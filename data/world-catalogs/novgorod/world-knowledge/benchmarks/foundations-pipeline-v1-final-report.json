@@ -1,0 +1,548 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_report_v1",
+  "benchmark_ref": "wk-pipeline:scientific-foundations-v1",
+  "completed": false,
+  "decision": {
+    "status": "fail",
+    "failures": [
+      {
+        "case_id": "foundations_neutralization_en",
+        "reason": "PIPELINE_EXECUTION_FAILED"
+      }
+    ]
+  },
+  "failed_case": {
+    "mode": "without_wk",
+    "case_id": "foundations_neutralization_en"
+  },
+  "failure": {
+    "code": "invalid_response",
+    "message": "Provider returned an invalid response.",
+    "details": null,
+    "planner_outputs": []
+  },
+  "runs": [
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_reappraisal_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "The laboratory negative-film task found that instructed cognitive reappraisal reduced reported negative emotional experience.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-01-reappraisal-negative-experience"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms4-01-reappraisal-negative-experience"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1601.6254,
+      "semantic_usage": {
+        "prompt_tokens": 353,
+        "completion_tokens": 38,
+        "total_tokens": 391,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 97
+      },
+      "total_pipeline_ms": 1601.6254
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_uncertainty_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Согласно обзору исследований, неопределённость и её представление могут влиять на процессы когнитивного контроля и принятия решений через модуляцию активности в префронтальной коре и других связанных областях, что отражается в изменениях поведения, таких как адаптация скорости реакции и точности в условиях неопределённости.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-03-uncertainty-cognitive-control"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms4-03-uncertainty-cognitive-control"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1519.6350999999995,
+      "semantic_usage": {
+        "prompt_tokens": 366,
+        "completion_tokens": 97,
+        "total_tokens": 463,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 110
+      },
+      "total_pipeline_ms": 1519.6350999999995
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_antler_workability_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Олений рог отличается от кератинового рога тем, что он состоит из костной ткани, а не из кератина. Опыт с естественно сброшенным рогом благородного оленя показал, что он содержит воду и поддается обработке.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-material3-03-antler-water-workability"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-material3-01-antler-osseous-not-horn"
+        ],
+        [
+          "claim:foundations-physical-material3-03-antler-water-workability"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1126.2942999999996,
+      "semantic_usage": {
+        "prompt_tokens": 379,
+        "completion_tokens": 85,
+        "total_tokens": 464,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 123
+      },
+      "total_pipeline_ms": 1126.2942999999996
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_acute_stress_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Острый стресс может влиять на процессы принятия решений, изменяя баланс между системами быстрых, интуитивных реакций и более медленных, рациональных размышлений, что часто приводит к более рискованным или менее гибким решениям.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-04-acute-stress"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms3-04-acute-stress"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1324.4069,
+      "semantic_usage": {
+        "prompt_tokens": 356,
+        "completion_tokens": 84,
+        "total_tokens": 440,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 100
+      },
+      "total_pipeline_ms": 1324.4069
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_apology_experiment_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "The experiment found that apology increased later re-investment, but only when the apology was accompanied by compensation; apology alone did not significantly increase re-investment.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-06-apology-reinvestment"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms3-06-apology-reinvestment"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1072.717999999999,
+      "semantic_usage": {
+        "prompt_tokens": 357,
+        "completion_tokens": 54,
+        "total_tokens": 411,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 101
+      },
+      "total_pipeline_ms": 1072.717999999999
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_infection_routes_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Учебная схема CDC/NIOSH выделяет следующие пути передачи возбудителей: контактный (прямой и непрямой), воздушно-капельный (крупные капли), воздушный (аэрозольный, включая ядра капель), а также общий (через общие предметы/поверхности). Входные ворота инфекции включают дыхательные пути, желудочно-кишечный тракт, кожу и слизистые оболочки, а также парентеральный путь (через кровь/инъекции).",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-life-44-pathogen-transport",
+        "claim:foundations-life-45-infection-entry"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-44-pathogen-transport"
+        ],
+        [
+          "claim:foundations-life-45-infection-entry"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1909.9159,
+      "semantic_usage": {
+        "prompt_tokens": 361,
+        "completion_tokens": 151,
+        "total_tokens": 512,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 105
+      },
+      "total_pipeline_ms": 1909.9159
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_chemical_exposure_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Contact with a chemical contaminant does not by itself determine illness because illness depends on the dose (amount and concentration), duration and frequency of exposure, route of entry (inhalation, ingestion, dermal), and individual susceptibility (age, health, genetics). These exposure conditions determine whether a harmful effect occurs.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:foundations-haz-02-exposure-not-illness"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-haz-01-exposure-modifiers"
+        ],
+        [
+          "claim:foundations-haz-02-exposure-not-illness"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1162.6671000000006,
+      "semantic_usage": {
+        "prompt_tokens": 354,
+        "completion_tokens": 83,
+        "total_tokens": 437,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 98
+      },
+      "total_pipeline_ms": 1162.6671000000006
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_wet_slope_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Дождь или снеготаяние увеличивают водонасыщение грунта, повышая поровое давление и снижая эффективные напряжения, что уменьшает прочность на сдвиг и может спровоцировать движение склона, уже находящегося в предельном состоянии устойчивости.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-haz-04-slope-force-strength",
+        "claim:foundations-haz-05-slope-water-triggers"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-haz-04-slope-force-strength"
+        ],
+        [
+          "claim:foundations-haz-05-slope-water-triggers"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1124.2134999999998,
+      "semantic_usage": {
+        "prompt_tokens": 363,
+        "completion_tokens": 84,
+        "total_tokens": 447,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 107
+      },
+      "total_pipeline_ms": 1124.2134999999998
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_air_resistance_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Лёгкий широкий лист испытывает большее сопротивление воздуха из-за своей большой площади и малой массы, что замедляет его падение и приводит к хаотичному движению. Компактный груз имеет меньшую площадь и большую массу, поэтому сопротивление воздуха влияет на него слабее, и он падает быстрее и по более прямой траектории.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-phys-01-air-drag-fall"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-01-air-drag-fall"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1326.442000000001,
+      "semantic_usage": {
+        "prompt_tokens": 361,
+        "completion_tokens": 107,
+        "total_tokens": 468,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 105
+      },
+      "total_pipeline_ms": 1326.442000000001
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_impact_duration_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Spreading the same change in momentum over a longer contact time reduces the force, because force equals the change in momentum divided by the time interval over which the change occurs.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-phys-02-impulse-momentum-change"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-02-impulse-momentum-change"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1009.7187000000013,
+      "semantic_usage": {
+        "prompt_tokens": 351,
+        "completion_tokens": 55,
+        "total_tokens": 406,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 95
+      },
+      "total_pipeline_ms": 1009.7187000000013
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_wet_metal_contact_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Электрический контакт разных металлов во влажной проводящей среде может менять коррозию из-за образования гальванической пары, где более активный металл (анод) корродирует быстрее, а менее активный (катод) защищается. Это происходит вследствие разности электродных потенциалов, создающей электрический ток в электролите.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-chm-12-galvanic-contact-corrosion"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-chm-12-galvanic-contact-corrosion"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1471.0715000000018,
+      "semantic_usage": {
+        "prompt_tokens": 361,
+        "completion_tokens": 110,
+        "total_tokens": 471,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 105
+      },
+      "total_pipeline_ms": 1471.0715000000018
+    }
+  ]
+}

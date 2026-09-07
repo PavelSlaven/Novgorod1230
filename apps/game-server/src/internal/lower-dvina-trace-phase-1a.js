@@ -17,16 +17,19 @@ import {
 } from '@rus/new-game/stages/stage-24';
 import { buildStage25CommitInput, runStage25PartyCommit } from '@rus/new-game/stages/stage-25';
 import { computeStage24ArtifactDigest } from '@rus/contracts';
+import {
+  loadLowerDvinaTraceMaterializationBundle,
+  resolveLowerDvinaTraceStartTimestamp,
+  validateLowerDvinaTracePlayerDossier
+} from './lower-dvina-trace-phase-1a-bundle.js';
 export {
   loadLowerDvinaTraceMaterializationBundle,
   resolveLowerDvinaTraceStartTimestamp,
   validateLowerDvinaTracePlayerDossier
 } from './lower-dvina-trace-phase-1a-bundle.js';
 import {
-  loadLowerDvinaTraceMaterializationBundle,
-  resolveLowerDvinaTraceStartTimestamp,
-  validateLowerDvinaTracePlayerDossier
-} from './lower-dvina-trace-phase-1a-bundle.js';
+  assertLowerDvinaTraceWorldKnowledgePreflight
+} from './lower-dvina-trace-world-knowledge-bridge.js';
 const inFlightParties = new Map();
 
 export async function materializeLowerDvinaTraceParty({
@@ -37,6 +40,7 @@ export async function materializeLowerDvinaTraceParty({
   repository,
   stage25Ports,
   stage24Auditor = auditPartyDbWritePlanByCode,
+  worldKnowledge = null,
   rootDir = process.cwd()
 } = {}) {
   if (!request?.party_id || !repository || !stage25Ports) fail('TRACE_PHASE_1A_SERVICE_INPUT_INVALID', 'Request, repository and Stage 25 ports are required.');
@@ -57,6 +61,7 @@ export async function materializeLowerDvinaTraceParty({
     repository,
     stage25Ports,
     stage24Auditor,
+    worldKnowledge,
     rootDir
   });
   inFlightParties.set(request.party_id, operation);
@@ -67,7 +72,7 @@ export async function materializeLowerDvinaTraceParty({
   }
 }
 
-async function materializeAndCommit({ request, domainCatalogPinLoader, partyDatabaseSchema, worldBaseReferenceSnapshot, repository, stage25Ports, stage24Auditor, rootDir }) {
+async function materializeAndCommit({ request, domainCatalogPinLoader, partyDatabaseSchema, worldBaseReferenceSnapshot, repository, stage25Ports, stage24Auditor, worldKnowledge, rootDir }) {
   if (typeof domainCatalogPinLoader !== 'function') {
     fail('TRACE_PHASE_1A_DOMAIN_CATALOG_PIN_MISSING', 'The active item/container domain catalog pin loader is required before materialization.');
   }
@@ -80,6 +85,12 @@ async function materializeAndCommit({ request, domainCatalogPinLoader, partyData
     rootDir,
     scenarioDefinitionRevision: request.scenario_definition_revision
   });
+  if (worldKnowledge != null) {
+    assertLowerDvinaTraceWorldKnowledgePreflight({
+      worldKnowledge,
+      scenarioBundle: bundle
+    });
+  }
   const authoredMaterialization = materializeLowerDvinaTracePartyInstance({
     ...request,
     domain_catalog_pin: domainCatalogPin,

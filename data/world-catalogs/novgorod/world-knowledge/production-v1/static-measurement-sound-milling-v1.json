@@ -1,0 +1,767 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-measurement-tare",
+      "title": "NIST — Weighing and Scales FAQs",
+      "authors": [],
+      "publication": "NIST — Weighing and Scales FAQs",
+      "source_kind": "technical_reference",
+      "citation": "https://www.nist.gov/pml/owm/faqs/weighing-and-scales-faqs",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-measurement-grain",
+      "title": "Canadian Grain Commission — Test weight calculators",
+      "authors": [],
+      "publication": "Canadian Grain Commission — Test weight calculators",
+      "source_kind": "technical_reference",
+      "citation": "https://www.grainscanada.gc.ca/en/grain-quality/grain-grading/grading-factors/test-weight-calculator.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-milling-fracture",
+      "title": "FAO — Small mills in Africa",
+      "authors": [],
+      "publication": "FAO — Small mills in Africa",
+      "source_kind": "technical_reference",
+      "citation": "https://www.fao.org/4/j8482e/j8482e.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-sound-intensity",
+      "title": "OpenStax — University Physics Volume 1, 17.3 Sound Intensity",
+      "authors": [],
+      "publication": "OpenStax — University Physics Volume 1, 17.3 Sound Intensity",
+      "source_kind": "technical_reference",
+      "citation": "https://openstax.org/books/university-physics-volume-1/pages/17-3-sound-intensity",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-sound-delay",
+      "title": "OpenStax — Introduction to Behavioral Neuroscience, 7.1 Acoustic Cues and Signals",
+      "authors": [],
+      "publication": "OpenStax — Introduction to Behavioral Neuroscience, 7.1 Acoustic Cues and Signals",
+      "source_kind": "technical_reference",
+      "citation": "https://openstax.org/books/introduction-behavioral-neuroscience/pages/7-1-acoustic-cues-and-signals",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-sound-weather",
+      "title": "FHWA — Noise Barrier Design Handbook, 3 Acoustical Considerations",
+      "authors": [],
+      "publication": "FHWA — Noise Barrier Design Handbook, 3 Acoustical Considerations",
+      "source_kind": "technical_reference",
+      "citation": "https://www.fhwa.dot.gov/Environment/noise/noise_barriers/design_construction/design/design03.cfm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:static-random-independence",
+      "title": "OpenStax — Introductory Statistics 2e, 3.2 Independent and Mutually Exclusive Events",
+      "authors": [],
+      "publication": "OpenStax — Introductory Statistics 2e, 3.2 Independent and Mutually Exclusive Events",
+      "source_kind": "technical_reference",
+      "citation": "https://openstax.org/books/introductory-statistics-2e/pages/3-2-independent-and-mutually-exclusive-events",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-measurement-tare",
+      "source_ref": "source:static-measurement-tare",
+      "anchor": {
+        "section": "Mathematical agreement in determining net weight"
+      },
+      "note": "Gross load comprises packaging tare and net product; use the physical relation, not current US law or digital-scale requirements.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-measurement-grain",
+      "source_ref": "source:static-measurement-grain",
+      "anchor": {
+        "section": "Determining grain weights and volumes; Unit equivalents"
+      },
+      "note": "Mass-volume conversion uses grain test weight and identified units; no medieval measure or fixed batch density is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-milling-fracture",
+      "source_ref": "source:static-milling-fracture",
+      "anchor": {
+        "section": "Printed pp. 5–7 (PDF pp. 13–15), milling mechanisms and plate mills"
+      },
+      "note": "Compression/shear fracture, moisture-dependent deformation and plate-gap relation. Modern equipment examples do not establish historical availability.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-sound-intensity",
+      "source_ref": "source:static-sound-intensity",
+      "anchor": {
+        "section": "Opening examples; spherical spreading"
+      },
+      "note": "Sound spreading and masking by surrounding noise, without a local audible distance or guarantee.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-sound-delay",
+      "source_ref": "source:static-sound-delay",
+      "anchor": {
+        "section": "Room reflections and perceptible delay"
+      },
+      "note": "Longer reflected paths can arrive after direct sound; no exact church acoustics or singing custom.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-sound-weather",
+      "source_ref": "source:static-sound-weather",
+      "anchor": {
+        "section": "3.3.3 Meteorological effects"
+      },
+      "note": "Wind/temperature gradients refract sound; conditional outdoor propagation, not local audibility or modern traffic.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:static-random-independence",
+      "source_ref": "source:static-random-independence",
+      "anchor": {
+        "section": "Independent Events"
+      },
+      "note": "Independence and fair-die model; no attestation of a physical die, historical game or current fairness.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:measurement-and-milling",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:sound-propagation",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:random-trials",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:measurement-net-excludes-tare",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:measurement-and-milling",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Gross load includes contents and packaging tare. Comparing contents requires accounting for tare separately; a heavier sack need not contain more grain."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-measurement-tare"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:measurement-grain-mass-volume-density",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:measurement-and-milling",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Grain mass and volume are linked by bulk density: equal volumes of batches with different bulk densities have different masses. Conversion needs an applicable density, not only the grain name."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-measurement-grain"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:measurement-units-must-be-identified",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:measurement-and-milling",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Comparing measures requires identifying the quantity and unit: mass cannot be equated directly with volume, and the same measure name need not denote the same volume."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-measurement-grain"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:milling-grain-compression-shear-fracture",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:measurement-and-milling",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "In milling, grain fractures under compression and shear at contacts, producing a range of particle sizes including fines and dust. Load, contact and grain condition affect the result."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-milling-fracture"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:milling-moisture-changes-grain-deformation",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:measurement-and-milling",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Dry grain is more brittle during milling; moist grain can deform more before fracture. The same mechanical action therefore need not give the same product at different moisture contents."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-milling-fracture"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:milling-plate-gap-pressure-fineness",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:measurement-and-milling",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "In the described plate milling, narrowing the working gap raises pressure on grain and changes fineness; contact between the working surfaces themselves causes excess wear. This is a qualitative mechanism, not a setting for every mill."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-milling-fracture"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:sound-spreading-reduces-intensity",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:sound-propagation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "In a free field, a spreading sound wave distributes energy over increasing area, so intensity decreases with distance. Reflections, obstacles and the medium can change actual audibility."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-sound-intensity"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:sound-background-noise-masks-speech",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:sound-propagation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Strong surrounding noise can make speech difficult to understand even near the speaker. Proximity does not guarantee intelligibility when other sounds mask speech."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-sound-intensity"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:sound-reflections-arrive-after-direct-path",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:sound-propagation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Reflected sound travels a longer path and can arrive after direct sound; indoors this produces delayed reflections that alter the heard sequence of sounds."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-sound-delay"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:sound-wind-temperature-gradients-refract",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:sound-propagation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Wind and temperature gradients refract airborne sound: under some conditions downwind propagation bends toward the ground and upwind propagation away from it. Audibility depends on propagation conditions, not only voice level."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-sound-weather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:random-independent-trials-do-not-owe-reversal",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:random-trials",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "For genuinely independent trials, a previous outcome does not change the next outcome's probability. In an independent fair-roll model repetitions are possible and do not make a reversal obligatory; this does not establish fairness of a physical die."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:static-random-independence"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:measurement-and-milling",
+      "locale": "ru",
+      "labels": [
+        "Измерение и измельчение"
+      ],
+      "short_definition": "Измерение и измельчение",
+      "search_aliases": [
+        "Измерение и измельчение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:measurement-and-milling",
+      "locale": "en",
+      "labels": [
+        "Measurement and comminution"
+      ],
+      "short_definition": "Measurement and comminution",
+      "search_aliases": [
+        "Measurement and comminution"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:sound-propagation",
+      "locale": "ru",
+      "labels": [
+        "Распространение звука"
+      ],
+      "short_definition": "Распространение звука",
+      "search_aliases": [
+        "Распространение звука"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:sound-propagation",
+      "locale": "en",
+      "labels": [
+        "Sound propagation"
+      ],
+      "short_definition": "Sound propagation",
+      "search_aliases": [
+        "Sound propagation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:random-trials",
+      "locale": "ru",
+      "labels": [
+        "Независимые случайные испытания"
+      ],
+      "short_definition": "Независимые случайные испытания",
+      "search_aliases": [
+        "Независимые случайные испытания"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:random-trials",
+      "locale": "en",
+      "labels": [
+        "Independent random trials"
+      ],
+      "short_definition": "Independent random trials",
+      "search_aliases": [
+        "Independent random trials"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:measurement-net-excludes-tare",
+      "locale": "ru",
+      "runtime_text": "Масса груза вместе с упаковкой включает массу содержимого и тары. Чтобы сравнивать само содержимое, тару учитывают отдельно; тяжёлый мешок не означает больше зерна.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:measurement-net-excludes-tare",
+      "locale": "en",
+      "runtime_text": "Gross load includes contents and packaging tare. Comparing contents requires accounting for tare separately; a heavier sack need not contain more grain.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:measurement-grain-mass-volume-density",
+      "locale": "ru",
+      "runtime_text": "Масса и объём зерна связаны его насыпной плотностью: одинаковый объём партий с разной насыпной плотностью имеет разную массу. Пересчёт требует подходящего значения плотности, а не одного названия зерна.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:measurement-grain-mass-volume-density",
+      "locale": "en",
+      "runtime_text": "Grain mass and volume are linked by bulk density: equal volumes of batches with different bulk densities have different masses. Conversion needs an applicable density, not only the grain name.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:measurement-units-must-be-identified",
+      "locale": "ru",
+      "runtime_text": "Для сопоставления мер нужно знать, какую величину и какую единицу используют: массу нельзя напрямую приравнивать объёму, а одинаковое название меры не гарантирует одинакового объёма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:measurement-units-must-be-identified",
+      "locale": "en",
+      "runtime_text": "Comparing measures requires identifying the quantity and unit: mass cannot be equated directly with volume, and the same measure name need not denote the same volume.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:milling-grain-compression-shear-fracture",
+      "locale": "ru",
+      "runtime_text": "При помоле зерно разрушается под сжатием и сдвигом в местах контакта; это даёт частицы разных размеров, включая мелочь и пыль. Нагрузка, контакт и состояние зерна влияют на результат.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:milling-grain-compression-shear-fracture",
+      "locale": "en",
+      "runtime_text": "In milling, grain fractures under compression and shear at contacts, producing a range of particle sizes including fines and dust. Load, contact and grain condition affect the result.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:milling-moisture-changes-grain-deformation",
+      "locale": "ru",
+      "runtime_text": "Сухое зерно при измельчении более хрупко; влажное способно сильнее деформироваться до разрушения. Поэтому одинаковое механическое воздействие не обязано давать одинаковый помол при разной влажности.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:milling-moisture-changes-grain-deformation",
+      "locale": "en",
+      "runtime_text": "Dry grain is more brittle during milling; moist grain can deform more before fracture. The same mechanical action therefore need not give the same product at different moisture contents.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:milling-plate-gap-pressure-fineness",
+      "locale": "ru",
+      "runtime_text": "В описанном помоле между плитами сужение рабочего зазора повышает давление на зерно и меняет тонкость помола; контакт самих рабочих поверхностей вызывает лишний износ. Это качественная механическая связь, не настройка любой мельницы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:milling-plate-gap-pressure-fineness",
+      "locale": "en",
+      "runtime_text": "In the described plate milling, narrowing the working gap raises pressure on grain and changes fineness; contact between the working surfaces themselves causes excess wear. This is a qualitative mechanism, not a setting for every mill.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sound-spreading-reduces-intensity",
+      "locale": "ru",
+      "runtime_text": "В свободном пространстве расходящаяся звуковая волна распределяет энергию по растущей площади, поэтому её интенсивность падает с расстоянием. Отражения, преграды и среда могут менять реальную слышимость.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sound-spreading-reduces-intensity",
+      "locale": "en",
+      "runtime_text": "In a free field, a spreading sound wave distributes energy over increasing area, so intensity decreases with distance. Reflections, obstacles and the medium can change actual audibility.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sound-background-noise-masks-speech",
+      "locale": "ru",
+      "runtime_text": "Сильный окружающий шум может мешать разбирать речь даже рядом с говорящим. Близость источника не гарантирует разборчивости, если речь перекрывается другими звуками.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sound-background-noise-masks-speech",
+      "locale": "en",
+      "runtime_text": "Strong surrounding noise can make speech difficult to understand even near the speaker. Proximity does not guarantee intelligibility when other sounds mask speech.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sound-reflections-arrive-after-direct-path",
+      "locale": "ru",
+      "runtime_text": "Отражённый звук проходит более длинный путь и может приходить позже прямого; в помещении это создаёт задержанные отражения, которые меняют слышимую последовательность звуков.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sound-reflections-arrive-after-direct-path",
+      "locale": "en",
+      "runtime_text": "Reflected sound travels a longer path and can arrive after direct sound; indoors this produces delayed reflections that alter the heard sequence of sounds.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sound-wind-temperature-gradients-refract",
+      "locale": "ru",
+      "runtime_text": "Градиенты ветра и температуры преломляют звук в воздухе: при некоторых условиях по ветру он изгибается к земле, против ветра — от неё. Слышимость зависит от условий распространения, а не только громкости голоса.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sound-wind-temperature-gradients-refract",
+      "locale": "en",
+      "runtime_text": "Wind and temperature gradients refract airborne sound: under some conditions downwind propagation bends toward the ground and upwind propagation away from it. Audibility depends on propagation conditions, not only voice level.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:random-independent-trials-do-not-owe-reversal",
+      "locale": "ru",
+      "runtime_text": "Если испытания действительно независимы, предыдущий исход не меняет вероятности следующего. В модели независимых честных бросков повторения допустимы и не делают противоположный исход обязательным; это не доказывает честность реальной кости.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:random-independent-trials-do-not-owe-reversal",
+      "locale": "en",
+      "runtime_text": "For genuinely independent trials, a previous outcome does not change the next outcome's probability. In an independent fair-roll model repetitions are possible and do not make a reversal obligatory; this does not establish fairness of a physical die.",
+      "search_aliases": []
+    }
+  ]
+}

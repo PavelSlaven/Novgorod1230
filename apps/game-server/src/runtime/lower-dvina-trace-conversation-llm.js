@@ -9,6 +9,7 @@ import {
 } from './lower-dvina-trace-conversation-assembly.js';
 import { auditFreshNpcSpeech } from
   './lower-dvina-trace-npc-speech-grounding-audit.js';
+import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
 
 export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}) {
   requireRoleRunner(roleRunner);
@@ -37,13 +38,16 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}
   };
 }
 
-export function createLowerDvinaTraceNpcSemanticModel({ roleRunner } = {}) {
+export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
+  worldKnowledgeGrounder = null } = {}) {
   requireRoleRunner(roleRunner);
   const model = async function planNpcConversationResponse(request, context = {}) {
     const repair = context.repair ?? null;
     const semanticRepair = repair?.validation_errors?.some(
       ({ category }) => category === 'semantic_grounding'
     ) === true;
+    const modelRequest = worldKnowledgeGrounder == null ? request
+      : await worldKnowledgeGrounder.ground(request, 'conversation');
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -52,16 +56,17 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner } = {}) {
       request_identity: request.request_id,
       messages: [{
         role: 'system',
-        content: npcConversationInstructions(repair, request)
+        content: [npcConversationInstructions(repair, modelRequest),
+          ...worldKnowledgeFactualClosure(modelRequest)].join(' ')
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {
-          request,
+          request: modelRequest,
           ...(semanticRepair ? {} : {
             original_output: repair.original_output
           }),
           validation_errors: repair.validation_errors
-        } : request)
+        } : modelRequest)
       }],
       overrides: { temperature: 0, maxTokens: 20_000 }
     });

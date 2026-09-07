@@ -1,0 +1,109 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-universal-life-environment-v2-pregnancy",
+      "claim_ref": "claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
+      "claim_digest": "8649a43e6ba446c66940e0672949dc08b70ded2316fefbc8ec6df4f90974dd18",
+      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-pregnancy-involves-maternal-physiological-changes",
+      "auditor_ref": "/root/universal_v2_verifier",
+      "independence_basis": "Independent direct OpenStax source review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-v2-pregnancy"],
+      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-pregnancy-involves-maternal-physiological-changes",
+      "verdict": "APPROVE",
+      "limits": "General physiological relation only; no person, pregnancy, symptom, timing, diagnosis, treatment, or scene outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-universal-life-environment-v2-labor",
+      "claim_ref": "claim:candidate-v2-labor-is-a-staged-process",
+      "claim_digest": "18f88983daecd27297195366ad0dd15a486565517eeaa25835f91688b6ad4730",
+      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-labor-is-a-staged-process",
+      "auditor_ref": "/root/universal_v2_verifier",
+      "independence_basis": "Independent direct OpenStax source review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-v2-labor"],
+      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-labor-is-a-staged-process",
+      "verdict": "APPROVE",
+      "limits": "General staged-process relation only; no person, pregnancy, labor timing, intervention, diagnosis, outcome, or scene state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-universal-life-environment-v2-newborn-adjustments",
+      "claim_ref": "claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
+      "claim_digest": "58abe4b7dcb3b0e7cb03df39d9ab82128975c3134783114f3dbd79ca36e3f1cf",
+      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-newborn-undergoes-adjustments-at-birth",
+      "auditor_ref": "/root/universal_v2_verifier",
+      "independence_basis": "Independent direct OpenStax source review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-v2-postnatal"],
+      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-newborn-undergoes-adjustments-at-birth",
+      "verdict": "APPROVE",
+      "limits": "General birth-adjustment relation only; no newborn, birth event, temperature, respiration, diagnosis, care, or individual condition."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-universal-life-environment-v2-lactation",
+      "claim_ref": "claim:candidate-v2-lactation-is-milk-production-and-secretion",
+      "claim_digest": "78ff651199f07d8de4991587eec387c733e7872a20cd716b4aeddd146d31f466",
+      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-lactation-is-milk-production-and-secretion",
+      "auditor_ref": "/root/universal_v2_verifier",
+      "independence_basis": "Independent direct OpenStax source review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-v2-lactation"],
+      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-lactation-is-milk-production-and-secretion",
+      "verdict": "APPROVE",
+      "limits": "Definition only; no person, feeding event, milk amount, health condition, diagnosis, treatment, or scene outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-universal-life-environment-v2-foodborne-symptoms",
+      "claim_ref": "claim:candidate-v2-foodborne-symptoms-vary-by-germ",
+      "claim_digest": "62325b33c378ea3f42f4a96c4e335fdb7a27417adaf2b8b38d5d568e822c300c",
+      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-foodborne-symptoms-vary-by-germ",
+      "auditor_ref": "/root/universal_v2_verifier",
+      "independence_basis": "Independent direct CDC source review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-v2-foodborne-symptoms"],
+      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-foodborne-symptoms-vary-by-germ",
+      "verdict": "APPROVE",
+      "limits": "Food-poisoning symptom variation only; no food, germ, exposure, illness, diagnosis, severity, treatment, or scene outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-universal-life-environment-v2-slip-hazard",
+      "claim_ref": "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+      "claim_digest": "7f7bc124c570fac9db0b32e533ee26c7698f0f15ba539f7dada5d2cbff3007ee",
+      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+      "auditor_ref": "/root/universal_v2_verifier",
+      "independence_basis": "Independent direct CDC source review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-v2-slip-hazard"],
+      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+      "verdict": "APPROVE",
+      "limits": "Possible walking-surface hazard only; no local ice or snow, traction value, fall, injury, weather state, or scene outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-universal-life-environment-v2-ice-strength-factors",
+      "claim_ref": "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+      "claim_digest": "1c372dde4808d004fe93d89ea75c26a0b2475b87fbd93267883b143aa1a38ce0",
+      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+      "auditor_ref": "/root/universal_v2_verifier",
+      "independence_basis": "Independent direct Environment and Climate Change Canada source review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-v2-ice-strength-factors"],
+      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-ice-strength-depends-on-physical-conditions",
+      "verdict": "APPROVE",
+      "limits": "Qualitative relation only; no ice presence, ice type, thickness, temperature, salt content, safe threshold, load, route, or site state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-universal-life-environment-v2-near-melting-ice",
+      "claim_ref": "claim:candidate-v2-near-melting-ice-has-less-strength",
+      "claim_digest": "562e66113d4642a7a4788634e28b5561ce4b563e1dd9e8410de5b5faf46b592a",
+      "candidate_ref": "git:23bfdc006d45ca7539f62b870f60b5d36e12b28b:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-universal-life-environment-v2.json#claim:candidate-v2-near-melting-ice-has-less-strength",
+      "auditor_ref": "/root/universal_v2_verifier",
+      "independence_basis": "Independent direct Environment and Climate Change Canada source review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-v2-ice-near-melting"],
+      "review_ref": "verification/macro-universal-life-environment-v2.md#claim-candidate-v2-near-melting-ice-has-less-strength",
+      "verdict": "APPROVE",
+      "limits": "Qualitative same-thickness comparison only; no local ice, temperature, thickness, safe threshold, load, route, or site state."
+    }
+  ]
+}

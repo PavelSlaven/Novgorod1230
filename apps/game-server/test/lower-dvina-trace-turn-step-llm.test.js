@@ -47,6 +47,7 @@ test('turn step model sends the validated request to the isolated planner role',
     'exactly one request_discovery',
     'one current visible target_ref',
     'preserve the player query',
+    'never paste a compound action into query and set continuation null',
     'never grant an impossible result',
     'skill proficiency is not',
     'no_experience still permits an attempt',
@@ -89,7 +90,7 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
         actor_ref: '<copy current actor ref from request>',
         discovery_kind: '<copy inspect or search from intent>',
         target_refs: ['<copy one current visible searched location or entity ref>'],
-        query: '<copy player query>' }], check: null
+        query: '<copy only the current information-seeking query, not later physical actions>' }], check: null
     });
     const mapping = mappings.focused_ordinary_discovery;
     assert.equal(validateTurnStepPlan({
@@ -110,9 +111,51 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
     assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*sought ordinary detail need not be visible[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
     assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
     assert.match(prompt, /general current situation, ongoing activity, or who is nearby are ordinary_scene_seed while scene_seed_available is true and visible_general_look afterward/u);
-  assert.match(prompt, /required first handoff[\s\S]*tries to take, use, or transform an ordinary physical referent[\s\S]*no semantically matching item entity_ref[\s\S]*current visible sensory facts[\s\S]*ordinary referent merely sought in the current visible physical scope[\s\S]*request_discovery[\s\S]*continuation containing the complete intended handling or transformation[\s\S]*action_production owns the transformation/u);
+  assert.match(prompt, /Without a matching ambient_ordinary_capability or item entity_ref[\s\S]*must first acquire[\s\S]*ordinary_material_prerequisite[\s\S]*current visible sensory facts[\s\S]*ordinary referent merely sought in the current visible physical scope[\s\S]*request_discovery[\s\S]*continuation containing the complete intended handling or transformation[\s\S]*action_production owns the transformation/u);
   assert.match(prompt, /Every material physically incorporated[\s\S]*action_production is forbidden[\s\S]*Never smuggle an unreferenced material/u);
   }
+});
+
+test('turn step planner routes an exposed ambient portion through its capability ref', async () => {
+  const capabilityRef = 'capability:alluvial-silt-portion-v9';
+  const input = request({
+    root_player_action: 'Зачерпнуть пригоршню речного ила и сжать её.',
+    remaining_intent: 'Зачерпнуть пригоршню речного ила и сжать её.',
+    player_safe_state: { visible_context: { visible_objects: [{
+      entity_ref: { entity_kind: 'ambient_ordinary_capability', entity_id: capabilityRef },
+      display_label: 'пригоршня речного ила', recognition: 'code_owned_source_capability',
+      visible_status: 'available', ambient_portion_bounds: { quantity_unit: 'scoop',
+        min_quantity: 2, max_quantity: 4, min_mass_grams: 70, max_mass_grams: 900 }
+    }] } }
+  });
+  let prompt;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
+    prompt = call.messages[0].content;
+    return { output: {
+      interpretation: { player_goal: input.root_player_action,
+        grounded_attempt: 'Зачерпнуть пригоршню речного ила.', adaptation: 'literal' },
+      resolution: 'direct', goal_result: 'achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
+      operation_choice: null,
+      operations: [{ op: 'create_entity', temp_ref: 'taken-silt',
+        semantic_type: 'material_portion', name: 'пригоршня речного ила',
+        origin: { kind: 'ambient_ordinary', source_refs: [capabilityRef] }, facts: [],
+        mechanics: { mass_grams: 300, external_hand_cost: 1, carry_form: 'compact',
+          packing_slot_cost: 1, quantity: { value: 3, unit: 'scoop' }, container: null },
+        placement: { relation: 'held_by', target_ref: input.actor.actor_ref } }],
+      check: null, continuation: { remaining_intent: 'Сжать взятую порцию.',
+        depends_on_refs: ['taken-silt'] }, clarification: null,
+      reason_code: 'ambient_ordinary_portion_take', reason: 'Беру видимую порцию.'
+    } };
+  } } });
+  const plan = await model(input);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+  assert.deepEqual(plan.operations[0].origin,
+    { kind: 'ambient_ordinary', source_refs: [capabilityRef] });
+  assert.equal(plan.goal_result, 'pending');
+  assert.deepEqual(plan.continuation,
+    { remaining_intent: 'Сжать взятую порцию.', depends_on_refs: ['taken-silt'] });
+  assert.match(prompt, /ambient_ordinary_capability[\s\S]*exact code-owned permission and source[\s\S]*not an existing item alias or a discovery target[\s\S]*ambient_ordinary_portion_take before ordinary_material_prerequisite or action_production[\s\S]*sole origin\.source_refs[\s\S]*quantity\.unit from its ambient_portion_bounds[\s\S]*quantity\.value and mass_grams only within those exact min\/max bounds[\s\S]*effective type, name, mechanics, source, and profile values at commit[\s\S]*Never substitute any nearby, worn, held, or listed item ref[\s\S]*making that compound plan pending/u);
 });
 
 test('turn step planner and repair prompts map available container access exactly', async () => {

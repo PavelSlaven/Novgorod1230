@@ -1,0 +1,37 @@
+{
+  "batch": "macro-19",
+  "reviewer": "/root/macro_b19_review_a",
+  "corpus_commit": "325591f0a53ce616383d7b5d4390880bbc9dd9d3",
+  "method": "Independent WK-only triage of the two substantial-gap findings from review B; local givens are not treated as additional world facts.",
+  "cases": [
+    {
+      "case_id": "mb19core-055",
+      "primary_domain": "horsefly and animal work",
+      "verdict": "genuine_gap",
+      "rationale_ru": "Runtime подтверждает, что отдельные кровососущие Culex питаются кровью людей и животных, а клещи питаются кровью, но не содержит factual premise о слепнях/кусающих мухах, их сезонной активности у рабочего КРС либо о беспокойстве и нарушении тяги. Нельзя перенести реакцию человека или иной вид насекомых в объяснение волов. Данная сцена требует общего reusable relation, а не состояния конкретной упряжки.",
+      "claim_refs": [
+        "claim:fauna-culex-female-blood",
+        "claim:fauna-tick-feeding",
+        "claim:environment-p1-cattle"
+      ],
+      "needed_family": "Кровососущие двукрылые у рабочего скота: укусы и назойливость могут вызывать беспокойство и ухудшать устойчивость работы; сезон, количество, реакция и исход контекстны."
+    },
+    {
+      "case_id": "mb19core-058",
+      "primary_domain": "charcoal dust and breathing",
+      "verdict": "covered_composable",
+      "rationale_ru": "Сцена уже задаёт мелкую пыль при пересыпании и начавшийся кашель. WK связывает вдыхание с путём воздействия, а раздражение дыхательных путей частицами — с кашлевым рефлексом; уголь исторически совместим с работой кузницы. Этого достаточно для осторожной reconstruction: не выдавать кашель за диагноз или доказанный вред именно угля, уменьшить дальнейшее запыление и выйти к более свежему воздуху/прекратить пересыпание при продолжающемся кашле. Отдельная charcoal-specific токсикология не нужна для этого ответа.",
+      "claim_refs": [
+        "claim:foundations-haz-03-exposure-routes",
+        "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+        "claim:fuel-charcoal-metallurgy-fuel"
+      ],
+      "needed_family": null
+    }
+  ],
+  "summary": {
+    "genuine_gap": 1,
+    "covered_composable": 1,
+    "out_of_scope_state": 0
+  }
+}

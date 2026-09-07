@@ -1,0 +1,1401 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-batch-01-editorial",
+      "title": "Reality batch 01 practical reconstruction",
+      "authors": [
+        "Novgorod1230 editorial team"
+      ],
+      "publication": "Candidate reconstruction from reality-batch-01 triage",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/benchmarks/offline-context-v1/reality-batch-01-triage.json",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-batch-01-umn-herbs",
+      "title": "Preserving food at home: Drying",
+      "authors": [
+        "University of Minnesota Extension"
+      ],
+      "publication": "University of Minnesota Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.umn.edu/food/preparing/cooking-at-home/food-preservation/drying",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-batch-01-medlineplus-wounds",
+      "title": "How wounds heal",
+      "authors": [
+        "U.S. National Library of Medicine"
+      ],
+      "publication": "MedlinePlus Medical Encyclopedia",
+      "source_kind": "official_documentation",
+      "citation": "https://medlineplus.gov/ency/patientinstructions/000741.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-batch-01-fao-soil",
+      "title": "Physical properties",
+      "authors": [
+        "Food and Agriculture Organization of the United Nations"
+      ],
+      "publication": "FAO Soils Portal",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fao.org/soils-portal/soil-survey/soil-properties/physical-properties/en/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reality-batch-01-pmc-horse",
+      "title": "Heat stress in horses: a literature review",
+      "authors": [
+        "H. Kang and colleagues"
+      ],
+      "publication": "Journal of Animal Science and Biotechnology, 2023",
+      "source_kind": "scholarship",
+      "citation": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10267279/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-batch-01-wetland-reed",
+      "source_ref": "source:reality-batch-01-editorial",
+      "anchor": {
+        "section": "Wetland reed harvesting"
+      },
+      "note": "Bounded ordinary reconstruction of an already established wetland plant and available cutting action. It establishes neither plant presence, identity, ownership, access, yield nor safe outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-batch-01-rope-joinery",
+      "source_ref": "source:reality-batch-01-editorial",
+      "anchor": {
+        "section": "Rope and wooden joins"
+      },
+      "note": "Bounded reconstruction of visible rope and wooden joints. It establishes no rope, load, knot type, damage cause, repair material, strength or successful repair.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-batch-01-herbs",
+      "source_ref": "source:reality-batch-01-umn-herbs",
+      "anchor": {
+        "section": "Air drying"
+      },
+      "note": "University Extension describes air drying herbs indoors in a dry setting. It establishes no herb, aroma, mold, quantity, safety, medicinal use or storage outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-batch-01-horse",
+      "source_ref": "source:reality-batch-01-pmc-horse",
+      "anchor": {
+        "section": "Abstract and thermoregulation discussion"
+      },
+      "note": "The review supports observable thermoregulatory responses to exercise and heat. It establishes no horse, workload, diagnosis, injury, treatment, tack condition or work decision.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-batch-01-abrasion",
+      "source_ref": "source:reality-batch-01-medlineplus-wounds",
+      "anchor": {
+        "section": "Minor wounds and infection prevention"
+      },
+      "note": "MedlinePlus describes minor wounds, their care needs, and infection prevention. It establishes no wound, contamination, infection, treatment availability or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-batch-01-soil",
+      "source_ref": "source:reality-batch-01-fao-soil",
+      "anchor": {
+        "section": "Soil structure and soil water characteristics"
+      },
+      "note": "FAO describes texture, structure, water movement, moisture storage and their effects on soil stability. It establishes no ground, stake, excavation, bearing value, collapse or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:reality-batch-01-editorial-observable-bridges",
+      "source_ref": "source:reality-batch-01-editorial",
+      "anchor": {
+        "section": "Observable condition and low-risk response bridges"
+      },
+      "note": "Bounded editorial bridges cover observable stale odour and separation of visibly damp or moldy herbs; harness contact rubbing or displacement and considering rest, cooling or adjustment; clean hands and available clean covering for a minor abrasion; and qualitative inference from soil texture and water to local temporary-stake or small-excavation checks. They establish no presence, state, cause, diagnosis, threshold, safety, historical practice or outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:reality-batch-01-wetland-reed-cutting",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:reality-batch-01-wooden-joinery",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:reality-batch-01-dried-herb-storage",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:reality-batch-01-working-horse-observation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:reality-batch-01-soil-temporary-stability",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-batch-01-wetland-reed-cutting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "among_already_present_wetland_reed_stems_dry_or_intact_stems_can_be_distinguished_from_visibly_damaged_or_wet_stems_by_observation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [{"facet":"process_ref","operator":"present"}]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-wetland-reed"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-batch-01-wetland-reed-cutting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cutting_an_already_present_wetland_reed_stem_can_need_clear_hand_and_foot_placement_around_a_blade_and_unstable_wet_ground"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-wetland-reed"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-batch-01-wetland-reed-cutting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cut_reed_stems_can_be_gathered_or_set_aside_before_moving_across_wet_ground_without_establishing_a_harvest_amount_or_result"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-wetland-reed"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_rope_knot_arranged_as_a_releasable_load_bearing_hitch_can_hold_tension_while_loaded_and_be_released_after_load_is_removed"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-rope-joinery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "releasing_a_releasable_rope_knot_can_require_access_to_its_working_part_and_control_of_remaining_tension"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-rope-joinery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_rope_knot_can_be_checked_for_its_dressing_contact_and_clear_release_path_before_loading_without_establishing_strength_or_success"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-rope-joinery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reality-batch-01-wooden-joinery",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "visible_sag_or_looseness_in_an_already_present_wooden_assembly_can_be_observed_at_its_joints_frame_or_bearing_points_without_diagnosing_cause"
+      },
+      "polarity": "support",
+      "applicability": {"conditions":[{"facet":"process_ref","operator":"present"}]},
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-rope-joinery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reality-batch-01-wooden-joinery",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an_already_present_loose_or_sagging_wooden_join_can_be_unloaded_or_supported_before_adjustment_without_proving_its_condition_or_repair_outcome"
+      },
+      "polarity": "support",
+      "applicability": {"conditions":[{"facet":"process_ref","operator":"present"}]},
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-rope-joinery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reality-batch-01-wooden-joinery",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_temporary_wedge_brace_or_reseating_of_an_already_present_wooden_join_can_limit_visible_movement_as_fit_material_and_load_allow_without_guaranteeing_stability"
+      },
+      "polarity": "support",
+      "applicability": {"conditions":[{"facet":"process_ref","operator":"present"}]},
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-rope-joinery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:reality-batch-01-dried-herb-storage",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "already_dried_herbs_can_be_kept_in_a_dry_protected_storage_condition_without_establishing_a_specific_herb_or_its_quality"
+      },
+      "polarity": "support",
+      "applicability": {"conditions":[{"facet":"process_ref","operator":"present"}]},
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-herbs"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:reality-batch-01-dried-herb-storage",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "stored_dried_herbs_can_be_checked_for_dampness_visible_mold_or_stale_odor_without_proving_spoilage_or_safety"
+      },
+      "polarity": "support",
+      "applicability": {"conditions":[{"facet":"process_ref","operator":"present"}]},
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-herbs",
+        "evidence:reality-batch-01-editorial-observable-bridges"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:reality-batch-01-dried-herb-storage",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "dried_herbs_can_be_separated_from_damp_or_visibly_moldy_material_to_limit_contact_without_establishing_preservation_or_remediation_outcome"
+      },
+      "polarity": "support",
+      "applicability": {"conditions":[{"facet":"process_ref","operator":"present"}]},
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-herbs",
+        "evidence:reality-batch-01-editorial-observable-bridges"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-batch-01-working-horse-observation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an_already_present_working_horse_can_show_observable_change_in_heat_sweating_or_breathing_after_exertion_without_establishing_fatigue_or_illness"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-horse"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-batch-01-working-horse-observation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "contact_areas_under_an_already_present_horse_harness_can_be_observed_for_rubbing_heat_or_displacement_without_diagnosing_an_injury"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-horse",
+        "evidence:reality-batch-01-editorial-observable-bridges"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-batch-01-working-horse-observation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "observation_of_a_working_horse_can_support_considering_rest_cooling_or_harness_adjustment_without_deciding_work_fitness_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-horse",
+        "evidence:reality-batch-01-editorial-observable-bridges"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an_already_observed_minor_dirty_abrasion_can_be_rinsed_or_cleaned_gently_before_covering_without_establishing_contamination_or_infection"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-abrasion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "care_of_an_already_observed_minor_dirty_abrasion_can_use_clean_hands_and_available_clean_covering_material_without_establishing_sterility_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-abrasion",
+        "evidence:reality-batch-01-editorial-observable-bridges"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an_already_observed_minor_abrasion_can_be_kept_clean_covered_when_practical_and_observed_for_change_without_diagnosis_or_treatment_claim"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-abrasion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-batch-01-soil-temporary-stability",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "soil_texture_and_moisture_can_change_the_local_resistance_of_ground_to_a_temporary_stake_without_establishing_holding_strength"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-soil",
+        "evidence:reality-batch-01-editorial-observable-bridges"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-batch-01-soil-temporary-stability",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "saturated_soil_can_lose_cohesion_or_slump_around_a_small_excavation_without_establishing_a_collapse_or_safe_depth"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-soil",
+        "evidence:reality-batch-01-editorial-observable-bridges"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reality-batch-01-soil-temporary-stability",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_temporary_stake_or_small_excavation_can_be_checked_locally_as_ground_texture_or_wetness_changes_without_predicting_stability_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:reality-batch-01-soil",
+        "evidence:reality-batch-01-editorial-observable-bridges"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reality-batch-01-wetland-reed-cutting",
+      "locale": "ru",
+      "labels": [
+        "Срезка болотного тростника"
+      ],
+      "short_definition": "Наблюдение и условная срезка уже наличного болотного тростника.",
+      "search_aliases": [
+        "срезать тростник"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reality-batch-01-wetland-reed-cutting",
+      "locale": "en",
+      "labels": [
+        "Wetland reed cutting"
+      ],
+      "short_definition": "Observation and conditional cutting of already present wetland reed.",
+      "search_aliases": [
+        "cut reed"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
+      "locale": "ru",
+      "labels": [
+        "Развязываемый грузовой узел"
+      ],
+      "short_definition": "Условное удержание и освобождение натянутой верёвки.",
+      "search_aliases": [
+        "развязать узел"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
+      "locale": "en",
+      "labels": [
+        "Releasable load-bearing rope knot"
+      ],
+      "short_definition": "Conditional holding and release of tensioned rope.",
+      "search_aliases": [
+        "release rope knot"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reality-batch-01-wooden-joinery",
+      "locale": "ru",
+      "labels": [
+        "Расшатанное деревянное соединение"
+      ],
+      "short_definition": "Осмотр провисания и временная стабилизация деревянного соединения.",
+      "search_aliases": [
+        "расшатанная дверь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reality-batch-01-wooden-joinery",
+      "locale": "en",
+      "labels": [
+        "Loose wooden joinery"
+      ],
+      "short_definition": "Sag inspection and temporary stabilization of a wooden joint.",
+      "search_aliases": [
+        "sagging door"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:reality-batch-01-dried-herb-storage",
+      "locale": "ru",
+      "labels": [
+        "Хранение сушёных трав"
+      ],
+      "short_definition": "Условия хранения и осмотр сушёных трав.",
+      "search_aliases": [
+        "сушёные травы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:reality-batch-01-dried-herb-storage",
+      "locale": "en",
+      "labels": [
+        "Dried herb storage"
+      ],
+      "short_definition": "Storage conditions and inspection of dried herbs.",
+      "search_aliases": [
+        "dried herbs"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:reality-batch-01-working-horse-observation",
+      "locale": "ru",
+      "labels": [
+        "Наблюдение рабочей лошади"
+      ],
+      "short_definition": "Недигностическое наблюдение лошади после работы и упряжи.",
+      "search_aliases": [
+        "лошадь устала"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:reality-batch-01-working-horse-observation",
+      "locale": "en",
+      "labels": [
+        "Working horse observation"
+      ],
+      "short_definition": "Nondiagnostic observation of a horse after work and under harness.",
+      "search_aliases": [
+        "tired horse"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
+      "locale": "ru",
+      "labels": [
+        "Уход за малой ссадиной"
+      ],
+      "short_definition": "Начальная недиагностическая помощь при уже замеченной малой ссадине.",
+      "search_aliases": [
+        "грязная ссадина"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
+      "locale": "en",
+      "labels": [
+        "Minor abrasion care"
+      ],
+      "short_definition": "Initial nondiagnostic care for an already observed minor abrasion.",
+      "search_aliases": [
+        "dirty abrasion"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reality-batch-01-soil-temporary-stability",
+      "locale": "ru",
+      "labels": [
+        "Временная устойчивость грунта"
+      ],
+      "short_definition": "Влияние текстуры и влажности грунта на временную опору или малую выемку.",
+      "search_aliases": [
+        "колышек в мокром грунте"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reality-batch-01-soil-temporary-stability",
+      "locale": "en",
+      "labels": [
+        "Temporary soil stability"
+      ],
+      "short_definition": "Texture and moisture effects on a temporary stake or small excavation.",
+      "search_aliases": [
+        "stake wet soil"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
+      "locale": "ru",
+      "runtime_text": "Среди уже наличных болотных стеблей можно наблюдением отличить сухие или целые от явно повреждённых либо мокрых. Наличие, вид, доступ и сбор не заданы.",
+      "search_aliases": [
+        "выбрать сухой тростник"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
+      "locale": "en",
+      "runtime_text": "Among already present wetland stems, observation can distinguish dry or intact stems from visibly damaged or wet ones. Presence, species, access, and harvest are unset.",
+      "search_aliases": [
+        "choose dry reed"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+      "locale": "ru",
+      "runtime_text": "Срезка наличного болотного стебля может требовать ясного положения рук и ног относительно лезвия и мокрого грунта. Безопасный исход не задан.",
+      "search_aliases": [
+        "срезать тростник безопасно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+      "locale": "en",
+      "runtime_text": "Cutting a present wetland reed stem can need clear hand and foot placement around a blade and wet ground. A safe outcome is unset.",
+      "search_aliases": [
+        "cut reed safely"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
+      "locale": "ru",
+      "runtime_text": "Срезанные стебли можно собрать или отложить до движения по мокрому грунту. Количество и результат не задаются.",
+      "search_aliases": [
+        "собрать тростник"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
+      "locale": "en",
+      "runtime_text": "Cut reed stems can be gathered or set aside before moving across wet ground. Amount and outcome are unset.",
+      "search_aliases": [
+        "gather reed"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
+      "locale": "ru",
+      "runtime_text": "Развязываемый грузовой узел может держать натяжение под нагрузкой и освобождаться после её снятия. Прочность и успех не заданы.",
+      "search_aliases": [
+        "развязать грузовой узел"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
+      "locale": "en",
+      "runtime_text": "A releasable load-bearing knot can hold tension when loaded and release after unloading. Strength and success are unset.",
+      "search_aliases": [
+        "release load knot"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
+      "locale": "ru",
+      "runtime_text": "Освобождение развязываемого узла может требовать доступа к ходовому концу и контроля остаточного натяжения.",
+      "search_aliases": [
+        "ходовой конец узла"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
+      "locale": "en",
+      "runtime_text": "Releasing a releasable knot can require access to its working part and control of remaining tension.",
+      "search_aliases": [
+        "knot working end"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
+      "locale": "ru",
+      "runtime_text": "Перед нагрузкой узел можно осмотреть по укладке, контакту и свободе освобождения. Прочность не определяется.",
+      "search_aliases": [
+        "осмотреть узел"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
+      "locale": "en",
+      "runtime_text": "Before loading, a knot can be checked for dressing, contact, and a clear release path. Strength is not determined.",
+      "search_aliases": [
+        "inspect rope knot"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
+      "locale": "ru",
+      "runtime_text": "Видимое провисание или люфт деревянной сборки можно осмотреть у соединений, рамы или точек опоры. Причина не диагностируется.",
+      "search_aliases": [
+        "провисшая деревянная дверь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
+      "locale": "en",
+      "runtime_text": "Visible sag or looseness in a wooden assembly can be inspected at joints, frame, or bearing points. Cause is not diagnosed.",
+      "search_aliases": [
+        "sagging wooden door"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
+      "locale": "ru",
+      "runtime_text": "Расшатанное или провисшее деревянное соединение можно разгрузить либо подпереть до правки. Состояние и результат починки не заданы.",
+      "search_aliases": [
+        "подпереть расшатанный стул"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
+      "locale": "en",
+      "runtime_text": "A loose or sagging wooden join can be unloaded or supported before adjustment. Condition and repair result are unset.",
+      "search_aliases": [
+        "support loose chair"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+      "locale": "ru",
+      "runtime_text": "Временный клин, распорка или посадка соединения могут ограничить видимый люфт по подгонке, материалу и нагрузке. Устойчивость не гарантирована.",
+      "search_aliases": [
+        "подклинить дверь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+      "locale": "en",
+      "runtime_text": "A temporary wedge, brace, or reseating can limit visible movement as fit, material, and load allow. Stability is not guaranteed.",
+      "search_aliases": [
+        "wedge loose door"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
+      "locale": "ru",
+      "runtime_text": "Уже сушёные травы можно хранить в сухом защищённом месте. Вид травы и её качество не заданы.",
+      "search_aliases": [
+        "хранить сушёные травы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
+      "locale": "en",
+      "runtime_text": "Already dried herbs can be kept in dry, protected storage. Herb type and quality are unset.",
+      "search_aliases": [
+        "store dried herbs"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
+      "locale": "ru",
+      "runtime_text": "Хранимые сушёные травы можно проверить на сырость, видимую плесень или затхлый запах. Порча и безопасность не доказаны.",
+      "search_aliases": [
+        "плесень на травах"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
+      "locale": "en",
+      "runtime_text": "Stored dried herbs can be checked for dampness, visible mold, or stale odor. Spoilage and safety are not proven.",
+      "search_aliases": [
+        "mold on dried herbs"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
+      "locale": "ru",
+      "runtime_text": "Сушёные травы можно отделить от сырого или видимо заплесневелого материала, чтобы ограничить контакт. Сохранность не гарантирована.",
+      "search_aliases": [
+        "отделить заплесневелые травы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
+      "locale": "en",
+      "runtime_text": "Dried herbs can be separated from damp or visibly moldy material to limit contact. Preservation is not guaranteed.",
+      "search_aliases": [
+        "separate moldy herbs"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
+      "locale": "ru",
+      "runtime_text": "Уже наличная рабочая лошадь после усилия может показывать заметные изменения тепла, пота или дыхания. Усталость и болезнь не устанавливаются.",
+      "search_aliases": [
+        "лошадь горячая после работы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
+      "locale": "en",
+      "runtime_text": "A present working horse can show observable heat, sweat, or breathing changes after exertion. Fatigue and illness are not established.",
+      "search_aliases": [
+        "horse hot after work"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
+      "locale": "ru",
+      "runtime_text": "Участки контакта под наличной упряжью можно осмотреть на натирание, тепло или смещение. Травма не диагностируется.",
+      "search_aliases": [
+        "натерла упряжь лошади"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
+      "locale": "en",
+      "runtime_text": "Contact areas under present horse harness can be observed for rubbing, heat, or displacement. Injury is not diagnosed.",
+      "search_aliases": [
+        "horse harness rub"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
+      "locale": "ru",
+      "runtime_text": "Наблюдение рабочей лошади может обосновывать рассмотрение отдыха, охлаждения или правки упряжи, не решая пригодность к работе или исход.",
+      "search_aliases": [
+        "дать лошади отдых"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
+      "locale": "en",
+      "runtime_text": "Observing a working horse can support considering rest, cooling, or harness adjustment without deciding work fitness or outcome.",
+      "search_aliases": [
+        "rest working horse"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
+      "locale": "ru",
+      "runtime_text": "Уже замеченную малую грязную ссадину можно осторожно промыть либо очистить до покрытия. Загрязнение и инфекция не установлены.",
+      "search_aliases": [
+        "промыть грязную ссадину"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
+      "locale": "en",
+      "runtime_text": "An already observed minor dirty abrasion can be rinsed or cleaned gently before covering. Contamination and infection are not established.",
+      "search_aliases": [
+        "clean dirty abrasion"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
+      "locale": "ru",
+      "runtime_text": "Для ухода за уже замеченной малой грязной ссадиной можно использовать чистые руки и доступный чистый покрывающий материал. Стерильность и исход не заданы.",
+      "search_aliases": [
+        "чистая повязка ссадина"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
+      "locale": "en",
+      "runtime_text": "Care of an observed minor dirty abrasion can use clean hands and available clean covering material. Sterility and outcome are unset.",
+      "search_aliases": [
+        "clean dressing abrasion"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
+      "locale": "ru",
+      "runtime_text": "Малую уже замеченную ссадину можно при возможности держать чистой, покрытой и наблюдать за изменениями. Диагноз и лечение не заявляются.",
+      "search_aliases": [
+        "наблюдать ссадину"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
+      "locale": "en",
+      "runtime_text": "An observed minor abrasion can be kept clean, covered when practical, and watched for change. Diagnosis and treatment are not claimed.",
+      "search_aliases": [
+        "watch abrasion"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
+      "locale": "ru",
+      "runtime_text": "Текстура и влажность грунта могут менять местное сопротивление временному колышку. Удерживающая прочность не задана.",
+      "search_aliases": [
+        "колышек в грунте"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
+      "locale": "en",
+      "runtime_text": "Soil texture and moisture can change local resistance to a temporary stake. Holding strength is unset.",
+      "search_aliases": [
+        "stake in soil"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
+      "locale": "ru",
+      "runtime_text": "Насыщенный водой грунт может терять связность или осыпаться у малой выемки. Обвал и безопасная глубина не определяются.",
+      "search_aliases": [
+        "мокрая яма осыпается"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
+      "locale": "en",
+      "runtime_text": "Saturated soil can lose cohesion or slump around a small excavation. Collapse and safe depth are not determined.",
+      "search_aliases": [
+        "wet hole slumps"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
+      "locale": "ru",
+      "runtime_text": "Временный колышек или малую выемку можно местно проверять при изменении текстуры либо мокроты грунта. Исход устойчивости не предсказывается.",
+      "search_aliases": [
+        "проверить устойчивость колышка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
+      "locale": "en",
+      "runtime_text": "A temporary stake or small excavation can be checked locally as ground texture or wetness changes. Stability outcome is not predicted.",
+      "search_aliases": [
+        "check stake stability"
+      ]
+    }
+  ]
+}

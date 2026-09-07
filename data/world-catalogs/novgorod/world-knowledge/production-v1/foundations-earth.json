@@ -1,0 +1,3718 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {"schema":"world_knowledge_source_v1","source_ref":"source:foundations-hazards-usgs-landslide","title":"What is a landslide and what causes one?","authors":["U.S. Geological Survey"],"publication":"USGS FAQ, updated 2026-04-20","source_kind":"official_documentation","citation":"https://www.usgs.gov/faqs/what-a-landslide-and-what-causes-one","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "title": "Общая экология",
+      "authors": [
+        "Н. М. Чернова",
+        "А. М. Былова"
+      ],
+      "publication": "Дрофа, Москва, 2007, ISBN 978-5-358-03410-5",
+      "source_kind": "scholarship",
+      "citation": "/srv/library/fb2-166043-168102.zip!166144.fb2",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "title": "Зачем нужна геология: краткая история прошлого и будущего нашей планеты",
+      "authors": [
+        "Дуг Макдугалл"
+      ],
+      "publication": "Бомбора, Москва, 2022, ISBN 978-5-04-157616-5",
+      "source_kind": "scholarship",
+      "citation": "/srv/library/f.fb2-720344-729585.zip!723486.fb2",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:usgs-water-cycle",
+      "title": "Water cycle",
+      "authors": [
+        "U.S. Geological Survey, Water Science School"
+      ],
+      "publication": "U.S. Geological Survey Water Science School, accessed 2026-09-04",
+      "source_kind": "technical_reference",
+      "citation": "https://www.usgs.gov/water-science-school/water-cycle",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:met-office-fog",
+      "title": "What is fog?",
+      "authors": [
+        "UK Met Office"
+      ],
+      "publication": "UK Met Office, accessed 2026-09-04",
+      "source_kind": "technical_reference",
+      "citation": "https://weather.metoffice.gov.uk/learn-about/weather/types-of-weather/fog",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:noaa-gml-hydrologic-cycle",
+      "title": "The Hydrologic Cycle",
+      "authors": [
+        "NOAA Global Monitoring Laboratory"
+      ],
+      "publication": "NOAA Global Monitoring Laboratory, accessed 2026-09-04",
+      "source_kind": "technical_reference",
+      "citation": "https://gml.noaa.gov/outreach/lesson_plans/The%20Hydrologic%20Cycle.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:foundations-earth-fersman",
+      "title": "Занимательная минералогия",
+      "authors": [
+        "А. Е. Ферсман"
+      ],
+      "publication": "local FB2 library edition",
+      "source_kind": "scholarship",
+      "citation": "/srv/library/f.fb2-225712-228905.zip!227320.fb2",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:usgs-joshua-tree-geology",
+      "title": "Geology of Joshua Tree National Park",
+      "authors": [
+        "U.S. Geological Survey"
+      ],
+      "publication": "U.S. Geological Survey, accessed 2026-09-04",
+      "source_kind": "technical_reference",
+      "citation": "https://www.usgs.gov/geology-and-ecology-of-national-parks/geology-joshua-tree-national-park",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:met-office-wind-rain",
+      "title": "Wind flow; Rain",
+      "authors": [
+        "UK Met Office"
+      ],
+      "publication": "UK Met Office, accessed 2026-09-04",
+      "source_kind": "technical_reference",
+      "citation": "https://weather.metoffice.gov.uk/learn-about/weather/how-weather-works/high-and-low-pressure/wind-flow ; https://weather.metoffice.gov.uk/learn-about/weather/types-of-weather/rain",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:noaa-cloud-formation",
+      "title": "How Clouds Form",
+      "authors": [
+        "NOAA JetStream"
+      ],
+      "publication": "NOAA, accessed 2026-09-04",
+      "source_kind": "technical_reference",
+      "citation": "https://prod-01-alb-www-noaa.woc.noaa.gov/jetstream/clouds/how-clouds-form",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:noaa-river-ice-flooding",
+      "title": "River Ice & Flooding Initiative",
+      "authors": [
+        "NOAA NESDIS"
+      ],
+      "publication": "NOAA, accessed 2026-09-04",
+      "source_kind": "technical_reference",
+      "citation": "https://www.nesdis.noaa.gov/river-ice-flooding-initiative",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:noaa-gfdl-clouds-convection",
+      "title": "Clouds and Convection",
+      "authors": [
+        "NOAA Geophysical Fluid Dynamics Laboratory"
+      ],
+      "publication": "NOAA, accessed 2026-09-04",
+      "source_kind": "technical_reference",
+      "citation": "https://www.gfdl.noaa.gov/clouds-and-convection/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-haz-04","source_ref":"source:foundations-hazards-usgs-landslide","anchor":{"section":"What is a landslide and what causes one?","record_id":"downslope forces and resisting strength"},"note":"Independent verification HAZ04; no local stability calculation.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:foundations-haz-05","source_ref":"source:foundations-hazards-usgs-landslide","anchor":{"section":"What is a landslide and what causes one?","record_id":"near-failure trigger list"},"note":"Independent verification HAZ05; preserves near-failure condition and no forecast.","review_status":"approved"},
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-01",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "2.3. Общие законы действия факторов среды на организмы, paragraph 2"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-02",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "2.3. Общие законы действия факторов среды на организмы, paragraph 18"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-03",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "4.3.1. Особенности почвы, paragraph 0"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-04",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "4.3.1. Особенности почвы, paragraph 0"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-05",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "4.3.1. Особенности почвы, paragraphs 5–6"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-06",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "4.3.1. Особенности почвы, paragraph 7"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-07",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "4.3.1. Особенности почвы, paragraph 8"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-08",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "7.3.5. Конкуренция, paragraph 0"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-09",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "7.3.5. Конкуренция, paragraph 1"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-10",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "7.3.3. Мутуализм, paragraph 0"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-11",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "9.2. Поток энергии в экосистемах, paragraph 5"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-12",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "9.2. Поток энергии в экосистемах, paragraphs 5, 8–9"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-13",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "9.2. Поток энергии в экосистемах, paragraph 3"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-14",
+      "source_ref": "source:foundations-earth-chernova-bylova",
+      "anchor": {
+        "section": "9.2. Поток энергии в экосистемах, paragraphs 8, 14–15"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-15",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "anchor": {
+        "section": "Глава 1. Увековечено в камне, paragraphs 10–11, 15"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-16",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "anchor": {
+        "section": "Глава 1. Увековечено в камне, paragraph 11"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-17",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "anchor": {
+        "section": "Глава 1. Увековечено в камне, paragraphs 15–16"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-18",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "anchor": {
+        "section": "Глава 1. Увековечено в камне, paragraph 15"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-19",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "anchor": {
+        "section": "Глава 13. Зачем нужна геология, paragraph 28"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-20",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "anchor": {
+        "section": "Глава 13. Зачем нужна геология, paragraph 28"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-21",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "anchor": {
+        "section": "Глава 13. Зачем нужна геология, paragraphs 26–30"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-22",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "anchor": {
+        "section": "Глава 13. Зачем нужна геология, paragraph 15"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-23",
+      "source_ref": "source:foundations-earth-mcdougall",
+      "anchor": {
+        "section": "Глава 13. Зачем нужна геология, paragraph 15"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-24",
+      "source_ref": "source:usgs-water-cycle",
+      "anchor": {
+        "section": "Water cycle — Fluxes move water between pools"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-25",
+      "source_ref": "source:usgs-water-cycle",
+      "anchor": {
+        "section": "Water cycle — Fluxes move water between pools"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-26",
+      "source_ref": "source:usgs-water-cycle",
+      "anchor": {
+        "section": "Water cycle — Humans alter the water cycle"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-27",
+      "source_ref": "source:met-office-fog",
+      "anchor": {
+        "section": "What causes fog?"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-28",
+      "source_ref": "source:met-office-fog",
+      "anchor": {
+        "section": "Radiation fog"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-29",
+      "source_ref": "source:met-office-fog",
+      "anchor": {
+        "section": "Advection fog"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-30",
+      "source_ref": "source:met-office-fog",
+      "anchor": {
+        "section": "Upslope fog"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth-31",
+      "source_ref": "source:met-office-fog",
+      "anchor": {
+        "section": "Freezing fog"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-06",
+      "source_ref": "source:noaa-gml-hydrologic-cycle",
+      "anchor": {
+        "section": "The Hydrologic Cycle — runoff passage"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md EARTH2-06. Universal runoff boundary only; no local saturation, flood, water amount, quality, or forecast.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-01",
+      "source_ref": "source:usgs-joshua-tree-geology",
+      "anchor": {
+        "section": "Weathering"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-02",
+      "source_ref": "source:usgs-joshua-tree-geology",
+      "anchor": {
+        "section": "Chemical weathering"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-03",
+      "source_ref": "source:usgs-joshua-tree-geology",
+      "anchor": {
+        "section": "Physical weathering"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-04",
+      "source_ref": "source:foundations-earth-fersman",
+      "anchor": {
+        "section": "Твёрдый и мягкий камень, paragraphs 612–614"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-05",
+      "source_ref": "source:foundations-earth-fersman",
+      "anchor": {
+        "section": "В лаборатории минералога, paragraph 995; Твёрдый и мягкий камень, paragraph 619"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-07",
+      "source_ref": "source:met-office-wind-rain",
+      "anchor": {
+        "section": "Wind flow — How does wind flow around areas of high and low pressure?"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-08",
+      "source_ref": "source:noaa-cloud-formation",
+      "anchor": {
+        "section": "How Clouds Form — Nuclei; Temperature's role"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-09",
+      "source_ref": "source:met-office-wind-rain",
+      "anchor": {
+        "section": "Rain — What is rain?"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-10",
+      "source_ref": "source:noaa-gfdl-clouds-convection",
+      "anchor": {
+        "section": "Clouds and Convection — main explanatory text"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-11",
+      "source_ref": "source:noaa-river-ice-flooding",
+      "anchor": {
+        "section": "River Ice & Flooding Initiative — When frozen rivers thaw…"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:foundations-earth2-12",
+      "source_ref": "source:met-office-wind-rain",
+      "anchor": {
+        "section": "What are the different types of wind? — Small-scale winds"
+      },
+      "note": "Independent verification/verification-foundations-earth-library.md. Qualified universal causal premise only; no local historical inventory, weather, water quality, exact mechanics, actor knowledge, or outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:environment:slope-force-strength","domain":"environment","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:environment:slope-water-triggers","domain":"environment","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:ecological-tolerance",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:soil-phases",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:soil-thermal-buffer",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:soil-horizons",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:soil-aggregation",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:soil-water-states",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:ecological-competition",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:mutualistic-dependence",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:consumer-assimilation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:consumer-energy-allocation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:trophic-levels",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:ecosystem-energy-flow",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:igneous-rock-formation",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:igneous-cooling-texture",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:sedimentary-rock-formation",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:metamorphic-rock-formation",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:aquifer-pore-flow",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:groundwater-recharge-discharge",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:groundwater-withdrawal-balance",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:hydrothermal-metal-transport",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:hydrothermal-precipitation",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:water-cycle-fluxes",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:snowmelt-runoff",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:runoff-contaminant-transport",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:fog-visibility",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:radiation-fog",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:advection-fog",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:upslope-fog",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:freezing-fog-rime",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:precipitation-infiltration-runoff-limit",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:rock-weathering-physical-chemical",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:water-mineral-chemical-weathering",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:freeze-thaw-rock-fracture",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:mineral-hardness-not-brittleness",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:mineral-hardness-scratch-comparison",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:pressure-gradient-wind",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:rising-air-cooling-cloud-condensation",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:cloud-droplet-growth-precipitation",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:cloud-radiative-two-way-effect",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:river-ice-jam-flow-obstruction",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:solar-surface-heating-local-pressure",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-haz-04-slope-force-strength","domain":"environment","subject_ref":"wk:environment:slope-force-strength","predicate":"supported_fact","object":{"kind":"literal","value":"slope_force_strength"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-haz-04"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:foundations-haz-05-slope-water-triggers","domain":"environment","subject_ref":"wk:environment:slope-water-triggers","predicate":"supported_fact","object":{"kind":"literal","value":"slope_water_triggers"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:foundations-haz-05"],"review_status":"approved","conflict_group_ref":null},
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-01-ecological-tolerance",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ecological-tolerance",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ecological_tolerance"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-01"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-02-ecological-tolerance",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ecological-tolerance",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ecological_tolerance"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-02"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-03-soil-phases",
+      "domain": "environment",
+      "subject_ref": "wk:environment:soil-phases",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "soil_phases"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-03"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-04-soil-thermal-buffer",
+      "domain": "environment",
+      "subject_ref": "wk:environment:soil-thermal-buffer",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "soil_thermal_buffer"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-04"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-05-soil-horizons",
+      "domain": "environment",
+      "subject_ref": "wk:environment:soil-horizons",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "soil_horizons"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-05"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-06-soil-aggregation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:soil-aggregation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "soil_aggregation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-06"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-07-soil-water-states",
+      "domain": "environment",
+      "subject_ref": "wk:environment:soil-water-states",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "soil_water_states"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-07"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-08-ecological-competition",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ecological-competition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ecological_competition"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-08"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-09-ecological-competition",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ecological-competition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ecological_competition"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-09"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-10-mutualistic-dependence",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:mutualistic-dependence",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "mutualistic_dependence"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-10"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-11-consumer-assimilation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:consumer-assimilation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "consumer_assimilation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-11"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-12-consumer-energy-allocation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:consumer-energy-allocation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "consumer_energy_allocation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-12"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-13-trophic-levels",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:trophic-levels",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "trophic_levels"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-13"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-14-ecosystem-energy-flow",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ecosystem-energy-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "ecosystem_energy_flow"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-14"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-15-igneous-rock-formation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:igneous-rock-formation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "igneous_rock_formation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-15"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-16-igneous-cooling-texture",
+      "domain": "environment",
+      "subject_ref": "wk:environment:igneous-cooling-texture",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "igneous_cooling_texture"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-16"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-17-sedimentary-rock-formation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:sedimentary-rock-formation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "sedimentary_rock_formation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-17"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-18-metamorphic-rock-formation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:metamorphic-rock-formation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "metamorphic_rock_formation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-18"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-19-aquifer-pore-flow",
+      "domain": "environment",
+      "subject_ref": "wk:environment:aquifer-pore-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "aquifer_pore_flow"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-19"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-20-groundwater-recharge-discharge",
+      "domain": "environment",
+      "subject_ref": "wk:environment:groundwater-recharge-discharge",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "groundwater_recharge_discharge"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-20"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-21-groundwater-withdrawal-balance",
+      "domain": "environment",
+      "subject_ref": "wk:environment:groundwater-withdrawal-balance",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "groundwater_withdrawal_balance"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-21"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-22-hydrothermal-metal-transport",
+      "domain": "environment",
+      "subject_ref": "wk:environment:hydrothermal-metal-transport",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hydrothermal_metal_transport"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-22"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-23-hydrothermal-precipitation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:hydrothermal-precipitation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hydrothermal_precipitation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-23"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-24-water-cycle-fluxes",
+      "domain": "environment",
+      "subject_ref": "wk:environment:water-cycle-fluxes",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "water_cycle_fluxes"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-24"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-25-snowmelt-runoff",
+      "domain": "environment",
+      "subject_ref": "wk:environment:snowmelt-runoff",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "snowmelt_runoff"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-25"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-26-runoff-contaminant-transport",
+      "domain": "environment",
+      "subject_ref": "wk:environment:runoff-contaminant-transport",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "runoff_contaminant_transport"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-26"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-27-fog-visibility",
+      "domain": "environment",
+      "subject_ref": "wk:environment:fog-visibility",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fog_visibility"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-27"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-28-radiation-fog",
+      "domain": "environment",
+      "subject_ref": "wk:environment:radiation-fog",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "radiation_fog"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-28"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-29-advection-fog",
+      "domain": "environment",
+      "subject_ref": "wk:environment:advection-fog",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "advection_fog"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-29"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-30-upslope-fog",
+      "domain": "environment",
+      "subject_ref": "wk:environment:upslope-fog",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "upslope_fog"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-30"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth-31-freezing-fog-rime",
+      "domain": "environment",
+      "subject_ref": "wk:environment:freezing-fog-rime",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "freezing_fog_rime"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth-31"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+      "domain": "environment",
+      "subject_ref": "wk:environment:precipitation-infiltration-runoff-limit",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "excess_water_can_flow_as_surface_runoff_when_input_exceeds_surface_or_soil_acceptance_capacity"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-06"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-01-rock-weathering-physical-chemical",
+      "domain": "environment",
+      "subject_ref": "wk:environment:rock-weathering-physical-chemical",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rock_weathering_physical_chemical"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-01"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-02-water-mineral-chemical-weathering",
+      "domain": "environment",
+      "subject_ref": "wk:environment:water-mineral-chemical-weathering",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "water_mineral_chemical_weathering"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-02"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+      "domain": "environment",
+      "subject_ref": "wk:environment:freeze-thaw-rock-fracture",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "freeze_thaw_rock_fracture"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-03"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
+      "domain": "environment",
+      "subject_ref": "wk:environment:mineral-hardness-not-brittleness",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "mineral_hardness_not_brittleness"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-04"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
+      "domain": "environment",
+      "subject_ref": "wk:environment:mineral-hardness-scratch-comparison",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "mineral_hardness_scratch_comparison"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-05"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-07-pressure-gradient-wind",
+      "domain": "environment",
+      "subject_ref": "wk:environment:pressure-gradient-wind",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pressure_gradient_wind"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-07"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:rising-air-cooling-cloud-condensation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rising_air_cooling_cloud_condensation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-08"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:cloud-droplet-growth-precipitation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cloud_droplet_growth_precipitation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-09"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
+      "domain": "environment",
+      "subject_ref": "wk:environment:cloud-radiative-two-way-effect",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cloud_radiative_two_way_effect"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-10"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+      "domain": "environment",
+      "subject_ref": "wk:environment:river-ice-jam-flow-obstruction",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "river_ice_jam_flow_obstruction"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-11"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:foundations-earth2-12-solar-surface-heating-local-pressure",
+      "domain": "environment",
+      "subject_ref": "wk:environment:solar-surface-heating-local-pressure",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "solar_surface_heating_local_pressure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:foundations-earth2-12"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:environment:slope-force-strength","locale":"ru","labels":["Силы и прочность склона"],"short_definition":"Движение склона возможно, когда силы вниз по склону превышают сопротивление материала; это не расчёт устойчивости.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:environment:slope-force-strength","locale":"en","labels":["Slope forces and material strength"],"short_definition":"Slope movement is possible when downslope forces exceed material resistance; this is not a stability calculation.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:environment:slope-water-triggers","locale":"ru","labels":["Водные триггеры почти неустойчивого склона"],"short_definition":"Осадки, таяние, изменения грунтовых вод и эрозия могут запускать движение только при близости склона к потере устойчивости.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:environment:slope-water-triggers","locale":"en","labels":["Water-related triggers of a near-failure slope"],"short_definition":"Rainfall, snowmelt, groundwater changes, and erosion can trigger movement only where a slope is near failure.","search_aliases":[]},
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:ecological-tolerance",
+      "locale": "ru",
+      "labels": [
+        "Экологическая выносливость"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:ecological-tolerance",
+      "locale": "en",
+      "labels": [
+        "Ecological tolerance"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-phases",
+      "locale": "ru",
+      "labels": [
+        "Фазы и поры почвы"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-phases",
+      "locale": "en",
+      "labels": [
+        "Soil phases and pores"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-thermal-buffer",
+      "locale": "ru",
+      "labels": [
+        "Тепловой режим почвы"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-thermal-buffer",
+      "locale": "en",
+      "labels": [
+        "Soil thermal buffering"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-horizons",
+      "locale": "ru",
+      "labels": [
+        "Почвенные горизонты"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-horizons",
+      "locale": "en",
+      "labels": [
+        "Soil horizons"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-aggregation",
+      "locale": "ru",
+      "labels": [
+        "Агрегаты почвы"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-aggregation",
+      "locale": "en",
+      "labels": [
+        "Soil aggregation"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-water-states",
+      "locale": "ru",
+      "labels": [
+        "Состояния воды в почве"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:soil-water-states",
+      "locale": "en",
+      "labels": [
+        "States of soil water"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:ecological-competition",
+      "locale": "ru",
+      "labels": [
+        "Экологическая конкуренция"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:ecological-competition",
+      "locale": "en",
+      "labels": [
+        "Ecological competition"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:mutualistic-dependence",
+      "locale": "ru",
+      "labels": [
+        "Взаимовыгодные связи организмов"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:mutualistic-dependence",
+      "locale": "en",
+      "labels": [
+        "Mutualistic dependence"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:consumer-assimilation",
+      "locale": "ru",
+      "labels": [
+        "Усвоение пищи консументами"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:consumer-assimilation",
+      "locale": "en",
+      "labels": [
+        "Consumer food assimilation"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:consumer-energy-allocation",
+      "locale": "ru",
+      "labels": [
+        "Распределение пищевой энергии"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:consumer-energy-allocation",
+      "locale": "en",
+      "labels": [
+        "Consumer energy allocation"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:trophic-levels",
+      "locale": "ru",
+      "labels": [
+        "Трофические уровни"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:trophic-levels",
+      "locale": "en",
+      "labels": [
+        "Trophic levels"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:ecosystem-energy-flow",
+      "locale": "ru",
+      "labels": [
+        "Поток энергии экосистемы"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:ecosystem-energy-flow",
+      "locale": "en",
+      "labels": [
+        "Ecosystem energy flow"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:igneous-rock-formation",
+      "locale": "ru",
+      "labels": [
+        "Образование магматических пород"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:igneous-rock-formation",
+      "locale": "en",
+      "labels": [
+        "Igneous rock formation"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:igneous-cooling-texture",
+      "locale": "ru",
+      "labels": [
+        "Охлаждение и зернистость магматической породы"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:igneous-cooling-texture",
+      "locale": "en",
+      "labels": [
+        "Igneous cooling texture"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:sedimentary-rock-formation",
+      "locale": "ru",
+      "labels": [
+        "Осадочное накопление"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:sedimentary-rock-formation",
+      "locale": "en",
+      "labels": [
+        "Sedimentary accumulation"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:metamorphic-rock-formation",
+      "locale": "ru",
+      "labels": [
+        "Метаморфическое преобразование пород"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:metamorphic-rock-formation",
+      "locale": "en",
+      "labels": [
+        "Metamorphic rock formation"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:aquifer-pore-flow",
+      "locale": "ru",
+      "labels": [
+        "Водоносные горизонты и поровое течение"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:aquifer-pore-flow",
+      "locale": "en",
+      "labels": [
+        "Aquifers and pore flow"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:groundwater-recharge-discharge",
+      "locale": "ru",
+      "labels": [
+        "Питание и разгрузка подземных вод"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:groundwater-recharge-discharge",
+      "locale": "en",
+      "labels": [
+        "Groundwater recharge and discharge"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:groundwater-withdrawal-balance",
+      "locale": "ru",
+      "labels": [
+        "Баланс подземных вод"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:groundwater-withdrawal-balance",
+      "locale": "en",
+      "labels": [
+        "Groundwater withdrawal balance"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:hydrothermal-metal-transport",
+      "locale": "ru",
+      "labels": [
+        "Гидротермальный перенос металлов"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:hydrothermal-metal-transport",
+      "locale": "en",
+      "labels": [
+        "Hydrothermal metal transport"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:hydrothermal-precipitation",
+      "locale": "ru",
+      "labels": [
+        "Гидротермальное осаждение сульфидов"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:hydrothermal-precipitation",
+      "locale": "en",
+      "labels": [
+        "Hydrothermal precipitation"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:water-cycle-fluxes",
+      "locale": "ru",
+      "labels": [
+        "Потоки круговорота воды"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:water-cycle-fluxes",
+      "locale": "en",
+      "labels": [
+        "Water-cycle fluxes"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:snowmelt-runoff",
+      "locale": "ru",
+      "labels": [
+        "Снеготаяние и сток"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:snowmelt-runoff",
+      "locale": "en",
+      "labels": [
+        "Snowmelt runoff"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:runoff-contaminant-transport",
+      "locale": "ru",
+      "labels": [
+        "Перенос загрязнений поверхностным стоком"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:runoff-contaminant-transport",
+      "locale": "en",
+      "labels": [
+        "Runoff contaminant transport"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:fog-visibility",
+      "locale": "ru",
+      "labels": [
+        "Туман и видимость"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:fog-visibility",
+      "locale": "en",
+      "labels": [
+        "Fog and visibility"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:radiation-fog",
+      "locale": "ru",
+      "labels": [
+        "Радиационный туман"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:radiation-fog",
+      "locale": "en",
+      "labels": [
+        "Radiation fog"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:advection-fog",
+      "locale": "ru",
+      "labels": [
+        "Адвекционный туман"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:advection-fog",
+      "locale": "en",
+      "labels": [
+        "Advection fog"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:upslope-fog",
+      "locale": "ru",
+      "labels": [
+        "Туман на склонах"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:upslope-fog",
+      "locale": "en",
+      "labels": [
+        "Upslope fog"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:freezing-fog-rime",
+      "locale": "ru",
+      "labels": [
+        "Переохлаждённый туман и изморозь"
+      ],
+      "short_definition": "Квалифицированная универсальная эколого-геологическая или гидрологическая предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:freezing-fog-rime",
+      "locale": "en",
+      "labels": [
+        "Freezing fog and rime"
+      ],
+      "short_definition": "Qualified universal ecological, geological, or hydrological premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:precipitation-infiltration-runoff-limit",
+      "locale": "ru",
+      "labels": [
+        "Предел впитывания осадков и поверхностный сток"
+      ],
+      "short_definition": "Условная граница между поступлением воды, впитыванием и поверхностным стоком, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:precipitation-infiltration-runoff-limit",
+      "locale": "en",
+      "labels": [
+        "Precipitation-infiltration runoff limit"
+      ],
+      "short_definition": "Conditional boundary between water input, acceptance, and surface runoff, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:rock-weathering-physical-chemical",
+      "locale": "ru",
+      "labels": [
+        "Выветривание горных пород включает механическое разрушение и химическое изменение минералов под действием среды."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:rock-weathering-physical-chemical",
+      "locale": "en",
+      "labels": [
+        "Rock weathering includes mechanical breakdown and chemical alteration of minerals by the environment."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:water-mineral-chemical-weathering",
+      "locale": "ru",
+      "labels": [
+        "Вода и растворённые в ней вещества могут химически изменять минеральные зёрна в породе."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:water-mineral-chemical-weathering",
+      "locale": "en",
+      "labels": [
+        "Water and substances dissolved in it can chemically alter mineral grains in rock."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:freeze-thaw-rock-fracture",
+      "locale": "ru",
+      "labels": [
+        "Вода в трещинах или порах породы при замерзании расширяется и может расширять трещины при повторных циклах замерзания и оттаивания."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:freeze-thaw-rock-fracture",
+      "locale": "en",
+      "labels": [
+        "Water in rock fractures or pores expands on freezing and can widen cracks through repeated freeze–thaw cycles."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:mineral-hardness-not-brittleness",
+      "locale": "ru",
+      "labels": [
+        "Твёрдость минерала и его хрупкость — разные свойства: твёрдый минерал может быть хрупким."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:mineral-hardness-not-brittleness",
+      "locale": "en",
+      "labels": [
+        "Mineral hardness and brittleness are different properties: a hard mineral can be brittle."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:mineral-hardness-scratch-comparison",
+      "locale": "ru",
+      "labels": [
+        "Относительную твёрдость минералов можно сравнивать по способности царапать друг друга."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:mineral-hardness-scratch-comparison",
+      "locale": "en",
+      "labels": [
+        "Relative mineral hardness can be compared by their ability to scratch one another."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:pressure-gradient-wind",
+      "locale": "ru",
+      "labels": [
+        "Разность атмосферного давления вызывает движение воздуха от более высокого давления к более низкому; больший градиент при прочих сопоставимых условиях связан с более сильным ветром."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:pressure-gradient-wind",
+      "locale": "en",
+      "labels": [
+        "An atmospheric pressure difference drives air from higher toward lower pressure; with other conditions comparable, a greater gradient is associated with stronger wind."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:rising-air-cooling-cloud-condensation",
+      "locale": "ru",
+      "labels": [
+        "Поднимающийся воздух расширяется и охлаждается; при достижении насыщения водяной пар может конденсироваться на ядрах конденсации и образовывать облачные капли."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:rising-air-cooling-cloud-condensation",
+      "locale": "en",
+      "labels": [
+        "Rising air expands and cools; on reaching saturation, water vapour can condense on condensation nuclei to form cloud droplets."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:cloud-droplet-growth-precipitation",
+      "locale": "ru",
+      "labels": [
+        "В облаке капли могут расти при конденсации и столкновениях; если они становятся слишком тяжёлыми для удержания, они выпадают как дождь."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:cloud-droplet-growth-precipitation",
+      "locale": "en",
+      "labels": [
+        "In a cloud, droplets can grow by condensation and collisions; when too heavy to remain suspended, they fall as rain."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:cloud-radiative-two-way-effect",
+      "locale": "ru",
+      "labels": [
+        "Облака отражают часть приходящего солнечного излучения и одновременно удерживают часть инфракрасного излучения, испускаемого Землёй."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:cloud-radiative-two-way-effect",
+      "locale": "en",
+      "labels": [
+        "Clouds reflect some incoming solar radiation while also retaining some infrared radiation emitted by Earth."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:river-ice-jam-flow-obstruction",
+      "locale": "ru",
+      "labels": [
+        "При таянии речной лёд может перемещаться вниз по течению и образовывать затор, который препятствует стоку воды и может вызвать паводковое подтопление."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:river-ice-jam-flow-obstruction",
+      "locale": "en",
+      "labels": [
+        "During thaw, river ice can move downstream and form a jam that obstructs water flow and can cause flooding."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:solar-surface-heating-local-pressure",
+      "locale": "ru",
+      "labels": [
+        "Неравномерное солнечное нагревание поверхности может создавать температурный и связанный с ним перепад давления воздуха, способствующий местному ветру."
+      ],
+      "short_definition": "Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:solar-surface-heating-local-pressure",
+      "locale": "en",
+      "labels": [
+        "Uneven solar heating of the surface can create a temperature contrast and associated air-pressure difference that promotes local wind."
+      ],
+      "short_definition": "Qualified universal geological or atmospheric premise, not a fact about a particular scene.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-haz-04-slope-force-strength","locale":"ru","runtime_text":"Склон может прийти в движение, когда силы вниз по склону, главным образом связанные с тяжестью, превышают сопротивление его материалов. Это не даёт точного расчёта устойчивости.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-haz-04-slope-force-strength","locale":"en","runtime_text":"A slope can move when downslope forces, principally gravity in this model, exceed the resisting strength of its materials. This is not an exact stability calculation.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-haz-05-slope-water-triggers","locale":"ru","runtime_text":"Осадки, таяние снега, изменения грунтовых вод и эрозия руслом могут запустить движение склона, уже близкого к потере устойчивости. Это не прогноз и не означает, что любой мокрый склон обрушится.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:foundations-haz-05-slope-water-triggers","locale":"en","runtime_text":"Rainfall, snowmelt, groundwater changes, and stream erosion can initiate movement on a slope already near failure. This is not a forecast or a claim that every wet slope fails.","search_aliases":[]},
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-01-ecological-tolerance",
+      "locale": "ru",
+      "runtime_text": "Недостаток или избыток экологического фактора может угнетать жизнедеятельность организма. Это не задаёт порог или состояние конкретного организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-01-ecological-tolerance",
+      "locale": "en",
+      "runtime_text": "Deficiency or excess of an environmental factor can impair an organism's functioning. This supplies neither a threshold nor a particular organism's state.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-02-ecological-tolerance",
+      "locale": "ru",
+      "runtime_text": "Выносливость вида к широкому диапазону одного фактора среды не означает такой же выносливости к другим факторам. Вид и местообитание не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-02-ecological-tolerance",
+      "locale": "en",
+      "runtime_text": "A species' tolerance of a wide range of one environmental factor does not imply similar tolerance of other factors. Species and habitat are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-03-soil-phases",
+      "locale": "ru",
+      "runtime_text": "Почва содержит твёрдые частицы и поровое пространство, которое может содержать воздух и воду. Это не доказывает пористость, проницаемость или почву в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-03-soil-phases",
+      "locale": "en",
+      "runtime_text": "Soil contains solid particles and pore space that can contain air and water. This establishes neither porosity, permeability, nor scene soil.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-04-soil-thermal-buffer",
+      "locale": "ru",
+      "runtime_text": "Температурные колебания в почве могут быть сглажены относительно приземного воздуха; глубина, покров, влажность и время важны. Местная температура не задана.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-04-soil-thermal-buffer",
+      "locale": "en",
+      "runtime_text": "Temperature fluctuation in soil can be buffered relative to near-ground air; depth, cover, moisture, and time matter. No local temperature is supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-05-soil-horizons",
+      "locale": "ru",
+      "runtime_text": "Почвенные горизонты могут различаться по строению и химическим свойствам. Это не доказывает местный горизонт, плодородие или водный результат.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-05-soil-horizons",
+      "locale": "en",
+      "runtime_text": "Soil horizons can differ in structure and chemical properties. This does not establish a local horizon, fertility, or water result.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-06-soil-aggregation",
+      "locale": "ru",
+      "runtime_text": "Органические вещества могут связывать минеральные частицы почвы в агрегаты и менять поровое пространство. Устойчивость или проницаемость не гарантированы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-06-soil-aggregation",
+      "locale": "en",
+      "runtime_text": "Organic substances can bind mineral soil particles into aggregates and change pore space. Stability or permeability is not guaranteed.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-07-soil-water-states",
+      "locale": "ru",
+      "runtime_text": "Вода в почве может удерживаться поверхностью частиц, занимать капиллярные поры или крупные пустоты и находиться в виде пара. Количество и связный путь не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-07-soil-water-states",
+      "locale": "en",
+      "runtime_text": "Soil water can be held on particle surfaces, occupy capillary pores or larger voids, and occur as vapor. Quantity and a connected path are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-08-ecological-competition",
+      "locale": "ru",
+      "runtime_text": "При общих ограниченных ресурсах конкурирующий вид может уменьшать доступ другого вида к пище или убежищам. Это не доказывает численность или встречу видов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-08-ecological-competition",
+      "locale": "en",
+      "runtime_text": "When shared resources are limited, a competing species can reduce another species' access to food or shelter. This establishes neither population nor encounter.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-09-ecological-competition",
+      "locale": "ru",
+      "runtime_text": "Экологическая конкуренция может происходить без прямой физической борьбы. Это не конфликт или агрессия конкретных животных.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-09-ecological-competition",
+      "locale": "en",
+      "runtime_text": "Ecological competition can occur without direct physical fighting. This is not conflict or aggression of particular animals.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-10-mutualistic-dependence",
+      "locale": "ru",
+      "runtime_text": "Взаимовыгодные межвидовые связи могут быть факультативными либо требовать присутствия партнёра для жизнедеятельности участников. Это не задаёт именованного партнёрства.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-10-mutualistic-dependence",
+      "locale": "en",
+      "runtime_text": "Mutually beneficial interspecies associations can be facultative or require a partner for participants' functioning. This does not establish a named association.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-11-consumer-assimilation",
+      "locale": "ru",
+      "runtime_text": "Часть поглощённой пищи может не усваиваться и возвращаться в среду с экскрементами. Рацион, организм и количество не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-11-consumer-assimilation",
+      "locale": "en",
+      "runtime_text": "Some consumed food may remain unassimilated and return to the environment in feces. Diet, organism, and quantity are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-12-consumer-energy-allocation",
+      "locale": "ru",
+      "runtime_text": "Усвоенная пищевая энергия расходуется на обмен, рост и размножение; соотношение затрат зависит от стадии развития и физиологического состояния. Текущее состояние и исход не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-12-consumer-energy-allocation",
+      "locale": "en",
+      "runtime_text": "Assimilated food energy supports metabolism, growth, and reproduction; allocation depends on developmental stage and physiological state. Current state and outcome are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-13-trophic-levels",
+      "locale": "ru",
+      "runtime_text": "Вид с широким спектром питания может занимать разные трофические уровни в разных пищевых цепях. Питание, добыча и присутствие вида не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-13-trophic-levels",
+      "locale": "en",
+      "runtime_text": "A species with a broad diet can occupy different trophic levels in different food chains. Diet, prey, and species presence are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-14-ecosystem-energy-flow",
+      "locale": "ru",
+      "runtime_text": "В отличие от веществ энергия в экосистеме течёт, а не совершает круговорот; метаболические передачи могут включать потери теплоты. Это не местная пищевая сеть или скорость.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-14-ecosystem-energy-flow",
+      "locale": "en",
+      "runtime_text": "Unlike matter, energy in ecosystems flows rather than cycles; metabolic transfers can include heat loss. This is not a local food web or rate.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-15-igneous-rock-formation",
+      "locale": "ru",
+      "runtime_text": "Магматические породы образуются при остывании и затвердевании расплавленного материала. Конкретная порода не задана.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-15-igneous-rock-formation",
+      "locale": "en",
+      "runtime_text": "Igneous rocks form as molten material cools and solidifies. No particular rock is supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-16-igneous-cooling-texture",
+      "locale": "ru",
+      "runtime_text": "При прочих сопоставимых условиях медленное охлаждение магматического расплава позволяет вырасти более крупным минеральным зёрнам, чем быстрое. Размер не задан.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-16-igneous-cooling-texture",
+      "locale": "en",
+      "runtime_text": "Under otherwise comparable conditions, slow cooling of igneous melt permits larger mineral grains to grow than rapid cooling. No size is supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-17-sedimentary-rock-formation",
+      "locale": "ru",
+      "runtime_text": "Накопление осаждающихся частиц может приводить к образованию осадочных пород. Местное отложение, время и материал не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-17-sedimentary-rock-formation",
+      "locale": "en",
+      "runtime_text": "Accumulation of deposited particles can lead to sedimentary rock formation. Local deposit, time, and material are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-18-metamorphic-rock-formation",
+      "locale": "ru",
+      "runtime_text": "Нагрев и механические напряжения могут преобразовывать исходные породы в метаморфические. Порог и местное преобразование не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-18-metamorphic-rock-formation",
+      "locale": "en",
+      "runtime_text": "Heating and mechanical stress can transform pre-existing rocks into metamorphic rocks. No threshold or local transformation is supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-19-aquifer-pore-flow",
+      "locale": "ru",
+      "runtime_text": "Водоносные горизонты могут состоять из твёрдых пород или рыхлых отложений; вода движется через их проницаемые пустоты. Нет утверждения о местном горизонте, чистоте или доступности.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-19-aquifer-pore-flow",
+      "locale": "en",
+      "runtime_text": "Aquifers can consist of solid rock or unconsolidated deposits; water moves through their permeable voids. This establishes no local aquifer, purity, or access.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-20-groundwater-recharge-discharge",
+      "locale": "ru",
+      "runtime_text": "Просачивающаяся вода может пополнять водоносный горизонт, а подземный поток — выходить на поверхность родниками. Расход и пригодный источник не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-20-groundwater-recharge-discharge",
+      "locale": "en",
+      "runtime_text": "Infiltrating water can recharge an aquifer, and groundwater flow can emerge at springs. Flow rate and a usable source are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-21-groundwater-withdrawal-balance",
+      "locale": "ru",
+      "runtime_text": "Если водозабор длительно превышает пополнение подземных запасов, их уровень и доступность могут снижаться. Нет утверждения о запасе, водозаборе, сроке или политике.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-21-groundwater-withdrawal-balance",
+      "locale": "en",
+      "runtime_text": "If withdrawal persistently exceeds groundwater replenishment, water levels and availability can decline. No stock, withdrawal, date, or policy is supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-22-hydrothermal-metal-transport",
+      "locale": "ru",
+      "runtime_text": "Горячие водные растворы могут извлекать химические элементы из пород и переносить их в растворённой форме. Руда, металл и технология не подразумеваются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-22-hydrothermal-metal-transport",
+      "locale": "en",
+      "runtime_text": "Hot aqueous solutions can extract chemical elements from rocks and transport them in dissolved form. Ore, metal availability, and technology are not implied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-23-hydrothermal-precipitation",
+      "locale": "ru",
+      "runtime_text": "При смешении горячих гидротермальных растворов с холодной морской водой растворённые металлы могут выпадать в осадок в форме сульфидов. Оба условия нужны; местное месторождение не задано.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-23-hydrothermal-precipitation",
+      "locale": "en",
+      "runtime_text": "When hot hydrothermal solutions mix with cold seawater, dissolved metals can precipitate as sulfides. Both conditions are required; no local deposit is supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-24-water-cycle-fluxes",
+      "locale": "ru",
+      "runtime_text": "Испарение, перенос атмосферной влаги, осадки, поверхностный сток и просачивание перемещают воду между атмосферой, поверхностью и недрами. Погода и объём не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-24-water-cycle-fluxes",
+      "locale": "en",
+      "runtime_text": "Evaporation, atmospheric moisture transport, precipitation, runoff, and infiltration move water among atmosphere, surface, and subsurface. Weather and volume are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-25-snowmelt-runoff",
+      "locale": "ru",
+      "runtime_text": "Таяние снега может снабжать водой поверхностный сток и водотоки. Снежный покров, сезон, расход и паводок не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-25-snowmelt-runoff",
+      "locale": "en",
+      "runtime_text": "Snowmelt can supply water to surface runoff and streams. Snowpack, season, discharge, and flooding are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-26-runoff-contaminant-transport",
+      "locale": "ru",
+      "runtime_text": "Там, где присутствуют загрязняющие вещества, поверхностный сток может переносить наносы, химические вещества или нечистоты в реки и озёра. Качество воды и источник загрязнения не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-26-runoff-contaminant-transport",
+      "locale": "en",
+      "runtime_text": "Where contaminants are present, surface runoff can carry sediment, chemicals, or sewage into rivers and lakes. Water quality and contamination source are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-27-fog-visibility",
+      "locale": "ru",
+      "runtime_text": "Взвешенные у поверхности мельчайшие водяные капли тумана уменьшают видимость. Туман и значение видимости не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-27-fog-visibility",
+      "locale": "en",
+      "runtime_text": "Tiny fog droplets suspended near the surface reduce visibility. Fog presence and a visibility value are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-28-radiation-fog",
+      "locale": "ru",
+      "runtime_text": "При достаточной влажности, ясном небе и слабом ветре ночное радиационное охлаждение может охладить приземный воздух достаточно для радиационного тумана. Прогноз и местный туман не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-28-radiation-fog",
+      "locale": "en",
+      "runtime_text": "With sufficient moisture, clear skies, and light winds, nighttime radiative cooling can cool near-surface air enough for radiation fog. Forecast and local fog are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-29-advection-fog",
+      "locale": "ru",
+      "runtime_text": "Тёплый влажный воздух над более холодной поверхностью может охлаждаться и образовывать адвекционный туман. Ветер, побережье и погода не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-29-advection-fog",
+      "locale": "en",
+      "runtime_text": "Warm moist air passing over a colder surface can cool and form advection fog. Wind, coast, and weather are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-30-upslope-fog",
+      "locale": "ru",
+      "runtime_text": "Воздух, поднимающийся по склону, охлаждается; его влага может конденсироваться в туман. Склон, влажность и событие не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-30-upslope-fog",
+      "locale": "en",
+      "runtime_text": "Air rising up a slope cools; its moisture can condense as upslope fog. Slope, humidity, and event are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-31-freezing-fog-rime",
+      "locale": "ru",
+      "runtime_text": "Переохлаждённые жидкие капли тумана могут замерзать на поверхностях с образованием изморози. Условие ниже нуля, изморозь и безопасность не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth-31-freezing-fog-rime",
+      "locale": "en",
+      "runtime_text": "Supercooled liquid fog droplets can freeze onto surfaces and form rime. Sub-zero condition, rime presence, and safety are not supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+      "locale": "ru",
+      "runtime_text": "Когда поступление воды превышает способность поверхности или почвы её принимать, избыток может течь как поверхностный сток. Это не устанавливает местное насыщение, паводок, количество, качество воды или прогноз.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+      "locale": "en",
+      "runtime_text": "When water input exceeds the acceptance capacity of a surface or soil, excess can flow as surface runoff. This establishes no local saturation, flood, water amount, quality, or forecast.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-01-rock-weathering-physical-chemical",
+      "locale": "ru",
+      "runtime_text": "Выветривание горных пород включает механическое разрушение и химическое изменение минералов под действием среды. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-01-rock-weathering-physical-chemical",
+      "locale": "en",
+      "runtime_text": "Rock weathering includes mechanical breakdown and chemical alteration of minerals by the environment. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-02-water-mineral-chemical-weathering",
+      "locale": "ru",
+      "runtime_text": "Вода и растворённые в ней вещества могут химически изменять минеральные зёрна в породе. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-02-water-mineral-chemical-weathering",
+      "locale": "en",
+      "runtime_text": "Water and substances dissolved in it can chemically alter mineral grains in rock. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+      "locale": "ru",
+      "runtime_text": "Вода в трещинах или порах породы при замерзании расширяется и может расширять трещины при повторных циклах замерзания и оттаивания. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+      "locale": "en",
+      "runtime_text": "Water in rock fractures or pores expands on freezing and can widen cracks through repeated freeze–thaw cycles. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
+      "locale": "ru",
+      "runtime_text": "Твёрдость минерала и его хрупкость — разные свойства: твёрдый минерал может быть хрупким. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-04-mineral-hardness-not-brittleness",
+      "locale": "en",
+      "runtime_text": "Mineral hardness and brittleness are different properties: a hard mineral can be brittle. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
+      "locale": "ru",
+      "runtime_text": "Относительную твёрдость минералов можно сравнивать по способности царапать друг друга. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-05-mineral-hardness-scratch-comparison",
+      "locale": "en",
+      "runtime_text": "Relative mineral hardness can be compared by their ability to scratch one another. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-07-pressure-gradient-wind",
+      "locale": "ru",
+      "runtime_text": "Разность атмосферного давления вызывает движение воздуха от более высокого давления к более низкому; больший градиент при прочих сопоставимых условиях связан с более сильным ветром. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-07-pressure-gradient-wind",
+      "locale": "en",
+      "runtime_text": "An atmospheric pressure difference drives air from higher toward lower pressure; with other conditions comparable, a greater gradient is associated with stronger wind. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+      "locale": "ru",
+      "runtime_text": "Поднимающийся воздух расширяется и охлаждается; при достижении насыщения водяной пар может конденсироваться на ядрах конденсации и образовывать облачные капли. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+      "locale": "en",
+      "runtime_text": "Rising air expands and cools; on reaching saturation, water vapour can condense on condensation nuclei to form cloud droplets. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
+      "locale": "ru",
+      "runtime_text": "В облаке капли могут расти при конденсации и столкновениях; если они становятся слишком тяжёлыми для удержания, они выпадают как дождь. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
+      "locale": "en",
+      "runtime_text": "In a cloud, droplets can grow by condensation and collisions; when too heavy to remain suspended, they fall as rain. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
+      "locale": "ru",
+      "runtime_text": "Облака отражают часть приходящего солнечного излучения и одновременно удерживают часть инфракрасного излучения, испускаемого Землёй. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-10-cloud-radiative-two-way-effect",
+      "locale": "en",
+      "runtime_text": "Clouds reflect some incoming solar radiation while also retaining some infrared radiation emitted by Earth. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+      "locale": "ru",
+      "runtime_text": "При таянии речной лёд может перемещаться вниз по течению и образовывать затор, который препятствует стоку воды и может вызвать паводковое подтопление. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+      "locale": "en",
+      "runtime_text": "During thaw, river ice can move downstream and form a jam that obstructs water flow and can cause flooding. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-12-solar-surface-heating-local-pressure",
+      "locale": "ru",
+      "runtime_text": "Неравномерное солнечное нагревание поверхности может создавать температурный и связанный с ним перепад давления воздуха, способствующий местному ветру. Это универсальная условная связь; локальный объект, состояние, количество, время или исход не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:foundations-earth2-12-solar-surface-heating-local-pressure",
+      "locale": "en",
+      "runtime_text": "Uneven solar heating of the surface can create a temperature contrast and associated air-pressure difference that promotes local wind. This is a universal conditional relation; no local object, state, amount, time, or outcome is established.",
+      "search_aliases": []
+    }
+  ]
+}

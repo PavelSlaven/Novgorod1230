@@ -1,0 +1,342 @@
+{
+  "schema": "wk_trade_economy_offline_review_v1",
+  "batch_id": "trade-economy-02",
+  "reviewer_agent_identity": "/root/trade_economy_replay",
+  "input_commit": "bce717f0622e9659a283a6f902f5660b5a09f046",
+  "corpus_claim_count": 1579,
+  "method": "WK-only: reconstruct from the frozen approved runtime snapshot; do not infer current prices, availability, title, ownership, local law, route result, scene state, or exact outcome.",
+  "cases": [
+    {
+      "case_id": "trade-economy-free-02-01",
+      "status": "covered",
+      "answer_ru": "Обе порции можно разложить отдельно и сравнить видимым способом; отличающийся запах после долгой переправы требует осторожного обращения с партией, но не определяет свежесть, цену или сделку.",
+      "claim_refs": [
+        "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+        "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict"
+      ],
+      "bounded_inferences": [
+        "Сравнение порций и осторожное обращение допустимы; безопасность, цена и согласие не заданы."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-02",
+      "status": "covered",
+      "answer_ru": "Возчик осматривает ослабшую лямку, защищает мокрый угол и отмечает состояние связки при передаче. Он не решает, кто отвечает за ущерб, и не считает дорогу проходимой автоматически.",
+      "claim_refs": [
+        "claim:military-world-working-animal-care-intersects-travel",
+        "claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
+      ],
+      "bounded_inferences": [
+        "Можно уменьшить нагрузку и сохранить наблюдаемую неопределённость; ответственность и исход пути не выводятся."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-03",
+      "status": "covered",
+      "answer_ru": "Зерно для еды и посева держат отдельными партиями; следы у мешка требуют осмотра и изоляции подозрительной части. Нельзя выводить остаток, пригодность или решение семьи.",
+      "claim_refs": [
+        "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:rural-household-economy-context"
+      ],
+      "bounded_inferences": [
+        "Раздельное хранение и проверка состояния обоснованы; количество и порча не установлены."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-04",
+      "status": "covered",
+      "answer_ru": "Кузнец сначала оценивает износ застёжки и влажное топливо; мокрый уголь не обещает немедленной горячей работы. Быстрота ремонта, запас топлива и результат остаются открыты.",
+      "claim_refs": [
+        "claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work",
+        "claim:work-intensity-duration"
+      ],
+      "bounded_inferences": [
+        "Осмотр и управление топливом допустимы; готовность изделия и поездка не гарантированы."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-05",
+      "status": "covered",
+      "answer_ru": "Помощник может удерживать телёнка от болотистого края, наблюдать локальную опору и его реакцию на мух, а пищу держать отдельно. Нельзя утверждать состояние телёнка, качество сыра или доступность безопасного пути.",
+      "claim_refs": [
+        "claim:place-outdoors-microterrain-patches",
+        "claim:macro-b1819-blood-feeding-flies-can-provoke-defensive-behavior-in-cattle",
+        "claim:food-preservation-qualitative"
+      ],
+      "bounded_inferences": [
+        "Локальная проверка опоры и осторожное обращение с едой допустимы; состояние животного, порча и исход не известны."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-06",
+      "status": "covered",
+      "answer_ru": "Стороны могут повторно приложить оба отреза к общей видимой линейной опоре. Это не создаёт официальной меры, курса металла или обязательства купить.",
+      "claim_refs": [
+        "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
+        "claim:clothing-linen"
+      ],
+      "bounded_inferences": [
+        "Общее линейное сравнение допустимо; эталон, цена и сделка остаются неустановленными."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-07",
+      "status": "covered",
+      "answer_ru": "Тёплый внутренний участок сена — признак для осторожности: его не следует разбирать при подозрении на нагрев, людей и животных стоит держать в стороне и искать доступную помощь. Нельзя объявлять пожар или лишение корма.",
+      "claim_refs": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
+        "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
+      "bounded_inferences": [
+        "Описано осторожное обращение с уже наблюдаемым нагревом; пожар и кормовой остаток не выводятся."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-08",
+      "status": "covered",
+      "answer_ru": "Сточную воду можно удержать от путей пищи и чистой воды; мытьё перемещает видимую грязь, но не гарантирует чистоту. Приоритет носки воды и хозяйственный расчёт остаются за сценой.",
+      "claim_refs": [
+        "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
+        "claim:final-social-washing-and-drying-can-change-visible-household-soil"
+      ],
+      "bounded_inferences": [
+        "Разделение потоков снижает контакт; загрязнение, запас и решение хозяев не доказаны."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-09",
+      "status": "covered",
+      "answer_ru": "Перед выходом осматривают сетку, корд и тёмный шов; мокрая снасть может требовать сушки и ремонта. Партнёрская доля улова, мореходность и рейс не определены.",
+      "claim_refs": [
+        "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+        "claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse",
+        "claim:final-practical-wet-wooden-hull-or-boat-seam-needs-local-inspection-before-repair-or-travel"
+      ],
+      "bounded_inferences": [
+        "Осмотр и отложенное решение обоснованы; состояние лодки и исход выхода не установлены."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-10",
+      "status": "covered",
+      "answer_ru": "Образец воска можно сопоставить с видимой чистотой, цветом и отдельными свёртками, не считая его доказательством всей партии. Состав, цена и ночлег неизвестны.",
+      "claim_refs": [
+        "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits"
+      ],
+      "bounded_inferences": [
+        "Осмотр образца имеет пределы; репрезентативность всей партии, качество и покупка не выводятся."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-11",
+      "status": "covered",
+      "answer_ru": "Рыбу и сырую птицу следует развести; подозрительный горшок отделяют и проверяют, не объявляя блюдо безопасным или опасным. Объём еды для работников не задаётся.",
+      "claim_refs": [
+        "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
+        "claim:food-preservation-qualitative"
+      ],
+      "bounded_inferences": [
+        "Разделение и удержание сомнительной посуды — качественные меры; заражение и рацион не известны."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-12",
+      "status": "covered",
+      "answer_ru": "Погрузку можно приостановить, осмотреть пони и мешки, распределить доступную ношу и учесть мокрый снег. Немедленная загрузка не становится безопасной или обязательной.",
+      "claim_refs": [
+        "claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal",
+        "claim:human-life-travel-conditions-can-justify-delay"
+      ],
+      "bounded_inferences": [
+        "Осмотр нагрузки и задержка допустимы; состояние животного, договор и исход не определены."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-13",
+      "status": "covered",
+      "answer_ru": "Находку держат отдельно от собственного свёртка, фиксируют различные описания и ищут дальнейшее подтверждение. Это не устанавливает владельца, правдивость рассказов или право оставить кошель.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+        "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
+        "claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry"
+      ],
+      "bounded_inferences": [
+        "Сохранение находки и inquiry допустимы; титул и исход спора не выводятся."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-14",
+      "status": "covered",
+      "answer_ru": "Мешки с похожими метками остаются раздельными, а задержку мельницы сообщают как наблюдаемое ограничение водного пути. Нельзя назначить очередь, срок возврата или принадлежность партии.",
+      "claim_refs": [
+        "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "bounded_inferences": [
+        "Раздельный учёт и сообщение о задержке обоснованы; работа мельницы и права на зерно не заданы."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-15",
+      "status": "covered",
+      "answer_ru": "Поставщица может объяснить цель, осмотреть изношенный шнур и предложить овощи, не предполагая допуска, милостыни или правила поста. Грязь — наблюдаемое состояние товара, не verdict качества.",
+      "claim_refs": [
+        "claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes",
+        "claim:final-nature-known-edible-plant-premise-does-not-transfer-to-an-unidentified-part-or-lookalike"
+      ],
+      "bounded_inferences": [
+        "Запрос и осмотр груза допустимы; доступ, религиозная обязанность и исход не выводятся."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-16",
+      "status": "covered",
+      "answer_ru": "Носильщик осматривает смещённую доску и мокрый угол мешка, сохраняет груз от дальнейшей влаги и сообщает о сомнении. Туман и мокрость не позволяют установить остаток соли или проходимость.",
+      "claim_refs": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
+      ],
+      "bounded_inferences": [
+        "Осмотр и защита от влаги обоснованы; содержимое, маршрут и ответственность не установлены."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-17",
+      "status": "covered",
+      "answer_ru": "Стороны могут отдельно назвать раннее обещание, предмет залога и нынешнее предложение, не смешивая хранение украшения с правом собственности. Нельзя выводить долг, срок или правовой результат.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title"
+      ],
+      "bounded_inferences": [
+        "Запись разных версий и раздельное хранение допустимы; обязательство и исход не даны."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-18",
+      "status": "covered",
+      "answer_ru": "Свежий снег не делает тёмный участок льда безопасным; смещение мешков требует проверить крепления и распределение. Решение о переправе, толщина льда и судьба груза не известны.",
+      "claim_refs": [
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal"
+      ],
+      "bounded_inferences": [
+        "Наблюдение риска и креплений допустимо; проходимость и исход не предсказываются."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-19",
+      "status": "covered",
+      "answer_ru": "Незнакомые ягоды не получают пищевой статус по виду; мокрую метку можно просушить и сообщить о её состоянии. Нельзя приписать растению съедобность или считать запись прочитанной.",
+      "claim_refs": [
+        "claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility",
+        "claim:final-nature-known-edible-plant-premise-does-not-transfer-to-an-unidentified-part-or-lookalike"
+      ],
+      "bounded_inferences": [
+        "Неопознанное растение оставляют неопознанным; смысл метки и задержка не установлены."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-20",
+      "status": "covered",
+      "answer_ru": "Доски сортируют по наблюдаемому состоянию влаги и возможному изменению свойств, а предложение обменять рацион остаётся заявлением сторон. Ветер и сухость не определяют прочность, цену или принятие сделки.",
+      "claim_refs": [
+        "claim:foundations-mat-02-wood-drying-crack-strength",
+        "claim:foundations-mat-06-wood-drying-property-change",
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "bounded_inferences": [
+        "Сортировка и предложение возможны; качество досок и расчёт не заданы."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-21",
+      "status": "covered",
+      "answer_ru": "Семья может держать семенное и пищевое зерно раздельно, осмотреть испорченную дорожную еду и обсуждать расход как выбор, а не предрешённую необходимость.",
+      "claim_refs": [
+        "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:rural-household-economy-context"
+      ],
+      "bounded_inferences": [
+        "Разделение запасов и обсуждение нужды обоснованы; объём, порча и решение семьи не выводятся."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-22",
+      "status": "covered",
+      "answer_ru": "При течи с крыши груз можно различать по уязвимости к воде и переносить доступные партии, сохраняя совместные претензии как несогласованные. Нельзя установить приоритет, собственность или ущерб.",
+      "claim_refs": [
+        "claim:final-practical-stored-goods-condition-can-change-with-air-moisture-and-time-without-fixed-rate",
+        "claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry"
+      ],
+      "bounded_inferences": [
+        "Осмотр и перенос возможны; очередность, доли и результат не известны."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-23",
+      "status": "covered",
+      "answer_ru": "Повреждённый хомут и мокрая дорога требуют осмотра до нового использования кобылы; предложение курьера — не достаточное основание игнорировать состояние снаряжения.",
+      "claim_refs": [
+        "claim:military-world-working-animal-care-intersects-travel",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+        "claim:macro-b20-a-worked-horse-needs-gradual-cooling-and-observation-before-return-to-rest-or-work"
+      ],
+      "bounded_inferences": [
+        "Осмотр и задержка допустимы; право распоряжаться кобылой, маршрут и оплата не заданы."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-24",
+      "status": "covered",
+      "answer_ru": "Банку с остатком у крышки отделяют для осмотра; сведения о прежнем открытии фиксируют как разные рассказы, не как доказательство торговой передачи. Запас и назначение гороха остаются сценой.",
+      "claim_refs": [
+        "claim:food-preservation-qualitative",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "bounded_inferences": [
+        "Осмотр и фиксация разных рассказов допустимы; содержимое, цель и вывод не установлены."
+      ],
+      "reusable_gaps": []
+    },
+    {
+      "case_id": "trade-economy-free-02-25",
+      "status": "covered",
+      "answer_ru": "Посуду с потёртостями отделяют по наблюдаемому состоянию, а просьбу об отсрочке — по сторонам и основанию. Репутационный комментарий остаётся сообщением, не проверенным фактом.",
+      "claim_refs": [
+        "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport",
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "bounded_inferences": [
+        "Раздельный осмотр и разговор об отсрочке допустимы; цена, доверие и сделка не определены."
+      ],
+      "reusable_gaps": []
+    }
+  ]
+}

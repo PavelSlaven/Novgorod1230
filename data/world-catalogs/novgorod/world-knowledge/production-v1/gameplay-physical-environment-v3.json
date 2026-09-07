@@ -1,0 +1,174 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:nist-fds-visibility-smoke",
+      "title": "Fire Dynamics Simulator Technical Reference Guide: 7.10 Visibility",
+      "authors": [],
+      "publication": "National Institute of Standards and Technology, NISTIR 6784 (2002)",
+      "source_kind": "official_documentation",
+      "citation": "https://nvlpubs.nist.gov/nistpubs/Legacy/IR/nistir6784e2002.pdf; §7.10 Visibility.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:usgs-aquatic-plant-life-forms",
+      "title": "Graphical Vegetation Database Browser Help Page: Life Forms",
+      "authors": [],
+      "publication": "U.S. Geological Survey, Upper Midwest Environmental Sciences Center",
+      "source_kind": "official_documentation",
+      "citation": "https://www.umesc.usgs.gov/data_library/vegetation/graphical/veg_help.html; Life Forms.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:uf-ifas-aquatic-plant-types",
+      "title": "Freshwater Ornamental Aquatic Plant Production in Florida",
+      "authors": [],
+      "publication": "University of Florida IFAS Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://ask.ifas.ufl.edu/publication/FA251; Basic aquatic plant types grown in aquaculture.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:uaf-sea-grant-fibre-rope-maintenance",
+      "title": "Ropes for Ordinary Vessel Use",
+      "authors": [],
+      "publication": "University of Alaska Fairbanks Sea Grant, Alaska Boater’s Field Guide",
+      "source_kind": "official_documentation",
+      "citation": "https://seagrant.uaf.edu/bookstore/boatkeeper/rope.pdf; Rope Maintenance.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:us-army-natural-fibre-rope-strength",
+      "title": "TM 3-34.86 / MCRP 3-17.7J: Rigging Techniques, Procedures, and Applications",
+      "authors": [],
+      "publication": "U.S. Army / U.S. Marine Corps technical manual",
+      "source_kind": "official_documentation",
+      "citation": "https://rdl.train.army.mil/catalog-ws/view/100.ATSC/1676C9DD-7ADF-4E41-9130-6BCEE7BBC5A9-1343151324082/tm3_34x86.pdf; §§1-12–1-15, Fiber Rope / Strength.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gameplay-pe3-nist-smoke-visibility",
+      "source_ref": "source:nist-fds-visibility-smoke",
+      "anchor": {"section": "7.10 Visibility"},
+      "note": "NIST relates smoke-particle extinction to transmitted-light attenuation and visibility. Candidate prepared pending independent review; no current smoke, perception, range, exposure, or outcome follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gameplay-pe3-aquatic-life-forms",
+      "source_ref": "source:usgs-aquatic-plant-life-forms",
+      "anchor": {"section": "Life Forms"},
+      "note": "USGS defines submerged, rooted floating-leaf, and emergent forms by their relation to water surface and sediment. Candidate prepared pending independent review; no local vegetation follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gameplay-pe3-uf-ifas-aquatic-types",
+      "source_ref": "source:uf-ifas-aquatic-plant-types",
+      "anchor": {"section": "Basic aquatic plant types grown in aquaculture"},
+      "note": "UF/IFAS distinguishes emergent, floating-leaved, submersed, and floating forms and notes both anchored and free-floating submersed plants. Candidate prepared pending independent review; categories are not a complete species key.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gameplay-pe3-uaf-fibre-rope-condition",
+      "source_ref": "source:uaf-sea-grant-fibre-rope-maintenance",
+      "anchor": {"section": "Rope Maintenance"},
+      "note": "Contemporary fibre-rope guidance identifies chafe, abrasion, prior stress, bends, knots and splices as strength-relevant. Candidate prepared pending independent review; it is not wire-rope evidence and does not establish historical hemp-line properties.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gameplay-pe3-army-natural-fibre-rope-strength",
+      "source_ref": "source:us-army-natural-fibre-rope-strength",
+      "anchor": {"section": "§§1-12–1-15, Fiber Rope / Strength"},
+      "note": "Army manual identifies Manila and sisal as fibre rope and names knots and sharp bends among stresses reducing rope strength after use/exposure. Candidate amendment prepared pending independent review; no exact table value or historical line property follows.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:smoke-optical-obscuration", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment", "domain": "biology_physiology", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:modern-fibre-rope-condition", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"}
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:smoke-optical-obscuration",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "smoke_particles_can_attenuate_transmitted_light_and_reduce_visual_discrimination"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "common", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gameplay-pe3-nist-smoke-visibility"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "submerged_rooted_floating_leaf_emergent_and_free_floating_forms_differ_in_substrate_attachment_and_leaf_position"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "common", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gameplay-pe3-aquatic-life-forms", "evidence:gameplay-pe3-uf-ifas-aquatic-types"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:modern-fibre-rope-condition",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "abrasion_bends_and_knots_can_reduce_available_strength_of_fibre_rope"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "common", "confidence": "medium", "directness": "inferred"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gameplay-pe3-uaf-fibre-rope-condition", "evidence:gameplay-pe3-army-natural-fibre-rope-strength"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:smoke-optical-obscuration", "locale": "ru", "labels": ["Оптическое задымление"], "short_definition": "Ослабление света частицами дыма на пути зрения.", "search_aliases": ["дым видимость", "задымление"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:smoke-optical-obscuration", "locale": "en", "labels": ["Smoke optical obscuration"], "short_definition": "Light attenuation by smoke particles along a line of sight.", "search_aliases": ["smoke visibility", "smoke light attenuation"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment", "locale": "ru", "labels": ["Форма и прикрепление водных макрофитов"], "short_definition": "Связь формы водного макрофита с грунтом и поверхностью воды.", "search_aliases": ["водные растения форма", "плавающие и погружённые растения"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:biology_physiology:aquatic-macrophyte-form-attachment", "locale": "en", "labels": ["Aquatic macrophyte form and attachment"], "short_definition": "Relation of aquatic macrophyte form to substrate attachment and water surface.", "search_aliases": ["aquatic plant forms", "floating submerged emergent"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:modern-fibre-rope-condition", "locale": "ru", "labels": ["Состояние волокнистой верёвки"], "short_definition": "Состояние волокнистой верёвки, влияющее на доступную прочность.", "search_aliases": ["истирание верёвки", "износ верёвки"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:modern-fibre-rope-condition", "locale": "en", "labels": ["Fibre-rope condition"], "short_definition": "Fibre-rope condition relevant to available strength.", "search_aliases": ["rope chafe", "rope abrasion"]}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:smoke-particles-can-attenuate-light-and-reduce-visibility", "locale": "ru", "runtime_text": "Частицы дыма могут ослаблять проходящий свет и уменьшать зрительную различимость; дым, видимость, восприятие и результат в конкретной сцене не подразумеваются.", "search_aliases": ["дым видимость", "задымление"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:smoke-particles-can-attenuate-light-and-reduce-visibility", "locale": "en", "runtime_text": "Smoke particles can attenuate transmitted light and reduce visual discrimination; no smoke, visibility value, perception, or scene outcome is implied.", "search_aliases": ["smoke visibility", "light attenuation"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position", "locale": "ru", "runtime_text": "Погружённые, укоренённо-плавающие, надводные укоренённые и свободноплавающие формы водных макрофитов различаются прикреплением к грунту и положением листьев; вид, местное растение и проходимость не подразумеваются.", "search_aliases": ["водные растения форма", "плавающие растения"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position", "locale": "en", "runtime_text": "Submerged, rooted floating-leaf, rooted emergent, and free-floating aquatic macrophyte forms differ in substrate attachment and leaf position; no species, local plant, or passability is implied.", "search_aliases": ["aquatic plant forms", "floating submerged emergent"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength", "locale": "ru", "runtime_text": "Истирание, изгибы и узлы могут уменьшать доступную прочность волокнистой верёвки; это не устанавливает прочность, узел, нагрузку, обрыв, точные свойства исторической пеньковой снасти или верёвку в сцене.", "search_aliases": ["истирание верёвки", "узел прочность"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:modern-fibre-rope-condition-can-reduce-available-strength", "locale": "en", "runtime_text": "Abrasion, bends, and knots can reduce the available strength of fibre rope; this establishes no strength, knot, load, break, exact historical hemp-line property, or scene rope.", "search_aliases": ["rope chafe", "knot strength"]}
+  ]
+}

@@ -24,7 +24,8 @@ const llmSettings = createLlmSettingsOwner({
   })
 });
 const llmTurnBudget = createLlmTurnBudget();
-const llmDiagnostics = createLlmDiagnostics({ turnBudget: llmTurnBudget });
+const llmDiagnostics = createLlmDiagnostics({ turnBudget: llmTurnBudget,
+  developerMode: config.developerMode });
 const runtimeConfig = { ...config, llmSettings, llmDiagnostics, llmTurnBudget };
 const productionRoot = await loadConfiguredComposition(config.compositionModule, { env: process.env, config: runtimeConfig });
 const publicRoot = Object.freeze({

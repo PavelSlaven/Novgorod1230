@@ -17,8 +17,10 @@ export function successEnvelope(data, { requestId = null } = {}) {
 }
 
 export function errorEnvelope(error, { requestId = null, developerMode = false } = {}) {
-  const status = Number.isInteger(error?.status) ? error.status : 500;
-  const internal = status >= 500 || error?.public_exposure === 'internal';
+  const unresolvedOrdinary = error?.code === 'TURN_ORDINARY_DISCOVERY_UNRESOLVED';
+  const status = unresolvedOrdinary ? 409
+    : Number.isInteger(error?.status) ? error.status : 500;
+  const internal = unresolvedOrdinary || status >= 500 || error?.public_exposure === 'internal';
   const code = internal ? 'TEMPORARY_ACTION_UNAVAILABLE'
     : text(error?.code) || 'REQUEST_FAILED';
   const message = internal

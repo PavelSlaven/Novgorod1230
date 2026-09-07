@@ -1,0 +1,259 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-milk-dye-fao-cheese-process",
+      "title": "The technology of the main cheese varieties",
+      "authors": ["Food and Agriculture Organization of the United Nations"],
+      "publication": "FAO Animal Production and Health Paper 113",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fao.org/4/t0755e/t0755e01.htm",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-milk-dye-usu-indigo",
+      "title": "A Home Dyer’s Garden, Part III: Dyeing With Japanese Indigo",
+      "authors": ["Utah State University Extension"],
+      "publication": "Utah State University Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.usu.edu/yardandgarden/research/dyeing-with-japanese-indigo",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-milk-dye-uvm-garden-dyes",
+      "title": "Making Dyes from Your Garden",
+      "authors": ["University of Vermont Extension"],
+      "publication": "University of Vermont Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://www.uvm.edu/extension/news/making-dyes-your-garden",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-milk-dye-hossain-process-variables",
+      "title": "Investigation of the effect of different process variables on color and physical properties of viscose and cotton knitted fabrics",
+      "authors": ["Ismail Hossain", "Md. Moniruzzaman", "Md. Maniruzzaman", "Mohammad Abdul Jalil"],
+      "publication": "Heliyon 7 (2021), e07735",
+      "source_kind": "scholarship",
+      "citation": "https://doi.org/10.1016/j.heliyon.2021.e07735",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-milk-curd-formation",
+      "source_ref": "source:place-milk-dye-fao-cheese-process",
+      "anchor": {"section": "Processing stages: Coagulation"},
+      "note": "FAO describes enzymic and lactic-acid clotting as distinct mechanisms that both form a curd or clot. Universal process relation only; no ingredient, recipe, duration, milk state, or product follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-milk-curd-whey-separation",
+      "source_ref": "source:place-milk-dye-fao-cheese-process",
+      "anchor": {"section": "Processing stages: Draining"},
+      "note": "FAO describes progressive curd-whey separation after fresh coagulation, with most water and lactose in whey and protein/fat increasingly concentrated in curd according to draining method. No quantity, rate, yield, texture, safety, or particular batch follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-milk-straining-support",
+      "source_ref": "source:place-milk-dye-fao-cheese-process",
+      "anchor": {"section": "Fresh cheese: Draining"},
+      "note": "FAO describes traditional moulding in draining bags or hoops while handling a fragile curd. This supports only an editorial relation between an already established curd, permeable support, and liquid drainage; it supplies no medieval implement, required technique, or result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-dye-preparation-and-evenness",
+      "source_ref": "source:place-milk-dye-usu-indigo",
+      "anchor": {"section": "Preparing the Fabric; Method 2, dye-vat movement"},
+      "note": "USU Extension says inadequate scouring can result in blotchy uptake and, for its indigo method, periodic gentle movement aims to ensure even dyeing. This is a modern process observation, not a medieval recipe, universal guarantee, dye identity, or present textile state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-dye-dye-fibre-process-conditions",
+      "source_ref": "source:place-milk-dye-hossain-process-variables",
+      "anchor": {"section": "§3.1.2–3.1.3, Effects of dyeing time and temperature"},
+      "note": "For its reactive dyes on cotton and viscose, Hossain et al. describe dye transfer from bath to fibre and diffusion inside the textile, with time and temperature changing uptake around an equilibrium. This supports a qualitative conditional transfer relation, not a universal monotonic temperature rule, natural-dye practice, or outcome for a particular bath.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-dye-stirring-evenness",
+      "source_ref": "source:place-milk-dye-uvm-garden-dyes",
+      "anchor": {"section": "Making dyes from your garden, dye-bath step"},
+      "note": "UVM Extension presents stirring a dye pot to seek even colour. It supports a narrow editorial work relation only; stirring supplies neither a guaranteed even result nor a fixed dye, fibre, bath, temperature, or historical practice.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:milk-curd-and-straining",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:dyebath-cooling-and-uptake",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:curd-straining-work",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:dyebath-textile-handling",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:milk-curd-and-straining",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "milk_coagulation_by_acidification_or_milk_clotting_enzymes_can_form_a_curd_or_clot"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-milk-curd-formation"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:milk-curd-and-straining",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "a_fresh_milk_coagulum_can_progressively_separate_into_curd_and_whey_with_components_partitioned_between_them"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-milk-curd-whey-separation"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:curd-straining-work",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "where_a_curd_and_permeable_straining_support_are_established_the_support_can_retain_curd_while_whey_drains_away"},
+      "polarity": "support",
+      "applicability": {"time": {"from": 1200, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-milk-straining-support"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:dyebath-cooling-and-uptake",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "textile_preparation_can_affect_dye_uptake_and_inadequate_cleaning_can_contribute_to_blotchy_uptake"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-dye-preparation-and-evenness"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:dyebath-cooling-and-uptake",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "in_an_established_dye_fibre_process_dye_material_can_transfer_from_bath_to_fibre_and_its_uptake_can_change_with_contact_time_temperature_and_the_particular_dye_fibre_combination"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-dye-dye-fibre-process-conditions"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-dye-moving-submerged-textile-can-support-even-contact",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:dyebath-textile-handling",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "where_a_dye_bath_and_submerged_textile_are_established_moving_the_textile_can_support_contact_across_its_portions_without_guaranteeing_even_colour"},
+      "polarity": "support",
+      "applicability": {"time": {"from": 1200, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-dye-stirring-evenness"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:chemistry_process:milk-curd-and-straining", "locale": "ru", "labels": ["Молочный сгусток и отцеживание"], "short_definition": "Качественные связи свёртывания молока, сгустка, сыворотки и отцеживания.", "search_aliases": ["творог", "сгусток", "сыворотка", "отцеживание"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:chemistry_process:milk-curd-and-straining", "locale": "en", "labels": ["Milk curd and straining"], "short_definition": "Qualitative relations of milk coagulation, curd, whey, and straining.", "search_aliases": ["curd", "whey", "straining"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:chemistry_process:dyebath-cooling-and-uptake", "locale": "ru", "labels": ["Остывание красильной ванны и поглощение красителя"], "short_definition": "Качественные связи условий ванны, поглощения, закрепления и ровности окраски.", "search_aliases": ["красильная ванна", "остывание", "поглощение красителя", "ровность"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:chemistry_process:dyebath-cooling-and-uptake", "locale": "en", "labels": ["Dye-bath cooling and uptake"], "short_definition": "Qualitative relations of bath conditions, uptake, fixation, and colour evenness.", "search_aliases": ["dye bath", "cooling", "dye uptake", "evenness"]}
+    ,{"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:craft_technology:curd-straining-work", "locale": "ru", "labels": ["Отцеживание сгустка"], "short_definition": "Редакционная рабочая связь сгустка, проницаемой основы и стока сыворотки.", "search_aliases": ["отцеживание", "творог", "сыворотка"]}
+    ,{"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:craft_technology:curd-straining-work", "locale": "en", "labels": ["Curd straining work"], "short_definition": "Editorial work relation of curd, permeable support, and whey drainage.", "search_aliases": ["curd straining", "whey"]}
+    ,{"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:craft_technology:dyebath-textile-handling", "locale": "ru", "labels": ["Обращение с текстилем в красильной ванне"], "short_definition": "Редакционная рабочая связь погружённого текстиля и контакта с ванной.", "search_aliases": ["красильная ванна", "перемешивание ткани"]}
+    ,{"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:craft_technology:dyebath-textile-handling", "locale": "en", "labels": ["Textile handling in a dye bath"], "short_definition": "Editorial work relation of submerged textile and bath contact.", "search_aliases": ["dye bath", "textile movement"]}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd", "locale": "ru", "runtime_text": "Подкисление молока либо действие молокосвёртывающих ферментов могут образовать сгусток. Это не устанавливает молоко, кислоту, фермент, рецепт, длительность, безопасность или результат конкретной партии.", "search_aliases": ["свёртывание молока", "молочный сгусток"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd", "locale": "en", "runtime_text": "Milk acidification or milk-clotting enzymes can form a curd. This establishes no milk, acid, enzyme, recipe, duration, safety, or result for a particular batch.", "search_aliases": ["milk coagulation", "milk curd"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-milk-fresh-curd-can-progressively-separate-from-whey", "locale": "ru", "runtime_text": "Свежий молочный сгусток может постепенно разделяться на творожную часть и сыворотку, между которыми распределяются компоненты молока. Это не задаёт скорость, количество, выход, плотность, съедобность или состояние конкретного сосуда.", "search_aliases": ["отделение сыворотки", "творог", "сыворотка"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-milk-fresh-curd-can-progressively-separate-from-whey", "locale": "en", "runtime_text": "A fresh milk coagulum can progressively separate into curd and whey, with milk components partitioned between them. This fixes no rate, amount, yield, firmness, edibility, or state of a particular vessel.", "search_aliases": ["whey separation", "curd", "whey"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains", "locale": "ru", "runtime_text": "Если уже есть сгусток и проницаемая основа для отцеживания, она может удерживать творожную часть, пока сыворотка стекает. Это editorial reconstruction, не наличие ткани или сита, не обязательный приём, не рецепт и не обещание отделения.", "search_aliases": ["отцеживание творога", "сыворотка", "сито"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains", "locale": "en", "runtime_text": "Where a curd and a permeable straining support are established, the support can retain curd while whey drains away. This is editorial reconstruction, not an available cloth or sieve, required method, recipe, or separation guarantee.", "search_aliases": ["curd straining", "whey", "sieve"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-dye-textile-preparation-can-affect-uptake-evenness", "locale": "ru", "runtime_text": "Подготовка текстиля может влиять на поглощение красителя, а недостаточная очистка может способствовать пятнистому поглощению. Это не устанавливает загрязнение, вид волокна, краситель, ванну, цвет или результат окраски.", "search_aliases": ["подготовка ткани", "пятнистая окраска", "поглощение красителя"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-dye-textile-preparation-can-affect-uptake-evenness", "locale": "en", "runtime_text": "Textile preparation can affect dye uptake, and inadequate cleaning can contribute to blotchy uptake. This establishes no contamination, fibre, dye, bath, colour, or dyeing result.", "search_aliases": ["textile preparation", "blotchy dyeing", "dye uptake"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions", "locale": "ru", "runtime_text": "В уже идущем процессе крашения краситель может переходить из ванны в волокно; его поглощение может меняться с временем контакта, температурой и сочетанием конкретных красителя и волокна. Остывание меняет одно из этих условий, но само по себе не доказывает количество поглощения, закрепление или ровность цвета и не даёт общего знака изменения.", "search_aliases": ["переход красителя в волокно", "температура красильной ванны", "поглощение красителя"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions", "locale": "en", "runtime_text": "In an established dyeing process, dye material can transfer from bath to fibre; its uptake can change with contact time, temperature, and the particular dye–fibre combination. Cooling changes one such condition but alone proves neither uptake amount, fixation, nor colour evenness and gives no general direction of change.", "search_aliases": ["dye transfer to fibre", "dye bath temperature", "dye uptake"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-dye-moving-submerged-textile-can-support-even-contact", "locale": "ru", "runtime_text": "Если ванна и погружённый текстиль уже установлены, перемещение текстиля может поддержать контакт раствора с разными его частями, но не гарантирует ровный цвет. Это editorial reconstruction, не обязательный приём, скорость, инструмент, краситель, ванна или исход.", "search_aliases": ["перемешивание красильной ванны", "ровная окраска", "ткань в ванне"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-dye-moving-submerged-textile-can-support-even-contact", "locale": "en", "runtime_text": "Where a dye bath and submerged textile are established, moving the textile can support contact across its portions but does not guarantee even colour. This is editorial reconstruction, not a required method, speed, tool, dye, bath, or outcome.", "search_aliases": ["dye bath movement", "even dyeing", "textile in bath"]}
+  ]
+}

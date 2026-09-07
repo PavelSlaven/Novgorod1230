@@ -1,0 +1,65 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:residual-traces-animal-trace-types",
+      "claim_ref": "claim:residual-traces-animal-trace-types",
+      "claim_digest": "fb9f7c2e7d2a48638f1b54c452afcd539774381a526246ebb2f022eac0facd8e",
+      "candidate_ref": "git:6fe76141641006f3f208e64e94173d20d0a5585e:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-traces-v1.json#claim:residual-traces-animal-trace-types",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live University of New Hampshire source review and current RU/EN semantic reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-traces-animal-trace-types"
+      ],
+      "review_ref": "verification/residual-traces-v1.md#approved-narrowed-trace-claims",
+      "verdict": "APPROVE",
+      "limits": "List of possible animal signs only; no species identification, local occurrence, encounter, count, time, or present-state inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:residual-traces-deadwood-feeding-signs",
+      "claim_ref": "claim:residual-traces-deadwood-feeding-signs",
+      "claim_digest": "3e5f2ae1e19a0ec1c125a4077790eb7b8c1c08de73776ea9e5eeae9b9d245679",
+      "candidate_ref": "git:6fe76141641006f3f208e64e94173d20d0a5585e:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-traces-v1.json#claim:residual-traces-deadwood-feeding-signs",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live University of New Hampshire source review and current RU/EN semantic reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-traces-deadwood-feeding-signs"
+      ],
+      "review_ref": "verification/residual-traces-v1.md#approved-narrowed-trace-claims",
+      "verdict": "APPROVE",
+      "limits": "Dead wood, insects and bird feeding signs only; no particular bird, occupancy, current presence, local observation, or identification rule."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:residual-traces-weather-decay",
+      "claim_ref": "claim:residual-traces-animal-trace-weather-decay",
+      "claim_digest": "4b9d3306b2473b005873a8710c31f90c36b28513cf2a0b22e156ba00c70638b2",
+      "candidate_ref": "git:6fe76141641006f3f208e64e94173d20d0a5585e:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-traces-v1.json#claim:residual-traces-animal-trace-weather-decay",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live University of Maine source review and current RU/EN semantic reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-traces-animal-trace-weather-decay"
+      ],
+      "review_ref": "verification/residual-traces-v1.md#approved-narrowed-trace-claims",
+      "verdict": "APPROVE",
+      "limits": "Mechanisms of trace loss only; no exact age, local clock, species, encounter, current presence, or local-observation inference."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:residual-traces-absence-limit",
+      "claim_ref": "claim:residual-traces-animal-sign-absence-limit",
+      "claim_digest": "0f46fa3e80cf127301203aee20344bad7ed4d6a627ce45f30ecbbeb89830b164",
+      "candidate_ref": "git:e1a3c6363a595c923a70a3269e280812e71c2aa6:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-traces-v1.json#claim:residual-traces-animal-sign-absence-limit",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Independent live University of Maine source review and current RU/EN semantic reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-traces-animal-sign-absence-limit"
+      ],
+      "review_ref": "verification/residual-traces-v1.md#approved-nonpermanent-traces-limit",
+      "verdict": "APPROVE",
+      "limits": "Inference from the source's nonpermanence mechanism only: it bars proof of no earlier passage from no surviving signs; it establishes neither animal presence, species, number, time, nor a local observation."
+    }
+  ]
+}

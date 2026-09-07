@@ -1,0 +1,182 @@
+{
+  "batch": "macro-batch-19",
+  "generator": "independent-free-adversarial-generator",
+  "sampling_component": "free_adversarial",
+  "cases": [
+    {
+      "case_id": "macro-19-free-001",
+      "location": "край городской улицы у двора после оттепели",
+      "person": { "age": 34, "gender": "woman", "occupation": "household member", "means": "modest", "status": "free townswoman", "relations": "member of a shared courtyard household" },
+      "circumstances": "Поздний зимний день; подтаявший снег ночью прихватило морозом.",
+      "situation": "Она несёт воду от общего источника и замечает, что у ворот соседей образовалась гладкая наледь; ей нужно решить, как безопасно пройти с тяжёлой ношей и что можно сделать с проходом."
+    },
+    {
+      "case_id": "macro-19-free-002",
+      "location": "песчаная отмель у реки",
+      "person": { "age": 27, "gender": "man", "occupation": "fisher", "means": "modest", "status": "free worker", "relations": "member of a small household" },
+      "circumstances": "Раннее утро в конце лета; вода после ветреной ночи ещё высокая и мутная.",
+      "situation": "Рыбак пришёл к оставленной снасти и видит, что течение занесло её илом и ветками; он оценивает, можно ли работать с берега, что рискует потерять и как распорядиться уловом, если часть рыбы уже испортилась."
+    },
+    {
+      "case_id": "macro-19-free-003",
+      "location": "лесная делянка за дорогой",
+      "person": { "age": 39, "gender": "man", "occupation": "woodcutter", "means": "poor", "status": "hired seasonal worker", "relations": "working away from his household" },
+      "circumstances": "Сырой осенний полдень; моросит дождь, под ногами листва и мокрые корни.",
+      "situation": "Дровосек должен доставить несколько поленьев к дороге до темноты, но топор плохо держит заточку, а путь пересекает заболоченная низина."
+    },
+    {
+      "case_id": "macro-19-free-004",
+      "location": "изба с печью",
+      "person": { "age": 52, "gender": "woman", "occupation": "caregiver", "means": "modest", "status": "free household elder", "relations": "member of a multi-generation household" },
+      "circumstances": "Ночь, мороз и сильный ветер; младший ребёнок кашляет, а в помещении душно.",
+      "situation": "Хозяйка выбирает, как поддержать тепло, проветрить избу и уложить больного, не создавая новой опасности для остальных спящих."
+    },
+    {
+      "case_id": "macro-19-free-005",
+      "location": "монастырский двор",
+      "person": { "age": 41, "gender": "man", "occupation": "travelling lay visitor", "means": "modest", "status": "free traveller", "relations": "away from his home household" },
+      "circumstances": "Дождливый весенний вечер; путник пришёл с дороги в грязной одежде и просит ночлег.",
+      "situation": "Ему надо понять, как обратиться к людям двора, где оставить мокрые вещи и как вести себя так, чтобы не мешать установленному распорядку."
+    },
+    {
+      "case_id": "macro-19-free-006",
+      "location": "овин у деревенского двора",
+      "person": { "age": 31, "gender": "woman", "occupation": "farm worker", "means": "modest", "status": "free village worker", "relations": "member of a village household" },
+      "circumstances": "Сухой ветреный день после уборки; рядом сложены снопы, к вечеру ожидается дождь.",
+      "situation": "Работница замечает запах дыма не там, где его ждала, и должна решить, какие действия безопасны для зерна, постройки и людей поблизости."
+    },
+    {
+      "case_id": "macro-19-free-007",
+      "location": "узкий мост через ручей на дороге",
+      "person": { "age": 44, "gender": "man", "occupation": "cart driver", "means": "modest", "status": "free carrier", "relations": "responsible for a transport load" },
+      "circumstances": "Весенняя вода подмыла один конец моста; телега нагружена обычной поклажей.",
+      "situation": "Возчик должен оценить переправу, разгрузку или обход, учитывая тяговое животное, мокрые доски и необходимость не задержать других путников."
+    },
+    {
+      "case_id": "macro-19-free-008",
+      "location": "городской двор ремесленника",
+      "person": { "age": 15, "gender": "boy", "occupation": "apprentice", "means": "dependent", "status": "apprentice", "relations": "resident in a master's household" },
+      "circumstances": "Раннее утро; наставник отсутствует, а заказанный предмет случайно треснул после ночного холода.",
+      "situation": "Подмастерье решает, что можно осмотреть или временно подготовить самому, кого следует позвать и как не выдать повреждённую вещь за исправную."
+    },
+    {
+      "case_id": "macro-19-free-009",
+      "location": "луг в пойме",
+      "person": { "age": 29, "gender": "woman", "occupation": "herder", "means": "poor", "status": "free village worker", "relations": "member of a village household" },
+      "circumstances": "Жаркий летний полдень; скот разбрёлся к воде, над травой много насекомых.",
+      "situation": "Пастушка видит, что одно животное хромает и не идёт за стадом, а тучи указывают на скорую грозу."
+    },
+    {
+      "case_id": "macro-19-free-010",
+      "location": "кладовая в городском доме",
+      "person": { "age": 37, "gender": "woman", "occupation": "household keeper", "means": "comfortable", "status": "free townswoman", "relations": "member of an urban household" },
+      "circumstances": "Начало весны; после долгой зимы часть припасов отсырела.",
+      "situation": "Хозяйка перебирает съестное и хозяйственные запасы, замечает следы грызунов и решает, что отделить, что проверить и как уменьшить дальнейшую порчу."
+    },
+    {
+      "case_id": "macro-19-free-011",
+      "location": "каменистый берег озера",
+      "person": { "age": 22, "gender": "woman", "occupation": "gatherer", "means": "modest", "status": "free rural worker", "relations": "member of a rural household" },
+      "circumstances": "Ясное летнее утро; она собирала растения и услышала крики птиц в камышах.",
+      "situation": "Собирательница выбирает, продолжать ли работу у воды, как различить безопасный подход и что учитывать при возвращении с полной корзиной."
+    },
+    {
+      "case_id": "macro-19-free-012",
+      "location": "баня у двора",
+      "person": { "age": 56, "gender": "man", "occupation": "neighbour helping with repairs", "means": "modest", "status": "free householder", "relations": "neighbour to the bathing household" },
+      "circumstances": "Холодный вечер; после мытья заметили воду под настилом и слабый запах гари у стены.",
+      "situation": "Сосед должен решить, что прекратить немедленно, как осмотреть печь и мокрый настил и когда работу лучше отложить до света."
+    },
+    {
+      "case_id": "macro-19-free-013",
+      "location": "окраина торга",
+      "person": { "age": 35, "gender": "man", "occupation": "visitor from a nearby settlement", "means": "modest", "status": "free household representative", "relations": "travelling for his household" },
+      "circumstances": "Торговый день близится к концу; часть привезённого товара отсырела под внезапным дождём.",
+      "situation": "Посетитель обсуждает с незнакомым покупателем качество товара и возможность отложить расчёт, стараясь не обещать того, чего не может выполнить."
+    },
+    {
+      "case_id": "macro-19-free-014",
+      "location": "сосновый лес у тропы",
+      "person": { "age": 24, "gender": "man", "occupation": "messenger", "means": "modest", "status": "free traveller", "relations": "travelling alone on an errand" },
+      "circumstances": "Сумерки ранней осени; он сбился с тропы, и начался мелкий дождь.",
+      "situation": "Гонец должен решить, стоит ли искать дорогу дальше, устроить временный привал или вернуться к последнему знакомому ориентиру, не теряя в темноте свои вещи."
+    },
+    {
+      "case_id": "macro-19-free-015",
+      "location": "подвал под городским домом",
+      "person": { "age": 33, "gender": "woman", "occupation": "household member", "means": "modest", "status": "free townswoman", "relations": "member of a shared urban household" },
+      "circumstances": "После сильного ливня вода просочилась в нижнее помещение; там хранятся деревянные и тканые вещи.",
+      "situation": "Она организует перенос вещей наверх, пытаясь различить срочные угрозы для запасов, пола и здоровья людей, работающих в сырости."
+    },
+    {
+      "case_id": "macro-19-free-016",
+      "location": "кузница у городской улицы",
+      "person": { "age": 46, "gender": "man", "occupation": "smith", "means": "modest", "status": "free craft worker", "relations": "head of a workshop household" },
+      "circumstances": "Днём в мастерской душно; меха работают неровно, а у помощника обожжена ладонь.",
+      "situation": "Кузнец должен безопасно остановить работу, разобраться с огнём и инструментом и решить, какую помощь можно оказать помощнику до продолжения дела."
+    },
+    {
+      "case_id": "macro-19-free-017",
+      "location": "церковный двор",
+      "person": { "age": 61, "gender": "woman", "occupation": "widowed household head", "means": "poor", "status": "widowed householder", "relations": "head of a small household" },
+      "circumstances": "После службы она встретила родственника, с которым давно не виделась.",
+      "situation": "Родственник просит помочь ему с едой и ночлегом; женщина решает, как ответить публично, учитывая собственные скромные запасы и ожидаемую помощь соседей."
+    },
+    {
+      "case_id": "macro-19-free-018",
+      "location": "поле у деревни",
+      "person": { "age": 38, "gender": "man", "occupation": "field worker", "means": "modest", "status": "free village worker", "relations": "member of a village household" },
+      "circumstances": "Конец лета; после нескольких сухих дней поднялся сильный ветер.",
+      "situation": "Работник замечает, что часть посевов полегла, а у края поля появились следы животных; ему нужно решить порядок осмотра, защиты и сообщения домашним."
+    },
+    {
+      "case_id": "macro-19-free-019",
+      "location": "пристань на реке",
+      "person": { "age": 23, "gender": "man", "occupation": "boat crew member", "means": "modest", "status": "seasonal crew worker", "relations": "member of a seasonal boat crew" },
+      "circumstances": "Холодное утро в середине осени; ветер прижимает лодку к настилу, верёвка намокла.",
+      "situation": "Член команды должен помочь закрепить судно и выгрузить ношу, не поскользнувшись и не повредив груз или снасти."
+    },
+    {
+      "case_id": "macro-19-free-020",
+      "location": "двор с хлевом",
+      "person": { "age": 10, "gender": "girl", "occupation": "household helper", "means": "modest", "status": "dependent child", "relations": "member of a rural household" },
+      "circumstances": "Хмурое зимнее утро; взрослые заняты вне двора, у животного опрокинулась поилка.",
+      "situation": "Девочка ищет безопасный способ позаботиться о животном и позвать помощь, не подвергая себя риску в тесном, скользком помещении."
+    },
+    {
+      "case_id": "macro-19-free-021",
+      "location": "мастерская ткачихи",
+      "person": { "age": 40, "gender": "woman", "occupation": "textile worker", "means": "modest", "status": "free craft worker", "relations": "member of a workshop household" },
+      "circumstances": "Пасмурный день; в помещении мало света, а принесённая нить пахнет плесенью.",
+      "situation": "Ткачиха решает, можно ли использовать материал, как отделить его от здорового запаса и как продолжить работу, не испортив ткань и глаза."
+    },
+    {
+      "case_id": "macro-19-free-022",
+      "location": "болото у лесной опушки",
+      "person": { "age": 32, "gender": "man", "occupation": "forager", "means": "poor", "status": "free rural worker", "relations": "member of a rural household" },
+      "circumstances": "Весенний день; с вечера растаял снег, кочки скрыты водой.",
+      "situation": "Собиратель замечает знакомые следы на мягком грунте и решает, безопасно ли углубляться за ними, как не потерять дорогу и что делать при промокшей обуви."
+    },
+    {
+      "case_id": "macro-19-free-023",
+      "location": "небольшая комната писца",
+      "person": { "age": 13, "gender": "girl", "occupation": "learner", "means": "dependent", "status": "dependent learner", "relations": "attending lessons in a teacher's household" },
+      "circumstances": "Дневной урок; дождь сделал помещение темнее, а принесённая запись намокла в дороге.",
+      "situation": "Ученица просит разобрать написанное и сохранить материал до следующего занятия, не зная, насколько запись ещё читаема."
+    },
+    {
+      "case_id": "macro-19-free-024",
+      "location": "городская улица у чужого двора",
+      "person": { "age": 36, "gender": "man", "occupation": "night watch helper", "means": "modest", "status": "free townsman", "relations": "serving a neighbourhood duty" },
+      "circumstances": "Поздняя ночь; снег отражает слабый свет, из-за ограды слышны спор и треск дерева.",
+      "situation": "Помощник должен решить, когда позвать других людей, как не принять обычный шум за беду и как действовать рядом с чужим домом без права распоряжаться им."
+    },
+    {
+      "case_id": "macro-19-free-025",
+      "location": "дорога между деревней и городом",
+      "person": { "age": 58, "gender": "man", "occupation": "pedlar", "means": "modest", "status": "free travelling trader", "relations": "travelling with a pack animal" },
+      "circumstances": "Предзимний день; дождь переходит в мокрый снег, животное устало, а до жилья ещё далеко.",
+      "situation": "Разносчик решает, где искать укрытие, как защитить поклажу и животное и что можно попросить у встречного двора, не предполагая заранее чужого согласия."
+    }
+  ]
+}

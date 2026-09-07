@@ -1,0 +1,1289 @@
+{
+  "batch": "trade-economy-02",
+  "generator": "/root/trade_economy_replay",
+  "sampling_component": "stratified",
+  "sampling_plan": {
+    "exchange_payment_measure_quality": 15,
+    "credit_records_disputes": 12,
+    "storage_transport_seasonality": 18,
+    "household_production_labor": 18,
+    "travel_partnership_risk": 12
+  },
+  "cases": [
+    {
+      "case_id": "te02core-001",
+      "primary_domain": "barter comparison",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "market quay",
+      "person": {
+        "age": 31,
+        "gender": "man",
+        "occupation": "fish seller",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "late-summer drizzle at dawn",
+      "situation": "bulk grain against linen: compare usefulness without fixed rate."
+    },
+    {
+      "case_id": "te02core-002",
+      "primary_domain": "partial payment",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "village yard",
+      "person": {
+        "age": 44,
+        "gender": "woman",
+        "occupation": "weaver",
+        "means": "modest",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "early-autumn clear afternoon",
+      "situation": "partial payment with wool and deferred remainder: distinguish promise from settled value."
+    },
+    {
+      "case_id": "te02core-003",
+      "primary_domain": "measure and count",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "river landing",
+      "person": {
+        "age": 27,
+        "gender": "man",
+        "occupation": "boat hand",
+        "means": "limited",
+        "status": "hired worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "spring overcast morning",
+      "situation": "two lengths of cloth measured by differing cords: preserve uncertainty until measure is checked."
+    },
+    {
+      "case_id": "te02core-004",
+      "primary_domain": "money and tender limits",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "forest-edge road",
+      "person": {
+        "age": 52,
+        "gender": "woman",
+        "occupation": "smallholder",
+        "means": "modest",
+        "status": "village resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "winter dry dusk",
+      "situation": "mixed copper pieces offered for salt: assess count and condition without asserting tender."
+    },
+    {
+      "case_id": "te02core-005",
+      "primary_domain": "quality-adjusted exchange",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "town workshop",
+      "person": {
+        "age": 36,
+        "gender": "man",
+        "occupation": "smith",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "cool autumn evening",
+      "situation": "damaged iron tool plus food offered for a sound tool: compare repair burden."
+    },
+    {
+      "case_id": "te02core-006",
+      "primary_domain": "barter comparison",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "household yard",
+      "person": {
+        "age": 29,
+        "gender": "woman",
+        "occupation": "cook",
+        "means": "limited",
+        "status": "householder",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "wet spring noon",
+      "situation": "shared purchase of lamp oil: divide contribution without fixed prices."
+    },
+    {
+      "case_id": "te02core-007",
+      "primary_domain": "partial payment",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "market lane",
+      "person": {
+        "age": 41,
+        "gender": "man",
+        "occupation": "grain trader",
+        "means": "secure",
+        "status": "traveller",
+        "relations": "works with a household member"
+      },
+      "circumstances": "hot summer midday",
+      "situation": "weighed beeswax against dried peas: separate weight from quality."
+    },
+    {
+      "case_id": "te02core-008",
+      "primary_domain": "measure and count",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "granary threshold",
+      "person": {
+        "age": 48,
+        "gender": "woman",
+        "occupation": "store keeper",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "frosty early-winter morning",
+      "situation": "a buyer offers a small metal token of unknown standing: inspect without authenticity verdict."
+    },
+    {
+      "case_id": "te02core-009",
+      "primary_domain": "money and tender limits",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "mill approach",
+      "person": {
+        "age": 34,
+        "gender": "man",
+        "occupation": "miller helper",
+        "means": "limited",
+        "status": "worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "windy autumn dawn",
+      "situation": "part of a bundle arrives wet: revise exchange conversation around condition."
+    },
+    {
+      "case_id": "te02core-010",
+      "primary_domain": "quality-adjusted exchange",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "church-side street",
+      "person": {
+        "age": 38,
+        "gender": "woman",
+        "occupation": "laundress",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "clear spring evening",
+      "situation": "a traveller proposes goods now for carriage later: separate service from commodity value."
+    },
+    {
+      "case_id": "te02core-011",
+      "primary_domain": "barter comparison",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "village byre",
+      "person": {
+        "age": 45,
+        "gender": "man",
+        "occupation": "herder",
+        "means": "limited",
+        "status": "smallholder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "snowy winter afternoon",
+      "situation": "fish sized by basketful: ask what basket and fullness mean."
+    },
+    {
+      "case_id": "te02core-012",
+      "primary_domain": "partial payment",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "boat shed",
+      "person": {
+        "age": 26,
+        "gender": "woman",
+        "occupation": "net maker",
+        "means": "modest",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "misty autumn morning",
+      "situation": "a seller mixes fresh and old rope: keep lots distinct in comparison."
+    },
+    {
+      "case_id": "te02core-013",
+      "primary_domain": "measure and count",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "field track",
+      "person": {
+        "age": 57,
+        "gender": "man",
+        "occupation": "carter",
+        "means": "modest",
+        "status": "carrier",
+        "relations": "works with a household member"
+      },
+      "circumstances": "thawing late-winter noon",
+      "situation": "a household offers labour toward a mill share: identify non-cash contribution."
+    },
+    {
+      "case_id": "te02core-014",
+      "primary_domain": "money and tender limits",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "home hearth",
+      "person": {
+        "age": 33,
+        "gender": "woman",
+        "occupation": "spinner",
+        "means": "limited",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "rainy summer evening",
+      "situation": "a cracked vessel is included in a barter lot: distinguish useable from sound condition."
+    },
+    {
+      "case_id": "te02core-015",
+      "primary_domain": "quality-adjusted exchange",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "exchange_payment_measure_quality",
+      "location": "workshop yard",
+      "person": {
+        "age": 40,
+        "gender": "man",
+        "occupation": "carpenter",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "clear early-autumn dawn",
+      "situation": "two partners pool goods for one purchase: record whose contribution is whose."
+    },
+    {
+      "case_id": "te02core-016",
+      "primary_domain": "credit and record",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "market quay",
+      "person": {
+        "age": 31,
+        "gender": "man",
+        "occupation": "fish seller",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "late-summer drizzle at dawn",
+      "situation": "a neighbour asks to note a grain loan: preserve parties, thing and return context without rule outcome."
+    },
+    {
+      "case_id": "te02core-017",
+      "primary_domain": "pledge custody",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "village yard",
+      "person": {
+        "age": 44,
+        "gender": "woman",
+        "occupation": "weaver",
+        "means": "modest",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "early-autumn clear afternoon",
+      "situation": "a creditor receives a partial bundle: distinguish acknowledgement from discharge."
+    },
+    {
+      "case_id": "te02core-018",
+      "primary_domain": "account disagreement",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "river landing",
+      "person": {
+        "age": 27,
+        "gender": "man",
+        "occupation": "boat hand",
+        "means": "limited",
+        "status": "hired worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "spring overcast morning",
+      "situation": "a pledged cloak is kept through rain: separate custody, condition and title."
+    },
+    {
+      "case_id": "te02core-019",
+      "primary_domain": "delivery evidence",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "forest-edge road",
+      "person": {
+        "age": 52,
+        "gender": "woman",
+        "occupation": "smallholder",
+        "means": "modest",
+        "status": "village resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "winter dry dusk",
+      "situation": "two witnesses recall a delivery differently: preserve accounts without truth verdict."
+    },
+    {
+      "case_id": "te02core-020",
+      "primary_domain": "bounded return inquiry",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "town workshop",
+      "person": {
+        "age": 36,
+        "gender": "man",
+        "occupation": "smith",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "cool autumn evening",
+      "situation": "a borrower proposes labour after missed return: frame a possible arrangement without settling duty."
+    },
+    {
+      "case_id": "te02core-021",
+      "primary_domain": "credit and record",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "household yard",
+      "person": {
+        "age": 29,
+        "gender": "woman",
+        "occupation": "cook",
+        "means": "limited",
+        "status": "householder",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "wet spring noon",
+      "situation": "a debt marker lacks one party name: identify missing context without inventing obligation."
+    },
+    {
+      "case_id": "te02core-022",
+      "primary_domain": "pledge custody",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "market lane",
+      "person": {
+        "age": 41,
+        "gender": "man",
+        "occupation": "grain trader",
+        "means": "secure",
+        "status": "traveller",
+        "relations": "works with a household member"
+      },
+      "circumstances": "hot summer midday",
+      "situation": "a carrier claims a sealed sack was lighter at handover: preserve observation limits."
+    },
+    {
+      "case_id": "te02core-023",
+      "primary_domain": "account disagreement",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "granary threshold",
+      "person": {
+        "age": 48,
+        "gender": "woman",
+        "occupation": "store keeper",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "frosty early-winter morning",
+      "situation": "a seller says payment was counted twice: distinguish claim from proof."
+    },
+    {
+      "case_id": "te02core-024",
+      "primary_domain": "delivery evidence",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "mill approach",
+      "person": {
+        "age": 34,
+        "gender": "man",
+        "occupation": "miller helper",
+        "means": "limited",
+        "status": "worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "windy autumn dawn",
+      "situation": "a household requests delay until harvest: tie request to season without granting it."
+    },
+    {
+      "case_id": "te02core-025",
+      "primary_domain": "bounded return inquiry",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "church-side street",
+      "person": {
+        "age": 38,
+        "gender": "woman",
+        "occupation": "laundress",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "clear spring evening",
+      "situation": "a pledge object needs repair while held: separate maintenance from ownership."
+    },
+    {
+      "case_id": "te02core-026",
+      "primary_domain": "credit and record",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "village byre",
+      "person": {
+        "age": 45,
+        "gender": "man",
+        "occupation": "herder",
+        "means": "limited",
+        "status": "smallholder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "snowy winter afternoon",
+      "situation": "a cousin offers to speak for a borrower: distinguish relationship from authority."
+    },
+    {
+      "case_id": "te02core-027",
+      "primary_domain": "pledge custody",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "credit_records_disputes",
+      "location": "boat shed",
+      "person": {
+        "age": 26,
+        "gender": "woman",
+        "occupation": "net maker",
+        "means": "modest",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "misty autumn morning",
+      "situation": "a buyer alleges short measure after leaving stall: preserve a bounded inquiry."
+    },
+    {
+      "case_id": "te02core-028",
+      "primary_domain": "storage moisture",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "field track",
+      "person": {
+        "age": 57,
+        "gender": "man",
+        "occupation": "carter",
+        "means": "modest",
+        "status": "carrier",
+        "relations": "works with a household member"
+      },
+      "circumstances": "thawing late-winter noon",
+      "situation": "grain sacks are moved off a damp floor before a wet night: identify moisture and handling premises."
+    },
+    {
+      "case_id": "te02core-029",
+      "primary_domain": "cargo handling",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "home hearth",
+      "person": {
+        "age": 33,
+        "gender": "woman",
+        "occupation": "spinner",
+        "means": "limited",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "rainy summer evening",
+      "situation": "dried fish is stacked near a smoky hearth: distinguish drying context from safety outcome."
+    },
+    {
+      "case_id": "te02core-030",
+      "primary_domain": "seasonal supply",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "workshop yard",
+      "person": {
+        "age": 40,
+        "gender": "man",
+        "occupation": "carpenter",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "clear early-autumn dawn",
+      "situation": "a wagon load of pottery crosses rutted ground after rain: identify packing and shock risks."
+    },
+    {
+      "case_id": "te02core-031",
+      "primary_domain": "water transport",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "market quay",
+      "person": {
+        "age": 31,
+        "gender": "man",
+        "occupation": "fish seller",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "late-summer drizzle at dawn",
+      "situation": "barrels wait under an awning during thaw: consider water exposure and movement."
+    },
+    {
+      "case_id": "te02core-032",
+      "primary_domain": "goods condition",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "village yard",
+      "person": {
+        "age": 44,
+        "gender": "woman",
+        "occupation": "weaver",
+        "means": "modest",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "early-autumn clear afternoon",
+      "situation": "rope and nets are brought in after river spray: distinguish drying from guaranteed reuse."
+    },
+    {
+      "case_id": "te02core-033",
+      "primary_domain": "storage moisture",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "river landing",
+      "person": {
+        "age": 27,
+        "gender": "man",
+        "occupation": "boat hand",
+        "means": "limited",
+        "status": "hired worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "spring overcast morning",
+      "situation": "a cellar store is opened during a warm spell: note air, moisture and condition checks."
+    },
+    {
+      "case_id": "te02core-034",
+      "primary_domain": "cargo handling",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "forest-edge road",
+      "person": {
+        "age": 52,
+        "gender": "woman",
+        "occupation": "smallholder",
+        "means": "modest",
+        "status": "village resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "winter dry dusk",
+      "situation": "two people load a boat at dawn mist: separate visibility from route safety."
+    },
+    {
+      "case_id": "te02core-035",
+      "primary_domain": "seasonal supply",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "town workshop",
+      "person": {
+        "age": 36,
+        "gender": "man",
+        "occupation": "smith",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "cool autumn evening",
+      "situation": "a cart carries mixed fragile and heavy goods: identify placement and securing issues."
+    },
+    {
+      "case_id": "te02core-036",
+      "primary_domain": "water transport",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "household yard",
+      "person": {
+        "age": 29,
+        "gender": "woman",
+        "occupation": "cook",
+        "means": "limited",
+        "status": "householder",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "wet spring noon",
+      "situation": "a small store is inventoried before winter: distinguish observed stock from future supply."
+    },
+    {
+      "case_id": "te02core-037",
+      "primary_domain": "goods condition",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "market lane",
+      "person": {
+        "age": 41,
+        "gender": "man",
+        "occupation": "grain trader",
+        "means": "secure",
+        "status": "traveller",
+        "relations": "works with a household member"
+      },
+      "circumstances": "hot summer midday",
+      "situation": "a porter shifts salt sacks from a leaking roof line: consider dry storage without spoilage claim."
+    },
+    {
+      "case_id": "te02core-038",
+      "primary_domain": "storage moisture",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "granary threshold",
+      "person": {
+        "age": 48,
+        "gender": "woman",
+        "occupation": "store keeper",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "frosty early-winter morning",
+      "situation": "a riverbank landing is muddy after spring water: distinguish footing observation from passage outcome."
+    },
+    {
+      "case_id": "te02core-039",
+      "primary_domain": "cargo handling",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "mill approach",
+      "person": {
+        "age": 34,
+        "gender": "man",
+        "occupation": "miller helper",
+        "means": "limited",
+        "status": "worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "windy autumn dawn",
+      "situation": "a household moves seeds away from mice signs: identify protection premise without infestation conclusion."
+    },
+    {
+      "case_id": "te02core-040",
+      "primary_domain": "seasonal supply",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "church-side street",
+      "person": {
+        "age": 38,
+        "gender": "woman",
+        "occupation": "laundress",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "clear spring evening",
+      "situation": "a merchant wraps iron goods against rain: distinguish corrosion concern from condition finding."
+    },
+    {
+      "case_id": "te02core-041",
+      "primary_domain": "water transport",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "village byre",
+      "person": {
+        "age": 45,
+        "gender": "man",
+        "occupation": "herder",
+        "means": "limited",
+        "status": "smallholder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "snowy winter afternoon",
+      "situation": "a traveller pauses with food bundles in summer heat: consider time and exposure without safety verdict."
+    },
+    {
+      "case_id": "te02core-042",
+      "primary_domain": "goods condition",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "boat shed",
+      "person": {
+        "age": 26,
+        "gender": "woman",
+        "occupation": "net maker",
+        "means": "modest",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "misty autumn morning",
+      "situation": "a boat crew sorts cargo before a gust: distinguish load distribution from voyage outcome."
+    },
+    {
+      "case_id": "te02core-043",
+      "primary_domain": "storage moisture",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "field track",
+      "person": {
+        "age": 57,
+        "gender": "man",
+        "occupation": "carter",
+        "means": "modest",
+        "status": "carrier",
+        "relations": "works with a household member"
+      },
+      "circumstances": "thawing late-winter noon",
+      "situation": "a granary door is left open after damp weather: assess airflow context without assuming spoilage."
+    },
+    {
+      "case_id": "te02core-044",
+      "primary_domain": "cargo handling",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "home hearth",
+      "person": {
+        "age": 33,
+        "gender": "woman",
+        "occupation": "spinner",
+        "means": "limited",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "rainy summer evening",
+      "situation": "a family separates fodder from household food: identify cross-contact concern."
+    },
+    {
+      "case_id": "te02core-045",
+      "primary_domain": "seasonal supply",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "storage_transport_seasonality",
+      "location": "workshop yard",
+      "person": {
+        "age": 40,
+        "gender": "man",
+        "occupation": "carpenter",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "clear early-autumn dawn",
+      "situation": "a hired cart waits overnight in snowfall: distinguish cover, cold and delayed transport."
+    },
+    {
+      "case_id": "te02core-046",
+      "primary_domain": "household labour",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "market quay",
+      "person": {
+        "age": 31,
+        "gender": "man",
+        "occupation": "fish seller",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "late-summer drizzle at dawn",
+      "situation": "a smith household assigns one person to bellows and one to fuel: identify work coordination premises."
+    },
+    {
+      "case_id": "te02core-047",
+      "primary_domain": "craft workflow",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "village yard",
+      "person": {
+        "age": 44,
+        "gender": "woman",
+        "occupation": "weaver",
+        "means": "modest",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "early-autumn clear afternoon",
+      "situation": "a baker divides grain cleaning, grinding and baking through a morning: separate tasks and time."
+    },
+    {
+      "case_id": "te02core-048",
+      "primary_domain": "food and fuel economy",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "river landing",
+      "person": {
+        "age": 27,
+        "gender": "man",
+        "occupation": "boat hand",
+        "means": "limited",
+        "status": "hired worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "spring overcast morning",
+      "situation": "a weaver pauses work to mend a loom cord: distinguish maintenance from completed repair."
+    },
+    {
+      "case_id": "te02core-049",
+      "primary_domain": "care and work coordination",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "forest-edge road",
+      "person": {
+        "age": 52,
+        "gender": "woman",
+        "occupation": "smallholder",
+        "means": "modest",
+        "status": "village resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "winter dry dusk",
+      "situation": "a dairy household cools milk before other chores: identify time-sensitive handling without safety result."
+    },
+    {
+      "case_id": "te02core-050",
+      "primary_domain": "production maintenance",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "town workshop",
+      "person": {
+        "age": 36,
+        "gender": "man",
+        "occupation": "smith",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "cool autumn evening",
+      "situation": "a woodworker chooses between cutting, drying and joining tasks: compare sequence constraints."
+    },
+    {
+      "case_id": "te02core-051",
+      "primary_domain": "household labour",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "household yard",
+      "person": {
+        "age": 29,
+        "gender": "woman",
+        "occupation": "cook",
+        "means": "limited",
+        "status": "householder",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "wet spring noon",
+      "situation": "a family prepares flax while watching children: identify competing attention and labour."
+    },
+    {
+      "case_id": "te02core-052",
+      "primary_domain": "craft workflow",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "market lane",
+      "person": {
+        "age": 41,
+        "gender": "man",
+        "occupation": "grain trader",
+        "means": "secure",
+        "status": "traveller",
+        "relations": "works with a household member"
+      },
+      "circumstances": "hot summer midday",
+      "situation": "a household counts firewood before a cold evening: distinguish stock observation from sufficiency."
+    },
+    {
+      "case_id": "te02core-053",
+      "primary_domain": "food and fuel economy",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "granary threshold",
+      "person": {
+        "age": 48,
+        "gender": "woman",
+        "occupation": "store keeper",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "frosty early-winter morning",
+      "situation": "a spinner shares wool preparation with an apprentice: identify skill transfer context without competence claim."
+    },
+    {
+      "case_id": "te02core-054",
+      "primary_domain": "care and work coordination",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "mill approach",
+      "person": {
+        "age": 34,
+        "gender": "man",
+        "occupation": "miller helper",
+        "means": "limited",
+        "status": "worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "windy autumn dawn",
+      "situation": "a cook keeps raw and ready food apart at a crowded hearth: identify contact premise."
+    },
+    {
+      "case_id": "te02core-055",
+      "primary_domain": "production maintenance",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "church-side street",
+      "person": {
+        "age": 38,
+        "gender": "woman",
+        "occupation": "laundress",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "clear spring evening",
+      "situation": "a farmer assigns feed, water and mucking work at dawn: distinguish animal-care tasks from condition."
+    },
+    {
+      "case_id": "te02core-056",
+      "primary_domain": "household labour",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "village byre",
+      "person": {
+        "age": 45,
+        "gender": "man",
+        "occupation": "herder",
+        "means": "limited",
+        "status": "smallholder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "snowy winter afternoon",
+      "situation": "a potter schedules firing around wind and rain: identify heat and weather context without firing outcome."
+    },
+    {
+      "case_id": "te02core-057",
+      "primary_domain": "craft workflow",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "boat shed",
+      "person": {
+        "age": 26,
+        "gender": "woman",
+        "occupation": "net maker",
+        "means": "modest",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "misty autumn morning",
+      "situation": "a household decides whether to repair a leaking roof before market work: compare labour priorities."
+    },
+    {
+      "case_id": "te02core-058",
+      "primary_domain": "food and fuel economy",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "field track",
+      "person": {
+        "age": 57,
+        "gender": "man",
+        "occupation": "carter",
+        "means": "modest",
+        "status": "carrier",
+        "relations": "works with a household member"
+      },
+      "circumstances": "thawing late-winter noon",
+      "situation": "a mill helper clears grain dust before grinding: identify cleanliness and machinery context."
+    },
+    {
+      "case_id": "te02core-059",
+      "primary_domain": "care and work coordination",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "home hearth",
+      "person": {
+        "age": 33,
+        "gender": "woman",
+        "occupation": "spinner",
+        "means": "limited",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "rainy summer evening",
+      "situation": "a carpenter stores offcuts for later: distinguish material remnants from available finished goods."
+    },
+    {
+      "case_id": "te02core-060",
+      "primary_domain": "production maintenance",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "workshop yard",
+      "person": {
+        "age": 40,
+        "gender": "man",
+        "occupation": "carpenter",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "clear early-autumn dawn",
+      "situation": "a widow and neighbour coordinate a wash day: identify shared labour and water needs."
+    },
+    {
+      "case_id": "te02core-061",
+      "primary_domain": "household labour",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "market quay",
+      "person": {
+        "age": 31,
+        "gender": "man",
+        "occupation": "fish seller",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "late-summer drizzle at dawn",
+      "situation": "a household prepares a guest meal while preserving winter stores: distinguish present use from total supply."
+    },
+    {
+      "case_id": "te02core-062",
+      "primary_domain": "craft workflow",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "village yard",
+      "person": {
+        "age": 44,
+        "gender": "woman",
+        "occupation": "weaver",
+        "means": "modest",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "early-autumn clear afternoon",
+      "situation": "a tanner keeps wet hides apart from dry leather work: identify workspace separation."
+    },
+    {
+      "case_id": "te02core-063",
+      "primary_domain": "food and fuel economy",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "household_production_labor",
+      "location": "river landing",
+      "person": {
+        "age": 27,
+        "gender": "man",
+        "occupation": "boat hand",
+        "means": "limited",
+        "status": "hired worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "spring overcast morning",
+      "situation": "a boatman repairs cordage while another person prepares food: identify competing space and time."
+    },
+    {
+      "case_id": "te02core-064",
+      "primary_domain": "travel logistics",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "forest-edge road",
+      "person": {
+        "age": 52,
+        "gender": "woman",
+        "occupation": "smallholder",
+        "means": "modest",
+        "status": "village resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "winter dry dusk",
+      "situation": "two traders plan a road journey with mixed loads: distinguish companionship from joint ownership."
+    },
+    {
+      "case_id": "te02core-065",
+      "primary_domain": "shared cargo",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "town workshop",
+      "person": {
+        "age": 36,
+        "gender": "man",
+        "occupation": "smith",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "cool autumn evening",
+      "situation": "a boat crew considers leaving before rain: identify weather, visibility and cargo premises without route verdict."
+    },
+    {
+      "case_id": "te02core-066",
+      "primary_domain": "road and river risk",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "household yard",
+      "person": {
+        "age": 29,
+        "gender": "woman",
+        "occupation": "cook",
+        "means": "limited",
+        "status": "householder",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "wet spring noon",
+      "situation": "a partner sends goods with another household: preserve custody and delivery uncertainty."
+    },
+    {
+      "case_id": "te02core-067",
+      "primary_domain": "partnership accounting",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "market lane",
+      "person": {
+        "age": 41,
+        "gender": "man",
+        "occupation": "grain trader",
+        "means": "secure",
+        "status": "traveller",
+        "relations": "works with a household member"
+      },
+      "circumstances": "hot summer midday",
+      "situation": "a traveller chooses between carrying tools or hiring space: distinguish burden from cost outcome."
+    },
+    {
+      "case_id": "te02core-068",
+      "primary_domain": "carrying limits",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "granary threshold",
+      "person": {
+        "age": 48,
+        "gender": "woman",
+        "occupation": "store keeper",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "frosty early-winter morning",
+      "situation": "a group pauses at a bridge with an overloaded cart: identify inspection needs without crossing verdict."
+    },
+    {
+      "case_id": "te02core-069",
+      "primary_domain": "travel logistics",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "mill approach",
+      "person": {
+        "age": 34,
+        "gender": "man",
+        "occupation": "miller helper",
+        "means": "limited",
+        "status": "worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "windy autumn dawn",
+      "situation": "a merchant and porter discuss who watches goods overnight: distinguish watch arrangement from security outcome."
+    },
+    {
+      "case_id": "te02core-070",
+      "primary_domain": "shared cargo",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "church-side street",
+      "person": {
+        "age": 38,
+        "gender": "woman",
+        "occupation": "laundress",
+        "means": "modest",
+        "status": "town resident",
+        "relations": "works with a household member"
+      },
+      "circumstances": "clear spring evening",
+      "situation": "a rider brings a damaged strap to a roadside stop: identify maintenance context without travel result."
+    },
+    {
+      "case_id": "te02core-071",
+      "primary_domain": "road and river risk",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "village byre",
+      "person": {
+        "age": 45,
+        "gender": "man",
+        "occupation": "herder",
+        "means": "limited",
+        "status": "smallholder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "snowy winter afternoon",
+      "situation": "two households combine a boat load for one crossing: separate lots and responsibilities."
+    },
+    {
+      "case_id": "te02core-072",
+      "primary_domain": "partnership accounting",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "boat shed",
+      "person": {
+        "age": 26,
+        "gender": "woman",
+        "occupation": "net maker",
+        "means": "modest",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "misty autumn morning",
+      "situation": "a traveller carries food and trade samples through frost: identify cold and packaging premises."
+    },
+    {
+      "case_id": "te02core-073",
+      "primary_domain": "carrying limits",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "field track",
+      "person": {
+        "age": 57,
+        "gender": "man",
+        "occupation": "carter",
+        "means": "modest",
+        "status": "carrier",
+        "relations": "works with a household member"
+      },
+      "circumstances": "thawing late-winter noon",
+      "situation": "a crew sees floating debris near a landing: distinguish observation from navigability."
+    },
+    {
+      "case_id": "te02core-074",
+      "primary_domain": "travel logistics",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "home hearth",
+      "person": {
+        "age": 33,
+        "gender": "woman",
+        "occupation": "spinner",
+        "means": "limited",
+        "status": "householder",
+        "relations": "meets an unrelated counterpart"
+      },
+      "circumstances": "rainy summer evening",
+      "situation": "a partnership dissolves after a delayed delivery: preserve accounts and goods distinction without legal result."
+    },
+    {
+      "case_id": "te02core-075",
+      "primary_domain": "shared cargo",
+      "knowledge_need": "What reusable factual premises support a practical reconstruction without asserting price, local rule, authoritative state or outcome?",
+      "need_group": "travel_partnership_risk",
+      "location": "workshop yard",
+      "person": {
+        "age": 40,
+        "gender": "man",
+        "occupation": "carpenter",
+        "means": "secure",
+        "status": "craft worker",
+        "relations": "coordinates with a work partner"
+      },
+      "circumstances": "clear early-autumn dawn",
+      "situation": "a family sends a child with a small parcel to a nearby village: identify supervision and weather context without outcome."
+    }
+  ]
+}

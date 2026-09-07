@@ -1,0 +1,70 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-water-v1-fuel-combustion-carbon-monoxide",
+      "claim_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "claim_digest": "ce596c26fe6f3a1a3fa19b565be61fd9d09b1733a6506c815d92f53d8640016e",
+      "candidate_ref": "git:ac49d74220b81ef338701a98d045579a9858c3de:data/world-catalogs/novgorod/world-knowledge/research/static-exposure-water-candidates-v1.json#claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "auditor_ref": "/root/claim_verifier/troitsky_primary",
+      "independence_basis": "Independent direct CDC source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-static-exposure-co-combustion"],
+      "review_ref": "verification/static-exposure-water-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "CDC supports the qualitative relation only; no particular fuel, fire, amount, rate, place, exposure, symptom, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-water-v1-carbon-monoxide-indoors",
+      "claim_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+      "claim_digest": "99c16784bc0c8a637353ad7b4f9c3e75a50cdeb1c87c1436295c1ca14b1765ca",
+      "candidate_ref": "git:ac49d74220b81ef338701a98d045579a9858c3de:data/world-catalogs/novgorod/world-knowledge/research/static-exposure-water-candidates-v1.json#claim:research-carbon-monoxide-can-accumulate-indoors",
+      "auditor_ref": "/root/claim_verifier/troitsky_primary",
+      "independence_basis": "Independent direct CDC source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-static-exposure-co-indoor-accumulation"],
+      "review_ref": "verification/static-exposure-water-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "CDC supports possible indoor accumulation only; no actual enclosure, ventilation, concentration, duration, person, symptom, diagnosis, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-water-v1-cold-water-immersion-hypothermia",
+      "claim_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "claim_digest": "e5993f9a6d9c84d74f18c5d5d4817585b9f819a1fed0bcb78affabf38dcce288",
+      "candidate_ref": "git:ac49d74220b81ef338701a98d045579a9858c3de:data/world-catalogs/novgorod/world-knowledge/research/static-exposure-water-candidates-v1.json#claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "auditor_ref": "/root/claim_verifier/troitsky_primary",
+      "independence_basis": "Independent direct CDC/NIOSH source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-static-exposure-cold-water-immersion"],
+      "review_ref": "verification/static-exposure-water-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "No water temperature, duration, clothing, body state, impairment, injury, survival, treatment, outcome, or comparative speed conclusion."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-water-v1-heating-water-germs",
+      "claim_ref": "claim:research-heating-water-can-kill-disease-causing-germs",
+      "claim_digest": "fbadb3cdfc4809fd9bc7da6379af9991338975bd52654de59171fdf7d605f395",
+      "candidate_ref": "git:ac49d74220b81ef338701a98d045579a9858c3de:data/world-catalogs/novgorod/world-knowledge/research/static-exposure-water-candidates-v1.json#claim:research-heating-water-can-kill-disease-causing-germs",
+      "auditor_ref": "/root/claim_verifier/troitsky_primary",
+      "independence_basis": "Independent direct CDC source-anchor review and active-pack duplicate reconciliation; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-static-exposure-boiling-germs"],
+      "review_ref": "verification/static-exposure-water-v1.md#per-claim-verdicts",
+      "verdict": "REJECT",
+      "limits": "CDC supports the qualitative wording, but active claim:heating-reduces-microbial-viability already covers the needed heating-to-microbial-viability premise; do not promote this duplicate."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-water-v1-boiling-fuel-toxic-water",
+      "claim_ref": "claim:research-boiling-does-not-make-fuel-or-toxic-chemical-water-drinkable",
+      "claim_digest": "e21c3276781ffda39b063700c07668b0f598fc9ede62ce7fd3c2ba454d17c0b0",
+      "candidate_ref": "git:ac49d74220b81ef338701a98d045579a9858c3de:data/world-catalogs/novgorod/world-knowledge/research/static-exposure-water-candidates-v1.json#claim:research-boiling-does-not-make-fuel-or-toxic-chemical-water-drinkable",
+      "auditor_ref": "/root/claim_verifier/troitsky_primary",
+      "independence_basis": "Independent direct CDC source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-static-exposure-boiling-fuel-toxic-chemicals"],
+      "review_ref": "verification/static-exposure-water-v1.md#per-claim-verdicts",
+      "verdict": "NEEDS_REVIEW",
+      "limits": "CDC gives a household-water-treatment safety boundary, not a universal physical impossibility for every toxic chemical, concentration, or process. Revise to: boiling alone does not establish potability for water contaminated with fuel or toxic chemicals; contaminant-specific removal/process evidence is required."
+    }
+  ]
+}

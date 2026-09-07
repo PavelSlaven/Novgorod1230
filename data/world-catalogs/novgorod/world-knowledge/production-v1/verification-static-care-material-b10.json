@@ -1,0 +1,65 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-parchment-or-vellum-should-not-be-wetted",
+      "claim_ref": "claim:static-parchment-or-vellum-should-not-be-wetted",
+      "claim_digest": "727ed88641415d5f6dacd549d18bf308ebb3b8fcd7221cb7c784a7ea3519796d",
+      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-care-material-b10.json#claim:static-parchment-or-vellum-should-not-be-wetted",
+      "auditor_ref": "/root/mixed_sampling_contract_audit",
+      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:static-care-material-b10-parchment-wet-distortion"
+      ],
+      "review_ref": "verification/static-care-material-b10.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Parchment or vellum should not be wetted: wetting can cause cockling and distortion and, in degraded material, irreversible gelatinization. This establishes no document's composition, age, condition, or outcome. Modern care or analogy does not create historical availability or actor knowledge."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+      "claim_ref": "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+      "claim_digest": "3130c9445eb9df27062094a9452c1cd33f530d42d127cf44db4a053002007ed3",
+      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-care-material-b10.json#claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+      "auditor_ref": "/root/mixed_sampling_contract_audit",
+      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:static-care-material-b10-parchment-ink-specialist-limit"
+      ],
+      "review_ref": "verification/static-care-material-b10.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "Fragile parchment, vellum, or a record with iron-gall ink should not receive uncontrolled humidification or flattening; that treatment requires conservation expertise. This gives no procedure, ink composition, damage diagnosis, or restoration result. Modern care or analogy does not create historical availability or actor knowledge."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+      "claim_ref": "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+      "claim_digest": "10bf4ceaac442addcf6480b3893014e274e41300680c0bb77c44faaf9ccb6c1d",
+      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-care-material-b10.json#claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+      "auditor_ref": "/root/mixed_sampling_contract_audit",
+      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:static-care-material-b10-burn-immediate-care"
+      ],
+      "review_ref": "verification/static-care-material-b10.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "For a minor thermal burn, modern first aid uses prompt cool running water and avoids removing adherent material or applying creams, oils, or butter. This is modern universal biology, not 1230 Novgorod medical practice, a diagnosis, or an outcome guarantee. Modern care or analogy does not create historical availability or actor knowledge."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
+      "claim_ref": "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
+      "claim_digest": "2e4641ffa6cf56cc4e8eace520fc91ee90affc95c040c749e91dcedee2b0e690",
+      "candidate_ref": "git:f164358f3b451d4d03904f0e41ee0fc1f616215f:data/world-catalogs/novgorod/world-knowledge/production-v1/static-care-material-b10.json#claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
+      "auditor_ref": "/root/mixed_sampling_contract_audit",
+      "independence_basis": "Independent source/domain reviewer distinct from the candidate author; actual source checks, RU/EN wording and applicability limits are recorded in the linked review. Root mechanically binds this verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:static-care-material-b10-burn-red-flags"
+      ],
+      "review_ref": "verification/static-care-material-b10.md#approved-premises",
+      "verdict": "APPROVE",
+      "limits": "A very large or deep burn, a burn on face, genitals, or bottom, or a chemical or electrical burn is a modern urgent qualified-care red flag. This is not a way to determine a concrete injury's severity or outcome. Modern care or analogy does not create historical availability or actor knowledge."
+    }
+  ]
+}

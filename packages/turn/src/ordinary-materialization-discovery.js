@@ -13,6 +13,7 @@ import { resolveOrdinaryMaterializationPresence,
   './ordinary-materialization-presence.js';
 import { resolveOrdinaryMaterializationSeedScope } from
   './ordinary-materialization-seed.js';
+import { turnFailure } from './errors.js';
 
 /** Common O1 owner; callers supply only committed context/profile adapters. */
 export function createOrdinaryMaterializationDiscoveryOwner({
@@ -53,7 +54,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           authority_context: seedAuthorityContext({ execution,
             objective: enabled.objective_context,
             scopeRef: enabled.ordinary_aggregate.scope_ref }) }),
-        semanticContext: enabled.seed_semantic_context ?? null,
+        semanticContext: enabled.semantic_context ?? null,
         ordinaryMaterializationModel: modelBudget.invoke,
         repairAvailable: modelBudget.hasRemaining,
         workingProjection: projection,
@@ -121,6 +122,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       candidate_context: candidateContext,
       selected_supporting_basis_ref: selectedSupportingBasisRef });
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
+      semanticContext: enabled.semantic_context ?? null,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
       workingProjection: projection,
@@ -131,7 +133,11 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       mechanicsPolicy: execution.mechanics_policy });
     if (presence.status === 'already_resolved') return ordinaryNoop(request);
     if (presence.status === 'no_change' && presence.decision === null) {
-      if (transitions.length === 0) return ordinaryNoop(request);
+      if (transitions.length === 0) throw turnFailure(
+        'TURN_ORDINARY_DISCOVERY_UNRESOLVED',
+        'Ordinary discovery prerequisite could not be resolved.',
+        { reason: presence.reason ?? 'no_change' }
+      );
       return resolvedPlan({ request, enabled, partyId, scopeRef,
         inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
         next: projection.ordinary_materialization_aggregate,

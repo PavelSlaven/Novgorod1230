@@ -1,0 +1,313 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-cci-stitches-textile-conservation-2008",
+      "title": "Stitches Used in Textile Conservation — Canadian Conservation Institute (CCI) Notes 13/10",
+      "authors": [
+        "Canadian Conservation Institute Textile Lab"
+      ],
+      "publication": "Canadian Conservation Institute Notes 13/10, revised 2008; page details 2019-05-02",
+      "source_kind": "official_documentation",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/conservation-preservation-publications/canadian-conservation-institute-notes/stitches-textile-conservation.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-nps-fatty-acid-spew-leather-objects-2025",
+      "title": "Conserve O Gram 9/1: Fatty Acid Spew on Leather Objects",
+      "authors": [
+        "National Park Service"
+      ],
+      "publication": "National Park Service Conserve O Gram 9/1, published 2025-01; updated 2025-07-02",
+      "source_kind": "official_documentation",
+      "citation": "https://www.nps.gov/articles/conserve-o-gram-9-1-leather-dressings.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-cdc-household-water-treatment-2024",
+      "title": "Household Water Treatment",
+      "authors": [
+        "Centers for Disease Control and Prevention, National Center for Emerging and Zoonotic Infectious Diseases"
+      ],
+      "publication": "CDC Global Water, Sanitation, and Hygiene, updated 2024-04-22",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/global-water-sanitation-hygiene/about/about-household-water-treatment.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-household-textile-stitch-support",
+      "source_ref": "source:research-cci-stitches-textile-conservation-2008",
+      "anchor": {
+        "section": "Attaching Fragile Textiles to Support Fabrics — Self-couching stitch"
+      },
+      "note": "CCI says a self-couching stitch secures torn, frayed or weak textile areas to a new support fabric. This is a modern conditional conservation relation, not medieval practice, a current textile, thread, support, tool, skill, repair success, strength or item identity.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-household-leather-stitched-join-failure",
+      "source_ref": "source:research-nps-fatty-acid-spew-leather-objects-2025",
+      "anchor": {
+        "section": "Research on Leather Dressings, treatment-report quotation beginning ‘The stitching attaching the sides to the sole’"
+      },
+      "note": "NPS records a shoe in which weakened and broken stitching attaching sides to the sole was followed by separation of the parts. The candidate is limited to a stitched leather assembly; it is not evidence that every leather object is stitched, nor of a current object, cause, load, repair, durability, medieval practice or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-static-exposure-boiling-fuel-toxic-chemicals",
+      "source_ref": "source:research-cdc-household-water-treatment-2024",
+      "anchor": {
+        "section": "Overview, paragraph beginning ‘Water that has fuel’; Ways to make water safe — Boiling"
+      },
+      "note": "CDC says water containing fuel or toxic chemicals is not made drinkable by boiling or household treatment. The bounded candidate is epistemic: boiling alone does not establish drinkability for those named contaminant classes; it does not assert a universal physical non-removal result for every substance or treatment. No contamination, water source, treatment event, drinking permission or health outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-textile-stitch-support",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-textile-stitch-support",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "stitching_can_secure_a_torn_frayed_or_weak_textile_area_to_a_support_textile"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-household-textile-stitch-support"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "failure_of_stitching_joining_components_of_a_leather_assembly_can_separate_the_components"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-household-leather-stitched-join-failure"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "boiling_alone_does_not_establish_drinkability_of_water_containing_fuel_or_toxic_chemicals"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-static-exposure-boiling-fuel-toxic-chemicals"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-textile-stitch-support",
+      "locale": "ru",
+      "labels": [
+        "Стежковая поддержка ослабленного текстиля"
+      ],
+      "short_definition": "Условная связь стежков, повреждённого текстиля и поддерживающей ткани.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-textile-stitch-support",
+      "locale": "en",
+      "labels": [
+        "Stitched support for weakened textile"
+      ],
+      "short_definition": "Conditional relation between stitching, damaged textile, and support textile.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+      "locale": "ru",
+      "labels": [
+        "Стежковое соединение частей кожаного изделия"
+      ],
+      "short_definition": "Условная связь стежкового соединения кожаных частей и их разделения при разрушении стежков.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:research-stitched-leather-component-join",
+      "locale": "en",
+      "labels": [
+        "Stitched leather component join"
+      ],
+      "short_definition": "Conditional relation between a stitched leather-component join and separation when it fails.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+      "locale": "ru",
+      "labels": [
+        "Нагрев воды и границы удаления загрязнителей"
+      ],
+      "short_definition": "Различие между инактивацией микроорганизмов нагревом и химическими примесями.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:research-water-heating-contaminant-boundary",
+      "locale": "en",
+      "labels": [
+        "Water heating and contaminant-removal boundary"
+      ],
+      "short_definition": "Distinction between heating-induced germ inactivation and chemical contaminants.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
+      "locale": "ru",
+      "runtime_text": "Стежки могут закреплять порванный, осыпающийся или ослабленный участок текстиля на поддерживающей ткани. Это не устанавливает текстиль, нить, поддержку, инструмент, навык, историческую практику, прочность или результат ремонта в конкретной сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-stitching-can-secure-weak-textile-to-support",
+      "locale": "en",
+      "runtime_text": "Stitching can secure a torn, frayed, or weak textile area to a support textile. This establishes no textile, thread, support, tool, skill, historical practice, strength, or repair result in a concrete scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
+      "locale": "ru",
+      "runtime_text": "В кожаном изделии, части которого соединены стежками, разрушение соединяющих стежков может привести к разделению частей. Это не устанавливает изделие, тип стежков, состояние шва, нагрузку, причину разрушения, ремонт, долговечность, историческую практику или исход в конкретной сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-failure-of-stitched-leather-join-can-separate-components",
+      "locale": "en",
+      "runtime_text": "In a leather assembly whose components are joined by stitching, failure of the joining stitches can separate the components. This establishes no object, stitch type, seam condition, load, failure cause, repair, durability, historical practice, or outcome in a concrete scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+      "locale": "ru",
+      "runtime_text": "Одно кипячение само по себе не устанавливает пригодность для питья воды с топливом или токсичными химическими примесями. Это не утверждает универсальную невозможность удаления любого вещества и не устанавливает загрязнение, источник воды, обработку, разрешение на питьё или исход для здоровья в конкретной сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+      "locale": "en",
+      "runtime_text": "Boiling alone does not establish the drinkability of water containing fuel or toxic chemicals. This does not assert universal impossibility of removing every substance and establishes no contamination, water source, treatment event, drinking permission, or health outcome in a concrete scene.",
+      "search_aliases": []
+    }
+  ]
+}

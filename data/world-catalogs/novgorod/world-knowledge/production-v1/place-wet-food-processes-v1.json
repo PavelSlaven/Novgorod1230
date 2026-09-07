@@ -1,0 +1,483 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:epa-leather-tanning-development",
+      "title": "Leather tanning and finishing development document",
+      "authors": [
+        "United States Environmental Protection Agency"
+      ],
+      "publication": "EPA leather tanning and finishing process and effluent guidance",
+      "source_kind": "official_documentation",
+      "citation": "https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=00000W73.TXT",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:unido-tannery-effluent",
+      "title": "Introduction to treatment of tannery effluents",
+      "authors": [
+        "UNIDO"
+      ],
+      "publication": "UNIDO technical report",
+      "source_kind": "official_documentation",
+      "citation": "https://downloads.unido.org/ot/46/70/4670676/KRAL_AGR_AIT_BGD_2011_101002_001.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:fao-fish-products",
+      "title": "Fish and fish products",
+      "authors": [
+        "FAO"
+      ],
+      "publication": "FAO fisheries training material",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fao.org/4/x5434e/x5434e0f.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:fao-smoked-fish-retail",
+      "title": "Smoked Fish Recommended Practice for Retailers",
+      "authors": [
+        "FAO"
+      ],
+      "publication": "FAO technical guidance",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fao.org/4/x5895e/x5895e01.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-wet-food-editorial",
+      "title": "Wet and food process place reconstruction",
+      "authors": [
+        "/root/place_scene_a"
+      ],
+      "publication": "Repository editorial reconstruction note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/research/place-wet-food-processes-v1.md",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:epa-hide-washing-and-fleshing",
+      "source_ref": "source:epa-leather-tanning-development",
+      "anchor": {
+        "section": "Process description: soaking/washing and fleshing"
+      },
+      "note": "EPA describes soaking/washing followed, when not already performed, by fleshing that removes adhering flesh, fat and muscle; fleshings are generally isolated solid waste. Universal process relation only, not a medieval recipe or particular workshop.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:wet-hide-process",
+      "source_ref": "source:unido-tannery-effluent",
+      "anchor": {
+        "section": "Process stages and effluent categories"
+      },
+      "note": "Modern process relation: soaking/washing and fleshing produce distinct liquid and removable organic residues; no medieval recipe or chemical transfer.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:wet-work-separation",
+      "source_ref": "source:place-wet-food-editorial",
+      "anchor": {
+        "section": "Ordinary work composition"
+      },
+      "note": "Editorial spatial relation: when both work water and water reserved for another task are established, separate vessels, surfaces or flow paths avoid their direct mixing; no layout or water state follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fish-smoke-process",
+      "source_ref": "source:fao-fish-products",
+      "anchor": {
+        "section": "Smoked fish"
+      },
+      "note": "Smoking preservation is a combined effect of drying, smoke compounds and heat; salt may be combined, with outcome dependent on process conditions.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fish-smoke-sensory-limit",
+      "source_ref": "source:fao-smoked-fish-retail",
+      "anchor": {
+        "section": "Quality assessment"
+      },
+      "note": "Colour is an unreliable quality guide; sensory appearance does not establish safety.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:wet-hide-work-context",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:fish-smoking-context",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:wet-hide-work-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "where_hide_preparation_is_established_washing_or_soaking_can_be_followed_by_removal_of_attached_flesh_or_other_residue"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:epa-hide-washing-and-fleshing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:wet-hide-work-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wet_hide_washing_and_fleshing_can_leave_liquid_effluent_and_removable_organic_residue_that_need_not_share_the_same_handling_path"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:wet-hide-process"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-place-work-space",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "when_work_water_and_water_reserved_for_a_clean_task_are_both_established_separate_vessels_surfaces_or_flow_paths_can_avoid_direct_mixing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:wet-work-separation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:fish-smoking-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fish_smoking_can_remove_water_by_drying_deposit_smoke_compounds_and_apply_heat_which_differs_between_hot_and_cold_processes_while_salt_when_used_lowers_available_water_and_preservation_depends_on_the_actual_combination"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fish-smoke-process"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:fish-smoking-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "smoke_smell_colour_or_visible_smoke_do_not_by_themselves_establish_the_safety_or_storage_outcome_of_a_smoked_fish_batch"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fish-smoke-sensory-limit",
+        "evidence:fish-smoke-process"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:wet-hide-work-context",
+      "locale": "ru",
+      "labels": [
+        "Мокрая обработка шкуры"
+      ],
+      "short_definition": "Качественные связи промывки, удаляемых остатков и рабочих потоков.",
+      "search_aliases": [
+        "шкура",
+        "промывка",
+        "сток"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:wet-hide-work-context",
+      "locale": "en",
+      "labels": [
+        "Wet hide work"
+      ],
+      "short_definition": "Qualitative relations of washing, removable residue, and work flows.",
+      "search_aliases": [
+        "hide",
+        "washing",
+        "effluent"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:fish-smoking-context",
+      "locale": "ru",
+      "labels": [
+        "Копчение рыбы"
+      ],
+      "short_definition": "Качественная связь дыма, сушки, тепла и соли при копчении.",
+      "search_aliases": [
+        "рыба",
+        "копчение",
+        "сушка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:fish-smoking-context",
+      "locale": "en",
+      "labels": [
+        "Fish smoking"
+      ],
+      "short_definition": "Qualitative relation of smoke, drying, heat, and salt in fish smoking.",
+      "search_aliases": [
+        "fish",
+        "smoking",
+        "drying"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+      "locale": "ru",
+      "runtime_text": "Там, где обработка шкуры уже установлена, промывка или вымачивание могут сопровождаться удалением приставшей плоти либо иных остатков. Это не рецепт, не стадия каждой выделки, не наличие шкуры, воды, инструмента или результат.",
+      "search_aliases": [
+        "промывка шкуры",
+        "очистка шкуры"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+      "locale": "en",
+      "runtime_text": "Where hide preparation is already established, washing or soaking can be accompanied by removal of attached flesh or other residue. This establishes no recipe, stage for every tanning process, hide, water, tool, or outcome.",
+      "search_aliases": [
+        "hide washing",
+        "hide cleaning"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+      "locale": "ru",
+      "runtime_text": "Мокрая промывка и мездрение шкуры могут оставлять жидкий сток и удаляемые органические остатки; они не обязаны идти одним путём. Это не создаёт загрязнение, объём, запах, водоём или способ удаления в сцене.",
+      "search_aliases": [
+        "сток кожевника",
+        "мездра"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+      "locale": "en",
+      "runtime_text": "Wet hide washing and fleshing can leave liquid effluent and removable organic residue; they need not use one handling path. This creates no pollution, amount, smell, water body, or disposal method in a scene.",
+      "search_aliases": [
+        "tannery effluent",
+        "fleshings"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+      "locale": "ru",
+      "runtime_text": "Если установлены и рабочая вода, и вода для чистой задачи, отдельные сосуды, поверхности или пути стока могут не дать им смешаться напрямую. Это editorial reconstruction, не планировка, не качество воды и не правило для всякого двора.",
+      "search_aliases": [
+        "чистая вода",
+        "рабочая вода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+      "locale": "en",
+      "runtime_text": "Where work water and water reserved for a clean task are established, separate vessels, surfaces, or flow paths can avoid direct mixing. This is editorial reconstruction, not a layout, water quality, or rule for every yard.",
+      "search_aliases": [
+        "clean water",
+        "work water"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+      "locale": "ru",
+      "runtime_text": "При копчении рыбы сушка удаляет часть влаги, дым оставляет соединения на продукте, а тепло действует по-разному в горячем и холодном процессе; соль, если она применяется, уменьшает доступную воду. Сохраняющий эффект зависит от фактического сочетания этих факторов, а не от одного признака. Это не рецепт, срок, температура, запас, безопасность или результат конкретной партии.",
+      "search_aliases": [
+        "копчение рыбы",
+        "соль",
+        "сушка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+      "locale": "en",
+      "runtime_text": "In fish smoking, drying removes some water, smoke deposits compounds on the product, and heat acts differently in hot and cold processes; salt, when used, lowers available water. The preservative effect depends on the actual combination of these factors, not one sign. This establishes no recipe, duration, temperature, stock, safety, or batch outcome.",
+      "search_aliases": [
+        "fish smoking",
+        "salt",
+        "drying"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+      "locale": "ru",
+      "runtime_text": "Запах дыма, цвет или видимый дым сами по себе не устанавливают безопасность или исход хранения копчёной рыбы. Это не диагноз порчи и не запрет использовать чувственные признаки как описание сцены.",
+      "search_aliases": [
+        "цвет копчёной рыбы",
+        "запах дыма"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+      "locale": "en",
+      "runtime_text": "Smoke smell, colour, or visible smoke alone do not establish the safety or storage outcome of smoked fish. This is neither a spoilage diagnosis nor a ban on sensory scene description.",
+      "search_aliases": [
+        "smoked fish colour",
+        "smoke smell"
+      ]
+    }
+  ]
+}

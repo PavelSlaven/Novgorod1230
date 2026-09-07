@@ -1,24 +1,18 @@
-import {
-  databaseQuantity
-} from './lower-dvina-trace-turn-step-item-state.js';
+import { databaseQuantity } from './lower-dvina-trace-turn-step-item-state.js';
 import { validateMechanicsProvenance } from
   './lower-dvina-trace-turn-step-commit-validation.js';
 import { validatePlacementShape } from
   './lower-dvina-trace-turn-step-operation-validation.js';
-import {
-  exact,
-  fail,
-  requireMechanics,
-  text
-} from './lower-dvina-trace-turn-step-persistence-support.js';
+import { exact, fail, requireMechanics, text } from
+  './lower-dvina-trace-turn-step-persistence-support.js';
 import { applyAuthoredItemOperation } from
   './lower-dvina-trace-turn-step-authored-item-operation.js';
-
 export function applyItemOperation({
   operation, entities, authoredItems, authoredItemRefs, authoredContainers,
   authoredContainerRefs, authoredStateTouched,
   creates, touched, placements, ownerships, retired, state, changeSetId,
-  knowledgeInserts, recordActorKnowledge = true, actorId = state.actor_id
+  knowledgeInserts, recordActorKnowledge = true, actorId = state.actor_id,
+  ambientPortionProfileRef = null
 }) {
   const { operation_kind: kind, payload } = operation;
   if (kind === 'create_entity') {
@@ -35,12 +29,24 @@ export function applyItemOperation({
     const mechanics = requireMechanics(
       payload.runtime_instance_mechanics_snapshot);
     validateMechanicsProvenance(operation, mechanics, payload.origin);
-    for (const sourceRef of payload.origin.source_refs) {
-      if (!entities.has(sourceRef) && !knownStateRef(state, sourceRef)) {
+    const sourceRefs = payload.origin.source_refs;
+    const knownSource = (sourceRef) => entities.has(sourceRef)
+      || knownStateRef(state, sourceRef);
+    const ownerExpandedAmbient = payload.origin.kind === 'ambient_ordinary'
+      && sourceRefs.includes(ambientPortionProfileRef)
+      && mechanics.provenance?.source_kind === 'ordinary_direct_action_result'
+      && mechanics.provenance.origin_kind === 'ambient_ordinary'
+      && sourceRefs.some((ref) => !knownSource(ref));
+    if (ownerExpandedAmbient) {
+      if (!sourceRefs.some(knownSource)) {
         fail('TRACE_TURN_STEP_REF_UNRESOLVED', {
-          field: 'origin.source_refs', ref: sourceRef
+          field: 'origin.source_refs', ref: sourceRefs[0] ?? null
         });
       }
+    } else for (const sourceRef of sourceRefs) {
+      if (!knownSource(sourceRef)) fail('TRACE_TURN_STEP_REF_UNRESOLVED', {
+        field: 'origin.source_refs', ref: sourceRef
+      });
     }
     const placement = normalizePlacement(
       payload.placement, state, entities, actorId);
@@ -169,7 +175,6 @@ export function applyItemOperation({
   }
   fail('TRACE_TURN_STEP_OPERATION_SCHEMA_UNKNOWN', { operation_kind: kind });
 }
-
 function normalizePlacement(value, state, entities, actorId) {
   let placement = structuredClone(value);
   if (Object.hasOwn(placement, 'relation')) {
@@ -236,7 +241,6 @@ function normalizePlacement(value, state, entities, actorId) {
   }
   return placement;
 }
-
 function requireMutableRuntimeEntity(entities, entityRef, retired) {
   const entity = entities.get(entityRef);
   if (!entity || retired.has(entityRef)
@@ -260,12 +264,10 @@ function knownStateRef(state, ref) {
     || (state.npcs ?? []).some((npc) =>
       npc?.npc_id === ref || npc?.instance_id === ref);
 }
-
 function appendHistory(entity, operation, result, extra = {}) {
   entity.db_state.ordinary_metadata.operation_history.push(
     history(operation, result, extra));
 }
-
 function history(operation, result, extra = {}) {
   return {
     operation_id: operation.operation_id,

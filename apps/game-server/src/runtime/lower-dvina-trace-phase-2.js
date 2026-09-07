@@ -42,7 +42,7 @@ export function createLowerDvinaTracePhase2Runtime({
   ordinaryDiscoveryEnablementMarker = null,
   ordinaryDiscoveryScopeBinding = null,
   createTurnStepAmbientOrdinaryPortionAdmission = null,
-  requireTurnStepAmbientOrdinaryAdmission = false,
+  requireTurnStepAmbientOrdinaryAdmission = false, turnStepAmbientPortionProfileRef = null,
   createTurnStepActionProductionOwner = null,
   actionProductionProfile = null,
   createTurnStepWorldProcessResolver = null, localFireProfile = null,
@@ -72,6 +72,7 @@ export function createLowerDvinaTracePhase2Runtime({
         const turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null;
         let replay = await repository.loadPhase2Replay({ partyId, idempotencyKey, turnBudget });
         if (replay) {
+          llmDiagnostics?.recordGameplayTrace?.({ event: 'turn_replay', idempotency_key: idempotencyKey });
           if (replay.input_digest !== inputDigest) {
             throw serverError('TRACE_PHASE_2_IDEMPOTENCY_CONFLICT', 'The idempotency identity is already bound to another input.', { status: 409 });
           }
@@ -99,6 +100,7 @@ export function createLowerDvinaTracePhase2Runtime({
           presentationIdempotencyKey: idempotencyKey,
           turnBudget,
         });
+        llmDiagnostics?.recordGameplayTrace?.({ event: 'turn_context', intent: rawText, authoritative_context: state });
         const scenarioDefinitionRevision = committedTraceScenarioDefinitionRevision(state);
         const phase2Bundle = await runWithinTurnDeadline(turnBudget, () =>
           phase2BundleLoader({ scenarioDefinitionRevision })
@@ -267,11 +269,11 @@ export function createLowerDvinaTracePhase2Runtime({
                 })
               : null,
           requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
-          turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
+          turnStepAmbientPortionProfileRef, turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
           turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
           narrator, randomSourceFactory,
           randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,
-          decisionNow: now, turnBudget,
+          decisionNow: now, turnBudget, llmDiagnostics,
         });
         try {
           const result = await runTurnWorkflow(

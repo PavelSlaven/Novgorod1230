@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "de6b8f23a093a4f3c838bd4ae3830dd5ad8e1a79b0cdcaa3db8deb4c27b877cf",
+  "baseline_manifest_sha256": "e9e1108a246cffe81cb64bbcb3c020eb8b277dfb630650847d9572b8df831ea3",
   "default_statuses": ["active"],
   "documents": [
     {
@@ -881,6 +881,40 @@
         "npc-autonomous-decision-contract",
         "temporal-world-and-interruptible-activities"
       ],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "world-knowledge-platform-implementation-contract",
+      "document_type": "target_normative",
+      "priority_tier": "technical_contract",
+      "subsystems": [
+        "world-knowledge",
+        "turn",
+        "npc",
+        "materialization"
+      ],
+      "related_document_ids": [
+        "contract-index",
+        "turn-step-llm-contract",
+        "code-driven-world-materialization-architecture"
+      ],
+      "related_module_paths": [
+        "packages/world-knowledge",
+        "packages/turn",
+        "tools/world-catalog-workflow"
+      ],
+      "related_contracts": [
+        "world_knowledge_query_v1",
+        "world_knowledge_slice_v1"
+      ],
+      "search_terms": [
+        "world knowledge",
+        "historical grounding",
+        "knowledge query planner",
+        "coverage profile",
+        "evidence claims"
+      ],
+      "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
     {

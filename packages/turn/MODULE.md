@@ -22,7 +22,13 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `resolveWorldProcessStep`, `validateWorldProcessStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, `spatialResult`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
+- `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner. Gameplay call site не активирован, пока нет production coverage profile для текущего world runtime.
 - Internal ordinary hook применяет уже вычисленный pure aggregate result к общей working projection без собственного schema/type; raw ordinary transition остаётся ответственностью `@rus/materialization` reducer. Hook не экспортируется как второй projection owner и не активирует O1.
+- Общий ordinary discovery owner передаёт одну player-safe scene projection
+  в seed и presence, включая structural repair; candidate query имеет нулевой
+  evidence weight и не подтверждает соседние объекты, отношения или историю.
+  Неисполненный prerequisite при исчерпании бюджета возвращает typed
+  `TURN_ORDINARY_DISCOVERY_UNRESOLVED` до commit, а не успешный пустой шаг.
 - S1 reaches only through existing `request_discovery/look` after higher-priority
   owners. Turn forwards the current player-safe position marker and does not
   choose local detail, capacity, topology, mechanics or a persistence path.
@@ -158,14 +164,18 @@ P16 change set и лишь затем запускает обычную narratio
 Revision 19 / `spatial-v3-production-v9` наследует этот orchestration без
 нового semantic mode; actor appearance materialization остаётся code-owned, а
 портрет строится только как read-time player-safe projection.
-Current `spatial-v3-production-v14` inherits the approved Phase-7 autonomous NPC
+Current `spatial-v3-production-v15` inherits the approved Phase-7 autonomous NPC
 actor-step profile. Общий current NPC actor-step path принимает только зарегистрированные
 и state-applicable owner capabilities с текущими NPC-safe refs; exact
 `operation_contract` и handler остаются общими owner contracts, без scenario
 action/ref/owner whitelist, special Жданко action logic или fallback. Жданко —
 первый activation participant/probe.
-The v14 cutover additionally pins revision 32 / M20 / Phase 1A v23 /
-Phase 1B v27 and only the profile-specific background-fisher N1 remainder.
+The v15 cutover additionally inherits revision 32 / M20 / Phase 1A v23 /
+Phase 1B v27 and the profile-specific background-fisher N1 remainder, then
+grounds open semantic calls with the production World Knowledge slice. The
+planner emits predicates and facets, while code supplies authoritative time,
+place, actor context and factual closure; the resulting claims never become
+state changes or exact mechanics by themselves.
 
 O1 активирует internal ordinary branch только внутри существующего
 `request_discovery`; нового public op и scenario-local resolver нет. После

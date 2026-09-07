@@ -71,8 +71,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "14f35d4f24af3fd5e07c818206f0c4fa14eaeed586939561000617d0ac2b7835",
-      "bytes": 20344,
+      "sha256": "84045f038759d92acb2fcfaaf4588800e5e0997593e63f372518cd481a7c1ff7",
+      "bytes": 23651,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -424,6 +424,15 @@
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "b1fbf6343d479a2f5c9296b7c5dc2f35f0b93e2eb15fab867d23b9201bd01b3e",
       "source_legacy_bytes": 71231
+    },
+    {
+      "document_id": "world-knowledge-platform-implementation-contract",
+      "canonical_path": "corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md",
+      "file_name": "world_knowledge_platform_implementation_contract.md",
+      "sha256": "09d8de121aba42c4e82650d3dba2a5c623654d49729c30700d14b1538d135923",
+      "bytes": 147577,
+      "status": "active",
+      "provenance_mode": "native"
     },
     {
       "document_id": "world-regions",

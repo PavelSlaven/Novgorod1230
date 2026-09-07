@@ -111,11 +111,16 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
 test('seed and presence each retain one structural repair',
   async () => {
     let modelCalls = 0;
+    const semanticContext = { visible_scene: 'мастерская',
+      sensory_details: ['На полу лежат деревянные обрезки.'],
+      visible_objects: ['скамья'] };
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
       partyId: 'party', inputDigest: 'repair-budget', verifyStageBCutover,
       loadEnablement: async () => enabled(),
       ordinaryMaterializationModel: async (modelRequest, context) => {
         modelCalls += 1;
+        assert.deepEqual(context.semantic_context, semanticContext,
+          'presence and its repair must retain scene evidence, not only the candidate wording');
         if (modelCalls === 1 || modelCalls === 3) return {};
         if (modelRequest.mode === 'seed_scope' && context.repair != null) {
           return { schema: 'ordinary_materialization_plan_v1',
@@ -137,7 +142,10 @@ test('seed and presence each retain one structural repair',
         return {};
       }
     });
-    const result = await resolver(request('найти ложку'));
+    const input = request('найти обрезок рядом с названным игроком сундуком');
+    input.request.player_safe_state = { current_visible_context: {
+      ...semanticContext, visible_objects: [{ display_label: 'скамья' }] } };
+    const result = await resolver(input);
     assert.equal(modelCalls, 4);
     assert.deepEqual(result.ordinary_materialization_atomic_write_plan
       .transitions.map(({ kind }) => kind), ['seed', 'resolve_presence']);
@@ -262,15 +270,17 @@ test('Stage A sparse density is mapped by code to a zero persisted identity budg
   'transient zero-budget no_change does not fabricate a granular record');
 });
 
-test('full resolution cap returns no_change without a write or granular record',
+for (const exhausted of ['identity budget', 'resolution cap']) {
+test(`exhausted ${exhausted} rejects before model or atomic plan`,
   async () => {
+    const capped = exhausted === 'resolution cap';
     let aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'shore' },
       resolution_record_cap: 1 });
     aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
       kind: 'seed', request_identity: 'seed', expected_state_version: 0,
-      density_band: 'ordinary', identity_budget: 1, background_groups: []
+      density_band: 'ordinary', identity_budget: capped ? 1 : 0, background_groups: []
     } });
-    aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
+    if (capped) aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
       kind: 'resolve_presence', request_identity: 'presence-one',
       expected_state_version: 1, resolution_ref: 'resolution-one',
       candidate_key: 'candidate-one', coverage_key: 'coverage-one',
@@ -284,22 +294,23 @@ test('full resolution cap returns no_change without a write or granular record',
         const value = enabled();
         value.ordinary_aggregate = structuredClone(aggregate);
         value.objective_context.ordinary_state = {
-          seeded: true, density_band: 'ordinary', remaining_identity_budget: 1,
-          background_groups: [], presence_resolutions: ['resolution-one'],
+          seeded: true, density_band: 'ordinary', remaining_identity_budget: capped ? 1 : 0,
+          background_groups: [], presence_resolutions: capped ? ['resolution-one'] : [],
           closed_observation_scopes: []
         };
-        value.version_pins.ordinary_state_version = 2;
+        value.version_pins.ordinary_state_version = aggregate.state_version;
         return value;
       },
       ordinaryMaterializationModel: async () => { modelCalls += 1; return {}; }
     });
-    const result = await resolver(request('найти другую вещь'));
+    await assert.rejects(() => resolver(request('найти другую вещь')),
+      (error) => error.code === 'TURN_ORDINARY_DISCOVERY_UNRESOLVED'
+        && error.details.reason === 'budget_or_cap_exhausted');
     assert.equal(modelCalls, 0);
-    assert.equal(Object.hasOwn(result,
-      'ordinary_materialization_atomic_write_plan'), false);
-    assert.equal(aggregate.presence_resolutions.length, 1);
-    assert.equal(aggregate.state_version, 2);
+    assert.equal(aggregate.presence_resolutions.length, capped ? 1 : 0);
+    assert.equal(aggregate.state_version, capped ? 2 : 1);
   });
+}
 
 test('production-shaped bounded mechanics admits one positive ordinary item',
   async () => {

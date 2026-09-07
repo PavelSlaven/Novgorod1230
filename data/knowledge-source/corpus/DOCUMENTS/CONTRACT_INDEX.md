@@ -83,6 +83,7 @@ Active status applies only to the scope stated by each header and active profile
 
 | Документ | Статус | Правило применения |
 |---|---|---|
+| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. Runtime wiring spatial-v3 production v15 — `validated_candidate_not_active`, activation определяется actual release/binding, а не этим индексом. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |
 | [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) | `PROPOSED UMBRELLA TARGET` | не active как единый контракт; активированные profile semantics берутся из их actual cutover/bindings/active contracts/code/tests, а не из старого umbrella snapshot |
 | [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `PROPOSED` | не доказывает наличие DDL, profiles, validators или runtime capability |
 | [`universal_category_classification_references.md`](universal_category_classification_references.md) | `REFERENCE FOR PROPOSED POLICY` | источники/обоснования proposed classification policy |
@@ -95,6 +96,30 @@ Active status applies only to the scope stated by each header and active profile
 
 ## 6. Compatibility navigation and superseded audit rules
 
+World Knowledge ranking (§§58–60 действующего контракта) сохраняет приоритет
+hard constraints, exact focus и requested predicates; внутри этих уровней
+query relevance предшествует context specificity и qualifiers. Это порядок
+bounded retrieval, не изменение applicability, actor access или authority.
+
+World Knowledge §35.1 закрепляет production authoring approval: независимый
+per-claim verdict связан с точными claim/localization/evidence inputs.
+Владелец проверки — internal compiler `@rus/world-catalog-workflow`;
+runtime World Knowledge получает только `verification_ref`, без ledger.
+§98.1 требует отдельной category cartography и независимого поиска missing
+families по location/materialization потребностям, не по числу claims/cells.
+
+World Knowledge §0.1 разделяет статическое наполнение и последующую
+gameplay-testing фазу. §112.12 задаёт target Gameplay Gap Auditor, trace
+requirements, классификацию, lifecycle и saturation; наличие internal
+development tooling не активирует testing и не делает saturation gate
+критерием статической готовности.
+
+World Knowledge §0.2 разрешает честно отмеченную игровую реконструкцию из
+аналогий и здравого смысла. §35.1 использует тот же независимый approval для
+source accuracy либо plausibility; точное свидетельство 1230 года для каждой
+ordinary-детали не требуется. `editorial_reconstruction` — редакторское
+основание, не внешний научный источник. Runtime owners и exact state неизменны.
+
 | Документ | Статус после этого index cutover | Replacement |
 |---|---|---|
 | [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |
@@ -103,6 +128,17 @@ Active status applies only to the scope stated by each header and active profile
 | [`.github/Правило вызова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |
 
 The obsolete rule “critic after every code change” does not apply. Independent read-only audit is mandatory for elevated-risk changes; an ordinary local fix does not require a separate critic when its boundaries are proven unchanged.
+
+World Knowledge §0.4 adds an open place-first authoring need-map:
+environment envelopes, linked approved premises, explicit gaps and
+place-by-conditions reconstruction checks. It does not create location
+presence, an object whitelist, a materializer or gameplay activation.
+Structural map validation is not evidence of environmental completeness.
+
+World Knowledge §0.5 adds an open military-first factual need-map and static
+75 rotating + 25 blind-free probe method. It does not define combat mechanics,
+a military scenario whitelist, force state, equipment presence or gameplay
+activation; separate WK-only reconstruction exposes missing premises.
 
 ## 7. Domain guides and legacy/supporting documents
 

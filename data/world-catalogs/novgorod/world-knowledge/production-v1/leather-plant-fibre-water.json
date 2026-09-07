@@ -1,0 +1,1209 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:cci-leather-skin-fur",
+      "title": "Caring for leather, skin and fur",
+      "authors": [
+        "Carole Dignard",
+        "Janet Mason"
+      ],
+      "publication": "Canadian Conservation Institute, preventive-conservation guidelines",
+      "source_kind": "technical_reference",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/preventive-conservation/guidelines-collections/caring-leather-skin-fur.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:falcao-araujo-vegetable-tannins",
+      "title": "Vegetable Tannins Used in the Manufacture of Historic Leathers",
+      "authors": [
+        "Lina Falcão",
+        "Maria Eduarda M. Araújo"
+      ],
+      "publication": "Molecules 23 (2018), 1081",
+      "source_kind": "technical_reference",
+      "citation": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6099987/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:textile-fibres-twist-yarn",
+      "source_ref": "source:population-textiles",
+      "anchor": {
+        "section": "General characteristics of textiles / Fibrous structure"
+      },
+      "note": "Independent verification/verification-leather-plant-fibre-water.md FPD-10: capability only, no preparation state, species, complete recipe, strength, tool, worker, successful output or historical availability.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:oil-rawhide-moisture-resistance",
+      "source_ref": "source:cci-leather-skin-fur",
+      "anchor": {
+        "section": "Rawhide: final paragraph"
+      },
+      "note": "Independent verification/verification-oils-resins-adhesives.md: OFA-01, APPROVE_WITH_LIMITS. Universal conditional material/process relation only; no historical availability, scene stock or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:oil-fat-vegetable-leather-flexibility",
+      "source_ref": "source:cci-leather-skin-fur",
+      "anchor": {
+        "section": "Vegetable-tanned leather: process paragraph"
+      },
+      "note": "Independent verification/verification-oils-resins-adhesives.md: OFA-02, APPROVE_WITH_LIMITS. Universal conditional material/process relation only; no historical availability, scene stock or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:oil-tanning-crosslinking-fibres",
+      "source_ref": "source:cci-leather-skin-fur",
+      "anchor": {
+        "section": "Oil-tanned skin (chamois): first paragraph, described oxidation/crosslinking reaction"
+      },
+      "note": "Independent verification/verification-oils-resins-adhesives.md: OFA-03, APPROVE_WITH_LIMITS. Universal conditional material/process relation only; no historical availability, scene stock or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:leather-water-cci",
+      "source_ref": "source:cci-leather-skin-fur",
+      "anchor": {
+        "section": "Water: opening, vegetable-tanned leather and alum-tawed skin"
+      },
+      "note": "Independent verification/verification-leather-plant-fibre-water.md: LP-01–03. Conditional universal material behaviour only, not medieval processing availability, object state, quantity or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:rawhide-water-cci",
+      "source_ref": "source:cci-leather-skin-fur",
+      "anchor": {
+        "section": "Rawhide; Water"
+      },
+      "note": "Independent verification/verification-leather-plant-fibre-water.md: LP-04. Conditional universal material behaviour only, not medieval processing availability, object state, quantity or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:plant-fibres-cci",
+      "source_ref": "source:population-textiles",
+      "anchor": {
+        "section": "Natural fibres: cellulose, hemp, flax and new linen"
+      },
+      "note": "Independent verification/verification-leather-plant-fibre-water.md: PF-01 corrected wording and PF-02. Conditional universal material behaviour only, not medieval processing availability, object state, quantity or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:textile-water-cci",
+      "source_ref": "source:population-textiles",
+      "anchor": {
+        "section": "Water: opening damage list; excess-water fibre penetration and swelling"
+      },
+      "note": "Independent verification/verification-leather-plant-fibre-water.md: PF-03 corrected wording and PF-04. Conditional universal material behaviour only, not medieval processing availability, object state, quantity or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:textile-pollutants-cci",
+      "source_ref": "source:population-textiles",
+      "anchor": {
+        "section": "Pollutants: Liquid contaminants"
+      },
+      "note": "Independent verification/verification-leather-plant-fibre-water.md: PF-05. Conditional universal material behaviour only, not medieval processing availability, object state, quantity or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:vegetable-tanning-collagen",
+      "source_ref": "source:falcao-araujo-vegetable-tannins",
+      "anchor": {
+        "section": "1. Introduction: vegetable tanning process and collagen–tannin stabilization"
+      },
+      "note": "Independent verification/verification-hide-processing.md HLP-04–05: universal conditional process and chemistry only. No Rus/Novgorod attestation or mandatory preparation recipe.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:fibre-twisting",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:oil-tanning",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:vegetable-tanned-leather",
+      "domain": "material_culture",
+      "broader_refs": [
+        "wk:material_culture:leather"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:alum-tawed-skin",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:rawhide",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:plant-cellulosic-fibres",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:natural-fibre-water-response",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:textile-water-damage",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:textile-fibres-twist-yarn",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:fibre-twisting",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "textile_fibres_can_be_twisted_together_to_form_yarn"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:textile-fibres-twist-yarn"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:oil-rawhide-moisture-resistance",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:rawhide",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "oiled_rawhide_described_more_resistant_to_moisture_and_water"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:oil-rawhide-moisture-resistance"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:oil-fat-vegetable-leather-flexibility",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:vegetable-tanned-leather",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "fats_or_oils_worked_into_hard_leather_at_end_of_vegetable_tanning_for_flexibility"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:oil-fat-vegetable-leather-flexibility"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:oil-tanning-crosslinking-fibres",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:oil-tanning",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "oil_tanning_crosslinking_in_skin_prevents_fibres_sticking_on_drying_and_imparts_suppleness"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:oil-tanning-crosslinking-fibres"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-leather-water-processing",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:leather",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "direct_water_contact_damage_depends_on_processing_finishing_condition"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:leather-water-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-vegetable-leather-water",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:vegetable-tanned-leather",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "direct_water_exposure_possible_shrinkage_stiffening_tannin_migration"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:leather-water-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-alum-skin-water",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:alum-tawed-skin",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "wetting_can_wash_out_processing_salts_leave_hard_horny_condition"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:leather-water-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-rawhide-wet-dry",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:rawhide",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "sufficient_wetting_swells_untanned_hide_drying_shrinks_it"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:rawhide-water-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-plant-fibre-cellulose",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:plant-cellulosic-fibres",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "plant_fibres_predominantly_cellulosic"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:plant-fibres-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-new-linen-water",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:linen-textile",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "water_absorption_and_drying_of_new_linen"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:plant-fibres-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-natural-fibres-water-swelling",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:natural-fibre-water-response",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "excess_water_penetration_can_swell_natural_fibres"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:textile-water-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-textile-water-load",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:textile-water-damage",
+      "predicate": "can_produce",
+      "object": {
+        "kind": "literal",
+        "value": "water_exposure_possible_shrinkage_flexibility_loss_stretching_tears_if_added_weight_not_supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:textile-water-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-textile-liquid-contaminants",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:textile-water-damage",
+      "predicate": "can_produce",
+      "object": {
+        "kind": "literal",
+        "value": "contaminating_water_or_oil_capillary_soil_transport_later_stain_oxidation_fibre_weakening"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:textile-pollutants-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-hemp-cellulosic-fibre",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:hemp-fibre",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hemp_is_cellulosic_plant_fibre_used_for_fabrics"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:plant-fibres-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:material-water-linen-flax-origin",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:linen-textile",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "linen_textile_is_made_from_flax_fibre"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:plant-fibres-cci"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:vegetable-tanning-prepared-hide",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:material_culture:vegetable-tanned-leather",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "vegetable_tanning_treats_prepared_hide_with_plant_material_or_liquor_containing_tannins"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:vegetable-tanning-collagen"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:vegetable-tanning-collagen-stabilization",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:material_culture:vegetable-tanned-leather",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "vegetable_tanning_collagen_tannin_bonds_stabilize_leather_against_putrefaction"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:vegetable-tanning-collagen"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:fibre-twisting",
+      "locale": "ru",
+      "labels": [
+        "Скручивание текстильных волокон"
+      ],
+      "short_definition": "Общая способность текстильных волокон скручиваться в пряжу; не рецепт подготовки и не гарантированный результат.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:fibre-twisting",
+      "locale": "en",
+      "labels": [
+        "Twisting textile fibres"
+      ],
+      "short_definition": "General capability of textile fibres to be twisted into yarn; not a preparation recipe or guaranteed result.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:oil-tanning",
+      "locale": "ru",
+      "labels": [
+        "Масляное дубление"
+      ],
+      "short_definition": "Процесс выделки с реакцией масла в структуре шкуры; не обычное поверхностное намасливание и не историческая доступность технологии.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:oil-tanning",
+      "locale": "en",
+      "labels": [
+        "Oil tanning"
+      ],
+      "short_definition": "Skin processing involving reaction of oil within its structure; not ordinary surface oiling or historical technological availability.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:vegetable-tanned-leather",
+      "locale": "ru",
+      "labels": [
+        "Растительно-дублёная кожа"
+      ],
+      "short_definition": "Кожа с растительным дублением; способ выделки конкретного объекта требует отдельного основания.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:vegetable-tanned-leather",
+      "locale": "en",
+      "labels": [
+        "Vegetable-tanned leather"
+      ],
+      "short_definition": "Leather with vegetable tannage; a particular object's processing needs separate grounding.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:alum-tawed-skin",
+      "locale": "ru",
+      "labels": [
+        "Квасцово-выделанная кожа"
+      ],
+      "short_definition": "Кожа квасцовой выделки, не тождественная растительно-дублёной коже.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:alum-tawed-skin",
+      "locale": "en",
+      "labels": [
+        "Alum-tawed skin"
+      ],
+      "short_definition": "Alum-tawed skin, distinct from vegetable-tanned leather.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:rawhide",
+      "locale": "ru",
+      "labels": [
+        "Недублёная высушенная шкура"
+      ],
+      "short_definition": "Недублёная шкура (rawhide); не общее название выделанной кожи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:rawhide",
+      "locale": "en",
+      "labels": [
+        "Rawhide"
+      ],
+      "short_definition": "Untanned hide; not a generic term for processed leather.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:plant-cellulosic-fibres",
+      "locale": "ru",
+      "labels": [
+        "Растительные целлюлозные волокна"
+      ],
+      "short_definition": "Научный класс волокон, отличный от готовой пряжи и ткани.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:plant-cellulosic-fibres",
+      "locale": "en",
+      "labels": [
+        "Plant cellulosic fibres"
+      ],
+      "short_definition": "A scientific fibre class distinct from finished yarn and fabric.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:natural-fibre-water-response",
+      "locale": "ru",
+      "labels": [
+        "Природные волокна при воздействии воды"
+      ],
+      "short_definition": "Условное проникновение воды в природные волокна и их разбухание.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:natural-fibre-water-response",
+      "locale": "en",
+      "labels": [
+        "Natural-fibre water response"
+      ],
+      "short_definition": "Conditional water penetration into natural fibres and swelling.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:textile-water-damage",
+      "locale": "ru",
+      "labels": [
+        "Текстиль при воздействии воды и жидких загрязнений"
+      ],
+      "short_definition": "Условные изменения текстильного объекта, не одинаковое поведение всех волокон.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:textile-water-damage",
+      "locale": "en",
+      "labels": [
+        "Textile water and liquid-contamination damage"
+      ],
+      "short_definition": "Conditional textile-object changes, not identical behaviour of all fibres.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-fibres-twist-yarn",
+      "locale": "ru",
+      "runtime_text": "Текстильные волокна могут скручиваться вместе, образуя пряжу. Это способность, не гарантия пригодной пряжи из любого волокна. Факт не задаёт подготовку, вид сырья, длину волокон, направление или величину крутки, инструмент, работника, время, прочность, готовый результат, историческую доступность или наличие волокна и нити.",
+      "search_aliases": [
+        "Скручивание волокон в нить",
+        "Прядение пряжи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-fibres-twist-yarn",
+      "locale": "en",
+      "runtime_text": "Textile fibres can be twisted together to form yarn. This is a capability, not a guarantee of usable yarn from every fibre. The fact specifies no preparation, raw-material species, fibre length, twist direction or amount, tool, worker, time, strength, completed output, historical availability or present fibre or thread.",
+      "search_aliases": [
+        "Twisting fibres into thread",
+        "Spinning yarn"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:oil-rawhide-moisture-resistance",
+      "locale": "ru",
+      "runtime_text": "Намасленная недублёная шкура описана как более устойчивая к влаге и воде. Это условная зависимость обработки и свойства, не водонепроницаемость и не результат для любого масла, шкуры, способа нанесения или воздействия воды. Она не устанавливает наличие материала, масла или историческую доступность обработки.",
+      "search_aliases": [
+        "Намасливание шкуры",
+        "Масло и недублёная кожа"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:oil-rawhide-moisture-resistance",
+      "locale": "en",
+      "runtime_text": "Oiled rawhide is described as more resistant to moisture and water. This conditional treatment/property relation is not impermeability or a result for every oil, skin, application or water exposure. It establishes neither present material or oil nor historical availability of the treatment.",
+      "search_aliases": [
+        "Oiling rawhide",
+        "Oil and untanned skin"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:oil-fat-vegetable-leather-flexibility",
+      "locale": "ru",
+      "runtime_text": "В конце растительного дубления жировые вещества или масла могут врабатываться в жёсткую кожу для придания гибкости. Условие относится к этому способу обработки и состоянию материала, не ко всей коже; это не гарантированный результат, определённый жир или масло, полная последовательность работ, умение мастера либо историческая доступность процесса.",
+      "search_aliases": [
+        "Жирование кожи",
+        "Масло после растительного дубления"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:oil-fat-vegetable-leather-flexibility",
+      "locale": "en",
+      "runtime_text": "At the end of vegetable tanning, fats or oils may be worked into hard leather for flexibility. This condition concerns that processing pathway and material state, not all leather; it is not a guaranteed result, a particular fat or oil, a complete work sequence, an actor's skill or historical availability of the process.",
+      "search_aliases": [
+        "Leather fatliquoring",
+        "Oil after vegetable tanning"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:oil-tanning-crosslinking-fibres",
+      "locale": "ru",
+      "runtime_text": "В описанной реакции масляного дубления химическое сшивание масла в структуре шкуры предотвращает слипание волокон при высыхании и придаёт мягкость. Зависимость относится к этой реакции, а не обычному поверхностному намасливанию, любому маслу или необогреваемой обработке. Она не задаёт водонепроницаемость, температуру, длительность, оборудование, наличие материалов или историческую доступность технологии.",
+      "search_aliases": [
+        "Масляное дубление",
+        "Слипание волокон шкуры при высыхании"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:oil-tanning-crosslinking-fibres",
+      "locale": "en",
+      "runtime_text": "In the described oil-tanning reaction, oil crosslinking within skin structure prevents fibres sticking on drying and imparts suppleness. The relation concerns that reaction, not ordinary surface oiling, every oil or unheated treatment. It specifies neither impermeability, temperature, duration, equipment, present materials nor historical availability of the technology.",
+      "search_aliases": [
+        "Oil tanning",
+        "Skin fibres sticking during drying"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-leather-water-processing",
+      "locale": "ru",
+      "runtime_text": "При прямом контакте с водой выделанная кожа может повреждаться; степень зависит в том числе от обработки, отделки и состояния. Это не доказывает намокание, способ выделки или повреждение конкретного предмета.",
+      "search_aliases": [
+        "Кожаный ремень намок",
+        "Кожа и вода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-leather-water-processing",
+      "locale": "en",
+      "runtime_text": "Direct water contact can damage leather; the degree depends in part on processing, finishing and condition. This does not establish a particular object's wetness, tannage or damage.",
+      "search_aliases": [
+        "Wet leather strap",
+        "Leather and water"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-vegetable-leather-water",
+      "locale": "ru",
+      "runtime_text": "Растительно-дублёная кожа при прямом контакте с водой может усыхать или твердеть; миграция дубильных веществ к поверхности может вызвать окрашивание и поверхностную хрупкость. Это не общее правило для любой кожи и не свидетельство местной технологии дубления.",
+      "search_aliases": [
+        "Растительное дубление вода"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-vegetable-leather-water",
+      "locale": "en",
+      "runtime_text": "Vegetable-tanned leather directly exposed to water may shrink or stiffen; tannin migration to the surface may cause staining and surface embrittlement. This is not a rule for all leather or evidence of local tanning technology.",
+      "search_aliases": [
+        "Vegetable tannage water"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-alum-skin-water",
+      "locale": "ru",
+      "runtime_text": "Квасцово-выделанная кожа обладает малой водостойкостью: при намокании соли обработки могут вымываться, оставляя твёрдое роговидное состояние. Ни тип выделки конкретной шкуры, ни наличие этой технологии в сцене отсюда не следуют.",
+      "search_aliases": [
+        "Квасцовая выделка намокание"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-alum-skin-water",
+      "locale": "en",
+      "runtime_text": "Alum-tawed skin has little water resistance: wetting can wash out processing salts, leaving a hard, horny condition. Neither a particular hide's processing nor the technology's presence in a scene follows.",
+      "search_aliases": [
+        "Alum-tawed skin wetting"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-rawhide-wet-dry",
+      "locale": "ru",
+      "runtime_text": "Недублёная высушенная шкура (rawhide), достаточно намокнув, может разбухать, а при высыхании усыхает. Это не тождественно реакции дублёной кожи и не доказывает обратимость цикла, постоянство изменения, силу стягивания или доступность материала в сцене.",
+      "search_aliases": [
+        "Недублёная шкура намокание высыхание"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-rawhide-wet-dry",
+      "locale": "en",
+      "runtime_text": "Rawhide that becomes sufficiently wet can swell and shrinks as it dries. This is distinct from tanned leather and establishes no reversible cycle, permanent change, contraction force or scene availability.",
+      "search_aliases": [
+        "Rawhide wetting drying"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-plant-fibre-cellulose",
+      "locale": "ru",
+      "runtime_text": "Растительные волокна состоят преимущественно из целлюлозы. Эта классификация сама по себе не задаёт влажную прочность, наличие материала или историческую доступность.",
+      "search_aliases": [
+        "растительные волокна целлюлоза"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-plant-fibre-cellulose",
+      "locale": "en",
+      "runtime_text": "Plant fibres are predominantly cellulosic. This classification alone supplies no wet strength, present material or historical availability.",
+      "search_aliases": [
+        "plant fibres cellulose"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-new-linen-water",
+      "locale": "ru",
+      "runtime_text": "Новая льняная ткань из волокон льна характеризуется способностью впитывать влагу и быстро высыхать. Это не характеристика пеньки, любой растительной ткани или состарившегося полотна и не точное время высыхания предмета.",
+      "search_aliases": [
+        "Новая льняная ткань впитывание высыхание"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-new-linen-water",
+      "locale": "en",
+      "runtime_text": "New linen made from flax is described as absorbent and quick-drying. This is not a property of hemp, every plant textile or aged fabric, and gives no exact object drying time.",
+      "search_aliases": [
+        "New linen absorbency drying"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-natural-fibres-water-swelling",
+      "locale": "ru",
+      "runtime_text": "Избыточная вода может проникать в природные волокна; при этом они могут разбухать. Это не устанавливает постоянного изменения размеров, намокания предмета или прохождения воды насквозь через любую ткань.",
+      "search_aliases": [
+        "Природные волокна вода разбухание"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-natural-fibres-water-swelling",
+      "locale": "en",
+      "runtime_text": "Excess water can penetrate natural fibres; when it does, they can swell. This establishes no permanent dimensional change, current wetness or through-flow in every fabric.",
+      "search_aliases": [
+        "Natural fibre water swelling"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-textile-water-load",
+      "locale": "ru",
+      "runtime_text": "Повреждения текстиля водой могут включать усадку, потерю гибкости, растяжение и разрывы, если волокна не удерживают дополнительный вес воды. Это условные возможности, не одинаковая реакция всех волокон, не доказательство повреждения или его необратимости; порог нагрузки не задан.",
+      "search_aliases": [
+        "Мокрая ткань вес воды разрыв"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-textile-water-load",
+      "locale": "en",
+      "runtime_text": "Water damage to a textile can include shrinkage, loss of flexibility, stretching and tears when fibres cannot support the added water weight. These are conditional possibilities, not identical responses of all fibres or proof of damage or irreversibility; no load threshold is supplied.",
+      "search_aliases": [
+        "Wet textile water weight tears"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-textile-liquid-contaminants",
+      "locale": "ru",
+      "runtime_text": "Вода или масла могут капиллярно переносить загрязнения внутрь волоконной структуры текстиля; со временем такие пятна могут окисляться, ослабляя и разрывая волокна. Для этого пути через загрязнение нужны загрязняющая жидкость и последующее время: вода сама по себе не объявляется загрязнением, а немедленное повреждение не следует.",
+      "search_aliases": [
+        "Жидкие загрязнения текстиля"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-textile-liquid-contaminants",
+      "locale": "en",
+      "runtime_text": "Water or oils can carry soils into textile fibre structure by capillary action; over time such stains can oxidize, weakening and breaking fibres. For this contamination-mediated pathway, contaminating liquid and subsequent time are required: water alone is not declared a contaminant and immediate damage does not follow.",
+      "search_aliases": [
+        "Liquid textile contaminants"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-hemp-cellulosic-fibre",
+      "locale": "ru",
+      "runtime_text": "Пенька относится к растительным целлюлозным волокнам, используемым для тканей. Волокно не тождественно пряже или ткани; эта классификация сама по себе не задаёт влажную прочность, наличие материала или историческую доступность.",
+      "search_aliases": [
+        "пенька конопля растительное волокно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-hemp-cellulosic-fibre",
+      "locale": "en",
+      "runtime_text": "Hemp is a cellulosic plant fibre used for fabrics. Fibre is distinct from yarn or fabric; this classification alone supplies no wet strength, present material or historical availability.",
+      "search_aliases": [
+        "hemp cellulosic plant fibre"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-linen-flax-origin",
+      "locale": "ru",
+      "runtime_text": "Льняную ткань (linen) получают из волокон льна (flax). Волокно не тождественно готовой ткани; связь происхождения сама по себе не задаёт влажную прочность, наличие материала или историческую доступность.",
+      "search_aliases": [
+        "льняная ткань волокна льна"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:material-water-linen-flax-origin",
+      "locale": "en",
+      "runtime_text": "Linen is the textile made from flax fibre. Fibre is distinct from finished fabric; this origin relation alone supplies no wet strength, present material or historical availability.",
+      "search_aliases": [
+        "linen textile flax fibre"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:vegetable-tanning-prepared-hide",
+      "locale": "ru",
+      "runtime_text": "Растительное дубление обрабатывает предварительно подготовленную шкуру растительным материалом или раствором, содержащим дубильные вещества. Это условная связь процесса, не обязательный рецепт подготовки всякой шкуры. Она не устанавливает дубление в Новгороде, конкретное растение, сосуд, запас, доступ, умение, время или успешный результат; высушивание недублёной шкуры и квасцовая выделка остаются другими процессами.",
+      "search_aliases": [
+        "растительное дубление подготовленная шкура дубильные вещества"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:vegetable-tanning-prepared-hide",
+      "locale": "en",
+      "runtime_text": "Vegetable tanning treats a previously prepared hide with plant material or a liquor containing tannins. This is a conditional process relation, not a mandatory preparation recipe for every hide. It establishes no Novgorod tanning practice, particular plant, vessel, stock, access, skill, duration or successful result; rawhide drying and alum tawing remain different processes.",
+      "search_aliases": [
+        "vegetable tanning prepared hide plant tannins"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:vegetable-tanning-collagen-stabilization",
+      "locale": "ru",
+      "runtime_text": "При растительном дублении химические связи между коллагеном шкуры и растительными дубильными веществами стабилизируют материал, делая полученную кожу более устойчивой к гниению. Это не означает, что всякая кожа растительно-дублёная или что конкретная шкура уже прошла дубление. Связь не задаёт водостойкость, механическую прочность, срок, пропорции, наличие растения, знание персонажа или историческую доступность; расход и исход принадлежат состоянию мира и механике.",
+      "search_aliases": [
+        "дубление коллаген танины устойчивость кожи к гниению"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:vegetable-tanning-collagen-stabilization",
+      "locale": "en",
+      "runtime_text": "In vegetable tanning, chemical bonds between hide collagen and vegetable tannins stabilize the material, making the resulting leather more resistant to putrefaction. This does not mean all leather is vegetable-tanned or that a particular hide has completed tanning. It supplies no water resistance, mechanical strength, duration, ratio, plant presence, actor knowledge or historical availability; consumption and outcome belong to world state and mechanics.",
+      "search_aliases": [
+        "tanning collagen tannin bonds leather putrefaction resistance"
+      ]
+    }
+  ]
+}

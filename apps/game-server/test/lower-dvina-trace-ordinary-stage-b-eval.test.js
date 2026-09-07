@@ -81,7 +81,8 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   assert.match(prompt, /resolve_presence permits materialize, absent, no_change, or authority_required/u);
   assert.match(prompt, /Decide only whether and how the supplied ordinary candidate is semantically realized/u);
   assert.match(prompt, /Lack of a pre-supplied descriptor alone is not a reason for absent/u);
-  assert.match(prompt, /derive it only from candidate_query\.candidate_hint/u);
+  assert.match(prompt, /candidate_query\.candidate_hint identifies what is sought, not evidence/u);
+  assert.match(prompt, /never promote an unsupported presupposition from the query into a fact/u);
   assert.match(prompt, /general question about people, current activity, or the situation is not an ordinary item candidate/u);
   assert.match(prompt, /never turn a person, event, place, or question into an item name or item fact/u);
   assert.match(prompt, /server assembles/u);

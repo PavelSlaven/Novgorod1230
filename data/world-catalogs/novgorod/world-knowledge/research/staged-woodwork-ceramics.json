@@ -1,0 +1,1633 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:museum-woodwork",
+      "title": "Деревообработка в средневековом Новгороде",
+      "authors": [
+        "Novgorod Museum"
+      ],
+      "publication": "2023 exhibition collection description",
+      "source_kind": "museum_collection",
+      "citation": "https://novgorodmuseum.ru/o-muzee-zapovednike/novosti/derevoobrabotka-v-srednevekovom-novgorode",
+      "rights": {
+        "status": "pending",
+        "redistribution": "Short original factual paraphrases only."
+      },
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:cci-ceramics-glass",
+      "title": "Caring for ceramic and glass objects",
+      "authors": [
+        "Judith A. Logan; Tara Grant"
+      ],
+      "publication": "Canadian Conservation Institute",
+      "source_kind": "institutional_reference",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/preventive-conservation/guidelines-collections/ceramics-glass-preventive-conservation.html",
+      "rights": {
+        "status": "pending",
+        "redistribution": "Short original factual paraphrases only."
+      },
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:usfs-fastenings",
+      "title": "Wood Handbook, Chapter 8: Fastenings",
+      "authors": [
+        "Douglas R. Rammer"
+      ],
+      "publication": "FPL-GTR-282 (2021)",
+      "source_kind": "scientific_reference",
+      "citation": "https://research.fs.usda.gov/download/treesearch/62253.pdf",
+      "rights": {
+        "status": "pending",
+        "redistribution": "Short original factual paraphrases only."
+      },
+      "review_status": "pending"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:museum-woodwork",
+      "source_ref": "source:museum-woodwork",
+      "anchor": {
+        "section": "X–XV-century collection; tools; wooden transport"
+      },
+      "note": "Candidate set in research/population-woodwork-ceramics.md; independent verification required.",
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:cci-ceramics-glass",
+      "source_ref": "source:cci-ceramics-glass",
+      "anchor": {
+        "section": "Composition; Forming; Firing; Glass; Physical forces; Water"
+      },
+      "note": "Candidate set in research/population-woodwork-ceramics.md; independent verification required.",
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:usfs-fastenings",
+      "source_ref": "source:usfs-fastenings",
+      "anchor": {
+        "section": "8–1 to 8–3: introduction and nail withdrawal resistance"
+      },
+      "note": "Candidate set in research/population-woodwork-ceramics.md; independent verification required.",
+      "review_status": "pending"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:axe",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:adze",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:saw",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:drill",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:chisel",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:sledge",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:ceramic",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:glass",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:ceramic-attachment",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:porous-ceramic",
+      "domain": "material_culture",
+      "broader_refs": [
+        "wk:material_culture:ceramic"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:iron-bearing-ceramic",
+      "domain": "material_culture",
+      "broader_refs": [
+        "wk:material_culture:ceramic"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:glass-forming",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:wood-fastening",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:nail-joint",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:smooth-nail-joint",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "pending"
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:axe",
+      "locale": "ru",
+      "labels": [
+        "Топор"
+      ],
+      "short_definition": "Топор",
+      "search_aliases": [
+        "Топор"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:axe",
+      "locale": "en",
+      "labels": [
+        "Axe"
+      ],
+      "short_definition": "Axe",
+      "search_aliases": [
+        "Axe"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:adze",
+      "locale": "ru",
+      "labels": [
+        "Тесло"
+      ],
+      "short_definition": "Тесло",
+      "search_aliases": [
+        "Тесло"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:adze",
+      "locale": "en",
+      "labels": [
+        "Adze"
+      ],
+      "short_definition": "Adze",
+      "search_aliases": [
+        "Adze"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:saw",
+      "locale": "ru",
+      "labels": [
+        "Пила"
+      ],
+      "short_definition": "Пила",
+      "search_aliases": [
+        "Пила"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:saw",
+      "locale": "en",
+      "labels": [
+        "Saw"
+      ],
+      "short_definition": "Saw",
+      "search_aliases": [
+        "Saw"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:drill",
+      "locale": "ru",
+      "labels": [
+        "Сверло"
+      ],
+      "short_definition": "Сверло",
+      "search_aliases": [
+        "Сверло"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:drill",
+      "locale": "en",
+      "labels": [
+        "Drill"
+      ],
+      "short_definition": "Drill",
+      "search_aliases": [
+        "Drill"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:chisel",
+      "locale": "ru",
+      "labels": [
+        "Долото"
+      ],
+      "short_definition": "Долото",
+      "search_aliases": [
+        "Долото"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:chisel",
+      "locale": "en",
+      "labels": [
+        "Chisel"
+      ],
+      "short_definition": "Chisel",
+      "search_aliases": [
+        "Chisel"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sledge",
+      "locale": "ru",
+      "labels": [
+        "Сани"
+      ],
+      "short_definition": "Сани",
+      "search_aliases": [
+        "Сани"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sledge",
+      "locale": "en",
+      "labels": [
+        "Sledge"
+      ],
+      "short_definition": "Sledge",
+      "search_aliases": [
+        "Sledge"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ceramic",
+      "locale": "ru",
+      "labels": [
+        "Керамика"
+      ],
+      "short_definition": "Керамика",
+      "search_aliases": [
+        "Керамика"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ceramic",
+      "locale": "en",
+      "labels": [
+        "Ceramic"
+      ],
+      "short_definition": "Ceramic",
+      "search_aliases": [
+        "Ceramic"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:glass",
+      "locale": "ru",
+      "labels": [
+        "Стекло"
+      ],
+      "short_definition": "Стекло",
+      "search_aliases": [
+        "Стекло"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:glass",
+      "locale": "en",
+      "labels": [
+        "Glass"
+      ],
+      "short_definition": "Glass",
+      "search_aliases": [
+        "Glass"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ceramic-attachment",
+      "locale": "ru",
+      "labels": [
+        "Приставная керамическая деталь"
+      ],
+      "short_definition": "Приставная керамическая деталь",
+      "search_aliases": [
+        "Приставная керамическая деталь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ceramic-attachment",
+      "locale": "en",
+      "labels": [
+        "Attached ceramic part"
+      ],
+      "short_definition": "Attached ceramic part",
+      "search_aliases": [
+        "Attached ceramic part"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:porous-ceramic",
+      "locale": "ru",
+      "labels": [
+        "Пористая керамика"
+      ],
+      "short_definition": "Пористая керамика",
+      "search_aliases": [
+        "Пористая керамика"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:porous-ceramic",
+      "locale": "en",
+      "labels": [
+        "Porous ceramic"
+      ],
+      "short_definition": "Porous ceramic",
+      "search_aliases": [
+        "Porous ceramic"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-bearing-ceramic",
+      "locale": "ru",
+      "labels": [
+        "Железосодержащая керамика"
+      ],
+      "short_definition": "Железосодержащая керамика",
+      "search_aliases": [
+        "Железосодержащая керамика"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-bearing-ceramic",
+      "locale": "en",
+      "labels": [
+        "Iron-bearing ceramic"
+      ],
+      "short_definition": "Iron-bearing ceramic",
+      "search_aliases": [
+        "Iron-bearing ceramic"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:glass-forming",
+      "locale": "ru",
+      "labels": [
+        "Формование стекла"
+      ],
+      "short_definition": "Формование стекла",
+      "search_aliases": [
+        "Формование стекла"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:glass-forming",
+      "locale": "en",
+      "labels": [
+        "Glass forming"
+      ],
+      "short_definition": "Glass forming",
+      "search_aliases": [
+        "Glass forming"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:wood-fastening",
+      "locale": "ru",
+      "labels": [
+        "Механическое соединение древесины"
+      ],
+      "short_definition": "Механическое соединение древесины",
+      "search_aliases": [
+        "Механическое соединение древесины"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:wood-fastening",
+      "locale": "en",
+      "labels": [
+        "Mechanical wood joint"
+      ],
+      "short_definition": "Mechanical wood joint",
+      "search_aliases": [
+        "Mechanical wood joint"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:nail-joint",
+      "locale": "ru",
+      "labels": [
+        "Гвоздевое соединение"
+      ],
+      "short_definition": "Гвоздевое соединение",
+      "search_aliases": [
+        "Гвоздевое соединение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:nail-joint",
+      "locale": "en",
+      "labels": [
+        "Nailed joint"
+      ],
+      "short_definition": "Nailed joint",
+      "search_aliases": [
+        "Nailed joint"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:smooth-nail-joint",
+      "locale": "ru",
+      "labels": [
+        "Соединение гладким гвоздём"
+      ],
+      "short_definition": "Соединение гладким гвоздём",
+      "search_aliases": [
+        "Соединение гладким гвоздём"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:physics_material_science:smooth-nail-joint",
+      "locale": "en",
+      "labels": [
+        "Smooth-shank nail joint"
+      ],
+      "short_definition": "Smooth-shank nail joint",
+      "search_aliases": [
+        "Smooth-shank nail joint"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-woodwork-axe",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:axe",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:woodworking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:museum-woodwork"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-woodwork-adze",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:adze",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:woodworking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:museum-woodwork"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-woodwork-saw",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:saw",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:woodworking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:museum-woodwork"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-woodwork-drill",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:drill",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:woodworking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:museum-woodwork"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-woodwork-chisel",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:chisel",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:woodworking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:museum-woodwork"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-wood-sledge",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:sledge"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:museum-woodwork"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-wood-cart",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:cart"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:museum-woodwork"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-wood-boat",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:boat"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1500,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:museum-woodwork"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-ceramic-fracture",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:ceramic",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "force_fracture"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-ceramics-glass"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-glass-fracture",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:glass",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "force_fracture"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-ceramics-glass"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-ceramic-water",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:porous-ceramic",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "water_absorption"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-ceramics-glass"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-ceramic-porosity",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:ceramic",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "firing_body_porosity"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-ceramics-glass"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-ceramic-joint",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:ceramic-attachment",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "joint_failure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-ceramics-glass"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-glass-cooling",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:glass-forming",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "controlled_cooling"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-ceramics-glass"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-ceramic-colour",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:iron-bearing-ceramic",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "firing_oxygen"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-ceramics-glass"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-fastening-grain",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:wood-fastening",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "grain_direction"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:usfs-fastenings"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-fastening-moisture",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:wood-fastening",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "moisture_dimensional_change"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:usfs-fastenings"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-nail-loading",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:nail-joint",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "withdrawal_or_lateral_load"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:usfs-fastenings"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-nail-holding",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:nail-joint",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "density_diameter_penetration"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:usfs-fastenings"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-nail-wet-dry",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:smooth-nail-joint",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "wet_dry_loosening"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "general",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:usfs-fastenings"
+      ],
+      "review_status": "pending",
+      "conflict_group_ref": null
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-axe",
+      "locale": "ru",
+      "runtime_text": "Топоры входили в новгородский деревообрабатывающий инструментарий.",
+      "search_aliases": [
+        "Топоры входили в новгородский деревообрабатывающий инструментарий."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-axe",
+      "locale": "en",
+      "runtime_text": "Axes belonged to Novgorod woodworking toolkits.",
+      "search_aliases": [
+        "Axes belonged to Novgorod woodworking toolkits."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-adze",
+      "locale": "ru",
+      "runtime_text": "Тёсла засвидетельствованы среди новгородских деревообрабатывающих инструментов.",
+      "search_aliases": [
+        "Тёсла засвидетельствованы среди новгородских деревообрабатывающих инструментов."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-adze",
+      "locale": "en",
+      "runtime_text": "Adzes are attested among Novgorod woodworking tools.",
+      "search_aliases": [
+        "Adzes are attested among Novgorod woodworking tools."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-saw",
+      "locale": "ru",
+      "runtime_text": "Пилы засвидетельствованы среди новгородских деревообрабатывающих инструментов.",
+      "search_aliases": [
+        "Пилы засвидетельствованы среди новгородских деревообрабатывающих инструментов."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-saw",
+      "locale": "en",
+      "runtime_text": "Saws are attested among Novgorod woodworking tools.",
+      "search_aliases": [
+        "Saws are attested among Novgorod woodworking tools."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-drill",
+      "locale": "ru",
+      "runtime_text": "Свёрла засвидетельствованы среди новгородских деревообрабатывающих инструментов.",
+      "search_aliases": [
+        "Свёрла засвидетельствованы среди новгородских деревообрабатывающих инструментов."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-drill",
+      "locale": "en",
+      "runtime_text": "Drills are attested among Novgorod woodworking tools.",
+      "search_aliases": [
+        "Drills are attested among Novgorod woodworking tools."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-chisel",
+      "locale": "ru",
+      "runtime_text": "Долота засвидетельствованы среди новгородских деревообрабатывающих инструментов.",
+      "search_aliases": [
+        "Долота засвидетельствованы среди новгородских деревообрабатывающих инструментов."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-chisel",
+      "locale": "en",
+      "runtime_text": "Chisels are attested among Novgorod woodworking tools.",
+      "search_aliases": [
+        "Chisels are attested among Novgorod woodworking tools."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wood-sledge",
+      "locale": "ru",
+      "runtime_text": "В средневековом Новгороде из дерева делали сани.",
+      "search_aliases": [
+        "В средневековом Новгороде из дерева делали сани."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wood-sledge",
+      "locale": "en",
+      "runtime_text": "Medieval Novgorod sledges were made from wood.",
+      "search_aliases": [
+        "Medieval Novgorod sledges were made from wood."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wood-cart",
+      "locale": "ru",
+      "runtime_text": "В средневековом Новгороде из дерева делали телеги.",
+      "search_aliases": [
+        "В средневековом Новгороде из дерева делали телеги."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wood-cart",
+      "locale": "en",
+      "runtime_text": "Medieval Novgorod carts were made from wood.",
+      "search_aliases": [
+        "Medieval Novgorod carts were made from wood."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wood-boat",
+      "locale": "ru",
+      "runtime_text": "В средневековом Новгороде из дерева делали лодки.",
+      "search_aliases": [
+        "В средневековом Новгороде из дерева делали лодки."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wood-boat",
+      "locale": "en",
+      "runtime_text": "Medieval Novgorod boats were made from wood.",
+      "search_aliases": [
+        "Medieval Novgorod boats were made from wood."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-fracture",
+      "locale": "ru",
+      "runtime_text": "Керамика хрупка: нагрузка может вызвать сколы и трещины.",
+      "search_aliases": [
+        "Керамика хрупка: нагрузка может вызвать сколы и трещины."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-fracture",
+      "locale": "en",
+      "runtime_text": "Brittle ceramics can chip or crack under force.",
+      "search_aliases": [
+        "Brittle ceramics can chip or crack under force."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-glass-fracture",
+      "locale": "ru",
+      "runtime_text": "Стекло может разбиваться и скалываться под нагрузкой.",
+      "search_aliases": [
+        "Стекло может разбиваться и скалываться под нагрузкой."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-glass-fracture",
+      "locale": "en",
+      "runtime_text": "Glass can break or chip under force.",
+      "search_aliases": [
+        "Glass can break or chip under force."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-water",
+      "locale": "ru",
+      "runtime_text": "Пористая керамика впитывает воду и растворённые примеси.",
+      "search_aliases": [
+        "Пористая керамика впитывает воду и растворённые примеси."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-water",
+      "locale": "en",
+      "runtime_text": "Porous ceramics absorb water and dissolved residues.",
+      "search_aliases": [
+        "Porous ceramics absorb water and dissolved residues."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-porosity",
+      "locale": "ru",
+      "runtime_text": "Состав массы и обжиг влияют на пористость керамики.",
+      "search_aliases": [
+        "Состав массы и обжиг влияют на пористость керамики."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-porosity",
+      "locale": "en",
+      "runtime_text": "Body composition and firing affect ceramic porosity.",
+      "search_aliases": [
+        "Body composition and firing affect ceramic porosity."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-joint",
+      "locale": "ru",
+      "runtime_text": "Приставные ручки и носики могут отламываться в соединениях.",
+      "search_aliases": [
+        "Приставные ручки и носики могут отламываться в соединениях."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-joint",
+      "locale": "en",
+      "runtime_text": "Attached handles and spouts can fail at joints.",
+      "search_aliases": [
+        "Attached handles and spouts can fail at joints."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-glass-cooling",
+      "locale": "ru",
+      "runtime_text": "Формуемое стекло требует контролируемого охлаждения.",
+      "search_aliases": [
+        "Формуемое стекло требует контролируемого охлаждения."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-glass-cooling",
+      "locale": "en",
+      "runtime_text": "Formed glass requires controlled cooling.",
+      "search_aliases": [
+        "Formed glass requires controlled cooling."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-colour",
+      "locale": "ru",
+      "runtime_text": "Кислород при обжиге влияет на цвет железосодержащей керамики.",
+      "search_aliases": [
+        "Кислород при обжиге влияет на цвет железосодержащей керамики."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-ceramic-colour",
+      "locale": "en",
+      "runtime_text": "Firing oxygen affects iron-bearing ceramic colour.",
+      "search_aliases": [
+        "Firing oxygen affects iron-bearing ceramic colour."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fastening-grain",
+      "locale": "ru",
+      "runtime_text": "Соединение древесины зависит от направления волокон.",
+      "search_aliases": [
+        "Соединение древесины зависит от направления волокон."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fastening-grain",
+      "locale": "en",
+      "runtime_text": "Wood joints depend on grain direction.",
+      "search_aliases": [
+        "Wood joints depend on grain direction."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fastening-moisture",
+      "locale": "ru",
+      "runtime_text": "Изменение влажности древесины влияет на её соединения.",
+      "search_aliases": [
+        "Изменение влажности древесины влияет на её соединения."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fastening-moisture",
+      "locale": "en",
+      "runtime_text": "Wood moisture changes affect joints.",
+      "search_aliases": [
+        "Wood moisture changes affect joints."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-nail-loading",
+      "locale": "ru",
+      "runtime_text": "Выдёргивание гвоздя и поперечная нагрузка — разные режимы.",
+      "search_aliases": [
+        "Выдёргивание гвоздя и поперечная нагрузка — разные режимы."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-nail-loading",
+      "locale": "en",
+      "runtime_text": "Nail withdrawal and lateral loading are distinct modes.",
+      "search_aliases": [
+        "Nail withdrawal and lateral loading are distinct modes."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-nail-holding",
+      "locale": "ru",
+      "runtime_text": "Удержание гвоздя зависит от древесины, диаметра и заглубления.",
+      "search_aliases": [
+        "Удержание гвоздя зависит от древесины, диаметра и заглубления."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-nail-holding",
+      "locale": "en",
+      "runtime_text": "Nail holding depends on wood, diameter and penetration.",
+      "search_aliases": [
+        "Nail holding depends on wood, diameter and penetration."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-nail-wet-dry",
+      "locale": "ru",
+      "runtime_text": "Циклы намокания и высыхания могут ослаблять гладкие гвозди.",
+      "search_aliases": [
+        "Циклы намокания и высыхания могут ослаблять гладкие гвозди."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-nail-wet-dry",
+      "locale": "en",
+      "runtime_text": "Wet–dry cycles can loosen smooth-shank nails.",
+      "search_aliases": [
+        "Wet–dry cycles can loosen smooth-shank nails."
+      ]
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import { backgroundNpcFormalStateDigest,
   '../../infrastructure/postgres/background-npc-semantic-atomic-write-plan.js';
 
 export function createLowerDvinaTraceN1ProductionResolverFactory({
-  loadedProfile, roleRunner,
+  loadedProfile, roleRunner, worldKnowledgeGrounder = null,
   resolveNpcOrdinarySemanticRemainder = resolveTurnRemainder
 } = {}) {
   if (loadedProfile?.schema !== 'rus.lower_dvina_trace_n1_loaded_profile.v1'
@@ -72,7 +72,17 @@ export function createLowerDvinaTraceN1ProductionResolverFactory({
         }
       };
       const proposal = await resolveNpcOrdinarySemanticRemainder({
-        request: modelRequest, roleRunner
+        request: modelRequest, roleRunner,
+        worldKnowledge: worldKnowledgeGrounder == null ? null
+          : (await worldKnowledgeGrounder.ground(modelRequest,
+              'materialization_support', {
+                clock: safeState.clock,
+                place_refs: [locationRef],
+                actor_facets: {
+                  role_ref: roleRef,
+                  occupation_ref: occupationRef
+                }
+              })).world_knowledge
       });
       const remainder = buildNpcOrdinarySemanticRemainder({
         request: modelRequest, proposal, profileRef,

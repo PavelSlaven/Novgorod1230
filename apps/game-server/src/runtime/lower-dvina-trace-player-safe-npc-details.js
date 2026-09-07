@@ -89,7 +89,7 @@ function safeConversationEquipment(items, npcIds) {
   }).filter((item) => item.visual_profile_snapshot !== null);
 }
 
-function safeVisualProfile(value) {
+export function safeVisualProfile(value) {
   if (!plain(value)
       || value.schema !== 'item_visual_profile_snapshot_v1'
       || value.version !== 1

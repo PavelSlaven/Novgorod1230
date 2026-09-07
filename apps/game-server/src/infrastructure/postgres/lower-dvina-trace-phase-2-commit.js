@@ -49,11 +49,13 @@ export async function commitLowerDvinaTracePhase2({
   phase4Contracts, phase8Contracts, phase9Contracts, phase10Contracts,
   phase5Contracts, phase6Contracts, phase7Contracts, turn10Contracts,
   turnStepApprovedOwners,
+  turnStepAmbientPortionProfileRef = null,
   loadState,
   committer
 }) {
   const routed = await routeLowerDvinaTraceTurnStepCommit({
-    partyId, writePlan, inputDigest, contracts, loadState, committer
+    partyId, writePlan, inputDigest, contracts, loadState, committer,
+    turnStepAmbientPortionProfileRef
   });
   if (routed.handled) return routed.result;
   const factual = routed.factual;
@@ -149,7 +151,8 @@ export async function commitLowerDvinaTracePhase2({
   });
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
     partyId, writePlan, state, snapshot: baseSnapshot, factual,
-    changeSetId, idemId, phase3Contracts, turnStepApprovedOwners
+    changeSetId, idemId, phase3Contracts, turnStepApprovedOwners,
+    turnStepAmbientPortionProfileRef
   });
   const snapshot = turnStep.snapshot;
   const pendingScreen = buildLowerDvinaTracePendingScreen({

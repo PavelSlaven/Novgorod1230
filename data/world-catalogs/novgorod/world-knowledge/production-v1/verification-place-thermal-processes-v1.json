@@ -1,0 +1,65 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-process-v1-place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+      "claim_ref": "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+      "claim_digest": "5d524f96d0e0d5d0690085a94f940242b41cf4d65871d8ab2aed00005fe8c7fc",
+      "candidate_ref": "git:71199d0fcff71038a89bc330c3a545e676c85130:data/world-catalogs/novgorod/world-knowledge/production-v1/place-thermal-processes-v1.json#claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
+      "evidence_checked": [
+        "evidence:place-thermal-birch-tar-methods"
+      ],
+      "review_ref": "verification/place-thermal-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Inferred process composition; no bark, tar, installation, recipe, yield, or scene state follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-process-v1-place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
+      "claim_ref": "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
+      "claim_digest": "281e77a18dd15486107039138e401431c22c4c3adbe7bd451b1efb890d385b9f",
+      "candidate_ref": "git:71199d0fcff71038a89bc330c3a545e676c85130:data/world-catalogs/novgorod/world-knowledge/production-v1/place-thermal-processes-v1.json#claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
+      "evidence_checked": [
+        "evidence:place-thermal-birch-tar-methods"
+      ],
+      "review_ref": "verification/place-thermal-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No unique pit, vessel, closure, firing regime, or successful outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-process-v1-place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+      "claim_ref": "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+      "claim_digest": "bf7e56fe6e4f0d6509391a31c23066df66a9c23be5887f8bed0c946bc653fac3",
+      "candidate_ref": "git:71199d0fcff71038a89bc330c3a545e676c85130:data/world-catalogs/novgorod/world-knowledge/production-v1/place-thermal-processes-v1.json#claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
+      "evidence_checked": [
+        "evidence:place-thermal-ovin-structure"
+      ],
+      "review_ref": "verification/place-thermal-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Explicit later Upper Volga analogy only; no XIII-century Novgorod building, furnace, or grain stock follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-process-v1-place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
+      "claim_ref": "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
+      "claim_digest": "4a9f53505e070fa5bf1d29f179bc22260a5ad2cda68b27ea514e3b6165a961d5",
+      "candidate_ref": "git:71199d0fcff71038a89bc330c3a545e676c85130:data/world-catalogs/novgorod/world-knowledge/production-v1/place-thermal-processes-v1.json#claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
+      "evidence_checked": [
+        "evidence:place-thermal-ovin-structure"
+      ],
+      "review_ref": "verification/place-thermal-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No room count, air regime, temperature, duration, safety result, or completed drying follows."
+    }
+  ]
+}

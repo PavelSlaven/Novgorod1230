@@ -496,7 +496,7 @@ async function waitForPostgres(name) {
   for (let attempt = 0; attempt < 50; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 300));
     if (docker([
-      'exec', name, 'pg_isready', '-U', 'phase1b', '-d', 'pr17_phase1b'
+      'exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'phase1b', '-d', 'pr17_phase1b'
     ]).status === 0) return;
   }
   assert.fail('PostgreSQL container did not become ready');

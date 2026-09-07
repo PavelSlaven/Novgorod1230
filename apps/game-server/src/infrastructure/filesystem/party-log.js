@@ -149,13 +149,14 @@ function errorRecord(error) {
   };
 }
 function stringify(value) {
-  const seen = new WeakSet();
-  return JSON.stringify(value, (_key, entry) => {
+  const ancestors = [];
+  return JSON.stringify(value, function (_key, entry) {
     if (typeof entry === 'bigint') return entry.toString();
     if (entry instanceof Error) return errorRecord(entry);
     if (entry && typeof entry === 'object') {
-      if (seen.has(entry)) return '[Circular]';
-      seen.add(entry);
+      while (ancestors.length && ancestors.at(-1) !== this) ancestors.pop();
+      if (ancestors.includes(entry)) return '[Circular]';
+      ancestors.push(entry);
     }
     return entry;
   });

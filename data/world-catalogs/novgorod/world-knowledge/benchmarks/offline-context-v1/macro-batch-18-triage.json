@@ -1,0 +1,27 @@
+{
+  "exact_head": "9e69d0a7fa80b1cd70dd4dd0659306636e490ab4",
+  "reviewer": "wk-only-independent-triage",
+  "cases": [
+    {
+      "case_id": "mb18free-014",
+      "verdict": "genuine_gap",
+      "reason_ru": "Runtime подтверждает лишь принадлежность коровы к жвачным, роль рубцового брожения, отдельный риск плесневого корма и срочность сочетания выраженного вздутия с дыхательным расстройством. Он не даёт общей, проверяемой основы для недиагностического первичного наблюдения неспецифически отказавшегося от корма жвачного, безопасной временной организации стойла и ясной границы эскалации до прихода знающего человека. Это не exact mechanics, не текущий state и не скрытая деталь: такая premise многократно нужна для обычного ухода за сельскохозяйственными жвачными.",
+      "claim_refs": [
+        "claim:livestock-ruminant-membership",
+        "claim:livestock-rumen-fermentation",
+        "claim:livestock-rumen-forage-digestion",
+        "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
+        "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+        "claim:animal-homeostasis-responds-to-internal-external-change"
+      ],
+      "required_family": "недиагностическое первичное наблюдение и безопасная временная поддержка сельскохозяйственного жвачного при неспецифическом ухудшении",
+      "boundary": "Family должна фиксировать наблюдаемые признаки и безопасные до-помощи меры без диагноза, лечебного протокола, доз, цены, наличия ветеринара, текущего корма или исхода конкретной коровы."
+    }
+  ],
+  "summary": {
+    "genuine_gaps": 1,
+    "covered_composable": 0,
+    "out_of_scope_state_or_exact_mechanics": 0,
+    "result": "B18 cannot count as a clean batch until this reusable family is added and independently approved, then the same frozen case is replayed."
+  }
+}

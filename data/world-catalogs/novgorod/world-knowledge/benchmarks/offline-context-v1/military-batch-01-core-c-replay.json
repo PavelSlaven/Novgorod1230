@@ -1,0 +1,237 @@
+{
+  "schema": "wk_military_first_offline_review_v1",
+  "batch_id": "military-batch-01-core-c-replay",
+  "known_gap_replay": false,
+  "replay_of_exact_commit": "da426cc648930c94397d47effb961bf3eb3a0ff8",
+  "reviewer_agent_identity": "military01_replay_c",
+  "input_commit": "b67287b3",
+  "corpus_claim_count": 1449,
+  "method": "Independent WK-only replay against the frozen controlled-c input and the compiled runtime bundle at the exact integration commit. It reconstructs only qualitative practical constraints; it does not create current state, authority, force composition, exact combat mechanics, or outcomes.",
+  "cases": [
+    {
+      "case_id": "military01-core-051",
+      "verdict": "covered",
+      "scene_ru": "Мокрые настил и проход над воротами требуют проверки фактического доступа, опоры и состояния видимых частей, а не допуска о прочности либо проломе. Дождь, порывистый ветер и рассвет ограничивают обзор, слух, сцепление и работу с мокрым снаряжением.",
+      "interaction_ru": "Смена уже организованного дозора может передать ограниченную задачу наблюдения и путь тревоги; щит и копьё должны сохранять переносимость и доступ, не мешая узкому проходу. Предупреждение остаётся сообщением с адресатом и подтверждением, а не доказательством силы противника или исполнения приказа.",
+      "variation_ru": "При большем скоплении людей, худшем свете или более скользком настиле доступ и безопасная перестановка становятся ещё уже; это не предрешает оборону.",
+      "claim_refs": ["claim:military-world-defensive-structure-needs-local-inspection", "claim:military-world-gate-and-passage-use-needs-actual-access", "claim:military-world-watch-relief-keeps-attention-bounded", "claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-wet-equipment-benefits-from-inspection"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-052",
+      "verdict": "covered",
+      "scene_ru": "Временная остановка у ручья требует соотнести сухое место, воду, огонь, животных, грузы, отходы, проход и дозор с тем, что реально доступно на месте. Талая вода, мягкий берег и ночной холод делают сухость, тепло и наблюдение практическими, но не гарантированными потребностями.",
+      "interaction_ru": "Когда есть место и средства, сон, готовка, уход за животными, ремонт, хранение, отходы и наблюдение можно развести, чтобы не мешать друг другу. Сырые ремни, ткань, дерево и металлические fittings можно осмотреть и по возможности высушить без предположения об их исправности.",
+      "variation_ru": "При тесноте или нехватке людей эти работы конкурируют друг с другом; стандартной планировки лагеря или готового запаса из этого не следует.",
+      "claim_refs": ["claim:military-world-camp-needs-place-specific-arrangement", "claim:military-world-camp-work-areas-benefit-from-separation", "claim:military-world-cold-and-wetness-need-practical-boundaries", "claim:military-world-wet-equipment-benefits-from-inspection", "claim:military-world-animals-and-households-have-continuing-needs"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-053",
+      "verdict": "covered",
+      "scene_ru": "Камыш, грязь, края рва и узкая сухая тропа дают отдельные окна обзора и укрытия, но влажное покрытие и препятствия ограничивают движение, видимость и интерпретацию звуков или следов. Наблюдение может дать только ограниченный отчёт, а не установить врага или засаду.",
+      "interaction_ru": "Лук, тетива и стрелы требуют бережного обращения, сухого хранения по возможности, осмотра и свободного пространства; влага, запутывание и повреждение делают их точное использование неопределённым. Отчёту нужны наблюдаемое содержание, путь передачи, адресат и подтверждение.",
+      "variation_ru": "После нового дождя следы и покрытие меняются, а при худшем обзоре выводы должны становиться осторожнее, не превращаясь в утверждение о намерениях другого отряда.",
+      "claim_refs": ["claim:military-world-observation-is-bounded-by-conditions", "claim:military-world-traces-need-cautious-interpretation", "claim:military-world-bow-and-arrows-need-condition-and-clear-handling", "claim:military-world-message-needs-recipient-and-confirmation", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-054",
+      "verdict": "covered",
+      "scene_ru": "Перенос древесины по открытому склону с рытвинами требует учитывать маршрут, опору, нагрузку, пыль, ветер, воду и усталость; возможное наблюдение защитников не определяет исход работ. Длинный груз нуждается в просвете от людей, стен и препятствий.",
+      "interaction_ru": "Работа около укрепления связывает перенос, копку, укрытие, инструменты, воду, пищу и отдых; доступные люди могут делить перенос, наблюдение и ремонт лишь при уже установленной общей задаче. Средства защиты и переносимый инструмент требуют надёжного удержания без потери доступа и равновесия.",
+      "variation_ru": "Если путь размокнет или людей станет меньше, темп и распределение работы меняются; конкретная осадная машина, план или успех из этого не выводятся.",
+      "claim_refs": ["claim:military-world-siege-work-is-labour-and-logistics-bound", "claim:military-world-loads-need-order-and-passage", "claim:military-world-long-implements-need-clearance", "claim:military-world-small-group-coordination-needs-established-roles", "claim:military-world-exertion-competes-with-attention-and-recovery"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-055",
+      "verdict": "covered",
+      "scene_ru": "Туман, грязные узкие входы, неровный двор и сходящиеся люди ограничивают обзор, проход и удержание ребёнка с ношей вместе. Само церковное место не устанавливает убежища, правового статуса или намерений вооружённых людей.",
+      "interaction_ru": "В узком проходе ноша требует порядка движения, свободного прохода и внимания к зацепам, опоре и доступу; вооружённое присутствие может заставить людей искать расстояние, сведения или помощь без единой обязательной реакции. Существующие household needs продолжают требовать еды, укрытия, доступа и ухода.",
+      "variation_ru": "При большей толпе или худшей видимости риск разъединения и задержки растёт, но ни допуск, ни насилие, ни результат поиска убежища не заданы.",
+      "claim_refs": ["claim:military-world-gate-and-passage-use-needs-actual-access", "claim:military-world-loads-need-order-and-passage", "claim:military-world-ground-and-weather-change-practical-options", "claim:public-world-armed-presence-changes-public-risk", "claim:military-world-animals-and-households-have-continuing-needs"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-056",
+      "verdict": "covered",
+      "scene_ru": "Мокрые доски, крутые подходы, паводковый мусор, течение и дождь требуют местной оценки конструкции, берега, опоры, нагрузки и реакции лошади, а не вывода о проходимости моста по его названию. Порядок колонны и узость подхода могут создать ожидание.",
+      "interaction_ru": "Всадник, лошадь, упряжь и плащ требуют проверки опоры, снаряжения, воды, отдыха и места для поворота; сообщение нуждается в наблюдаемом содержании, адресате, способе передачи и подтверждении. Грузы и люди можно пропускать поэтапно, защищая уязвимые вещи от лишнего намокания.",
+      "variation_ru": "При ухудшении потока или поведения животного разумны новая оценка, задержка либо иной путь; безопасный переход, грузоподъёмность и скорость не заданы.",
+      "claim_refs": ["claim:military-world-crossing-conditions-remain-local", "claim:military-world-crossing-needs-staged-load-handling", "claim:military-world-working-animal-care-intersects-travel", "claim:military-world-loads-need-order-and-passage", "claim:military-world-message-needs-recipient-and-confirmation"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-057",
+      "verdict": "covered",
+      "scene_ru": "Корни, пни, зола и густой подлесок меняют опору, шум, обзор, влажность и проходимость; возможная засада остаётся неподтверждённой. Местный проводник может сообщать наблюдения, но они ограничены местом, светом и препятствиями.",
+      "interaction_ru": "Копья, щиты, топоры, луки и ноши требуют прохода, порядка движения и контроля за зацепами; длинные предметы нуждаются в просвете. Уже сложившаяся малая группа может распределять наблюдение, перенос и движение, не создавая фиксированного строя или командной власти.",
+      "variation_ru": "В сумерках или после дождя различение и интервалы могут меняться, однако это не предписывает тактику и не подтверждает контакт.",
+      "claim_refs": ["claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-observation-is-bounded-by-conditions", "claim:military-world-long-implements-need-clearance", "claim:military-world-loads-need-order-and-passage", "claim:military-world-small-group-coordination-needs-established-roles"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-058",
+      "verdict": "covered",
+      "scene_ru": "Вооружённая тревога может заставить домохозяйства заново соотнести зависимых людей, животных, запасы, укрытие, труд и доступную помощь; это не определяет нападение или реакцию. В сухом ветреном дворе с sheaves, сараями и телегами огонь, проход и нагрузка остаются практическими рисками.",
+      "interaction_ru": "Люди, животные, еда и household work сохраняют потребности в воде, корме, укрытии, уходе и труде. Телеги, животные, sacks и переносимые вещи требуют порядка движения, свободного прохода, проверки зацепов и опоры; шумный проход может мешать животным и текущей работе.",
+      "variation_ru": "При нехватке времени выбор между людьми, животными и грузом зависит от реального доступа и средств; потери, нападающие и сохранность имущества не устанавливаются.",
+      "claim_refs": ["claim:military-world-armed-disruption-affects-civilian-work", "claim:military-world-animals-and-households-have-continuing-needs", "claim:military-world-loads-need-order-and-passage", "claim:military-world-passage-can-disturb-animals-and-work", "claim:military-world-fire-and-smoke-need-access-and-separation"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-059",
+      "verdict": "covered",
+      "scene_ru": "Мороз, снег, тьма, промёрзший мокрый грунт и exposed ditch изменяют сцепление, обзор, работу с материалом и условия наблюдения. Состояние стены, stakes и видимого повреждения требует местного осмотра без утверждения о бреше или несущей способности.",
+      "interaction_ru": "Временное укрепление или ремонт требуют доступных работников, инструмента, материала, света, прохода и времени, конкурируя с наблюдением, отдыхом и прочей заботой. Ноша с деревом и верёвками требует безопасного прохода и равновесия.",
+      "variation_ru": "Если свет ухудшится либо опасный участок станет менее доступным, возможно отложить, отметить или ограничить работу; результат ремонта и давление противника не следуют.",
+      "claim_refs": ["claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-defensive-structure-needs-local-inspection", "claim:military-world-defence-repair-competes-for-people-and-material", "claim:military-world-cold-and-wetness-need-practical-boundaries", "claim:military-world-loads-need-order-and-passage"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-060",
+      "verdict": "covered",
+      "scene_ru": "Открытый луг, трава, ложбины, телеги и поперечный ветер дают неравные sightlines и проходы; остановленная телега с животными и багажом может создавать помехи без подтверждённого нападения. Ветер и пространство вокруг лучника делают точное применение лука неопределённым.",
+      "interaction_ru": "Лук, тетива и стрелы требуют осмотра, сухости по возможности и ясного пространства обращения; около телег нужно не мешать водителям, животным и проходу. Охрана может наблюдать через доступные окна обзора, но не получает целей, дальностей или результата.",
+      "variation_ru": "При росте ветра, скученности или беспокойстве животных свободное место и доступ к снаряжению сокращаются; никакая атака этим не создаётся.",
+      "claim_refs": ["claim:military-world-bow-and-arrows-need-condition-and-clear-handling", "claim:military-world-observation-is-bounded-by-conditions", "claim:military-world-passage-can-disturb-animals-and-work", "claim:military-world-carried-equipment-needs-secure-access", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-061",
+      "verdict": "covered",
+      "scene_ru": "Грязь, тесные повороты, ограды и дрова ограничивают опору, разворот и безопасный проход; wet thaw делает состояние ремней и наружного снаряжения особенно требующим осмотра. Наличие повреждённой застёжки не доказывает травму или полную негодность защиты.",
+      "interaction_ru": "Шлем, щит, оружие, пояс и protective layers требуют посадки, регулировки и периодической проверки, потому что arrangement влияет на удобство, движение и доступ. Видимый дефект может вести к осмотру, временному ограничению, ремонту, замене или отсрочке в зависимости от материалов, инструментов, навыка, времени и доступа.",
+      "variation_ru": "Помощник может облегчить осмотр в sheltered месте, но метод ремонта и итоговая serviceability остаются открытыми.",
+      "claim_refs": ["claim:military-world-protective-layers-need-fit-and-adjustment", "claim:military-world-field-maintenance-is-conditional", "claim:military-world-wet-equipment-benefits-from-inspection", "claim:military-world-gate-and-passage-use-needs-actual-access", "claim:military-world-carried-equipment-needs-secure-access"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-062",
+      "verdict": "covered",
+      "scene_ru": "Камни, илистые пятна, холодная вода и ветер требуют местной оценки берега, глубины, дна, течения, погоды, груза и реакции животного; страх преследования не заменяет этой оценки. Мокрая одежда и immersion делают укрытие, тепло и наблюдение состояния практически значимыми.",
+      "interaction_ru": "Людей, animal и грузы можно распределять и перемещать поэтапно, закрепляя ношу и снова оценивая опору между перемещениями; порядок движения нужен и для прохода, и для rear security. Сообщения и наблюдения о преследовании ограничены видимостью и должны оставаться подтверждаемыми.",
+      "variation_ru": "При изменении течения, очереди или реакции животного возможны пауза и новая организация; переход и прибытие преследователя не предопределены.",
+      "claim_refs": ["claim:military-world-crossing-conditions-remain-local", "claim:military-world-crossing-needs-staged-load-handling", "claim:military-world-cold-and-wetness-need-practical-boundaries", "claim:military-world-loads-need-order-and-passage", "claim:military-world-observation-is-bounded-by-conditions"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-063",
+      "verdict": "covered",
+      "scene_ru": "В crowded hall дым, огонь, теснота, ночной свет и дождливая сырость ограничивают чистое место, обзор, проход и доступ к теплу. Уже установленная рана требует учитывать ongoing danger, движение, exposure, helpers, shelter и rest без диагноза или прогноза.",
+      "interaction_ru": "Для внешнего кровотечения чистая ткань или повязка с прямым давлением может помогать контролировать bleeding; это не заменяет оценки тяжести. Перенос раненого может требовать slower pace, поддержки, укрытия и дополнительных людей по фактическому состоянию и средствам.",
+      "variation_ru": "При усилении дыма или crowding доступ к воде, свету и помощникам меняется; лечение, выживание и исход не задаются.",
+      "claim_refs": ["claim:military-world-established-casualty-needs-hazard-aware-help", "claim:care-direct-pressure-bleeding", "claim:military-world-carrying-an-injured-person-is-conditional", "claim:military-world-fire-and-smoke-need-access-and-separation", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-064",
+      "verdict": "covered",
+      "scene_ru": "Мокрые рытвины, ветви, листва, дождь и поздний свет ограничивают движение, spacing, обзор и слышимость; следы, шум или disturbance требуют осторожного сравнения с местом, а не идентифицируют преследователя. Усталость и carrying делают отдых, вода, food, warmth и attention practically relevant.",
+      "interaction_ru": "Уже движущаяся группа может распределять наблюдение, перенос и движение, а сообщение или звуковой знак требует адресата, наблюдаемого содержания и подтверждения. Порядок движения должен сохранять проход и доступ к носимому снаряжению, но не создаёт строя или signal code.",
+      "variation_ru": "При худшей видимости или большем числе отставших темп, паузы и связь требуют переоценки; контакт и погоня не устанавливаются.",
+      "claim_refs": ["claim:military-world-traces-need-cautious-interpretation", "claim:military-world-flight-and-pursuit-share-environmental-limits", "claim:military-world-exertion-competes-with-attention-and-recovery", "claim:military-world-message-needs-recipient-and-confirmation", "claim:military-world-small-group-coordination-needs-established-roles"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-065",
+      "verdict": "covered",
+      "scene_ru": "Дым, сухая жара, splintered timber, rubble, узкие двери и люди на улице меняют обзор, дыхательный комфорт, опору и свободный проход. Наличие дыма или воды не доказывает причину, распространение огня, breach или роль человека в обороне.",
+      "interaction_ru": "В built area fire/smoke hazard делает exits, people, water, combustible material, wind, visibility и room to work practically relevant. Водный сосуд и bundle требуют удержания, прохода и внимания к spilling, debris и crowding; armed disruption может заставить households переоценить dependants, shelter и помощь без обязательного поведения.",
+      "variation_ru": "При более плотной толпе или меньшей видимости проход и локальная помощь затрудняются; никто не получает назначенную боевую роль.",
+      "claim_refs": ["claim:military-world-fire-and-smoke-need-access-and-separation", "claim:military-world-gate-and-passage-use-needs-actual-access", "claim:military-world-loads-need-order-and-passage", "claim:military-world-armed-disruption-affects-civilian-work", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-066",
+      "verdict": "covered",
+      "scene_ru": "Высота даёт отдельные окна обзора, но haze, distance, неровный грунт и scattered rocks ограничивают различение и интерпретацию; наблюдатель может составить ограниченный report, не установив расположение противника или форму подразделений. Лошади и riding gear требуют места, опоры, воды, корма, отдыха и проверки упряжи.",
+      "interaction_ru": "Направление сообщения к separated groups требует конкретного адресата, наблюдаемого содержания, маршрута или medium и acknowledgement; visible banner или audible signal сами не доказывают authority, receipt либо compliance. Переносимое оружие нуждается в secure retention и доступе без вмешательства в управление лошадью.",
+      "variation_ru": "При усилении haze, усталости mounts или изменении ground связь и observation могут потребовать relay или паузы; ranks, codes и formations не задаются.",
+      "claim_refs": ["claim:military-world-observation-is-bounded-by-conditions", "claim:military-world-message-needs-recipient-and-confirmation", "claim:military-world-working-animal-care-intersects-travel", "claim:military-world-carried-equipment-needs-secure-access", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-067",
+      "verdict": "covered",
+      "scene_ru": "Trampled yard, damaged fence, ash patches, snow и muddy lane дают поводы осматривать доступные shelter, tools, stores, animals, water, routes и injuries, но не позволяют приписать повреждение, назвать потери или установить будущую опасность. Лёгкий снег и ранняя зима делают dry shelter, warmth и состояние запасов practically relevant.",
+      "interaction_ru": "После disruption люди могут выбирать repair, salvage, care, rest либо withdrawal по фактическому доступу и состоянию; животные и household work по-прежнему требуют еды, воды, укрытия, ухода и труда. Огонь и зола требуют оставлять проход, людей, воду и combustible material в поле внимания.",
+      "variation_ru": "Если доступ к дому или stores закрыт, порядок осмотра меняется; ownership, legal consequences и окончательная пригодность хозяйства остаются открытыми.",
+      "claim_refs": ["claim:military-world-recovery-starts-with-actual-condition-and-access", "claim:military-world-animals-and-households-have-continuing-needs", "claim:military-world-cold-and-wetness-need-practical-boundaries", "claim:military-world-fire-and-smoke-need-access-and-separation", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-068",
+      "verdict": "covered",
+      "scene_ru": "Chipped wooden shaft в sheltered work yard требует отличить видимый дефект от полной непригодности: условия, инструменты, материалы, skill, время и доступ определяют, возможны ли осмотр, temporary limitation, repair, replacement или deferral. Ясный участок и wall уменьшают interference, но не создают мастерскую или запас.",
+      "interaction_ru": "Работы repair в temporary halt могут отделяться от отдыха, хранения, animal care и прохода, когда хватает места и средств. Длинный shaft нуждается в clearance, а personal gear — в удержании и доступе, не мешающих ручной работе.",
+      "variation_ru": "При скором выходе, плохом свете или нехватке материала ремонт может быть отложен; конкретный метод, прочность и итоговое weapon performance не выводятся.",
+      "claim_refs": ["claim:military-world-field-maintenance-is-conditional", "claim:military-world-camp-work-areas-benefit-from-separation", "claim:military-world-long-implements-need-clearance", "claim:military-world-carried-equipment-needs-secure-access", "claim:military-world-exertion-competes-with-attention-and-recovery"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-069",
+      "verdict": "covered",
+      "scene_ru": "Узкая raised path, standing water, reeds и dense mist ограничивают passage, visibility, footing и возможность обойти остановившуюся телегу; route name не гарантирует проходимость. Влага требует осмотра harness, колёс, груза и ground condition, не устанавливая capacity или raid.",
+      "interaction_ru": "Люди, animals, carts и loads требуют порядка движения, свободного участка и внимания к зацепам, опоре и доступу; working animals также требуют состояния упряжи, воды, корма, отдыха, tethering и места разворота. Guard может вести ограниченное наблюдение, но не создаёт угрозу из тумана.",
+      "variation_ru": "При ухудшении ground или росте очереди возможны новая организация, пауза или локальный разворот; точная вместимость телеги и состояние маршрута остаются неустановленными.",
+      "claim_refs": ["claim:military-world-loads-need-order-and-passage", "claim:military-world-working-animal-care-intersects-travel", "claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-observation-is-bounded-by-conditions", "claim:military-world-wet-equipment-benefits-from-inspection"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-070",
+      "verdict": "covered",
+      "scene_ru": "Scattered gear, trampled ground, drizzle, twilight и closed gate требуют сохранять passage, свет, опору и безопасное обращение с видимыми предметами; они не раскрывают содержимое, владельца, статус трофея или legality. Продолжающаяся оборона ограничивает время и attention, доступные для sorting.",
+      "interaction_ru": "Малая уже сложившаяся группа может разделить наблюдение, перенос и доступ к двору, не создавая новую authority. Носимые objects и long weapons требуют secure handling, clearance и порядка движения, а после disruption доступные вещи можно сначала inspect без вывода о loss или ownership.",
+      "variation_ru": "При худшем свете или новом движении через yard sorting может быть отложен; custody и disposition не предрешаются.",
+      "claim_refs": ["claim:military-world-recovery-starts-with-actual-condition-and-access", "claim:military-world-small-group-coordination-needs-established-roles", "claim:military-world-carried-equipment-needs-secure-access", "claim:military-world-long-implements-need-clearance", "claim:military-world-gate-and-passage-use-needs-actual-access"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-071",
+      "verdict": "covered",
+      "scene_ru": "Gravel, exposed wind и предрассветный холод меняют опору, grip, одежду и attention; worn straps и shield требуют fit, adjustment и inspection. Наличие youth, leader и practice не доказывает единый возрастной статус, doctrine или будущую competence.",
+      "interaction_ru": "Практика с доступным shield, staff или weapon может быть paced, observed, corrected и interrupted из-за fatigue или safety; repetition сама по себе не делает человека умелым. Spacing, clear handling space и доступ к воде/теплу зависят от фактического места и средств.",
+      "variation_ru": "При более сильном ветре, усталости или тесноте занятие может быть сокращено либо перестроено; drill sequence и combat effect остаются открытыми.",
+      "claim_refs": ["claim:military-world-training-links-practice-feedback-and-rest", "claim:military-world-protective-layers-need-fit-and-adjustment", "claim:military-world-exertion-competes-with-attention-and-recovery", "claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-carried-equipment-needs-secure-access"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-072",
+      "verdict": "covered",
+      "scene_ru": "Wind-packed snow, uneven ice, reed margins и severe cold требуют локально оценивать поверхность, снег, лёд, доступ, погоду, груз и реакцию лошадей; ледовый маршрут не становится безопасным по названию или ясному небу. Холод делает укрытие, dry layers, warmth и observation of condition practically relevant.",
+      "interaction_ru": "Mounted scout и spare horse требуют tack, footing, water, fodder, rest, tethering и места разворота; pole или rope могут быть уже имеющимися средствами осмотра, но не доказывают возможность перехода. Report о маршруте должен отличать observed conditions от неопределённых выводов.",
+      "variation_ru": "При ветре, скрытых участках или изменении поведения horse маршрут может быть отложен или проверен иначе; ice strength, speed и safe passage не задаются.",
+      "claim_refs": ["claim:military-world-crossing-conditions-remain-local", "claim:military-world-working-animal-care-intersects-travel", "claim:military-world-cold-and-wetness-need-practical-boundaries", "claim:military-world-observation-is-bounded-by-conditions", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-073",
+      "verdict": "covered",
+      "scene_ru": "Мокрые boards, piled goods, narrow stair, rain mist и evening light ограничивают безопасный проход, visibility и свободное место. Сам факт escort/custody не устанавливает guilt, lawful authority, coercion или дальнейшую судьбу человека.",
+      "interaction_ru": "При уже существующем удержании или сопровождении supervision, space, light, food, drink, rest, movement и attention available people становятся practical constraints. Группа может разделить наблюдение, перенос и движение, а ноша и оружие требуют secure access без помех на лестнице.",
+      "variation_ru": "При меньшем свободном месте или худшем свете движение может быть медленнее и требовать reassessment; исход разговора и status остаются неустановленными.",
+      "claim_refs": ["claim:military-world-custody-needs-attention-and-basic-needs", "claim:military-world-gate-and-passage-use-needs-actual-access", "claim:military-world-small-group-coordination-needs-established-roles", "claim:military-world-carried-equipment-needs-secure-access", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-074",
+      "verdict": "covered",
+      "scene_ru": "Soft soil, low branches, ditches, fallen fruit, wind и approaching rain меняют опору, visibility, cover и wetness; возможное преследование не становится фактом. Shield в руках человека остаётся переносимым предметом, а не доказательством combat role.",
+      "interaction_ru": "Withdrawal/evasion может быть shaped by terrain, visibility, local knowledge, fatigue, companions и available routes, а bundle и shield требуют balance, secure retention, prompt access и clear passage. Несколько людей могут распределять перенос и наблюдение лишь по существующей общей задаче, без заданной тактики.",
+      "variation_ru": "При более тяжёлой ноше, худшей погоде или необходимости помогать dependant темп и маршрут могут измениться; concealment, contact и escape не гарантируются.",
+      "claim_refs": ["claim:military-world-flight-and-pursuit-share-environmental-limits", "claim:military-world-carried-equipment-needs-secure-access", "claim:military-world-loads-need-order-and-passage", "claim:military-world-small-group-coordination-needs-established-roles", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-075",
+      "verdict": "covered",
+      "scene_ru": "Heavy rain, puddles, crumbling earth, timber revetment, steep descent и night change footing, access, visibility, wetness and work options. Внешний вид earthwork требует local inspection по материалам, joints, wetness, access, ground и visible damage, не устанавливая collapse или design.",
+      "interaction_ru": "Urgent repair or temporary strengthening needs workers, tools, material, light, safe passage and time while watch, rest, food and other care compete for the same people. An already organized watch can hand over bounded observation and an alert path without defining its strength, schedule or threat.",
+      "variation_ru": "Если ливень продолжится или workers устанут, приоритет может сместиться к наблюдению, временному ограничению доступа или отдыху; successful repair и attack не предполагаются.",
+      "claim_refs": ["claim:military-world-defensive-structure-needs-local-inspection", "claim:military-world-defence-repair-competes-for-people-and-material", "claim:military-world-watch-relief-keeps-attention-bounded", "claim:military-world-exertion-competes-with-attention-and-recovery", "claim:military-world-ground-and-weather-change-practical-options"],
+      "gaps": []
+    }
+  ]
+}

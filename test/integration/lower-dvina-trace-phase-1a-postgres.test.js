@@ -520,7 +520,7 @@ async function assertSnapshotEnvelopeMutationRejected(pool, partyId) {
 async function waitForPostgres(name) {
   for (let attempt = 0; attempt < 50; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 300));
-    if (docker(['exec', name, 'pg_isready', '-U', 'phase1a', '-d', 'phase1a']).status === 0) return;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'phase1a', '-d', 'phase1a']).status === 0) return;
   }
   assert.fail('PostgreSQL container did not become ready');
 }

@@ -67,6 +67,8 @@ import { resolveSpatialV3FirstEntryLifecycle } from
 import { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate,
   runAutonomousUpdates } from './autonomous-update.js';
 import { spatialResult } from './stages/narration.js';
+import { requestWorldKnowledgeQueryPlan, resolveTurnStepWorldKnowledge } from
+  './world-knowledge-grounding.js';
 
 export {
   createTurnWorkflowContext,
@@ -107,7 +109,9 @@ export {
   createAutonomousUpdateRegistry,
   isCodeOwnedAutonomousUpdate,
   runAutonomousUpdates,
-  spatialResult
+  spatialResult,
+  requestWorldKnowledgeQueryPlan,
+  resolveTurnStepWorldKnowledge
 };
 export {
   TURN_PRIMARY_MODES,

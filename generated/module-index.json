@@ -478,7 +478,8 @@
         "@rus/pipeline-engine",
         "@rus/presentation",
         "@rus/time-events-history",
-        "@rus/visibility-knowledge-memory"
+        "@rus/visibility-knowledge-memory",
+        "@rus/world-knowledge"
       ],
       "name": "@rus/turn",
       "owns": [
@@ -518,6 +519,23 @@
       "public_entry": "./src/index.js",
       "purpose": "Read-only порт доступа к канонической базе мира.",
       "version": "0.9.0"
+    },
+    {
+      "dependencies": [],
+      "name": "@rus/world-knowledge",
+      "owns": [
+        "query/bundle validation и slice construction",
+        "exact, structured и localized lexical retrieval",
+        "caller-provided vector scores и pure flat-vector scan; Core остаётся",
+        "pack-specific applicability, coverage/verdict, explicit conflicts, ranking и deterministic context packing",
+        "lexicographic ranking: hard constraints, exact focus, requested predicates,",
+        "relative lexical admission per independent search hint; aggregate lexical",
+        "actor-safe filtering только по уже переданным caller facets"
+      ],
+      "path": "packages/world-knowledge",
+      "public_entry": "./src/index.js",
+      "purpose": "Pure read-only gameplay factual owner. Загружает caller-provided immutable compiled Knowledge Pack и детерминированно разрешает `world_knowledge_query_v1` в bounded `world_knowledge_slice_v1`.",
+      "version": "0.1.0"
     },
     {
       "dependencies": [
@@ -684,11 +702,16 @@
         "чистой `calculatePackingSlots({ quantity, packing_slot_cost, packing_bundle_size })` без доступа к БД, файлам, глобальному состоянию, массы или fallback",
         "`validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback",
         "Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation",
-        "`buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set"
+        "`buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set",
+        "internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay",
+        "production authoring approval: один независимый `APPROVE` на claim, exact",
+        "`editorial_reconstruction` source для игровых реконструкций: существующие",
+        "internal `build-world-knowledge-vectors` и",
+        "internal `build-gameplay-gap-backlog --campaign FILE --audit FILE --out FILE`:"
       ],
       "path": "tools/world-catalog-workflow",
       "public_entry": "./src/index.js",
-      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Модуль также предоставляет нейтральные чистые projections утверждённых `world_base` records для Stage 8 и G5 materialization. Он не владеет runtime I/O, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.",
+      "purpose": "Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Модуль также владеет internal CLI/authoring-компиляцией approved World Knowledge records в deterministic immutable bundle и предоставляет нейтральные чистые projections утверждённых `world_base` records для Stage 8 и G5 materialization. Он не владеет gameplay World Knowledge runtime, runtime I/O, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.",
       "version": "0.1.0"
     }
   ]

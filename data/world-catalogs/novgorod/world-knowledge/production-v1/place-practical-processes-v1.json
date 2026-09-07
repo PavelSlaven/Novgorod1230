@@ -1,0 +1,148 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-practical-usdol-cooper",
+      "title": "Dictionary of Occupational Titles: cooper and barrel raiser",
+      "authors": ["U.S. Department of Labor"],
+      "publication": "Office of Administrative Law Judges Law Library",
+      "source_kind": "official_documentation",
+      "citation": "https://www.dol.gov/agencies/oalj/PUBLIC/DOT/REFERENCES/DOT07E",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-practical-epa-water",
+      "title": "Water on Tap: What You Need to Know",
+      "authors": ["United States Environmental Protection Agency"],
+      "publication": "EPA drinking-water guidance",
+      "source_kind": "official_documentation",
+      "citation": "https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=P1008ZP0.TXT",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-practical-epa-cloth-filter",
+      "title": "Industrial Wastewater Treatment Technology Database",
+      "authors": ["United States Environmental Protection Agency"],
+      "publication": "EPA treatment-technology database",
+      "source_kind": "official_documentation",
+      "citation": "https://watersgeo.epa.gov/iwtt/treatment-technologies",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-practical-epa-dissolved-solids",
+      "title": "Total Solids",
+      "authors": ["United States Environmental Protection Agency"],
+      "publication": "EPA monitoring and assessment reference",
+      "source_kind": "official_documentation",
+      "citation": "https://archive.epa.gov/water/archive/web/html/vms58.html",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-practical-rutgers-candle",
+      "title": "Surface Area Effects as Related to Flammability",
+      "authors": ["Rutgers University"],
+      "publication": "Chemistry Learning Demonstrations",
+      "source_kind": "technical_reference",
+      "citation": "https://www.chem.rutgers.edu/cldf-demos/1558-surface-area-effects-as-related-to-flammability",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-practical-epa-candle-soot",
+      "title": "Candles and Incense as Potential Sources of Indoor Air Pollution",
+      "authors": ["United States Environmental Protection Agency"],
+      "publication": "EPA literature review",
+      "source_kind": "official_documentation",
+      "citation": "https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=P1009D5G.TXT",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:practical-cooper-hoop-compression",
+      "source_ref": "source:place-practical-usdol-cooper",
+      "anchor": {"section": "COOPER (wood. container), 764.684-022"},
+      "note": "The modern occupational description says a cooper compresses staves to loosen hoops, then replaces and tightens hoops; it also distinguishes caulking leaking stave joints. The claim is a bounded qualitative transfer to staved-vessel fit, not a repair guarantee, historical tool list, or claim that every loosened hoop causes leakage.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:practical-water-settling-filtration",
+      "source_ref": "source:place-practical-epa-water",
+      "anchor": {"section": "Coagulation, sedimentation, filtration, and disinfection"},
+      "note": "EPA describes particles settling and filtration removing particles, while stating that filtration without the final disinfection step is not safe to drink. The source is a modern treatment explanation, not a medieval water practice or a household method.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:practical-cloth-filter-solids",
+      "source_ref": "source:place-practical-epa-cloth-filter",
+      "anchor": {"section": "Cloth Filtration"},
+      "note": "EPA defines cloth filtration as water passing through a cloth medium to remove solids. It does not specify a household cloth, pore size, removal rate, or safety result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:practical-dissolved-solids-pass-filter",
+      "source_ref": "source:place-practical-epa-dissolved-solids",
+      "anchor": {"section": "Dissolved and suspended solids"},
+      "note": "EPA distinguishes dissolved solids as particles that pass through a filter, unlike suspended solids. This supports the stated limit, not a complete contaminant inventory or a water-safety result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:practical-wick-capillary-feed",
+      "source_ref": "source:place-practical-rutgers-candle",
+      "anchor": {"section": "Candle flame and capillary action"},
+      "note": "Rutgers describes liquid wax travelling upward through a wick by capillary action before vaporizing and burning. The claim makes a bounded transfer from candle to a wick-fed liquid-fuel flame; it establishes neither a fuel nor lamp design, brightness, duration, historical lamp type, or individual result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:practical-wick-soot-limit",
+      "source_ref": "source:place-practical-epa-candle-soot",
+      "anchor": {"section": "Candles and soot formation"},
+      "note": "EPA reports soot under imperfect candle combustion and identifies composition, wick length, and drafts as factors affecting it. The claim transfers only the conditional relation to a wick-fed flame; it does not provide a universal trimming length or predict one lamp's outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:physics_material_science:staved-vessel-hoop-fit","domain":"physics_material_science","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:chemistry_process:water-clarification-by-settling-and-cloth","domain":"chemistry_process","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:physics_material_science:wick-fed-flame","domain":"physics_material_science","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair","domain":"physics_material_science","subject_ref":"wk:physics_material_science:staved-vessel-hoop-fit","predicate":"supported_fact","object":{"kind":"literal","value":"in_a_staved_vessel_hoop_fit_holds_staves_in_compression_so_a_change_in_fit_can_change_stave_contact_and_possible_joint_leakage_without_establishing_a_repair"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-cooper-hoop-compression"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water","domain":"chemistry_process","subject_ref":"wk:chemistry_process:water-clarification-by-settling-and-cloth","predicate":"supported_fact","object":{"kind":"literal","value":"water_left_undisturbed_can_settle_some_suspended_matter_and_passing_water_through_cloth_can_retain_some_particles_but_neither_step_establishes_disinfection_or_removal_of_dissolved_substances"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-water-settling-filtration","evidence:practical-cloth-filter-solids","evidence:practical-dissolved-solids-pass-filter"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment","domain":"physics_material_science","subject_ref":"wk:physics_material_science:wick-fed-flame","predicate":"supported_fact","object":{"kind":"literal","value":"a_fibrous_wick_can_feed_liquid_fuel_to_a_flame_by_capillary_action_and_exposed_wick_length_can_affect_combustion_and_soot_without_defining_a_universal_adjustment_or_result"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-wick-capillary-feed","evidence:practical-wick-soot-limit"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:physics_material_science:staved-vessel-hoop-fit","locale":"ru","labels":["Посадка обруча на клёпках"],"short_definition":"Качественная связь обруча, сжатия клёпок и стыков сосуда.","search_aliases":["обруч","клёпки","бочка"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:physics_material_science:staved-vessel-hoop-fit","locale":"en","labels":["Hoop fit on staves"],"short_definition":"Qualitative relation of a hoop, stave compression, and vessel joints.","search_aliases":["hoop","staves","barrel"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:chemistry_process:water-clarification-by-settling-and-cloth","locale":"ru","labels":["Отстаивание и тканевая фильтрация воды"],"short_definition":"Качественные связи взвесей, покоя воды и ткани как фильтрующей среды.","search_aliases":["мутная вода","отстаивание","ткань"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:chemistry_process:water-clarification-by-settling-and-cloth","locale":"en","labels":["Water settling and cloth filtration"],"short_definition":"Qualitative relations of suspended matter, still water, and cloth as filter media.","search_aliases":["muddy water","settling","cloth filter"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:physics_material_science:wick-fed-flame","locale":"ru","labels":["Фитильная подача топлива"],"short_definition":"Качественная связь капиллярной подачи топлива, пламени и копчения.","search_aliases":["фитиль","лампа","копоть"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:physics_material_science:wick-fed-flame","locale":"en","labels":["Wick-fed flame"],"short_definition":"Qualitative relation of capillary fuel feed, flame, and soot.","search_aliases":["wick","lamp","soot"]}
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair","locale":"ru","runtime_text":"В сосуде из клёпок обруч удерживает клёпки сжатыми; изменение его посадки может изменить прилегание клёпок и щели, а значит и возможную течь. Это не обещание ремонта, герметичности, наличия бочки или конкретного способа работы.","search_aliases":["подтянуть обруч","течь бочки","щель между клёпками"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair","locale":"en","runtime_text":"In a staved vessel, a hoop holds the staves in compression; changing its fit can change stave contact and gaps, and therefore possible leakage. This promises neither repair nor tightness, vessel presence, or a particular working method.","search_aliases":["tighten hoop","barrel leak","stave gap"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water","locale":"ru","runtime_text":"Вода, оставленная в покое, может дать осесть части взвесей, а ткань может задержать часть частиц. Эти шаги сами по себе не гарантируют и не подтверждают обеззараживания, удаления растворённых веществ или безопасности воды.","search_aliases":["осадок в воде","процедить воду","мутная вода"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water","locale":"en","runtime_text":"Water left undisturbed can let some suspended matter settle, and cloth can retain some particles. By themselves these steps neither guarantee nor establish disinfection, removal of dissolved substances, or water safety.","search_aliases":["water sediment","strain water","muddy water"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment","locale":"ru","runtime_text":"Волокнистый фитиль может капиллярно подавать жидкое топливо к пламени; длина открытого фитиля может влиять на горение и копчение. Слишком длинный фитиль может быть причиной копоти, но это не даёт универсальной длины, настройки, яркости, расхода или исхода конкретной лампы.","search_aliases":["подрезать фитиль","коптит лампа","капиллярный фитиль"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment","locale":"en","runtime_text":"A fibrous wick can feed liquid fuel to a flame by capillary action; exposed wick length can affect combustion and soot. An overlong wick can contribute to soot, but this supplies no universal length, adjustment, brightness, consumption, or result for a particular lamp.","search_aliases":["trim wick","smoky lamp","capillary wick"]}
+  ]
+}

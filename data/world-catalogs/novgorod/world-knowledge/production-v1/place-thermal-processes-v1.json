@@ -1,0 +1,137 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-thermal-birch-tar-schmidt-2023",
+      "title": "Production method of the Königsaue birch tar documents cumulative culture in Neanderthals",
+      "authors": ["Patrick Schmidt", "Tabea J. Koch", "Matthias A. Blessing", "F. Alexandros Karakostis", "Katerina Harvati", "Veit Dresely", "Armelle Charrie-Duhaut"],
+      "publication": "Archaeological and Anthropological Sciences 15, 84 (2023)",
+      "source_kind": "scholarship",
+      "citation": "https://doi.org/10.1007/s12520-023-01789-2",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-thermal-ovin-ethnomuseum",
+      "title": "Ethnographic drawings: farm buildings. Materials of the Upper Volga ethnological expedition, 1921–1925",
+      "authors": ["I. I. Shangina", "O. P. Ignatieva"],
+      "publication": "Russian Ethnographic Museum collection",
+      "source_kind": "catalogue",
+      "citation": "https://collection.ethnomuseum.ru/entity/ARTICLE/2008607",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-thermal-birch-tar-methods",
+      "source_ref": "source:place-thermal-birch-tar-schmidt-2023",
+      "anchor": {"section": "Abstract and experimental production methods"},
+      "note": "The study documents an intentionally created low-oxygen underground tar-distillation environment and contrasts it with simpler methods. Editorial composition: heating bark releases material that can be condensed or collected along a distinct path; closure or covering can change air access, but establishes neither a recipe nor an outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-thermal-ovin-structure",
+      "source_ref": "source:place-thermal-ovin-ethnomuseum",
+      "anchor": {"section": "Овины и риги"},
+      "note": "The museum describes ovins and rigas for drying grain sheaves, with a furnace and a sheaf area on grates in separate or shared rooms. Editorial composition: warmed air or smoke can pass toward spaced sheaves; heat and air exchange can remove moisture, while direct flame or sparks remain a separate hazard for dry material. This is later Upper Volga analogy plus general physical reasoning, not medieval Novgorod attestation or a drying regime.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:place-thermal-processes",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:place-thermal-processes",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "heating_birch_bark_can_release_material_that_is_condensed_or_collected_along_a_distinct_tar_production_path"},
+      "polarity": "support",
+      "applicability": {"time": {"from": 1200, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-thermal-birch-tar-methods"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:place-thermal-processes",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "birch_tar_method_choice_or_covering_can_change_oxygen_access_and_collection_conditions_without_implying_one_required_layout_or_outcome"},
+      "polarity": "support",
+      "applicability": {"time": {"from": 1200, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-thermal-birch-tar-methods"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:place-thermal-processes",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "an_ovin_or_riga_drying_context_can_relate_a_furnace_to_grated_space_holding_spaced_grain_sheaves_in_the_path_of_warmed_air_or_smoke"},
+      "polarity": "support",
+      "applicability": {"time": {"from": 1200, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "analogical"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-thermal-ovin-structure"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:place-thermal-processes",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "heat_and_air_exchange_can_remove_moisture_from_spaced_sheaves_while_direct_flame_or_sparks_remain_a_separate_hazard_for_dry_material"},
+      "polarity": "support",
+      "applicability": {"time": {"from": 1200, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:place-thermal-ovin-structure"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:craft_technology:place-thermal-processes", "locale": "ru", "labels": ["Тепловые процессы места"], "short_definition": "Качественные связи нагрева, материала и рабочего пространства.", "search_aliases": ["дёготь", "береста", "овин", "сушка"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:craft_technology:place-thermal-processes", "locale": "en", "labels": ["Place thermal processes"], "short_definition": "Qualitative links between heating, material, and work space.", "search_aliases": ["birch tar", "bark", "ovin", "grain drying"]}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path", "locale": "ru", "runtime_text": "При изготовлении берёзового дёгтя нагрев бересты может выделять материал, который затем конденсируют или собирают отдельным путём. Это описывает связь этапов процесса, а не наличие бересты, готового дёгтя или заданную установку.", "search_aliases": ["берёзовый дёготь", "береста", "сбор дёгтя"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path", "locale": "en", "runtime_text": "In birch-tar making, heating bark can release material that is then condensed or collected along a separate path. This describes process relations, not available bark, finished tar, or a fixed apparatus.", "search_aliases": ["birch tar", "bark", "tar collection"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions", "locale": "ru", "runtime_text": "Разные способы получения берёзового дёгтя по-разному ограничивают приток воздуха и собирают продукт; повреждённое покрытие или закрытие меняет эти условия, но не гарантирует исход. Из этого не следует единственная обязательная яма, сосуд, режим огня или рецепт.", "search_aliases": ["дёготь", "кислород", "перегонка"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions", "locale": "en", "runtime_text": "Birch-tar methods can differ in oxygen access and product collection; a damaged cover or closure changes those conditions but guarantees no outcome. This implies neither one required pit, vessel, firing regime, nor recipe.", "search_aliases": ["tar method", "oxygen", "distillation"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates", "locale": "ru", "runtime_text": "В реконструкции овина или риги печь может быть связана с местом, где снопы лежат на колосниках с промежутками: к ним проходит нагретый воздух или дым. Это аналогия устройства и функции, не доказательство конкретной постройки, топки или запаса зерна.", "search_aliases": ["овин", "рига", "снопы", "колосники"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates", "locale": "en", "runtime_text": "In an ovin or riga reconstruction, a furnace can relate to sheaves held with gaps on grates, where warmed air or smoke can pass toward them. This is an analogy of structure and function, not proof of a particular building, fire, or grain stock.", "search_aliases": ["ovin", "riga", "sheaves", "grates"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles", "locale": "ru", "runtime_text": "Нагретый воздух и воздухообмен вокруг разложенных с промежутками снопов могут уносить влагу при сушке. Прямой огонь или искры остаются отдельной опасностью для сухого материала; это не задаёт число помещений, режим воздуха, температуру или длительность.", "search_aliases": ["сушка зерна", "печь", "снопы", "воздух"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles", "locale": "en", "runtime_text": "Warmed air and air exchange around spaced sheaves can carry away moisture during drying. Direct flame or sparks remain a separate hazard for dry material; this fixes no room count, air regime, temperature, or duration.", "search_aliases": ["grain drying", "furnace", "sheaves", "air"]}
+  ]
+}

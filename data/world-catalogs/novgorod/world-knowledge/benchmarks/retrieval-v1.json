@@ -1,0 +1,3139 @@
+{
+  "schema": "world_knowledge_retrieval_benchmark_v1",
+  "benchmark_ref": "wk-benchmark:novgorod-production-v1",
+  "vector_candidate_limit": 3,
+  "gate": {
+    "min_recall_at_10": 0.85,
+    "min_recall_improvement_at_10": 0.05,
+    "max_noise_at_10": 0.75,
+    "min_hard_constraint_recall": 1,
+    "min_applicability_precision": 1,
+    "max_query_embedding_mean_ms": 750,
+    "max_vector_scan_mean_ms": 10
+  },
+  "cases": [
+    {
+      "case_id": "foundations_reappraisal_en",
+      "locale": "en",
+      "query_text": "What did the laboratory negative-film task find about instructed cognitive reappraisal and reported negative emotional experience?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-01-reappraisal-negative-experience"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "psychology_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_uncertainty_ru",
+      "locale": "ru",
+      "query_text": "Как неопределённость и её представление могут влиять на процессы когнитивного контроля и принятия решений, согласно обзору исследований?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-03-uncertainty-cognitive-control"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "psychology_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_antler_workability_ru",
+      "locale": "ru",
+      "query_text": "Чем олений рог отличается от кератинового рога и что опыт с естественно сброшенным рогом благородного оленя показал о воде и обрабатываемости?",
+      "relevant_claim_refs": [
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-material3-03-antler-water-workability"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_acute_stress_ru",
+      "locale": "ru",
+      "query_text": "Как острый стресс может влиять на процессы принятия решений, согласно обзору исследований?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-04-acute-stress"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "psychology_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_apology_experiment_en",
+      "locale": "en",
+      "query_text": "What did the two-round trust-game experiment with 221 Chinese undergraduates find about apology and later re-investment?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-06-apology-reinvestment"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_infection_routes_ru",
+      "locale": "ru",
+      "query_text": "Какие пути передачи возбудителей и входные ворота инфекции выделяет учебная схема CDC/NIOSH?",
+      "relevant_claim_refs": [
+        "claim:foundations-life-44-pathogen-transport",
+        "claim:foundations-life-45-infection-entry"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_chemical_exposure_en",
+      "locale": "en",
+      "query_text": "Why does contact with a chemical contaminant not by itself determine illness, and which exposure conditions matter?",
+      "relevant_claim_refs": [
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:foundations-haz-02-exposure-not-illness"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process",
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_wet_slope_ru",
+      "locale": "ru",
+      "query_text": "Почему дождь или снеготаяние могут вызвать движение склона, уже близкого к потере устойчивости?",
+      "relevant_claim_refs": [
+        "claim:foundations-haz-04-slope-force-strength",
+        "claim:foundations-haz-05-slope-water-triggers"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_air_resistance_ru",
+      "locale": "ru",
+      "query_text": "Почему лёгкий широкий лист и компактный груз падают в воздухе по-разному?",
+      "relevant_claim_refs": [
+        "claim:foundations-phys-01-air-drag-fall"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_impact_duration_en",
+      "locale": "en",
+      "query_text": "How can spreading the same change in momentum over a longer contact time affect the force?",
+      "relevant_claim_refs": [
+        "claim:foundations-phys-02-impulse-momentum-change"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_wet_metal_contact_ru",
+      "locale": "ru",
+      "query_text": "Почему электрический контакт разных металлов во влажной проводящей среде может менять коррозию?",
+      "relevant_claim_refs": [
+        "claim:foundations-chm-12-galvanic-contact-corrosion"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_neutralization_en",
+      "locale": "en",
+      "query_text": "What can an acid–base neutralization produce, and what happens to heat when a strong acid reacts with a strong base?",
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
+        "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_sound_medium_ru",
+      "locale": "ru",
+      "query_text": "Почему звуковая волна не проходит через вакуум?",
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-snd-02-sound-material-medium"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_horn_water_en",
+      "locale": "en",
+      "query_text": "What can happen when thin horn is put into contact with water?",
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_digestion_absorption_ru",
+      "locale": "ru",
+      "query_text": "Чем расщепление пищи отличается от всасывания продуктов пищеварения?",
+      "relevant_claim_refs": [
+        "claim:foundations-life-10-digestion",
+        "claim:foundations-life-11-absorption"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_lung_gas_exchange_en",
+      "locale": "en",
+      "query_text": "How do oxygen and carbon dioxide move between air in lung alveoli and blood?",
+      "relevant_claim_refs": [
+        "claim:foundations-life-13-alveolar-exchange"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_attention_task_ru",
+      "locale": "ru",
+      "query_text": "Почему человек, сосредоточенный на задаче, может не заметить часть видимых деталей?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms-06-visual-selection"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "psychology_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_practice_learning_en",
+      "locale": "en",
+      "query_text": "How can repeated movement practice and sensory feedback contribute to acquiring a skill?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms-12-practice-correction"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "psychology_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_attribution_ru",
+      "locale": "ru",
+      "query_text": "Почему один поступок наблюдатели могут объяснить и характером человека, и обстоятельствами?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms-20-attribution-alternatives"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "psychology_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_persuasion_en",
+      "locale": "en",
+      "query_text": "What conditions can affect whether persuasion changes someone’s social judgment?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms-25-persuasion-context"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_aquifer_recharge_ru",
+      "locale": "ru",
+      "query_text": "Почему длительный отбор подземной воды быстрее пополнения может понижать её уровень?",
+      "relevant_claim_refs": [
+        "claim:foundations-earth-21-groundwater-withdrawal-balance"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_radiation_fog_en",
+      "locale": "en",
+      "query_text": "How can fog form near the ground during a clear calm moist night?",
+      "relevant_claim_refs": [
+        "claim:foundations-earth-28-radiation-fog"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "foundations_foggy_attention_ru",
+      "locale": "ru",
+      "query_text": "Как туман и сосредоточенность на другой зрительной задаче могут ограничить замеченные детали на дороге?",
+      "relevant_claim_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:foundations-ms-06-visual-selection"
+      ],
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment",
+        "psychology_behavior"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "ewe_maternal_ru",
+      "locale": "ru",
+      "query_text": "Как овца отличает своих ягнят от чужих после рождения?",
+      "relevant_claim_refs": [
+        "claim:fauna-ewe-lamb-recognition"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "goat_groups_en",
+      "locale": "en",
+      "query_text": "Are natural goat social groups fixed, or can they merge and split during movement and feeding?",
+      "relevant_claim_refs": [
+        "claim:fauna-goat-sociality"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "wolf_pup_care_ru",
+      "locale": "ru",
+      "query_text": "Как у волков устроены стая и уход за волчатами?",
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-pack-pup-care"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "horse_separation_en",
+      "locale": "en",
+      "query_text": "Why can separating a domestic horse from its herd change its behavior?",
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-domestic-horse-herd-sociality",
+        "claim:fauna-mammals-domestic-horse-separation-stress"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "bird_navigation_ru",
+      "locale": "ru",
+      "query_text": "Какие ориентиры помогают перелётным птицам выбирать направление пути?",
+      "relevant_claim_refs": [
+        "claim:fauna-bird-navigation"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "salmon_eel_migration_en",
+      "locale": "en",
+      "query_text": "How do sea-bound European silver eels differ from Atlantic salmon returning from the sea to reproduce?",
+      "relevant_claim_refs": [
+        "claim:fauna-eel-migration",
+        "claim:fauna-salmon-anadromy"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "adder_defence_ru",
+      "locale": "ru",
+      "query_text": "Как обыкновенная гадюка обычно реагирует на беспокойство человеком?",
+      "relevant_claim_refs": [
+        "claim:fauna-adder-defence"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "bee_winter_en",
+      "locale": "en",
+      "query_text": "How does a honeybee colony survive a cold temperate winter?",
+      "relevant_claim_refs": [
+        "claim:fauna-bee-winter-cluster"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "dragonfly_development_ru",
+      "locale": "ru",
+      "query_text": "Проходит ли стрекоза стадию куколки, и где развивается её личинка?",
+      "relevant_claim_refs": [
+        "claim:fauna-dragonfly-lifecycle"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "tick_movement_en",
+      "locale": "en",
+      "query_text": "Do ticks jump onto passing animals, or how do they reach a host?",
+      "relevant_claim_refs": [
+        "claim:fauna-tick-questing"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "chicken_dust_ru",
+      "locale": "ru",
+      "query_text": "Что делает курица при пылевой ванне?",
+      "relevant_claim_refs": [
+        "claim:fauna-chicken-dust-bathing"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "crayfish_eggs_en",
+      "locale": "en",
+      "query_text": "How are eggs carried in the noble crayfish Astacus astacus?",
+      "relevant_claim_refs": [
+        "claim:fauna-crayfish-egg-carrying"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "squirrel_winter_ru",
+      "locale": "ru",
+      "query_text": "Впадает ли обыкновенная белка в зимнюю спячку и что делает при плохой погоде?",
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "fish_oxygen_en",
+      "locale": "en",
+      "query_text": "Why can a warm summer night worsen oxygen shortage for fish?",
+      "relevant_claim_refs": [
+        "claim:fauna-fish-summer-night-oxygen"
+      ],
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "mushroom_resemblance_not_edibility_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Гриб похож на знакомый съедобный. Достаточно ли внешнего сходства, чтобы считать его пригодным в пищу?",
+      "relevant_claim_refs": [
+        "claim:wild-mushroom-resemblance-not-edibility"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "fungal_substrate_nutrition_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "How do most fungi take up nutrients from the material they grow through?",
+      "relevant_claim_refs": [
+        "claim:most-fungi-hyphae-substrate-nutrition"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "wild_berry_identification_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Листья и ягоды похожи на бруснику. Чем важно сходство с толокнянкой при определении растения?",
+      "relevant_claim_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "mezereon_toxicity_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Is poisonous sap in mezereon limited to its berries or present in other parts too?",
+      "relevant_claim_refs": [
+        "claim:mezereon-poisonous-sap-all-parts"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "qualified_winter_sledge_context_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "What winter conveyance is recorded for Tverdislav in the Novgorod chronicle entry for 1220, and does it establish an annual routine or the availability of a vehicle here?",
+      "relevant_claim_refs": [
+        "claim:transport-winter-sledge-1220"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "probable_communion_bowl_function_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Как музей определяет вероятную функцию домонгольской чаши XII–XIII веков с крестом на днище? Можно ли по этому описанию установить материал, средневековое новгородское происхождение или нынешний обряд?",
+      "relevant_claim_refs": [
+        "claim:probable-travel-chalice-communion"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "ordinary_restraint_grounded_geometry_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "craft_technology",
+        "physics_material_science"
+      ],
+      "query_text": "An actor has real materials and a separately established animal context and attempts an improvised restraint. Do the early-Rus lovishcha and perevesishcha references specify its mechanism or guarantee capture? What general force, contact, support and geometry factors can constrain the attempt?",
+      "relevant_claim_refs": [
+        "claim:early-rus-hunting-ground-terms",
+        "claim:force-contact-geometry"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "officeholder_military_episode_context_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "npc_daily_life"
+      ],
+      "query_text": "What recorded conflict activities involved Novgorod-Land posadniks in 1224 and 1228? Do these episodes establish a duty, boat, crew or present conflict for another officeholder?",
+      "relevant_claim_refs": [
+        "claim:posadnik-fedor-conflict-1224",
+        "claim:posadnik-volodislav-pursuit-1228"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "burial_container_material_forms_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Какие конструкции деревянных погребальных контейнеров наблюдались на Ильинском II в Старой Руссе: дощатый гроб, крепление гвоздями, крышка с планкой или долблёная колода? Что ограничивает их датировку и обобщение?",
+      "relevant_claim_refs": [
+        "claim:burial-plank-coffin-nails",
+        "claim:burial-coffin-lid-transverse-plank",
+        "claim:burial-hollowed-log-container"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "spinning_fibre_capability_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "An actor twists an already present bundle of textile fibres. What fibre-to-yarn transformation is physically supported, and does that guarantee usable yarn from every fibre?",
+      "relevant_claim_refs": [
+        "claim:textile-fibres-twist-yarn"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "maslo_historical_account_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Какое упоминание масла в сосуде есть в новгородской берестяной грамоте № 718 и определяет ли оно происхождение, применение или нынешний запас масла?",
+      "relevant_claim_refs": [
+        "claim:maslo-birchbark-718-account"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "novgorod_thirteenth_century_colourants_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "What indigo/yellow and lac-dye identifications does Nahlik report for thirteenth-century Novgorod textiles, and what limits local production inference?",
+      "relevant_claim_refs": [
+        "claim:textile-indigo-yellow-analysis",
+        "claim:textile-lac-dye-analysis"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "oil_treatments_distinct_skin_states_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Compare the moisture and water resistance of oiled rawhide with the flexibility treatment at the end of vegetable tanning: what distinct material states and conditional effects are supported?",
+      "relevant_claim_refs": [
+        "claim:oil-rawhide-moisture-resistance",
+        "claim:oil-fat-vegetable-leather-flexibility"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "oil_tanning_reaction_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "query_text": "Как химическое сшивание масла при масляном дублении влияет на слипание волокон шкуры при высыхании и её мягкость?",
+      "relevant_claim_refs": [
+        "claim:oil-tanning-crosslinking-fibres"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "textile_dye_application_en",
+      "locale": "en",
+      "domains": [
+        "chemistry_process"
+      ],
+      "query_text": "At what textile stages can dye be applied, and what can a mordant do? Does that make immersion and a mordant necessary for every dye?",
+      "purpose": "semantic_resolution",
+      "relevant_claim_refs": [
+        "claim:textile-dye-application",
+        "claim:textile-dye-mordant-fixation"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "fur_skin_preservation_ru",
+      "locale": "ru",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Для чего обрабатывают снятую шкуру и как быстрое охлаждение с тщательной очисткой меховой шкуры связано с бактериальным ростом и удержанием волоса?",
+      "purpose": "semantic_resolution",
+      "relevant_claim_refs": [
+        "claim:flayed-skin-processing-purpose",
+        "claim:fur-skin-cooling-cleansing"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "flax_breaker_hackle_function_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "craft_technology"
+      ],
+      "query_text": "Чем различались функции мялки при обработке стеблей льна и чесала при очистке растительных волокон от кострики?",
+      "relevant_claim_refs": [
+        "claim:fibre-flax-breaker-shive",
+        "claim:fibre-hackle-removes-shive"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "rural_economic_context_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "architecture_settlement"
+      ],
+      "query_text": "What household economy and agricultural context is historically compatible with a northern-Rus rural settlement, without assuming any particular current field or crop?",
+      "relevant_claim_refs": [
+        "claim:rural-household-economy-context",
+        "claim:rural-agriculture-crop-context"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "novgorod_wetland_pollen_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "environment"
+      ],
+      "query_text": "По каким признакам растительности реконструировано переувлажнение низин у Рюрикова городища в начале XIII века?",
+      "relevant_claim_refs": [
+        "claim:novgorod-wetland-pollen-context"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "stone_edge_maintenance_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "What maintenance uses did small whetstones and natural-stone grinding wheels or bars have in pre-Mongol Rus?",
+      "relevant_claim_refs": [
+        "claim:stone-whetstone-edge-maintenance",
+        "claim:stone-grinding-metal-use"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "clay_rewetting_state_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "How does mixing with water differ for dried clay and clay that has undergone ceramic transformation in firing?",
+      "relevant_claim_refs": [
+        "claim:clay-dried-replasticization",
+        "claim:clay-fired-no-replasticization",
+        "claim:clay-firing-structural-transformation"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "stone_abrasive_shaping_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "What conditional methods allow sawing or smoothing a suitable hard-stone blank with compatible abrasive?",
+      "relevant_claim_refs": [
+        "claim:hard-stone-abrasive-sawing",
+        "claim:hard-stone-abrasive-shaping"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "novgorod_pottery_wheel_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "К какому раннему периоду Арциховский относит изготовление новгородской керамики на гончарном круге?",
+      "relevant_claim_refs": [
+        "claim:ceramic-novgorod-wheel"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "church_statute_roles_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "social_law_economy"
+      ],
+      "query_text": "Кого Оленинская редакция Устава Владимира перечисляет среди церковных людей и кому относит разбор их вины?",
+      "relevant_claim_refs": [
+        "claim:religion-olenin-church-people",
+        "claim:religion-olenin-adjudication"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "goat_forage_biology_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Why can a goat digest hay and grass?",
+      "relevant_claim_refs": [
+        "claim:livestock-ruminant-membership",
+        "claim:livestock-rumen-forage-digestion"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "swine_ruminant_diet_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Почему питание свиньи нельзя приравнивать к питанию жвачных по потребности в энергии и волокне?",
+      "relevant_claim_refs": [
+        "claim:livestock-swine-membership",
+        "claim:livestock-swine-comparative-diet"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "harvest_handle_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Какие исторические сведения связывают серп с уборкой урожая и деревянной рукоятью?",
+      "relevant_claim_refs": [
+        "claim:harvest-sickle-crops-grasses",
+        "claim:harvest-sickle-wooden-handle"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "cereal_food_uses_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture",
+        "craft_technology"
+      ],
+      "query_text": "What northern-Rus cereal uses connect barley with soup or porridge and rye with flour or bread?",
+      "relevant_claim_refs": [
+        "claim:food-practices-barley-porridge-soup",
+        "claim:food-practices-rye-flour-bread"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "grain_processing_traces_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "craft_technology",
+        "architecture_settlement"
+      ],
+      "query_text": "Какие отходы связывают с обмолотом зерна и очисткой пшена: мякину или целые чешуи проса?",
+      "relevant_claim_refs": [
+        "claim:food-practices-threshing-chaff",
+        "claim:food-practices-millet-cleaning-waste"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "hemp_stem_byproduct_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "environment",
+        "craft_technology",
+        "material_culture"
+      ],
+      "query_text": "Из конопляных стеблей хотят получить волокно, а отход использовать для щелей сруба. Какие исторические материальные связи это допускают?",
+      "relevant_claim_refs": [
+        "claim:agriculture-fauna-hemp-stem-fibre",
+        "claim:agriculture-fauna-hemp-processing-tow",
+        "claim:agriculture-fauna-tow-log-gaps"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "rural_bort_tools_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "craft_technology",
+        "material_culture"
+      ],
+      "query_text": "What historical tree-based bee keeping context connects climbing hooks with honey and wax, without proving an urban domestic hive?",
+      "relevant_claim_refs": [
+        "claim:agriculture-fauna-rural-tree-borts",
+        "claim:agriculture-fauna-bort-climbing-hooks",
+        "claim:agriculture-fauna-borts-honey",
+        "claim:agriculture-fauna-borts-wax"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "handmade_pottery_inputs_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "What suitable local clay and temper inputs were associated with hand-made pottery in the Novgorod and Rurik Gorodishche corpus?",
+      "relevant_claim_refs": [
+        "claim:pottery-handmade-local-clay",
+        "claim:pottery-handmade-temper"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "fur_sale_accounting_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_law_economy"
+      ],
+      "query_text": "Могла ли письменная запись продажи пушного товара связывать товарную партию и денежную сумму, не устанавливая общий тариф?",
+      "relevant_claim_refs": [
+        "claim:social-daily-fur-sale-accounting"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "bark_laced_sleeve_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "craft_technology"
+      ],
+      "query_text": "Как соединить слои бересты лыком, подготовив края и отверстия для шва?",
+      "relevant_claim_refs": [
+        "claim:population-bark-input",
+        "claim:population-bark-bast",
+        "claim:population-bark-cut",
+        "claim:population-bark-pierce"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "bent_rod_hoop_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "craft_technology"
+      ],
+      "query_text": "Bend a flexible rod into a hoop and secure its ends using a cord.",
+      "relevant_claim_refs": [
+        "claim:population-rod-input",
+        "claim:population-rod-cord"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "fresh_clay_over_fire_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "query_text": "Почему сырая глиняная заготовка может лопнуть при быстром нагреве?",
+      "relevant_claim_refs": [
+        "claim:population-material-clay-steam"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "wet_wool_lashing_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "A wool tie gets soaked and is pulled taut: how does wetting affect its fibres?",
+      "relevant_claim_refs": [
+        "claim:population-material-wet-wool"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "coated_iron_scratch_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "query_text": "Как сплошное покрытие защищает железо от воздуха и влаги, и что меняется при повреждении?",
+      "relevant_claim_refs": [
+        "claim:population-material-iron-coating",
+        "claim:population-material-iron-rust"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "heated_wood_low_air_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "query_text": "Что остаётся от древесины при нагреве с ограниченным доступом кислорода?",
+      "relevant_claim_refs": [
+        "claim:population-material-wood-pyrolysis"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "oil_on_glued_splint_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Помешают ли масло и рыхлые волокна склеить две деревянные части?",
+      "relevant_claim_refs": [
+        "claim:population-joining-bond-contamination"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "fresh_glue_load_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Можно ли сразу нагружать соединение, пока клей ещё не затвердел?",
+      "relevant_claim_refs": [
+        "claim:population-joining-bond-cure"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "work_hardened_wire_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Почему после многократного холодного сгибания металлическая проволока упрочняется и может сломаться?",
+      "relevant_claim_refs": [
+        "claim:population-joining-metal-cold-work",
+        "claim:population-joining-metal-fatigue"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "warm_wax_impression_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Размягчится ли восковый оттиск при нагреве?",
+      "relevant_claim_refs": [
+        "claim:population-joining-wax-soften"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "fisher_bark_sewing_role_ru",
+      "locale": "ru",
+      "purpose": "npc_decision",
+      "domains": [
+        "craft_technology"
+      ],
+      "query_text": "Как рыбак сшивает берестяной поплавок лыком через отверстия?",
+      "relevant_claim_refs": [
+        "claim:population-bark-bast",
+        "claim:population-bark-pierce"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {
+          "role_ref": "nov_role_fisher"
+        }
+      },
+      "inapplicable_claim_refs": [
+        "claim:population-bark-bast",
+        "claim:population-bark-pierce"
+      ],
+      "inapplicable_context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {
+          "role_ref": "nov_role_boatman"
+        }
+      }
+    },
+    {
+      "case_id": "material_leather_personal_item_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Могла ли личная вещь быть сделана из выделанной шкуры?",
+      "relevant_claim_refs": [
+        "claim:novgorod-leather-items"
+      ],
+      "inapplicable_claim_refs": [
+        "claim:novgorod-leather-items"
+      ],
+      "inapplicable_context": {
+        "time": {
+          "year": 1601
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      },
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "material_waterlogged_preservation_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "What happens to buried organic artifacts in saturated cultural layers?",
+      "relevant_claim_refs": [
+        "claim:novgorod-waterlogged-organic-preservation"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "material_timber_streetscape_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Совместимы ли брёвна и доски с городской средой, не доказывая их в этой сцене?",
+      "relevant_claim_refs": [
+        "claim:novgorod-wooden-urban-elements"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "craft_smithy_assumption_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "craft_technology"
+      ],
+      "query_text": "Do metal goods by themselves prove that a forge operates in this yard?",
+      "relevant_claim_refs": [
+        "claim:metalworking-broad-context"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "craft_shavings_identity_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "craft_technology"
+      ],
+      "query_text": "Можно ли по щепе установить, что именно здесь изготовили?",
+      "relevant_claim_refs": [
+        "claim:work-waste-context"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "craft_clay_firing_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "craft_technology"
+      ],
+      "query_text": "Доказывает ли глиняный сосуд конкретную печь и режим термообработки?",
+      "relevant_claim_refs": [
+        "claim:ceramic-material-category"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "environment_fishing_presence_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "query_text": "Гарантирует ли история промысла улов именно у этого берега сейчас?",
+      "relevant_claim_refs": [
+        "claim:regional-fish-exploitation"
+      ],
+      "inapplicable_claim_refs": [
+        "claim:regional-fish-exploitation"
+      ],
+      "inapplicable_context": {
+        "time": {
+          "year": 1601
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      },
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "environment_livestock_basis_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "query_text": "May livestock be assumed without an established farm, market, or transport setting?",
+      "relevant_claim_refs": [
+        "claim:domestic-animal-context"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "environment_fur_food_evidence_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "query_text": "Одинаково ли свидетельствуют кости съеденных зверей и следы торговли мехом?",
+      "relevant_claim_refs": [
+        "claim:wild-food-and-fur-evidence"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "architecture_single_find_function_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "architecture_settlement"
+      ],
+      "query_text": "Можно ли по одной находке уверенно назвать назначение постройки?",
+      "relevant_claim_refs": [
+        "claim:contextual-evidence-classes"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "architecture_paved_route_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "architecture_settlement"
+      ],
+      "query_text": "Could an excavated medieval urban route have a surfaced walkway?",
+      "relevant_claim_refs": [
+        "claim:urban-pavements"
+      ],
+      "inapplicable_claim_refs": [
+        "claim:urban-pavements"
+      ],
+      "inapplicable_context": {
+        "time": {
+          "year": 1601
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      },
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "architecture_modern_sewer_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "architecture_settlement"
+      ],
+      "query_text": "Позволяет ли благоустройство квартала считать, что под ним современная канализация?",
+      "relevant_claim_refs": [
+        "claim:localized-improvement-context"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "npc_combined_resource_skills_ru",
+      "locale": "ru",
+      "purpose": "npc_decision",
+      "domains": [
+        "npc_daily_life"
+      ],
+      "query_text": "Следует ли любому рыбаку автоматически приписать охоту, пушной промысел и все эти навыки?",
+      "relevant_claim_refs": [
+        "claim:resource-occupation-needs-setting"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "npc_current_fieldwork_en",
+      "locale": "en",
+      "purpose": "npc_decision",
+      "domains": [
+        "npc_daily_life"
+      ],
+      "query_text": "Can a rural person be assigned current field work when no holding or settlement has been established?",
+      "relevant_claim_refs": [
+        "claim:agriculture-rural-role-context"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "npc_house_family_wealth_ru",
+      "locale": "ru",
+      "purpose": "npc_decision",
+      "domains": [
+        "npc_daily_life"
+      ],
+      "query_text": "Доказывает ли само жилище родство жильцов, их достаток и всё имущество?",
+      "relevant_claim_refs": [
+        "claim:neutral-household-context"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "physics_wet_grain_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Почему сырая доска ведёт себя неодинаково вдоль и поперёк волокон?",
+      "relevant_claim_refs": [
+        "claim:wood-anisotropy-moisture"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "physics_ceramic_crack_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Why can a small flaw make a fired vessel fragment under impact?",
+      "relevant_claim_refs": [
+        "claim:brittle-fracture-defects"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "physics_lever_energy_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Может ли рычаг создать работу из ничего, если изменить точку опоры?",
+      "relevant_claim_refs": [
+        "claim:force-contact-geometry"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "chemistry_damp_iron_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "query_text": "Почему железная вещь быстрее портится во влажном месте на воздухе?",
+      "relevant_claim_refs": [
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "chemistry_salted_food_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "query_text": "Does curing food with salt guarantee that a stored batch cannot become unsafe?",
+      "relevant_claim_refs": [
+        "claim:food-preservation-qualitative"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "chemistry_quicklime_water_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process"
+      ],
+      "query_text": "Чем опасно заливать водой свежеобожжённую известь?",
+      "relevant_claim_refs": [
+        "claim:lime-transformations"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "biology_one_meal_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Доказывает ли один пропущенный обед истощение человека?",
+      "relevant_claim_refs": [
+        "claim:food-energy-nutrients"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "biology_work_heat_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Why may sustained labor overheat someone when the surroundings impede cooling?",
+      "relevant_claim_refs": [
+        "claim:exercise-heat-dissipation"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "biology_pain_damage_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Можно ли считать ощущение боли точной шкалой повреждения ткани?",
+      "relevant_claim_refs": [
+        "claim:pain-nociception-distinct"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "social_debt_seizure_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_law_economy"
+      ],
+      "query_text": "Даёт ли найденная долговая записка право немедленно забрать имущество?",
+      "relevant_claim_refs": [
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "inapplicable_claim_refs": [
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "inapplicable_context": {
+        "time": {
+          "year": 1250
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      },
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "social_pravda_direct_code_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_law_economy"
+      ],
+      "query_text": "Should Russkaya Pravda automatically be enforced as the complete local code in Novgorod in 1230?",
+      "relevant_claim_refs": [
+        "claim:russkaya-pravda-comparative-only"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "social_later_charter_hard_exclusion_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "social_law_economy"
+      ],
+      "query_text": "Можно ли применить нормы поздней Новгородской судной грамоты к разбирательству 1230 года?",
+      "relevant_claim_refs": [
+        "claim:later-novgorod-judicial-charter"
+      ],
+      "expected_hard_constraint_refs": [
+        "claim:later-novgorod-judicial-charter"
+      ],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "plank_gap_patch_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "What historical ways could hold wooden hull parts together and pack a gap between planks?",
+      "relevant_claim_refs": [
+        "claim:construction-wooden-peg-vessel-joint",
+        "claim:construction-forged-iron-nail-vessel-joint",
+        "claim:construction-tarred-tow-caulking",
+        "claim:construction-iron-clamp-caulking"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "shirt_gusset_fastener_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Какая ткань подходила для рубахи, чем расширяли её под мышками и застёгивали ворот?",
+      "relevant_claim_refs": [
+        "claim:clothing-linen-shirt",
+        "claim:clothing-wool-shirt",
+        "claim:clothing-shirt-gussets",
+        "claim:clothing-button-shirt"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "charcoal_pit_air_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "craft_technology"
+      ],
+      "query_text": "How did a wood-filled pit become charcoal, and why was its air supply regulated?",
+      "relevant_claim_refs": [
+        "claim:fuel-pit-charcoal-burning-wood-input",
+        "claim:fuel-pit-charcoal-burning-air-sequence",
+        "claim:fuel-pit-charcoal-burning-charcoal-output"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "domestic_pan_handling_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Каким приспособлением ставили железную сковороду в печь и доставали её обратно?",
+      "relevant_claim_refs": [
+        "claim:fuel-iron-pan-lifter-use"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "seasonal_wild_bird_use_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "query_text": "Was medieval Novgorod wildfowl hunting seasonal, with poultry and mallards available differently?",
+      "relevant_claim_refs": [
+        "claim:environment-p1-wildfowl-season",
+        "claim:environment-p1-bird-taxa"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "cloth_cold_weather_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Как носили зимний овчинный кожух и чем обматывали стопы и голени?",
+      "relevant_claim_refs": [
+        "claim:clothing-sheepskin-kozhukh",
+        "claim:clothing-onuchi-wrap"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "smith_equipment_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "material_culture",
+        "craft_technology",
+        "npc_daily_life"
+      ],
+      "query_text": "What material and tools supported a smith working metal: anvil, hammer and tongs?",
+      "relevant_claim_refs": [
+        "claim:occupation-smith-iron-input",
+        "claim:occupation-smith-anvil",
+        "claim:occupation-smith-hammer",
+        "claim:occupation-smith-tongs"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "crib_foundation_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "architecture_settlement"
+      ],
+      "query_text": "How could a wooden bridge support be made as a log crib resting on the riverbed and filled with stones?",
+      "relevant_claim_refs": [
+        "claim:construction-rjaz-riverbed-foundation",
+        "claim:construction-rjaz-stone-fill"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "soaked_wooden_wedge_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Почему деревянный клин при погружении торцом в воду впитывает её вдоль волокон, но разбухает преимущественно поперёк?",
+      "relevant_claim_refs": [
+        "claim:wood-liquid-directional-uptake",
+        "claim:population-material-wood-shrinkage"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "porous_insert_wetting_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "A porous insert gets wet on its outer surface. Does wetting or a large volume of isolated pores prove water can pass through it?",
+      "relevant_claim_refs": [
+        "claim:water-wetting-forces",
+        "claim:water-permeability-connected-pores"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "wet_hide_binding_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Одинаково ли меняются при намокании и высыхании недублёная высушенная шкура и ремешок из кожи неизвестной выделки?",
+      "relevant_claim_refs": [
+        "claim:material-water-leather-water-processing",
+        "claim:material-water-rawhide-wet-dry"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "hemp_fibre_wetting_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "Hemp fibres in a cord are exposed to excess water. What natural fibre class and possible swelling response apply without establishing permanent damage?",
+      "relevant_claim_refs": [
+        "claim:material-water-hemp-cellulosic-fibre",
+        "claim:material-water-natural-fibres-water-swelling"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "resin_bast_binding_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Есть ли ранний новгородский пример сосновой смолы на деревянном корпусе и на лыковой связке, без гарантии водонепроницаемости?",
+      "relevant_claim_refs": [
+        "claim:construction-pine-resin-surfaces",
+        "claim:construction-pine-resin-bast"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "glue_chalk_wood_layers_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "What earlier Novgorod evidence associates animal glue with chalk binding and layers of wood also fastened mechanically?",
+      "relevant_claim_refs": [
+        "claim:construction-animal-glue-chalk",
+        "claim:construction-animal-glue-pegged-planks"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "church_building_supply_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "architecture_settlement"
+      ],
+      "query_text": "Для каменной храмовой стройки хотят привезти известняк и ракушечник и нанять людей копать фундаментные рвы. Какой исторический контекст снабжения и труда допустим?",
+      "relevant_claim_refs": [
+        "claim:construction-quarry-procurement",
+        "claim:construction-auxiliary-construction-work"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "potter_building_order_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "architecture_settlement"
+      ],
+      "query_text": "A potter is asked about making bricks and ceramic resonators for a church builder. Is there historical production context, including plinth made to supplied patterns?",
+      "relevant_claim_refs": [
+        "claim:construction-construction-pottery-products",
+        "claim:construction-plinth-patterns-1207"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "regional_parent_materials_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "environment"
+      ],
+      "query_text": "Какие пески, суглинки, глины, гравий и галька входят в региональные четвертичные почвообразующие породы, без утверждения местной добычи?",
+      "relevant_claim_refs": [
+        "claim:terrain-background",
+        "claim:terrain-parent-material-assemblage"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "transport_nonwinter_equipment_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture"
+      ],
+      "query_text": "Допустимы ли сани для перевозки груза летом, и есть ли новгородский документ, где конь, сани и сбруя упомянуты вместе, без обязательного комплекта?",
+      "relevant_claim_refs": [
+        "claim:transport-sledge-summer-cargo",
+        "claim:transport-horse-sledge-equipment"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "transport_boat_service_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture",
+        "npc_daily_life"
+      ],
+      "query_text": "What Novgorod letters support dispatching hides, a box and wax by boat and the existence of a hired boatman in a journey and goods-settlement context?",
+      "relevant_claim_refs": [
+        "claim:transport-boat-cargo-dispatch",
+        "claim:transport-hired-boatman"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "hay_horse_composition_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "material_culture",
+        "biology_physiology"
+      ],
+      "query_text": "Is hay documented in Novgorod household accounts, and what general feed relation connects hay or pasture forage with healthy horses without prescribing a ration?",
+      "relevant_claim_refs": [
+        "claim:fodder-hay-account",
+        "claim:fodder-healthy-horse-forage"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "conditional_household_care_en",
+      "locale": "en",
+      "purpose": "materialization_support",
+      "domains": [
+        "social_law_economy"
+      ],
+      "query_text": "What conditional care relationships does the Extended Russkaya Pravda describe for minor children after their mother's remarriage and for the household that fed a mother without a succession disposition?",
+      "relevant_claim_refs": [
+        "claim:rp-minor-children-conditional-care",
+        "claim:rp-caretaker-principal-goods",
+        "claim:rp-mother-household-care-succession"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "pitch_coating_system_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "physics_material_science"
+      ],
+      "query_text": "What did the described heated pine-pitch coating do in the woven-basket system, and what happened to severely oxidized coatings in that collection?",
+      "relevant_claim_refs": [
+        "claim:pine-pitch-woven-basket-coating",
+        "claim:pine-pitch-severe-oxidation"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "care_bleeding_water_exposure_ru",
+      "locale": "ru",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "biology_physiology"
+      ],
+      "query_text": "Как прямое давление чистой тканью связано с наружным кровотечением, а водонепроницаемая повязка — с риском инфекции чистой открытой раны при загрязнённой воде?",
+      "relevant_claim_refs": [
+        "claim:care-direct-pressure-bleeding",
+        "claim:care-waterproof-wound-cover"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "vegetable_tanning_inputs_en",
+      "locale": "en",
+      "purpose": "semantic_resolution",
+      "domains": [
+        "chemistry_process",
+        "physics_material_science"
+      ],
+      "query_text": "What inputs distinguish vegetable tanning of a prepared hide from merely drying it, and how do tannins affect collagen and resistance to putrefaction?",
+      "relevant_claim_refs": [
+        "claim:vegetable-tanning-prepared-hide",
+        "claim:vegetable-tanning-collagen-stabilization"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {
+      "case_id": "market_landing_surfacing_ru",
+      "locale": "ru",
+      "purpose": "materialization_support",
+      "domains": [
+        "architecture_settlement"
+      ],
+      "query_text": "Какая историческая связь описана между торговой площадью и вымолами-пристанями, и как распределялись работы по мощению их участков?",
+      "relevant_claim_refs": [
+        "claim:river-landing-category",
+        "claim:river-landing-market-approaches",
+        "claim:river-landing-surfacing-allocation"
+      ],
+      "expected_hard_constraint_refs": [],
+      "context": {
+        "time": {
+          "year": 1230
+        },
+        "place_refs": [
+          "region_novgorod_land"
+        ],
+        "actor_facets": {}
+      }
+    },
+    {"case_id":"macro_causal_health_limits_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology","chemistry_process"],"query_text":"Почему угарный газ мешает доставке кислорода, а кипячение воды не удаляет токсичные вещества и не исключает повторного загрязнения?","relevant_claim_refs":["claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure","claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"macro_causal_injury_parasite_en","locale":"en","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"How can a fracture, tooth injury, or parasite burden limit ordinary function without diagnosing a person?","relevant_claim_refs":["claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use","claim:candidate-macro-causal-v2-tooth-decay-or-injury-can-cause-pain-and-interfere-with-chewing","claim:candidate-macro-causal-v2-parasites-can-have-variable-symptoms-or-functional-burden"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"macro_birth_household_support_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"Когда роды уже начались, почему люди, тепло, вода, ткань и время влияют на возможную помощь, а после рождения меняется распределение домашней работы?","relevant_claim_refs":["claim:macro-gap-birth-needs-practical-support-and-time","claim:macro-gap-after-childbirth-needs-can-reshape-household-labour"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"macro_carcass_handling_en","locale":"en","purpose":"semantic_resolution","domains":["craft_technology"],"query_text":"Once an animal and carcass are established, why do slaughter and carcass handling require work, tools and a place, and lead to separate material paths?","relevant_claim_refs":["claim:macro-gap-slaughter-needs-work-tools-and-place","claim:macro-gap-carcass-handling-can-separate-material-streams"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"macro_obligation_document_ru","locale":"ru","purpose":"semantic_resolution","domains":["social_law_economy"],"query_text":"Почему залог и частичная оплата зависят от уже установленных условий, а документ сам не доказывает автора, доставку или юридическую силу?","relevant_claim_refs":["claim:macro-gap-collateral-follows-established-security-terms","claim:macro-gap-payment-changes-only-accepted-obligation-part","claim:macro-gap-writing-carries-attributed-account-only"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb14_shore_trace_ru","locale":"ru","purpose":"semantic_resolution","domains":["environment"],"query_text":"На берегу уже видны колья, уголь и неровный грунт. Что это может осторожно сказать о прошлом месте, не называя постройку или хозяина?","relevant_claim_refs":["claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb14_weighing_check_en","locale":"en","purpose":"semantic_resolution","domains":["social_law_economy"],"query_text":"If a sale by weight already appears inconsistent, what shared check can people make before deciding the dispute without inventing an official rule?","relevant_claim_refs":["claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb14_weather_guest_ru","locale":"ru","purpose":"semantic_resolution","domains":["social_behavior"],"query_text":"Незнакомый путник просится переждать непогоду. Как хозяин может ограниченно помочь или отказать, не создавая обязанность принять его?","relevant_claim_refs":["claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb14_care_observe_en","locale":"en","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"What can be observed after a ewe gives birth, during a fever, or after a deep bleeding cut without assuming a cause, diagnosis, or outcome?","relevant_claim_refs":["claim:mb14-practical-ewe-lamb-postbirth-observation","claim:mb14-practical-fever-needs-observation-not-causal-assumption","claim:mb14-practical-deep-cut-first-response-is-pressure-and-help"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb14_workpiece_conditions_ru","locale":"ru","purpose":"semantic_resolution","domains":["craft_technology"],"query_text":"Какие качественные признаки важны при вытягивании сети, раскалывании сырой древесины, обжиге глины, ковке нагретого железа и осмотре мокрой верёвки — без точной температуры, нагрузки или гарантии работы?","relevant_claim_refs":["claim:mb14-practical-net-draw-needs-clear-controlled-water-edge","claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint","claim:mb14-practical-clay-firing-needs-gradual-observation","claim:mb14-practical-iron-workability-is-qualitative-not-temperature","claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb14_field_and_food_en","locale":"en","purpose":"semantic_resolution","domains":["environment","npc_daily_life"],"query_text":"How can locally workable soil, a cold spell, and warm conditions change sowing, cabbage transplanting, and milk handling without proving a crop, calendar, or food safety result?","relevant_claim_refs":["claim:mb14-practical-sowing-follows-local-workable-soil","claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold","claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb14_household_protection_ru","locale":"ru","purpose":"semantic_resolution","domains":["npc_daily_life"],"query_text":"Во время дождя через крышу пошла вода, а при перевозке есть хрупкая посуда и жирное пятно на полотне. Какие простые приоритеты и процессы здесь возможны без обещания ремонта, сохранности или чистоты?","relevant_claim_refs":["claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores","claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport","claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb14_transport_control_en","locale":"en","purpose":"semantic_resolution","domains":["craft_technology","environment"],"query_text":"A laden wagon pulls badly and an already established boat approaches a landing in wind and current. What observable distinctions and controls matter without proving a fault, a crew, or a safe arrival?","relevant_claim_refs":["claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes","claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb17_hay_heat_response_ru","locale":"ru","purpose":"semantic_resolution","domains":["environment"],"query_text":"В запасённом сене появился затхлый или карамельный запах, возможно и дым. Что это может означать и чего не стоит делать с подозрительно горячей массой, не утверждая пожар?","relevant_claim_refs":["claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk","claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb17_sticky_leaf_limits_en","locale":"en","purpose":"semantic_resolution","domains":["environment"],"query_text":"A plant leaf feels sticky. What might honeydew explain, and why can appearance alone not identify the residue or prove it safe to touch?","relevant_claim_refs":["claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb17_unknown_dye_contact_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"На кожу попала жидкость из уже имеющейся неизвестной красильной или протравной ванны. Каков осторожный первый ответ без определения состава и диагноза?","relevant_claim_refs":["claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb19_fibre_work_conditions_en","locale":"en","purpose":"semantic_resolution","domains":["craft_technology"],"query_text":"How do a retting bundle, an uneven loom warp, and dry willow rods call for different condition checks before controlled fibre or basket work without promising a result?","relevant_claim_refs":["claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment","claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment","claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb19_fat_and_mud_limits_ru","locale":"ru","purpose":"semantic_resolution","domains":["chemistry_process","craft_technology"],"query_text":"Почему горящий жир нельзя заливать водой, а мокрая грязь на поверхности ещё не доказывает пригодную для гончарства глину?","relevant_claim_refs":["claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water","claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb19_mill_pack_checks_en","locale":"en","purpose":"semantic_resolution","domains":["physics_material_science"],"query_text":"What must be checked for an already established watermill path and a loaded pack animal without inferring usable power, a safe load, or successful travel?","relevant_claim_refs":["claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path","claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb1819_cattle_condition_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"Как наблюдать нездоровую корову, отделение коровы от телёнка и беспокойство от кровососущих мух, не ставя диагноз и не предсказывая поведение?","relevant_claim_refs":["claim:macro-b1819-ill-cattle-observation-is-nondiagnostic-and-can-warrant-experienced-assessment","claim:macro-b1819-cow-calf-separation-is-a-stressful-transition-and-context-can-moderate-added-stress","claim:macro-b1819-blood-feeding-flies-can-provoke-defensive-behavior-in-cattle"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb1819_animal_weather_exposure_en","locale":"en","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"Why can wet cold wind matter to an already established sheep, and how can smoke or ash affect eyes without proving weather, exposure dose, or recovery?","relevant_claim_refs":["claim:macro-b1819-wet-cold-wind-can-overwhelm-sheep-insulation-and-dry-shelter-reduces-exposure","claim:macro-b1819-smoke-or-ash-can-irritate-eyes-and-supports-clean-air-and-rinsing-response"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb1819_nest_and_hung_wood_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology","environment"],"query_text":"Что можно сказать о гнездовом месте уже имеющейся несушки и о зависшей после бури древесине, не создавая яйца, дерево или падение?","relevant_claim_refs":["claim:macro-b1819-laying-hens-can-use-nest-sites-for-egg-laying","claim:macro-b1819-storm-damaged-hung-wood-is-an-overhead-hazard-until-its-state-is-known"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb20_animal_work_weather_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"Какие условия важны, если нужно открыть уже имеющийся улей, вернуть в работу разгорячённую лошадь и вести собаку по следу после дождя, не создавая животных, след или результат?","relevant_claim_refs":["claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained","claim:macro-b20-a-worked-horse-needs-gradual-cooling-and-observation-before-return-to-rest-or-work","claim:macro-b20-rain-or-other-weather-can-alter-canine-scent-work-without-proving-a-trail-is-lost"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb20_tool_fibre_wood_control_en","locale":"en","purpose":"semantic_resolution","domains":["craft_technology"],"query_text":"How should sticky resin on an established hand tool, insect-damaged stored wool, and steam-softened wood be handled without inferring materials, tools, stock, or a successful result?","relevant_claim_refs":["claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work","claim:macro-b20-insect-damage-to-stored-wool-can-call-for-inspection-isolation-and-clean-dry-storage","claim:macro-b20-steam-softened-wood-needs-restraint-and-controlled-drying-to-retain-a-bend"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb20_ember_snow_pitch_ankle_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology","chemistry_process","environment"],"query_text":"Почему зола не доказывает безопасность, яркий снег может мешать зрительной работе, горячий пек требует осторожности, а больная лодыжка — наблюдения без диагноза?","relevant_claim_refs":["claim:macro-b20-ash-can-conceal-hot-embers-so-apparent-ash-is-not-by-itself-safe-to-handle-or-leave","claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work","claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling","claim:macro-b20-ankle-soft-tissue-pain-or-swelling-can-call-for-protection-observation-and-escalation-without-diagnosis"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb21_ground_change_en","locale":"en","purpose":"semantic_resolution","domains":["environment"],"query_text":"How can a rain-dried soil crust and freezing-thawing susceptible ground affect surface work and a shallow post without proving rain, frost, damage, or repair?","relevant_claim_refs":["claim:macro-b21-rain-formed-soil-crust-can-limit-infiltration-emergence-and-surface-workability","claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb21_willow_establishment_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"От каких условий зависит укоренение уже имеющегося свежего черенка ивы, не создавая черенок, участок, воду или успешную посадку?","relevant_claim_refs":["claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"mb21_forge_and_saw_control_en","locale":"en","purpose":"semantic_resolution","domains":["craft_technology"],"query_text":"Why does wet charcoal need drying or fire management before hot forge work, and why should a binding saw kerf be controlled rather than forced, without inferring a forge, fuel stock, tool, or completed work?","relevant_claim_refs":["claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work","claim:macro-b21-saw-kerf-binding-needs-pause-and-control-of-support-stress-or-alignment-not-force"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"trade_payment_and_linear_comparison_ru","locale":"ru","purpose":"semantic_resolution","domains":["social_law_economy"],"query_text":"Как осторожно сравнить уже имеющиеся части платёжного металла и длину ткани либо верёвки, не устанавливая состав, подлинность, официальную меру, цену, согласие или расчёт?","relevant_claim_refs":["claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement","claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"trade_wax_and_balance_en","locale":"en","purpose":"semantic_resolution","domains":["craft_technology"],"query_text":"What can visible beeswax qualities and repeated observations of an existing balance support, without deciding every piece's composition, an official standard, seller intent, price, or transaction outcome?","relevant_claim_refs":["claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits","claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"trade_fish_and_seed_reserve_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"Почему свежая рыба требует осторожности к времени, температуре и признакам, а отобранное зерно можно хранить отдельно на посев, не устанавливая безопасность пищи, урожай, голод или домашний выбор?","relevant_claim_refs":["claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict","claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"trade_lost_pack_animal_en","locale":"en","purpose":"semantic_resolution","domains":["social_behavior"],"query_text":"If an already established pack animal is no longer under control, how can people begin from known signs and attend remaining cargo without inferring a route, weather, blame, recovery, or outcome?","relevant_claim_refs":["claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"final_static_retrieval_property_institution_ru","locale":"ru","purpose":"semantic_resolution","domains":["social_law_economy"],"query_text":"Вещь уже найдена, а люди по-разному говорят, кому она принадлежит. Как начать ограниченное выяснение возврата, не превращая находку в собственность и не назначая решение веча или должностного лица?","relevant_claim_refs":["claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition","claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry","claim:final-social-veche-can-provide-bounded-public-deliberation-interface","claim:final-social-posadnik-role-can-frame-civic-administrative-contact"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"final_static_retrieval_water_memory_en","locale":"en","purpose":"semantic_resolution","domains":["architecture_settlement","psychology_behavior"],"query_text":"How can household water use, washing, and keeping waste apart shape visible conditions, while one witness's retelling remains limited by position, attention, and changed detail?","relevant_claim_refs":["claim:final-social-household-water-use-depends-on-access-vessels-and-labour","claim:final-social-washing-and-drying-can-change-visible-household-soil","claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact","claim:final-social-observation-is-bounded-by-position-conditions-and-attention","claim:final-social-retelling-can-preserve-or-change-source-and-detail"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"final_static_retrieval_religion_ru","locale":"ru","purpose":"semantic_resolution","domains":["social_behavior"],"query_text":"Если церковная служба или соблюдение уже установлены, как различать роли посетителя, работника и клирика, возможные бытовые цели контакта и изменения распорядка без вывода о вере, доступе или результате?","relevant_claim_refs":["claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor","claim:final-social-established-observance-can-change-food-time-and-visiting-context","claim:final-social-household-and-church-contact-can-have-bounded-ordinary-purposes"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"final_static_retrieval_bank_tree_en","locale":"en","purpose":"semantic_resolution","domains":["environment"],"query_text":"After thaw on a wet riverbank, what changes can make soil detach more readily, and how can deciduous or wet-site tree context and basswood bast be described without identifying a particular tree or usable material?","relevant_claim_refs":["claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability","claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state","claim:final-nature-deciduous-trees-have-seasonal-leaf-state-unlike-evergreen-conifers","claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context","claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"final_static_retrieval_aquatic_toxic_ru","locale":"ru","purpose":"semantic_resolution","domains":["environment","biology_physiology"],"query_text":"Почему укоренённое водное растение с листьями на поверхности не следует считать плавающим мусором, и почему внешний вид дикого растения не доказывает съедобность или безопасность части растения?","relevant_claim_refs":["claim:final-nature-rooted-aquatic-herbs-can-combine-substrate-rhizomes-with-floating-or-emergent-leaves","claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris","claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food","claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"final_static_retrieval_debris_equipment_en","locale":"en","purpose":"semantic_resolution","domains":["environment","craft_technology"],"query_text":"What can stranded woody debris change at a shore without predicting passage, and what must be checked when already present arms or protective equipment are carried, fitted, or visibly worn?","relevant_claim_refs":["claim:final-nature-channel-flow-can-transport-large-woody-debris","claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport","claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage","claim:final-practical-present-weapon-or-tool-needs-secure-carrying-and-access","claim:final-practical-protective-layers-and-shields-need-fit-and-clearance","claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"final_static_retrieval_postnatal_exposure_ru","locale":"ru","purpose":"semantic_resolution","domains":["biology_physiology"],"query_text":"После рождения какие наблюдение и доступная помощь могут быть нужны матери, младенцу и хозяйству; как осторожно отреагировать на неизвестный токсичный контакт или подозрение на паразитов без диагноза?","relevant_claim_refs":["claim:final-practical-after-birth-mother-and-newborn-need-continuing-observation-and-available-support","claim:final-practical-postnatal-care-can-share-attention-between-parent-infant-and-household-needs","claim:final-practical-uncertain-toxic-contact-can-call-for-distance-from-source-and-observation","claim:final-practical-parasite-concern-can-support-hygiene-observation-and-contextual-help-without-diagnosis"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"final_static_retrieval_storage_wetgear_en","locale":"en","purpose":"semantic_resolution","domains":["architecture_settlement","craft_technology"],"query_text":"How can moisture, odour, and visible change guide checks of stored organic goods, while wet nets, cordage, or a wooden hull seam need inspection, drying, repair, and work space without promising safe travel?","relevant_claim_refs":["claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change","claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available","claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse","claim:final-practical-wet-wooden-hull-or-boat-seam-needs-local-inspection-before-repair-or-travel","claim:final-practical-wet-gear-and-hull-care-compete-for-space-time-and-dry-work-area"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}},
+    {"case_id":"final_static_retrieval_water_fire_ru","locale":"ru","purpose":"semantic_resolution","domains":["physics_material_science"],"query_text":"Когда вода может охлаждать обычный твёрдый горючий материал, а когда при неизвестной жидкости, масле или иной опасности важнее отойти и не делать вывод о безопасном способе тушения?","relevant_claim_refs":["claim:final-practical-water-cooling-applies-to-ordinary-solid-combustibles-not-every-fire","claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards"],"expected_hard_constraint_refs":[],"context":{"time":{"year":1230},"place_refs":["region_novgorod_land"],"actor_facets":{}}}
+  ]
+}

@@ -1,0 +1,273 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:shm-gnezdovo-candles",
+      "title": "Wax candles and a next-to-skin cross — Gnezdovo burial C-301",
+      "authors": [
+        "State Historical Museum"
+      ],
+      "publication": "State Historical Museum, exhibit 1438; MSU excavations 1982",
+      "source_kind": "catalogue",
+      "citation": "https://nav.shm.ru/en/exhibits/1438/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:shm-gnezdovo-candles",
+      "source_ref": "source:shm-gnezdovo-candles",
+      "anchor": {
+        "section": "Exhibit dating and first descriptive paragraph: wax-plate construction and wick-channel imprints"
+      },
+      "note": "Independently verified in verification-wax-candles.md. The find is Gnezdovo, second half X century; use for Novgorod 1100–1300 only as inferred earlier-Old-Rus compatibility, never a scene or ritual assertion.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:wax-candle",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:iron-candlestick"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:wax-plate-candle-forming",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:wax-candle"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candle-wax-material",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wax",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wax-candle"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:shm-gnezdovo-candles"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candle-thread-wick",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:textile-thread",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wax-candle"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:shm-gnezdovo-candles"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candle-rolled-plate",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:wax-plate-candle-forming",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wax_plate_rolled_into_cylinder_with_edges_pressed_together"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:shm-gnezdovo-candles"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wax-candle",
+      "locale": "ru",
+      "labels": [
+        "Восковая свеча"
+      ],
+      "short_definition": "Восковая свеча",
+      "search_aliases": [
+        "Восковая свеча"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wax-candle",
+      "locale": "en",
+      "labels": [
+        "Wax candle"
+      ],
+      "short_definition": "Wax candle",
+      "search_aliases": [
+        "Wax candle"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:wax-plate-candle-forming",
+      "locale": "ru",
+      "labels": [
+        "Формирование свечи из восковой пластины"
+      ],
+      "short_definition": "Формирование свечи из восковой пластины",
+      "search_aliases": [
+        "Формирование свечи из восковой пластины"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:wax-plate-candle-forming",
+      "locale": "en",
+      "labels": [
+        "Forming a candle from a wax plate"
+      ],
+      "short_definition": "Forming a candle from a wax plate",
+      "search_aliases": [
+        "Forming a candle from a wax plate"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candle-wax-material",
+      "locale": "ru",
+      "runtime_text": "Свечи из Гнёздова второй половины X века изготовлены из воска. Для Новгородской земли это более ранний древнерусский аналог, а не свидетельство конкретного запаса в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candle-wax-material",
+      "locale": "en",
+      "runtime_text": "The second-half-X-century Gnezdovo candles were made of wax. For Novgorod land this is an earlier Old-Rus analogue, not evidence of a particular stock in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candle-thread-wick",
+      "locale": "ru",
+      "runtime_text": "Отпечатки внутри каналов гнёздовских восковых свечей указывают на фитили из нескольких скрученных нитей. Вид волокна не установлен этим описанием.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candle-thread-wick",
+      "locale": "en",
+      "runtime_text": "Imprints in the Gnezdovo wax candles channels indicate wicks of several twisted threads. This description does not establish the fibre species.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candle-rolled-plate",
+      "locale": "ru",
+      "runtime_text": "Гнёздовские свечи описаны как цилиндры из свёрнутой восковой пластины с плотно прижатыми встык краями. Это засвидетельствованный способ конструкции, не обязательная технология всех свечей.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candle-rolled-plate",
+      "locale": "en",
+      "runtime_text": "The Gnezdovo candles are described as cylinders of rolled wax plate with edges pressed closely together. This is an attested construction, not a required technique for every candle.",
+      "search_aliases": []
+    }
+  ]
+}

@@ -1,0 +1,309 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-01",
+      "claim_ref": "claim:residual-law-visible-injury-and-witness",
+      "claim_digest": "18d713f6b00b3a65578ff9740ce500ff1c631dd3df2483b0d6ba67b44193335b",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-visible-injury-and-witness",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-visible-injury-and-witness",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-02",
+      "claim_ref": "claim:residual-law-injury-and-treatment-payments",
+      "claim_digest": "3281ccbc2a47fa8dccd11623a7c742586fed43efc4ab52bdbcf2fcc736e4c895",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-injury-and-treatment-payments",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-injury-and-treatment-payments",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-03",
+      "claim_ref": "claim:residual-law-unauthorized-horse-use",
+      "claim_digest": "49ad7904b87d4cdfe52053c4f14d4c47328e3b7332a50f3eee7dd1af4df8a03f",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-unauthorized-horse-use",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-unauthorized-horse-use",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-04",
+      "claim_ref": "claim:residual-law-detained-thief-and-princely-court",
+      "claim_digest": "1b61d1a003d7ceb44c3b9d8170a22b837dc7fbdcc15ea5fb43307d6695e605e3",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-detained-thief-and-princely-court",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-detained-thief-and-princely-court",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-05",
+      "claim_ref": "claim:residual-law-debt-denial-witness-oath",
+      "claim_digest": "59e5f4db2acb0706bdaf85d813882b9f43d757f86688a8d13004c117f32f640c",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-debt-denial-witness-oath",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-debt-denial-witness-oath",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-06",
+      "claim_ref": "claim:residual-law-merchant-entrustment-proof-exception",
+      "claim_digest": "4b16fd3d7eda46827864c1e485084699aa941088c11a373f06b693c6ad21181f",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-merchant-entrustment-proof-exception",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-merchant-entrustment-proof-exception",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-07",
+      "claim_ref": "claim:residual-law-interest-agreement-and-witnesses",
+      "claim_digest": "d91cde6bebad1544d3d2ff83d14842706a6a57373eed3aa695c0e1f43bf99e3a",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-interest-agreement-and-witnesses",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-interest-agreement-and-witnesses",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-08",
+      "claim_ref": "claim:residual-law-monthly-and-longer-interest",
+      "claim_digest": "94defb106e97fd8345996407c4d2a8c59a96efe55f803388daa9c5b8d741326e",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-monthly-and-longer-interest",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-monthly-and-longer-interest",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-09",
+      "claim_ref": "claim:residual-law-creditor-priority",
+      "claim_digest": "ebee718c496232e4bffc7091c9f85bb482d048136559a11cc86079774b1fa6f0",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-creditor-priority",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-creditor-priority",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-10",
+      "claim_ref": "claim:residual-law-zakup-complaint-not-escape",
+      "claim_digest": "ea82b504dc9445994ef197dd90c0d57f9115ec1807ad62e465c07bc9e9d14581",
+      "candidate_ref": "git:578e101e9f68f97f80e5772e2ed4c7f00140dcd9:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-zakup-complaint-not-escape",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-zakup-complaint-not-escape",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-corrected-article-52-and-88-claims",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; pravda is retained as justice or redress, not a mandated hearing; no uniform local enactment, present court, actor status, enforcement or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-11",
+      "claim_ref": "claim:residual-law-zakup-loss-context",
+      "claim_digest": "eeae02d76b37e3478e464b14af64be5d8f348006dbd610a2a5c5c6d2774fdf31",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-zakup-loss-context",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-zakup-loss-context",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-12",
+      "claim_ref": "claim:residual-law-zakup-illegal-sale",
+      "claim_digest": "6198fe282e51dfd0d20c9fea10b155125b963411354f3b16fcccef9e3d20a371",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-zakup-illegal-sale",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-zakup-illegal-sale",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-13",
+      "claim_ref": "claim:residual-law-status-and-witness-exceptions",
+      "claim_digest": "cc87180c1a5f791a38b73739fba484fb1069ad854aa0d258c68750501c7076f2",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-status-and-witness-exceptions",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-status-and-witness-exceptions",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-14",
+      "claim_ref": "claim:residual-law-boundaries-and-marked-trees",
+      "claim_digest": "b8e4e18fe2acc810c44031c27a475e857cb1d9b78525b85ae53a39e6ae091fb5",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-boundaries-and-marked-trees",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-boundaries-and-marked-trees",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-15",
+      "claim_ref": "claim:residual-law-arson-remedy-and-sanction",
+      "claim_digest": "40952eb38c71d84b2051e79f54b05130bbe8444ed7d2c6a91d39c14e2d8203cc",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-arson-remedy-and-sanction",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-arson-remedy-and-sanction",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-16",
+      "claim_ref": "claim:residual-law-daughters-and-status-inheritance",
+      "claim_digest": "b10e5656839b1030dd1676ef0f5e8efa85ae85b880080d199cf7813eefeaf8a3",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-daughters-and-status-inheritance",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-daughters-and-status-inheritance",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-17",
+      "claim_ref": "claim:residual-law-widow-separate-property",
+      "claim_digest": "b22afbac56e30c03615276f396c3c53401d46f85cd9f02f7189a8a29ae0822a6",
+      "candidate_ref": "git:578e101e9f68f97f80e5772e2ed4c7f00140dcd9:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-widow-separate-property",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-widow-separate-property",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-corrected-article-52-and-88-claims",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; distinguishes widow's portion/gifted property and children's maternal property, with no subsequent-wife condition, uniform local enactment, actor status, enforcement or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-18",
+      "claim_ref": "claim:residual-law-stepchildren-paternal-inheritance",
+      "claim_digest": "3412047ad29dd2eea1b738c2054056d889f2c30aade0eeaf3030b9649798e3fc",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-stepchildren-paternal-inheritance",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-stepchildren-paternal-inheritance",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:law-19",
+      "claim_ref": "claim:residual-law-dependency-and-agreement",
+      "claim_digest": "631d665d4ed47b7706e6c1faa812cde015808e2dba146fc3fd1631e231c7c9f6",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-law-norms-v1.json#claim:residual-law-dependency-and-agreement",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of MSU Troitsky-copy text, Waugh chronology discussion, and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-law-dependency-and-agreement",
+        "evidence:residual-law-recension-dating"
+      ],
+      "review_ref": "verification/residual-law-norms-v1.md#approved-comparative-documentary-norms",
+      "verdict": "APPROVE",
+      "limits": "Comparative documentary norm only; no uniform local enactment, present court, actor status, guilt, exact tariff, enforcement, remedy, or outcome."
+    }
+  ]
+}

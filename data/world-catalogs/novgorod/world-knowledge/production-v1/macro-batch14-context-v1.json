@@ -1,0 +1,138 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:macro-b14-context-editorial",
+      "title": "Macro batch 14 context editorial rationale v1",
+      "authors": ["Novgorod1230 editorial team"],
+      "publication": "Repository editorial reconstruction note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/research/macro-batch14-context-v1.md",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:macro-b14-shore-mixed-trace",
+      "source_ref": "source:macro-b14-context-editorial",
+      "anchor": {"section": "Reading a mixed shoreline trace"},
+      "note": "Editorial cautious reading of already observed mixed traces; it identifies no past structure, date, owner, safety or entitlement.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:macro-b14-market-weighing",
+      "source_ref": "source:macro-b14-context-editorial",
+      "anchor": {"section": "Weighing at a market"},
+      "note": "Editorial conditional reconstruction for an already apparent difference in a sale by weight; no named unit, price, official, mandatory procedure or outcome follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:macro-b14-road-hospitality",
+      "source_ref": "source:macro-b14-context-editorial",
+      "anchor": {"section": "A stranger at the door"},
+      "note": "Editorial reconstruction of conditional temporary aid; it creates no duty, right of entry, meal, bed, trust, payment or uniform response.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:reconstructed-mixed-shoreline-trace",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:reconstructed-market-weighing-check",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:reconstructed-road-hospitality-boundary",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-mixed-shoreline-trace",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "where stakes, charcoal and uneven ground are already observed together, the combination can signal prior human use of a shore while remaining insufficient to identify a dwelling, function, date, owner or extent"},
+      "polarity": "support",
+      "applicability": {"time": {"from": 1200, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "found_in"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "low", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:macro-b14-shore-mixed-trace"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:reconstructed-market-weighing-check",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "where an apparent difference arises in a sale by weight, people can repeat a mutually observable comparison using an available balance and an accepted reference or agreed method before deciding how to proceed; this supplies no named unit, price, official, procedure or outcome"},
+      "polarity": "support",
+      "applicability": {"time": {"from": 1200, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "low", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:macro-b14-market-weighing"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:reconstructed-road-hospitality-boundary",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "when an unfamiliar traveller seeks help in bad weather, a host can ask and assess immediate risk and household capacity, then offer limited dry shelter, warmth, food or directions, or refuse or redirect; temporary aid does not establish entitlement or a uniform duty"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "low", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:macro-b14-road-hospitality"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:environment:reconstructed-mixed-shoreline-trace", "locale": "ru", "labels": ["смешанный береговой след"], "short_definition": "Редакторская осторожная интерпретация сочетания уже видимых следов на берегу.", "search_aliases": ["колья уголь холмики", "следы старого жилья"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:environment:reconstructed-mixed-shoreline-trace", "locale": "en", "labels": ["mixed shoreline trace"], "short_definition": "Editorial cautious reading of already observed mixed shoreline traces.", "search_aliases": ["stakes charcoal mounds", "former shore use"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:reconstructed-market-weighing-check", "locale": "ru", "labels": ["проверка взвешивания на торгу"], "short_definition": "Редакторская premise о повторяемом общем сравнении при споре о весе.", "search_aliases": ["торг весы спор", "мера веса"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:reconstructed-market-weighing-check", "locale": "en", "labels": ["market weighing check"], "short_definition": "Editorial premise about a repeatable shared comparison in a weight dispute.", "search_aliases": ["market scale dispute", "weight measure"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_behavior:reconstructed-road-hospitality-boundary", "locale": "ru", "labels": ["границы дорожного гостеприимства"], "short_definition": "Редакторская premise о временной помощи путнику в пределах риска и хозяйских средств.", "search_aliases": ["путник дождь ночлег", "гость у дороги"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_behavior:reconstructed-road-hospitality-boundary", "locale": "en", "labels": ["road hospitality boundary"], "short_definition": "Editorial premise about temporary traveller aid within risk and household means.", "search_aliases": ["traveller rain shelter", "stranger at the door"]}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function", "locale": "ru", "runtime_text": "Колья, уголь и неровный грунт вместе могут указывать на прежнее использование берега людьми, но не называют жильё, функцию, дату, хозяина или размер места.", "search_aliases": ["колья уголь холмики", "следы жилья на берегу"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function", "locale": "en", "runtime_text": "Stakes, charcoal and uneven ground together can suggest prior human use of a shore, but do not identify a dwelling, function, date, owner or extent.", "search_aliases": ["stakes charcoal mounds", "shore dwelling traces"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution", "locale": "ru", "runtime_text": "Когда при продаже на вес уже возникло расхождение, люди могут повторить общее наблюдаемое сравнение на доступных весах с признанным или согласованным способом, прежде чем решать, как поступить. Это не называет единицу, цену, должностное лицо, обязательную процедуру или исход.", "search_aliases": ["торг спор о весе", "признанная мера веса", "повторное взвешивание"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution", "locale": "en", "runtime_text": "Where an apparent difference arises in a sale by weight, people can repeat a shared observable comparison on available scales with an accepted reference or agreed method before deciding how to proceed. This names no unit, price, official, mandatory procedure or outcome.", "search_aliases": ["market weight dispute", "accepted measure", "repeat weighing"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid", "locale": "ru", "runtime_text": "Незнакомый путник в непогоду может вызвать ограниченную помощь: хозяин оценивает риск и средства, предлагает сухое место, тепло, еду или направление — либо отказывает или направляет дальше. Это не право гостя и не одинаковая обязанность.", "search_aliases": ["ночлег в дождь", "случайный путник", "гостеприимство хозяина"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid", "locale": "en", "runtime_text": "An unfamiliar traveller in bad weather can prompt bounded aid: a host assesses risk and means, offers dry shelter, warmth, food or directions, or refuses or redirects. It is neither entitlement nor a uniform duty.", "search_aliases": ["traveller rain lodging", "stranger hospitality", "host shelter"]}
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-process-v1-place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+      "claim_ref": "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+      "claim_digest": "dfb45af585123cb822de8006c5f0978d0d67641ac9a5d48fcd0beac669d5815b",
+      "candidate_ref": "git:f4a9f01b19ef03df5ebb4ee07a79d75e17027073:data/world-catalogs/novgorod/world-knowledge/production-v1/place-wet-food-processes-v1.json#claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
+      "evidence_checked": [
+        "evidence:epa-hide-washing-and-fleshing"
+      ],
+      "review_ref": "verification/place-wet-food-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "It remains universal and conditional; no hide, water, tool, medieval recipe, workshop, or outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-process-v1-place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+      "claim_ref": "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+      "claim_digest": "707998bbba4d93764a9e30bc546811aa180ae777cacecd35bfdc155826659d36",
+      "candidate_ref": "git:71199d0fcff71038a89bc330c3a545e676c85130:data/world-catalogs/novgorod/world-knowledge/production-v1/place-wet-food-processes-v1.json#claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
+      "evidence_checked": [
+        "evidence:wet-hide-process"
+      ],
+      "review_ref": "verification/place-wet-food-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No pollution level, smell, water body, disposal method, volume, or present workshop follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-process-v1-place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+      "claim_ref": "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+      "claim_digest": "51ce9bdc0eacaefdd0e44b52bc7f38eeb02830c5e438a0075516992bb342ebab",
+      "candidate_ref": "git:d89f2004f5d55e7262f60192c932e260d5a85c1c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-wet-food-processes-v1.json#claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
+      "evidence_checked": [
+        "evidence:wet-work-separation"
+      ],
+      "review_ref": "verification/place-wet-food-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "It is editorial, not a layout, water-quality finding, universal rule, or scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-process-v1-place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+      "claim_ref": "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+      "claim_digest": "ccf11b43cf299f7b6abe9c4dd09834d76b6972d72a4239077169ee5d3b79812f",
+      "candidate_ref": "git:71199d0fcff71038a89bc330c3a545e676c85130:data/world-catalogs/novgorod/world-knowledge/production-v1/place-wet-food-processes-v1.json#claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
+      "evidence_checked": [
+        "evidence:fish-smoke-process"
+      ],
+      "review_ref": "verification/place-wet-food-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No recipe, duration, temperature, stock, safety, or batch outcome follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-process-v1-place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+      "claim_ref": "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+      "claim_digest": "1ac24aac0a010bb7e7a9b877c8948e29e292097782fa7384b469f1e90693fb7d",
+      "candidate_ref": "git:71199d0fcff71038a89bc330c3a545e676c85130:data/world-catalogs/novgorod/world-knowledge/production-v1/place-wet-food-processes-v1.json#claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+      "auditor_ref": "/root/place_scene_b",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from the candidate authors; root mechanically binds the recorded verdict to the frozen full claim inputs.",
+      "evidence_checked": [
+        "evidence:fish-smoke-sensory-limit",
+        "evidence:fish-smoke-process"
+      ],
+      "review_ref": "verification/place-wet-food-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Sensory description remains allowed; no safety or storage conclusion follows from it alone."
+    }
+  ]
+}

@@ -1,0 +1,1018 @@
+{
+  "batch": "macro-19",
+  "reviewer": "/root/macro_b19_review_a",
+  "corpus_commit": "325591f0a53ce616383d7b5d4390880bbc9dd9d3",
+  "corpus_claim_count": 1489,
+  "method": "WK-only review of frozen core cases 001–050. Givens establish a local scene only; citations support reusable premises, never state, exact mechanics, ownership, prices, or outcomes.",
+  "cases": [
+  {
+    "case_id": "mb19core-001",
+    "primary_domain": "riverbank erosion",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «riverbank erosion»."
+    },
+    "answer_ru": "Подмыв и высокая вода могут ослабить уже уязвимый берег. Груз не катят по кромке до осмотра и выбора более широкой опоры; это не прогноз обвала.",
+    "claim_refs": [
+      "claim:foundations-haz-05-slope-water-triggers",
+      "claim:river-flow-affects-sediment-transport-deposition"
+    ],
+    "inferences": [
+      "Держаться дальше от свежего подреза — осторожный вывод, не оценка несущей способности."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-002",
+    "primary_domain": "boat bilge and timber moisture",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «boat bilge and timber moisture»."
+    },
+    "answer_ru": "Воду убирают, затем осматривают швы и древесину; вода сама не доказывает течь либо порчу корпуса.",
+    "claim_refs": [
+      "claim:foundations-mat-06-wood-drying-property-change",
+      "claim:foundations-mat-02-wood-drying-crack-strength",
+      "claim:military-world-wet-equipment-benefits-from-inspection"
+    ],
+    "inferences": [
+      "Осмотр до рейса не является диагнозом лодки."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-003",
+    "primary_domain": "wind-driven rain and clothing",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «wind-driven rain and clothing»."
+    },
+    "answer_ru": "Мокрая одежда в холодной ветреной среде делает потерю тепла важной. Ищут укрытие или сухой слой, не называя предел выносливости.",
+    "claim_refs": [
+      "claim:research-extreme-cold-can-cause-cold-stress",
+      "claim:military-world-ground-and-weather-change-practical-options"
+    ],
+    "inferences": [
+      "Уменьшение воздействия не обещает восстановления."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-004",
+    "primary_domain": "insects near wet ground",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «insects near wet ground»."
+    },
+    "answer_ru": "У Culex водные стадии развиваются в воде, а самки используют кровь людей и животных; тёплый вечер у мелкой воды объясняет укусы и беспокойство.",
+    "claim_refs": [
+      "claim:fauna-culex-life-cycle",
+      "claim:fauna-culex-female-blood",
+      "claim:fauna-culex-dusk-rest"
+    ],
+    "inferences": [
+      "Вид и число насекомых не устанавливаются."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-005",
+    "primary_domain": "hoof condition and rough travel",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «hoof condition and rough travel»."
+    },
+    "answer_ru": "Копыто несёт вес и даёт сцепление; мусор около стрелки можно убрать при обычной очистке. При бережении ноги останавливаются и осматривают, не ставя диагноз.",
+    "claim_refs": [
+      "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+      "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
+    ],
+    "inferences": [
+      "Нагрузку не продолжают как обычно, пока причина неизвестна."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-006",
+    "primary_domain": "milk souring",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «milk souring»."
+    },
+    "answer_ru": "В жару утреннее молоко держат в самом прохладном месте и используют или перерабатывают скорее; время не доказывает свежесть либо порчу.",
+    "claim_refs": [
+      "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
+      "claim:practical-food-milk"
+    ],
+    "inferences": [
+      "Мера сокращает риск, но не подтверждает безопасность сосуда."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-007",
+    "primary_domain": "fish smoking",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «fish smoking»."
+    },
+    "answer_ru": "Сохранение рыбы зависит от сочетания сушки, дыма, тепла и при наличии соли. Неравномерную партию наблюдают и перераспределяют, но вид и запах не доказывают безопасность.",
+    "claim_refs": [
+      "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+      "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+      "claim:food-drying-depends-on-humidity-airflow"
+    ],
+    "inferences": [
+      "Обдув влияет на процесс, но не даёт рецепт."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-008",
+    "primary_domain": "cellar condensation",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «cellar condensation»."
+    },
+    "answer_ru": "Прохлада может замедлять потерю качества, но условия различны у культур. Влажные корзины отделяют и наблюдают, не объявляя запас испорченным.",
+    "claim_refs": [
+      "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
+      "claim:drying-reduces-microbial-growth-conditions"
+    ],
+    "inferences": [
+      "Отделение влажной части не доказывает порчу."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-009",
+    "primary_domain": "wool felting and friction",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «wool felting and friction»."
+    },
+    "answer_ru": "Влага, тепло и механическое действие могут вызвать валяние шерсти. Сильное трение прекращают, не объявляя степень усадки конкретной вещи.",
+    "claim_refs": [
+      "claim:static-wool-moisture-heat-mechanical-action-can-felt",
+      "claim:population-material-wet-wool"
+    ],
+    "inferences": [
+      "Мягкое обращение ограничивает воздействие, не гарантирует исход."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-010",
+    "primary_domain": "flax retting",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «flax retting»."
+    },
+    "answer_ru": "WK подтверждает лён и последующую механическую обработку, но прямо не покрывает мочение, его срок и признаки готовности. Решение вытаскивать пучки пришлось бы выдумывать.",
+    "claim_refs": [
+      "claim:agriculture-fauna-flax-hemp-cultivation",
+      "claim:fibre-flax-breaker-shive"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественные признаки недо- и перемочки льна и связь воды, тепла, времени с отделением волокна.",
+        "why_substantial": "Без этого нельзя решить центральный вопрос — продолжать или прекращать мочение — без рецепта и точного срока.",
+        "closest_claim_refs": [
+          "claim:fibre-flax-breaker-shive",
+          "claim:agriculture-fauna-flax-hemp-cultivation"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-011",
+    "primary_domain": "lime mortar curing",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «lime mortar curing»."
+    },
+    "answer_ru": "Известь может твердеть с водой либо через карбонизацию воздухом. Свежий шов защищают от прямого размывания, не назначая тип раствора или срок.",
+    "claim_refs": [
+      "claim:static-hydraulic-lime-can-initially-set-with-water",
+      "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+      "claim:lime-transformations"
+    ],
+    "inferences": [
+      "Защита от дождя не есть рецепт выдержки."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-012",
+    "primary_domain": "wooden joinery moisture",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «wooden joinery moisture»."
+    },
+    "answer_ru": "Смена влажности меняет свойства древесины, а трещины ухудшают целостность. Раму осматривают без силового выламывания двери.",
+    "claim_refs": [
+      "claim:foundations-mat-06-wood-drying-property-change",
+      "claim:foundations-mat-02-wood-drying-crack-strength"
+    ],
+    "inferences": [
+      "Сначала разделяют перекос и явное повреждение."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-013",
+    "primary_domain": "forge bellows and airflow",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «forge bellows and airflow»."
+    },
+    "answer_ru": "Горн и меха дают управляемый рабочий жар; сквозняк меняет дым и тепло. Регулируют меха и дверь, не называя температуру.",
+    "claim_refs": [
+      "claim:ordinary-life-smith-forge-and-bellows",
+      "claim:ordinary-life-smith-fire-needs-managed-space",
+      "claim:mb14-practical-iron-workability-is-qualitative-not-temperature"
+    ],
+    "inferences": [
+      "Это качественная корректировка, не температурный норматив."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-014",
+    "primary_domain": "hot iron cooling",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «hot iron cooling»."
+    },
+    "answer_ru": "WK допускает нагрев и охлаждение водой, но не объясняет, как выбор охлаждения меняет пригодность кованого крюка. Выбор воздуха или воды был бы догадкой.",
+    "claim_refs": [
+      "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+      "claim:mb14-practical-iron-workability-is-qualitative-not-temperature"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественное влияние охлаждения кованой железной детали на твёрдость, хрупкость и пригодность к подгонке.",
+        "why_substantial": "Способ охлаждения определяет центральный исход работы; существующее «вода может охлаждать» не объясняет выбор.",
+        "closest_claim_refs": [
+          "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-015",
+    "primary_domain": "tool-handle splitting",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «tool-handle splitting»."
+    },
+    "answer_ru": "Древесина слабее поперёк волокон, а трещина ухудшает прочность. Тяжёлые удары прекращают и рукоять осматривают либо меняют.",
+    "claim_refs": [
+      "claim:foundations-mat-04-wood-transverse-tension-weakness",
+      "claim:foundations-mat-02-wood-drying-crack-strength"
+    ],
+    "inferences": [
+      "Это не прогноз немедленного слома."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-016",
+    "primary_domain": "abrasives and edge maintenance",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «abrasives and edge maintenance»."
+    },
+    "answer_ru": "Оселок мог служить для правки затупившейся режущей кромки. Нож, рвущий кожу, правят, не придумывая угол заточки.",
+    "claim_refs": [
+      "claim:stone-whetstone-edge-maintenance",
+      "claim:stone-grinding-metal-use"
+    ],
+    "inferences": [
+      "Остановка для правки предпочтительнее усиления давления."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-017",
+    "primary_domain": "millstone grinding",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «millstone grinding»."
+    },
+    "answer_ru": "WK знает мельничный механизм, но не ручной помол: как состояние зерна и зазор камней дают грубую муку и что менять. Центральная причина не покрыта.",
+    "claim_refs": [
+      "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественная связь состояния зерна и зазора жерновов с крупностью и равномерностью муки при ручном помоле.",
+        "why_substantial": "Без неё нельзя объяснить грубую муку и следующий шаг.",
+        "closest_claim_refs": [
+          "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-018",
+    "primary_domain": "raw food handling",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «raw food handling»."
+    },
+    "answer_ru": "Сырые животные продукты отделяют от готовой пищи; очищают руки и поверхности. Это уменьшает риск, но не доказывает загрязнение.",
+    "claim_refs": [
+      "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
+      "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control"
+    ],
+    "inferences": [
+      "Безопасность речной воды не предполагается."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-019",
+    "primary_domain": "wood ash and cleaning",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «wood ash and cleaning»."
+    },
+    "answer_ru": "Зольный сток едок и может раздражать, но WK не говорит, что он очистит жир с тканевых инструментов без вреда. Нужен общий процесс, а не просто осторожность.",
+    "claim_refs": [
+      "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+      "claim:static-wood-ash-can-irritate-skin-and-eyes"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественная связь древесной золы/щёлочи с удалением жира и рисками для волокон и рук.",
+        "why_substantial": "Без неё нельзя решить, применять ли средство.",
+        "closest_claim_refs": [
+          "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+          "claim:static-wood-ash-can-irritate-skin-and-eyes"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-020",
+    "primary_domain": "cooking fat and open flame",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «cooking fat and open flame»."
+    },
+    "answer_ru": "Общий пожарный риск покрыт, но нет связи пролившегося кухонного жира с углями и первичным безопасным действием. Нельзя объявлять вспышку неизбежной.",
+    "claim_refs": [
+      "claim:ordinary-life-smith-fire-needs-managed-space",
+      "claim:military-world-fire-and-smoke-need-access-and-separation"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественное поведение пищевого жира у открытого пламени/углей и безопасные первичные действия.",
+        "why_substantial": "Это определяет непосредственную опасность и действие повара.",
+        "closest_claim_refs": [
+          "claim:military-world-fire-and-smoke-need-access-and-separation"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-021",
+    "primary_domain": "cold injury prevention",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «cold injury prevention»."
+    },
+    "answer_ru": "Холодная среда может быстро отнимать тепло; тяжёлая работа делает тепло и отдых важными. Устраняют сырость и ветер без диагноза обморожения.",
+    "claim_refs": [
+      "claim:research-extreme-cold-can-cause-cold-stress",
+      "claim:military-world-exertion-competes-with-attention-and-recovery"
+    ],
+    "inferences": [
+      "Это снижение воздействия, не лечение."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-022",
+    "primary_domain": "heat strain and hydration",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «heat strain and hydration»."
+    },
+    "answer_ru": "Жара и работа увеличивают тепловую нагрузку; жажда, сухость, усталость и головокружение неспецифичны. Он прекращает работу, ищет тень и воду без диагноза.",
+    "claim_refs": [
+      "claim:research-extreme-heat-can-increase-body-heat-storage",
+      "claim:candidate-v6-dehydration-can-have-nonspecific-observations",
+      "claim:activity-fluid-balance"
+    ],
+    "inferences": [
+      "Безопасность воды не предполагается."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-023",
+    "primary_domain": "muscle strain and lifting",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «muscle strain and lifting»."
+    },
+    "answer_ru": "Внезапная боль не даёт диагноза, но продолжение тяжёлой переноски не выдают за безопасное. Работу прекращают и ищут помощь/другой способ переноса.",
+    "claim_refs": [
+      "claim:public-world-capacity-can-vary-day-to-day",
+      "claim:military-world-established-casualty-needs-hazard-aware-help"
+    ],
+    "inferences": [
+      "Снижение нагрузки — осторожная поддержка, не лечение."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-024",
+    "primary_domain": "eye irritation from smoke",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «eye irritation from smoke»."
+    },
+    "answer_ru": "Есть дым как помеха видимости и зола как раздражитель глаз, но нет premise о раздражении глаз висящим дымом. Центральная связь не покрыта.",
+    "claim_refs": [
+      "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+      "claim:static-wood-ash-can-irritate-skin-and-eyes"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественная связь дыма с раздражением глаз, видимостью и пределом продолжения работы.",
+        "why_substantial": "Зола и дым не взаимозаменяемы.",
+        "closest_claim_refs": [
+          "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+          "claim:static-wood-ash-can-irritate-skin-and-eyes"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-025",
+    "primary_domain": "animal handling at pasture",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «animal handling at pasture»."
+    },
+    "answer_ru": "Нет поведенческой связи коровы и телёнка; материнское поведение овцы нельзя переносить на КРС. Полноценный ответ о ведении телёнка не покрыт.",
+    "claim_refs": [
+      "claim:fauna-ewe-lamb-recognition",
+      "claim:environment-p1-cattle"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественное поведение коровы и телёнка при кратком разделении и безопасное совместное перемещение.",
+        "why_substantial": "Без этого нельзя объяснить действие мальчика без переноса данных другого вида.",
+        "closest_claim_refs": [
+          "claim:fauna-ewe-lamb-recognition",
+          "claim:environment-p1-cattle"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-026",
+    "primary_domain": "sheep weather shelter",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «sheep weather shelter»."
+    },
+    "answer_ru": "Стадность овец известна, но нет связи мокрого холода с их благополучием и нуждой в укрытии. Выбор пастуха пришлось бы выдумывать.",
+    "claim_refs": [
+      "claim:fauna-sheep-flocking",
+      "claim:environment-p1-sheep-goat"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественное влияние холодной сырой погоды на овец и роль укрытия/сухой подстилки.",
+        "why_substantial": "Это определяет основной выбор пастуха.",
+        "closest_claim_refs": [
+          "claim:fauna-sheep-flocking",
+          "claim:environment-p1-sheep-goat"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-027",
+    "primary_domain": "poultry nesting behavior",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «poultry nesting behavior»."
+    },
+    "answer_ru": "Наседка может инкубировать яйца, но нет связи нарушения укрытия с выбором гнезда несушки и поиском яиц. Общая стадность этого не заменяет.",
+    "claim_refs": [
+      "claim:fauna-chicken-brooding",
+      "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Связь укрытия/нарушения привычного гнезда с местом кладки домашней курицы и практическим поиском яиц.",
+        "why_substantial": "Без неё не объяснить исчезновение яиц и действие помощницы.",
+        "closest_claim_refs": [
+          "claim:fauna-chicken-brooding",
+          "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-028",
+    "primary_domain": "winter livestock feed",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «winter livestock feed»."
+    },
+    "answer_ru": "Сено хранят сухим; некоторые кормовые плесени могут вредить животному. Подмоченное сено отделяют и ищут иной корм, не диагностируя корову.",
+    "claim_refs": [
+      "claim:practical-fodder-hay",
+      "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects"
+    ],
+    "inferences": [
+      "Изоляция не доказывает токсины или причину плохого аппетита."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-029",
+    "primary_domain": "orchard frost and blossoms",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «orchard frost and blossoms»."
+    },
+    "answer_ru": "Уязвимость к замерзанию зависит от вида и стадии растения; временное укрытие может удержать местное тепло, но не гарантирует результат. Урожай не предсказывают.",
+    "claim_refs": [
+      "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+      "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection"
+    ],
+    "inferences": [
+      "Риск цветку не есть прогноз плодоношения."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-030",
+    "primary_domain": "wild fungi and safe identification",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «wild fungi and safe identification»."
+    },
+    "answer_ru": "Внешнее сходство не подтверждает съедобность. Незнакомые грибы отделяют и не едят, не придумывая признаки вида.",
+    "claim_refs": [
+      "claim:wild-mushroom-resemblance-not-edibility",
+      "claim:bearberry-lingonberry-resemblance-not-identification"
+    ],
+    "inferences": [
+      "Отдельная корзина не делает гриб идентифицированным."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-031",
+    "primary_domain": "willow and wet ground",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «willow and wet ground»."
+    },
+    "answer_ru": "Ива связана с влажным освещённым прибрежным местом, насыщение делает грунт гидрическим. Проверяют опору и не считают иву доказательством проходимости.",
+    "claim_refs": [
+      "claim:white-willow-depends-on-moist-lit-riparian-habitat",
+      "claim:wetland-hydric-soil-depends-on-saturation"
+    ],
+    "inferences": [
+      "Ива не доказывает наличие пригодных прутьев."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-032",
+    "primary_domain": "flood silt and fields",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «flood silt and fields»."
+    },
+    "answer_ru": "Поток переносит и откладывает наносы, паводок оставляет ил и мусор. Полосу осматривают и очищают, не называя ил удобрением.",
+    "claim_refs": [
+      "claim:river-flow-affects-sediment-transport-deposition",
+      "claim:research-flood-can-leave-high-water-mark-types"
+    ],
+    "inferences": [
+      "Качество почвы и урожай не задаются."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-033",
+    "primary_domain": "storm-fallen wood",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «storm-fallen wood»."
+    },
+    "answer_ru": "Общие свойства древесины не описывают корневую плиту, зависшие и напряжённые ветви. Нельзя отличить доступные дрова от немедленной опасности.",
+    "claim_refs": [
+      "claim:foundations-mat-02-wood-drying-crack-strength",
+      "claim:foundations-mat-04-wood-transverse-tension-weakness"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Наблюдаемые опасности бурелома: частично вывороченный ствол, зависшие/напряжённые ветви и безопасная дистанция.",
+        "why_substantial": "Без этого нельзя реконструировать немедленную механическую опасность.",
+        "closest_claim_refs": [
+          "claim:foundations-mat-02-wood-drying-crack-strength"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-034",
+    "primary_domain": "loom tension",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «loom tension»."
+    },
+    "answer_ru": "WK говорит, что стан держит основу под натяжением, но не объясняет, как неравное натяжение стягивает кромку и как его выравнивать.",
+    "claim_refs": [
+      "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
+      "claim:population-processes-weaving-thread"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Связь неравного натяжения основы с перекосом полотна и простая корректировка натяжения.",
+        "why_substantial": "Без неё центральное наблюдение ткачихи не получает действия.",
+        "closest_claim_refs": [
+          "claim:ordinary-life-weaver-needs-yarn-and-loom-space"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-035",
+    "primary_domain": "leather stitching durability",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «leather stitching durability»."
+    },
+    "answer_ru": "Отказ стежков может разделить детали. Свежий влажный шов не тянут резко; точная прочность и срок сушки не заданы.",
+    "claim_refs": [
+      "claim:research-failure-of-stitched-leather-join-can-separate-components",
+      "claim:population-material-leather-mould"
+    ],
+    "inferences": [
+      "Постепенная проба не обещает долговечность."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-036",
+    "primary_domain": "basket weaving materials",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «basket weaving materials»."
+    },
+    "answer_ru": "Нет свойства свежих и высушенных ивовых прутьев при сгибе. Нельзя выбрать смачивание или отбраковку без технологии из памяти.",
+    "claim_refs": [
+      "claim:white-willow-depends-on-moist-lit-riparian-habitat"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Разница гибкости свежих, подсушенных и повторно увлажнённых ивовых прутьев при плетении.",
+        "why_substantial": "Это определяет пригодность доступного материала.",
+        "closest_claim_refs": [
+          "claim:white-willow-depends-on-moist-lit-riparian-habitat"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-037",
+    "primary_domain": "tarred wood waterproofing",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «tarred wood waterproofing»."
+    },
+    "answer_ru": "В сравнительной интерпретации щели досок конопатили просмоленной паклей; это поддерживает осмотр раскрытого шва и совместимое уплотнение. Герметичность и успех ремонта не обещаны.",
+    "claim_refs": [
+      "claim:construction-tarred-tow-caulking",
+      "claim:construction-pine-resin-bast"
+    ],
+    "inferences": [
+      "Это не создаёт запас пакли или исправную лодку."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-038",
+    "primary_domain": "roof drainage",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «roof drainage»."
+    },
+    "answer_ru": "Нахлёсты ведут воду вниз и наружу, разрыв нарушает путь. Повторяющуюся лужу связывают с осмотром края и локальным ремонтом, не с гарантией герметичности.",
+    "claim_refs": [
+      "claim:household-roof-layers-shed-water",
+      "claim:household-roof-local-condition-guides-repair",
+      "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit"
+    ],
+    "inferences": [
+      "Гниль стены не предполагается."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-039",
+    "primary_domain": "clay soil workability",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «clay soil workability»."
+    },
+    "answer_ru": "Глина может становиться пластичной с водой, но нет признаков пригодной карьерной глины и отличия её от верхней грязи. Отбор материала не покрыт.",
+    "claim_refs": [
+      "claim:clay-dried-replasticization",
+      "claim:clay-firing-structural-transformation"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественные признаки пригодной пластичной глины в сыром карьере и отличие от поверхностной грязи/органики.",
+        "why_substantial": "Без этого не объяснить, почему добытый материал годится для работы.",
+        "closest_claim_refs": [
+          "claim:clay-dried-replasticization"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-040",
+    "primary_domain": "snow crust and travel",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «snow crust and travel»."
+    },
+    "answer_ru": "Подтаявший и снова замёрзший снег даёт наст, но не сообщает, выдержит ли он человека, коня или груз. Скорость снижают и проверяют опору.",
+    "claim_refs": [
+      "claim:residual-nature-snow-melt-refreeze-crust",
+      "claim:military-world-ground-and-weather-change-practical-options"
+    ],
+    "inferences": [
+      "Это не прогноз провала."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-041",
+    "primary_domain": "ice and slipping",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «ice and slipping»."
+    },
+    "answer_ru": "Лёд и снег на ходовой поверхности могут вызвать скольжение. Подходящих предупреждают и очищают/обходят доступный участок, не обещая падение.",
+    "claim_refs": [
+      "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+      "claim:military-world-ground-and-weather-change-practical-options"
+    ],
+    "inferences": [
+      "Риск не равен происшествию."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-042",
+    "primary_domain": "fog and sound",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «fog and sound»."
+    },
+    "answer_ru": "Туман уменьшает видимость; условия воды и тумана меняют безопасные варианты. Не выходят в канал вслепую и ждут визуального подтверждения, не назначая курс судна.",
+    "claim_refs": [
+      "claim:foundations-earth-27-fog-visibility",
+      "claim:military-world-ground-and-weather-change-practical-options"
+    ],
+    "inferences": [
+      "Услышанное судно не доказывает положение."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-043",
+    "primary_domain": "moonlight and outdoor work",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «moonlight and outdoor work»."
+    },
+    "answer_ru": "Фаза Луны не задаёт освещённость места; облачность и горизонт мешают наблюдению. Делают лишь безопасный видимый труд и прекращают при потере света.",
+    "claim_refs": [
+      "claim:residual-nature-moonlight-reflected-sunlight",
+      "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
+      "claim:residual-nature-twilight-solar-afterglow"
+    ],
+    "inferences": [
+      "Луну не используют как точные часы."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-044",
+    "primary_domain": "water mill flow",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «water mill flow»."
+    },
+    "answer_ru": "WK знает привод и жернова, но не связь расхода воды с ходом колеса. Низкая вода и медленный ход остаются необъяснёнными.",
+    "claim_refs": [
+      "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественная связь расхода/напора воды с вращением колеса и производительностью мельницы.",
+        "why_substantial": "Без неё центральная причинная связь сцены отсутствует.",
+        "closest_claim_refs": [
+          "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-045",
+    "primary_domain": "bridge boards and frost",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «bridge boards and frost»."
+    },
+    "answer_ru": "Лёд даёт риск скольжения, а влажность меняет свойства древесины. Пони ведут медленно и проверяют доски, не оценивая несущую способность.",
+    "claim_refs": [
+      "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+      "claim:foundations-mat-06-wood-drying-property-change",
+      "claim:construction-rjaz-bridge-support"
+    ],
+    "inferences": [
+      "Медленное пересечение не доказывает состояние моста."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-046",
+    "primary_domain": "ferry rope wear",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «ferry rope wear»."
+    },
+    "answer_ru": "Мокрую волокнистую снасть осматривают на износ до рейса; местное повреждение чинят лишь при времени и материале, иначе меняют план. Сплющенные пряди не дают прочность.",
+    "claim_refs": [
+      "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair"
+    ],
+    "inferences": [
+      "Это не предсказывает обрыв."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-047",
+    "primary_domain": "cart axle friction",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «cart axle friction»."
+    },
+    "answer_ru": "WK требует отделять влияние груза, колеса, оси и дороги, но не даёт, что горячая шумная ступица означает трение и как это ограничивает поездку.",
+    "claim_refs": [
+      "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
+        "claim:static-lubricant-film-can-separate-moving-surfaces"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Качественные признаки трения в оси/ступице, связь нагрева и шума с остановкой, осмотром и смазкой.",
+        "why_substantial": "Без этого нельзя объяснить изменение плана пути.",
+        "closest_claim_refs": [
+          "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
+          "claim:static-lubricant-film-can-separate-moving-surfaces"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-048",
+    "primary_domain": "pack load balance",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «pack load balance»."
+    },
+    "answer_ru": "Есть общая нужда в уходе за рабочим животным, но не связь неравного вьюка с устойчивостью, натиранием и движением. Правильная перекладка не покрыта.",
+    "claim_refs": [
+      "claim:military-world-working-animal-care-intersects-travel",
+      "claim:measurement-net-excludes-tare"
+    ],
+    "inferences": [],
+    "status": "substantial_gap",
+    "gaps": [
+      {
+        "need": "Связь симметрии и закрепления вьюка с устойчивостью, натиранием и движением животного.",
+        "why_substantial": "Она определяет основное действие помощницы.",
+        "closest_claim_refs": [
+          "claim:military-world-working-animal-care-intersects-travel"
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "mb19core-049",
+    "primary_domain": "river current and small craft",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «river current and small craft»."
+    },
+    "answer_ru": "При подходе лодочник соотносит вёсла с ветром и течением; при потере контроля ждёт или выбирает иной подход. Точный манёвр не назначается.",
+    "claim_refs": [
+      "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+      "claim:practical-boat-weather-water"
+    ],
+    "inferences": [
+      "Дрейф не обещает исход швартовки."
+    ],
+    "status": "covered",
+    "gaps": []
+  },
+  {
+    "case_id": "mb19core-050",
+    "primary_domain": "forest canopy and drying",
+    "domain_fit": {
+      "matches": true,
+      "reason": "Проверяется factual слой «forest canopy and drying»."
+    },
+    "answer_ru": "Сушка зависит от влажности и движения воздуха; после дождя под деревьями не обещают быстрый результат. Выбирают более проветриваемое место либо несут листья дальше.",
+    "claim_refs": [
+      "claim:food-drying-depends-on-humidity-airflow",
+      "claim:place-outdoors-season-work-space-reallocation",
+      "claim:population-physics-evaporation-humidity"
+    ],
+    "inferences": [
+      "Тень сама не доказывает сухость или проветривание."
+    ],
+    "status": "covered",
+    "gaps": []
+  }
+]
+}

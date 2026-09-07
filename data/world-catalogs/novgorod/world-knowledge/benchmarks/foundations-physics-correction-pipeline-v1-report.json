@@ -1,0 +1,25 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_report_v1",
+  "benchmark_ref": "wk-pipeline:scientific-foundations-physics-correction-v1",
+  "completed": false,
+  "decision": {
+    "status": "fail",
+    "failures": [
+      {
+        "case_id": "foundations_air_resistance_ru",
+        "reason": "PIPELINE_EXECUTION_FAILED"
+      }
+    ]
+  },
+  "failed_case": {
+    "mode": "without_wk",
+    "case_id": "foundations_air_resistance_ru"
+  },
+  "failure": {
+    "code": "transport_error",
+    "message": "Provider request failed.",
+    "details": null,
+    "planner_outputs": []
+  },
+  "runs": []
+}

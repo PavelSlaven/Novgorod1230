@@ -11,8 +11,13 @@ const loadedProfile = { schema: 'rus.lower_dvina_trace_n1_loaded_profile.v1',
 
 test('N1 grounds one existing visible background NPC and replays without model', async () => {
   let calls = 0;
+  let grounded;
   const factory = createLowerDvinaTraceN1ProductionResolverFactory({
     loadedProfile, roleRunner: {},
+    worldKnowledgeGrounder: { async ground(request, purpose, authoritative) {
+      grounded = { request, purpose, authoritative };
+      return { ...request, world_knowledge: { facts: [] } };
+    } },
     async resolveNpcOrdinarySemanticRemainder({ request }) {
       calls += 1;
       assert.equal(Object.hasOwn(request, 'formal_facets'), false);
@@ -29,6 +34,11 @@ test('N1 grounds one existing visible background NPC and replays without model',
   const input = requestInput();
   const first = await resolve(input);
   assert.equal(calls, 1);
+  assert.equal(grounded.purpose, 'materialization_support');
+  assert.deepEqual(grounded.authoritative.actor_facets, {
+    role_ref: 'fisher', occupation_ref: 'fishing'
+  });
+  assert.equal(Object.hasOwn(grounded.request, 'formal_facets'), false);
   assert.equal(first.background_npc_semantic_atomic_write_plan.npc_ref, 'npc:1');
   assert.deepEqual(first.working_projection.current_visible_context.visible_npc[0]
     .observable_cues.ordinary_remainder, {

@@ -1,0 +1,2810 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_report_v1",
+  "benchmark_ref": "wk-pipeline:scientific-foundations-v1",
+  "completed": false,
+  "decision": {
+    "status": "fail",
+    "failures": [
+      {
+        "case_id": "foundations_reappraisal_en",
+        "reason": "PIPELINE_EXECUTION_FAILED"
+      }
+    ]
+  },
+  "failed_case": {
+    "mode": "hybrid",
+    "case_id": "foundations_reappraisal_en"
+  },
+  "failure": {
+    "code": "transport_error",
+    "message": "Provider request failed.",
+    "details": null,
+    "planner_outputs": [
+      {
+        "role_id": "world_knowledge_query_planner",
+        "output": {
+          "schema": "world_knowledge_query_plan_v1",
+          "query_locale": "en",
+          "domains": [
+            "psychology_behavior"
+          ],
+          "focus_refs": [
+            "wk:psychology_behavior:emotion-regulation-experimental"
+          ],
+          "requested_predicates": [],
+          "search_hints": [
+            "effect of instructed cognitive reappraisal on reported negative emotional experience in laboratory negative-film task"
+          ]
+        }
+      }
+    ]
+  },
+  "runs": [
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_reappraisal_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "The laboratory negative-film task found that instructed cognitive reappraisal reduced reported negative emotional experience.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-01-reappraisal-negative-experience"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms4-01-reappraisal-negative-experience"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1182.7839000000001,
+      "semantic_usage": {
+        "prompt_tokens": 353,
+        "completion_tokens": 38,
+        "total_tokens": 391,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 97
+      },
+      "total_pipeline_ms": 1182.7839000000001
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_uncertainty_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Неопределённость и её представление могут влиять на процессы когнитивного контроля и принятия решений, поскольку они модулируют активность в префронтальной коре и связанных сетях, что отражается на адаптивном поведении, оценке ошибок и выборе стратегий. Однако конкретные механизмы зависят от типа неопределённости (например, риск, двусмысленность) и контекста задачи.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-03-uncertainty-cognitive-control"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms4-03-uncertainty-cognitive-control"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1701.9283999999998,
+      "semantic_usage": {
+        "prompt_tokens": 366,
+        "completion_tokens": 120,
+        "total_tokens": 486,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 110
+      },
+      "total_pipeline_ms": 1701.9283999999998
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_antler_workability_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Олений рог отличается от кератинового рога тем, что он состоит из костной ткани, а не из кератина. Опыт с естественно сброшенным рогом благородного оленя показал, что рог содержит воду и поддается обработке.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-material3-03-antler-water-workability"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-material3-01-antler-osseous-not-horn"
+        ],
+        [
+          "claim:foundations-physical-material3-03-antler-water-workability"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1265.2302,
+      "semantic_usage": {
+        "prompt_tokens": 379,
+        "completion_tokens": 86,
+        "total_tokens": 465,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 123
+      },
+      "total_pipeline_ms": 1265.2302
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_acute_stress_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Острый стресс может влиять на процессы принятия решений, изменяя баланс между системами быстрых, интуитивных реакций и более медленными, обдуманными процессами, что часто приводит к более рискованным или менее гибким решениям.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-04-acute-stress"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms3-04-acute-stress"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1473.7161000000006,
+      "semantic_usage": {
+        "prompt_tokens": 356,
+        "completion_tokens": 84,
+        "total_tokens": 440,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 100
+      },
+      "total_pipeline_ms": 1473.7161000000006
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_apology_experiment_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "The experiment found that apology increased later re-investment, but only when the apology was accompanied by compensation; apology alone did not increase re-investment.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-06-apology-reinvestment"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms3-06-apology-reinvestment"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1407.3172000000004,
+      "semantic_usage": {
+        "prompt_tokens": 357,
+        "completion_tokens": 53,
+        "total_tokens": 410,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 101
+      },
+      "total_pipeline_ms": 1407.3172000000004
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_infection_routes_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Учебная схема CDC/NIOSH выделяет следующие пути передачи возбудителей: контактный (прямой и непрямой), воздушно-капельный (крупные капли), воздушно-пылевой (аэрозоль), а также трансмиссивный (через переносчиков). Входные ворота инфекции включают дыхательные пути, желудочно-кишечный тракт, кожу и слизистые оболочки, а также парентеральный путь (через кровь и инъекции).",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-life-44-pathogen-transport",
+        "claim:foundations-life-45-infection-entry"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-44-pathogen-transport"
+        ],
+        [
+          "claim:foundations-life-45-infection-entry"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1686.0745000000006,
+      "semantic_usage": {
+        "prompt_tokens": 361,
+        "completion_tokens": 143,
+        "total_tokens": 504,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 105
+      },
+      "total_pipeline_ms": 1686.0745000000006
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_chemical_exposure_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Contact with a chemical contaminant does not by itself determine illness because illness depends on the dose (amount and concentration), duration and frequency of exposure, route of entry (e.g., inhalation, ingestion, dermal), and individual susceptibility (e.g., age, health status, genetics). These exposure conditions determine whether a harmful effect occurs.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:foundations-haz-02-exposure-not-illness"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-haz-01-exposure-modifiers"
+        ],
+        [
+          "claim:foundations-haz-02-exposure-not-illness"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1476.5869000000002,
+      "semantic_usage": {
+        "prompt_tokens": 354,
+        "completion_tokens": 88,
+        "total_tokens": 442,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 98
+      },
+      "total_pipeline_ms": 1476.5869000000002
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_wet_slope_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Дождь или снеготаяние увеличивают водонасыщение грунта, повышая поровое давление и снижая эффективные напряжения, что уменьшает прочность на сдвиг и может спровоцировать движение склона, уже находящегося в предельном состоянии устойчивости.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-haz-04-slope-force-strength",
+        "claim:foundations-haz-05-slope-water-triggers"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-haz-04-slope-force-strength"
+        ],
+        [
+          "claim:foundations-haz-05-slope-water-triggers"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1164.5030000000006,
+      "semantic_usage": {
+        "prompt_tokens": 363,
+        "completion_tokens": 84,
+        "total_tokens": 447,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 107
+      },
+      "total_pipeline_ms": 1164.5030000000006
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_air_resistance_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Лёгкий широкий лист испытывает большее сопротивление воздуха из-за своей большой площади и малой массы, что замедляет его падение и приводит к хаотичному движению. Компактный груз имеет меньшую площадь и большую массу, поэтому сопротивление воздуха для него менее значимо, и он падает быстрее и по более прямой траектории.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-phys-01-air-drag-fall"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-01-air-drag-fall"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1184.7962000000007,
+      "semantic_usage": {
+        "prompt_tokens": 361,
+        "completion_tokens": 105,
+        "total_tokens": 466,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 105
+      },
+      "total_pipeline_ms": 1184.7962000000007
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_impact_duration_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Spreading the same change in momentum over a longer contact time reduces the force, because force equals change in momentum divided by time (F = Δp/Δt).",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-phys-02-impulse-momentum-change"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-02-impulse-momentum-change"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 938.6749,
+      "semantic_usage": {
+        "prompt_tokens": 351,
+        "completion_tokens": 54,
+        "total_tokens": 405,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 95
+      },
+      "total_pipeline_ms": 938.6749
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_wet_metal_contact_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Электрический контакт разных металлов во влажной проводящей среде может менять коррозию из-за образования гальванической пары: более активный металл (анод) корродирует быстрее, а менее активный (катод) защищается. Это происходит вследствие разности электродных потенциалов, создающей электрический ток через электролит.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-chm-12-galvanic-contact-corrosion"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-chm-12-galvanic-contact-corrosion"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1284.1838000000007,
+      "semantic_usage": {
+        "prompt_tokens": 361,
+        "completion_tokens": 108,
+        "total_tokens": 469,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 105
+      },
+      "total_pipeline_ms": 1284.1838000000007
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_neutralization_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "An acid–base neutralization can produce a salt and water. When a strong acid reacts with a strong base, heat is released (the reaction is exothermic).",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
+        "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-b2-chm-01-acid-base-neutralization"
+        ],
+        [
+          "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 782.8292999999994,
+      "semantic_usage": {
+        "prompt_tokens": 359,
+        "completion_tokens": 54,
+        "total_tokens": 413,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 103
+      },
+      "total_pipeline_ms": 782.8292999999994
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_sound_medium_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Звуковая волна не проходит через вакуум, потому что ей нужна среда (газ, жидкость или твёрдое тело) для распространения: она передаётся через колебания частиц среды, а в вакууме частиц нет.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-snd-02-sound-material-medium"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-b2-snd-02-sound-material-medium"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1216.615700000002,
+      "semantic_usage": {
+        "prompt_tokens": 349,
+        "completion_tokens": 80,
+        "total_tokens": 429,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 93
+      },
+      "total_pipeline_ms": 1216.615700000002
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_horn_water_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Thin horn can soften or warp when exposed to water, as moisture can affect its structure.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1087.5881000000008,
+      "semantic_usage": {
+        "prompt_tokens": 347,
+        "completion_tokens": 40,
+        "total_tokens": 387,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 91
+      },
+      "total_pipeline_ms": 1087.5881000000008
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_digestion_absorption_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Расщепление пищи — это процесс механического и химического разложения крупных молекул на более простые, тогда как всасывание продуктов пищеварения — это переход этих простых молекул через стенку кишечника в кровь или лимфу.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-life-10-digestion",
+        "claim:foundations-life-11-absorption"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-10-digestion"
+        ],
+        [
+          "claim:foundations-life-11-absorption"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1260.8388000000014,
+      "semantic_usage": {
+        "prompt_tokens": 352,
+        "completion_tokens": 79,
+        "total_tokens": 431,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 96
+      },
+      "total_pipeline_ms": 1260.8388000000014
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_lung_gas_exchange_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Oxygen and carbon dioxide move between air in lung alveoli and blood by passive diffusion across the alveolar-capillary membrane, driven by partial pressure gradients: oxygen diffuses from alveoli (higher partial pressure) into blood (lower partial pressure), while carbon dioxide diffuses from blood (higher partial pressure) into alveoli (lower partial pressure).",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-life-13-alveolar-exchange"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-13-alveolar-exchange"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1284.586800000001,
+      "semantic_usage": {
+        "prompt_tokens": 350,
+        "completion_tokens": 89,
+        "total_tokens": 439,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 94
+      },
+      "total_pipeline_ms": 1284.586800000001
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_attention_task_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Человек, сосредоточенный на задаче, может не заметить часть видимых деталей из-за ограниченности внимания и эффекта невнимательной слепоты, когда мозг отфильтровывает нерелевантную информацию для обработки приоритетных стимулов.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms-06-visual-selection"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-06-visual-selection"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1180.5269000000008,
+      "semantic_usage": {
+        "prompt_tokens": 360,
+        "completion_tokens": 93,
+        "total_tokens": 453,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 104
+      },
+      "total_pipeline_ms": 1180.5269000000008
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_practice_learning_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Repeated movement practice and sensory feedback contribute to acquiring a skill by enabling the refinement of motor patterns through trial and error, where feedback helps adjust movements to improve accuracy and efficiency.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms-12-practice-correction"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-12-practice-correction"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 964.3640000000014,
+      "semantic_usage": {
+        "prompt_tokens": 348,
+        "completion_tokens": 56,
+        "total_tokens": 404,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 92
+      },
+      "total_pipeline_ms": 964.3640000000014
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_attribution_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Наблюдатели могут объяснить один поступок и характером, и обстоятельствами, потому что в объяснении поведения возможны разные атрибуции: диспозиционная (ссылка на устойчивые черты личности) и ситуационная (ссылка на внешние условия). Оба типа объяснений могут быть правдоподобны в зависимости от доступной информации и точки зрения наблюдателя.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms-20-attribution-alternatives"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-20-attribution-alternatives"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1509.1304000000018,
+      "semantic_usage": {
+        "prompt_tokens": 357,
+        "completion_tokens": 107,
+        "total_tokens": 464,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 101
+      },
+      "total_pipeline_ms": 1509.1304000000018
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_persuasion_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Persuasion can affect social judgment under conditions such as high message elaboration, perceived source credibility, message relevance, and when the audience is motivated and able to process the arguments.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms-25-persuasion-context"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-25-persuasion-context"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1368.755799999999,
+      "semantic_usage": {
+        "prompt_tokens": 347,
+        "completion_tokens": 56,
+        "total_tokens": 403,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 91
+      },
+      "total_pipeline_ms": 1368.755799999999
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_aquifer_recharge_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Длительный отбор подземной воды быстрее пополнения понижает её уровень, потому что извлечение превышает естественное восполнение, что приводит к истощению запасов и снижению уровня воды.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-earth-21-groundwater-withdrawal-balance"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-earth-21-groundwater-withdrawal-balance"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1104.7438999999977,
+      "semantic_usage": {
+        "prompt_tokens": 358,
+        "completion_tokens": 70,
+        "total_tokens": 428,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 102
+      },
+      "total_pipeline_ms": 1104.7438999999977
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_radiation_fog_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Fog forms near the ground during a clear calm moist night through radiational cooling: the ground loses heat by infrared radiation to space, cooling the air in contact with it. If the air is moist and calm, the cooling lowers the air temperature to the dew point, causing water vapor to condense into tiny water droplets, forming radiation fog.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-earth-28-radiation-fog"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-earth-28-radiation-fog"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1567.1509000000005,
+      "semantic_usage": {
+        "prompt_tokens": 348,
+        "completion_tokens": 90,
+        "total_tokens": 438,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 92
+      },
+      "total_pipeline_ms": 1567.1509000000005
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "foundations_foggy_attention_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Туман снижает видимость и контраст, что ограничивает способность замечать детали на дороге. Сосредоточенность на другой зрительной задаче (например, на телефоне или навигаторе) отвлекает внимание от дорожной обстановки, снижая осведомленность о происходящем. В совокупности эти факторы уменьшают количество замеченных деталей, повышая риск аварий.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:foundations-ms-06-visual-selection"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-earth-27-fog-visibility"
+        ],
+        [
+          "claim:foundations-ms-06-visual-selection"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1484.959600000002,
+      "semantic_usage": {
+        "prompt_tokens": 362,
+        "completion_tokens": 121,
+        "total_tokens": 483,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 106
+      },
+      "total_pipeline_ms": 1484.959600000002
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_reappraisal_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "In a laboratory negative-film task, instructed cognitive reappraisal decreased reported negative emotional experience.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-01-reappraisal-negative-experience"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms4-01-reappraisal-negative-experience"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-ms4-01-reappraisal-negative-experience",
+        "claim:foundations-ms4-02-suppression-expression-subjective-gap"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-ms4-01-reappraisal-negative-experience"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "psychology_behavior"
+        ],
+        "focus_refs": [
+          "wk:psychology_behavior:emotion-regulation-experimental"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "effect of instructed cognitive reappraisal on reported negative emotional experience in laboratory negative-film task"
+        ]
+      },
+      "planner_ms": 1512.013600000002,
+      "planner_usage": {
+        "prompt_tokens": 22155,
+        "completion_tokens": 78,
+        "total_tokens": 22233
+      },
+      "retrieval_ms": 6.3791999999994005,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 907.9825999999994,
+      "semantic_usage": {
+        "prompt_tokens": 1131,
+        "completion_tokens": 54,
+        "total_tokens": 1185,
+        "prompt_tokens_details": {
+          "cached_tokens": 1024
+        },
+        "prompt_cache_hit_tokens": 1024,
+        "prompt_cache_miss_tokens": 107
+      },
+      "total_pipeline_ms": 2428.0829999999987
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_uncertainty_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Согласно обзору исследований, сама неопределённость и её представление могут изменять процессы когнитивного контроля и принятия решений. Однако направление, склонность к риску и суждение конкретного человека не устанавливаются.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-03-uncertainty-cognitive-control"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms4-03-uncertainty-cognitive-control"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-ms4-03-uncertainty-cognitive-control",
+        "claim:foundations-ms3-04-acute-stress"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-ms4-03-uncertainty-cognitive-control"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "psychology_behavior"
+        ],
+        "focus_refs": [
+          "wk:psychology_behavior:uncertainty-cognitive-control"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "влияние неопределённости на когнитивный контроль",
+          "представление неопределённости и принятие решений",
+          "обзор исследований по неопределённости и когнитивному контролю"
+        ]
+      },
+      "planner_ms": 1303.0375999999997,
+      "planner_usage": {
+        "prompt_tokens": 22168,
+        "completion_tokens": 125,
+        "total_tokens": 22293
+      },
+      "retrieval_ms": 1.0577999999950407,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1161.3683999999994,
+      "semantic_usage": {
+        "prompt_tokens": 1241,
+        "completion_tokens": 90,
+        "total_tokens": 1331,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 89
+      },
+      "total_pipeline_ms": 2465.6705999999976
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_antler_workability_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Олений рог — костная ткань, а не кератиновый рог; кератиновый рог состоит из того же материала, что волосы, копыта и ногти, и имеет структуру твёрдых волосоподобных волокон, скреплённых вместе. Опыт с естественно сброшенным рогом благородного оленя показал, что замачивание участков с открытой губчатой костью улучшало обрабатываемость, а губчатая кость удерживала воду дольше плотной.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-material3-03-antler-water-workability"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-material3-01-antler-osseous-not-horn"
+        ],
+        [
+          "claim:foundations-physical-material3-03-antler-water-workability"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-physical-material3-03-antler-water-workability",
+        "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-material3-04-osseous-shaping-operations",
+        "claim:foundations-phys-01-air-drag-fall",
+        "claim:wood-liquid-moisture-change",
+        "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:wood-liquid-directional-uptake",
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:clay-firing-structural-transformation",
+        "claim:grain-processing-bread-ground-plant-base",
+        "claim:oil-rawhide-moisture-resistance"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
+        "claim:foundations-physical-material3-03-antler-water-workability"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "physics_material_science"
+        ],
+        "focus_refs": [
+          "wk:physics_material_science:antler-osseous-not-horn",
+          "wk:physics_material_science:horn-keratin-filament-structure",
+          "wk:physics_material_science:antler-water-workability-conditional"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "различие между оленьим рогом (antler) и кератиновым рогом (horn) по составу и структуре",
+          "результаты опыта с естественно сброшенным рогом благородного оленя: влияние воды на обрабатываемость",
+          "свойства оленьего рога: оссеозный материал, не кератиновый",
+          "свойства кератинового рога: филаментная структура из кератина",
+          "условия обрабатываемости оленьего рога после контакта с водой"
+        ]
+      },
+      "planner_ms": 2356.493199999997,
+      "planner_usage": {
+        "prompt_tokens": 22181,
+        "completion_tokens": 228,
+        "total_tokens": 22409
+      },
+      "retrieval_ms": 2.1533999999955995,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1949.4035999999978,
+      "semantic_usage": {
+        "prompt_tokens": 3611,
+        "completion_tokens": 216,
+        "total_tokens": 3827,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 2459
+      },
+      "total_pipeline_ms": 4308.223999999995
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_acute_stress_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Согласно систематическому обзору 44 исследований, механизмы острого стресса могут ухудшать процессы принятия решений в когнитивной, мотивационной, аффективной областях и области предсказуемости.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-04-acute-stress"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms3-04-acute-stress"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-ms3-04-acute-stress",
+        "claim:foundations-ms4-03-uncertainty-cognitive-control",
+        "claim:foundations-ms3-01-initial-attention",
+        "claim:foundations-ms3-02-working-memory",
+        "claim:foundations-ms3-03-goal-frustration",
+        "claim:foundations-ms-08-duration-rhythm"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-ms3-04-acute-stress"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "psychology_behavior"
+        ],
+        "focus_refs": [
+          "wk:psychology_behavior:foundations-ms3-experimental-cognition",
+          "wk:psychology_behavior:uncertainty-cognitive-control"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "влияние острого стресса на принятие решений",
+          "острый стресс и когнитивные процессы",
+          "стресс и процессы принятия решений",
+          "обзор исследований о стрессе и принятии решений"
+        ]
+      },
+      "planner_ms": 1436.9626999999964,
+      "planner_usage": {
+        "prompt_tokens": 22158,
+        "completion_tokens": 126,
+        "total_tokens": 22284
+      },
+      "retrieval_ms": 0.569100000000617,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1341.9097000000038,
+      "semantic_usage": {
+        "prompt_tokens": 1983,
+        "completion_tokens": 87,
+        "total_tokens": 2070,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1343
+      },
+      "total_pipeline_ms": 2779.8201000000045
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_apology_experiment_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "In a two-round trust game with 221 Chinese undergraduates, participants who received an apology after a modeled zero-return violation re-invested more than those who experienced the violation without an apology. Additionally, perceived transgressor trustworthiness statistically mediated the apology/re-investment association, and negative emotions moderated the apology-to-perceived-trustworthiness path.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-06-apology-reinvestment"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms3-06-apology-reinvestment"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-ms3-07-apology-mediation",
+        "claim:foundations-ms3-06-apology-reinvestment",
+        "claim:foundations-ms3-08-mutual-cooperation",
+        "claim:foundations-ms3-09-mutual-defection",
+        "claim:foundations-ms3-10-ultimatum-expectations",
+        "claim:foundations-ms3-01-initial-attention",
+        "claim:foundations-ms2-03-distrust-cooperation",
+        "claim:foundations-ms3-02-working-memory",
+        "claim:foundations-ms3-03-goal-frustration",
+        "claim:foundations-ms3-04-acute-stress"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-ms3-06-apology-reinvestment",
+        "claim:foundations-ms3-07-apology-mediation"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "psychology_behavior",
+          "social_behavior"
+        ],
+        "focus_refs": [
+          "wk:psychology_behavior:foundations-ms3-experimental-cognition",
+          "wk:social_behavior:foundations-ms3-experimental-interaction"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "two-round trust game experiment with 221 Chinese undergraduates",
+          "effect of apology on later re-investment in trust game",
+          "apology and subsequent trust restoration in economic game"
+        ]
+      },
+      "planner_ms": 1482.5945999999967,
+      "planner_usage": {
+        "prompt_tokens": 22159,
+        "completion_tokens": 119,
+        "total_tokens": 22278
+      },
+      "retrieval_ms": 3.2406000000046333,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1374.7330999999976,
+      "semantic_usage": {
+        "prompt_tokens": 2501,
+        "completion_tokens": 119,
+        "total_tokens": 2620,
+        "prompt_tokens_details": {
+          "cached_tokens": 2432
+        },
+        "prompt_cache_hit_tokens": 2432,
+        "prompt_cache_miss_tokens": 69
+      },
+      "total_pipeline_ms": 2860.9286999999968
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_infection_routes_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Учебная схема CDC/NIOSH выделяет следующие возможные пути передачи возбудителей: контакт, капли, укусы, загрязнённое оборудование, переносчики, пища и вода. Входные ворота инфекции включают отверстия тела и нарушения кожного барьера.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-life-44-pathogen-transport",
+        "claim:foundations-life-45-infection-entry"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-44-pathogen-transport"
+        ],
+        [
+          "claim:foundations-life-45-infection-entry"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-life-43-infection-chain",
+        "claim:foundations-life-45-infection-entry",
+        "claim:foundations-life-44-pathogen-transport",
+        "claim:foundations-life-47-host-susceptibility",
+        "claim:care-waterproof-wound-cover"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-life-44-pathogen-transport",
+        "claim:foundations-life-45-infection-entry"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:foundation-infection-chain",
+          "wk:biology_physiology:foundation-infection-entry"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "пути передачи возбудителей инфекции по схеме CDC/NIOSH",
+          "входные ворота инфекции по схеме CDC/NIOSH"
+        ]
+      },
+      "planner_ms": 1573.8818000000028,
+      "planner_usage": {
+        "prompt_tokens": 22163,
+        "completion_tokens": 107,
+        "total_tokens": 22270
+      },
+      "retrieval_ms": 0.35420000000158325,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1366.4591999999975,
+      "semantic_usage": {
+        "prompt_tokens": 1903,
+        "completion_tokens": 115,
+        "total_tokens": 2018,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1263
+      },
+      "total_pipeline_ms": 2940.8745999999956
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_chemical_exposure_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Contact with a chemical contaminant alone does not mean a person will necessarily become ill; possible health effects depend on contaminant properties and toxicity, concentration, route, duration and frequency of exposure, and individual factors. Exposure routes include ingestion, inhalation, and dermal contact. For airborne tuberculosis, droplet-nuclei concentration and exposure duration are factors affecting severity and outcomes, and host susceptibility can be influenced by multiple factors.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:foundations-haz-02-exposure-not-illness"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-haz-01-exposure-modifiers"
+        ],
+        [
+          "claim:foundations-haz-02-exposure-not-illness"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:foundations-haz-03-exposure-routes",
+        "claim:foundations-life-46-airborne-tuberculosis-exposure",
+        "claim:foundations-life-47-host-susceptibility",
+        "claim:care-waterproof-wound-cover"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:foundations-haz-02-exposure-not-illness",
+        "claim:foundations-haz-03-exposure-routes",
+        "claim:foundations-life-46-airborne-tuberculosis-exposure",
+        "claim:foundations-life-47-host-susceptibility"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology",
+          "chemistry_process"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:chemical-exposure-not-illness",
+          "wk:chemistry_process:chemical-exposure-modifiers",
+          "wk:chemistry_process:environmental-exposure-routes"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "chemical contaminant exposure not sufficient for illness",
+          "exposure conditions determining illness outcome",
+          "dose or concentration effect on toxicity",
+          "route of exposure influence on health effect",
+          "duration of exposure and illness",
+          "individual susceptibility factors in chemical illness"
+        ]
+      },
+      "planner_ms": 1702.8963000000003,
+      "planner_usage": {
+        "prompt_tokens": 22156,
+        "completion_tokens": 134,
+        "total_tokens": 22290
+      },
+      "retrieval_ms": 3.016799999997602,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1862.2209000000003,
+      "semantic_usage": {
+        "prompt_tokens": 1927,
+        "completion_tokens": 173,
+        "total_tokens": 2100,
+        "prompt_tokens_details": {
+          "cached_tokens": 1024
+        },
+        "prompt_cache_hit_tokens": 1024,
+        "prompt_cache_miss_tokens": 903
+      },
+      "total_pipeline_ms": 3568.306499999999
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_wet_slope_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Согласно предоставленным фактам, осадки и таяние снега могут запустить движение склона, уже близкого к потере устойчивости, поскольку они добавляют воду, которая может увеличить силы, действующие вниз по склону, или снизить сопротивление материалов, что приводит к превышению сил сопротивления. Это не означает, что любой мокрый склон обрушится, и не даёт точного расчёта устойчивости.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-haz-04-slope-force-strength",
+        "claim:foundations-haz-05-slope-water-triggers"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-haz-04-slope-force-strength"
+        ],
+        [
+          "claim:foundations-haz-05-slope-water-triggers"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:foundations-haz-04-slope-force-strength",
+        "claim:foundations-earth2-07-pressure-gradient-wind",
+        "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
+        "claim:foundations-earth-25-snowmelt-runoff",
+        "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+        "claim:foundations-earth2-12-solar-surface-heating-local-pressure",
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
+        "claim:foundations-earth-24-water-cycle-fluxes",
+        "claim:foundations-earth-23-hydrothermal-precipitation",
+        "claim:foundations-earth-06-soil-aggregation"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:foundations-haz-04-slope-force-strength"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "environment"
+        ],
+        "focus_refs": [
+          "wk:environment:slope-force-strength",
+          "wk:environment:slope-water-triggers"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "Как дождь или снеготаяние влияют на устойчивость склона?",
+          "Какие механизмы вызывают движение склона при добавлении воды?",
+          "Связь между насыщением водой и потерей прочности грунта?",
+          "Роль порового давления воды в снижении прочности склона?",
+          "Как снеготаяние увеличивает риск оползней?"
+        ]
+      },
+      "planner_ms": 1728.0776999999944,
+      "planner_usage": {
+        "prompt_tokens": 22165,
+        "completion_tokens": 148,
+        "total_tokens": 22313
+      },
+      "retrieval_ms": 1.8191999999980908,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1636.9554000000062,
+      "semantic_usage": {
+        "prompt_tokens": 3465,
+        "completion_tokens": 153,
+        "total_tokens": 3618,
+        "prompt_tokens_details": {
+          "cached_tokens": 3456
+        },
+        "prompt_cache_hit_tokens": 3456,
+        "prompt_cache_miss_tokens": 9
+      },
+      "total_pipeline_ms": 3367.015100000004
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_air_resistance_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Сопротивление воздуха может менять падение тела: в квадратичной модели при одинаковых скорости, плотности среды и коэффициенте сопротивления увеличение площади проекции поперёк потока увеличивает силу сопротивления. Однако само различие ширины или компактности не задаёт, какой из двух объектов упадёт раньше, поскольку массы, ориентация, коэффициенты и начальные условия отдельно не установлены.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-phys-01-air-drag-fall"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-01-air-drag-fall"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-phys-01-air-drag-fall",
+        "claim:foundations-mat-05-wood-grain-shear-vs-cut",
+        "claim:foundations-mat-12-material-thermal-insulation-porosity",
+        "claim:material-water-hemp-cellulosic-fibre",
+        "claim:material-water-linen-flax-origin",
+        "claim:material-water-plant-fibre-cellulose",
+        "claim:hard-stone-abrasive-shaping",
+        "claim:foundations-mat-11-stone-density-compressive-response",
+        "claim:material-water-textile-liquid-contaminants",
+        "claim:foundations-physical-b2-elc-01-conductor-insulator-charge-mobility",
+        "claim:population-joining-bond-weak-link",
+        "claim:water-permeability-connected-pores"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-phys-01-air-drag-fall"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "physics_material_science"
+        ],
+        "focus_refs": [
+          "wk:physics_material_science:air-drag-fall"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "Почему лёгкий широкий лист и компактный груз падают в воздухе по-разному?",
+          "Сравнение падения лёгкого широкого листа и компактного груза в воздухе",
+          "Влияние формы и массы на сопротивление воздуха при падении",
+          "Различие в скорости падения из-за воздушного сопротивления"
+        ]
+      },
+      "planner_ms": 1678.7872000000061,
+      "planner_usage": {
+        "prompt_tokens": 22163,
+        "completion_tokens": 143,
+        "total_tokens": 22306
+      },
+      "retrieval_ms": 0.8715999999985797,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1489.618300000002,
+      "semantic_usage": {
+        "prompt_tokens": 3618,
+        "completion_tokens": 127,
+        "total_tokens": 3745,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 2978
+      },
+      "total_pipeline_ms": 3169.4195000000036
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_impact_duration_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Spreading the same change in momentum over a longer contact time reduces the magnitude of the average net external force, as stated by the impulse-momentum relationship. This applies to the average force; it does not bound peak force when force varies in time or establish an injury threshold.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-phys-02-impulse-momentum-change"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-02-impulse-momentum-change"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:foundations-phys-01-air-drag-fall",
+        "claim:grain-processing-bread-dough-before-baking"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-phys-02-impulse-momentum-change"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "physics_material_science"
+        ],
+        "focus_refs": [
+          "wk:physics_material_science:impulse-momentum-change"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "How does increasing contact time affect force for a given change in momentum?",
+          "Relationship between impulse, force, and time"
+        ]
+      },
+      "planner_ms": 1453.3246999999974,
+      "planner_usage": {
+        "prompt_tokens": 22153,
+        "completion_tokens": 88,
+        "total_tokens": 22241
+      },
+      "retrieval_ms": 2.3984999999956926,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1559.0823999999993,
+      "semantic_usage": {
+        "prompt_tokens": 1404,
+        "completion_tokens": 93,
+        "total_tokens": 1497,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 764
+      },
+      "total_pipeline_ms": 3015.0181999999986
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_wet_metal_contact_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Электрический контакт разнородных металлов во влажной проводящей среде может образовывать гальваническую пару, изменяющую коррозионные роли металлов. Это возможно, поскольку влажная среда может действовать как электролит, а растворы электролитов содержат подвижные ионы, участвующие в электродных процессах. Однако конкретное изменение коррозии для данной пары металлов и среды не установлено.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-chm-12-galvanic-contact-corrosion"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-chm-12-galvanic-contact-corrosion"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-chm-12-galvanic-contact-corrosion",
+        "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
+        "claim:foundations-chm-10-metal-environment-corrosion",
+        "claim:foundations-chm-09-electrolyte-ions-in-water",
+        "claim:population-material-iron-coating"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-chm-12-galvanic-contact-corrosion",
+        "claim:foundations-chm-11-electrochemical-corrosion-electrolyte",
+        "claim:foundations-chm-09-electrolyte-ions-in-water"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "chemistry_process"
+        ],
+        "focus_refs": [
+          "wk:chemistry_process:galvanic-contact-corrosion",
+          "wk:chemistry_process:electrochemical-corrosion-electrolyte"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "влияние контакта разных металлов на коррозию во влажной проводящей среде",
+          "гальваническая коррозия при контакте разнородных металлов",
+          "роль электролита в коррозии металлов"
+        ]
+      },
+      "planner_ms": 1782.7180999999982,
+      "planner_usage": {
+        "prompt_tokens": 22163,
+        "completion_tokens": 126,
+        "total_tokens": 22289
+      },
+      "retrieval_ms": 0.630299999997078,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1852.5181999999986,
+      "semantic_usage": {
+        "prompt_tokens": 1750,
+        "completion_tokens": 171,
+        "total_tokens": 1921,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1110
+      },
+      "total_pipeline_ms": 3636.038099999998
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_neutralization_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "An acid–base neutralization can form a salt and water. When a strong acid reacts with a strong base in dilute aqueous solution, heat is released.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
+        "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-b2-chm-01-acid-base-neutralization"
+        ],
+        [
+          "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat",
+        "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
+        "claim:foundations-physical-b2-chm-03-weak-acid-base-incomplete-neutralization"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
+        "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "chemistry_process"
+        ],
+        "focus_refs": [
+          "wk:chemistry_process:acid-base-neutralization",
+          "wk:chemistry_process:strong-acid-base-neutralization-heat"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "products of acid-base neutralization",
+          "heat change in strong acid-strong base reaction"
+        ]
+      },
+      "planner_ms": 1458.6526999999987,
+      "planner_usage": {
+        "prompt_tokens": 22161,
+        "completion_tokens": 87,
+        "total_tokens": 22248
+      },
+      "retrieval_ms": 0.9334999999991851,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1038.5528999999951,
+      "semantic_usage": {
+        "prompt_tokens": 1272,
+        "completion_tokens": 92,
+        "total_tokens": 1364,
+        "prompt_tokens_details": {
+          "cached_tokens": 1152
+        },
+        "prompt_cache_hit_tokens": 1152,
+        "prompt_cache_miss_tokens": 120
+      },
+      "total_pipeline_ms": 2498.2456999999995
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_sound_medium_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Звуковая волна не проходит через вакуум, потому что для её распространения необходима материальная среда, а в вакууме она отсутствует.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-snd-02-sound-material-medium"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-b2-snd-02-sound-material-medium"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-physical-b2-snd-02-sound-material-medium",
+        "claim:foundations-physical-b2-snd-04-sound-reflection-surface",
+        "claim:foundations-physical-b2-lgt-01-light-refraction-medium-boundary",
+        "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+        "claim:material-water-vegetable-leather-water",
+        "claim:oil-fat-vegetable-leather-flexibility",
+        "claim:foundations-phys-02-impulse-momentum-change",
+        "claim:grain-processing-bread-ground-plant-base",
+        "claim:grain-processing-bread-liquid",
+        "claim:grain-processing-bread-optional-leaven",
+        "claim:material-water-hemp-cellulosic-fibre",
+        "claim:material-water-textile-liquid-contaminants"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-physical-b2-snd-02-sound-material-medium"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "physics_material_science"
+        ],
+        "focus_refs": [
+          "wk:physics_material_science:sound-material-medium"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "почему звук не распространяется в вакууме",
+          "звуковая волна требует среду для распространения",
+          "вакуум отсутствие частиц для передачи звука"
+        ]
+      },
+      "planner_ms": 1646.4128999999957,
+      "planner_usage": {
+        "prompt_tokens": 22151,
+        "completion_tokens": 119,
+        "total_tokens": 22270
+      },
+      "retrieval_ms": 1.1371000000071945,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1546.35119999999,
+      "semantic_usage": {
+        "prompt_tokens": 3409,
+        "completion_tokens": 75,
+        "total_tokens": 3484,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 2769
+      },
+      "total_pipeline_ms": 3194.0121999999974
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_horn_water_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Thin horn can soften quickly and deform on contact with water.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
+        "claim:wood-liquid-directional-uptake",
+        "claim:wood-liquid-capillary-uptake",
+        "claim:wood-liquid-moisture-change",
+        "claim:material-water-leather-water-processing",
+        "claim:water-capillary-rise-depression"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "physics_material_science"
+        ],
+        "focus_refs": [
+          "wk:physics_material_science:thin-horn-water-softening"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "What happens when thin horn is put into contact with water?",
+          "thin horn water softening",
+          "horn water contact effect"
+        ]
+      },
+      "planner_ms": 1594.4195999999938,
+      "planner_usage": {
+        "prompt_tokens": 22149,
+        "completion_tokens": 88,
+        "total_tokens": 22237
+      },
+      "retrieval_ms": 0.8178000000043539,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 882.1746999999887,
+      "semantic_usage": {
+        "prompt_tokens": 1865,
+        "completion_tokens": 55,
+        "total_tokens": 1920,
+        "prompt_tokens_details": {
+          "cached_tokens": 1792
+        },
+        "prompt_cache_hit_tokens": 1792,
+        "prompt_cache_miss_tokens": 73
+      },
+      "total_pipeline_ms": 2477.5410999999876
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_digestion_absorption_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Расщепление пищи — это механическая обработка и ферментативное разложение веществ пищи до доступных для усвоения форм, тогда как всасывание — это перенос продуктов переваривания из пищеварительного тракта во внутреннюю среду организма.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-life-10-digestion",
+        "claim:foundations-life-11-absorption"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-10-digestion"
+        ],
+        [
+          "claim:foundations-life-11-absorption"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-life-10-digestion",
+        "claim:foundations-life-11-absorption",
+        "claim:care-direct-pressure-bleeding",
+        "claim:foundations-life-20-kidneys",
+        "claim:livestock-rumen-fermentation",
+        "claim:livestock-rumen-fermentation-nutrients",
+        "claim:livestock-rumen-forage-digestion",
+        "claim:livestock-ruminant-membership",
+        "claim:animal-energy-availability-depends-on-food-derived-nutrients",
+        "claim:dietary-macronutrients-support-cellular-energy",
+        "claim:drying-reduces-microbial-growth-conditions",
+        "claim:fauna-chicken-foraging"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-life-10-digestion",
+        "claim:foundations-life-11-absorption"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:foundation-digestion",
+          "wk:biology_physiology:foundation-absorption"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "различие между расщеплением пищи и всасыванием продуктов пищеварения",
+          "механизм расщепления пищи",
+          "механизм всасывания продуктов пищеварения"
+        ]
+      },
+      "planner_ms": 1710.219100000002,
+      "planner_usage": {
+        "prompt_tokens": 22154,
+        "completion_tokens": 111,
+        "total_tokens": 22265
+      },
+      "retrieval_ms": 0.4386999999987893,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1218.4231999999902,
+      "semantic_usage": {
+        "prompt_tokens": 3075,
+        "completion_tokens": 96,
+        "total_tokens": 3171,
+        "prompt_tokens_details": {
+          "cached_tokens": 3072
+        },
+        "prompt_cache_hit_tokens": 3072,
+        "prompt_cache_miss_tokens": 3
+      },
+      "total_pipeline_ms": 2929.196299999996
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_lung_gas_exchange_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Oxygen and carbon dioxide move between alveolar air and blood by diffusion.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-life-13-alveolar-exchange"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-13-alveolar-exchange"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-life-13-alveolar-exchange",
+        "claim:foundations-life-12-respiration",
+        "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
+        "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+        "claim:stomatal-opening-affects-gas-water-exchange"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-life-13-alveolar-exchange"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:foundation-alveolar-exchange"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "gas exchange between alveolar air and blood",
+          "oxygen diffusion from alveoli to blood",
+          "carbon dioxide diffusion from blood to alveoli"
+        ]
+      },
+      "planner_ms": 1228.1156000000046,
+      "planner_usage": {
+        "prompt_tokens": 22152,
+        "completion_tokens": 87,
+        "total_tokens": 22239
+      },
+      "retrieval_ms": 1.4934999999968568,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 952.8083000000042,
+      "semantic_usage": {
+        "prompt_tokens": 1499,
+        "completion_tokens": 47,
+        "total_tokens": 1546,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "prompt_cache_hit_tokens": 1408,
+        "prompt_cache_miss_tokens": 91
+      },
+      "total_pipeline_ms": 2182.5108000000037
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_attention_task_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Сосредоточенность на задаче может приводить к тому, что зрительное восприятие выделяет одни элементы образа и отвлекается от других в зависимости от задачи, поэтому часть видимых деталей может не замечаться.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms-06-visual-selection"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-06-visual-selection"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-ms-04-attention-competition",
+        "claim:foundations-ms-06-visual-selection",
+        "claim:foundations-ms3-02-working-memory",
+        "claim:foundations-ms-02-attention-novelty",
+        "claim:foundations-ms4-01-reappraisal-negative-experience",
+        "claim:foundations-ms3-01-initial-attention",
+        "claim:foundations-ms3-03-goal-frustration",
+        "claim:foundations-ms3-04-acute-stress",
+        "claim:foundations-ms-05-tactile-components",
+        "claim:foundations-ms-07-auditory-sequence"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-ms-06-visual-selection"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "psychology_behavior"
+        ],
+        "focus_refs": [
+          "wk:psychology_behavior:foundations-ms-04-attention-competition",
+          "wk:psychology_behavior:foundations-ms-06-visual-selection"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "влияние концентрации на задаче на восприятие видимых деталей",
+          "конкуренция внимания и игнорирование визуальных стимулов",
+          "избирательность зрительного внимания при фокусировке"
+        ]
+      },
+      "planner_ms": 1895.5627999999997,
+      "planner_usage": {
+        "prompt_tokens": 22162,
+        "completion_tokens": 136,
+        "total_tokens": 22298
+      },
+      "retrieval_ms": 0.5449999999982538,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1402.1290000000008,
+      "semantic_usage": {
+        "prompt_tokens": 2680,
+        "completion_tokens": 86,
+        "total_tokens": 2766,
+        "prompt_tokens_details": {
+          "cached_tokens": 2560
+        },
+        "prompt_cache_hit_tokens": 2560,
+        "prompt_cache_miss_tokens": 120
+      },
+      "total_pipeline_ms": 3298.367400000003
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_practice_learning_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Repeated movement practice and sensory feedback contribute to acquiring a skill by refining the sensory representation of movement and its corrections, as stated in claim:foundations-ms-12-practice-correction.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms-12-practice-correction"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-12-practice-correction"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-ms-12-practice-correction",
+        "claim:foundations-ms-13-movement-demonstration",
+        "claim:foundations-ms-11-practiced-action",
+        "claim:foundations-ms3-03-goal-frustration"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-ms-12-practice-correction"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "psychology_behavior"
+        ],
+        "focus_refs": [
+          "wk:psychology_behavior:foundations-ms-11-practiced-action",
+          "wk:psychology_behavior:foundations-ms-12-practice-correction",
+          "wk:psychology_behavior:foundations-ms-13-movement-demonstration"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "How does repeated practice contribute to skill acquisition?",
+          "How does sensory feedback contribute to skill acquisition?",
+          "What is the role of practice and feedback in learning a skill?"
+        ]
+      },
+      "planner_ms": 1887.4633999999933,
+      "planner_usage": {
+        "prompt_tokens": 22150,
+        "completion_tokens": 136,
+        "total_tokens": 22286
+      },
+      "retrieval_ms": 1.7102999999915482,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1296.175099999993,
+      "semantic_usage": {
+        "prompt_tokens": 1394,
+        "completion_tokens": 73,
+        "total_tokens": 1467,
+        "prompt_tokens_details": {
+          "cached_tokens": 1280
+        },
+        "prompt_cache_hit_tokens": 1280,
+        "prompt_cache_miss_tokens": 114
+      },
+      "total_pipeline_ms": 3185.450599999982
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_attribution_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Один и тот же поступок может получать личностное или ситуационное объяснение, потому что объяснение поведения другого человека зависит от того, какие причины наблюдатель ему приписывает.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms-20-attribution-alternatives"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-20-attribution-alternatives"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-ms-20-attribution-alternatives",
+        "claim:foundations-ms-19-attribution-explanation",
+        "claim:foundations-ms-25-persuasion-context"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-ms-20-attribution-alternatives",
+        "claim:foundations-ms-19-attribution-explanation"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "psychology_behavior",
+          "social_behavior"
+        ],
+        "focus_refs": [
+          "wk:psychology_behavior:foundations-ms-19-attribution-explanation",
+          "wk:psychology_behavior:foundations-ms-20-attribution-alternatives"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "почему наблюдатели объясняют одно и то же действие и личностными чертами, и ситуационными обстоятельствами",
+          "фундаментальная ошибка атрибуции",
+          "различие диспозиционной и ситуационной атрибуции",
+          "условия использования диспозиционных и ситуационных объяснений"
+        ]
+      },
+      "planner_ms": 1693.1663000000117,
+      "planner_usage": {
+        "prompt_tokens": 22159,
+        "completion_tokens": 158,
+        "total_tokens": 22317
+      },
+      "retrieval_ms": 0.2783999999955995,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1340.0256999999983,
+      "semantic_usage": {
+        "prompt_tokens": 1321,
+        "completion_tokens": 92,
+        "total_tokens": 1413,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 681
+      },
+      "total_pipeline_ms": 3033.5727000000043
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_persuasion_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Persuasion can change social judgments, but its effect depends on source, message, audience, and situation.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-ms-25-persuasion-context"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-25-persuasion-context"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-ms-25-persuasion-context"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-ms-25-persuasion-context"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "social_behavior"
+        ],
+        "focus_refs": [
+          "wk:social_behavior:foundations-ms-25-persuasion-context"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "conditions affecting persuasion effectiveness on social judgment",
+          "factors influencing attitude change through persuasion",
+          "contextual moderators of persuasion impact"
+        ]
+      },
+      "planner_ms": 1336.5631999999896,
+      "planner_usage": {
+        "prompt_tokens": 22149,
+        "completion_tokens": 89,
+        "total_tokens": 22238
+      },
+      "retrieval_ms": 0.6799000000028173,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 849.7021999999997,
+      "semantic_usage": {
+        "prompt_tokens": 954,
+        "completion_tokens": 58,
+        "total_tokens": 1012,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 314
+      },
+      "total_pipeline_ms": 2187.0818
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_aquifer_recharge_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Длительный отбор подземной воды, превышающий её пополнение, может снижать уровень и доступность подземных запасов, поскольку пополнение (просачивание воды) не компенсирует изъятие.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-earth-21-groundwater-withdrawal-balance"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-earth-21-groundwater-withdrawal-balance"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-earth-21-groundwater-withdrawal-balance",
+        "claim:foundations-earth-20-groundwater-recharge-discharge",
+        "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:soil-texture-affects-infiltration-rate",
+        "claim:foundations-earth-29-advection-fog",
+        "claim:foundations-earth2-11-river-ice-jam-flow-obstruction",
+        "claim:foundations-earth-07-soil-water-states",
+        "claim:foundations-earth-24-water-cycle-fluxes",
+        "claim:foundations-earth-26-runoff-contaminant-transport",
+        "claim:water-temperature-affects-aquatic-organism-range"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-earth-21-groundwater-withdrawal-balance",
+        "claim:foundations-earth-20-groundwater-recharge-discharge"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "environment"
+        ],
+        "focus_refs": [
+          "wk:environment:groundwater-withdrawal-balance"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "длительный отбор подземной воды",
+          "скорость отбора превышает скорость пополнения",
+          "понижение уровня подземных вод",
+          "причина понижения уровня при превышении отбора над пополнением"
+        ]
+      },
+      "planner_ms": 1693.505799999999,
+      "planner_usage": {
+        "prompt_tokens": 22160,
+        "completion_tokens": 125,
+        "total_tokens": 22285
+      },
+      "retrieval_ms": 0.43959999999788124,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1722.2602999999945,
+      "semantic_usage": {
+        "prompt_tokens": 2995,
+        "completion_tokens": 101,
+        "total_tokens": 3096,
+        "prompt_tokens_details": {
+          "cached_tokens": 768
+        },
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 2227
+      },
+      "total_pipeline_ms": 3416.305800000002
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_radiation_fog_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Fog can form near the ground during a clear calm moist night through radiative cooling: with sufficient moisture, clear skies, and light winds, nighttime radiative cooling can cool near-surface air enough for radiation fog.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-earth-28-radiation-fog"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-earth-28-radiation-fog"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-earth-28-radiation-fog",
+        "claim:foundations-earth-29-advection-fog",
+        "claim:foundations-earth-04-soil-thermal-buffer",
+        "claim:novgorod-wetland-pollen-context",
+        "claim:foundations-earth-27-fog-visibility"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-earth-28-radiation-fog"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "environment"
+        ],
+        "focus_refs": [
+          "wk:environment:radiation-fog"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "fog formation near ground on clear calm moist night",
+          "radiation fog conditions clear sky calm wind moisture"
+        ]
+      },
+      "planner_ms": 1567.2256000000052,
+      "planner_usage": {
+        "prompt_tokens": 22150,
+        "completion_tokens": 73,
+        "total_tokens": 22223
+      },
+      "retrieval_ms": 0.4370000000053551,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1443.0780999999988,
+      "semantic_usage": {
+        "prompt_tokens": 1714,
+        "completion_tokens": 74,
+        "total_tokens": 1788,
+        "prompt_tokens_details": {
+          "cached_tokens": 768
+        },
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 946
+      },
+      "total_pipeline_ms": 3010.837999999989
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "foundations_foggy_attention_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Туман уменьшает видимость, что может ограничивать заметность деталей на дороге. Сосредоточенность на другой зрительной задаче может приводить к тому, что зрительное восприятие выделяет одни элементы образа и отвлекается от других в зависимости от задачи; при двух сопоставимо сильных конкурирующих стимулах внимание может колебаться между ними. Однако конкретное влияние на замеченные детали на дороге в данной ситуации не установлено.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:foundations-ms-06-visual-selection"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-earth-27-fog-visibility"
+        ],
+        [
+          "claim:foundations-ms-06-visual-selection"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:foundations-ms-04-attention-competition",
+        "claim:foundations-ms-06-visual-selection",
+        "claim:foundations-ms3-01-initial-attention",
+        "claim:foundations-earth-28-radiation-fog",
+        "claim:foundations-earth-31-freezing-fog-rime",
+        "claim:foundations-ms3-02-working-memory",
+        "claim:foundations-ms3-03-goal-frustration",
+        "claim:foundations-ms3-04-acute-stress",
+        "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+        "claim:foundations-earth-30-upslope-fog",
+        "claim:river-flow-affects-sediment-transport-deposition"
+      ],
+      "factual_premise_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:foundations-ms-06-visual-selection",
+        "claim:foundations-ms-04-attention-competition"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "psychology_behavior",
+          "environment"
+        ],
+        "focus_refs": [
+          "wk:psychology_behavior:foundations-ms-06-visual-selection",
+          "wk:psychology_behavior:foundations-ms-04-attention-competition",
+          "wk:environment:fog-visibility"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "Как туман снижает видимость и ограничивает восприятие деталей на дороге?",
+          "Как сосредоточенность на другой зрительной задаче (например, на экране) влияет на распределение внимания и замечание деталей на дороге?",
+          "Какие механизмы зрительного внимания и конкуренции за внимание объясняют упущение деталей при фокусировке на одной задаче?",
+          "Как сочетание тумана и отвлечения внимания влияет на способность замечать объекты и детали в дорожной обстановке?"
+        ]
+      },
+      "planner_ms": 2136.5510000000068,
+      "planner_usage": {
+        "prompt_tokens": 22164,
+        "completion_tokens": 227,
+        "total_tokens": 22391
+      },
+      "retrieval_ms": 1.296200000011595,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1889.5890999999974,
+      "semantic_usage": {
+        "prompt_tokens": 3101,
+        "completion_tokens": 168,
+        "total_tokens": 3269,
+        "prompt_tokens_details": {
+          "cached_tokens": 768
+        },
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 2333
+      },
+      "total_pipeline_ms": 4027.645700000008
+    }
+  ]
+}

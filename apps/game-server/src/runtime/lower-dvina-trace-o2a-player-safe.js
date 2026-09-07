@@ -17,7 +17,8 @@ export function projectLowerDvinaTraceO2aCapabilities({ projected,
       entity_id: capability.portion_profile_ref },
     display_label: capability.public_name,
     recognition: 'code_owned_source_capability',
-    visible_status: 'available'
+    visible_status: 'available',
+    ambient_portion_bounds: structuredClone(capability.ambient_portion_bounds)
   }))];
   return { ...projected, player_safe_state: {
     ...projected.player_safe_state,
@@ -50,8 +51,21 @@ export function projectLowerDvinaTraceO2aDiscoverySources({ projected,
 
 function validCapability(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value)
-    && Object.keys(value).length === 4
+    && Object.keys(value).length === 5
     && ['source_ref','portion_profile_ref','semantic_type','public_name']
-      .every((key) => typeof value[key] === 'string'
-        && value[key].length > 0 && value[key] === value[key].trim());
+      .every((key) => text(value[key]))
+    && validBounds(value.ambient_portion_bounds);
 }
+
+function validBounds(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === 5
+    && typeof value.quantity_unit === 'string' && value.quantity_unit.trim()
+    && Number.isFinite(value.min_quantity) && value.min_quantity > 0
+    && Number.isFinite(value.max_quantity) && value.max_quantity >= value.min_quantity
+    && Number.isSafeInteger(value.min_mass_grams) && value.min_mass_grams > 0
+    && Number.isSafeInteger(value.max_mass_grams)
+    && value.max_mass_grams >= value.min_mass_grams;
+}
+
+function text(value) { return typeof value === 'string' && value.trim() === value && value.length > 0; }

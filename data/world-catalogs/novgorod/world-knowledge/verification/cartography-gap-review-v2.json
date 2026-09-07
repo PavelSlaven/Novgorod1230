@@ -1,0 +1,166 @@
+{
+  "schema": "world_knowledge_cartography_gap_review_v2",
+  "audited_pack": "production-v1 authoring.json",
+  "scope": "bounded gameplay factual-family review; no per-location inventory, presence, ownership, access or materialization whitelist",
+  "reviewed_old_missing_family_ids": [
+    "flora-trees",
+    "flora-shrubs-herbs-aquatic",
+    "flora-toxic-and-food-plants",
+    "flora-fibre-taxonomy",
+    "fauna-amphibian-reptile",
+    "fauna-invertebrate",
+    "shelter-interior-space",
+    "storage-ventilation-and-drying",
+    "fishing-net-boat-care",
+    "riparian-substrate-and-debris",
+    "npc-occupation-location-and-access",
+    "fire-extinguishing-water"
+  ],
+  "findings": {
+    "flora-trees": {
+      "verdict": "partial_factual_coverage",
+      "note": "Grounded tree examples/material contexts; missing factual dimension is ecological/seasonal functional coverage beyond willow and selected worked trees.",
+      "claim_refs": [
+        "claim:white-willow-depends-on-moist-lit-riparian-habitat",
+        "claim:settlement-pine-spruce-log",
+        "claim:settlement-oak-shingle-roof",
+        "claim:household-apple-orchard",
+        "claim:agriculture-fauna-ash-hunting-bow"
+      ]
+    },
+    "flora-shrubs-herbs-aquatic": {
+      "verdict": "partial_factual_coverage",
+      "note": "Grounded reed, willow and named shrub safety evidence; missing factual dimension is broader aquatic/herb functional coverage for gathering or habitat interpretation.",
+      "claim_refs": [
+        "claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+        "claim:white-willow-depends-on-moist-lit-riparian-habitat",
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:mezereon-poisonous-sap-all-parts"
+      ]
+    },
+    "flora-toxic-and-food-plants": {
+      "verdict": "partial_factual_coverage",
+      "note": "Grounded named poison and look-alike cautions; missing factual dimension is non-fungal edible-versus-toxic plant identification rules.",
+      "claim_refs": [
+        "claim:mezereon-poisonous-sap-all-parts",
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:wild-mushroom-resemblance-not-edibility"
+      ]
+    },
+    "flora-fibre-taxonomy": {
+      "verdict": "partial_factual_coverage",
+      "note": "Grounded flax/hemp and plant-fibre processing; missing factual dimension is which additional wild local plant families yield usable fibre.",
+      "claim_refs": [
+        "claim:agriculture-fauna-flax-hemp-cultivation",
+        "claim:agriculture-fauna-hemp-stem-fibre",
+        "claim:agriculture-fauna-hemp-processing-tow",
+        "claim:material-water-plant-fibre-cellulose"
+      ]
+    },
+    "fauna-amphibian-reptile": {
+      "verdict": "grounded_family",
+      "claim_refs": [
+        "claim:fauna-frog-damp-foraging",
+        "claim:fauna-frog-metamorphosis",
+        "claim:fauna-adder-cover-basking",
+        "claim:fauna-adder-viviparity",
+        "claim:fauna-toad-breeding-return",
+        "claim:fauna-common-frog-aquatic-overwintering"
+      ]
+    },
+    "fauna-invertebrate": {
+      "verdict": "grounded_family",
+      "claim_refs": [
+        "claim:fauna-tick-questing",
+        "claim:fauna-cross-spider-web",
+        "claim:fauna-dragonfly-lifecycle",
+        "claim:fauna-culex-life-cycle",
+        "claim:fauna-mussel-filtration",
+        "claim:fauna-earthworm-soil-effects",
+        "claim:fauna-crayfish-habitat"
+      ]
+    },
+    "shelter-interior-space": {
+      "verdict": "partial_factual_coverage",
+      "note": "Grounded house envelope, vestibule, oven, underfloor storage and furniture; missing factual dimension is interior spatial-function relationships beyond those elements.",
+      "claim_refs": [
+        "claim:settlement-wood-building",
+        "claim:settlement-log-building-form",
+        "claim:settlement-vestibule-log",
+        "claim:settlement-underfloor-storage",
+        "claim:settlement-oven-heating",
+        "claim:household-furniture-wood"
+      ]
+    },
+    "storage-ventilation-and-drying": {
+      "verdict": "partial_factual_coverage",
+      "note": "Grounded drying/storage condition evidence; missing factual dimension is storage ventilation/condensation and food-spoilage practice as a joined family.",
+      "claim_refs": [
+        "claim:population-drying-workspace",
+        "claim:population-household-storage",
+        "claim:food-drying-depends-on-humidity-airflow",
+        "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:foundations-mat-07-wood-storage-biological-damage"
+      ]
+    },
+    "fishing-net-boat-care": {
+      "verdict": "partial_factual_coverage",
+      "note": "Grounded net components, net work, boat context and repair clamp; missing factual dimension is wet-use wear, drying and recurring net/hull maintenance.",
+      "claim_refs": [
+        "claim:population-net-floats",
+        "claim:population-net-weights",
+        "claim:population-net-cord",
+        "claim:population-processes-hemp-net",
+        "claim:population-boat-context",
+        "claim:household-boat-repair-clamp"
+      ]
+    },
+    "riparian-substrate-and-debris": {
+      "verdict": "partial_factual_coverage",
+      "note": "Grounded sediment, clay transport and saturation; missing factual dimension is debris/drift material formation and seasonal retention at shore.",
+      "claim_refs": [
+        "claim:river-flow-affects-sediment-transport-deposition",
+        "claim:secondary-clay-forms-through-water-transport-deposition",
+        "claim:wetland-hydric-soil-depends-on-saturation"
+      ]
+    },
+    "npc-occupation-location-and-access": {
+      "verdict": "code_owned_not_factual_gap",
+      "note": "Occupation evidence is factual; current entity presence, controller, access and permission remain materialization/code-owned.",
+      "claim_refs": [
+        "claim:occupation-smith-role",
+        "claim:occupation-carpenter-role",
+        "claim:population-net-work",
+        "claim:population-boat-work",
+        "claim:resource-occupation-needs-setting"
+      ]
+    },
+    "fire-extinguishing-water": {
+      "verdict": "partial_factual_coverage",
+      "note": "Heat transfer, vaporization and combustion prerequisites ground qualitative water cooling/suppression; missing factual dimension is a dedicated applied extinguishing outcome family for this game context.",
+      "claim_refs": [
+        "claim:water-wetting-forces",
+        "claim:population-physics-conduction-gradient",
+        "claim:population-physics-melting-vaporization-energy",
+        "claim:population-physics-evaporation-humidity",
+        "claim:foundations-thm-02-combustion-fuel-oxidizer",
+        "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:foundations-thm-10-thermal-gradient-heat-flow"
+      ]
+    }
+  },
+  "new_missing_families": [],
+  "remaining_factual_gaps": [
+    "Tree ecological/seasonal functional coverage beyond the named/used species.",
+    "Aquatic/herb functional coverage and non-fungal edible-versus-toxic plant identification.",
+    "Wild fibre-plant family applicability beyond flax/hemp.",
+    "Interior spatial-function relationships; storage ventilation/condensation/spoilage; wet-use net/hull maintenance.",
+    "Riparian debris/drift formation and retention.",
+    "Applied water-extinguishing outcome semantics beyond general cooling, phase-change and combustion-prerequisite claims."
+  ],
+  "code_owned_exclusions": [
+    "current presence, quantity, ownership, topology, controller, permission and access",
+    "ordinary container contents when no committed causal basis exists",
+    "exact fire-profile execution, numeric mechanics and committed effects"
+  ]
+}

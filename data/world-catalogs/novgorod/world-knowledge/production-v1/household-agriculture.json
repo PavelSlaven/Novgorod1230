@@ -1,0 +1,2284 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:ha-firesteel",
+      "title": "Чёрная металлургия и металлообработка в Древней Руси (домонгольский период)",
+      "authors": [
+        "Б. А. Колчин"
+      ],
+      "publication": "МИА 32 (1953)",
+      "source_kind": "scholarship",
+      "citation": "https://archaeolog.ru/media/series/mia/MIA_32.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:ha-desyatinny",
+      "title": "Десятинный раскоп в Великом Новгороде",
+      "authors": [],
+      "publication": "Institute of Archaeology RAS",
+      "source_kind": "scholarship",
+      "citation": "https://archaeolog.ru/press/articles/n167",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:ha-winter",
+      "title": "О зимних работах Новгородской экспедиции ИА РАН",
+      "authors": [],
+      "publication": "Institute of Archaeology RAS",
+      "source_kind": "scholarship",
+      "citation": "https://archaeolog.ru/press/articles/o-zimnikh-rabotakh-novgorodskoy-ekspeditsii-ia-ran",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:ha-wooden-catalogue",
+      "title": "Новгородские древности. Деревянные изделия",
+      "authors": [],
+      "publication": "Institute of Archaeology RAS",
+      "source_kind": "scholarship",
+      "citation": "https://archaeolog.ru/el-bib/el-cat/el-series/svod-arch/sai-e1-55_1968",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:ha-grain943",
+      "title": "Новгородская берестяная грамота №943",
+      "authors": [],
+      "publication": "HSE and Institute of Slavic Studies RAS",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/943/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:maslo-birchbark-718-account",
+      "source_ref": "source:gramota718",
+      "anchor": {
+        "section": "Editorial metadata, text and translation: receipt/payment register; горшок масла"
+      },
+      "note": "Independent verification/verification-oils-resins-adhesives.md OFH-01: pot of maslo only, not two pots. Conditional1220–1240 date may shift later; XIII stratigraphy and extra-stratigraphic1160s–1230s(preferred1180s–1210s). Inferred-medium target-period context; no animal/plant identification, material use or scene supply.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ha-firesteel",
+      "source_ref": "source:ha-firesteel",
+      "anchor": {
+        "page": "165",
+        "section": "XII-century Novgorod firesteel; striking fire"
+      },
+      "note": "No fuel, lamp or guaranteed ignition follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ha-desyatinny",
+      "source_ref": "source:ha-desyatinny",
+      "anchor": {
+        "section": "Early field, XI gardens, XII casting and early-XIII abandonment"
+      },
+      "note": "Independent verification: verification/verification-household-agriculture.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ha-winter",
+      "source_ref": "source:ha-winter",
+      "anchor": {
+        "section": "Medieval household finds and river-bank premises"
+      },
+      "note": "Independent verification: verification/verification-household-agriculture.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ha-wooden-catalogue",
+      "source_ref": "source:ha-wooden-catalogue",
+      "anchor": {
+        "section": "Collection annotation"
+      },
+      "note": "Independent verification: verification/verification-household-agriculture.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:ha-grain943",
+      "source_ref": "source:ha-grain943",
+      "anchor": {
+        "section": "Dating and grain-transaction text"
+      },
+      "note": "Independent verification: verification/verification-household-agriculture.md.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:historically-recorded-maslo",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:firesteel",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:fire-ignition"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:fire-ignition",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:spur",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:porshen-overshoe",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:birch-bark-tues",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:wooden-tableware",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:ceramic-vessel",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:ceramic-pot",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:tar",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:household-utensil",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:furniture",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:ski",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:iron-repair-clamp",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:boat-repair",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:ploughshare",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:tillage",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:shovel",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:garden-work",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:scythe",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:grass-cutting",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:clay-spindle-whorl",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:spinning",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:rye",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:grain-commodity",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:barley",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:belt-fitting",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:belt",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:leather-offcut",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:leatherworking",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:riverside-storage",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:garden-orchard",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:maslo-birchbark-718-account",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:historically-recorded-maslo",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "novgorod_birchbark_718_receipt_payment_register_mentions_pot_of_maslo"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:maslo-birchbark-718-account"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:ha-firesteel-ignition",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:firesteel",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:fire-ignition"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-firesteel"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-spur",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:spur",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:footwear"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-overshoe",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:porshen-overshoe",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:footwear"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-bark-tues",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:birch-bark-tues",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:birch-bark"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-winter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-wooden-tableware",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wooden-tableware",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wood"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-winter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-ceramic-vessel",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:ceramic-vessel",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:ceramic"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-winter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-tar-pot",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:ceramic-pot",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:tar"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-winter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-utensil-wood",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:household-utensil"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-wooden-catalogue"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-furniture-wood",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:furniture"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-wooden-catalogue"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-ski-wood",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:ski"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-wooden-catalogue"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-boat-repair-clamp",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-repair-clamp",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:boat-repair"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-winter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-ploughshare-tillage",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:ploughshare",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:tillage"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-garden-shovel",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:shovel",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:garden-work"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-scythe-cutting",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:scythe",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:grass-cutting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-spindle-whorl",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:clay-spindle-whorl",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:spinning"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-rye-commodity",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:rye",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:grain-commodity"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-grain943"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-barley-commodity",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:barley",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:grain-commodity"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-grain943"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-belt-fitting",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:belt-fitting",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:belt"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-winter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-leather-offcut",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:leather-offcut",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:leatherworking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-riverside-storage",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:riverside-storage",
+      "predicate": "attested_function",
+      "object": {
+        "kind": "literal",
+        "value": "storage_beside_river"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-winter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:household-apple-orchard",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:garden-orchard",
+      "predicate": "attested_function",
+      "object": {
+        "kind": "literal",
+        "value": "cultivation_including_apple_trees"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:historically-recorded-maslo",
+      "locale": "ru",
+      "labels": [
+        "Масло в исторических записях"
+      ],
+      "short_definition": "Историческое обозначение «масло» без определения животного или растительного происхождения, способа получения или применения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:historically-recorded-maslo",
+      "locale": "en",
+      "labels": [
+        "Historically recorded maslo"
+      ],
+      "short_definition": "The historical material term maslo (oil), without identifying animal or plant origin, manufacture or use.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:firesteel",
+      "locale": "ru",
+      "labels": [
+        "Кресало"
+      ],
+      "short_definition": "Орудие для высекания огня",
+      "search_aliases": [
+        "Кресало"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:firesteel",
+      "locale": "en",
+      "labels": [
+        "Firesteel"
+      ],
+      "short_definition": "Tool for striking fire",
+      "search_aliases": [
+        "Firesteel"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:fire-ignition",
+      "locale": "ru",
+      "labels": [
+        "Высекание огня"
+      ],
+      "short_definition": "Получение искры кресалом",
+      "search_aliases": [
+        "Высекание огня"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:fire-ignition",
+      "locale": "en",
+      "labels": [
+        "Fire striking"
+      ],
+      "short_definition": "Producing a spark with a firesteel",
+      "search_aliases": [
+        "Fire striking"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:spur",
+      "locale": "ru",
+      "labels": [
+        "Шпора"
+      ],
+      "short_definition": "Шпора",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:spur",
+      "locale": "en",
+      "labels": [
+        "Spur"
+      ],
+      "short_definition": "Spur",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:porshen-overshoe",
+      "locale": "ru",
+      "labels": [
+        "Поршень поверх обуви"
+      ],
+      "short_definition": "Поршень поверх обуви",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:porshen-overshoe",
+      "locale": "en",
+      "labels": [
+        "Porshen overshoe"
+      ],
+      "short_definition": "Porshen overshoe",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:birch-bark-tues",
+      "locale": "ru",
+      "labels": [
+        "Берестяной туес"
+      ],
+      "short_definition": "Берестяной туес",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:birch-bark-tues",
+      "locale": "en",
+      "labels": [
+        "Birch-bark tues"
+      ],
+      "short_definition": "Birch-bark tues",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wooden-tableware",
+      "locale": "ru",
+      "labels": [
+        "Деревянная посуда"
+      ],
+      "short_definition": "Деревянная посуда",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wooden-tableware",
+      "locale": "en",
+      "labels": [
+        "Wooden tableware"
+      ],
+      "short_definition": "Wooden tableware",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ceramic-vessel",
+      "locale": "ru",
+      "labels": [
+        "Керамический сосуд"
+      ],
+      "short_definition": "Керамический сосуд",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ceramic-vessel",
+      "locale": "en",
+      "labels": [
+        "Ceramic vessel"
+      ],
+      "short_definition": "Ceramic vessel",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ceramic-pot",
+      "locale": "ru",
+      "labels": [
+        "Керамический горшок"
+      ],
+      "short_definition": "Керамический горшок",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ceramic-pot",
+      "locale": "en",
+      "labels": [
+        "Ceramic pot"
+      ],
+      "short_definition": "Ceramic pot",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tar",
+      "locale": "ru",
+      "labels": [
+        "Дёготь"
+      ],
+      "short_definition": "Дёготь",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tar",
+      "locale": "en",
+      "labels": [
+        "Tar"
+      ],
+      "short_definition": "Tar",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:household-utensil",
+      "locale": "ru",
+      "labels": [
+        "Бытовая утварь"
+      ],
+      "short_definition": "Бытовая утварь",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:household-utensil",
+      "locale": "en",
+      "labels": [
+        "Household utensil"
+      ],
+      "short_definition": "Household utensil",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:furniture",
+      "locale": "ru",
+      "labels": [
+        "Мебель"
+      ],
+      "short_definition": "Мебель",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:furniture",
+      "locale": "en",
+      "labels": [
+        "Furniture"
+      ],
+      "short_definition": "Furniture",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ski",
+      "locale": "ru",
+      "labels": [
+        "Лыжа"
+      ],
+      "short_definition": "Лыжа",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ski",
+      "locale": "en",
+      "labels": [
+        "Ski"
+      ],
+      "short_definition": "Ski",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-repair-clamp",
+      "locale": "ru",
+      "labels": [
+        "Железная ремонтная скоба"
+      ],
+      "short_definition": "Железная ремонтная скоба",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-repair-clamp",
+      "locale": "en",
+      "labels": [
+        "Iron repair clamp"
+      ],
+      "short_definition": "Iron repair clamp",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:boat-repair",
+      "locale": "ru",
+      "labels": [
+        "Ремонт речного судна"
+      ],
+      "short_definition": "Ремонт речного судна",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:boat-repair",
+      "locale": "en",
+      "labels": [
+        "River-vessel repair"
+      ],
+      "short_definition": "River-vessel repair",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ploughshare",
+      "locale": "ru",
+      "labels": [
+        "Наконечник рала"
+      ],
+      "short_definition": "Наконечник рала",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:ploughshare",
+      "locale": "en",
+      "labels": [
+        "Ploughshare"
+      ],
+      "short_definition": "Ploughshare",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:tillage",
+      "locale": "ru",
+      "labels": [
+        "Пахота"
+      ],
+      "short_definition": "Пахота",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:tillage",
+      "locale": "en",
+      "labels": [
+        "Tillage"
+      ],
+      "short_definition": "Tillage",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:shovel",
+      "locale": "ru",
+      "labels": [
+        "Лопата"
+      ],
+      "short_definition": "Лопата",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:shovel",
+      "locale": "en",
+      "labels": [
+        "Shovel"
+      ],
+      "short_definition": "Shovel",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:garden-work",
+      "locale": "ru",
+      "labels": [
+        "Садово-огородная работа"
+      ],
+      "short_definition": "Садово-огородная работа",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:garden-work",
+      "locale": "en",
+      "labels": [
+        "Garden work"
+      ],
+      "short_definition": "Garden work",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:scythe",
+      "locale": "ru",
+      "labels": [
+        "Коса"
+      ],
+      "short_definition": "Коса",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:scythe",
+      "locale": "en",
+      "labels": [
+        "Scythe"
+      ],
+      "short_definition": "Scythe",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:grass-cutting",
+      "locale": "ru",
+      "labels": [
+        "Скашивание травы"
+      ],
+      "short_definition": "Скашивание травы",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:grass-cutting",
+      "locale": "en",
+      "labels": [
+        "Grass cutting"
+      ],
+      "short_definition": "Grass cutting",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:clay-spindle-whorl",
+      "locale": "ru",
+      "labels": [
+        "Глиняное пряслице"
+      ],
+      "short_definition": "Глиняное пряслице",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:clay-spindle-whorl",
+      "locale": "en",
+      "labels": [
+        "Clay spindle whorl"
+      ],
+      "short_definition": "Clay spindle whorl",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:spinning",
+      "locale": "ru",
+      "labels": [
+        "Прядение"
+      ],
+      "short_definition": "Прядение",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:spinning",
+      "locale": "en",
+      "labels": [
+        "Spinning"
+      ],
+      "short_definition": "Spinning",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:rye",
+      "locale": "ru",
+      "labels": [
+        "Рожь"
+      ],
+      "short_definition": "Рожь",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:rye",
+      "locale": "en",
+      "labels": [
+        "Rye"
+      ],
+      "short_definition": "Rye",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:grain-commodity",
+      "locale": "ru",
+      "labels": [
+        "Товарное зерно"
+      ],
+      "short_definition": "Товарное зерно",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:grain-commodity",
+      "locale": "en",
+      "labels": [
+        "Grain commodity"
+      ],
+      "short_definition": "Grain commodity",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:barley",
+      "locale": "ru",
+      "labels": [
+        "Ячмень"
+      ],
+      "short_definition": "Ячмень",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:barley",
+      "locale": "en",
+      "labels": [
+        "Barley"
+      ],
+      "short_definition": "Barley",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:belt-fitting",
+      "locale": "ru",
+      "labels": [
+        "Поясная накладка"
+      ],
+      "short_definition": "Поясная накладка",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:belt-fitting",
+      "locale": "en",
+      "labels": [
+        "Belt fitting"
+      ],
+      "short_definition": "Belt fitting",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:belt",
+      "locale": "ru",
+      "labels": [
+        "Пояс"
+      ],
+      "short_definition": "Пояс",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:belt",
+      "locale": "en",
+      "labels": [
+        "Belt"
+      ],
+      "short_definition": "Belt",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:leather-offcut",
+      "locale": "ru",
+      "labels": [
+        "Обрезок кожи"
+      ],
+      "short_definition": "Обрезок кожи",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:leather-offcut",
+      "locale": "en",
+      "labels": [
+        "Leather offcut"
+      ],
+      "short_definition": "Leather offcut",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:leatherworking",
+      "locale": "ru",
+      "labels": [
+        "Обработка кожи"
+      ],
+      "short_definition": "Обработка кожи",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:leatherworking",
+      "locale": "en",
+      "labels": [
+        "Leatherworking"
+      ],
+      "short_definition": "Leatherworking",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:riverside-storage",
+      "locale": "ru",
+      "labels": [
+        "Прибрежный склад"
+      ],
+      "short_definition": "Прибрежный склад",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:riverside-storage",
+      "locale": "en",
+      "labels": [
+        "Riverside storage"
+      ],
+      "short_definition": "Riverside storage",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:garden-orchard",
+      "locale": "ru",
+      "labels": [
+        "Садово-огородный участок"
+      ],
+      "short_definition": "Садово-огородный участок",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:garden-orchard",
+      "locale": "en",
+      "labels": [
+        "Garden-and-orchard plot"
+      ],
+      "short_definition": "Garden-and-orchard plot",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:maslo-birchbark-718-account",
+      "locale": "ru",
+      "runtime_text": "Новгородская берестяная грамота № 718 упоминает «горшок масла» в реестре доходов или выплат. Её условная датировка 1220–1240 гг. может сдвигаться позднее; применимость к Новгородской земле XIII века здесь — вывод средней уверенности. Запись не определяет животное или растительное происхождение масла, его применение, изготовление, владельца, местный запас, обычный набор хозяйства либо наличие в текущей сцене.",
+      "search_aliases": [
+        "Горшок масла",
+        "Масло в берестяной грамоте"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:maslo-birchbark-718-account",
+      "locale": "en",
+      "runtime_text": "Novgorod birchbark letter No. 718 mentions a pot of maslo (oil) in a receipt/payment register. Its conditional 1220–1240 date may shift later; thirteenth-century Novgorod-Land applicability here is a medium-confidence inference. The record identifies neither animal or plant origin, use, manufacture, owner, local stock, a default household kit nor current scene presence.",
+      "search_aliases": [
+        "Pot of maslo",
+        "Oil in a birchbark account"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ha-firesteel-ignition",
+      "locale": "ru",
+      "runtime_text": "Кресало исторически засвидетельствовано для высекания огня; успех зависит от реальных условий.",
+      "search_aliases": [
+        "Кресало"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:ha-firesteel-ignition",
+      "locale": "en",
+      "runtime_text": "A firesteel is historically attested for striking fire; success depends on real conditions.",
+      "search_aliases": [
+        "Firesteel"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-spur",
+      "locale": "ru",
+      "runtime_text": "Шпоры прикрепляли к обуви всадников. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-spur",
+      "locale": "en",
+      "runtime_text": "Spurs were attached to riders' footwear. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-overshoe",
+      "locale": "ru",
+      "runtime_text": "В межсезонье простые поршни могли носить поверх дорогой обуви. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-overshoe",
+      "locale": "en",
+      "runtime_text": "Simple porshni could be worn over expensive footwear between seasons. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-bark-tues",
+      "locale": "ru",
+      "runtime_text": "Берестяные туеса входят в средневековые бытовые находки Новгорода. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-bark-tues",
+      "locale": "en",
+      "runtime_text": "Birch-bark tues containers occur among medieval Novgorod household finds. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-wooden-tableware",
+      "locale": "ru",
+      "runtime_text": "Деревянная посуда засвидетельствована в бытовом материале раскопа. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-wooden-tableware",
+      "locale": "en",
+      "runtime_text": "Wooden tableware is attested in the excavation's household material. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-ceramic-vessel",
+      "locale": "ru",
+      "runtime_text": "Керамические сосуды входят в средневековые бытовые находки. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-ceramic-vessel",
+      "locale": "en",
+      "runtime_text": "Ceramic vessels occur among medieval household finds. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-tar-pot",
+      "locale": "ru",
+      "runtime_text": "В прибрежном раскопе найдены керамические горшки с дёгтем — один вариант хранения. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-tar-pot",
+      "locale": "en",
+      "runtime_text": "Ceramic pots holding tar were found at the riverside excavation, documenting one storage use. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-utensil-wood",
+      "locale": "ru",
+      "runtime_text": "Новгородская деревянная коллекция включает утварь и сосуды. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-utensil-wood",
+      "locale": "en",
+      "runtime_text": "The Novgorod wooden collection includes utensils and vessels. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-furniture-wood",
+      "locale": "ru",
+      "runtime_text": "Мебель входит в новгородскую коллекцию деревянных изделий. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-furniture-wood",
+      "locale": "en",
+      "runtime_text": "Furniture occurs in the Novgorod wooden-object collection. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-ski-wood",
+      "locale": "ru",
+      "runtime_text": "Деревянные лыжи входят в новгородскую археологическую коллекцию. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-ski-wood",
+      "locale": "en",
+      "runtime_text": "Wooden skis occur in the Novgorod archaeological collection. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-boat-repair-clamp",
+      "locale": "ru",
+      "runtime_text": "В прибрежном раскопе найдены железные скобы для ремонта речных судов. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-boat-repair-clamp",
+      "locale": "en",
+      "runtime_text": "Iron clamps for river-vessel repair were found in the riverside excavation. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-ploughshare-tillage",
+      "locale": "ru",
+      "runtime_text": "Металлический наконечник рала найден в раннем участке с бороздами пахотного поля. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-ploughshare-tillage",
+      "locale": "en",
+      "runtime_text": "A metal ploughshare was found in an early area with ploughed-field furrows. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-garden-shovel",
+      "locale": "ru",
+      "runtime_text": "Лопаты найдены в слое XI века с садами и огородами. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-garden-shovel",
+      "locale": "en",
+      "runtime_text": "Shovels were found in an eleventh-century garden-and-orchard layer. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-scythe-cutting",
+      "locale": "ru",
+      "runtime_text": "Косы найдены в слое XI века с садами и огородами. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-scythe-cutting",
+      "locale": "en",
+      "runtime_text": "Scythes were found in the eleventh-century garden-and-orchard layer. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-spindle-whorl",
+      "locale": "ru",
+      "runtime_text": "Глиняные пряслица засвидетельствованы в раннем хозяйственном слое Новгорода. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-spindle-whorl",
+      "locale": "en",
+      "runtime_text": "Clay spindle whorls are attested in an early Novgorod household layer. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-rye-commodity",
+      "locale": "ru",
+      "runtime_text": "Грамота №943 конца XII — начала XIII века говорит о покупке ржи. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-rye-commodity",
+      "locale": "en",
+      "runtime_text": "Letter 943, broadly late twelfth to early thirteenth century, mentions purchasing rye. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-barley-commodity",
+      "locale": "ru",
+      "runtime_text": "Грамота №943 упоминает цену ячменя, подтверждая товарный контекст. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-barley-commodity",
+      "locale": "en",
+      "runtime_text": "Letter 943 mentions a barley price, supporting a commodity context. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-belt-fitting",
+      "locale": "ru",
+      "runtime_text": "Поясные накладки входят в средневековые бытовые находки раскопа. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-belt-fitting",
+      "locale": "en",
+      "runtime_text": "Belt fittings occur among the excavation's medieval household finds. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-leather-offcut",
+      "locale": "ru",
+      "runtime_text": "В многопериодной коллекции многочисленны обрезки кожи — следы работы с этим материалом. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-leather-offcut",
+      "locale": "en",
+      "runtime_text": "The multi-period collection includes numerous leather offcuts, traces of working that material. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-riverside-storage",
+      "locale": "ru",
+      "runtime_text": "У берега Волхова исследованы крупные средневековые складские помещения; их содержимое неизвестно. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-riverside-storage",
+      "locale": "en",
+      "runtime_text": "Large medieval storage rooms were excavated beside the Volkhov; their contents are not established. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-apple-orchard",
+      "locale": "ru",
+      "runtime_text": "В XI веке на Десятинном участке были огороды и сады с яблонями; в начале XIII конкретный участок был заброшен. Средневековая совместимость, не наличие или обязательный набор вещей в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:household-apple-orchard",
+      "locale": "en",
+      "runtime_text": "The eleventh-century Desyatinny area had gardens and apple orchards; that particular area was abandoned in early thirteenth century. Medieval compatibility, not presence or a mandatory scene inventory.",
+      "search_aliases": []
+    }
+  ]
+}

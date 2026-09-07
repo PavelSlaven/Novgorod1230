@@ -1,0 +1,155 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-01",
+      "claim_ref": "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+      "claim_digest": "e287a0e698e4a84fb5cc045316579bcd04abc58744967baaac9715cd943312d3",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-who-postbirth-bleeding-infection"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-02",
+      "claim_ref": "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
+      "claim_digest": "528ee77a1d4159974cefe4e11c3b602fd8e767ae7128ab7452c6398195adf831",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-who-maternal-newborn-link"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-03",
+      "claim_ref": "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
+      "claim_digest": "7b1db612ae3f91e228afd2b6ca2e3a20daeffb32a1277ac00a35c9892729105b",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-ncbi-uterine-contraction"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-04",
+      "claim_ref": "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment",
+      "claim_digest": "699ff3f28f8085f2ad8116a35bf28724d4ff12f3ce4b66701df85d9a2f7edf5b",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-ncbi-lactation-feedback"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-05",
+      "claim_ref": "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
+      "claim_digest": "0e57fdb9ff49410accd2dfac8f5aedf28e228d5bfc174b16544ba1bb57c5b6b1",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-ncbi-milk-ejection"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-06",
+      "claim_ref": "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
+      "claim_digest": "9ad1466b6c098746a1ca19f8a9fb9172fd12325ed413eea8cf313b78a7f1b426",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-ncbi-colostrum"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-07",
+      "claim_ref": "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
+      "claim_digest": "1ca4ee55915f46347568acbae7136309525e4a127d59913071b50ce945ec66dd",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-ncbi-breastmilk-immune-factors"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-08",
+      "claim_ref": "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
+      "claim_digest": "7874464725a4abe674b070342c61f289d11ea193bbf3b6ddaae2593cf0a27e3e",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-who-first-week"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-09",
+      "claim_ref": "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
+      "claim_digest": "597e0847663b73c3106449a5d40103bb8bc7c0ebec3fbc7f786c3a75e1ee271c",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-who-feeding-infection-protection"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:postpartum-10",
+      "claim_ref": "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development",
+      "claim_digest": "5e302da5018607e476d761214dd7327095f9b632a5c94275eec56fd5cd7bb0a1",
+      "candidate_ref": "git:78efb4b1234f45fd2b7180842af7c60a7a451812:data/world-catalogs/novgorod/world-knowledge/production-v1/residual-postpartum-v1.json#claim:residual-postpartum-early-child-nutrition-supports-growth-and-development",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent live review of cited WHO/NCBI pages and current RU/EN reconciliation; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:residual-postpartum-who-nutrition-early-life"
+      ],
+      "review_ref": "verification/residual-postpartum-v1.md#approved-general-physiology-and-health-contexts",
+      "verdict": "APPROVE",
+      "limits": "General modern physiology/health context only; no dosage, historical practice, care availability, diagnosis, actor state, feeding history, infection, recovery, or outcome."
+    }
+  ]
+}

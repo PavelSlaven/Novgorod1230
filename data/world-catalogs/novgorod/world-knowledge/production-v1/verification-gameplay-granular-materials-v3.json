@@ -1,0 +1,31 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-granular-materials-v3-wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+      "claim_ref": "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+      "claim_digest": "4e56a1610d6bc3e0baf9e3bcd686ff8e05a82229b65bd7682a573616e5a937cf",
+      "candidate_ref": "git:f1fca6334217d3b5ba7c22d64f7a6a0f379e47be:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-granular-materials-v3.json#claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Independent publisher-source review; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:granular-v3-capillary-bridges"],
+      "review_ref": "verification/gameplay-granular-materials-v3.md#independent-verification-gameplay-granular-materials-v3",
+      "verdict": "APPROVE",
+      "limits": "Scheel et al. directly study water-mixed spherical-bead packings. The modal relation supports no material, saturation, grain size, strength, moulding, local water, or action outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-granular-materials-v3-partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+      "claim_ref": "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+      "claim_digest": "a51e746069a467f2d6db841bb7192d80719d82c82b44cde4142bb32aa8905b5c",
+      "candidate_ref": "git:f1fca6334217d3b5ba7c22d64f7a6a0f379e47be:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-granular-materials-v3.json#claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Independent publisher-source review; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:granular-v3-compression-phase-evolution"],
+      "review_ref": "verification/gameplay-granular-materials-v3.md#independent-verification-gameplay-granular-materials-v3",
+      "verdict": "APPROVE",
+      "limits": "Milatz et al. directly observe Hamburg Sand and glass beads under in-situ uniaxial compression. The modal relation supplies no direction, magnitude, universal response of every material, discharge, connected path, amount, rate, local material, or action outcome."
+    }
+  ]
+}

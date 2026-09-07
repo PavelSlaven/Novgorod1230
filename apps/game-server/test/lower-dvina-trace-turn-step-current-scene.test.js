@@ -59,11 +59,14 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
       kind: 'semantic_activity' } } }, retrieved_state: current, mode_resolution: {
       decision_trace: { remaining_intent: null,
         step_traces: [{ approved_plan: { resolution: 'direct',
+          interpretation: { player_goal: 'определить узор на досках',
+            grounded_attempt: 'поднести доску к глазам' },
           goal_result: 'not_achieved', operations: [], check: null } }] }
     } }, directSeedKeys: ['turn_step_1'], body: {} });
   assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
   assert.equal(JSON.stringify(direct).includes('injured_unable_to_walk'), false);
-  assert.deepEqual(direct.visible_changes, []);
+  assert.deepEqual(direct.visible_changes,
+    ['Не удалось достичь цели «определить узор на досках».']);
   assert.deepEqual(direct.uncertainties, []);
   assert.equal(direct.do_not_imply.includes('unconfirmed_attempt_success'), true);
 });
@@ -217,6 +220,26 @@ test('ordinary scene seed augments the current scene in the same turn', async ()
     recognition }) => ({ entity_ref, display_label, recognition })),
   state.current_visible_context.visible_npc);
   assert.equal(JSON.stringify(visible).includes('ordinary_scene_seed'), false);
+});
+
+test('unfinished domain prerequisite preserves the scene without inventing partial success', async () => {
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => assert.fail('fallback not expected') }
+  });
+  const state = committedState();
+  state.current_visible_context.sensory_details = ['На досках лежит мокрая трава.'];
+  const visible = await projector.project({
+    consequence: { status: 'partial', visible_seed: { completed_steps: [] } },
+    retrieved_state: state, body_update: { state_after: {} },
+    mode_resolution: { decision_trace: { remaining_intent: 'Скрутить траву в жгут.',
+      step_traces: [{ approved_plan: { resolution: 'domain_request',
+        goal_result: 'pending', operations: [{ op: 'request_discovery' }], check: null } }] } }
+  });
+  assert.equal(visible.visible_scene, state.current_visible_context.visible_scene);
+  assert.deepEqual(visible.sensory_details, ['На досках лежит мокрая трава.']);
+  assert.deepEqual(visible.visible_changes, []);
+  assert.deepEqual(visible.uncertainties, []);
+  assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));
 });
 
 function committedState() {

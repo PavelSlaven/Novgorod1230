@@ -15,7 +15,8 @@ const DIRECT = new Set([
 ]);
 
 /** Every physical fragment must be authorized by the exact applied step. */
-export function validateTurnStepBatchPlanBindings({ batch, factual, state }) {
+export function validateTurnStepBatchPlanBindings({ batch, factual, state,
+  ambientPortionProfileRef = null }) {
   const slots = expectedSlots(factual?.loop_trace?.step_traces ?? []);
   const aliases = new Map();
   const materializedItems = [
@@ -40,11 +41,11 @@ export function validateTurnStepBatchPlanBindings({ batch, factual, state }) {
       : { type: 'operation', step: fragment.value.step_index,
           kind: fragment.value.operation_kind };
     const slot = slots[cursor];
+    const bindingState = { ...state, items: materializedItems };
     if (!slot || slot.type !== candidate.type || slot.step !== candidate.step
         || (slot.type === 'operation' && slot.operation.op !== candidate.kind)
-        || !slotMatches(slot, fragment.value, aliases, {
-          ...state, items: materializedItems
-        })) {
+        || !slotMatches(slot, fragment.value, aliases, bindingState,
+          ambientPortionProfileRef)) {
       mismatch(fragment.value, 'fragment is not authorized in this order');
     }
     cursor += 1;
@@ -88,7 +89,7 @@ function expectedSlots(traces) {
   });
 }
 
-function slotMatches(slot, value, aliases, state) {
+function slotMatches(slot, value, aliases, state, ambientPortionProfileRef) {
   if (slot.type === 'activity') {
     return value.duration_class === slot.activity.duration_class
       && value.effort === slot.activity.effort;
@@ -96,6 +97,11 @@ function slotMatches(slot, value, aliases, state) {
   const expected = slot.operation;
   const payload = value.payload;
   if (expected.op === 'create_entity') {
+    if (expected.origin.kind === 'ambient_ordinary'
+        && expected.origin.source_refs.includes(ambientPortionProfileRef)) {
+      return ambientPortionMatches(expected, payload, aliases, state,
+        ambientPortionProfileRef);
+    }
     return payload.temp_ref === expected.temp_ref
       && payload.semantic_type === expected.semantic_type
       && payload.name === expected.name
@@ -142,6 +148,26 @@ function slotMatches(slot, value, aliases, state) {
   }
   return expected.op === 'request_container_access'
     && containerAccessMatches(slot, payload, expected, aliases, state);
+}
+
+function ambientPortionMatches(expected, payload, aliases, state,
+  ambientPortionProfileRef) {
+  const snapshot = payload.runtime_instance_mechanics_snapshot;
+  const mechanics = snapshot?.mechanics;
+  return payload.temp_ref === expected.temp_ref
+    && payload.origin?.kind === 'ambient_ordinary'
+    && Array.isArray(payload.origin?.source_refs)
+    && snapshot?.provenance?.origin_kind === 'ambient_ordinary'
+    && same(payload.origin.source_refs, snapshot.provenance.source_refs)
+    && payload.origin.source_refs.includes(ambientPortionProfileRef)
+    && expected.origin.source_refs.every((ref) =>
+      payload.origin.source_refs.includes(resolve(ref, aliases)))
+    && same(payload.facts?.map(({ temp_ref, text: factText }) => ({
+      temp_ref, text: factText
+    })), expected.facts)
+    && mechanics?.mass_grams === expected.mechanics.mass_grams
+    && same(mechanics?.quantity, expected.mechanics.quantity)
+    && placementMatches(payload.placement, expected.placement, aliases, state);
 }
 
 function containerAccessMatches(slot, payload, expected, aliases, state) {

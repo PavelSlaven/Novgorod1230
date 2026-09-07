@@ -1180,7 +1180,7 @@ async function phase4RouteCount(pool, partyId) {
 
 async function waitForPostgres(name) {
   for (let attempt = 0; attempt < 30; attempt += 1) {
-    if (docker(['exec', name, 'pg_isready']).status === 0) return;
+    if (docker(['exec', name, 'pg_isready', '-h', '127.0.0.1']).status === 0) return;
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   throw new Error('PostgreSQL did not become ready');

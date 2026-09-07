@@ -32,6 +32,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     npcSemanticRemainderProfile,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
+    turnStepAmbientPortionProfileRef,
     turnStepOrdinaryResultPolicy,
     turnStepApprovedOwners,
     turnStepPackingCalculator,
@@ -166,12 +167,22 @@ export function buildLowerDvinaTracePhase2Services(context) {
     partyStore: {
       async commit(writePlan) {
         turnBudget?.assertCanCommit();
-        const committed = await repository.commitPhase2Turn({
+        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_requested',
+          write_plan: writePlan });
+        let committed;
+        try { committed = await repository.commitPhase2Turn({
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
           turn10Contracts, phase8Contracts, phase9Contracts,
-          phase10Contracts, turnStepApprovedOwners, turnBudget
-        });
+          phase10Contracts, turnStepApprovedOwners, turnBudget,
+          turnStepAmbientPortionProfileRef
+        }); } catch (error) {
+          context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_rejected',
+            code: error?.code ?? null, details: error?.details ?? null });
+          throw error;
+        }
+        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_completed',
+          result: committed });
         committedPublicResult = committed.committed_public_result ?? null;
         return committed;
       }

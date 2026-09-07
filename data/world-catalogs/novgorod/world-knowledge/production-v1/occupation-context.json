@@ -1,0 +1,285 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:npl-1220-1229",
+      "title": "Новгородская первая летопись старшего и младшего изводов: 1220–1229",
+      "authors": [],
+      "publication": "Москва–Ленинград, 1950, с. 261–275; электронное издание",
+      "source_kind": "primary_text",
+      "citation": "http://litopys.org.ua/novglet/novg23.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:npl-posadnik-1224",
+      "source_ref": "source:npl-1220-1229",
+      "anchor": {
+        "section": "6732 [1224]"
+      },
+      "note": "Named Fedor/Rusa military episode only; direct/high for the record, inferred/medium for a 1200–1300 possible role/activity envelope. No general office duty or power. Independently approved ORP-01.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:npl-posadnik-1228",
+      "source_ref": "source:npl-1220-1229",
+      "anchor": {
+        "section": "6736 [1228]"
+      },
+      "note": "Named Ladoga posadnik Volodislav pursuit/fighting episode only; direct/high for the record, inferred/medium for a 1200–1300 possible role/activity envelope. No standing naval duty, boat, crew or current enemy. Independently approved ORP-02.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:occupation-kolchin-craft",
+      "source_ref": "source:kolchin-novgorod-1957",
+      "anchor": {
+        "section": "Ремесло; рис. 4–5"
+      },
+      "note": "Independently approved with limits from Kolchin's archaeological synthesis: XI–XII tool/process evidence; no 1230 workshop inventory or individual practitioner follows.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:posadnik-role-context",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:craft_technology:smithing","domain":"craft_technology","broader_refs":["wk:craft_technology:metalworking-broad-context"],"related_refs":["wk:material_culture:iron","wk:material_culture:steel"],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:craft_technology:steel-working-part-heat-treatment","domain":"craft_technology","broader_refs":["wk:craft_technology:smithing"],"related_refs":["wk:material_culture:steel"],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:npc_daily_life:smith","domain":"npc_daily_life","broader_refs":[],"related_refs":["wk:craft_technology:smithing"],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:npc_daily_life:carpenter","domain":"npc_daily_life","broader_refs":[],"related_refs":["wk:craft_technology:woodworking"],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:material_culture:anvil","domain":"material_culture","broader_refs":[],"related_refs":["wk:craft_technology:smithing"],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:material_culture:smith-hammer","domain":"material_culture","broader_refs":[],"related_refs":["wk:craft_technology:smithing"],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:material_culture:smith-tongs","domain":"material_culture","broader_refs":[],"related_refs":["wk:craft_technology:smithing"],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:material_culture:drawknife","domain":"material_culture","broader_refs":[],"related_refs":["wk:craft_technology:woodworking"],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:material_culture:plane-like-tool","domain":"material_culture","broader_refs":[],"related_refs":["wk:craft_technology:woodworking"],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:social_law_economy:directed-grain-procurement","domain":"social_law_economy","broader_refs":[],"related_refs":["wk:social_law_economy:business-record"],"external_mappings":[],"review_status":"approved"}
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:posadnik-role-context",
+      "locale": "ru",
+      "labels": [
+        "Посадник: контекст деятельности"
+      ],
+      "short_definition": "Именованные летописные эпизоды деятельности посадников",
+      "search_aliases": [
+        "посадник",
+        "военная деятельность"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:posadnik-role-context",
+      "locale": "en",
+      "labels": [
+        "Posadnik activity context"
+      ],
+      "short_definition": "Named chronicle episodes involving officeholders",
+      "search_aliases": [
+        "posadnik",
+        "officeholder",
+        "military activity"
+      ]
+    },
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:craft_technology:smithing","locale":"ru","labels":["Кузнечное дело"],"short_definition":"Обработка железа и стали кузнечным способом","search_aliases":["кузнечное ремесло"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:craft_technology:smithing","locale":"en","labels":["Smithing"],"short_definition":"Working iron and steel by smithing","search_aliases":["blacksmithing"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:craft_technology:steel-working-part-heat-treatment","locale":"ru","labels":["Термообработка стальной рабочей части"],"short_definition":"Закалка и отпуск стальной рабочей части","search_aliases":["закалка", "отпуск"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:craft_technology:steel-working-part-heat-treatment","locale":"en","labels":["Steel working-part heat treatment"],"short_definition":"Quenching and tempering a steel working part","search_aliases":["quenching", "tempering"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:npc_daily_life:smith","locale":"ru","labels":["Кузнец"],"short_definition":"Роль в контексте кузнечной работы","search_aliases":["кузнец"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:npc_daily_life:smith","locale":"en","labels":["Smith"],"short_definition":"Role in a smithing context","search_aliases":["blacksmith"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:npc_daily_life:carpenter","locale":"ru","labels":["Плотник"],"short_definition":"Роль в контексте деревообработки","search_aliases":["плотник"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:npc_daily_life:carpenter","locale":"en","labels":["Carpenter"],"short_definition":"Role in a woodworking context","search_aliases":["carpenter"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:anvil","locale":"ru","labels":["Кузнечная наковальня"],"short_definition":"Опора для кузнечной обработки металла","search_aliases":["наковальня"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:anvil","locale":"en","labels":["Smithing anvil"],"short_definition":"Support for smithing metal","search_aliases":["anvil"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:smith-hammer","locale":"ru","labels":["Кузнечный молоток"],"short_definition":"Молоток для кузнечной обработки металла","search_aliases":["ручник", "кувалда"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:smith-hammer","locale":"en","labels":["Smithing hammer"],"short_definition":"Hammer for smithing metal","search_aliases":["hand hammer", "sledgehammer"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:smith-tongs","locale":"ru","labels":["Кузнечные клещи"],"short_definition":"Клещи для кузнечной обработки металла","search_aliases":["клещи"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:smith-tongs","locale":"en","labels":["Smithing tongs"],"short_definition":"Tongs for smithing metal","search_aliases":["tongs"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:drawknife","locale":"ru","labels":["Скобель"],"short_definition":"Инструмент для обработки дерева","search_aliases":["скобель"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:drawknife","locale":"en","labels":["Drawknife"],"short_definition":"Tool for working wood","search_aliases":["drawknife"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:plane-like-tool","locale":"ru","labels":["Наструг"],"short_definition":"Строгальный инструмент типа рубанка","search_aliases":["наструг", "рубанок"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:material_culture:plane-like-tool","locale":"en","labels":["Plane-like tool"],"short_definition":"Planing tool of plane type","search_aliases":["plane"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:social_law_economy:directed-grain-procurement","locale":"ru","labels":["Распоряжение о закупке зерна"],"short_definition":"Письменное распоряжение приобрести зерно","search_aliases":["закупка зерна"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:social_law_economy:directed-grain-procurement","locale":"en","labels":["Directed grain procurement"],"short_definition":"Written direction to purchase grain","search_aliases":["grain purchase instruction"]}
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:posadnik-fedor-conflict-1224",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:posadnik-role-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "chronicle_1224_fedor_with_people_of_rusa_fought_lithuanians"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:npl-posadnik-1224"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:posadnik-volodislav-pursuit-1228",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:posadnik-role-context",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "chronicle_1228_ladoga_posadnik_volodislav_with_ladogans_pursued_yem_in_boats_and_fought"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:npl-posadnik-1228"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-smith-iron-input","domain":"craft_technology","subject_ref":"wk:craft_technology:smithing","predicate":"requires_input","object":{"kind":"concept_ref","value":"wk:material_culture:iron"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-smith-role","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:smith","predicate":"supports_known_process","object":{"kind":"concept_ref","value":"wk:craft_technology:smithing"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-smith-anvil","domain":"material_culture","subject_ref":"wk:material_culture:anvil","predicate":"attested_use","object":{"kind":"concept_ref","value":"wk:craft_technology:smithing"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-smith-hammer","domain":"material_culture","subject_ref":"wk:material_culture:smith-hammer","predicate":"attested_use","object":{"kind":"concept_ref","value":"wk:craft_technology:smithing"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-smith-tongs","domain":"material_culture","subject_ref":"wk:material_culture:smith-tongs","predicate":"attested_use","object":{"kind":"concept_ref","value":"wk:craft_technology:smithing"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-smith-heat-treatment","domain":"craft_technology","subject_ref":"wk:craft_technology:steel-working-part-heat-treatment","predicate":"historically_compatible","object":{"kind":"literal","value":"quenching_and_tempering_of_steel_working_parts"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-smith-specialisation","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:smith","predicate":"supported_fact","object":{"kind":"literal","value":"product_specific_smith_specialisation_documented_without_closed_occupation_vocabulary"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-carpenter-role","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:carpenter","predicate":"supports_known_process","object":{"kind":"concept_ref","value":"wk:craft_technology:woodworking"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-wood-drawknife","domain":"material_culture","subject_ref":"wk:material_culture:drawknife","predicate":"attested_use","object":{"kind":"concept_ref","value":"wk:craft_technology:woodworking"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-wood-plane","domain":"material_culture","subject_ref":"wk:material_culture:plane-like-tool","predicate":"attested_use","object":{"kind":"concept_ref","value":"wk:craft_technology:woodworking"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:occupation-kolchin-craft"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:occupation-directed-grain-procurement","domain":"social_law_economy","subject_ref":"wk:social_law_economy:directed-grain-procurement","predicate":"supported_fact","object":{"kind":"literal","value":"letter_943_records_instruction_to_purchase_grain_not_holder_identity_or_completed_transaction"},"polarity":"support","applicability":{"time":{"from":1100,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"attested","confidence":"medium","directness":"inferred"},"knowledge_access":{"class":"common_cultural","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:ha-grain943"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:posadnik-fedor-conflict-1224",
+      "locale": "ru",
+      "runtime_text": "Новгородская первая летопись под 1224 годом сообщает, что посадник Фёдор ходил с рушанами и сражался с литвой. Это прямое свидетельство именованного эпизода; перенос в возможный контекст деятельности посадника Новгородской земли 1200–1300 гг. имеет среднюю уверенность и является выводом. Он не задаёт обычную обязанность, командные полномочия, войско, вооружение, разрешение, нынешний конфликт или поведение другого NPC.",
+      "search_aliases": [
+        "посадник",
+        "Фёдор",
+        "рушане"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:posadnik-fedor-conflict-1224",
+      "locale": "en",
+      "runtime_text": "The Novgorod First Chronicle entry for 1224 reports that posadnik Fedor went with the people of Rusa and fought Lithuanians. This directly attests a named episode; its use as a possible Novgorod-Land officeholder activity context for 1200–1300 is inferred with medium confidence. It establishes no routine duty, command power, force, weapons, permission, current conflict or another NPC’s conduct.",
+      "search_aliases": [
+        "posadnik",
+        "Fedor",
+        "Rusa"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:posadnik-volodislav-pursuit-1228",
+      "locale": "ru",
+      "runtime_text": "Новгородская первая летопись под 1228 годом сообщает, что ладожский посадник Володислав с ладожанами преследовал в лодьях людей Еми и вступил с ними в бой. Это прямое свидетельство именованного эпизода; совместимость с возможной деятельностью должностного лица Новгородской земли 1200–1300 гг. — вывод средней уверенности. Оно не устанавливает постоянную морскую службу, обычай или обязанность преследования, власть над NPC, нынешнюю лодью, команду, врага, тактику либо результат.",
+      "search_aliases": [
+        "Володислав",
+        "Ладога",
+        "лодьи",
+        "Емь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:posadnik-volodislav-pursuit-1228",
+      "locale": "en",
+      "runtime_text": "The Novgorod First Chronicle entry for 1228 reports that Ladoga posadnik Volodislav and the people of Ladoga pursued the Yem in boats and fought them. This directly attests a named episode; compatibility with a possible Novgorod-Land officeholder activity in 1200–1300 is an inference of medium confidence. It establishes no standing naval service, customary or obligatory pursuit, authority over NPCs, present boat, crew, enemy, tactic or outcome.",
+      "search_aliases": [
+        "Volodislav",
+        "Ladoga",
+        "boats",
+        "Yem"
+      ]
+    },
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-iron-input","locale":"ru","runtime_text":"В описанном новгородском кузнечном производстве железо поступало от сельских металлургов; городская кузница работала с уже полученным металлом. Это не доказывает рудник, запас железа или работу кузнеца в текущей сцене.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-iron-input","locale":"en","runtime_text":"In the described Novgorod smithing, iron was supplied by rural metallurgists; the urban smithy worked from already obtained metal. This does not establish a mine, iron stock or a working smith in the current scene.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-role","locale":"ru","runtime_text":"Кузнечный контекст связан с обработкой железа и стали. Роль «кузнец» не создаёт мастерскую, топливо, инструменты, навык, заказ или обязательную работу конкретного NPC.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-role","locale":"en","runtime_text":"A smithing context concerns working iron and steel. The role “smith” creates no workshop, fuel, tools, skill, commission or compulsory activity for a particular NPC.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-anvil","locale":"ru","runtime_text":"Кузнечная наковальня засвидетельствована среди инструментов обработки металла. Это не означает, что наковальня есть в данном месте или доступна действующему лицу.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-anvil","locale":"en","runtime_text":"A smithing anvil is attested among metalworking tools. This does not mean that an anvil is present at this place or accessible to the actor.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-hammer","locale":"ru","runtime_text":"Кувалды и ручные кузнечные молотки засвидетельствованы среди инструментов обработки металла. Они не образуют обязательный набор и не создают предмет в сцене.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-hammer","locale":"en","runtime_text":"Sledgehammers and hand smithing hammers are attested among metalworking tools. They are not a mandatory kit and do not create an item in the scene.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-tongs","locale":"ru","runtime_text":"Кузнечные клещи разных размеров засвидетельствованы среди инструментов обработки металла. Свидетельство о классе инструмента не доказывает его наличие, состояние или применение сейчас.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-tongs","locale":"en","runtime_text":"Smithing tongs of different sizes are attested among metalworking tools. Evidence for a tool class does not prove its presence, condition or present use.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-heat-treatment","locale":"ru","runtime_text":"При изготовлении стальных рабочих частей применялись закалка и отпуск. Источник не задаёт температуру, длительность, состав сплава, успешный результат или числовую механику предмета.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-heat-treatment","locale":"en","runtime_text":"Quenching and tempering were used when making steel working parts. The source gives no temperature, duration, alloy composition, successful outcome or numerical item mechanics.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-specialisation","locale":"ru","runtime_text":"В XII-вековом Новгороде источник описывает специализацию кузнецов по семействам изделий. Это не закрытый список профессий, не цех и не доказательство специализации или статуса текущего NPC.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-smith-specialisation","locale":"en","runtime_text":"For twelfth-century Novgorod, the source describes smith specialisation by product families. It is not a closed occupation list, a guild, or proof of a current NPC’s speciality or status.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-carpenter-role","locale":"ru","runtime_text":"Плотницкий контекст связан с деревообработкой; источник помещает плотников среди специализированных деревянных ремёсел. Роль не создаёт лесоматериал, постройку, лодку, мост, мастерскую или право строительства.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-carpenter-role","locale":"en","runtime_text":"A carpenter context concerns woodworking; the source places carpenters among specialised wood crafts. The role creates no timber, building, boat, bridge, workshop or building permission.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-wood-drawknife","locale":"ru","runtime_text":"Скобель засвидетельствован в наборе стальных инструментов деревообработки X–XII веков. Это не обязательный набор плотника и не предмет, уже находящийся в сцене.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-wood-drawknife","locale":"en","runtime_text":"A drawknife is attested in the X–XII-century steel woodworking toolkit. It is neither a carpenter’s mandatory kit nor an item already in the scene.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-wood-plane","locale":"ru","runtime_text":"Наструг, инструмент типа рубанка, засвидетельствован в наборе стальных инструментов деревообработки X–XII веков. Источник не доказывает его наличие, остроту или успешную обработку конкретной детали.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-wood-plane","locale":"en","runtime_text":"A plane-like tool is attested in the X–XII-century steel woodworking toolkit. The source does not prove its presence, sharpness or successful work on a particular part.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-directed-grain-procurement","locale":"ru","runtime_text":"Грамота №943 — фрагмент распоряжения о покупке зерна; в сохранившемся тексте названы рожь и ячмень. Она не называет адресата купцом, не доказывает наличие зерна или завершённую сделку.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:occupation-directed-grain-procurement","locale":"en","runtime_text":"Letter 943 is a fragmentary instruction to purchase grain; its surviving text names rye and barley. It does not identify the addressee as a merchant or establish grain possession or a completed transaction.","search_aliases":[]}
+  ]
+}

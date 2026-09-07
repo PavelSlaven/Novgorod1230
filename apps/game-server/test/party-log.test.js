@@ -12,6 +12,20 @@ import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { readServerConfig } from '../src/config.js';
 
+test('party log preserves shared WK data and marks only real ancestor cycles', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'rus-party-log-alias-'));
+  const log = createPartyLog({ directory });
+  const facts = [{ claim_ref: 'claim:shared', runtime_text: 'same supplied fact' }];
+  const cyclic = { value: 'kept' }; cyclic.self = cyclic;
+  await log.append('alias', { event: 'turn.completed',
+    retrieved_slice: { facts }, consumer_request: { world_knowledge: { facts } },
+    other_reference: facts[0], cyclic });
+  const saved = JSON.parse(await readFile(log.pathFor('alias'), 'utf8'));
+  assert.deepEqual(saved.consumer_request.world_knowledge.facts, facts);
+  assert.deepEqual(saved.other_reference, facts[0]);
+  assert.equal(saved.cyclic.self, '[Circular]');
+});
+
 test('server config exposes LOG_DIRECTORY for party logs', () => {
   assert.equal(readServerConfig({ LOG_DIRECTORY: 'D:\\game-logs' }).logDirectory,
     'D:\\game-logs');

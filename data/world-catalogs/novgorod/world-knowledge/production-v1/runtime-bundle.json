@@ -10051,6 +10051,22 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "title": "Trade economy batch 03 bounded reconstruction",
+      "authors": [
+        "Novgorod1230 editorial team"
+      ],
+      "publication": "Candidate reconstruction from trade-economy-batch-03 triage",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/benchmarks/offline-context-v1/trade-economy-batch-03-triage.json",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:trade-economy-editorial-handling",
       "title": "Trade and household handling: bounded editorial reconstruction",
       "authors": [
@@ -21957,6 +21973,56 @@
     },
     {
       "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-exchange",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Qualitative exchange valuation and bargaining"
+      },
+      "note": "Bounded reconstruction: observed usefulness, condition, urgency, alternatives, effort and risk can be discussed qualitatively in exchange. No price, rate, unit, stock, ownership, law, route, agreement, identity, outcome or NPC decision is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-packaging",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Packaging geometry and container constraints"
+      },
+      "note": "Bounded reconstruction: shape, opening, capacity and closure constrain handling of already present goods and containers. No container, quantity, owner, route, loss or outcome is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-payment-metal",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Payment metal material suitability"
+      },
+      "note": "Bounded reconstruction: already present metal portions can be inspected and kept separate by visible material condition. No authentication, currency identity, amount, rate, ownership, acceptance or settlement is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-provisions",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Seasonal provision availability and preservation"
+      },
+      "note": "Bounded reconstruction: fresh provision availability can vary seasonally and preservation can extend use of already available food. No food, stock, season at a place, method, safety, duration or outcome is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:trade-economy-batch-03-storage",
+      "source_ref": "source:trade-economy-batch-03-editorial",
+      "anchor": {
+        "section": "Cross-material storage compatibility"
+      },
+      "note": "Bounded reconstruction: moisture, odour, smoke, pests and cold can be considered across already stored materials. No stored good, condition, cause, spoilage, safety, loss or preservation outcome is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:trade-economy-divisible-metal-editorial",
       "source_ref": "source:trade-economy-editorial-handling",
       "anchor": {
@@ -23654,6 +23720,37 @@
             "Timber-and-earth fortification"
           ],
           "short_definition": "Timber-and-earth fortification",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+          "locale": "ru",
+          "labels": [
+            "Совместимость хранения разных материалов"
+          ],
+          "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+          "locale": "en",
+          "labels": [
+            "Cross-material storage compatibility"
+          ],
+          "short_definition": "Conditional qualitative relation without concrete state or outcome.",
           "search_aliases": []
         }
       }
@@ -45381,6 +45478,99 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+          "locale": "ru",
+          "labels": [
+            "Упаковка и тара"
+          ],
+          "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+          "locale": "en",
+          "labels": [
+            "Packaging and containers"
+          ],
+          "short_definition": "Conditional qualitative relation without concrete state or outcome.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+          "locale": "ru",
+          "labels": [
+            "Материальная пригодность платёжного металла"
+          ],
+          "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+          "locale": "en",
+          "labels": [
+            "Payment-metal material suitability"
+          ],
+          "short_definition": "Conditional qualitative relation without concrete state or outcome.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+          "locale": "ru",
+          "labels": [
+            "Сезонные припасы"
+          ],
+          "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+          "locale": "en",
+          "labels": [
+            "Seasonal provisions"
+          ],
+          "short_definition": "Conditional qualitative relation without concrete state or outcome.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:material_culture:tree-climbing-hook",
       "domain": "material_culture",
       "broader_refs": [],
@@ -55845,6 +56035,37 @@
           "search_aliases": [
             "third-party goods"
           ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+          "locale": "ru",
+          "labels": [
+            "Качественный обмен"
+          ],
+          "short_definition": "Условная качественная связь без конкретного состояния или результата.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+          "locale": "en",
+          "labels": [
+            "Qualitative exchange"
+          ],
+          "short_definition": "Conditional qualitative relation without concrete state or outcome.",
+          "search_aliases": []
         }
       }
     },
@@ -142675,6 +142896,786 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "known_alternatives_can_qualitatively_affect_bargaining_room_without_establishing_demand_acceptance_or_npc_choice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-exchange"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-03"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "participants_can_qualitatively_compare_observed_usefulness_and_condition_of_already_present_exchange_items_without_setting_a_price_or_rate"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-exchange"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-01"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "effort_risk_and_urgency_can_be_discussed_as_qualitative_conditions_of_an_exchange_without_fixing_terms_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-exchange"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-02"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fresh_and_preserved_provisions_can_be_considered_as_different_availability_forms_without_inferring_current_stock_or_choice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-provisions"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-15"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "availability_of_fresh_provisions_can_vary_by_season_without_establishing_a_place_stock_or_current_food"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-provisions"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-13"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "dividing_goods_into_carried_units_uses_available_packaging_material_and_space_without_establishing_count_capacity_or_owner"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-packaging"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-09"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "available_packaging_material_and_closure_can_conditionally_affect_handling_of_already_present_goods_without_proving_containment_or_loss_prevention"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-packaging"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-08"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "container_shape_and_opening_geometry_constrain_which_already_present_goods_can_pass_through_without_assigning_a_quantity_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-packaging"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-07"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an_already_present_metal_portion_can_be_inspected_for_visible_material_condition_without_authenticating_it_or_assigning_payment_value"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-payment-metal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-04"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "already_present_metal_portions_can_be_kept_separate_for_qualitative_comparison_without_setting_an_amount_rate_or_settlement"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-payment-metal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-05"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "visible_material_suitability_of_metal_remains_distinct_from_authentication_currency_identity_or_a_partys_acceptance"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-payment-metal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-06"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "preservation_can_conditionally_extend_use_of_already_available_provisions_without_setting_method_duration_safety_or_outcome"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-provisions"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-14"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "placement_of_already_stored_different_materials_can_be_inspected_and_adjusted_as_space_and_access_allow_without_guaranteeing_preservation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-storage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-12"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "already_stored_food_leather_textile_or_oil_can_be_separated_by_observed_moisture_or_odour_sensitivity_without_proving_contamination_or_loss"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-storage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-10"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "smoke_pest_and_cold_exposure_can_be_considered_as_distinct_storage_conditions_across_materials_without_diagnosing_damage_or_safety"
+      },
+      "polarity": "support",
+      "applicability": {
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:trade-economy-batch-03-storage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
+          "locale": "ru",
+          "runtime_text": "Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
+          "locale": "en",
+          "runtime_text": "Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:trade-economy-b03-11"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
       "domain": "social_law_economy",
       "subject_ref": "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits",
@@ -145723,6 +146724,15 @@
       "wk:architecture_settlement:timber-earth-defence": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:architecture_settlement:timber-earth-defence",
+        "domain": "architecture_settlement",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "domain": "architecture_settlement",
         "broader_refs": [],
         "related_refs": [],
@@ -151617,6 +152627,33 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:material_culture:trade-economy-batch-03-packaging": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+        "domain": "material_culture",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:material_culture:trade-economy-batch-03-payment-metal": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "domain": "material_culture",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:material_culture:trade-economy-batch-03-seasonal-provisions": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+        "domain": "material_culture",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:material_culture:tree-climbing-hook": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:material_culture:tree-climbing-hook",
@@ -154493,6 +155530,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+        "domain": "social_law_economy",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits",
@@ -154713,6 +155759,11 @@
         "claim:civic-defence-stake-support",
         "claim:civic-defence-transverse-support",
         "claim:civic-wood-earth-wall"
+      ],
+      "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage": [
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions"
       ],
       "wk:architecture_settlement:underfloor-space": [
         "claim:settlement-underfloor-storage",
@@ -157154,6 +158205,21 @@
       "wk:material_culture:tin": [
         "claim:casting-tin"
       ],
+      "wk:material_culture:trade-economy-batch-03-packaging": [
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through"
+      ],
+      "wk:material_culture:trade-economy-batch-03-payment-metal": [
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance"
+      ],
+      "wk:material_culture:trade-economy-batch-03-seasonal-provisions": [
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally"
+      ],
       "wk:material_culture:tree-climbing-hook": [
         "claim:agriculture-fauna-bort-climbing-hooks"
       ],
@@ -158309,6 +159375,11 @@
       "wk:social_law_economy:third-party-goods-or-funds": [
         "claim:rp-merchant-credit-relates-third-party-goods"
       ],
+      "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange": [
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions"
+      ],
       "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits": [
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference"
@@ -158416,6 +159487,9 @@
         "claim:settlement-wood-building",
         "claim:settlement-wooden-paving",
         "claim:settlement-workshop-street",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:urban-pavements"
       ],
       "biology_physiology": [
@@ -159466,6 +160540,15 @@
         "claim:textile-ellagic-acid-analysis",
         "claim:textile-indigo-yellow-analysis",
         "claim:textile-lac-dye-analysis",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
         "claim:transport-boat-cargo-dispatch",
         "claim:transport-horse-sledge-equipment",
         "claim:transport-private-boat-arrangement",
@@ -159986,6 +161069,9 @@
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:social-written-complaint-may-assert-compensation",
         "claim:social-written-prayer-relates-invocation",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference"
       ]
@@ -161648,6 +162734,21 @@
         "claim:textile-indigo-yellow-analysis",
         "claim:textile-lac-dye-analysis",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
@@ -165325,6 +166426,7 @@
         "claim:wild-food-and-fur-evidence",
         "claim:work-waste-context",
         "wk:architecture_settlement:reconstructed-household-water-and-waste-context",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
         "wk:biology_physiology:candidate-v6-clinical-observations",
         "wk:biology_physiology:macro-b1819-cattle-observation",
@@ -165359,6 +166461,9 @@
         "wk:environment:static-animal-b06-bat-roost-disturbance",
         "wk:environment:wild-food-and-fur-evidence",
         "wk:material_culture:historically-recorded-maslo",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:physics_material_science:abrasive-hardness-material-removal",
         "wk:physics_material_science:action-reaction-separate-bodies",
         "wk:physics_material_science:air-drag-fall",
@@ -165388,6 +166493,7 @@
         "wk:social_behavior:reconstructed-ordinary-religious-life",
         "wk:social_behavior:trade-economy-lost-pack-animal-response",
         "wk:social_law_economy:reconstructed-public-dispute-and-language",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
       ],
       "безветренная": [
@@ -170569,6 +171675,21 @@
         "claim:place-outdoors-microterrain-patches",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:biology_physiology:fauna-ruminant-grazing-selection",
         "wk:craft_technology:macro-b19-flexible-basket-stock-and-clay-selection",
         "wk:social_law_economy:settlement-or-court-choice"
@@ -174873,6 +175994,21 @@
         "claim:textile-dye-mordant-fixation",
         "claim:textile-ellagic-acid-analysis",
         "claim:textile-lac-dye-analysis",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:transport-hired-boatman",
         "claim:transport-horse-sledge-equipment",
         "claim:transport-sledge-summer-cargo",
@@ -178591,6 +179727,21 @@
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
         "claim:static-forge-welding-requires-heated-pressed-interface",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:material_culture:water"
       ],
       "заделывает": [
@@ -179105,6 +180256,21 @@
         "claim:stone-grinding-metal-use",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
         "claim:textile-ellagic-acid-analysis",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:vegetable-tanning-prepared-hide",
         "wk:architecture_settlement:architectural-material-classes",
         "wk:environment:regional-fish-exploitation",
@@ -182009,6 +183175,7 @@
         "wk:architecture_settlement:river-landing",
         "wk:architecture_settlement:riverbank-workspace",
         "wk:architecture_settlement:storage-workspace",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology:candidate-plant-lookalike-differentiation",
         "wk:biology_physiology:acute-sleep-loss-performance",
         "wk:biology_physiology:broad-clawed-crayfish-behavior",
@@ -182128,6 +183295,9 @@
         "wk:material_culture:stone",
         "wk:material_culture:strap",
         "wk:material_culture:textile-colourants",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:material_culture:vessel",
         "wk:material_culture:wood",
         "wk:material_culture:wooden-last",
@@ -182174,6 +183344,7 @@
         "wk:social_law_economy:payment-register",
         "wk:social_law_economy:settlement-or-court-choice",
         "wk:social_law_economy:third-party-goods-or-funds",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits",
         "wk:social_law_economy:written-complaint"
       ],
@@ -183447,6 +184618,21 @@
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
         "claim:vegetable-tanning-collagen-stabilization",
@@ -184136,6 +185322,22 @@
       "качественная": [
         "claim:clay-firing-structural-transformation",
         "claim:milling-plate-gap-pressure-fineness",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:cat-hiding-places",
@@ -184166,6 +185368,9 @@
         "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:research-freeze-thaw-sediment-erosion",
         "wk:environment:research-track-substrate-interpretation",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
         "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:research-smoke-transport-dispersion",
@@ -184176,7 +185381,8 @@
         "wk:physics_material_science:wick-fed-flame",
         "wk:psychology_behavior:research-memory-postevent-misinformation",
         "wk:psychology_behavior:research-memory-source-misattribution",
-        "wk:social_behavior:research-pooled-work-social-loafing"
+        "wk:social_behavior:research-pooled-work-social-loafing",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "качественно": [
         "claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained"
@@ -184231,7 +185437,8 @@
         "wk:biology_physiology:static-animal-b06-working-horse-context",
         "wk:biology_physiology:static-minor-thermal-burn-care-b10",
         "wk:biology_physiology:static-visual-comfort-context-b06",
-        "wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control"
+        "wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "качественным": [
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue"
@@ -185623,18 +186830,23 @@
         "claim:static-repeated-skin-friction-can-cause-blistering",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:acute-sleep-loss-performance",
         "wk:biology_physiology:candidate-v6-clinical-observations",
         "wk:biology_physiology:residual-postpartum-maternal-recovery",
         "wk:biology_physiology:residual-postpartum-newborn-physiology",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
         "wk:material_culture:novgorod-wooden-urban-elements",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:material_culture:vegetable-tanned-leather",
         "wk:psychology_behavior:research-memory-postevent-misinformation",
         "wk:psychology_behavior:research-memory-source-misattribution",
         "wk:social_behavior:foundations-ms3-experimental-interaction",
         "wk:social_behavior:research-pooled-work-social-loafing",
-        "wk:social_law_economy:regional-economic-activities"
+        "wk:social_law_economy:regional-economic-activities",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "конкретное": [
         "claim:animal-care-needs-presence",
@@ -186193,6 +187405,21 @@
         "claim:terrain-background",
         "claim:textile-chrysin-analysis",
         "claim:textile-ellagic-acid-analysis",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:transport-horse-sledge-equipment",
         "wk:biology_physiology:macro-b1819-cow-calf-separation",
         "wk:material_culture:novgorod-waterlogged-organic-preservation",
@@ -189806,6 +191033,7 @@
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r2",
         "claim:structural-and-object-wood",
         "claim:water-can-cool-class-a-fire-fuel-and-flame",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:chemistry_process:metal-classes-composition",
         "wk:craft_technology:structural-and-object-wood",
         "wk:material_culture:novgorod-wood-bone-horn-classes",
@@ -189883,6 +191111,7 @@
         "wk:material_culture:sinker",
         "wk:material_culture:stone",
         "wk:material_culture:strap",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
         "wk:material_culture:vessel",
         "wk:material_culture:wood",
         "wk:material_culture:wooden-last",
@@ -190706,6 +191935,7 @@
         "wk:material_culture:anvil",
         "wk:material_culture:smith-hammer",
         "wk:material_culture:smith-tongs",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
         "wk:physics_material_science:metal-properties-depend-on-state",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
       ],
@@ -195619,6 +196849,21 @@
         "claim:textile-lac-dye-analysis",
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
@@ -197856,7 +199101,8 @@
         "claim:population-processes-fur-exchange",
         "claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use",
         "wk:biology_physiology:foundation-metabolism",
-        "wk:biology_physiology:human-thermoregulation"
+        "wk:biology_physiology:human-thermoregulation",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "обмена": [
         "claim:foundations-life-20-kidneys",
@@ -204403,6 +205649,7 @@
       ],
       "платёжного": [
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
         "wk:social_law_economy:payment-register",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
       ],
@@ -208345,6 +209592,21 @@
         "claim:social-loan-request-relates-loan",
         "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
         "claim:static-raking-mushroom-ground-can-damage-fungal-habitat",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:transport-horse-sledge-equipment",
         "claim:transport-winter-sledge-1220",
         "wk:environment:hunting-fur-procurement",
@@ -208447,6 +209709,21 @@
       "практическая": [
         "claim:healer-observation-and-questioning",
         "claim:technology-newcomen-boundary",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:biology_physiology:reconstructed-health-support",
         "wk:craft_technology:atmospheric-reciprocating-engine",
         "wk:craft_technology:mb14-practical-making-and-repair"
@@ -208759,6 +210036,21 @@
         "claim:burial-hollowed-log-container"
       ],
       "предпосылка": [
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:biology_physiology:consumer-assimilation",
         "wk:biology_physiology:consumer-energy-allocation",
         "wk:biology_physiology:ecological-competition",
@@ -209559,6 +210851,7 @@
         "claim:stone-whetstone-edge-maintenance",
         "claim:transport-sledge-summer-cargo",
         "wk:biology:candidate-plant-food-part-bound",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
         "wk:physics_material_science:fishing-net-serviceability"
       ],
       "пригодный": [
@@ -210024,7 +211317,8 @@
         "claim:public-world-armed-loss-reaches-household",
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
         "claim:settlement-underfloor-storage",
-        "wk:craft_technology:reconstructed-practical-food-provision"
+        "wk:craft_technology:reconstructed-practical-food-provision",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions"
       ],
       "приписывает": [
         "claim:foundations-ms-19-attribution-explanation",
@@ -212871,6 +214165,7 @@
         "claim:population-wood-float",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:fauna-earthworm",
         "wk:physics_material_science:light-refraction-medium-boundary"
       ],
@@ -214372,7 +215667,12 @@
         "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
         "claim:population-rod-input",
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
-        "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water"
+        "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "результатом": [
         "claim:ordinary-life-worker-means-and-duty-vary"
@@ -216624,6 +217924,7 @@
         "claim:textile-dye-application",
         "claim:vegetable-tanning-collagen-stabilization",
         "claim:vegetable-tanning-prepared-hide",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
@@ -216673,6 +217974,9 @@
         "wk:environment:reality-first-place-composition",
         "wk:environment:research-freeze-thaw-sediment-erosion",
         "wk:environment:research-track-substrate-interpretation",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:npc_daily_life:reality-first-rural-household",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
         "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
@@ -216690,7 +217994,8 @@
         "wk:physics_material_science:wick-fed-flame",
         "wk:social_behavior:foundations-ms-28-ostracism-conditional",
         "wk:social_law_economy:historical-church-monthbook-day-commemoration",
-        "wk:social_law_economy:priest-baptism-statutory-context"
+        "wk:social_law_economy:priest-baptism-statutory-context",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "связями": [
         "claim:buoyancy-pressure-phase-change",
@@ -216969,7 +218274,8 @@
       ],
       "сезонные": [
         "claim:practical-season-work",
-        "wk:environment:final-nature-tree-and-bast-context"
+        "wk:environment:final-nature-tree-and-bast-context",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions"
       ],
       "сезонный": [
         "claim:residual-tree-alnus-glutinosa-catkins-nutlets",
@@ -218969,6 +220275,7 @@
         "claim:transport-winter-sledge-1220",
         "claim:urban-bird-period-specific",
         "claim:water-temperature-affects-aquatic-organism-range",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:environment:flax-hemp-cultivation",
         "wk:environment:static-wetland-plant-regional-compatibility",
         "wk:environment:urban-bird-period-specific",
@@ -220110,15 +221417,20 @@
         "claim:static-forge-welding-requires-heated-pressed-interface",
         "claim:wood-anisotropy-moisture",
         "wk:architecture_settlement:reconstructed-household-water-and-waste-context",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:candidate-v3-disability-context",
         "wk:biology_physiology:pain-nociception-distinct",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:biology_physiology:static-animal-b06-working-horse-context",
         "wk:craft_technology:metalworking-broad-context",
         "wk:environment:soil-water-states",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:physics_material_science:brittle-fracture-defects",
         "wk:physics_material_science:buoyancy-pressure-phase-change",
-        "wk:physics_material_science:wood-anisotropy-moisture"
+        "wk:physics_material_science:wood-anisotropy-moisture",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "состоят": [
         "claim:material-water-plant-fibre-cellulose"
@@ -223027,7 +224339,8 @@
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-outdoors-market-activity-and-empty-intervals",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
-        "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
+        "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+        "wk:material_culture:trade-economy-batch-03-packaging"
       ],
       "тариф": [
         "claim:residual-law-monthly-and-longer-interest",
@@ -225935,6 +227248,21 @@
         "claim:residual-law-detained-thief-and-princely-court",
         "claim:residual-nature-snow-wind-drift-visibility",
         "claim:river-landing-surfacing-allocation",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
@@ -226533,7 +227861,8 @@
         "claim:foundations-phys-01-air-drag-fall"
       ],
       "упаковка": [
-        "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport"
+        "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport",
+        "wk:material_culture:trade-economy-batch-03-packaging"
       ],
       "упаковкой": [
         "claim:measurement-net-excludes-tare"
@@ -226942,6 +228271,7 @@
         "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:rp-minor-children-conditional-care",
         "claim:vegetable-tanning-prepared-hide",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:research-cold-water-immersion-muscle-control",
         "wk:biology_physiology:research-plant-herbivory-effects",
         "wk:biology_physiology:research-raw-animal-food-cross-contact",
@@ -226949,6 +228279,9 @@
         "wk:craft_technology:final-practical-arms-and-repair",
         "wk:environment:precipitation-infiltration-runoff-limit",
         "wk:environment:reality-batch-01-wetland-reed-cutting",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:npc_daily_life:reality-first-rural-household",
         "wk:physics_material_science:research-fire-plume-upper-layer-transport",
         "wk:physics_material_science:research-floating-body-small-angle-stability",
@@ -226956,7 +228289,8 @@
         "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:research-textile-stitch-support",
         "wk:physics_material_science:research-wind-driven-rain-opening-pressure",
-        "wk:social_law_economy:contingent-return-request"
+        "wk:social_law_economy:contingent-return-request",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "условно": [
         "wk:social_law_economy:candidate-official-obligations-document",
@@ -227358,6 +228692,21 @@
         "claim:military-world-recovery-starts-with-actual-condition-and-access",
         "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
         "claim:resource-occupation-needs-setting",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:environment:reality-first-place-composition",
         "wk:npc_daily_life:resource-occupation-needs-setting",
         "wk:social_law_economy:reconstructed-political-communication-records"
@@ -229394,6 +230743,7 @@
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
         "wk:architecture_settlement:final-practical-storage-conditions",
         "wk:architecture_settlement:storage-workspace",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:research-cold-storage-microorganisms",
         "wk:chemistry_process:food-preservation-qualitative",
         "wk:material_culture:reality-batch-01-dried-herb-storage",
@@ -229625,7 +230975,22 @@
       "цена": [
         "claim:agriculture-fauna-borts-wax",
         "claim:social-daily-fur-sale-accounting",
-        "claim:social-daily-wax-commodity-context"
+        "claim:social-daily-wax-commodity-context",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions"
       ],
       "ценностей": [
         "claim:foundations-ms-38-reference-group",
@@ -236119,6 +237484,21 @@
         "claim:textile-ellagic-acid-analysis",
         "claim:textile-indigo-yellow-analysis",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
         "claim:transport-sledge-summer-cargo",
@@ -237231,6 +238611,21 @@
         "claim:textile-lac-dye-analysis",
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
@@ -237605,6 +239000,7 @@
         "wk:material_culture:sinker",
         "wk:material_culture:stone",
         "wk:material_culture:strap",
+        "wk:material_culture:trade-economy-batch-03-packaging",
         "wk:material_culture:vessel",
         "wk:material_culture:water",
         "wk:material_culture:wood",
@@ -238435,6 +239831,21 @@
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
         "claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:transport-sledge-summer-cargo",
         "claim:troitsky-bilberry-incidence-indicates-northern-heath-clearing-exploitation",
         "claim:urban-pavements",
@@ -244140,6 +245551,21 @@
       "choice": [
         "claim:human-life-travel-conditions-can-justify-delay",
         "claim:rp-merchant-credit-relates-third-party-goods",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:social_law_economy:settlement-or-court-choice"
       ],
       "choices": [
@@ -245377,6 +246803,7 @@
         "wk:architecture_settlement:plank-vestibule",
         "wk:architecture_settlement:post-fence",
         "wk:architecture_settlement:street",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:architecture_settlement:underfloor-space",
         "wk:architecture_settlement:wooden-paving",
         "wk:architecture_settlement:workshop",
@@ -245792,19 +247219,24 @@
         "claim:wood-anisotropy-moisture",
         "wk:architecture_settlement:architectural-material-classes",
         "wk:architecture_settlement:excavated-urban-structures",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:activity-fluid-balance",
         "wk:biology_physiology:acute-sleep-loss-performance",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
         "wk:craft_technology:urban-wooden-coverings",
         "wk:material_culture:novgorod-leather-items",
         "wk:material_culture:novgorod-wooden-urban-elements",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:npc_daily_life:animal-care-needs-presence",
         "wk:physics_material_science:brittle-fracture-defects",
         "wk:physics_material_science:buoyancy-pressure-phase-change",
         "wk:physics_material_science:wood-anisotropy-moisture",
         "wk:psychology_behavior:research-memory-postevent-misinformation",
         "wk:psychology_behavior:research-memory-source-misattribution",
-        "wk:social_behavior:research-pooled-work-social-loafing"
+        "wk:social_behavior:research-pooled-work-social-loafing",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "condensation": [
         "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
@@ -245937,6 +247369,7 @@
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
         "claim:vegetable-tanning-prepared-hide",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:reality-first-food-animal-care",
         "wk:biology_physiology:research-cold-water-immersion-muscle-control",
         "wk:biology_physiology:research-plant-herbivory-effects",
@@ -245950,6 +247383,9 @@
         "wk:environment:precipitation-infiltration-runoff-limit",
         "wk:environment:reality-batch-01-wetland-reed-cutting",
         "wk:environment:reality-first-travel-exposure",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:npc_daily_life:reality-first-rural-household",
         "wk:physics_material_science:natural-fibre-water-response",
         "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
@@ -245966,7 +247402,8 @@
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession",
         "wk:social_law_economy:conditional-pochestie-assurance",
-        "wk:social_law_economy:reconstructed-community-environment"
+        "wk:social_law_economy:reconstructed-community-environment",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "conditionally": [
         "wk:social_law_economy:candidate-official-obligations-document"
@@ -246443,7 +247880,8 @@
         "claim:place-outdoors-means-upkeep-and-environment",
         "claim:population-storage-vessels",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
-        "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
+        "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+        "wk:material_culture:trade-economy-batch-03-packaging"
       ],
       "containing": [
         "claim:fauna-tawny-owl-pellets",
@@ -246604,6 +248042,21 @@
         "claim:terrain-background",
         "claim:textile-chrysin-analysis",
         "claim:textile-ellagic-acid-analysis",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:urban-wooden-coverings",
         "wk:architecture_settlement:composite-urban-quarter",
         "wk:architecture_settlement:riverbank-workspace",
@@ -247447,6 +248900,7 @@
         "claim:probable-travel-chalice-communion",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:fauna-cross-spider",
         "wk:biology_physiology:research-raw-animal-food-cross-contact",
         "wk:chemistry_process:candidate-v6-food-cross-contamination"
@@ -251861,6 +253315,21 @@
         "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
         "claim:static-wool-moisture-heat-mechanical-action-can-felt",
         "claim:stone-whetstone-edge-maintenance",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
         "wk:architecture_settlement:composite-urban-quarter",
         "wk:biology_physiology:reconstructed-birth-household-support",
@@ -252488,7 +253957,8 @@
         "claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use",
         "wk:biology_physiology:human-thermoregulation",
         "wk:biology_physiology:stomatal-opening-tradeoff",
-        "wk:material_culture:gramota-73-grivna-term"
+        "wk:material_culture:gramota-73-grivna-term",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "exchanges": [
         "claim:population-material-wood-moisture"
@@ -254858,6 +256328,21 @@
         "claim:textile-dye-mordant-fixation",
         "claim:textile-ellagic-acid-analysis",
         "claim:textile-lac-dye-analysis",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use",
         "claim:transport-hired-boatman",
         "claim:transport-horse-sledge-equipment",
@@ -262784,6 +264269,21 @@
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
         "claim:rp-mother-household-care-succession",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:social_law_economy:conditional-dependant-care",
         "wk:social_law_economy:conditional-maternal-care-succession",
         "wk:social_law_economy:residual-law-credit",
@@ -264868,6 +266368,7 @@
         "wk:architecture_settlement:fishing-workspace",
         "wk:architecture_settlement:riverbank-workspace",
         "wk:architecture_settlement:storage-workspace",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:architecture_settlement:urban-pavements",
         "wk:biology_physiology:foundation-mitosis",
         "wk:biology_physiology:foundation-virion-structure",
@@ -264927,6 +266428,7 @@
         "wk:material_culture:strap",
         "wk:material_culture:tarred-tow",
         "wk:material_culture:textile-thread",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
         "wk:material_culture:vessel",
         "wk:material_culture:water",
         "wk:material_culture:wood",
@@ -265585,6 +267087,7 @@
         "wk:material_culture:metal",
         "wk:material_culture:smith-hammer",
         "wk:material_culture:smith-tongs",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
         "wk:physics_material_science:metal-properties-depend-on-state",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
       ],
@@ -271714,6 +273217,7 @@
         "wk:architecture_settlement:river-landing",
         "wk:architecture_settlement:riverbank-workspace",
         "wk:architecture_settlement:storage-workspace",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology:candidate-plant-lookalike-differentiation",
         "wk:biology_physiology:acute-sleep-loss-performance",
         "wk:biology_physiology:broad-clawed-crayfish-behavior",
@@ -271856,6 +273360,9 @@
         "wk:material_culture:stone",
         "wk:material_culture:strap",
         "wk:material_culture:textile-colourants",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:material_culture:vessel",
         "wk:material_culture:wood",
         "wk:material_culture:wooden-last",
@@ -271929,6 +273436,7 @@
         "wk:social_law_economy:residual-law-status",
         "wk:social_law_economy:settlement-or-court-choice",
         "wk:social_law_economy:third-party-goods-or-funds",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits",
         "wk:social_law_economy:written-complaint"
       ],
@@ -272398,14 +273906,34 @@
         "claim:stomatal-opening-affects-gas-water-exchange",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
         "claim:vegetable-tanning-collagen-stabilization",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:activity-fluid-balance",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:physics_material_science:buoyancy-pressure-phase-change",
         "wk:psychology_behavior:uncertainty-cognitive-control",
         "wk:social_behavior:foundations-ms3-experimental-interaction",
-        "wk:social_law_economy:judicial-accusation-record"
+        "wk:social_law_economy:judicial-accusation-record",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "outcomes": [
         "claim:candidate-physiology-v3-drowning-respiratory-impairment",
@@ -272716,7 +274244,8 @@
         "wk:social_behavior:trade-economy-lost-pack-animal-response"
       ],
       "packaging": [
-        "claim:measurement-net-excludes-tare"
+        "claim:measurement-net-excludes-tare",
+        "wk:material_culture:trade-economy-batch-03-packaging"
       ],
       "packed": [
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
@@ -273466,6 +274995,7 @@
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:transport-private-boat-arrangement",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
         "wk:social_law_economy:church-payment-demand",
         "wk:social_law_economy:church-payment-instruction",
         "wk:social_law_economy:payment-register",
@@ -274790,6 +276320,21 @@
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:technology-newcomen-boundary",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:architecture_settlement:reconstructed-practical-dwelling-upkeep",
         "wk:biology_physiology:mb14-practical-care",
         "wk:biology_physiology:reconstructed-birth-household-support",
@@ -275023,6 +276568,21 @@
         "wk:biology_physiology:macro-b1819-cattle-observation"
       ],
       "premise": [
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:biology_physiology:consumer-assimilation",
         "wk:biology_physiology:consumer-energy-allocation",
         "wk:biology_physiology:ecological-competition",
@@ -275565,6 +277125,21 @@
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
         "claim:social-daily-fur-sale-accounting",
         "claim:social-daily-wax-commodity-context",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
         "wk:material_culture:gramota-73-grivna-term",
@@ -276385,7 +277960,8 @@
         "claim:public-world-armed-loss-reaches-household",
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
         "claim:settlement-underfloor-storage",
-        "wk:craft_technology:reconstructed-practical-food-provision"
+        "wk:craft_technology:reconstructed-practical-food-provision",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions"
       ],
       "proximity": [
         "claim:sound-background-noise-masks-speech"
@@ -276628,9 +278204,25 @@
         "claim:milling-plate-gap-pressure-fineness",
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "wk:architecture_settlement:reconstructed-church-interior-yard-context",
         "wk:architecture_settlement:reconstructed-dwelling-interior-context",
         "wk:architecture_settlement:reconstructed-place-work-space",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:cat-hiding-places",
@@ -276696,6 +278288,9 @@
         "wk:environment:static-fat-storm-b10-lightning-shelter-limits",
         "wk:environment:static-weather-b06-cloud-rain-observation",
         "wk:material_culture:reconstructed-armed-public-world",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:npc_daily_life:reconstructed-compound-upkeep-context",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
         "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
@@ -276709,7 +278304,8 @@
         "wk:physics_material_science:wick-fed-flame",
         "wk:psychology_behavior:research-memory-postevent-misinformation",
         "wk:psychology_behavior:research-memory-source-misattribution",
-        "wk:social_behavior:research-pooled-work-social-loafing"
+        "wk:social_behavior:research-pooled-work-social-loafing",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "qualitatively": [
         "claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained"
@@ -277962,6 +279558,7 @@
         "claim:social-kin-request-reports-contingent-return",
         "claim:textile-dye-application",
         "claim:vegetable-tanning-prepared-hide",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:aquatic-macrophyte-form-attachment",
@@ -278006,6 +279603,9 @@
         "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:research-freeze-thaw-sediment-erosion",
         "wk:environment:research-track-substrate-interpretation",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
         "wk:physics_material_science:gas-temperature-pressure-volume",
         "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
@@ -278021,7 +279621,8 @@
         "wk:physics_material_science:static-yarn-twist-cohesion",
         "wk:physics_material_science:staved-vessel-hoop-fit",
         "wk:physics_material_science:wick-fed-flame",
-        "wk:social_law_economy:priest-baptism-statutory-context"
+        "wk:social_law_economy:priest-baptism-statutory-context",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "relations": [
         "claim:buoyancy-pressure-phase-change",
@@ -280713,6 +282314,7 @@
         "wk:environment:final-nature-tree-and-bast-context",
         "wk:environment:seasonal-bird-migration",
         "wk:environment:seasonal-wildfowl",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:npc_daily_life:reconstructed-compound-upkeep-context",
         "wk:npc_daily_life:reconstructed-practical-seasonal-work"
       ],
@@ -283543,6 +285145,7 @@
         "wk:architecture_settlement:reconstructed-household-water-and-waste-context",
         "wk:architecture_settlement:riverbank-workspace",
         "wk:architecture_settlement:storage-workspace",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:activity-fluid-balance",
         "wk:biology_physiology:pain-nociception-distinct",
         "wk:biology_physiology:residual-postpartum-maternal-recovery",
@@ -283586,6 +285189,9 @@
         "wk:material_culture:sinker",
         "wk:material_culture:stone",
         "wk:material_culture:strap",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:material_culture:vessel",
         "wk:material_culture:wood",
         "wk:material_culture:wooden-last",
@@ -283604,7 +285210,8 @@
         "wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits",
         "wk:social_law_economy:residual-law-credit",
         "wk:social_law_economy:residual-law-offense",
-        "wk:social_law_economy:residual-law-status"
+        "wk:social_law_economy:residual-law-status",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
       "stated": [
         "claim:foundations-chm-07-dynamic-chemical-equilibrium",
@@ -283915,6 +285522,21 @@
         "claim:stored-grain-condition-depends-on-temperature-moisture",
         "claim:structural-and-object-wood",
         "claim:textile-ellagic-acid-analysis",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
         "claim:vegetable-tanning-prepared-hide",
         "wk:architecture_settlement:architectural-material-classes",
         "wk:architecture_settlement:construction-pottery-production",
@@ -284029,6 +285651,7 @@
         "wk:architecture_settlement:final-practical-storage-conditions",
         "wk:architecture_settlement:riverside-storage",
         "wk:architecture_settlement:storage-workspace",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:research-cold-storage-microorganisms",
         "wk:biology_physiology:static-harvested-produce-cool-respiration",
         "wk:biology_physiology:stored-grain-condition",
@@ -284560,7 +286183,8 @@
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance",
         "claim:transport-sledge-summer-cargo",
-        "wk:biology:candidate-plant-food-part-bound"
+        "wk:biology:candidate-plant-food-part-bound",
+        "wk:material_culture:trade-economy-batch-03-payment-metal"
       ],
       "suitable": [
         "claim:food-practices-rye-flour-bread",
@@ -289618,7 +291242,22 @@
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
         "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
-        "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment"
+        "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
+        "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+        "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+        "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+        "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+        "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+        "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+        "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+        "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+        "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+        "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+        "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+        "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+        "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+        "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions"
       ],
       "unspecified": [
         "claim:animal-energy-availability-depends-on-food-derived-nutrients",
@@ -292395,6 +294034,7 @@
         "claim:wild-food-and-fur-evidence",
         "claim:work-waste-context",
         "wk:architecture_settlement:reconstructed-household-water-and-waste-context",
+        "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
         "wk:biology_physiology:candidate-v6-clinical-observations",
         "wk:biology_physiology:fauna-dragonfly",
@@ -292411,11 +294051,15 @@
         "wk:environment:regional-agriculture-practice",
         "wk:environment:wild-food-and-fur-evidence",
         "wk:material_culture:historically-recorded-maslo",
+        "wk:material_culture:trade-economy-batch-03-packaging",
+        "wk:material_culture:trade-economy-batch-03-payment-metal",
+        "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:physics_material_science:static-bedding-material-condition",
         "wk:social_behavior:foundations-ms-29-helping-no-reward",
         "wk:social_behavior:reconstructed-ordinary-religious-life",
         "wk:social_behavior:trade-economy-lost-pack-animal-response",
         "wk:social_law_economy:reconstructed-public-dispute-and-language",
+        "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
       ],
       "withstands": [

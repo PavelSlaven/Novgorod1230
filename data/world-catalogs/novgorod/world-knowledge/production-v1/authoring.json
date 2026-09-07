@@ -230,6 +230,8 @@
     "reality-first-static-v1.json",
     "verification-reality-first-static-v1.json",
     "reality-batch-01-gap-closure-v1.json",
-    "verification-reality-batch-01-gap-closure-v1.json"
+    "verification-reality-batch-01-gap-closure-v1.json",
+    "trade-economy-batch-03-gap-closure-v1.json",
+    "verification-trade-economy-batch-03-gap-closure-v1.json"
   ]
 }

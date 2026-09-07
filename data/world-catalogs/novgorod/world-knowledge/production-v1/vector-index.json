@@ -22382,6 +22382,216 @@
       "retrieval_text": "Осмотр воска и весов Наблюдаемые признаки воска и повторяемая проверка доступных весов. Доступные весы зависят от опоры, подвеса, плеч, чаш и размещения груза, чтобы давать повторяемое сравнение. Повторная проверка может показать повод проверить обращение или состояние, но не называет дефект, виновного, эталон, числовую ошибку или итог сделки. воск с примесями проверить кусок воска весы качаются повторно взвесить весы дают разный результат чаши весов повторно взвесить товар"
     },
     {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively:en",
+      "target_ref": "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Qualitative exchange Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively:ru",
+      "target_ref": "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Качественный обмен Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively:en",
+      "target_ref": "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Qualitative exchange Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively:ru",
+      "target_ref": "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Качественный обмен Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions:en",
+      "target_ref": "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Qualitative exchange Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions:ru",
+      "target_ref": "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Качественный обмен Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms:en",
+      "target_ref": "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Seasonal provisions Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms:ru",
+      "target_ref": "claim:trade-economy-batch-03-fresh-and-preserved-provisions-can-be-considered-as-different-availability-forms",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Сезонные припасы Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season:en",
+      "target_ref": "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Seasonal provisions Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season:ru",
+      "target_ref": "claim:trade-economy-batch-03-fresh-provision-availability-can-vary-by-season",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Сезонные припасы Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit:en",
+      "target_ref": "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Packaging and containers Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit:ru",
+      "target_ref": "claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Упаковка и тара Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally:en",
+      "target_ref": "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Packaging and containers Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally:ru",
+      "target_ref": "claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Упаковка и тара Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through:en",
+      "target_ref": "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Packaging and containers Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through:ru",
+      "target_ref": "claim:trade-economy-batch-03-packaging-shape-and-opening-constrain-what-can-pass-through",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Упаковка и тара Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition:en",
+      "target_ref": "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Payment-metal material suitability Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition:ru",
+      "target_ref": "claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Материальная пригодность платёжного металла Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison:en",
+      "target_ref": "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Payment-metal material suitability Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison:ru",
+      "target_ref": "claim:trade-economy-batch-03-payment-metal-portions-can-be-kept-separated-for-comparison",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Материальная пригодность платёжного металла Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance:en",
+      "target_ref": "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Payment-metal material suitability Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance:ru",
+      "target_ref": "claim:trade-economy-batch-03-payment-metal-suitability-remains-distinct-from-authentication-and-acceptance",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Материальная пригодность платёжного металла Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally:en",
+      "target_ref": "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Seasonal provisions Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally:ru",
+      "target_ref": "claim:trade-economy-batch-03-preservation-can-extend-use-of-already-available-provisions-conditionally",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Сезонные припасы Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally:en",
+      "target_ref": "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Cross-material storage compatibility Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally:ru",
+      "target_ref": "claim:trade-economy-batch-03-storage-cross-material-placement-can-be-inspected-and-adjusted-conditionally",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Совместимость хранения разных материалов Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity:en",
+      "target_ref": "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Cross-material storage compatibility Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity:ru",
+      "target_ref": "claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Совместимость хранения разных материалов Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions:en",
+      "target_ref": "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Cross-material storage compatibility Conditional qualitative relation without concrete state or outcome. Qualitative practical premise for an established context; price, stock, law, choice, and outcome are unset."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions:ru",
+      "target_ref": "claim:trade-economy-batch-03-storage-smoke-pests-and-cold-can-be-considered-as-distinct-conditions",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Совместимость хранения разных материалов Условная качественная связь без конкретного состояния или результата. Качественная практическая предпосылка для уже установленного контекста; цена, запас, право, выбор и исход не задаются."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement:en",
       "target_ref": "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
       "domain": "social_law_economy",
@@ -23542,6 +23752,20 @@
       "domain": "architecture_settlement",
       "locale": "ru",
       "retrieval_text": "Деревоземляное укрепление"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:trade-economy-batch-03-cross-material-storage:en",
+      "target_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "Cross-material storage compatibility Conditional qualitative relation without concrete state or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:trade-economy-batch-03-cross-material-storage:ru",
+      "target_ref": "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "Совместимость хранения разных материалов Условная качественная связь без конкретного состояния или результата."
     },
     {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:underfloor-space:en",
@@ -32532,6 +32756,48 @@
       "retrieval_text": "Олово"
     },
     {
+      "entry_ref": "wk-retrieval:wk:material_culture:trade-economy-batch-03-packaging:en",
+      "target_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Packaging and containers Conditional qualitative relation without concrete state or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:trade-economy-batch-03-packaging:ru",
+      "target_ref": "wk:material_culture:trade-economy-batch-03-packaging",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Упаковка и тара Условная качественная связь без конкретного состояния или результата."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:trade-economy-batch-03-payment-metal:en",
+      "target_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Payment-metal material suitability Conditional qualitative relation without concrete state or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:trade-economy-batch-03-payment-metal:ru",
+      "target_ref": "wk:material_culture:trade-economy-batch-03-payment-metal",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Материальная пригодность платёжного металла Условная качественная связь без конкретного состояния или результата."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:trade-economy-batch-03-seasonal-provisions:en",
+      "target_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Seasonal provisions Conditional qualitative relation without concrete state or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:trade-economy-batch-03-seasonal-provisions:ru",
+      "target_ref": "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Сезонные припасы Условная качественная связь без конкретного состояния или результата."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:material_culture:tree-climbing-hook:en",
       "target_ref": "wk:material_culture:tree-climbing-hook",
       "domain": "material_culture",
@@ -36786,6 +37052,20 @@
       "domain": "social_law_economy",
       "locale": "ru",
       "retrieval_text": "Чужие товары или средства Товары или средства другой стороны чужой товар"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:trade-economy-batch-03-qualitative-exchange:en",
+      "target_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "domain": "social_law_economy",
+      "locale": "en",
+      "retrieval_text": "Qualitative exchange Conditional qualitative relation without concrete state or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_law_economy:trade-economy-batch-03-qualitative-exchange:ru",
+      "target_ref": "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange",
+      "domain": "social_law_economy",
+      "locale": "ru",
+      "retrieval_text": "Качественный обмен Условная качественная связь без конкретного состояния или результата."
     },
     {
       "entry_ref": "wk-retrieval:wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits:en",

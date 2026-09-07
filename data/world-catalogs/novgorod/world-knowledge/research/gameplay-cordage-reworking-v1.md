@@ -26,4 +26,3 @@ Code remains owner of identity, access, ownership, tools, mass conservation,
 time, checks, exact load, breakage, persistence and action outcome. The claims
 must not infer fibre material from an unidentified rope-like item or permit
 altering somebody else's property.
-

@@ -1,0 +1,278 @@
+{
+  "schema_version": "world_knowledge_static_acceptance_batch_v1",
+  "batch_id": "final-static-streak-r6-03-core-a",
+  "candidate_commit": "d15cb80b5e06a94657c62fff75ca4f98f43ab752",
+  "sampling": {
+    "kind": "controlled_mixed",
+    "case_count": 38
+  },
+  "cases": [
+    {
+      "case_id": "r603ca01",
+      "primary_domain": "winter foot travel",
+      "need_group": "practical_natural_physical",
+      "situation": "A messenger must cross a snow-covered field at dusk without losing the road.",
+      "knowledge_need": "winter travel conditions, visibility, and wayfinding"
+    },
+    {
+      "case_id": "r603ca02",
+      "primary_domain": "wool working",
+      "need_group": "practical_natural_physical",
+      "situation": "A household wants to turn freshly washed wool into thread fit for a warm mitten.",
+      "knowledge_need": "ordinary wool preparation and spinning"
+    },
+    {
+      "case_id": "r603ca03",
+      "primary_domain": "river ice",
+      "need_group": "practical_natural_physical",
+      "situation": "Two children ask whether thin new ice near a bank can bear them.",
+      "knowledge_need": "ice formation, shore conditions, and physical risk"
+    },
+    {
+      "case_id": "r603ca04",
+      "primary_domain": "bread baking",
+      "need_group": "practical_natural_physical",
+      "situation": "A cook needs to bake rye loaves when fuel is scarce and the oven is cooling.",
+      "knowledge_need": "hearth use, baking sequence, and fuel economy"
+    },
+    {
+      "case_id": "r603ca05",
+      "primary_domain": "wood joinery",
+      "need_group": "practical_natural_physical",
+      "situation": "A stool leg has loosened; its owner wants a repair that survives daily use.",
+      "knowledge_need": "wood movement, simple joinery, and available materials"
+    },
+    {
+      "case_id": "r603ca06",
+      "primary_domain": "horse care",
+      "need_group": "practical_natural_physical",
+      "situation": "A travelling horse is wet and shivering after sleet.",
+      "knowledge_need": "basic equine care, drying, feeding, and shelter"
+    },
+    {
+      "case_id": "r603ca07",
+      "primary_domain": "fish preservation",
+      "need_group": "practical_natural_physical",
+      "situation": "A net has brought in more small fish than one family can eat today.",
+      "knowledge_need": "short-term and longer preservation methods"
+    },
+    {
+      "case_id": "r603ca08",
+      "primary_domain": "rope and load",
+      "need_group": "practical_natural_physical",
+      "situation": "A boatman must lower a heavy sack from a loft without tearing its mouth.",
+      "knowledge_need": "safe handling of loads, rope use, and textile limits"
+    },
+    {
+      "case_id": "r603ca09",
+      "primary_domain": "spring mud",
+      "need_group": "practical_natural_physical",
+      "situation": "A cart wheel sinks on a thawing lane while carrying firewood.",
+      "knowledge_need": "ground conditions, cart traction, and practical recovery"
+    },
+    {
+      "case_id": "r603ca10",
+      "primary_domain": "linen washing",
+      "need_group": "practical_natural_physical",
+      "situation": "A family needs to wash linen after an illness without ruining the cloth.",
+      "knowledge_need": "washing materials, fabric care, and drying constraints"
+    },
+    {
+      "case_id": "r603ca11",
+      "primary_domain": "roof maintenance",
+      "need_group": "practical_natural_physical",
+      "situation": "Wind has lifted part of a wooden roof before a long rain.",
+      "knowledge_need": "common roofing materials, weatherproof repair, and work safety"
+    },
+    {
+      "case_id": "r603ca12",
+      "primary_domain": "lamp light",
+      "need_group": "practical_natural_physical",
+      "situation": "A scribe must work through a dark evening while conserving lamp fuel.",
+      "knowledge_need": "ordinary artificial light, fuel, and fire precautions"
+    },
+    {
+      "case_id": "r603ca13",
+      "primary_domain": "garden soil",
+      "need_group": "practical_natural_physical",
+      "situation": "A gardener chooses a dry patch for onions after a wet spring.",
+      "knowledge_need": "soil moisture, drainage, and seasonal planting"
+    },
+    {
+      "case_id": "r603ca14",
+      "primary_domain": "smoke indoors",
+      "need_group": "practical_natural_physical",
+      "situation": "Smoke hangs low in a dwelling while an infant is coughing.",
+      "knowledge_need": "ventilation, hearth smoke, and immediate practical measures"
+    },
+    {
+      "case_id": "r603ca15",
+      "primary_domain": "leather repair",
+      "need_group": "practical_natural_physical",
+      "situation": "A boot sole splits during a journey and must last until the next settlement.",
+      "knowledge_need": "leather properties and temporary footwear repair"
+    },
+    {
+      "case_id": "r603ca16",
+      "primary_domain": "grain storage",
+      "need_group": "practical_natural_physical",
+      "situation": "A granary keeper sees dampness and insects in a sack of grain.",
+      "knowledge_need": "spoilage signs, storage practice, and salvage limits"
+    },
+    {
+      "case_id": "r603ca17",
+      "primary_domain": "river current",
+      "need_group": "practical_natural_physical",
+      "situation": "A ferryman judges whether to take a small craft across after rain has raised the water.",
+      "knowledge_need": "current, water level, boat handling, and weather effects"
+    },
+    {
+      "case_id": "r603ca18",
+      "primary_domain": "simple wound care",
+      "need_group": "practical_natural_physical",
+      "situation": "A woodworker cuts a palm on a fresh shaving and wants to keep working.",
+      "knowledge_need": "plausible first care, cleanliness, and functional limits"
+    },
+    {
+      "case_id": "r603ca19",
+      "primary_domain": "charcoal heat",
+      "need_group": "practical_natural_physical",
+      "situation": "A metalworker needs steady heat for a small repair, not a roaring fire.",
+      "knowledge_need": "fuel behavior, heat control, and workshop practice"
+    },
+    {
+      "case_id": "r603ca20",
+      "primary_domain": "dairy handling",
+      "need_group": "practical_natural_physical",
+      "situation": "Milk has begun to sour on a warm day; a household considers what can still be made from it.",
+      "knowledge_need": "ordinary dairy transformation and spoilage judgment"
+    },
+    {
+      "case_id": "r603ca21",
+      "primary_domain": "bees and hives",
+      "need_group": "practical_natural_physical",
+      "situation": "A beekeeper must inspect hives after a storm without provoking needless loss of bees.",
+      "knowledge_need": "seasonal bee behavior, hive handling, and protective practice"
+    },
+    {
+      "case_id": "r603ca22",
+      "primary_domain": "clay vessels",
+      "need_group": "practical_natural_physical",
+      "situation": "A cooking pot develops a hairline crack beside the hearth.",
+      "knowledge_need": "ceramic heat limits, safe use, and repair realism"
+    },
+    {
+      "case_id": "r603ca23",
+      "primary_domain": "cold exposure",
+      "need_group": "practical_natural_physical",
+      "situation": "A traveller returns with numb fingers after handling wet rope in wind.",
+      "knowledge_need": "cold injury signs, gradual warming, and practical prevention"
+    },
+    {
+      "case_id": "r603ca24",
+      "primary_domain": "fodder",
+      "need_group": "practical_natural_physical",
+      "situation": "A household must stretch winter fodder for a goat through a late snowfall.",
+      "knowledge_need": "ordinary animal feed, seasonal scarcity, and animal welfare"
+    },
+    {
+      "case_id": "r603ca25",
+      "primary_domain": "dye plants",
+      "need_group": "practical_natural_physical",
+      "situation": "A dyer wants a modest color from locally gathered plant material for rough cloth.",
+      "knowledge_need": "plant dyes, mordants, material limits, and seasonal availability"
+    },
+    {
+      "case_id": "r603ca26",
+      "primary_domain": "firewood",
+      "need_group": "practical_natural_physical",
+      "situation": "A family must choose between damp fallen wood and green-cut branches for tonight's hearth.",
+      "knowledge_need": "wood moisture, burning qualities, and smoke consequences"
+    },
+    {
+      "case_id": "r603ca27",
+      "primary_domain": "thatch and rain",
+      "need_group": "practical_natural_physical",
+      "situation": "Rain begins before loose thatch can be tied down on a shed.",
+      "knowledge_need": "temporary weather protection and plant-fiber roofing behavior"
+    },
+    {
+      "case_id": "r603ca28",
+      "primary_domain": "poultry keeping",
+      "need_group": "practical_natural_physical",
+      "situation": "Chickens stop laying during a short, cold stretch.",
+      "knowledge_need": "season, light, feed, shelter, and normal animal variation"
+    },
+    {
+      "case_id": "r603ca29",
+      "primary_domain": "hand tools",
+      "need_group": "practical_natural_physical",
+      "situation": "An axe head wobbles on its haft before a day of splitting wood.",
+      "knowledge_need": "tool safety, haft fitting, and consequences of use"
+    },
+    {
+      "case_id": "r603ca30",
+      "primary_domain": "water collection",
+      "need_group": "practical_natural_physical",
+      "situation": "A household's usual water edge is fouled after flooding and they need drinking water.",
+      "knowledge_need": "water contamination, alternative sources, and boiling limits"
+    },
+    {
+      "case_id": "r603ca31",
+      "primary_domain": "household service",
+      "need_group": "social_institutional",
+      "situation": "A young helper is sent to deliver bread to a wealthier household and fears making an insult.",
+      "knowledge_need": "service expectations, manners, and status-sensitive conduct"
+    },
+    {
+      "case_id": "r603ca32",
+      "primary_domain": "craft apprenticeship",
+      "need_group": "social_institutional",
+      "situation": "An apprentice wants to ask for better tools without seeming to challenge a master.",
+      "knowledge_need": "workshop hierarchy, training relations, and plausible speech"
+    },
+    {
+      "case_id": "r603ca33",
+      "primary_domain": "market exchange",
+      "need_group": "social_institutional",
+      "situation": "A rural seller brings eggs to a market and must judge a buyer's offer without knowing a fixed price.",
+      "knowledge_need": "ordinary bargaining, measures, trust, and exchange customs"
+    },
+    {
+      "case_id": "r603ca34",
+      "primary_domain": "family mourning",
+      "need_group": "social_institutional",
+      "situation": "Neighbors hear that an elderly household member has died and decide how to help.",
+      "knowledge_need": "kinship duties, mourning practice, and community response"
+    },
+    {
+      "case_id": "r603ca35",
+      "primary_domain": "oath and witness",
+      "need_group": "social_institutional",
+      "situation": "Two neighbors dispute a boundary marker and ask respected bystanders to speak.",
+      "knowledge_need": "local dispute practice, reputation, witnesses, and limits of authority"
+    },
+    {
+      "case_id": "r603ca36",
+      "primary_domain": "religious observance",
+      "need_group": "social_institutional",
+      "situation": "A traveller arrives during a feast day and wants to know what public behavior is expected.",
+      "knowledge_need": "ordinary observance, hospitality, and social norms"
+    },
+    {
+      "case_id": "r603ca37",
+      "primary_domain": "marriage negotiation",
+      "need_group": "social_institutional",
+      "situation": "A widow considers a remarriage proposal while protecting her children's household position.",
+      "knowledge_need": "family interests, status, property expectations, and consent"
+    },
+    {
+      "case_id": "r603ca38",
+      "primary_domain": "debt and reputation",
+      "need_group": "social_institutional",
+      "situation": "A borrower cannot repay a small loan by the agreed season and must face the lender.",
+      "knowledge_need": "credit relations, negotiation, reputation, and plausible consequences"
+    }
+  ]
+}
+

@@ -1,0 +1,136 @@
+{
+  "schema_version": "world_knowledge_static_acceptance_batch_v1",
+  "batch_id": "final-static-streak-r6-01-free",
+  "candidate_commit": "d15cb80b5e06a94657c62fff75ca4f98f43ab752",
+  "sampling": {
+    "kind": "free_adversarial",
+    "case_count": 25
+  },
+  "cases": [
+    {
+      "case_id": "r6-01-fr-001",
+      "situation": "They want to know what, if anything, can be inferred before confronting a family elder. Person: adopted adolescent. Location: Novgorod vicinity. Circumstances: has a carved token said to be from an unknown parent.",
+      "knowledge_need": "plausible evidentiary meaning of a family token, adoption-household authority, and limits on inferring parentage"
+    },
+    {
+      "case_id": "r6-01-fr-002",
+      "situation": "She invents signals and asks whether others will understand or cooperate. Person: deaf rope maker. Location: crowded quay. Circumstances: must coordinate a risky lift with strangers.",
+      "knowledge_need": "dockside coordination methods, treatment of disabled workers, and safety expectations around a shared lift"
+    },
+    {
+      "case_id": "r6-01-fr-003",
+      "situation": "She asks what reasonable next steps, fears, and hopes could follow without inventing facts. Person: displaced widow. Location: edge of a burnt hamlet. Circumstances: finds a child's shoe in ashes.",
+      "knowledge_need": "post-fire displacement, household recovery, child welfare, and realistic routes for seeking aid or information"
+    },
+    {
+      "case_id": "r6-01-fr-004",
+      "situation": "He wants to shout directions to the boatman despite not knowing where they are. Person: young boat passenger. Location: river fog. Circumstances: hears bells but cannot see shore.",
+      "knowledge_need": "river travel practice in fog, audible navigation cues, and passenger versus boatman authority"
+    },
+    {
+      "case_id": "r6-01-fr-005",
+      "situation": "They seek food and protection while expecting difficult questions. Person: hungry runaway. Location: monastery gate. Circumstances: claims to have committed a grave offense but refuses details.",
+      "knowledge_need": "charitable shelter practice, questioning a runaway, and boundaries on protection without verified claims"
+    },
+    {
+      "case_id": "r6-01-fr-006",
+      "situation": "He tries to repair the misunderstanding with almost no shared language. Person: foreign-speaking seller. Location: summer fair. Circumstances: crowd mistakes his gestures for mockery.",
+      "knowledge_need": "fair-trade interaction across language barriers, crowd etiquette, and de-escalation of perceived insult"
+    },
+    {
+      "case_id": "r6-01-fr-007",
+      "situation": "She wants to challenge them without provoking a dangerous quarrel. Person: skeptical traveler. Location: forest shrine path. Circumstances: companions insist a harmless noise is an omen.",
+      "knowledge_need": "traveling companions' religious and folk interpretations, dissent etiquette, and risks of a public quarrel"
+    },
+    {
+      "case_id": "r6-01-fr-008",
+      "situation": "He hides it from companions and must choose whether to seek help. Person: injured veteran. Location: town bathhouse. Circumstances: an old scar tears while washing.",
+      "knowledge_need": "bathhouse norms, wound privacy, available help, and realistic risks of reopening an old injury"
+    },
+    {
+      "case_id": "r6-01-fr-009",
+      "situation": "She must respond in the moment and interpret onlookers' reactions. Person: street musician. Location: unexpected funeral procession. Circumstances: is playing loudly when the procession turns into the lane.",
+      "knowledge_need": "funeral-procession conduct, acceptable public noise, and immediate social signals of respect"
+    },
+    {
+      "case_id": "r6-01-fr-010",
+      "situation": "They debate taking some, repairing the fence, or finding an owner. Person: two hungry siblings. Location: abandoned orchard. Circumstances: they see fruit behind a broken fence.",
+      "knowledge_need": "ownership of enclosed orchard fruit, childhood responsibility, and credible ways to seek permission or make amends"
+    },
+    {
+      "case_id": "r6-01-fr-011",
+      "situation": "Those nearby must decide who can help, where to move her, and what cannot be promised. Person: pregnant seasonal worker. Location: work camp. Circumstances: labor pains begin before dawn.",
+      "knowledge_need": "ordinary childbirth support, work-camp social roles, shelter, and limits of available care"
+    },
+    {
+      "case_id": "r6-01-fr-012",
+      "situation": "He tries to bluff his way through while a companion worries about consequences. Person: young trickster. Location: bridge toll point. Circumstances: offers a convincing forged-looking pass.",
+      "knowledge_need": "toll-crossing practice, treatment of suspect documents, companions' exposure, and likely consequences of deception"
+    },
+    {
+      "case_id": "r6-01-fr-013",
+      "situation": "He must decide whether it is threat, worker, accident, or something unknowable. Person: sleep-deprived guard. Location: night watch. Circumstances: sees a moving light across the water.",
+      "knowledge_need": "night-watch duties, plausible interpretations of distant river light, and escalation before assuming a threat"
+    },
+    {
+      "case_id": "r6-01-fr-014",
+      "situation": "She expects a reward but fears being accused of theft. Person: poor child. Location: wealthy household entrance. Circumstances: returns a lost ring found in mud.",
+      "knowledge_need": "treatment of a poor child's found valuable object, theft suspicion, reward custom, and household authority"
+    },
+    {
+      "case_id": "r6-01-fr-015",
+      "situation": "They must share scarce space while an old inheritance argument returns. Person: two estranged brothers. Location: isolated ferry hut. Circumstances: ice blocks the crossing and forces an overnight stay.",
+      "knowledge_need": "winter ferry disruption, overnight hospitality, kinship conflict, and realistic use of scarce shelter"
+    },
+    {
+      "case_id": "r6-01-fr-016",
+      "situation": "The healer must answer compassionately without false certainty. Person: desperate parent. Location: herbalist's doorway. Circumstances: brings a feverish child and demands a guaranteed cure.",
+      "knowledge_need": "fever care, healer-client expectations, uncertainty about cure, and when a household seeks further help"
+    },
+    {
+      "case_id": "r6-01-fr-017",
+      "situation": "He struggles with memory, ownership, and pressure from adults. Person: orphaned novice. Location: river market. Circumstances: is told to identify a dead relative's belongings among similar goods.",
+      "knowledge_need": "identification and custody of a dead relative's belongings, market ownership expectations, and pressure on a novice"
+    },
+    {
+      "case_id": "r6-01-fr-018",
+      "situation": "She tries to calm them but a story begins to sound like a real warning. Person: elderly storyteller. Location: flooded lane. Circumstances: children demand a tale while adults move possessions.",
+      "knowledge_need": "flood response, child calming, household salvage priorities, and how rumor or warning spreads locally"
+    },
+    {
+      "case_id": "r6-01-fr-019",
+      "situation": "He asks to retrieve it while owner suspects a trick. Person: wandering performer. Location: village edge. Circumstances: his trained bird flies into a neighbor's granary.",
+      "knowledge_need": "animal ownership and retrieval, granary access, suspicion of theft, and a performer's local standing"
+    },
+    {
+      "case_id": "r6-01-fr-020",
+      "situation": "They ask a trusted person whether keeping it is betrayal, memory, or both. Person: new convert. Location: quiet chapel porch. Circumstances: wears an old family charm under clothing.",
+      "knowledge_need": "coexistence of family keepsakes and religious observance, private counsel, and risks of public accusation"
+    },
+    {
+      "case_id": "r6-01-fr-021",
+      "situation": "Family must respond before assuming how it came to be there. Person: sleepwalking teenager. Location: granary lane. Circumstances: wakes holding a key that is not theirs.",
+      "knowledge_need": "household response to unexplained possession of a key, access control, youth discipline, and evidentiary restraint"
+    },
+    {
+      "case_id": "r6-01-fr-022",
+      "situation": "Companions debate trust, privacy, and precautions for the night. Person: former prisoner. Location: traveler camp. Circumstances: refuses to say where a branded mark came from.",
+      "knowledge_need": "treatment of a former prisoner, meaning and uncertainty of bodily marks, camp trust, and overnight precautions"
+    },
+    {
+      "case_id": "r6-01-fr-023",
+      "situation": "She wants to keep it though household fears disease and expense. Person: child with a stray dog. Location: town boundary. Circumstances: animal follows her for three days and guards her bundle.",
+      "knowledge_need": "keeping a stray animal in a household, animal-health caution, child authority, and resource burden"
+    },
+    {
+      "case_id": "r6-01-fr-024",
+      "situation": "She tries to apologize while friends urge her to stand proud. Person: respected craftswoman. Location: after a public argument. Circumstances: accidentally insults a visitor's accent.",
+      "knowledge_need": "status and language etiquette after public insult, credible apology, peer pressure, and repair of reputation"
+    },
+    {
+      "case_id": "r6-01-fr-025",
+      "situation": "Gate workers must decide how to treat a person who may be ill, deceptive, or frightened. Person: unknown exhausted pilgrim. Location: dawn at a city gate. Circumstances: carries an empty sealed tube and gives contradictory answers.",
+      "knowledge_need": "city-gate procedure for an exhausted contradictory traveler, illness caution, document uncertainty, and humane restraint"
+    }
+  ]
+}

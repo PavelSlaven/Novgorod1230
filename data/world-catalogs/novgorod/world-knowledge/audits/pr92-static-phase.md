@@ -1,6 +1,49 @@
-# PR92 — static coverage checkpoint, 2026-09-06
+# PR92 — static coverage checkpoint, 2026-09-07
 
-## Status: static mixed acceptance satisfied; not world completeness or gameplay saturation
+## Current final static reconciliation — audited content `6709cb2e`
+
+The production corpus contains **1,655 independently approved claims, 997
+concepts, 611 sources and 1,159 evidence records**. Every compiled claim has
+one validated `APPROVE` binding to a committed candidate copy. Category
+cartography maps **268 supported families** and retains **14 explicitly
+bounded P2 families**; the final independent static audit found no current
+P0/P1 factual-family blocker. This is broad game-ready static coverage, not a
+mathematical claim of whole-world completeness or gameplay saturation.
+
+The post-repair reality-first clean series contains 75 controlled cases (65
+practical/natural/physical) plus 25 independent free/adversarial cases.
+Independent WK-only review and cross-triage found no genuine remaining gap.
+The post-repair trade/economy-first clean series likewise contains 75
+controlled plus 25 free/adversarial cases; two reviewers covered 100/100 and
+an independent cross-audit found no genuine gap. Both are offline static
+tests, not live gameplay campaigns or scenario whitelists.
+
+The matching vector package contains **5,304 x 1,024 float32 entries
+(21,725,184 bytes)** under the unchanged pinned
+`wk-embedding:giga-480m-0826:v1` profile. The 174-case retrieval gate passes
+with hybrid Recall@10/20 **0.922126/0.922126**. The freshly rebuilt 389-case
+gameplay-coverage retrieval gate passes with hybrid Recall@10 **0.961825**
+and Recall@20 **0.962339**; hard-constraint recall and applicability precision
+are 1.0 in both reports. Production requires the local offline Giga encoder;
+encoder/vector failure returns typed `WORLD_KNOWLEDGE_UNAVAILABLE` before the
+semantic consumer and commit, with no lexical production fallback.
+
+Independent reports on that content are:
+
+- `pr92-final-grounding-1655.md`: PASS;
+- `pr92-final-verification-1655.md`: PASS;
+- `pr92-final-completeness-1655.md`: PASS_WITH_P2;
+- `pr92-final-contract-1655.md`: PASS;
+- `pr92-final-open-world-1655.md`: PASS.
+
+The exact merge HEAD still requires its own green full CI. No systematic live
+gameplay, saturation campaign, or repair of other gameplay owners is claimed.
+
+> The sections below are chronological checkpoints. Their older counts,
+> candidate SHAs, benchmark timings and CI results do not override this
+> reconciliation or certify a later HEAD.
+
+## Historical checkpoint: static mixed acceptance satisfied
 
 The user's clarified requirement permits plausible reconstruction from
 neighbouring periods/settings and practical reasoning. WK contract §0.2
@@ -881,12 +924,13 @@ consent or transaction outcome.
 
 No live gameplay campaign ran in this phase, and no inventory, ownership,
 materialization, persistence, body, combat, NPC, narration or spatial owner
-was repaired. The existing runtime still uses the local pinned
-`wk-embedding:giga-480m-0826:v1` query encoder for hybrid retrieval and has a
-structured lexical fallback if that encoder is unavailable; vectors are not
-silently produced by ordinary application code.
+was repaired. At that historical checkpoint the runtime used the local pinned
+`wk-embedding:giga-480m-0826:v1` query encoder for hybrid retrieval and still
+had a structured lexical fallback if the encoder was unavailable. That
+fallback behavior is superseded by the current fail-closed reconciliation
+above; vectors are not silently produced by ordinary application code.
 
-## Current final static status — supersedes earlier counts and phase status
+## Historical 1,579-claim static status
 
 Basis: pushed data/runtime snapshot `fc3ac52982890051f473d3ba9cb47b5e87e3851c`.
 
@@ -897,7 +941,7 @@ Basis: pushed data/runtime snapshot `fc3ac52982890051f473d3ba9cb47b5e87e3851c`.
 - Retrieval: 174 PASS, hybrid R@10/R@20 `0.9221264368`/`0.9221264368`; gameplay coverage: 389 PASS, `0.9618252`/`0.9623393`.
 - Trade/economy batch 02: 75+25 independently generated probes, 100/100 reviewed, 29 cross-triage citation corrections, 0 gaps.
 
-PR92 static phase is ready, not a proof of exhaustive world coverage or
+This checkpoint judged the PR92 static phase ready, not a proof of exhaustive world coverage or
 gameplay saturation. Live gameplay campaigns, the Gameplay Gap Auditor and
 saturation testing remain future work. Residual P2 limits are bounded and do
 not block static readiness. The exact final report-containing commit must pass

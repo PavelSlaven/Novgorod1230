@@ -30,7 +30,7 @@ outcome.
 
 ## Boundary
 
-The candidate is a universal `social_law_economy` coordination relation, not a
+The candidate is a universal `social_behavior` coordination relation, not a
 diagnosis, social script, authority rule, or work procedure. Existing state and
 mechanics owners decide actual participants, perception, consent, means, task,
 risk, capacity, handling, and outcome.

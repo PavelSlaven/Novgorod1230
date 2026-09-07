@@ -17384,6 +17384,90 @@
       "retrieval_text": "Состояние деревянного колеса Осмотр посадки обода и деревянных частей. INFERENCE: При высыхании деревянной детали поперечное изменение размера может ослабить прежде плотную посадку обода или шины на колесе."
     },
     {
+      "entry_ref": "wk-retrieval:claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference:en",
+      "target_ref": "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Nonverbal coordination in shared risky work Qualitative conditions for intelligible nonverbal coordination in already established shared work. Communication can be adapted to actual sensory capacity without inferring a person's inability, status, skill, or willingness to cooperate. work signals coordinate lift adapt communication sensory capacity"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference:ru",
+      "target_ref": "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Невербальная координация общей рискованной работы Качественные условия понятного невербального согласования в уже установленной общей работе. Связь можно приспособить к фактической сенсорной возможности, не выводя из этого неспособность, статус, умение или готовность человека сотрудничать. жесты при работе согласовать подъем приспособить связь сенсорная возможность"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work:en",
+      "target_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Reed mat preparation and interlacing Qualitative material relation of preparing and joining stems into a mat-like sheet. Already cut fresh reed stems can be sorted and left to dry or otherwise prepared before attempting mat work; no sequence, duration, tool, or result is specified. reed mat interlaced stems dry reed prepare stems"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work:ru",
+      "target_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Подготовка и переплетение тростника для циновки Качественное отношение подготовки и соединения стеблей в циновкоподобное полотно. Уже срезанные свежие стебли тростника можно сортировать и оставить сушиться либо иначе подготовить перед попыткой сделать циновку; порядок, срок, орудие и результат не заданы. тростник циновка плетение стеблей сушить тростник подготовить стебли"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying:en",
+      "target_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Reed mat preparation and interlacing Qualitative material relation of preparing and joining stems into a mat-like sheet. A mat-like reed sheet's usability depends on stem condition and continuity, interlacing or binding, and drying; load, durability, comfort, cleanliness, and successful floor use are not guaranteed. reed mat interlaced stems reed mat durability reed condition"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying:ru",
+      "target_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Подготовка и переплетение тростника для циновки Качественное отношение подготовки и соединения стеблей в циновкоподобное полотно. Пригодность циновкоподобного полотна зависит от состояния и целости стеблей, переплетения или связки и сушки; нагрузка, прочность, удобство, чистота и успешное напольное применение не гарантируются. тростник циновка плетение стеблей прочность циновки состояние тростника"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling:en",
+      "target_ref": "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Nonverbal coordination in shared risky work Qualitative conditions for intelligible nonverbal coordination in already established shared work. Before an already established shared task with meaningful handling risk, participants can agree simple start, stop, or hold signals; this assigns no leader, signal system, task, load, agreement, or successful handling. work signals coordinate lift start stop hold signals"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling:ru",
+      "target_ref": "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Невербальная координация общей рискованной работы Качественные условия понятного невербального согласования в уже установленной общей работе. Перед уже установленной общей работой с существенным риском при обращении участники могут согласовать простые сигналы «начать», «стоп» или «держать»; это не назначает руководителя, систему сигналов, задачу, груз, согласие или успешное выполнение. жесты при работе согласовать подъем сигнал начать стоп держать"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat:en",
+      "target_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Reed mat preparation and interlacing Qualitative material relation of preparing and joining stems into a mat-like sheet. Suitable prepared flexible continuous reed stems can be overlapped or interlaced and locally bound into a mat-like sheet; no recipe or binding material is implied. reed mat interlaced stems weave reed mat bind reeds"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat:ru",
+      "target_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Подготовка и переплетение тростника для циновки Качественное отношение подготовки и соединения стеблей в циновкоподобное полотно. Подходящие подготовленные гибкие непрерывные стебли можно накладывать или переплетать и местами связывать в циновкоподобное полотно; рецепт и связующий материал не подразумеваются. тростник циновка плетение стеблей плести циновку связать тростник"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation:en",
+      "target_ref": "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Nonverbal coordination in shared risky work Qualitative conditions for intelligible nonverbal coordination in already established shared work. A visual or tactile signal needs actual mutual perception and confirmation to function as shared communication; it is not automatically understood or received. work signals coordinate lift visual signal tactile signal confirmation"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation:ru",
+      "target_ref": "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Невербальная координация общей рискованной работы Качественные условия понятного невербального согласования в уже установленной общей работе. Зрительный или осязательный сигнал требует фактического взаимного восприятия и подтверждения, чтобы служить общей связью; он не бывает автоматически понят или получен. жесты при работе согласовать подъем зрительный сигнал осязательный сигнал подтверждение"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:random-independent-trials-do-not-owe-reversal:en",
       "target_ref": "claim:random-independent-trials-do-not-owe-reversal",
       "domain": "physics_material_science",
@@ -34996,6 +35080,20 @@
       "retrieval_text": "Истечение жидкости из-за разности давления Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте."
     },
     {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:r6-reed-mat-preparation-and-interlacing:en",
+      "target_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Reed mat preparation and interlacing Qualitative material relation of preparing and joining stems into a mat-like sheet. reed mat interlaced stems"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:r6-reed-mat-preparation-and-interlacing:ru",
+      "target_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Подготовка и переплетение тростника для циновки Качественное отношение подготовки и соединения стеблей в циновкоподобное полотно. тростник циновка плетение стеблей"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:physics_material_science:random-trials:en",
       "target_ref": "wk:physics_material_science:random-trials",
       "domain": "physics_material_science",
@@ -36436,6 +36534,20 @@
       "domain": "social_behavior",
       "locale": "ru",
       "retrieval_text": "Обычные социальные отношения"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:r6-nonverbal-shared-work-coordination:en",
+      "target_ref": "wk:social_behavior:r6-nonverbal-shared-work-coordination",
+      "domain": "social_behavior",
+      "locale": "en",
+      "retrieval_text": "Nonverbal coordination in shared risky work Qualitative conditions for intelligible nonverbal coordination in already established shared work. work signals coordinate lift"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:social_behavior:r6-nonverbal-shared-work-coordination:ru",
+      "target_ref": "wk:social_behavior:r6-nonverbal-shared-work-coordination",
+      "domain": "social_behavior",
+      "locale": "ru",
+      "retrieval_text": "Невербальная координация общей рискованной работы Качественные условия понятного невербального согласования в уже установленной общей работе. жесты при работе согласовать подъем"
     },
     {
       "entry_ref": "wk-retrieval:wk:social_behavior:reconstructed-ordinary-religious-life:en",

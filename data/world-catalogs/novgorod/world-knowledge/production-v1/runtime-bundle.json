@@ -7574,6 +7574,38 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r6-nonverbal-work-editorial",
+      "title": "R6 nonverbal shared-work coordination: candidate bounded editorial reconstruction",
+      "authors": [
+        "PR92 World Knowledge editorial team"
+      ],
+      "publication": "PR92 research note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "research/final-static-r6-nonverbal-work-gap-repair.md",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r6-reed-mat-editorial",
+      "title": "R6 reed mat preparation and interlacing: bounded editorial reconstruction",
+      "authors": [
+        "PR92 World Knowledge editorial team"
+      ],
+      "publication": "PR92 research note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "research/final-static-r6-reed-mat-gap-repair.md",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:reality-batch-01-editorial",
       "title": "Reality batch 01 practical reconstruction",
       "authors": [
@@ -19880,6 +19912,26 @@
         "section": "Churning"
       },
       "note": "Churning cream coalesces fat globules and releases buttermilk; temperature and working affect process and texture without exact thresholds or yield.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r6-nonverbal-work-editorial",
+      "source_ref": "source:r6-nonverbal-work-editorial",
+      "anchor": {
+        "section": "Candidate reusable premises"
+      },
+      "note": "Candidate editorial bridge from approved signal acknowledgement, capacity adaptation, and non-deterministic social-category premises. It establishes no person, sensory condition, work, load, means, authority, consent, cooperation, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r6-reed-mat-editorial",
+      "source_ref": "source:r6-reed-mat-editorial",
+      "anchor": {
+        "section": "Candidate reusable premises"
+      },
+      "note": "Candidate editorial bridge from already committed cut reeds and general material-condition/interlacing premises. It establishes no reed source, presence, access, quantity, tool, binding, skill, mat, durability, or outcome.",
       "review_status": "approved"
     },
     {
@@ -50002,6 +50054,43 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+          "locale": "ru",
+          "labels": [
+            "Подготовка и переплетение тростника для циновки"
+          ],
+          "short_definition": "Качественное отношение подготовки и соединения стеблей в циновкоподобное полотно.",
+          "search_aliases": [
+            "тростник циновка",
+            "плетение стеблей"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+          "locale": "en",
+          "labels": [
+            "Reed mat preparation and interlacing"
+          ],
+          "short_definition": "Qualitative material relation of preparing and joining stems into a mat-like sheet.",
+          "search_aliases": [
+            "reed mat",
+            "interlaced stems"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:physics_material_science:random-trials",
       "domain": "physics_material_science",
       "broader_refs": [],
@@ -53310,6 +53399,43 @@
           "short_definition": "Ordinary social lifeways",
           "search_aliases": [
             "Ordinary social lifeways"
+          ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_behavior:r6-nonverbal-shared-work-coordination",
+      "domain": "social_behavior",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_behavior:r6-nonverbal-shared-work-coordination",
+          "locale": "ru",
+          "labels": [
+            "Невербальная координация общей рискованной работы"
+          ],
+          "short_definition": "Качественные условия понятного невербального согласования в уже установленной общей работе.",
+          "search_aliases": [
+            "жесты при работе",
+            "согласовать подъем"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:social_behavior:r6-nonverbal-shared-work-coordination",
+          "locale": "en",
+          "labels": [
+            "Nonverbal coordination in shared risky work"
+          ],
+          "short_definition": "Qualitative conditions for intelligible nonverbal coordination in already established shared work.",
+          "search_aliases": [
+            "work signals",
+            "coordinate lift"
           ]
         }
       }
@@ -124262,6 +124388,326 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:r6-nonverbal-shared-work-coordination",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "communication_can_be_adapted_to_actual_sensory_capacity_without_inferring_a_person_s_inability_status_skill_or_willingness_to_cooperate"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r6-nonverbal-work-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+          "locale": "ru",
+          "runtime_text": "Связь можно приспособить к фактической сенсорной возможности, не выводя из этого неспособность, статус, умение или готовность человека сотрудничать.",
+          "search_aliases": [
+            "приспособить связь",
+            "сенсорная возможность"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+          "locale": "en",
+          "runtime_text": "Communication can be adapted to actual sensory capacity without inferring a person's inability, status, skill, or willingness to cooperate.",
+          "search_aliases": [
+            "adapt communication",
+            "sensory capacity"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:final-static-r6-nonverbal-work-capacity-adaptation"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "already_present_freshly_cut_reed_stems_can_be_sorted_and_left_to_dry_or_otherwise_prepared_before_attempted_mat_work_without_prescribing_a_sequence_duration_tool_or_result"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r6-reed-mat-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+          "locale": "ru",
+          "runtime_text": "Уже срезанные свежие стебли тростника можно сортировать и оставить сушиться либо иначе подготовить перед попыткой сделать циновку; порядок, срок, орудие и результат не заданы.",
+          "search_aliases": [
+            "сушить тростник",
+            "подготовить стебли"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+          "locale": "en",
+          "runtime_text": "Already cut fresh reed stems can be sorted and left to dry or otherwise prepared before attempting mat work; no sequence, duration, tool, or result is specified.",
+          "search_aliases": [
+            "dry reed",
+            "prepare stems"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:final-static-r6-reed-mat-preparation"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_reed_mat_like_sheet_s_practical_usability_depends_on_actual_stem_condition_continuity_interlacing_or_binding_and_drying_without_guaranteeing_load_durability_comfort_cleanliness_or_successful_floor_use"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r6-reed-mat-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+          "locale": "ru",
+          "runtime_text": "Пригодность циновкоподобного полотна зависит от состояния и целости стеблей, переплетения или связки и сушки; нагрузка, прочность, удобство, чистота и успешное напольное применение не гарантируются.",
+          "search_aliases": [
+            "прочность циновки",
+            "состояние тростника"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+          "locale": "en",
+          "runtime_text": "A mat-like reed sheet's usability depends on stem condition and continuity, interlacing or binding, and drying; load, durability, comfort, cleanliness, and successful floor use are not guaranteed.",
+          "search_aliases": [
+            "reed mat durability",
+            "reed condition"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:final-static-r6-reed-mat-usability"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:r6-nonverbal-shared-work-coordination",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "before_an_already_established_shared_task_with_meaningful_handling_risk_participants_can_agree_simple_start_stop_or_hold_signals_without_assigning_a_leader_exact_signal_system_task_load_agreement_or_successful_handling"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r6-nonverbal-work-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+          "locale": "ru",
+          "runtime_text": "Перед уже установленной общей работой с существенным риском при обращении участники могут согласовать простые сигналы «начать», «стоп» или «держать»; это не назначает руководителя, систему сигналов, задачу, груз, согласие или успешное выполнение.",
+          "search_aliases": [
+            "сигнал начать стоп держать",
+            "согласовать подъем"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+          "locale": "en",
+          "runtime_text": "Before an already established shared task with meaningful handling risk, participants can agree simple start, stop, or hold signals; this assigns no leader, signal system, task, load, agreement, or successful handling.",
+          "search_aliases": [
+            "start stop hold signals",
+            "coordinate lift"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:final-static-r6-nonverbal-work-shared-signals"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "suitable_prepared_flexible_continuous_reed_stems_can_be_overlapped_or_interlaced_and_locally_bound_into_a_mat_like_sheet_without_prescribing_a_recipe_or_supplying_binding_material"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r6-reed-mat-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+          "locale": "ru",
+          "runtime_text": "Подходящие подготовленные гибкие непрерывные стебли можно накладывать или переплетать и местами связывать в циновкоподобное полотно; рецепт и связующий материал не подразумеваются.",
+          "search_aliases": [
+            "плести циновку",
+            "связать тростник"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+          "locale": "en",
+          "runtime_text": "Suitable prepared flexible continuous reed stems can be overlapped or interlaced and locally bound into a mat-like sheet; no recipe or binding material is implied.",
+          "search_aliases": [
+            "weave reed mat",
+            "bind reeds"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:final-static-r6-reed-mat-interlacing"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+      "domain": "social_behavior",
+      "subject_ref": "wk:social_behavior:r6-nonverbal-shared-work-coordination",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_visual_or_tactile_signal_needs_actual_mutual_perception_and_confirmation_to_function_as_shared_communication_and_is_not_automatically_understood_or_received"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "low",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r6-nonverbal-work-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+          "locale": "ru",
+          "runtime_text": "Зрительный или осязательный сигнал требует фактического взаимного восприятия и подтверждения, чтобы служить общей связью; он не бывает автоматически понят или получен.",
+          "search_aliases": [
+            "зрительный сигнал",
+            "осязательный сигнал",
+            "подтверждение"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+          "locale": "en",
+          "runtime_text": "A visual or tactile signal needs actual mutual perception and confirmation to function as shared communication; it is not automatically understood or received.",
+          "search_aliases": [
+            "visual signal",
+            "tactile signal",
+            "confirmation"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:final-static-r6-nonverbal-work-mutual-perception"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:random-independent-trials-do-not-owe-reversal",
       "domain": "physics_material_science",
       "subject_ref": "wk:physics_material_science:random-trials",
@@ -157456,6 +157902,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+        "domain": "physics_material_science",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:physics_material_science:random-trials": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:physics_material_science:random-trials",
@@ -158377,6 +158832,15 @@
       "wk:social_behavior:ordinary-social-lifeways": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:social_behavior:ordinary-social-lifeways",
+        "domain": "social_behavior",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:social_behavior:r6-nonverbal-shared-work-coordination": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "domain": "social_behavior",
         "broader_refs": [],
         "related_refs": [],
@@ -162595,6 +163059,11 @@
       "wk:physics_material_science:pressure-driven-liquid-outflow": [
         "claim:foundations-phys-06-pressure-driven-liquid-outflow"
       ],
+      "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
+      ],
       "wk:physics_material_science:random-trials": [
         "claim:random-independent-trials-do-not-owe-reversal"
       ],
@@ -162943,6 +163412,11 @@
         "claim:ordinary-life-public-reputation-follows-conduct",
         "claim:ordinary-life-status-does-not-fix-wealth",
         "claim:ordinary-life-worker-means-and-duty-vary"
+      ],
+      "wk:social_behavior:r6-nonverbal-shared-work-coordination": [
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation"
       ],
       "wk:social_behavior:reconstructed-ordinary-religious-life": [
         "claim:final-social-established-observance-can-change-food-time-and-visiting-context",
@@ -164817,6 +165291,9 @@
         "claim:population-physics-sliding-friction",
         "claim:population-physics-static-friction",
         "claim:population-physics-stress-failure",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
@@ -164945,6 +165422,9 @@
         "claim:ordinary-life-public-reputation-follows-conduct",
         "claim:ordinary-life-status-does-not-fix-wealth",
         "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:research-pooled-work-social-loafing",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited"
       ],
@@ -166497,6 +166977,12 @@
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:r401-wood-drying-can-loosen-wheel-fit",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -168346,6 +168832,12 @@
         "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:r401-root-water-and-oxygen-limits",
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
@@ -169874,6 +170366,7 @@
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
         "claim:population-wool-lining",
         "claim:r201-lye-2",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:resource-occupation-needs-setting",
@@ -171763,6 +172256,7 @@
       ],
       "бывает": [
         "claim:fauna-animal-partial-migration",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "wk:biology_physiology:fauna-animal-movement"
       ],
@@ -172821,7 +173315,8 @@
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions"
       ],
       "взаимного": [
-        "claim:foundations-phys-03-action-reaction-separate-bodies"
+        "claim:foundations-phys-03-action-reaction-separate-bodies",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation"
       ],
       "взаимное": [
         "claim:foundations-ms2-03-distrust-cooperation",
@@ -174765,6 +175260,7 @@
         "claim:human-life-capacity-experience-help-vary",
         "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water",
         "claim:material-water-textile-water-load",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited"
@@ -174775,6 +175271,7 @@
         "claim:hard-stone-abrasive-sawing",
         "claim:harvest-sickle-wooden-handle",
         "claim:human-life-learning-tasks-can-match-capacity-risk",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
         "claim:research-memory-postevent-misinformation",
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
@@ -175317,6 +175814,7 @@
         "wk:social_behavior:foundations-ms-31-conflict-misperception"
       ],
       "восприятия": [
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "wk:architecture_settlement:reconstructed-church-interior-yard-context",
         "wk:psychology_behavior:reconstructed-information-provenance-limits"
       ],
@@ -176039,6 +176537,9 @@
         "claim:rp-mother-household-care-succession",
         "claim:transport-winter-sledge-1220"
       ],
+      "выводя": [
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
+      ],
       "выводятся": [
         "claim:urban-pavements",
         "wk:architecture_settlement:urban-pavements"
@@ -176397,6 +176898,7 @@
       ],
       "выполнение": [
         "claim:foundations-ms-11-practiced-action",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "wk:psychology_behavior:foundations-ms-11-practiced-action"
       ],
       "выполняли": [
@@ -176866,7 +177368,8 @@
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water"
       ],
       "гарантируются": [
-        "claim:final-social-washing-and-drying-can-change-visible-household-soil"
+        "claim:final-social-washing-and-drying-can-change-visible-household-soil",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
       ],
       "гарантируя": [
         "claim:r201-compost-2"
@@ -177098,6 +177601,7 @@
       ],
       "гибкие": [
         "claim:fauna-mammals-domestic-dog-flexible-sociality",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "wk:biology_physiology:fauna-domestic-dog",
         "wk:craft_technology:macro-b19-flexible-basket-stock-and-clay-selection"
@@ -178017,6 +178521,7 @@
         "claim:foundations-ms-21-attitude-definition",
         "claim:human-life-category-does-not-determine-means-ties-skill",
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
         "wk:biology_physiology:fauna-eurasian-perch",
         "wk:biology_physiology:reconstructed-military-readiness-care",
@@ -178375,6 +178880,7 @@
         "claim:military-world-crossing-conditions-remain-local",
         "claim:military-world-crossing-needs-staged-load-handling",
         "claim:practical-boat-load",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r3",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
@@ -179648,6 +180154,7 @@
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
         "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
         "claim:practical-food-grain-storage",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
@@ -180389,6 +180896,7 @@
         "wk:material_culture:water",
         "wk:material_culture:wooden-peg",
         "wk:physics_material_science:macro-b19-waterpower-and-pack-load-limits",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:physics_material_science:static-force-equilibrium",
         "wk:physics_material_science:support-polygon-center-of-mass",
         "wk:physics_material_science:textile-conditioning-matters",
@@ -182965,6 +183473,9 @@
       "жёсткую": [
         "claim:oil-fat-vegetable-leather-flexibility"
       ],
+      "жесты": [
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
+      ],
       "живая": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
         "claim:final-static-b01-living-birch"
@@ -183603,6 +184114,7 @@
         "claim:population-rod-input",
         "claim:population-wool-lining",
         "claim:public-world-support-needs-available-person-and-resources",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
@@ -184050,6 +184562,7 @@
         "claim:military-world-custody-needs-attention-and-basic-needs",
         "claim:military-world-small-group-coordination-needs-established-roles",
         "claim:plant-development-responds-to-light",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
         "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
@@ -184082,6 +184595,7 @@
       ],
       "задачу": [
         "claim:agriculture-rural-role-context",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:social-hired-work-relates-business-record",
         "wk:npc_daily_life:agriculture-rural-role-context"
       ],
@@ -185933,6 +186447,7 @@
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"
       ],
       "зрительный": [
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "wk:biology_physiology:static-visual-comfort-context-b06"
       ],
       "зрительными": [
@@ -186173,6 +186688,7 @@
         "claim:pottery-handmade-local-clay",
         "claim:pottery-handmade-temper",
         "claim:practical-leather-stitch",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
@@ -187344,6 +187860,11 @@
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:r401-wood-drying-can-loosen-wheel-fit",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -188037,6 +188558,7 @@
       "иначе": [
         "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
         "claim:r201-lye-2",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths"
       ],
       "иная": [
@@ -189863,6 +190385,7 @@
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
         "wk:biology_physiology:static-harvested-produce-cool-respiration",
         "wk:craft:r401-cream-churning",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:physics_material_science:stored-grain-airflow-temperature-management"
       ],
       "качественные": [
@@ -189902,7 +190425,8 @@
         "wk:environment:static-weather-b06-cloud-rain-observation",
         "wk:material_culture:reconstructed-armed-public-world",
         "wk:npc_daily_life:reconstructed-compound-upkeep-context",
-        "wk:physics_material_science:static-fragile-wet-record-care-b10"
+        "wk:physics_material_science:static-fragile-wet-record-care-b10",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "качественный": [
         "claim:fuel-pit-charcoal-burning-charcoal-output",
@@ -192181,6 +192705,7 @@
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment"
       ],
       "координация": [
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_law_economy:reconstructed-military-coordination-custody"
       ],
       "координировать": [
@@ -194175,6 +194700,7 @@
         "claim:practical-food-preserve",
         "claim:public-world-witness-account-has-bounded-scope",
         "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
@@ -195504,6 +196030,7 @@
         "claim:practical-textile-repair",
         "claim:practical-work-tradeoff",
         "claim:probable-travel-chalice-communion",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
         "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
         "claim:research-porous-high-water-stain-can-require-corroboration",
@@ -196243,6 +196770,7 @@
         "wk:npc_daily_life:resource-occupation-needs-setting"
       ],
       "местами": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "wk:biology_physiology:rock-pigeon-built-sites-and-food"
       ],
       "местах": [
@@ -197238,6 +197766,7 @@
         "claim:r301-new-growth",
         "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
@@ -197833,6 +198362,9 @@
         "claim:public-world-dispute-can-use-questions-and-kin",
         "claim:public-world-local-authority-is-one-escalation-option",
         "claim:public-world-name-can-combine-personal-and-distinguishing-form",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -199172,6 +199704,7 @@
         "claim:population-ceramic-fracture",
         "claim:population-joining-metal-fatigue",
         "claim:population-physics-load-deformation",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:residual-nature-snow-depth-not-load",
         "claim:residual-nature-snow-uneven-roof-loading",
         "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
@@ -199381,6 +199914,7 @@
         "claim:human-life-learning-observation-practice-feedback",
         "claim:macro-b20-ankle-soft-tissue-pain-or-swelling-can-call-for-protection-observation-and-escalation-without-diagnosis",
         "claim:military-world-working-animal-care-intersects-travel",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
         "wk:npc_daily_life:agriculture-rural-role-context"
       ],
@@ -199489,6 +200023,9 @@
       ],
       "накладки": [
         "claim:household-belt-fitting"
+      ],
+      "накладывать": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
       ],
       "накладывают": [
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help"
@@ -199921,6 +200458,9 @@
       ],
       "написаны": [
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context"
+      ],
+      "напольное": [
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
       ],
       "напольные": [
         "claim:construction-construction-pottery-products"
@@ -200469,6 +201009,7 @@
         "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
         "claim:healer-observation-and-questioning",
         "claim:mb14-practical-sowing-follows-local-workable-soil",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:static-hydraulic-lime-can-initially-set-with-water",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited"
       ],
@@ -201239,6 +201780,12 @@
         "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:r401-cream-condition-and-working-affect-churning",
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -201831,6 +202378,12 @@
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
         "wk:biology_physiology:static-minor-thermal-burn-care-b10"
       ],
+      "невербальная": [
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
+      ],
+      "невербального": [
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
+      ],
       "невзятии": [
         "claim:candidate-v7-npl-1222-kesi-campaign",
         "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign"
@@ -202337,6 +202890,9 @@
         "claim:residual-nature-snow-conceals-ice-gaps",
         "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
       ],
+      "непрерывные": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
+      ],
       "непривлекательной": [
         "claim:fauna-toad-defence",
         "wk:biology_physiology:fauna-common-toad"
@@ -202510,6 +203066,9 @@
       ],
       "неспособности": [
         "claim:public-world-illness-can-reallocate-ordinary-work"
+      ],
+      "неспособность": [
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "несрочное": [
         "claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained"
@@ -204254,6 +204813,7 @@
       "обращении": [
         "claim:foundations-physical-b2-bnh-02-porous-bone-fragility",
         "claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:social-priest-fragment-relates-office-address",
         "wk:chemistry_process:candidate-v6-food-cross-contamination",
         "wk:physics_material_science:porous-bone-fragility",
@@ -204517,7 +205077,10 @@
       ],
       "общей": [
         "claim:human-life-shared-role-can-be-negotiated",
-        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "общем": [
         "claim:human-life-recreation-participation-can-be-uneven-voluntary",
@@ -205916,6 +206479,7 @@
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:posadnik-fedor-conflict-1224",
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:social-hired-work-relates-business-record",
@@ -206685,6 +207249,7 @@
       "орудие": [
         "claim:fibre-flax-breaker-shive",
         "claim:harvest-sickle-crops-grasses",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:regional-agriculture-practice",
         "wk:environment:regional-agriculture-practice",
         "wk:material_culture:firesteel"
@@ -207066,6 +207631,7 @@
         "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
         "claim:practical-boat-unload-order",
         "claim:practical-textile-weave",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1"
       ],
       "оставлен": [
@@ -207390,6 +207956,9 @@
         "claim:foundations-ms-05-tactile-components",
         "wk:psychology_behavior:foundations-ms-05-tactile-components"
       ],
+      "осязательный": [
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation"
+      ],
       "от": [
         "claim:aerobic-muscle-atp-regeneration-depends-on-oxygen",
         "claim:animal-energy-availability-depends-on-food-derived-nutrients",
@@ -207521,6 +208090,7 @@
         "claim:public-world-name-can-combine-personal-and-distinguishing-form",
         "claim:public-world-support-needs-available-person-and-resources",
         "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
@@ -208172,7 +208742,8 @@
         "claim:fodder-healthy-horse-forage",
         "claim:foundations-mat-04-wood-transverse-tension-weakness",
         "claim:social-kin-request-reports-contingent-return",
-        "wk:biology_physiology:horse-forage-feeding"
+        "wk:biology_physiology:horse-forage-feeding",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "отношений": [
         "claim:human-life-audience-can-interpret-standing-contextually",
@@ -209289,6 +209860,8 @@
         "claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures",
         "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
         "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
         "claim:streak01-splinter-assessment"
@@ -209678,14 +210251,17 @@
         "claim:ordinary-life-weaver-needs-yarn-and-loom-space"
       ],
       "переплетать": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:static-yarn-twist-can-increase-fibre-cohesion"
       ],
       "переплетение": [
         "claim:clothing-linen-plain-or-twill",
-        "claim:population-processes-weaving-textile"
+        "claim:population-processes-weaving-textile",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "переплетения": [
-        "claim:population-material-wet-wool"
+        "claim:population-material-wet-wool",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
       ],
       "переправа": [
         "claim:human-life-travel-conditions-can-justify-delay"
@@ -210582,8 +211158,12 @@
         "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits"
       ],
+      "плести": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
+      ],
       "плетение": [
-        "claim:final-static-b01-willow-limits"
+        "claim:final-static-b01-willow-limits",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "плетения": [
         "claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work",
@@ -211716,6 +212296,9 @@
         "claim:foundations-ms-03-attention-expectation",
         "wk:psychology_behavior:foundations-ms-03-attention-expectation"
       ],
+      "подготовить": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work"
+      ],
       "подготовиться": [
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
         "wk:environment:static-weather-b06-cloud-rain-observation"
@@ -211723,13 +212306,15 @@
       "подготовка": [
         "claim:final-static-b01-willow-preparation",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
-        "claim:pottery-handmade-temper"
+        "claim:pottery-handmade-temper",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "подготовки": [
         "claim:fibre-flax-breaker-shive",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:vegetable-tanning-prepared-hide",
-        "wk:physics_material_science:fibre-twisting"
+        "wk:physics_material_science:fibre-twisting",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "подготовкой": [
         "claim:population-fishing-workspace"
@@ -211749,7 +212334,8 @@
       ],
       "подготовленные": [
         "claim:population-bark-bast",
-        "claim:population-bark-input"
+        "claim:population-bark-input",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
       ],
       "подделку": [
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits"
@@ -212011,6 +212597,7 @@
         "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
@@ -212106,6 +212693,7 @@
       "подтверждение": [
         "claim:construction-plinth-patterns-1207",
         "claim:population-material-wet-silk",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:residual-law-debt-denial-witness-oath",
         "wk:social_law_economy:residual-law-offense"
       ],
@@ -212113,6 +212701,7 @@
         "claim:military-world-message-needs-recipient-and-confirmation"
       ],
       "подтверждения": [
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:residual-law-monthly-and-longer-interest"
       ],
       "подтверждённом": [
@@ -212169,6 +212758,9 @@
         "claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee",
         "claim:place-outdoors-traffic-wet-ground-and-ruts"
       ],
+      "подходящие": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
+      ],
       "подходящий": [
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:population-joining-metal-anneal"
@@ -212185,6 +212777,10 @@
       ],
       "подчинение": [
         "claim:research-pooled-work-social-loafing"
+      ],
+      "подъем": [
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "подъём": [
         "claim:household-dough-temperature-changes-proofing",
@@ -212762,7 +213358,8 @@
         "claim:clothing-povoi-headcover"
       ],
       "полотна": [
-        "claim:material-water-new-linen-water"
+        "claim:material-water-new-linen-water",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
       ],
       "полотнищ": [
         "claim:clothing-porty-cut"
@@ -212774,7 +213371,9 @@
         "claim:clothing-linen-shirt",
         "claim:population-processes-weaving-textile",
         "claim:practical-textile-weave",
-        "wk:material_culture:woven-textile"
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "wk:material_culture:woven-textile",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "полотняное": [
         "claim:clothing-linen-plain-or-twill"
@@ -212823,6 +213422,9 @@
         "claim:residual-law-daughters-and-status-inheritance",
         "wk:biology_physiology:animal-food-energy",
         "wk:biology_physiology:foundation-mitosis"
+      ],
+      "получен": [
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation"
       ],
       "получение": [
         "claim:cellular-atp-production-can-cause-metabolic-heat",
@@ -213104,8 +213706,14 @@
         "claim:healer-belief-and-bodily-attention",
         "claim:human-life-audience-can-interpret-standing-contextually"
       ],
+      "понят": [
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation"
+      ],
       "понятий": [
         "wk:social_law_economy:residual-government-law-v1-accusation-and-state-language-limits"
+      ],
+      "понятного": [
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "понятности": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech"
@@ -213205,6 +213813,9 @@
       ],
       "попытки": [
         "claim:technology-newcomen-boundary"
+      ],
+      "попыткой": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work"
       ],
       "пор": [
         "claim:fauna-earthworm-soil-effects",
@@ -213441,6 +214052,7 @@
         "claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained",
         "claim:military-world-loads-need-order-and-passage",
         "claim:practical-boat-unload-order",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "wk:social_law_economy:candidate-v7-writing-and-inquiry-records"
       ],
       "посадить": [
@@ -215546,6 +216158,7 @@
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
         "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:r401-wood-drying-can-loosen-wheel-fit",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
@@ -215665,6 +216278,7 @@
         "wk:physics_material_science:wood-drying-property-change",
         "wk:physics_material_science:wood-transverse-tension-weakness",
         "wk:psychology_behavior:foundations-ms-04-attention-competition",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_law_economy:reconstructed-market-weighing-check"
       ],
       "приближающимся": [
@@ -215811,6 +216425,7 @@
         "claim:foundations-mat-08-abrasive-hardness-material-removal",
         "claim:hard-stone-abrasive-shaping",
         "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
@@ -216114,6 +216729,7 @@
         "claim:occupation-smith-tongs",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:population-wool-lining",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:textile-chrysin-analysis",
         "claim:textile-lac-dye-analysis",
         "claim:transport-boat-cargo-dispatch",
@@ -216343,6 +216959,9 @@
       ],
       "приспосабливаются": [
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk"
+      ],
+      "приспособить": [
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "приспособлений": [
         "claim:agriculture-fauna-bort-climbing-hooks",
@@ -217254,6 +217873,7 @@
         "claim:construction-auxiliary-construction-work",
         "claim:force-contact-geometry",
         "claim:household-overshoe",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:residual-tree-betula-pendula-simple-leaves",
         "wk:physics_material_science:force-contact-geometry"
       ],
@@ -217681,6 +218301,7 @@
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:population-joining-bond-cure",
         "claim:population-physics-section-response",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
@@ -218299,6 +218920,7 @@
         "wk:biology_physiology:macro-b20-animal-work-and-trail-conditions",
         "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
         "wk:biology_physiology:static-visual-comfort-context-b06",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_behavior:research-pooled-work-social-loafing"
       ],
       "работник": [
@@ -218334,7 +218956,8 @@
         "claim:healer-experience-and-reputation",
         "claim:human-life-recreation-competes-for-time",
         "claim:military-world-carried-equipment-needs-secure-access",
-        "claim:military-world-passage-can-disturb-animals-and-work"
+        "claim:military-world-passage-can-disturb-animals-and-work",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
       ],
       "работоспособности": [
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause"
@@ -218400,6 +219023,7 @@
         "wk:npc_daily_life:reconstructed-compound-upkeep-context",
         "wk:npc_daily_life:smith",
         "wk:physics_material_science:macro-b19-waterpower-and-pack-load-limits",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_law_economy:hired-work-reference"
       ],
       "рабочая": [
@@ -220696,6 +221320,7 @@
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:pottery-handmade-local-clay",
         "claim:practical-leather-cut",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
@@ -221044,6 +221669,7 @@
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:population-processes-malt-context",
         "claim:r201-lye-1",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:textile-chrysin-analysis",
@@ -221218,13 +221844,17 @@
         "claim:food-preservation-qualitative",
         "wk:chemistry_process:food-preservation-qualitative"
       ],
+      "рискованной": [
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
+      ],
       "рисковать": [
         "claim:fauna-perch-experience",
         "wk:biology_physiology:fauna-eurasian-perch"
       ],
       "риском": [
         "claim:ordinary-life-smith-fire-needs-managed-space",
-        "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth"
+        "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
       ],
       "риску": [
         "claim:foundations-ms4-03-uncertainty-cognitive-control",
@@ -221690,6 +222320,9 @@
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
         "claim:streak01-splinter-assessment"
+      ],
+      "руководителя": [
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
       ],
       "руководство": [
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"
@@ -222386,7 +223019,8 @@
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict"
       ],
       "свежие": [
-        "claim:place-outdoors-means-upkeep-and-environment"
+        "claim:place-outdoors-means-upkeep-and-environment",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work"
       ],
       "свежий": [
         "claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee",
@@ -222883,6 +223517,9 @@
         "wk:physics_material_science:conductor-insulator-charge-mobility",
         "wk:psychology_behavior:foundations-ms-09-memory-systems"
       ],
+      "связать": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
+      ],
       "связей": [
         "claim:healer-livelihood-and-household-support"
       ],
@@ -222935,7 +223572,8 @@
       ],
       "связки": [
         "claim:construction-bast-vessel-fastening",
-        "claim:construction-pine-resin-bast"
+        "claim:construction-pine-resin-bast",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
       ],
       "связность": [
         "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation"
@@ -222950,6 +223588,9 @@
       ],
       "связующее": [
         "claim:construction-animal-glue-chalk"
+      ],
+      "связующий": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
       ],
       "связывает": [
         "claim:agriculture-fauna-flax-hemp-cultivation",
@@ -222978,6 +223619,7 @@
       ],
       "связывать": [
         "claim:foundations-earth-06-soil-aggregation",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually"
       ],
       "связываются": [
@@ -223023,6 +223665,7 @@
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
         "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
         "claim:place-thermal-birch-tar-can-link-heated-bark-and-a-separate-collection-path",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:river-landing-market-approaches",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
@@ -223103,6 +223746,9 @@
         "wk:social_law_economy:historical-church-monthbook-day-commemoration",
         "wk:social_law_economy:priest-baptism-statutory-context",
         "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
+      ],
+      "связью": [
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation"
       ],
       "связями": [
         "claim:buoyancy-pressure-phase-change",
@@ -223213,6 +223859,7 @@
         "claim:human-life-travel-conditions-can-justify-delay",
         "claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work",
         "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
         "claim:streak01-wet-leather-drying",
@@ -223568,8 +224215,14 @@
       "сеновале": [
         "wk:biology_physiology:cat-hiding-places"
       ],
+      "сенсорная": [
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
+      ],
       "сенсорное": [
         "claim:research-novel-stimulus-can-elicit-orienting-response"
+      ],
+      "сенсорной": [
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "сенсорную": [
         "claim:foundations-ms-12-practice-correction",
@@ -223745,7 +224398,9 @@
       "сигнал": [
         "claim:fauna-mammals-eurasian-beaver-tail-slap-alarm",
         "claim:military-world-message-needs-recipient-and-confirmation",
-        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation"
       ],
       "сигнала": [
         "claim:foundations-ms-03-attention-expectation",
@@ -223756,10 +224411,14 @@
         "claim:fauna-animal-signals",
         "wk:biology_physiology:fauna-animal-communication"
       ],
+      "сигналов": [
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
+      ],
       "сигналы": [
         "claim:candidate-physiology-v3-vestibular-postural-correction",
         "claim:fauna-mammals-domestic-dog-multimodal-communication",
         "claim:foundations-life-19-sensory-receptor",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "wk:biology_physiology:fauna-animal-communication",
         "wk:biology_physiology:foundation-sensory-receptor"
       ],
@@ -223962,6 +224621,7 @@
       ],
       "систему": [
         "claim:pine-pitch-woven-basket-coating",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
         "claim:social-payment-register-records-entry"
       ],
@@ -224702,6 +225362,7 @@
         "claim:fibre-flax-breaker-shive",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:residual-nature-stars-horizon-navigation",
         "claim:residual-traces-deadwood-feeding-signs",
         "claim:settlement-underfloor-utility",
@@ -225557,6 +226218,7 @@
         "claim:foundations-ms-23-group-pressure",
         "claim:human-life-recreation-participation-can-be-uneven-voluntary",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:religion-priest-child-baptism",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "wk:social_behavior:foundations-ms-23-group-pressure"
@@ -225572,7 +226234,8 @@
       ],
       "согласования": [
         "claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination",
-        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage"
+        "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "согласованного": [
         "claim:military-world-portage-is-coordinated-carry-work"
@@ -225589,7 +226252,9 @@
       "согласовать": [
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:human-life-starting-household-needs-coordination",
-        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "согласуют": [
         "claim:fauna-sheep-flocking",
@@ -225697,6 +226362,7 @@
         "wk:craft_technology:reality-batch-01-wooden-joinery",
         "wk:material_culture:wooden-peg",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:physics_material_science:static-forge-welding-interface",
         "wk:physics_material_science:thermal-assembly"
@@ -226255,7 +226921,8 @@
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development"
       ],
       "сортировать": [
-        "claim:human-life-household-tasks-can-offer-learning"
+        "claim:human-life-household-tasks-can-offer-learning",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work"
       ],
       "сортировке": [
         "claim:final-static-b01-willow-preparation"
@@ -226482,6 +227149,7 @@
         "claim:practical-leather-shoe",
         "claim:r201-compost-1",
         "claim:r201-ice-2",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
         "claim:research-bright-retinal-light-can-constrict-pupils",
@@ -226614,6 +227282,7 @@
         "claim:population-material-wood-moisture",
         "claim:population-physics-freezing-condensation-energy",
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:static-belt-friction-can-resist-relative-slip",
         "claim:static-forge-welding-requires-heated-pressed-interface",
         "claim:wood-anisotropy-moisture",
@@ -226701,6 +227370,9 @@
       "сотня": [
         "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
         "wk:social_law_economy:residual-government-law-v2-dated-office-relations"
+      ],
+      "сотрудничать": [
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "сохнет": [
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
@@ -227637,6 +228309,7 @@
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area"
       ],
       "срезанные": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground"
       ],
       "срезать": [
@@ -227670,6 +228343,7 @@
         "claim:plant-development-responds-to-light",
         "claim:population-fish-dried-form",
         "claim:population-physics-evaporation-humidity",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:residual-law-monthly-and-longer-interest",
@@ -227979,6 +228653,7 @@
         "claim:ordinary-life-status-does-not-fix-wealth",
         "claim:public-world-name-form-does-not-prove-status-or-kinship",
         "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:religion-olenin-church-people",
         "claim:social-christian-exegetical-text-relates-urban-context",
         "claim:social-hired-work-relates-business-record",
@@ -228076,12 +228751,16 @@
         "claim:fibre-flax-breaker-shive",
         "claim:novgorod-wetland-pollen-context",
         "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "wk:craft_technology:flax-stem-breaking",
-        "wk:craft_technology:hemp-stem-processing"
+        "wk:craft_technology:hemp-stem-processing",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "стебли": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground"
       ],
       "стебля": [
@@ -228311,6 +228990,9 @@
       ],
       "стом": [
         "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division"
+      ],
+      "стоп": [
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
       ],
       "стопе": [
         "claim:care-direct-pressure-bleeding"
@@ -228907,8 +229589,12 @@
         "claim:final-practical-wet-gear-and-hull-care-compete-for-space-time-and-dry-work-area",
         "claim:final-social-washing-and-drying-can-change-visible-household-soil",
         "claim:ordinary-life-shoes-protect-feet",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "wk:physics_material_science:static-fragile-wet-record-care-b10"
+      ],
+      "сушиться": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work"
       ],
       "сушка": [
         "claim:clay-fired-no-replasticization",
@@ -228949,6 +229635,7 @@
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:population-drying-workspace",
         "claim:population-physics-evaporation-humidity",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
         "wk:architecture_settlement:drying-workspace",
         "wk:biology_physiology:research-exposed-fish-drying",
@@ -228968,6 +229655,9 @@
       ],
       "существенной": [
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area"
+      ],
+      "существенным": [
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
       ],
       "существование": [
         "wk:material_culture:honey"
@@ -231523,6 +232213,7 @@
         "claim:practical-leather-stitch",
         "claim:practical-textile-weave",
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
@@ -231712,16 +232403,22 @@
         "claim:place-outdoors-clearing-and-trace-renewal"
       ],
       "тростник": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
         "wk:environment:common-reed-rhizome-habitat",
-        "wk:environment:reality-batch-01-wetland-reed-cutting"
+        "wk:environment:reality-batch-01-wetland-reed-cutting",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "тростника": [
         "claim:novgorod-wetland-pollen-context",
-        "wk:environment:reality-batch-01-wetland-reed-cutting"
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "wk:environment:reality-batch-01-wetland-reed-cutting",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "тростнике": [
         "claim:common-reed-rhizome-produces-stems-in-wetland-habitat"
@@ -232453,7 +233150,8 @@
         "claim:human-life-lodging-trades-space-privacy-comfort-security"
       ],
       "удобство": [
-        "claim:place-outdoors-traffic-wet-ground-and-ruts"
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
       ],
       "удочек": [
         "claim:population-pine-float"
@@ -232535,6 +233233,8 @@
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
         "claim:r201-porridge-2",
         "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
@@ -232582,7 +233282,8 @@
         "wk:npc_daily_life:agriculture-rural-role-context",
         "wk:npc_daily_life:animal-care-needs-presence",
         "wk:npc_daily_life:reconstructed-local-religious-observance",
-        "wk:physics_material_science:cordage-reworking"
+        "wk:physics_material_science:cordage-reworking",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "узды": [
         "claim:population-tack-context"
@@ -232913,6 +233614,7 @@
         "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
         "claim:livestock-rumen-forage-digestion",
         "claim:oil-fat-vegetable-leather-flexibility",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:religion-olenin-church-people",
         "claim:religion-priest-child-baptism",
         "claim:social-alphabet-exercise-records-text",
@@ -233523,7 +234225,8 @@
         "wk:physics_material_science:static-belt-friction",
         "wk:physics_material_science:static-forge-welding-interface",
         "wk:physics_material_science:static-forge-welding-pressure-conditions",
-        "wk:social_behavior:foundations-ms-25-persuasion-context"
+        "wk:social_behavior:foundations-ms-25-persuasion-context",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "условиям": [
         "claim:macro-gap-collateral-follows-established-security-terms",
@@ -233690,6 +234393,8 @@
       ],
       "успешное": [
         "claim:agriculture-fauna-tow-log-gaps",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk"
       ],
       "успешность": [
@@ -234039,7 +234744,9 @@
       ],
       "установленной": [
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
-        "claim:military-world-established-casualty-needs-hazard-aware-help"
+        "claim:military-world-established-casualty-needs-hazard-aware-help",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "установленном": [
         "claim:military-world-custody-needs-attention-and-basic-needs",
@@ -234597,7 +235304,8 @@
       ],
       "участники": [
         "claim:foundations-ms3-06-apology-reinvestment",
-        "claim:human-life-performance-needs-willing-participants-suitable-occasion"
+        "claim:human-life-performance-needs-willing-participants-suitable-occasion",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
       ],
       "участников": [
         "claim:foundations-earth-10-mutualistic-dependence",
@@ -234832,12 +235540,16 @@
       ],
       "фактического": [
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "wk:social_law_economy:reconstructed-possession-and-return-inquiry"
       ],
       "фактическое": [
         "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk"
+      ],
+      "фактической": [
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "фактора": [
         "claim:foundations-earth-01-ecological-tolerance",
@@ -236287,6 +236999,9 @@
       "целом": [
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech"
       ],
+      "целости": [
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
+      ],
       "целостность": [
         "claim:foundations-mat-02-wood-drying-crack-strength",
         "claim:r401-cracked-shell-compromises-egg-barrier",
@@ -236511,6 +237226,24 @@
       ],
       "цилиндры": [
         "claim:candle-rolled-plate"
+      ],
+      "циновка": [
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
+      ],
+      "циновки": [
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
+      ],
+      "циновкоподобного": [
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
+      ],
+      "циновкоподобное": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
+      ],
+      "циновку": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
       ],
       "циркуляция": [
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
@@ -236833,6 +237566,7 @@
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:population-net-work",
         "claim:public-world-name-form-does-not-prove-status-or-kinship",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "claim:residual-law-detained-thief-and-princely-court",
@@ -237148,6 +237882,7 @@
       "чистота": [
         "claim:bathing-washing-water",
         "claim:final-social-washing-and-drying-can-change-visible-household-soil",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:terrain-parent-material-assemblage",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
         "wk:biology_physiology:reality-first-ordinary-care"
@@ -237282,6 +238017,7 @@
         "claim:practical-boat-unload-order",
         "claim:practical-food-preserve",
         "claim:practical-net-dry",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:textile-dye-mordant-fixation",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard"
@@ -238667,6 +239403,7 @@
         "claim:probable-travel-chalice-communion",
         "claim:r201-lye-1",
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
@@ -238934,6 +239671,7 @@
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:population-storage-role",
         "claim:pottery-handmade-local-clay",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
         "claim:skeletal-muscle-contraction-depends-on-atp",
         "claim:textile-lac-dye-analysis",
@@ -241613,6 +242351,8 @@
         "claim:population-storage-vessels",
         "claim:practical-food-grain-storage",
         "claim:practical-leather-cut",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
@@ -241644,11 +242384,15 @@
         "wk:psychology_behavior:foundations-ms3-experimental-cognition"
       ],
       "adapt": [
-        "claim:public-world-illness-can-reallocate-ordinary-work"
+        "claim:public-world-illness-can-reallocate-ordinary-work",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "adaptation": [
         "claim:fauna-brown-bear-winter-denning",
         "wk:biology_physiology:reconstructed-health-support"
+      ],
+      "adapted": [
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "add": [
         "claim:residual-nature-snow-depth-not-load"
@@ -242069,7 +242813,8 @@
         "claim:fauna-mammals-domestic-cattle-startle-response"
       ],
       "agree": [
-        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal"
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
       ],
       "agreed": [
         "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
@@ -242086,6 +242831,7 @@
         "claim:human-life-stay-can-enable-consented-exchange",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans",
         "claim:residual-law-dependency-and-agreement",
         "claim:residual-law-interest-agreement-and-witnesses",
@@ -242478,6 +243224,8 @@
         "claim:population-hide-leather-distinction",
         "claim:population-processes-fur-exchange",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
@@ -242493,7 +243241,8 @@
         "wk:material_culture:pine-pitch-coating",
         "wk:material_culture:reconstructed-military-equipment-readiness",
         "wk:npc_daily_life:animal-care-needs-presence",
-        "wk:npc_daily_life:reconstructed-local-religious-observance"
+        "wk:npc_daily_life:reconstructed-local-religious-observance",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "also": [
         "claim:agriculture-fauna-borts-wax",
@@ -242937,6 +243686,7 @@
         "claim:r201-lye-2",
         "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
@@ -243913,6 +244663,10 @@
         "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:r401-cream-condition-and-working-affect-churning",
         "claim:r401-root-water-and-oxygen-limits",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -244602,6 +245356,7 @@
         "wk:physics_material_science:partially-saturated-granular-deformation",
         "wk:physics_material_science:plant-cellulosic-fibres",
         "wk:physics_material_science:porous-medium-water-flow",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
         "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:research-carbon-monoxide-perceptibility",
@@ -245350,6 +246105,7 @@
         "claim:r201-roots-2",
         "claim:r301-honeydew-ants",
         "claim:r401-root-water-and-oxygen-limits",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -245746,6 +246502,7 @@
         "claim:practical-food-grain-storage",
         "claim:probable-travel-chalice-communion",
         "claim:r401-wood-drying-can-loosen-wheel-fit",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
@@ -245977,6 +246734,7 @@
       "assigns": [
         "claim:final-social-religious-service-context-can-distinguish-cleric-worker-and-visitor",
         "claim:human-life-learning-observation-practice-feedback",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:religion-olenin-adjudication",
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
         "claim:social-daily-economic-activities"
@@ -246224,6 +246982,9 @@
       ],
       "attempted": [
         "claim:technology-newcomen-boundary"
+      ],
+      "attempting": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work"
       ],
       "attempts": [
         "claim:foundations-ms-28-ostracism-conditional",
@@ -246476,6 +247237,7 @@
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
         "claim:population-wool-lining",
         "claim:r201-compost-1",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:resource-occupation-needs-setting",
@@ -247155,6 +247917,9 @@
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -247387,6 +248152,8 @@
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:public-world-dispute-can-use-questions-and-kin",
         "claim:r201-porridge-1",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
@@ -247706,7 +248473,8 @@
       ],
       "bind": [
         "claim:foundations-earth-06-soil-aggregation",
-        "claim:macro-b21-saw-kerf-binding-needs-pause-and-control-of-support-stress-or-alignment-not-force"
+        "claim:macro-b21-saw-kerf-binding-needs-pause-and-control-of-support-stress-or-alignment-not-force",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
       ],
       "binder": [
         "claim:construction-animal-glue-chalk"
@@ -247717,6 +248485,8 @@
         "claim:population-rod-input",
         "claim:population-stone-weight",
         "claim:population-weight-stone",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
         "wk:biology_physiology:research-fish-heating-muscle-texture",
         "wk:craft_technology:macro-b21-fuel-moisture-and-saw-kerf-control",
@@ -248217,6 +248987,7 @@
         "claim:military-world-established-casualty-needs-hazard-aware-help",
         "claim:population-material-wood-shrinkage",
         "claim:population-rod-cord",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:residual-law-detained-thief-and-princely-court",
         "wk:physics_material_science:conductor-insulator-charge-mobility"
       ],
@@ -249628,6 +250399,10 @@
         "claim:r401-cream-condition-and-working-affect-churning",
         "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:r401-wood-drying-can-loosen-wheel-fit",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -249959,6 +250734,7 @@
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
         "claim:public-world-capacity-can-vary-day-to-day",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
         "claim:skeletal-muscle-contraction-depends-on-atp",
         "claim:transport-boat-cargo-dispatch",
@@ -251633,6 +252409,7 @@
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
         "claim:final-social-washing-and-drying-can-change-visible-household-soil",
         "claim:place-outdoors-means-upkeep-and-environment",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
       ],
@@ -252258,6 +253035,7 @@
       ],
       "comfort": [
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
         "wk:biology_physiology:static-visual-comfort-context-b06"
       ],
@@ -252349,6 +253127,8 @@
       ],
       "communication": [
         "claim:macro-gap-political-communication-needs-accepted-performance",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "wk:social_law_economy:reconstructed-political-communication-records"
       ],
       "communion": [
@@ -253051,6 +253831,7 @@
         "claim:r201-ice-2",
         "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
@@ -253278,7 +254059,8 @@
         "wk:physics_material_science:static-forge-welding-pressure-conditions",
         "wk:physics_material_science:static-wool-felting",
         "wk:psychology_behavior:emotion-regulation-experimental",
-        "wk:psychology_behavior:foundations-ms3-experimental-cognition"
+        "wk:psychology_behavior:foundations-ms3-experimental-cognition",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "conduct": [
         "claim:foundations-ms-34-role-adjustment",
@@ -253332,6 +254114,9 @@
       ],
       "confirm": [
         "claim:residual-nature-snow-conceals-ice-gaps"
+      ],
+      "confirmation": [
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation"
       ],
       "confirms": [
         "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
@@ -253956,12 +254741,14 @@
       ],
       "continuity": [
         "claim:foundations-life-25-reproduction",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "wk:biology_physiology:foundation-reproduction"
       ],
       "continuous": [
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
         "claim:population-material-iron-coating",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:residual-nature-snow-conceals-ice-gaps",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
         "claim:technology-motor-boundary",
@@ -254159,7 +254946,8 @@
         "wk:environment:rising-air-cooling-cloud-condensation"
       ],
       "cooperate": [
-        "claim:foundations-ms2-03-distrust-cooperation"
+        "claim:foundations-ms2-03-distrust-cooperation",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "cooperation": [
         "claim:foundations-ms3-08-mutual-cooperation",
@@ -254172,7 +254960,9 @@
         "claim:foundations-life-16-regulation",
         "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
-        "wk:biology_physiology:foundation-regulation"
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "wk:biology_physiology:foundation-regulation",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "coordinated": [
         "claim:military-world-portage-is-coordinated-carry-work"
@@ -254188,6 +254978,7 @@
         "claim:final-social-novgorod-end-can-frame-neighbourhood-affiliation-and-coordination",
         "claim:healer-care-coordination-and-uncertainty",
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_law_economy:reconstructed-community-environment",
         "wk:social_law_economy:reconstructed-military-coordination-custody"
       ],
@@ -254973,6 +255764,7 @@
         "claim:population-shoe-form",
         "claim:practical-leather-cut",
         "claim:practical-textile-sew",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
         "claim:static-weather-b06-beaver-compatible-cut-can-show-conical-top-and-incisor-grooves",
@@ -255829,6 +256621,7 @@
         "claim:population-rod-input",
         "claim:population-wool-lining",
         "claim:public-world-support-needs-available-person-and-resources",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
@@ -257754,6 +258547,7 @@
         "claim:practical-food-grain-storage",
         "claim:practical-net-dry",
         "claim:r201-onion-2",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
@@ -257796,6 +258590,7 @@
         "claim:population-material-clay-drying",
         "claim:population-physics-evaporation-below-boiling",
         "claim:population-physics-evaporation-humidity",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
@@ -257851,6 +258646,7 @@
         "claim:clay-firing-structural-transformation",
         "claim:household-clay-key-and-compatible-patch",
         "claim:pine-pitch-woven-basket-coating",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:textile-dye-mordant-fixation"
       ],
@@ -257885,6 +258681,7 @@
         "claim:population-material-iron-rust",
         "claim:population-material-leather-dry",
         "claim:r201-ice-1",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
@@ -259221,6 +260018,7 @@
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:public-world-speech-can-be-plain-without-modern-slang",
         "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r1",
@@ -259261,6 +260059,7 @@
         "wk:npc_daily_life:neutral-household-context",
         "wk:npc_daily_life:reconstructed-local-religious-observance",
         "wk:npc_daily_life:resource-occupation-needs-setting",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_law_economy:debt-needs-parties-and-basis",
         "wk:social_law_economy:reconstructed-political-communication-records",
         "wk:social_law_economy:reconstructed-security-obligation-boundaries"
@@ -261567,6 +262366,7 @@
         "claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work",
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
         "claim:population-rod-input",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "wk:biology_physiology:fauna-domestic-dog",
         "wk:craft_technology:macro-b19-flexible-basket-stock-and-clay-selection",
@@ -261662,6 +262462,7 @@
       ],
       "floor": [
         "claim:construction-construction-pottery-products",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
@@ -262392,6 +263193,7 @@
         "wk:physics_material_science:textile-conditioning-matters",
         "wk:physics_material_science:wood-anisotropy-moisture",
         "wk:social_behavior:foundations-ms-39-social-norm",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_behavior:reconstructed-recreation-oral-culture",
         "wk:social_law_economy:accounting-amount",
         "wk:social_law_economy:candidate-v7-museum-learning-context",
@@ -262912,6 +263714,7 @@
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
         "claim:practical-food-milk",
         "claim:practical-food-preserve",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:residual-nature-snow-grain-compaction",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "claim:streak01-lime-weather",
@@ -263366,6 +264169,7 @@
         "claim:foundations-life-34-lymphoid-system",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:place-thermal-ovin-can-relate-a-furnace-to-sheaves-held-on-grates",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:residual-v1-name-only-owner-labels-have-disputed-function",
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
@@ -264546,6 +265350,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
         "claim:r201-compost-2",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:streak01-lime-curing-limits",
@@ -264770,6 +265575,7 @@
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
         "claim:population-storage-role",
         "claim:practical-boat-load",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
@@ -265713,6 +266519,7 @@
         "claim:ordinary-life-master-has-work-responsibility",
         "claim:ordinary-life-smith-anvil-hammer-tongs",
         "claim:population-physics-static-friction",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "wk:biology_physiology:domestic-fowl-gentle-examination"
       ],
@@ -266700,6 +267507,7 @@
         "claim:medieval-novgorod-food-base-attests-domestic-animals-and-crops",
         "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
         "claim:seasonal-plant-development-depends-on-photoperiod",
@@ -267386,6 +268194,7 @@
         "wk:social_behavior:foundations-ms-36-socialization",
         "wk:social_behavior:foundations-ms-39-social-norm",
         "wk:social_behavior:foundations-ms-40-social-prescription",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_behavior:reconstructed-social-variation",
         "wk:social_behavior:research-pooled-work-social-loafing",
         "wk:social_law_economy:accounting-or-commodity-entry",
@@ -267413,7 +268222,8 @@
         "wk:social_law_economy:urban-textual-context"
       ],
       "inability": [
-        "claim:mb14-practical-ewe-lamb-postbirth-observation"
+        "claim:mb14-practical-ewe-lamb-postbirth-observation",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "inactivates": [
         "claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination"
@@ -267859,6 +268669,7 @@
       ],
       "inferring": [
         "claim:macro-gap-established-local-observance-can-change-availability",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "wk:biology_physiology:residual-postpartum-maternal-recovery"
       ],
       "infertile": [
@@ -268314,6 +269125,9 @@
         "claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech",
         "claim:sound-background-noise-masks-speech"
       ],
+      "intelligible": [
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
+      ],
       "intended": [
         "claim:macro-b20-steam-softened-wood-needs-restraint-and-controlled-drying-to-retain-a-bend"
       ],
@@ -268422,7 +269236,13 @@
         "wk:architecture_settlement:reconstructed-dwelling-interior-context"
       ],
       "interlaced": [
-        "claim:ordinary-life-weaver-needs-yarn-and-loom-space"
+        "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
+      ],
+      "interlacing": [
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "interlock": [
         "claim:static-wool-moisture-heat-mechanical-action-can-felt"
@@ -268534,6 +269354,7 @@
         "claim:practical-textile-spin",
         "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:residual-law-stepchildren-paternal-inheritance",
         "claim:residual-law-zakup-illegal-sale",
@@ -268549,6 +269370,7 @@
         "wk:environment:urban-bird-period-specific",
         "wk:physics_material_science:fibre-twisting",
         "wk:physics_material_science:natural-fibre-water-response",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:psychology_behavior:foundations-ms-07-auditory-sequence",
         "wk:social_law_economy:acquisition-chain-inquiry",
         "wk:social_law_economy:reconstructed-possession-and-return-inquiry",
@@ -269151,6 +269973,9 @@
         "claim:r201-leaves-2",
         "claim:r201-onion-1",
         "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
@@ -269527,6 +270352,7 @@
         "claim:probable-travel-chalice-communion",
         "claim:public-world-support-needs-available-person-and-resources",
         "claim:r201-compost-2",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
@@ -269807,6 +270633,7 @@
         "wk:craft_technology:bark-assembly",
         "wk:craft_technology:vessel-joinery",
         "wk:material_culture:wooden-peg",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:physics_material_science:static-forge-welding-interface"
       ],
       "joins": [
@@ -270541,6 +271368,9 @@
         "wk:material_culture:lead",
         "wk:material_culture:red-lead-pigment"
       ],
+      "leader": [
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
+      ],
       "leads": [
         "claim:fauna-mallard-brood",
         "claim:population-joining-metal-cold-work",
@@ -270731,6 +271561,7 @@
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:rp-caretaker-principal-goods"
@@ -270968,7 +271799,9 @@
         "wk:social_behavior:ordinary-social-lifeways"
       ],
       "lift": [
-        "claim:residual-nature-snow-wind-drift-visibility"
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "lifter": [
         "claim:fuel-iron-pan-lifter-use",
@@ -271049,10 +271882,13 @@
         "claim:foundations-physical-b2-bnh-03-horn-keratin-filament-structure",
         "claim:occupation-wood-plane",
         "claim:population-material-clay-plasticity",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
         "wk:material_culture:plane-like-tool",
         "wk:material_culture:tunic-shirt",
-        "wk:physics_material_science:horn-keratin-filament-structure"
+        "wk:physics_material_science:horn-keratin-filament-structure",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "likelihood": [
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
@@ -271463,6 +272299,8 @@
         "claim:population-physics-sliding-friction",
         "claim:population-physics-static-friction",
         "claim:population-wood-float",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
@@ -271645,6 +272483,7 @@
         "claim:final-practical-wet-wooden-hull-or-boat-seam-needs-local-inspection-before-repair-or-travel",
         "claim:household-roof-local-condition-guides-repair",
         "claim:mb14-practical-sowing-follows-local-workable-soil",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes"
       ],
       "locate": [
@@ -272427,7 +273266,11 @@
         "claim:residual-law-zakup-loss-context"
       ],
       "mat": [
-        "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods"
+        "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "matched": [
         "claim:foundations-ms3-01-initial-attention"
@@ -272535,6 +273378,7 @@
         "claim:probable-travel-chalice-communion",
         "claim:r201-leaves-2",
         "claim:r201-porridge-1",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
@@ -272652,6 +273496,7 @@
         "wk:physics_material_science:conductor-insulator-charge-mobility",
         "wk:physics_material_science:horn-keratin-filament-structure",
         "wk:physics_material_science:material-thermal-insulation-porosity",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:physics_material_science:sound-absorption-soft-material",
         "wk:physics_material_science:sound-material-medium",
         "wk:physics_material_science:static-bedding-material-condition",
@@ -272852,7 +273697,8 @@
         "claim:river-landing-category"
       ],
       "meaningful": [
-        "claim:healer-care-coordination-and-uncertainty"
+        "claim:healer-care-coordination-and-uncertainty",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
       ],
       "means": [
         "claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally",
@@ -274323,6 +275169,7 @@
         "claim:foundations-ms2-03-distrust-cooperation",
         "claim:foundations-ms3-08-mutual-cooperation",
         "claim:foundations-ms3-09-mutual-defection",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:static-yarn-twist-can-increase-fibre-cohesion"
       ],
@@ -274666,6 +275513,7 @@
         "claim:public-world-foot-and-mounted-service-have-different-needs",
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
         "claim:r201-onion-1",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
@@ -275238,6 +276086,9 @@
         "claim:probable-travel-chalice-communion",
         "claim:public-world-armed-movement-consumes-food-fuel-attention",
         "claim:r201-lye-2",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
@@ -275474,6 +276325,9 @@
         "wk:biology_physiology:candidate-v6-foodborne-observations",
         "wk:biology_physiology:macro-b1819-cattle-observation",
         "wk:biology_physiology:static-head-injury-warning-context-b06"
+      ],
+      "nonverbal": [
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "nonwinter": [
         "claim:transport-sledge-summer-cargo"
@@ -276077,6 +276931,8 @@
         "claim:r301-honeydew-ants",
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -277866,6 +278722,7 @@
         "wk:physics_material_science:mechanical-energy-dissipation",
         "wk:physics_material_science:metal-properties-depend-on-state",
         "wk:physics_material_science:moisture-vaporization-heat-demand",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
         "wk:physics_material_science:research-carbon-monoxide-perceptibility",
         "wk:physics_material_science:research-floating-body-small-angle-stability",
@@ -278238,6 +279095,7 @@
         "claim:public-world-support-needs-available-person-and-resources",
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
@@ -279264,6 +280122,12 @@
         "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:r401-wood-drying-can-loosen-wheel-fit",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -280079,6 +280943,7 @@
         "claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained",
         "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
         "claim:r201-lye-2",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "wk:physics_material_science:sound-frequency-pitch"
       ],
       "otrok": [
@@ -280446,6 +281311,9 @@
       "overlap": [
         "claim:civic-defence-log-length-joint",
         "claim:household-roof-layers-shed-water"
+      ],
+      "overlapped": [
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
       ],
       "overlapping": [
         "claim:wound-healing-time-dependent",
@@ -280849,7 +281717,8 @@
         "claim:foundations-ms3-03-goal-frustration",
         "claim:foundations-ms3-06-apology-reinvestment",
         "claim:foundations-ms3-10-ultimatum-expectations",
-        "claim:human-life-performance-needs-willing-participants-suitable-occasion"
+        "claim:human-life-performance-needs-willing-participants-suitable-occasion",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling"
       ],
       "participate": [
         "claim:foundations-chm-09-electrolyte-ions-in-water",
@@ -281539,6 +282408,7 @@
         "claim:foundations-ms-05-tactile-components",
         "claim:foundations-ms-06-visual-selection",
         "claim:foundations-ms-07-auditory-sequence",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
@@ -281689,6 +282559,7 @@
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:public-world-health-disclosure-is-contextual",
         "claim:public-world-support-needs-available-person-and-resources",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "claim:residual-law-detained-thief-and-princely-court",
@@ -283126,13 +283997,15 @@
         "claim:vegetable-tanning-prepared-hide",
         "wk:biology_physiology:skin-emollient-and-occlusive-film",
         "wk:environment:static-weather-b06-cloud-rain-observation",
-        "wk:physics_material_science:fibre-twisting"
+        "wk:physics_material_science:fibre-twisting",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "preparations": [
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title"
       ],
       "prepare": [
         "claim:foundations-ms-03-attention-expectation",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "wk:psychology_behavior:foundations-ms-03-attention-expectation"
       ],
       "prepared": [
@@ -283144,10 +284017,13 @@
         "claim:population-hide-leather-distinction",
         "claim:population-shoe-input",
         "claim:practical-textile-spin",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:vegetable-tanning-prepared-hide"
       ],
       "preparing": [
-        "claim:population-fishing-workspace"
+        "claim:population-fishing-workspace",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "preschool": [
         "claim:candidate-v3-child-development-has-recognizable-periods"
@@ -284724,6 +285600,7 @@
         "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:npc_daily_life:reconstructed-compound-upkeep-context",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:research-smoke-transport-dispersion",
         "wk:physics_material_science:static-fragile-wet-record-care-b10",
@@ -284735,6 +285612,7 @@
         "wk:physics_material_science:wick-fed-flame",
         "wk:psychology_behavior:research-memory-postevent-misinformation",
         "wk:psychology_behavior:research-memory-source-misattribution",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_behavior:research-pooled-work-social-loafing",
         "wk:social_law_economy:trade-economy-batch-03-qualitative-exchange"
       ],
@@ -285308,6 +286186,7 @@
       ],
       "received": [
         "claim:candidate-v7-npl-1220-tverdislav-ivanko-posadnichestvo",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:research-memory-postevent-misinformation"
       ],
       "receives": [
@@ -285363,6 +286242,7 @@
         "claim:population-fish-dried-form",
         "claim:population-processes-malt-context",
         "claim:r201-lye-1",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:streak01-lime-curing-limits",
@@ -285729,16 +286609,21 @@
       ],
       "reed": [
         "claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
         "wk:environment:common-reed-rhizome-habitat",
-        "wk:environment:reality-batch-01-wetland-reed-cutting"
+        "wk:environment:reality-batch-01-wetland-reed-cutting",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "reeds": [
         "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
-        "claim:novgorod-wetland-pollen-context"
+        "claim:novgorod-wetland-pollen-context",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
       ],
       "reference": [
         "claim:foundations-ms-38-reference-group",
@@ -286061,6 +286946,7 @@
         "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
         "wk:physics_material_science:gas-temperature-pressure-volume",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
         "wk:physics_material_science:research-carbon-monoxide-combustion-indoor-air",
         "wk:physics_material_science:research-fire-plume-upper-layer-transport",
         "wk:physics_material_science:research-floating-body-small-angle-stability",
@@ -287116,6 +288002,7 @@
         "claim:pottery-handmade-local-clay",
         "claim:practical-leather-cut",
         "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
@@ -287450,6 +288337,7 @@
         "claim:public-world-health-disclosure-is-contextual",
         "claim:public-world-publicity-raises-reputation-risk",
         "claim:r201-compost-2",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:research-flood-can-leave-high-water-mark-types",
         "claim:static-abrupt-equine-diet-change-can-increase-colic-risk",
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
@@ -287469,6 +288357,9 @@
       ],
       "risks": [
         "claim:fauna-perch-group-behavior"
+      ],
+      "risky": [
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "rite": [
         "claim:burial-hollowed-log-container",
@@ -289053,6 +289944,7 @@
         "claim:foundations-ms-12-practice-correction",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-outdoors-activity-sensory-pulses",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "wk:biology_physiology:foundation-sensory-receptor",
@@ -289161,6 +290053,7 @@
         "claim:fibre-hackle-removes-shive",
         "claim:food-practices-threshing-chaff",
         "claim:oil-fat-vegetable-leather-flexibility",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky",
         "claim:river-landing-market-approaches",
         "claim:sound-reflections-arrive-after-direct-path",
@@ -289429,6 +290322,8 @@
         "claim:human-life-shared-role-can-be-negotiated",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
         "claim:military-world-small-group-coordination-needs-established-roles",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
@@ -289436,6 +290331,7 @@
         "wk:architecture_settlement:reconstructed-dwelling-interior-context",
         "wk:biology:candidate-plant-lookalike-differentiation",
         "wk:npc_daily_life:reconstructed-compound-upkeep-context",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_behavior:reconstructed-recreation-oral-culture",
         "wk:social_law_economy:reconstructed-market-weighing-check",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
@@ -289506,7 +290402,10 @@
         "wk:material_culture:sheepskin"
       ],
       "sheet": [
-        "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition"
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "shelf": [
         "claim:food-preservation-qualitative",
@@ -289843,6 +290742,8 @@
         "claim:foundations-ms-03-attention-expectation",
         "claim:military-world-message-needs-recipient-and-confirmation",
         "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "wk:psychology_behavior:foundations-ms-03-attention-expectation"
       ],
       "signals": [
@@ -289851,8 +290752,10 @@
         "claim:fauna-animal-signals",
         "claim:fauna-mammals-domestic-dog-multimodal-communication",
         "claim:foundations-life-19-sensory-receptor",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "wk:biology_physiology:fauna-animal-communication",
-        "wk:biology_physiology:foundation-sensory-receptor"
+        "wk:biology_physiology:foundation-sensory-receptor",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination"
       ],
       "signed": [
         "wk:social_law_economy:podvoisky-signed-letter"
@@ -289919,6 +290822,7 @@
         "claim:construction-auxiliary-construction-work",
         "claim:force-contact-geometry",
         "claim:household-overshoe",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:residual-government-law-v2-bishop-and-archbishop-titles-not-simple-date-marker",
         "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
         "claim:residual-tree-betula-pendula-simple-leaves",
@@ -290085,6 +290989,7 @@
         "claim:occupation-smith-role",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:population-net-work",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:religion-olenin-church-people",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:resource-occupation-needs-setting",
@@ -290873,7 +291778,8 @@
         "claim:human-life-household-tasks-can-offer-learning"
       ],
       "sorted": [
-        "claim:practical-net-repair"
+        "claim:practical-net-repair",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work"
       ],
       "sorting": [
         "claim:final-static-b01-willow-preparation",
@@ -291258,6 +292164,7 @@
         "claim:clay-firing-structural-transformation",
         "claim:continued-sweating-can-cause-body-water-loss",
         "claim:food-practices-rye-flour-bread",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
         "claim:river-landing-surfacing-allocation",
@@ -291657,6 +292564,7 @@
       "start": [
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt",
         "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited"
       ],
       "starting": [
@@ -291865,6 +292773,7 @@
         "claim:ordinary-life-status-does-not-fix-wealth",
         "claim:place-outdoors-means-upkeep-and-environment",
         "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:religion-olenin-church-people",
         "claim:residual-law-daughters-and-status-inheritance",
         "claim:residual-law-status-and-witness-exceptions",
@@ -291951,6 +292860,7 @@
         "claim:fibre-flax-breaker-shive",
         "claim:final-static-b01-living-birch-limits",
         "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
         "wk:craft_technology:flax-stem-breaking",
         "wk:craft_technology:hemp-stem-processing",
@@ -291966,8 +292876,11 @@
         "claim:place-outdoors-clearing-and-trace-renewal",
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
-        "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation"
+        "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
+        "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing"
       ],
       "step": [
         "claim:bathing-washing-water"
@@ -292205,6 +293118,7 @@
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
         "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context"
@@ -292745,6 +293659,8 @@
         "claim:occupation-smith-heat-treatment",
         "claim:occupation-wood-plane",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
         "claim:stone-whetstone-edge-maintenance",
@@ -292849,6 +293765,7 @@
         "claim:pottery-handmade-temper",
         "claim:practical-food-cooking",
         "claim:practical-textile-weave",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
         "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
         "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
@@ -293477,6 +294394,7 @@
         "claim:foundations-phys-08-momentum-closed-system",
         "claim:localized-improvement-context",
         "claim:pine-pitch-woven-basket-coating",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
         "claim:residual-v1-name-only-owner-labels-have-disputed-function",
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
@@ -293537,6 +294455,7 @@
         "claim:fauna-animal-signals",
         "claim:foundations-life-24-skin-sensation",
         "claim:foundations-ms-05-tactile-components",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "wk:biology_physiology:fauna-animal-communication",
         "wk:biology_physiology:foundation-skin-sensation",
         "wk:psychology_behavior:foundations-ms-05-tactile-components"
@@ -293682,6 +294601,7 @@
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
         "claim:public-world-capacity-can-vary-day-to-day",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r2",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:social-hired-work-relates-business-record",
@@ -295541,6 +296461,7 @@
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:probable-travel-chalice-communion",
         "claim:r201-lye-1",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
@@ -296364,6 +297285,9 @@
         "claim:public-world-health-disclosure-is-contextual",
         "claim:public-world-help-access-can-be-limited",
         "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
@@ -296639,6 +297563,7 @@
         "claim:population-iron-hook",
         "claim:population-processes-weaving-device",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
         "claim:regional-agriculture-practice",
@@ -297691,6 +298616,9 @@
         "claim:healer-belief-and-bodily-attention",
         "claim:sound-background-noise-masks-speech"
       ],
+      "understood": [
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation"
+      ],
       "understory": [
         "claim:fauna-mammals-wild-boar-grubbing-soil-disturbance"
       ],
@@ -298165,7 +299093,8 @@
         "wk:biology_physiology:research-nettle-food-contact-properties"
       ],
       "usability": [
-        "claim:foundations-mat-02-wood-drying-crack-strength"
+        "claim:foundations-mat-02-wood-drying-crack-strength",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
       ],
       "usable": [
         "claim:environment-p1-waterlogged-layer",
@@ -298236,6 +299165,7 @@
         "claim:practical-food-preserve",
         "claim:practical-net-repair",
         "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
         "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3",
         "claim:residual-law-unauthorized-horse-use",
@@ -298791,6 +299721,7 @@
         "claim:fauna-animal-signals",
         "claim:foundations-ms-06-visual-selection",
         "claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
@@ -299682,7 +300613,8 @@
       ],
       "weave": [
         "claim:clothing-linen-plain-or-twill",
-        "claim:population-processes-weaving-textile"
+        "claim:population-processes-weaving-textile",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat"
       ],
       "weaver": [
         "claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment"
@@ -300323,7 +301255,8 @@
       ],
       "willingness": [
         "claim:human-life-category-does-not-determine-means-ties-skill",
-        "claim:public-world-support-needs-available-person-and-resources"
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
       ],
       "willow": [
         "claim:final-static-b01-willow-preparation",
@@ -300614,6 +301547,7 @@
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
         "claim:r301-new-growth",
         "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:religion-olenin-church-people",
@@ -300817,6 +301751,7 @@
         "claim:r201-roots-1",
         "claim:r301-nondiagnostic",
         "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
@@ -301171,6 +302106,7 @@
         "claim:public-world-armed-loss-reaches-household",
         "claim:public-world-help-access-can-be-limited",
         "claim:public-world-illness-can-reallocate-ordinary-work",
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
@@ -301226,6 +302162,7 @@
         "wk:physics_material_science:force-contact-geometry",
         "wk:physics_material_science:macro-b19-waterpower-and-pack-load-limits",
         "wk:physics_material_science:osseous-material-shaping-operations",
+        "wk:social_behavior:r6-nonverbal-shared-work-coordination",
         "wk:social_behavior:research-pooled-work-social-loafing",
         "wk:social_law_economy:hired-work-reference"
       ],

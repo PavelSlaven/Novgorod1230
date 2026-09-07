@@ -299,6 +299,8 @@
     }
   ],
   "source_inventory": [
+    {"id":"final-static-r6-nonverbal-work-gap-repair-v1","source_path":"final-static-r6-nonverbal-work-gap-repair-v1.json","domains":["social_behavior"],"location_applicability":"Universal bounded coordination relations for already established shared risky work only; no participants, task, load, authority, consent, sensory condition, handling or outcome.","applicability":{"resource":"actual participants and means only","material":"no material presence implied","process":"qualitative shared-signal and perception relation","npc":"context only; no decision, consent or cooperation inferred"},"coverage":"3 independently approved atomic nonverbal-work premises; not a signal protocol or social-state assertion."},
+    {"id":"final-static-r6-reed-mat-gap-repair-v1","source_path":"final-static-r6-reed-mat-gap-repair-v1.json","domains":["physics_material_science"],"location_applicability":"Universal bounded material-work relations for already established cut reed stems only; no reed source, presence, access, quantity, tool, skill, binding material, mat, floor use or outcome.","applicability":{"resource":"actual established stems and means only","material":"observed reed stems only","process":"qualitative preparation, interlacing and condition relation","npc":"context only; no decision inferred"},"coverage":"3 independently approved atomic material-work premises; not a recipe or state assertion."},
     {"id":"final-static-streak-r4-01-gap-repair-v1","source_path":"final-static-streak-r4-01-gap-repair-v1.json","domains":["craft_technology","environment","biology_physiology"],"location_applicability":"Modern bounded material, root-zone, food-process and condition-reading relations only; no historical practice, present object, food, plant, diagnosis, safety verdict, repair, or outcome.","applicability":{"resource":"actual means only","material":"observed wheel, soil, cream, or egg only","process":"qualitative inspection or handling relation","npc":"context only"},"coverage":"8 independently verified claims across four R4.01 gaps; bounded, not exhaustive."},
     {"id":"final-static-streak-r3-01-gap-repair-v1","source_path":"final-static-streak-r3-01-gap-repair-v1.json","domains":["environment"],"location_applicability":"Modern bounded field observations only; no local presence, species, diagnosis, treatment, or outcome.","applicability":{"resource":"actual observed plant and conditions only","material":"observed plant surface only","process":"inspection context only","npc":"no decision inferred"},"coverage":"3 candidate clues; pending independent verification."},
     {"id":"final-static-streak-r2-01-gap-repair-v1","source_path":"final-static-streak-r2-01-gap-repair-v1.json","domains":["environment","biology_physiology","architecture_settlement","chemistry_process","craft_technology"],"location_applicability":"Modern bounded relations only.","applicability":{"resource":"actual means only","material":"observed material only","process":"qualitative relation","npc":"context only"},"coverage":"14 candidate claims; pending verification."},
@@ -1590,6 +1592,46 @@
     {"id":"gameplay-cordage-reworking-v1","source_path":"gameplay-cordage-reworking-v1.json","domains":["physics_material_science"],"location_applicability":"An already established laid fibre cord and intended use; no material identity, access, ownership, tool, strength, fishing gear or outcome.","applicability":{"resource":"actual cord and working means only","material":"laid fibre cord only when established","process":"conditional unlaying and reworking","npc":"work context only, not permission, skill or result"},"coverage":"3 independently approved bounded premises; no guaranteed line, strength, tackle or success."}
   ],
   "families": [
+    {
+      "id": "final-static-r6-nonverbal-shared-work-coordination",
+      "domain": "social_behavior",
+      "subdomain": "shared_work_communication_conditions",
+      "family": "Bounded nonverbal coordination conditions for already established shared risky work",
+      "location_applicability": "Universal coordination context only; no participants, task, load, authority, consent, sensory condition, handling or outcome.",
+      "applicability": {
+        "resource": "actual participants and means only",
+        "material": "no material presence implied",
+        "process": "qualitative shared-signal and perception relation",
+        "npc": "context only; no decision, consent or cooperation inferred"
+      },
+      "coverage": "3 independently approved bounded premises; no signal protocol, social status or state transition.",
+      "evidence_boundary": "Editorial reconstruction is limited to coordination conditions; code retains authority over perception, consent, actor capacity, timing, handling and commit.",
+      "claim_refs": [
+        "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+        "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+        "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference"
+      ]
+    },
+    {
+      "id": "final-static-r6-reed-mat-material-work",
+      "domain": "physics_material_science",
+      "subdomain": "flexible_stem_preparation_and_interlacing",
+      "family": "Bounded preparation, interlacing and condition relations of already established reed stems",
+      "location_applicability": "Universal material-work context only; no reed source, presence, access, quantity, tool, skill, binding material, mat, floor use or outcome.",
+      "applicability": {
+        "resource": "actual established stems and means only",
+        "material": "observed reed stems only",
+        "process": "qualitative preparation, interlacing and drying relation",
+        "npc": "context only; no decision inferred"
+      },
+      "coverage": "3 independently approved bounded premises; no recipe, state transition or usability guarantee.",
+      "evidence_boundary": "Editorial reconstruction is limited to material-work relations; code retains authority over access, quantity, tools, skill, time, result and commit.",
+      "claim_refs": [
+        "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+        "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+        "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying"
+      ]
+    },
     {"id":"gameplay-cordage-reworking-v1","domain":"physics_material_science","subdomain":"cordage_reworking","family":"Conditional unlaying, reworking and intended-use suitability of existing fibre cordage","location_applicability":"An already established laid fibre cord and intended use; no material identity, access, ownership, tool, strength, fishing gear or outcome.","applicability":{"resource":"actual cord and working means only","material":"laid fibre cord only when established","process":"conditional unlaying and reworking","npc":"work context only, not permission, skill or result"},"coverage":"3 independently approved bounded premises; no guaranteed line, strength, tackle or success.","evidence_boundary":"Editorial reconstruction plus approved modern fibre-rope condition evidence; code retains authority, mass, load and outcome.","claim_refs":["claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit","claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength","claim:reworked-cord-is-not-automatically-serviceable-fishing-line"]},
     {"id":"final-static-streak-r3-01-sap-feeding-clues","domain":"environment","subdomain":"bounded_field_signs","family":"Sap-feeding insect observation and diagnostic limits","location_applicability":"Modern conditional field context only; no species, local presence, treatment, or outcome.","applicability":{"resource":"actual observed plant only","material":"observed leaves, stems, and residue only","process":"inspection only","npc":"no decision inferred"},"coverage":"Three bounded candidate premises; not exhaustive.","claim_refs":["claim:r301-new-growth","claim:r301-honeydew-ants","claim:r301-nondiagnostic"]},
     {"id":"final-static-streak-r4-01-wheel-condition","domain":"craft_technology","subdomain":"material_condition_and_maintenance","family":"Wooden wheel fit and condition-reading limits","location_applicability":"An already established wooden wheel with an actual rim or tire and observed condition; no wheel design, cause, load, repair, or outcome.","applicability":{"resource":"existing wheel and inspection means only","material":"observed wood, rim, tire, and joints only","process":"qualitative inspection and restrained use context","npc":"work-planning context only"},"coverage":"Two independently verified bounded premises; not exhaustive.","claim_refs":["claim:r401-wood-drying-can-loosen-wheel-fit","claim:r401-wheel-condition-needs-cause-distinction"]},

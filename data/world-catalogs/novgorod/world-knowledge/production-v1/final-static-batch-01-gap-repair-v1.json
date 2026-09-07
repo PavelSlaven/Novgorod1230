@@ -1,0 +1,765 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:final-static-b01-birch",
+      "title": "Iowa State University Extension: Shedding, Peeling and Splitting Bark on Shade Trees",
+      "authors": [],
+      "publication": "Iowa State University Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://yardandgarden.extension.iastate.edu/how-to/shedding-peeling-and-splitting-bark-shade-trees",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:final-static-b01-willow",
+      "title": "Willow: A New Old Crop",
+      "authors": [],
+      "publication": "Cornell Small Farms",
+      "source_kind": "official_documentation",
+      "citation": "https://smallfarms.cornell.edu/2013/06/willow-a-new-old-crop/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:final-static-b01-textile",
+      "title": "Textiles and Costumes",
+      "authors": [],
+      "publication": "Canadian Conservation Institute",
+      "source_kind": "official_documentation",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/preventive-conservation/guidelines-collections/textiles-costumes.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:final-static-b01-moisture",
+      "title": "Moisture Control Guidance",
+      "authors": [],
+      "publication": "US Environmental Protection Agency",
+      "source_kind": "official_documentation",
+      "citation": "https://www.epa.gov/iaq/moisture",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:final-static-b01-dryness",
+      "title": "Designing for Dryness",
+      "authors": [],
+      "publication": "US Forest Service",
+      "source_kind": "official_documentation",
+      "citation": "https://www.srs.fs.usda.gov/pubs/gtr/gtr_so001.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:final-static-b01-birch",
+      "source_ref": "source:final-static-b01-birch",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern scientific or extension source supports bounded general relation only; no Novgorod-1230 practice or current-world fact.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:final-static-b01-willow",
+      "source_ref": "source:final-static-b01-willow",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern scientific or extension source supports bounded general relation only; no Novgorod-1230 practice or current-world fact.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:final-static-b01-textile",
+      "source_ref": "source:final-static-b01-textile",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern scientific or extension source supports bounded general relation only; no Novgorod-1230 practice or current-world fact.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:final-static-b01-moisture",
+      "source_ref": "source:final-static-b01-moisture",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern scientific or extension source supports bounded general relation only; no Novgorod-1230 practice or current-world fact.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:final-static-b01-dryness",
+      "source_ref": "source:final-static-b01-dryness",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern scientific or extension source supports bounded general relation only; no Novgorod-1230 practice or current-world fact.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:final-static-b01-environment",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:final-static-b01-craft_technology",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:final-static-b01-material_culture",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:final-static-b01-architecture_settlement",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:final-static-b01-biology_physiology",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-living-birch",
+      "domain": "environment",
+      "subject_ref": "wk:environment:final-static-b01-environment",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A living tree's bark protects underlying conducting tissues; removing bark can injure those tissues; naturally loose outer bark is not the same as a fresh inner-bark wound."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-birch"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-living-birch-limits",
+      "domain": "environment",
+      "subject_ref": "wk:environment:final-static-b01-environment",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Avoiding wound extension and leaving bark around the stem reduces avoidable additional harm; observation after damage does not establish recovery."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-birch"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-willow-selection",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:final-static-b01-craft_technology",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A willow shoot's straightness, branching, thickness and flexible response can be observed on that shoot; these cues do not prove species or defect-free strength."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-willow"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-willow-preparation",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:final-static-b01-craft_technology",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Fresh willow can shrink as it dries; dried willow may need sorting and soaking to regain flexibility; thicker rods can need more preparation."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-willow"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-willow-limits",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:final-static-b01-craft_technology",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A trial bend and observed cracks, dryness or branching can guide cautious handling but do not guarantee a usable woven result."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-willow"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-textile-cues",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:final-static-b01-material_culture",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Linen, wool and silk have differing observable handling tendencies, but smoothness or lustre alone does not identify silk."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-textile"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-textile-uncertainty",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:final-static-b01-material_culture",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Without laboratory examination, an observed textile can be assigned only a probable fibre group; ageing, soil, finish and mixtures limit certainty."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-textile"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-textile-wet-limit",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:final-static-b01-material_culture",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Silk can weaken when wet and wool can felt; such material tendencies do not prove fibre identity, origin, price or status of an observed cloth."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-textile"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-wet-ground-goal",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:final-static-b01-architecture_settlement",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Directing surface water away from a structure and limiting persistent wood-to-wet-ground contact are causal moisture-control goals, not a prescribed foundation design."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-moisture"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-wet-ground-observation",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:final-static-b01-architecture_settlement",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Standing water, runoff paths and soft or moving ground are observable reasons to reassess local support and drainage conditions."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-moisture"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:final-static-b01-wet-ground-wood-limit",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:final-static-b01-architecture_settlement",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Wood kept near persistent ground moisture has greater decay risk; a general moisture principle does not establish safe depth, bearing capacity or longevity."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:final-static-b01-dryness"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:final-static-b01-environment",
+      "locale": "ru",
+      "labels": [
+        "environment"
+      ],
+      "short_definition": "Ограниченный source-backed контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:final-static-b01-environment",
+      "locale": "en",
+      "labels": [
+        "environment"
+      ],
+      "short_definition": "Bounded source-backed context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:final-static-b01-craft_technology",
+      "locale": "ru",
+      "labels": [
+        "craft_technology"
+      ],
+      "short_definition": "Ограниченный source-backed контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:final-static-b01-craft_technology",
+      "locale": "en",
+      "labels": [
+        "craft_technology"
+      ],
+      "short_definition": "Bounded source-backed context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:final-static-b01-material_culture",
+      "locale": "ru",
+      "labels": [
+        "material_culture"
+      ],
+      "short_definition": "Ограниченный source-backed контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:final-static-b01-material_culture",
+      "locale": "en",
+      "labels": [
+        "material_culture"
+      ],
+      "short_definition": "Bounded source-backed context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:final-static-b01-architecture_settlement",
+      "locale": "ru",
+      "labels": [
+        "architecture_settlement"
+      ],
+      "short_definition": "Ограниченный source-backed контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:final-static-b01-architecture_settlement",
+      "locale": "en",
+      "labels": [
+        "architecture_settlement"
+      ],
+      "short_definition": "Bounded source-backed context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:final-static-b01-biology_physiology",
+      "locale": "ru",
+      "labels": [
+        "biology_physiology"
+      ],
+      "short_definition": "Ограниченный source-backed контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:final-static-b01-biology_physiology",
+      "locale": "en",
+      "labels": [
+        "biology_physiology"
+      ],
+      "short_definition": "Bounded source-backed context.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-living-birch",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Живая кора защищает проводящие ткани; снятие коры может их повредить; свободная наружная береста не равна свежей ране.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-living-birch",
+      "locale": "en",
+      "runtime_text": "INFERENCE: A living tree's bark protects underlying conducting tissues; removing bark can injure those tissues; naturally loose outer bark is not the same as a fresh inner-bark wound.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-living-birch-limits",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Не расширять рану и не снимать кору кольцом снижает добавочный вред; наблюдение не доказывает выздоровление.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-living-birch-limits",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Avoiding wound extension and leaving bark around the stem reduces avoidable additional harm; observation after damage does not establish recovery.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-willow-selection",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Прямизну, ветвление, толщину и гибкость ивового прута наблюдают на самом пруте; признаки не доказывают породу или прочность.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-willow-selection",
+      "locale": "en",
+      "runtime_text": "INFERENCE: A willow shoot's straightness, branching, thickness and flexible response can be observed on that shoot; these cues do not prove species or defect-free strength.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-willow-preparation",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Свежая ива усыхает при сушке; сухие прутья могут нуждаться в сортировке и вымачивании; толстым нужна большая подготовка.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-willow-preparation",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Fresh willow can shrink as it dries; dried willow may need sorting and soaking to regain flexibility; thicker rods can need more preparation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-willow-limits",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Пробный изгиб, трещины, сухость и ветвление направляют осторожное обращение, но не гарантируют годное плетение.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-willow-limits",
+      "locale": "en",
+      "runtime_text": "INFERENCE: A trial bend and observed cracks, dryness or branching can guide cautious handling but do not guarantee a usable woven result.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-textile-cues",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Лён, шерсть и шёлк дают разные наблюдаемые признаки, но гладкость или блеск сами не доказывают шёлк.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-textile-cues",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Linen, wool and silk have differing observable handling tendencies, but smoothness or lustre alone does not identify silk.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-textile-uncertainty",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Без лаборатории ткань относят лишь к вероятной группе волокон; старение, загрязнение, отделка и смеси ограничивают уверенность.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-textile-uncertainty",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Without laboratory examination, an observed textile can be assigned only a probable fibre group; ageing, soil, finish and mixtures limit certainty.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-textile-wet-limit",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Шёлк может слабеть мокрым, а шерсть сваливаться; это не доказывает состав, происхождение, цену или статус ткани.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-textile-wet-limit",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Silk can weaken when wet and wool can felt; such material tendencies do not prove fibre identity, origin, price or status of an observed cloth.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-wet-ground-goal",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Отвести поверхностную воду и ограничить постоянный контакт древесины с мокрым грунтом — причинные цели, не обязательная конструкция основания.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-wet-ground-goal",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Directing surface water away from a structure and limiting persistent wood-to-wet-ground contact are causal moisture-control goals, not a prescribed foundation design.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-wet-ground-observation",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Стоячая вода, сток и мягкий либо подвижный грунт — наблюдаемые причины перепроверить опору и водоотвод.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-wet-ground-observation",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Standing water, runoff paths and soft or moving ground are observable reasons to reassess local support and drainage conditions.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-wet-ground-wood-limit",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Древесина у постоянной сырости сильнее рискует гниением; общий принцип не задаёт глубину, несущую способность или долговечность.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:final-static-b01-wet-ground-wood-limit",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Wood kept near persistent ground moisture has greater decay risk; a general moisture principle does not establish safe depth, bearing capacity or longevity.",
+      "search_aliases": []
+    }
+  ]
+}

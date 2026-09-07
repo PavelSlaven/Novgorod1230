@@ -946,3 +946,50 @@ gameplay saturation. Live gameplay campaigns, the Gameplay Gap Auditor and
 saturation testing remain future work. Residual P2 limits are bounded and do
 not block static readiness. The exact final report-containing commit must pass
 CI before merge; this section intentionally does not invent its SHA.
+
+## Final 1,700-claim reconciliation and fresh 3/3 acceptance
+
+The historical 1,579-claim checkpoint was not used as the final stopping
+evidence. Later reality-first and trade/economy-first probes found genuine
+reusable gaps, so contract §0.3 reset the clean streak. The final R4 diagnostic
+then found four remaining practical families: butter churning, damaged egg
+handling, wooden-wheel/tire fit and root-zone watering. Eight bounded premises
+were independently source/domain approved and compiled through the existing
+production path. The resulting factual candidate is
+`003bda998813c7b17f0dbd175e40af09cb3e4181`: **1,700 approved claims, 1,015
+concepts, 641 sources, 1,189 evidence records and 5,430 pinned 1,024-dimensional
+Giga vectors**.
+
+R5 then restarted acceptance from zero. Three independent corpus-blind input
+batches were frozen after that repair. Each contains **75 controlled cases**
+(60 practical/natural/physical and 15 social/institutional) plus **25 fully
+free/adversarial cases**. Separate WK-only reviewers reconstructed all cases
+against the same unchanged factual candidate:
+
+| Batch | Result | Substantial gaps |
+| --- | ---: | ---: |
+| R5-01 | 100/100 covered | 0 |
+| R5-02 | 100/100 covered | 0 |
+| R5-03 | 100/100 covered | 0 |
+
+This fresh **3/3** sequence satisfies the operational static stopping rule.
+The free lane remains outside the controlled domain labels, and the controlled
+domains rotate broadly enough that the procedure is not a fixed twenty-topic
+exam. No known-case replay or live gameplay result is counted in the streak.
+
+The final independent audit package is:
+
+- `pr92-final-grounding-1700.md`: PASS_WITH_P2_LIMITS;
+- `pr92-final-verification-1700.md`: PASS;
+- `pr92-final-completeness-1700.md`: PASS_WITH_P2, P0/P1 = 0 and 14 explicit
+  bounded P2 detail limits;
+- `pr92-final-contract-1700.md`: PASS;
+- `pr92-final-open-world-1700.md`: PASS.
+
+The five stale cartography captions that still called static acceptance
+pending were normalized after the audit without changing claims, refs,
+applicability or runtime data. This closes PR92's static
+acceptance criterion only. Mathematical completeness, current scene state,
+live gameplay saturation and future Gameplay Gap Auditor campaigns remain
+outside this phase. The final report-containing HEAD must still pass the full
+exact-HEAD CI gate before merge.

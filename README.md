@@ -78,11 +78,13 @@ LLM выбирает закрытые варианты либо возвраща
 
 ## Быстрый запуск
 
-Для локальной игры нужны Node.js 22+, Docker и ключ DeepSeek.
+Для локальной игры нужны Node.js 22+, Docker, Python, ключ DeepSeek и
+[подготовленная локальная Giga-модель](docs/setup/WORLD_KNOWLEDGE_GIGA_EMBEDDINGS.md).
 
 ```powershell
 npm ci
 $env:DEEPSEEK_API_KEY = '...'
+npm run world-knowledge:giga-readiness
 npm run play:local
 ```
 

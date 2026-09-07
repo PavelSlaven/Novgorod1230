@@ -51,7 +51,7 @@
       "authors": [],
       "publication": "US Environmental Protection Agency",
       "source_kind": "official_documentation",
-      "citation": "https://www.epa.gov/iaq/moisture",
+      "citation": "https://www.epa.gov/indoor-air-quality-iaq/moisture-control-guidance-building-design-construction-and-maintenance-0",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -66,6 +66,20 @@
       "publication": "US Forest Service",
       "source_kind": "official_documentation",
       "citation": "https://www.srs.fs.usda.gov/pubs/gtr/gtr_so001.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:final-static-b01-textile-identification",
+      "title": "Identification of Natural Fibres",
+      "authors": [],
+      "publication": "Canadian Conservation Institute",
+      "source_kind": "official_documentation",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/conservation-preservation-publications/canadian-conservation-institute-notes/identification-natural-fibres.html",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -122,6 +136,16 @@
         "section": "research note"
       },
       "note": "Modern scientific or extension source supports bounded general relation only; no Novgorod-1230 practice or current-world fact.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:final-static-b01-textile-identification",
+      "source_ref": "source:final-static-b01-textile-identification",
+      "anchor": {
+        "section": "Identification limits"
+      },
+      "note": "CCI describes non-conclusive burn and microscopy identification and complications from mixtures, ageing, soil and finishes; no fibre identity, provenance or value is established.",
       "review_status": "approved"
     }
   ],
@@ -408,7 +432,7 @@
       },
       "hard_exclusion": null,
       "evidence_refs": [
-        "evidence:final-static-b01-textile"
+        "evidence:final-static-b01-textile-identification"
       ],
       "review_status": "approved",
       "conflict_group_ref": null

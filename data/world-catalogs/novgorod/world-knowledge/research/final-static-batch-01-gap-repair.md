@@ -76,7 +76,7 @@
 - Базовая цель основания — не допускать дождевую и грунтовую воду к постройке:
   окружающий уклон и поверхностный водоотвод направляют воду от основания;
   дренаж и capillary break уменьшают подсос влаги в чувствительные к влаге
-  материалы, включая древесину. [US EPA, *Moisture Control Guidance*](https://www.epa.gov/iaq/moisture)
+  материалы, включая древесину. [US EPA, *Moisture Control Guidance*](https://www.epa.gov/indoor-air-quality-iaq/moisture-control-guidance-building-design-construction-and-maintenance-0)
 - Древесина у земли и постоянная сырость — риск гниения: Forest Service
   рекомендует держать нижние деревянные элементы выше грунта и подчёркивает
   важность отвода воды от строения. [US Forest Service, *Designing for Dryness*](https://www.srs.fs.usda.gov/pubs/gtr/gtr_so001.pdf)

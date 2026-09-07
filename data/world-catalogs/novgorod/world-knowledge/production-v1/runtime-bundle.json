@@ -7474,6 +7474,34 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r301-tamu",
+      "title": "Diagnosing Insect and Mite Damage",
+      "authors": [],
+      "publication": "Texas A&M AgriLife Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://landscapeipm.tamu.edu/ipm-for-ornamentals/diagnosing-insect-and-mite-damage-ornamentals/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r301-utah",
+      "title": "Aphid Pests on Vegetables",
+      "authors": [],
+      "publication": "Utah State University Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.usu.edu/planthealth/research/aphid-pests-on-vegetables",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:reality-batch-01-editorial",
       "title": "Reality batch 01 practical reconstruction",
       "authors": [
@@ -19710,6 +19738,26 @@
         "section": "research note"
       },
       "note": "Baruch chemistry lab describes emulsion, separation and process conditions; no recipe or usable soap is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r301-tamu",
+      "source_ref": "source:r301-tamu",
+      "anchor": {
+        "section": "Diagnostic limits"
+      },
+      "note": "Plant deformity has multiple possible causes and needs inspection; no diagnosis or treatment.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r301-utah",
+      "source_ref": "source:r301-utah",
+      "anchor": {
+        "section": "Aphid signs"
+      },
+      "note": "Aphid sap feeding, new growth, honeydew and ants; no species or local presence.",
       "review_status": "approved"
     },
     {
@@ -39907,6 +39955,37 @@
             "environment"
           ],
           "short_definition": "Bounded modern context.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:r301-sap-feeding-signs",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:environment:r301-sap-feeding-signs",
+          "locale": "ru",
+          "labels": [
+            "Признаки сосущих насекомых"
+          ],
+          "short_definition": "Ограниченные полевые признаки без диагноза.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:environment:r301-sap-feeding-signs",
+          "locale": "en",
+          "labels": [
+            "Sap-feeding insect signs"
+          ],
+          "short_definition": "Bounded field signs without diagnosis.",
           "search_aliases": []
         }
       }
@@ -123299,6 +123378,148 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r301-honeydew-ants",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r301-sap-feeding-signs",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Sticky honeydew and repeated ant movement on stems are compatible clues for honeydew-producing sap feeders, not proof of aphids or species."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r301-utah"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r301-honeydew-ants",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Липкая медвяная роса и повторяющееся движение муравьёв по стеблям — совместимые признаки сосущих насекомых, но не доказательство тлей или вида.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r301-honeydew-ants",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Sticky honeydew and repeated ant movement on stems are compatible clues for honeydew-producing sap feeders, not proof of aphids or species.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r301-honeydew-ants"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r301-new-growth",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r301-sap-feeding-signs",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Sap-sucking aphids can gather on succulent new growth and feeding can coincide with curled, yellowed, stunted, or distorted leaves and stems."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r301-utah"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r301-new-growth",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Сосущие тли могут скапливаться на молодой сочной поросли; питание может совпадать со скрученными, желтеющими, низкорослыми или деформированными листьями и стеблями.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r301-new-growth",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Sap-sucking aphids can gather on succulent new growth and feeding can coincide with curled, yellowed, stunted, or distorted leaves and stems.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r301-new-growth"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r301-nondiagnostic",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r301-sap-feeding-signs",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Leaf curl or distortion has multiple possible causes; inspection can support a tentative description without diagnosis, treatment, or outcome."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r301-utah",
+        "evidence:r301-tamu"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r301-nondiagnostic",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Скручивание или деформация листьев имеют несколько возможных причин; осмотр допускает осторожное описание без диагноза, лечения или исхода.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r301-nondiagnostic",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Leaf curl or distortion has multiple possible causes; inspection can support a tentative description without diagnosis, treatment, or outcome.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r301-nondiagnostic"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:random-independent-trials-do-not-owe-reversal",
       "domain": "physics_material_science",
       "subject_ref": "wk:physics_material_science:random-trials",
@@ -153607,6 +153828,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:environment:r301-sap-feeding-signs": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:environment:r301-sap-feeding-signs",
+        "domain": "environment",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:environment:radiation-fog": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:environment:radiation-fog",
@@ -160316,6 +160546,11 @@
         "claim:r201-roots-1",
         "claim:r201-roots-2"
       ],
+      "wk:environment:r301-sap-feeding-signs": [
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
+        "claim:r301-nondiagnostic"
+      ],
       "wk:environment:radiation-fog": [
         "claim:foundations-earth-28-radiation-fog"
       ],
@@ -163163,6 +163398,9 @@
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:r201-roots-1",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
+        "claim:r301-nondiagnostic",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
@@ -165312,6 +165550,9 @@
         "claim:r201-porridge-2",
         "claim:r201-roots-1",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
+        "claim:r301-nondiagnostic",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -167151,6 +167392,9 @@
         "claim:r201-onion-2",
         "claim:r201-roots-1",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
+        "claim:r301-nondiagnostic",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
@@ -169352,6 +169596,7 @@
         "claim:public-world-deference-can-be-calibrated-to-seniority-role",
         "claim:public-world-illness-can-reallocate-ordinary-work",
         "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:r301-nondiagnostic",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour",
@@ -169398,6 +169643,7 @@
         "wk:chemistry_process:temperature-reaction-rate",
         "wk:craft_technology:urban-wooden-coverings",
         "wk:craft_technology:work-waste-context",
+        "wk:environment:r301-sap-feeding-signs",
         "wk:environment:static-animal-b06-bat-roost-disturbance",
         "wk:environment:wild-food-and-fur-evidence",
         "wk:material_culture:historically-recorded-maslo",
@@ -171849,6 +172095,7 @@
         "claim:microbial-growth-depends-on-species-temperature-range",
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+        "claim:r301-honeydew-ants",
         "claim:residual-tree-alnus-glutinosa-catkins-nutlets",
         "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
         "claim:residual-tree-betula-pendula-deciduous",
@@ -173601,6 +173848,7 @@
       "возможных": [
         "claim:fauna-fish-low-oxygen",
         "claim:foundations-life-44-pathogen-transport",
+        "claim:r301-nondiagnostic",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "wk:biology_physiology:fauna-fish-oxygen"
       ],
@@ -177780,6 +178028,7 @@
         "claim:military-world-custody-needs-attention-and-basic-needs",
         "claim:military-world-small-group-coordination-needs-established-roles",
         "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:r301-honeydew-ants",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
         "claim:residual-nature-celestial-pole-daily-circles",
@@ -178556,9 +178805,13 @@
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
         "claim:population-joining-metal-cold-work",
         "claim:population-physics-elastic-recovery",
+        "claim:r301-nondiagnostic",
         "wk:physics_material_science:partially-saturated-granular-deformation",
         "wk:physics_material_science:solid-deformation",
         "wk:physics_material_science:static-birch-bark-water-deformation"
+      ],
+      "деформированными": [
+        "claim:r301-new-growth"
       ],
       "деформировать": [
         "claim:streak01-wet-leather-drying"
@@ -178648,13 +178901,15 @@
       "диагноза": [
         "claim:candidate-v5-gramota715-is-classified-as-charm-prayer",
         "claim:final-practical-severe-or-worsening-postnatal-concerns-need-available-experienced-assessment-without-diagnosis",
+        "claim:r301-nondiagnostic",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
         "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
         "wk:biology_physiology:candidate-v6-clinical-observations",
         "wk:biology_physiology:macro-b1819-cattle-observation",
         "wk:biology_physiology:residual-postpartum-newborn-physiology",
-        "wk:biology_physiology:static-animal-b06-working-horse-context"
+        "wk:biology_physiology:static-animal-b06-working-horse-context",
+        "wk:environment:r301-sap-feeding-signs"
       ],
       "диагнозом": [
         "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
@@ -179475,6 +179730,7 @@
         "claim:population-net-work",
         "claim:probable-travel-chalice-communion",
         "claim:r201-ice-2",
+        "claim:r301-honeydew-ants",
         "claim:religion-olenin-adjudication",
         "claim:residual-government-law-v1-1227-records-accusation-and-burning-episode",
         "claim:rp-property-claim-relates-acquisition-chain",
@@ -180017,6 +180273,7 @@
         "claim:agriculture-fauna-hemp-processing-tow",
         "claim:composite-urban-quarter",
         "claim:r201-leaves-1",
+        "claim:r301-nondiagnostic",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
         "claim:residual-law-status-and-witness-exceptions",
         "claim:rp-merchant-credit-relates-third-party-goods",
@@ -181614,6 +181871,9 @@
         "claim:pigment-yellow-ochre",
         "claim:textile-chrysin-analysis",
         "wk:material_culture:yellow-ochre"
+      ],
+      "желтеющими": [
+        "claim:r301-new-growth"
       ],
       "жёлтой": [
         "claim:fauna-eel-feeding",
@@ -186048,6 +186308,9 @@
         "claim:r201-lye-2",
         "claim:r201-onion-2",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
+        "claim:r301-nondiagnostic",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -186631,6 +186894,7 @@
         "claim:foundations-life-28-virus-replication",
         "claim:foundations-phys-08-momentum-closed-system",
         "claim:r201-onion-2",
+        "claim:r301-nondiagnostic",
         "claim:residual-law-boundaries-and-marked-trees",
         "claim:wood-liquid-directional-uptake",
         "wk:biology_physiology:foundation-virus-replication"
@@ -187815,6 +188079,7 @@
         "claim:military-world-flight-and-pursuit-share-environmental-limits",
         "claim:military-world-siege-work-is-labour-and-logistics-bound",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:r301-nondiagnostic",
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
@@ -192750,6 +193015,7 @@
         "claim:household-trauma-danger-or-airway-changes-position-choice",
         "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
+        "claim:r301-nondiagnostic",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context"
       ],
@@ -192893,6 +193159,9 @@
         "claim:foundations-life-03-cell-macromolecules",
         "wk:biology_physiology:foundation-cell-macromolecules"
       ],
+      "липкая": [
+        "claim:r301-honeydew-ants"
+      ],
       "липкие": [
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "wk:environment:macro-b17-sticky-plant-coating-limits"
@@ -193009,6 +193278,7 @@
       "листьев": [
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
         "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+        "claim:r301-nondiagnostic",
         "claim:residual-traces-animal-trace-types",
         "wk:biology_physiology:snail-slug-moisture-and-leaf-feeding",
         "wk:environment:candidate-deciduous-tree-leaf-flower-sequence"
@@ -193035,6 +193305,7 @@
         "claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
+        "claim:r301-new-growth",
         "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
         "wk:biology_physiology:snail-slug-moisture-and-leaf-feeding",
@@ -194473,6 +194744,7 @@
       ],
       "медвяная": [
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:r301-honeydew-ants",
         "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "медвяной": [
@@ -195875,6 +196147,7 @@
         "claim:public-world-status-and-ties-affect-access-not-guilt",
         "claim:r201-ice-1",
         "claim:r201-porridge-2",
+        "claim:r301-new-growth",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
@@ -196268,6 +196541,7 @@
         "claim:r201-onion-1",
         "claim:r201-porridge-1",
         "claim:r201-roots-1",
+        "claim:r301-new-growth",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
@@ -196631,6 +196905,9 @@
         "wk:biology_physiology:fauna-eurasian-beaver",
         "wk:biology_physiology:fauna-european-otter"
       ],
+      "молодой": [
+        "claim:r301-new-growth"
+      ],
       "молодую": [
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold"
       ],
@@ -196951,6 +197228,7 @@
       ],
       "муравьёв": [
         "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "claim:r301-honeydew-ants",
         "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "муравьи": [
@@ -197314,6 +197592,7 @@
         "claim:public-world-status-and-ties-affect-access-not-guilt",
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
         "claim:r201-leaves-1",
+        "claim:r301-new-growth",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
@@ -198786,7 +199065,9 @@
         "claim:fauna-pike-juvenile-predation",
         "claim:foundations-mat-07-wood-storage-biological-damage",
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
-        "claim:residual-traces-deadwood-feeding-signs"
+        "claim:r301-honeydew-ants",
+        "claim:residual-traces-deadwood-feeding-signs",
+        "wk:environment:r301-sap-feeding-signs"
       ],
       "населения": [
         "claim:social-alphabet-exercise-records-text"
@@ -199848,6 +200129,7 @@
         "claim:r201-onion-2",
         "claim:r201-porridge-2",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -201087,6 +201369,7 @@
         "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
         "claim:foundations-life-41-immune-components",
         "claim:r201-onion-2",
+        "claim:r301-nondiagnostic",
         "claim:residual-law-creditor-priority",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
         "wk:biology_physiology:fauna-red-squirrel",
@@ -201311,6 +201594,9 @@
         "claim:foundations-earth2-07-pressure-gradient-wind",
         "wk:environment:pressure-gradient-wind"
       ],
+      "низкорослыми": [
+        "claim:r301-new-growth"
+      ],
       "никита": [
         "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky"
       ],
@@ -201437,6 +201723,7 @@
         "claim:r201-leaves-2",
         "claim:r201-onion-1",
         "claim:r201-porridge-2",
+        "claim:r301-honeydew-ants",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
@@ -203868,6 +204155,7 @@
       "ограниченные": [
         "claim:military-world-watch-relief-keeps-attention-bounded",
         "claim:practical-work-tradeoff",
+        "wk:environment:r301-sap-feeding-signs",
         "wk:social_law_economy:candidate-v5-dated-private-correspondence",
         "wk:social_law_economy:candidate-v9-assembly-territory-relations"
       ],
@@ -204727,6 +205015,7 @@
         "claim:early-rus-hunting-ground-terms",
         "claim:environment-p1-buried-soil",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+        "claim:r301-nondiagnostic",
         "claim:residual-government-law-v1-halperin-limits-sovereign-land-projection",
         "claim:residual-tree-betula-pendula-simple-leaves"
       ],
@@ -205482,6 +205771,7 @@
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
         "claim:r201-leaves-1",
+        "claim:r301-nondiagnostic",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
         "wk:architecture_settlement:final-practical-storage-conditions",
         "wk:biology_physiology:domestic-fowl-gentle-examination",
@@ -205850,6 +206140,7 @@
       ],
       "осторожное": [
         "claim:final-static-b01-willow-limits",
+        "claim:r301-nondiagnostic",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "wk:environment:static-cloven-hoof-trace-comparison",
         "wk:social_law_economy:reconstructed-possession-and-return-inquiry"
@@ -208702,6 +208993,7 @@
         "claim:foundations-earth-13-trophic-levels",
         "claim:most-fungi-hyphae-substrate-nutrition",
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
+        "claim:r301-new-growth",
         "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development",
         "claim:technology-circuit-prerequisite",
         "wk:biology_physiology:fungal-mycelium-nutrition",
@@ -209389,6 +209681,7 @@
         "claim:public-world-health-disclosure-is-contextual",
         "claim:public-world-support-needs-available-person-and-resources",
         "claim:r201-onion-1",
+        "claim:r301-honeydew-ants",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
@@ -209884,6 +210177,9 @@
       ],
       "повторяемом": [
         "wk:social_law_economy:reconstructed-market-weighing-check"
+      ],
+      "повторяющееся": [
+        "claim:r301-honeydew-ants"
       ],
       "повторяющейся": [
         "claim:foundations-ms3-08-mutual-cooperation",
@@ -211102,6 +211398,9 @@
       "полевое": [
         "claim:r201-leaves-1"
       ],
+      "полевые": [
+        "wk:environment:r301-sap-feeding-signs"
+      ],
       "полезно": [
         "claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment"
       ],
@@ -211861,6 +212160,9 @@
       ],
       "порожняя": [
         "claim:transport-private-boat-arrangement"
+      ],
+      "поросли": [
+        "claim:r301-new-growth"
       ],
       "порошистый": [
         "claim:r201-leaves-1"
@@ -214465,6 +214767,7 @@
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
         "claim:residual-traces-animal-sign-absence-limit",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
@@ -214474,6 +214777,7 @@
         "wk:biology_physiology:macro-b1819-cattle-observation",
         "wk:biology_physiology:static-weather-b06-beaver-cut-signs",
         "wk:craft_technology:trade-economy-wax-and-balance-observation",
+        "wk:environment:r301-sap-feeding-signs",
         "wk:environment:static-cloven-hoof-trace-comparison",
         "wk:environment:static-weather-b06-cloud-rain-observation",
         "wk:psychology_behavior:foundations-ms-10-recognition-representation"
@@ -214953,6 +215257,7 @@
       ],
       "причин": [
         "claim:r201-onion-2",
+        "claim:r301-nondiagnostic",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation"
       ],
@@ -219985,6 +220290,7 @@
       ],
       "роса": [
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:r301-honeydew-ants",
         "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "росой": [
@@ -222462,6 +222768,9 @@
       "скалываться": [
         "claim:population-glass-fracture"
       ],
+      "скапливаться": [
+        "claim:r301-new-growth"
+      ],
       "скачок": [
         "claim:candidate-v3-puberty-can-coincide-with-final-growth-spurt"
       ],
@@ -222689,12 +222998,16 @@
       "скрип": [
         "claim:place-outdoors-activity-sensory-pulses"
       ],
+      "скрученными": [
+        "claim:r301-new-growth"
+      ],
       "скрученных": [
         "claim:candle-thread-wick",
         "claim:population-bark-float"
       ],
       "скручивание": [
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:r301-nondiagnostic",
         "claim:textile-fibres-twist-yarn",
         "wk:physics_material_science:fibre-twisting"
       ],
@@ -223603,6 +223916,7 @@
         "claim:material-water-textile-liquid-contaminants",
         "claim:population-physics-immersion-buoyancy",
         "claim:population-stone-weight",
+        "claim:r301-new-growth",
         "claim:social-daily-fur-sale-accounting",
         "claim:social-guarantor-relates-transaction-obligation",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
@@ -223880,7 +224194,8 @@
         "wk:craft_technology:urban-wooden-coverings"
       ],
       "совместимые": [
-        "claim:population-storage-vessels"
+        "claim:population-storage-vessels",
+        "claim:r301-honeydew-ants"
       ],
       "совместимый": [
         "claim:clothing-hemp",
@@ -223924,6 +224239,9 @@
       "совокупность": [
         "claim:foundations-life-27-ontogeny",
         "wk:biology_physiology:foundation-ontogeny"
+      ],
+      "совпадать": [
+        "claim:r301-new-growth"
       ],
       "совпадение": [
         "claim:final-social-independent-accounts-can-corroborate-without-proving-truth"
@@ -225102,8 +225420,13 @@
       "сосульки": [
         "claim:residual-nature-roof-melt-eave-refreezing"
       ],
+      "сосущие": [
+        "claim:r301-new-growth"
+      ],
       "сосущих": [
-        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:r301-honeydew-ants",
+        "wk:environment:r301-sap-feeding-signs"
       ],
       "сотен": [
         "claim:residual-government-law-v2-1230-source-uses-hundred-term-for-property-division",
@@ -225310,6 +225633,9 @@
       ],
       "сочетая": [
         "claim:final-practical-present-weapon-or-tool-needs-secure-carrying-and-access"
+      ],
+      "сочной": [
+        "claim:r301-new-growth"
       ],
       "союз": [
         "claim:candidate-v7-npl-1222-kesi-campaign"
@@ -226494,8 +226820,12 @@
         "wk:environment:candidate-nettle-bast-fibre-extraction",
         "wk:material_culture:hemp-fibre"
       ],
+      "стеблям": [
+        "claim:r301-honeydew-ants"
+      ],
       "стеблями": [
-        "claim:common-reed-rhizome-produces-stems-in-wetland-habitat"
+        "claim:common-reed-rhizome-produces-stems-in-wetland-habitat",
+        "claim:r301-new-growth"
       ],
       "стежками": [
         "claim:research-failure-of-stitched-leather-join-can-separate-components"
@@ -229151,6 +229481,9 @@
       "тлеет": [
         "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
       ],
+      "тлей": [
+        "claim:r301-honeydew-ants"
+      ],
       "тления": [
         "wk:environment:macro-b17-damp-stored-hay-heating"
       ],
@@ -229159,6 +229492,9 @@
       ],
       "тлеющую": [
         "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart"
+      ],
+      "тли": [
+        "claim:r301-new-growth"
       ],
       "тля": [
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
@@ -238047,6 +238383,9 @@
         "claim:r201-porridge-2",
         "claim:r201-roots-1",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
+        "claim:r301-nondiagnostic",
         "claim:streak01-lime-curing-limits",
         "claim:streak01-lime-weather",
         "claim:streak01-splinter-assessment",
@@ -242197,6 +242536,8 @@
         "claim:r201-porridge-2",
         "claim:r201-roots-1",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -243166,6 +243507,7 @@
       "ant": [
         "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "claim:r301-honeydew-ants",
         "wk:biology_physiology:ant-brood-care-and-relocation"
       ],
       "anti": [
@@ -243236,7 +243578,9 @@
         "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "aphids": [
-        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety"
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth"
       ],
       "apiaceae": [
         "claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food"
@@ -243624,6 +243968,7 @@
         "claim:r201-ice-2",
         "claim:r201-lye-1",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -246536,6 +246881,7 @@
         "wk:craft_technology:streak01-repair",
         "wk:environment:final-static-b01-environment",
         "wk:environment:r201-repair",
+        "wk:environment:r301-sap-feeding-signs",
         "wk:material_culture:final-static-b01-material_culture",
         "wk:psychology_behavior:research-memory-postevent-misinformation",
         "wk:psychology_behavior:research-memory-source-misattribution",
@@ -247871,6 +248217,8 @@
         "claim:r201-porridge-1",
         "claim:r201-porridge-2",
         "claim:r201-roots-1",
+        "claim:r301-new-growth",
+        "claim:r301-nondiagnostic",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -248769,6 +249117,7 @@
         "claim:foundations-physical-b2-chm-07-ionic-precipitation-threshold",
         "claim:milling-plate-gap-pressure-fineness",
         "claim:r201-onion-2",
+        "claim:r301-nondiagnostic",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
         "wk:chemistry_process:ionic-precipitation-threshold",
         "wk:psychology_behavior:foundations-ms-19-attribution-explanation"
@@ -250077,6 +250426,9 @@
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
         "wk:biology_physiology:static-ruminant-feed-b11-fermentation-bloat-risk"
       ],
+      "clues": [
+        "claim:r301-honeydew-ants"
+      ],
       "clumps": [
         "claim:construction-pine-resin-bast",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
@@ -250185,6 +250537,9 @@
         "claim:social-daily-fur-sale-accounting",
         "claim:social-grivna-accounting-unit",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement"
+      ],
+      "coincide": [
+        "claim:r301-new-growth"
       ],
       "cold": [
         "claim:bathing-washing-water",
@@ -250800,6 +251155,7 @@
         "claim:population-storage-vessels",
         "claim:population-wool-lining",
         "claim:practical-leather-patch",
+        "claim:r301-honeydew-ants",
         "claim:rural-agriculture-crop-context",
         "claim:rural-household-economy-context",
         "claim:static-weather-b06-beaver-compatible-cut-can-show-conical-top-and-incisor-grooves",
@@ -253028,6 +253384,12 @@
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
         "claim:streak01-lime-curing-limits"
       ],
+      "curl": [
+        "claim:r301-nondiagnostic"
+      ],
+      "curled": [
+        "claim:r301-new-growth"
+      ],
       "current": [
         "claim:agriculture-fauna-ash-hunting-bow",
         "claim:agriculture-fauna-borts-honey",
@@ -254195,6 +254557,7 @@
         "claim:environment-p1-buried-soil",
         "claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+        "claim:r301-nondiagnostic",
         "claim:residual-government-law-v1-halperin-limits-sovereign-land-projection",
         "wk:architecture_settlement:wooden-bathhouse"
       ],
@@ -254422,6 +254785,7 @@
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+        "claim:r301-nondiagnostic",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
@@ -254450,7 +254814,8 @@
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:biology_physiology:static-animal-b06-working-horse-context",
         "wk:biology_physiology:wound-healing-time-dependent",
-        "wk:chemistry_process:chemical-exposure-modifiers"
+        "wk:chemistry_process:chemical-exposure-modifiers",
+        "wk:environment:r301-sap-feeding-signs"
       ],
       "diagnostic": [
         "wk:biology:candidate-plant-diagnostic-identity",
@@ -255103,8 +255468,12 @@
         "claim:research-memory-postevent-misinformation",
         "claim:streak01-wet-leather-drying"
       ],
+      "distorted": [
+        "claim:r301-new-growth"
+      ],
       "distortion": [
         "claim:macro-b20-steam-softened-wood-needs-restraint-and-controlled-drying-to-retain-a-bend",
+        "claim:r301-nondiagnostic",
         "claim:static-parchment-or-vellum-should-not-be-wetted",
         "claim:streak01-wet-leather-support"
       ],
@@ -259012,6 +259381,9 @@
         "claim:foundations-ms3-03-goal-frustration",
         "claim:human-life-learning-feedback-can-shape-practice"
       ],
+      "feeders": [
+        "claim:r301-honeydew-ants"
+      ],
       "feeding": [
         "claim:candidate-v2-lactation-is-milk-production-and-secretion",
         "claim:fauna-bird-migration-energy",
@@ -259035,6 +259407,7 @@
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-b1819-blood-feeding-flies-can-provoke-defensive-behavior-in-cattle",
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
+        "claim:r301-new-growth",
         "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
         "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
         "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment",
@@ -259049,6 +259422,7 @@
         "wk:biology_physiology:macro-b1819-cattle-blood-feeding-flies",
         "wk:biology_physiology:snail-slug-moisture-and-leaf-feeding",
         "wk:biology_physiology:static-animal-b06-british-bat-activity",
+        "wk:environment:r301-sap-feeding-signs",
         "wk:environment:residual-trace-formation-and-preservation"
       ],
       "feeds": [
@@ -259245,6 +259619,7 @@
         "wk:craft_technology:reconstructed-military-field-maintenance-transport",
         "wk:environment:flax-hemp-cultivation",
         "wk:environment:mb14-practical-field-and-water",
+        "wk:environment:r301-sap-feeding-signs",
         "wk:environment:regional-agriculture-practice",
         "wk:physics_material_science:current-magnetic-field",
         "wk:physics_material_science:electromagnetic-rotation"
@@ -260352,6 +260727,7 @@
         "claim:probable-travel-chalice-communion",
         "claim:public-world-support-needs-available-person-and-resources",
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+        "claim:r301-honeydew-ants",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
@@ -261779,6 +262155,7 @@
         "claim:fauna-mammals-brown-bear-conditional-aggregation",
         "claim:ordinary-life-work-clothes-protect-and-move",
         "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "claim:r301-new-growth",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground"
       ],
       "gathered": [
@@ -262588,6 +262965,7 @@
         "claim:place-outdoors-clearing-and-trace-renewal",
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
         "claim:r201-onion-1",
+        "claim:r301-new-growth",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:residual-postpartum-early-child-nutrition-supports-growth-and-development",
         "claim:residual-tree-betula-pendula-moist-soil",
@@ -263032,6 +263410,7 @@
         "claim:material-water-alum-skin-water",
         "claim:pigment-blue-layer-order",
         "claim:practical-season-work",
+        "claim:r301-nondiagnostic",
         "claim:residual-law-creditor-priority",
         "claim:residual-tree-alnus-glutinosa-catkins-nutlets",
         "claim:residual-tree-betula-pendula-male-female-catkins",
@@ -263915,6 +264294,7 @@
       ],
       "honeydew": [
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:r301-honeydew-ants",
         "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "hood": [
@@ -265893,6 +266273,9 @@
         "claim:r201-porridge-2",
         "claim:r201-roots-1",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
+        "claim:r301-nondiagnostic",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
         "claim:rp-mother-household-care-succession",
@@ -266206,7 +266589,8 @@
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-b20-insect-damage-to-stored-wool-can-call-for-inspection-isolation-and-clean-dry-storage",
         "wk:biology_physiology:static-animal-b06-british-bat-activity",
-        "wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control"
+        "wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control",
+        "wk:environment:r301-sap-feeding-signs"
       ],
       "insectivorous": [
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
@@ -266288,6 +266672,7 @@
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:r201-leaves-1",
         "claim:r201-roots-1",
+        "claim:r301-nondiagnostic",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "wk:architecture_settlement:final-practical-storage-conditions",
@@ -268634,6 +269019,7 @@
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:place-outdoors-forest-structure-and-season",
         "claim:r201-leaves-1",
+        "claim:r301-nondiagnostic",
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "wk:biology_physiology:orchard-tree-pruning-context",
@@ -268779,6 +269165,7 @@
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:practical-textile-cut",
+        "claim:r301-new-growth",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:residual-traces-animal-trace-types",
         "claim:residual-tree-alnus-glutinosa-deciduous-simple-leaves",
@@ -272194,6 +272581,7 @@
         "claim:ordinary-life-work-clothes-protect-and-move",
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+        "claim:r301-honeydew-ants",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:transport-winter-sledge-1220",
@@ -272290,6 +272678,7 @@
         "claim:foundations-life-41-immune-components",
         "claim:foundations-life-47-host-susceptibility",
         "claim:r201-onion-2",
+        "claim:r301-nondiagnostic",
         "claim:residual-law-creditor-priority",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
         "wk:biology_physiology:foundation-host-susceptibility",
@@ -272990,6 +273379,7 @@
         "claim:ordinary-life-household-repairs-compete-with-new-goods",
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
         "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:r301-new-growth",
         "claim:residual-nature-snow-wind-drift-visibility",
         "claim:static-root-loss-can-cause-transplant-shock",
         "wk:biology_physiology:foundation-fertilization",
@@ -274127,6 +274517,7 @@
         "claim:r201-lye-1",
         "claim:r201-onion-1",
         "claim:r201-onion-2",
+        "claim:r301-honeydew-ants",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -275619,6 +276010,7 @@
         "claim:r201-ice-2",
         "claim:r201-leaves-1",
         "claim:r201-roots-1",
+        "claim:r301-honeydew-ants",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
@@ -276276,6 +276668,8 @@
         "claim:probable-travel-chalice-communion",
         "claim:public-world-health-disclosure-is-contextual",
         "claim:public-world-support-needs-available-person-and-resources",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
@@ -277289,6 +277683,9 @@
         "claim:r201-porridge-2",
         "claim:r201-roots-1",
         "claim:r201-roots-2",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
+        "claim:r301-nondiagnostic",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -278217,6 +278614,7 @@
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:public-world-capacity-can-vary-day-to-day",
         "claim:public-world-help-access-can-be-limited",
+        "claim:r301-nondiagnostic",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
@@ -280604,6 +281002,7 @@
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
         "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:r301-nondiagnostic",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:residual-traces-animal-sign-absence-limit",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
@@ -281875,6 +282274,7 @@
       ],
       "producing": [
         "claim:milling-grain-compression-shear-fracture",
+        "claim:r301-honeydew-ants",
         "claim:residual-law-debt-denial-witness-oath",
         "wk:biology_physiology:lactic-fermentation",
         "wk:craft_technology:fire-ignition"
@@ -282057,6 +282457,7 @@
         "claim:population-net-work",
         "claim:r201-ice-2",
         "claim:r201-leaves-1",
+        "claim:r301-honeydew-ants",
         "claim:religion-olenin-adjudication",
         "claim:residual-government-law-v1-1227-records-accusation-and-burning-episode",
         "claim:residual-law-monthly-and-longer-interest",
@@ -284471,6 +284872,7 @@
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
         "claim:population-joining-metal-fatigue",
         "claim:practical-leather-shoe",
+        "claim:r301-honeydew-ants",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
@@ -286315,10 +286717,13 @@
       "sap": [
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:mezereon-poisonous-sap-all-parts",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "wk:biology_physiology:mezereon-toxicity",
         "wk:biology_physiology:static-ranunculaceae-sap-contact",
-        "wk:environment:macro-b17-sticky-plant-coating-limits"
+        "wk:environment:macro-b17-sticky-plant-coating-limits",
+        "wk:environment:r301-sap-feeding-signs"
       ],
       "sapling": [
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation"
@@ -287834,6 +288239,7 @@
         "wk:biology_physiology:macro-b1819-cattle-observation",
         "wk:biology_physiology:static-equine-hindgut-and-colic-context",
         "wk:biology_physiology:static-weather-b06-beaver-cut-signs",
+        "wk:environment:r301-sap-feeding-signs",
         "wk:environment:residual-trace-formation-and-preservation",
         "wk:social_behavior:trade-economy-lost-pack-animal-response"
       ],
@@ -289120,6 +289526,7 @@
         "claim:plant-development-responds-to-light",
         "claim:population-material-wood-shrinkage",
         "claim:r201-leaves-1",
+        "claim:r301-honeydew-ants",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:regional-fish-exploitation",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
@@ -289909,6 +290316,8 @@
         "claim:fibre-flax-breaker-shive",
         "claim:novgorod-wetland-pollen-context",
         "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:r301-honeydew-ants",
+        "claim:r301-new-growth",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation"
       ],
@@ -289935,6 +290344,7 @@
       "sticky": [
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
+        "claim:r301-honeydew-ants",
         "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "stiff": [
@@ -290550,6 +290960,9 @@
         "claim:static-weather-b06-beaver-compatible-cut-can-show-conical-top-and-incisor-grooves",
         "wk:biology_physiology:static-weather-b06-beaver-cut-signs"
       ],
+      "stunted": [
+        "claim:r301-new-growth"
+      ],
       "styli": [
         "claim:candidate-v7-museum-x-xvii-novgorod-archaeological-collection",
         "claim:residual-v1-birch-writing-used-styli-on-inner-surface"
@@ -290688,6 +291101,9 @@
         "claim:foundations-ms-07-auditory-sequence",
         "wk:psychology_behavior:foundations-ms-07-auditory-sequence"
       ],
+      "succulent": [
+        "claim:r301-new-growth"
+      ],
       "such": [
         "claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use",
         "claim:construction-construction-pottery-products",
@@ -290704,6 +291120,9 @@
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
         "claim:residual-law-interest-agreement-and-witnesses",
         "claim:residual-law-unauthorized-horse-use"
+      ],
+      "sucking": [
+        "claim:r301-new-growth"
       ],
       "suckling": [
         "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment"
@@ -290964,6 +291383,7 @@
         "claim:public-world-publicity-raises-reputation-risk",
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
         "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:r301-nondiagnostic",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
@@ -291861,6 +292281,9 @@
       ],
       "tensioned": [
         "wk:physics_material_science:reality-batch-01-releasable-rope-knot"
+      ],
+      "tentative": [
+        "claim:r301-nondiagnostic"
       ],
       "tenth": [
         "claim:ceramic-novgorod-wheel",
@@ -295100,6 +295523,7 @@
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
         "claim:population-joining-metal-anneal",
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+        "claim:r301-nondiagnostic",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
@@ -298477,6 +298901,7 @@
         "claim:public-world-ordinary-speech-tracks-relationship-setting",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+        "claim:r301-new-growth",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:religion-olenin-church-people",
@@ -298678,6 +299103,7 @@
         "claim:r201-ice-1",
         "claim:r201-leaves-2",
         "claim:r201-roots-1",
+        "claim:r301-nondiagnostic",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
@@ -298711,6 +299137,7 @@
         "wk:biology_physiology:static-weather-b06-beaver-cut-signs",
         "wk:craft_technology:urban-wooden-coverings",
         "wk:craft_technology:work-waste-context",
+        "wk:environment:r301-sap-feeding-signs",
         "wk:environment:regional-agriculture-practice",
         "wk:environment:wild-food-and-fur-evidence",
         "wk:material_culture:historically-recorded-maslo",
@@ -299496,6 +299923,9 @@
         "claim:textile-indigo-yellow-analysis",
         "wk:biology_physiology:fauna-european-eel",
         "wk:material_culture:yellow-ochre"
+      ],
+      "yellowed": [
+        "claim:r301-new-growth"
       ],
       "yem": [
         "claim:posadnik-volodislav-pursuit-1228"

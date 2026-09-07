@@ -17216,6 +17216,48 @@
       "retrieval_text": "environment Ограниченный современный контекст. INFERENCE: Наблюдаемые признаки порчи не устанавливают причину, безопасность соседнего запаса или восстановление повреждённой пищи."
     },
     {
+      "entry_ref": "wk-retrieval:claim:r301-honeydew-ants:en",
+      "target_ref": "claim:r301-honeydew-ants",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Sap-feeding insect signs Bounded field signs without diagnosis. INFERENCE: Sticky honeydew and repeated ant movement on stems are compatible clues for honeydew-producing sap feeders, not proof of aphids or species."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r301-honeydew-ants:ru",
+      "target_ref": "claim:r301-honeydew-ants",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Признаки сосущих насекомых Ограниченные полевые признаки без диагноза. INFERENCE: Липкая медвяная роса и повторяющееся движение муравьёв по стеблям — совместимые признаки сосущих насекомых, но не доказательство тлей или вида."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r301-new-growth:en",
+      "target_ref": "claim:r301-new-growth",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Sap-feeding insect signs Bounded field signs without diagnosis. INFERENCE: Sap-sucking aphids can gather on succulent new growth and feeding can coincide with curled, yellowed, stunted, or distorted leaves and stems."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r301-new-growth:ru",
+      "target_ref": "claim:r301-new-growth",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Признаки сосущих насекомых Ограниченные полевые признаки без диагноза. INFERENCE: Сосущие тли могут скапливаться на молодой сочной поросли; питание может совпадать со скрученными, желтеющими, низкорослыми или деформированными листьями и стеблями."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r301-nondiagnostic:en",
+      "target_ref": "claim:r301-nondiagnostic",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Sap-feeding insect signs Bounded field signs without diagnosis. INFERENCE: Leaf curl or distortion has multiple possible causes; inspection can support a tentative description without diagnosis, treatment, or outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r301-nondiagnostic:ru",
+      "target_ref": "claim:r301-nondiagnostic",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Признаки сосущих насекомых Ограниченные полевые признаки без диагноза. INFERENCE: Скручивание или деформация листьев имеют несколько возможных причин; осмотр допускает осторожное описание без диагноза, лечения или исхода."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:random-independent-trials-do-not-owe-reversal:en",
       "target_ref": "claim:random-independent-trials-do-not-owe-reversal",
       "domain": "physics_material_science",
@@ -30682,6 +30724,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "environment Ограниченный современный контекст."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r301-sap-feeding-signs:en",
+      "target_ref": "wk:environment:r301-sap-feeding-signs",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Sap-feeding insect signs Bounded field signs without diagnosis."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r301-sap-feeding-signs:ru",
+      "target_ref": "wk:environment:r301-sap-feeding-signs",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Признаки сосущих насекомых Ограниченные полевые признаки без диагноза."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:radiation-fog:en",

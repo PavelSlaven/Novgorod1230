@@ -17468,6 +17468,202 @@
       "retrieval_text": "Невербальная координация общей рискованной работы Качественные условия понятного невербального согласования в уже установленной общей работе. Зрительный или осязательный сигнал требует фактического взаимного восприятия и подтверждения, чтобы служить общей связью; он не бывает автоматически понят или получен. жесты при работе согласовать подъем зрительный сигнал осязательный сигнал подтверждение"
     },
     {
+      "entry_ref": "wk-retrieval:claim:r7-acidic-wet-food-in-unlined-copper-contact-can-change-the-contact-surface:en",
+      "target_ref": "claim:r7-acidic-wet-food-in-unlined-copper-contact-can-change-the-contact-surface",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Acidic food and copper contact Contact boundary between acidic wet food and unlined copper. Acidic wet food contacting an already present unlined copper surface can change the food-contact surface; that contact does not establish safe storage or a safe food result. acidic food copper pot unlined copper copper food contact"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-acidic-wet-food-in-unlined-copper-contact-can-change-the-contact-surface:ru",
+      "target_ref": "claim:r7-acidic-wet-food-in-unlined-copper-contact-can-change-the-contact-surface",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Кислая пища и медь Граница контакта кислой влажной пищи с нелужёной медью. Кислая влажная пища в контакте с уже имеющейся нелужёной медной поверхностью может менять поверхность контакта; такой контакт не доказывает безопасное хранение или безопасный пищевой результат. кислая еда медная посуда нелужёная медь медь и пища"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-confined-low-ventilation-space-can-retain-harmful-or-oxygen-poor-air:en",
+      "target_ref": "claim:r7-confined-low-ventilation-space-can-retain-harmful-or-oxygen-poor-air",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Confined-air warning Cautious assessment of air in a cave or poorly ventilated cavity. An established confined natural space with low ventilation can retain harmful or oxygen-poor air; a dimming flame or discomfort is a cue to withdraw cautiously, not a safe test or gas identification. cave flame dims stuffy air oxygen poor air leave cave"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-confined-low-ventilation-space-can-retain-harmful-or-oxygen-poor-air:ru",
+      "target_ref": "claim:r7-confined-low-ventilation-space-can-retain-harmful-or-oxygen-poor-air",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Предупреждение о воздухе в замкнутом пространстве Осторожная оценка воздуха в пещере или иной плохо вентилируемой полости. Уже установленное замкнутое природное пространство со слабым проветриванием может удерживать вредный или бедный кислородом воздух; тускнеющее пламя либо недомогание — повод осторожно выйти, а не безопасная проба или определение газа. пещера гаснет огонь душный воздух нехватка кислорода выйти из пещеры"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-fuelwood-combustion-depends-on-moisture-density-piece-size-and-air:en",
+      "target_ref": "claim:r7-fuelwood-combustion-depends-on-moisture-density-piece-size-and-air",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Fuelwood combustion conditions Fuelwood combustion depends on moisture, density, size, and air. Combustion of already present fuelwood depends on moisture, density, piece size, and air; dry dense and dry light woods can differ in ignition and burn character without a fixed ranking, fuel stock, heat output, or result. dry firewood hardwood softwood wet wood"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-fuelwood-combustion-depends-on-moisture-density-piece-size-and-air:ru",
+      "target_ref": "claim:r7-fuelwood-combustion-depends-on-moisture-density-piece-size-and-air",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Условия горения дров Горение дров зависит от влажности, плотности, размера и воздуха. Горение уже имеющихся дров зависит от влажности, плотности, размера кусков и воздуха; сухая плотная и сухая лёгкая древесина могут различаться по розжигу и характеру горения, но не задано ранжирование, запас, теплоотдача или результат. сухие дрова твёрдая древесина мягкая древесина сырые дрова"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-gentle-warming-of-beeswax-comb-can-separate-some-liquid-wax-from-coarse-debris:en",
+      "target_ref": "claim:r7-gentle-warming-of-beeswax-comb-can-separate-some-liquid-wax-from-coarse-debris",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Beeswax coarse separation Gentle warming can separate some liquid wax from coarse comb debris. Gentle warming of already present beeswax-containing comb can allow some liquid wax to separate from coarse debris by settling or straining, without setting temperature, equipment, yield, purity, or a complete method. render beeswax clean wax comb wax debris"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-gentle-warming-of-beeswax-comb-can-separate-some-liquid-wax-from-coarse-debris:ru",
+      "target_ref": "claim:r7-gentle-warming-of-beeswax-comb-can-separate-some-liquid-wax-from-coarse-debris",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Грубое отделение воска от сотов Мягкое нагревание может отделить часть жидкого воска от крупного мусора. Мягкое нагревание уже имеющихся содержащих воск сотов может позволить части жидкого воска отделиться от крупного мусора отстаиванием или процеживанием, но температура, оснащение, выход, чистота и полный способ не заданы. перетопить воск очистить воск от сотов воск и мусор"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-polished-metal-can-reflect-directional-sunlight-with-condition-bound-visibility:en",
+      "target_ref": "claim:r7-polished-metal-can-reflect-directional-sunlight-with-condition-bound-visibility",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Directional sunlight reflection Polished-metal reflection depends on geometry and visibility conditions. An already present polished metal surface can reflect directional sunlight, but visibility depends on light, orientation, line of sight, and intervening conditions; it establishes no recipient, range, or signal result. mirror signal metal glint reflect sunlight"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-polished-metal-can-reflect-directional-sunlight-with-condition-bound-visibility:ru",
+      "target_ref": "claim:r7-polished-metal-can-reflect-directional-sunlight-with-condition-bound-visibility",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Направленное отражение солнечного света Отражение света полированным металлом зависит от геометрии и условий видимости. Уже имеющаяся полированная металлическая поверхность может отражать направленный солнечный свет, но видимость зависит от света, ориентации, линии зрения и условий между наблюдателями; получатель, дальность и результат сигнала не заданы. зеркальный сигнал блик металла отразить солнце"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-poorly-ventilated-animal-housing-can-have-irritating-air-from-manure-and-urine:en",
+      "target_ref": "claim:r7-poorly-ventilated-animal-housing-can-have-irritating-air-from-manure-and-urine",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Animal-enclosure air Irritating air where manure and weak ventilation coincide. Poorly ventilated animal housing with manure and urine can have irritating air; odour or eye or airway discomfort supports ventilation or withdrawal without identifying a chemical or diagnosing exposure. barn pungent smell manure eye irritation ventilate stable"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-poorly-ventilated-animal-housing-can-have-irritating-air-from-manure-and-urine:ru",
+      "target_ref": "claim:r7-poorly-ventilated-animal-housing-can-have-irritating-air-from-manure-and-urine",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Воздух в помещении для животных Раздражающий воздух при навозе и слабом проветривании. Плохо проветриваемое помещение для животных с навозом и мочой может иметь раздражающий воздух; запах либо раздражение глаз или дыхания оправдывает проветривание или выход, но не определяет химическое вещество и не ставит диагноз. хлев едкий запах навоз раздражает глаза проветрить хлев"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-possibly-frozen-body-part-needs-protection-from-further-cold-and-rough-warming-avoidance:en",
+      "target_ref": "claim:r7-possibly-frozen-body-part-needs-protection-from-further-cold-and-rough-warming-avoidance",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cold-injury caution boundary Uncertain cold injury needs protection from further cold. A possibly frozen body part needs protection from further cold; rough rubbing or uncontrolled heating is not a reliable response, without diagnosing injury or establishing treatment or outcome. frostbite do not rub with snow frozen fingers"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-possibly-frozen-body-part-needs-protection-from-further-cold-and-rough-warming-avoidance:ru",
+      "target_ref": "claim:r7-possibly-frozen-body-part-needs-protection-from-further-cold-and-rough-warming-avoidance",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Граница первой осторожности при холодовой травме Неопределённая холодовая травма требует защиты от дальнейшего холода. Возможно замёрзшую часть тела нужно защищать от дальнейшего холода; грубое растирание или неконтролируемое согревание не являются надёжным ответом, но это не диагноз, лечение или обещание исхода. обморожение не растирать снегом замёрзшие пальцы"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-potato-must-not-be-assumed-locally-available-in-novgorod-rus-1200-1300:en",
+      "target_ref": "claim:r7-potato-must-not-be-assumed-locally-available-in-novgorod-rus-1200-1300",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Potato anachronism boundary for thirteenth-century Novgorod Potato is not assumed to be a local food in Novgorod/Rus 1200–1300. Potato must not be assumed to be a locally available food in Novgorod/Rus in 1200–1300: its mention is an anachronism boundary, not a present crop or food stock. potato 1230 potatoes Novgorod food anachronism"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-potato-must-not-be-assumed-locally-available-in-novgorod-rus-1200-1300:ru",
+      "target_ref": "claim:r7-potato-must-not-be-assumed-locally-available-in-novgorod-rus-1200-1300",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Анахронизм картофеля для Новгорода XIII века Картофель не предполагается местной пищей Новгорода/Руси 1200–1300. Картофель нельзя предполагать местной пищей Новгорода/Руси 1200–1300: его упоминание — граница анахронизма, а не существующий урожай или пищевой запас. картофель 1230 картошка Новгород анахронизм еды"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-repeated-wetting-rinsing-and-daylight-can-gradually-lighten-some-flax-linen:en",
+      "target_ref": "claim:r7-repeated-wetting-rinsing-and-daylight-can-gradually-lighten-some-flax-linen",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Linen lightening Wetting, rinsing, and light can gradually lighten some flax linen. Repeated wetting or rinsing and daylight can gradually lighten some flax linen, while soil, dye, fibre condition, and weather prevent a fixed duration or guaranteed visible result. bleach linen sun bleach flax rinse linen"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-repeated-wetting-rinsing-and-daylight-can-gradually-lighten-some-flax-linen:ru",
+      "target_ref": "claim:r7-repeated-wetting-rinsing-and-daylight-can-gradually-lighten-some-flax-linen",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Осветление льняной ткани Влажнение, полоскание и свет могут постепенно осветлять часть льняных тканей. Повторное увлажнение или полоскание и дневной свет могут постепенно осветлять часть льняной ткани, но загрязнение, окраска, состояние волокна и погода не позволяют задать срок или гарантировать видимый результат. белить лён солнце и лён полоскать льняную ткань"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-sealed-food-container-can-swell-when-gas-forms-or-warms:en",
+      "target_ref": "claim:r7-sealed-food-container-can-swell-when-gas-forms-or-warms",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Sealed food-container pressure Swelling of sealed food storage as a possible internal-pressure cue. An already present sealed food container can swell when gas forms or warms; swelling makes internal pressure and cautious handling relevant without diagnosing spoilage or setting an opening method or outcome. swollen container bulging jar gas in sealed food"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-sealed-food-container-can-swell-when-gas-forms-or-warms:ru",
+      "target_ref": "claim:r7-sealed-food-container-can-swell-when-gas-forms-or-warms",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Давление в закрытой пищевой таре Вздутие закрытой тары как признак возможного внутреннего давления. Уже имеющаяся закрытая тара с пищей может вздуться, когда образуется или нагревается газ; вздутие делает важными внутреннее давление и осторожное обращение, но не доказывает порчу и не задаёт способ вскрытия или результат. вздутая банка вздутая тара газ в закрытой еде"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-stored-edible-or-lamp-oil-condition-can-change-with-age-air-or-contamination:en",
+      "target_ref": "claim:r7-stored-edible-or-lamp-oil-condition-can-change-with-age-air-or-contamination",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Stored oil condition Qualitative signs of change in edible or lamp oil. The condition of already present edible or lamp oil can change with age, air contact, or contamination: rancid odour, unusual taste, or sediment calls for caution without proving cause, food safety, or lamp function. rancid oil oil sediment lamp oil spoiled lamp oil"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-stored-edible-or-lamp-oil-condition-can-change-with-age-air-or-contamination:ru",
+      "target_ref": "claim:r7-stored-edible-or-lamp-oil-condition-can-change-with-age-air-or-contamination",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Состояние хранимого масла Качественные признаки изменения пищевого или лампового масла. Состояние уже имеющегося пищевого или лампового масла может меняться от времени, воздуха или загрязнения: прогорклый запах, необычный вкус либо осадок требуют осторожной оценки, но не доказывают причину, безопасность пищи или работу лампы. прогорклое масло осадок в масле ламповое масло испорченное ламповое масло"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-suspected-venomous-snakebite-supports-limiting-exertion-and-seeking-help:en",
+      "target_ref": "claim:r7-suspected-venomous-snakebite-supports-limiting-exertion-and-seeking-help",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Suspected snakebite caution boundary Suspected venomous bite does not identify species or severity but limits risky responses. A suspected venomous snakebite supports limiting exertion and seeking available help; cutting, sucking, or constricting the limb is not reliable, and species, severity, and outcome remain unknown. snakebite venomous snake do not use tourniquet"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-suspected-venomous-snakebite-supports-limiting-exertion-and-seeking-help:ru",
+      "target_ref": "claim:r7-suspected-venomous-snakebite-supports-limiting-exertion-and-seeking-help",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Граница осторожности при подозрении на укус змеи Подозрение на ядовитый укус не устанавливает вид или тяжесть, но ограничивает рискованные действия. При подозрении на укус ядовитой змеи следует ограничить нагрузку и искать доступную помощь; разрезание, отсасывание или перетягивание конечности ненадёжны, а вид, тяжесть и исход остаются неизвестны. укус змеи ядовитая змея не накладывать жгут"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-unstable-layered-snow-on-a-slope-can-release-and-warning-cues-support-exposure-reduction:en",
+      "target_ref": "claim:r7-unstable-layered-snow-on-a-slope-can-release-and-warning-cues-support-exposure-reduction",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow-slope instability Qualitative relation of layered snow, loading, and release risk. Unstable layered snow on an established slope can release under gravity or added load; warning cues or recent loading support reducing exposure without predicting an avalanche, route, or outcome. avalanche snow slope snow cracks"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-unstable-layered-snow-on-a-slope-can-release-and-warning-cues-support-exposure-reduction:ru",
+      "target_ref": "claim:r7-unstable-layered-snow-on-a-slope-can-release-and-warning-cues-support-exposure-reduction",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Неустойчивость снежного склона Качественная связь слоистого снега, нагрузки и риска схода. Неустойчивый слоистый снег на уже установленном склоне может сойти под тяжестью или дополнительной нагрузкой; предупреждающие признаки либо недавняя нагрузка — повод уменьшить воздействие, но не предсказание лавины, маршрута или исхода. лавина снег на склоне трещины в снегу"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-unusual-flame-colour-or-fume-can-support-unidentified-material-exposure-caution:en",
+      "target_ref": "claim:r7-unusual-flame-colour-or-fume-can-support-unidentified-material-exposure-caution",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Unidentified flame and fume Caution around an unknown burning material. An unusual flame colour or fume can reflect an unidentified material or burning condition and supports avoiding inhalation or direct exposure without identifying the material or establishing a safe fire response. flame colour irritating fumes unknown material burns"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r7-unusual-flame-colour-or-fume-can-support-unidentified-material-exposure-caution:ru",
+      "target_ref": "claim:r7-unusual-flame-colour-or-fume-can-support-unidentified-material-exposure-caution",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Необычное пламя и дым Осторожность при неизвестном составе горящего материала. Необычный цвет пламени или дым может быть связан с неизвестным материалом либо условием горения и оправдывает избегать вдыхания и прямого воздействия, но не определяет материал и не задаёт безопасный ответ на пожар. цвет пламени едкий дым неизвестное горит"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:random-independent-trials-do-not-owe-reversal:en",
       "target_ref": "claim:random-independent-trials-do-not-owe-reversal",
       "domain": "physics_material_science",
@@ -27254,6 +27450,34 @@
       "retrieval_text": "biology_physiology Ограниченный современный контекст."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:r7-cold-injury-boundary:en",
+      "target_ref": "wk:biology_physiology:r7-cold-injury-boundary",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Cold-injury caution boundary Uncertain cold injury needs protection from further cold. frostbite do not rub with snow frozen fingers"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:r7-cold-injury-boundary:ru",
+      "target_ref": "wk:biology_physiology:r7-cold-injury-boundary",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Граница первой осторожности при холодовой травме Неопределённая холодовая травма требует защиты от дальнейшего холода. обморожение не растирать снегом замёрзшие пальцы"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:r7-suspected-snakebite-boundary:en",
+      "target_ref": "wk:biology_physiology:r7-suspected-snakebite-boundary",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Suspected snakebite caution boundary Suspected venomous bite does not identify species or severity but limits risky responses. snakebite venomous snake do not use tourniquet"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:r7-suspected-snakebite-boundary:ru",
+      "target_ref": "wk:biology_physiology:r7-suspected-snakebite-boundary",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Граница осторожности при подозрении на укус змеи Подозрение на ядовитый укус не устанавливает вид или тяжесть, но ограничивает рискованные действия. укус змеи ядовитая змея не накладывать жгут"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:reality-batch-01-minor-abrasion-care:en",
       "target_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
       "domain": "biology_physiology",
@@ -28864,6 +29088,34 @@
       "retrieval_text": "chemistry_process Ограниченный современный контекст."
     },
     {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:r7-acidic-food-copper-contact:en",
+      "target_ref": "wk:chemistry_process:r7-acidic-food-copper-contact",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Acidic food and copper contact Contact boundary between acidic wet food and unlined copper. acidic food copper pot unlined copper copper food contact"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:r7-acidic-food-copper-contact:ru",
+      "target_ref": "wk:chemistry_process:r7-acidic-food-copper-contact",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Кислая пища и медь Граница контакта кислой влажной пищи с нелужёной медью. кислая еда медная посуда нелужёная медь медь и пища"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:r7-unidentified-flame-fume:en",
+      "target_ref": "wk:chemistry_process:r7-unidentified-flame-fume",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "Unidentified flame and fume Caution around an unknown burning material. flame colour irritating fumes unknown material burns"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:r7-unidentified-flame-fume:ru",
+      "target_ref": "wk:chemistry_process:r7-unidentified-flame-fume",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "Необычное пламя и дым Осторожность при неизвестном составе горящего материала. цвет пламени едкий дым неизвестное горит"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:reaction-rate-reactant-concentration:en",
       "target_ref": "wk:chemistry_process:reaction-rate-reactant-concentration",
       "domain": "chemistry_process",
@@ -29730,6 +29982,62 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "craft_technology Ограниченный современный контекст."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r7-beeswax-coarse-separation:en",
+      "target_ref": "wk:craft_technology:r7-beeswax-coarse-separation",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Beeswax coarse separation Gentle warming can separate some liquid wax from coarse comb debris. render beeswax clean wax comb wax debris"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r7-beeswax-coarse-separation:ru",
+      "target_ref": "wk:craft_technology:r7-beeswax-coarse-separation",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Грубое отделение воска от сотов Мягкое нагревание может отделить часть жидкого воска от крупного мусора. перетопить воск очистить воск от сотов воск и мусор"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r7-fuelwood-combustion-condition:en",
+      "target_ref": "wk:craft_technology:r7-fuelwood-combustion-condition",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Fuelwood combustion conditions Fuelwood combustion depends on moisture, density, size, and air. dry firewood hardwood softwood wet wood"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r7-fuelwood-combustion-condition:ru",
+      "target_ref": "wk:craft_technology:r7-fuelwood-combustion-condition",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Условия горения дров Горение дров зависит от влажности, плотности, размера и воздуха. сухие дрова твёрдая древесина мягкая древесина сырые дрова"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r7-linen-lightening:en",
+      "target_ref": "wk:craft_technology:r7-linen-lightening",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Linen lightening Wetting, rinsing, and light can gradually lighten some flax linen. bleach linen sun bleach flax rinse linen"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r7-linen-lightening:ru",
+      "target_ref": "wk:craft_technology:r7-linen-lightening",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Осветление льняной ткани Влажнение, полоскание и свет могут постепенно осветлять часть льняных тканей. белить лён солнце и лён полоскать льняную ткань"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r7-stored-oil-condition:en",
+      "target_ref": "wk:craft_technology:r7-stored-oil-condition",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Stored oil condition Qualitative signs of change in edible or lamp oil. rancid oil oil sediment lamp oil"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r7-stored-oil-condition:ru",
+      "target_ref": "wk:craft_technology:r7-stored-oil-condition",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Состояние хранимого масла Качественные признаки изменения пищевого или лампового масла. прогорклое масло осадок в масле ламповое масло"
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:reality-batch-01-wooden-joinery:en",
@@ -31032,6 +31340,48 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Вода в корневой зоне древесного растения Качественные условия воды и воздуха у корней."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r7-animal-enclosure-air:en",
+      "target_ref": "wk:environment:r7-animal-enclosure-air",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Animal-enclosure air Irritating air where manure and weak ventilation coincide. barn pungent smell manure eye irritation ventilate stable"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r7-animal-enclosure-air:ru",
+      "target_ref": "wk:environment:r7-animal-enclosure-air",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Воздух в помещении для животных Раздражающий воздух при навозе и слабом проветривании. хлев едкий запах навоз раздражает глаза проветрить хлев"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r7-confined-air-warning:en",
+      "target_ref": "wk:environment:r7-confined-air-warning",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Confined-air warning Cautious assessment of air in a cave or poorly ventilated cavity. cave flame dims stuffy air oxygen poor air"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r7-confined-air-warning:ru",
+      "target_ref": "wk:environment:r7-confined-air-warning",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Предупреждение о воздухе в замкнутом пространстве Осторожная оценка воздуха в пещере или иной плохо вентилируемой полости. пещера гаснет огонь душный воздух нехватка кислорода"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r7-snow-slope-instability:en",
+      "target_ref": "wk:environment:r7-snow-slope-instability",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Snow-slope instability Qualitative relation of layered snow, loading, and release risk. avalanche snow slope snow cracks"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r7-snow-slope-instability:ru",
+      "target_ref": "wk:environment:r7-snow-slope-instability",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Неустойчивость снежного склона Качественная связь слоистого снега, нагрузки и риска схода. лавина снег на склоне трещины в снегу"
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:radiation-fog:en",
@@ -33288,6 +33638,20 @@
       "retrieval_text": "Вероятный походный потир Музейная вероятная атрибуция чаши для причастия чаша потир причастие"
     },
     {
+      "entry_ref": "wk-retrieval:wk:material_culture:r7-potato-anachronism-boundary:en",
+      "target_ref": "wk:material_culture:r7-potato-anachronism-boundary",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "Potato anachronism boundary for thirteenth-century Novgorod Potato is not assumed to be a local food in Novgorod/Rus 1200–1300. potato 1230 potatoes Novgorod food anachronism"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:r7-potato-anachronism-boundary:ru",
+      "target_ref": "wk:material_culture:r7-potato-anachronism-boundary",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "Анахронизм картофеля для Новгорода XIII века Картофель не предполагается местной пищей Новгорода/Руси 1200–1300. картофель 1230 картошка Новгород анахронизм еды"
+    },
+    {
       "entry_ref": "wk-retrieval:wk:material_culture:rawhide:en",
       "target_ref": "wk:material_culture:rawhide",
       "domain": "material_culture",
@@ -35092,6 +35456,34 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Подготовка и переплетение тростника для циновки Качественное отношение подготовки и соединения стеблей в циновкоподобное полотно. тростник циновка плетение стеблей"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:r7-directional-sunlight-reflection:en",
+      "target_ref": "wk:physics_material_science:r7-directional-sunlight-reflection",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Directional sunlight reflection Polished-metal reflection depends on geometry and visibility conditions. mirror signal metal glint reflect sunlight"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:r7-directional-sunlight-reflection:ru",
+      "target_ref": "wk:physics_material_science:r7-directional-sunlight-reflection",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Направленное отражение солнечного света Отражение света полированным металлом зависит от геометрии и условий видимости. зеркальный сигнал блик металла отразить солнце"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:r7-sealed-food-pressure:en",
+      "target_ref": "wk:physics_material_science:r7-sealed-food-pressure",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Sealed food-container pressure Swelling of sealed food storage as a possible internal-pressure cue. swollen container bulging jar gas in sealed food"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:r7-sealed-food-pressure:ru",
+      "target_ref": "wk:physics_material_science:r7-sealed-food-pressure",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Давление в закрытой пищевой таре Вздутие закрытой тары как признак возможного внутреннего давления. вздутая банка вздутая тара газ в закрытой еде"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:random-trials:en",

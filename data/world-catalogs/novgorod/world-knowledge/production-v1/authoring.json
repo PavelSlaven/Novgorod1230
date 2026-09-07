@@ -234,6 +234,7 @@
     "trade-economy-batch-03-gap-closure-v1.json",
     "verification-trade-economy-batch-03-gap-closure-v1.json",
     "final-static-batch-01-gap-repair-v1.json",
-    "verification-final-static-batch-01-gap-repair-v1.json"
+    "verification-final-static-batch-01-gap-repair-v1.json",
+    "final-static-streak-01-gap-repair-v1.json"
   ]
 }

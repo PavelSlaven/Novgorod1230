@@ -1,0 +1,183 @@
+{
+  "batch": "final-static-streak-r3-01",
+  "generator": "/root/r3_b1_free",
+  "sampling_component": "free",
+  "candidate_commit": "63bea9e204d8af2464728688a69a5e57cd522523",
+  "cases": [
+    {
+      "case_id": "fssr3-01-free-001",
+      "location": "under a timber arcade beside Novgorod's fish market",
+      "person": "a woman buying lamp wicks",
+      "circumstances": "a carrier has dropped a basket of live eels, and several are sliding through meltwater toward the street drain",
+      "situation": "Vendors shout at one another while the woman notices a small child trying to catch an eel with bare hands beside a cart wheel."
+    },
+    {
+      "case_id": "fssr3-01-free-002",
+      "location": "a birch-bark roof above a riverside dye workshop",
+      "person": "a teenage apprentice sent to clear snow",
+      "circumstances": "the roof gives a dull crack beneath his feet and violet water is steaming from a broken vat below",
+      "situation": "He can hear workers arguing inside, but no one knows he is on the roof."
+    },
+    {
+      "case_id": "fssr3-01-free-003",
+      "location": "a narrow ice road across a flooded meadow near Lake Ilmen",
+      "person": "an old man driving a goat cart",
+      "circumstances": "wind has covered the road markers, and the goat refuses to move toward a stretch of glassy ice",
+      "situation": "A second traveler behind him claims to know a shortcut, though his own boots are soaked to the ankle."
+    },
+    {
+      "case_id": "fssr3-01-free-004",
+      "location": "the loft of a small grain storehouse",
+      "person": "a miller's niece",
+      "circumstances": "pigeons have knocked a clay lamp into loose chaff, but its wick has gone out",
+      "situation": "She smells something scorching near a wall where last year's grain sacks are stacked too tightly to inspect."
+    },
+    {
+      "case_id": "fssr3-01-free-005",
+      "location": "a muddy lane outside a bathhouse",
+      "person": "a traveling icon painter",
+      "circumstances": "his wrapped panel has fallen from a handcart into slush just as bathhouse water is poured into the lane",
+      "situation": "The cart owner insists on leaving for the city gate before dusk, while two youths offer help only if allowed to see the painting."
+    },
+    {
+      "case_id": "fssr3-01-free-006",
+      "location": "a reed-fringed inlet on the Volkhov",
+      "person": "a widow checking eel traps",
+      "circumstances": "one trap contains a silver-colored spoon tangled with weeds, but no fish",
+      "situation": "A nearby boat has fresh scrape marks on its hull and no oars visible, while fog is closing over the water."
+    },
+    {
+      "case_id": "fssr3-01-free-007",
+      "location": "inside a crowded rope-maker's yard",
+      "person": "a boy delivering flax tow",
+      "circumstances": "a twisting wheel has caught the loose end of his sleeve, though the wheel is turning slowly",
+      "situation": "The rope-maker is arguing at the far gate and a dog is barking close enough to startle the boy."
+    },
+    {
+      "case_id": "fssr3-01-free-008",
+      "location": "a forest clearing used for drying mushrooms",
+      "person": "a grandmother with two grandchildren",
+      "circumstances": "the children find a fresh ash circle and a warm stone beneath a pile of leaves",
+      "situation": "Rain begins, and the grandmother must decide whether the hidden fire is a danger, a stranger's shelter, or both."
+    },
+    {
+      "case_id": "fssr3-01-free-009",
+      "location": "a monastery guest stable before dawn",
+      "person": "a young stable hand",
+      "circumstances": "one mule has chewed through the tether of a visiting merchant's horse and now stands over an overturned feed bin",
+      "situation": "The merchant's saddlebags are hanging open, and hoofbeats approach from the road."
+    },
+    {
+      "case_id": "fssr3-01-free-010",
+      "location": "a sandbank below a ferry crossing",
+      "person": "a ferryman's daughter",
+      "circumstances": "the ferry rope has snagged on a floating log and a passenger's basket of hens is drifting away from the landing",
+      "situation": "Her father is waist-deep in water trying to free the rope, while a gust threatens to turn the empty ferry broadside."
+    },
+    {
+      "case_id": "fssr3-01-free-011",
+      "location": "a cooper's shed behind a wealthy courtyard",
+      "person": "a servant sent for a vinegar barrel",
+      "circumstances": "she finds two nearly identical barrels, but one has a chalk mark she cannot read and smells faintly of pitch",
+      "situation": "The cook is waiting with pickling vegetables, and the cooper has gone to answer a summons across town."
+    },
+    {
+      "case_id": "fssr3-01-free-012",
+      "location": "a footpath beside an abandoned clay pit",
+      "person": "a shepherd looking for a missing lamb",
+      "circumstances": "he hears bleating from below the crumbling edge and sees fresh adult footprints ending at the pit rim",
+      "situation": "His dog is straining toward the slope, but the shepherd carries only a crook and a small knife."
+    },
+    {
+      "case_id": "fssr3-01-free-013",
+      "location": "a weaver's room lit by a single window",
+      "person": "a deaf woman sorting dyed thread",
+      "circumstances": "a raven has flown through the open shutter and carried a bright red skein onto a ceiling beam",
+      "situation": "Below it, a pot of mordant has tipped against the loom, and she cannot hear neighbors calling from the lane."
+    },
+    {
+      "case_id": "fssr3-01-free-014",
+      "location": "a winter market stall selling carved spoons",
+      "person": "a craftsman with frostbitten fingers",
+      "circumstances": "a customer accuses him of replacing a promised walnut spoon with an alder one after snow obscured the goods",
+      "situation": "The craftsman remembers the commission but cannot feel the grain well enough to be certain which spoon he held back."
+    },
+    {
+      "case_id": "fssr3-01-free-015",
+      "location": "a narrow wooden dock after a spring flood",
+      "person": "a novice fisherman",
+      "circumstances": "a waterlogged chest is wedged beneath the dock and knocks against the posts with each swell",
+      "situation": "The dock is already splintering, and his uncle has forbidden him from touching cargo washed in from upriver."
+    },
+    {
+      "case_id": "fssr3-01-free-016",
+      "location": "a smoky kitchen in a roadside inn",
+      "person": "an innkeeper's son",
+      "circumstances": "a stranger's goose has swallowed a brass button from the floor and now flaps wildly among the cooking pots",
+      "situation": "The stranger demands the bird be caught unharmed, while broth boils over and three hungry travelers wait at the table."
+    },
+    {
+      "case_id": "fssr3-01-free-017",
+      "location": "a willow bridge over a marshy stream",
+      "person": "a woman carrying a sealed basket of eggs",
+      "circumstances": "one of the bridge lashings has come loose and a cow is pushing from the opposite side",
+      "situation": "The woman sees a boy beneath the bridge gathering driftwood, unaware that the whole span is shifting."
+    },
+    {
+      "case_id": "fssr3-01-free-018",
+      "location": "a cobbler's bench near a town gate",
+      "person": "a soldier on leave",
+      "circumstances": "he discovers his boot sole has been stitched with a strip cut from a written birch-bark note",
+      "situation": "The cobbler is absent, guards are beginning to close the gate, and rain is making the writing blur."
+    },
+    {
+      "case_id": "fssr3-01-free-019",
+      "location": "a hay barge moored beneath a low bridge",
+      "person": "a bargewoman",
+      "circumstances": "rising water has lifted the barge until its stacked hay presses against bridge beams",
+      "situation": "Her sleeping brother is below deck, and cutting the mooring may send the barge into the night current."
+    },
+    {
+      "case_id": "fssr3-01-free-020",
+      "location": "a village well surrounded by thawing snow",
+      "person": "a healer fetching water",
+      "circumstances": "the bucket rope has snapped, leaving a wooden pail bobbing just beyond reach in the well shaft",
+      "situation": "A coughing child waits nearby for warm water, while another villager says the well stones have begun to shift."
+    },
+    {
+      "case_id": "fssr3-01-free-021",
+      "location": "a shed where beeswax candles are poured",
+      "person": "a beekeeper's wife",
+      "circumstances": "a swarm has entered through a roof gap and gathered above the cooling molds",
+      "situation": "The door is blocked by stacked baskets, and her husband is away selling honey with the only veil."
+    },
+    {
+      "case_id": "fssr3-01-free-022",
+      "location": "a wooded slope beside a charcoal road",
+      "person": "a man searching for his lost axe",
+      "circumstances": "he finds a freshly buried clay pot whose lid has been cracked by a tree root",
+      "situation": "Snowmelt is running into the opening, and distant voices move along the road toward him."
+    },
+    {
+      "case_id": "fssr3-01-free-023",
+      "location": "a crowded porch outside a communal oven",
+      "person": "a woman with a newborn wrapped beneath her cloak",
+      "circumstances": "a draft has blown a neighbor's cooling rye loaf into a muddy puddle where a pig is nosing it",
+      "situation": "The oven keeper insists the next batch must go in now, but the loaf belongs to a household known for disputes."
+    },
+    {
+      "case_id": "fssr3-01-free-024",
+      "location": "a quiet corner of a fur warehouse",
+      "person": "a clerk counting bundles",
+      "circumstances": "he notices a trail of blue thread leading from a torn bale to a locked side door",
+      "situation": "The warehouse owner is entertaining buyers upstairs, and a cat is scratching from behind the locked door."
+    },
+    {
+      "case_id": "fssr3-01-free-025",
+      "location": "a peat-cutting field at evening",
+      "person": "a girl sent to bring her father supper",
+      "circumstances": "she finds his spade standing upright beside a fresh cut, but his meal basket has been opened and crows circle nearby",
+      "situation": "Fog is thickening across the pits, and the girl can hear someone coughing without seeing where the sound comes from."
+    }
+  ]
+}

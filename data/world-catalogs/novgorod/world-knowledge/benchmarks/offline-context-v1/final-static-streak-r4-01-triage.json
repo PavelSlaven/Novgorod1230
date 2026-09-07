@@ -1,0 +1,93 @@
+{
+  "batch": "final-static-streak-r4-01",
+  "triager": "/root/r4_b1_triage",
+  "corpus_basis": {
+    "commit": "b6feb79880b8221d2f046367c00ef310b898f0cd",
+    "bundle": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json"
+  },
+  "method": "WK-only cross-triage of all reviewer flags. Transparent common-sense composition and bounded action bridges are allowed; exact state, outcome, price, diagnosis, numeric mechanics, and authoritative local facts are out of scope.",
+  "entries": [
+    {
+      "case_id": "fssr4-01-core-a-002",
+      "original_gap": "Нет переиспользуемой предпосылки о том, как температура сливок и механическое сбивание связаны с отделением масла.",
+      "verdict": "genuine_gap",
+      "rationale_ru": "В runtime bundle нет claim о фазовом отделении масла при сбивании сливок либо о качественной зависимости процесса от температуры и продолжения работы. Наличие масла как продукта не даёт эту центральную причинную связь; без неё существенная часть практического ответа была бы произвольной.",
+      "claim_refs": [],
+      "proposed_family": "butter-churning-conditions-and-phase-separation"
+    },
+    {
+      "case_id": "fssr4-01-core-a-005",
+      "original_gap": "Нет factual premise о том, как трещина скорлупы вместе с тёплым хранением меняет осторожность обращения с яйцом.",
+      "verdict": "genuine_gap",
+      "rationale_ru": "Claim о разделении сырых яиц с другой пищей говорит о перекрёстном загрязнении, но не связывает повреждение скорлупы и тёплое хранение с осторожным обращением. Это самостоятельная reusable предпосылка; из имеющихся claims нельзя вывести её, не придумав существенную фактическую связь.",
+      "claim_refs": [
+        "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination"
+      ],
+      "proposed_family": "cracked-egg-shell-and-warm-storage-handling"
+    },
+    {
+      "case_id": "fssr4-01-core-a-014",
+      "original_gap": "Нет premise, связывающей пересыхание деревянного колеса с ослаблением железной шины и риском при движении с грузом.",
+      "verdict": "genuine_gap",
+      "rationale_ru": "Claims о зависимости свойств древесины от влажности описывают общий материал, но не посадку железной шины на деревянное колесо и её практический риск при движении. Переход от общего изменения свойства к этому составному узлу не является прозрачным action bridge, поэтому существенная premise отсутствует.",
+      "claim_refs": [
+        "claim:foundations-mat-06-wood-drying-property-change",
+        "claim:wood-anisotropy-moisture",
+        "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
+        "claim:population-wood-cart"
+      ],
+      "proposed_family": "wooden-wheel-drying-and-iron-tire-fit"
+    },
+    {
+      "case_id": "fssr4-01-core-a-018",
+      "original_gap": "Нет reusable premise о том, как мокрая шерсть, беспокойство животного и тупой инструмент меняют тягу и риск пореза.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Bundle подтверждает историческую совместимость ножниц для стрижки, стадное поведение овец и изменение шерсти при влаге и механическом воздействии. Решение не продолжать работу с мокрым, беспокойным животным или явно плохо режущим инструментом — прозрачный bounded safety bridge; он не требует утверждать конкретный порез, степень тяги или исход.",
+      "claim_refs": [
+        "claim:harvest-sheep-shearing-scissors",
+        "claim:fauna-sheep-flocking",
+        "claim:static-wool-moisture-heat-mechanical-action-can-felt"
+      ]
+    },
+    {
+      "case_id": "fssr4-01-core-a-019",
+      "original_gap": "Нет premise о пищевом охранном поведении и о том, как дистанция и резкие движения меняют риск эскалации.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Bundle даёт наблюдаемые социальные сигналы собаки. Пройти с ребёнком, сохранив дистанцию и не делая резких движений, — ограниченный common-sense bridge для неэскалации; он не объявляет пищевую охрану, укус или реакцию конкретной собаки фактом.",
+      "claim_refs": [
+        "claim:fauna-mammals-domestic-dog-multimodal-communication",
+        "claim:fauna-mammals-domestic-dog-flexible-sociality"
+      ]
+    },
+    {
+      "case_id": "fssr4-01-core-a-021",
+      "original_gap": "Нет premise о различии глубокого промачивания корневой зоны и частого поверхностного смачивания при ограниченной воде.",
+      "verdict": "genuine_gap",
+      "rationale_ru": "Имеющиеся claims устанавливают, что воду поглощают корни и что вода нужна росту, но не дают качественную связь между способом подачи воды, корневой зоной и поверхностным увлажнением. Это центральная reusable premise для практического выбора при дефиците воды, а не точная норма или прогноз урожая.",
+      "claim_refs": [
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals"
+      ],
+      "proposed_family": "root-zone-watering-versus-shallow-sprinkling"
+    },
+    {
+      "case_id": "fssr4-01-core-a-022",
+      "original_gap": "Нет premise о том, что недостаточно высушенные семена при хранении могут нагреваться, плесневеть или терять всхожесть.",
+      "verdict": "covered_composable",
+      "rationale_ru": "Bundle уже связывает влажность и температуру с ограничениями хранения зерна, сушку — с уменьшением доступной воды для микроорганизмов, а отобранное зерно — с будущим посевом. Отсюда можно обоснованно досушить и проверять материал на сырость или видимые изменения, не утверждая нагрев, плесень либо всхожесть конкретной партии.",
+      "claim_refs": [
+        "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:drying-reduces-microbial-growth-conditions",
+        "claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use"
+      ]
+    }
+  ],
+  "summary": {
+    "reviewed_flags": 7,
+    "covered_composable": 3,
+    "out_of_scope_state": 0,
+    "genuine_gaps": 4,
+    "substantial_gaps": 4
+  }
+}

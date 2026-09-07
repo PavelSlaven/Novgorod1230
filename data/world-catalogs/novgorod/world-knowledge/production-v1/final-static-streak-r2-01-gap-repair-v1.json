@@ -1,0 +1,1091 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-roots",
+      "title": "Potato (Early Crop)",
+      "authors": [],
+      "publication": "UC Davis Postharvest Research and Extension Center",
+      "source_kind": "official_documentation",
+      "citation": "https://postharvest.ucdavis.edu/produce-facts-sheets/potato",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-leaves",
+      "title": "Powdery Mildew",
+      "authors": [],
+      "publication": "Cornell University",
+      "source_kind": "official_documentation",
+      "citation": "https://greenhouse.cornell.edu/pests-diseases/disease-factsheets/powdery-mildew/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-ice",
+      "title": "Ice House & Tack Room",
+      "authors": [],
+      "publication": "U.S. National Park Service",
+      "source_kind": "official_documentation",
+      "citation": "https://home.nps.gov/places/ice-house-tack-room.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-lye",
+      "title": "Sodium Hydroxide: Medical Management Guidelines",
+      "authors": [],
+      "publication": "CDC/ATSDR",
+      "source_kind": "official_documentation",
+      "citation": "https://wwwn.cdc.gov/TSP/MMG/MMGDetails.aspx?mmgid=246&toxid=45",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-compost",
+      "title": "Fire Prevention 52: Spontaneous Combustion—Fact or Fiction?",
+      "authors": [],
+      "publication": "U.S. National Park Service",
+      "source_kind": "official_documentation",
+      "citation": "https://www.nps.gov/articles/fire-prevention-52-spontaneous-combustion.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-porridge",
+      "title": "Cooking with Heat",
+      "authors": [],
+      "publication": "University of Kentucky Cooperative Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://fcs.mgcafe.uky.edu/sites/fcs.mgcafe.uky.edu/files/fn-ssb_002_cookingwithheat_2022.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-onion",
+      "title": "Onion Production Guide",
+      "authors": [],
+      "publication": "University of Georgia Cooperative Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.uga.edu/publications/detail.html?number=B1198&title=onion-production-guide",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-leaves-diagnostic",
+      "title": "Powdery Mildew of Strawberry",
+      "authors": [],
+      "publication": "North Carolina State Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://content.ces.ncsu.edu/powdery-mildew-of-strawberry",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-soap-attempt",
+      "title": "DIY: Make Your Own Soap",
+      "authors": [],
+      "publication": "Open University",
+      "source_kind": "official_documentation",
+      "citation": "https://www.open.edu/openlearn/science-maths-technology/science/diy-make-your-own-soap",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-porridge-bottom",
+      "title": "Instructor's manual foundation course: school lunch",
+      "authors": [],
+      "publication": "Georgia State Department of Education",
+      "source_kind": "official_documentation",
+      "citation": "https://dlg.usg.edu/record/dlg_ggpd_s-ga-be300-pa2-bm1-b1969-bl8",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-onion-root",
+      "title": "Helping Vegetable Crops Through Drought and Heat",
+      "authors": [],
+      "publication": "UConn Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.uconn.edu/publication/vegetable-crops-drought-and-heat/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r201-plant-ambiguity",
+      "title": "Why is my houseplant wilting?",
+      "authors": [],
+      "publication": "Iowa State University Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://yardandgarden.extension.iastate.edu/faq/why-my-houseplant-wilting",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-roots",
+      "source_ref": "source:r201-roots",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern bounded causal relation only; no medieval availability, state, recipe, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-leaves",
+      "source_ref": "source:r201-leaves",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern bounded causal relation only; no medieval availability, state, recipe, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-ice",
+      "source_ref": "source:r201-ice",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern bounded causal relation only; no medieval availability, state, recipe, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-lye",
+      "source_ref": "source:r201-lye",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern bounded causal relation only; no medieval availability, state, recipe, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-compost",
+      "source_ref": "source:r201-compost",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern bounded causal relation only; no medieval availability, state, recipe, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-porridge",
+      "source_ref": "source:r201-porridge",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern bounded causal relation only; no medieval availability, state, recipe, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-onion",
+      "source_ref": "source:r201-onion",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern bounded causal relation only; no medieval availability, state, recipe, diagnosis or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-leaves-diagnostic",
+      "source_ref": "source:r201-leaves-diagnostic",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Diagnostic magnification distinguishes fungal structures from lookalike residues.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-soap-attempt",
+      "source_ref": "source:r201-soap-attempt",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Ash-derived alkaline-fat attempts can fail or separate; no recipe or usable product follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-porridge-bottom",
+      "source_ref": "source:r201-porridge-bottom",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Bottom and sides cook faster in thick starch mixtures; low heat and stirring are bounded mitigation.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-onion-root",
+      "source_ref": "source:r201-onion-root",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Root-zone moisture inspection is needed beyond surface appearance.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r201-plant-ambiguity",
+      "source_ref": "source:r201-plant-ambiguity",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Dry and over-wet root conditions can both limit water supply and produce wilt.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:r201-repair",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:r201-repair",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:r201-repair",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:r201-repair",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:r201-repair",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-roots-1",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Frozen tissue can appear water-soaked or glassy and break down after thawing; visible softened, collapsed or decaying pieces justify inspection and sorting without identifying cause or batch safety."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-roots"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-roots-2",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Freezing injury and decay observations are distinct; sorting limits exposure but cannot restore damaged stock or prove neighbouring food sound."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-roots"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-leaves-1",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A white or gray powdery leaf coating supports field suspicion and careful inspection, not proof of mildew, species, spread or remedy."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-leaves"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-leaves-2",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Loose surface material can change what is visible without proving whether an underlying infection exists."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-leaves-diagnostic"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-ice-1",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Insulating packing, protected enclosure and a meltwater path can reduce heat gain or water damage around stored ice without stopping melt or proving duration."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-ice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-ice-2",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Opening, packing condition and drainage are observable storage conditions, not proof of a historical icehouse design."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-ice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-lye-1",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Unknown-strength alkaline liquor, splashes, hot liquid and mist are conditional skin and eye hazards; this does not assign a reagent strength or recipe."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-lye"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-lye-2",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "An alkaline-fat attempt can separate, remain oily or otherwise fail; no usable soap or safe recovery follows."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-soap-attempt"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-compost-1",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Compost or manure piles can self-heat; a warm pile is not automatically aflame, while smoke is a dangerous fire state."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-compost"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-compost-2",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Opening or spreading a smoking pile can introduce oxygen and increase immediate fire risk; it is not a guaranteed fix."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-compost"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-porridge-1",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Heating starch absorbs water and thickens; pan-contact material can scorch before less-cooked material away from the pan."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-porridge",
+        "evidence:r201-porridge-bottom"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-porridge-2",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Lower heat and stirring or scraping can mitigate local scorching but cannot unburn a portion or guarantee uniform cooking."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-porridge-bottom"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-onion-1",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Onion water stress can reduce growth while visible wilt is not a sufficient moisture test; root-zone moisture needs observation."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-onion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r201-onion-2",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:r201-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Dry-looking surface, wilt or droop can have multiple causes; watering does not guarantee recovery or exclude root damage, disease or excess-water stress."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r201-onion-root",
+        "evidence:r201-plant-ambiguity"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:r201-repair",
+      "locale": "ru",
+      "labels": [
+        "environment"
+      ],
+      "short_definition": "Ограниченный современный контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:r201-repair",
+      "locale": "en",
+      "labels": [
+        "environment"
+      ],
+      "short_definition": "Bounded modern context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:r201-repair",
+      "locale": "ru",
+      "labels": [
+        "biology_physiology"
+      ],
+      "short_definition": "Ограниченный современный контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:r201-repair",
+      "locale": "en",
+      "labels": [
+        "biology_physiology"
+      ],
+      "short_definition": "Bounded modern context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:r201-repair",
+      "locale": "ru",
+      "labels": [
+        "architecture_settlement"
+      ],
+      "short_definition": "Ограниченный современный контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:r201-repair",
+      "locale": "en",
+      "labels": [
+        "architecture_settlement"
+      ],
+      "short_definition": "Bounded modern context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:r201-repair",
+      "locale": "ru",
+      "labels": [
+        "chemistry_process"
+      ],
+      "short_definition": "Ограниченный современный контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:chemistry_process:r201-repair",
+      "locale": "en",
+      "labels": [
+        "chemistry_process"
+      ],
+      "short_definition": "Bounded modern context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:r201-repair",
+      "locale": "ru",
+      "labels": [
+        "craft_technology"
+      ],
+      "short_definition": "Ограниченный современный контекст.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:r201-repair",
+      "locale": "en",
+      "labels": [
+        "craft_technology"
+      ],
+      "short_definition": "Bounded modern context.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-roots-1",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Frozen tissue can appear water-soaked or glassy and break down after thawing; visible softened, collapsed or decaying pieces justify inspection and sorting without identifying cause or batch safety.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-roots-1",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Frozen tissue can appear water-soaked or glassy and break down after thawing; visible softened, collapsed or decaying pieces justify inspection and sorting without identifying cause or batch safety.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-roots-2",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Freezing injury and decay observations are distinct; sorting limits exposure but cannot restore damaged stock or prove neighbouring food sound.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-roots-2",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Freezing injury and decay observations are distinct; sorting limits exposure but cannot restore damaged stock or prove neighbouring food sound.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-leaves-1",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: A white or gray powdery leaf coating supports field suspicion and careful inspection, not proof of mildew, species, spread or remedy.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-leaves-1",
+      "locale": "en",
+      "runtime_text": "INFERENCE: A white or gray powdery leaf coating supports field suspicion and careful inspection, not proof of mildew, species, spread or remedy.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-leaves-2",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Loose surface material can change what is visible without proving whether an underlying infection exists.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-leaves-2",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Loose surface material can change what is visible without proving whether an underlying infection exists.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-ice-1",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Insulating packing, protected enclosure and a meltwater path can reduce heat gain or water damage around stored ice without stopping melt or proving duration.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-ice-1",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Insulating packing, protected enclosure and a meltwater path can reduce heat gain or water damage around stored ice without stopping melt or proving duration.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-ice-2",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Opening, packing condition and drainage are observable storage conditions, not proof of a historical icehouse design.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-ice-2",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Opening, packing condition and drainage are observable storage conditions, not proof of a historical icehouse design.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-lye-1",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Unknown-strength alkaline liquor, splashes, hot liquid and mist are conditional skin and eye hazards; this does not assign a reagent strength or recipe.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-lye-1",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Unknown-strength alkaline liquor, splashes, hot liquid and mist are conditional skin and eye hazards; this does not assign a reagent strength or recipe.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-lye-2",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: An alkaline-fat attempt can separate, remain oily or otherwise fail; no usable soap or safe recovery follows.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-lye-2",
+      "locale": "en",
+      "runtime_text": "INFERENCE: An alkaline-fat attempt can separate, remain oily or otherwise fail; no usable soap or safe recovery follows.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-compost-1",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Compost or manure piles can self-heat; a warm pile is not automatically aflame, while smoke is a dangerous fire state.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-compost-1",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Compost or manure piles can self-heat; a warm pile is not automatically aflame, while smoke is a dangerous fire state.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-compost-2",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Opening or spreading a smoking pile can introduce oxygen and increase immediate fire risk; it is not a guaranteed fix.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-compost-2",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Opening or spreading a smoking pile can introduce oxygen and increase immediate fire risk; it is not a guaranteed fix.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-porridge-1",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Heating starch absorbs water and thickens; pan-contact material can scorch before less-cooked material away from the pan.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-porridge-1",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Heating starch absorbs water and thickens; pan-contact material can scorch before less-cooked material away from the pan.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-porridge-2",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Lower heat and stirring or scraping can mitigate local scorching but cannot unburn a portion or guarantee uniform cooking.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-porridge-2",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Lower heat and stirring or scraping can mitigate local scorching but cannot unburn a portion or guarantee uniform cooking.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-onion-1",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Onion water stress can reduce growth while visible wilt is not a sufficient moisture test; root-zone moisture needs observation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-onion-1",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Onion water stress can reduce growth while visible wilt is not a sufficient moisture test; root-zone moisture needs observation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-onion-2",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Dry-looking surface, wilt or droop can have multiple causes; watering does not guarantee recovery or exclude root damage, disease or excess-water stress.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r201-onion-2",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Dry-looking surface, wilt or droop can have multiple causes; watering does not guarantee recovery or exclude root damage, disease or excess-water stress.",
+      "search_aliases": []
+    }
+  ]
+}

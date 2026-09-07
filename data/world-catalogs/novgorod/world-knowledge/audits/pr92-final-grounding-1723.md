@@ -17,4 +17,3 @@
 - P0: none.
 - P1: none.
 - P2: static grounding/approval is not whole-world completeness, current party/scene state, or gameplay saturation. This audit did not run live gameplay or assess activation/deployment state.
-

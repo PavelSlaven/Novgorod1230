@@ -1,8 +1,8 @@
 # PR92 final completeness/cartography audit — 1,723
 
-**Exact audited checkpoint:** `88920ab23bd2c0361f1f35373d116a59dc09fc23`  
-**R8 artifact checkpoint:** `7c82e83ab14e8244d415f652ce3c5ed235ce794d`  
-**Factual candidate/runtime:** `db1f8984a3b36838992b9a0c5911d6d2c735a951`  
+**Exact audited checkpoint:** `88920ab23bd2c0361f1f35373d116a59dc09fc23`
+**R8 artifact checkpoint:** `7c82e83ab14e8244d415f652ce3c5ed235ce794d`
+**Factual candidate/runtime:** `db1f8984a3b36838992b9a0c5911d6d2c735a951`
 **Verdict:** **PASS_WITH_P2**
 
 ## Scope and standard

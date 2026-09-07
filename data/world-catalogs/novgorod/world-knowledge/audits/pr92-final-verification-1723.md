@@ -28,4 +28,3 @@ Both updated reports pass against this 1,723-claim production bundle: `retrieval
 - P0: none.
 - P1: none.
 - P2: static machine verification only; not whole-world completeness, current party/scene state, gameplay saturation, or deployment/activation proof.
-

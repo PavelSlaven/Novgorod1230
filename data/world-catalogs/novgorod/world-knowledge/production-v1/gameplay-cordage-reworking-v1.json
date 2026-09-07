@@ -1,0 +1,151 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gameplay-cordage-reworking-editorial",
+      "title": "Cordage reworking — gameplay reconstruction v1",
+      "authors": ["Novgorod1230 World Knowledge editorial team"],
+      "publication": "PR92 research note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "research/gameplay-cordage-reworking-v1.md#bounded-reconstruction",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gameplay-cordage-reworking-editorial",
+      "source_ref": "source:gameplay-cordage-reworking-editorial",
+      "anchor": {"section": "Bounded reconstruction"},
+      "note": "Game-grade reconstruction of reworking an already present laid fibre cord. It establishes no item, material, condition, access, ownership, tool, strength, fishing gear or outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:cordage-reworking",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": ["wk:physics_material_science:modern-fibre-rope-condition"],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:cordage-reworking",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "an_already_present_laid_fibre_cord_can_sometimes_be_unlaid_into_component_yarns_or_strands_when_its_construction_remaining_length_and_condition_permit"},
+      "polarity": "support",
+      "applicability": {"conditions": [{"facet": "process_ref", "operator": "present"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gameplay-cordage-reworking-editorial"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:cordage-reworking",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "component_yarns_or_strands_recovered_from_existing_cordage_can_sometimes_be_retwisted_or_braided_into_thinner_cord_but_reworking_does_not_establish_usable_length_or_strength"},
+      "polarity": "support",
+      "applicability": {"conditions": [{"facet": "process_ref", "operator": "present"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gameplay-cordage-reworking-editorial", "evidence:gameplay-pe3-uaf-fibre-rope-condition", "evidence:gameplay-pe3-army-natural-fibre-rope-strength"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:cordage-reworking",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "a_reworked_cord_is_not_a_serviceable_fishing_line_until_its_actual_material_condition_continuity_attachments_and_required_load_are_suitable_for_the_intended_use"},
+      "polarity": "support",
+      "applicability": {"conditions": [{"facet": "process_ref", "operator": "present"}]},
+      "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gameplay-cordage-reworking-editorial", "evidence:gameplay-pe3-uaf-fibre-rope-condition", "evidence:gameplay-pe3-army-natural-fibre-rope-strength"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "coverage_profiles": [],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:cordage-reworking",
+      "locale": "ru",
+      "labels": ["Переработка верёвки и шнура"],
+      "short_definition": "Условная разборка и перевивка уже существующего волокнистого шнура.",
+      "search_aliases": ["распустить верёвку", "сплести тонкий шнур", "сделать леску из верёвки"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:cordage-reworking",
+      "locale": "en",
+      "labels": ["Cordage reworking"],
+      "short_definition": "Conditional unlaying and reworking of an existing fibre cord.",
+      "search_aliases": ["unlay rope", "make thinner cord", "make fishing line from rope"]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+      "locale": "ru",
+      "runtime_text": "Уже существующий витой волокнистый шнур иногда можно распустить на составляющие нити или пряди, если это позволяют его устройство, оставшаяся длина и состояние. Это не устанавливает материал, доступ, собственника, инструмент или результат.",
+      "search_aliases": ["распустить верёвку на пряди", "разобрать шнур", "волокна верёвки"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+      "locale": "en",
+      "runtime_text": "An existing laid fibre cord can sometimes be unlaid into component yarns or strands when construction, remaining length and condition permit. This establishes no material, access, owner, tool or outcome.",
+      "search_aliases": ["unlay rope into strands", "take cord apart", "rope fibres"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+      "locale": "ru",
+      "runtime_text": "Полученные из наличной верёвки нити или пряди иногда можно перевить либо сплести в более тонкий шнур, но такая переработка не гарантирует достаточную длину или прочность.",
+      "search_aliases": ["сплести тонкий шнур", "перевить пряди", "тонкая верёвка из старой"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+      "locale": "en",
+      "runtime_text": "Yarns or strands recovered from existing cordage can sometimes be retwisted or braided into thinner cord, but reworking does not guarantee usable length or strength.",
+      "search_aliases": ["make thin cord", "retwist strands", "cord from old rope"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+      "locale": "ru",
+      "runtime_text": "Переработанный шнур не становится автоматически пригодной леской: важны фактический материал и состояние, непрерывность, соединения и требуемая нагрузка. Это не создаёт снасть, улов или успешный исход.",
+      "search_aliases": ["леска из верёвки", "пригодность лески", "прочность рыболовной лески"]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+      "locale": "en",
+      "runtime_text": "Reworked cord is not automatically a serviceable fishing line: actual material and condition, continuity, attachments and required load matter. This creates no tackle, catch or successful outcome.",
+      "search_aliases": ["fishing line from rope", "line suitability", "fishing line strength"]
+    }
+  ]
+}

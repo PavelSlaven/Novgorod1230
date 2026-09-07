@@ -6212,6 +6212,160 @@
       "retrieval_text": "Домашняя вода и отходы Доступ к воде, перенос, мытьё, раздельные пути отходов и стока без утверждения состояния среды. Мытьё уже имеющегося человека, вещи или поверхности может убрать либо перенести видимую грязь; затем сырость меняется от времени, воздуха, тепла и обращения. Чистота и безопасность не гарантируются. принести воду мыть в доме отходы сток мыть грязь мокрая вещь сушить после мытья"
     },
     {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-living-birch-limits:en",
+      "target_ref": "claim:final-static-b01-living-birch-limits",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "environment Bounded source-backed context. INFERENCE: Avoiding wound extension and leaving bark around the stem reduces avoidable additional harm; observation after damage does not establish recovery."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-living-birch-limits:ru",
+      "target_ref": "claim:final-static-b01-living-birch-limits",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "environment Ограниченный source-backed контекст. INFERENCE: Не расширять рану и не снимать кору кольцом снижает добавочный вред; наблюдение не доказывает выздоровление."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-living-birch:en",
+      "target_ref": "claim:final-static-b01-living-birch",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "environment Bounded source-backed context. INFERENCE: A living tree's bark protects underlying conducting tissues; removing bark can injure those tissues; naturally loose outer bark is not the same as a fresh inner-bark wound."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-living-birch:ru",
+      "target_ref": "claim:final-static-b01-living-birch",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "environment Ограниченный source-backed контекст. INFERENCE: Живая кора защищает проводящие ткани; снятие коры может их повредить; свободная наружная береста не равна свежей ране."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-textile-cues:en",
+      "target_ref": "claim:final-static-b01-textile-cues",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "material_culture Bounded source-backed context. INFERENCE: Linen, wool and silk have differing observable handling tendencies, but smoothness or lustre alone does not identify silk."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-textile-cues:ru",
+      "target_ref": "claim:final-static-b01-textile-cues",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "material_culture Ограниченный source-backed контекст. INFERENCE: Лён, шерсть и шёлк дают разные наблюдаемые признаки, но гладкость или блеск сами не доказывают шёлк."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-textile-uncertainty:en",
+      "target_ref": "claim:final-static-b01-textile-uncertainty",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "material_culture Bounded source-backed context. INFERENCE: Without laboratory examination, an observed textile can be assigned only a probable fibre group; ageing, soil, finish and mixtures limit certainty."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-textile-uncertainty:ru",
+      "target_ref": "claim:final-static-b01-textile-uncertainty",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "material_culture Ограниченный source-backed контекст. INFERENCE: Без лаборатории ткань относят лишь к вероятной группе волокон; старение, загрязнение, отделка и смеси ограничивают уверенность."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-textile-wet-limit:en",
+      "target_ref": "claim:final-static-b01-textile-wet-limit",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "material_culture Bounded source-backed context. INFERENCE: Silk can weaken when wet and wool can felt; such material tendencies do not prove fibre identity, origin, price or status of an observed cloth."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-textile-wet-limit:ru",
+      "target_ref": "claim:final-static-b01-textile-wet-limit",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "material_culture Ограниченный source-backed контекст. INFERENCE: Шёлк может слабеть мокрым, а шерсть сваливаться; это не доказывает состав, происхождение, цену или статус ткани."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-wet-ground-goal:en",
+      "target_ref": "claim:final-static-b01-wet-ground-goal",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "architecture_settlement Bounded source-backed context. INFERENCE: Directing surface water away from a structure and limiting persistent wood-to-wet-ground contact are causal moisture-control goals, not a prescribed foundation design."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-wet-ground-goal:ru",
+      "target_ref": "claim:final-static-b01-wet-ground-goal",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "architecture_settlement Ограниченный source-backed контекст. INFERENCE: Отвести поверхностную воду и ограничить постоянный контакт древесины с мокрым грунтом — причинные цели, не обязательная конструкция основания."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-wet-ground-observation:en",
+      "target_ref": "claim:final-static-b01-wet-ground-observation",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "architecture_settlement Bounded source-backed context. INFERENCE: Standing water, runoff paths and soft or moving ground are observable reasons to reassess local support and drainage conditions."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-wet-ground-observation:ru",
+      "target_ref": "claim:final-static-b01-wet-ground-observation",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "architecture_settlement Ограниченный source-backed контекст. INFERENCE: Стоячая вода, сток и мягкий либо подвижный грунт — наблюдаемые причины перепроверить опору и водоотвод."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-wet-ground-wood-limit:en",
+      "target_ref": "claim:final-static-b01-wet-ground-wood-limit",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "architecture_settlement Bounded source-backed context. INFERENCE: Wood kept near persistent ground moisture has greater decay risk; a general moisture principle does not establish safe depth, bearing capacity or longevity."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-wet-ground-wood-limit:ru",
+      "target_ref": "claim:final-static-b01-wet-ground-wood-limit",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "architecture_settlement Ограниченный source-backed контекст. INFERENCE: Древесина у постоянной сырости сильнее рискует гниением; общий принцип не задаёт глубину, несущую способность или долговечность."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-willow-limits:en",
+      "target_ref": "claim:final-static-b01-willow-limits",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded source-backed context. INFERENCE: A trial bend and observed cracks, dryness or branching can guide cautious handling but do not guarantee a usable woven result."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-willow-limits:ru",
+      "target_ref": "claim:final-static-b01-willow-limits",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный source-backed контекст. INFERENCE: Пробный изгиб, трещины, сухость и ветвление направляют осторожное обращение, но не гарантируют годное плетение."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-willow-preparation:en",
+      "target_ref": "claim:final-static-b01-willow-preparation",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded source-backed context. INFERENCE: Fresh willow can shrink as it dries; dried willow may need sorting and soaking to regain flexibility; thicker rods can need more preparation."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-willow-preparation:ru",
+      "target_ref": "claim:final-static-b01-willow-preparation",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный source-backed контекст. INFERENCE: Свежая ива усыхает при сушке; сухие прутья могут нуждаться в сортировке и вымачивании; толстым нужна большая подготовка."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-willow-selection:en",
+      "target_ref": "claim:final-static-b01-willow-selection",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded source-backed context. INFERENCE: A willow shoot's straightness, branching, thickness and flexible response can be observed on that shoot; these cues do not prove species or defect-free strength."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:final-static-b01-willow-selection:ru",
+      "target_ref": "claim:final-static-b01-willow-selection",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный source-backed контекст. INFERENCE: Прямизну, ветвление, толщину и гибкость ивового прута наблюдают на самом пруте; признаки не доказывают породу или прочность."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability:en",
       "target_ref": "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
       "domain": "physics_material_science",
@@ -23334,6 +23488,20 @@
       "retrieval_text": "Условия хранения Осмотр влажности и разделение хранимых вещей. сырость в хранении"
     },
     {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:final-static-b01-architecture_settlement:en",
+      "target_ref": "wk:architecture_settlement:final-static-b01-architecture_settlement",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "architecture_settlement Bounded source-backed context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:final-static-b01-architecture_settlement:ru",
+      "target_ref": "wk:architecture_settlement:final-static-b01-architecture_settlement",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "architecture_settlement Ограниченный source-backed контекст."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:fishing-workspace:en",
       "target_ref": "wk:architecture_settlement:fishing-workspace",
       "domain": "architecture_settlement",
@@ -25292,6 +25460,20 @@
       "domain": "biology_physiology",
       "locale": "ru",
       "retrieval_text": "Неясное воздействие Осторожные пределы наблюдения при неясном токсичном или паразитарном риске. неясное отравление"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:final-static-b01-biology_physiology:en",
+      "target_ref": "wk:biology_physiology:final-static-b01-biology_physiology",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded source-backed context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:final-static-b01-biology_physiology:ru",
+      "target_ref": "wk:biology_physiology:final-static-b01-biology_physiology",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный source-backed контекст."
     },
     {
       "entry_ref": "wk-retrieval:wk:biology_physiology:flayed-skin-preservation:en",
@@ -28486,6 +28668,20 @@
       "retrieval_text": "Мокрая сеть и корпус Осмотр и условный уход за мокрой снастью и лодкой. мокрая сеть"
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft_technology:final-static-b01-craft_technology:en",
+      "target_ref": "wk:craft_technology:final-static-b01-craft_technology",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded source-backed context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:final-static-b01-craft_technology:ru",
+      "target_ref": "wk:craft_technology:final-static-b01-craft_technology",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный source-backed контекст."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:craft_technology:fire-ignition:en",
       "target_ref": "wk:craft_technology:fire-ignition",
       "domain": "craft_technology",
@@ -29562,6 +29758,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Деревья и лубяное волокно Сезонные и средовые различия деревьев и луб как волокнистый слой липы. липа луб хвойное зимой дерево на сыром берегу"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:final-static-b01-environment:en",
+      "target_ref": "wk:environment:final-static-b01-environment",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "environment Bounded source-backed context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:final-static-b01-environment:ru",
+      "target_ref": "wk:environment:final-static-b01-environment",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "environment Ограниченный source-backed контекст."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:flax-hemp-cultivation:en",
@@ -31354,6 +31564,20 @@
       "domain": "material_culture",
       "locale": "ru",
       "retrieval_text": "Войлок Войлок: материальная или функциональная категория; наличие и параметры задаёт состояние мира."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:final-static-b01-material_culture:en",
+      "target_ref": "wk:material_culture:final-static-b01-material_culture",
+      "domain": "material_culture",
+      "locale": "en",
+      "retrieval_text": "material_culture Bounded source-backed context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:material_culture:final-static-b01-material_culture:ru",
+      "target_ref": "wk:material_culture:final-static-b01-material_culture",
+      "domain": "material_culture",
+      "locale": "ru",
+      "retrieval_text": "material_culture Ограниченный source-backed контекст."
     },
     {
       "entry_ref": "wk-retrieval:wk:material_culture:firesteel:en",

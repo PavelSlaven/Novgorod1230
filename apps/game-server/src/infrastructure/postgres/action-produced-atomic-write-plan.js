@@ -52,7 +52,8 @@ export function createActionProducedAtomicWritePlan(rawInput) {
   const toolPins = load.row_pins.filter(({ role }) => role === 'tool');
   const sourceUpdates = deriveActionProducedSourceUpdates(proposal, sourcePins);
   const outputDestination = proposal.identity_mode === 'independent_outputs'
-      || load.row_pins.some(({ placement }) => placement.anchor_id != null)
+      || load.row_pins.some(({ placement }) => placement.anchor_id != null
+        || placement.scene_position_id != null)
     ? load.output_destination_pin : null;
   const resultItems = proposal.identity_mode === 'independent_outputs'
     ? proposal.results.map((result) => producedItem(result, sourcePins,

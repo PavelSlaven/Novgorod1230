@@ -1,7 +1,6 @@
 import { isDeepStrictEqual } from 'node:util';
 import { actionProducedAccessState,
   actionProducedControllerPermitted,
-  actionProducedControllerRef,
   actionProducedPlacementAccessible,
   validActionProducedAccessContainer } from
   './action-produced-contained-access.js';
@@ -10,6 +9,8 @@ import {
   exactActionProducedRecord as exact,
   failActionProducedPersistence as fail
 } from './action-produced-persistence-boundary.js';
+import { createActionProducedCommittedEntitySnapshot } from
+  './action-produced-committed-row-pin.js';
 
 const ROW_PIN_KEYS = [
   'role', 'item_id', 'item', 'placement', 'ownership', 'entity_snapshot',
@@ -205,15 +206,9 @@ function expectedEntity(pin, role, actorRef, finite,
       || !actionProducedControllerPermitted(ownership, role, actorRef)) {
     fail('ACTION_PRODUCED_PLAN_INVALID');
   }
-  return {
-    schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
-    commit_state: 'committed', role, entity_ref: pin.item_id,
-    state_version: String(item.state_version), lifecycle_state: 'active',
-    access_state: accessState, holder_ref: holderRef,
-    controller_ref: actionProducedControllerRef(ownership),
-    ownership_snapshot: structuredClone(ownership),
-    finite_resource: finite
-  };
+  return createActionProducedCommittedEntitySnapshot({ role,
+    itemId: pin.item_id, stateVersion: item.state_version,
+    accessState, holderRef, ownership, finiteResource: finite });
 }
 
 function validOwnership(value) {

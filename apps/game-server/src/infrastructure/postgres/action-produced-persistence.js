@@ -7,6 +7,8 @@ import { lockAndVerifyActionProducedContext } from
   './action-produced-persistence-context.js';
 import { lockAndVerifyPreparedActionProducedPin } from
   './action-produced-prepared-ordinary-persistence.js';
+import { actionProducedPlacementFromRow } from
+  './action-produced-committed-row-pin.js';
 import { actionProducedPlacementAccessible,
   actionProducedControllerPermitted,
   loadActionProducedAccessContainers } from
@@ -145,12 +147,19 @@ function accessibleByActor(placement, ownership, accessContainer, actorRef,
   accessAnchorId, accessScenePositionId, role) {
   const owners = Number(text(ownership.owner_character_id))
     + Number(text(ownership.owner_npc_id))
-    + Number(ownership.owner_party === true);
+    + Number(ownership.owner_party === true)
+    + Number(validExternalOwner(ownership.owner_external_ref));
   return actionProducedPlacementAccessible(placement, accessContainer,
     actorRef, accessAnchorId, accessScenePositionId)
     && actionProducedControllerPermitted(ownership, role, actorRef)
     && owners === 1 && typeof ownership.owner_party === 'boolean'
     && text(ownership.claim_state);
+}
+
+function validExternalOwner(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === 2 && text(value.entity_kind)
+    && text(value.entity_id);
 }
 
 async function rejectOutputCollisions(client, plan) {
@@ -231,17 +240,7 @@ function normalizedRows(row) {
       condition_state: row.condition_state, legal_status: row.legal_status,
       state: row.state, state_version: Number(row.state_version)
     },
-    placement: {
-      anchor_id: row.anchor_id,
-      ...(row.item_scene_position_id == null ? {}
-        : { scene_position_id: row.item_scene_position_id }),
-      container_id: row.container_id,
-      holder_npc_id: row.holder_npc_id,
-      holder_character_id: row.holder_character_id,
-      physical_position: row.physical_position,
-      equipment_slot_category_id: row.equipment_slot_category_id,
-      attached_item_id: row.attached_item_id
-    },
+    placement: actionProducedPlacementFromRow(row),
     ownership: {
       ownership_id: row.ownership_id, owner_npc_id: row.owner_npc_id,
       owner_character_id: row.owner_character_id,

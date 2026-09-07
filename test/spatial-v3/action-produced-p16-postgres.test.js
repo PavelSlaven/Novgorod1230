@@ -1217,6 +1217,22 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       FROM party_runtime.entity_placements
       WHERE party_id='party-a1' AND entity_kind='item' AND entity_id=$1`,
     [modernPosition.result_items[0].item_id])).rows[0].n, 0);
+
+    const sceneItemId = modernPosition.result_items[1].item_id;
+    await pool.query(`UPDATE party_runtime.party_ownership
+      SET owner_character_id=NULL,owner_external_ref=$1::jsonb,
+        controller_character_id=NULL,claim_state='property_bound'
+      WHERE party_id='party-a1' AND item_id=$2`, [JSON.stringify({
+      entity_kind: 'ordinary_property_source', entity_id: 'shore' }),
+    sceneItemId]);
+    const externalScene = await actionPlan(pool, {
+      partyVersion: movedVersion + 1, changeSetId: 'change-external-scene',
+      requestId: 'external-scene', actionRef: 'action-external-scene',
+      sources: [sceneItemId], tools: ['rollback-tool'],
+      mode: 'preserve_source'
+    });
+    assert.equal((await committer.commit({ plan: await combinedPlan(
+      externalScene, 'external-scene', movedVersion + 1) })).ok, true);
   });
 
 async function actionPlan(pool, config) {

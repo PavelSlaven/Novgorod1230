@@ -14,9 +14,9 @@ export function createActionProducedCommittedRowPin({
   row, role, actorRef, finite, accessAnchorId, accessScenePositionId,
   accessContainer = null, preparedOrdinary = null, preparedAction = null
 }) {
+  const placement = actionProducedPlacementFromRow(row);
   const accessPlacement = { ...row,
-    scene_position_id: row?.item_scene_position_id
-      ?? row?.scene_position_id };
+    scene_position_id: placement.scene_position_id ?? null };
   if (!row || !text(row.item_id)
       || !Number.isSafeInteger(Number(row.state_version))
       || Number(row.state_version) < 1
@@ -52,18 +52,6 @@ export function createActionProducedCommittedRowPin({
     legal_status: row.legal_status, state: row.state,
     state_version: Number(row.state_version)
   };
-  const placement = {
-    anchor_id: row.anchor_id,
-    ...(row.item_scene_position_id == null ? {} : {
-      scene_position_id: row.item_scene_position_id
-    }),
-    container_id: row.container_id,
-    holder_npc_id: row.holder_npc_id,
-    holder_character_id: row.holder_character_id,
-    physical_position: row.physical_position,
-    equipment_slot_category_id: row.equipment_slot_category_id,
-    attached_item_id: row.attached_item_id
-  };
   const ownership = {
     ownership_id: row.ownership_id,
     owner_npc_id: row.owner_npc_id,
@@ -85,15 +73,10 @@ export function createActionProducedCommittedRowPin({
         state_version: Number(row.scene_state_version)
       }
     }),
-    entity_snapshot: {
-      schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
-      commit_state: 'committed', role, entity_ref: row.item_id,
-      state_version: String(row.state_version), lifecycle_state: 'active',
-      access_state: access, holder_ref: holderRef,
-      controller_ref: actionProducedControllerRef(row),
-      ownership_snapshot: structuredClone(ownership),
-      finite_resource: finite?.snapshot ?? null
-    },
+    entity_snapshot: createActionProducedCommittedEntitySnapshot({ role,
+      itemId: row.item_id, stateVersion: row.state_version,
+      accessState: access, holderRef, ownership,
+      finiteResource: finite?.snapshot ?? null }),
     finite_resource_row: finite?.persisted_row ?? null,
     ...(accessContainer === null ? {} : {
       access_container: structuredClone(accessContainer)
@@ -102,6 +85,35 @@ export function createActionProducedCommittedRowPin({
       prepared_ordinary: preparedOrdinary
     }),
     ...(preparedAction === null ? {} : { prepared_action: preparedAction })
+  };
+}
+
+export function actionProducedPlacementFromRow(row) {
+  const scenePositionId = row?.item_scene_position_id
+    ?? row?.scene_position_id;
+  return {
+    anchor_id: row?.anchor_id,
+    ...(scenePositionId == null ? {} : {
+      scene_position_id: scenePositionId
+    }),
+    container_id: row?.container_id,
+    holder_npc_id: row?.holder_npc_id,
+    holder_character_id: row?.holder_character_id,
+    physical_position: row?.physical_position,
+    equipment_slot_category_id: row?.equipment_slot_category_id,
+    attached_item_id: row?.attached_item_id
+  };
+}
+
+export function createActionProducedCommittedEntitySnapshot({ role, itemId,
+  stateVersion, accessState, holderRef, ownership, finiteResource }) {
+  return {
+    schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
+    commit_state: 'committed', role, entity_ref: itemId,
+    state_version: String(stateVersion), lifecycle_state: 'active',
+    access_state: accessState, holder_ref: holderRef,
+    controller_ref: actionProducedControllerRef(ownership),
+    ownership_snapshot: structuredClone(ownership), finite_resource: finiteResource
   };
 }
 

@@ -10888,6 +10888,20 @@
       "retrieval_text": "Молочнокислое брожение Брожение с образованием молочной кислоты. Молочнокислое брожение образует молочную кислоту и может менять белки среды; готовая пища не подразумевается."
     },
     {
+      "entry_ref": "wk-retrieval:claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit:en",
+      "target_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Cordage reworking Conditional unlaying and reworking of an existing fibre cord. An existing laid fibre cord can sometimes be unlaid into component yarns or strands when construction, remaining length and condition permit. This establishes no material, access, owner, tool or outcome. unlay rope make thinner cord make fishing line from rope unlay rope into strands take cord apart rope fibres"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit:ru",
+      "target_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Переработка верёвки и шнура Условная разборка и перевивка уже существующего волокнистого шнура. Уже существующий витой волокнистый шнур иногда можно распустить на составляющие нити или пряди, если это позволяют его устройство, оставшаяся длина и состояние. Это не устанавливает материал, доступ, собственника, инструмент или результат. распустить верёвку сплести тонкий шнур сделать леску из верёвки распустить верёвку на пряди разобрать шнур волокна верёвки"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:later-novgorod-judicial-charter:en",
       "target_ref": "claim:later-novgorod-judicial-charter",
       "domain": "social_law_economy",
@@ -18490,6 +18504,20 @@
       "retrieval_text": "Рабочий поток места Качественные связи между этапами обычной работы и пространством. Мокрая работа может увлажнить оставленные рядом сухие ткань или зерно, а горячая обработка требует убрать от жара легко воспламеняющийся мусор. Поэтому на общей поверхности такие дела разумно разводить по очереди; это не задаёт процедуру или состояние места. мастерская работа мельница овин мокрая работа горячая работа"
     },
     {
+      "entry_ref": "wk-retrieval:claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength:en",
+      "target_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Cordage reworking Conditional unlaying and reworking of an existing fibre cord. Yarns or strands recovered from existing cordage can sometimes be retwisted or braided into thinner cord, but reworking does not guarantee usable length or strength. unlay rope make thinner cord make fishing line from rope make thin cord retwist strands cord from old rope"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength:ru",
+      "target_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Переработка верёвки и шнура Условная разборка и перевивка уже существующего волокнистого шнура. Полученные из наличной верёвки нити или пряди иногда можно перевить либо сплести в более тонкий шнур, но такая переработка не гарантирует достаточную длину или прочность. распустить верёвку сплести тонкий шнур сделать леску из верёвки перевить пряди тонкая верёвка из старой"
+    },
+    {
       "entry_ref": "wk-retrieval:claim:reduced-atp-reserves-can-cause-muscle-fatigue:en",
       "target_ref": "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
       "domain": "biology_physiology",
@@ -20448,6 +20476,20 @@
       "domain": "npc_daily_life",
       "locale": "ru",
       "retrieval_text": "Рыболовство, охота и пушной промысел требуют отдельно установленного ресурса, места и практики Рыболовство, охота и пушной промысел требуют отдельно установленного ресурса, места и практики; они не образуют автоматически единую профессию или набор навыков NPC."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reworked-cord-is-not-automatically-serviceable-fishing-line:en",
+      "target_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Cordage reworking Conditional unlaying and reworking of an existing fibre cord. Reworked cord is not automatically a serviceable fishing line: actual material and condition, continuity, attachments and required load matter. This creates no tackle, catch or successful outcome. unlay rope make thinner cord make fishing line from rope fishing line from rope line suitability fishing line strength"
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:reworked-cord-is-not-automatically-serviceable-fishing-line:ru",
+      "target_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Переработка верёвки и шнура Условная разборка и перевивка уже существующего волокнистого шнура. Переработанный шнур не становится автоматически пригодной леской: важны фактический материал и состояние, непрерывность, соединения и требуемая нагрузка. Это не создаёт снасть, улов или успешный исход. распустить верёвку сплести тонкий шнур сделать леску из верёвки леска из верёвки пригодность лески прочность рыболовной лески"
     },
     {
       "entry_ref": "wk-retrieval:claim:river-flow-affects-sediment-transport-deposition:en",
@@ -34420,6 +34462,20 @@
       "domain": "physics_material_science",
       "locale": "ru",
       "retrieval_text": "Конвективный перенос теплоты Квалифицированная универсальная физико-химическая предпосылка без утверждения о конкретном объекте."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:cordage-reworking:en",
+      "target_ref": "wk:physics_material_science:cordage-reworking",
+      "domain": "physics_material_science",
+      "locale": "en",
+      "retrieval_text": "Cordage reworking Conditional unlaying and reworking of an existing fibre cord. unlay rope make thinner cord make fishing line from rope"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:physics_material_science:cordage-reworking:ru",
+      "target_ref": "wk:physics_material_science:cordage-reworking",
+      "domain": "physics_material_science",
+      "locale": "ru",
+      "retrieval_text": "Переработка верёвки и шнура Условная разборка и перевивка уже существующего волокнистого шнура. распустить верёвку сплести тонкий шнур сделать леску из верёвки"
     },
     {
       "entry_ref": "wk-retrieval:wk:physics_material_science:current-magnetic-field:en",

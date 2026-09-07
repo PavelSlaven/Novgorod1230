@@ -4163,6 +4163,22 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gameplay-cordage-reworking-editorial",
+      "title": "Cordage reworking — gameplay reconstruction v1",
+      "authors": [
+        "Novgorod1230 World Knowledge editorial team"
+      ],
+      "publication": "PR92 research note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "research/gameplay-cordage-reworking-v1.md#bounded-reconstruction",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:grain-processing-hansson-2002",
       "title": "Pre- and protohistoric bread in Sweden: a definition and a review",
       "authors": [
@@ -16286,6 +16302,16 @@
         "section": "Figures 144–147; чапельник, светцы и подсвечники"
       },
       "note": "Independent verification: root rendered and read pp. 166–168. These are broad Ancient-Rus iron-form inferences, not a present lit object, candle, splinter, oven, pan or cookware set.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gameplay-cordage-reworking-editorial",
+      "source_ref": "source:gameplay-cordage-reworking-editorial",
+      "anchor": {
+        "section": "Bounded reconstruction"
+      },
+      "note": "Game-grade reconstruction of reworking an already present laid fibre cord. It establishes no item, material, condition, access, ownership, tool, strength, fishing gear or outcome.",
       "review_status": "approved"
     },
     {
@@ -48728,6 +48754,47 @@
           ],
           "short_definition": "Qualified universal physical or chemical premise, not a fact about a particular object.",
           "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:cordage-reworking",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:physics_material_science:modern-fibre-rope-condition"
+      ],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:cordage-reworking",
+          "locale": "ru",
+          "labels": [
+            "Переработка верёвки и шнура"
+          ],
+          "short_definition": "Условная разборка и перевивка уже существующего волокнистого шнура.",
+          "search_aliases": [
+            "распустить верёвку",
+            "сплести тонкий шнур",
+            "сделать леску из верёвки"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:physics_material_science:cordage-reworking",
+          "locale": "en",
+          "labels": [
+            "Cordage reworking"
+          ],
+          "short_definition": "Conditional unlaying and reworking of an existing fibre cord.",
+          "search_aliases": [
+            "unlay rope",
+            "make thinner cord",
+            "make fishing line from rope"
+          ]
         }
       }
     },
@@ -97849,6 +97916,61 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:cordage-reworking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an_already_present_laid_fibre_cord_can_sometimes_be_unlaid_into_component_yarns_or_strands_when_its_construction_remaining_length_and_condition_permit"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gameplay-cordage-reworking-editorial"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+          "locale": "ru",
+          "runtime_text": "Уже существующий витой волокнистый шнур иногда можно распустить на составляющие нити или пряди, если это позволяют его устройство, оставшаяся длина и состояние. Это не устанавливает материал, доступ, собственника, инструмент или результат.",
+          "search_aliases": [
+            "распустить верёвку на пряди",
+            "разобрать шнур",
+            "волокна верёвки"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+          "locale": "en",
+          "runtime_text": "An existing laid fibre cord can sometimes be unlaid into component yarns or strands when construction, remaining length and condition permit. This establishes no material, access, owner, tool or outcome.",
+          "search_aliases": [
+            "unlay rope into strands",
+            "take cord apart",
+            "rope fibres"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:gameplay-cordage-reworking-v1-unlaid-fibre-cord"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:later-novgorod-judicial-charter",
       "domain": "social_law_economy",
       "subject_ref": "wk:social_law_economy:later-novgorod-judicial-charter",
@@ -128642,6 +128764,63 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:cordage-reworking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "component_yarns_or_strands_recovered_from_existing_cordage_can_sometimes_be_retwisted_or_braided_into_thinner_cord_but_reworking_does_not_establish_usable_length_or_strength"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gameplay-cordage-reworking-editorial",
+        "evidence:gameplay-pe3-uaf-fibre-rope-condition",
+        "evidence:gameplay-pe3-army-natural-fibre-rope-strength"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+          "locale": "ru",
+          "runtime_text": "Полученные из наличной верёвки нити или пряди иногда можно перевить либо сплести в более тонкий шнур, но такая переработка не гарантирует достаточную длину или прочность.",
+          "search_aliases": [
+            "сплести тонкий шнур",
+            "перевить пряди",
+            "тонкая верёвка из старой"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+          "locale": "en",
+          "runtime_text": "Yarns or strands recovered from existing cordage can sometimes be retwisted or braided into thinner cord, but reworking does not guarantee usable length or strength.",
+          "search_aliases": [
+            "make thin cord",
+            "retwist strands",
+            "cord from old rope"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:gameplay-cordage-reworking-v1-reworked-components"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
       "domain": "biology_physiology",
       "subject_ref": "wk:biology_physiology:muscle-fatigue",
@@ -136411,6 +136590,63 @@
         }
       },
       "verification_ref": "wk-verification:production-resource-occupation-needs-setting"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:cordage-reworking",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "a_reworked_cord_is_not_a_serviceable_fishing_line_until_its_actual_material_condition_continuity_attachments_and_required_load_are_suitable_for_the_intended_use"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:gameplay-cordage-reworking-editorial",
+        "evidence:gameplay-pe3-uaf-fibre-rope-condition",
+        "evidence:gameplay-pe3-army-natural-fibre-rope-strength"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+          "locale": "ru",
+          "runtime_text": "Переработанный шнур не становится автоматически пригодной леской: важны фактический материал и состояние, непрерывность, соединения и требуемая нагрузка. Это не создаёт снасть, улов или успешный исход.",
+          "search_aliases": [
+            "леска из верёвки",
+            "пригодность лески",
+            "прочность рыболовной лески"
+          ]
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+          "locale": "en",
+          "runtime_text": "Reworked cord is not automatically a serviceable fishing line: actual material and condition, continuity, attachments and required load matter. This creates no tackle, catch or successful outcome.",
+          "search_aliases": [
+            "fishing line from rope",
+            "line suitability",
+            "fishing line strength"
+          ]
+        }
+      },
+      "verification_ref": "wk-verification:gameplay-cordage-reworking-v1-fishing-line-limit"
     },
     {
       "schema": "world_knowledge_claim_v1",
@@ -156876,6 +157112,17 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:physics_material_science:cordage-reworking": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:physics_material_science:cordage-reworking",
+        "domain": "physics_material_science",
+        "broader_refs": [],
+        "related_refs": [
+          "wk:physics_material_science:modern-fibre-rope-condition"
+        ],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:physics_material_science:current-magnetic-field": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:physics_material_science:current-magnetic-field",
@@ -162221,6 +162468,11 @@
       "wk:physics_material_science:convective-heat-transfer": [
         "claim:foundations-thm-01-convective-heat-transfer"
       ],
+      "wk:physics_material_science:cordage-reworking": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
+      ],
       "wk:physics_material_science:current-magnetic-field": [
         "claim:foundations-physical-b2-elc-03-current-magnetic-field"
       ],
@@ -164491,6 +164743,7 @@
         "claim:grain-processing-bread-oven-baking",
         "claim:hard-stone-abrasive-sawing",
         "claim:hard-stone-abrasive-shaping",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal",
         "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
         "claim:material-water-alum-skin-water",
@@ -164568,6 +164821,7 @@
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:research-carbon-monoxide-can-accumulate-indoors",
         "claim:research-carbon-monoxide-is-colorless-and-odorless",
@@ -164581,6 +164835,7 @@
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
         "claim:sound-background-noise-masks-speech",
         "claim:sound-reflections-arrive-after-direct-path",
@@ -165929,6 +166184,7 @@
         "claim:human-life-visitors-add-resource-demands",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:judicial-accusation-record",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:later-novgorod-judicial-charter",
         "claim:leather-broad-context",
         "claim:lime-transformations",
@@ -166321,6 +166577,7 @@
         "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:regional-agriculture-practice",
         "claim:regional-fish-exploitation",
         "claim:religion-olenin-adjudication",
@@ -166460,6 +166717,7 @@
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
         "claim:resource-occupation-needs-setting",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
@@ -167880,6 +168138,7 @@
         "claim:iron-corrosion-moisture-oxygen",
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:lime-transformations",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-fermentation-nutrients",
@@ -168112,6 +168371,7 @@
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
@@ -168202,6 +168462,7 @@
         "claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity",
         "claim:residual-tree-pinus-sylvestris-dry-infertile-soils",
         "claim:residual-tree-pinus-sylvestris-evergreen-needles",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
         "claim:seasonal-plant-development-depends-on-photoperiod",
@@ -169616,6 +169877,7 @@
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:resource-occupation-needs-setting",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:russkaya-pravda-comparative-only",
         "claim:urban-pavements",
@@ -171019,6 +171281,7 @@
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
         "claim:residual-nature-roof-melt-eave-refreezing",
         "claim:residual-nature-twilight-solar-afterglow",
@@ -171692,6 +171955,7 @@
         "claim:population-material-leather-dry",
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "wk:biology_physiology:fauna-common-adder"
       ],
       "важным": [
@@ -172052,6 +172316,7 @@
         "claim:population-net-cord",
         "claim:population-processes-hemp-cordage",
         "claim:population-weight-cord",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "wk:craft_technology:mb14-practical-making-and-repair",
         "wk:material_culture:cordage"
       ],
@@ -172059,8 +172324,12 @@
         "claim:population-net-cord"
       ],
       "верёвки": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:modern-fibre-rope-condition",
         "wk:physics_material_science:reality-batch-01-releasable-rope-knot"
       ],
@@ -172069,9 +172338,11 @@
       ],
       "верёвку": [
         "claim:early-rus-hunting-ground-terms",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
+        "wk:physics_material_science:cordage-reworking",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
       ],
       "верёвок": [
@@ -173000,6 +173271,9 @@
       "вирусы": [
         "claim:foundations-life-28-virus-replication",
         "wk:biology_physiology:foundation-virus-replication"
+      ],
+      "витой": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit"
       ],
       "вихри": [
         "claim:foundations-phys-05-flow-regime-speed"
@@ -174696,6 +174970,7 @@
         "claim:candle-thread-wick",
         "claim:clothing-hemp",
         "claim:fibre-flax-breaker-shive",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:livestock-swine-comparative-diet",
         "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
         "claim:material-water-linen-flax-origin",
@@ -174725,6 +175000,9 @@
         "claim:textile-dye-mordant-fixation",
         "wk:biology_physiology:swine-digestion"
       ],
+      "волокнистого": [
+        "wk:physics_material_science:cordage-reworking"
+      ],
       "волокнистой": [
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
         "wk:physics_material_science:modern-fibre-rope-condition"
@@ -174736,6 +175014,7 @@
         "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
         "claim:final-nature-basswood-bast-property-does-not-transfer-to-unidentified-tree-bark",
         "claim:final-nature-basswood-inner-bark-is-a-fibrous-bast-material",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "wk:environment:final-nature-tree-and-bast-context",
         "wk:material_culture:tarred-tow"
@@ -176568,6 +176847,7 @@
         "claim:population-material-clay-drying",
         "claim:population-net-weights",
         "claim:population-physics-point-pressure",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
         "claim:sound-background-noise-masks-speech",
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
@@ -179744,6 +180024,7 @@
       "длина": [
         "claim:fauna-bird-migration-cues",
         "claim:fauna-dragonfly-emergence",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:seasonal-plant-development-depends-on-photoperiod",
         "wk:biology_physiology:fauna-bird-migration",
@@ -179769,6 +180050,7 @@
         "claim:place-outdoors-forest-structure-and-season"
       ],
       "длину": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:textile-fibres-twist-yarn",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference"
       ],
@@ -181130,7 +181412,8 @@
         "claim:livestock-rumen-forage-digestion"
       ],
       "достаточную": [
-        "claim:candidate-physiology-v3-blood-volume-perfusion-compensation"
+        "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "достаточный": [
         "claim:food-preservation-qualitative",
@@ -181172,6 +181455,7 @@
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-learning-needs-time-task-material-access",
         "claim:human-life-standing-can-affect-social-access",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
         "claim:military-world-animals-and-households-have-continuing-needs",
         "claim:military-world-crossing-conditions-remain-local",
@@ -181997,6 +182281,7 @@
         "claim:grain-processing-bread-ground-plant-base",
         "claim:healer-belief-and-bodily-attention",
         "claim:healer-portable-and-household-kit",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
         "claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work",
@@ -182279,6 +182564,7 @@
         "claim:foundations-earth-21-groundwater-withdrawal-balance",
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
         "claim:human-life-reception-depends-on-trust-ties-means",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water",
         "claim:material-water-textile-water-load",
         "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
@@ -185888,6 +186174,7 @@
         "claim:pottery-handmade-temper",
         "claim:practical-leather-stitch",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
@@ -185900,6 +186187,7 @@
         "claim:residual-nature-roof-melt-eave-refreezing",
         "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
         "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:settlement-ice-grip-iron",
         "claim:settlement-oak-shingle-roof",
         "claim:skeletal-muscle-contraction-depends-on-atp",
@@ -185926,6 +186214,7 @@
         "wk:material_culture:hemp-fibre",
         "wk:material_culture:iron-pan-lifter",
         "wk:material_culture:kozhukh",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:force-contact-geometry",
         "wk:physics_material_science:horn-keratin-filament-structure",
         "wk:physics_material_science:pressure-driven-liquid-outflow",
@@ -186792,6 +187081,7 @@
         "claim:human-life-travel-conditions-can-justify-delay",
         "claim:human-life-travellers-may-seek-local-information",
         "claim:iron-corrosion-moisture-oxygen",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:leather-broad-context",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-forage-digestion",
@@ -187087,6 +187377,7 @@
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:regional-agriculture-practice",
         "claim:regional-fish-exploitation",
         "claim:religion-olenin-adjudication",
@@ -187181,6 +187472,7 @@
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
         "claim:resource-occupation-needs-setting",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
@@ -187814,7 +188106,9 @@
         "claim:clothing-shirt-principal-garment",
         "claim:fauna-adder-winter-refuge",
         "claim:fauna-mammals-red-fox-cooperative-pup-care",
-        "claim:mb14-practical-iron-workability-is-qualitative-not-temperature"
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+        "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "иного": [
         "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work"
@@ -187860,6 +188154,7 @@
         "claim:food-practices-threshing-chaff",
         "claim:human-life-household-tasks-can-offer-learning",
         "claim:human-life-recreation-can-use-voice-memory-body-or-objects",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
         "claim:occupation-wood-plane",
@@ -188765,6 +189060,7 @@
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
         "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:social-authority-letter-relates-theft-inquiry",
         "claim:social-settlement-demand-reports-court-choice",
@@ -193618,6 +193914,18 @@
         "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
         "wk:biology_physiology:fauna-red-squirrel"
       ],
+      "леска": [
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
+      ],
+      "лески": [
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
+      ],
+      "леской": [
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
+      ],
+      "леску": [
+        "wk:physics_material_science:cordage-reworking"
+      ],
       "лесная": [
         "claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland"
       ],
@@ -193873,6 +194181,7 @@
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:research-memory-source-misattribution",
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
@@ -195179,6 +195488,7 @@
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:harvest-sickle-wooden-handle",
         "claim:human-life-household-tasks-can-offer-learning",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling",
         "claim:macro-gap-carcass-handling-can-separate-material-streams",
@@ -195198,6 +195508,7 @@
         "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:residual-government-law-v2-mid-xii-mixed-court-comparator",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
@@ -197498,6 +197809,7 @@
         "claim:household-roof-local-condition-guides-repair",
         "claim:human-life-learning-tasks-can-match-capacity-risk",
         "claim:human-life-shared-role-can-be-negotiated",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
         "claim:mb14-practical-ewe-lamb-postbirth-observation",
@@ -197536,6 +197848,7 @@
         "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
@@ -198312,6 +198625,7 @@
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:human-life-reception-depends-on-trust-ties-means",
         "claim:human-life-standing-can-affect-social-access",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
@@ -198859,7 +199173,8 @@
         "claim:population-joining-metal-fatigue",
         "claim:population-physics-load-deformation",
         "claim:residual-nature-snow-depth-not-load",
-        "claim:residual-nature-snow-uneven-roof-loading"
+        "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
       ],
       "нагрузке": [
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
@@ -199466,7 +199781,8 @@
         "claim:military-world-defence-repair-competes-for-people-and-material",
         "claim:military-world-portage-is-coordinated-carry-work",
         "claim:military-world-training-links-practice-feedback-and-rest",
-        "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement"
+        "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "наличную": [
         "claim:flayed-skin-processing-purpose",
@@ -200654,6 +200970,7 @@
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:iron-corrosion-moisture-oxygen",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:later-novgorod-judicial-charter",
         "claim:leather-broad-context",
         "claim:livestock-rumen-fermentation",
@@ -200961,6 +201278,7 @@
         "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
         "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
         "claim:regional-agriculture-practice",
         "claim:regional-fish-exploitation",
@@ -201083,6 +201401,7 @@
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
         "claim:resource-occupation-needs-setting",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
@@ -202015,7 +202334,8 @@
         "claim:technology-motor-boundary"
       ],
       "непрерывность": [
-        "claim:residual-nature-snow-conceals-ice-gaps"
+        "claim:residual-nature-snow-conceals-ice-gaps",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
       ],
       "непривлекательной": [
         "claim:fauna-toad-defence",
@@ -202423,9 +202743,11 @@
       "нити": [
         "claim:clothing-nerev-coloured-wool",
         "claim:fauna-cross-spider-egg-sac",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment",
         "claim:population-processes-weaving-textile",
         "claim:population-processes-weaving-thread",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:textile-fibres-twist-yarn"
       ],
       "нить": [
@@ -202528,6 +202850,7 @@
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
         "claim:residual-law-status-and-witness-exceptions",
@@ -206792,6 +207115,9 @@
         "claim:practical-textile-cut",
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel"
       ],
+      "оставшаяся": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit"
+      ],
       "оставшегося": [
         "wk:social_behavior:trade-economy-lost-pack-animal-response"
       ],
@@ -208889,6 +209215,12 @@
         "claim:early-rus-hunting-ground-terms",
         "wk:craft_technology:early-rus-hunting-resource-grounds"
       ],
+      "перевивка": [
+        "wk:physics_material_science:cordage-reworking"
+      ],
+      "перевить": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
+      ],
       "перевод": [
         "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised"
       ],
@@ -209368,9 +209700,16 @@
       "перепроверить": [
         "claim:final-static-b01-wet-ground-observation"
       ],
+      "переработанный": [
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
+      ],
       "переработать": [
         "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
         "claim:practical-food-milk"
+      ],
+      "переработка": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "переработки": [
         "claim:agriculture-fauna-borts-wax"
@@ -211951,7 +212290,8 @@
       ],
       "позволяют": [
         "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
-        "claim:human-life-reception-depends-on-trust-ties-means"
+        "claim:human-life-reception-depends-on-trust-ties-means",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit"
       ],
       "позвоночных": [
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
@@ -212509,6 +212849,9 @@
       ],
       "полученную": [
         "claim:vegetable-tanning-collagen-stabilization"
+      ],
+      "полученные": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "полученным": [
         "claim:occupation-smith-iron-input"
@@ -215451,6 +215794,7 @@
       ],
       "пригодной": [
         "claim:population-material-clay-plasticity",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
         "claim:textile-fibres-twist-yarn"
       ],
@@ -215469,6 +215813,7 @@
         "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
         "claim:static-straw-is-a-traditional-horse-bedding-source",
         "claim:stone-grinding-metal-use",
@@ -217339,7 +217684,9 @@
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-yarn-strength-can-fall-after-excessive-twist",
         "claim:streak01-wet-leather-limits",
         "claim:textile-fibres-twist-yarn",
@@ -217433,6 +217780,10 @@
       ],
       "прядению": [
         "claim:fibre-hackle-removes-shive"
+      ],
+      "пряди": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "прядильных": [
         "claim:fibre-hackle-removes-shive",
@@ -218227,6 +218578,9 @@
       "разбора": [
         "wk:social_law_economy:ecclesiastical-adjudication"
       ],
+      "разборка": [
+        "wk:physics_material_science:cordage-reworking"
+      ],
       "разбором": [
         "claim:public-world-local-authority-is-one-escalation-option"
       ],
@@ -218856,6 +219210,9 @@
         "wk:biology_physiology:fauna-earthworm",
         "wk:physics_material_science:light-refraction-medium-boundary"
       ],
+      "разобрать": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit"
+      ],
       "разорении": [
         "claim:candidate-v7-npl-1223-yaroslav-colyvan-campaign"
       ],
@@ -219342,6 +219699,10 @@
       ],
       "распрямлять": [
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment"
+      ],
+      "распустить": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "рассада": [
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold"
@@ -220308,6 +220669,7 @@
         "claim:fuel-pit-charcoal-burning-charcoal-output",
         "claim:hard-stone-abrasive-sawing",
         "claim:human-life-learning-feedback-can-shape-practice",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
@@ -221493,6 +221855,7 @@
         "wk:material_culture:net"
       ],
       "рыболовной": [
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "wk:physics_material_science:fishing-net-serviceability"
       ],
       "рыболовный": [
@@ -222854,6 +223217,7 @@
         "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
         "claim:streak01-wet-leather-drying",
         "claim:technology-newcomen-boundary",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:glass-scattering-translucency"
       ],
       "сделка": [
@@ -224638,6 +225002,7 @@
         "claim:final-practical-wet-gear-and-hull-care-compete-for-space-time-and-dry-work-area",
         "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
         "claim:population-net-weights",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish"
       ],
       "снастью": [
@@ -224909,7 +225274,8 @@
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground"
       ],
       "собственника": [
-        "claim:early-rus-hunting-ground-terms"
+        "claim:early-rus-hunting-ground-terms",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit"
       ],
       "собственной": [
         "claim:residual-law-merchant-entrustment-proof-exception"
@@ -225326,6 +225692,7 @@
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:population-joining-bond-moisture",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-forge-welding-surface-oxide-can-degrade-join",
         "wk:craft_technology:reality-batch-01-wooden-joinery",
         "wk:material_culture:wooden-peg",
@@ -225425,6 +225792,7 @@
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-landing-named-list",
         "claim:rp-minor-children-conditional-care",
         "claim:rural-household-economy-context",
@@ -226021,6 +226389,9 @@
       "составе": [
         "claim:terrain-parent-material-assemblage"
       ],
+      "составляющие": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit"
+      ],
       "составляющих": [
         "claim:social-daily-economic-activities"
       ],
@@ -226090,6 +226461,7 @@
         "claim:foundations-life-47-host-susceptibility",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
         "claim:foundations-thm-07-thermal-expansion-state-change",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:livestock-rumen-fermentation",
         "claim:macro-b1819-storm-damaged-hung-wood-is-an-overhead-hazard-until-its-state-is-known",
         "claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures",
@@ -226118,6 +226490,7 @@
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:residual-postpartum-colostrum-is-early-small-volume-immune-rich-milk",
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
         "claim:static-animal-b06-british-bat-winter-hibernation-sites-need-low-disturbance",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
@@ -226647,6 +227020,10 @@
       ],
       "сплава": [
         "claim:occupation-smith-heat-treatment"
+      ],
+      "сплести": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "сплошное": [
         "claim:population-material-iron-coating"
@@ -227512,6 +227889,7 @@
         "claim:clay-fired-no-replasticization",
         "claim:population-material-clay-plasticity",
         "claim:practical-fodder-hay",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:social-daily-fur-sale-accounting"
       ],
       "становиться": [
@@ -227558,7 +227936,8 @@
         "wk:environment:reconstructed-mixed-shoreline-trace"
       ],
       "старой": [
-        "claim:burial-plank-coffin-nails"
+        "claim:burial-plank-coffin-nails",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "старом": [
         "claim:pine-pitch-severe-oxidation"
@@ -228599,7 +228978,8 @@
       ],
       "существующего": [
         "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
-        "wk:material_culture:reconstructed-military-equipment-readiness"
+        "wk:material_culture:reconstructed-military-equipment-readiness",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "существующей": [
         "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water",
@@ -228610,7 +228990,8 @@
         "claim:population-river-work"
       ],
       "существующий": [
-        "claim:agriculture-fauna-tow-log-gaps"
+        "claim:agriculture-fauna-tow-log-gaps",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit"
       ],
       "существующих": [
         "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5"
@@ -229097,7 +229478,8 @@
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
       "такая": [
-        "claim:food-practices-threshing-chaff"
+        "claim:food-practices-threshing-chaff",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "также": [
         "claim:agriculture-fauna-borts-wax",
@@ -230632,7 +231014,8 @@
       ],
       "тонкая": [
         "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting",
-        "claim:construction-aspen-cladding-joint"
+        "claim:construction-aspen-cladding-joint",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "тонкие": [
         "claim:residual-nature-ice-current-thin-areas"
@@ -230640,7 +231023,9 @@
       "тонкий": [
         "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
         "claim:population-rod-input",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:residual-nature-ice-current-thin-areas",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:thin-horn-water-softening"
       ],
       "тонкой": [
@@ -231095,6 +231480,7 @@
       "требуемая": [
         "claim:foundations-physical-b2-sta-03-lever-force-arm-tradeoff",
         "claim:population-rod-input",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "wk:physics_material_science:lever-force-arm-tradeoff"
       ],
       "требуемого": [
@@ -232106,6 +232492,7 @@
         "claim:final-social-washing-and-drying-can-change-visible-household-soil",
         "claim:foundations-haz-05-slope-water-triggers",
         "claim:healer-observation-and-questioning",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
         "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water",
@@ -232194,7 +232581,8 @@
         "wk:material_culture:reconstructed-military-equipment-readiness",
         "wk:npc_daily_life:agriculture-rural-role-context",
         "wk:npc_daily_life:animal-care-needs-presence",
-        "wk:npc_daily_life:reconstructed-local-religious-observance"
+        "wk:npc_daily_life:reconstructed-local-religious-observance",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "узды": [
         "claim:population-tack-context"
@@ -232478,6 +232866,7 @@
         "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
         "claim:population-net-weights",
         "claim:regional-fish-exploitation",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
         "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
         "wk:environment:regional-fish-exploitation"
@@ -233204,6 +233593,7 @@
         "wk:material_culture:trade-economy-batch-03-payment-metal",
         "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:npc_daily_life:reality-first-rural-household",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:research-fire-plume-upper-layer-transport",
         "wk:physics_material_science:research-floating-body-small-angle-stability",
         "wk:physics_material_science:research-local-exhaust-airflow",
@@ -233311,6 +233701,7 @@
       ],
       "успешный": [
         "claim:occupation-smith-heat-treatment",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:vegetable-tanning-prepared-hide"
       ],
       "устав": [
@@ -233412,6 +233803,7 @@
         "claim:foundations-haz-01-exposure-modifiers",
         "claim:foundations-haz-03-exposure-routes",
         "claim:foundations-ms4-02-suppression-expression-subjective-gap",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:macro-b1819-ill-cattle-observation-is-nondiagnostic-and-can-warrant-experienced-assessment",
         "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
@@ -233786,6 +234178,7 @@
       "устройство": [
         "claim:harvest-sickle-wooden-handle",
         "claim:human-life-relationship-change-can-alter-household-arrangement",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:localized-improvement-context",
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
@@ -234430,6 +234823,9 @@
       "фактическая": [
         "claim:human-life-oral-retelling-varies-with-context",
         "claim:research-fuel-burning-stoves-can-add-indoor-water-vapour"
+      ],
+      "фактический": [
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
       ],
       "фактических": [
         "claim:research-increased-ventilation-can-help-reduce-condensation"
@@ -237252,8 +237648,15 @@
         "wk:biology_physiology:wild-mushroom-identification"
       ],
       "шнур": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:military-world-wet-equipment-benefits-from-inspection",
-        "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling"
+        "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+        "wk:physics_material_science:cordage-reworking"
+      ],
+      "шнура": [
+        "wk:physics_material_science:cordage-reworking"
       ],
       "шнурком": [
         "claim:clothing-male-shirt-belt"
@@ -238129,6 +238532,7 @@
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:human-life-learning-observation-practice-feedback",
         "claim:human-thermoregulation-depends-on-heat-exchange",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-forage-digestion",
         "claim:livestock-ruminant-membership",
@@ -238376,6 +238780,7 @@
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-landing-category",
         "claim:river-landing-surfacing-allocation",
         "claim:rp-caretaker-principal-goods",
@@ -240836,6 +241241,7 @@
         "claim:human-life-capacity-experience-help-vary",
         "claim:human-life-learning-needs-time-task-material-access",
         "claim:human-life-standing-can-affect-social-access",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
         "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
         "claim:military-world-animals-and-households-have-continuing-needs",
@@ -241214,6 +241620,7 @@
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:residual-nature-snow-uneven-roof-loading",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:sound-spreading-reduces-intensity",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
         "claim:streak01-wet-leather-support",
@@ -242445,6 +242852,7 @@
         "claim:human-life-reception-depends-on-trust-ties-means",
         "claim:human-life-visitors-add-resource-demands",
         "claim:judicial-accusation-record",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-swine-comparative-diet",
         "claim:localized-improvement-context",
@@ -242669,6 +243077,7 @@
         "wk:physics_material_science:antler-water-workability-conditional",
         "wk:physics_material_science:bone-organic-inorganic-structure",
         "wk:physics_material_science:conductor-insulator-charge-mobility",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:current-magnetic-field",
         "wk:physics_material_science:research-fire-plume-upper-layer-transport",
         "wk:physics_material_science:research-wind-driven-rain-opening-pressure",
@@ -243180,6 +243589,7 @@
         "claim:judicial-accusation-record",
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:lime-transformations",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-fermentation-nutrients",
@@ -243655,6 +244065,7 @@
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
         "claim:resource-occupation-needs-setting",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-named-list",
         "claim:rp-caretaker-principal-goods",
@@ -244171,6 +244582,7 @@
         "wk:physics_material_science:brittle-fracture-defects",
         "wk:physics_material_science:buoyancy-pressure-phase-change",
         "wk:physics_material_science:candidate-v9-iron-care-relations",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:dry-friction",
         "wk:physics_material_science:electromagnetic-rotation",
         "wk:physics_material_science:final-practical-water-fire-limits",
@@ -244537,6 +244949,7 @@
       "apart": [
         "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
         "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
         "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r2",
         "claim:religion-olenin-adjudication"
@@ -245797,7 +246210,8 @@
         "wk:craft_technology:hull-planking-attachment"
       ],
       "attachments": [
-        "claim:population-net-weights"
+        "claim:population-net-weights",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
       ],
       "attack": [
         "claim:candidate-v3-oral-bacteria-acid-can-damage-enamel"
@@ -246065,6 +246479,7 @@
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:resource-occupation-needs-setting",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:rp-property-claim-relates-acquisition-chain",
         "claim:russkaya-pravda-comparative-only",
         "wk:npc_daily_life:resource-occupation-needs-setting",
@@ -246689,6 +247104,7 @@
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:human-life-recreation-participation-can-be-uneven-voluntary",
         "claim:human-life-shared-role-can-be-negotiated",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
         "claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work",
@@ -246760,6 +247176,7 @@
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
@@ -247903,6 +248320,9 @@
       "bracelet": [
         "claim:clothing-pointed-cap-xii-depiction"
       ],
+      "braided": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
+      ],
       "brain": [
         "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
         "wk:biology_physiology:candidate-low-brain-perfusion-awareness",
@@ -248390,6 +248810,7 @@
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
         "claim:residual-law-status-and-witness-exceptions",
@@ -248984,6 +249405,7 @@
         "claim:human-life-visitors-add-resource-demands",
         "claim:lactic-bacteria-can-convert-carbohydrate-to-acid-carbon-dioxide",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:livestock-rumen-fermentation-nutrients",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
@@ -249249,6 +249671,7 @@
         "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
         "claim:research-acute-circulatory-failure-can-reduce-tissue-perfusion",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
@@ -249879,6 +250302,7 @@
         "claim:practical-food-preserve",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:regional-fish-exploitation",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
         "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
@@ -252290,6 +252714,7 @@
       "component": [
         "claim:foundations-physical-b2-bnh-01-bone-organic-inorganic-structure",
         "claim:foundations-thm-03-combustion-mixture-conditions",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:population-processes-weaving-device",
         "wk:material_culture:weaving-device-component",
         "wk:physics_material_science:bone-organic-inorganic-structure",
@@ -252600,6 +253025,7 @@
         "claim:food-energy-nutrients",
         "claim:foundations-earth-31-freezing-fog-rime",
         "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:livestock-rumen-fermentation",
         "claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work",
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
@@ -252632,6 +253058,7 @@
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:residual-postpartum-maternal-and-newborn-health-are-linked-after-birth",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:rp-mother-household-care-succession",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
@@ -252720,6 +253147,7 @@
         "wk:material_culture:trade-economy-batch-03-payment-metal",
         "wk:material_culture:trade-economy-batch-03-seasonal-provisions",
         "wk:npc_daily_life:reality-first-rural-household",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:natural-fibre-water-response",
         "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
         "wk:physics_material_science:research-fire-plume-upper-layer-transport",
@@ -253083,6 +253511,7 @@
         "claim:grain-processing-bread-oven-baking",
         "claim:harvest-scythe-iron-steel-specimen",
         "claim:harvest-sickle-wooden-handle",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:population-material-wet-wool",
         "claim:population-weight-bark",
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
@@ -253527,6 +253956,7 @@
       ],
       "continuity": [
         "claim:foundations-life-25-reproduction",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "wk:biology_physiology:foundation-reproduction"
       ],
       "continuous": [
@@ -253783,10 +254213,14 @@
       ],
       "cord": [
         "claim:clothing-male-shirt-belt",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:military-world-wet-equipment-benefits-from-inspection",
         "claim:population-net-cord",
         "claim:population-rod-cord",
-        "claim:population-weight-cord"
+        "claim:population-weight-cord",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "cordage": [
         "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
@@ -253795,7 +254229,9 @@
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
         "claim:population-processes-hemp-cordage",
         "claim:population-weight-cord",
-        "wk:material_culture:cordage"
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "wk:material_culture:cordage",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "cords": [
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4"
@@ -254177,6 +254613,7 @@
         "claim:population-tack-context",
         "claim:probable-travel-chalice-communion",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-landing-named-list",
         "claim:rp-minor-children-conditional-care",
         "claim:rural-household-economy-context",
@@ -256857,6 +257294,7 @@
         "claim:r201-onion-2",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:regional-fish-exploitation",
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
@@ -258892,6 +259330,7 @@
         "claim:foundations-earth-19-aquifer-pore-flow",
         "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
         "claim:foundations-ms3-01-initial-attention",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
         "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
@@ -259543,14 +259982,17 @@
         "claim:construction-auxiliary-construction-work",
         "claim:construction-construction-pottery-products",
         "claim:foundations-earth-18-metamorphic-rock-formation",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:population-material-wood-decay",
         "claim:population-weight-stone",
         "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r5",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
-        "wk:material_culture:reconstructed-military-equipment-readiness"
+        "wk:material_culture:reconstructed-military-equipment-readiness",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "exists": [
         "claim:mb14-practical-cabbage-transplants-can-be-covered-or-delayed-in-cold",
@@ -260580,6 +261022,7 @@
         "claim:final-static-b01-textile-uncertainty",
         "claim:final-static-b01-textile-wet-limit",
         "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:livestock-swine-comparative-diet",
         "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
         "claim:material-water-hemp-cellulosic-fibre",
@@ -260611,12 +261054,14 @@
         "wk:environment:candidate-nettle-bast-fibre-extraction",
         "wk:environment:final-nature-tree-and-bast-context",
         "wk:material_culture:hemp-fibre",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:modern-fibre-rope-condition",
         "wk:physics_material_science:natural-fibre-water-response",
         "wk:physics_material_science:plant-cellulosic-fibres"
       ],
       "fibres": [
         "claim:fibre-hackle-removes-shive",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-plant-fibre-cellulose",
         "claim:material-water-textile-liquid-contaminants",
@@ -260960,6 +261405,7 @@
         "claim:population-processes-hemp-net",
         "claim:population-river-work",
         "claim:resource-occupation-needs-setting",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "wk:architecture_settlement:fishing-workspace",
         "wk:biology_physiology:static-bait-b11-animal-material-target-fit",
         "wk:craft_technology:net-fishing",
@@ -260967,6 +261413,7 @@
         "wk:material_culture:hook",
         "wk:material_culture:net",
         "wk:npc_daily_life:resource-occupation-needs-setting",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:fishing-net-serviceability"
       ],
       "fit": [
@@ -262657,6 +263104,7 @@
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:religion-olenin-adjudication",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
@@ -262683,6 +263131,7 @@
         "claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity",
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-landing-market-approaches",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-entrusted-goods-claim-relates-reference",
@@ -262776,6 +263225,7 @@
         "wk:npc_daily_life:boat-worker",
         "wk:npc_daily_life:fisher",
         "wk:npc_daily_life:storage-worker",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:force-contact-geometry",
         "wk:physics_material_science:lever-force-arm-tradeoff",
         "wk:physics_material_science:plant-cellulosic-fibres",
@@ -264064,6 +264514,7 @@
         "claim:r201-onion-2",
         "claim:r201-porridge-2",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
         "claim:sound-background-noise-masks-speech",
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
@@ -268072,6 +268523,7 @@
         "claim:foundations-life-19-sensory-receptor",
         "claim:foundations-ms-07-auditory-sequence",
         "claim:foundations-phys-09-mechanical-energy-dissipation",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:material-water-textile-liquid-contaminants",
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
@@ -268082,6 +268534,7 @@
         "claim:practical-textile-spin",
         "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:residual-law-stepchildren-paternal-inheritance",
         "claim:residual-law-zakup-illegal-sale",
         "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
@@ -268766,6 +269219,7 @@
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-category",
         "claim:river-landing-named-list",
@@ -269764,7 +270218,8 @@
         "wk:biology_physiology:macro-b1819-cattle-observation"
       ],
       "laid": [
-        "claim:fauna-frog-calls-parental"
+        "claim:fauna-frog-calls-parental",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit"
       ],
       "lake": [
         "claim:novgorod-wetland-pollen-context",
@@ -270320,8 +270775,10 @@
       "length": [
         "claim:fauna-bird-migration-cues",
         "claim:fauna-dragonfly-emergence",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:population-physics-section-response",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:seasonal-plant-development-depends-on-photoperiod",
         "claim:textile-fibres-twist-yarn",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
@@ -270748,6 +271205,8 @@
         "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint",
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:smoke-optical-obscuration"
       ],
       "linear": [
@@ -271014,6 +271473,7 @@
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "claim:residual-nature-snow-depth-not-load",
         "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
         "claim:static-yarn-twist-can-increase-fibre-cohesion",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
@@ -271650,6 +272110,7 @@
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
         "claim:sound-background-noise-masks-speech",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
@@ -271657,6 +272118,7 @@
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
         "claim:textile-dye-mordant-fixation",
         "wk:biology_physiology:fauna-common-toad",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:glass-scattering-translucency",
         "wk:social_behavior:foundations-ms-33-role-predictability"
       ],
@@ -272022,6 +272484,7 @@
         "claim:household-wooden-tableware",
         "claim:human-life-household-tasks-can-offer-learning",
         "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling",
         "claim:macro-b20-insect-damage-to-stored-wool-can-call-for-inspection-isolation-and-clean-dry-storage",
@@ -272083,6 +272546,7 @@
         "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:residual-government-law-v2-mid-xii-mixed-court-comparator",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
@@ -272277,6 +272741,7 @@
         "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
         "claim:population-material-clay-steam",
         "claim:population-material-leather-dry",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:textile-conditioning-matters",
         "claim:wood-liquid-directional-uptake",
         "wk:biology_physiology:foundation-ecosystem-cycling",
@@ -274693,6 +275158,7 @@
         "claim:human-thermoregulation-depends-on-heat-exchange",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:lactic-fermentation-affects-acidity-and-food-proteins",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
         "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk",
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
@@ -274836,6 +275302,7 @@
         "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment",
         "claim:residual-traces-animal-sign-absence-limit",
         "claim:residual-v1-church-texts-have-pure-or-mixed-church-slavonic-context",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
         "claim:rp-minor-children-conditional-care",
@@ -275629,6 +276096,7 @@
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:regional-fish-exploitation",
         "claim:religion-olenin-adjudication",
         "claim:religion-olenin-church-people",
@@ -275694,6 +276162,7 @@
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
         "claim:resource-occupation-needs-setting",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-flow-affects-sediment-transport-deposition",
         "claim:river-landing-category",
         "claim:river-landing-surfacing-allocation",
@@ -277389,6 +277858,7 @@
         "wk:material_culture:weaving-device-component",
         "wk:npc_daily_life:animal-care-needs-presence",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:fibre-twisting",
         "wk:physics_material_science:glass-absorption-transmission",
         "wk:physics_material_science:horn-keratin-filament-structure",
@@ -277602,6 +278072,7 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:probable-travel-chalice-communion",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:residual-v1-household-and-official-birch-registers-differ",
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance",
@@ -278518,6 +278989,7 @@
         "claim:human-life-travellers-may-seek-local-information",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:iron-corrosion-moisture-oxygen",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:leather-broad-context",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-forage-digestion",
@@ -278832,6 +279304,7 @@
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:regional-agriculture-practice",
         "claim:regional-fish-exploitation",
         "claim:religion-olenin-adjudication",
@@ -278926,6 +279399,7 @@
         "claim:residual-v2-late-xii-gramota1144-has-from-to-address-construction",
         "claim:residual-v2-xiii-novgorod-women-can-have-husband-derived-name-forms",
         "claim:resource-occupation-needs-setting",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
         "claim:river-landing-named-list",
@@ -279687,6 +280161,7 @@
         "claim:foundations-life-47-host-susceptibility",
         "claim:hard-stone-abrasive-sawing",
         "claim:judicial-accusation-record",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:livestock-rumen-fermentation",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
         "claim:macro-b17-suspected-hot-or-smoking-hay-should-not-be-pulled-apart",
@@ -279760,6 +280235,7 @@
         "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:rp-market-purchase-relates-proof-participant",
         "claim:rp-merchant-credit-relates-third-party-goods",
         "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
@@ -280039,6 +280515,7 @@
         "claim:early-rus-hunting-ground-terms",
         "claim:final-practical-present-weapon-or-tool-needs-secure-carrying-and-access",
         "claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
         "claim:maslo-birchbark-718-account",
         "claim:public-world-dispute-starts-with-competing-accounts",
@@ -281157,6 +281634,7 @@
         "claim:residual-law-unauthorized-horse-use"
       ],
       "permit": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b20-steam-softened-wood-needs-restraint-and-controlled-drying-to-retain-a-bend",
         "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
       ],
@@ -285066,7 +285544,8 @@
         "claim:candidate-v7-npl-1220-mitrofan-mediated-reconciliation"
       ],
       "recovered": [
-        "claim:population-boat-work"
+        "claim:population-boat-work",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "recovering": [
         "claim:population-boat-context",
@@ -285796,6 +286275,7 @@
       "remaining": [
         "claim:fibre-hackle-removes-shive",
         "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:population-material-clay-steam",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
@@ -286237,6 +286717,7 @@
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:residual-law-merchant-entrustment-proof-exception",
         "claim:residual-nature-moonlight-reflected-sunlight",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
         "wk:physics_material_science:lever-force-arm-tradeoff",
@@ -286767,6 +287248,12 @@
         "claim:fauna-doe-kid-care",
         "claim:healer-livelihood-and-household-support"
       ],
+      "retwist": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
+      ],
+      "retwisted": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
+      ],
       "reuse": [
         "claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse"
       ],
@@ -286805,6 +287292,13 @@
       "reward": [
         "claim:foundations-ms-29-helping-no-reward",
         "wk:social_behavior:foundations-ms-29-helping-no-reward"
+      ],
+      "reworked": [
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
+      ],
+      "reworking": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "rez": [
         "claim:residual-law-interest-agreement-and-witnesses"
@@ -287241,11 +287735,15 @@
       "rope": [
         "claim:early-rus-hunting-ground-terms",
         "claim:final-nature-basswood-bast-can-be-a-fibre-source-for-flexible-ordinary-goods",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
         "claim:modern-fibre-rope-condition-can-reduce-available-strength",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
         "wk:craft_technology:mb14-practical-making-and-repair",
+        "wk:physics_material_science:cordage-reworking",
         "wk:physics_material_science:modern-fibre-rope-condition",
         "wk:physics_material_science:reality-batch-01-releasable-rope-knot",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
@@ -288716,6 +289214,9 @@
       "serviceability": [
         "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
         "wk:physics_material_science:fishing-net-serviceability"
+      ],
+      "serviceable": [
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line"
       ],
       "services": [
         "claim:localized-improvement-context",
@@ -290336,7 +290837,9 @@
       "sometimes": [
         "claim:clothing-shirt-principal-garment",
         "claim:fauna-adder-winter-refuge",
-        "claim:fauna-mammals-red-fox-cooperative-pup-care"
+        "claim:fauna-mammals-red-fox-cooperative-pup-care",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
       ],
       "son": [
         "claim:candidate-v7-npl-1222-yuri-gives-vsevolod",
@@ -291848,6 +292351,10 @@
       "stranded": [
         "claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport"
       ],
+      "strands": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength"
+      ],
       "stranger": [
         "claim:macro-b14-stranger-in-bad-weather-can-prompt-bounded-host-aid",
         "wk:social_behavior:reconstructed-road-hospitality-boundary"
@@ -291926,7 +292433,9 @@
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:research-stitching-can-secure-weak-textile-to-support",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
         "claim:static-yarn-strength-can-fall-after-excessive-twist",
@@ -292236,6 +292745,7 @@
         "claim:occupation-smith-heat-treatment",
         "claim:occupation-wood-plane",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
         "claim:stone-whetstone-edge-maintenance",
         "claim:vegetable-tanning-prepared-hide"
@@ -292309,6 +292819,7 @@
         "claim:foundations-mat-08-abrasive-hardness-material-removal",
         "claim:hard-stone-abrasive-shaping",
         "claim:population-rod-input",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-straw-is-a-traditional-horse-bedding-source",
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance",
@@ -293015,6 +293526,7 @@
         "wk:material_culture:horse-tack"
       ],
       "tackle": [
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:static-bait-b11-natural-freshwater-animal-bait-can-include-worms-minnows-or-crayfish"
       ],
       "tactic": [
@@ -293044,6 +293556,7 @@
       ],
       "take": [
         "claim:fauna-mammals-eurasian-lynx-prey-spectrum",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:ordinary-life-household-repairs-compete-with-new-goods",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception"
       ],
@@ -294610,6 +295123,7 @@
         "claim:construction-aspen-cladding-joint",
         "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
         "claim:population-rod-input",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:residual-nature-ice-current-thin-areas",
         "wk:physics_material_science:thin-horn-water-softening"
       ],
@@ -294624,6 +295138,10 @@
       ],
       "things": [
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"
+      ],
+      "thinner": [
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
+        "wk:physics_material_science:cordage-reworking"
       ],
       "third": [
         "claim:burial-hollowed-log-container",
@@ -294897,6 +295415,7 @@
         "claim:household-trauma-danger-or-airway-changes-position-choice",
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:human-life-learning-observation-practice-feedback",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:leather-broad-context",
         "claim:livestock-rumen-fermentation",
         "claim:livestock-rumen-forage-digestion",
@@ -295126,6 +295645,7 @@
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
         "claim:residual-v1-private-letters-and-practical-registers-are-corpus-categories",
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions",
+        "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
         "claim:river-landing-category",
         "claim:river-landing-market-approaches",
         "claim:river-landing-surfacing-allocation",
@@ -296106,6 +296626,7 @@
         "claim:fuel-iron-pan-lifter-form",
         "claim:harvest-sickle-crops-grasses",
         "claim:human-life-household-tasks-can-offer-learning",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
         "claim:military-world-training-links-practice-feedback-and-rest",
@@ -297396,6 +297917,16 @@
         "wk:chemistry_process:metal-classes-composition",
         "wk:social_law_economy:judicial-accusation-record"
       ],
+      "unlaid": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit"
+      ],
+      "unlay": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+        "wk:physics_material_science:cordage-reworking"
+      ],
+      "unlaying": [
+        "wk:physics_material_science:cordage-reworking"
+      ],
       "unlike": [
         "claim:foundations-earth-14-ecosystem-energy-flow"
       ],
@@ -297644,6 +298175,7 @@
         "claim:novgorod-wetland-pollen-context",
         "claim:r201-lye-2",
         "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:terrain-parent-material-assemblage",
         "claim:textile-fibres-twist-yarn",
         "wk:biology_physiology:animal-food-energy"
@@ -299462,6 +299994,7 @@
         "claim:healer-care-coordination-and-uncertainty",
         "claim:healer-observation-and-questioning",
         "claim:human-life-reception-depends-on-trust-ties-means",
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
         "claim:macro-gap-birth-needs-practical-support-and-time",
         "claim:material-water-natural-fibres-water-swelling",
         "claim:material-water-textile-water-load",
@@ -301073,6 +301606,8 @@
         "wk:physics_material_science:static-yarn-twist-cohesion"
       ],
       "yarns": [
+        "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
+        "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
         "claim:textile-dye-application"
       ],
       "yaroslav": [

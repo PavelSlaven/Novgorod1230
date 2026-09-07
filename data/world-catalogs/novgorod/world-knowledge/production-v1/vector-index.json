@@ -22284,6 +22284,132 @@
       "retrieval_text": "Влагоперенос в хранимом зерне Перенос и осаждение влаги при температурной неоднородности хранимого зерна. Разница температур в хранимом зерне может переносить влагу к более холодной зоне, где она может осаждаться; наличие зерна, его состояние и результат не заданы. зерно конденсат влагоперенос хранение конденсат зерно"
     },
     {
+      "entry_ref": "wk-retrieval:claim:streak01-lime-curing-limits:en",
+      "target_ref": "claim:streak01-lime-curing-limits",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "chemistry_process Bounded modern context. INFERENCE: Mix, exposure, protection and elapsed time affect lime curing; a general limit supplies neither a recipe nor a guaranteed sound result."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-lime-curing-limits:ru",
+      "target_ref": "claim:streak01-lime-curing-limits",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "chemistry_process Ограниченный современный контекст. INFERENCE: Состав, воздействие, защита и время влияют на твердение извести; общий предел не даёт рецепта и не гарантирует прочный результат."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-lime-weather:en",
+      "target_ref": "claim:streak01-lime-weather",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "chemistry_process Bounded modern context. INFERENCE: Fresh lime work is vulnerable to frost, rain and rapid drying; these exposures can interrupt or weaken setting without predicting a bond outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-lime-weather:ru",
+      "target_ref": "claim:streak01-lime-weather",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "chemistry_process Ограниченный современный контекст. INFERENCE: Свежая известковая работа уязвима к морозу, дождю и быстрому высыханию; это может прервать или ослабить схватывание без предсказания результата."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-splinter-assessment:en",
+      "target_ref": "claim:streak01-splinter-assessment",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded modern context. INFERENCE: A visible, safely graspable splinter differs from a deeply embedded or eye-adjacent object; hands and area can be cleaned before bounded assessment."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-splinter-assessment:ru",
+      "target_ref": "claim:streak01-splinter-assessment",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный современный контекст. INFERENCE: Видимая безопасно захватываемая заноза отличается от глубоко внедрённого или близкого к глазу предмета; руки и место можно очистить перед ограниченной оценкой."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-splinter-escalation:en",
+      "target_ref": "claim:streak01-splinter-escalation",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded modern context. INFERENCE: A deep, difficult, painful, eye-adjacent or inflamed splinter is an escalation boundary for skilled help, not a diagnosis or infection outcome."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-splinter-escalation:ru",
+      "target_ref": "claim:streak01-splinter-escalation",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный современный контекст. INFERENCE: Глубокая, трудная, болезненная, близкая к глазу или воспалённая заноза — граница для обращения за опытной помощью, не диагноз и не исход инфекции."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-splinter-tetanus-uncertainty:en",
+      "target_ref": "claim:streak01-splinter-tetanus-uncertainty",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded modern context. INFERENCE: Deep or dirty wounds and uncertain tetanus protection are modern escalation considerations; they do not establish infection, immunity or treatment in the world."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-splinter-tetanus-uncertainty:ru",
+      "target_ref": "claim:streak01-splinter-tetanus-uncertainty",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный современный контекст. INFERENCE: Глубокие или грязные раны и неясная защита от столбняка — современные основания эскалации; они не устанавливают инфекцию, иммунитет или лечение в мире."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-wet-leather-drying:en",
+      "target_ref": "claim:streak01-wet-leather-drying",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded modern context. INFERENCE: Strong heat can desiccate, distort, stiffen or split wet leather; slow air drying with support is a bounded modern conservation measure, not restoration."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-wet-leather-drying:ru",
+      "target_ref": "claim:streak01-wet-leather-drying",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный современный контекст. INFERENCE: Сильный жар может пересушить, деформировать, сделать жёсткой или расколоть влажную кожу; медленная воздушная сушка с поддержкой — современная ограниченная мера, не восстановление."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-wet-leather-limits:en",
+      "target_ref": "claim:streak01-wet-leather-limits",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded modern context. INFERENCE: Leather processing and prior condition affect wetting and drying response, so former fit, strength or appearance cannot be promised."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-wet-leather-limits:ru",
+      "target_ref": "claim:streak01-wet-leather-limits",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный современный контекст. INFERENCE: Выделка и прежнее состояние кожи влияют на реакцию на влагу и сушку; прежнюю форму, прочность или вид нельзя обещать."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-wet-leather-support:en",
+      "target_ref": "claim:streak01-wet-leather-support",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded modern context. INFERENCE: Damp leather can be cautiously supported or reshaped to limit further distortion while its actual condition is observed."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-wet-leather-support:ru",
+      "target_ref": "claim:streak01-wet-leather-support",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный современный контекст. INFERENCE: Влажную кожу можно осторожно поддержать или придать форму, ограничивая дальнейшую деформацию и наблюдая её состояние."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-wet-lime-contact:en",
+      "target_ref": "claim:streak01-wet-lime-contact",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "chemistry_process Bounded modern context. INFERENCE: Wet calcium hydroxide can irritate or burn skin and eyes; avoiding contact and washing contaminated skin are modern hazard controls, not period treatment."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:streak01-wet-lime-contact:ru",
+      "target_ref": "claim:streak01-wet-lime-contact",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "chemistry_process Ограниченный современный контекст. INFERENCE: Влажный гидроксид кальция может раздражать или обжигать кожу и глаза; избегать контакта и промывать загрязнённую кожу — современные меры, не историческое лечение."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:structural-and-object-wood:en",
       "target_ref": "claim:structural-and-object-wood",
       "domain": "craft_technology",
@@ -27506,6 +27632,20 @@
       "retrieval_text": "Состояние хранимого зерна Температура и влажность ограничивают хранение зерна."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:streak01-repair:en",
+      "target_ref": "wk:biology_physiology:streak01-repair",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded modern context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:streak01-repair:ru",
+      "target_ref": "wk:biology_physiology:streak01-repair",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный современный контекст."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:sweat-evaporation:en",
       "target_ref": "wk:biology_physiology:sweat-evaporation",
       "domain": "biology_physiology",
@@ -28402,6 +28542,20 @@
       "retrieval_text": "Изменчивая щёлочность древесной золы Разная способность образцов древесной золы повышать pH."
     },
     {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:streak01-repair:en",
+      "target_ref": "wk:chemistry_process:streak01-repair",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "chemistry_process Bounded modern context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:streak01-repair:ru",
+      "target_ref": "wk:chemistry_process:streak01-repair",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "chemistry_process Ограниченный современный контекст."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:strong-acid-base-neutralization-heat:en",
       "target_ref": "wk:chemistry_process:strong-acid-base-neutralization-heat",
       "domain": "chemistry_process",
@@ -29240,6 +29394,20 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Термообработка стальной рабочей части Закалка и отпуск стальной рабочей части закалка отпуск"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:streak01-repair:en",
+      "target_ref": "wk:craft_technology:streak01-repair",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded modern context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:streak01-repair:ru",
+      "target_ref": "wk:craft_technology:streak01-repair",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный современный контекст."
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:structural-and-object-wood:en",

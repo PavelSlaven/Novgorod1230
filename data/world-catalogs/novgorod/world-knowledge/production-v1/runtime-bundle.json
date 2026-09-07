@@ -10047,6 +10047,90 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-leather",
+      "title": "Caring for Leather, Skin and Fur",
+      "authors": [],
+      "publication": "Canadian Conservation Institute",
+      "source_kind": "official_documentation",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/preventive-conservation/guidelines-collections/caring-leather-skin-fur.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-lime",
+      "title": "Calcium Hydroxide",
+      "authors": [],
+      "publication": "CDC/NIOSH",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/niosh/npg/npgd0092.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-lime-weather",
+      "title": "Technical Note: Repointing Stone and Brick",
+      "authors": [],
+      "publication": "Northern Ireland Department for Communities",
+      "source_kind": "official_documentation",
+      "citation": "https://www.communities-ni.gov.uk/articles/technical-note-repointing-stone-and-brick",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-smithsonian",
+      "title": "Quick Reference Guide: Salvaging Wet Collections Items",
+      "authors": [],
+      "publication": "Smithsonian National Collections Program",
+      "source_kind": "official_documentation",
+      "citation": "https://ncp.si.edu/sites/default/files/ncp/files/PRICE/Water/QUICK%20REFERENCE%20GUIDE%20Salvaging%20Wet%20Collections%20Items_PRICE_2020%20.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-splinter",
+      "title": "Splinter removal",
+      "authors": [],
+      "publication": "NIH/MedlinePlus",
+      "source_kind": "official_documentation",
+      "citation": "https://medlineplus.gov/ency/article/002137.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:streak01-tetanus",
+      "title": "Clinical Guidance for Wound Management to Prevent Tetanus",
+      "authors": [],
+      "publication": "CDC",
+      "source_kind": "official_documentation",
+      "citation": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:technology-current",
       "title": "Electrical Current",
       "authors": [],
@@ -21987,6 +22071,66 @@
     },
     {
       "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-leather",
+      "source_ref": "source:streak01-leather",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern general source supports bounded relation only; no 1230 practice, item, treatment, state or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-lime",
+      "source_ref": "source:streak01-lime",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern general source supports bounded relation only; no 1230 practice, item, treatment, state or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-lime-weather",
+      "source_ref": "source:streak01-lime-weather",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "New lime work needs protection and remains vulnerable to frost and rain; no historical recipe or bond outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-smithsonian",
+      "source_ref": "source:streak01-smithsonian",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Wet leather support, shape holding, air circulation and air drying are conservation measures; no restoration or historical practice.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-splinter",
+      "source_ref": "source:streak01-splinter",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Modern general source supports bounded relation only; no 1230 practice, item, treatment, state or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:streak01-tetanus",
+      "source_ref": "source:streak01-tetanus",
+      "anchor": {
+        "section": "research note"
+      },
+      "note": "Wound type and vaccination history guide modern tetanus prevention; no infection, immunity or treatment is established.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
       "evidence_ref": "evidence:technology-current",
       "source_ref": "source:technology-current",
       "anchor": {
@@ -32614,6 +32758,37 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:streak01-repair",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:streak01-repair",
+          "locale": "ru",
+          "labels": [
+            "biology_physiology"
+          ],
+          "short_definition": "Ограниченный современный контекст.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology_physiology:streak01-repair",
+          "locale": "en",
+          "labels": [
+            "biology_physiology"
+          ],
+          "short_definition": "Bounded modern context.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:biology_physiology:sweat-evaporation",
       "domain": "biology_physiology",
       "broader_refs": [],
@@ -34700,6 +34875,37 @@
             "Variable wood-ash alkalinity"
           ],
           "short_definition": "Wood-ash samples vary in pH-raising effect.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:chemistry_process:streak01-repair",
+      "domain": "chemistry_process",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:chemistry_process:streak01-repair",
+          "locale": "ru",
+          "labels": [
+            "chemistry_process"
+          ],
+          "short_definition": "Ограниченный современный контекст.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:chemistry_process:streak01-repair",
+          "locale": "en",
+          "labels": [
+            "chemistry_process"
+          ],
+          "short_definition": "Bounded modern context.",
           "search_aliases": []
         }
       }
@@ -36841,6 +37047,37 @@
             "quenching",
             "tempering"
           ]
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:streak01-repair",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:craft_technology:streak01-repair",
+          "locale": "ru",
+          "labels": [
+            "craft_technology"
+          ],
+          "short_definition": "Ограниченный современный контекст.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:craft_technology:streak01-repair",
+          "locale": "en",
+          "labels": [
+            "craft_technology"
+          ],
+          "short_definition": "Bounded modern context.",
+          "search_aliases": []
         }
       }
     },
@@ -142766,6 +143003,448 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-lime-curing-limits",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Mix, exposure, protection and elapsed time affect lime curing; a general limit supplies neither a recipe nor a guaranteed sound result."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-lime-weather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-lime-curing-limits",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Состав, воздействие, защита и время влияют на твердение извести; общий предел не даёт рецепта и не гарантирует прочный результат.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-lime-curing-limits",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Mix, exposure, protection and elapsed time affect lime curing; a general limit supplies neither a recipe nor a guaranteed sound result.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:streak01-lime-curing-limits"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-lime-weather",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Fresh lime work is vulnerable to frost, rain and rapid drying; these exposures can interrupt or weaken setting without predicting a bond outcome."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-lime-weather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-lime-weather",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Свежая известковая работа уязвима к морозу, дождю и быстрому высыханию; это может прервать или ослабить схватывание без предсказания результата.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-lime-weather",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Fresh lime work is vulnerable to frost, rain and rapid drying; these exposures can interrupt or weaken setting without predicting a bond outcome.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:streak01-lime-weather"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-splinter-assessment",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A visible, safely graspable splinter differs from a deeply embedded or eye-adjacent object; hands and area can be cleaned before bounded assessment."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-splinter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-splinter-assessment",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Видимая безопасно захватываемая заноза отличается от глубоко внедрённого или близкого к глазу предмета; руки и место можно очистить перед ограниченной оценкой.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-splinter-assessment",
+          "locale": "en",
+          "runtime_text": "INFERENCE: A visible, safely graspable splinter differs from a deeply embedded or eye-adjacent object; hands and area can be cleaned before bounded assessment.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:streak01-splinter-assessment"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-splinter-escalation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A deep, difficult, painful, eye-adjacent or inflamed splinter is an escalation boundary for skilled help, not a diagnosis or infection outcome."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-splinter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-splinter-escalation",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Глубокая, трудная, болезненная, близкая к глазу или воспалённая заноза — граница для обращения за опытной помощью, не диагноз и не исход инфекции.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-splinter-escalation",
+          "locale": "en",
+          "runtime_text": "INFERENCE: A deep, difficult, painful, eye-adjacent or inflamed splinter is an escalation boundary for skilled help, not a diagnosis or infection outcome.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:streak01-splinter-escalation"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-splinter-tetanus-uncertainty",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Deep or dirty wounds and uncertain tetanus protection are modern escalation considerations; they do not establish infection, immunity or treatment in the world."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-tetanus"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-splinter-tetanus-uncertainty",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Глубокие или грязные раны и неясная защита от столбняка — современные основания эскалации; они не устанавливают инфекцию, иммунитет или лечение в мире.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-splinter-tetanus-uncertainty",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Deep or dirty wounds and uncertain tetanus protection are modern escalation considerations; they do not establish infection, immunity or treatment in the world.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:streak01-splinter-tetanus-uncertainty"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-wet-leather-drying",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Strong heat can desiccate, distort, stiffen or split wet leather; slow air drying with support is a bounded modern conservation measure, not restoration."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-leather",
+        "evidence:streak01-smithsonian"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-wet-leather-drying",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Сильный жар может пересушить, деформировать, сделать жёсткой или расколоть влажную кожу; медленная воздушная сушка с поддержкой — современная ограниченная мера, не восстановление.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-wet-leather-drying",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Strong heat can desiccate, distort, stiffen or split wet leather; slow air drying with support is a bounded modern conservation measure, not restoration.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:streak01-wet-leather-drying"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-wet-leather-limits",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Leather processing and prior condition affect wetting and drying response, so former fit, strength or appearance cannot be promised."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-leather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-wet-leather-limits",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Выделка и прежнее состояние кожи влияют на реакцию на влагу и сушку; прежнюю форму, прочность или вид нельзя обещать.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-wet-leather-limits",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Leather processing and prior condition affect wetting and drying response, so former fit, strength or appearance cannot be promised.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:streak01-wet-leather-limits"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-wet-leather-support",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Damp leather can be cautiously supported or reshaped to limit further distortion while its actual condition is observed."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-smithsonian"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-wet-leather-support",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Влажную кожу можно осторожно поддержать или придать форму, ограничивая дальнейшую деформацию и наблюдая её состояние.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-wet-leather-support",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Damp leather can be cautiously supported or reshaped to limit further distortion while its actual condition is observed.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:streak01-wet-leather-support"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:streak01-wet-lime-contact",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:chemistry_process:streak01-repair",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Wet calcium hydroxide can irritate or burn skin and eyes; avoiding contact and washing contaminated skin are modern hazard controls, not period treatment."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:streak01-lime"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-wet-lime-contact",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Влажный гидроксид кальция может раздражать или обжигать кожу и глаза; избегать контакта и промывать загрязнённую кожу — современные меры, не историческое лечение.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:streak01-wet-lime-contact",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Wet calcium hydroxide can irritate or burn skin and eyes; avoiding contact and washing contaminated skin are modern hazard controls, not period treatment.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:streak01-wet-lime-contact"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:structural-and-object-wood",
       "domain": "craft_technology",
       "subject_ref": "wk:craft_technology:structural-and-object-wood",
@@ -149923,6 +150602,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology_physiology:streak01-repair": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology_physiology:streak01-repair",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:biology_physiology:sweat-evaporation": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:biology_physiology:sweat-evaporation",
@@ -150493,6 +151181,15 @@
       "wk:chemistry_process:static-wood-ash-variable-alkalinity": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:chemistry_process:static-wood-ash-variable-alkalinity",
+        "domain": "chemistry_process",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:chemistry_process:streak01-repair": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:chemistry_process:streak01-repair",
         "domain": "chemistry_process",
         "broader_refs": [],
         "related_refs": [],
@@ -151070,6 +151767,15 @@
         "related_refs": [
           "wk:material_culture:steel"
         ],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:craft_technology:streak01-repair": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:craft_technology:streak01-repair",
+        "domain": "craft_technology",
+        "broader_refs": [],
+        "related_refs": [],
         "external_mappings": [],
         "review_status": "approved"
       },
@@ -157644,6 +158350,11 @@
       "wk:biology_physiology:stored-grain-condition": [
         "claim:stored-grain-condition-depends-on-temperature-moisture"
       ],
+      "wk:biology_physiology:streak01-repair": [
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty"
+      ],
       "wk:biology_physiology:sweat-evaporation": [
         "claim:sweat-evaporation-reduces-surface-heat"
       ],
@@ -157850,6 +158561,11 @@
       ],
       "wk:chemistry_process:static-wood-ash-variable-alkalinity": [
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample"
+      ],
+      "wk:chemistry_process:streak01-repair": [
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-lime-weather",
+        "claim:streak01-wet-lime-contact"
       ],
       "wk:chemistry_process:strong-acid-base-neutralization-heat": [
         "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat"
@@ -158128,6 +158844,11 @@
       ],
       "wk:craft_technology:steel-working-part-heat-treatment": [
         "claim:occupation-smith-heat-treatment"
+      ],
+      "wk:craft_technology:streak01-repair": [
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support"
       ],
       "wk:craft_technology:structural-and-object-wood": [
         "claim:structural-and-object-wood"
@@ -160887,6 +161608,9 @@
         "claim:stomatal-opening-affects-gas-water-exchange",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
@@ -160967,6 +161691,9 @@
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
         "claim:static-wood-ash-water-can-produce-alkaline-runoff",
         "claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-lime-weather",
+        "claim:streak01-wet-lime-contact",
         "claim:textile-dye-application",
         "claim:textile-dye-mordant-fixation",
         "claim:vegetable-tanning-collagen-stabilization",
@@ -161104,6 +161831,9 @@
         "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
         "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
         "claim:structural-and-object-wood",
         "claim:technology-motor-boundary",
         "claim:technology-newcomen-boundary",
@@ -163678,6 +164408,15 @@
         "claim:stone-whetstone-edge-maintenance",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
+        "claim:streak01-wet-lime-contact",
         "claim:structural-and-object-wood",
         "claim:terrain-background",
         "claim:terrain-parent-material-assemblage",
@@ -165389,6 +166128,12 @@
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-lime-contact",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:technology-circuit-prerequisite",
         "claim:technology-rotation-prerequisite",
@@ -167380,6 +168125,7 @@
         "claim:residual-law-unauthorized-horse-use",
         "claim:residual-law-visible-injury-and-witness",
         "claim:rp-mother-household-care-succession",
+        "claim:streak01-lime-weather",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
         "claim:urban-wooden-coverings",
         "claim:wild-food-and-fur-evidence",
@@ -167475,7 +168221,8 @@
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"
       ],
       "безопасно": [
-        "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement"
+        "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
+        "claim:streak01-splinter-assessment"
       ],
       "безопасного": [
         "claim:agriculture-fauna-bort-climbing-hooks",
@@ -167913,7 +168660,8 @@
         "claim:fauna-mallard-brood"
       ],
       "близкая": [
-        "claim:static-dim-light-reading-can-tire-eyes-without-harming-them"
+        "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
+        "claim:streak01-splinter-escalation"
       ],
       "близкие": [
         "claim:research-porous-high-water-stain-can-require-corroboration"
@@ -167928,7 +168676,8 @@
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation"
       ],
       "близкого": [
-        "claim:foundations-haz-05-slope-water-triggers"
+        "claim:foundations-haz-05-slope-water-triggers",
+        "claim:streak01-splinter-assessment"
       ],
       "близкой": [
         "wk:biology_physiology:static-visual-comfort-context-b06"
@@ -168118,6 +168867,9 @@
       "болезней": [
         "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
         "wk:biology_physiology:candidate-v2-foodborne-symptom-variation"
+      ],
+      "болезненная": [
+        "claim:streak01-splinter-escalation"
       ],
       "болезненное": [
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour"
@@ -168625,6 +169377,9 @@
       ],
       "быстрой": [
         "claim:foundations-thm-05-surface-area-heterogeneous-rate"
+      ],
+      "быстрому": [
+        "claim:streak01-lime-weather"
       ],
       "быструю": [
         "claim:research-extreme-cold-can-cause-cold-stress"
@@ -169834,6 +170589,7 @@
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "claim:static-raking-mushroom-ground-can-damage-fungal-habitat",
         "claim:static-root-loss-can-cause-transplant-shock",
+        "claim:streak01-wet-leather-limits",
         "claim:textile-fibres-twist-yarn",
         "wk:biology_physiology:final-nature-wild-plant-identification-limits",
         "wk:environment:common-reed-rhizome-habitat",
@@ -169881,7 +170637,8 @@
       "видимая": [
         "claim:final-nature-rooted-aquatic-plant-has-distinct-submerged-and-surface-parts",
         "claim:residual-nature-ice-current-thin-areas",
-        "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level"
+        "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
+        "claim:streak01-splinter-assessment"
       ],
       "видимо": [
         "claim:construction-quarry-procurement",
@@ -170207,7 +170964,8 @@
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:static-root-loss-can-cause-transplant-shock",
-        "claim:stored-grain-temperature-gradient-can-migrate-moisture"
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-wet-leather-limits"
       ],
       "владелец": [
         "claim:agriculture-fauna-borts-honey",
@@ -170351,7 +171109,9 @@
         "claim:material-water-hemp-cellulosic-fibre",
         "claim:material-water-linen-flax-origin",
         "claim:material-water-plant-fibre-cellulose",
-        "claim:residual-tree-alnus-glutinosa-moist-soil"
+        "claim:residual-tree-alnus-glutinosa-moist-soil",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-support"
       ],
       "влажные": [
         "claim:fauna-amphibian-moist-skin",
@@ -170364,6 +171124,7 @@
       "влажный": [
         "claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state",
         "claim:foundations-earth-29-advection-fog",
+        "claim:streak01-wet-lime-contact",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "wk:physics_material_science:static-ground-b05-wet-soil-trafficability",
         "wk:physics_material_science:wet-granular-capillary-cohesion"
@@ -170472,6 +171233,8 @@
         "claim:population-material-iron-rust",
         "claim:population-material-wood-combustion",
         "claim:stomatal-opening-affects-gas-water-exchange",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-wet-leather-limits",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:wound-healing-time-dependent",
         "wk:biology_physiology:fauna-bird-migration",
@@ -170539,6 +171302,9 @@
         "wk:biology_physiology:fauna-moose",
         "wk:biology_physiology:fauna-wild-boar",
         "wk:biology_physiology:young-bird-ground-stage-and-intervention"
+      ],
+      "внедрённого": [
+        "claim:streak01-splinter-assessment"
       ],
       "внедрить": [
         "claim:research-memory-postevent-misinformation"
@@ -171362,6 +172128,7 @@
         "claim:research-extreme-cold-can-cause-cold-stress",
         "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer",
         "claim:research-malus-sylvestris-fruit-is-edible-but-seeds-are-poisonous",
+        "claim:streak01-lime-curing-limits",
         "wk:biology_physiology:candidate-macro-causal-v2-exposure-and-function",
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:final-practical-uncertain-exposure",
@@ -171467,6 +172234,9 @@
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "wk:physics_material_science:research-increased-ventilation-can-help-reduce-condensation"
+      ],
+      "воздушная": [
+        "claim:streak01-wet-leather-drying"
       ],
       "воздушной": [
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
@@ -171966,6 +172736,9 @@
       "воспаление": [
         "claim:tissue-injury-can-cause-inflammatory-repair-response"
       ],
+      "воспалённая": [
+        "claim:streak01-splinter-escalation"
+      ],
       "воспалительный": [
         "wk:biology_physiology:tissue-injury-response"
       ],
@@ -172095,6 +172868,7 @@
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
+        "claim:streak01-wet-leather-drying",
         "wk:biology_physiology:muscle-aerobic-energy",
         "wk:biology_physiology:residual-postpartum-maternal-recovery"
       ],
@@ -172316,6 +173090,7 @@
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
+        "claim:streak01-lime-curing-limits",
         "claim:textile-fibres-twist-yarn",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:transport-winter-sledge-1220",
@@ -172838,6 +173613,7 @@
       ],
       "выделка": [
         "claim:material-water-alum-skin-water",
+        "claim:streak01-wet-leather-limits",
         "claim:vegetable-tanning-prepared-hide"
       ],
       "выделки": [
@@ -173297,6 +174073,9 @@
         "claim:oil-tanning-crosslinking-fibres",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
       ],
+      "высыханию": [
+        "claim:streak01-lime-weather"
+      ],
       "высыхания": [
         "claim:material-water-new-linen-water",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
@@ -173583,6 +174362,7 @@
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-bee-smoke-b09-smoke-can-prompt-honey-engorgement-without-guaranteeing-calm",
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "claim:streak01-lime-curing-limits",
         "wk:chemistry_process:food-preservation-qualitative"
       ],
       "гарантируется": [
@@ -173869,6 +174649,9 @@
       "гидраты": [
         "claim:static-hydraulic-lime-can-initially-set-with-water"
       ],
+      "гидроксид": [
+        "claim:streak01-wet-lime-contact"
+      ],
       "гидролиз": [
         "claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap"
       ],
@@ -173975,6 +174758,7 @@
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:streak01-wet-lime-contact",
         "wk:biology_physiology:macro-b1819-smoke-ash-eye-response",
         "wk:environment:macro-b20-embers-and-snow-light"
       ],
@@ -173984,6 +174768,10 @@
       "глазах": [
         "claim:macro-b1819-smoke-or-ash-can-irritate-eyes-and-supports-clean-air-and-rinsing-response",
         "claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work"
+      ],
+      "глазу": [
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation"
       ],
       "глебу": [
         "claim:transport-winter-sledge-1220"
@@ -174100,8 +174888,17 @@
       "глубины": [
         "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area"
       ],
+      "глубокая": [
+        "claim:streak01-splinter-escalation"
+      ],
+      "глубокие": [
+        "claim:streak01-splinter-tetanus-uncertainty"
+      ],
       "глубокий": [
         "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care"
+      ],
+      "глубоко": [
+        "claim:streak01-splinter-assessment"
       ],
       "гнёзд": [
         "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
@@ -174910,6 +175707,7 @@
         "claim:religion-priest-child-baptism",
         "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans",
         "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
+        "claim:streak01-splinter-escalation",
         "wk:biology:candidate-plant-food-part-bound",
         "wk:environment:precipitation-infiltration-runoff-limit"
       ],
@@ -175284,6 +176082,9 @@
       "грязную": [
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently"
       ],
+      "грязные": [
+        "claim:streak01-splinter-tetanus-uncertainty"
+      ],
       "грязь": [
         "claim:final-social-washing-and-drying-can-change-visible-household-soil",
         "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
@@ -175442,6 +176243,7 @@
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:residual-nature-celestial-pole-daily-circles",
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+        "claim:streak01-lime-curing-limits",
         "claim:water-capillary-height",
         "claim:wood-anisotropy-moisture",
         "wk:biology_physiology:food-energy-nutrients",
@@ -175476,7 +176278,8 @@
       ],
       "дальнейшую": [
         "claim:human-life-learning-feedback-can-shape-practice",
-        "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling"
+        "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+        "claim:streak01-wet-leather-support"
       ],
       "дальние": [
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel"
@@ -176478,7 +177281,8 @@
       ],
       "деформацию": [
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
-        "claim:static-parchment-or-vellum-should-not-be-wetted"
+        "claim:static-parchment-or-vellum-should-not-be-wetted",
+        "claim:streak01-wet-leather-support"
       ],
       "деформация": [
         "claim:partially-saturated-granular-deformation-can-change-pore-phase-configuration",
@@ -176487,6 +177291,9 @@
         "wk:physics_material_science:partially-saturated-granular-deformation",
         "wk:physics_material_science:solid-deformation",
         "wk:physics_material_science:static-birch-bark-water-deformation"
+      ],
+      "деформировать": [
+        "claim:streak01-wet-leather-drying"
       ],
       "деформироваться": [
         "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening",
@@ -176564,6 +177371,7 @@
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+        "claim:streak01-splinter-escalation",
         "claim:wound-healing-time-dependent",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:biology_physiology:wound-healing-time-dependent",
@@ -176984,6 +177792,7 @@
         "claim:stomatal-opening-affects-gas-water-exchange",
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance",
+        "claim:streak01-splinter-escalation",
         "claim:technology-circuit-prerequisite",
         "claim:terrain-background",
         "claim:textile-conditioning-matters",
@@ -177316,7 +178125,8 @@
         "wk:social_behavior:reconstructed-road-hospitality-boundary"
       ],
       "дождю": [
-        "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue"
+        "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
+        "claim:streak01-lime-weather"
       ],
       "дождя": [
         "claim:macro-b21-rain-formed-soil-crust-can-limit-infiltration-emergence-and-surface-workability",
@@ -179128,6 +179938,7 @@
         "claim:static-birch-bark-water-can-deform-layers",
         "claim:static-root-loss-can-cause-transplant-shock",
         "claim:static-straw-is-a-traditional-horse-bedding-source",
+        "claim:streak01-wet-leather-support",
         "claim:transport-private-boat-arrangement",
         "claim:water-capillary-rise-depression",
         "claim:water-wetting-forces",
@@ -179341,7 +180152,8 @@
         "wk:social_law_economy:practical-document-genres"
       ],
       "жар": [
-        "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3"
+        "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r3",
+        "claim:streak01-wet-leather-drying"
       ],
       "жара": [
         "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
@@ -179591,7 +180403,8 @@
         "claim:population-material-copper-iron-contact"
       ],
       "жёсткой": [
-        "claim:residual-tree-picea-abies-evergreen-needles"
+        "claim:residual-tree-picea-abies-evergreen-needles",
+        "claim:streak01-wet-leather-drying"
       ],
       "жёсткость": [
         "claim:foundations-physical-b2-bnh-01-bone-organic-inorganic-structure",
@@ -180067,6 +180880,7 @@
         "claim:static-birch-bark-water-can-deform-layers",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
+        "claim:streak01-splinter-escalation",
         "claim:transport-hired-boatman",
         "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:fauna-honeybee",
@@ -180400,7 +181214,8 @@
         "claim:care-waterproof-wound-cover"
       ],
       "загрязнённую": [
-        "claim:care-waterproof-wound-cover"
+        "claim:care-waterproof-wound-cover",
+        "claim:streak01-wet-lime-contact"
       ],
       "загрязнённые": [
         "claim:place-outdoors-shore-working-edge-composition"
@@ -181189,6 +182004,10 @@
       "заново": [
         "claim:military-world-crossing-needs-staged-load-handling"
       ],
+      "заноза": [
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation"
+      ],
       "занятие": [
         "claim:agriculture-fauna-hunting-economic-context",
         "claim:agriculture-fauna-rural-tree-borts",
@@ -181748,6 +182567,9 @@
       "захвата": [
         "claim:population-physics-static-friction"
       ],
+      "захватываемая": [
+        "claim:streak01-splinter-assessment"
+      ],
       "захватывали": [
         "claim:foundations-ms3-01-initial-attention"
       ],
@@ -181793,6 +182615,8 @@
         "claim:macro-gap-political-communication-needs-accepted-performance",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "wk:biology_physiology:candidate-swallowing-airway-protection",
         "wk:biology_physiology:macro-b20-ankle-soft-tissue-observation",
         "wk:chemistry_process:food-preservation-qualitative",
@@ -182830,7 +183654,8 @@
       ],
       "избегать": [
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
-        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+        "claim:streak01-wet-lime-contact"
       ],
       "избегают": [
         "claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling"
@@ -182868,6 +183693,7 @@
       ],
       "извести": [
         "claim:lime-transformations",
+        "claim:streak01-lime-curing-limits",
         "wk:chemistry_process:lime-transformations",
         "wk:chemistry_process:static-hydraulic-lime-water-setting",
         "wk:chemistry_process:static-nonhydraulic-lime-carbonation"
@@ -182876,6 +183702,7 @@
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word"
       ],
       "известковая": [
+        "claim:streak01-lime-weather",
         "wk:material_culture:lime-wall-plaster"
       ],
       "известковой": [
@@ -184148,6 +184975,14 @@
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
+        "claim:streak01-wet-lime-contact",
         "claim:technology-motor-boundary",
         "claim:technology-newcomen-boundary",
         "claim:terrain-background",
@@ -184524,6 +185359,7 @@
       "иммунитет": [
         "claim:foundations-life-33-acquired-immunity",
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "wk:biology_physiology:foundation-acquired-immunity"
       ],
       "иммунной": [
@@ -184834,6 +185670,7 @@
         "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
         "claim:care-waterproof-wound-cover",
         "claim:foundations-life-45-infection-entry",
+        "claim:streak01-splinter-escalation",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour"
       ],
       "инфекционных": [
@@ -184846,7 +185683,8 @@
         "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
         "claim:research-infection-in-vertebrates-can-be-associated-with-sickness-behaviour",
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
-        "claim:static-repeated-skin-friction-can-cause-blistering"
+        "claim:static-repeated-skin-friction-can-cause-blistering",
+        "claim:streak01-splinter-tetanus-uncertainty"
       ],
       "инфекция": [
         "claim:candidate-v5-fever-is-not-itself-a-disease",
@@ -185354,6 +186192,7 @@
         "claim:population-storage-role",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:river-landing-surfacing-allocation",
+        "claim:streak01-wet-lime-contact",
         "wk:material_culture:historically-recorded-maslo"
       ],
       "исторической": [
@@ -185635,6 +186474,7 @@
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
+        "claim:streak01-splinter-escalation",
         "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
         "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
         "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
@@ -186007,7 +186847,8 @@
         "claim:foundations-thm-06-moisture-vaporization-heat-demand"
       ],
       "кальция": [
-        "claim:static-nonhydraulic-lime-can-harden-by-carbonation"
+        "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+        "claim:streak01-wet-lime-contact"
       ],
       "каменно": [
         "wk:architecture_settlement:stone-filled-log-crib"
@@ -187260,6 +188101,7 @@
         "claim:population-shoe-form",
         "claim:practical-leather-stitch",
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
+        "claim:streak01-wet-leather-limits",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:textile-conditioning-matters",
         "claim:transport-boat-cargo-dispatch",
@@ -187307,6 +188149,9 @@
         "claim:practical-leather-cut",
         "claim:static-repeated-skin-friction-can-cause-blistering",
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-support",
+        "claim:streak01-wet-lime-contact",
         "claim:vegetable-tanning-collagen-stabilization"
       ],
       "кожух": [
@@ -188291,6 +189136,7 @@
         "claim:population-physics-static-friction",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
         "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
+        "claim:streak01-wet-lime-contact",
         "claim:wood-liquid-moisture-change",
         "wk:craft_technology:dyebath-textile-handling",
         "wk:physics_material_science:force-contact-geometry",
@@ -188394,7 +189240,10 @@
         "wk:biology_physiology:static-minor-thermal-burn-care-b10",
         "wk:biology_physiology:static-skin-friction-context-b06",
         "wk:biology_physiology:static-visual-comfort-context-b06",
+        "wk:biology_physiology:streak01-repair",
+        "wk:chemistry_process:streak01-repair",
         "wk:craft_technology:final-static-b01-craft_technology",
+        "wk:craft_technology:streak01-repair",
         "wk:environment:final-static-b01-environment",
         "wk:environment:hunting-fur-procurement",
         "wk:environment:medieval-novgorod-fishing-context",
@@ -190550,6 +191399,8 @@
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-lime-contact",
         "wk:social_law_economy:candidate-v5-fever-charm-text"
       ],
       "лечением": [
@@ -192301,6 +193152,9 @@
       "медицинскую": [
         "claim:transport-winter-sledge-1220"
       ],
+      "медленная": [
+        "claim:streak01-wet-leather-drying"
+      ],
       "медленно": [
         "claim:residual-nature-pole-star-precession-limit"
       ],
@@ -192606,6 +193460,7 @@
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
         "claim:practical-document-genres",
+        "claim:streak01-wet-leather-drying",
         "wk:social_law_economy:practical-document-genres",
         "wk:social_law_economy:reconstructed-market-weighing-check"
       ],
@@ -192628,6 +193483,7 @@
       "меры": [
         "claim:macro-b20-insect-damage-to-stored-wool-can-call-for-inspection-isolation-and-clean-dry-storage",
         "claim:measurement-units-must-be-identified",
+        "claim:streak01-wet-lime-contact",
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
       ],
       "места": [
@@ -192867,6 +193723,7 @@
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:static-animal-b06-british-insectivorous-bats-use-echolocation-at-night",
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+        "claim:streak01-splinter-assessment",
         "wk:architecture_settlement:assembly-space",
         "wk:architecture_settlement:drying-workspace",
         "wk:architecture_settlement:fishing-workspace",
@@ -193343,6 +194200,7 @@
       ],
       "мире": [
         "claim:macro-gap-political-communication-needs-accepted-performance",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "wk:architecture_settlement:timber-dwelling"
       ],
       "мирные": [
@@ -194154,6 +195012,9 @@
         "claim:static-yarn-twist-can-increase-fibre-cohesion",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-lime-weather",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-lime-contact",
         "claim:textile-dye-application",
         "claim:textile-dye-mordant-fixation",
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
@@ -194266,6 +195127,8 @@
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-wet-leather-support",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
@@ -194566,6 +195429,9 @@
       ],
       "морозочувствительного": [
         "claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures"
+      ],
+      "морозу": [
+        "claim:streak01-lime-weather"
       ],
       "морской": [
         "claim:foundations-earth-23-hydrothermal-precipitation"
@@ -195139,6 +196005,8 @@
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:stomatal-opening-affects-gas-water-exchange",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-wet-leather-limits",
         "claim:textile-chrysin-analysis",
         "claim:textile-dye-application",
         "claim:textile-dye-mordant-fixation",
@@ -195298,6 +196166,9 @@
       "наблюдают": [
         "claim:final-static-b01-willow-selection",
         "claim:mb14-practical-clay-firing-needs-gradual-observation"
+      ],
+      "наблюдая": [
+        "claim:streak01-wet-leather-support"
       ],
       "наблюдение": [
         "claim:construction-pine-resin-surfaces",
@@ -197894,6 +198765,11 @@
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-lime-contact",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:technology-circuit-prerequisite",
         "claim:technology-motor-boundary",
@@ -198488,6 +199364,7 @@
         "claim:population-physics-sliding-friction",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+        "claim:streak01-wet-leather-limits",
         "claim:urban-bird-period-specific",
         "wk:biology_physiology:food-energy-nutrients",
         "wk:biology_physiology:pain-nociception-distinct",
@@ -198956,7 +199833,8 @@
         "wk:social_behavior:foundations-ms-40-social-prescription"
       ],
       "неясная": [
-        "claim:religion-priest-child-baptism"
+        "claim:religion-priest-child-baptism",
+        "claim:streak01-splinter-tetanus-uncertainty"
       ],
       "неясно": [
         "claim:final-social-retelling-can-preserve-or-change-source-and-detail",
@@ -200038,6 +200916,9 @@
       "обещаны": [
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals"
       ],
+      "обещать": [
+        "claim:streak01-wet-leather-limits"
+      ],
       "обещают": [
         "claim:healer-care-coordination-and-uncertainty",
         "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work"
@@ -200068,6 +200949,9 @@
         "claim:clay-dried-replasticization",
         "claim:pottery-handmade-temper",
         "wk:craft_technology:ceramic-material-category"
+      ],
+      "обжигать": [
+        "claim:streak01-wet-lime-contact"
       ],
       "обжиге": [
         "claim:clay-fired-no-replasticization",
@@ -200593,6 +201477,7 @@
         "claim:social-authority-letter-relates-theft-inquiry",
         "claim:social-daily-wax-commodity-context",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+        "claim:streak01-splinter-escalation",
         "wk:physics_material_science:static-fragile-wet-record-care-b10",
         "wk:social_law_economy:residual-v1-name-and-address-boundaries"
       ],
@@ -200882,6 +201767,7 @@
         "claim:river-landing-surfacing-allocation",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
+        "claim:streak01-lime-curing-limits",
         "claim:transport-private-boat-arrangement",
         "claim:urban-bird-period-specific",
         "wk:environment:urban-bird-period-specific"
@@ -201559,6 +202445,7 @@
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
         "claim:population-household-storage",
         "claim:river-landing-category",
+        "claim:streak01-wet-leather-drying",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:psychology_behavior:research-memory-postevent-misinformation",
         "wk:psychology_behavior:research-memory-source-misattribution",
@@ -201575,7 +202462,8 @@
         "claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky"
       ],
       "ограниченной": [
-        "claim:agriculture-fauna-rural-tree-borts"
+        "claim:agriculture-fauna-rural-tree-borts",
+        "claim:streak01-splinter-assessment"
       ],
       "ограниченном": [
         "claim:medieval-novgorod-wild-mammal-remains-attest-limited-dietary-use"
@@ -201596,7 +202484,10 @@
         "wk:architecture_settlement:final-static-b01-architecture_settlement",
         "wk:biology_physiology:final-static-b01-biology_physiology",
         "wk:biology_physiology:static-animal-b06-british-bat-activity",
+        "wk:biology_physiology:streak01-repair",
+        "wk:chemistry_process:streak01-repair",
         "wk:craft_technology:final-static-b01-craft_technology",
+        "wk:craft_technology:streak01-repair",
         "wk:environment:final-static-b01-environment",
         "wk:material_culture:final-static-b01-material_culture"
       ],
@@ -201645,6 +202536,9 @@
       ],
       "ограничивающие": [
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury"
+      ],
+      "ограничивая": [
+        "claim:streak01-wet-leather-support"
       ],
       "ограничить": [
         "claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use",
@@ -202272,6 +203166,7 @@
         "claim:population-felt-lining",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:resource-occupation-needs-setting",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:water-permeability-connected-pores",
         "wk:biology_physiology:fauna-tick",
@@ -202767,7 +203662,8 @@
       ],
       "опытной": [
         "claim:macro-b1819-ill-cattle-observation-is-nondiagnostic-and-can-warrant-experienced-assessment",
-        "claim:mb14-practical-fever-needs-observation-not-causal-assumption"
+        "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
+        "claim:streak01-splinter-escalation"
       ],
       "опытную": [
         "claim:final-practical-severe-or-worsening-postnatal-concerns-need-available-experienced-assessment-without-diagnosis",
@@ -203132,7 +204028,8 @@
         "claim:fur-skin-cooling-cleansing",
         "claim:population-joining-bond-contamination",
         "claim:population-joining-bond-pressure",
-        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "claim:streak01-lime-weather"
       ],
       "ослабление": [
         "wk:physics_material_science:smoke-optical-obscuration"
@@ -203243,6 +204140,7 @@
         "claim:novgorod-leather-items",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
         "claim:residual-law-dependency-and-agreement",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:wild-food-and-fur-evidence",
         "wk:architecture_settlement:excavated-urban-structures",
         "wk:chemistry_process:acid-base-neutralization",
@@ -203532,6 +204430,7 @@
         "claim:final-practical-water-cooling-applies-to-ordinary-solid-combustibles-not-every-fire",
         "claim:food-practices-processing-area-inference",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
+        "claim:streak01-wet-leather-support",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits"
       ],
       "осторожного": [
@@ -203820,6 +204719,8 @@
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
         "claim:static-repeated-skin-friction-can-cause-blistering",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:textile-ellagic-acid-analysis",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
@@ -204270,7 +205171,8 @@
         "claim:fauna-ewe-lamb-recognition"
       ],
       "отличается": [
-        "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation"
+        "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+        "claim:streak01-splinter-assessment"
       ],
       "отличаться": [
         "claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context",
@@ -204896,7 +205798,8 @@
         "wk:social_behavior:foundations-ms-26-group-context"
       ],
       "оценкой": [
-        "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment"
+        "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
+        "claim:streak01-splinter-assessment"
       ],
       "оценку": [
         "claim:final-practical-severe-or-worsening-postnatal-concerns-need-available-experienced-assessment-without-diagnosis",
@@ -204941,7 +205844,8 @@
       ],
       "очистить": [
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
-        "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently"
+        "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
+        "claim:streak01-splinter-assessment"
       ],
       "очистка": [
         "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
@@ -205522,7 +206426,8 @@
         "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
         "claim:place-ant-workers-tend-immature-stages-and-some-larvae-form-cocoons",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
-        "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind"
+        "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
+        "claim:streak01-splinter-assessment"
       ],
       "передавать": [
         "claim:human-life-shared-oral-activity-can-entertain-and-circulate-memory"
@@ -205984,6 +206889,9 @@
       ],
       "перестало": [
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited"
+      ],
+      "пересушить": [
+        "claim:streak01-wet-leather-drying"
       ],
       "пересчёт": [
         "claim:measurement-grain-mass-volume-density"
@@ -207961,7 +208869,8 @@
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:static-root-loss-can-cause-transplant-shock",
-        "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat"
+        "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+        "claim:streak01-wet-leather-support"
       ],
       "поддерживаемого": [
         "claim:technology-circuit-prerequisite"
@@ -208017,7 +208926,8 @@
       "поддержкой": [
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:public-world-capacity-can-vary-day-to-day",
-        "claim:public-world-rest-warmth-drink-food-are-contextual-support"
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+        "claim:streak01-wet-leather-drying"
       ],
       "поддержку": [
         "claim:public-world-publicity-raises-reputation-risk",
@@ -209261,7 +210171,8 @@
       "помощью": [
         "claim:fauna-mammals-red-fox-cooperative-pup-care",
         "claim:ordinary-life-apprentice-learns-and-assists",
-        "claim:public-world-community-response-to-impairment-varies"
+        "claim:public-world-community-response-to-impairment-varies",
+        "claim:streak01-splinter-escalation"
       ],
       "понадобиться": [
         "claim:public-world-injured-person-needs-safe-carriage-or-shelter"
@@ -210952,6 +211863,7 @@
         "claim:foundations-physical-b2-chm-05-solubility-saturation",
         "claim:public-world-health-disclosure-is-contextual",
         "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
+        "claim:streak01-lime-curing-limits",
         "wk:biology_physiology:research-cold-storage-microorganisms",
         "wk:chemistry_process:solubility-saturation",
         "wk:environment:precipitation-infiltration-runoff-limit"
@@ -211041,6 +211953,7 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:population-physics-conduction-gradient",
         "claim:population-physics-section-response",
+        "claim:streak01-splinter-assessment",
         "claim:textile-ellagic-acid-analysis",
         "wk:chemistry_process:iron-corrosion-moisture-oxygen",
         "wk:material_culture:novgorod-waterlogged-organic-preservation"
@@ -211271,6 +212184,9 @@
       "предсказана": [
         "claim:animal-homeostasis-responds-to-internal-external-change"
       ],
+      "предсказания": [
+        "claim:streak01-lime-weather"
+      ],
       "предсказуемости": [
         "claim:foundations-ms3-04-acute-stress"
       ],
@@ -211378,7 +212294,8 @@
       ],
       "прежнее": [
         "claim:macro-b14-mixed-shore-traces-can-signal-prior-human-use-not-function",
-        "claim:population-material-leather-dry"
+        "claim:population-material-leather-dry",
+        "claim:streak01-wet-leather-limits"
       ],
       "прежней": [
         "claim:healer-experience-and-reputation"
@@ -211394,7 +212311,8 @@
         "claim:fauna-toad-breeding-return"
       ],
       "прежнюю": [
-        "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition"
+        "claim:final-social-finding-an-object-can-start-return-inquiry-not-acquisition",
+        "claim:streak01-wet-leather-limits"
       ],
       "преимущественно": [
         "claim:agriculture-fauna-rural-tree-borts",
@@ -211482,7 +212400,8 @@
         "wk:environment:river-ice-jam-flow-obstruction"
       ],
       "прервать": [
-        "claim:ordinary-life-weaver-needs-yarn-and-loom-space"
+        "claim:ordinary-life-weaver-needs-yarn-and-loom-space",
+        "claim:streak01-lime-weather"
       ],
       "прерывает": [
         "claim:household-roof-layers-shed-water"
@@ -211995,6 +212914,9 @@
       ],
       "приданое": [
         "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title"
+      ],
+      "придать": [
+        "claim:streak01-wet-leather-support"
       ],
       "придающую": [
         "claim:foundations-physical-b2-bnh-01-bone-organic-inorganic-structure",
@@ -213108,6 +214030,9 @@
       "промывание": [
         "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen"
       ],
+      "промывать": [
+        "claim:streak01-wet-lime-contact"
+      ],
       "промывка": [
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
@@ -213795,6 +214720,7 @@
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:static-yarn-strength-can-fall-after-excessive-twist",
+        "claim:streak01-wet-leather-limits",
         "claim:textile-fibres-twist-yarn",
         "claim:vegetable-tanning-collagen-stabilization",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
@@ -213811,7 +214737,8 @@
         "wk:environment:candidate-v2-ice-snow-hazards"
       ],
       "прочный": [
-        "claim:clay-firing-structural-transformation"
+        "claim:clay-firing-structural-transformation",
+        "claim:streak01-lime-curing-limits"
       ],
       "прошедшая": [
         "claim:static-wood-ash-water-can-produce-alkaline-runoff"
@@ -214360,6 +215287,7 @@
         "claim:research-extreme-heat-can-increase-body-heat-storage",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
+        "claim:streak01-lime-weather",
         "wk:architecture_settlement:reconstructed-military-defence-emergency-work",
         "wk:biology_physiology:exercise-heat-dissipation",
         "wk:craft_technology:garden-work",
@@ -214899,7 +215827,8 @@
       "раздражать": [
         "claim:macro-b1819-smoke-or-ash-can-irritate-eyes-and-supports-clean-air-and-rinsing-response",
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
-        "claim:static-wood-ash-can-irritate-skin-and-eyes"
+        "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:streak01-wet-lime-contact"
       ],
       "раздражающем": [
         "wk:biology_physiology:static-ranunculaceae-sap-contact"
@@ -215539,6 +216468,7 @@
         "claim:care-direct-pressure-bleeding",
         "claim:care-waterproof-wound-cover",
         "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:wound-healing-time-dependent",
         "wk:biology_physiology:orchard-tree-pruning-context",
         "wk:biology_physiology:wound-healing-time-dependent"
@@ -215561,7 +216491,8 @@
         "claim:mb14-practical-wet-wood-splitting-needs-grain-and-restraint"
       ],
       "расколоть": [
-        "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it"
+        "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
+        "claim:streak01-wet-leather-drying"
       ],
       "раскоп": [
         "claim:candidate-v7-museum-bone-skates-xii-xiii",
@@ -216415,7 +217346,8 @@
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
         "claim:research-novel-stimulus-can-elicit-orienting-response",
         "claim:static-animal-b06-roost-disturbance-can-cause-abandonment-or-hibernation-arousal",
-        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "claim:streak01-wet-leather-limits"
       ],
       "реакция": [
         "claim:animal-homeostasis-responds-to-internal-external-change",
@@ -216776,6 +217708,7 @@
         "claim:stone-grinding-metal-use",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-lime-curing-limits",
         "claim:textile-chrysin-analysis",
         "claim:textile-fibres-twist-yarn",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
@@ -216797,6 +217730,7 @@
         "claim:population-rod-input",
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
+        "claim:streak01-lime-weather",
         "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
         "wk:material_culture:trade-economy-batch-03-packaging",
         "wk:material_culture:trade-economy-batch-03-payment-metal",
@@ -217108,7 +218042,8 @@
         "wk:physics_material_science:fibre-twisting"
       ],
       "рецепта": [
-        "claim:construction-construction-pottery-products"
+        "claim:construction-construction-pottery-products",
+        "claim:streak01-lime-curing-limits"
       ],
       "рецепторы": [
         "claim:foundations-life-19-sensory-receptor",
@@ -217736,7 +218671,8 @@
         "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
-        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "claim:streak01-splinter-assessment"
       ],
       "руководство": [
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"
@@ -218395,6 +219331,7 @@
       ],
       "свежая": [
         "claim:final-static-b01-willow-preparation",
+        "claim:streak01-lime-weather",
         "wk:biology_physiology:trade-economy-fresh-food-and-seed-condition"
       ],
       "свежего": [
@@ -219245,6 +220182,7 @@
         "claim:mb14-practical-net-draw-needs-clear-controlled-water-edge",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
+        "claim:streak01-wet-leather-drying",
         "claim:technology-newcomen-boundary",
         "wk:physics_material_science:glass-scattering-translucency"
       ],
@@ -219884,7 +220822,8 @@
       "сильный": [
         "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
         "claim:research-extreme-cold-can-cause-cold-stress",
-        "claim:sound-background-noise-masks-speech"
+        "claim:sound-background-noise-masks-speech",
+        "claim:streak01-wet-leather-drying"
       ],
       "сильным": [
         "claim:foundations-earth2-07-pressure-gradient-wind",
@@ -221496,6 +222435,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:residual-law-injury-and-treatment-payments",
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+        "claim:streak01-wet-leather-drying",
         "wk:biology_physiology:static-straw-horse-bedding",
         "wk:environment:candidate-nettle-bast-fibre-extraction"
       ],
@@ -221512,6 +222452,10 @@
         "claim:residual-nature-pole-star-precession-limit",
         "wk:architecture_settlement:localized-improvement-context"
       ],
+      "современные": [
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-lime-contact"
+      ],
       "современный": [
         "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
         "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
@@ -221519,6 +222463,9 @@
         "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
         "claim:urban-bird-period-specific",
         "wk:biology_physiology:static-minor-thermal-burn-care-b10",
+        "wk:biology_physiology:streak01-repair",
+        "wk:chemistry_process:streak01-repair",
+        "wk:craft_technology:streak01-repair",
         "wk:environment:static-wetland-plant-regional-compatibility",
         "wk:environment:urban-bird-period-specific"
       ],
@@ -222330,6 +223277,7 @@
         "claim:static-hydraulic-lime-can-initially-set-with-water",
         "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
         "claim:static-parchment-or-vellum-should-not-be-wetted",
+        "claim:streak01-lime-curing-limits",
         "claim:textile-dye-application",
         "claim:textile-ellagic-acid-analysis",
         "claim:textile-indigo-yellow-analysis",
@@ -222459,6 +223407,8 @@
         "claim:static-straw-is-a-traditional-horse-bedding-source",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
         "claim:textile-conditioning-matters",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
@@ -224231,6 +225181,9 @@
         "claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures",
         "wk:environment:macro-b21-rain-crust-and-frost-ground-change"
       ],
+      "столбняка": [
+        "claim:streak01-splinter-tetanus-uncertainty"
+      ],
       "столкновение": [
         "claim:residual-law-visible-injury-and-witness"
       ],
@@ -224848,6 +225801,7 @@
         "claim:population-physics-evaporation-below-boiling",
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+        "claim:streak01-wet-leather-drying",
         "wk:biology_physiology:food-drying",
         "wk:biology_physiology:food-drying-airflow-humidity",
         "wk:biology_physiology:food-drying-microbial-conditions",
@@ -224884,6 +225838,7 @@
         "claim:fibre-flax-breaker-shive",
         "claim:food-drying-depends-on-humidity-airflow",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r4",
+        "claim:streak01-wet-leather-limits",
         "wk:biology_physiology:food-drying-airflow-humidity"
       ],
       "существенно": [
@@ -224929,6 +225884,7 @@
         "wk:social_law_economy:contingent-return-request"
       ],
       "схватывание": [
+        "claim:streak01-lime-weather",
         "wk:physics_material_science:aqueous-animal-glue-setting-and-drying"
       ],
       "схема": [
@@ -225543,6 +226499,7 @@
         "claim:candidate-v2-near-melting-ice-has-less-strength"
       ],
       "твердение": [
+        "claim:streak01-lime-curing-limits",
         "wk:chemistry_process:static-hydraulic-lime-water-setting",
         "wk:chemistry_process:static-nonhydraulic-lime-carbonation"
       ],
@@ -227651,6 +228608,9 @@
       "труде": [
         "wk:architecture_settlement:reconstructed-military-defence-emergency-work",
         "wk:craft_technology:reconstructed-animal-material-handling"
+      ],
+      "трудная": [
+        "claim:streak01-splinter-escalation"
       ],
       "трудно": [
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
@@ -229797,6 +230757,7 @@
         "claim:candidate-v6-moon-phases-change-apparent-illuminated-portion",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict"
       ],
       "устанавливаются": [
@@ -230537,6 +231498,9 @@
       "ущерба": [
         "claim:residual-law-injury-and-treatment-payments"
       ],
+      "уязвима": [
+        "claim:streak01-lime-weather"
+      ],
       "уязвимости": [
         "wk:biology_physiology:place-plant-freezing-injury-context",
         "wk:biology_physiology:residual-postpartum-newborn-physiology",
@@ -231067,6 +232031,8 @@
         "claim:population-physics-load-deformation",
         "claim:static-cloven-hoof-trace-comparison-requires-multiple-observable-features",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
         "wk:material_culture:gramota-73-grivna-term",
         "wk:material_culture:novgorod-wooden-urban-elements",
         "wk:physics_material_science:static-birch-bark-water-deformation",
@@ -233998,6 +234964,9 @@
         "claim:foundations-haz-05-slope-water-triggers",
         "wk:environment:slope-water-triggers"
       ],
+      "эскалации": [
+        "claim:streak01-splinter-tetanus-uncertainty"
+      ],
       "эта": [
         "claim:fur-skin-cooling-cleansing",
         "claim:grain-processing-bread-dough-before-baking",
@@ -234678,6 +235647,7 @@
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
         "claim:stone-grinding-metal-use",
+        "claim:streak01-lime-weather",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:technology-newcomen-boundary",
         "claim:terrain-background",
@@ -235269,7 +236239,8 @@
         "wk:environment:betula-pendula-properties"
       ],
       "biology": [
-        "wk:biology_physiology:final-static-b01-biology_physiology"
+        "wk:biology_physiology:final-static-b01-biology_physiology",
+        "wk:biology_physiology:streak01-repair"
       ],
       "bone": [
         "wk:physics_material_science:bone-organic-inorganic-structure",
@@ -235330,6 +236301,9 @@
         "wk:physics_material_science:conductor-insulator-charge-mobility",
         "wk:physics_material_science:stationary-charge-distance-force"
       ],
+      "chemistry": [
+        "wk:chemistry_process:streak01-repair"
+      ],
       "common": [
         "wk:chemistry_process:common-ion-precipitation-shift"
       ],
@@ -235360,7 +236334,8 @@
         "wk:biology_physiology:research-hazelnut-food-part"
       ],
       "craft": [
-        "wk:craft_technology:final-static-b01-craft_technology"
+        "wk:craft_technology:final-static-b01-craft_technology",
+        "wk:craft_technology:streak01-repair"
       ],
       "culex": [
         "claim:fauna-culex-dusk-rest",
@@ -235504,7 +236479,16 @@
         "claim:final-static-b01-wet-ground-wood-limit",
         "claim:final-static-b01-willow-limits",
         "claim:final-static-b01-willow-preparation",
-        "claim:final-static-b01-willow-selection"
+        "claim:final-static-b01-willow-selection",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
+        "claim:streak01-wet-lime-contact"
       ],
       "inorganic": [
         "wk:physics_material_science:bone-organic-inorganic-structure"
@@ -235786,7 +236770,8 @@
         "wk:environment:common-reed-rhizome-habitat"
       ],
       "physiology": [
-        "wk:biology_physiology:final-static-b01-biology_physiology"
+        "wk:biology_physiology:final-static-b01-biology_physiology",
+        "wk:biology_physiology:streak01-repair"
       ],
       "picea": [
         "claim:residual-tree-picea-abies-cones-brown-at-maturity",
@@ -235835,6 +236820,9 @@
         "wk:npc_daily_life:reconstructed-local-religious-observance",
         "wk:npc_daily_life:reconstructed-military-camp-household-disruption",
         "wk:social_law_economy:reconstructed-military-coordination-custody"
+      ],
+      "process": [
+        "wk:chemistry_process:streak01-repair"
       ],
       "protocol": [
         "claim:macro-gap-birth-needs-practical-support-and-time"
@@ -235994,7 +236982,8 @@
         "wk:biology_physiology:fauna-domestic-cattle"
       ],
       "technology": [
-        "wk:craft_technology:final-static-b01-craft_technology"
+        "wk:craft_technology:final-static-b01-craft_technology",
+        "wk:craft_technology:streak01-repair"
       ],
       "temperature": [
         "wk:chemistry_process:temperature-solubility-conditional"
@@ -237360,6 +238349,7 @@
         "claim:residual-nature-snow-uneven-roof-loading",
         "claim:sound-spreading-reduces-intensity",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
+        "claim:streak01-wet-leather-support",
         "claim:water-percolation-openings",
         "wk:environment:regional-quaternary-deposits",
         "wk:environment:residual-nature-sky",
@@ -237484,7 +238474,9 @@
         "wk:physics_material_science:wood-bond"
       ],
       "adjacent": [
-        "claim:household-clay-drying-and-incompatible-movement"
+        "claim:household-clay-drying-and-incompatible-movement",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation"
       ],
       "adjoin": [
         "claim:settlement-vestibule-log"
@@ -237620,6 +238612,8 @@
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:stomatal-opening-affects-gas-water-exchange",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-wet-leather-limits",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "wk:biology_physiology:food-drying-airflow-humidity",
         "wk:chemistry_process:metal-classes-composition",
@@ -237884,6 +238878,7 @@
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
         "claim:residual-nature-roof-melt-eave-refreezing",
+        "claim:streak01-wet-leather-drying",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "claim:wood-liquid-directional-uptake",
         "wk:architecture_settlement:reconstructed-dwelling-interior-context",
@@ -238714,6 +239709,7 @@
         "claim:static-moose-track-reference-can-show-crescent-halves-and-dewclaws",
         "claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
+        "claim:streak01-splinter-escalation",
         "claim:structural-and-object-wood",
         "claim:technology-motor-boundary",
         "claim:technology-newcomen-boundary",
@@ -239845,6 +240841,12 @@
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:stone-grinding-metal-use",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-lime-contact",
         "claim:structural-and-object-wood",
         "claim:technology-circuit-prerequisite",
         "claim:technology-newcomen-boundary",
@@ -240685,6 +241687,7 @@
         "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
         "claim:macro-b19-dried-willow-rods-can-be-moistened-for-flexible-basket-work",
         "claim:macro-b21-rain-formed-soil-crust-can-limit-infiltration-emergence-and-surface-workability",
+        "claim:streak01-wet-leather-limits",
         "wk:environment:macro-b17-sticky-plant-coating-limits"
       ],
       "appears": [
@@ -241083,6 +242086,8 @@
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
         "claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-lime-contact",
         "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
         "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
         "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
@@ -241156,6 +242161,7 @@
         "claim:population-physics-point-pressure",
         "claim:research-stitching-can-secure-weak-textile-to-support",
         "claim:sound-spreading-reduces-intensity",
+        "claim:streak01-splinter-assessment",
         "wk:architecture_settlement:grain-processing-area-evidence",
         "wk:biology_physiology:orchard-tree-pruning-context",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
@@ -241610,6 +242616,7 @@
         "claim:residual-law-injury-and-treatment-payments",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+        "claim:streak01-splinter-assessment",
         "wk:biology_physiology:candidate-v6-clinical-observations",
         "wk:biology_physiology:macro-b1819-cattle-observation",
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits"
@@ -242296,7 +243303,8 @@
         "claim:public-world-community-response-to-impairment-varies"
       ],
       "avoiding": [
-        "claim:final-static-b01-living-birch-limits"
+        "claim:final-static-b01-living-birch-limits",
+        "claim:streak01-wet-lime-contact"
       ],
       "avoids": [
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease"
@@ -242852,6 +243860,9 @@
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
         "claim:static-wool-moisture-heat-mechanical-action-can-felt",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
         "claim:textile-dye-application",
         "claim:textile-dye-mordant-fixation",
         "claim:textile-fibres-twist-yarn",
@@ -243042,7 +244053,8 @@
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
-        "claim:residual-law-arson-remedy-and-sanction"
+        "claim:residual-law-arson-remedy-and-sanction",
+        "claim:streak01-splinter-assessment"
       ],
       "began": [
         "claim:healer-observation-and-questioning",
@@ -243400,7 +244412,8 @@
       ],
       "biology": [
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
-        "wk:biology_physiology:final-static-b01-biology_physiology"
+        "wk:biology_physiology:final-static-b01-biology_physiology",
+        "wk:biology_physiology:streak01-repair"
       ],
       "biotic": [
         "claim:foundations-life-37-ecological-factors",
@@ -243773,7 +244786,8 @@
         "claim:fauna-ewe-lamb-recognition",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
         "claim:population-joining-bond-contamination",
-        "claim:population-joining-bond-moisture"
+        "claim:population-joining-bond-moisture",
+        "claim:streak01-lime-weather"
       ],
       "bonding": [
         "claim:foundations-mat-01-wood-knot-strength-bonding",
@@ -243884,6 +244898,7 @@
         "claim:residual-government-law-v1-1234-records-campaign-and-peace-with-germans",
         "claim:residual-law-boundaries-and-marked-trees",
         "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
+        "claim:streak01-splinter-escalation",
         "wk:biology:candidate-plant-food-part-bound",
         "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
@@ -243900,11 +244915,16 @@
         "claim:population-household-storage",
         "claim:pottery-handmade-temper",
         "claim:residual-government-law-v2-1218-distinguishes-princely-and-novgorodian-tysyatsky",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-wet-leather-drying",
         "wk:architecture_settlement:final-static-b01-architecture_settlement",
         "wk:biology_physiology:ant-brood-care-and-relocation",
         "wk:biology_physiology:final-static-b01-biology_physiology",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
+        "wk:biology_physiology:streak01-repair",
+        "wk:chemistry_process:streak01-repair",
         "wk:craft_technology:final-static-b01-craft_technology",
+        "wk:craft_technology:streak01-repair",
         "wk:environment:final-static-b01-environment",
         "wk:material_culture:final-static-b01-material_culture",
         "wk:psychology_behavior:research-memory-postevent-misinformation",
@@ -244349,6 +245369,7 @@
         "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+        "claim:streak01-wet-lime-contact",
         "wk:biology_physiology:candidate-v6-burns",
         "wk:biology_physiology:static-minor-thermal-burn-care-b10",
         "wk:chemistry_process:macro-b20-heated-pitch-handling"
@@ -244644,7 +245665,8 @@
         "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "calcium": [
-        "claim:static-nonhydraulic-lime-can-harden-by-carbonation"
+        "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+        "claim:streak01-wet-lime-contact"
       ],
       "calculation": [
         "claim:foundations-haz-04-slope-force-strength",
@@ -245390,6 +246412,11 @@
         "claim:static-yarn-twist-can-increase-fibre-cohesion",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-support",
+        "claim:streak01-wet-lime-contact",
         "claim:textile-dye-application",
         "claim:textile-dye-mordant-fixation",
         "claim:textile-fibres-twist-yarn",
@@ -245510,6 +246537,7 @@
         "claim:pain-nociception-distinct",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:rp-minor-children-conditional-care",
+        "claim:streak01-wet-leather-limits",
         "claim:urban-bird-period-specific",
         "claim:wood-liquid-fibre-saturation",
         "wk:biology_physiology:food-energy-nutrients",
@@ -246154,7 +247182,8 @@
         "wk:social_law_economy:trade-economy-payment-and-ordinary-measurement-limits"
       ],
       "cautiously": [
-        "claim:food-practices-processing-area-inference"
+        "claim:food-practices-processing-area-inference",
+        "claim:streak01-wet-leather-support"
       ],
       "cavity": [
         "claim:agriculture-fauna-bort-climbing-hooks",
@@ -246763,7 +247792,8 @@
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
       ],
       "chemistry": [
-        "claim:fauna-salmon-homing"
+        "claim:fauna-salmon-homing",
+        "wk:chemistry_process:streak01-repair"
       ],
       "chewed": [
         "claim:residual-traces-animal-trace-types"
@@ -247169,7 +248199,8 @@
         "wk:biology_physiology:fauna-pearl-mussel"
       ],
       "cleaned": [
-        "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently"
+        "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
+        "claim:streak01-splinter-assessment"
       ],
       "cleaner": [
         "claim:ordinary-life-festive-clothes-differ-from-work"
@@ -248615,6 +249646,8 @@
         "claim:static-parchment-or-vellum-should-not-be-wetted",
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
         "claim:static-straw-is-a-traditional-horse-bedding-source",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
         "claim:textile-conditioning-matters",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
@@ -248974,6 +250007,7 @@
       ],
       "conservation": [
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+        "claim:streak01-wet-leather-drying",
         "wk:physics_material_science:momentum-closed-system"
       ],
       "conserved": [
@@ -248981,6 +250015,9 @@
       ],
       "consideration": [
         "claim:household-trauma-danger-or-airway-changes-position-choice"
+      ],
+      "considerations": [
+        "claim:streak01-splinter-tetanus-uncertainty"
       ],
       "considered": [
         "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
@@ -249123,6 +250160,7 @@
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:streak01-wet-lime-contact",
         "claim:water-capillary-height",
         "claim:water-capillary-rise-depression",
         "claim:water-wetting-forces",
@@ -249222,6 +250260,7 @@
         "claim:foundations-life-44-pathogen-transport",
         "claim:macro-b17-unknown-dye-or-mordant-skin-contact-first-response-is-stop-remove-rinse-observe-and-seek-help",
         "claim:research-local-exhaust-can-remove-contaminated-air-from-a-room",
+        "claim:streak01-wet-lime-contact",
         "wk:biology_physiology:foundation-pathogen-transport",
         "wk:physics_material_science:research-local-exhaust-airflow"
       ],
@@ -249378,9 +250417,12 @@
         "wk:biology_physiology:static-minor-thermal-burn-care-b10",
         "wk:biology_physiology:static-skin-friction-context-b06",
         "wk:biology_physiology:static-visual-comfort-context-b06",
+        "wk:biology_physiology:streak01-repair",
+        "wk:chemistry_process:streak01-repair",
         "wk:craft_technology:early-rus-hunting-resource-grounds",
         "wk:craft_technology:final-static-b01-craft_technology",
         "wk:craft_technology:leather-broad-context",
+        "wk:craft_technology:streak01-repair",
         "wk:craft_technology:urban-wooden-coverings",
         "wk:environment:final-static-b01-environment",
         "wk:environment:hunting-fur-procurement",
@@ -249569,6 +250611,9 @@
       ],
       "controller": [
         "claim:population-storage-role"
+      ],
+      "controls": [
+        "claim:streak01-wet-lime-contact"
       ],
       "convection": [
         "claim:human-thermoregulation-depends-on-heat-exchange"
@@ -250018,7 +251063,8 @@
         "wk:architecture_settlement:architectural-material-classes",
         "wk:architecture_settlement:contextual-evidence-classes",
         "wk:craft_technology:final-static-b01-craft_technology",
-        "wk:craft_technology:mb14-practical-making-and-repair"
+        "wk:craft_technology:mb14-practical-making-and-repair",
+        "wk:craft_technology:streak01-repair"
       ],
       "crafted": [
         "claim:population-woodwork-material"
@@ -250334,7 +251380,8 @@
         "claim:social-written-prayer-relates-invocation"
       ],
       "curing": [
-        "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk"
+        "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
+        "claim:streak01-lime-curing-limits"
       ],
       "current": [
         "claim:agriculture-fauna-ash-hunting-bow",
@@ -250605,6 +251652,7 @@
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+        "claim:streak01-wet-leather-support",
         "wk:architecture_settlement:final-practical-storage-conditions",
         "wk:architecture_settlement:reconstructed-dwelling-interior-context",
         "wk:biology_physiology:fauna-amphibian",
@@ -250950,7 +251998,12 @@
         "claim:residual-v1-birch-writing-used-styli-on-inner-surface"
       ],
       "deep": [
-        "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care"
+        "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty"
+      ],
+      "deeply": [
+        "claim:streak01-splinter-assessment"
       ],
       "deer": [
         "claim:fauna-mammals-roe-deer-seasonal-grouping",
@@ -251498,6 +252551,9 @@
       "descriptor": [
         "claim:human-life-shared-role-can-be-negotiated"
       ],
+      "desiccate": [
+        "claim:streak01-wet-leather-drying"
+      ],
       "design": [
         "claim:construction-rjaz-riverbed-foundation",
         "claim:final-static-b01-wet-ground-goal",
@@ -251736,6 +252792,7 @@
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+        "claim:streak01-splinter-escalation",
         "claim:wound-healing-time-dependent",
         "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
         "wk:biology_physiology:macro-b1819-cattle-observation",
@@ -251887,10 +252944,12 @@
       ],
       "differs": [
         "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
-        "claim:foundations-mat-05-wood-grain-shear-vs-cut"
+        "claim:foundations-mat-05-wood-grain-shear-vs-cut",
+        "claim:streak01-splinter-assessment"
       ],
       "difficult": [
-        "claim:sound-background-noise-masks-speech"
+        "claim:sound-background-noise-masks-speech",
+        "claim:streak01-splinter-escalation"
       ],
       "difficulty": [
         "claim:macro-b20-ankle-soft-tissue-pain-or-swelling-can-call-for-protection-observation-and-escalation-without-diagnosis",
@@ -252079,6 +253138,7 @@
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "wk:biology_physiology:reality-batch-01-minor-abrasion-care"
       ],
       "disability": [
@@ -252387,11 +253447,13 @@
         "wk:social_law_economy:merchant-journey-loss-of-third-party-goods-or-funds"
       ],
       "distort": [
-        "claim:research-memory-postevent-misinformation"
+        "claim:research-memory-postevent-misinformation",
+        "claim:streak01-wet-leather-drying"
       ],
       "distortion": [
         "claim:macro-b20-steam-softened-wood-needs-restraint-and-controlled-drying-to-retain-a-bend",
-        "claim:static-parchment-or-vellum-should-not-be-wetted"
+        "claim:static-parchment-or-vellum-should-not-be-wetted",
+        "claim:streak01-wet-leather-support"
       ],
       "distractor": [
         "claim:foundations-ms3-02-working-memory"
@@ -252532,6 +253594,7 @@
         "claim:resource-occupation-needs-setting",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:wound-healing-time-dependent",
         "wk:architecture_settlement:contextual-evidence-classes",
@@ -253240,6 +254303,9 @@
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
         "claim:research-fish-salting-moves-water-out-and-salt-in-and-its-effect-depends-on-distribution",
         "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
+        "claim:streak01-lime-weather",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-limits",
         "claim:vegetable-tanning-prepared-hide",
         "wk:architecture_settlement:drying-workspace",
         "wk:biology_physiology:food-drying",
@@ -253844,6 +254910,7 @@
         "wk:biology_physiology:residual-postpartum-lactation"
       ],
       "elapsed": [
+        "claim:streak01-lime-curing-limits",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict"
       ],
       "elastic": [
@@ -253962,6 +255029,7 @@
       ],
       "embedded": [
         "claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures",
+        "claim:streak01-splinter-assessment",
         "wk:environment:macro-b21-rain-crust-and-frost-ground-change"
       ],
       "embers": [
@@ -254470,6 +255538,10 @@
         "claim:foundations-life-15-blood",
         "wk:biology_physiology:foundation-blood"
       ],
+      "escalation": [
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty"
+      ],
       "escape": [
         "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
         "claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards",
@@ -254558,6 +255630,7 @@
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
         "claim:stone-grinding-metal-use",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:textile-chrysin-analysis",
         "claim:textile-dye-mordant-fixation",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
@@ -255645,6 +256718,7 @@
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+        "claim:streak01-lime-curing-limits",
         "wk:biology_physiology:candidate-macro-causal-v2-exposure-and-function",
         "wk:biology_physiology:chemical-exposure-not-illness",
         "wk:biology_physiology:final-practical-uncertain-exposure",
@@ -255655,7 +256729,8 @@
         "wk:environment:reality-first-travel-exposure"
       ],
       "exposures": [
-        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+        "claim:streak01-lime-weather"
       ],
       "express": [
         "claim:ordinary-life-public-and-private-conduct-differ"
@@ -255770,6 +256845,8 @@
         "claim:macro-b20-bright-snow-reflection-can-cause-eye-discomfort-and-limit-comfortable-visual-work",
         "claim:research-bright-retinal-light-can-constrict-pupils",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
         "wk:biology_physiology:macro-b1819-smoke-ash-eye-response",
         "wk:biology_physiology:static-visual-comfort-context-b06",
         "wk:chemistry_process:static-wood-ash-contact-irritation"
@@ -255780,6 +256857,7 @@
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:streak01-wet-lime-contact",
         "wk:biology_physiology:macro-b1819-smoke-ash-eye-response",
         "wk:environment:macro-b20-embers-and-snow-light"
       ],
@@ -256808,6 +257886,7 @@
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:practical-leather-shoe",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+        "claim:streak01-wet-leather-limits",
         "wk:biology_physiology:static-bait-b11-animal-material-target-fit",
         "wk:craft_technology:leather-broad-context",
         "wk:physics_material_science:staved-vessel-hoop-fit"
@@ -257670,6 +258749,7 @@
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
         "claim:static-yarn-strength-can-fall-after-excessive-twist",
         "claim:stone-grinding-metal-use",
+        "claim:streak01-splinter-escalation",
         "claim:textile-conditioning-matters",
         "claim:textile-dye-mordant-fixation",
         "claim:textile-ellagic-acid-analysis",
@@ -258032,6 +259112,7 @@
         "wk:material_culture:woven-textile"
       ],
       "former": [
+        "claim:streak01-wet-leather-limits",
         "wk:environment:reconstructed-mixed-shoreline-trace"
       ],
       "formerly": [
@@ -258283,6 +259364,7 @@
         "claim:practical-food-preserve",
         "claim:residual-nature-snow-grain-compaction",
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
+        "claim:streak01-lime-weather",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "wk:biology_physiology:fauna-european-eel",
         "wk:biology_physiology:static-ranunculaceae-sap-contact",
@@ -258509,6 +259591,7 @@
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
         "claim:static-ground-b05-groundwater-seepage-can-enter-excavation",
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+        "claim:streak01-splinter-assessment",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:textile-ellagic-acid-analysis",
         "claim:textile-fibres-twist-yarn",
@@ -258611,6 +259694,7 @@
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
+        "claim:streak01-lime-weather",
         "wk:biology_physiology:place-plant-freezing-injury-context",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:biology_physiology:static-corn-soybean-seedling-frost-response",
@@ -258875,6 +259959,7 @@
         "claim:residual-law-arson-remedy-and-sanction",
         "claim:residual-nature-snow-depth-not-load",
         "claim:rp-market-purchase-relates-proof-participant",
+        "claim:streak01-wet-leather-support",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:work-waste-context",
         "wk:craft_technology:work-waste-context"
@@ -259088,6 +260173,7 @@
         "claim:social-guarantor-relates-transaction-obligation",
         "claim:social-spousal-complaint-reports-marital-treatment",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
+        "claim:streak01-lime-curing-limits",
         "claim:transport-private-boat-arrangement",
         "wk:biology:candidate-plant-food-part-bound",
         "wk:biology_physiology:candidate-macro-causal-v2-exposure-and-function",
@@ -259563,6 +260649,9 @@
       "graphic": [
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions"
       ],
+      "graspable": [
+        "claim:streak01-splinter-assessment"
+      ],
       "grass": [
         "claim:livestock-rumen-forage-digestion",
         "claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust",
@@ -259888,6 +260977,7 @@
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
+        "claim:streak01-lime-curing-limits",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
         "wk:physics_material_science:fibre-twisting"
       ],
@@ -260137,7 +261227,8 @@
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
-        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+        "claim:streak01-splinter-assessment"
       ],
       "happened": [
         "claim:final-social-independent-accounts-can-corroborate-without-proving-truth"
@@ -260325,6 +261416,7 @@
         "claim:military-world-fire-and-smoke-need-access-and-separation",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
+        "claim:streak01-wet-lime-contact",
         "wk:biology:candidate-plant-lookalike-differentiation",
         "wk:environment:macro-b1819-storm-hung-wood"
       ],
@@ -260494,6 +261586,7 @@
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
         "claim:static-wool-moisture-heat-mechanical-action-can-felt",
+        "claim:streak01-wet-leather-drying",
         "claim:sweat-evaporation-reduces-surface-heat",
         "wk:biology_physiology:endotherm-insulation",
         "wk:biology_physiology:exercise-heat-dissipation",
@@ -260637,6 +261730,7 @@
         "claim:residual-postpartum-oxytocin-can-contract-uterus-after-delivery",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+        "claim:streak01-splinter-escalation",
         "wk:biology_physiology:static-head-injury-warning-context-b06"
       ],
       "helper": [
@@ -261596,6 +262690,9 @@
         "wk:environment:hydrothermal-metal-transport",
         "wk:environment:hydrothermal-precipitation"
       ],
+      "hydroxide": [
+        "claim:streak01-wet-lime-contact"
+      ],
       "hygiene": [
         "claim:final-practical-parasite-concern-can-support-hygiene-observation-and-contextual-help-without-diagnosis"
       ],
@@ -261905,6 +263002,7 @@
       "immunity": [
         "claim:foundations-life-33-acquired-immunity",
         "claim:residual-postpartum-breast-milk-has-bioactive-and-antiinfective-factors",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "wk:biology_physiology:foundation-acquired-immunity"
       ],
       "immunoglobulins": [
@@ -262545,6 +263643,7 @@
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:technology-motor-boundary",
         "claim:technology-newcomen-boundary",
         "claim:terrain-background",
@@ -263046,6 +264145,8 @@
         "claim:residual-postpartum-breastfeeding-protects-against-infectious-disease",
         "claim:residual-postpartum-postbirth-bleeding-and-infection-are-serious-complication-contexts",
         "claim:static-repeated-skin-friction-can-cause-blistering",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "wk:biology_physiology:candidate-v5-fever-sign-and-cause",
         "wk:biology_physiology:research-vertebrate-infection-sickness-behaviour"
       ],
@@ -263080,6 +264181,15 @@
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
         "claim:rp-mother-household-care-succession",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
+        "claim:streak01-wet-lime-contact",
         "claim:textile-lac-dye-analysis",
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
         "wk:environment:macro-b17-sticky-plant-coating-limits",
@@ -263153,6 +264263,9 @@
       ],
       "infirm": [
         "claim:transport-winter-sledge-1220"
+      ],
+      "inflamed": [
+        "claim:streak01-splinter-escalation"
       ],
       "inflammation": [
         "claim:tissue-injury-can-cause-inflammatory-repair-response"
@@ -263737,7 +264850,8 @@
         "wk:biology_physiology:foundation-organ-systems"
       ],
       "interrupt": [
-        "claim:human-life-household-pressure-can-interrupt-learning"
+        "claim:human-life-household-pressure-can-interrupt-learning",
+        "claim:streak01-lime-weather"
       ],
       "interrupted": [
         "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather"
@@ -263996,7 +265110,8 @@
       "irritate": [
         "claim:macro-b1819-smoke-or-ash-can-irritate-eyes-and-supports-clean-air-and-rinsing-response",
         "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable",
-        "claim:static-wood-ash-can-irritate-skin-and-eyes"
+        "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:streak01-wet-lime-contact"
       ],
       "irritating": [
         "wk:biology_physiology:static-ranunculaceae-sap-contact"
@@ -264531,6 +265646,10 @@
         "claim:stone-whetstone-edge-maintenance",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-support",
         "claim:structural-and-object-wood",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:technology-motor-boundary",
@@ -264952,6 +266071,7 @@
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-belt-friction-can-resist-relative-slip",
+        "claim:streak01-wet-leather-support",
         "claim:textile-ellagic-acid-analysis",
         "claim:textile-lac-dye-analysis",
         "claim:transport-private-boat-arrangement",
@@ -265863,6 +266983,9 @@
         "claim:practical-leather-stitch",
         "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
         "claim:textile-conditioning-matters",
         "claim:vegetable-tanning-collagen-stabilization",
         "wk:craft_technology:leather-broad-context",
@@ -266306,6 +267429,8 @@
         "claim:pigment-lime-plaster",
         "claim:static-hydraulic-lime-can-initially-set-with-water",
         "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-lime-weather",
         "wk:chemistry_process:lime-transformations",
         "wk:chemistry_process:static-hydraulic-lime-water-setting",
         "wk:chemistry_process:static-nonhydraulic-lime-carbonation",
@@ -266339,6 +267464,8 @@
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:residual-government-law-v1-halperin-limits-sovereign-land-projection",
         "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-wet-leather-support",
         "claim:trade-economy-lost-pack-animal-response-starts-from-known-signs-and-keeps-cargo-weather-limited",
         "wk:biology_physiology:research-cold-storage-microorganisms",
         "wk:chemistry_process:diffusion-limited-heterogeneous-process",
@@ -268076,6 +269203,7 @@
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
         "claim:measurement-units-must-be-identified",
         "claim:practical-document-genres",
+        "claim:streak01-wet-leather-drying",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference",
         "wk:social_law_economy:practical-document-genres",
         "wk:social_law_economy:reconstructed-market-weighing-check",
@@ -268790,7 +269918,8 @@
       "mix": [
         "claim:foundations-earth-23-hydrothermal-precipitation",
         "claim:static-hydraulic-lime-can-initially-set-with-water",
-        "claim:static-nonhydraulic-lime-can-harden-by-carbonation"
+        "claim:static-nonhydraulic-lime-can-harden-by-carbonation",
+        "claim:streak01-lime-curing-limits"
       ],
       "mixed": [
         "claim:clay-dried-replasticization",
@@ -268855,12 +269984,18 @@
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
         "claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia",
         "claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-lime-contact",
         "claim:terrain-background",
         "claim:terrain-parent-material-assemblage",
         "claim:urban-bird-period-specific",
         "wk:architecture_settlement:localized-improvement-context",
         "wk:biology_physiology:static-minor-thermal-burn-care-b10",
         "wk:biology_physiology:static-straw-horse-bedding",
+        "wk:biology_physiology:streak01-repair",
+        "wk:chemistry_process:streak01-repair",
+        "wk:craft_technology:streak01-repair",
         "wk:environment:candidate-nettle-bast-fibre-extraction",
         "wk:environment:static-wetland-plant-regional-compatibility",
         "wk:environment:urban-bird-period-specific"
@@ -269956,6 +271091,7 @@
         "claim:residual-v1-practical-registers-can-be-memory-aids-or-collection-instructions",
         "claim:social-alphabet-exercise-records-text",
         "claim:social-settlement-demand-reports-court-choice",
+        "claim:streak01-lime-curing-limits",
         "claim:textile-indigo-yellow-analysis",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
         "claim:transport-horse-sledge-equipment",
@@ -270705,6 +271841,7 @@
         "claim:social-podvoisky-letter-reports-pochestie-assurance",
         "claim:social-settlement-demand-reports-court-choice",
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+        "claim:streak01-lime-curing-limits",
         "claim:textile-indigo-yellow-analysis",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
         "claim:transport-horse-sledge-equipment",
@@ -271379,6 +272516,10 @@
         "claim:stone-grinding-metal-use",
         "claim:stone-whetstone-edge-maintenance",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-lime-contact",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:technology-circuit-prerequisite",
         "claim:technology-motor-boundary",
@@ -272058,6 +273199,7 @@
         "claim:residual-tree-picea-abies-cones-brown-at-maturity",
         "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
         "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+        "claim:streak01-splinter-assessment",
         "claim:water-capillary-rise-depression",
         "wk:chemistry_process:catalyst-rate-not-equilibrium",
         "wk:chemistry_process:combustion-fuel-oxidizer",
@@ -272267,6 +273409,7 @@
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
         "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
+        "claim:streak01-wet-leather-support",
         "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:environment:reality-first-place-composition",
@@ -274607,6 +275750,14 @@
         "claim:stone-whetstone-edge-maintenance",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-leather-limits",
+        "claim:streak01-wet-leather-support",
+        "claim:streak01-wet-lime-contact",
         "claim:technology-motor-boundary",
         "claim:technology-newcomen-boundary",
         "claim:terrain-background",
@@ -275345,6 +276496,8 @@
         "claim:stomatal-opening-affects-gas-water-exchange",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "claim:streak01-lime-weather",
+        "claim:streak01-splinter-escalation",
         "claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively",
         "claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively",
         "claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions",
@@ -275721,7 +276874,8 @@
         "wk:psychology_behavior:foundations-ms-05-tactile-components"
       ],
       "painful": [
-        "claim:candidate-physiology-v3-protective-withdrawal"
+        "claim:candidate-physiology-v3-protective-withdrawal",
+        "claim:streak01-splinter-escalation"
       ],
       "paint": [
         "claim:pigment-carbon-black-pigment",
@@ -276655,6 +277809,7 @@
         "claim:fauna-mammals-brown-bear-maternal-care",
         "claim:household-leather-offcut",
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
+        "claim:streak01-wet-lime-contact",
         "claim:urban-bird-period-specific",
         "wk:environment:urban-bird-period-specific"
       ],
@@ -276952,7 +278107,8 @@
         "claim:livestock-rumen-fermentation",
         "wk:biology_physiology:final-static-b01-biology_physiology",
         "wk:biology_physiology:residual-postpartum-newborn-physiology",
-        "wk:biology_physiology:static-equine-hindgut-and-colic-context"
+        "wk:biology_physiology:static-equine-hindgut-and-colic-context",
+        "wk:biology_physiology:streak01-repair"
       ],
       "picea": [
         "claim:residual-tree-picea-abies-cones-brown-at-maturity",
@@ -277960,7 +279116,8 @@
       ],
       "predicting": [
         "claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage",
-        "claim:military-world-fire-and-smoke-need-access-and-separation"
+        "claim:military-world-fire-and-smoke-need-access-and-separation",
+        "claim:streak01-lime-weather"
       ],
       "predicts": [
         "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
@@ -278661,6 +279818,7 @@
         "claim:population-material-leather-dry",
         "claim:residual-government-law-v2-mid-xii-mixed-court-comparator",
         "claim:residual-law-merchant-entrustment-proof-exception",
+        "claim:streak01-wet-leather-limits",
         "wk:biology_physiology:fauna-eurasian-perch"
       ],
       "priority": [
@@ -278807,6 +279965,7 @@
         "wk:biology_physiology:wound-healing-time-dependent",
         "wk:chemistry_process:diffusion-limited-heterogeneous-process",
         "wk:chemistry_process:lime-transformations",
+        "wk:chemistry_process:streak01-repair",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
         "wk:craft_technology:metalworking-broad-context",
         "wk:craft_technology:reality-first-worksite-flow"
@@ -278850,6 +280009,7 @@
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:population-drying-workspace",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
+        "claim:streak01-wet-leather-limits",
         "wk:architecture_settlement:grain-processing-area-evidence",
         "wk:chemistry_process:metal-classes-composition",
         "wk:chemistry_process:oil-tanning",
@@ -279032,7 +280192,8 @@
       "promised": [
         "claim:military-world-cold-and-wetness-need-practical-boundaries",
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
-        "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5"
+        "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
+        "claim:streak01-wet-leather-limits"
       ],
       "promises": [
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
@@ -279247,6 +280408,8 @@
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r3",
         "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
         "claim:social-kin-letter-reports-protection-request",
+        "claim:streak01-lime-curing-limits",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "wk:biology_physiology:candidate-swallowing-airway-protection",
         "wk:biology_physiology:macro-b20-ankle-soft-tissue-observation",
         "wk:biology_physiology:place-plant-temporary-cold-cover",
@@ -279939,6 +281102,7 @@
         "claim:research-wind-pressure-difference-can-force-rain-across-building-opening",
         "claim:static-weather-b06-gray-altostratus-or-nimbostratus-can-be-a-rain-preparation-cue",
         "claim:static-weather-b06-typical-advancing-cloud-sequence-can-warn-of-approaching-rain-and-increasing-wind",
+        "claim:streak01-lime-weather",
         "wk:biology_physiology:macro-b1819-small-ruminant-wet-cold",
         "wk:biology_physiology:macro-b20-animal-work-and-trail-conditions",
         "wk:environment:cloud-droplet-growth-precipitation",
@@ -280030,7 +281194,8 @@
         "claim:foundations-thm-02-combustion-fuel-oxidizer",
         "claim:research-extreme-cold-can-cause-cold-stress",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
-        "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat"
+        "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+        "claim:streak01-lime-weather"
       ],
       "rapidly": [
         "claim:wood-liquid-moisture-change"
@@ -280380,6 +281545,7 @@
         "claim:population-processes-malt-context",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
+        "claim:streak01-lime-curing-limits",
         "claim:textile-chrysin-analysis",
         "claim:textile-lac-dye-analysis",
         "claim:vegetable-tanning-prepared-hide",
@@ -281799,6 +282965,9 @@
       "reshape": [
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour"
       ],
+      "reshaped": [
+        "claim:streak01-wet-leather-support"
+      ],
       "reshaping": [
         "claim:hard-stone-abrasive-shaping",
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area"
@@ -281978,6 +283147,7 @@
         "claim:static-bait-b11-animal-or-invertebrate-bait-response-varies-by-target-fish",
         "claim:static-birch-bark-water-can-deform-layers",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
+        "claim:streak01-wet-leather-limits",
         "claim:tissue-injury-can-cause-inflammatory-repair-response",
         "wk:biology_physiology:candidate-emesis-reflex-response",
         "wk:biology_physiology:foundation-antibodies",
@@ -282042,7 +283212,8 @@
         "wk:architecture_settlement:rjaz-supported-bridge"
       ],
       "restoration": [
-        "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment"
+        "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
+        "claim:streak01-wet-leather-drying"
       ],
       "restore": [
         "claim:foundations-ms-28-ostracism-conditional",
@@ -282128,6 +283299,7 @@
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
         "claim:static-hydraulic-lime-can-initially-set-with-water",
         "claim:stone-grinding-metal-use",
+        "claim:streak01-lime-curing-limits",
         "claim:textile-chrysin-analysis",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
         "claim:vegetable-tanning-prepared-hide",
@@ -283100,6 +284272,7 @@
         "claim:food-energy-nutrients",
         "claim:reality-batch-01-wetland-reed-cutting-needs-clear-hand-and-foot-placement",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
+        "claim:streak01-splinter-assessment",
         "wk:biology_physiology:food-energy-nutrients"
       ],
       "safety": [
@@ -284210,6 +285383,7 @@
         "claim:milling-plate-gap-pressure-fineness",
         "claim:place-outdoors-forest-structure-and-season",
         "claim:resource-occupation-needs-setting",
+        "claim:streak01-lime-weather",
         "claim:technology-newcomen-boundary",
         "wk:chemistry_process:static-hydraulic-lime-water-setting",
         "wk:npc_daily_life:resource-occupation-needs-setting",
@@ -285024,6 +286198,9 @@
         "wk:npc_daily_life:resource-occupation-needs-setting",
         "wk:psychology_behavior:foundations-ms-12-practice-correction"
       ],
+      "skilled": [
+        "claim:streak01-splinter-escalation"
+      ],
       "skin": [
         "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context",
         "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
@@ -285049,6 +286226,7 @@
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
         "claim:static-repeated-skin-friction-can-cause-blistering",
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
+        "claim:streak01-wet-lime-contact",
         "claim:sweat-evaporation-reduces-surface-heat",
         "claim:wound-healing-time-dependent",
         "wk:biology_physiology:fauna-amphibian",
@@ -285174,7 +286352,8 @@
         "claim:foundations-earth-16-igneous-cooling-texture",
         "claim:population-material-clay-drying",
         "claim:practical-net-space",
-        "claim:static-cool-storage-can-slow-respiration-of-harvested-produce"
+        "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
+        "claim:streak01-wet-leather-drying"
       ],
       "slower": [
         "claim:military-world-carrying-an-injured-person-is-conditional",
@@ -285441,6 +286620,7 @@
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:social-settlement-demand-reports-court-choice",
         "claim:sound-spreading-reduces-intensity",
+        "claim:streak01-wet-leather-limits",
         "claim:textile-indigo-yellow-analysis",
         "claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use"
       ],
@@ -285811,6 +286991,7 @@
         "claim:sound-reflections-arrive-after-direct-path",
         "claim:sound-spreading-reduces-intensity",
         "claim:sound-wind-temperature-gradients-refract",
+        "claim:streak01-lime-curing-limits",
         "wk:physics_material_science:sound-absorption-soft-material",
         "wk:physics_material_science:sound-frequency-pitch",
         "wk:physics_material_science:sound-material-medium",
@@ -286265,11 +287446,14 @@
       ],
       "splinter": [
         "claim:fuel-iron-splinter-holder-form",
+        "claim:streak01-splinter-assessment",
+        "claim:streak01-splinter-escalation",
         "wk:material_culture:iron-splinter-holder"
       ],
       "split": [
         "claim:candidate-v3-pressure-beyond-bone-capacity-can-fracture-it",
         "claim:fauna-goat-sociality",
+        "claim:streak01-wet-leather-drying",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "wk:biology_physiology:fauna-domestic-goat",
         "wk:environment:static-cloven-hoof-trace-comparison"
@@ -286891,7 +288075,8 @@
       ],
       "stiffen": [
         "claim:material-water-vegetable-leather-water",
-        "claim:population-material-leather-dry"
+        "claim:population-material-leather-dry",
+        "claim:streak01-wet-leather-drying"
       ],
       "stigma": [
         "claim:public-world-community-response-to-impairment-varies"
@@ -287313,6 +288498,7 @@
         "claim:static-forge-welding-pressure-depends-on-temperature-and-material",
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
         "claim:static-yarn-strength-can-fall-after-excessive-twist",
+        "claim:streak01-wet-leather-limits",
         "claim:textile-fibres-twist-yarn",
         "claim:vegetable-tanning-collagen-stabilization",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
@@ -287398,6 +288584,7 @@
         "claim:foundations-ms-04-attention-competition",
         "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat",
         "claim:sound-background-noise-masks-speech",
+        "claim:streak01-wet-leather-drying",
         "wk:chemistry_process:strong-acid-base-neutralization-heat",
         "wk:psychology_behavior:foundations-ms-04-attention-competition"
       ],
@@ -287845,6 +289032,7 @@
         "claim:river-landing-market-approaches",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
+        "claim:streak01-lime-curing-limits",
         "claim:textile-dye-mordant-fixation",
         "claim:transport-boat-cargo-dispatch",
         "claim:transport-private-boat-arrangement",
@@ -287909,6 +289097,7 @@
         "claim:static-lubricant-film-can-separate-moving-surfaces",
         "claim:static-root-loss-can-cause-transplant-shock",
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
+        "claim:streak01-wet-leather-drying",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
         "wk:architecture_settlement:polygonal-log-crib",
@@ -287929,6 +289118,7 @@
         "claim:civic-defence-stake-support",
         "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
+        "claim:streak01-wet-leather-support",
         "wk:architecture_settlement:rjaz-supported-bridge",
         "wk:physics_material_science:support-polygon-center-of-mass"
       ],
@@ -288604,7 +289794,8 @@
         "claim:material-water-vegetable-leather-water",
         "claim:oil-tanning-crosslinking-fibres",
         "claim:technology-motor-boundary",
-        "wk:craft_technology:final-static-b01-craft_technology"
+        "wk:craft_technology:final-static-b01-craft_technology",
+        "wk:craft_technology:streak01-repair"
       ],
       "tells": [
         "claim:social-podvoisky-letter-reports-pochestie-assurance"
@@ -288854,6 +290045,9 @@
       ],
       "tests": [
         "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests"
+      ],
+      "tetanus": [
+        "claim:streak01-splinter-tetanus-uncertainty"
       ],
       "tethering": [
         "claim:military-world-working-animal-care-intersects-travel"
@@ -289614,6 +290808,7 @@
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
         "claim:static-yarn-strength-can-fall-after-excessive-twist",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:technology-motor-boundary",
         "claim:technology-newcomen-boundary",
         "claim:terrain-background",
@@ -289888,7 +291083,8 @@
         "claim:residual-law-status-and-witness-exceptions",
         "claim:residual-law-stepchildren-paternal-inheritance",
         "claim:residual-v1-instructional-birch-texts-include-alphabets-numerals-syllables-exercises",
-        "claim:social-spousal-complaint-reports-marital-treatment"
+        "claim:social-spousal-complaint-reports-marital-treatment",
+        "claim:streak01-lime-weather"
       ],
       "they": [
         "claim:burial-plank-coffin-nails",
@@ -289912,6 +291108,7 @@
         "claim:residual-law-daughters-and-status-inheritance",
         "claim:resource-occupation-needs-setting",
         "claim:rp-minor-children-conditional-care",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "wk:biology_physiology:fauna-amphibian",
         "wk:biology_physiology:fauna-great-tit",
@@ -290876,6 +292073,7 @@
         "claim:research-surface-inversion-can-trap-smoke-near-ground",
         "claim:static-repeated-skin-friction-can-cause-blistering",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+        "claim:streak01-lime-curing-limits",
         "claim:textile-fibres-twist-yarn",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:work-waste-context",
@@ -291253,6 +292451,8 @@
         "claim:static-yarn-twist-can-increase-fibre-cohesion",
         "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
         "claim:stone-whetstone-edge-maintenance",
+        "claim:streak01-lime-weather",
+        "claim:streak01-wet-leather-support",
         "claim:technology-motor-boundary",
         "claim:textile-chrysin-analysis",
         "claim:textile-dye-application",
@@ -292025,6 +293225,8 @@
         "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
         "claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
+        "claim:streak01-splinter-tetanus-uncertainty",
+        "claim:streak01-wet-lime-contact",
         "wk:craft_technology:steel-working-part-heat-treatment",
         "wk:social_law_economy:asserted-marital-treatment",
         "wk:social_law_economy:candidate-v5-fever-charm-text"
@@ -292371,6 +293573,7 @@
         "claim:military-world-bow-and-arrows-need-condition-and-clear-handling",
         "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
         "claim:social-settlement-demand-reports-court-choice",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "wk:biology_physiology:final-practical-uncertain-exposure"
       ],
       "uncertainty": [
@@ -293527,6 +294730,7 @@
         "claim:static-equine-abdominal-distension-is-not-specific-diagnosis",
         "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
         "claim:static-weather-b06-beaver-compatible-cut-can-show-conical-top-and-incisor-grooves",
+        "claim:streak01-splinter-assessment",
         "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
         "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference"
       ],
@@ -293698,6 +294902,7 @@
         "claim:military-world-portage-is-coordinated-carry-work",
         "claim:population-material-leather-dry",
         "claim:research-freeze-thaw-can-loosen-consolidated-sediment-for-erosion",
+        "claim:streak01-lime-weather",
         "wk:physics_material_science:static-fragile-wet-record-care-b10"
       ],
       "vulpes": [
@@ -293933,6 +295138,7 @@
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+        "claim:streak01-wet-lime-contact",
         "wk:architecture_settlement:reconstructed-household-water-and-waste-context",
         "wk:biology_physiology:wet-hide-work-context",
         "wk:craft_technology:bathing-washing",
@@ -294330,7 +295536,8 @@
       "weaken": [
         "claim:final-static-b01-textile-wet-limit",
         "claim:population-joining-bond-contamination",
-        "claim:population-joining-bond-pressure"
+        "claim:population-joining-bond-pressure",
+        "claim:streak01-lime-weather"
       ],
       "weakened": [
         "wk:physics_material_science:research-textile-stitch-support"
@@ -294639,6 +295846,8 @@
         "claim:residual-tree-alnus-glutinosa-moist-soil",
         "claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition",
         "claim:static-parchment-or-vellum-should-not-be-wetted",
+        "claim:streak01-wet-leather-drying",
+        "claim:streak01-wet-lime-contact",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "wk:biology_physiology:macro-b1819-small-ruminant-wet-cold",
         "wk:biology_physiology:snail-slug-moisture-and-leaf-feeding",
@@ -294691,6 +295900,7 @@
         "claim:population-material-wood-shrinkage",
         "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
         "claim:static-parchment-or-vellum-should-not-be-wetted",
+        "claim:streak01-wet-leather-limits",
         "claim:water-wetting-forces",
         "wk:physics_material_science:liquid-surface-wetting"
       ],
@@ -294918,6 +296128,7 @@
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
         "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
+        "claim:streak01-wet-leather-support",
         "wk:biology_physiology:fauna-culex-mosquito",
         "wk:biology_physiology:fauna-domestic-goat",
         "wk:biology_physiology:static-bee-smoke-b09-colony-defense-context",
@@ -295387,6 +296598,7 @@
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
         "claim:static-wool-moisture-heat-mechanical-action-can-felt",
         "claim:stone-whetstone-edge-maintenance",
+        "claim:streak01-wet-leather-drying",
         "claim:terrain-parent-material-assemblage",
         "claim:textile-dye-mordant-fixation",
         "claim:textile-indigo-yellow-analysis",
@@ -295562,6 +296774,7 @@
         "claim:rp-mother-household-care-succession",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
+        "claim:streak01-lime-weather",
         "claim:urban-wooden-coverings",
         "claim:wild-food-and-fur-evidence",
         "claim:work-waste-context",
@@ -295916,6 +297129,7 @@
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
         "claim:static-equine-abdominal-pain-signs-warrant-pausing-work-and-qualified-assessment",
+        "claim:streak01-lime-weather",
         "claim:work-intensity-duration",
         "claim:work-waste-context",
         "wk:architecture_settlement:reconstructed-military-defence-emergency-work",
@@ -296092,6 +297306,7 @@
         "wk:architecture_settlement:storage-workspace"
       ],
       "world": [
+        "claim:streak01-splinter-tetanus-uncertainty",
         "claim:structural-and-object-wood",
         "claim:vegetable-tanning-collagen-stabilization",
         "wk:architecture_settlement:drying-workspace",
@@ -296197,6 +297412,7 @@
       ],
       "wounds": [
         "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+        "claim:streak01-splinter-tetanus-uncertainty",
         "wk:biology_physiology:orchard-tree-pruning-context"
       ],
       "woven": [

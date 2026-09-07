@@ -7,6 +7,14 @@ const REQUIRED_CASES = Object.freeze([
   'silver-currency',
   'sword-weapon'
 ]);
+const COMMON_POSITIVE_CASE = Object.freeze({
+  id: 'common-mundane-positive', query: 'отыскать обычную верёвку'
+});
+
+export function lowerDvinaTraceOrdinaryStageBQualificationCases(value) {
+  return validateLowerDvinaTraceOrdinaryStageBEval(value)
+    ? Object.freeze([...value.cases, COMMON_POSITIVE_CASE]) : null;
+}
 export function validateLowerDvinaTraceOrdinaryStageBEval(value) {
   const snapshot = snapshotLowerDvinaTraceOrdinaryStageBJson(value);
   if (!exact(snapshot, ['schema', 'version', 'model_contract_ref',
@@ -35,17 +43,23 @@ export function evaluateLowerDvinaTraceOrdinaryStageBModelOutputs(input = {}) {
   const boundary = snapshotLowerDvinaTraceOrdinaryStageBJson(input);
   const contract = boundary == null ? null : boundary.eval_contract;
   const results = boundary == null ? null : boundary.outputs;
-  if (!validateLowerDvinaTraceOrdinaryStageBEval(contract)
-      || !Array.isArray(results) || results.length !== contract.cases.length) {
+  const cases = lowerDvinaTraceOrdinaryStageBQualificationCases(contract);
+  if (cases == null || !Array.isArray(results) || results.length !== cases.length) {
     return Object.freeze({ pass: false, failed_case_ids: Object.freeze(['invalid_eval_input']) });
   }
   const byId = new Map(results.map((entry) => [entry?.id, entry]));
   const failed = [];
-  for (const probe of contract.cases) {
+  for (const probe of cases) {
     const result = byId.get(probe.id);
-    if (!exact(result, ['id', 'resolution', 'entities'])
-        || result.id !== probe.id || !probe.allowed_resolutions.includes(result.resolution)
-        || !Array.isArray(result.entities) || result.entities.length !== 0) {
+    const positive = probe.id === COMMON_POSITIVE_CASE.id;
+    const invalid = !exact(result, ['id', 'resolution', 'entities'])
+      || result.id !== probe.id || !Array.isArray(result.entities)
+      || (positive
+        ? result.resolution !== 'materialize' || result.entities.length !== 1
+          || result.entities[0]?.admission_class !== 'common_mundane'
+        : !probe.allowed_resolutions.includes(result.resolution)
+          || result.entities.length !== 0);
+    if (invalid) {
       failed.push(probe.id);
     }
   }

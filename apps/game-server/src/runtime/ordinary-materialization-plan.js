@@ -1,3 +1,9 @@
+import { ORDINARY_MATERIALIZATION_V1_ENUMS } from
+  '@rus/contracts/ordinary-materialization-v1';
+
+const ADMISSION_CLASSES = new Set(
+  ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class);
+
 export function ordinaryMaterializationResponseShape(request) {
   if (!plain(request)) return null;
   const base = { schema: 'ordinary_materialization_plan_v1',
@@ -73,15 +79,23 @@ export function bindOrdinaryMaterializationPlan(request, output) {
     return shape;
   }
   if (request.mode !== 'resolve_presence') return output;
+  const authority = request.authority_envelope;
+  if (authority?.stage !== 'resolve_presence') return output;
+  if (authority.selected_supporting_basis_ref != null) {
+    if (!ADMISSION_CLASSES.has(output.semantic_admission_class)) {
+      return { ...output, semantic_admission_class: null };
+    }
+    if (output.semantic_admission_class !== authority.candidate.admission_class) {
+      return negativePlan(request, 'absent', 'semantic_admission_mismatch');
+    }
+  }
   if (['absent', 'no_change', 'authority_required'].includes(output.resolution)) {
     return negativePlan(request, output.resolution, output.reason_code);
   }
   if (output.resolution !== 'materialize' || !Array.isArray(output.entities)
       || output.entities.length !== 1 || !plain(output.entities[0])) return output;
-  const authority = request.authority_envelope;
   const entity = output.entities[0];
-  if (authority?.stage !== 'resolve_presence'
-      || !plain(entity.semantic_descriptor)
+  if (!plain(entity.semantic_descriptor)
       || !plain(entity.mechanics_proposal)
       || !text(authority.selected_supporting_basis_ref)
       || !authority.allowed_supporting_bases.some(({ basis_ref }) =>

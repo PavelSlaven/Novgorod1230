@@ -12,6 +12,7 @@
   },
   "approved_case_ids": [
     "anachronism",
+    "common-mundane-positive",
     "evidence-clue",
     "letter-document",
     "misleading-common-name",
@@ -19,5 +20,5 @@
     "silver-currency",
     "sword-weapon"
   ],
-  "result_digest": "828090cab96caa8e38cda1fc1d4f37ce081c87fcd68b0ed84180245c8b074cdd"
+  "result_digest": "cc4e67169e63b0fb6ac7804701ca55133a7c705d455687fbf1392bf0af2d936c"
 }

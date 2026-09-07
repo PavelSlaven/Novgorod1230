@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "dfff88e465d31e28972e5004606141b1e68b1bad2ca62335960073121a35bf51",
+  "corpus_hash": "c896744a8f71036c9b036dc3cfb7b1faa97fdac936e95c25ce7b7c64eb0c3c3a",
   "chunk_count": 2728,
   "chunks": [
     {
@@ -2808,8 +2808,8 @@
       "section": "2. Главное правило материализации",
       "line_start": 67,
       "line_end": 82,
-      "text": "## items_and_property.txt — 2. Главное правило материализации\npons/value/currency, natural finite sources, O2, A1, F1, S1 или N1; `ordinary` не означает `unowned`, а topology и `party_scene_baseline` не меняются.\n\nActive O2a в текущей revision включает authored abundant ambient source берега и first-entry context-bound finite stock подготовленной глины. Context-bound marker раскрывает только `discovery_available`, а committed stock проецируется как обычный source без expected result, permission или capacity. Stage B свободно выбирает unlisted ordinary semantic type/name внутри approved class; source/property/permission/mechanics остаются code-owned, facts запрещены. Сам `ambient_ordinary` не является O2a marker, поэтому существующие direct-action clay/wood/bark/grass/stone/shell/root/worm остаются совместимыми. First-entry provision-ит exact finite basis, permissions, property/placement и resource row. Любой admitted `finite_source`, включая `common_mundane`, обязан пройти generic initialization/decrement; constrained policy добавляет resource permissions, но не владеет conservation. Restricted weapon/currency/document/other без authored authority сохраняются как `absent`; не provisioned precious/remnant profiles остаются fail-closed.",
-      "char_count": 1254
+      "text": "## items_and_property.txt — 2. Главное правило материализации\npons/value/currency, natural finite sources, O2, A1, F1, S1 или N1; `ordinary` не означает `unowned`, а topology и `party_scene_baseline` не меняются.\n\nActive O2a в текущей revision включает authored abundant ambient source берега и first-entry context-bound finite stock подготовленной глины. Context-bound marker раскрывает только `discovery_available`, а committed stock проецируется как обычный source без expected result, permission или capacity. Stage B свободно выбирает unlisted ordinary semantic type/name и independently classifies admission полного candidate со всеми qualifiers/relations; несовпадение с code-owned candidate сохраняется как `absent`. source/property/permission/mechanics остаются code-owned, facts запрещены. Сам `ambient_ordinary` не является O2a marker, поэтому существующие direct-action clay/wood/bark/grass/stone/shell/root/worm остаются совместимыми. First-entry provision-ит exact finite basis, permissions, property/placement и resource row. Любой admitted `finite_source`, включая `common_mundane`, обязан пройти generic initialization/decrement; constrained policy добавляет resource permissions, но не владеет conservation. Restricted weapon/currency/document/other без authored authority сохраняются как `absent`; не provisioned precious/remnant profiles остаются fail-closed.",
+      "char_count": 1379
     },
     {
       "id": "items_and_property.txt:2. Главное правило материализации:3",

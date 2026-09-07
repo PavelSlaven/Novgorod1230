@@ -215,8 +215,11 @@ committed stock как обычный source только при отдельн�
 state; concealed capabilities остаются server-only. Unresolved remainder
 проецируется только через boolean `discovery_available`, без expected result,
 permission и capacity.
-Stage B может выбрать unlisted ordinary semantic type/name внутри approved class;
-source/property/permission/mechanics и пустой facts остаются code-owned gates. Сам `ambient_ordinary`
+Stage B может выбрать unlisted ordinary semantic type/name и независимо назвать
+admission class полного candidate с qualifiers/relations; при несовпадении с
+code-owned candidate owner fail-closed
+фиксирует `absent`. source/property/permission/mechanics и пустой
+facts остаются code-owned gates. Сам `ambient_ordinary`
 не является O2a marker: legacy direct actions без
 этого capability сохраняют прежний path. Drifted binding не публикует capability,
 а forged ref не проходит current-ref validation. Generic finite effect связан с

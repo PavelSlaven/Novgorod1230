@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import {
   evaluateLowerDvinaTraceOrdinaryStageBModelOutputs,
+  lowerDvinaTraceOrdinaryStageBQualificationCases,
   validateLowerDvinaTraceOrdinaryStageBEval
 } from '../src/internal/lower-dvina-trace-ordinary-stage-b-eval.js';
 import { bindOrdinaryMaterializationPlan,
@@ -35,6 +36,13 @@ async function evalContract() {
   const profile = JSON.parse(await readFile(profileUrl, 'utf8'));
   return profile.stage_b_classification_eval;
 }
+function qualifiedOutputs(contract) {
+  return lowerDvinaTraceOrdinaryStageBQualificationCases(contract).map((probe) =>
+    probe.id === 'common-mundane-positive'
+      ? { id: probe.id, resolution: 'materialize', entities: [{
+        admission_class: 'common_mundane' }] }
+      : { id: probe.id, resolution: probe.allowed_resolutions[0], entities: [] });
+}
 
 test('active O1 cutover pins the complete adversarial Stage B corpus', async () => {
   const contract = await evalContract();
@@ -44,27 +52,19 @@ test('active O1 cutover pins the complete adversarial Stage B corpus', async () 
     'misleading-common-name', 'significant-hidden', 'silver-currency',
     'sword-weapon'
   ]);
-  const outputs = contract.cases.map(({ id, allowed_resolutions }) => ({
-    id, resolution: allowed_resolutions[0], entities: []
-  }));
+  const outputs = qualifiedOutputs(contract);
   assert.deepEqual(evaluateLowerDvinaTraceOrdinaryStageBModelOutputs({
     eval_contract: contract, outputs
   }), { pass: true, failed_case_ids: [] });
-  const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
-  const { request_timeout_ms, ...identity } = describeRoleLlmCall({
-    scope: 'turn_runtime', roleId: 'ordinary_materialization',
-    env: { DEEPSEEK_API_KEY: 'identity-only' },
-    overrides: { temperature: 0, maxTokens: 6000 }
-  });
-  assert.deepEqual(approval.model_identity, identity);
+  assert.deepEqual(lowerDvinaTraceOrdinaryStageBQualificationCases(contract)
+    .map(({ id }) => id).sort(), [...contract.cases.map(({ id }) => id),
+    'common-mundane-positive'].sort());
 });
 
 test('Stage B eval catches sensitive materialization hidden behind common fields', async () => {
   const contract = await evalContract();
   for (const probe of contract.cases) {
-    const outputs = contract.cases.map(({ id, allowed_resolutions }) => ({
-      id, resolution: allowed_resolutions[0], entities: []
-    }));
+    const outputs = qualifiedOutputs(contract);
     const output = outputs.find(({ id }) => id === probe.id);
     output.resolution = 'materialize';
     output.entities = [{ authority_class: 'ordinary',
@@ -76,6 +76,18 @@ test('Stage B eval catches sensitive materialization hidden behind common fields
     assert.equal(report.pass, false, probe.id);
     assert.deepEqual(report.failed_case_ids, [probe.id]);
   }
+});
+
+test('Stage B eval requires one bound common-positive result', async () => {
+  const contract = await evalContract();
+  const outputs = qualifiedOutputs(contract);
+  const positive = outputs.find(({ id }) => id === 'common-mundane-positive');
+  positive.entities[0].admission_class = 'weapon_or_armament';
+  const report = evaluateLowerDvinaTraceOrdinaryStageBModelOutputs({
+    eval_contract: contract, outputs
+  });
+  assert.deepEqual(report, { pass: false,
+    failed_case_ids: ['common-mundane-positive'] });
 });
 
 test('ordinary materialization prompt keeps a supported free candidate materializable', () => {
@@ -207,6 +219,7 @@ test('ordinary materialization prompt carries complete code-owned Stage B shapes
   const admitted = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(admitted, /"resolution":"materialize"/u);
   assert.match(admitted, /"admission_class":"common_mundane"/u);
+  assert.match(admitted, /semantic_admission_class/u);
   assert.match(admitted, /"property_basis_ref":"property"/u);
   assert.match(admitted, /"position_ref":"bench"/u);
   assert.match(admitted, /"supporting_basis_ref":"ordinary_group_prepared"/u);
@@ -216,6 +229,37 @@ test('ordinary materialization prompt carries complete code-owned Stage B shapes
   assert.match(admitted,
     /never copy the player's intended use, action, goal, or hoped-for result/u);
   assert.doesNotMatch(admitted, /"mass_grams":1/u);
+});
+
+test('Stage B fails closed when its semantic admission differs from the candidate', () => {
+  const request = presenceRequest('подходящий предмет');
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'materialize', semantic_admission_class: 'weapon_or_armament',
+    reason_code: 'found', entities: [{
+      semantic_descriptor: { semantic_type: 'free_descriptor',
+        name: 'свободное описание', facts: [] },
+      presence_expectation: 'plausible', mechanics_proposal: {
+        mass_grams: 100, external_hand_cost: 0, carry_form: 'compact',
+        packing_slot_cost: 0, quantity: { value: 1, unit: 'item' },
+        container: null
+      }
+    }]
+  });
+  assert.equal(plan.resolution, 'absent');
+  assert.deepEqual(plan.entities, []);
+  assert.equal(plan.reason_code, 'semantic_admission_mismatch');
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
+});
+
+test('Stage B checks semantic admission before a negative resolution', () => {
+  const request = presenceRequest('подходящий предмет');
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'no_change', semantic_admission_class: 'other_restricted',
+    reason_code: 'not_an_item'
+  });
+  assert.equal(plan.resolution, 'absent');
+  assert.equal(plan.reason_code, 'semantic_admission_mismatch');
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
 test('production O1 binds incomplete Flash output to its request envelope', async () => {
@@ -228,7 +272,8 @@ test('production O1 binds incomplete Flash output to its request envelope', asyn
     selected_supporting_basis_ref: 'stage-b'
   } };
   const roleRunner = { async run() { return { provider_record: modelIdentity(),
-    output: { resolution: 'materialize', reason_code: 'found', entities: [{
+    output: { resolution: 'materialize', semantic_admission_class: 'common_mundane',
+      reason_code: 'found', entities: [{
       semantic_descriptor: { semantic_type: 'cordage', name: 'верёвка', facts: [] },
       presence_expectation: 'routine', supporting_basis_ref: 'stage-b',
       causal_basis: { basis_kind: 'ordinary_presence', basis_refs: ['stage-b'] },
@@ -262,6 +307,7 @@ test('O1 production path drops unsupported provenance before preparing item', as
       ++calls === 1 ? { resolution: 'seeded', density_band_proposal: 'ordinary',
         background_groups: [{ descriptor: discoveryGroup().descriptor }],
         reason_code: 'seed' } : { resolution: 'materialize', reason_code: 'found',
+        semantic_admission_class: 'common_mundane',
         entities: [{ semantic_descriptor: { semantic_type: 'ordinary_wood',
           name: 'обломок доски', facts: ['фрагмент недавнего груза с разбитой телеги'] },
         presence_expectation: 'routine', mechanics_proposal: { mass_grams: 350,
@@ -315,7 +361,8 @@ test('production O1 model verifies the activation receipt without live probes',
     const roleRunner = { describe() { return modelIdentity(); }, async run(input) {
       calls.push(input);
       const request = JSON.parse(input.messages[1].content);
-      return { output: absentPlan(request), provider_record: modelIdentity() };
+      return { output: { ...absentPlan(request),
+        semantic_admission_class: 'common_mundane' }, provider_record: modelIdentity() };
     } };
     const model = createOrdinaryMaterializationModel({ roleRunner,
       stageBApprovalReceipt: approval });
@@ -351,7 +398,8 @@ test('custom O1 role uses its qualified exact identity without gameplay eval',
       const request = JSON.parse(input.messages[1].content);
       const identity = runner.describe({ scope: input.scope, role_id: input.roleId,
         tier_id: input.tierId, overrides: input.overrides });
-      return { status: 'ok', parsed_json: absentPlan(request),
+      return { status: 'ok', parsed_json: { ...absentPlan(request),
+        semantic_admission_class: 'common_mundane' },
         provider: identity.provider, model: identity.model, scope: input.scope,
         role_id: input.roleId, tier_id: input.tierId, durationMs: 1,
         config_hash: identity.config_hash };
@@ -387,11 +435,13 @@ test('custom O1 call keeps its approved identity snapshot while it is in flight'
     const firstRequest = presenceRequest('ложка');
     const first = model(firstRequest, { repair: null });
     current = newIdentity;
-    pending.shift().resolve({ output: absentPlan(firstRequest), provider_record: oldIdentity });
+    pending.shift().resolve({ output: { ...absentPlan(firstRequest),
+      semantic_admission_class: 'common_mundane' }, provider_record: oldIdentity });
     assert.deepEqual(await first, absentPlan(firstRequest));
     const secondRequest = presenceRequest('ковш');
     const second = model(secondRequest, { repair: null });
-    pending.shift().resolve({ output: absentPlan(secondRequest), provider_record: newIdentity });
+    pending.shift().resolve({ output: { ...absentPlan(secondRequest),
+      semantic_admission_class: 'common_mundane' }, provider_record: newIdentity });
     assert.deepEqual(await second, absentPlan(secondRequest));
   });
 
@@ -406,25 +456,43 @@ test('custom Stage B qualification uses production messages, unique case refs, a
     evalContract: contract,
     roleRunner: { describe(input) { assert.deepEqual(input.provider_snapshot, candidate); return identity; },
       async run(input) { calls.push(input); const request = JSON.parse(input.messages[1].content);
-        return { output: absentPlan(request), provider_record: identity }; } }
+        const positive = request.request_id.endsWith('common-mundane-positive');
+        return { output: positive ? {
+          resolution: 'materialize', semantic_admission_class: 'common_mundane',
+          reason_code: 'ordinary_present', entities: [{
+            semantic_descriptor: { semantic_type: 'cordage', name: 'обычная верёвка', facts: [] },
+            presence_expectation: 'routine',
+            mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
+              carry_form: 'compact', packing_slot_cost: 1,
+              quantity: { value: 1, unit: 'item' }, container: null }
+          }]
+        } : { ...absentPlan(request), semantic_admission_class: 'common_mundane' },
+        provider_record: identity }; } }
   });
   const owner = createLlmSettingsOwner({ qualifyCustom: qualifier });
   await owner.probe({ mode: 'custom', base_url: candidate.baseUrl, model: candidate.model,
     api_key: null });
   assert.equal(owner.read().mode, 'default');
-  assert.equal(calls.length, contract.cases.length);
+  assert.equal(calls.length, contract.cases.length + 1);
   assert.ok(calls.every((call) => call.overrides.requestTimeoutMs === 120000));
   assert.ok(calls.every((call) => call.provider_snapshot.model === 'candidate'));
   const requests = calls.map((call) => JSON.parse(call.messages[1].content));
   assert.equal(new Set(requests.map((request) => request.request_id)).size,
-    contract.cases.length);
+    contract.cases.length + 1);
   assert.equal(new Set(requests.map((request) => request.candidate_query.candidate_key)).size,
-    contract.cases.length);
+    contract.cases.length + 1);
   assert.equal(new Set(requests.map((request) => request.candidate_query.coverage_key)).size,
-    contract.cases.length);
+    contract.cases.length + 1);
   for (const call of calls) {
     const request = JSON.parse(call.messages[1].content);
     assert.deepEqual(call.messages, buildOrdinaryMaterializationMessages(request));
+    assert.deepEqual(request.authority_envelope.candidate, {
+      semantic_type: 'ordinary_object_candidate', functional_bucket: 'other_ordinary',
+      admission_class: 'common_mundane', availability_class: 'common',
+      coverage_kind: 'visible_surface', coverage_ref: `stage-b:${request.request_id
+        .replace('llm-settings:ordinary-stage-b:', '')}`
+    });
+    assert.equal(request.authority_envelope.selected_supporting_basis_ref, 'stage-b');
   }
   await owner.apply({ mode: 'custom', base_url: candidate.baseUrl, model: candidate.model,
     api_key: null });

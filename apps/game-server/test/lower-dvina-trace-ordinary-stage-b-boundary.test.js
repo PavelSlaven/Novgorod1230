@@ -7,6 +7,8 @@ import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../src/internal/lower-dvina-trace-ordinary-stage-b-approval.js';
 import { createOrdinaryMaterializationStageBQualifier } from
   '../src/runtime/ordinary-materialization-stage-b-qualification.js';
+import { lowerDvinaTraceOrdinaryStageBQualificationCases } from
+  '../src/internal/lower-dvina-trace-ordinary-stage-b-eval.js';
 import { absentPlan, modelIdentity, presenceRequest } from
   './lower-dvina-trace-ordinary-stage-b-eval-fixture.js';
 
@@ -25,14 +27,15 @@ test('custom Stage B qualification rejects schema-invalid evaluator-safe output'
   const qualifier = createOrdinaryMaterializationStageBQualifier({
     evalContract: contract,
     roleRunner: { describe() { return identity; }, async run(input) {
-      const request = JSON.parse(input.messages[1].content);
-      return { output: { ...absentPlan(request), unexpected: true },
+      return { output: { resolution: 'materialize', entities: [] },
         provider_record: identity };
     } }
   });
   await assert.rejects(qualifier({}), (error) => {
     assert.equal(error.code, 'LLM_SETTINGS_ORDINARY_STAGE_B_QUALIFICATION_FAILED');
-    assert.deepEqual(error.details.failed_case_ids, contract.cases.map(({ id }) => id).sort());
+    assert.deepEqual(error.details.failed_case_ids,
+      lowerDvinaTraceOrdinaryStageBQualificationCases(contract)
+        .map(({ id }) => id).sort());
     return true;
   });
 });

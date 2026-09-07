@@ -100,6 +100,8 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
     .background_groups[0].group_ref.startsWith('ordinary_group_'), true);
   assert.equal(first.ordinary_materialization_atomic_write_plan.new_prepared_bases[0].basis_ref,
     first.ordinary_materialization_atomic_write_plan.transitions[0].background_groups[0].group_ref);
+  assert.deepEqual(first.consequence_fragment.visible_seed.ordinary_presence_seed,
+    { kind: 'ordinary_presence_seed', resolution: 'absent' });
   calls.length = 0;
   await resolver(request('найти верёвку'));
   assert.equal(calls[1].candidate_query.coverage_key, firstCoverageKey);
@@ -310,6 +312,7 @@ test(`exhausted ${exhausted} returns a no-op before model or atomic plan`,
     assert.deepEqual(result.working_projection, input.working_projection);
     assert.deepEqual(result.write_fragments, []);
     assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
+    assert.equal(Object.hasOwn(result, 'consequence_fragment'), false);
     assert.equal(result.player_response_boundary, true);
     assert.equal(aggregate.presence_resolutions.length, capped ? 1 : 0);
     assert.equal(aggregate.state_version, capped ? 2 : 1);

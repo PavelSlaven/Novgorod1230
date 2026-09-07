@@ -222,6 +222,32 @@ test('ordinary scene seed augments the current scene in the same turn', async ()
   assert.equal(JSON.stringify(visible).includes('ordinary_scene_seed'), false);
 });
 
+for (const [resolution, change] of Object.entries({
+  absent: 'Искомое здесь не обнаружено.',
+  no_change: 'Попытка обнаружить искомое не дала определённого результата.',
+  authority_required:
+    'Эта попытка не позволяет установить, находится ли здесь искомое.'
+})) {
+  test(`persisted ordinary ${resolution} result is visible to the player`, async () => {
+    const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project: async () => assert.fail('fallback not expected') }
+    });
+    const visible = await projector.project({
+      consequence: { status: 'resolved', visible_seed: {
+        ordinary_scene_seed: { kind: 'ordinary_scene_seed',
+          sensory_details: ['На песке остались следы от пешни.'] },
+        ordinary_presence_seed: { kind: 'ordinary_presence_seed', resolution }
+      } },
+      retrieved_state: committedState(), body_update: { state_after: {} },
+      mode_resolution: { decision_trace: { remaining_intent: null,
+        step_traces: [{ approved_plan: { resolution: 'domain_request',
+          goal_result: 'pending', operations: [{ op: 'request_discovery' }],
+          check: null } }] } }
+    });
+    assert.deepEqual(visible.visible_changes, [change]);
+  });
+}
+
 test('unfinished domain prerequisite preserves the scene without inventing partial success', async () => {
   const projector = createLowerDvinaTraceTurnStepVisibleProjector({
     fallback: { project: async () => assert.fail('fallback not expected') }

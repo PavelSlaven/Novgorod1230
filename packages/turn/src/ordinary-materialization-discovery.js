@@ -306,15 +306,25 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     .filter(({ kind }) => kind === 'seed')
     .flatMap(({ background_groups: groups }) => groups)
     .map(({ descriptor }) => descriptor);
+  const negativePresenceResolution = item == null
+    && transitions.at(-1)?.kind === 'resolve_presence'
+    && ['absent', 'no_change', 'authority_required'].includes(resolution)
+    ? resolution : null;
+  const visibleSeed = {
+    ...(sceneDetails.length === 0 ? {} : { ordinary_scene_seed: {
+      kind: 'ordinary_scene_seed', sensory_details: sceneDetails
+    } }),
+    ...(negativePresenceResolution == null ? {} : { ordinary_presence_seed: {
+      kind: 'ordinary_presence_seed', resolution: negativePresenceResolution
+    } })
+  };
   return Object.freeze({ working_projection: request.working_projection,
     write_fragments: [], summary: 'ordinary discovery resolved',
     duration_minutes: 0,
     ...(request.operation?.discovery_kind === 'look'
       ? { goal_result: 'achieved' } : {}),
-    ...(sceneDetails.length === 0 ? {} : { consequence_fragment: {
-      visible_seed: { ordinary_scene_seed: {
-        kind: 'ordinary_scene_seed', sensory_details: sceneDetails
-      } }
+    ...(Object.keys(visibleSeed).length === 0 ? {} : { consequence_fragment: {
+      visible_seed: visibleSeed
     } }),
     player_response_boundary: item == null || request.plan?.continuation == null,
     ordinary_materialization_atomic_write_plan: plan });

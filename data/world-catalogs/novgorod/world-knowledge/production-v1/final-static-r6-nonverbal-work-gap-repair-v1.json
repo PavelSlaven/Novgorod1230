@@ -1,0 +1,100 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r6-nonverbal-work-editorial",
+      "title": "R6 nonverbal shared-work coordination: candidate bounded editorial reconstruction",
+      "authors": ["PR92 World Knowledge editorial team"],
+      "publication": "PR92 research note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "research/final-static-r6-nonverbal-work-gap-repair.md",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r6-nonverbal-work-editorial",
+      "source_ref": "source:r6-nonverbal-work-editorial",
+      "anchor": {"section": "Candidate reusable premises"},
+      "note": "Candidate editorial bridge from approved signal acknowledgement, capacity adaptation, and non-deterministic social-category premises. It establishes no person, sensory condition, work, load, means, authority, consent, cooperation, or outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:r6-nonverbal-shared-work-coordination",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:r6-nonverbal-shared-work-coordination",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "before_an_already_established_shared_task_with_meaningful_handling_risk_participants_can_agree_simple_start_stop_or_hold_signals_without_assigning_a_leader_exact_signal_system_task_load_agreement_or_successful_handling"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "low", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:r6-nonverbal-work-editorial"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:r6-nonverbal-shared-work-coordination",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "a_visual_or_tactile_signal_needs_actual_mutual_perception_and_confirmation_to_function_as_shared_communication_and_is_not_automatically_understood_or_received"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "low", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:r6-nonverbal-work-editorial"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:r6-nonverbal-shared-work-coordination",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "communication_can_be_adapted_to_actual_sensory_capacity_without_inferring_a_person_s_inability_status_skill_or_willingness_to_cooperate"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "low", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:r6-nonverbal-work-editorial"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:r6-nonverbal-shared-work-coordination", "locale": "ru", "labels": ["Невербальная координация общей рискованной работы"], "short_definition": "Качественные условия понятного невербального согласования в уже установленной общей работе.", "search_aliases": ["жесты при работе", "согласовать подъем"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:r6-nonverbal-shared-work-coordination", "locale": "en", "labels": ["Nonverbal coordination in shared risky work"], "short_definition": "Qualitative conditions for intelligible nonverbal coordination in already established shared work.", "search_aliases": ["work signals", "coordinate lift"]}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling", "locale": "ru", "runtime_text": "Перед уже установленной общей работой с существенным риском при обращении участники могут согласовать простые сигналы «начать», «стоп» или «держать»; это не назначает руководителя, систему сигналов, задачу, груз, согласие или успешное выполнение.", "search_aliases": ["сигнал начать стоп держать", "согласовать подъем"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling", "locale": "en", "runtime_text": "Before an already established shared task with meaningful handling risk, participants can agree simple start, stop, or hold signals; this assigns no leader, signal system, task, load, agreement, or successful handling.", "search_aliases": ["start stop hold signals", "coordinate lift"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation", "locale": "ru", "runtime_text": "Зрительный или осязательный сигнал требует фактического взаимного восприятия и подтверждения, чтобы служить общей связью; он не бывает автоматически понят или получен.", "search_aliases": ["зрительный сигнал", "осязательный сигнал", "подтверждение"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation", "locale": "en", "runtime_text": "A visual or tactile signal needs actual mutual perception and confirmation to function as shared communication; it is not automatically understood or received.", "search_aliases": ["visual signal", "tactile signal", "confirmation"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference", "locale": "ru", "runtime_text": "Связь можно приспособить к фактической сенсорной возможности, не выводя из этого неспособность, статус, умение или готовность человека сотрудничать.", "search_aliases": ["приспособить связь", "сенсорная возможность"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference", "locale": "en", "runtime_text": "Communication can be adapted to actual sensory capacity without inferring a person's inability, status, skill, or willingness to cooperate.", "search_aliases": ["adapt communication", "sensory capacity"]}
+  ]
+}

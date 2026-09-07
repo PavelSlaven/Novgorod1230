@@ -10,7 +10,8 @@ import { projectLowerDvinaTraceO2aCapabilities,
   '../src/runtime/lower-dvina-trace-o2a-player-safe.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
   '../src/runtime/lower-dvina-trace-turn-step-runtime-ports.js';
-import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
+import { applyLowerDvinaTraceWorkingProjection,
+  createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
   '../src/runtime/lower-dvina-trace-player-safe-working.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
@@ -102,6 +103,42 @@ test('O2a projection preserves arbitrary approved portion bounds', async () => {
   assert.deepEqual(projected.player_safe_state.visible_context.visible_objects[0]
     .ambient_portion_bounds, { quantity_unit: 'scoop', min_quantity: 0.5,
       max_quantity: 1.5, min_mass_grams: 70, max_mass_grams: 900 });
+});
+
+test('strict working visible-context projection preserves only valid O2a bounds', async () => {
+  const profile = await loadLowerDvinaTraceOrdinaryMaterializationProfile({
+    rootDir: process.cwd() });
+  const admission = createLowerDvinaTraceO2aAmbientPort({ profile,
+    committedState: { actor_id: 'mikula', position: {
+      g6_id: 'trace_ld_v1_g6_wreck_shore',
+      location_ref: 'trace_ld_v1_loc_wreck_shore' } } });
+  const projected = projectLowerDvinaTraceO2aCapabilities({ admission,
+    projected: { player_safe_state: { visible_context: { visible_objects: [] } } } });
+  const visible = projected.player_safe_state.visible_context;
+  const authority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+  const roundTrip = (visibleContext) => applyLowerDvinaTraceWorkingProjection({
+    base: { visible_context: visible }, actorId: 'mikula', committedState: {},
+    authority, workingProjection: authority.admit({ actor_id: 'mikula',
+      visible_context: visibleContext })
+  });
+  const projectedRoundTrip = roundTrip(visible);
+  assert.deepEqual(projectedRoundTrip.visible_context.visible_objects,
+    visible.visible_objects);
+
+  const malformed = structuredClone(visible);
+  malformed.visible_objects[0].ambient_portion_bounds.min_quantity = 0;
+  assert.throws(() => roundTrip(malformed),
+    { code: 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' });
+
+  const numericString = structuredClone(visible);
+  numericString.visible_objects[0].ambient_portion_bounds.max_quantity = '1';
+  assert.throws(() => roundTrip(numericString),
+    { code: 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' });
+
+  const otherKind = structuredClone(visible);
+  otherKind.visible_objects[0].entity_ref.entity_kind = 'ordinary_resource_source';
+  assert.throws(() => roundTrip(otherKind),
+    { code: 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' });
 });
 
 test('O2a ambient admission is absent for a drifted binding', async () => {

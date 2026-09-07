@@ -208,10 +208,18 @@ test('committed exact identity survives reload and only normalized wording reuse
     .next_supporting_basis_catalog;
   assert.equal(modelCalls, 2);
   assert.equal(cutoverCalls, 1);
-  await resolver({ ...request('  НАЙТИ   ложку  '), request: { root_turn_id: 'turn:party:2' } });
+  const committedBeforeReplay = structuredClone(committed);
+  const replay = await resolver({ ...request('  НАЙТИ   ложку  '), request: { root_turn_id: 'turn:party:2' } });
   assert.equal(modelCalls, 2, 'case/whitespace normalization maps to the committed identity');
   assert.equal(cutoverCalls, 1,
     'known resolution short-circuits before the local receipt check');
+  assert.deepEqual(committed, committedBeforeReplay,
+    'known negative replay does not mutate the committed aggregate');
+  assert.deepEqual(replay.write_fragments, []);
+  assert.equal(Object.hasOwn(replay, 'ordinary_materialization_atomic_write_plan'), false);
+  assert.deepEqual(replay.consequence_fragment.visible_seed.ordinary_presence_seed,
+    first.consequence_fragment.visible_seed.ordinary_presence_seed,
+    'known negative replay exposes the same persisted visible result');
   await resolver({ ...request('отыскать ложку'), request: { root_turn_id: 'turn:party:3' } });
   assert.equal(modelCalls, 3,
     'a semantically different normalized query receives a new candidate identity');

@@ -131,7 +131,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           eval_contract: execution.stage_b_classification_eval
         }), codeOwnedResolution: enabled.code_owned_resolution ?? null,
       mechanicsPolicy: execution.mechanics_policy });
-    if (presence.status === 'already_resolved') return ordinaryNoop(request);
+    if (presence.status === 'already_resolved') {
+      return knownNegativeResolution(request, presence.known_resolution?.resolution);
+    }
     if (presence.status === 'no_change' && presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);
       return resolvedPlan({ request, enabled, partyId, scopeRef,
@@ -420,6 +422,19 @@ function ordinaryNoop(request) { return Object.freeze({
   write_fragments: [], summary: 'ordinary discovery unavailable',
   duration_minutes: 0,
   player_response_boundary: true }); }
+function knownNegativeResolution(request, resolution) {
+  if (!['absent', 'no_change', 'authority_required'].includes(resolution)) {
+    return ordinaryNoop(request);
+  }
+  return Object.freeze({
+    working_projection: structuredClone(request?.working_projection ?? {}),
+    write_fragments: [], summary: 'ordinary discovery resolved',
+    duration_minutes: 0, player_response_boundary: true,
+    consequence_fragment: { visible_seed: { ordinary_presence_seed: {
+      kind: 'ordinary_presence_seed', resolution
+    } } }
+  });
+}
 function ordinaryState(a) { return { seeded: a.seeded,
   density_band: a.density_band,
   remaining_identity_budget: a.remaining_identity_budget,

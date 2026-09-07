@@ -17,9 +17,13 @@ import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmSettingsOwner } from '../src/runtime/llm-settings.js';
 import { createOrdinaryMaterializationStageBQualifier } from
   '../src/runtime/ordinary-materialization-stage-b-qualification.js';
+import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
+  '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 import { validateOrdinaryMaterializationPlanV1 } from '@rus/contracts';
 import { absentPlan, modelIdentity, presenceRequest } from
   './lower-dvina-trace-ordinary-stage-b-eval-fixture.js';
+import { enabled as discoveryEnabled, group as discoveryGroup,
+  request as discoveryRequest } from './lower-dvina-trace-o1-fixture.js';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m7-content/'
@@ -246,6 +250,33 @@ test('ordinary assembly does not invent an omitted semantic reason', () => {
     resolution: 'absent' });
   assert.equal(plan.reason_code, undefined);
   assert.notDeepEqual(validateOrdinaryMaterializationPlanV1(plan), []);
+});
+
+test('O1 production path drops unsupported provenance before preparing item', async () => {
+  const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+  const enabled = discoveryEnabled();
+  enabled.execution_context.stage_b_classification_eval = await evalContract();
+  let calls = 0;
+  const model = createOrdinaryMaterializationModel({ stageBApprovalReceipt: approval,
+    roleRunner: { async run() { return { provider_record: modelIdentity(), output:
+      ++calls === 1 ? { resolution: 'seeded', density_band_proposal: 'ordinary',
+        background_groups: [{ descriptor: discoveryGroup().descriptor }],
+        reason_code: 'seed' } : { resolution: 'materialize', reason_code: 'found',
+        entities: [{ semantic_descriptor: { semantic_type: 'ordinary_wood',
+          name: 'обломок доски', facts: ['фрагмент недавнего груза с разбитой телеги'] },
+        presence_expectation: 'routine', mechanics_proposal: { mass_grams: 350,
+          external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
+          quantity: { value: 1, unit: 'item' }, container: null } }] } }; } }
+  });
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
+    inputDigest: 'unsupported-provenance', loadEnablement: async () => enabled,
+    ordinaryMaterializationModel: model });
+  const plan = (await resolver(discoveryRequest('найти обломок доски')))
+    .ordinary_materialization_atomic_write_plan;
+  assert.equal(calls, 2);
+  assert.deepEqual(plan.item.item_proposal.semantic_descriptor, {
+    semantic_type: 'ordinary_wood', name: 'обломок доски', facts: []
+  });
 });
 
 test('production O1 assembles a semantic Stage A no_change choice', async () => {

@@ -92,7 +92,9 @@ export function bindOrdinaryMaterializationPlan(request, output) {
     schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,
     resolution: 'materialize', density_band_proposal: null,
     background_groups: [], presence_resolutions: [],
-    entities: [{ semantic_descriptor: entity.semantic_descriptor,
+    entities: [{ semantic_descriptor: {
+      semantic_type: entity.semantic_descriptor.semantic_type,
+      name: entity.semantic_descriptor.name, facts: [] },
       authority_class: 'ordinary',
       admission_class: authority.candidate.admission_class,
       availability_class: authority.candidate.availability_class,

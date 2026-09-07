@@ -1,0 +1,45 @@
+{
+  "batch": "trade-economy-batch-04",
+  "reviewer": "/root/trade4_clean_cross_audit",
+  "corpus_basis": {
+    "commit": "a94e54cc34686beb040376aaa15abdf2887a2439",
+    "runtime_bundle": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json",
+    "inputs": [
+      "trade-economy-batch-04-core.json",
+      "trade-economy-batch-04-free.json",
+      "trade-economy-batch-04-review-a.json",
+      "trade-economy-batch-04-review-b.json"
+    ]
+  },
+  "method": "Independent WK-only cross-audit. Exact source/review case-ID equality, status, approved runtime claim-ref resolution, and a diverse 20-case central-relevance/boundedness sample were checked. Scenario facts establish local state. Missing authoritative stock, ownership, exact price/rate/unit, law, route, identity, outcome, or NPC choice is out of scope, not a corpus gap.",
+  "audit_sample": [
+    {"case_id":"te04core-003","disposition":"covered","central_claim_refs":["claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement","claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard"],"reasoning":"Visible condition and available repeated weighing support bounded comparison; authenticity, value, acceptance, and settlement remain unresolved."},
+    {"case_id":"te04core-014","disposition":"covered","central_claim_refs":["claim:wood-anisotropy-moisture","claim:wood-liquid-directional-uptake","claim:practical-work-tradeoff"],"reasoning":"Wood response plus labour/material trade-off supports inspection before repair-versus-replacement; no preferred outcome is asserted."},
+    {"case_id":"te04core-023","disposition":"covered","central_claim_refs":["claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity","claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"],"reasoning":"Cross-material moisture and odour sensitivity directly supports conditional separation without inferring contamination or room capacity."},
+    {"case_id":"te04core-028","disposition":"covered","central_claim_refs":["claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport","claim:trade-economy-batch-03-packaging-division-uses-material-and-space-per-carried-unit"],"reasoning":"Claims centrally support dividing, separating, and cushioning mixed cargo; boat capacity and successful transport are not claimed."},
+    {"case_id":"te04core-038","disposition":"covered","central_claim_refs":["claim:debt-needs-parties-and-basis","claim:debt-record-practice"],"reasoning":"Parties, basis, transferred goods, and later settlement are proper record facts; record is not given legal force."},
+    {"case_id":"te04core-042","disposition":"covered","central_claim_refs":["claim:milling-grain-compression-shear-fracture","claim:milling-moisture-changes-grain-deformation"],"reasoning":"Mechanical grain transformation and moisture-sensitive deformation support possible fractions and losses without a yield or mill state."},
+    {"case_id":"te04core-047","disposition":"covered","central_claim_refs":["claim:animal-energy-availability-depends-on-food-derived-nutrients","claim:practical-fodder-hay","claim:animal-care-needs-presence"],"reasoning":"Feed, shelter, animal condition, and workload are central care constraints; no stock, ration, or animal state is invented."},
+    {"case_id":"te04core-051","disposition":"covered","central_claim_refs":["claim:wood-anisotropy-moisture"],"reasoning":"Fibre direction and moisture support conditional timber assessment; knots and required service remain scene-specific inspection facts."},
+    {"case_id":"te04core-059","disposition":"covered","central_claim_refs":["claim:stored-grain-condition-depends-on-temperature-moisture","claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"],"reasoning":"Wet cut crops create a bounded preservation and labour-priority question; loss, schedule, and available shelter are not inferred."},
+    {"case_id":"te04core-060","disposition":"covered","central_claim_refs":["claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally","claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits"],"reasoning":"External package condition and bounded sample comparison allow inspection while preserving uncertainty about hidden contents and deceit."},
+    {"case_id":"te04free-001","disposition":"covered","central_claim_refs":["claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively"],"reasoning":"Observable usefulness and condition support a general suitability check; price, provenance, and availability remain excluded."},
+    {"case_id":"te04free-002","disposition":"covered","central_claim_refs":["claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity","claim:stored-grain-condition-depends-on-temperature-moisture"],"reasoning":"Storage separation and moisture-sensitive condition support bounded reserve handling without quantity or duration."},
+    {"case_id":"te04free-006","disposition":"covered","central_claim_refs":["claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively","claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions","claim:trade-economy-batch-03-exchange-alternatives-can-affect-bargaining-room-qualitatively"],"reasoning":"All named qualitative exchange factors are directly covered; no rate, consent, or result follows."},
+    {"case_id":"te04free-009","disposition":"covered","central_claim_refs":["claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"],"reasoning":"Weather, work pressure, available people, and means support conditional ordering of tasks, not a universal calendar."},
+    {"case_id":"te04free-013","disposition":"covered","central_claim_refs":["claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use","claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity"],"reasoning":"Separate reserve and condition-aware storage are central; reserve size, owner, and household decision remain open."},
+    {"case_id":"te04free-015","disposition":"covered","central_claim_refs":["claim:trade-economy-batch-03-packaging-material-and-closure-affect-handling-conditionally"],"reasoning":"Conditional handling supports balancing access, protection, and carrying load without a route, inventory, or outcome."},
+    {"case_id":"te04free-018","disposition":"covered","central_claim_refs":["claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r4","claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"],"reasoning":"Competing household work and available means support flexible sequencing; no mandatory order is imposed."},
+    {"case_id":"te04free-022","disposition":"covered","central_claim_refs":["claim:trade-economy-batch-03-exchange-can-compare-observed-usefulness-and-condition-qualitatively","claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits"],"reasoning":"Visible description and sample limits support bounded product description without price, provenance, guarantee, or quality verdict."},
+    {"case_id":"te04free-023","disposition":"covered","central_claim_refs":["claim:trade-economy-batch-03-storage-materials-can-be-separated-by-moisture-and-odour-sensitivity","claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"],"reasoning":"Conditional protection and priority of work cover weather response without inventing forecast, buildings, or supplies."},
+    {"case_id":"te04free-025","disposition":"covered","central_claim_refs":["claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use","claim:trade-economy-batch-03-exchange-can-discuss-effort-risk-and-urgency-as-conditions"],"reasoning":"Present-versus-future use and qualitative effort/risk comparison are covered; household decision remains unchosen."}
+  ],
+  "summary": {
+    "all_cases": 100,
+    "covered": 100,
+    "flagged": 0,
+    "genuine_gap": 0,
+    "out_of_scope": 0,
+    "grouped_families": []
+  }
+}

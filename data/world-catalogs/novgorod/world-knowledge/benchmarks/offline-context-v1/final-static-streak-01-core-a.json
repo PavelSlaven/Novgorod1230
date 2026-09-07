@@ -1,0 +1,388 @@
+{
+  "batch": "final-static-streak-01",
+  "generator": "/root/streak1_core_a",
+  "method": "corpus-blind controlled generator; 38 practical/natural/physical cross-domain cases",
+  "candidate_commit": "2efa158c66ce4f08eafa40d1fcd88014e4e29348",
+  "cases": [
+    {
+      "case_id": "fss01-core-a-001",
+      "primary_domain": "woodworking",
+      "knowledge_need": "How to keep a fresh-split ash handle from loosening in an iron hoe eye as it dries.",
+      "need_group": "practical_natural_physical",
+      "location": "vegetable plot outside Novgorod",
+      "person": "gardener",
+      "circumstances": "handle was fitted after rain and now rattles",
+      "situation": "A morning of digging remains before the plot can be planted."
+    },
+    {
+      "case_id": "fss01-core-a-002",
+      "primary_domain": "textiles",
+      "knowledge_need": "Whether damp linen can be safely dried close to a clay stove without scorching or shrinking it.",
+      "need_group": "practical_natural_physical",
+      "location": "small town house",
+      "person": "washerwoman",
+      "circumstances": "cold rain has kept lines wet for two days",
+      "situation": "She needs a clean shirt for a traveller leaving at dawn."
+    },
+    {
+      "case_id": "fss01-core-a-003",
+      "primary_domain": "roof repair",
+      "knowledge_need": "How wind-driven rain reaches a thatched roof ridge and what temporary repair will hold until dry weather.",
+      "need_group": "practical_natural_physical",
+      "location": "yard by the Volkhov",
+      "person": "householder",
+      "circumstances": "a gust lifted old thatch at the ridge",
+      "situation": "Water is dripping into a grain chest below."
+    },
+    {
+      "case_id": "fss01-core-a-004",
+      "primary_domain": "food preservation",
+      "knowledge_need": "Why a barrel of salted fish smells sour and whether its brine level can still protect the catch.",
+      "need_group": "practical_natural_physical",
+      "location": "river wharf storehouse",
+      "person": "fish seller",
+      "circumstances": "barrel stood in spring warmth after a bung leaked",
+      "situation": "He must decide what can be kept apart from what should not be served."
+    },
+    {
+      "case_id": "fss01-core-a-005",
+      "primary_domain": "wagon travel",
+      "knowledge_need": "How to free a loaded cart wheel sunk in thawing ruts without breaking its spokes.",
+      "need_group": "practical_natural_physical",
+      "location": "clay road south of Novgorod",
+      "person": "carter",
+      "circumstances": "one horse is pulling while the wheel is buried to its hub",
+      "situation": "A second cart is approaching from behind."
+    },
+    {
+      "case_id": "fss01-core-a-006",
+      "primary_domain": "animal care",
+      "knowledge_need": "How to recognize chafing beneath a horse collar and reduce it before a long haul.",
+      "need_group": "practical_natural_physical",
+      "location": "posting yard",
+      "person": "stable hand",
+      "circumstances": "the mare keeps tossing her head after harnessing",
+      "situation": "The owner wants to leave before sunset."
+    },
+    {
+      "case_id": "fss01-core-a-007",
+      "primary_domain": "plant gathering",
+      "knowledge_need": "Whether willow bark cut in early spring will peel cleanly enough for simple binding strips.",
+      "need_group": "practical_natural_physical",
+      "location": "wet bank near an alder stand",
+      "person": "basket maker",
+      "circumstances": "fresh shoots are swelling but leaves are not open",
+      "situation": "She needs ties for several damaged baskets."
+    },
+    {
+      "case_id": "fss01-core-a-008",
+      "primary_domain": "injury care",
+      "knowledge_need": "How to handle a shallow axe cut on a palm that is dirty with bark and soil.",
+      "need_group": "practical_natural_physical",
+      "location": "woodlot",
+      "person": "woodcutter",
+      "circumstances": "cut bleeds steadily but fingers still move",
+      "situation": "He is far from town and must not contaminate the wound further."
+    },
+    {
+      "case_id": "fss01-core-a-009",
+      "primary_domain": "seasonal weather",
+      "knowledge_need": "How a sudden hard night frost affects newly sprouted peas in low ground.",
+      "need_group": "practical_natural_physical",
+      "location": "floodplain garden",
+      "person": "smallholder",
+      "circumstances": "clear evening follows a warm April day",
+      "situation": "He has loose straw and woven mats but little time before dark."
+    },
+    {
+      "case_id": "fss01-core-a-010",
+      "primary_domain": "river ice",
+      "knowledge_need": "How to judge changing ice near a river current when crossing with a hand sled.",
+      "need_group": "practical_natural_physical",
+      "location": "narrow Volkhov side channel",
+      "person": "villager",
+      "circumstances": "surface is snow-covered after several thawing days",
+      "situation": "A longer route to the bridge remains open."
+    },
+    {
+      "case_id": "fss01-core-a-011",
+      "primary_domain": "smoke and ventilation",
+      "knowledge_need": "Why smoke stays low in a hut during a damp, windless morning and how to improve breathing without spreading fire.",
+      "need_group": "practical_natural_physical",
+      "location": "black-heated cottage",
+      "person": "elderly occupant",
+      "circumstances": "green kindling was used after overnight rain",
+      "situation": "Two children are coughing near the sleeping bench."
+    },
+    {
+      "case_id": "fss01-core-a-012",
+      "primary_domain": "cold exposure",
+      "knowledge_need": "How to respond when wet wool mittens freeze stiff during winter travel.",
+      "need_group": "practical_natural_physical",
+      "location": "forest track",
+      "person": "messenger",
+      "circumstances": "snow entered his sleeves while he fell beside the road",
+      "situation": "He has a fire kit but wind is strong and daylight is short."
+    },
+    {
+      "case_id": "fss01-core-a-013",
+      "primary_domain": "masonry",
+      "knowledge_need": "Why a clay-and-sand patch cracks around a hearth opening and how moisture and heat affect it.",
+      "need_group": "practical_natural_physical",
+      "location": "baker's outbuilding",
+      "person": "apprentice",
+      "circumstances": "patch was laid thick over damp old clay",
+      "situation": "The oven is needed for bread the next day."
+    },
+    {
+      "case_id": "fss01-core-a-014",
+      "primary_domain": "water handling",
+      "knowledge_need": "How to clear a wooden bucket's rope from a well windlass after it twists under load.",
+      "need_group": "practical_natural_physical",
+      "location": "communal well",
+      "person": "water carrier",
+      "circumstances": "bucket hangs halfway down and rope is pinched at the axle",
+      "situation": "A queue has formed with empty pails."
+    },
+    {
+      "case_id": "fss01-core-a-015",
+      "primary_domain": "soil and drainage",
+      "knowledge_need": "How standing water after snowmelt changes a kitchen-garden bed and what simple drainage is useful.",
+      "need_group": "practical_natural_physical",
+      "location": "low yard behind a timber house",
+      "person": "gardener",
+      "circumstances": "meltwater has covered last year's manure",
+      "situation": "Seed potatoes must be planted soon."
+    },
+    {
+      "case_id": "fss01-core-a-016",
+      "primary_domain": "ironwork",
+      "knowledge_need": "How to tell whether a heated iron rivet has been upset enough to hold two strap ends without splitting them.",
+      "need_group": "practical_natural_physical",
+      "location": "village smithy",
+      "person": "smith's helper",
+      "circumstances": "strap is for a chest hinge and rivet head is cooling quickly",
+      "situation": "The helper has only a hammer and anvil."
+    },
+    {
+      "case_id": "fss01-core-a-017",
+      "primary_domain": "leatherwork",
+      "knowledge_need": "How to soften a water-soaked leather boot enough to reshape it without cracking when it dries.",
+      "need_group": "practical_natural_physical",
+      "location": "merchant's lodging",
+      "person": "traveller",
+      "circumstances": "boot was submerged while stepping from a boat",
+      "situation": "He must walk to market the next morning."
+    },
+    {
+      "case_id": "fss01-core-a-018",
+      "primary_domain": "grain milling",
+      "knowledge_need": "Why a hand quern begins producing coarse flour and how grain moisture and stone setting affect it.",
+      "need_group": "practical_natural_physical",
+      "location": "household shed",
+      "person": "miller's daughter",
+      "circumstances": "grain was brought in from a humid store",
+      "situation": "She needs flour for evening porridge."
+    },
+    {
+      "case_id": "fss01-core-a-019",
+      "primary_domain": "fermentation",
+      "knowledge_need": "Why a crock of cabbage brine has stopped bubbling in a cold cellar and whether warmth should be changed gradually.",
+      "need_group": "practical_natural_physical",
+      "location": "earth cellar",
+      "person": "householder",
+      "circumstances": "a cold snap followed packing the crock",
+      "situation": "The stored vegetables are meant for late winter."
+    },
+    {
+      "case_id": "fss01-core-a-020",
+      "primary_domain": "boat handling",
+      "knowledge_need": "How a small river boat behaves when a pole slips from firm bottom into soft silt near shore.",
+      "need_group": "practical_natural_physical",
+      "location": "reed-lined landing",
+      "person": "ferryman",
+      "circumstances": "boat is carrying two passengers and sacks of rye",
+      "situation": "A crosswind is pushing its bow toward reeds."
+    },
+    {
+      "case_id": "fss01-core-a-021",
+      "primary_domain": "animal behavior",
+      "knowledge_need": "How to approach a tethered cow that has become agitated after a dog barked nearby.",
+      "need_group": "practical_natural_physical",
+      "location": "common pasture edge",
+      "person": "herd child",
+      "circumstances": "rope is caught around a sapling and cow is pulling against it",
+      "situation": "Milk pail and calf are both close by."
+    },
+    {
+      "case_id": "fss01-core-a-022",
+      "primary_domain": "light and vision",
+      "knowledge_need": "How reflected snow light and low winter sun affect a person trying to follow tracks.",
+      "need_group": "practical_natural_physical",
+      "location": "open marsh path",
+      "person": "hunter",
+      "circumstances": "wind has partly filled tracks with loose snow",
+      "situation": "He is deciding whether to continue before dusk."
+    },
+    {
+      "case_id": "fss01-core-a-023",
+      "primary_domain": "burn injury",
+      "knowledge_need": "What immediate care suits a minor scald from spilled hot porridge and when it may be more serious.",
+      "need_group": "practical_natural_physical",
+      "location": "communal kitchen",
+      "person": "cook",
+      "circumstances": "hot porridge splashed across a forearm",
+      "situation": "Skin is red and painful but not visibly charred."
+    },
+    {
+      "case_id": "fss01-core-a-024",
+      "primary_domain": "illness and hydration",
+      "knowledge_need": "How repeated loose stools after questionable well water affect a labourer's ability to work and what fluid care matters.",
+      "need_group": "practical_natural_physical",
+      "location": "field camp",
+      "person": "ditch digger",
+      "circumstances": "he feels weak after a day of summer heat",
+      "situation": "Companions need to decide whether he can remain at work."
+    },
+    {
+      "case_id": "fss01-core-a-025",
+      "primary_domain": "charcoal fire",
+      "knowledge_need": "Why a charcoal brazier flares when fresh fuel is piled on and how airflow changes the burn.",
+      "need_group": "practical_natural_physical",
+      "location": "smithy lean-to",
+      "person": "young helper",
+      "circumstances": "he needs a steady bed of heat for a small repair",
+      "situation": "Dry shavings lie near the brazier."
+    },
+    {
+      "case_id": "fss01-core-a-026",
+      "primary_domain": "rope and load",
+      "knowledge_need": "How a hemp rope's condition and knot placement affect lifting a heavy stone from a shallow pit.",
+      "need_group": "practical_natural_physical",
+      "location": "building site",
+      "person": "labourer",
+      "circumstances": "rope is frayed near one end and stone is half buried",
+      "situation": "Three people can pull but no replacement rope is nearby."
+    },
+    {
+      "case_id": "fss01-core-a-027",
+      "primary_domain": "household pests",
+      "knowledge_need": "How to reduce mice reaching a sack of grain stored in a timber room.",
+      "need_group": "practical_natural_physical",
+      "location": "winter store room",
+      "person": "widow",
+      "circumstances": "fresh droppings appear beneath the sack each morning",
+      "situation": "She has boards, a clay jar, and a cat that rarely hunts."
+    },
+    {
+      "case_id": "fss01-core-a-028",
+      "primary_domain": "beekeeping",
+      "knowledge_need": "How cold, damp spring weather changes bee activity at a hollow-log hive and when opening it causes harm.",
+      "need_group": "practical_natural_physical",
+      "location": "orchard edge",
+      "person": "beekeeper",
+      "circumstances": "few bees are flying after three rainy days",
+      "situation": "He worries the colony has failed."
+    },
+    {
+      "case_id": "fss01-core-a-029",
+      "primary_domain": "thawing food",
+      "knowledge_need": "How to thaw a frozen pike without leaving the outer flesh warm too long in a heated room.",
+      "need_group": "practical_natural_physical",
+      "location": "town kitchen",
+      "person": "inn cook",
+      "circumstances": "fish was kept outdoors through a hard freeze",
+      "situation": "Guests expect supper before nightfall."
+    },
+    {
+      "case_id": "fss01-core-a-030",
+      "primary_domain": "snow shelter",
+      "knowledge_need": "How wind-packed snow differs from loose snow when making a temporary windbreak beside a forest road.",
+      "need_group": "practical_natural_physical",
+      "location": "pine forest clearing",
+      "person": "stranded traveller",
+      "circumstances": "sleigh runner cracked and snow continues falling",
+      "situation": "Two people must wait until morning with wool blankets."
+    },
+    {
+      "case_id": "fss01-core-a-031",
+      "primary_domain": "flood safety",
+      "knowledge_need": "How quickly spring river rise can undermine a low bank where a timber shed stands.",
+      "need_group": "practical_natural_physical",
+      "location": "Volkhov floodplain",
+      "person": "boat builder",
+      "circumstances": "water has reached the shed's lower logs overnight",
+      "situation": "Tools and seasoned planks remain inside."
+    },
+    {
+      "case_id": "fss01-core-a-032",
+      "primary_domain": "lime and mortar",
+      "knowledge_need": "Why wet lime mortar irritates skin and why its setting changes in cold rain.",
+      "need_group": "practical_natural_physical",
+      "location": "church repair yard",
+      "person": "mason",
+      "circumstances": "mortar splashed through a torn glove",
+      "situation": "A small wall joint was laid shortly before rain began."
+    },
+    {
+      "case_id": "fss01-core-a-033",
+      "primary_domain": "fishing gear",
+      "knowledge_need": "How to mend a torn flax net so the repaired section does not pull open under fish weight.",
+      "need_group": "practical_natural_physical",
+      "location": "riverbank drying rack",
+      "person": "fisher",
+      "circumstances": "tear is beside an old worn knot",
+      "situation": "The net must be used again at evening."
+    },
+    {
+      "case_id": "fss01-core-a-034",
+      "primary_domain": "children and cold water",
+      "knowledge_need": "How to respond after a child falls through thin shore ice and is pulled out quickly.",
+      "need_group": "practical_natural_physical",
+      "location": "pond beside a village",
+      "person": "older sibling",
+      "circumstances": "child is soaked, crying, and shivering in a sharp wind",
+      "situation": "A heated house is several minutes away."
+    },
+    {
+      "case_id": "fss01-core-a-035",
+      "primary_domain": "dairy handling",
+      "knowledge_need": "Why cream will not rise well in a milk pan left near a smoky warm wall.",
+      "need_group": "practical_natural_physical",
+      "location": "farmhouse dairy corner",
+      "person": "dairy worker",
+      "circumstances": "morning milk was set out after a hot fire was lit",
+      "situation": "Butter is needed for a market order."
+    },
+    {
+      "case_id": "fss01-core-a-036",
+      "primary_domain": "tree felling",
+      "knowledge_need": "How lean, wind direction, and binding branches affect where a partially cut birch may fall.",
+      "need_group": "practical_natural_physical",
+      "location": "mixed woodland",
+      "person": "two woodcutters",
+      "circumstances": "tree has begun to settle on the saw cut",
+      "situation": "A loaded sled and a companion stand within reach of its crown."
+    },
+    {
+      "case_id": "fss01-core-a-037",
+      "primary_domain": "earthenware",
+      "knowledge_need": "Why a clay cooking pot cracks when set directly from cold water into a strong fire.",
+      "need_group": "practical_natural_physical",
+      "location": "roadside camp",
+      "person": "travelling cook",
+      "circumstances": "pot was rinsed in a cold stream moments earlier",
+      "situation": "Only one pot is available for the group."
+    },
+    {
+      "case_id": "fss01-core-a-038",
+      "primary_domain": "forest ecology",
+      "knowledge_need": "How fresh storm-fallen spruce changes footing, sight lines, and firewood quality in a wet forest.",
+      "need_group": "practical_natural_physical",
+      "location": "forest trail north of Novgorod",
+      "person": "forager",
+      "circumstances": "a recent gale has blocked the usual path",
+      "situation": "Rain is starting and she must choose between detouring or cutting through debris."
+    }
+  ]
+}

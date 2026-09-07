@@ -122,3 +122,13 @@ test('turn step planner prompt has stated-goal adaptation triage', async () => {
   assert.match(prompt, /Otherwise: literal/u);
   assert.match(prompt, /ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery\/domain flow/u);
 });
+
+test('turn step planner keeps an ongoing wet-reed smoulder out of A1', async () => {
+  const prompt = await capturePrompt(request({
+    remaining_intent: 'Оставляю мокрый тростник тлеть.'
+  }));
+  assert.match(prompt, /action_production represents only a durable item-local physical result after the action ends/u);
+  assert.match(prompt, /Never use its physical_description, qualitative_facts, or source_fact_delta to claim, create, preserve, or describe an active, ongoing, self-propagating, or time-dependent world process/u);
+  assert.match(prompt, /process requires an exact supplied code-owned domain operation; select its matching choice_id/u);
+  assert.match(prompt, /Without one, return the honest reality_limited no-operation attempt with no process or physical-fact claim/u);
+});

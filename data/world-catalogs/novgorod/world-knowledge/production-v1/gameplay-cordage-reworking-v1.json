@@ -27,8 +27,8 @@
   "concepts": [
     {
       "schema": "world_knowledge_concept_v1",
-      "concept_ref": "wk:craft_technology:cordage-reworking",
-      "domain": "craft_technology",
+      "concept_ref": "wk:physics_material_science:cordage-reworking",
+      "domain": "physics_material_science",
       "broader_refs": [],
       "related_refs": ["wk:physics_material_science:modern-fibre-rope-condition"],
       "external_mappings": [],
@@ -39,8 +39,8 @@
     {
       "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:laid-fibre-cord-can-be-unlaid-when-construction-and-condition-permit",
-      "domain": "craft_technology",
-      "subject_ref": "wk:craft_technology:cordage-reworking",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:cordage-reworking",
       "predicate": "supported_fact",
       "object": {"kind": "literal", "value": "an_already_present_laid_fibre_cord_can_sometimes_be_unlaid_into_component_yarns_or_strands_when_its_construction_remaining_length_and_condition_permit"},
       "polarity": "support",
@@ -55,8 +55,8 @@
     {
       "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:recovered-cordage-components-can-be-reworked-without-guaranteed-strength",
-      "domain": "craft_technology",
-      "subject_ref": "wk:craft_technology:cordage-reworking",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:cordage-reworking",
       "predicate": "supported_fact",
       "object": {"kind": "literal", "value": "component_yarns_or_strands_recovered_from_existing_cordage_can_sometimes_be_retwisted_or_braided_into_thinner_cord_but_reworking_does_not_establish_usable_length_or_strength"},
       "polarity": "support",
@@ -71,8 +71,8 @@
     {
       "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:reworked-cord-is-not-automatically-serviceable-fishing-line",
-      "domain": "craft_technology",
-      "subject_ref": "wk:craft_technology:cordage-reworking",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:cordage-reworking",
       "predicate": "supported_fact",
       "object": {"kind": "literal", "value": "a_reworked_cord_is_not_a_serviceable_fishing_line_until_its_actual_material_condition_continuity_attachments_and_required_load_are_suitable_for_the_intended_use"},
       "polarity": "support",
@@ -89,7 +89,7 @@
   "concept_localizations": [
     {
       "schema": "world_knowledge_concept_localization_v1",
-      "concept_ref": "wk:craft_technology:cordage-reworking",
+      "concept_ref": "wk:physics_material_science:cordage-reworking",
       "locale": "ru",
       "labels": ["Переработка верёвки и шнура"],
       "short_definition": "Условная разборка и перевивка уже существующего волокнистого шнура.",
@@ -97,7 +97,7 @@
     },
     {
       "schema": "world_knowledge_concept_localization_v1",
-      "concept_ref": "wk:craft_technology:cordage-reworking",
+      "concept_ref": "wk:physics_material_science:cordage-reworking",
       "locale": "en",
       "labels": ["Cordage reworking"],
       "short_definition": "Conditional unlaying and reworking of an existing fibre cord.",

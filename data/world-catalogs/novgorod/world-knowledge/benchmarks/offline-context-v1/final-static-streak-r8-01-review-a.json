@@ -1,8 +1,8 @@
 {
   "batch": "final-static-streak-r8-01",
-  "reviewer": "r8-01-review-a",
+  "reviewer": "r8-01-review-a; corrective cross-audit: /root/r8_01_cross_auditor",
   "corpus_basis": { "commit": "db1f8984a3b36838992b9a0c5911d6d2c735a951", "bundle": "production-v1/runtime-bundle.json", "claim_count": 1723 },
-  "method": "WK-only semantic review of the frozen 50 cases against the full runtime bundle. Answers use only qualitative reusable premises; recipe, exact procedure, scene state, price, local custom, legal ruling, authority and outcome are outside this review.",
+  "method": "WK-only semantic review of the frozen 50 cases against the full runtime bundle. Answers use only qualitative reusable premises; recipe, exact procedure, scene state, price, local custom, legal ruling, authority and outcome are outside this review. False gaps reclassified through existing bounded premises; no corpus facts added.",
   "cases": [
     { "case_id": "r8-01-a-001", "status": "covered", "answer_ru": "Обмолот и сушка — разные рабочие контексты: сырой материал требует осторожной паузы и разделения, а не обещания сохранности.", "refs": ["claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts"], "inferences": [], "gaps": [] },
     { "case_id": "r8-01-a-002", "status": "covered", "answer_ru": "Веять имеет смысл только как осторожную обработку уже имеющегося зерна; выбор ветра и потери урожая остаются обстоятельствами сцены.", "refs": ["claim:agriculture-rural-role-context"], "inferences": [], "gaps": [] },

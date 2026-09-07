@@ -1,0 +1,47 @@
+{
+  "batch": "final-static-streak-r8-02",
+  "auditor": "r8-02-cross-auditor",
+  "corpus_basis": {
+    "commit": "db1f8984a3b36838992b9a0c5911d6d2c735a951",
+    "bundle": "production-v1/runtime-bundle.json",
+    "claim_count": 1723
+  },
+  "method": "Проверены все 100 corpus-only cases. Gap требует только отсутствующей существенной reusable factual premise; допустимы композиция claims и bounded здравый смысл, без требования exact recipe/state/price/local law/outcome/authority.",
+  "covered_audit": {
+    "checked": 100,
+    "invalid_or_hidden_gaps": []
+  },
+  "gap_triage": [
+    {"case_id":"r8-02-a-009","verdict":"composable_existing","family":"beekeeping-swarm-management","reason":"Роение и условное снижение защитной реакции уже позволяют осторожное condition-based действие без рецепта снятия роя.","refs":["claim:fauna-bee-swarming","claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense"]},
+    {"case_id":"r8-02-a-011","verdict":"composable_existing","family":"mushroom-preservation","reason":"Сушка уменьшает условия микробного роста; отсутствие точного метода или критерия порчи не является gap.","refs":["claim:drying-reduces-microbial-growth-conditions","claim:wild-mushroom-resemblance-not-edibility"]},
+    {"case_id":"r8-02-a-014","verdict":"composable_existing","family":"bog-travel-safety","reason":"Условия мокрой поверхности уже требуют condition-based темпа и осторожности; точная техника группы не нужна.","refs":["claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1"]},
+    {"case_id":"r8-02-a-016","verdict":"composable_existing","family":"lime-mortar-application","reason":"Превращения извести и погодные пределы поддерживают отказ от гарантии без exact mortar recipe.","refs":["claim:lime-transformations","claim:streak01-lime-weather"]},
+    {"case_id":"r8-02-a-017","verdict":"composable_existing","family":"cold-weather-clothing-and-hypothermia","reason":"Сухая одежда, тепло и снижение воздействия уже поддержаны; медицинский исход не нужен.","refs":["claim:military-world-cold-and-wetness-need-practical-boundaries","claim:ordinary-life-work-clothes-protect-and-move"]},
+    {"case_id":"r8-02-a-018","verdict":"composable_existing","family":"garden-soil-drainage-and-cropping","reason":"Рост зависит от условий, а временное покрытие имеет условный эффект; exact crops и сроки не требуются.","refs":["claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals","claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection"]},
+    {"case_id":"r8-02-a-020","verdict":"composable_existing","family":"paediatric-fever-triage","reason":"Лихорадка не является диагнозом, а наблюдение и поиск помощи — допустимая bounded реакция.","refs":["claim:healer-observation-and-questioning","claim:candidate-v5-fever-is-not-itself-a-disease"]},
+    {"case_id":"r8-02-a-021","verdict":"composable_existing","family":"cart-wheel-repair","reason":"Осмотр и условный локальный ремонт изношенного крепления покрывают попытку без модели колеса.","refs":["claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally"]},
+    {"case_id":"r8-02-a-022","verdict":"composable_existing","family":"river-landing-hydrodynamics","reason":"Подход лодки зависит от ветра, течения и контроля, а берег условно уязвим к размыву.","refs":["claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control","claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability"]},
+    {"case_id":"r8-02-a-024","verdict":"composable_existing","family":"unknown-dog-bite-risk","reason":"Давление при кровотечении и фиксация обстоятельств для помощи достаточны без конкретного диагноза укуса.","refs":["claim:care-direct-pressure-bleeding","claim:final-practical-uncertain-exposure-needs-route-and-source-details-preserved-for-help"]},
+    {"case_id":"r8-02-a-026","verdict":"composable_existing","family":"leather-footwear-waterproofing","reason":"Обувь допускает сушку и ремонт, а просмоленный материал показывает условную защиту швов; exact пропитка не нужна.","refs":["claim:ordinary-life-shoes-protect-feet","claim:construction-tarred-tow-caulking"]},
+    {"case_id":"r8-02-a-027","verdict":"composable_existing","family":"well-water-contamination","reason":"Кипячение и отстаивание/фильтрация дают ограниченные меры без обещания безопасной воды.","refs":["claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination","claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water"]},
+    {"case_id":"r8-02-a-028","verdict":"composable_existing","family":"stored-grain-insect-management","reason":"Сухое защищённое хранение и condition-based раздельное размещение покрывают реакцию; вид вредителя не нужен.","refs":["claim:practical-food-grain-storage","claim:drying-reduces-microbial-growth-conditions"]},
+    {"case_id":"r8-02-a-029","verdict":"composable_existing","family":"field-boundary-dispute-practice","reason":"Вопросы, родня и юридическая значимость межевых знаков поддерживают проверку без local procedure.","refs":["claim:public-world-dispute-can-use-questions-and-kin","claim:residual-law-boundaries-and-marked-trees"]},
+    {"case_id":"r8-02-a-030","verdict":"composable_existing","family":"market-measure-dispute-practice","reason":"Осмотр платёжного металла и competing accounts поддерживают спор без exact market rule.","refs":["claim:trade-economy-batch-03-payment-metal-can-be-inspected-for-visible-material-condition","claim:public-world-dispute-starts-with-competing-accounts"]},
+    {"case_id":"r8-02-a-032","verdict":"composable_existing","family":"apprenticeship-obligation-practice","reason":"Ученик помогает и обучение соразмеряется риску; обязательства и уход остаются предметом разговора, не data gap.","refs":["claim:ordinary-life-apprentice-learns-and-assists","claim:human-life-learning-tasks-can-match-capacity-risk"]},
+    {"case_id":"r8-02-a-033","verdict":"composable_existing","family":"ferry-priority-practice","reason":"Условия пути допускают задержку, а переговоры — поиск договорённости; exact очередь не нужна.","refs":["claim:human-life-travel-conditions-can-justify-delay","claim:public-world-negotiation-can-precede-formal-escalation"]},
+    {"case_id":"r8-02-a-035","verdict":"composable_existing","family":"travelling-craft-vending-custom","reason":"Торг — публичное пространство, работа мастера зависит от обстоятельств; допуск не обязан иметь fixed rule.","refs":["claim:civic-public-market","claim:ordinary-life-craftsman-income-varies-with-orders"]},
+    {"case_id":"r8-02-a-036","verdict":"composable_existing","family":"harvest-mutual-aid-practice","reason":"Помощь создаёт условную взаимность, доступ помощи ограничен; specific obligation вдовы не нужна.","refs":["claim:ordinary-life-help-can-create-reciprocity","claim:public-world-help-access-can-be-limited"]},
+    {"case_id":"r8-02-a-037","verdict":"composable_existing","family":"birchbark-letter-weatherproof-delivery","reason":"Запись материальна и береста деформируется от воды; condition-based защита и доставка не требуют exact carrier practice.","refs":["claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r1","claim:static-birch-bark-water-can-deform-layers"]},
+    {"case_id":"r8-02-b-001","verdict":"composable_existing","family":"charcoal-burn-process-control","reason":"Укладка, контроль воздуха и последовательность обугливания прямо поддержаны.","refs":["claim:fuel-pit-charcoal-burning-air-control","claim:fuel-pit-charcoal-burning-air-sequence"]},
+    {"case_id":"r8-02-b-003","verdict":"composable_existing","family":"sourdough-leavening-conditions","reason":"Тесто предшествует выпечке, а температура условно меняет скорость реакций; exact закваска не обязательна.","refs":["claim:grain-processing-bread-dough-before-baking","claim:foundations-thm-08-temperature-reaction-rate"]},
+    {"case_id":"r8-02-b-004","verdict":"composable_existing","family":"ox-yoke-fitting-and-training","reason":"Контакт упряжи можно осмотреть, а уход за рабочим животным связан с поездкой; exact yoke pattern не нужен.","refs":["claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement","claim:military-world-working-animal-care-intersects-travel"]},
+    {"case_id":"r8-02-b-005","verdict":"composable_existing","family":"grass-wildfire-response","reason":"Реакция на огонь требует пути отхода, а ветер имеет физическую причинность; exact suppression tactic не требуется.","refs":["claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards","claim:foundations-earth2-07-pressure-gradient-wind"]},
+    {"case_id":"r8-02-b-008","verdict":"composable_existing","family":"thunderstorm-lightning-safety","reason":"Прямой claim исключает безопасное открытое место и одинокие деревья/воду.","refs":["claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"]},
+    {"case_id":"r8-02-b-012","verdict":"composable_existing","family":"wattle-fence-construction","reason":"Вбитые колья как опора уже поддержаны; плетение — bounded ordinary construction detail, не hidden premise.","refs":["claim:civic-defence-stake-support"]}
+  ],
+  "conclusion": {
+    "genuine_gap_count": 0,
+    "hidden_gap_count": 0,
+    "clean": true
+  }
+}

@@ -1,8 +1,8 @@
 {
   "batch": "final-static-streak-r8-02",
-  "reviewer": "r8-02-review-b",
+  "reviewer": "r8-02-review-b; corrective cross-audit: /root/r8_02_cross_auditor",
   "corpus_basis": { "commit": "db1f8984a3b36838992b9a0c5911d6d2c735a951", "bundle": "production-v1/runtime-bundle.json", "claim_count": 1723 },
-  "method": "WK-only semantic review of the frozen 25 remaining controlled and 25 free cases against the full runtime bundle. Answers retain only reusable qualitative premises; recipes, exact state, price, local rule, authority and outcome are not required coverage.",
+  "method": "WK-only semantic review of the frozen 25 remaining controlled and 25 free cases against the full runtime bundle. Answers retain only reusable qualitative premises; recipes, exact state, price, local rule, authority and outcome are not required coverage. False gaps reclassified through existing bounded premises; no corpus facts added.",
   "cases": [
     { "case_id": "r8-02-b-013", "status": "covered", "answer_ru": "Соль может слёживаться от влаги через растворение и перекристаллизацию; просушка и сухая тара — условные меры, не гарантия качества.", "refs": ["claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"], "inferences": [], "gaps": [] },
     { "case_id": "r8-02-b-014", "status": "covered", "answer_ru": "Ветер и местный рельеф дают изменчивые наблюдаемые признаки, поэтому направление следует сверять по нескольким ориентирам, а не считать постоянным.", "refs": ["claim:foundations-earth2-12-solar-surface-heating-local-pressure", "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion"], "inferences": [], "gaps": [] },

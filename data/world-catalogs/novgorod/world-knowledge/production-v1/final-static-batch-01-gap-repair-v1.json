@@ -245,7 +245,13 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",
@@ -275,7 +281,13 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",
@@ -305,7 +317,13 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",
@@ -335,7 +353,13 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",
@@ -365,7 +389,13 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",
@@ -395,7 +425,13 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",
@@ -425,7 +461,13 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",
@@ -455,7 +497,13 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",
@@ -485,7 +533,13 @@
       },
       "polarity": "support",
       "applicability": {
-        "context_scope": "universal"
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
       },
       "qualifiers": {
         "typicality": "unknown",

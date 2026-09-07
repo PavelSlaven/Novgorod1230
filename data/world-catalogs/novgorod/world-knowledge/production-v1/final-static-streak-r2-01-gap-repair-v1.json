@@ -5,11 +5,11 @@
     {
       "schema": "world_knowledge_source_v1",
       "source_ref": "source:r201-roots",
-      "title": "Potato (Early Crop)",
+      "title": "Potatoes: Storage and Handling",
       "authors": [],
-      "publication": "UC Davis Postharvest Research and Extension Center",
+      "publication": "University of Maine Cooperative Extension",
       "source_kind": "official_documentation",
-      "citation": "https://postharvest.ucdavis.edu/produce-facts-sheets/potato",
+      "citation": "https://extension.umaine.edu/publications/4135e/",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -117,11 +117,11 @@
     {
       "schema": "world_knowledge_source_v1",
       "source_ref": "source:r201-soap-attempt",
-      "title": "DIY: Make Your Own Soap",
+      "title": "Soap Laboratory Experiment",
       "authors": [],
-      "publication": "Open University",
+      "publication": "Baruch College/CUNY",
       "source_kind": "official_documentation",
-      "citation": "https://www.open.edu/openlearn/science-maths-technology/science/diy-make-your-own-soap",
+      "citation": "https://weissman.baruch.cuny.edu/wp-content/uploads/sites/20/2020/09/9_soap.pdf",
       "rights": {
         "status": "approved",
         "redistribution": "metadata_and_factual_summary"
@@ -179,7 +179,7 @@
       "anchor": {
         "section": "research note"
       },
-      "note": "Modern bounded causal relation only; no medieval availability, state, recipe, diagnosis or outcome.",
+      "note": "University of Maine describes loss of rigidity, softening and water soaking in stored potatoes; no cause, safety or recovery is established.",
       "review_status": "approved"
     },
     {
@@ -259,7 +259,7 @@
       "anchor": {
         "section": "research note"
       },
-      "note": "Ash-derived alkaline-fat attempts can fail or separate; no recipe or usable product follows.",
+      "note": "Baruch chemistry lab describes emulsion, separation and process conditions; no recipe or usable soap is established.",
       "review_status": "approved"
     },
     {
@@ -895,7 +895,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-roots-1",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Frozen tissue can appear water-soaked or glassy and break down after thawing; visible softened, collapsed or decaying pieces justify inspection and sorting without identifying cause or batch safety.",
+      "runtime_text": "INFERENCE: Замороженная ткань может размокать, размягчаться и разрушаться после оттаивания; видимые изменения требуют осмотра и сортировки.",
       "search_aliases": []
     },
     {
@@ -909,7 +909,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-roots-2",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Freezing injury and decay observations are distinct; sorting limits exposure but cannot restore damaged stock or prove neighbouring food sound.",
+      "runtime_text": "INFERENCE: Наблюдаемые признаки порчи не устанавливают причину, безопасность соседнего запаса или восстановление повреждённой пищи.",
       "search_aliases": []
     },
     {
@@ -923,7 +923,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-leaves-1",
       "locale": "ru",
-      "runtime_text": "INFERENCE: A white or gray powdery leaf coating supports field suspicion and careful inspection, not proof of mildew, species, spread or remedy.",
+      "runtime_text": "INFERENCE: Белый или серый порошистый налёт на листе допускает полевое подозрение и осторожный осмотр, но не доказывает мучнистую росу.",
       "search_aliases": []
     },
     {
@@ -937,7 +937,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-leaves-2",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Loose surface material can change what is visible without proving whether an underlying infection exists.",
+      "runtime_text": "INFERENCE: Удаление рыхлого поверхностного налёта меняет видимое, но не доказывает отсутствие скрытого поражения.",
       "search_aliases": []
     },
     {
@@ -951,7 +951,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-ice-1",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Insulating packing, protected enclosure and a meltwater path can reduce heat gain or water damage around stored ice without stopping melt or proving duration.",
+      "runtime_text": "INFERENCE: Изоляция, защищённое помещение и отвод талой воды могут уменьшить нагрев и водяной ущерб вокруг льда, но не останавливают таяние.",
       "search_aliases": []
     },
     {
@@ -965,7 +965,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-ice-2",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Opening, packing condition and drainage are observable storage conditions, not proof of a historical icehouse design.",
+      "runtime_text": "INFERENCE: Открывание, состояние прокладки и сток — наблюдаемые условия хранения, не доказательство исторической ледницы.",
       "search_aliases": []
     },
     {
@@ -979,7 +979,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-lye-1",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Unknown-strength alkaline liquor, splashes, hot liquid and mist are conditional skin and eye hazards; this does not assign a reagent strength or recipe.",
+      "runtime_text": "INFERENCE: Щелочной раствор неизвестной крепости, брызги, горячая жидкость и туман условно опасны для кожи и глаз; это не рецепт.",
       "search_aliases": []
     },
     {
@@ -993,7 +993,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-lye-2",
       "locale": "ru",
-      "runtime_text": "INFERENCE: An alkaline-fat attempt can separate, remain oily or otherwise fail; no usable soap or safe recovery follows.",
+      "runtime_text": "INFERENCE: Щелочно-жировая попытка может расслоиться, остаться масляной или иначе не удасться; годное мыло не следует автоматически.",
       "search_aliases": []
     },
     {
@@ -1007,7 +1007,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-compost-1",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Compost or manure piles can self-heat; a warm pile is not automatically aflame, while smoke is a dangerous fire state.",
+      "runtime_text": "INFERENCE: Компост или навозная куча может самонагреваться; тёплая куча не обязательно горит, а дым — опасное состояние.",
       "search_aliases": []
     },
     {
@@ -1021,7 +1021,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-compost-2",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Opening or spreading a smoking pile can introduce oxygen and increase immediate fire risk; it is not a guaranteed fix.",
+      "runtime_text": "INFERENCE: Открывание или разбрасывание дымящейся кучи может дать кислород и повысить риск огня, не гарантируя исправление.",
       "search_aliases": []
     },
     {
@@ -1035,7 +1035,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-porridge-1",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Heating starch absorbs water and thickens; pan-contact material can scorch before less-cooked material away from the pan.",
+      "runtime_text": "INFERENCE: Нагретый крахмал впитывает воду и густеет; у дна посуды пища может пригореть раньше остальной массы.",
       "search_aliases": []
     },
     {
@@ -1049,7 +1049,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-porridge-2",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Lower heat and stirring or scraping can mitigate local scorching but cannot unburn a portion or guarantee uniform cooking.",
+      "runtime_text": "INFERENCE: Уменьшение огня и перемешивание могут ограничить местное пригорание, но не исправляют уже сгоревшую часть.",
       "search_aliases": []
     },
     {
@@ -1063,7 +1063,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-onion-1",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Onion water stress can reduce growth while visible wilt is not a sufficient moisture test; root-zone moisture needs observation.",
+      "runtime_text": "INFERENCE: Водный стресс лука может уменьшать рост, но видимое увядание само по себе не является достаточной проверкой влаги.",
       "search_aliases": []
     },
     {
@@ -1077,7 +1077,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-onion-2",
       "locale": "ru",
-      "runtime_text": "INFERENCE: Dry-looking surface, wilt or droop can have multiple causes; watering does not guarantee recovery or exclude root damage, disease or excess-water stress.",
+      "runtime_text": "INFERENCE: Сухой вид поверхности, увядание или поникание имеют несколько причин; полив не обещает восстановления и не исключает повреждение корней, болезнь или избыток воды.",
       "search_aliases": []
     },
     {

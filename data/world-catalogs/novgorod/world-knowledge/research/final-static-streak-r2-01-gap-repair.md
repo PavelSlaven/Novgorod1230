@@ -4,9 +4,9 @@ Status: research note only. Modern general evidence, not a claim about Novgorod 
 
 ## 1. Stored root vegetables: freezing versus decay
 
-Source: UC Davis Postharvest Research and Extension Center, ["Potato (Early Crop)"](https://postharvest.ucdavis.edu/produce-facts-sheets/potato), **Freezing Injury** and **Pathological Disorders**.
+Source: University of Maine Cooperative Extension, ["Potatoes: Storage and Handling"](https://extension.umaine.edu/publications/4135e/).
 
-- Freezing injury can present as water-soaked or glassy tissue, then tissue breakdown after thawing.
+- Storage injury can include loss of rigidity, softening and water soaking.
 - The same storage domain also has bacterial and fungal rots; handling damage can lead to water loss, shriveling, and decay.
 - Game premise: visible wet/glassy, softened, collapsed, discolored, or decaying pieces can justify inspection and sorting from apparently sound stock. Appearance alone does not identify agent, prove safety of a neighboring piece, or restore damaged food. Sorting limits loss exposure; it cannot guarantee that a stored batch is sound.
 
@@ -28,11 +28,11 @@ Source: U.S. National Park Service, ["Ice House & Tack Room"](https://home.nps.g
 
 ## 4. Hot ash-lye and soap attempt: hazardous and conditional
 
-Sources: Alabama Cooperative Extension, ["Wood Ashes For Lime And Potash"](https://www.aces.edu/blog/topics/lawn-garden/wood-ashes-for-lime-and-potash/); CDC/ATSDR, ["Sodium Hydroxide: Medical Management Guidelines"](https://wwwn.cdc.gov/TSP/MMG/MMGDetails.aspx?mmgid=246&toxid=45); Open University, ["DIY: Make Your Own Soap"](https://www.open.edu/openlearn/science-maths-technology/science/diy-make-your-own-soap).
+Sources: Alabama Cooperative Extension, ["Wood Ashes For Lime And Potash"](https://www.aces.edu/blog/topics/lawn-garden/wood-ashes-for-lime-and-potash/); CDC/ATSDR, ["Sodium Hydroxide: Medical Management Guidelines"](https://wwwn.cdc.gov/TSP/MMG/MMGDetails.aspx?mmgid=246&toxid=45); Baruch College/CUNY, ["Soap Laboratory Experiment"](https://weissman.baruch.cuny.edu/wp-content/uploads/sites/20/2020/09/9_soap.pdf).
 
 - Wood ash retains alkaline metal compounds; Alabama Extension notes its historical use as a lye source, but gives no basis for treating a particular ash liquor as known-strength reagent.
 - CDC describes lye (sodium hydroxide) and its solutions as corrosive, with severe skin and especially eye hazard; contact, splashes, hot liquid, and mist are meaningful hazards. This is a hazard analogy, not a claim that ash liquor has a measured sodium-hydroxide concentration.
-- Open University's ash-derived dilute potassium-hydroxide attempt with oil failed, while later purification and changed conditions produced soap. A separated, grainy, oily, watery, or otherwise unsatisfactory mass may therefore be a failed or incomplete attempt, not a successful product.
+- The Baruch chemistry lab describes emulsion, separation and process conditions; a separated, grainy, oily, watery, or otherwise unsatisfactory mass may be a failed or incomplete attempt, not a successful product.
 - Game premise: an actor may attempt controlled mixing/heating of alkaline liquor and fat, with a conditional result. Unknown-strength liquor, uncertain inputs, poor separation, splashing, or unsafe heat can yield a failure, damaged batch, or injury risk. Do not infer a recipe, safe recovery procedure, usable soap, or guaranteed emulsion from the attempt.
 
 ## 5. Manure or compost heap: self-heating can become fire risk

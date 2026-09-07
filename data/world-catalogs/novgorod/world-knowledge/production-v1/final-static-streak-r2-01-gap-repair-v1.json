@@ -349,7 +349,7 @@
       "predicate": "supported_fact",
       "object": {
         "kind": "literal",
-        "value": "Frozen tissue can appear water-soaked or glassy and break down after thawing; visible softened, collapsed or decaying pieces justify inspection and sorting without identifying cause or batch safety."
+        "value": "After freezing, stored root tissue can show loss of rigidity, softening, or a water-soaked appearance; these observations justify bounded inspection and sorting without identifying cause or batch safety."
       },
       "polarity": "support",
       "applicability": {
@@ -902,7 +902,7 @@
       "schema": "world_knowledge_claim_localization_v1",
       "claim_ref": "claim:r201-roots-1",
       "locale": "en",
-      "runtime_text": "INFERENCE: Frozen tissue can appear water-soaked or glassy and break down after thawing; visible softened, collapsed or decaying pieces justify inspection and sorting without identifying cause or batch safety.",
+      "runtime_text": "INFERENCE: After freezing, stored root tissue can show loss of rigidity, softening, or a water-soaked appearance; these observations justify bounded inspection and sorting without identifying cause or batch safety.",
       "search_aliases": []
     },
     {

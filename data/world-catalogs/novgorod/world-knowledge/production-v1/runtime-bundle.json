@@ -7502,6 +7502,62 @@
     },
     {
       "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r401-csu-roots",
+      "title": "Healthy Roots and Healthy Trees",
+      "authors": [],
+      "publication": "Colorado State University Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.colostate.edu/resource/healthy-roots-and-healthy-trees/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r401-usda-eggs",
+      "title": "Shell Eggs from Farm to Table",
+      "authors": [],
+      "publication": "USDA Food Safety and Inspection Service",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/eggs/shell-eggs-farm-table",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r401-usda-wood",
+      "title": "Wood Handbook: Drying and Control of Moisture Content and Dimensional Changes",
+      "authors": [],
+      "publication": "USDA Forest Service, Forest Products Laboratory",
+      "source_kind": "official_documentation",
+      "citation": "https://research.fs.usda.gov/treesearch/62200",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r401-wisconsin-butter",
+      "title": "Butter Science 101",
+      "authors": [],
+      "publication": "University of Wisconsin Center for Dairy Research",
+      "source_kind": "official_documentation",
+      "citation": "https://cdr.wisc.edu/butter-science-101/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
       "source_ref": "source:reality-batch-01-editorial",
       "title": "Reality batch 01 practical reconstruction",
       "authors": [
@@ -19758,6 +19814,46 @@
         "section": "Aphid signs"
       },
       "note": "Aphid sap feeding, new growth, honeydew and ants; no species or local presence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r401-csu-roots",
+      "source_ref": "source:r401-csu-roots",
+      "anchor": {
+        "section": "Where Roots Grow; Control and Prevention"
+      },
+      "note": "Roots need water and oxygen; deep root-zone watering is contrasted with frequent surface wetting for established trees, without a schedule or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r401-usda-eggs",
+      "source_ref": "source:r401-usda-eggs",
+      "anchor": {
+        "section": "Is It Safe to Use Eggs that Have Cracks?"
+      },
+      "note": "Egg bacteria can be on or in contents and enter through pores; cracks compromise shell integrity and warmer conditions can increase concern, without a safety verdict.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r401-usda-wood",
+      "source_ref": "source:r401-usda-wood",
+      "anchor": {
+        "section": "Dimensional Changes"
+      },
+      "note": "Wood changes dimension with moisture-content change below fibre saturation; no wheel design or failure prediction.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r401-wisconsin-butter",
+      "source_ref": "source:r401-wisconsin-butter",
+      "anchor": {
+        "section": "Churning"
+      },
+      "note": "Churning cream coalesces fat globules and releases buttermilk; temperature and working affect process and texture without exact thresholds or yield.",
       "review_status": "approved"
     },
     {
@@ -33693,6 +33789,37 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology:r401-damaged-shell-egg",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology:r401-damaged-shell-egg",
+          "locale": "ru",
+          "labels": [
+            "Яйцо с повреждённой скорлупой"
+          ],
+          "short_definition": "Граница осторожной оценки повреждённого яйца.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:biology:r401-damaged-shell-egg",
+          "locale": "en",
+          "labels": [
+            "Damaged-shell egg"
+          ],
+          "short_definition": "Cautious condition boundary for a damaged egg.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:chemistry_process:acid-base-neutralization",
       "domain": "chemistry_process",
       "broader_refs": [],
@@ -38023,6 +38150,68 @@
     },
     {
       "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft:r401-cream-churning",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:craft:r401-cream-churning",
+          "locale": "ru",
+          "labels": [
+            "Сбивание сливок"
+          ],
+          "short_definition": "Качественное разделение сливок при сбивании.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:craft:r401-cream-churning",
+          "locale": "en",
+          "labels": [
+            "Cream churning"
+          ],
+          "short_definition": "Qualitative separation of cream during churning.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft:r401-wooden-wheel-condition",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:craft:r401-wooden-wheel-condition",
+          "locale": "ru",
+          "labels": [
+            "Состояние деревянного колеса"
+          ],
+          "short_definition": "Осмотр посадки обода и деревянных частей.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:craft:r401-wooden-wheel-condition",
+          "locale": "en",
+          "labels": [
+            "Wooden wheel condition"
+          ],
+          "short_definition": "Inspection of rim fit and wooden parts.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
       "concept_ref": "wk:environment:advection-fog",
       "domain": "environment",
       "broader_refs": [],
@@ -39986,6 +40175,37 @@
             "Sap-feeding insect signs"
           ],
           "short_definition": "Bounded field signs without diagnosis.",
+          "search_aliases": []
+        }
+      }
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:r401-woody-root-zone-water",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved",
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:environment:r401-woody-root-zone-water",
+          "locale": "ru",
+          "labels": [
+            "Вода в корневой зоне древесного растения"
+          ],
+          "short_definition": "Качественные условия воды и воздуха у корней.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_concept_localization_v1",
+          "concept_ref": "wk:environment:r401-woody-root-zone-water",
+          "locale": "en",
+          "labels": [
+            "Woody-plant root-zone water"
+          ],
+          "short_definition": "Qualitative water and air conditions at roots.",
           "search_aliases": []
         }
       }
@@ -123520,6 +123740,406 @@
     },
     {
       "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft:r401-cream-churning",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Churning cream can coalesce fat globules into butter grains or clumps while buttermilk separates and can be drained."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r401-wisconsin-butter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: При сбивании сливок жировые шарики могут слипаться в зёрна или комки масла, а пахта отделяется и может быть слита.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Churning cream can coalesce fat globules into butter grains or clumps while buttermilk separates and can be drained.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r401-churning"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r401-cracked-shell-compromises-egg-barrier",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology:r401-damaged-shell-egg",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A visible crack compromises the intact shell barrier of an egg and is more than a cosmetic condition."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r401-usda-eggs"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-cracked-shell-compromises-egg-barrier",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Видимая трещина нарушает целостность защитной скорлупы яйца и не является лишь косметическим дефектом.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-cracked-shell-compromises-egg-barrier",
+          "locale": "en",
+          "runtime_text": "INFERENCE: A visible crack compromises the intact shell barrier of an egg and is more than a cosmetic condition.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r401-egg-shell"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r401-cream-condition-and-working-affect-churning",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft:r401-cream-churning",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Cream temperature and the amount of working can materially affect how readily butter grains form and the character of the result, without establishing a threshold, yield, or success."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r401-wisconsin-butter"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-cream-condition-and-working-affect-churning",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Температура сливок и объём работы могут влиять на образование масляных зёрен и характер результата, но не доказывают порог, выход или успех.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-cream-condition-and-working-affect-churning",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Cream temperature and the amount of working can materially affect butter-grain formation and result character, without establishing a threshold, yield, or success.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r401-churning-conditions"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r401-established-woody-plant-water-reaches-root-zone",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r401-woody-root-zone-water",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "For an established woody plant with usable surrounding soil, water directed into the accessible root zone can reach roots more effectively than repeated surface-only wetting."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r401-csu-roots"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-established-woody-plant-water-reaches-root-zone",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: У уже укоренившегося древесного растения с доступной почвой вокруг вода, направленная в корневую зону, может достигать корней лучше, чем повторное смачивание одной поверхности.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-established-woody-plant-water-reaches-root-zone",
+          "locale": "en",
+          "runtime_text": "INFERENCE: For an established woody plant with usable surrounding soil, water directed into the accessible root zone can reach roots more effectively than repeated surface-only wetting.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r401-root-zone"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r401-root-water-and-oxygen-limits",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r401-woody-root-zone-water",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Repeated light wetting, drought, and prolonged soil saturation are distinct root-zone conditions because roots require both water and oxygen."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r401-csu-roots"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-root-water-and-oxygen-limits",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Частое лёгкое смачивание, пересушка и длительное насыщение почвы водой — разные условия корневой зоны, потому что корням нужны и вода, и кислород.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-root-water-and-oxygen-limits",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Repeated light wetting, drought, and prolonged soil saturation are distinct root-zone conditions because roots require both water and oxygen.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r401-root-oxygen"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology:r401-damaged-shell-egg",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A warm, cracked, or heavily handled egg calls for more cautious condition reading than a clean intact cold-stored egg, but those observations do not establish contamination, spoilage, or safety."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r401-usda-eggs"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Тёплое, треснувшее или сильно тронутое яйцо требует более осторожной оценки состояния, чем чистое целое холодно хранившееся яйцо, но это не доказывает загрязнение, порчу или безопасность.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+          "locale": "en",
+          "runtime_text": "INFERENCE: A warm, cracked, or heavily handled egg calls for more cautious condition reading than a clean intact cold-stored egg, but those observations do not establish contamination, spoilage, or safety.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r401-egg-caution"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r401-wheel-condition-needs-cause-distinction",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft:r401-wooden-wheel-condition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Visible rim movement, a gap, opened joints, or tire movement warrants inspection; those signs alone do not distinguish moisture-related wood change from tire wear, wood damage, or loosened joints."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r401-usda-wood"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-wheel-condition-needs-cause-distinction",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: Движение обода или шины, зазор либо раскрывшиеся стыки — повод осмотреть колесо; по этим признакам нельзя однозначно отличить усушку от износа, повреждения дерева или ослабленных соединений.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-wheel-condition-needs-cause-distinction",
+          "locale": "en",
+          "runtime_text": "INFERENCE: Rim or tire movement, a gap, or opened joints warrants inspection, but those signs do not uniquely distinguish shrinkage from wear, wood damage, or loosened joints.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r401-wheel-condition"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r401-wood-drying-can-loosen-wheel-fit",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft:r401-wooden-wheel-condition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "As a wooden wheel part dries, cross-grain dimensional change can reduce a formerly tight rim or tire fit."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": null,
+        "conditions": [
+          {
+            "facet": "process_ref",
+            "operator": "present"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r401-usda-wood"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "localizations": {
+        "ru": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-wood-drying-can-loosen-wheel-fit",
+          "locale": "ru",
+          "runtime_text": "INFERENCE: При высыхании деревянной детали поперечное изменение размера может ослабить прежде плотную посадку обода или шины на колесе.",
+          "search_aliases": []
+        },
+        "en": {
+          "schema": "world_knowledge_claim_localization_v1",
+          "claim_ref": "claim:r401-wood-drying-can-loosen-wheel-fit",
+          "locale": "en",
+          "runtime_text": "INFERENCE: As a wooden wheel part dries, cross-grain dimensional change can reduce a formerly tight rim or tire fit.",
+          "search_aliases": []
+        }
+      },
+      "verification_ref": "wk-verification:r401-wheel-fit"
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
       "claim_ref": "claim:random-independent-trials-do-not-owe-reversal",
       "domain": "physics_material_science",
       "subject_ref": "wk:physics_material_science:random-trials",
@@ -152112,6 +152732,15 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:biology:r401-damaged-shell-egg": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:biology:r401-damaged-shell-egg",
+        "domain": "biology_physiology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:chemistry_process:acid-base-neutralization": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:chemistry_process:acid-base-neutralization",
@@ -153297,6 +153926,24 @@
         "external_mappings": [],
         "review_status": "approved"
       },
+      "wk:craft:r401-cream-churning": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:craft:r401-cream-churning",
+        "domain": "craft_technology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:craft:r401-wooden-wheel-condition": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:craft:r401-wooden-wheel-condition",
+        "domain": "craft_technology",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
       "wk:environment:advection-fog": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:environment:advection-fog",
@@ -153831,6 +154478,15 @@
       "wk:environment:r301-sap-feeding-signs": {
         "schema": "world_knowledge_concept_v1",
         "concept_ref": "wk:environment:r301-sap-feeding-signs",
+        "domain": "environment",
+        "broader_refs": [],
+        "related_refs": [],
+        "external_mappings": [],
+        "review_status": "approved"
+      },
+      "wk:environment:r401-woody-root-zone-water": {
+        "schema": "world_knowledge_concept_v1",
+        "concept_ref": "wk:environment:r401-woody-root-zone-water",
         "domain": "environment",
         "broader_refs": [],
         "related_refs": [],
@@ -159818,6 +160474,10 @@
       "wk:biology:candidate-plant-lookalike-differentiation": [
         "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties"
       ],
+      "wk:biology:r401-damaged-shell-egg": [
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
+      ],
       "wk:chemistry_process:acid-base-neutralization": [
         "claim:foundations-physical-b2-chm-01-acid-base-neutralization"
       ],
@@ -160338,6 +160998,14 @@
       "wk:craft_technology:work-waste-context": [
         "claim:work-waste-context"
       ],
+      "wk:craft:r401-cream-churning": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cream-condition-and-working-affect-churning"
+      ],
+      "wk:craft:r401-wooden-wheel-condition": [
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit"
+      ],
       "wk:environment:advection-fog": [
         "claim:foundations-earth-29-advection-fog"
       ],
@@ -160550,6 +161218,10 @@
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
         "claim:r301-nondiagnostic"
+      ],
+      "wk:environment:r401-woody-root-zone-water": [
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits"
       ],
       "wk:environment:radiation-fog": [
         "claim:foundations-earth-28-radiation-fog"
@@ -162950,6 +163622,8 @@
         "claim:r201-leaves-2",
         "claim:r201-onion-1",
         "claim:r201-onion-2",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
@@ -163261,6 +163935,10 @@
         "claim:practical-textile-weave",
         "claim:r201-porridge-1",
         "claim:r201-porridge-2",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
@@ -163401,6 +164079,8 @@
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
         "claim:r301-nondiagnostic",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
@@ -165553,6 +166233,14 @@
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
         "claim:r301-nondiagnostic",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -167395,6 +168083,10 @@
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
         "claim:r301-nondiagnostic",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
@@ -169755,6 +170447,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:population-physics-evaporation-humidity",
         "claim:r201-roots-2",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
         "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
@@ -170322,6 +171015,7 @@
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:public-world-church-and-official-speech-can-be-marked",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
@@ -170952,6 +171646,7 @@
         "claim:public-world-church-and-official-speech-can-be-marked",
         "claim:public-world-community-response-to-impairment-varies",
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
@@ -172125,6 +172820,7 @@
       ],
       "видимая": [
         "claim:final-nature-rooted-aquatic-plant-has-distinct-submerged-and-surface-parts",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:residual-nature-ice-current-thin-areas",
         "claim:static-ruminant-feed-b11-visible-mold-does-not-establish-mycotoxin-presence-or-level",
         "claim:streak01-splinter-assessment"
@@ -172703,6 +173399,7 @@
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
         "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
         "wk:social_behavior:foundations-ms-18-social-experience",
@@ -173039,6 +173736,8 @@
         "claim:population-material-clay-steam",
         "claim:population-physics-evaporation-below-boiling",
         "claim:practical-boat-leak",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r3",
@@ -173066,6 +173765,7 @@
         "wk:chemistry_process:water-clarification-by-settling-and-cloth",
         "wk:environment:freeze-thaw-rock-fracture",
         "wk:environment:mb14-practical-field-and-water",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:static-fat-storm-b10-lightning-shelter-limits",
         "wk:environment:water-mineral-chemical-weathering",
         "wk:material_culture:water",
@@ -173220,6 +173920,7 @@
         "claim:material-water-vegetable-leather-water",
         "claim:military-world-camp-needs-place-specific-arrangement",
         "claim:population-material-clay-steam",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
         "claim:secondary-clay-forms-through-water-transport-deposition",
         "claim:static-hydraulic-lime-can-initially-set-with-water",
@@ -173447,6 +174148,7 @@
         "wk:chemistry_process:water-clarification-by-settling-and-cloth",
         "wk:environment:candidate-water-circulation-oxygen",
         "wk:environment:precipitation-infiltration-runoff-limit",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:research-flood-high-water-mark-observation",
         "wk:environment:river-ice-jam-flow-obstruction",
         "wk:environment:soil-texture-infiltration",
@@ -173708,6 +174410,7 @@
         "wk:biology_physiology:research-exposed-fish-drying",
         "wk:chemistry_process:static-nonhydraulic-lime-carbonation",
         "wk:environment:pressure-gradient-wind",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:solar-surface-heating-local-pressure",
         "wk:physics_material_science:air-drag-fall",
         "wk:physics_material_science:partially-saturated-granular-deformation",
@@ -173940,6 +174643,7 @@
         "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
         "claim:place-thermal-ovin-heat-source-and-sheaf-area-can-have-distinct-work-roles",
         "claim:r201-ice-1",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:residual-nature-celestial-pole-daily-circles",
         "claim:residual-postpartum-birth-and-first-week-are-critical-newborn-periods",
@@ -175576,7 +176280,8 @@
       "высыхании": [
         "claim:material-water-rawhide-wet-dry",
         "claim:oil-tanning-crosslinking-fibres",
-        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "claim:r401-wood-drying-can-loosen-wheel-fit"
       ],
       "высыханию": [
         "claim:streak01-lime-weather"
@@ -175643,6 +176348,7 @@
         "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
         "claim:population-material-wood-pyrolysis",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:static-animal-b06-bat-roost-entries-and-exits-can-be-observed-from-outside",
         "claim:static-animal-b06-indoor-bat-can-locate-an-exit-and-leave-on-its-own",
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
@@ -177221,6 +177927,7 @@
         "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
         "claim:streak01-splinter-escalation",
         "wk:biology:candidate-plant-food-part-bound",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:environment:precipitation-infiltration-runoff-limit"
       ],
       "границах": [
@@ -178029,6 +178736,7 @@
         "claim:military-world-small-group-coordination-needs-established-roles",
         "claim:place-outdoors-clearing-and-trace-renewal",
         "claim:r301-honeydew-ants",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
         "claim:residual-nature-celestial-pole-daily-circles",
@@ -178474,6 +179182,7 @@
         "claim:population-wood-cart",
         "claim:population-wood-float",
         "claim:population-wood-sledge",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:residual-tree-betula-pendula-simple-leaves",
         "claim:residual-tree-pinus-sylvestris-cones-fall-at-maturity",
         "wk:biology_physiology:orchard-tree-pruning-context",
@@ -178566,6 +179275,7 @@
         "wk:material_culture:wooden-tableware"
       ],
       "деревянного": [
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:craft_technology:reality-batch-01-wooden-joinery"
       ],
       "деревянное": [
@@ -178576,6 +179286,7 @@
         "wk:craft_technology:reality-batch-01-wooden-joinery"
       ],
       "деревянной": [
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points"
       ],
       "деревянном": [
@@ -178620,6 +179331,7 @@
         "claim:household-furniture-wood",
         "claim:occupation-carpenter-role",
         "claim:settlement-log-building-form",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:craft_technology:vessel-joinery"
       ],
       "держание": [
@@ -178720,6 +179432,7 @@
         "claim:practical-leather-cut",
         "claim:practical-leather-stitch",
         "claim:practical-textile-sew",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:wood-anisotropy-moisture",
         "claim:wood-liquid-capillary-uptake",
         "claim:wood-liquid-fibre-saturation",
@@ -178788,6 +179501,9 @@
       "дефектам": [
         "claim:brittle-fracture-defects",
         "wk:physics_material_science:brittle-fracture-defects"
+      ],
+      "дефектом": [
+        "claim:r401-cracked-shell-compromises-egg-barrier"
       ],
       "дефекты": [
         "claim:foundations-mat-04-wood-transverse-tension-weakness"
@@ -179067,7 +179783,8 @@
         "claim:foundations-earth-21-groundwater-withdrawal-balance"
       ],
       "длительное": [
-        "claim:continued-sweating-can-cause-body-water-loss"
+        "claim:continued-sweating-can-cause-body-water-loss",
+        "claim:r401-root-water-and-oxygen-limits"
       ],
       "длительной": [
         "claim:work-intensity-duration",
@@ -179819,6 +180536,7 @@
         "claim:public-world-name-form-does-not-prove-status-or-kinship",
         "claim:r201-leaves-1",
         "claim:r201-leaves-2",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
         "claim:residual-nature-ice-current-thin-areas",
@@ -179850,6 +180568,7 @@
         "claim:final-static-b01-textile-cues",
         "claim:final-static-b01-willow-selection",
         "claim:ordinary-life-status-does-not-fix-wealth",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
         "claim:static-ruminant-feed-b11-legume-forage-can-support-frothy-rumen-bloat",
         "claim:water-permeability-connected-pores",
@@ -180420,6 +181139,9 @@
       "достигает": [
         "claim:stored-grain-airflow-can-reduce-temperature-differences"
       ],
+      "достигать": [
+        "claim:r401-established-woody-plant-water-reaches-root-zone"
+      ],
       "достижении": [
         "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
         "wk:environment:rising-air-cooling-cloud-condensation"
@@ -180532,6 +181254,7 @@
         "claim:macro-gap-after-childbirth-needs-can-reshape-household-labour",
         "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
         "claim:microbial-growth-depends-on-available-moisture",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:technology-motor-boundary",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
         "wk:biology_physiology:food-drying",
@@ -180789,9 +181512,11 @@
         "wk:biology_physiology:fauna-ruminant-grazing-selection"
       ],
       "древесного": [
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "wk:craft_technology:pit-charcoal-burning",
         "wk:environment:candidate-flood-woody-debris-transport-retention",
-        "wk:environment:final-nature-bank-and-riparian-processes"
+        "wk:environment:final-nature-bank-and-riparian-processes",
+        "wk:environment:r401-woody-root-zone-water"
       ],
       "древесной": [
         "claim:candidate-nettle-bast-fibre-retting-decortication",
@@ -182351,7 +183076,8 @@
         "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp"
       ],
       "жировые": [
-        "claim:oil-fat-vegetable-leather-flexibility"
+        "claim:oil-fat-vegetable-leather-flexibility",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk"
       ],
       "жировыми": [
         "claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards"
@@ -182718,6 +183444,7 @@
         "claim:material-water-textile-liquid-contaminants",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
@@ -183188,6 +183915,9 @@
       ],
       "зажимать": [
         "claim:macro-b21-saw-kerf-binding-needs-pause-and-control-of-support-stress-or-alignment-not-force"
+      ],
+      "зазор": [
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "зазора": [
         "claim:milling-plate-gap-pressure-fineness"
@@ -184196,6 +184926,7 @@
       ],
       "защитной": [
         "claim:foundations-life-34-lymphoid-system",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
         "wk:biology_physiology:foundation-lymphoid-system",
         "wk:biology_physiology:skin-emollient-and-occlusive-film"
       ],
@@ -184547,6 +185278,7 @@
         "claim:residual-nature-celestial-pole-daily-circles"
       ],
       "зёрен": [
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "wk:physics_material_science:partially-saturated-granular-deformation",
         "wk:physics_material_science:wet-granular-capillary-cohesion"
@@ -184578,6 +185310,7 @@
       ],
       "зёрна": [
         "claim:foundations-earth2-02-water-mineral-chemical-weathering",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:residual-nature-snow-grain-compaction",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "wk:environment:water-mineral-chemical-weathering"
@@ -184844,18 +185577,21 @@
       ],
       "зоне": [
         "claim:foundations-thm-09-combustion-oxygen-supply",
-        "claim:stored-grain-temperature-gradient-can-migrate-moisture"
+        "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+        "wk:environment:r401-woody-root-zone-water"
       ],
       "зонтичная": [
         "claim:final-nature-poison-hemlock-is-a-toxic-plant-and-its-parts-are-not-food"
       ],
       "зону": [
         "claim:fauna-mammals-domestic-cattle-flight-zone",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "wk:biology_physiology:fauna-domestic-cattle"
       ],
       "зоны": [
-        "claim:place-outdoors-shore-working-edge-composition"
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:r401-root-water-and-oxygen-limits"
       ],
       "зрачка": [
         "claim:research-bright-retinal-light-can-constrict-pupils",
@@ -185470,6 +186206,7 @@
         "claim:population-joining-bond-moisture",
         "claim:population-material-clay-quartz",
         "claim:population-material-wood-shrinkage",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:research-memory-postevent-misinformation",
         "claim:residual-law-boundaries-and-marked-trees",
@@ -185623,7 +186360,8 @@
       ],
       "износа": [
         "claim:population-material-wet-wool",
-        "claim:practical-dwelling-roof"
+        "claim:practical-dwelling-roof",
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "изношенное": [
         "claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally",
@@ -186311,6 +187049,11 @@
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
         "claim:r301-nondiagnostic",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -188823,6 +189566,7 @@
       "качественное": [
         "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
         "wk:biology_physiology:static-harvested-produce-cool-respiration",
+        "wk:craft:r401-cream-churning",
         "wk:physics_material_science:stored-grain-airflow-temperature-management"
       ],
       "качественные": [
@@ -188852,6 +189596,7 @@
         "wk:environment:candidate-v2-ice-snow-hazards",
         "wk:environment:final-nature-bank-and-riparian-processes",
         "wk:environment:macro-b21-rain-crust-and-frost-ground-change",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:research-flood-high-water-mark-observation",
         "wk:environment:residual-nature-sky",
         "wk:environment:residual-nature-winter",
@@ -189120,6 +189865,7 @@
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:population-ceramic-colour",
         "claim:r201-compost-2",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:water-temperature-affects-aquatic-organism-range",
         "wk:biology_physiology:fauna-fish-oxygen",
         "wk:biology_physiology:foundation-alveolar-exchange",
@@ -189801,12 +190547,17 @@
       "колёс": [
         "claim:place-outdoors-traffic-wet-ground-and-ruts"
       ],
+      "колеса": [
+        "wk:craft:r401-wooden-wheel-condition"
+      ],
       "колесе": [
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "wk:physics_material_science:macro-b19-waterpower-and-pack-load-limits"
       ],
       "колесо": [
         "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
-        "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes"
+        "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "колея": [
         "claim:place-outdoors-traffic-wet-ground-and-ruts"
@@ -190035,6 +190786,7 @@
       ],
       "комки": [
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "комната": [
@@ -191392,12 +192144,21 @@
       "корневищем": [
         "claim:final-nature-rooted-aquatic-herbs-can-combine-substrate-rhizomes-with-floating-or-emergent-leaves"
       ],
+      "корневой": [
+        "claim:r401-root-water-and-oxygen-limits",
+        "wk:environment:r401-woody-root-zone-water"
+      ],
+      "корневую": [
+        "claim:r401-established-woody-plant-water-reaches-root-zone"
+      ],
       "корней": [
         "claim:r201-onion-2",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
         "claim:static-root-loss-can-cause-transplant-shock",
-        "wk:biology_physiology:static-transplant-root-disturbance"
+        "wk:biology_physiology:static-transplant-root-disturbance",
+        "wk:environment:r401-woody-root-zone-water"
       ],
       "корнеплодов": [
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
@@ -191412,6 +192173,9 @@
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
         "wk:biology_physiology:macro-b21-willow-cutting-establishment-limits",
         "wk:biology_physiology:plant-root-uptake"
+      ],
+      "корням": [
+        "claim:r401-root-water-and-oxygen-limits"
       ],
       "корнями": [
         "claim:place-outdoors-microterrain-patches",
@@ -191579,6 +192343,9 @@
       "косвенный": [
         "claim:novgorod-wetland-pollen-context",
         "claim:transport-sledge-summer-cargo"
+      ],
+      "косметическим": [
+        "claim:r401-cracked-shell-compromises-egg-barrier"
       ],
       "косой": [
         "wk:physics_material_science:research-wind-driven-rain-opening-pressure"
@@ -192734,6 +193501,9 @@
       "легко": [
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
       ],
+      "лёгкое": [
+        "claim:r401-root-water-and-oxygen-limits"
+      ],
       "легче": [
         "claim:practical-boat-load",
         "claim:practical-net-dry"
@@ -193096,6 +193866,7 @@
         "claim:practical-food-milk",
         "claim:practical-food-preserve",
         "claim:public-world-witness-account-has-bounded-scope",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
@@ -193505,6 +194276,7 @@
         "claim:human-life-stay-can-enable-consented-exchange",
         "claim:macro-gap-payment-changes-only-accepted-obligation-part",
         "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
         "claim:social-loan-request-relates-loan",
         "claim:terrain-background",
@@ -193856,6 +194628,7 @@
         "wk:material_culture:iron-splinter-holder"
       ],
       "лучше": [
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation"
       ],
@@ -194248,6 +195021,7 @@
         "claim:oil-fat-vegetable-leather-flexibility",
         "claim:oil-rawhide-moisture-resistance",
         "claim:oil-tanning-crosslinking-fibres",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
         "wk:chemistry_process:oil-tanning"
       ],
@@ -194285,6 +195059,9 @@
       ],
       "масляной": [
         "claim:r201-lye-2"
+      ],
+      "масляных": [
+        "claim:r401-cream-condition-and-working-affect-churning"
       ],
       "масса": [
         "claim:measurement-grain-mass-volume-density",
@@ -196148,6 +196925,8 @@
         "claim:r201-ice-1",
         "claim:r201-porridge-2",
         "claim:r301-new-growth",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
@@ -196542,6 +197321,9 @@
         "claim:r201-porridge-1",
         "claim:r201-roots-1",
         "claim:r301-new-growth",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
@@ -197593,6 +198375,8 @@
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
         "claim:r201-leaves-1",
         "claim:r301-new-growth",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
@@ -198878,6 +199662,9 @@
         "claim:wood-anisotropy-moisture",
         "wk:physics_material_science:wood-anisotropy-moisture"
       ],
+      "направленная": [
+        "claim:r401-established-woody-plant-water-reaches-root-zone"
+      ],
       "направленный": [
         "claim:fauna-tawny-owl-hearing"
       ],
@@ -198966,7 +199753,8 @@
       ],
       "нарушает": [
         "claim:candidate-macro-causal-v2-carbon-monoxide-impairs-oxygen-delivery-and-hazard-depends-on-exposure",
-        "claim:candidate-v3-dislocation-disrupts-normal-joint-position"
+        "claim:candidate-v3-dislocation-disrupts-normal-joint-position",
+        "claim:r401-cracked-shell-compromises-egg-barrier"
       ],
       "нарушать": [
         "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
@@ -199168,6 +199956,7 @@
       ],
       "насыщение": [
         "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:wood-liquid-fibre-saturation"
       ],
       "насыщения": [
@@ -200130,6 +200919,9 @@
         "claim:r201-porridge-2",
         "claim:r201-roots-2",
         "claim:r301-honeydew-ants",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -201027,6 +201819,7 @@
         "claim:pain-nociception-distinct",
         "claim:place-outdoors-clearing-and-trace-renewal",
         "claim:population-physics-sliding-friction",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:residual-nature-pole-star-precession-limit",
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
         "claim:streak01-wet-leather-limits",
@@ -201724,6 +202517,8 @@
         "claim:r201-onion-1",
         "claim:r201-porridge-2",
         "claim:r301-honeydew-ants",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
@@ -202400,6 +203195,7 @@
         "claim:population-material-copper-iron-contact",
         "claim:public-world-foot-and-mounted-service-have-different-needs",
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
         "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r3",
@@ -202788,6 +203584,11 @@
       "обогрев": [
         "claim:practical-dwelling-fuel"
       ],
+      "обода": [
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
+        "wk:craft:r401-wooden-wheel-condition"
+      ],
       "ободочной": [
         "claim:static-horses-are-hindgut-fermenters"
       ],
@@ -202950,6 +203751,7 @@
         "claim:foundations-life-36-immune-memory",
         "claim:foundations-life-40-photosynthesis",
         "claim:household-dough-temperature-changes-proofing",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment",
         "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
         "claim:water-wetting-forces",
@@ -203570,7 +204372,8 @@
         "claim:foundations-thm-07-thermal-expansion-state-change",
         "claim:measurement-grain-mass-volume-density",
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
-        "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue"
+        "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+        "claim:r401-cream-condition-and-working-affect-churning"
       ],
       "объёма": [
         "claim:measurement-units-must-be-identified",
@@ -204432,6 +205235,9 @@
         "wk:biology_physiology:bearberry-lingonberry-identification",
         "wk:biology_physiology:food-energy-nutrients"
       ],
+      "однозначно": [
+        "claim:r401-wheel-condition-needs-cause-distinction"
+      ],
       "однозначной": [
         "wk:biology_physiology:static-plant-wilt-nondiagnostic"
       ],
@@ -204444,6 +205250,7 @@
         "claim:final-nature-deciduous-trees-have-seasonal-leaf-state-unlike-evergreen-conifers",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:population-material-leather-mould",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:residual-law-stepchildren-paternal-inheritance",
         "wk:architecture_settlement:contextual-evidence-classes",
         "wk:social_law_economy:candidate-v5-khotynians-document-context",
@@ -205722,6 +206529,7 @@
         "claim:fur-skin-cooling-cleansing",
         "claim:population-joining-bond-contamination",
         "claim:population-joining-bond-pressure",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
         "claim:streak01-lime-weather"
       ],
@@ -205733,6 +206541,9 @@
       ],
       "ослабленный": [
         "claim:research-stitching-can-secure-weak-textile-to-support"
+      ],
+      "ослабленных": [
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "ослабляет": [
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r2"
@@ -205776,6 +206587,7 @@
         "wk:architecture_settlement:final-practical-storage-conditions",
         "wk:biology_physiology:domestic-fowl-gentle-examination",
         "wk:biology_physiology:macro-b20-animal-work-and-trail-conditions",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:craft_technology:final-practical-arms-and-repair",
         "wk:craft_technology:final-practical-wet-net-and-hull",
         "wk:craft_technology:reality-batch-01-wooden-joinery",
@@ -205805,6 +206617,7 @@
         "claim:military-world-recovery-starts-with-actual-condition-and-access",
         "claim:military-world-wet-equipment-benefits-from-inspection",
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
@@ -206147,6 +206960,8 @@
       ],
       "осторожной": [
         "claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:biology_physiology:macro-b1819-cattle-observation"
       ],
       "осторожности": [
@@ -206379,6 +207194,7 @@
         "claim:practical-food-grain-storage",
         "claim:public-world-name-can-combine-personal-and-distinguishing-form",
         "claim:public-world-support-needs-available-person-and-resources",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
@@ -206712,6 +207528,7 @@
       ],
       "отделяется": [
         "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "wk:craft_technology:macro-b19-bast-and-warp-process-control"
       ],
       "отделять": [
@@ -206892,6 +207709,7 @@
         "wk:psychology_behavior:foundations-ms-02-attention-novelty"
       ],
       "отличить": [
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation"
       ],
       "отличный": [
@@ -207501,7 +208319,9 @@
         "claim:foundations-ms-26-group-context",
         "claim:military-world-crossing-conditions-remain-local",
         "claim:public-world-speech-can-be-plain-without-modern-slang",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:research-pooled-work-social-loafing",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:biology_physiology:macro-b1819-cattle-observation",
         "wk:biology_physiology:static-ruminant-feed-b11-mold-mycotoxin-limits",
         "wk:social_behavior:foundations-ms-26-group-context"
@@ -207936,6 +208756,9 @@
       ],
       "пахотного": [
         "claim:household-ploughshare-tillage"
+      ],
+      "пахта": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk"
       ],
       "пациента": [
         "claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form"
@@ -208602,6 +209425,9 @@
       ],
       "пересушить": [
         "claim:streak01-wet-leather-drying"
+      ],
+      "пересушка": [
+        "claim:r401-root-water-and-oxygen-limits"
       ],
       "пересчёт": [
         "claim:measurement-grain-mass-volume-density"
@@ -209533,6 +210359,9 @@
       "плотностью": [
         "claim:measurement-grain-mass-volume-density"
       ],
+      "плотную": [
+        "claim:r401-wood-drying-can-loosen-wheel-fit"
+      ],
       "плотным": [
         "claim:foundations-mat-12-material-thermal-insulation-porosity"
       ],
@@ -209682,6 +210511,7 @@
         "claim:public-world-support-needs-available-person-and-resources",
         "claim:r201-onion-1",
         "claim:r301-honeydew-ants",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
@@ -209873,6 +210703,7 @@
         "claim:population-physics-static-friction",
         "claim:practical-food-cooking",
         "claim:r201-onion-2",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
         "claim:research-porous-high-water-stain-can-require-corroboration",
         "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
@@ -209980,6 +210811,7 @@
         "claim:military-world-traces-need-cautious-interpretation",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:public-world-unfamiliar-speech-allows-clarification",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
         "wk:environment:static-weather-b06-cloud-rain-observation"
       ],
@@ -210066,6 +210898,7 @@
         "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:practical-net-dry",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
         "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
         "claim:residual-law-injury-and-treatment-payments",
@@ -210080,6 +210913,7 @@
       ],
       "повреждённого": [
         "claim:burial-coffin-lid-transverse-plank",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:physics_material_science:research-textile-stitch-support"
       ],
       "повреждённое": [
@@ -210088,7 +210922,8 @@
       ],
       "повреждённой": [
         "claim:r201-roots-2",
-        "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position"
+        "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
+        "wk:biology:r401-damaged-shell-egg"
       ],
       "повреждённую": [
         "claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury"
@@ -210151,6 +210986,7 @@
         "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
         "claim:macro-b21-freezing-and-thawing-susceptible-ground-can-shift-shallow-embedded-posts-or-structures",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
         "claim:static-raking-mushroom-ground-can-damage-fungal-habitat",
         "claim:static-repeated-skin-friction-can-cause-blistering"
@@ -211965,6 +212801,9 @@
       "поперечная": [
         "claim:burial-coffin-lid-transverse-plank"
       ],
+      "поперечное": [
+        "claim:r401-wood-drying-can-loosen-wheel-fit"
+      ],
       "поперечные": [
         "claim:civic-defence-transverse-support"
       ],
@@ -212091,6 +212930,7 @@
         "claim:material-water-textile-water-load",
         "claim:pine-pitch-severe-oxidation",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:residual-nature-snow-uneven-roof-loading",
         "claim:static-animal-b06-heat-humidity-work-and-transport-contextualize-equine-heat-strain-signs",
         "claim:static-corn-soybean-seedling-frost-response-varies-with-stage-and-growing-point-position",
@@ -212226,6 +213066,7 @@
       ],
       "порчу": [
         "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict"
@@ -212273,11 +213114,13 @@
       ],
       "посадки": [
         "claim:military-world-protective-layers-need-fit-and-adjustment",
-        "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair"
+        "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+        "wk:craft:r401-wooden-wheel-condition"
       ],
       "посадку": [
         "claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee",
-        "claim:practical-leather-shoe"
+        "claim:practical-leather-shoe",
+        "claim:r401-wood-drying-can-loosen-wheel-fit"
       ],
       "посадник": [
         "claim:candidate-gramota222-letter-to-posadnik",
@@ -212922,6 +213765,7 @@
       "потому": [
         "claim:household-dough-yeast-gas-needs-retention",
         "claim:practical-dwelling-fuel",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:rp-caretaker-principal-goods"
       ],
       "потоотделение": [
@@ -213085,6 +213929,9 @@
       "почвенных": [
         "claim:fauna-earthworm-soil-effects"
       ],
+      "почвой": [
+        "claim:r401-established-woody-plant-water-reaches-root-zone"
+      ],
       "почвообразующие": [
         "claim:terrain-parent-material-assemblage",
         "wk:environment:regional-quaternary-deposits"
@@ -213106,6 +213953,7 @@
         "claim:fauna-earthworm-weather",
         "claim:foundations-earth-06-soil-aggregation",
         "claim:foundations-earth2-06-precipitation-infiltration-runoff-limit",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:residual-traces-animal-trace-types",
         "claim:residual-tree-alnus-glutinosa-moist-soil",
         "claim:residual-tree-pinus-sylvestris-dry-infertile-soils",
@@ -214037,6 +214885,7 @@
         "claim:macro-b20-a-worked-horse-needs-gradual-cooling-and-observation-before-return-to-rest-or-work",
         "claim:place-outdoors-forest-structure-and-season",
         "claim:practical-textile-spin",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually"
       ],
       "прежнего": [
@@ -214352,6 +215201,8 @@
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
@@ -214438,6 +215289,7 @@
         "wk:chemistry_process:solubility-saturation",
         "wk:chemistry_process:solute-solvation",
         "wk:chemistry_process:static-wood-ash-contact-irritation",
+        "wk:craft:r401-cream-churning",
         "wk:craft_technology:macro-b21-fuel-moisture-and-saw-kerf-control",
         "wk:environment:candidate-flood-woody-debris-transport-retention",
         "wk:environment:cloud-droplet-growth-precipitation",
@@ -214749,7 +215601,8 @@
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt"
       ],
       "признакам": [
-        "claim:fauna-bird-navigation"
+        "claim:fauna-bird-navigation",
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "признаками": [
         "wk:biology:candidate-plant-diagnostic-identity"
@@ -217179,6 +218032,7 @@
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:population-processes-bone-skate-output",
         "claim:population-processes-hemp-net",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
         "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
@@ -217549,7 +218403,8 @@
         "wk:architecture_settlement:final-practical-storage-conditions",
         "wk:biology_physiology:macro-b1819-cow-calf-separation",
         "wk:biology_physiology:reality-first-ordinary-care",
-        "wk:chemistry_process:candidate-v6-food-cross-contamination"
+        "wk:chemistry_process:candidate-v6-food-cross-contamination",
+        "wk:craft:r401-cream-churning"
       ],
       "разделением": [
         "wk:craft_technology:macro-b19-bast-and-warp-process-control"
@@ -217799,6 +218654,7 @@
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion"
       ],
       "размера": [
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:water-permeability-connected-pores"
       ],
       "размеренные": [
@@ -217953,6 +218809,7 @@
         "claim:place-outdoors-means-upkeep-and-environment",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:practical-document-genres",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
         "claim:residual-law-injury-and-treatment-payments",
         "wk:architecture_settlement:composite-urban-quarter",
@@ -218342,6 +219199,9 @@
       "раскрывают": [
         "claim:work-waste-context",
         "wk:craft_technology:work-waste-context"
+      ],
+      "раскрывшиеся": [
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "раскрытия": [
         "claim:macro-b21-saw-kerf-binding-needs-pause-and-control-of-support-stress-or-alignment-not-force"
@@ -218793,6 +219653,7 @@
         "claim:place-plant-temporary-cover-can-retain-local-heat-without-guaranteeing-protection",
         "claim:plant-development-responds-to-light",
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
         "claim:static-root-loss-can-cause-transplant-shock",
@@ -218807,6 +219668,7 @@
         "wk:biology_physiology:mezereon-toxicity",
         "wk:biology_physiology:research-plant-herbivory-effects",
         "wk:biology_physiology:static-plant-wilt-nondiagnostic",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:southern-deciduous-gathered-plants"
       ],
       "растениям": [
@@ -219513,6 +220375,7 @@
         "claim:fodder-healthy-horse-forage",
         "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
         "claim:population-rod-input",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:static-fragile-parchment-or-inked-record-needs-conservative-specialist-treatment",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
         "claim:streak01-lime-weather",
@@ -221041,6 +221904,13 @@
       ],
       "сберечь": [
         "claim:trade-economy-selected-seed-grain-can-be-reserved-and-protected-separately-without-choosing-household-use"
+      ],
+      "сбивание": [
+        "wk:craft:r401-cream-churning"
+      ],
+      "сбивании": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "wk:craft:r401-cream-churning"
       ],
       "сбор": [
         "claim:environment-p1-cattle",
@@ -222607,7 +223477,8 @@
         "wk:physics_material_science:conductor-insulator-charge-mobility"
       ],
       "сильно": [
-        "claim:pine-pitch-severe-oxidation"
+        "claim:pine-pitch-severe-oxidation",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
       ],
       "сильное": [
         "claim:bathing-house-heating-before-washing",
@@ -222909,6 +223780,12 @@
       ],
       "скорее": [
         "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use"
+      ],
+      "скорлупой": [
+        "wk:biology:r401-damaged-shell-egg"
+      ],
+      "скорлупы": [
+        "claim:r401-cracked-shell-compromises-egg-barrier"
       ],
       "скорости": [
         "claim:final-practical-stored-goods-condition-can-change-with-air-moisture-and-time-without-fixed-rate",
@@ -223264,6 +224141,11 @@
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
         "wk:biology_physiology:young-bird-ground-stage-and-intervention"
       ],
+      "сливок": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "wk:craft:r401-cream-churning"
+      ],
       "сливочное": [
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease"
       ],
@@ -223280,6 +224162,12 @@
       ],
       "слипание": [
         "claim:oil-tanning-crosslinking-fibres"
+      ],
+      "слипаться": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk"
+      ],
+      "слита": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk"
       ],
       "слишком": [
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
@@ -223536,6 +224424,8 @@
         "claim:water-wetting-forces"
       ],
       "смачивание": [
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:water-wetting-forces",
         "wk:physics_material_science:liquid-surface-wetting"
       ],
@@ -224428,6 +225318,7 @@
         "wk:physics_material_science:wood-bond"
       ],
       "соединений": [
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points"
       ],
       "соединения": [
@@ -225257,6 +226148,7 @@
         "wk:biology_physiology:food-energy-nutrients",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:biology_physiology:stored-grain-condition",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:craft_technology:bark-assembly",
         "wk:craft_technology:fish-drying",
         "wk:craft_technology:net-fishing",
@@ -225348,6 +226240,7 @@
         "claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area",
         "claim:population-material-wood-moisture",
         "claim:population-physics-freezing-condensation-energy",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:static-belt-friction-can-resist-relative-slip",
         "claim:static-forge-welding-requires-heated-pressed-interface",
         "claim:wood-anisotropy-moisture",
@@ -227294,7 +228187,8 @@
         "claim:military-world-defensive-structure-needs-local-inspection"
       ],
       "стыки": [
-        "claim:practical-dwelling-roof"
+        "claim:practical-dwelling-roof",
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "стыков": [
         "wk:physics_material_science:staved-vessel-hoop-fit"
@@ -228819,6 +229713,7 @@
         "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
         "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
         "claim:population-material-wood-pyrolysis",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:research-vegetable-fermentation-submersion-salt-and-temperature-shape-course",
         "claim:stored-grain-airflow-can-reduce-temperature-differences",
         "claim:stored-grain-condition-depends-on-temperature-moisture",
@@ -228998,6 +229893,9 @@
       ],
       "тепловым": [
         "wk:biology_physiology:research-thermal-stress"
+      ],
+      "тёплое": [
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
       ],
       "теплоизоляцией": [
         "wk:biology_physiology:macro-b1819-small-ruminant-wet-cold"
@@ -230238,6 +231136,7 @@
         "claim:practical-food-cooking",
         "claim:practical-leather-stitch",
         "claim:practical-textile-weave",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r3",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
@@ -230367,11 +231266,17 @@
         "claim:household-clay-drying-and-incompatible-movement",
         "claim:population-material-leather-dry"
       ],
+      "треснувшее": [
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
+      ],
       "третий": [
         "claim:burial-hollowed-log-container"
       ],
       "трещин": [
         "claim:population-material-clay-drying"
+      ],
+      "трещина": [
+        "claim:r401-cracked-shell-compromises-egg-barrier"
       ],
       "трещинах": [
         "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
@@ -230413,6 +231318,9 @@
       "тромбоциты": [
         "claim:foundations-life-15-blood",
         "wk:biology_physiology:foundation-blood"
+      ],
+      "тронутое": [
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
       ],
       "тропа": [
         "claim:place-outdoors-clearing-and-trace-renewal"
@@ -231239,6 +232147,7 @@
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
         "claim:r201-porridge-2",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reality-batch-01-dried-herbs-need-dry-protected-storage",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
@@ -231418,6 +232327,9 @@
       ],
       "укоренено": [
         "claim:final-nature-floating-leaved-aquatic-plants-remain-rooted-and-are-not-free-floating-debris"
+      ],
+      "укоренившегося": [
+        "claim:r401-established-woody-plant-water-reaches-root-zone"
       ],
       "укоренить": [
         "claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee"
@@ -232184,6 +233096,7 @@
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
         "claim:r201-ice-2",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:residual-law-dependency-and-agreement",
         "claim:residual-nature-moonlight-reflected-sunlight",
         "claim:social-collector-instruction-relates-task-context",
@@ -232211,6 +233124,7 @@
         "wk:craft_technology:macro-b19-bast-and-warp-process-control",
         "wk:environment:candidate-water-circulation-oxygen",
         "wk:environment:mb14-practical-field-and-water",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:reality-first-place-composition",
         "wk:environment:research-track-substrate-interpretation",
         "wk:environment:residual-nature-sky",
@@ -232371,6 +233285,7 @@
         "claim:ha-firesteel-ignition",
         "claim:macro-b20-resin-on-a-hand-tool-is-an-editorial-handling-condition-before-precise-work",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:water-can-cool-class-a-fire-fuel-and-flame"
       ],
@@ -232906,7 +233821,8 @@
         "claim:population-material-wood-shrinkage"
       ],
       "усушку": [
-        "claim:population-material-wood-shrinkage"
+        "claim:population-material-wood-shrinkage",
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "усыхает": [
         "claim:final-static-b01-willow-preparation",
@@ -234159,6 +235075,7 @@
       ],
       "характер": [
         "claim:construction-compared-church-masonry",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating"
       ],
       "характеризуется": [
@@ -234580,6 +235497,9 @@
         "claim:mb14-practical-grease-on-linen-needs-surfactant-and-repeat-work",
         "claim:population-joining-metal-cold-work"
       ],
+      "холодно": [
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
+      ],
       "холодного": [
         "wk:biology_physiology:research-cold-storage-microorganisms",
         "wk:biology_physiology:research-cold-water-immersion-muscle-control"
@@ -234767,6 +235687,9 @@
         "wk:material_culture:reality-batch-01-dried-herb-storage",
         "wk:npc_daily_life:storage-worker",
         "wk:social_law_economy:reconstructed-possession-and-return-inquiry"
+      ],
+      "хранившееся": [
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
       ],
       "хранил": [
         "claim:rp-entrusted-goods-claim-relates-reference"
@@ -234959,7 +235882,8 @@
         "claim:material-water-plant-fibre-cellulose"
       ],
       "целое": [
-        "claim:population-material-clay-drying"
+        "claim:population-material-clay-drying",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
       ],
       "целой": [
         "claim:candidate-novgorod-helmet-half-mask-find"
@@ -234969,6 +235893,7 @@
       ],
       "целостность": [
         "claim:foundations-mat-02-wood-drying-crack-strength",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
         "wk:physics_material_science:wood-drying-crack-strength"
       ],
       "целость": [
@@ -235229,6 +236154,7 @@
         "claim:research-failure-of-stitched-leather-join-can-separate-components",
         "wk:biology:candidate-plant-diagnostic-identity",
         "wk:biology:candidate-plant-food-part-bound",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:physics_material_science:fishing-net-serviceability",
         "wk:physics_material_science:research-stitched-leather-component-join",
         "wk:social_law_economy:residual-government-law-v1-dated-territory-and-external-episodes"
@@ -235349,6 +236275,9 @@
       ],
       "частого": [
         "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact"
+      ],
+      "частое": [
+        "claim:r401-root-water-and-oxygen-limits"
       ],
       "частокол": [
         "wk:architecture_settlement:post-fence"
@@ -235570,6 +236499,8 @@
         "claim:practical-textile-spin",
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:public-world-church-and-official-speech-can-be-marked",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
         "claim:wood-liquid-moisture-change"
@@ -235803,6 +236734,7 @@
       ],
       "чистое": [
         "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2"
       ],
       "чистой": [
@@ -235925,6 +236857,7 @@
         "claim:population-material-leather-mould",
         "claim:posadnik-fedor-conflict-1224",
         "claim:posadnik-volodislav-pursuit-1228",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:research-memory-source-misattribution",
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
@@ -236042,6 +236975,9 @@
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
         "claim:residual-nature-snow-grain-compaction"
       ],
+      "шарики": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk"
+      ],
       "шва": [
         "claim:pine-pitch-woven-basket-coating",
         "claim:research-failure-of-stitched-leather-join-can-separate-components"
@@ -236118,6 +237054,10 @@
       ],
       "шесть": [
         "claim:textile-indigo-yellow-analysis"
+      ],
+      "шины": [
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit"
       ],
       "шипит": [
         "claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work",
@@ -236914,6 +237854,7 @@
         "claim:macro-gap-collateral-follows-established-security-terms",
         "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
         "claim:population-drying-workspace",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:technology-motor-boundary"
       ],
       "этих": [
@@ -237321,6 +238262,7 @@
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:probable-travel-chalice-communion",
         "claim:r201-lye-1",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
@@ -237732,6 +238674,7 @@
         "claim:population-material-copper-iron-contact",
         "claim:posadnik-fedor-conflict-1224",
         "claim:r201-onion-1",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:residual-traces-animal-sign-absence-limit",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
@@ -237865,7 +238808,9 @@
         "claim:fauna-great-tit-incubation",
         "claim:macro-b1819-laying-hens-can-use-nest-sites-for-egg-laying",
         "claim:place-some-ant-workers-can-carry-immature-brood-during-colony-relocation",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r5",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:biology_physiology:domestic-chicken-behavior",
         "wk:biology_physiology:fauna-culex-mosquito"
       ],
@@ -237885,6 +238830,8 @@
       "яйцо": [
         "claim:fauna-dragonfly-lifecycle",
         "claim:macro-b1819-laying-hens-can-use-nest-sites-for-egg-laying",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:biology_physiology:fauna-dragonfly"
       ],
       "яма": [
@@ -238386,6 +239333,14 @@
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
         "claim:r301-nondiagnostic",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:streak01-lime-curing-limits",
         "claim:streak01-lime-weather",
         "claim:streak01-splinter-assessment",
@@ -239936,6 +240891,7 @@
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
         "claim:pottery-handmade-local-clay",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
         "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
         "claim:river-flow-affects-sediment-transport-deposition",
@@ -240519,6 +241475,7 @@
         "claim:population-material-iron-rust",
         "claim:population-material-wood-combustion",
         "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
         "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion",
         "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
@@ -240801,6 +241758,7 @@
         "wk:biology_physiology:research-exposed-fish-drying",
         "wk:chemistry_process:combustion-mixture-conditions",
         "wk:environment:pressure-gradient-wind",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:rising-air-cooling-cloud-condensation",
         "wk:environment:solar-surface-heating-local-pressure",
         "wk:physics_material_science:air-drag-fall",
@@ -241323,6 +242281,7 @@
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
         "claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying",
         "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
         "claim:research-fuel-combustion-can-produce-carbon-monoxide",
@@ -241568,6 +242527,8 @@
         "claim:public-world-unfamiliar-speech-allows-clarification",
         "claim:r201-leaves-2",
         "claim:r201-lye-2",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
@@ -242538,6 +243499,10 @@
         "claim:r201-roots-2",
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -243054,6 +244019,7 @@
         "wk:chemistry_process:temperature-reaction-rate",
         "wk:chemistry_process:temperature-solubility-conditional",
         "wk:chemistry_process:water-clarification-by-settling-and-cloth",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:craft_technology:bark-assembly",
         "wk:craft_technology:ceramic-material-category",
         "wk:craft_technology:curd-straining-work",
@@ -243119,6 +244085,7 @@
         "wk:environment:northern-heath-bilberry-context",
         "wk:environment:poozerie-cereal-millet-source",
         "wk:environment:precipitation-infiltration-runoff-limit",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:reality-batch-01-soil-temporary-stability",
         "wk:environment:reality-batch-01-wetland-reed-cutting",
         "wk:environment:reality-first-travel-exposure",
@@ -243969,6 +244936,7 @@
         "claim:r201-lye-1",
         "claim:r201-roots-2",
         "claim:r301-honeydew-ants",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
@@ -244364,6 +245332,7 @@
         "claim:posadnik-fedor-conflict-1224",
         "claim:practical-food-grain-storage",
         "claim:probable-travel-chalice-communion",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-temporary-stake-or-excavation-can-be-checked-locally-as-ground-changes",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
@@ -244749,6 +245718,7 @@
         "wk:biology_physiology:fauna-northern-pike",
         "wk:biology_physiology:fauna-roe-deer",
         "wk:chemistry_process:heterogeneous-reaction-interface",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:regional-fish-exploitation",
         "wk:physics_material_science:light-refraction-medium-boundary",
         "wk:physics_material_science:static-force-equilibrium",
@@ -245509,6 +246479,7 @@
         "claim:candidate-v6-burned-skin-barrier-can-increase-infection-risk",
         "claim:foundations-life-45-infection-entry",
         "claim:population-material-iron-coating",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
         "wk:biology_physiology:foundation-infection-entry",
         "wk:biology_physiology:skin-barrier"
@@ -245767,6 +246738,7 @@
         "claim:public-world-name-can-combine-personal-and-distinguishing-form",
         "claim:public-world-rest-warmth-drink-food-are-contextual-support",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -245899,6 +246871,7 @@
         "claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility",
         "claim:foundations-physical-b2-chm-03-weak-acid-base-incomplete-neutralization",
         "claim:population-material-copper-iron-contact",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-entrusted-goods-claim-relates-reference",
         "wk:chemistry_process:weak-acid-base-incomplete-neutralization"
@@ -246803,6 +247776,7 @@
       "both": [
         "claim:foundations-earth-23-hydrothermal-precipitation",
         "claim:population-weight-cord",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:residual-nature-stars-horizon-navigation"
       ],
       "bottom": [
@@ -246849,6 +247823,7 @@
         "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
         "claim:streak01-splinter-escalation",
         "wk:biology:candidate-plant-food-part-bound",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:chemistry_process:research-water-heating-contaminant-boundary",
         "wk:chemistry_process:surface-area-heterogeneous-rate",
         "wk:environment:precipitation-infiltration-runoff-limit",
@@ -247405,6 +248380,8 @@
         "claim:practical-textile-weave",
         "claim:r201-porridge-2",
         "claim:r201-roots-2",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r5",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
@@ -247433,7 +248410,12 @@
       ],
       "butter": [
         "claim:practical-food-milk",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease"
+      ],
+      "buttermilk": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk"
       ],
       "button": [
         "wk:material_culture:shirt-collar-button"
@@ -247675,6 +248657,7 @@
         "claim:mb14-practical-fever-needs-observation-not-causal-assumption",
         "claim:military-world-siege-work-is-labour-and-logistics-bound",
         "claim:place-outdoors-season-work-space-reallocation",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:residual-law-interest-agreement-and-witnesses",
         "claim:textile-chrysin-analysis"
       ],
@@ -248219,6 +249202,10 @@
         "claim:r201-roots-1",
         "claim:r301-new-growth",
         "claim:r301-nondiagnostic",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -249144,8 +250131,10 @@
         "claim:final-static-b01-willow-limits",
         "claim:household-trauma-unnecessary-movement-can-worsen",
         "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:biology_physiology:final-practical-uncertain-exposure",
         "wk:biology_physiology:macro-b17-unknown-material-skin-first-response",
         "wk:biology_physiology:macro-b1819-cattle-observation",
@@ -249506,6 +250495,7 @@
         "claim:population-physics-melting-vaporization-energy",
         "claim:public-world-armed-loss-reaches-household",
         "claim:r201-leaves-2",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
@@ -249620,6 +250610,7 @@
         "claim:clothing-shirt-principal-garment",
         "claim:construction-compared-church-masonry",
         "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:residual-v1-birch-letter-etiquette-formulas-aid-dating",
         "claim:residual-v1-household-and-official-birch-registers-differ",
         "claim:residual-v2-household-writing-has-bounded-graphic-substitutions"
@@ -249988,6 +250979,10 @@
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
         "wk:architecture_settlement:reconstructed-church-interior-yard-context"
       ],
+      "churning": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "wk:craft:r401-cream-churning"
+      ],
       "circle": [
         "claim:residual-nature-celestial-pole-daily-circles"
       ],
@@ -250168,6 +251163,7 @@
         "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog",
         "claim:place-outdoors-shore-working-edge-composition",
         "claim:place-wet-work-can-separate-work-water-from-water-reserved-for-clean-task",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-minor-abrasion-can-be-kept-observed-for-change-after-initial-care",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
@@ -250432,6 +251428,7 @@
       "clumps": [
         "claim:construction-pine-resin-bast",
         "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "wk:chemistry_process:place-salt-moisture-caking"
       ],
       "cluster": [
@@ -250452,6 +251449,9 @@
       ],
       "coagulum": [
         "claim:place-milk-fresh-curd-can-progressively-separate-from-whey"
+      ],
+      "coalesce": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk"
       ],
       "coarse": [
         "claim:ordinary-life-apron-when-work-warrants"
@@ -250559,6 +251559,7 @@
         "claim:place-outdoors-season-work-space-reallocation",
         "claim:population-joining-metal-anneal",
         "claim:population-joining-metal-cold-work",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r3",
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
@@ -251382,6 +252383,9 @@
         "claim:foundations-mat-06-wood-drying-property-change",
         "claim:foundations-mat-11-stone-density-compressive-response"
       ],
+      "compromises": [
+        "claim:r401-cracked-shell-compromises-egg-barrier"
+      ],
       "compulsion": [
         "claim:rp-merchant-credit-relates-third-party-goods"
       ],
@@ -251619,6 +252623,8 @@
         "claim:practical-livestock-care",
         "claim:public-world-capacity-can-vary-day-to-day",
         "claim:r201-ice-2",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
@@ -251644,11 +252650,13 @@
         "claim:urban-pavements",
         "claim:wood-anisotropy-moisture",
         "wk:architecture_settlement:urban-pavements",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:biology_physiology:acute-sleep-loss-performance",
         "wk:biology_physiology:food-energy-nutrients",
         "wk:biology_physiology:static-animal-b06-observable-animal-state-limits",
         "wk:biology_physiology:stored-grain-condition",
         "wk:biology_physiology:trade-economy-fresh-food-and-seed-condition",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:environment:reality-first-place-composition",
         "wk:material_culture:novgorod-wooden-urban-elements",
         "wk:physics_material_science:fishing-net-serviceability",
@@ -251789,6 +252797,7 @@
         "claim:population-material-leather-mould",
         "claim:practical-season-work",
         "claim:r201-ice-2",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
         "claim:research-footprint-track-interpretation-can-depend-on-substrate",
@@ -251826,6 +252835,7 @@
         "wk:environment:candidate-water-circulation-oxygen",
         "wk:environment:mb14-practical-field-and-water",
         "wk:environment:pressure-gradient-wind",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:reality-first-place-composition",
         "wk:environment:reconstructed-place-outdoors",
         "wk:environment:research-track-substrate-interpretation",
@@ -252270,6 +253280,7 @@
         "claim:foundations-life-44-pathogen-transport",
         "claim:material-water-textile-liquid-contaminants",
         "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
         "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
@@ -252879,6 +253890,9 @@
         "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
         "wk:biology_physiology:research-hazelnut-food-part"
       ],
+      "cosmetic": [
+        "claim:r401-cracked-shell-compromises-egg-barrier"
+      ],
       "cost": [
         "claim:human-life-lodging-trades-space-privacy-comfort-security",
         "claim:practical-season-work"
@@ -253031,11 +254045,13 @@
       "crack": [
         "claim:foundations-mat-02-wood-drying-crack-strength",
         "claim:household-clay-drying-and-incompatible-movement",
-        "claim:population-ceramic-fracture"
+        "claim:population-ceramic-fracture",
+        "claim:r401-cracked-shell-compromises-egg-barrier"
       ],
       "cracked": [
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "wk:biology_physiology:skin-emollient-and-occlusive-film"
       ],
       "cracking": [
@@ -253089,6 +254105,11 @@
       ],
       "creaks": [
         "claim:place-outdoors-activity-sensory-pulses"
+      ],
+      "cream": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "wk:craft:r401-cream-churning"
       ],
       "creams": [
         "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease"
@@ -253257,6 +254278,7 @@
         "claim:fauna-cross-spider-web",
         "claim:population-physics-section-response",
         "claim:probable-travel-chalice-communion",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
         "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
         "wk:architecture_settlement:trade-economy-batch-03-cross-material-storage",
@@ -253612,6 +254634,7 @@
         "claim:practical-net-dry",
         "claim:r201-ice-1",
         "claim:r201-onion-2",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
         "claim:research-positive-metacentric-height-can-right-small-floating-body-heel",
         "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
@@ -253640,6 +254663,7 @@
         "claim:r201-roots-2",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:static-weather-b06-multiple-near-water-beaver-signs-can-corroborate-a-beaver-explanation",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:biology_physiology:coagulation",
         "wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control",
         "wk:environment:macro-b1819-storm-hung-wood",
@@ -255020,7 +256044,8 @@
       "dimensional": [
         "claim:material-water-natural-fibres-water-swelling",
         "claim:population-joining-bond-moisture",
-        "claim:population-material-wood-shrinkage"
+        "claim:population-material-wood-shrinkage",
+        "claim:r401-wood-drying-can-loosen-wheel-fit"
       ],
       "dimensions": [
         "claim:burial-coffin-lid-transverse-plank",
@@ -255077,6 +256102,7 @@
         "claim:candidate-v7-gramota531-anna-asks-brother-klimyata-protection",
         "claim:fauna-chicken-allopreening",
         "claim:flayed-skin-processing-purpose",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:social-kin-request-reports-contingent-return",
         "wk:social_law_economy:directed-grain-procurement",
         "wk:social_law_economy:kin-directed-request"
@@ -255404,6 +256430,7 @@
         "claim:place-outdoors-means-upkeep-and-environment",
         "claim:population-hide-leather-distinction",
         "claim:r201-roots-2",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:residual-law-debt-denial-witness-oath",
         "claim:residual-law-injury-and-treatment-payments",
         "claim:wild-food-and-fur-evidence",
@@ -255434,6 +256461,7 @@
         "claim:final-social-retelling-can-preserve-or-change-source-and-detail",
         "claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment",
         "claim:place-outdoors-shore-working-edge-composition",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:residual-law-boundaries-and-marked-trees",
         "claim:residual-law-dependency-and-agreement",
@@ -255609,6 +256637,8 @@
         "claim:place-outdoors-means-upkeep-and-environment",
         "claim:population-net-weights",
         "claim:population-physics-sliding-friction",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:residual-government-law-v1-1220-1234-records-name-prussian-lyudin-and-nerev-ends",
@@ -256069,6 +257099,7 @@
         "wk:craft_technology:curd-straining-work"
       ],
       "drained": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:residual-tree-pinus-sylvestris-dry-infertile-soils"
       ],
       "drains": [
@@ -256141,6 +257172,7 @@
         "claim:final-static-b01-willow-preparation",
         "claim:material-water-rawhide-wet-dry",
         "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "wk:biology_physiology:macro-b21-willow-cutting-establishment-limits"
       ],
@@ -256237,6 +257269,7 @@
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"
       ],
       "drought": [
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis"
       ],
       "drowning": [
@@ -256473,6 +257506,7 @@
         "wk:biology_physiology:reconstructed-health-support",
         "wk:chemistry_process:combustion-oxygen-supply",
         "wk:chemistry_process:solute-solvation",
+        "wk:craft:r401-cream-churning",
         "wk:environment:river-ice-jam-flow-obstruction",
         "wk:environment:static-fat-storm-b10-lightning-shelter-limits",
         "wk:npc_daily_life:reconstructed-local-religious-observance",
@@ -256883,7 +257917,8 @@
         "wk:social_behavior:foundations-ms-25-persuasion-context"
       ],
       "effectively": [
-        "claim:foundations-ms3-01-initial-attention"
+        "claim:foundations-ms3-01-initial-attention",
+        "claim:r401-established-woody-plant-water-reaches-root-zone"
       ],
       "effects": [
         "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context",
@@ -256914,6 +257949,9 @@
         "claim:fauna-culex-life-cycle",
         "claim:fauna-dragonfly-lifecycle",
         "claim:macro-b1819-laying-hens-can-use-nest-sites-for-egg-laying",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:biology_physiology:fauna-culex-mosquito",
         "wk:biology_physiology:fauna-dragonfly",
         "wk:biology_physiology:macro-b1819-chicken-nesting-laying"
@@ -257647,6 +258685,7 @@
         "claim:population-material-wood-decay",
         "claim:population-material-wood-shrinkage",
         "claim:population-physics-floating-shape",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:regional-fish-exploitation",
         "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability",
@@ -257743,6 +258782,7 @@
         "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:public-world-speech-can-be-plain-without-modern-slang",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reality-batch-01-minor-dirty-abrasion-can-be-rinsed-or-cleaned-gently",
         "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r1",
@@ -257982,6 +259022,7 @@
         "claim:fauna-mammals-domestic-pig-mixing-social-rank",
         "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact",
         "claim:place-feathered-mobile-young-bird-on-ground-can-be-a-fledgling",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment",
         "wk:biology_physiology:fauna-domestic-pig"
       ],
@@ -259219,6 +260260,7 @@
         "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
         "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
         "claim:r201-lye-2",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:static-fat-storm-b10-animal-fat-can-fuel-a-wick-lamp-in-a-suitable-lamp",
         "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
         "wk:biology_physiology:endotherm-insulation",
@@ -259933,9 +260975,11 @@
         "claim:military-world-protective-layers-need-fit-and-adjustment",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
         "claim:practical-leather-shoe",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:streak01-wet-leather-limits",
         "wk:biology_physiology:static-bait-b11-animal-material-target-fit",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:craft_technology:leather-broad-context",
         "wk:physics_material_science:staved-vessel-hoop-fit"
       ],
@@ -260728,6 +261772,8 @@
         "claim:public-world-support-needs-available-person-and-resources",
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
         "claim:r301-honeydew-ants",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
@@ -260833,6 +261879,7 @@
         "wk:architecture_settlement:construction-pottery-production",
         "wk:architecture_settlement:reconstructed-military-defence-emergency-work",
         "wk:architecture_settlement:stone-filled-log-crib",
+        "wk:biology:r401-damaged-shell-egg",
         "wk:biology_physiology:dietary-macronutrient-energy",
         "wk:biology_physiology:domestic-fowl-gentle-examination",
         "wk:biology_physiology:fauna-brown-bear",
@@ -261142,6 +262189,7 @@
         "claim:foundations-life-40-photosynthesis",
         "claim:human-life-household-change-can-redistribute-labor-care",
         "claim:military-world-loads-need-order-and-passage",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "wk:biology_physiology:foundation-acquired-immunity",
         "wk:biology_physiology:foundation-immune-memory",
         "wk:biology_physiology:foundation-photosynthesis",
@@ -261168,7 +262216,8 @@
         "wk:environment:reconstructed-mixed-shoreline-trace"
       ],
       "formerly": [
-        "claim:place-outdoors-forest-structure-and-season"
+        "claim:place-outdoors-forest-structure-and-season",
+        "claim:r401-wood-drying-can-loosen-wheel-fit"
       ],
       "forming": [
         "claim:macro-b19-wet-surface-mud-is-not-by-itself-evidence-of-workable-pottery-clay",
@@ -261596,6 +262645,7 @@
         "claim:practical-boat-leak",
         "claim:practical-food-grain-storage",
         "claim:r201-porridge-1",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
@@ -262078,6 +263128,7 @@
         "claim:household-roof-layers-shed-water",
         "claim:milling-plate-gap-pressure-fineness",
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:residual-nature-snow-conceals-ice-gaps",
         "wk:craft_technology:plank-gap-caulking"
       ],
@@ -262485,6 +263536,9 @@
         "claim:research-global-cerebral-hypoperfusion-can-cause-syncope",
         "wk:biology_physiology:research-syncope-cerebral-perfusion"
       ],
+      "globules": [
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk"
+      ],
       "glue": [
         "claim:construction-animal-glue-chalk",
         "claim:construction-animal-glue-pegged-planks",
@@ -262650,6 +263704,8 @@
         "claim:population-material-wood-loading",
         "claim:population-material-wood-shrinkage",
         "claim:practical-food-grain-storage",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
         "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
@@ -262681,6 +263737,7 @@
         "claim:foundations-earth-16-igneous-cooling-texture",
         "claim:foundations-earth2-02-water-mineral-chemical-weathering",
         "claim:foundations-mat-08-abrasive-hardness-material-removal",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:residual-nature-snow-grain-compaction",
         "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion",
         "wk:environment:water-mineral-chemical-weathering",
@@ -263230,6 +264287,9 @@
       "handle": [
         "claim:harvest-sickle-wooden-handle"
       ],
+      "handled": [
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
+      ],
       "handler": [
         "claim:place-brief-domestic-fowl-examination-supports-body-and-folded-wings-without-chest-compression"
       ],
@@ -263740,6 +264800,9 @@
         "claim:measurement-net-excludes-tare",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r4",
         "claim:residual-nature-snow-depth-not-load"
+      ],
+      "heavily": [
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading"
       ],
       "heavy": [
         "claim:foundations-earth2-09-cloud-droplet-growth-precipitation",
@@ -266276,6 +267339,14 @@
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
         "claim:r301-nondiagnostic",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:rp-caretaker-principal-goods",
         "claim:rp-minor-children-conditional-care",
         "claim:rp-mother-household-care-succession",
@@ -266673,10 +267744,12 @@
         "claim:r201-leaves-1",
         "claim:r201-roots-1",
         "claim:r301-nondiagnostic",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r2",
         "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
         "wk:architecture_settlement:final-practical-storage-conditions",
         "wk:biology_physiology:macro-b20-animal-work-and-trail-conditions",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:craft_technology:final-practical-arms-and-repair",
         "wk:craft_technology:final-practical-wet-net-and-hull",
         "wk:craft_technology:reality-batch-01-wooden-joinery",
@@ -266772,6 +267845,8 @@
         "claim:food-practices-millet-cleaning-waste",
         "claim:intact-skin-reduces-pathogen-entry",
         "claim:population-material-clay-drying",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
         "wk:biology_physiology:skin-barrier"
       ],
@@ -267005,6 +268080,8 @@
         "claim:practical-food-milk",
         "claim:practical-leather-cut",
         "claim:practical-textile-spin",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:residual-law-stepchildren-paternal-inheritance",
         "claim:residual-law-zakup-illegal-sale",
         "claim:residual-postpartum-oxytocin-can-move-collected-milk-into-ducts",
@@ -267620,6 +268697,7 @@
         "claim:r201-compost-2",
         "claim:r201-leaves-2",
         "claim:r201-onion-1",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
         "claim:reality-batch-01-horse-harness-contact-can-be-observed-for-rub-or-displacement",
         "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading",
@@ -268304,6 +269382,7 @@
         "claim:military-world-defensive-structure-needs-local-inspection",
         "claim:population-ceramic-joint",
         "claim:practical-dwelling-roof",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
         "wk:biology_physiology:foundation-muscle-movement",
         "wk:physics_material_science:staved-vessel-hoop-fit"
@@ -269467,6 +270546,7 @@
         "claim:place-outdoors-forest-structure-and-season",
         "claim:plant-development-responds-to-light",
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
@@ -270223,6 +271303,9 @@
       ],
       "loosen": [
         "claim:fur-skin-cooling-cleansing"
+      ],
+      "loosened": [
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "looseness": [
         "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points"
@@ -271121,6 +272204,9 @@
       ],
       "materializes": [
         "claim:medieval-novgorod-landscape-attests-volkhov-ilmen-woodland-meadow-context"
+      ],
+      "materially": [
+        "claim:r401-cream-condition-and-working-affect-churning"
       ],
       "materials": [
         "claim:clothing-wool",
@@ -272405,6 +273491,9 @@
         "claim:place-outdoors-means-upkeep-and-environment",
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:public-world-church-and-official-speech-can-be-marked",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
@@ -272582,6 +273671,7 @@
         "claim:place-dye-moving-submerged-textile-can-support-even-contact",
         "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
         "claim:r301-honeydew-ants",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
         "claim:research-increased-ventilation-can-help-reduce-condensation",
         "claim:transport-winter-sledge-1220",
@@ -274518,6 +275608,8 @@
         "claim:r201-onion-1",
         "claim:r201-onion-2",
         "claim:r301-honeydew-ants",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -275543,6 +276635,7 @@
         "claim:final-social-independent-accounts-can-corroborate-without-proving-truth",
         "claim:r201-roots-1",
         "claim:r201-roots-2",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
         "wk:biology_physiology:candidate-v6-clinical-observations",
         "wk:biology_physiology:candidate-v6-foodborne-observations",
@@ -276011,6 +277104,8 @@
         "claim:r201-leaves-1",
         "claim:r201-roots-1",
         "claim:r301-honeydew-ants",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-batch-01-minor-dirty-abrasion-care-can-use-clean-hands-and-material",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
@@ -276238,6 +277333,8 @@
         "wk:chemistry_process:static-soap-cleaning",
         "wk:chemistry_process:strong-acid-base-neutralization-heat",
         "wk:chemistry_process:water-clarification-by-settling-and-cloth",
+        "wk:craft:r401-cream-churning",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:craft_technology:bathing-washing",
         "wk:craft_technology:curd-straining-work",
         "wk:craft_technology:dyebath-textile-handling",
@@ -276916,6 +278013,7 @@
         "claim:mb14-practical-wet-fibre-rope-is-inspected-before-use-or-repair",
         "claim:measurement-grain-mass-volume-density",
         "claim:place-young-bird-plumage-and-immediate-danger-bound-intervention",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
         "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
@@ -276970,6 +278068,9 @@
         "wk:biology_physiology:fauna-mountain-hare",
         "wk:biology_physiology:stomatal-opening-tradeoff",
         "wk:environment:static-fat-storm-b10-lightning-shelter-limits"
+      ],
+      "opened": [
+        "claim:r401-wheel-condition-needs-cause-distinction"
       ],
       "opening": [
         "claim:construction-bast-vessel-fastening",
@@ -277686,6 +278787,11 @@
         "claim:r301-honeydew-ants",
         "claim:r301-new-growth",
         "claim:r301-nondiagnostic",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-dried-herbs-can-be-separated-from-damp-or-moldy-material",
@@ -278998,6 +280104,7 @@
         "claim:population-material-wood-decay",
         "claim:population-material-wood-pyrolysis",
         "claim:r201-compost-2",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:water-temperature-affects-aquatic-organism-range",
         "claim:wetland-hydric-soil-depends-on-saturation",
         "claim:yeast-can-convert-sugars-to-ethanol-under-low-oxygen",
@@ -279223,6 +280330,7 @@
         "claim:macro-gap-payment-changes-only-accepted-obligation-part",
         "claim:material-water-leather-water-processing",
         "claim:occupation-wood-plane",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
@@ -279557,6 +280665,7 @@
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
         "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits",
         "wk:biology:candidate-plant-food-part-bound",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:physics_material_science:fishing-net-serviceability"
       ],
       "party": [
@@ -280567,6 +281676,7 @@
         "claim:plant-development-responds-to-light",
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:research-rubus-idaeus-fruit-can-be-eaten-raw-or-cooked",
         "claim:research-urtica-dioica-young-tender-leaves-are-documented-edible-parts",
@@ -280599,6 +281709,7 @@
         "wk:biology_physiology:static-plant-wilt-nondiagnostic",
         "wk:chemistry_process:plant-leaves-as-dye-source",
         "wk:environment:macro-b17-sticky-plant-coating-limits",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:static-wetland-plant-regional-compatibility",
         "wk:environment:troitsky-local-plant-remains",
         "wk:material_culture:historically-recorded-maslo",
@@ -282391,6 +283502,9 @@
       "prolong": [
         "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"
       ],
+      "prolonged": [
+        "claim:r401-root-water-and-oxygen-limits"
+      ],
       "prominently": [
         "claim:environment-p1-sheep-goat"
       ],
@@ -283103,6 +284217,7 @@
         "wk:chemistry_process:plant-leaves-as-dye-source",
         "wk:chemistry_process:static-fat-storm-b10-animal-fat-rendering-and-wick-fuel",
         "wk:chemistry_process:water-clarification-by-settling-and-cloth",
+        "wk:craft:r401-cream-churning",
         "wk:craft_technology:macro-b19-bast-and-warp-process-control",
         "wk:craft_technology:macro-b20-resin-textile-and-bent-wood-control",
         "wk:craft_technology:macro-b21-fuel-moisture-and-saw-kerf-control",
@@ -283115,6 +284230,7 @@
         "wk:environment:final-nature-bank-and-riparian-processes",
         "wk:environment:macro-b17-damp-stored-hay-heating",
         "wk:environment:macro-b21-rain-crust-and-frost-ground-change",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:research-flood-high-water-mark-observation",
         "wk:environment:research-freeze-thaw-sediment-erosion",
         "wk:environment:research-track-substrate-interpretation",
@@ -283550,7 +284666,8 @@
       "reach": [
         "claim:fauna-toad-breeding-return",
         "claim:military-world-long-implements-need-clearance",
-        "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs"
+        "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+        "claim:r401-established-woody-plant-water-reaches-root-zone"
       ],
       "reachable": [
         "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option"
@@ -283625,6 +284742,7 @@
       ],
       "reading": [
         "claim:candidate-v7-museum-onfim-learning-writing-reading-counting",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:residual-v1-fragmentary-birch-text-readings-can-be-revised",
         "claim:river-landing-named-list",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
@@ -284073,6 +285191,7 @@
         "claim:public-world-illness-can-reallocate-ordinary-work",
         "claim:r201-ice-1",
         "claim:r201-onion-1",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r2",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access",
@@ -284873,6 +285992,8 @@
         "claim:population-joining-metal-fatigue",
         "claim:practical-leather-shoe",
         "claim:r301-honeydew-ants",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
         "claim:static-equine-colic-is-abdominal-pain-with-variable-signs",
         "claim:static-post-head-injury-warning-observations-warrant-urgent-qualified-help",
@@ -285069,6 +286190,7 @@
         "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
         "claim:population-physics-evaporation-below-boiling",
         "claim:population-physics-melting-vaporization-energy",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
         "claim:residual-nature-snow-wind-drift-visibility",
@@ -285512,6 +286634,7 @@
         "claim:population-rod-input",
         "claim:pottery-handmade-local-clay",
         "claim:practical-leather-cut",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r5",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
@@ -285761,6 +286884,11 @@
         "claim:foundations-physical-b2-bnh-01-bone-organic-inorganic-structure",
         "claim:r201-roots-1",
         "wk:physics_material_science:bone-organic-inorganic-structure"
+      ],
+      "rim": [
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
+        "wk:craft:r401-wooden-wheel-condition"
       ],
       "rime": [
         "claim:foundations-earth-31-freezing-fog-rime",
@@ -286074,12 +287202,15 @@
         "claim:r201-onion-1",
         "claim:r201-onion-2",
         "claim:r201-roots-1",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:static-cool-storage-can-slow-respiration-of-harvested-produce",
         "claim:static-plant-wilt-is-not-by-itself-a-water-deficit-diagnosis",
         "claim:static-root-loss-can-cause-transplant-shock",
         "wk:biology_physiology:plant-root-uptake",
         "wk:biology_physiology:static-harvested-root-wound-loss",
-        "wk:biology_physiology:static-transplant-root-disturbance"
+        "wk:biology_physiology:static-transplant-root-disturbance",
+        "wk:environment:r401-woody-root-zone-water"
       ],
       "rooted": [
         "claim:aquatic-macrophyte-form-determines-attachment-and-leaf-position",
@@ -286098,11 +287229,14 @@
         "claim:macro-b21-fresh-willow-cuttings-need-suitable-season-moisture-and-contact-to-root-without-guarantee",
         "claim:place-outdoors-microterrain-patches",
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
         "claim:static-hop-bines-can-be-trained-on-support-and-need-moisture-without-standing-water",
         "claim:static-root-loss-can-cause-transplant-shock",
         "wk:biology_physiology:macro-b21-willow-cutting-establishment-limits",
-        "wk:biology_physiology:plant-root-uptake"
+        "wk:biology_physiology:plant-root-uptake",
+        "wk:environment:r401-woody-root-zone-water"
       ],
       "rope": [
         "claim:early-rus-hunting-ground-terms",
@@ -286542,6 +287676,7 @@
         "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
         "claim:population-physics-evaporation-humidity",
         "claim:r201-roots-1",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
         "claim:research-corylus-avellana-hazelnuts-are-documented-edible",
@@ -286746,6 +287881,7 @@
         "claim:foundations-earth2-08-rising-air-cooling-cloud-condensation",
         "claim:foundations-physical-b2-chm-05-solubility-saturation",
         "claim:population-material-wood-shrinkage",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:wood-liquid-fibre-saturation",
         "wk:chemistry_process:solubility-saturation",
         "wk:environment:rising-air-cooling-cloud-condensation"
@@ -287488,6 +288624,7 @@
       ],
       "separates": [
         "claim:macro-b19-flax-retting-is-a-progressive-separation-process-that-needs-condition-assessment",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:residual-law-injury-and-treatment-payments",
         "claim:residual-law-stepchildren-paternal-inheritance"
       ],
@@ -287512,6 +288649,7 @@
         "wk:architecture_settlement:reconstructed-household-water-and-waste-context",
         "wk:biology_physiology:macro-b1819-cow-calf-separation",
         "wk:chemistry_process:candidate-v6-food-cross-contamination",
+        "wk:craft:r401-cream-churning",
         "wk:craft_technology:linden-bast-soaking-and-separation",
         "wk:craft_technology:macro-b19-bast-and-warp-process-control",
         "wk:craft_technology:reconstructed-animal-material-handling",
@@ -287876,7 +289014,9 @@
       ],
       "shell": [
         "claim:construction-quarry-procurement",
-        "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts"
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:static-bait-b11-mollusc-soft-tissue-can-be-bait-in-some-freshwater-angling-contexts",
+        "wk:biology:r401-damaged-shell-egg"
       ],
       "shelter": [
         "claim:fauna-adder-cover-basking",
@@ -288115,6 +289255,7 @@
       "shrinkage": [
         "claim:material-water-textile-water-load",
         "claim:population-material-wood-shrinkage",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:static-birch-bark-water-can-deform-layers"
       ],
       "shrinks": [
@@ -288225,6 +289366,7 @@
         "claim:candidate-v6-clinical-assessment-can-combine-observations-and-tests",
         "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
         "claim:place-poultry-observable-emergency-signs-bound-casual-examination",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:residual-traces-animal-sign-absence-limit",
         "claim:residual-traces-animal-trace-types",
         "claim:residual-traces-animal-trace-weather-decay",
@@ -289024,6 +290166,8 @@
         "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
         "claim:population-material-clay-plasticity",
         "claim:pottery-handmade-local-clay",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reality-batch-01-saturated-soil-can-lose-cohesion-around-a-small-excavation",
         "claim:reality-batch-01-soil-texture-and-moisture-change-local-resistance-to-a-temporary-stake",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r1",
@@ -289740,6 +290884,7 @@
         "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
         "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use",
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
         "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
@@ -290632,6 +291777,7 @@
         "claim:practical-food-grain-storage",
         "claim:r201-ice-1",
         "claim:r201-roots-1",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r4",
         "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
@@ -291072,6 +292218,7 @@
         "claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally",
         "claim:ha-firesteel-ignition",
         "claim:mb14-practical-rain-leak-prioritizes-temporary-cover-and-dry-stores",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reality-batch-01-rope-knot-can-hold-tension-when-loaded-and-allow-release-when-unloaded",
         "claim:residual-postpartum-suckling-can-increase-milk-production-during-establishment",
         "claim:water-can-cool-class-a-fire-fuel-and-flame"
@@ -291512,6 +292659,7 @@
         "claim:practical-food-cooking",
         "claim:r201-leaves-2",
         "claim:r201-onion-2",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r1",
         "claim:reality-first-travel-wayfinding-and-exposure-remain-condition-bound-r1",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
@@ -291584,6 +292732,7 @@
         "claim:household-dough-temperature-changes-proofing",
         "claim:population-physics-evaporation-humidity",
         "claim:population-stone-weight",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:sound-background-noise-masks-speech",
         "wk:biology_physiology:fauna-fish-senses"
       ],
@@ -292160,6 +293309,7 @@
         "claim:population-physics-evaporation-humidity",
         "claim:population-physics-freezing-condensation-energy",
         "claim:population-physics-melting-vaporization-energy",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
         "claim:research-cold-water-immersion-can-impair-muscle-control",
         "claim:research-cooling-or-freezing-does-not-by-itself-guarantee-microorganism-destruction",
@@ -292499,6 +293649,9 @@
         "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
         "claim:public-world-church-and-official-speech-can-be-marked",
         "claim:public-world-ordinary-speech-tracks-relationship-setting",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:residual-nature-snow-depth-not-load",
         "claim:rp-entrusted-goods-claim-relates-reference",
@@ -292996,6 +294149,9 @@
         "claim:probable-travel-chalice-communion",
         "claim:public-world-witness-account-has-bounded-scope",
         "claim:r201-porridge-1",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
+        "claim:r401-cream-condition-and-working-affect-churning",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:random-independent-trials-do-not-owe-reversal",
         "claim:reality-first-ordinary-worksite-needs-task-specific-flow-and-clearance-r5",
         "claim:reality-first-place-environmental-composition-needs-observed-conditions-r5",
@@ -294114,6 +295270,8 @@
         "claim:final-static-b01-living-birch",
         "claim:place-outdoors-microterrain-patches",
         "claim:place-thermal-birch-tar-method-choice-can-change-oxygen-and-collection-conditions",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
         "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
         "claim:transport-horse-sledge-equipment",
@@ -294174,6 +295332,7 @@
         "claim:pine-pitch-severe-oxidation",
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:population-physics-stress-failure",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
         "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
@@ -294280,7 +295439,8 @@
       ],
       "tight": [
         "claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment",
-        "claim:pine-pitch-woven-basket-coating"
+        "claim:pine-pitch-woven-basket-coating",
+        "claim:r401-wood-drying-can-loosen-wheel-fit"
       ],
       "tighten": [
         "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair"
@@ -294431,6 +295591,8 @@
         "claim:static-cattle-cloven-hoof-print-can-be-blocky-and-rounded"
       ],
       "tire": [
+        "claim:r401-wheel-condition-needs-cause-distinction",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:static-dim-light-reading-can-tire-eyes-without-harming-them"
       ],
       "tired": [
@@ -296080,6 +297242,9 @@
       "uninformed": [
         "claim:residual-law-creditor-priority"
       ],
+      "uniquely": [
+        "claim:r401-wheel-condition-needs-cause-distinction"
+      ],
       "unit": [
         "claim:foundations-life-01-cell",
         "claim:macro-b14-weight-sale-needs-shared-comparison-before-resolution",
@@ -296478,6 +297643,7 @@
         "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
         "claim:novgorod-wetland-pollen-context",
         "claim:r201-lye-2",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:terrain-parent-material-assemblage",
         "claim:textile-fibres-twist-yarn",
         "wk:biology_physiology:animal-food-energy"
@@ -297045,6 +298211,7 @@
         "claim:place-fish-smoking-sensory-signs-do-not-establish-safety-or-storage-outcome",
         "claim:r201-leaves-2",
         "claim:r201-onion-1",
+        "claim:r401-cracked-shell-compromises-egg-barrier",
         "claim:reality-batch-01-dried-herbs-can-be-checked-for-dampness-visible-mold-or-stale-odor",
         "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
         "claim:reality-batch-01-wooden-joinery-temporary-wedge-or-brace-can-limit-movement-conditionally",
@@ -297325,6 +298492,7 @@
         "claim:foundations-thm-06-moisture-vaporization-heat-demand",
         "claim:macro-b20-opening-an-established-honeybee-colony-is-weather-constrained",
         "claim:r201-compost-1",
+        "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
         "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict"
       ],
       "warmed": [
@@ -297389,6 +298557,7 @@
       ],
       "warrants": [
         "claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment"
       ],
       "was": [
@@ -297641,6 +298810,8 @@
         "claim:r201-onion-2",
         "claim:r201-porridge-1",
         "claim:r201-roots-1",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r2",
         "claim:reality-first-food-animal-products-and-care-need-established-inputs-r4",
         "claim:reality-first-military-ordinary-basis-needs-actual-means-and-care-r1",
@@ -297731,6 +298902,7 @@
         "wk:environment:freeze-thaw-rock-fracture",
         "wk:environment:mb14-practical-field-and-water",
         "wk:environment:precipitation-infiltration-runoff-limit",
+        "wk:environment:r401-woody-root-zone-water",
         "wk:environment:research-flood-high-water-mark-observation",
         "wk:environment:rising-air-cooling-cloud-condensation",
         "wk:environment:river-ice-jam-flow-obstruction",
@@ -297926,6 +299098,7 @@
         "claim:population-material-wet-wool",
         "claim:practical-dwelling-roof",
         "claim:practical-textile-sew",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:residual-traces-animal-trace-weather-decay",
         "claim:static-asperity-contact-can-cause-local-stress-and-wear",
         "wk:physics_material_science:fishing-net-serviceability",
@@ -298230,6 +299403,8 @@
         "claim:material-water-rawhide-wet-dry",
         "claim:population-material-iron-rust",
         "claim:population-material-wood-shrinkage",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:reality-first-rural-subsistence-storage-and-animal-yard-compete-for-labour-r1",
         "claim:static-parchment-or-vellum-should-not-be-wetted",
         "claim:streak01-wet-leather-limits",
@@ -298256,7 +299431,9 @@
         "claim:ceramic-novgorod-wheel",
         "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
         "claim:mb14-practical-wagon-pull-can-separate-load-from-running-gear-causes",
-        "claim:stone-grinding-metal-use"
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
+        "claim:stone-grinding-metal-use",
+        "wk:craft:r401-wooden-wheel-condition"
       ],
       "wheels": [
         "claim:place-outdoors-traffic-wet-ground-and-ruts",
@@ -298445,6 +299622,7 @@
         "claim:practical-textile-sew",
         "claim:r201-compost-1",
         "claim:r201-onion-1",
+        "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
         "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
         "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
         "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
@@ -298902,6 +300080,7 @@
         "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
         "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
         "claim:r301-new-growth",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
         "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
         "claim:religion-olenin-church-people",
@@ -299104,6 +300283,7 @@
         "claim:r201-leaves-2",
         "claim:r201-roots-1",
         "claim:r301-nondiagnostic",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r5",
         "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5",
@@ -299240,6 +300420,7 @@
         "claim:population-wood-sledge",
         "claim:population-woodwork-material",
         "claim:population-woodwork-practice",
+        "claim:r401-wheel-condition-needs-cause-distinction",
         "claim:residual-traces-deadwood-feeding-signs",
         "claim:static-wood-ash-can-irritate-skin-and-eyes",
         "claim:static-wood-ash-ph-raising-effect-varies-by-sample",
@@ -299286,6 +300467,7 @@
         "claim:household-wooden-tableware",
         "claim:novgorod-wooden-urban-elements",
         "claim:population-shoe-form",
+        "claim:r401-wood-drying-can-loosen-wheel-fit",
         "claim:reality-batch-01-wooden-joinery-can-be-unloaded-before-adjustment",
         "claim:reality-batch-01-wooden-joinery-sag-can-be-observed-at-joints-frame-or-bearing-points",
         "claim:settlement-log-building-form",
@@ -299298,6 +300480,7 @@
         "wk:architecture_settlement:wooden-bathhouse",
         "wk:architecture_settlement:wooden-bridge",
         "wk:architecture_settlement:wooden-paving",
+        "wk:craft:r401-wooden-wheel-condition",
         "wk:craft_technology:reality-batch-01-wooden-joinery",
         "wk:craft_technology:urban-wooden-coverings",
         "wk:craft_technology:vessel-joinery",
@@ -299344,8 +300527,10 @@
         "claim:final-nature-channel-flow-can-transport-large-woody-debris",
         "claim:final-nature-large-woody-debris-can-be-deposited-or-stranded-after-transport",
         "claim:final-nature-wet-site-woody-plants-can-differ-from-drier-upland-tree-context",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
         "wk:environment:candidate-flood-woody-debris-transport-retention",
-        "wk:environment:final-nature-bank-and-riparian-processes"
+        "wk:environment:final-nature-bank-and-riparian-processes",
+        "wk:environment:r401-woody-root-zone-water"
       ],
       "wool": [
         "claim:clothing-nerev-coloured-wool",
@@ -299585,6 +300770,7 @@
         "claim:population-processes-bone-skate-output",
         "claim:population-river-work",
         "claim:population-woodwork-material",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:reality-batch-01-horse-work-rest-and-harness-adjustment-can-be-considered-after-observation",
         "claim:reality-batch-01-rope-knot-release-depends-on-access-to-its-working-part",
         "claim:reality-batch-01-working-horse-can-show-observable-post-work-heat-and-breathing-change",
@@ -299947,6 +301133,7 @@
         "claim:place-plant-freezing-injury-susceptibility-varies-by-kind-and-development",
         "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
         "claim:population-material-wood-pyrolysis",
+        "claim:r401-cream-condition-and-working-affect-churning",
         "claim:regional-agriculture-practice",
         "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
         "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability",
@@ -300018,8 +301205,11 @@
         "claim:fauna-mammals-domestic-cattle-flight-zone",
         "claim:foundations-thm-09-combustion-oxygen-supply",
         "claim:r201-onion-1",
+        "claim:r401-established-woody-plant-water-reaches-root-zone",
+        "claim:r401-root-water-and-oxygen-limits",
         "claim:stored-grain-temperature-gradient-can-migrate-moisture",
-        "wk:biology_physiology:fauna-domestic-cattle"
+        "wk:biology_physiology:fauna-domestic-cattle",
+        "wk:environment:r401-woody-root-zone-water"
       ],
       "zones": [
         "claim:fauna-mammals-mountain-hare-sheltered-winter-movement",

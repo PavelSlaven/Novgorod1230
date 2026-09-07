@@ -17258,6 +17258,118 @@
       "retrieval_text": "Признаки сосущих насекомых Ограниченные полевые признаки без диагноза. INFERENCE: Скручивание или деформация листьев имеют несколько возможных причин; осмотр допускает осторожное описание без диагноза, лечения или исхода."
     },
     {
+      "entry_ref": "wk-retrieval:claim:r401-churning-coalesces-fat-and-releases-buttermilk:en",
+      "target_ref": "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cream churning Qualitative separation of cream during churning. INFERENCE: Churning cream can coalesce fat globules into butter grains or clumps while buttermilk separates and can be drained."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-churning-coalesces-fat-and-releases-buttermilk:ru",
+      "target_ref": "claim:r401-churning-coalesces-fat-and-releases-buttermilk",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Сбивание сливок Качественное разделение сливок при сбивании. INFERENCE: При сбивании сливок жировые шарики могут слипаться в зёрна или комки масла, а пахта отделяется и может быть слита."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-cracked-shell-compromises-egg-barrier:en",
+      "target_ref": "claim:r401-cracked-shell-compromises-egg-barrier",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Damaged-shell egg Cautious condition boundary for a damaged egg. INFERENCE: A visible crack compromises the intact shell barrier of an egg and is more than a cosmetic condition."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-cracked-shell-compromises-egg-barrier:ru",
+      "target_ref": "claim:r401-cracked-shell-compromises-egg-barrier",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Яйцо с повреждённой скорлупой Граница осторожной оценки повреждённого яйца. INFERENCE: Видимая трещина нарушает целостность защитной скорлупы яйца и не является лишь косметическим дефектом."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-cream-condition-and-working-affect-churning:en",
+      "target_ref": "claim:r401-cream-condition-and-working-affect-churning",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cream churning Qualitative separation of cream during churning. INFERENCE: Cream temperature and the amount of working can materially affect butter-grain formation and result character, without establishing a threshold, yield, or success."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-cream-condition-and-working-affect-churning:ru",
+      "target_ref": "claim:r401-cream-condition-and-working-affect-churning",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Сбивание сливок Качественное разделение сливок при сбивании. INFERENCE: Температура сливок и объём работы могут влиять на образование масляных зёрен и характер результата, но не доказывают порог, выход или успех."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-established-woody-plant-water-reaches-root-zone:en",
+      "target_ref": "claim:r401-established-woody-plant-water-reaches-root-zone",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Woody-plant root-zone water Qualitative water and air conditions at roots. INFERENCE: For an established woody plant with usable surrounding soil, water directed into the accessible root zone can reach roots more effectively than repeated surface-only wetting."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-established-woody-plant-water-reaches-root-zone:ru",
+      "target_ref": "claim:r401-established-woody-plant-water-reaches-root-zone",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Вода в корневой зоне древесного растения Качественные условия воды и воздуха у корней. INFERENCE: У уже укоренившегося древесного растения с доступной почвой вокруг вода, направленная в корневую зону, может достигать корней лучше, чем повторное смачивание одной поверхности."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-root-water-and-oxygen-limits:en",
+      "target_ref": "claim:r401-root-water-and-oxygen-limits",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Woody-plant root-zone water Qualitative water and air conditions at roots. INFERENCE: Repeated light wetting, drought, and prolonged soil saturation are distinct root-zone conditions because roots require both water and oxygen."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-root-water-and-oxygen-limits:ru",
+      "target_ref": "claim:r401-root-water-and-oxygen-limits",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Вода в корневой зоне древесного растения Качественные условия воды и воздуха у корней. INFERENCE: Частое лёгкое смачивание, пересушка и длительное насыщение почвы водой — разные условия корневой зоны, потому что корням нужны и вода, и кислород."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-warm-cracked-egg-needs-cautious-condition-reading:en",
+      "target_ref": "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Damaged-shell egg Cautious condition boundary for a damaged egg. INFERENCE: A warm, cracked, or heavily handled egg calls for more cautious condition reading than a clean intact cold-stored egg, but those observations do not establish contamination, spoilage, or safety."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-warm-cracked-egg-needs-cautious-condition-reading:ru",
+      "target_ref": "claim:r401-warm-cracked-egg-needs-cautious-condition-reading",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Яйцо с повреждённой скорлупой Граница осторожной оценки повреждённого яйца. INFERENCE: Тёплое, треснувшее или сильно тронутое яйцо требует более осторожной оценки состояния, чем чистое целое холодно хранившееся яйцо, но это не доказывает загрязнение, порчу или безопасность."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-wheel-condition-needs-cause-distinction:en",
+      "target_ref": "claim:r401-wheel-condition-needs-cause-distinction",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wooden wheel condition Inspection of rim fit and wooden parts. INFERENCE: Rim or tire movement, a gap, or opened joints warrants inspection, but those signs do not uniquely distinguish shrinkage from wear, wood damage, or loosened joints."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-wheel-condition-needs-cause-distinction:ru",
+      "target_ref": "claim:r401-wheel-condition-needs-cause-distinction",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Состояние деревянного колеса Осмотр посадки обода и деревянных частей. INFERENCE: Движение обода или шины, зазор либо раскрывшиеся стыки — повод осмотреть колесо; по этим признакам нельзя однозначно отличить усушку от износа, повреждения дерева или ослабленных соединений."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-wood-drying-can-loosen-wheel-fit:en",
+      "target_ref": "claim:r401-wood-drying-can-loosen-wheel-fit",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wooden wheel condition Inspection of rim fit and wooden parts. INFERENCE: As a wooden wheel part dries, cross-grain dimensional change can reduce a formerly tight rim or tire fit."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r401-wood-drying-can-loosen-wheel-fit:ru",
+      "target_ref": "claim:r401-wood-drying-can-loosen-wheel-fit",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Состояние деревянного колеса Осмотр посадки обода и деревянных частей. INFERENCE: При высыхании деревянной детали поперечное изменение размера может ослабить прежде плотную посадку обода или шины на колесе."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:random-independent-trials-do-not-owe-reversal:en",
       "target_ref": "claim:random-independent-trials-do-not-owe-reversal",
       "domain": "physics_material_science",
@@ -28122,6 +28234,20 @@
       "retrieval_text": "Различение внешне похожих растений Внешнее сходство не устанавливает тождество таксона или свойств, связанных с опасностью."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology:r401-damaged-shell-egg:en",
+      "target_ref": "wk:biology:r401-damaged-shell-egg",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "Damaged-shell egg Cautious condition boundary for a damaged egg."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology:r401-damaged-shell-egg:ru",
+      "target_ref": "wk:biology:r401-damaged-shell-egg",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "Яйцо с повреждённой скорлупой Граница осторожной оценки повреждённого яйца."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:acid-base-neutralization:en",
       "target_ref": "wk:chemistry_process:acid-base-neutralization",
       "domain": "chemistry_process",
@@ -29900,6 +30026,34 @@
       "retrieval_text": "Производственные отходы могут быть контекстным следствием работы с материалом, но не раскрывают автора, время, профессию или скрытый результат без дополнительных данных Производственные отходы могут быть контекстным следствием работы с материалом, но не раскрывают автора, время, профессию или скрытый результат без дополнительных данных."
     },
     {
+      "entry_ref": "wk-retrieval:wk:craft:r401-cream-churning:en",
+      "target_ref": "wk:craft:r401-cream-churning",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Cream churning Qualitative separation of cream during churning."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft:r401-cream-churning:ru",
+      "target_ref": "wk:craft:r401-cream-churning",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Сбивание сливок Качественное разделение сливок при сбивании."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft:r401-wooden-wheel-condition:en",
+      "target_ref": "wk:craft:r401-wooden-wheel-condition",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "Wooden wheel condition Inspection of rim fit and wooden parts."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft:r401-wooden-wheel-condition:ru",
+      "target_ref": "wk:craft:r401-wooden-wheel-condition",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "Состояние деревянного колеса Осмотр посадки обода и деревянных частей."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:environment:advection-fog:en",
       "target_ref": "wk:environment:advection-fog",
       "domain": "environment",
@@ -30738,6 +30892,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Признаки сосущих насекомых Ограниченные полевые признаки без диагноза."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r401-woody-root-zone-water:en",
+      "target_ref": "wk:environment:r401-woody-root-zone-water",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "Woody-plant root-zone water Qualitative water and air conditions at roots."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r401-woody-root-zone-water:ru",
+      "target_ref": "wk:environment:r401-woody-root-zone-water",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "Вода в корневой зоне древесного растения Качественные условия воды и воздуха у корней."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:radiation-fog:en",

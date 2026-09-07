@@ -17020,6 +17020,202 @@
       "retrieval_text": "Публичный спор и обиходная речь Редакторские посылки о споре, обращении и именовании без готовой правовой процедуры. Свидетель или посыльный передаёт увиденное либо услышанное; память, интерес и неполнота ограничивают рассказ. спор суд речь имя свидетель посыльный"
     },
     {
+      "entry_ref": "wk-retrieval:claim:r201-compost-1:en",
+      "target_ref": "claim:r201-compost-1",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "chemistry_process Bounded modern context. INFERENCE: Compost or manure piles can self-heat; a warm pile is not automatically aflame, while smoke is a dangerous fire state."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-compost-1:ru",
+      "target_ref": "claim:r201-compost-1",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "chemistry_process Ограниченный современный контекст. INFERENCE: Компост или навозная куча может самонагреваться; тёплая куча не обязательно горит, а дым — опасное состояние."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-compost-2:en",
+      "target_ref": "claim:r201-compost-2",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "chemistry_process Bounded modern context. INFERENCE: Opening or spreading a smoking pile can introduce oxygen and increase immediate fire risk; it is not a guaranteed fix."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-compost-2:ru",
+      "target_ref": "claim:r201-compost-2",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "chemistry_process Ограниченный современный контекст. INFERENCE: Открывание или разбрасывание дымящейся кучи может дать кислород и повысить риск огня, не гарантируя исправление."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-ice-1:en",
+      "target_ref": "claim:r201-ice-1",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "architecture_settlement Bounded modern context. INFERENCE: Insulating packing, protected enclosure and a meltwater path can reduce heat gain or water damage around stored ice without stopping melt or proving duration."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-ice-1:ru",
+      "target_ref": "claim:r201-ice-1",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "architecture_settlement Ограниченный современный контекст. INFERENCE: Изоляция, защищённое помещение и отвод талой воды могут уменьшить нагрев и водяной ущерб вокруг льда, но не останавливают таяние."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-ice-2:en",
+      "target_ref": "claim:r201-ice-2",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "architecture_settlement Bounded modern context. INFERENCE: Opening, packing condition and drainage are observable storage conditions, not proof of a historical icehouse design."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-ice-2:ru",
+      "target_ref": "claim:r201-ice-2",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "architecture_settlement Ограниченный современный контекст. INFERENCE: Открывание, состояние прокладки и сток — наблюдаемые условия хранения, не доказательство исторической ледницы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-leaves-1:en",
+      "target_ref": "claim:r201-leaves-1",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded modern context. INFERENCE: A white or gray powdery leaf coating supports field suspicion and careful inspection, not proof of mildew, species, spread or remedy."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-leaves-1:ru",
+      "target_ref": "claim:r201-leaves-1",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный современный контекст. INFERENCE: Белый или серый порошистый налёт на листе допускает полевое подозрение и осторожный осмотр, но не доказывает мучнистую росу."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-leaves-2:en",
+      "target_ref": "claim:r201-leaves-2",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded modern context. INFERENCE: Loose surface material can change what is visible without proving whether an underlying infection exists."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-leaves-2:ru",
+      "target_ref": "claim:r201-leaves-2",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный современный контекст. INFERENCE: Удаление рыхлого поверхностного налёта меняет видимое, но не доказывает отсутствие скрытого поражения."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-lye-1:en",
+      "target_ref": "claim:r201-lye-1",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "chemistry_process Bounded modern context. INFERENCE: Unknown-strength alkaline liquor, splashes, hot liquid and mist are conditional skin and eye hazards; this does not assign a reagent strength or recipe."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-lye-1:ru",
+      "target_ref": "claim:r201-lye-1",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "chemistry_process Ограниченный современный контекст. INFERENCE: Щелочной раствор неизвестной крепости, брызги, горячая жидкость и туман условно опасны для кожи и глаз; это не рецепт."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-lye-2:en",
+      "target_ref": "claim:r201-lye-2",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "chemistry_process Bounded modern context. INFERENCE: An alkaline-fat attempt can separate, remain oily or otherwise fail; no usable soap or safe recovery follows."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-lye-2:ru",
+      "target_ref": "claim:r201-lye-2",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "chemistry_process Ограниченный современный контекст. INFERENCE: Щелочно-жировая попытка может расслоиться, остаться масляной или иначе не удасться; годное мыло не следует автоматически."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-onion-1:en",
+      "target_ref": "claim:r201-onion-1",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded modern context. INFERENCE: Onion water stress can reduce growth while visible wilt is not a sufficient moisture test; root-zone moisture needs observation."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-onion-1:ru",
+      "target_ref": "claim:r201-onion-1",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный современный контекст. INFERENCE: Водный стресс лука может уменьшать рост, но видимое увядание само по себе не является достаточной проверкой влаги."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-onion-2:en",
+      "target_ref": "claim:r201-onion-2",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded modern context. INFERENCE: Dry-looking surface, wilt or droop can have multiple causes; watering does not guarantee recovery or exclude root damage, disease or excess-water stress."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-onion-2:ru",
+      "target_ref": "claim:r201-onion-2",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный современный контекст. INFERENCE: Сухой вид поверхности, увядание или поникание имеют несколько причин; полив не обещает восстановления и не исключает повреждение корней, болезнь или избыток воды."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-porridge-1:en",
+      "target_ref": "claim:r201-porridge-1",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded modern context. INFERENCE: Heating starch absorbs water and thickens; pan-contact material can scorch before less-cooked material away from the pan."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-porridge-1:ru",
+      "target_ref": "claim:r201-porridge-1",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный современный контекст. INFERENCE: Нагретый крахмал впитывает воду и густеет; у дна посуды пища может пригореть раньше остальной массы."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-porridge-2:en",
+      "target_ref": "claim:r201-porridge-2",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded modern context. INFERENCE: Lower heat and stirring or scraping can mitigate local scorching but cannot unburn a portion or guarantee uniform cooking."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-porridge-2:ru",
+      "target_ref": "claim:r201-porridge-2",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный современный контекст. INFERENCE: Уменьшение огня и перемешивание могут ограничить местное пригорание, но не исправляют уже сгоревшую часть."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-roots-1:en",
+      "target_ref": "claim:r201-roots-1",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "environment Bounded modern context. INFERENCE: After freezing, stored root tissue can show loss of rigidity, softening, or a water-soaked appearance; these observations justify bounded inspection and sorting without identifying cause or batch safety."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-roots-1:ru",
+      "target_ref": "claim:r201-roots-1",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "environment Ограниченный современный контекст. INFERENCE: Замороженная ткань может размокать, размягчаться и разрушаться после оттаивания; видимые изменения требуют осмотра и сортировки."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-roots-2:en",
+      "target_ref": "claim:r201-roots-2",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "environment Bounded modern context. INFERENCE: Freezing injury and decay observations are distinct; sorting limits exposure but cannot restore damaged stock or prove neighbouring food sound."
+    },
+    {
+      "entry_ref": "wk-retrieval:claim:r201-roots-2:ru",
+      "target_ref": "claim:r201-roots-2",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "environment Ограниченный современный контекст. INFERENCE: Наблюдаемые признаки порчи не устанавливают причину, безопасность соседнего запаса или восстановление повреждённой пищи."
+    },
+    {
       "entry_ref": "wk-retrieval:claim:random-independent-trials-do-not-owe-reversal:en",
       "target_ref": "claim:random-independent-trials-do-not-owe-reversal",
       "domain": "physics_material_science",
@@ -23782,6 +23978,20 @@
       "retrieval_text": "Частокол Частокол: засвидетельствованная категория средневекового Новгорода, не утверждение о наличии в конкретном месте."
     },
     {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:r201-repair:en",
+      "target_ref": "wk:architecture_settlement:r201-repair",
+      "domain": "architecture_settlement",
+      "locale": "en",
+      "retrieval_text": "architecture_settlement Bounded modern context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:architecture_settlement:r201-repair:ru",
+      "target_ref": "wk:architecture_settlement:r201-repair",
+      "domain": "architecture_settlement",
+      "locale": "ru",
+      "retrieval_text": "architecture_settlement Ограниченный современный контекст."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:architecture_settlement:reconstructed-church-interior-yard-context:en",
       "target_ref": "wk:architecture_settlement:reconstructed-church-interior-yard-context",
       "domain": "architecture_settlement",
@@ -26750,6 +26960,20 @@
       "retrieval_text": "Поглощение корнями Корни поглощают доступные воду и неорганические вещества."
     },
     {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:r201-repair:en",
+      "target_ref": "wk:biology_physiology:r201-repair",
+      "domain": "biology_physiology",
+      "locale": "en",
+      "retrieval_text": "biology_physiology Bounded modern context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:biology_physiology:r201-repair:ru",
+      "target_ref": "wk:biology_physiology:r201-repair",
+      "domain": "biology_physiology",
+      "locale": "ru",
+      "retrieval_text": "biology_physiology Ограниченный современный контекст."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:biology_physiology:reality-batch-01-minor-abrasion-care:en",
       "target_ref": "wk:biology_physiology:reality-batch-01-minor-abrasion-care",
       "domain": "biology_physiology",
@@ -28332,6 +28556,20 @@
       "retrieval_text": "Листья растений как источник красителя Качественная связь листового растительного материала и красильной ванны. листья для краски красить листьями растительная краска"
     },
     {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:r201-repair:en",
+      "target_ref": "wk:chemistry_process:r201-repair",
+      "domain": "chemistry_process",
+      "locale": "en",
+      "retrieval_text": "chemistry_process Bounded modern context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:chemistry_process:r201-repair:ru",
+      "target_ref": "wk:chemistry_process:r201-repair",
+      "domain": "chemistry_process",
+      "locale": "ru",
+      "retrieval_text": "chemistry_process Ограниченный современный контекст."
+    },
+    {
       "entry_ref": "wk-retrieval:wk:chemistry_process:reaction-rate-reactant-concentration:en",
       "target_ref": "wk:chemistry_process:reaction-rate-reactant-concentration",
       "domain": "chemistry_process",
@@ -29184,6 +29422,20 @@
       "domain": "craft_technology",
       "locale": "ru",
       "retrieval_text": "Конопатка зазоров обшивки Уплотнение зазоров между обшивочными досками"
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r201-repair:en",
+      "target_ref": "wk:craft_technology:r201-repair",
+      "domain": "craft_technology",
+      "locale": "en",
+      "retrieval_text": "craft_technology Bounded modern context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:craft_technology:r201-repair:ru",
+      "target_ref": "wk:craft_technology:r201-repair",
+      "domain": "craft_technology",
+      "locale": "ru",
+      "retrieval_text": "craft_technology Ограниченный современный контекст."
     },
     {
       "entry_ref": "wk-retrieval:wk:craft_technology:reality-batch-01-wooden-joinery:en",
@@ -30416,6 +30668,20 @@
       "domain": "environment",
       "locale": "ru",
       "retrieval_text": "Разность атмосферного давления вызывает движение воздуха от более высокого давления к более низкому; больший градиент при прочих сопоставимых условиях связан с более сильным ветром. Квалифицированная универсальная геологическая или атмосферная предпосылка, не факт конкретной сцены."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r201-repair:en",
+      "target_ref": "wk:environment:r201-repair",
+      "domain": "environment",
+      "locale": "en",
+      "retrieval_text": "environment Bounded modern context."
+    },
+    {
+      "entry_ref": "wk-retrieval:wk:environment:r201-repair:ru",
+      "target_ref": "wk:environment:r201-repair",
+      "domain": "environment",
+      "locale": "ru",
+      "retrieval_text": "environment Ограниченный современный контекст."
     },
     {
       "entry_ref": "wk-retrieval:wk:environment:radiation-fog:en",

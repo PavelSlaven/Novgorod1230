@@ -62,7 +62,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       };
     } catch (repairError) {
       if (unresolvedDomainRequest(repairError)
-          || unavailableOwnerAfterRepair(repairError)
+          || unavailableOwnerAfterRepair(repairError, originalOutput)
           || forbiddenOperationChoiceAfterRepair(repairError)
           || unresolvedSemanticGrounding(repairError)
           || unresolvedContinuation(repairError)) {
@@ -87,12 +87,13 @@ function forbiddenOperationChoiceAfterRepair(error) {
       path === '$.operation_choice' && code === 'additional_property');
 }
 
-function unavailableOwnerAfterRepair(error) {
+function unavailableOwnerAfterRepair(error, originalOutput) {
   const repairedErrors = error?.details?.errors;
   const unavailable = ({ code }) => code === 'domain_owner_unavailable';
   const incompleteRemoval = ({ path, code }) => code === 'resolution'
     && ['$.activity.owner', '$.operations'].includes(path);
   return error?.code === 'TURN_STEP_PLAN_INVALID'
+    && originalOutput?.resolution !== 'domain_request'
     && Array.isArray(repairedErrors) && repairedErrors.length > 0
     && repairedErrors.every((item) => unavailable(item) || incompleteRemoval(item));
 }

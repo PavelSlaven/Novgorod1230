@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validateTurnStepPlan } from '../src/turn-step-contracts.js';
+import { requestTurnStepPlanWithRepair } from
+  '../src/turn-step-plan-repair.js';
 
 const actor = 'actor_mikula';
 const request = {
@@ -48,3 +50,16 @@ test('move_entity rejects a player-safe placement that is already satisfied', ()
   assert.equal(validateTurnStepPlan(plan('coat', 'worn_by'), { request }).ok,
     true);
 });
+
+test('structural repair repeating an unknown ref becomes a safe no-result',
+  async () => {
+    let calls = 0;
+    const result = await requestTurnStepPlanWithRepair({ request,
+      turnStepModel: async () => {
+        const value = plan('mistyped-ref', 'held_by');
+        return ++calls === 1
+          ? { ...value, interpretation: { adaptation: 'literal' } } : value;
+      } });
+    assert.equal(calls, 2);
+    assert.equal(result.plan.reason_code, 'domain_operation_unavailable');
+  });

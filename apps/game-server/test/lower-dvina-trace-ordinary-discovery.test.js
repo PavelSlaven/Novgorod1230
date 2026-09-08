@@ -6,6 +6,7 @@ import { enabled, group, request, verifyStageBCutover } from
   './lower-dvina-trace-o1-fixture.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
+import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 
 test('initial location binding resolves through its provisioned ordinary scope',
   async () => {
@@ -150,6 +151,58 @@ test('seed and presence each retain one structural repair',
     assert.equal(result.ordinary_materialization_atomic_write_plan.resolution,
       'absent');
   });
+
+test('presence repair budget is distinct per immutable turn step', async () => {
+  const budget = createLlmTurnBudget();
+  const repairClaims = [];
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: 'party', inputDigest: 'presence-repair-identity',
+    verifyStageBCutover,
+    loadEnablement: async () => {
+      const value = enabled();
+      value.ordinary_aggregate = applyOrdinaryAggregateTransition({
+        aggregate: value.ordinary_aggregate,
+        transition: { kind: 'seed', request_identity: 'seed',
+          expected_state_version: 0, density_band: 'ordinary',
+          identity_budget: 1, background_groups: [] }
+      });
+      value.version_pins = { ...value.version_pins, ordinary_state_version: 1 };
+      return value;
+    },
+    ordinaryMaterializationModel: async (modelRequest, context) => {
+      if (context.repair === null) return {};
+      repairClaims.push(budget.claimRepair({
+        requestIdentity: modelRequest.request_id,
+        repairKind: 'ordinary_materialization'
+      }));
+      return { schema: 'ordinary_materialization_plan_v1',
+        request_id: modelRequest.request_id, resolution: 'absent',
+        density_band_proposal: null, background_groups: [], entities: [],
+        presence_resolutions: [{
+          candidate_key: modelRequest.candidate_query.candidate_key,
+          coverage_key: modelRequest.candidate_query.coverage_key,
+          resolution: 'absent'
+        }], reason_code: 'presence_repaired' };
+    }
+  });
+  const first = request('найти ложку');
+  first.request.step_index = 1;
+  const second = request('найти верёвку');
+  second.request.step_index = 2;
+  await budget.runTurn(async () => {
+    await resolver(first);
+    await resolver(second);
+    await assert.rejects(() => resolver(second), (error) => {
+      assert.equal(error.code, 'TURN_ORDINARY_PRESENCE_MODEL_FAILED');
+      assert.equal(error.details.cause,
+        'Gameplay turn repair budget is already claimed.');
+      return true;
+    });
+  });
+  assert.deepEqual(repairClaims.map(({ request_identity }) => request_identity).sort(),
+    ['turn:party:1:ordinary:presence:step:1',
+      'turn:party:1:ordinary:presence:step:2']);
+});
 
 test('committed exact identity survives reload and only normalized wording reuses it', async () => {
   let committed = null;

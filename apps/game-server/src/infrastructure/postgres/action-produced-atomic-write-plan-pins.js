@@ -172,9 +172,11 @@ function validPreparedOrdinary(value, pin, causalIdentity) {
       && provenance?.step_index === value.step_index;
   }
   return value.schema === 'action_production_prepared_ordinary_pin_v2'
-    && exact(value, ['schema', 'request_identity', 'root_turn_id'])
-    && causalIdentity.step_index > 1
-    && value.request_identity === `${value.root_turn_id}:ordinary:presence`
+    && exact(value, ['schema', 'request_identity', 'root_turn_id', 'step_index'])
+    && Number.isSafeInteger(value.step_index)
+    && value.step_index >= 1 && value.step_index < causalIdentity.step_index
+    && value.request_identity
+      === `${value.root_turn_id}:ordinary:presence:step:${value.step_index}`
     && provenance?.request_id === value.request_identity;
 }
 

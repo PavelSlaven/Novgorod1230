@@ -96,7 +96,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         requestIdentity: objective.request_id, resolution: 'no_change' });
     }
     const presenceObjective = { ...enabled.objective_context,
-      request_id: `${rootId}:ordinary:presence`,
+      request_id: `${rootId}:ordinary:presence:step:${request.request.step_index}`,
       policy_refs: presencePolicyRefs({
         policyRefs: enabled.objective_context.policy_refs,
         bases,

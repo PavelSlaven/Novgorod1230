@@ -203,8 +203,8 @@ function operationFor(op, operations) {
 function requireO1CarrierBinding({ ordinaryPlan, semanticRequest, ...binding }) {
   const requestIdentity = ordinaryPlan.request_identity;
   const rootTurnId = semanticRequest?.root_turn_id;
-  if (!['seed', 'presence'].some((phase) => requestIdentity ===
-      `${rootTurnId}:ordinary:${phase}`)
+  if (!(requestIdentity === `${rootTurnId}:ordinary:seed`
+      || requestIdentity === `${rootTurnId}:ordinary:presence:step:${semanticRequest?.step_index}`)
       || typeof ordinaryPlan.semantic_target_ref !== 'string'
       || ordinaryPlan.item != null
         && ordinaryPlan.item.mechanics_snapshot.provenance.request_id

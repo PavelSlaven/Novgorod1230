@@ -174,6 +174,7 @@ export function wkClosure(request) {
 export { wkClosure as worldKnowledgeFactualClosure };
 async function runPlanner(roleRunner, request, repair, bundle) {
   const claimDomains = new Map(bundle.claims.map(claim => [claim.claim_ref, claim.domain]));
+  const forbiddenDomains = repair == null || !Array.isArray(repair.original_output?.domains) ? [] : [...new Set(repair.original_output.domains.filter(domain => !request.allowed_domains.includes(domain)))];
   const availableRefs = new Set(request.available_knowledge_refs);
   const focusClaimDomains = Object.fromEntries(bundle.concepts
     .filter(concept => availableRefs.has(concept.concept_ref))
@@ -202,7 +203,7 @@ async function runPlanner(roleRunner, request, repair, bundle) {
       'Return requested_predicates as an empty array. This semantic lookup preserves mixed typed and generic factual premises; restrictive predicate filters belong to exact code-owned queries.',
       'Do not return facts, outcomes, actions, party mutations, context overrides, or new refs.',
       repair == null ? 'Plan the smallest useful factual lookup.'
-        : `Replace the invalid output; repair only these structural errors: ${JSON.stringify(repair.structural_errors)} Remove every domain absent from request.allowed_domains. Remove unavailable focus_refs, or replace them only by verbatim refs from request.available_knowledge_refs. Do not return any domain or ref named as unavailable.`
+        : `Replace the invalid output; repair only these structural errors: ${JSON.stringify(repair.structural_errors)} These exact domain strings are forbidden and MUST NOT occur in output domains: ${JSON.stringify(forbiddenDomains)}. Remove every domain absent from request.allowed_domains. Remove unavailable focus_refs, or replace them only by verbatim refs from request.available_knowledge_refs. Do not return any domain or ref named as unavailable.`
     ].join(' ') }, { role: 'user', content: JSON.stringify(repair == null
       ? request : { request, original_output: repair.original_output,
         structural_errors: repair.structural_errors,
@@ -211,7 +212,6 @@ async function runPlanner(roleRunner, request, repair, bundle) {
   });
   return response;
 }
-
 function modelSlice(slice) {
   return Object.freeze({ schema: slice.schema, pack_ref: slice.pack_ref,
     pack_revision: slice.pack_revision, purpose: slice.purpose,

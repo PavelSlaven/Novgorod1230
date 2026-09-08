@@ -157,6 +157,8 @@ test('production repair removes unavailable domains and refs without changing au
       if (inputs.length === 2) {
         assert.match(call.messages[0].content,
           /Remove every domain absent from request.allowed_domains/u);
+        assert.match(call.messages[0].content,
+          /exact domain strings are forbidden[\s\S]*\["biology"\]/u);
         assert.match(call.messages[0].content, /Domain aliases are forbidden/u);
         assert.match(call.messages[0].content, /Remove unavailable focus_refs/u);
         assert.match(call.messages[0].content, /verbatim refs from request.available_knowledge_refs/u);
@@ -167,7 +169,7 @@ test('production repair removes unavailable domains and refs without changing au
       }
       return { output: { schema: 'world_knowledge_query_plan_v1',
         query_locale: 'ru', domains: inputs.length === 1
-          ? ['biology'] : ['environment'],
+          ? ['environment', 'biology'] : ['environment'],
         focus_refs: inputs.length === 1 ? ['wk:unavailable-ref'] : [],
         requested_predicates: [], search_hints: [] } };
     } }

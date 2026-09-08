@@ -59,6 +59,9 @@ Premise audit и backlog принадлежат development authoring workflow, 
 `RUS_ACCEPTANCE_LLM_RUNTIME_METADATA` и `RUS_ACCEPTANCE_LLM_HARDWARE_METADATA`;
 они описывают назначенный endpoint, а не текущий ПК. Ключ не передаётся через
 CLI, и локальная Gemma в этом режиме не запускается.
+120 секунд ограничивают отдельный LLM transport call; browser runner ждёт весь
+составной ход до 20 минут, потому что он включает несколько последовательных
+production roles.
 
 ## Не владеет
 

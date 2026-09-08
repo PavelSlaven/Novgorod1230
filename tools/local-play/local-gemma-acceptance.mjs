@@ -104,7 +104,8 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
         proposal.raw_text);
       await page.click('[data-turn-form] button[type="submit"]');
       await page.waitForSelector(
-        '[data-turn-form] textarea:not([disabled]), .error');
+        '[data-turn-form] textarea:not([disabled]), .error',
+        { timeout: 20 * 60_000 });
       if (await page.locator('.error').count()) throw new Error(
         `Browser turn failed: ${await page.locator('.error').innerText()}`);
       const event = await readNextTurnEvent({ directory: logDirectory,

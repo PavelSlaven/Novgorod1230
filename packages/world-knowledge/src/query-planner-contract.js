@@ -42,6 +42,25 @@ export function validateWorldKnowledgeQueryPlan(value, request, bundle) {
   return result(errors);
 }
 
+export function normalizeWorldKnowledgeQueryPlan(value, request, bundle) {
+  if (!object(value) || value.schema !== PLAN_SCHEMA) return value;
+  const domains = selection(value.domains, request.allowed_domains,
+    request.planner_limits.max_domains);
+  const predicates = new Set(domains.flatMap((domain) =>
+    Object.keys(bundle.predicate_registry[domain] ?? {})));
+  return { ...value, domains,
+    focus_refs: selection(value.focus_refs, request.available_knowledge_refs,
+      request.planner_limits.max_focus_refs),
+    requested_predicates: selection(value.requested_predicates, predicates) };
+}
+
+function selection(value, allowed, limit = Infinity) {
+  if (!Array.isArray(value)) return value;
+  const vocabulary = allowed instanceof Set ? allowed : new Set(allowed);
+  return [...new Set(value.filter((entry) =>
+    typeof entry === 'string' && vocabulary.has(entry)))].slice(0, limit);
+}
+
 function limits(value, errors) {
   if (!object(value)) { errors.push('request.planner_limits must be an object'); return; }
   exact(value, ['max_domains', 'max_search_hints', 'max_focus_refs'], 'request.planner_limits', errors);

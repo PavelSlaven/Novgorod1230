@@ -142,7 +142,7 @@ function assertRetrievalObservability(observability, grounded) {
   }
 }
 
-test('production repair removes unavailable domains and refs without changing authority', async () => {
+test('production normalization removes unavailable domains and refs without changing authority', async () => {
   const bundle = JSON.parse(await readFile(new URL(
     '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
     import.meta.url), 'utf8'));
@@ -154,30 +154,15 @@ test('production repair removes unavailable domains and refs without changing au
     roleRunner: { async run(call) {
       const input = JSON.parse(call.messages[1].content);
       inputs.push(input.request ?? input);
-      if (inputs.length === 2) {
-        assert.match(call.messages[0].content,
-          /Remove every domain absent from request.allowed_domains/u);
-        assert.match(call.messages[0].content,
-          /exact domain strings are forbidden[\s\S]*\["biology"\]/u);
-        assert.match(call.messages[0].content, /Domain aliases are forbidden/u);
-        assert.match(call.messages[0].content, /Remove unavailable focus_refs/u);
-        assert.match(call.messages[0].content, /verbatim refs from request.available_knowledge_refs/u);
-        assert.match(call.messages[0].content, /wk:unavailable-ref/u);
-        assert.ok(input.structural_errors.some(error => error.includes('wk:unavailable-ref')));
-        assert.match(input.repair_instruction,
-          /Never copy a rejected domain or ref/u);
-      }
       return { output: { schema: 'world_knowledge_query_plan_v1',
-        query_locale: 'ru', domains: inputs.length === 1
-          ? ['environment', 'biology'] : ['environment'],
-        focus_refs: inputs.length === 1 ? ['wk:unavailable-ref'] : [],
+        query_locale: 'ru', domains: ['environment', 'biology'],
+        focus_refs: ['wk:unavailable-ref'],
         requested_predicates: [], search_hints: [] } };
     } }
   });
   await grounder.ground({ semantic_input: 'Контекст места', player_safe_state: {} },
     'semantic_resolution');
-  assert.equal(inputs.length, 2);
-  assert.deepEqual(inputs[0], inputs[1]);
+  assert.equal(inputs.length, 1);
 });
 
 test('an unused focus does not block a supplied physical premise or force its historical domain', async () => {

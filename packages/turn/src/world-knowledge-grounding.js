@@ -1,5 +1,5 @@
 import { deepFreeze } from '@rus/kernel';
-import { validateWorldKnowledgeQueryPlan, validateWorldKnowledgeQueryPlannerRequest } from '@rus/world-knowledge';
+import { normalizeWorldKnowledgeQueryPlan, validateWorldKnowledgeQueryPlan, validateWorldKnowledgeQueryPlannerRequest } from '@rus/world-knowledge';
 import { turnFailure } from './errors.js';
 
 export async function requestWorldKnowledgeQueryPlan({ request, bundle, plannerModel } = {}) {
@@ -7,7 +7,8 @@ export async function requestWorldKnowledgeQueryPlan({ request, bundle, plannerM
   if (!requestValidation.ok) throw turnFailure('TURN_WORLD_KNOWLEDGE_PLANNER_REQUEST_INVALID', 'World Knowledge planner request is invalid.', { errors: requestValidation.errors });
   if (typeof plannerModel !== 'function') throw turnFailure('TURN_WORLD_KNOWLEDGE_PLANNING_UNAVAILABLE', 'World Knowledge query planner is unavailable.');
   const safeRequest = deepFreeze(structuredClone(request));
-  let output = await plannerModel(safeRequest, null);
+  let output = normalizeWorldKnowledgeQueryPlan(
+    await plannerModel(safeRequest, null), safeRequest, bundle);
   let validation = validateWorldKnowledgeQueryPlan(output, safeRequest, bundle);
   if (validation.ok) return deepFreeze({ plan: structuredClone(output), repaired: false });
   const repair = deepFreeze({
@@ -15,7 +16,8 @@ export async function requestWorldKnowledgeQueryPlan({ request, bundle, plannerM
     original_output: structuredClone(output),
     structural_errors: [...validation.errors]
   });
-  output = await plannerModel(safeRequest, repair);
+  output = normalizeWorldKnowledgeQueryPlan(
+    await plannerModel(safeRequest, repair), safeRequest, bundle);
   validation = validateWorldKnowledgeQueryPlan(output, safeRequest, bundle);
   if (!validation.ok) throw turnFailure('TURN_WORLD_KNOWLEDGE_QUERY_PLAN_INVALID', 'World Knowledge query plan and its one repair are invalid.', { errors: validation.errors, repair_attempted: true });
   return deepFreeze({ plan: structuredClone(output), repaired: true });

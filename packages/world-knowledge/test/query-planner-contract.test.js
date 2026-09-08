@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { validateWorldKnowledgeQueryPlan, validateWorldKnowledgeQueryPlannerRequest } from '../src/index.js';
+import { normalizeWorldKnowledgeQueryPlan, validateWorldKnowledgeQueryPlan, validateWorldKnowledgeQueryPlannerRequest } from '../src/index.js';
 
 const bundle = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/world-knowledge/pilot-v1/runtime-bundle.json', import.meta.url)));
 
@@ -37,4 +37,21 @@ test('planner contracts accept only bounded selections from caller authority', (
   });
   assert.equal(validateWorldKnowledgeQueryPlan({ ...plan, requested_predicates: ['invented'] }, input, bundle).ok, false);
   assert.equal(validateWorldKnowledgeQueryPlannerRequest({ ...input, purpose: 'invented' }, bundle).ok, false);
+});
+
+test('planner normalizer projects an unseen mixed selection onto caller authority', () => {
+  const input = request();
+  const normalized = normalizeWorldKnowledgeQueryPlan({
+    schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+    domains: ['law_institutions', 'imaginary_family', 'law_institutions',
+      'economy_trade'],
+    focus_refs: ['wk:invented', 'wk:economy:debt_record',
+      'wk:economy:debt_record'],
+    requested_predicates: ['invented', 'attested_use'],
+    search_hints: ['свидетельство о долге']
+  }, input, bundle);
+  assert.deepEqual(normalized.domains, ['law_institutions', 'economy_trade']);
+  assert.deepEqual(normalized.focus_refs, ['wk:economy:debt_record']);
+  assert.deepEqual(normalized.requested_predicates, ['attested_use']);
+  assert.equal(validateWorldKnowledgeQueryPlan(normalized, input, bundle).ok, true);
 });

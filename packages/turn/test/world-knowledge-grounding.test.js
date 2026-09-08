@@ -59,26 +59,20 @@ test('exact and NONE needs bypass planner', async () => {
   assert.equal(result.planner_called, false);
 });
 
-test('structural repair identifies unavailable focus refs without replacing caller authority', async () => {
+test('structural normalizer removes unavailable focus refs without replacing caller authority', async () => {
   const invalid = { ...plan, focus_refs: ['wk:law:debt_record'] };
   let calls = 0;
   const result = await requestWorldKnowledgeQueryPlan({
     request: plannerRequest, bundle,
-    plannerModel(request, repair) {
+    plannerModel(request) {
       calls += 1;
-      if (repair == null) return invalid;
-      assert.deepEqual(repair.original_output, invalid);
       assert.deepEqual(request.available_knowledge_refs, ['wk:economy:debt_record']);
-      assert.match(repair.structural_errors.join(' '), /wk:law:debt_record/u);
-      return plan;
+      return invalid;
     }
   });
-  assert.equal(calls, 2);
-  assert.equal(result.repaired, true);
-  assert.deepEqual(result.plan.focus_refs, plannerRequest.available_knowledge_refs);
-  await assert.rejects(requestWorldKnowledgeQueryPlan({
-    request: plannerRequest, bundle, plannerModel: () => invalid
-  }), error => error.code === 'TURN_WORLD_KNOWLEDGE_QUERY_PLAN_INVALID');
+  assert.equal(calls, 1);
+  assert.equal(result.repaired, false);
+  assert.deepEqual(result.plan.focus_refs, []);
 });
 
 test('RETRIEVE merges only authoritative context after planning', async () => {

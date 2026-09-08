@@ -115,22 +115,27 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
       throw dependencyError('Turn step planner returned no JSON object.');
     }
     const semanticOutput = repairing
-      ? mergeRepairOutput(repairContext.original_output, response.output)
+      ? mergeRepairOutput(repairContext.original_output, response.output,
+          new Set(repairContext.structural_errors
+            ?.filter(({ code }) => code === 'additional_property')
+            .map(({ path }) => path) ?? []))
       : response.output;
     return assembleTurnStepPlan(semanticOutput, request, operationChoices);
   };
   return model;
 }
 
-function mergeRepairOutput(original, repaired) {
+function mergeRepairOutput(original, repaired, rejectedPaths, path = '$') {
   if (!original || typeof original !== 'object' || Array.isArray(original)
       || !repaired || typeof repaired !== 'object' || Array.isArray(repaired)) {
     return repaired;
   }
   return Object.fromEntries([...new Set([
     ...Object.keys(original), ...Object.keys(repaired)
-  ])].map((key) => [key, key in repaired
-    ? mergeRepairOutput(original[key], repaired[key])
+  ])].filter((key) => !rejectedPaths.has(`${path}.${key}`))
+    .map((key) => [key, key in repaired
+    ? mergeRepairOutput(original[key], repaired[key], rejectedPaths,
+        `${path}.${key}`)
     : structuredClone(original[key])]));
 }
 

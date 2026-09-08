@@ -133,6 +133,20 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 
+test('repair drops a field rejected as an additional property', async () => {
+  const input = request();
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run() { return { output: output() }; }
+  } });
+  const plan = await model(input, {
+    original_output: { ...output(), interpretation: {
+      ...output().interpretation, adaptation_type: 'literal' } },
+    structural_errors: [{ path: '$.interpretation.adaptation_type',
+      code: 'additional_property', message: 'is forbidden' }]
+  });
+  assert.equal('adaptation_type' in plan.interpretation, false);
+});
+
 test('grounding repair keeps the model semantic result unchanged',
   async () => {
     const intent = 'Подбираю доску и делаю из неё опору.';

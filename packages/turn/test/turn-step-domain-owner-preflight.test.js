@@ -92,7 +92,10 @@ test('repeated unavailable owner becomes a safe direct no-result', async () => {
   const result = await runTurnStepLoop(input(), ports(
     async (request) => {
       calls += 1;
-      return unavailableGenericPlan(request);
+      const unavailable = unavailableGenericPlan(request);
+      return calls === 1
+        ? { ...unavailable, interpretation: { adaptation: 'literal' } }
+        : unavailable;
     }, preflight(), null
   ));
   assert.equal(calls, 2);

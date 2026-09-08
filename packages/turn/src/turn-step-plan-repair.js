@@ -81,7 +81,7 @@ function repeatedUnavailableOwner(error, originalErrors) {
   const repairedErrors = error?.details?.errors;
   const unavailable = ({ code }) => code === 'domain_owner_unavailable';
   return error?.code === 'TURN_STEP_PLAN_INVALID'
-    && originalErrors.length > 0 && originalErrors.every(unavailable)
+    && originalErrors.some(unavailable)
     && Array.isArray(repairedErrors) && repairedErrors.length > 0
     && repairedErrors.every(unavailable);
 }

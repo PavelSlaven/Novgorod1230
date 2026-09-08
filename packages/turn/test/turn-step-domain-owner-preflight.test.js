@@ -70,7 +70,7 @@ function ports(turnStepModel, semanticPlanValidator, randomSource) {
   };
 }
 
-test('unavailable generic owner repairs to direct plan before RNG or effects',
+test('owner repairs before RNG or effects',
   async () => {
     let calls = 0;
     let rolls = 0;
@@ -89,7 +89,7 @@ test('unavailable generic owner repairs to direct plan before RNG or effects',
     assert.deepEqual(result.write_fragments, []);
 });
 
-test('repeated unavailable owner becomes a safe direct no-result', async () => {
+test('repeated unavailable owner safely stops', async () => {
   let calls = 0;
   const result = await runTurnStepLoop(input(), ports(
     async (request) => {
@@ -105,8 +105,7 @@ test('repeated unavailable owner becomes a safe direct no-result', async () => {
   assert.equal(result.step_traces[0].reason_code, 'domain_operation_unavailable');
 });
 
-test('unseen item discovery without an owner becomes a safe direct no-result',
-  async () => {
+test('unseen ownerless item inspection safely stops', async () => {
     let calls = 0;
     const itemInput = input();
     itemInput.initialWorkingProjection = { actor_ref: 'actor-1',
@@ -114,22 +113,18 @@ test('unseen item discovery without an owner becomes a safe direct no-result',
     const result = await runTurnStepLoop(itemInput, ports(
       async (request) => {
         calls += 1;
-        return plan(request, {
-          resolution: 'domain_request', goal_result: 'pending',
-          activity: { owner: 'domain', duration_class: null, effort: null },
-          operations: [{ op: 'request_discovery', actor_ref: 'actor-1',
-            discovery_kind: 'inspect', target_refs: ['item:wooden-spoon'],
-            query: 'рассмотреть следы износа' }]
-        });
+        return plan(request, { resolution: 'domain_request', goal_result: 'pending',
+          activity: { owner: 'domain', duration_class: null, effort: null }, operations: [{
+            op: 'request_discovery', actor_ref: 'actor-1', discovery_kind: 'inspect',
+            target_refs: ['item:wooden-spoon'], query: 'рассмотреть следы износа' }] });
       }, preflight(), null
     ));
     assert.equal(calls, 2);
     assert.deepEqual(result.write_fragments, []);
-    assert.equal(result.step_traces[0].reason_code,
-      'domain_operation_unavailable');
+    assert.equal(result.step_traces[0].reason_code, 'domain_operation_unavailable');
   });
 
-test('structurally incomplete domain request can repair to a safe no-result',
+test('incomplete domain request repairs safely',
   async () => {
     let calls = 0;
     const result = await runTurnStepLoop(input(), ports(
@@ -151,7 +146,7 @@ test('structurally incomplete domain request can repair to a safe no-result',
       'domain_operation_unavailable');
   });
 
-test('partial removal of unavailable owner becomes a safe direct no-result',
+test('partial owner removal safely stops',
   async () => {
     let calls = 0;
     const result = await runTurnStepLoop(input(), ports(
@@ -170,7 +165,7 @@ test('partial removal of unavailable owner becomes a safe direct no-result',
       'domain_operation_unavailable');
   });
 
-test('rejected semantic choice retained by repair becomes a safe no-result',
+test('repair retaining rejected choice safely stops',
   async () => {
     let calls = 0;
     const request = {
@@ -198,7 +193,7 @@ test('rejected semantic choice retained by repair becomes a safe no-result',
     assert.equal(result.plan.reason_code, 'domain_operation_unavailable');
   });
 
-test('structural repair adding a forbidden choice becomes a safe no-result',
+test('repair adding forbidden choice safely stops',
   async () => {
     let calls = 0;
     const result = await runTurnStepLoop(input(), ports(
@@ -215,7 +210,7 @@ test('structural repair adding a forbidden choice becomes a safe no-result',
       'domain_operation_unavailable');
   });
 
-test('repeated non-progressing continuation becomes a safe no-result',
+test('repeated non-progressing continuation safely stops',
   async () => {
     let calls = 0;
     const result = await runTurnStepLoop(input(), ports(
@@ -231,7 +226,7 @@ test('repeated non-progressing continuation becomes a safe no-result',
       'domain_operation_unavailable');
   });
 
-test('unresolved repaired domain request becomes a safe no-result',
+test('unresolved repaired domain request safely stops',
   async () => {
     let calls = 0;
     const result = await runTurnStepLoop(input(), ports(
@@ -252,7 +247,7 @@ test('unresolved repaired domain request becomes a safe no-result',
       'domain_operation_unavailable');
   });
 
-test('active conversation does not reject an unrelated direct plan', () => {
+test('unrelated direct plan ignores active conversation', () => {
   const validate = preflight();
   const request = { player_safe_state: { active_interlocutor: {
     entity_ref: { entity_kind: 'npc', entity_id: 'npc:visible' }
@@ -263,7 +258,7 @@ test('active conversation does not reject an unrelated direct plan', () => {
     prepared_chain_context: null }));
 });
 
-test('planner receives only available exact domain operation DTOs', async () => {
+test('planner sees only available exact operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const wait = { ...dto, activity_kind: 'wait', description: 'Ждать.' };
   const semanticGrounding = { authority: 'authored_activity',
@@ -302,7 +297,7 @@ test('planner receives only available exact domain operation DTOs', async () => 
   assert.deepEqual((await run(false)).available_domain_operations, []);
 });
 
-test('prepared followup candidates bind each available precursor to its successor',
+test('prepared followups bind each available precursor',
   async () => {
     const parentA = activity('prepare-a');
     const parentB = activity('prepare-b');
@@ -374,7 +369,7 @@ test('prepared followup candidates bind each available precursor to its successo
       request, prepared_chain_context: null }), { code: 'TURN_STEP_PLAN_INVALID' });
   });
 
-test('prepared continuation recomputes domain operation DTOs from current state', async () => {
+test('prepared continuation recomputes operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const { services } = createServices([], { command: {
     matches: () => false,
@@ -428,7 +423,7 @@ test('prepared continuation recomputes domain operation DTOs from current state'
   assert.deepEqual(requests.map((request) => request.available_domain_operations), [[dto], []]);
 });
 
-test('direct continuation does not reuse initial domain operation DTOs', async () => {
+test('direct continuation drops initial operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1',
     activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const { services } = createServices([], { command: { matches: () => false,
@@ -455,7 +450,7 @@ test('direct continuation does not reuse initial domain operation DTOs', async (
     [[dto], []]);
 });
 
-test('direct continuation retains the active conversation owner', async () => {
+test('direct continuation keeps conversation owner', async () => {
   const dto = { op: 'emit_interaction', actor_ref: 'party-1',
     target_actor_refs: ['npc-1'], interaction_kind: 'speech',
     content: 'Говорить.', instrument_refs: [] };
@@ -499,7 +494,7 @@ function activity(description) {
     target_refs: [], description };
 }
 
-test('structural then unavailable owner becomes a safe no-result', async () => {
+test('structural then unavailable owner safely stops', async () => {
   let calls = 0;
   const result = await runTurnStepLoop(input(), ports(
     async (request) => {
@@ -516,7 +511,7 @@ test('structural then unavailable owner becomes a safe no-result', async () => {
     'domain_operation_unavailable');
 });
 
-test('repair with same operation recomputes owner for changed plan context', () => {
+test('repair recomputes owner for changed plan context', () => {
   const validate = createTurnStepDomainOwnerPreflight({ externalRegistry: null,
     semanticBindings: [{ command: { option_id: 'choice' }, binding: {
       operation: 'request_activity', matches: ({ plan: value }) =>
@@ -533,7 +528,7 @@ test('repair with same operation recomputes owner for changed plan context', () 
   prepared_chain_context: null }));
 });
 
-test('active prepared chain defers one unavailable domain request', () => {
+test('prepared chain defers unavailable domain request', () => {
   const request = { remaining_intent: 'ждать', player_safe_state: {} };
   assert.doesNotThrow(() => preflight()({ plan: {
     resolution: 'domain_request', operations: [{ op: 'request_activity' }],
@@ -545,7 +540,7 @@ test('active prepared chain defers one unavailable domain request', () => {
   }, request, prepared_chain_context: null }), { code: 'TURN_STEP_PLAN_INVALID' });
 });
 
-test('domain preflight delegates semantic grounding to the configured owner',
+test('preflight delegates semantic grounding',
   async () => {
     let received = null;
     const expected = Object.assign(new Error('source mismatch'), {

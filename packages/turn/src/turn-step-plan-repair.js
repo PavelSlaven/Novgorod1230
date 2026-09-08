@@ -62,6 +62,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       };
     } catch (repairError) {
       if (unresolvedDomainRequest({ error: repairError, originalOutput })
+          || repeatedUnavailableOwner(repairError, structuralErrors)
           || unresolvedSemanticGrounding(repairError)) {
         return { plan: noResultPlan(request), repaired: true };
       }
@@ -74,6 +75,15 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       throw repairError;
     }
   }
+}
+
+function repeatedUnavailableOwner(error, originalErrors) {
+  const repairedErrors = error?.details?.errors;
+  const unavailable = ({ code }) => code === 'domain_owner_unavailable';
+  return error?.code === 'TURN_STEP_PLAN_INVALID'
+    && originalErrors.length > 0 && originalErrors.every(unavailable)
+    && Array.isArray(repairedErrors) && repairedErrors.length > 0
+    && repairedErrors.every(unavailable);
 }
 
 const SEMANTIC_GROUNDING_CODES = new Set([

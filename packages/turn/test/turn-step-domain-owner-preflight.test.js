@@ -87,6 +87,19 @@ test('unavailable generic owner repairs to direct plan before RNG or effects',
     assert.deepEqual(result.write_fragments, []);
 });
 
+test('repeated unavailable owner becomes a safe direct no-result', async () => {
+  let calls = 0;
+  const result = await runTurnStepLoop(input(), ports(
+    async (request) => {
+      calls += 1;
+      return unavailableGenericPlan(request);
+    }, preflight(), null
+  ));
+  assert.equal(calls, 2);
+  assert.deepEqual(result.write_fragments, []);
+  assert.equal(result.step_traces[0].reason_code, 'domain_operation_unavailable');
+});
+
 test('active conversation does not reject an unrelated direct plan', () => {
   const validate = preflight();
   const request = { player_safe_state: { active_interlocutor: {

@@ -7,7 +7,7 @@ export const LOCAL_LLM_PRESET = Object.freeze({
 
 export function createLlmSettingsOwner({ qualifyCustom = null,
   probeCustom = null, now = Date.now, initialRecord = null,
-  persistSettings = null } = {}) {
+  persistSettings = null, runtimeStatus = null } = {}) {
   const restored = initialRecord == null
     ? { active: defaultSnapshot(), identity: null }
     : normalizeStoredRecord(initialRecord);
@@ -16,7 +16,7 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
   let generation = 0;
   let commitQueue = Promise.resolve();
   return Object.freeze({
-    read() { return publicSnapshot(active); },
+    read() { return publicSnapshot(active, runtimeStatus); },
     providerSnapshot() { return active; },
     ordinaryMaterializationIdentity() { return qualifiedO1Identity; },
     async apply(input) {
@@ -30,7 +30,7 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
         if (applyingGeneration !== generation) stale();
         active = next;
         qualifiedO1Identity = qualified;
-        return publicSnapshot(active);
+        return publicSnapshot(active, runtimeStatus);
       });
     },
     async probe(input) {
@@ -113,27 +113,24 @@ function normalizeProvider(input, active = null) {
     baseUrl, model, apiKey });
 }
 
-function defaultSnapshot() { return Object.freeze({ mode: 'default' }); }
-function publicSnapshot(snapshot) {
+function defaultSnapshot() { return Object.freeze({ mode: 'local',
+  compatibility: 'openai_compatible', baseUrl: LOCAL_LLM_PRESET.base_url,
+  model: LOCAL_LLM_PRESET.model, apiKey: null }); }
+function publicSnapshot(snapshot, runtimeStatus) {
   return Object.freeze({
-    ...(snapshot.mode === 'default'
-      ? { mode: 'default', base_url: null, model: null,
-          api_key_present: false, compatibility: 'deepseek' }
-      : { mode: snapshot.mode, compatibility: snapshot.compatibility,
-          base_url: snapshot.baseUrl, model: snapshot.model,
-          api_key_present: snapshot.apiKey != null }),
-    local_preset: LOCAL_LLM_PRESET
+    mode: snapshot.mode, compatibility: snapshot.compatibility,
+    base_url: snapshot.baseUrl, model: snapshot.model,
+    api_key_present: snapshot.apiKey != null,
+    local_preset: LOCAL_LLM_PRESET,
+    ...(runtimeStatus ? { local_runtime: runtimeStatus } : {})
   });
 }
 
 function storedRecord(snapshot, identity) {
   return Object.freeze({
     version: 1,
-    settings: snapshot.mode === 'default' ? { mode: 'default' } : {
-      mode: snapshot.mode, compatibility: snapshot.compatibility,
-      base_url: snapshot.baseUrl, model: snapshot.model,
-      api_key: snapshot.apiKey
-    },
+    settings: { mode: snapshot.mode, compatibility: snapshot.compatibility,
+      base_url: snapshot.baseUrl, model: snapshot.model, api_key: snapshot.apiKey },
     ordinary_materialization_identity: identity
   });
 }
@@ -144,7 +141,8 @@ function normalizeStoredRecord(record) {
       'Saved LLM settings are invalid.', { status: 500, public_exposure: 'internal' });
   }
   const active = normalizeSettings(record.settings, null);
-  const identity = active.mode === 'default' ? null
+  const legacyDefault = record.settings.mode === 'default';
+  const identity = legacyDefault ? null
     : normalizeIdentity(record.ordinary_materialization_identity);
   return { active, identity };
 }

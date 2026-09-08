@@ -4,6 +4,15 @@ import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createGameplayGapExplorer, runGameplayGapCampaign } from '../gameplay-gap-campaign.mjs';
+import { playerDom } from '../local-gemma-acceptance.mjs';
+
+test('browser PLAYER receives only rendered DOM text', async () => {
+  const selectors = [];
+  const page = { locator(selector) { selectors.push(selector);
+    return { innerText: async () => 'Видимая сцена и поле действия' }; } };
+  assert.equal(await playerDom(page), 'Видимая сцена и поле действия');
+  assert.deepEqual(selectors, ['[data-game-root]']);
+});
 
 test('development explorer makes a separate generative call from current safe context', async () => {
   const next = createGameplayGapExplorer({ focus: 'weather and materials', excludedIntents: ['prior'],
@@ -56,7 +65,8 @@ test('campaign drives HTTP, separates explorer context, and retains actual priva
           facts: [{ claim_ref: 'claim:actual' }], hard_constraints: [] } } },
         { event: 'owner_commit_completed', result: { committed: true } }],
       calls: [{ role_id: 'turn_step_planner', request: { messages: [] },
-        response: { parsed_json: { result: 'inspect' }, reasoning_content: 'must-not-forward' } }] } }];
+        response: { provider: 'openai_compatible', model: 'local-model',
+          parsed_json: { result: 'inspect' }, reasoning_content: 'must-not-forward' } }] } }];
     }
   });
   assert.equal(stopped, true);
@@ -74,6 +84,7 @@ test('campaign drives HTTP, separates explorer context, and retains actual priva
   const saved = await readFile(join(directory, 'campaign.json'), 'utf8');
   assert.equal(saved.includes('must-not-forward'), false);
   assert.equal(saved.includes('private'), true);
+  assert.equal(report.turns[0].events[1].llm.calls[0].model, 'local-model');
 });
 
 test('acceptance rejects dirty checkout before starting production', async () => {

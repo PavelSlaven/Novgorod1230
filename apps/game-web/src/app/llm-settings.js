@@ -30,7 +30,7 @@ export function createLlmSettingsController({ root, api, store, storage }) {
       return;
     }
     const candidate = llmSettingsCandidate(values);
-    if (mode !== 'default' && (!candidate.base_url || !candidate.model)) {
+    if (!candidate.base_url || !candidate.model) {
       store.setLlmSettingsMessage({ kind: 'error', text: !candidate.base_url ? 'Укажи API base URL.' : 'Укажи model.' });
       return;
     }
@@ -53,9 +53,6 @@ export function createLlmSettingsController({ root, api, store, storage }) {
   }
 
   function selectMode(mode) {
-    const disabled = mode === 'default';
-    root.querySelectorAll('[data-llm-settings-form] input[name="base_url"], [data-llm-settings-form] input[name="model"], [data-llm-settings-form] input[name="api_key"], [data-llm-settings-form] button[value="test"]')
-      .forEach((input) => { input.disabled = disabled; });
     if (mode !== 'local') return;
     const preset = store.getState().llmSettings?.local_preset;
     const baseUrl = root.querySelector('[data-llm-settings-form] input[name="base_url"]');
@@ -67,7 +64,6 @@ export function createLlmSettingsController({ root, api, store, storage }) {
 
 export function llmSettingsCandidate(values) {
   const mode = values.get('mode');
-  if (mode === 'default') return { mode: 'default' };
   return {
     mode,
     base_url: String(values.get('base_url') ?? '').trim(),

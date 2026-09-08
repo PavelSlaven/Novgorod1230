@@ -23,10 +23,12 @@ test('LLM API client uses game-server routes and preserves error envelopes', asy
   assert.deepEqual(JSON.parse(calls[3].options.body), { mode: 'default' });
 });
 
-test('LLM settings apply default uses strict request and failed probes stay errors', () => {
+test('LLM settings candidate and failed probes stay strict', () => {
   assert.deepEqual(llmSettingsCandidate(new Map([
-    ['mode', 'default'], ['base_url', ''], ['model', ''], ['api_key', '']
-  ])), { mode: 'default' });
+    ['mode', 'local'], ['base_url', 'http://127.0.0.1:8000/v1'],
+    ['model', 'gemma'], ['api_key', '']
+  ])), { mode: 'local', base_url: 'http://127.0.0.1:8000/v1',
+    model: 'gemma', api_key: '' });
   assert.throws(() => assertLlmProbeSuccess({ ok: false, category: 'timeout' }), {
     code: 'LLM_PROBE_FAILED', message: 'Проверка не пройдена: timeout.'
   });
@@ -53,13 +55,15 @@ test('LLM settings reload replaces stale browser draft with server config', asyn
   });
   await createLlmSettingsController({
     root: { querySelector: () => ({ focus() {} }) },
-    api: { getLlmSettings: async () => ({ mode: 'default', base_url: null, model: null, api_key_present: false }) },
+    api: { getLlmSettings: async () => ({ mode: 'local',
+      base_url: 'http://127.0.0.1:8000/v1', model: 'managed-gemma',
+      api_key_present: false }) },
     store, storage: null
   }).open();
   const state = store.getState();
-  assert.equal(state.llmSettings.mode, 'default');
-  assert.equal(state.llmSettingsDraft.model, null);
-  assert.match(renderAppState(state), /name="model" value=""/u);
+  assert.equal(state.llmSettings.mode, 'local');
+  assert.equal(state.llmSettingsDraft.model, 'managed-gemma');
+  assert.match(renderAppState(state), /name="model" value="managed-gemma"/u);
 });
 
 test('LLM settings overlay has required controls and never renders key', () => {
@@ -67,24 +71,24 @@ test('LLM settings overlay has required controls and never renders key', () => {
   store.setLlmSettings({ mode: 'custom', base_url: 'http://localhost/v1', model: 'local', api_key_present: true });
   store.openOverlay('llm_settings');
   let html = renderAppState(store.getState());
-  for (const label of ['По умолчанию', 'Свой OpenAI-compatible endpoint', 'API base URL', 'Model', 'Проверить', 'Применить', 'Сбросить к умолчанию']) {
-    assert.match(html, new RegExp(label, 'u'));
+  for (const label of ['Локальная Gemma 4 (по умолчанию)',
+    'Свой OpenAI-compatible endpoint', 'API base URL', 'Model', 'Проверить',
+    'Применить', 'Вернуть локальную Gemma']) {
+    assert.ok(html.includes(label), label);
   }
   assert.match(html, /Локальная Gemma 4/u);
   assert.match(html, /type="password"/u);
   assert.doesNotMatch(html, /secret|value="[^"]+"[^>]*type="password"/u);
   assert.doesNotMatch(html, /name="llm_action" value="test" disabled/u);
-  store.setLlmSettings({ mode: 'default' });
+  store.setLlmSettings({ mode: 'local', base_url: 'http://localhost/v1',
+    model: 'managed-gemma' });
   html = renderAppState(store.getState());
-  assert.match(html, /name="llm_action" value="test" disabled/u);
+  assert.doesNotMatch(html, /name="llm_action" value="test" disabled/u);
 });
 
-test('local mode fills supported preset and keeps fields editable', () => {
+test('local mode fills supported preset', () => {
   const fields = {
-    base_url: { disabled: true, value: '' },
-    model: { disabled: true, value: '' },
-    api_key: { disabled: true, value: '' },
-    test: { disabled: true }
+    base_url: { value: '' }, model: { value: '' }
   };
   const root = {
     querySelectorAll: () => Object.values(fields),
@@ -92,12 +96,24 @@ test('local mode fills supported preset and keeps fields editable', () => {
       ? fields.base_url : selector.includes('model') ? fields.model : null
   };
   const store = createUiStore();
-  store.setLlmSettings({ mode: 'default', local_preset: {
+  store.setLlmSettings({ mode: 'local', local_preset: {
     base_url: 'http://127.0.0.1:8000/v1', model: 'supported-gemma'
   } });
   createLlmSettingsController({ root, api: {}, store, storage: null })
     .selectMode('local');
   assert.equal(fields.base_url.value, 'http://127.0.0.1:8000/v1');
   assert.equal(fields.model.value, 'supported-gemma');
-  assert.equal(Object.values(fields).some(({ disabled }) => disabled), false);
+});
+
+test('landing blocks local play with hardware diagnostics until custom provider is selected', () => {
+  const store = createUiStore();
+  store.setLlmSettings({ mode: 'local', local_runtime: { ready: false,
+    reasons: ['Недостаточно VRAM.'] } });
+  let html = renderAppState(store.getState());
+  assert.match(html, /Недостаточно VRAM/u);
+  assert.match(html, /data-start-new-game disabled/u);
+  store.setLlmSettings({ mode: 'custom', base_url: 'https://example.test/v1',
+    model: 'custom' });
+  html = renderAppState(store.getState());
+  assert.doesNotMatch(html, /data-start-new-game disabled/u);
 });

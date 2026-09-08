@@ -5,7 +5,7 @@ export function storedLlmSettings(storage) {
     const value = JSON.parse(storage?.getItem?.(STORAGE_KEY) ?? 'null');
     if (!value || typeof value !== 'object') return null;
     return {
-      mode: ['local', 'custom'].includes(value.mode) ? value.mode : 'default',
+      mode: ['local', 'custom'].includes(value.mode) ? value.mode : 'local',
       base_url: text(value.base_url),
       model: text(value.model),
       api_key_present: false
@@ -17,7 +17,7 @@ export function rememberLlmSettings(storage, settings) {
   try {
     storage?.setItem?.(STORAGE_KEY, JSON.stringify({
       mode: ['local', 'custom'].includes(settings?.mode)
-        ? settings.mode : 'default',
+        ? settings.mode : 'local',
       base_url: text(settings?.base_url),
       model: text(settings?.model)
     }));

@@ -114,9 +114,24 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
         || Array.isArray(response.output)) {
       throw dependencyError('Turn step planner returned no JSON object.');
     }
-    return assembleTurnStepPlan(response.output, request, operationChoices);
+    const semanticOutput = repairing
+      ? mergeRepairOutput(repairContext.original_output, response.output)
+      : response.output;
+    return assembleTurnStepPlan(semanticOutput, request, operationChoices);
   };
   return model;
+}
+
+function mergeRepairOutput(original, repaired) {
+  if (!original || typeof original !== 'object' || Array.isArray(original)
+      || !repaired || typeof repaired !== 'object' || Array.isArray(repaired)) {
+    return repaired;
+  }
+  return Object.fromEntries([...new Set([
+    ...Object.keys(original), ...Object.keys(repaired)
+  ])].map((key) => [key, key in repaired
+    ? mergeRepairOutput(original[key], repaired[key])
+    : structuredClone(original[key])]));
 }
 
 function semanticTurnStepExample() {
@@ -211,9 +226,9 @@ export function assembleTurnStepPlan(choice, request,
       ? { owner: 'domain', duration_class: null, effort: null }
       : semantic.activity,
     operations,
-    check: semantic.check,
-    continuation: semantic.continuation,
-    clarification: semantic.clarification,
+    check: semantic.check ?? null,
+    continuation: semantic.continuation ?? null,
+    clarification: semantic.clarification ?? null,
     reason_code: semantic.reason_code,
     reason: semantic.reason,
     ...(mismatchedSelectedOperations ? {

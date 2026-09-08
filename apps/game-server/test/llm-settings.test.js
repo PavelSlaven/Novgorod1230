@@ -48,7 +48,10 @@ test('Apply generation rejects stale qualification after reset or newer Apply', 
     pending.push({ candidate, resolve });
   }) });
   const first = owner.apply(custom);
-  await owner.reset();
+  const reset = owner.reset();
+  pending[1].resolve({ ...identity(), model: LOCAL_LLM_PRESET.model });
+  await reset;
+  pending.splice(1, 1);
   pending.shift().resolve(identity());
   await assert.rejects(first, { code: 'LLM_SETTINGS_APPLY_STALE' });
   assert.deepEqual(owner.read(), defaultSettings());
@@ -96,8 +99,10 @@ test('custom qualification is atomic; probe does not apply it', async () => {
   assert.equal(owner.read().model, 'local-model');
   await assert.rejects(owner.probe({ ...custom, model: 'probe-model' }), { code: 'QUALIFICATION_FAILED' });
   assert.equal(owner.read().model, 'local-model');
+  fail = false;
   await owner.reset();
-  assert.equal(owner.ordinaryMaterializationIdentity(), null);
+  assert.equal(owner.ordinaryMaterializationIdentity().model,
+    LOCAL_LLM_PRESET.model);
 });
 
 test('role runner fixes custom provider settings at call start and tags probes separately', async () => {
@@ -117,7 +122,7 @@ test('role runner fixes custom provider settings at call start and tags probes s
   releaseFirst();
   await first;
   await runner.run({ scope: 'turn_runtime', role_id: 'intent_router' });
-  assert.equal(calls[0].runtimeProviderOverride, undefined);
+  assert.equal(calls[0].runtimeProviderOverride.model, LOCAL_LLM_PRESET.model);
   assert.equal(calls[1].runtimeProviderOverride.model, 'local-model');
   const description = runner.describe({ scope: 'turn_runtime', role_id: 'intent_router' });
   assert.equal(description.provider, 'openai_compatible');
@@ -238,6 +243,7 @@ test('readiness probe reports provider category without applying candidate', asy
 
 function identity() { return { provider: 'openai_compatible', model: 'local-model',
   scope: 'turn_runtime', role_id: 'ordinary_materialization', config_hash: 'qualified' }; }
-function defaultSettings() { return { mode: 'default', base_url: null,
-  model: null, api_key_present: false, compatibility: 'deepseek',
+function defaultSettings() { return { mode: 'local',
+  base_url: LOCAL_LLM_PRESET.base_url, model: LOCAL_LLM_PRESET.model,
+  api_key_present: false, compatibility: 'openai_compatible',
   local_preset: LOCAL_LLM_PRESET }; }

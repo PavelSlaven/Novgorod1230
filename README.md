@@ -78,23 +78,24 @@ LLM выбирает закрытые варианты либо возвраща
 
 ## Быстрый запуск
 
-Для локальной игры нужны Node.js 22+, Docker, Python и
-[подготовленная локальная Giga-модель](docs/setup/WORLD_KNOWLEDGE_GIGA_EMBEDDINGS.md).
-Gameplay LLM выбирается отдельно: DeepSeek через `DEEPSEEK_API_KEY` либо
-[локальный/облачный OpenAI-compatible provider](docs/setup/LLM_PROVIDERS.md).
+Для локальной игры нужен только Node.js 22+. Первый запуск автоматически
+проверяет GPU/VRAM/RAM/диск и подготавливает managed PostgreSQL, pinned Python,
+Giga embeddings, CUDA `llama.cpp` и локальную Gemma 4. Веса лежат в обычном
+user-data/cache каталоге, загрузка продолжается после обрыва и не повторяется
+после проверки версии и checksum.
 
 ```powershell
 npm ci
-npm run world-knowledge:giga-readiness
 npm run play:local
 ```
 
 После readiness откройте <http://127.0.0.1:3000>. Launcher создаёт локальную
-PostgreSQL при первом запуске; повторный `npm run play:local` использует ту же
-party DB, поэтому сохранения переживают остановку Node.js и Docker container.
+managed runtime при первом запуске; повторный `npm run play:local` работает
+offline и использует ту же party DB. Игра сама завершает принадлежащие ей
+server, inference и PostgreSQL процессы.
 
 `npm start` — low-level entry для уже подготовленного production environment;
-он не запускает Docker и не готовит базы.
+он не выполняет пользовательский provisioning.
 
 CLI-запуск без local launcher:
 

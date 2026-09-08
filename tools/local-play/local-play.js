@@ -5,18 +5,16 @@ import { fileURLToPath } from 'node:url';
 
 import pg from 'pg';
 
-import { createProductionLlmRoleRunner, probeLlmProvider } from
-  '../../apps/game-server/src/infrastructure/provider/deepseek.js';
 import { loadActiveRuntimeCatalogPin } from
   '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE
 } from '../../apps/game-server/src/composition/production-spatial-v3.js';
 import {
-  assertDockerAvailable,
   ensureLocalPostgres,
   localPlayError
 } from './local-postgres.js';
+import { provisionManagedRuntime } from './managed-runtime.js';
 import { installActivatedRuntimeCatalog } from './production-setup.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -35,7 +33,8 @@ export function validateLocalPlay({ env = process.env, nodeVersion = process.ver
   return Object.freeze({ port });
 }
 
-export function buildServerEnv({ env = process.env, worldUrl, partyUrl, pinManifestDigest, port }) {
+export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
+  pinManifestDigest, port, managedRuntime }) {
   const childEnv = { ...env };
   delete childEnv.RUS_RUNTIME_BINDINGS_MODULE;
   delete childEnv.RUS_RUN_PARTY_MIGRATIONS;
@@ -51,7 +50,14 @@ export function buildServerEnv({ env = process.env, worldUrl, partyUrl, pinManif
     RUS_DATABASE_SSL: 'false',
     RUS_SERVER_HOST: '127.0.0.1',
     RUS_SERVER_PORT: String(port),
-    RUS_TURN_DECISION_SECRET: 'novgorod1230-local-play-decision-secret-v1'
+    RUS_TURN_DECISION_SECRET: 'novgorod1230-local-play-decision-secret-v1',
+    RUS_WORLD_KNOWLEDGE_PYTHON: managedRuntime.giga.python,
+    ...(managedRuntime.giga.modelPath
+      ? { RUS_WORLD_KNOWLEDGE_MODEL_PATH: managedRuntime.giga.modelPath } : {}),
+    ...(managedRuntime.giga.hfHome ? { HF_HOME: managedRuntime.giga.hfHome } : {}),
+    HF_HUB_OFFLINE: '1',
+    TRANSFORMERS_OFFLINE: '1',
+    RUS_LOCAL_LLM_RUNTIME_STATUS: JSON.stringify(runtimeStatus(managedRuntime))
   };
 }
 
@@ -87,8 +93,7 @@ export async function startLocalPlay({
   setupProduction = installActivatedRuntimeCatalog,
   loadPin = loadActiveRuntimeCatalogPin,
   createPool = (options) => new pg.Pool(options),
-  checkDocker = assertDockerAvailable,
-  providerProbe = probeLlmProvider,
+  provisionRuntime = provisionManagedRuntime,
   spawnServer = defaultSpawnServer,
   fetchImpl = fetch,
   sleep = delay,
@@ -96,48 +101,62 @@ export async function startLocalPlay({
   log = console.log
 } = {}) {
   const { port } = validateLocalPlay({ env, nodeVersion });
-  checkDocker();
   if (!(await isPortAvailable(port))) {
     throw localPlayError('LOCAL_PLAY_PORT_UNAVAILABLE', `Port ${port} is already in use.`);
   }
-  if (String(env.DEEPSEEK_API_KEY ?? '').trim()) {
-    let provider;
-    try {
-      provider = await providerProbe(createProductionLlmRoleRunner({ env }));
-    } catch (error) {
-      throw providerPreflightError(error);
-    }
-    if (provider?.ok !== true) {
-      throw localPlayError('LOCAL_PLAY_PROVIDER_UNAVAILABLE',
-        'Default provider preflight failed.');
-    }
-  }
-  const postgres = await ensurePostgres({ settings: localPostgresSettings });
+  const managedRuntime = await provisionRuntime({ repositoryRoot: ROOT,
+    env, fetchImpl, log, startLlm: true });
+  let postgres;
+  try { postgres = await ensurePostgres({ settings: localPostgresSettings }); }
+  catch (error) { await managedRuntime.close(); throw error; }
   const worldPool = createPool({ connectionString: postgres.worldUrl, max: 1 });
   const partyPool = createPool({ connectionString: postgres.partyUrl, max: 1 });
   let pin;
   try {
-    if (postgres.state === 'fresh') {
-      await setupProduction({ worldPool, partyPool, worldUrl: postgres.worldUrl, repositoryRoot: ROOT });
-    }
-    pin = await loadPin(worldPool, SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_scope);
-  } finally {
-    await Promise.all([worldPool.end(), partyPool.end()]);
+    try {
+      if (postgres.state === 'fresh') await setupProduction({ worldPool,
+        partyPool, worldUrl: postgres.worldUrl, repositoryRoot: ROOT });
+      pin = await loadPin(worldPool,
+        SPATIAL_V3_PRODUCTION_RELEASE.runtime_catalog_scope);
+    } finally { await Promise.all([worldPool.end(), partyPool.end()]); }
+  } catch (error) {
+    await Promise.allSettled([managedRuntime.close(), postgres.close()]);
+    throw error;
   }
   const pinManifestDigest = pin?.compatible_world_pin_manifest_digest;
   if (!/^[a-f0-9]{64}$/u.test(String(pinManifestDigest ?? ''))) {
+    await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     throw localPlayError('LOCAL_PLAY_RUNTIME_PIN_INVALID', 'Active runtime catalog has no compatible pin manifest digest.');
   }
-  const child = spawnServer({ env: buildServerEnv({ env, worldUrl: postgres.worldUrl, partyUrl: postgres.partyUrl, pinManifestDigest, port }) });
+  const child = spawnServer({ env: buildServerEnv({ env,
+    worldUrl: postgres.worldUrl, partyUrl: postgres.partyUrl,
+    pinManifestDigest, port, managedRuntime }) });
   const baseUrl = `http://127.0.0.1:${port}`;
   try {
     await assertReadiness({ baseUrl, fetchImpl, sleep, child });
+    const settings = await readSuccess(fetchImpl,
+      `${baseUrl}/api/v1/llm-settings`);
+    if (managedRuntime.llm && settings.mode === 'local') {
+      await applyManagedLocalProvider(fetchImpl, baseUrl);
+    }
   } catch (error) {
     child.kill?.('SIGTERM');
+    await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     throw error;
   }
+  if (!managedRuntime.hardware.supported) {
+    log(`Локальная Gemma недоступна: ${managedRuntime.hardware.reasons.join(' ')} Открой настройки LLM и выбери внешний OpenAI-compatible provider.`);
+  }
   log(`Local game ready: ${baseUrl}`);
-  return Object.freeze({ child, url: baseUrl, postgres });
+  let closed = false;
+  return Object.freeze({ child, url: baseUrl, postgres, managedRuntime,
+    async close(signal = 'SIGTERM') {
+      if (closed) return; closed = true;
+      if (child.exitCode == null) child.kill(signal);
+      if (child.exitCode == null) await waitForExit(child, 10_000);
+      if (child.exitCode == null) child.kill('SIGKILL');
+      await Promise.allSettled([managedRuntime.close(), postgres.close()]);
+    } });
 }
 
 function assertHealth(health) {
@@ -152,19 +171,6 @@ function assertHealth(health) {
   }
 }
 
-function providerPreflightError(error) {
-  if (error?.code === 'http_401' || error?.code === 'http_403') {
-    return localPlayError('LOCAL_PLAY_PROVIDER_UNAUTHORIZED',
-      'Default provider authentication failed.');
-  }
-  if (error?.code === 'timeout') {
-    return localPlayError('LOCAL_PLAY_PROVIDER_TIMEOUT',
-      'Default provider preflight timed out.');
-  }
-  return localPlayError('LOCAL_PLAY_PROVIDER_UNAVAILABLE',
-    'Default provider preflight failed.');
-}
-
 async function readSuccess(fetchImpl, url) {
   const response = await fetchImpl(url);
   const payload = await response.json();
@@ -174,11 +180,35 @@ async function readSuccess(fetchImpl, url) {
   return payload.data;
 }
 
+async function applyManagedLocalProvider(fetchImpl, baseUrl) {
+  const response = await fetchImpl(`${baseUrl}/api/v1/llm-settings`, {
+    method: 'PUT', headers: { 'content-type': 'application/json',
+      accept: 'application/json' }, body: JSON.stringify({ mode: 'local' })
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || payload?.ok !== true) throw localPlayError(
+    'LOCAL_PLAY_PROVIDER_UNAVAILABLE',
+    `Локальная Gemma не прошла readiness: ${payload?.error?.code ?? `HTTP ${response.status}`}.`);
+}
+
+function runtimeStatus(runtime) {
+  return runtime.llm ? { ready: true, ...runtime.llm.identity }
+    : { ready: false, reasons: runtime.hardware.reasons,
+        hardware: runtime.hardware.facts };
+}
+
 function defaultSpawnServer({ env }) {
   return spawn(process.execPath, ['apps/game-server/src/server.js'], { cwd: ROOT, env, stdio: 'inherit' });
 }
 
 function delay(milliseconds) { return new Promise((resolve) => setTimeout(resolve, milliseconds)); }
+
+function waitForExit(child, timeoutMs) {
+  return new Promise((resolve) => {
+    const timeout = setTimeout(resolve, timeoutMs);
+    child.once('exit', () => { clearTimeout(timeout); resolve(); });
+  });
+}
 
 function portAvailable(port) {
   return new Promise((resolve) => {

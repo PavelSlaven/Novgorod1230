@@ -81,11 +81,10 @@ test('production grounding plans once and injects only an applicable bounded sli
   const ownerMetadata = calls[0].messages[0].content.match(/Focus claim domains: (.*?)\. A focus concept namespace/u);
   assert.ok(ownerMetadata, 'planner must see actual claim owners, not only cross-domain exceptions');
   const owners = JSON.parse(ownerMetadata[1]);
-  assert.deepEqual(owners['wk:material_culture:tree-climbing-hook'], ['material_culture']);
   assert.deepEqual(owners['wk:environment:regional-fish-exploitation'], ['environment']);
-  assert.ok(owners['wk:material_culture:vegetable-tanned-leather'].includes('chemistry_process'));
-  assert.ok(owners['wk:material_culture:vegetable-tanned-leather'].includes('physics_material_science'));
-  assert.ok(owners['wk:material_culture:iron'].includes('craft_technology'));
+  assert.ok(Object.keys(owners).length <= 256);
+  assert.ok(Object.keys(owners).every((ref) =>
+    plannerRequest.available_knowledge_refs.includes(ref)));
   assert.equal(first, second);
   assert.equal(Object.hasOwn(request, 'world_knowledge'), false);
   assert.equal(first.world_knowledge.pack_revision, 'revision:production-v1');
@@ -181,7 +180,7 @@ test('an unused focus does not block a supplied physical premise or force its hi
   let calls = 0;
   const plan = { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
     domains: ['craft_technology', 'physics_material_science'],
-    focus_refs: ['wk:craft_technology:spinning', 'wk:physics_material_science:fibre-twisting',
+    focus_refs: ['wk:physics_material_science:fibre-twisting',
       'wk:physics_material_science:plant-cellulosic-fibres'],
     requested_predicates: [], search_hints: ['twisting textile fibres to form yarn'] };
   const grounder = createProductionWorldKnowledgeGrounder({

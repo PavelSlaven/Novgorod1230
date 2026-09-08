@@ -25,6 +25,7 @@ const llmSettingsStore = createLlmSettingsFileStore({
 const llmSettings = createLlmSettingsOwner({
   initialRecord: await llmSettingsStore.load(),
   persistSettings: (record) => llmSettingsStore.save(record),
+  runtimeStatus: parseLocalRuntimeStatus(process.env.RUS_LOCAL_LLM_RUNTIME_STATUS),
   probeCustom: (candidate) => qualificationRunner.probe(candidate),
   qualifyCustom: createOrdinaryMaterializationStageBQualifier({
     roleRunner: qualificationRunner,
@@ -67,3 +68,20 @@ const server = createGameHttpServer({
 });
 const address = await listen(server, config);
 console.log(`@rus/game-server modular HTTP listening on http://${config.host}:${address.port}`);
+
+let closing = false;
+for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, async () => {
+  if (closing) return; closing = true;
+  await new Promise((resolve) => server.close(resolve));
+  await root.close();
+  process.exit(0);
+});
+
+function parseLocalRuntimeStatus(raw) {
+  if (!String(raw ?? '').trim()) return null;
+  try {
+    const value = JSON.parse(raw);
+    return value && typeof value === 'object' && !Array.isArray(value)
+      ? Object.freeze(value) : null;
+  } catch { return null; }
+}

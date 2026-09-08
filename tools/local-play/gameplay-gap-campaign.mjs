@@ -161,7 +161,10 @@ export async function runGameplayGapCampaign({ nextIntent, explorerRef,
     throw Object.assign(error, { report });
   } finally {
     try { await save(); }
-    finally { local?.child?.kill?.('SIGTERM'); }
+    finally {
+      if (typeof local?.close === 'function') await local.close();
+      else local?.child?.kill?.('SIGTERM');
+    }
   }
 }
 
@@ -186,7 +189,7 @@ export async function readPartyTurnTrace({ directory, partyId, requestId, attemp
   throw new Error(`Private trace was not flushed for request ${requestId}`);
 }
 
-function auditEvent(event) {
+export function auditEvent(event) {
   const llm = event.llm;
   // Structured input/output suffices for premise auditing. No provider reasoning
   // content, credentials, or transport snapshots are forwarded to auditors.
@@ -196,6 +199,9 @@ function auditEvent(event) {
       aggregate: llm.aggregate, calls: (llm.calls ?? []).map(call => ({
         role_id: call.role_id ?? null, request_identity: call.request_identity ?? null,
         status: call.response?.status ?? null, error_code: call.response?.error?.code ?? null,
+        provider: call.response?.provider ?? null,
+        model: call.response?.model ?? null,
+        config_hash: call.response?.config_hash ?? null,
         messages: call.request?.messages ?? null,
         output: call.response?.parsed_json ?? null,
         grounding: call.schema === 'world_knowledge_grounding_diagnostic_v1' ? call : null
@@ -205,7 +211,7 @@ function pending(response) {
   const data = response?.payload?.data;
   return (data?.screen?.screen_status ?? data?.screen_status) === 'committed_presentation_pending';
 }
-function gitSnapshot() {
+export function gitSnapshot() {
   const read = args => execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).trim();
   return { head: read(['rev-parse', 'HEAD']), dirty: read(['status', '--porcelain']) !== '' };
 }
@@ -216,11 +222,17 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   if (!outputDirectory || !focus) throw new Error('Usage: node gameplay-gap-campaign.mjs <output-directory> <exploration-focus> [turn-count]');
   const { createProductionLlmRoleRunner } = await import(
     '../../apps/game-server/src/infrastructure/provider/deepseek.js');
+  const { LOCAL_LLM_PRESET } = await import(
+    '../../apps/game-server/src/runtime/llm-settings.js');
+  const settings = { providerSnapshot: () => ({ mode: 'local',
+    compatibility: 'openai_compatible', baseUrl: LOCAL_LLM_PRESET.base_url,
+    model: LOCAL_LLM_PRESET.model, apiKey: null }) };
   const campaignId = `gameplay-gap-${randomUUID()}`;
   try {
     const report = await runGameplayGapCampaign({ outputDirectory, campaignId,
       explorerRef: `development-explorer:${campaignId}`, turns: Number(count),
-      nextIntent: createGameplayGapExplorer({ roleRunner: createProductionLlmRoleRunner(), focus }) });
+      nextIntent: createGameplayGapExplorer({
+        roleRunner: createProductionLlmRoleRunner({ settings }), focus }) });
     console.log(JSON.stringify({ campaign_id: report.campaign_id, status: report.status, turns: report.turns.length }));
   } catch (error) {
     console.error(JSON.stringify({ campaign_id: campaignId, status: 'failed',

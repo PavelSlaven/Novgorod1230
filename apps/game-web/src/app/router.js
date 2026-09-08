@@ -52,9 +52,14 @@ export function renderAppState(state) {
   return `${content}${state.view === 'game' ? '' : renderOverlay(state.screen, options)}${renderStatus(state)}`;
 }
 
-function renderLanding({ rememberedPartyId = null, theme = 'light', loading = false } = {}) {
-  const disabled = loading ? ' disabled' : '';
-  return `<main class="start-screen"><div class="theme-corner"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(theme)}</button></div><section class="start-card" aria-labelledby="chronicle-title"><p class="eyebrow">Хроника</p><h1 id="chronicle-title">Русь, лета 6738</h1><p class="start-description">Текстовое путешествие по Руси XIII века. Ты ведёшь одного человека; мир ведёт себя сам.</p><div class="start-actions"><button class="button-primary" type="button" data-start-new-game${disabled}>Новая игра</button>${rememberedPartyId ? `<button class="button-secondary" type="button" data-continue-party${disabled}>Продолжить</button>` : ''}</div><button class="theme-text" type="button" data-theme-toggle>Сменить освещение</button></section></main>`;
+function renderLanding({ rememberedPartyId = null, theme = 'light',
+  loading = false, llmSettings: settings = null } = {}) {
+  const blocked = settings?.mode === 'local'
+    && settings?.local_runtime?.ready === false;
+  const disabled = loading || blocked ? ' disabled' : '';
+  const diagnostic = blocked
+    ? `<p class="error" role="alert">Локальная Gemma не может быть запущена на этом ПК: ${escapeHtml((settings.local_runtime.reasons ?? []).join(' '))} Выбери внешний OpenAI-compatible provider в настройках LLM.</p>` : '';
+  return `<main class="start-screen"><div class="theme-corner"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(theme)}</button></div><section class="start-card" aria-labelledby="chronicle-title"><p class="eyebrow">Хроника</p><h1 id="chronicle-title">Русь, лета 6738</h1><p class="start-description">Текстовое путешествие по Руси XIII века. Ты ведёшь одного человека; мир ведёт себя сам.</p>${diagnostic}<div class="start-actions"><button class="button-primary" type="button" data-start-new-game${disabled}>Новая игра</button>${rememberedPartyId ? `<button class="button-secondary" type="button" data-continue-party${disabled}>Продолжить</button>` : ''}</div><button class="theme-text" type="button" data-theme-toggle>Сменить освещение</button></section></main>`;
 }
 
 function renderNewGame({ scenarios = [], newGameDraft = '', theme = 'light',
@@ -118,13 +123,13 @@ function renderOverlay(screen, { activeOverlay, developerMode = false, llmSettin
 
 function renderLlmSettingsOverlay(settings = {}, activeSettings = {}, message = null) {
   const mode = ['local', 'custom'].includes(settings?.mode)
-    ? settings.mode : 'default';
-  const configured = mode !== 'default';
+    ? settings.mode : 'local';
+  const configured = true;
   const baseUrl = escapeHtml(settings?.base_url ?? '');
   const model = escapeHtml(settings?.model ?? '');
   const disabled = configured ? '' : ' disabled';
   const note = message ? `<p class="llm-settings-message${message.kind === 'error' ? ' error' : ''}" role="${message.kind === 'error' ? 'alert' : 'status'}">${escapeHtml(message.text)}</p>` : '';
-  return `<div class="overlay-backdrop" data-overlay-backdrop><section class="overlay-panel" data-overlay-panel role="dialog" aria-modal="true" aria-labelledby="overlay-title" tabindex="-1"><header><p class="eyebrow">Настройки</p><h2 id="overlay-title">LLM</h2><button class="overlay-close" type="button" data-overlay-close aria-label="Закрыть">×</button></header><div class="overlay-body"><form class="llm-settings-form" data-llm-settings-form><fieldset><legend>Режим</legend><label><input type="radio" name="mode" value="default"${mode === 'default' ? ' checked' : ''}> По умолчанию</label><label><input type="radio" name="mode" value="local"${mode === 'local' ? ' checked' : ''}> Локальная Gemma 4</label><label><input type="radio" name="mode" value="custom"${mode === 'custom' ? ' checked' : ''}> Свой OpenAI-compatible endpoint</label></fieldset><label class="input-label">API base URL<input name="base_url" type="url" value="${baseUrl}" placeholder="http://127.0.0.1:8000/v1"${disabled}></label><label class="input-label">Model<input name="model" value="${model}"${disabled}></label><label class="input-label">API key <small>необязательно${activeSettings?.api_key_present ? ', ключ сохранён на этом ПК' : ''}</small><input name="api_key" type="password" autocomplete="off"${disabled}></label>${note}<div class="form-actions"><button class="button-secondary" type="submit" name="llm_action" value="test"${disabled}>Проверить</button><button class="button-primary" type="submit" name="llm_action" value="apply">Применить</button><button class="button-quiet" type="submit" name="llm_action" value="reset">Сбросить к умолчанию</button></div></form></div></section></div>`;
+  return `<div class="overlay-backdrop" data-overlay-backdrop><section class="overlay-panel" data-overlay-panel role="dialog" aria-modal="true" aria-labelledby="overlay-title" tabindex="-1"><header><p class="eyebrow">Настройки</p><h2 id="overlay-title">LLM</h2><button class="overlay-close" type="button" data-overlay-close aria-label="Закрыть">×</button></header><div class="overlay-body"><form class="llm-settings-form" data-llm-settings-form><fieldset><legend>Режим</legend><label><input type="radio" name="mode" value="local"${mode === 'local' ? ' checked' : ''}> Локальная Gemma 4 (по умолчанию)</label><label><input type="radio" name="mode" value="custom"${mode === 'custom' ? ' checked' : ''}> Свой OpenAI-compatible endpoint</label></fieldset><label class="input-label">API base URL<input name="base_url" type="url" value="${baseUrl}" placeholder="http://127.0.0.1:8000/v1"${disabled}></label><label class="input-label">Model<input name="model" value="${model}"${disabled}></label><label class="input-label">API key <small>необязательно${activeSettings?.api_key_present ? ', ключ сохранён на этом ПК' : ''}</small><input name="api_key" type="password" autocomplete="off"${disabled}></label>${note}<div class="form-actions"><button class="button-secondary" type="submit" name="llm_action" value="test"${disabled}>Проверить</button><button class="button-primary" type="submit" name="llm_action" value="apply">Применить</button><button class="button-quiet" type="submit" name="llm_action" value="reset">Вернуть локальную Gemma</button></div></form></div></section></div>`;
 }
 
 function panelBody(kind, screen, options) {

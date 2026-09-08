@@ -434,19 +434,18 @@ test('turn step choice preserves the selected semantic input variant', async () 
   assert.deepEqual(plan.operations, [cooling]);
 });
 
-test('turn step assembly does not invent omitted semantic fields', () => {
+test('turn step assembly normalizes omitted nullable fields only', () => {
   const input = request();
   const semantic = output();
-  delete semantic.operations;
   delete semantic.check;
   delete semantic.continuation;
   delete semantic.clarification;
   const plan = assembleTurnStepPlan(semantic, input);
-  assert.equal(plan.operations, undefined);
-  assert.equal(plan.check, undefined);
-  assert.equal(plan.continuation, undefined);
-  assert.equal(plan.clarification, undefined);
-  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
+  assert.deepEqual(plan.operations, []);
+  assert.equal(plan.check, null);
+  assert.equal(plan.continuation, null);
+  assert.equal(plan.clarification, null);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
   semantic.operations = [];
   semantic.operation_choice = 'unknown_choice';
   assert.equal(assembleTurnStepPlan(semantic, input).operations, undefined);

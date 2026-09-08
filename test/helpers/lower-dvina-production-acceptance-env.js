@@ -78,7 +78,7 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       }
     });
     server = createGameHttpServer({
-      root,
+      root: acceptanceHttpRoot(root, llm),
       staticAssets: createStaticAssetResolver({
         webRoot: resolve(repositoryRoot, 'apps/game-web'),
         contractsRoot: resolve(repositoryRoot, 'packages/contracts/src')
@@ -121,7 +121,7 @@ export async function startLowerDvinaProductionAcceptanceEnv({
           }
         });
         server = createGameHttpServer({
-          root,
+          root: acceptanceHttpRoot(root, llm),
           staticAssets: createStaticAssetResolver({
             webRoot: resolve(repositoryRoot, 'apps/game-web'),
             contractsRoot: resolve(repositoryRoot, 'packages/contracts/src')
@@ -153,6 +153,14 @@ export async function startLowerDvinaProductionAcceptanceEnv({
     docker(['rm', '-f', postgresContainer]);
     throw error;
   }
+}
+
+function acceptanceHttpRoot(root, llm) {
+  return Object.freeze({ ...root, getLlmSettings: () => ({
+    mode: 'custom', compatibility: 'openai_compatible',
+    base_url: llm.baseUrl, model: 'fixture-provider',
+    api_key_present: true
+  }) });
 }
 
 function startPostgres(name) {

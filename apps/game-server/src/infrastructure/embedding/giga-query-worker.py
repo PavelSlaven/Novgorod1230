@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -23,12 +24,13 @@ if (profile.get("embedding_profile_ref")
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 dtype = torch.bfloat16 if device == "cuda" else torch.float32
+model_path = os.environ.get("RUS_WORLD_KNOWLEDGE_MODEL_PATH")
+model_source = model_path or profile["model_id"]
+revision = {} if model_path else {"revision": profile["model_revision"]}
 tokenizer = AutoTokenizer.from_pretrained(
-    profile["model_id"], revision=profile["model_revision"],
-    trust_remote_code=True, local_files_only=True)
+    model_source, **revision, trust_remote_code=True, local_files_only=True)
 model = AutoModel.from_pretrained(
-    profile["model_id"], revision=profile["model_revision"],
-    trust_remote_code=True, local_files_only=True,
+    model_source, **revision, trust_remote_code=True, local_files_only=True,
     dtype=dtype).to(device).eval()
 print(json.dumps({"ready": True, "device": device}), flush=True)
 

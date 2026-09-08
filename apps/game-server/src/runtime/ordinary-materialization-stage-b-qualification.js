@@ -33,6 +33,7 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
     const probes = lowerDvinaTraceOrdinaryStageBQualificationCases(evalContract);
     if (probes == null) throw new Error('eval contract');
     const outputs = await Promise.all(probes.map(async (probe) => {
+      try {
         const request = presenceRequest(probe);
         const output = await qualifiedOutput({ roleRunner, invocation, identity,
           request });
@@ -40,6 +41,11 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
           resolution: validateOrdinaryMaterializationPlanV1(output, request).length === 0
             ? output.resolution : null,
           entities: output.entities };
+      } catch (error) {
+        if (/^(?:timeout|transport_error|invalid_response|json_parse_failed|http_\d{3})$/u
+          .test(String(error?.code ?? ''))) throw error;
+        return { id: probe.id, resolution: null, entities: [] };
+      }
       }));
     const report = evaluateLowerDvinaTraceOrdinaryStageBModelOutputs({
       eval_contract: evalContract, outputs });

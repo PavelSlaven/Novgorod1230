@@ -25,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 25);
+  assert.equal(corpus.corpus_version, 43);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -41,7 +41,8 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
       corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 19 }
     } });
     assert.equal(report.fixture_count, 28);
-    assert.equal(report.aggregates.total.passed, 28);
+    assert.equal(report.aggregates.total.passed, 28,
+      JSON.stringify(report.results.filter(({ pass }) => !pass)));
     assert.equal(report.aggregates.total.errors, 0);
     assert.equal(report.aggregates.total.scored, 28);
     assert.equal(report.aggregates.total.unscored, 0);
@@ -643,8 +644,10 @@ test('planner, ordinary and NPC conversation semantic mismatches fail after owne
     const report = await runFrozenRoleEval({ corpus: { ...corpus, fixtures: [planner, ordinary, conversation] },
       runtimeProviderOverride: { compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model' } });
     for (const result of report.results) {
-      assert.equal(result.errors.some((error) => error.startsWith('validator:')), false);
-      assert.equal(result.pass, false);
+      assert.equal(result.errors.some((error) => error.startsWith('validator:')),
+        false,
+        `${result.fixture_id}: ${result.errors.join(', ')}`);
+      assert.equal(result.pass, false, result.fixture_id);
       assert.ok(result.errors.some((error) => /^(unexpected|disallowed)_value:/.test(error)));
     }
   } finally { await new Promise((resolve) => server.close(resolve)); }

@@ -1,7 +1,7 @@
 # World Knowledge Platform — полный implementation contract
 
 **Проект:** `PavelSlaven/Novgorod1230` / «Русь XIII век»
-**Статус:** `ACTIVE` как норматив реализованной World Knowledge Platform production-v1 в PR92 (`4.13.0-world-knowledge.2`). Runtime wiring spatial-v3 production v15 имеет статус `validated_candidate_not_active`; production activation не заявляется этим документом и определяется actual versioned release/binding. Неактивированные optional stages остаются target именно там, где это указано.
+**Статус:** `ACTIVE` как норматив реализованной World Knowledge Platform production-v1 в PR92 (`4.13.0-world-knowledge.2`). Runtime wiring spatial-v3 production v15 активирован как sole production owner; точное состояние определяется actual versioned release/binding. Неактивированные optional stages остаются target именно там, где это указано.
 **Главный production target:** fully offline gameplay с локальной World Knowledge Platform и локальными весами моделей; облачные модели — пользовательская опция для отдельных LLM-ролей.
 **Первый game Knowledge Pack:** factual model реальности, необходимой игре `Novgorod1230`, включая Новгородскую землю около 1230 года и общие знания физики, материалов, химии, биологии и других естественно-научных/бытовых областей.
 **Первый target embedding profile:** `ai-sage/Giga-Embeddings-instruct-480M-0826` с exact revision pin при реальном embedding cutover.
@@ -35,7 +35,7 @@
 
 Если конкретное имя package/export/file в этом target расходится с текущим репозиторием, нормативны ответственность и поведение. Агент должен встроиться в фактическую текущую архитектуру самым маленьким корректным способом.
 
-## 0.1. Статическое наполнение и будущая gameplay-testing фаза
+## 0.1. Статическое наполнение и gameplay-testing фаза
 
 Статическая фаза World Knowledge включает архитектурный контракт, максимально
 широкую game-need cartography, corpus проверенных фактов и правдоподобных
@@ -45,12 +45,11 @@ verification, согласованные indexes/vectors и retrieval benchmarks
 реализованные consumers, а не от наличного corpus или текущего сценария.
 Для таких consumers явно сохраняется target status: карта не активирует runtime.
 
-Gameplay Gap Auditor (§112.12) — целевая development/testing архитектура
-отдельной последующей фазы, не критерий завершения статического наполнения.
-Систематические live campaigns, blind/adversarial explorers, replay и gameplay
-saturation запускаются только в явно назначенной gameplay-testing фазе после
-статического наполнения и отдельных тестовых проходов основного gameplay.
-Наличие development driver/validator само по себе не активирует эту фазу.
+Gameplay Gap Auditor (§112.12) остаётся отдельной development/testing
+архитектурой, не критерием завершения статического наполнения. Для PR92
+gameplay-testing фаза явно активирована: development campaigns, replay и
+финальный saturation gate разрешены, но не меняют owners factual corpus и
+gameplay mechanics.
 
 Обнаруженный gameplay defect передаётся отдельным finding правильному owner;
 статическое наполнение WK не разрешает ремонт inventory, ownership,
@@ -562,28 +561,30 @@ Narrator не может:
 Текущий пользовательский выбор:
 
 ```text
-Default DeepSeek
-Локальный OpenAI-compatible endpoint
+Managed local Gemma (default)
 Произвольный OpenAI-compatible endpoint
 ```
 
 Semantics:
 
 ```text
-Default:
-  roles → project DeepSeek role configuration
-
-Local/custom:
+Local/default:
+  installer → pinned Gemma Q4_K_P + pinned CUDA llama.cpp
   все production gameplay, narrator, planner, auditor и repair roles
-  → один явно выбранный OpenAI-compatible baseUrl/model/optional key
+  → managed local OpenAI-compatible chat/completions
+
+Custom:
+  те же roles → один явно выбранный baseUrl/model/optional key
 ```
 
-Local preset первым поддерживает
-`HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced`; base URL и model
-остаются редактируемыми. Endpoint обязан реализовать `chat/completions`.
-Readiness проверяется до Apply. Явный local/custom выбор не допускает fallback
-на DeepSeek, другую model или provider: connection/auth/model/timeout/invalid
-response возвращают typed failure, незавершённый ход не фиксируется.
+Local preset — `HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced` exact
+revision через pinned `llama.cpp`. `play:local` проверяет hardware/disk,
+resumable скачивает и сверяет checksum, запускает и останавливает owned
+inference. После provisioning runtime offline. Custom endpoint обязан
+реализовать `chat/completions`. Readiness проверяется до партии/Apply.
+Local/custom не допускает fallback на DeepSeek, другую model или provider:
+connection/auth/model/timeout/invalid response возвращают typed failure,
+незавершённый ход не фиксируется.
 
 ## 6.2. Future advanced routing
 
@@ -3690,14 +3691,15 @@ BLOCK если:
 
 Запускается при реальном committed-state integration. Проверяет save/load/retry/restart и отсутствие retroactive pack rewrite.
 
-## 112.12. GAMEPLAY GAP AUDITOR — target последующей testing-фазы
+## 112.12. GAMEPLAY GAP AUDITOR — active testing architecture
 
 Независимый development-time auditor сравнивает фактические потребности
 реальной игры с доставленными premises и результатом. Он не является runtime
 ролью, вторым planner/materializer, автоматическим исследователем или
-источником production approval. Его реальное применение отложено по §0.1.
-Существующие internal driver и backlog validator — подготовленные инструменты,
-не доказательство достижения gameplay readiness или saturation.
+источником production approval. HTTP driver остаётся development/regression
+инструментом; финальная acceptance campaign выполняется только поддерживаемым
+`gameplay:acceptance:local` runner. Само наличие runner/backlog validator не
+доказывает gameplay readiness или saturation.
 
 ### Trace requirements
 
@@ -3740,7 +3742,26 @@ Replay ссылается на реальную новую трассу и не�
 commit либо ожидаемый typed rejection с совпадающим error code и без commit.
 Простая смена status, HTTP 200 или unit fixture не заменяет replay.
 
-### Будущий saturation gate
+### Реальный browser/local-model acceptance
+
+Финальный PLAYER работает через настоящий Chromium/Playwright. Он получает
+только фактический player-facing DOM, формирует свободное намерение и вводит
+его через те же textarea/button, что человек. Прямой gameplay REST, scripted
+LLM fixture, canned response и network interception запрещены. Private traces
+читает только auditor после хода; PLAYER их не получает.
+
+`play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL,
+pinned Giga и local Gemma, запускает production server и owned processes, а
+runner гарантированно закрывает их. Development explorer и все production
+roles используют один явно зафиксированный local OpenAI-compatible endpoint.
+Каждая LLM call сохраняет единые `maxTokens = 20_000` и timeout 120 с.
+
+Evidence фиксирует exact HEAD, Gemma model/revision/GGUF checksum,
+llama.cpp version/backend, Giga revision, provider config identity,
+GPU/VRAM/RAM/disk/runtime metadata, campaign/turn/trace IDs и private gap
+audit. Fixture-based unit/CI не заменяет этот evidence.
+
+### Saturation gate
 
 После последнего P0/P1 исправления нужны три последовательные независимые
 unseen кампании на одном неизменном acceptance candidate с различающимися
@@ -3750,17 +3771,16 @@ unsupported premises в accepted traces — ноль. P2 должен быть r
 иметь независимо принятый bounded limit. Regression replay не считается unseen.
 Новый critical finding сбрасывает последовательность. Это ограниченное
 эмпирическое насыщение проверенного пространства, не математическая полнота
-мира. В статической фазе gate имеет статус «не применяется / будущая фаза»,
-а не PASS или blocker статического authoring.
+мира. Verdict допустим только после трёх реальных browser/local-Gemma кампаний
+на неизменном candidate и явного доказательства `unsupported accepted
+premises = 0`, `new P0/P1 = 0`.
 
 ---
 
 # 113. Full Definition of Done
 
-Ниже — совокупный target полной платформы. Для отдельной статической фазы
-применяется §0.1: обязательны corpus/verification/cartography/retrieval и
-проверки уже затронутой интеграции, но не новые live campaigns, gameplay
-saturation или ремонт других gameplay owners.
+Ниже — совокупный target полной платформы. Статическая готовность и активный
+gameplay-testing остаются разными verdict по §0.1 и §112.12.
 
 Полная implementation-ready platform revision завершена, когда одновременно:
 

@@ -123,7 +123,7 @@ test('custom Stage B qualification uses production messages and unique case refs
   const owner = createLlmSettingsOwner({ qualifyCustom: qualifier });
   await owner.probe({ mode: 'custom', base_url: candidate.baseUrl,
     model: candidate.model, api_key: null });
-  assert.equal(owner.read().mode, 'default');
+  assert.equal(owner.read().mode, 'local');
   assert.equal(calls.length, contract.cases.length + 5);
   assert.ok(calls.every((call) => call.overrides.requestTimeoutMs === 120000));
   assert.ok(calls.every((call) => call.provider_snapshot.model === 'candidate'));

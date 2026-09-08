@@ -25,13 +25,18 @@ and adds no second transaction owner.
 ## Владеет
 
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
-- Запускается как обычный production server entry. `tools/local-play` снаружи подготавливает только local Docker/PostgreSQL, актуальные env/pin и HTTP readiness; server не владеет launcher, Docker bootstrap или local reset.
+- Запускается как обычный production server entry. `tools/local-play` снаружи
+  подготавливает owned embedded PostgreSQL, Gemma/Giga runtime, актуальные
+  env/pin и readiness; server не создаёт второй launcher или inference transport.
 - После чтения committed screen/state владеет server-side adapter, который
   фильтрует active interlocutor identity/equipment и добавляет неперсистентные
   presentation-only selectors: `portrait_spec_v1`, optional
   `active_interlocutor.portrait_asset_id` и optional top-level
   `scene_asset_id` к public response.
-- Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые конструктивные категории neckline/sleeve/outer/fabric/trim.
+- Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side
+  provider-selected LLM-вызовом, который преобразует свободный текст только в
+  валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые
+  конструктивные категории neckline/sleeve/outer/fabric/trim.
 - Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `local`/`custom`, OpenAI-compatible base URL/model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. API key не входит в public read model, party save/replay, logs или telemetry; отдельного provider/gameplay path и silent fallback нет.
 - В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены.
 - Ведёт локальный диагностический `logs/<party_id>.jsonl` (каталог переопределяется `LOG_DIRECTORY`): отдельный append-only файл на партию с public runtime input/output/error, полным player intent, показанным экраном, длительностью и приватным LLM request/response trace. Credentials/API key, base URL и runtime provider override туда не передаются; non-secret provider/model, config hash и effective generation parameters сохраняются. PostgreSQL остаётся authoritative state.

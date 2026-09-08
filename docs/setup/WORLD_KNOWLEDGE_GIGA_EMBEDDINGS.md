@@ -1,39 +1,20 @@
-# Локальная подготовка Giga embeddings для World Knowledge
+# Giga embeddings для World Knowledge
 
-Production World Knowledge требует локальную модель
-`ai-sage/Giga-Embeddings-instruct-480M-0826` на exact revision
-`0c94f705aa35719324fb46f7e75b0a5c275da6e4`. Веса не входят в Git.
+`npm run play:local` сам устанавливает managed Python 3.11.11 через pinned
+`uv`, exact dependencies и snapshot
+`ai-sage/Giga-Embeddings-instruct-480M-0826@0c94f705aa35719324fb46f7e75b0a5c275da6e4`.
+Системный Python и ручная загрузка не нужны. Runtime использует локальный путь,
+`local_files_only=True`, `HF_HUB_OFFLINE=1` и `TRANSFORMERS_OFFLINE=1`.
 
-## Подготовка
+Артефакты хранятся в `%LOCALAPPDATA%\Novgorod1230`; resumable-загрузки и
+checksum не позволяют молча принять неполный либо другой snapshot. Веса не
+входят в Git и Hugging Face после успешного provisioning не требуется.
 
-Из корня репозитория:
-
-```powershell
-python -m pip install -r tools/world-catalog-workflow/requirements-embeddings.txt
-python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='ai-sage/Giga-Embeddings-instruct-480M-0826', revision='0c94f705aa35719324fb46f7e75b0a5c275da6e4')"
-```
-
-При необходимости укажите тот же Python для game-server:
-
-```powershell
-$env:RUS_WORLD_KNOWLEDGE_PYTHON = 'C:\path\to\python.exe'
-```
-
-Runtime всегда запускает Transformers с `local_files_only=True` и передаёт
-`HF_HUB_OFFLINE=1` и `TRANSFORMERS_OFFLINE=1`. Поэтому сеть во время игры не
-используется, а отсутствующий exact snapshot завершает startup ошибкой.
-
-## Проверка готовности
+Ручная диагностическая проверка уже подготовленного runtime:
 
 ```powershell
 npm run world-knowledge:giga-readiness
 ```
 
-Проверка загружает exact snapshot полностью offline, кодирует русский и
-английский запросы, подтверждает 1024 конечных L2-нормированных значения,
-повторяемость русского вектора и выполняет поиск по production vector index.
-Успех печатает JSON со `status: "ready"`; любая проблема с Python, cache,
-profile, worker или vectors даёт ненулевой exit code.
-
-Лицензионная запись находится в
-`data/world-catalogs/novgorod/world-knowledge/embedding-profiles/GIGA_480M_0826_NOTICE.md`.
+Она кодирует русский и английский запросы, проверяет размерность 1024,
+нормализацию, повторяемость и production vector retrieval.

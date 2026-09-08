@@ -1,90 +1,45 @@
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { cp, mkdir, unlink, writeFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
+import { dirname, join } from 'node:path';
+import { createServer } from 'node:net';
 
 import pg from 'pg';
 
-export const LOCAL_POSTGRES = Object.freeze({
-  container: 'novgorod1230-local-postgres',
-  volume: 'novgorod1230-local-postgres-data',
-  image: 'postgres:16-alpine',
-  label: 'com.pavelslaven.novgorod1230.local-play',
-  labelValue: '1',
-  worldDatabase: 'novgorod_world',
-  partyDatabase: 'novgorod_party',
-  worldUser: 'world_operator',
-  partyUser: 'party_operator',
-  password: 'local_only'
-});
-
+export const LOCAL_POSTGRES = Object.freeze({ version: '16.14.0',
+  worldDatabase: 'novgorod_world', partyDatabase: 'novgorod_party',
+  worldUser: 'world_operator', partyUser: 'party_operator',
+  adminUser: 'postgres', password: 'local_only' });
 const WORLD_SENTINELS = Object.freeze([
   'world_base.spatial_v3_world_revisions',
   'world_base.runtime_catalog_activation_events',
-  'world_base.domain_catalog_revisions',
-  'world_base.catalog_imports'
+  'world_base.domain_catalog_revisions', 'world_base.catalog_imports'
 ]);
 const PARTY_SENTINELS = Object.freeze([
-  'party_runtime.schema_migrations',
-  'party_runtime.parties',
+  'party_runtime.schema_migrations', 'party_runtime.parties',
   'party_runtime.party_catalog_pins'
 ]);
-const POSTGRES_INITIALIZATION_MARKERS = Object.freeze([
-  'PostgreSQL init process complete; ready for start up.',
-  'PostgreSQL Database directory appears to contain a database; Skipping initialization'
-]);
 
-export function localPlayError(code, message) {
-  const error = new Error(message);
-  error.code = code;
+export function localPlayError(code, message, details = null) {
+  const error = new Error(message); error.code = code;
+  if (details) error.details = details;
   return error;
 }
-
-export function parseDockerInspect(output, resource) {
-  try {
-    const parsed = JSON.parse(String(output));
-    const value = Array.isArray(parsed) ? parsed[0] : parsed;
-    if (!value || typeof value !== 'object') throw new Error('empty inspect');
-    return value;
-  } catch {
-    throw localPlayError(
-      'LOCAL_POSTGRES_INSPECT_INVALID',
-      `Docker returned invalid ${resource} inspect data.`
-    );
-  }
+export function localDataRoot(env = process.env) {
+  const root = String(env.LOCALAPPDATA ?? env.XDG_DATA_HOME ?? '').trim()
+    || homedir();
+  return join(root, 'Novgorod1230');
 }
-
-export function assertLocalPostgresOwnership({ volume, container, settings = LOCAL_POSTGRES }) {
-  const owned = (labels) => labels?.[settings.label] === settings.labelValue;
-  if (volume && !owned(volume.Labels)) {
-    throw localPlayError('LOCAL_POSTGRES_VOLUME_CONFLICT',
-      `Existing volume ${settings.volume} is not owned by local play.`);
-  }
-  if (!container) return;
-  const mounted = container.Mounts?.some((mount) => mount.Type === 'volume'
-    && mount.Name === settings.volume
-    && mount.Destination === '/var/lib/postgresql/data');
-  const bindings = container.HostConfig?.PortBindings?.['5432/tcp'];
-  const loopback = Array.isArray(bindings) && bindings.length > 0 && bindings.every(
-    (binding) => binding.HostIp === '127.0.0.1'
-      && (binding.HostPort === '' || /^\d+$/u.test(binding.HostPort))
-  );
-  if (!owned(container.Config?.Labels)
-      || container.Config?.Image !== settings.image
-      || !mounted || !loopback) {
-    throw localPlayError('LOCAL_POSTGRES_CONTAINER_CONFLICT',
-      `Existing container ${settings.container} is not local-play PostgreSQL.`);
-  }
-}
-
 export async function classifyLocalDatabases({ worldQuery, partyQuery }) {
-  const tableCountSql = `SELECT count(*)::int AS count
-    FROM information_schema.tables
+  const countSql = `SELECT count(*)::int AS count FROM information_schema.tables
     WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
       AND table_type = 'BASE TABLE'`;
-  const [worldTables, partyTables, worldSentinels, partySentinels] = await Promise.all([
-    tableCount(worldQuery, tableCountSql),
-    tableCount(partyQuery, tableCountSql),
-    Promise.all(WORLD_SENTINELS.map((name) => exists(worldQuery, name))),
-    Promise.all(PARTY_SENTINELS.map((name) => exists(partyQuery, name)))
-  ]);
+  const [worldTables, partyTables, worldSentinels, partySentinels] =
+    await Promise.all([tableCount(worldQuery, countSql),
+      tableCount(partyQuery, countSql),
+      Promise.all(WORLD_SENTINELS.map((name) => exists(worldQuery, name))),
+      Promise.all(PARTY_SENTINELS.map((name) => exists(partyQuery, name))) ]);
   if (worldTables === 0 && partyTables === 0) return 'fresh';
   if (worldTables === 0 || partyTables === 0
       || !worldSentinels.every(Boolean) || !partySentinels.every(Boolean)) {
@@ -93,145 +48,133 @@ export async function classifyLocalDatabases({ worldQuery, partyQuery }) {
   return 'existing';
 }
 
-export async function ensureLocalPostgres({
-  settings = LOCAL_POSTGRES,
-  commandRunner = runCommand,
-  createPool = (options) => new pg.Pool(options),
-  sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds))
-} = {}) {
-  assertDockerAvailable(commandRunner);
-  const volume = inspect(commandRunner, ['volume', 'inspect', settings.volume], 'volume');
-  const container = inspect(commandRunner, ['container', 'inspect', settings.container], 'container');
-  assertLocalPostgresOwnership({ volume, container, settings });
-  if (!volume) {
-    requireSuccess(commandRunner(['volume', 'create', '--label',
-      `${settings.label}=${settings.labelValue}`, settings.volume]),
-    'LOCAL_POSTGRES_VOLUME_CREATE_FAILED', 'Could not create local PostgreSQL volume.');
+export async function ensureLocalPostgres({ settings = LOCAL_POSTGRES,
+  dataRoot = localDataRoot(), createPool = (options) => new pg.Pool(options),
+  reservePort = availablePort, command = spawnSync, spawnProcess = spawn,
+  loadBinaries = defaultBinaries } = {}) {
+  const databaseDir = join(dataRoot, 'data', `postgres-${settings.version}-utf8`);
+  const runtimeDir = join(dataRoot, 'runtime', 'postgresql', settings.version);
+  await mkdir(databaseDir, { recursive: true });
+  const source = await loadBinaries();
+  if (!existsSync(join(runtimeDir, 'bin', 'postgres.exe'))) {
+    await mkdir(dirname(runtimeDir), { recursive: true });
+    await cp(source.nativeDir, runtimeDir, { recursive: true });
   }
-  if (!container) {
-    requireSuccess(commandRunner([
-      'run', '-d', '--name', settings.container,
-      '--label', `${settings.label}=${settings.labelValue}`,
-      '--mount', `type=volume,src=${settings.volume},dst=/var/lib/postgresql/data`,
-      '-p', '127.0.0.1::5432', '-e', `POSTGRES_PASSWORD=${settings.password}`,
-      settings.image
-    ]), 'LOCAL_POSTGRES_CONTAINER_CREATE_FAILED', 'Could not create local PostgreSQL container.');
-  } else if (!container.State?.Running) {
-    requireSuccess(commandRunner(['container', 'start', settings.container]),
-      'LOCAL_POSTGRES_CONTAINER_START_FAILED', 'Could not start local PostgreSQL container.');
-  }
-  await waitForPostgres(commandRunner, sleep, settings);
-  const databases = listDatabases(commandRunner, settings);
-  const hasWorld = databases.has(settings.worldDatabase);
-  const hasParty = databases.has(settings.partyDatabase);
-  if (!hasWorld && !hasParty && databases.size === 1) initializeFreshCluster(commandRunner, settings);
-  else if (!hasWorld || !hasParty) throw localPlayError('LOCAL_POSTGRES_PARTIAL',
-    'Local PostgreSQL has only part of required databases.');
-  else if (!hasRequiredRoles(commandRunner, settings)) throw localPlayError('LOCAL_POSTGRES_PARTIAL',
-    'Local PostgreSQL has only part of required roles.');
-
-  const port = containerPort(inspect(commandRunner,
-    ['container', 'inspect', settings.container], 'container'));
-  const worldUrl = databaseUrl(settings.worldUser, settings.worldDatabase, port, settings);
-  const partyUrl = databaseUrl(settings.partyUser, settings.partyDatabase, port, settings);
-  const worldPool = createPool({ connectionString: worldUrl, max: 1 });
-  const partyPool = createPool({ connectionString: partyUrl, max: 1 });
+  const binaries = { initdb: join(runtimeDir, 'bin', 'initdb.exe'),
+    postgres: join(runtimeDir, 'bin', 'postgres.exe'),
+    pgCtl: join(runtimeDir, 'bin', 'pg_ctl.exe') };
+  if (!existsSync(join(databaseDir, 'PG_VERSION'))) await initializeCluster({
+    databaseDir, dataRoot, settings, binaries, command });
+  const port = await reservePort();
+  const process = spawnProcess(binaries.postgres, ['-D', databaseDir, '-p',
+    String(port), '-h', '127.0.0.1'], { windowsHide: true,
+    stdio: ['ignore', 'ignore', 'ignore'] });
   try {
-    const state = await classifyLocalDatabases({
-      worldQuery: (...args) => worldPool.query(...args),
-      partyQuery: (...args) => partyPool.query(...args)
-    });
-    if (state === 'partial') throw localPlayError('LOCAL_POSTGRES_PARTIAL',
-      'Local PostgreSQL schema is partially initialized.');
-    return Object.freeze({ worldUrl, partyUrl, state });
-  } finally {
-    await Promise.all([worldPool.end(), partyPool.end()]);
+    await waitForPostgres({ port, settings, process, createPool });
+    await ensureRolesAndDatabases({ port, settings, createPool });
+    const worldUrl = databaseUrl(settings.worldUser,
+      settings.worldDatabase, port, settings);
+    const partyUrl = databaseUrl(settings.partyUser,
+      settings.partyDatabase, port, settings);
+    const worldPool = createPool({ connectionString: worldUrl, max: 1 });
+    const partyPool = createPool({ connectionString: partyUrl, max: 1 });
+    try {
+      const state = await classifyLocalDatabases({
+        worldQuery: (...args) => worldPool.query(...args),
+        partyQuery: (...args) => partyPool.query(...args) });
+      if (state === 'partial') throw localPlayError('LOCAL_POSTGRES_PARTIAL',
+        'Local PostgreSQL schema is partially initialized.');
+      let closed = false;
+      return Object.freeze({ worldUrl, partyUrl, state,
+        version: settings.version, databaseDir,
+        async close() {
+          if (closed) return; closed = true;
+          command(binaries.pgCtl, ['stop', '-D', databaseDir, '-m', 'fast',
+            '-w'], { encoding: 'utf8', windowsHide: true, timeout: 30_000 });
+        } });
+    } finally { await Promise.all([worldPool.end(), partyPool.end()]); }
+  } catch (error) {
+    command(binaries.pgCtl, ['stop', '-D', databaseDir, '-m', 'fast', '-w'],
+      { encoding: 'utf8', windowsHide: true, timeout: 30_000 });
+    if (error?.code) throw error;
+    throw localPlayError('LOCAL_POSTGRES_START_FAILED',
+      `Could not start managed PostgreSQL: ${error?.message ?? 'unknown error'}`);
   }
 }
 
-export function assertDockerAvailable(commandRunner = runCommand) {
-  requireSuccess(commandRunner(['version']), 'LOCAL_POSTGRES_DOCKER_UNAVAILABLE',
-    'Docker is unavailable.');
+async function defaultBinaries() {
+  if (process.platform !== 'win32' || process.arch !== 'x64') throw localPlayError(
+    'LOCAL_POSTGRES_PLATFORM_UNSUPPORTED',
+    'Managed PostgreSQL currently supports Windows x64.');
+  const module = await import('@embedded-postgres/windows-x64');
+  return { nativeDir: dirname(dirname(module.postgres)) };
 }
-
-async function tableCount(query, sql) {
-  const result = await query(sql);
-  return Number(result.rows?.[0]?.count);
+async function initializeCluster({ databaseDir, dataRoot, settings, binaries,
+  command }) {
+  const passwordPath = join(dataRoot, 'runtime', 'postgresql', '.password');
+  await writeFile(passwordPath, `${settings.password}\n`, { mode: 0o600 });
+  try {
+    requireSuccess(command(binaries.initdb, [`--pgdata=${databaseDir}`,
+      '--auth=password', `--username=${settings.adminUser}`,
+      `--pwfile=${passwordPath}`, '--lc-messages=C', '--locale=C',
+      '--encoding=UTF8'], { cwd: dataRoot, encoding: 'utf8', windowsHide: true,
+      timeout: 120_000, env: { ...process.env, LC_MESSAGES: 'C', TZ: 'UTC' } }),
+    'LOCAL_POSTGRES_INITIALIZE_FAILED',
+    'Could not initialize managed UTF-8 PostgreSQL.');
+  } finally { await unlink(passwordPath).catch(() => {}); }
 }
-
-async function exists(query, name) {
-  const result = await query('SELECT to_regclass($1) IS NOT NULL AS present', [name]);
-  return result.rows?.[0]?.present === true;
-}
-
-function inspect(commandRunner, args, resource) {
-  const result = commandRunner(args);
-  if (result.status !== 0) return null;
-  return parseDockerInspect(result.stdout, resource);
-}
-
-function containerPort(container) {
-  const bindings = container.NetworkSettings?.Ports?.['5432/tcp'];
-  const loopback = Array.isArray(bindings) && bindings.length > 0 && bindings.every(
-    (binding) => binding.HostIp === '127.0.0.1' && /^\d+$/u.test(binding.HostPort)
-  );
-  if (!loopback) throw localPlayError('LOCAL_POSTGRES_PORT_INVALID',
-    'Local PostgreSQL has no loopback port.');
-  return bindings[0].HostPort;
-}
-
-function listDatabases(commandRunner, settings) {
-  const result = commandRunner(['exec', settings.container, 'psql', '-U', 'postgres',
-    '-d', 'postgres', '-tAc', 'SELECT datname FROM pg_database WHERE datistemplate = false']);
-  requireSuccess(result, 'LOCAL_POSTGRES_DATABASE_LIST_FAILED',
-    'Could not inspect local PostgreSQL databases.');
-  return new Set(String(result.stdout).split(/\r?\n/u).map((name) => name.trim()).filter(Boolean));
-}
-
-function initializeFreshCluster(commandRunner, settings) {
-  for (const [user, database] of [
-    [settings.worldUser, settings.worldDatabase],
-    [settings.partyUser, settings.partyDatabase]
-  ]) {
-    requireSuccess(commandRunner(['exec', settings.container, 'psql', '-v', 'ON_ERROR_STOP=1',
-      '-U', 'postgres', '-d', 'postgres', '-c',
-      `CREATE ROLE ${user} LOGIN SUPERUSER PASSWORD '${settings.password}'`]),
-    'LOCAL_POSTGRES_INITIALIZE_FAILED', 'Could not create local PostgreSQL role.');
-    requireSuccess(commandRunner(['exec', settings.container, 'createdb', '-U', 'postgres',
-      '-O', user, database]), 'LOCAL_POSTGRES_INITIALIZE_FAILED',
-    'Could not create local PostgreSQL database.');
-  }
-}
-
-function hasRequiredRoles(commandRunner, settings) {
-  const result = commandRunner(['exec', settings.container, 'psql', '-U', 'postgres',
-    '-d', 'postgres', '-tAc', `SELECT rolname FROM pg_roles WHERE rolname IN ('${settings.worldUser}', '${settings.partyUser}')`]);
-  requireSuccess(result, 'LOCAL_POSTGRES_ROLE_LIST_FAILED',
-    'Could not inspect local PostgreSQL roles.');
-  const roles = new Set(String(result.stdout).split(/\r?\n/u).map((name) => name.trim()).filter(Boolean));
-  return roles.has(settings.worldUser) && roles.has(settings.partyUser);
-}
-
-async function waitForPostgres(commandRunner, sleep, settings) {
+async function waitForPostgres({ port, settings, process, createPool }) {
+  const url = databaseUrl(settings.adminUser, 'postgres', port, settings);
   for (let attempt = 0; attempt < 120; attempt += 1) {
-    const logs = commandRunner(['logs', settings.container]);
-    const initialized = POSTGRES_INITIALIZATION_MARKERS.some((marker) =>
-      `${logs.stdout ?? ''}\n${logs.stderr ?? ''}`.includes(marker));
-    if (initialized && commandRunner(['exec', settings.container, 'pg_isready', '-U',
-      'postgres', '-d', 'postgres']).status === 0) return;
-    if (attempt + 1 < 120) await sleep(250);
+    if (process.exitCode != null) throw new Error(
+      `PostgreSQL exited with code ${process.exitCode}.`);
+    const pool = createPool({ connectionString: url, max: 1 });
+    try { await pool.query('SELECT 1'); await pool.end(); return; }
+    catch { await pool.end().catch(() => {}); }
+    await new Promise((resolve) => setTimeout(resolve, 250));
   }
-  throw localPlayError('LOCAL_POSTGRES_NOT_READY', 'Local PostgreSQL did not become ready.');
+  throw new Error('PostgreSQL readiness timeout.');
 }
-
+async function ensureRolesAndDatabases({ port, settings, createPool }) {
+  const client = createPool({ connectionString: databaseUrl(settings.adminUser,
+    'postgres', port, settings), max: 1 });
+  try {
+    const roles = new Set((await client.query(
+      'SELECT rolname FROM pg_roles WHERE rolname = ANY($1)',
+      [[settings.worldUser, settings.partyUser]])).rows.map((row) => row.rolname));
+    for (const user of [settings.worldUser, settings.partyUser]) {
+      if (!roles.has(user)) await client.query(
+        `CREATE ROLE ${user} LOGIN SUPERUSER PASSWORD '${settings.password}'`);
+    }
+    const names = [settings.worldDatabase, settings.partyDatabase];
+    const databases = new Set((await client.query(
+      'SELECT datname FROM pg_database WHERE datname = ANY($1)', [names]))
+      .rows.map((row) => row.datname));
+    for (const [name, owner] of [[names[0], settings.worldUser],
+      [names[1], settings.partyUser]]) {
+      if (!databases.has(name)) await client.query(
+        `CREATE DATABASE ${name} OWNER ${owner}`);
+    }
+  } finally { await client.end(); }
+}
+function requireSuccess(result, code, message) {
+  if (result?.status !== 0) throw localPlayError(code,
+    `${message} ${String(result?.stderr ?? '').trim()}`.trim());
+}
+async function tableCount(query, sql) {
+  return Number((await query(sql)).rows?.[0]?.count);
+}
+async function exists(query, name) {
+  return (await query('SELECT to_regclass($1) IS NOT NULL AS present', [name]))
+    .rows?.[0]?.present === true;
+}
 function databaseUrl(user, database, port, settings) {
   return `postgresql://${user}:${settings.password}@127.0.0.1:${port}/${database}`;
 }
-
-function requireSuccess(result, code, message) {
-  if (result.status !== 0) throw localPlayError(code, message);
-}
-
-function runCommand(args) {
-  return spawnSync('docker', args, { encoding: 'utf8', timeout: 30_000 });
+function availablePort() {
+  return new Promise((resolve, reject) => {
+    const server = createServer(); server.once('error', reject);
+    server.listen(0, '127.0.0.1', () => { const port = server.address().port;
+      server.close((error) => error ? reject(error) : resolve(port)); });
+  });
 }

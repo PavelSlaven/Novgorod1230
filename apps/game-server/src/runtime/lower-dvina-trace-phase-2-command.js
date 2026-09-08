@@ -37,6 +37,11 @@ export function createTracePhase2InspectionCommand({
     approved_record: contracts.activityPin,
     reason_visible_to_actor:
       'Можно внимательно изучить лодку, крепления и следы на берегу.',
+    semantic_grounding: {
+      authority: 'authored_evidence_investigation',
+      purpose: 'investigate wreck circumstances through the boat, fastenings and traces',
+      result_scope: 'bounded authored observations and evidence'
+    },
     expected_cost: {
       kind: 'exact_time',
       value: contracts.activity.duration_minutes

@@ -101,8 +101,11 @@ test('active conversation does not reject an unrelated direct plan', () => {
 test('planner receives only available exact domain operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const wait = { ...dto, activity_kind: 'wait', description: 'Ждать.' };
+  const semanticGrounding = { authority: 'authored_activity',
+    purpose: 'help the injured person' };
   const run = async (available) => {
     const { services } = createServices([], { command: { matches: () => false,
+      semantic_grounding: semanticGrounding,
       availability: () => ({ version: 1, schema: 'turn_availability_decision', status: available ? 'available' : 'blocked', can_attempt: available, reasons: [], check_requests: [] }),
       semantic_binding: { binding_id: 'activity', operation: 'request_activity',
         operation_dtos: [dto, wait], matches: () => false } },
@@ -127,6 +130,10 @@ test('planner receives only available exact domain operation DTOs', async () => 
     await runTurnWorkflow(workflowInput(), services); return request;
   };
   assert.deepEqual((await run(true)).available_domain_operations, [dto, wait]);
+  assert.deepEqual((await run(true)).player_safe_state
+    .available_domain_operation_grounding, [dto, wait].map((operation) => ({
+      operation, semantic_scope: semanticGrounding
+    })));
   assert.deepEqual((await run(false)).available_domain_operations, []);
 });
 

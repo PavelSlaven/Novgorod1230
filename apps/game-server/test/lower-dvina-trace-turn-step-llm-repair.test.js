@@ -320,8 +320,27 @@ test('repair accepts an exact copied code-owned choice without trusting a new DT
       turnStepModel: model });
 
     assert.equal(result.repaired, true);
-    assert.deepEqual(result.plan.operations, [operation]);
-  });
+  assert.deepEqual(result.plan.operations, [operation]);
+});
+
+test('semantic repair cannot reselect the rejected exact operation', async () => {
+  const operation = { op: 'request_discovery', actor_ref: 'actor_mikula',
+    discovery_kind: 'inspect', target_refs: ['location:wreck'],
+    query: 'Inspect authored wreck evidence.' };
+  const input = request({ available_domain_operations: [operation] });
+  let prompt;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      prompt = call.messages[0].content;
+      return { output: output() };
+    }
+  } });
+  await model(input, { original_output: { resolution: 'domain_request',
+    operations: [operation] }, structural_errors: [{
+    path: '$.operations', code: 'operation_semantic_grounding'
+  }] });
+  assert.match(prompt, /Code-owned exact operation choices are:\n\[\]/u);
+});
 
 test('mismatched echoed operation cannot silently replace selected choice',
   async () => {
@@ -426,6 +445,42 @@ test('invalid repaired plan does not receive a second repair', async () => {
   assert.deepEqual(calls.map(({ role_id }) => role_id), [
     'turn_step_planner', 'turn_step_planner_repair'
   ]);
+});
+
+test('unresolved semantic grounding becomes a safe no-result', async () => {
+  const input = request({ player_safe_state: {
+    items: [{ item_id: 'boards', category_id: 'wooden_boards' }]
+  } });
+  let calls = 0;
+  const invalid = () => Object.assign(new Error('semantic mismatch'), {
+    code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{
+      path: '$.operations.0.action_production',
+      code: 'material_transformation_grounding',
+      message: 'must remain grounded'
+    }] }
+  });
+  const candidate = { ...output(), resolution: 'domain_request',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [{ op: 'request_item_use', actor_ref: 'actor_mikula',
+      item_ref: 'boards', use_kind: 'other', target_refs: [],
+      action_production: { source_refs: ['boards'], tool_refs: [],
+        requested_output_count: null, identity_mode: 'preserve_source',
+        origin: null, result_class: 'ordinary_physical_result',
+        material_extent: null, result_descriptor: { display_name: null,
+          physical_description: 'moved boards', qualitative_facts: [],
+          removed_physical_fact_refs: [], inscription_text: null,
+          physical_form: null, source_fact_delta: null },
+        output_class: 'ordinary_mundane' } }], operation_choice: null };
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run() { calls += 1; return { output: candidate }; }
+  } });
+  const result = await requestTurnStepPlanWithRepair({ request: input,
+    turnStepModel: model, semanticPlanValidator: async () => { throw invalid(); } });
+  assert.equal(calls, 2);
+  assert.equal(result.repaired, true);
+  assert.equal(result.plan.resolution, 'direct');
+  assert.equal(result.plan.goal_result, 'not_achieved');
+  assert.deepEqual(result.plan.operations, []);
 });
 
 test('empty unrecoverable domain request becomes a normal no-result', async () => {

@@ -2,6 +2,8 @@ import { isDeepStrictEqual } from 'node:util';
 import { serverError } from '../errors.js';
 import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS } from './lower-dvina-trace-phase-2-llm-prompts.js';
 import { assembleNpcConversationPlan, assemblePlayerConversationPlan } from './lower-dvina-trace-conversation-assembly.js';
+import { turnStepOperationChoices } from
+  './lower-dvina-trace-turn-step-operation-choices.js';
 import { groundTurnRequest, wkClosure } from './world-knowledge-grounding.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from './lower-dvina-trace-autonomous-llm.js';
 export { createLowerDvinaTraceNpcCombatModel } from './lower-dvina-trace-combat-llm.js';
@@ -47,7 +49,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             structuredClone(repairContext.structural_errors ?? [])
         }
       : input;
-    const operationChoices = turnStepOperationChoices(request);
+    const operationChoices = turnStepOperationChoices(request, repairContext);
     const activeConversationExample = activeConversationChoiceExample(
       request, operationChoices);
     const visibleConversationExamples = visibleConversationChoiceExamples(
@@ -67,6 +69,10 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             'Return interpretation, resolution, operation_family, semantic goal_result/activity when applicable, operation_choice or semantic operations, check, continuation, clarification, reason_code, and reason. reason is one short conclusion sentence, never analysis, alternatives, self-correction, or repeated deliberation. If you notice a mistake, emit only the corrected final JSON.',
             `A direct semantic example is:\n${semanticTurnStepExample()}`,
             `Code-owned exact operation choices are:\n${JSON.stringify(operationChoices)}`,
+            ...(operationChoices.some((choice) => choice.player_safe_grounding
+              ?.semantic_scope != null) ? [
+              'When a choice has player_safe_grounding.semantic_scope, select it only when the current step matches that complete purpose and result scope; shared target words or a generic inspect verb are insufficient.'
+            ] : []),
             'operation_choice is exactly one scalar supplied choice_id string or null, never an object, array, or wrapper. For a matching code-owned operation return that scalar choice_id and omit operations. The server restores the exact operation DTO. Otherwise set operation_choice to null and return only genuinely semantic operations.',
             'If an output format requires operations beside operation_choice, they must be empty or exactly copy that selected DTO; a different operation makes the choice invalid.',
             'For movement, never emit a hand-written request_movement: select its supplied operation_choice. In particular destination_ref is not a movement field and route_ref is code-owned.',
@@ -132,38 +138,6 @@ function turnStepPlanMappings(request) {
   return JSON.stringify(mappings);
 }
 
-function turnStepOperationChoices(request) {
-  const operations = [
-    ...(request.available_domain_operations ?? []),
-    ...(request.player_safe_state?.local_world_process?.allowed ?? [])
-  ];
-  const seen = new Set();
-  const unique = operations.filter((operation) => {
-    const key = JSON.stringify(operation);
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-  return unique.map((operation, index) => ({
-    choice_id: operationChoiceId(operation, index, unique),
-    operation: structuredClone(operation),
-    ...operationChoiceGrounding(operation, request)
-  }));
-}
-function operationChoiceGrounding(operation, request) {
-  if (operation?.op !== 'emit_interaction'
-      || operation.target_actor_refs?.length !== 1) return {};
-  const target = request.player_safe_state?.current_visible_context
-    ?.visible_npc?.find(({ entity_ref: reference }) =>
-      reference?.entity_kind === 'npc'
-        && reference.entity_id === operation.target_actor_refs[0]);
-  return target == null ? {} : {
-    player_safe_grounding: { target_actor: structuredClone(target) }
-  };
-}
-function operationChoiceId(operation,index,operations){const qualifier=operationQualifier(operation);const collision=operations.filter((candidate)=>candidate.op===operation.op&&operationQualifier(candidate)===qualifier).length>1;return['domain_operation',index+1,operation.op,qualifier,collision?semanticChoiceLabel(operation.description):null].filter((part)=>part!=null).join('_');}
-function operationQualifier(operation){return operation.process_action??operation.discovery_kind??operation.access_kind??operation.movement_kind??operation.use_kind??operation.activity_kind??operation.interaction_kind;}
-function semanticChoiceLabel(value){const label=typeof value==='string'?value.normalize('NFKC').toLocaleLowerCase('ru-RU').replace(/[^\p{L}\p{N}]+/gu,'_').replace(/^_+|_+$/gu,''):'';return label||'variant';}
 function activeConversationChoiceExample(request, choices) {
   const interlocutorId = request.player_safe_state?.active_interlocutor
     ?.entity_ref?.entity_id;

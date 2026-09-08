@@ -9,7 +9,8 @@ import { isBackgroundNpcSemanticRemainderInScope,
   resolveBackgroundNpcSemanticRemainder } from
   './turn-step-background-npc-remainder.js';
 import { isSpatialSemanticRemainderInScope, resolveSpatialSemanticRemainder } from './turn-step-spatial-semantic-remainder.js';
-import { initialWorkingProjectionFrom } from './turn-step-player-safe-projection.js';
+import { initialWorkingProjectionFrom, projectAvailableDomainOperations } from
+  './turn-step-player-safe-projection.js';
 import { resolveWorldProcessRemainder } from './turn-step-world-process-remainder.js';
 export { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
 export { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
@@ -63,12 +64,6 @@ export async function resolveBoundTurnStepCommand({
   const initialDomainOperations = semanticBindings
     .filter(({ command }) => availableOptions.has(command.option_id))
     .flatMap(({ binding }) => bindingOperations(binding));
-  const withAvailableDomainOperations = (state, operations,
-    preparedFollowupCandidates = []) => deepFreeze({ player_safe_state: state,
-    available_domain_operations: structuredClone(operations),
-    ...(preparedFollowupCandidates.length === 0 ? {} : {
-      prepared_followup_candidates: structuredClone(preparedFollowupCandidates)
-    }) });
   const currentDomainOperations = async (context, remainingIntent,
     completedSteps, playerSafeState) => {
     if ((context?.prior_effect_count ?? 0) === 0) {
@@ -96,9 +91,11 @@ export async function resolveBoundTurnStepCommand({
     }
     return operations;
   };
-  let firstProjection = withAvailableDomainOperations(projected.player_safe_state,
-    initialDomainOperations, initialPreparedFollowupCandidates(
-      semanticBindings, availableOptions));
+  let firstProjection = deepFreeze(projectAvailableDomainOperations({
+    state: projected.player_safe_state, operations: initialDomainOperations,
+    semanticBindings, preparedFollowupCandidates:
+      initialPreparedFollowupCandidates(semanticBindings, availableOptions)
+  }));
   const initialWorkingProjection = initialWorkingProjectionFrom(projected);
   const externalRegistry = services.turnStepExecutionRegistry ?? null;
   if (externalRegistry != null) requireTurnStepExecutionRegistry(externalRegistry);
@@ -372,9 +369,11 @@ export async function resolveBoundTurnStepCommand({
         throw turnCommandError('TURN_STEP_PLAYER_SAFE_PROJECTION_INVALID',
           'Player-safe projector must return actor and player_safe_state objects.');
       }
-      return withAvailableDomainOperations(next.player_safe_state,
-        await currentDomainOperations(preparedChainContext, remainingIntent,
-          completedSteps, next.player_safe_state));
+      return deepFreeze(projectAvailableDomainOperations({
+        state: next.player_safe_state, semanticBindings,
+        operations: await currentDomainOperations(preparedChainContext,
+          remainingIntent, completedSteps, next.player_safe_state)
+      }));
     },
     async revalidateCommittedState({ step_index: stepIndex }) {
       const request = {

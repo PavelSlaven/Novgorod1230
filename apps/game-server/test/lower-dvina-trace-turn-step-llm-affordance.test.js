@@ -108,6 +108,27 @@ test('movement keeps supplied semantic label', async () => {
   assert.deepEqual((await model(input)).operations, [movement]);
 });
 
+test('authored operation choice exposes its complete semantic scope', async () => {
+  const discovery = { op: 'request_discovery', actor_ref: 'actor:player',
+    discovery_kind: 'inspect', target_refs: ['location:wreck'],
+    query: 'Inspect the wreck evidence.' };
+  const semanticScope = { authority: 'authored_evidence_investigation',
+    purpose: 'investigate wreck circumstances',
+    result_scope: 'bounded authored observations and evidence' };
+  const input = request({ available_domain_operations: [discovery],
+    player_safe_state: { available_domain_operation_grounding: [{
+      operation: discovery, semantic_scope: semanticScope
+    }] } });
+  let prompt;
+  await modelFor(input, 'domain_operation_1_request_discovery_inspect', {
+    onPrompt: (value) => { prompt = value; }
+  })(input);
+  assert.match(prompt,
+    /player_safe_grounding.*semantic_scope.*authored_evidence_investigation.*investigate wreck circumstances/u);
+  assert.match(prompt,
+    /select it only when the current step matches that complete purpose and result scope/u);
+});
+
 test('ownerless ambient speech does not block its later domain action',
   async () => {
     const movement = { op: 'request_movement', actor_ref: 'actor:player',

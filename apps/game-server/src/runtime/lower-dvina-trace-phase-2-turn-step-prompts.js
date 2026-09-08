@@ -86,8 +86,6 @@ export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
 });
 
 export const NARRATION_AUDIT_PROMPT = 'Return only narration_audit JSON. Reject every unsupported fact. Use short strings and no duplicate evidence. Complete valid passing example: {"version":1,"schema":"narration_audit","pass":true,"concerns":[],"evidence":["visible facts only"]}.';
-export const NARRATION_AUDIT_MAX_TOKENS = 1800;
-
 export const SEMANTIC_RESOLVER_PROMPT = [
   'Resolve the raw Russian player text against the complete closed',
   'option set. Return either {"status":"unknown","reason_code":',

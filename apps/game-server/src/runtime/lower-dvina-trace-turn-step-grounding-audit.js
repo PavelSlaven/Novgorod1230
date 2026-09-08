@@ -12,9 +12,13 @@ const PROMPT = [
   '{"pass":false,"concerns":[{"kind":"<allowed kind>"}]}.',
   'Audit only the supplied focused discovery or action_production against the',
   'current remaining_intent and player-safe evidence. Refs are opaque.',
+  'Each operations entry contains its plan path and operation.',
   'For discovery, the operation must cover the earliest focused information',
   'need. A fixed authored query must not replace a different ordinary search,',
   'material prerequisite, handling, or transformation.',
+  'When available_domain_operation_grounding supplies a semantic_scope for',
+  'the exact operation, treat that purpose and result_scope as its complete',
+  'authority. Shared nouns, location, or inspect wording do not expand it.',
   'A fixed authored evidence or scene investigation must fail',
   'operation_semantic_grounding whenever the current step seeks ordinary',
   'material, suitability for work, acquisition or gathering, manipulation,',
@@ -47,10 +51,7 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     throw new TypeError('Turn-step grounding auditor requires a role runner.');
   }
   return async ({ plan, request }) => {
-    const audited = (plan?.operations ?? []).filter((operation) =>
-      operation?.op === 'request_discovery'
-        || operation?.op === 'request_item_use'
-          && operation.action_production != null);
+    const audited = [...auditedOperations(plan)];
     if (audited.length === 0) return true;
     const response = await roleRunner.run({
       scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
@@ -67,8 +68,27 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     if (response.output.pass) return true;
     throw serverError('TURN_STEP_PLAN_INVALID',
       'Turn-step semantic grounding is invalid.', { details: { errors:
-        response.output.concerns.map(({ kind }) => concern(kind)) } });
+        response.output.concerns.map(({ kind }) => concern(kind, audited)) } });
   };
+}
+
+function* auditedOperations(plan) {
+  for (const [index, operation] of (plan?.operations ?? []).entries()) {
+    if (auditable(operation)) yield { path: `$.operations.${index}`, operation };
+  }
+  for (const [band, outcome] of Object.entries(plan?.check?.outcomes ?? {})) {
+    for (const [index, operation] of (outcome.operations ?? []).entries()) {
+      if (auditable(operation)) yield {
+        path: `$.check.outcomes.${band}.operations.${index}`, operation
+      };
+    }
+  }
+}
+
+function auditable(operation) {
+  return operation?.op === 'request_discovery'
+    || operation?.op === 'request_item_use'
+      && operation.action_production != null;
 }
 
 function groundingState(state = {}) {
@@ -77,19 +97,24 @@ function groundingState(state = {}) {
     items: state.items ?? [], inventory: state.inventory ?? {},
     current_visible_context: state.current_visible_context ?? null,
     visible_context: state.visible_context ?? null,
-    ordinary_resolution: state.ordinary_resolution ?? null
+    ordinary_resolution: state.ordinary_resolution ?? null,
+    available_domain_operation_grounding:
+      state.available_domain_operation_grounding ?? []
   };
 }
 
-function concern(kind) {
-  const path = kind === 'operation_semantic_grounding' ? '$.operations'
+function concern(kind, audited) {
+  const operationPath = audited.length === 1 ? audited[0].path
+    : audited.every(({ path }) => path.startsWith('$.check.outcomes.'))
+      ? '$.check.outcomes' : '$.operations';
+  const path = kind === 'operation_semantic_grounding' ? operationPath
     : kind === 'source_semantic_grounding'
-      ? '$.operations.0.action_production.source_refs'
+      ? `${operationPath}.action_production.source_refs`
       : kind === 'source_placement_grounding'
-        ? '$.operations.0.action_production.result_descriptor'
+        ? `${operationPath}.action_production.result_descriptor`
         : kind === 'material_transformation_grounding'
-          ? '$.operations.0.action_production'
-          : '$.operations.0.action_production.identity_mode';
+          ? `${operationPath}.action_production`
+          : `${operationPath}.action_production.identity_mode`;
   return { path, rule: kind, code: kind,
     message: 'must remain grounded by the current intent and player-safe evidence' };
 }

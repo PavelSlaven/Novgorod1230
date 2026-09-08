@@ -61,7 +61,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         repaired: true
       };
     } catch (repairError) {
-      if (unresolvedDomainRequest({ error: repairError, originalOutput })) {
+      if (unresolvedDomainRequest({ error: repairError, originalOutput })
+          || unresolvedSemanticGrounding(repairError)) {
         return { plan: noResultPlan(request), repaired: true };
       }
       if (repairError?.code === 'TURN_STEP_PLAN_INVALID') {
@@ -73,6 +74,21 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       throw repairError;
     }
   }
+}
+
+const SEMANTIC_GROUNDING_CODES = new Set([
+  'operation_semantic_grounding',
+  'source_semantic_grounding',
+  'material_transformation_grounding',
+  'source_placement_grounding',
+  'action_production_identity_grounding'
+]);
+
+function unresolvedSemanticGrounding(error) {
+  const errors = error?.details?.errors;
+  return error?.code === 'TURN_STEP_PLAN_INVALID'
+    && Array.isArray(errors) && errors.length > 0
+    && errors.every(({ code }) => SEMANTIC_GROUNDING_CODES.has(code));
 }
 
 function unresolvedDomainRequest({ error, originalOutput }) {

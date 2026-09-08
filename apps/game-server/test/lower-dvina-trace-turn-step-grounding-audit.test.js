@@ -7,7 +7,12 @@ const request = {
   request_id: 'turn-step:1', remaining_intent: 'сложить доски в настил',
   player_safe_state: { actor_id: 'actor:1', position: { position_id: 'shore' },
     items: [{ item_id: 'knife:1', category_id: 'personal_utility_knife' }],
-    current_visible_context: { sensory_details: ['На берегу лежат доски.'] } }
+    current_visible_context: { sensory_details: ['На берегу лежат доски.'] },
+    available_domain_operation_grounding: [{
+      operation: { op: 'request_discovery', query: 'authored evidence' },
+      semantic_scope: { authority: 'authored_evidence_investigation',
+        purpose: 'investigate wreck circumstances' }
+    }] }
 };
 const plan = { continuation: null, operations: [{ op: 'request_item_use',
   item_ref: 'knife:1', action_production: {
@@ -32,7 +37,10 @@ test('turn-step grounding audit returns repairable source errors', async () => {
       assert.match(call.messages[0].content,
         /operation_semantic_grounding[\s\S]*ordinary material[\s\S]*acquisition or gathering[\s\S]*practical use/u);
       assert.equal(JSON.parse(call.messages[1].content).operations[0]
-        .action_production.source_refs[0], 'knife:1');
+        .operation.action_production.source_refs[0], 'knife:1');
+      assert.equal(JSON.parse(call.messages[1].content).player_safe_state
+        .available_domain_operation_grounding[0].semantic_scope.authority,
+      'authored_evidence_investigation');
       return { output: { pass: false,
         concerns: [{ kind: 'source_semantic_grounding' }] } };
     } }
@@ -43,6 +51,29 @@ test('turn-step grounding audit returns repairable source errors', async () => {
     return true;
   });
 });
+
+test('turn-step grounding audit includes generic-check outcome production',
+  async () => {
+    const outcomePlan = { operations: [], continuation: null, check: {
+      outcomes: { clean_success: { operations: plan.operations } }
+    } };
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run(call) {
+        const [{ path, operation }] = JSON.parse(call.messages[1].content)
+          .operations;
+        assert.equal(path,
+          '$.check.outcomes.clean_success.operations.0');
+        assert.equal(operation.action_production.source_refs[0], 'knife:1');
+        return { output: { pass: false,
+          concerns: [{ kind: 'source_semantic_grounding' }] } };
+      } }
+    });
+    await assert.rejects(validate({ request, plan: outcomePlan }), (error) => {
+      assert.equal(error.details.errors[0].path,
+        '$.check.outcomes.clean_success.operations.0.action_production.source_refs');
+      return true;
+    });
+  });
 
 test('turn-step grounding audit accepts a strict pass', async () => {
   const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({

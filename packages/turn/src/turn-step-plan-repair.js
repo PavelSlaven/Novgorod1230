@@ -91,10 +91,12 @@ function rejectedSemanticChoice(error, originalErrors) {
 function repeatedUnavailableOwner(error, originalErrors) {
   const repairedErrors = error?.details?.errors;
   const unavailable = ({ code }) => code === 'domain_owner_unavailable';
+  const incompleteRemoval = ({ path, code }) => code === 'resolution'
+    && ['$.activity.owner', '$.operations'].includes(path);
   return error?.code === 'TURN_STEP_PLAN_INVALID'
     && originalErrors.some(unavailable)
     && Array.isArray(repairedErrors) && repairedErrors.length > 0
-    && repairedErrors.every(unavailable);
+    && repairedErrors.every((item) => unavailable(item) || incompleteRemoval(item));
 }
 
 const SEMANTIC_GROUNDING_CODES = new Set([

@@ -105,6 +105,25 @@ test('repeated unavailable owner becomes a safe direct no-result', async () => {
   assert.equal(result.step_traces[0].reason_code, 'domain_operation_unavailable');
 });
 
+test('partial removal of unavailable owner becomes a safe direct no-result',
+  async () => {
+    let calls = 0;
+    const result = await runTurnStepLoop(input(), ports(
+      async (request) => {
+        calls += 1;
+        return calls === 1 ? unavailableGenericPlan(request) : plan(request, {
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operations: [{ op: 'request_activity', actor_ref: 'actor-1',
+            activity_kind: 'wait', target_refs: [], description: 'ждать' }]
+        });
+      }, preflight(), null
+    ));
+    assert.equal(calls, 2);
+    assert.deepEqual(result.write_fragments, []);
+    assert.equal(result.step_traces[0].reason_code,
+      'domain_operation_unavailable');
+  });
+
 test('rejected semantic choice retained by repair becomes a safe no-result',
   async () => {
     let calls = 0;

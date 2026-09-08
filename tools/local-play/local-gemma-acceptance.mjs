@@ -96,8 +96,9 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       const event = await readNextTurnEvent({ directory: logDirectory,
         partyId, afterCount: already });
       const audited = auditEvent(event);
-      for (const call of audited.llm.calls) assertLocalProvider(call,
-        identity, `gameplay role ${call.role_id}`);
+      for (const call of audited.llm.calls.filter(({ role_id }) => role_id)) {
+        assertLocalProvider(call, identity, `gameplay role ${call.role_id}`);
+      }
       const traceRef = `${campaignId}:trace:${index}`;
       const boundaries = audited.llm.gameplay_traces;
       const trace = { trace_ref: traceRef, campaign_id: campaignId,

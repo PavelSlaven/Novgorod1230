@@ -465,15 +465,15 @@ test('invalid repaired plan does not receive a second repair', async () => {
   ]);
 });
 
-test('unresolved semantic grounding becomes a safe no-result', async () => {
+test('unresolved grounding or closed shape becomes a safe no-result', async () => {
   const input = request({ player_safe_state: {
     items: [{ item_id: 'boards', category_id: 'wooden_boards' }]
   } });
   let calls = 0;
-  const invalid = () => Object.assign(new Error('semantic mismatch'), {
+  const invalid = (code) => Object.assign(new Error('semantic mismatch'), {
     code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{
       path: '$.operations.0.action_production',
-      code: 'material_transformation_grounding',
+      code,
       message: 'must remain grounded'
     }] }
   });
@@ -492,13 +492,17 @@ test('unresolved semantic grounding becomes a safe no-result', async () => {
   const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
     async run() { calls += 1; return { output: candidate }; }
   } });
-  const result = await requestTurnStepPlanWithRepair({ request: input,
-    turnStepModel: model, semanticPlanValidator: async () => { throw invalid(); } });
-  assert.equal(calls, 2);
-  assert.equal(result.repaired, true);
-  assert.equal(result.plan.resolution, 'direct');
-  assert.equal(result.plan.goal_result, 'not_achieved');
-  assert.deepEqual(result.plan.operations, []);
+  for (const code of ['material_transformation_grounding',
+    'material_extent_shape']) {
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model,
+      semanticPlanValidator: async () => { throw invalid(code); } });
+    assert.equal(result.repaired, true);
+    assert.equal(result.plan.resolution, 'direct');
+    assert.equal(result.plan.goal_result, 'not_achieved');
+    assert.deepEqual(result.plan.operations, []);
+  }
+  assert.equal(calls, 4);
 });
 
 test('empty unrecoverable domain request becomes a normal no-result', async () => {

@@ -1,4 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
+import { isDomainStepOperation } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS } from './lower-dvina-trace-phase-2-llm-prompts.js';
 import { assembleNpcConversationPlan, assemblePlayerConversationPlan } from './lower-dvina-trace-conversation-assembly.js';
@@ -210,7 +211,9 @@ export function assembleTurnStepPlan(choice, request,
     ? [structuredClone(selected.operation)]
     : semantic.operation_choice == null && !copiedExactOperation
       ? structuredClone(semantic.operations) : undefined);
-  const domainRequest = semantic.resolution === 'domain_request';
+  const resolution = operations?.some(({ op }) => isDomainStepOperation(op))
+    ? 'domain_request' : semantic.resolution;
+  const domainRequest = resolution === 'domain_request';
   const actionProduction = Array.isArray(operations) && operations.some((operation) =>
     operation?.op === 'request_item_use'
       && operation.action_production != null);
@@ -221,9 +224,9 @@ export function assembleTurnStepPlan(choice, request,
     working_revision: request.working_revision,
     step_index: request.step_index,
     interpretation: semantic.interpretation,
-    resolution: semantic.resolution,
-    goal_result: domainRequest || semantic.resolution === 'generic_check'
-      || semantic.resolution === 'clarification_required'
+    resolution,
+    goal_result: domainRequest || resolution === 'generic_check'
+      || resolution === 'clarification_required'
       || semantic.continuation != null
       ? 'pending'
       : semantic.goal_result,

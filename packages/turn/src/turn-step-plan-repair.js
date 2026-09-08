@@ -65,7 +65,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
           || unavailableOwnerAfterRepair(
             repairError, originalOutput, structuralErrors)
           || forbiddenOperationChoiceAfterRepair(repairError)
-          || unresolvedSemanticGrounding(repairError)
+          || unresolvedGroundingOrClosedShape(repairError)
           || unresolvedContinuation(repairError)
           || unresolvedReferenceAfterRepair(repairError, structuralErrors)) {
         return { plan: noResultPlan(request), repaired: true };
@@ -101,19 +101,23 @@ function unavailableOwnerAfterRepair(error, originalOutput, initialErrors) {
     && repairedErrors.every((item) => unavailable(item) || incompleteRemoval(item));
 }
 
-const SEMANTIC_GROUNDING_CODES = new Set([
+const SAFE_NO_RESULT_CODES = new Set([
   'operation_semantic_grounding',
   'source_semantic_grounding',
   'material_transformation_grounding',
   'source_placement_grounding',
-  'action_production_identity_grounding'
+  'action_production_identity_grounding',
+  'material_extent_shape',
+  'identity_shape',
+  'result_shape',
+  'writing_shape'
 ]);
 
-function unresolvedSemanticGrounding(error) {
+function unresolvedGroundingOrClosedShape(error) {
   const errors = error?.details?.errors;
   return error?.code === 'TURN_STEP_PLAN_INVALID'
     && Array.isArray(errors) && errors.length > 0
-    && errors.every(({ code }) => SEMANTIC_GROUNDING_CODES.has(code));
+    && errors.every(({ code }) => SAFE_NO_RESULT_CODES.has(code));
 }
 
 function unresolvedContinuation(error) {

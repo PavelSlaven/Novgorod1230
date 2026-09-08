@@ -22,3 +22,14 @@ test('turn step repair preserves valid nested fields omitted by the model', asyn
   assert.equal(plan.interpretation.grounded_attempt, 'открыть сундук');
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
+
+test('assembler derives domain resolution from an unseen domain operation', () => {
+  const input = request();
+  const plan = assembleTurnStepPlan({ ...output(), resolution: 'direct',
+    operation_choice: null, operations: [{ op: 'request_discovery',
+      actor_ref: input.actor.actor_ref, discovery_kind: 'inspect',
+      target_refs: ['location:unseen-workyard'], query: 'осмотреть навес' }] }, input);
+  assert.equal(plan.resolution, 'domain_request');
+  assert.deepEqual(plan.activity,
+    { owner: 'domain', duration_class: null, effort: null });
+});

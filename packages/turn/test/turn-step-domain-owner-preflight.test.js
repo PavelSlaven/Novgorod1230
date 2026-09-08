@@ -399,22 +399,21 @@ function activity(description) {
     target_refs: [], description };
 }
 
-test('structural then unavailable owner consumes no third repair', async () => {
+test('structural then unavailable owner becomes a safe no-result', async () => {
   let calls = 0;
-  await assert.rejects(() => runTurnStepLoop(input(), ports(
+  const result = await runTurnStepLoop(input(), ports(
     async (request) => {
       calls += 1;
       return calls === 1
         ? { ...plan(request), request_id: 'forged' }
         : unavailableGenericPlan(request);
     }, preflight(), null
-  )), (error) => {
-    assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
-    assert.equal(error.details.repair_attempted, true);
-    assert.equal(error.details.errors[0].rule, 'domain_owner_unavailable');
-    return true;
-  });
+  ));
   assert.equal(calls, 2);
+  assert.equal(result.stop_reason, 'terminal');
+  assert.equal(result.step_traces[0].goal_result, 'not_achieved');
+  assert.equal(result.step_traces[0].reason_code,
+    'domain_operation_unavailable');
 });
 
 test('repair with same operation recomputes owner for changed plan context', () => {

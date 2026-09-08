@@ -192,6 +192,7 @@ async function runPlanner(roleRunner, request, repair, bundle) {
       'schema must equal world_knowledge_query_plan_v1. The key is domains, never selected_domains.',
       'Do not echo the request object or any request metadata.',
       'Select only domains, approved focus_refs, registered predicates, search_hints, and query_locale needed for the supplied semantic input.',
+      'Copy every domain verbatim from request.allowed_domains. Domain aliases are forbidden; for example, biology must not replace biology_physiology.',
       'Select domains for the factual relationships being asked about, not every noun mentioned. Distinguish general scientific properties from historical availability or craft practice, and occupation/knowledge context from law or social institutions.',
       'For a question asking whether stated evidence establishes, identifies, implies, or is sufficient for a conclusion, select knowledge about that evidential relationship or limit, not attributes of the proposed conclusion.',
       'Choose the smallest sufficient set of the most specific approved focus_refs. Exact focus facts outrank fuzzy matches: do not add broad material, object or activity refs as background padding. Include a broad ref only when it directly supplies a separately needed factual relationship. An empty focus_refs array is valid when no supplied ref matches the need.',
@@ -202,11 +203,11 @@ async function runPlanner(roleRunner, request, repair, bundle) {
       'Return requested_predicates as an empty array. This semantic lookup preserves mixed typed and generic factual premises; restrictive predicate filters belong to exact code-owned queries.',
       'Do not return facts, outcomes, actions, party mutations, context overrides, or new refs.',
       repair == null ? 'Plan the smallest useful factual lookup.'
-        : `Replace the invalid output; repair only these structural errors: ${JSON.stringify(repair.structural_errors)} Remove unavailable focus_refs, or replace them only by verbatim refs from request.available_knowledge_refs. Do not return any ref named as unavailable.`
+        : `Replace the invalid output; repair only these structural errors: ${JSON.stringify(repair.structural_errors)} Remove every domain absent from request.allowed_domains. Remove unavailable focus_refs, or replace them only by verbatim refs from request.available_knowledge_refs. Do not return any domain or ref named as unavailable.`
     ].join(' ') }, { role: 'user', content: JSON.stringify(repair == null
       ? request : { request, original_output: repair.original_output,
         structural_errors: repair.structural_errors,
-        repair_instruction: 'Return the corrected six-key plan, not original_output. Remove every unavailable focus_ref. Keep the information need in search_hints; an empty focus_refs array is valid. Never copy a rejected ref.' }) }],
+        repair_instruction: 'Return the corrected six-key plan, not original_output. Copy domains only from request.allowed_domains and remove every unavailable domain or focus_ref. Keep the information need in search_hints; an empty focus_refs array is valid. Never copy a rejected domain or ref.' }) }],
     overrides: { temperature: 0 }
   });
   return response;

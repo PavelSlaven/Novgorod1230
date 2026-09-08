@@ -142,7 +142,7 @@ function assertRetrievalObservability(observability, grounded) {
   }
 }
 
-test('production repair explicitly removes unavailable refs without changing caller authority', async () => {
+test('production repair removes unavailable domains and refs without changing authority', async () => {
   const bundle = JSON.parse(await readFile(new URL(
     '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
     import.meta.url), 'utf8'));
@@ -155,14 +155,19 @@ test('production repair explicitly removes unavailable refs without changing cal
       const input = JSON.parse(call.messages[1].content);
       inputs.push(input.request ?? input);
       if (inputs.length === 2) {
+        assert.match(call.messages[0].content,
+          /Remove every domain absent from request.allowed_domains/u);
+        assert.match(call.messages[0].content, /Domain aliases are forbidden/u);
         assert.match(call.messages[0].content, /Remove unavailable focus_refs/u);
         assert.match(call.messages[0].content, /verbatim refs from request.available_knowledge_refs/u);
         assert.match(call.messages[0].content, /wk:unavailable-ref/u);
         assert.ok(input.structural_errors.some(error => error.includes('wk:unavailable-ref')));
-        assert.match(input.repair_instruction, /Never copy a rejected ref/u);
+        assert.match(input.repair_instruction,
+          /Never copy a rejected domain or ref/u);
       }
       return { output: { schema: 'world_knowledge_query_plan_v1',
-        query_locale: 'ru', domains: ['environment'],
+        query_locale: 'ru', domains: inputs.length === 1
+          ? ['biology'] : ['environment'],
         focus_refs: inputs.length === 1 ? ['wk:unavailable-ref'] : [],
         requested_predicates: [], search_hints: [] } };
     } }

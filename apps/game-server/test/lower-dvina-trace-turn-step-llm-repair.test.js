@@ -397,6 +397,8 @@ test('mismatched echoed operation cannot silently replace selected choice',
     assert.deepEqual(repair.original_output.operations, [ordinary]);
     assert.match(calls[1].messages[0].content,
       /operations must accompany operation_choice[\s\S]*exactly that selected DTO/u);
+    assert.match(calls[1].messages[0].content,
+      /domain_owner_unavailable on request_discovery with multiple target_refs[\s\S]*keep exactly one visible target[\s\S]*remaining targets plus the comparison in continuation/u);
   });
 
 test('planner errors other than primary JSON parsing do not repair', async () => {

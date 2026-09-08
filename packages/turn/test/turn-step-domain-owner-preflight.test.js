@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createTurnStepDomainOwnerPreflight } from
   '../src/turn-step-admission.js';
+import { requestTurnStepPlanWithRepair } from
+  '../src/turn-step-plan-repair.js';
 import { createTurnStepExecutionRegistry, runTurnStepLoop } from
   '../src/turn-step-loop.js';
 import { createTurnCommandRegistry, runTurnWorkflow } from '../src/index.js';
@@ -102,6 +104,34 @@ test('repeated unavailable owner becomes a safe direct no-result', async () => {
   assert.deepEqual(result.write_fragments, []);
   assert.equal(result.step_traces[0].reason_code, 'domain_operation_unavailable');
 });
+
+test('rejected semantic choice retained by repair becomes a safe no-result',
+  async () => {
+    let calls = 0;
+    const request = {
+      schema: 'turn_step_request_v1', request_id: 'request-1',
+      root_turn_id: 'turn-1', committed_state_version: 7,
+      working_revision: 0, step_index: 1, max_internal_steps: 8,
+      root_player_action: 'осмотреть', remaining_intent: 'осмотреть',
+      completed_steps: [], actor: { actor_ref: 'actor-1' },
+      player_safe_state: {}
+    };
+    const result = await requestTurnStepPlanWithRepair({ request,
+      turnStepModel: async () => {
+        calls += 1;
+        const value = plan(request);
+        return calls === 1 ? value : { ...value, operation_choice: 'rejected' };
+      }, semanticPlanValidator: async ({ attempt }) => {
+        if (attempt !== 1) return;
+        throw Object.assign(new Error('semantic mismatch'), {
+          code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{
+            path: '$.operations.0', code: 'operation_semantic_grounding'
+          }] }
+        });
+      } });
+    assert.equal(calls, 2);
+    assert.equal(result.plan.reason_code, 'domain_operation_unavailable');
+  });
 
 test('active conversation does not reject an unrelated direct plan', () => {
   const validate = preflight();

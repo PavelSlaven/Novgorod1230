@@ -63,6 +63,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
     } catch (repairError) {
       if (unresolvedDomainRequest({ error: repairError, originalOutput })
           || repeatedUnavailableOwner(repairError, structuralErrors)
+          || rejectedSemanticChoice(repairError, structuralErrors)
           || unresolvedSemanticGrounding(repairError)) {
         return { plan: noResultPlan(request), repaired: true };
       }
@@ -75,6 +76,16 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       throw repairError;
     }
   }
+}
+
+function rejectedSemanticChoice(error, originalErrors) {
+  const repairedErrors = error?.details?.errors;
+  return originalErrors.some(({ code }) =>
+    SEMANTIC_GROUNDING_CODES.has(code))
+    && error?.code === 'TURN_STEP_PLAN_INVALID'
+    && Array.isArray(repairedErrors) && repairedErrors.length > 0
+    && repairedErrors.every(({ path, code }) =>
+      path === '$.operation_choice' && code === 'additional_property');
 }
 
 function repeatedUnavailableOwner(error, originalErrors) {

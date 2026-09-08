@@ -19,7 +19,8 @@ import { MANAGED_RUNTIME_PINS } from '../../tools/local-play/managed-runtime.js'
 import { startLocalPlay } from '../../tools/local-play/local-play.js';
 
 test('local play persists a free turn and replays it after a server restart',
-  { timeout: 600_000 }, async (context) => {
+  { timeout: 600_000, skip: process.platform !== 'win32'
+      || process.arch !== 'x64' }, async (context) => {
     const suffix = randomUUID().replaceAll('-', '');
     const directory = await mkdtemp(join(tmpdir(), 'novgorod-local-play-'));
     const dataRoot = join(directory, 'data');

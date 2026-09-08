@@ -82,6 +82,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         budget: { max_facts: 12, max_candidates: 12,
           max_context_chars: 5000 }
       };
+      const retrievalStarted = performance.now();
       let embeddingMs = null;
       let vectorMs = null;
       let vectorScores;
@@ -103,9 +104,14 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
               ?? 'VECTOR_RETRIEVAL_UNAVAILABLE')
           });
       }
-      const retrievalStarted = performance.now();
+      const coreStarted = performance.now();
       const slice = worldKnowledge.core.resolveWorldKnowledge(query,
         { vectorScores });
+      const coreResolutionMs = Math.max(0, performance.now() - coreStarted);
+      const retrievalObservability = retrievalObservabilityOf({ bundle,
+        embeddingProfile: worldKnowledge.embedding_profile,
+        vectorScores, slice, embeddingMs, vectorMs, coreResolutionMs,
+        totalRetrievalMs: Math.max(0, performance.now() - retrievalStarted) });
       const grounded = Object.freeze({ ...request,
         world_knowledge: modelSlice(slice) });
       const purposeCache = cache.get(request) ?? new Map();
@@ -114,7 +120,8 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       telemetry?.onGameplayTrace?.({ event: 'world_knowledge_resolved', purpose,
         request_identity: request.request_id ?? null,
         planner_request: plannerRequest, planner_plan: planned.plan,
-        query, retrieved_slice: slice, consumer_request: grounded });
+        query, retrieved_slice: slice, consumer_request: grounded,
+        retrieval_observability: retrievalObservability });
       telemetry?.onDetail?.(Object.freeze({
         schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
         request_identity: request.request_id ?? null,
@@ -136,7 +143,8 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         slice_chars: slice.context_text.length,
         vector_status: 'ok', vector_error_code: null,
         query_embedding_ms: embeddingMs, vector_scan_ms: vectorMs,
-        retrieval_ms: Math.max(0, performance.now() - retrievalStarted),
+        retrieval_ms: coreResolutionMs,
+        retrieval_observability: retrievalObservability,
         total_grounding_ms: Math.max(0, performance.now() - started)
       }));
       return grounded;
@@ -147,6 +155,27 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
 export async function groundTurnRequest(grounder, request) {
   return grounder == null ? request
     : grounder.ground(request, 'semantic_resolution');
+}
+
+function retrievalObservabilityOf({ bundle, embeddingProfile, vectorScores,
+  slice, embeddingMs, vectorMs, coreResolutionMs, totalRetrievalMs }) {
+  const vectorHitRefs = Object.freeze([...vectorScores.keys()].slice(0, 3));
+  return Object.freeze({
+    pack_ref: bundle.manifest.pack_ref,
+    pack_revision: bundle.manifest.revision_id,
+    embedding_profile_ref: embeddingProfile?.embedding_profile_ref ?? null,
+    model_id: embeddingProfile?.model_id ?? null,
+    model_revision: embeddingProfile?.model_revision ?? null,
+    encoder: 'giga-query-encoder', vector_index: 'flat',
+    query_embedding_ms: embeddingMs, vector_scan_ms: vectorMs,
+    core_resolution_ms: coreResolutionMs,
+    total_retrieval_ms: totalRetrievalMs,
+    vector_hit_refs: vectorHitRefs, vector_hit_count: vectorHitRefs.length,
+    lexical_ms: null, lexical_status: 'included_in_core_resolution',
+    cache_outcome: 'miss',
+    hard_constraint_count: slice.hard_constraints.length,
+    gaps: Object.freeze([...slice.gaps])
+  });
 }
 
 export function wkClosure(request) {

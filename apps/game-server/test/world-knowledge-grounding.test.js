@@ -102,6 +102,7 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.equal(diagnostics[0].claim_refs.includes(
     'claim:regional-fish-exploitation'), true);
   assert.ok(diagnostics[0].claim_refs.length <= 12);
+  assertRetrievalObservability(diagnostics[0].retrieval_observability, first);
   assert.equal(gameplayTraces.length, 1);
   const trace = gameplayTraces[0];
   assert.equal(trace.event, 'world_knowledge_resolved');
@@ -109,8 +110,38 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.deepEqual(trace.query.search_hints, ['рыбные ресурсы']);
   assert.deepEqual(trace.consumer_request, first);
   assert.deepEqual(trace.retrieved_slice.facts, first.world_knowledge.facts);
+  assertRetrievalObservability(trace.retrieval_observability, first);
+  assert.deepEqual(trace.retrieval_observability,
+    diagnostics[0].retrieval_observability);
   assert.equal(Object.hasOwn(first, 'gameplay_traces'), false);
 });
+
+function assertRetrievalObservability(observability, grounded) {
+  assert.equal(observability.pack_ref, 'wk-pack:novgorod-1230');
+  assert.equal(observability.pack_revision, 'revision:production-v1');
+  assert.equal(observability.embedding_profile_ref,
+    'wk-embedding:giga-480m-0826:v1');
+  assert.equal(observability.model_id,
+    'ai-sage/Giga-Embeddings-instruct-480M-0826');
+  assert.equal(observability.model_revision,
+    '0c94f705aa35719324fb46f7e75b0a5c275da6e4');
+  assert.equal(observability.encoder, 'giga-query-encoder');
+  assert.equal(observability.vector_index, 'flat');
+  assert.deepEqual(observability.vector_hit_refs,
+    ['claim:regional-fish-exploitation']);
+  assert.equal(observability.vector_hit_count, 1);
+  assert.equal(observability.lexical_ms, null);
+  assert.equal(observability.lexical_status, 'included_in_core_resolution');
+  assert.equal(observability.cache_outcome, 'miss');
+  assert.equal(observability.hard_constraint_count,
+    grounded.world_knowledge.hard_constraints.length);
+  assert.deepEqual(observability.gaps, grounded.world_knowledge.gaps);
+  for (const field of ['query_embedding_ms', 'vector_scan_ms',
+    'core_resolution_ms', 'total_retrieval_ms']) {
+    assert.equal(Number.isFinite(observability[field]), true, field);
+    assert.ok(observability[field] >= 0, field);
+  }
+}
 
 test('production repair explicitly removes unavailable refs without changing caller authority', async () => {
   const bundle = JSON.parse(await readFile(new URL(

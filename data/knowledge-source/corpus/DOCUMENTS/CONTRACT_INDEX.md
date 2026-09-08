@@ -4,6 +4,7 @@
 **Репозиторий:** `PavelSlaven/Novgorod1230`  
 **Каноническое merged state:** ветка `main`  
 **Аудит индекса:** 2026-09-02, `main` HEAD `4cb58cdd1ee1ef636df0437b650bffe50f0936`
+**Проверка изменений PR92:** 2026-09-08
 
 Этот файл отвечает только за навигацию, статусы и порядок применения документов. Он не создаёт новую gameplay semantics и не заменяет профильные контракты, schemas, active bindings, код или tests.
 
@@ -69,7 +70,7 @@ Contract Auditor не копирует весь generated module index сюда 
 | [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |
 | [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |
 | [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details |
-| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority |
+| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |
 | [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |
 | [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |
 | [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |
@@ -83,7 +84,7 @@ Active status applies only to the scope stated by each header and active profile
 
 | Документ | Статус | Правило применения |
 |---|---|---|
-| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. Runtime wiring spatial-v3 production v15 — `validated_candidate_not_active`, activation определяется actual release/binding, а не этим индексом. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |
+| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. User-selected local/custom gameplay LLM проходит через общий `@rus/llm-runtime` override; readiness, persistence и UI принадлежат game-server/game-web/local-play MODULE owners. Runtime wiring spatial-v3 production v15 — `validated_candidate_not_active`, activation определяется actual release/binding, а не этим индексом. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |
 | [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) | `PROPOSED UMBRELLA TARGET` | не active как единый контракт; активированные profile semantics берутся из их actual cutover/bindings/active contracts/code/tests, а не из старого umbrella snapshot |
 | [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `PROPOSED` | не доказывает наличие DDL, profiles, validators или runtime capability |
 | [`universal_category_classification_references.md`](universal_category_classification_references.md) | `REFERENCE FOR PROPOSED POLICY` | источники/обоснования proposed classification policy |
@@ -177,6 +178,7 @@ An undeclared guide may still be relevant, but it must not silently override an 
 | Scope | Mandatory contract set |
 |---|---|
 | Player semantic action / LLM | `turn_step_llm_contract.md`, relevant operation schemas, `@rus/turn` MODULE, affected domain contract |
+| Production LLM provider/configuration | `turn_step_llm_contract.md`, `@rus/llm-runtime` MODULE, game-server settings/transport owner, game-web and local-play MODULEs; selected provider must reach every registered gameplay role without fallback |
 | Authored materialization | `code_driven_world_materialization_architecture.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |
 | Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |
 | Spatial/map | `spatial_architecture_standard_g0_g6.md` + four active Spatial v3 specializations + active world-catalog manifest/bindings |

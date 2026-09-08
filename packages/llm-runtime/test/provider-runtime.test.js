@@ -188,6 +188,7 @@ test('generic provider omits empty authorization and DeepSeek-only payload field
     assert.equal('Authorization' in request.headers, false);
     assert.equal('thinking' in request.payload, false);
     assert.equal('reasoning_effort' in request.payload, false);
+    assert.equal('chat_template_kwargs' in request.payload, false);
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -217,6 +218,14 @@ test('local OpenAI-compatible endpoint serves selected Gemma model', async (t) =
   assert.equal(request.authorization, undefined);
   assert.equal(request.body.model, model);
   assert.equal(request.body.max_tokens, 20_000);
+  assert.deepEqual(request.body.chat_template_kwargs,
+    { enable_thinking: false });
+});
+
+test('supported served Gemma alias disables template reasoning', () => {
+  const payload = buildProviderRequestPayload({ compatibility: 'openai_compatible',
+    model: 'gemma-4-26b-a4b-it', maxTokens: 20_000 }, []);
+  assert.deepEqual(payload.chat_template_kwargs, { enable_thinking: false });
 });
 
 test('malformed successful response fails closed', async () => {

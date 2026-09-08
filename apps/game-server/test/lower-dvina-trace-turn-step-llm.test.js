@@ -238,7 +238,7 @@ test('turn step planner prompt preserves only compound intent outside capability
     }
   }]);
   assert.match(prompt,
-    /direct preparation and action_production cannot share one plan[\s\S]*plan only move_entity now[\s\S]*still-unexecuted transformation in continuation/u);
+    /direct preparation and action_production cannot share one plan[\s\S]*item-local[\s\S]*never placement, attachment, holder, wearer, destination, or relocation[\s\S]*ordered explicit relocation, transformation, and placement[\s\S]*first move_entity now[\s\S]*each later placement again needs move_entity/u);
   assert.match(prompt,
     /direct achieved plan with empty operations[\s\S]*must never claim that movement, item relocation, manipulation, transformation, speech, focused perception/u);
   assert.match(prompt, /operation choice covers the intent[\s\S]*choice_id[\s\S]*Final continuation override for direct reality_limited or make_believe[\s\S]*stated action, purpose, manner, result, or qualifier[\s\S]*same grounding, not continuation[\s\S]*independently executable without that premise[\s\S]*every later sentence[\s\S]*continuation to null/u);

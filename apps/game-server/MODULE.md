@@ -132,7 +132,10 @@ capacity. Stage B may choose an
 unlisted ordinary semantic type/name and independently classifies the full
 candidate, including its qualifiers and relations, for admission;
 the owner accepts it only when that class matches the code-owned candidate, then
-rechecks mechanics, property, permission and source. The `ambient_ordinary`
+rechecks mechanics, property, permission and source. Before item admission, the
+same full candidate must be `standalone_item` rather than `non_item_detail`;
+the latter binds to persisted `no_change` and cannot reach item mechanics,
+ownership or placement. The `ambient_ordinary`
 enum alone never selects O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
 their legacy admission. Migration 025 conservation and bounded initialization/decrement
 are active for every admitted `finite_source`; each selected source reloads its

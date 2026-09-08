@@ -7,13 +7,19 @@ const REQUIRED_CASES = Object.freeze([
   'silver-currency',
   'sword-weapon'
 ]);
+const NON_ITEM_CASES = Object.freeze([
+  { id: 'boot-print-trace', query: 'след сапога на мокром песке' },
+  { id: 'puddle-surface', query: 'лужа на дороге' },
+  { id: 'shadow-observation', query: 'тень под навесом' },
+  { id: 'smoke-condition', query: 'дым над берегом' }
+]);
 const COMMON_POSITIVE_CASE = Object.freeze({
   id: 'common-mundane-positive', query: 'отыскать обычную верёвку'
 });
 
 export function lowerDvinaTraceOrdinaryStageBQualificationCases(value) {
   return validateLowerDvinaTraceOrdinaryStageBEval(value)
-    ? Object.freeze([...value.cases, COMMON_POSITIVE_CASE]) : null;
+    ? Object.freeze([...value.cases, ...NON_ITEM_CASES, COMMON_POSITIVE_CASE]) : null;
 }
 export function validateLowerDvinaTraceOrdinaryStageBEval(value) {
   const snapshot = snapshotLowerDvinaTraceOrdinaryStageBJson(value);
@@ -52,11 +58,14 @@ export function evaluateLowerDvinaTraceOrdinaryStageBModelOutputs(input = {}) {
   for (const probe of cases) {
     const result = byId.get(probe.id);
     const positive = probe.id === COMMON_POSITIVE_CASE.id;
+    const nonItem = NON_ITEM_CASES.some(({ id }) => id === probe.id);
     const invalid = !exact(result, ['id', 'resolution', 'entities'])
       || result.id !== probe.id || !Array.isArray(result.entities)
       || (positive
         ? result.resolution !== 'materialize' || result.entities.length !== 1
           || result.entities[0]?.admission_class !== 'common_mundane'
+        : nonItem
+          ? result.resolution !== 'no_change' || result.entities.length !== 0
         : !probe.allowed_resolutions.includes(result.resolution)
           || result.entities.length !== 0);
     if (invalid) {

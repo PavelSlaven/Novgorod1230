@@ -3,6 +3,7 @@ import { ORDINARY_MATERIALIZATION_V1_ENUMS } from
 
 const ADMISSION_CLASSES = new Set(
   ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class);
+const MATERIALIZATION_KINDS = new Set(['standalone_item', 'non_item_detail']);
 
 export function ordinaryMaterializationResponseShape(request) {
   if (!plain(request)) return null;
@@ -87,6 +88,12 @@ export function bindOrdinaryMaterializationPlan(request, output) {
     }
     if (output.semantic_admission_class !== authority.candidate.admission_class) {
       return negativePlan(request, 'absent', 'semantic_admission_mismatch');
+    }
+    if (!MATERIALIZATION_KINDS.has(output.semantic_materialization_kind)) {
+      return { ...output, semantic_materialization_kind: null };
+    }
+    if (output.semantic_materialization_kind !== 'standalone_item') {
+      return negativePlan(request, 'no_change', 'semantic_non_item_detail');
     }
   }
   if (['absent', 'no_change', 'authority_required'].includes(output.resolution)) {

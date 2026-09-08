@@ -52,21 +52,30 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
 
 async function qualifiedOutput({ roleRunner, invocation, identity, request }) {
   const first = await invoke({ roleRunner, invocation, identity, request,
-    repair: null });
+    repair: null, mechanicsPolicy: qualificationMechanicsPolicy() });
   const errors = validateOrdinaryMaterializationPlanV1(first, request);
   if (errors.length === 0) return first;
-  return invoke({ roleRunner, invocation, identity, request, repair: {
+  return invoke({ roleRunner, invocation, identity, request,
+    mechanicsPolicy: qualificationMechanicsPolicy(), repair: {
     schema: 'ordinary_materialization_repair_context_v1', original_output: null,
     validation_errors: errors
   } });
 }
 
-async function invoke({ roleRunner, invocation, identity, request, repair }) {
+async function invoke({ roleRunner, invocation, identity, request, repair,
+  mechanicsPolicy }) {
   const response = await roleRunner.run({ ...invocation, repair: repair !== null,
-    messages: buildOrdinaryMaterializationMessages(request, { repair }) });
+    messages: buildOrdinaryMaterializationMessages(request, { repair,
+      mechanicsPolicy }) });
   const outputResponse = ordinaryMaterializationResponseOf(response);
   if (!sameIdentity(identity, outputResponse.provider_record)) throw new Error('identity');
   return bindOrdinaryMaterializationPlan(request, outputResponse.output);
+}
+function qualificationMechanicsPolicy() {
+  return { policy_ref: 'stage-b', max_mass_grams: 20_000,
+    allowed_external_hand_costs: [0, 1, 2],
+    allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
+    max_packing_slot_cost: 16, max_quantity: 1 };
 }
 
 function qualificationError(failedCaseIds) {

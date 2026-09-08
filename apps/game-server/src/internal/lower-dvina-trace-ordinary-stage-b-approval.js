@@ -13,7 +13,7 @@ const PROFILE_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/'
 const RECEIPT_PATH = 'data/model-evals/lower-dvina-trace/'
   + 'ordinary-stage-b-approval-v1.json';
 const RECEIPT_DIGEST =
-  '6ed3fc6a7adae15b5a10383e2af9c285d62e51927b079d7ae5b6f4e4e195e856';
+  '3deeafa2257b3fadb8d80f30ea0d03203e22fe6686abb9449fa6210d9cb8de1f';
 
 export async function loadLowerDvinaTraceOrdinaryStageBApproval({
   rootDir = process.cwd()

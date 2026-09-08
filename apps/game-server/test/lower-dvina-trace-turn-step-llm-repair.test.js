@@ -281,6 +281,47 @@ test('repair accepts an exact copied code-owned choice without trusting a new DT
     assert.deepEqual(result.plan.operations, [operation]);
   });
 
+test('mismatched echoed operation cannot silently replace selected choice',
+  async () => {
+    const selected = { op: 'request_discovery', actor_ref: 'actor_mikula',
+      discovery_kind: 'inspect', target_refs: ['location:wreck'],
+      query: 'Осмотреть место крушения' };
+    const ordinary = { ...selected, target_refs: ['chest_1'],
+      query: 'Осмотреть клочок шерсти' };
+    const input = request({ available_domain_operations: [selected] });
+    const calls = [];
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run(call) {
+        calls.push(call);
+        return { output: calls.length === 1 ? {
+          ...output(), resolution: 'domain_request',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operation_choice: 'domain_operation_1_request_discovery_inspect',
+          operations: [ordinary]
+        } : {
+          ...output(), resolution: 'domain_request',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operation_choice: null, operations: [ordinary]
+        } };
+      }
+    } });
+
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model });
+
+    assert.equal(result.repaired, true);
+    assert.deepEqual(result.plan.operations, [ordinary]);
+    assert.deepEqual(calls.map(({ role_id }) => role_id), [
+      'turn_step_planner', 'turn_step_planner_repair'
+    ]);
+    const repair = JSON.parse(calls[1].messages[1].content);
+    assert.equal(repair.original_output.operation_choice,
+      'domain_operation_1_request_discovery_inspect');
+    assert.deepEqual(repair.original_output.operations, [ordinary]);
+    assert.match(calls[1].messages[0].content,
+      /operations must accompany operation_choice[\s\S]*exactly that selected DTO/u);
+  });
+
 test('planner errors other than primary JSON parsing do not repair', async () => {
   let calls = 0;
   const model = createLowerDvinaTraceTurnStepModel({

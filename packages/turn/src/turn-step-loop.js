@@ -168,14 +168,20 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       registry,
       ports
     });
+    if (execution.ordinary_materialization_atomic_write_plan != null
+        && ordinaryPlans.length !== 0) {
+      stopReason = 'player_response';
+      remainingIntent = request.remaining_intent;
+      stepTraces.push(traceFor({
+        plan, request, repaired, applied: false, boundary: true
+      }));
+      break;
+    }
     workingProjection = execution.workingProjection;
     writeFragments.push(...execution.writeFragments);
     consequenceFragments.push(...execution.consequenceFragments);
     preparedEffects.push(...execution.preparedEffects);
     if (execution.ordinary_materialization_atomic_write_plan != null) {
-      if (ordinaryPlans.length !== 0) throw turnFailure(
-        'TURN_STEP_ORDINARY_PLAN_DUPLICATE',
-        'Only one ordinary atomic plan is allowed per turn.');
       ordinaryPlans.push(execution.ordinary_materialization_atomic_write_plan);
     }
     if (execution.action_production_atomic_write_plan != null) {

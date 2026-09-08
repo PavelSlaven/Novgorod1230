@@ -62,7 +62,11 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       model: LOCAL_LLM_PRESET.model, apiKey: null };
     const identity = provider ? { mode: 'custom',
       provider: 'openai_compatible', base_url: provider.baseUrl,
-      model: provider.model } : local.managedRuntime.llm.identity;
+      model: provider.model, backend: provider.evidence.backend,
+      backend_version: provider.evidence.backendVersion,
+      runtime_metadata: provider.evidence.runtime,
+      hardware_metadata: provider.evidence.hardware }
+      : local.managedRuntime.llm.identity;
     report.execution = { interface: 'chromium_playwright_dom_only',
       gameplay_transport: 'browser_ui_only',
       browser: { executable: chromiumPath, headless },
@@ -205,12 +209,21 @@ export async function acceptanceProviderFromEnv(env = process.env) {
   const baseUrl = String(env.RUS_ACCEPTANCE_LLM_BASE_URL ?? '').trim();
   const model = String(env.RUS_ACCEPTANCE_LLM_MODEL ?? '').trim();
   const keyFile = String(env.RUS_ACCEPTANCE_LLM_API_KEY_FILE ?? '').trim();
-  if (!baseUrl && !model && !keyFile) return null;
+  const backend = String(env.RUS_ACCEPTANCE_LLM_BACKEND ?? '').trim();
+  const backendVersion = String(
+    env.RUS_ACCEPTANCE_LLM_BACKEND_VERSION ?? '').trim();
+  const runtime = String(env.RUS_ACCEPTANCE_LLM_RUNTIME_METADATA ?? '').trim();
+  const hardware = String(env.RUS_ACCEPTANCE_LLM_HARDWARE_METADATA ?? '').trim();
+  if (![baseUrl, model, keyFile, backend, backendVersion, runtime, hardware]
+    .some(Boolean)) return null;
   if (!baseUrl || !model) throw new Error(
     'RUS_ACCEPTANCE_LLM_BASE_URL and RUS_ACCEPTANCE_LLM_MODEL are required together.');
+  if (!backend || !backendVersion || !runtime || !hardware) throw new Error(
+    'External acceptance requires backend version, runtime and hardware metadata.');
   const apiKey = keyFile ? (await readFile(keyFile, 'utf8')).trim() : null;
   return Object.freeze({ mode: 'custom', compatibility: 'openai_compatible',
-    baseUrl, model, apiKey: apiKey || null });
+    baseUrl, model, apiKey: apiKey || null, evidence: Object.freeze({
+      backend, backendVersion, runtime, hardware }) });
 }
 function retrievedClaims(boundaries) {
   return [...new Set(boundaries

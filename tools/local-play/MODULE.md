@@ -54,8 +54,11 @@ Premise audit и backlog принадлежат development authoring workflow, 
 `npm run gameplay:acceptance:local -- <output-directory> <focus> [turn-count] [sequence]`.
 Для явно выбранного внешнего Gemma endpoint runner читает
 `RUS_ACCEPTANCE_LLM_BASE_URL`, `RUS_ACCEPTANCE_LLM_MODEL` и optional
-`RUS_ACCEPTANCE_LLM_API_KEY_FILE`; ключ не передаётся через CLI и локальная
-Gemma в этом режиме не запускается.
+`RUS_ACCEPTANCE_LLM_API_KEY_FILE`. Для воспроизводимого evidence обязательны
+`RUS_ACCEPTANCE_LLM_BACKEND`, `RUS_ACCEPTANCE_LLM_BACKEND_VERSION`,
+`RUS_ACCEPTANCE_LLM_RUNTIME_METADATA` и `RUS_ACCEPTANCE_LLM_HARDWARE_METADATA`;
+они описывают назначенный endpoint, а не текущий ПК. Ключ не передаётся через
+CLI, и локальная Gemma в этом режиме не запускается.
 
 ## Не владеет
 

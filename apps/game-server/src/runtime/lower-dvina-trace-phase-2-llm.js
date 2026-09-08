@@ -192,7 +192,6 @@ function visibleConversationChoiceExamples(request, choices) {
     return [`Visible conversation routing for ${JSON.stringify(label)}: choose exactly one matching supplied choice from ${JSON.stringify(matches.map(({ choice_id: operation_choice, operation }) => ({ interaction_kind: operation.interaction_kind, operation_choice })))}. Each choice's player_safe_grounding places this label and its observable cues beside the opaque target ref; use those cues to resolve natural descriptions of the addressee. Use speech for a statement, request when asking the person to answer, act, permit, oppose, or help, and offer for a proposed exchange. The supplied operation content is a capability label, not the utterance and not a phrase restriction; the raw player text remains the utterance and semantic input. A momentary look at that already visible person leading into speech is contextual and MUST select this conversation before visible_general_look, including first/then wording; a genuine earlier search, manipulation, movement, or other action with its own supplied owner still executes first. An unsupported physical intervention does not become a direct failure merely because no physical operation is supplied when the text also reaches a visible person whose response is the next owned boundary. A proposal to perform that intervention followed by a direct address, imperative, or request for this person to help is one interaction boundary, not an earlier completed physical attempt plus optional speech. Never reason that the addressed request is not a separate action: select the matching interaction and let its owner decide the response. A player-safe role or name established by current visible context or committed conversation history can identify this actor even when the words differ from display_label; that grounded address overrides another active interlocutor. When visible_scene introduces one unnamed person by position or relation and the player repeats that description, bind it to the corresponding generic visible label, never to a separately named person who also happens to be present. Do not use these choices for another NPC or invent a completed physical result.`];
   });
 }
-
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
   const semantic = structuredClone(choice);
@@ -217,13 +216,17 @@ export function assembleTurnStepPlan(choice, request,
   const actionProduction = Array.isArray(operations) && operations.some((operation) =>
     operation?.op === 'request_item_use'
       && operation.action_production != null);
+  const interpretation = semantic.interpretation;
+  if (interpretation?.constructor === Object &&
+      !interpretation.player_goal?.trim?.())
+    interpretation.player_goal = request.root_player_action;
   return {
     schema: 'turn_step_plan_v1',
     request_id: request.request_id,
     committed_state_version: request.committed_state_version,
     working_revision: request.working_revision,
     step_index: request.step_index,
-    interpretation: semantic.interpretation,
+    interpretation,
     resolution,
     goal_result: domainRequest || resolution === 'generic_check'
       || resolution === 'clarification_required'

@@ -78,6 +78,15 @@ test('launcher always makes managed Gemma available on supported hardware', asyn
     isPortAvailable: async () => true,
     provisionRuntime: async ({ startLlm }) => {
       assert.equal(startLlm, true); throw stop;
+  } }), stop);
+});
+
+test('an explicit external acceptance provider skips the owned Gemma process', async () => {
+  const stop = Object.assign(new Error('stop'), { code: 'STOP' });
+  await assert.rejects(startLocalPlay({ env: {}, startManagedLlm: false,
+    isPortAvailable: async () => true,
+    provisionRuntime: async ({ startLlm }) => {
+      assert.equal(startLlm, false); throw stop;
     } }), stop);
 });
 

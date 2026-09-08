@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
@@ -23,7 +24,7 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
   focus, turns = 8, campaignId = `local-gemma-${randomUUID()}`,
   sequence = 1, afterP0P1FixRef = null, start = startLocalPlay,
   launch = (options) => chromium.launch(options), snapshot = gitSnapshot,
-  chromiumPath = CHROMIUM, headless = false } = {}) {
+  chromiumPath = CHROMIUM, headless = false, provider = null } = {}) {
   if (!outputDirectory || !focus || !Number.isInteger(turns) || turns < 1
       || !chromiumPath) throw new TypeError(
     'outputDirectory, focus, positive turns and Chromium are required.');
@@ -45,22 +46,31 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
     `${JSON.stringify(report, null, 2)}\n`);
   await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`,
     { flag: 'wx' });
-  let local; let browser;
+  let local; let browser; let settingsDirectory;
   try {
+    if (provider) settingsDirectory = await mkdtemp(join(tmpdir(),
+      'novgorod-acceptance-llm-'));
     local = await start({ env: { ...process.env, RUS_DEVELOPER_MODE: 'true',
-      LOG_DIRECTORY: logDirectory } });
-    if (!local.managedRuntime?.llm) throw new Error(
+      LOG_DIRECTORY: logDirectory,
+      ...(settingsDirectory ? { RUS_LLM_SETTINGS_PATH:
+        join(settingsDirectory, 'settings.json') } : {}) },
+      startManagedLlm: provider == null });
+    if (!provider && !local.managedRuntime?.llm) throw new Error(
       'Final acceptance requires the managed local Gemma runtime.');
-    const identity = local.managedRuntime.llm.identity;
+    const selectedProvider = provider ?? { mode: 'local',
+      compatibility: 'openai_compatible', baseUrl: LOCAL_LLM_PRESET.base_url,
+      model: LOCAL_LLM_PRESET.model, apiKey: null };
+    const identity = provider ? { mode: 'custom',
+      provider: 'openai_compatible', base_url: provider.baseUrl,
+      model: provider.model } : local.managedRuntime.llm.identity;
     report.execution = { interface: 'chromium_playwright_dom_only',
       gameplay_transport: 'browser_ui_only',
       browser: { executable: chromiumPath, headless },
-      local_runtime: identity,
+      llm_provider: identity,
+      ...(!provider ? { local_runtime: identity } : {}),
       giga: local.managedRuntime.giga.identity,
       postgres: { version: local.postgres.version } };
-    const settings = { providerSnapshot: () => ({ mode: 'local',
-      compatibility: 'openai_compatible', baseUrl: LOCAL_LLM_PRESET.base_url,
-      model: LOCAL_LLM_PRESET.model, apiKey: null }) };
+    const settings = { providerSnapshot: () => selectedProvider };
     const nextIntent = createGameplayGapExplorer({ focus,
       roleRunner: createProductionLlmRoleRunner({ settings }) });
     browser = await launch({ executablePath: chromiumPath, headless,
@@ -68,7 +78,7 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
     const page = await browser.newPage();
     page.setDefaultTimeout(120_000);
     await page.goto(local.url);
-    await selectManagedLocalProvider(page);
+    await selectProvider(page, selectedProvider);
     await page.waitForSelector('[data-start-new-game]:not([disabled])');
     await page.click('[data-start-new-game]');
     await page.waitForSelector('[data-new-game-screen]');
@@ -132,6 +142,8 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
     finally {
       await browser?.close().catch(() => {});
       await local?.close().catch(() => {});
+      if (settingsDirectory) await rm(settingsDirectory,
+        { recursive: true, force: true });
     }
   }
 }
@@ -140,19 +152,25 @@ export async function playerDom(page) {
   return page.locator('[data-game-root]').innerText();
 }
 
-async function selectManagedLocalProvider(page) {
+async function selectProvider(page, provider) {
   await page.click('[data-llm-settings-open]');
   await page.waitForFunction(() => Boolean(document.querySelector(
     '[data-llm-settings-form] input[name="model"]')?.value));
-  const local = page.locator(
-    '[data-llm-settings-form] input[name="mode"][value="local"]');
-  if (!(await local.isChecked())) {
-    await local.check();
-    await page.click(
-      '[data-llm-settings-form] button[name="llm_action"][value="apply"]');
-    await page.waitForFunction(() => document.querySelector(
-      '.llm-settings-message')?.textContent?.includes('Настройки применены.'));
+  const mode = page.locator(
+    `[data-llm-settings-form] input[name="mode"][value="${provider.mode}"]`);
+  await mode.check();
+  if (provider.mode === 'custom') {
+    await page.fill('[data-llm-settings-form] input[name="base_url"]',
+      provider.baseUrl);
+    await page.fill('[data-llm-settings-form] input[name="model"]',
+      provider.model);
+    if (provider.apiKey) await page.fill(
+      '[data-llm-settings-form] input[name="api_key"]', provider.apiKey);
   }
+  await page.click(
+    '[data-llm-settings-form] button[name="llm_action"][value="apply"]');
+  await page.waitForFunction(() => document.querySelector(
+    '.llm-settings-message')?.textContent?.includes('Настройки применены.'));
   await page.click('[data-overlay-close]');
 }
 
@@ -179,7 +197,19 @@ async function turnEvents(directory, partyId) {
 function assertLocalProvider(record, identity, label) {
   if (record?.provider !== 'openai_compatible'
       || record?.model !== identity.model) throw new Error(
-    `${label} did not use the pinned local Gemma provider.`);
+    `${label} did not use the selected Gemma provider.`);
+}
+
+export async function acceptanceProviderFromEnv(env = process.env) {
+  const baseUrl = String(env.RUS_ACCEPTANCE_LLM_BASE_URL ?? '').trim();
+  const model = String(env.RUS_ACCEPTANCE_LLM_MODEL ?? '').trim();
+  const keyFile = String(env.RUS_ACCEPTANCE_LLM_API_KEY_FILE ?? '').trim();
+  if (!baseUrl && !model && !keyFile) return null;
+  if (!baseUrl || !model) throw new Error(
+    'RUS_ACCEPTANCE_LLM_BASE_URL and RUS_ACCEPTANCE_LLM_MODEL are required together.');
+  const apiKey = keyFile ? (await readFile(keyFile, 'utf8')).trim() : null;
+  return Object.freeze({ mode: 'custom', compatibility: 'openai_compatible',
+    baseUrl, model, apiKey: apiKey || null });
 }
 function retrievedClaims(boundaries) {
   return [...new Set(boundaries
@@ -204,7 +234,8 @@ if (process.argv[1]
   if (!outputDirectory || !focus) throw new Error(
     'Usage: npm run gameplay:acceptance:local -- <output-directory> <focus> [turn-count] [sequence]');
   const report = await runLocalGemmaBrowserAcceptance({ outputDirectory,
-    focus, turns: Number(count), sequence: Number(sequence) });
+    focus, turns: Number(count), sequence: Number(sequence),
+    provider: await acceptanceProviderFromEnv() });
   console.log(JSON.stringify({ campaign_id: report.campaign_id,
     status: report.status, turns: report.turns.length }));
 }

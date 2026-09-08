@@ -34,7 +34,7 @@ consumer slice, structured model output и owner commit/rejection. Driver
 не создаёт новую и не меняет БД напрямую. Такая кампания не допускается
 в acceptance mode; исходный player-safe screen сохраняется в trace.
 `local-gemma-acceptance.mjs` — единственный финальный browser-only runner:
-поднимает тот же managed runtime, запускает настоящий Chromium, передаёт PLAYER
+по умолчанию поднимает тот же managed runtime, запускает настоящий Chromium, передаёт PLAYER
 только фактический DOM, вводит намерения через UI и сохраняет private traces.
 Он не вызывает gameplay REST напрямую и не объявляет saturation без отдельного
 premise audit. Acceptance candidate требует clean неизменного checkout; development-прогоны
@@ -51,6 +51,10 @@ Premise audit и backlog принадлежат development authoring workflow, 
 
 Финальная реальная кампания:
 `npm run gameplay:acceptance:local -- <output-directory> <focus> [turn-count] [sequence]`.
+Для явно выбранного внешнего Gemma endpoint runner читает
+`RUS_ACCEPTANCE_LLM_BASE_URL`, `RUS_ACCEPTANCE_LLM_MODEL` и optional
+`RUS_ACCEPTANCE_LLM_API_KEY_FILE`; ключ не передаётся через CLI и локальная
+Gemma в этом режиме не запускается.
 
 ## Не владеет
 

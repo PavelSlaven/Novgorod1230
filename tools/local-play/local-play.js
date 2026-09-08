@@ -94,6 +94,7 @@ export async function startLocalPlay({
   loadPin = loadActiveRuntimeCatalogPin,
   createPool = (options) => new pg.Pool(options),
   provisionRuntime = provisionManagedRuntime,
+  startManagedLlm = true,
   spawnServer = defaultSpawnServer,
   fetchImpl = fetch,
   sleep = delay,
@@ -105,7 +106,7 @@ export async function startLocalPlay({
     throw localPlayError('LOCAL_PLAY_PORT_UNAVAILABLE', `Port ${port} is already in use.`);
   }
   const managedRuntime = await provisionRuntime({ repositoryRoot: ROOT,
-    env, fetchImpl, log, startLlm: true });
+    env, fetchImpl, log, startLlm: startManagedLlm });
   let postgres;
   try { postgres = await ensurePostgres({ settings: localPostgresSettings }); }
   catch (error) { await managedRuntime.close(); throw error; }

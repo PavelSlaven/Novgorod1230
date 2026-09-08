@@ -33,3 +33,11 @@ test('assembler derives domain resolution from an unseen domain operation', () =
   assert.deepEqual(plan.activity,
     { owner: 'domain', duration_class: null, effort: null });
 });
+
+test('assembler restores an omitted player goal from the code-owned request', () => {
+  const input = request({ root_player_action: 'Проверить незнакомый след.' });
+  const semantic = output(); delete semantic.interpretation.player_goal;
+  const plan = assembleTurnStepPlan(semantic, input);
+  assert.equal(plan.interpretation.player_goal, input.root_player_action);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+});

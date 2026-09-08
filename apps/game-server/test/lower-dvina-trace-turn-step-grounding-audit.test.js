@@ -29,6 +29,8 @@ test('turn-step grounding audit returns repairable source errors', async () => {
   const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     roleRunner: { async run(call) {
       assert.equal(call.role_id, 'turn_step_grounding_auditor');
+      assert.match(call.messages[0].content,
+        /operation_semantic_grounding[\s\S]*ordinary material[\s\S]*acquisition or gathering[\s\S]*practical use/u);
       assert.equal(JSON.parse(call.messages[1].content).operations[0]
         .action_production.source_refs[0], 'knife:1');
       return { output: { pass: false,

@@ -34,8 +34,6 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       committed_state: committedState,
       working_projection_authority: workingProjectionAuthority
     });
-    projected = projectLowerDvinaTraceO2aCapabilities({ projected,
-      admission: admitAmbientOrdinaryPortion });
     const preparedOrdinaryPlan =
       input.prepared_ordinary_materialization_atomic_write_plan;
     const basePlayerSafeState = projectPreparedOrdinaryScene(
@@ -44,8 +42,11 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     const { active_interlocutor: _staleActiveInterlocutor,
       current_visible_context: _presentationOnlyCurrentContext,
       ...initialWorkingProjection } = basePlayerSafeState;
+    projected = projectLowerDvinaTraceO2aCapabilities({ projected: {
+      ...projected, player_safe_state: basePlayerSafeState },
+    admission: admitAmbientOrdinaryPortion });
     const actionState = projectLowerDvinaTraceA1Capability({
-      playerSafeState: basePlayerSafeState,
+      playerSafeState: projected.player_safe_state,
       loadedProfile: actionProductionProfile,
       resolverAvailable:
         typeof createTurnStepActionProductionOwner === 'function'

@@ -16,7 +16,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt,
     state, contracts, registry, repository, semanticResolver,
-    turnStepModel, playerSafeStateProjector, locationProfiles, scenePresentation,
+    turnStepModel, turnStepSemanticGroundingValidator, playerSafeStateProjector,
+    locationProfiles, scenePresentation,
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
@@ -118,6 +119,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
       idempotencyKey, state, projectCurrentScene, turnBudget }),
     semanticResolver,
     ...(turnStepModel ? { turnStepModel } : {}),
+    ...(turnStepSemanticGroundingValidator ? {
+      turnStepSemanticGroundingValidator
+    } : {}),
     ...(turnStepPlayerSafeStateProjector ? {
       playerSafeStateProjector: turnStepPlayerSafeStateProjector
     } : {}),

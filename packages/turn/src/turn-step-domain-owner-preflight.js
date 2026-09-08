@@ -54,7 +54,10 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
       if (errors.length !== 0) throw turnCommandError('TURN_STEP_PLAN_INVALID',
         'Semantic plan references an unavailable domain owner.', { errors });
     };
-    return validateOwners();
+    validateOwners();
+    return services.turnStepSemanticGroundingValidator?.(deepFreeze({
+      plan: structuredClone(plan), request: structuredClone(request)
+    }));
   };
   validate.resolve = resolve;
   return validate;

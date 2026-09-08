@@ -186,6 +186,48 @@ test('assembler derives redundant A1 carrier refs from semantic source refs',
     assert.deepEqual(plan.operations[0].target_refs, ['binding', 'tool']);
   });
 
+test('one repair receives structural and semantic grounding errors together',
+  async () => {
+    const calls = [];
+    const input = request();
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run(call) {
+        calls.push(call);
+        if (calls.length > 1) return { output: output() };
+        return { output: { ...output(), resolution: 'domain_request',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operations: [{ op: 'request_item_use', actor_ref: 'actor_mikula',
+            item_ref: 'knife', use_kind: 'other', target_refs: [],
+            action_production: { source_refs: ['knife'], tool_refs: [],
+              requested_output_count: null, identity_mode: 'preserve_source',
+              origin: null, result_class: 'ordinary_physical_result',
+              material_extent: null, result_descriptor: { display_name: null,
+                physical_description: 'настил из досок', qualitative_facts: [],
+                removed_physical_fact_refs: [], inscription_text: null,
+                physical_form: null, source_fact_delta: null },
+              output_class: 'ordinary_mundane' } }], operation_choice: null
+        } };
+      }
+    } });
+    const semanticPlanValidator = async ({ plan }) => {
+      if (!plan.operations?.[0]?.action_production) return true;
+      throw Object.assign(new Error('source mismatch'), {
+        code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{
+          path: '$.operations.0.action_production.source_refs',
+          code: 'source_semantic_grounding', message: 'source mismatch'
+        }] }
+      });
+    };
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model, semanticPlanValidator });
+    const repair = JSON.parse(calls[1].messages[1].content);
+    assert.equal(result.repaired, true);
+    assert.equal(repair.structural_errors.some(({ code }) =>
+      code === 'resolution'), true);
+    assert.equal(repair.structural_errors.some(({ code }) =>
+      code === 'source_semantic_grounding'), true);
+  });
+
 test('primary JSON parse failure uses one structural repair only', async () => {
   const calls = [];
   const input = request();

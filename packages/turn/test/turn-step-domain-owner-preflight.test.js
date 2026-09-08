@@ -373,3 +373,26 @@ test('active prepared chain defers one unavailable domain request', () => {
     check: null
   }, request, prepared_chain_context: null }), { code: 'TURN_STEP_PLAN_INVALID' });
 });
+
+test('domain preflight delegates semantic grounding to the configured owner',
+  async () => {
+    let received = null;
+    const expected = Object.assign(new Error('source mismatch'), {
+      code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{
+        path: '$.operations', code: 'source_semantic_grounding'
+      }] }
+    });
+    const validate = createTurnStepDomainOwnerPreflight({
+      externalRegistry: { domain: () => () => {} }, semanticBindings: [],
+      availableOptions: new Set(), actor: {}, committedState: {},
+      services: { async turnStepSemanticGroundingValidator(value) {
+        received = value;
+        throw expected;
+      } }, isDomainStepOperation: () => true
+    });
+    const value = { plan: { operations: [{ op: 'request_activity' }],
+      check: null }, request: { player_safe_state: {} },
+    prepared_chain_context: null };
+    await assert.rejects(validate(value), expected);
+    assert.deepEqual(received, { plan: value.plan, request: value.request });
+  });

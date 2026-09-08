@@ -16,17 +16,16 @@ import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-playe
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
-import {
-  buildTracePhase2TurnRequest,
-  buildTraceTurnWorkflowInput
-} from './lower-dvina-trace-phase-2-turn-request.js';
+import { buildTracePhase2TurnRequest, buildTraceTurnWorkflowInput } from
+  './lower-dvina-trace-phase-2-turn-request.js';
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { isExpectedPostCommitPresentationFailure } from './lower-dvina-trace-post-commit-failure.js';
 import { recoverTracePendingPresentation } from './lower-dvina-trace-presentation-recovery.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
-  playerConversationModel = null, npcSemanticModel = null, npcAutonomousModel = null, runNpcConversationExchange = null,
+  turnStepSemanticGroundingValidator = null, playerConversationModel = null,
+  npcSemanticModel = null, npcAutonomousModel = null, runNpcConversationExchange = null,
   npcOwnerCapabilities = [], createNpcOwnerCapabilities = null, npcCombatModel = null,
   actionProducedWeaponClassifier = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
@@ -241,7 +240,7 @@ export function createLowerDvinaTracePhase2Runtime({
           turn10Contracts, phase8Contracts,
           phase9Contracts, phase10Contracts,
           registry, repository,
-          semanticResolver, turnStepModel,
+          semanticResolver, turnStepModel, turnStepSemanticGroundingValidator,
           npcAutonomousModel, npcCombatModel,
           playerSafeStateProjector,
           locationProfiles: bundle.location_topology_set.location_profiles,

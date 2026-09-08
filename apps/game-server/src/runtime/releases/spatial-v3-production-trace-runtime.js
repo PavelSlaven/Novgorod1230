@@ -6,6 +6,8 @@ import { createLowerDvinaTraceNarrationService,
   createLowerDvinaTraceSemanticResolver,
   createLowerDvinaTraceTurnStepModel } from
   '../lower-dvina-trace-phase-2-llm.js';
+import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
+  '../lower-dvina-trace-turn-step-grounding-audit.js';
 import { createLowerDvinaTraceActionProducedWeaponClassifier } from
   '../lower-dvina-trace-combat-ordinary-weapon.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from
@@ -165,6 +167,8 @@ export function createTraceTurnRuntime({
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,
       worldKnowledgeGrounder }),
+    turnStepSemanticGroundingValidator:
+      createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner }),
     actionProducedWeaponClassifier:
       createLowerDvinaTraceActionProducedWeaponClassifier({ roleRunner }),
     createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>

@@ -32,7 +32,7 @@ export function createTracePhase2InspectionCommand({
   return {
     command_id: 'lower_dvina_trace.inspect_wreck_in_detail',
     option_id: ids.option,
-    label: 'Подробно осмотреть место крушения',
+    label: 'Осмотреть лодку, крепления и следы крушения',
     target_id: contracts.locationRef,
     approved_record: contracts.activityPin,
     reason_visible_to_actor:

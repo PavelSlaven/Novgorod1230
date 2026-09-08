@@ -29,12 +29,24 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       throw error;
     }
     if (parseFailure) originalOutput = {};
+    const structuralErrors = parseFailure ? [{ path: '$',
+      code: 'json_parse_failed', message: 'Planner output was not valid JSON.' }]
+      : [...(error.details?.errors ?? [])];
+    if (!parseFailure && originalOutput != null
+        && typeof semanticPlanValidator === 'function') {
+      try {
+        await semanticPlanValidator(deepFreeze({ plan: originalOutput,
+          request: structuredClone(request), prepared_chain_context:
+            structuredClone(preparedChainContext), attempt: 1 }));
+      } catch (semanticError) {
+        if (semanticError?.code !== 'TURN_STEP_PLAN_INVALID') throw semanticError;
+        structuralErrors.push(...(semanticError.details?.errors ?? []));
+      }
+    }
     const repairContext = deepFreeze({ schema: 'turn_step_repair_context_v1',
       attempt: 2,
       original_output: structuredClone(originalOutput),
-      structural_errors: parseFailure ? [{ path: '$', code: 'json_parse_failed',
-        message: 'Planner output was not valid JSON.' }]
-        : structuredClone(error.details?.errors ?? [])
+      structural_errors: structuredClone(structuralErrors)
     });
     try {
       return {

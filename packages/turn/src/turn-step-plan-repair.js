@@ -61,7 +61,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         repaired: true
       };
     } catch (repairError) {
-      if (unresolvedDomainRequest({ error: repairError, originalOutput })
+      if (unresolvedDomainRequest(repairError)
           || unavailableOwnerAfterRepair(repairError)
           || forbiddenOperationChoiceAfterRepair(repairError)
           || unresolvedSemanticGrounding(repairError)
@@ -119,14 +119,16 @@ function unresolvedContinuation(error) {
     && errors.every(({ code }) => code === 'continuation_progress');
 }
 
-function unresolvedDomainRequest({ error, originalOutput }) {
+function unresolvedDomainRequest(error) {
+  const errors = error?.details?.errors;
+  const unresolved = ({ path, code }) => path === '$.operations'
+    && code === 'resolution';
+  const related = (item) => unresolved(item)
+    || (item.path === '$.operations' && item.code === 'type')
+    || item.code === 'continuation_progress';
   return error?.code === 'TURN_STEP_PLAN_INVALID'
-    && originalOutput?.resolution === 'domain_request'
-    && Array.isArray(originalOutput?.operations)
-    && originalOutput.operations.length === 0
-    && (error.details?.errors ?? []).some(({ path, code, message }) =>
-      path === '$.operations' && code === 'resolution'
-        && message === 'domain_request requires exactly one domain operation');
+    && Array.isArray(errors) && errors.some(unresolved)
+    && errors.every(related);
 }
 
 function noResultPlan(request) {

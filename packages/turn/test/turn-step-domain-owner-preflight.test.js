@@ -185,6 +185,27 @@ test('repeated non-progressing continuation becomes a safe no-result',
       'domain_operation_unavailable');
   });
 
+test('unresolved repaired domain request becomes a safe no-result',
+  async () => {
+    let calls = 0;
+    const result = await runTurnStepLoop(input(), ports(
+      async (request) => {
+        calls += 1;
+        const value = plan(request);
+        return calls === 1
+          ? { ...value, interpretation: { adaptation: 'literal' } }
+          : { ...value, resolution: 'domain_request', goal_result: 'pending',
+              activity: { owner: 'domain', duration_class: null, effort: null },
+              operations: undefined, continuation: {
+                remaining_intent: request.remaining_intent,
+                depends_on_refs: [] } };
+      }, null, null
+    ));
+    assert.equal(calls, 2);
+    assert.equal(result.step_traces[0].reason_code,
+      'domain_operation_unavailable');
+  });
+
 test('active conversation does not reject an unrelated direct plan', () => {
   const validate = preflight();
   const request = { player_safe_state: { active_interlocutor: {

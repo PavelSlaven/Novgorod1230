@@ -6,6 +6,8 @@ import { buildCombinedWritePlan } from
   '../../packages/turn/src/spatial-v3-write-plan.js';
 import { actionProducedPhysicalKeys, createActionProducedAtomicWritePlan } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-atomic-write-plan.js';
+import { lockAndVerifyActionProducedContext } from
+  '../../apps/game-server/src/infrastructure/postgres/action-produced-persistence-context.js';
 import { actionProducedTraceActionRef } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-causal-binding.js';
 import { validateSpatialV3CombinedWritePlan } from
@@ -273,6 +275,38 @@ test('A1 accepts loader-pinned committed ordinary scene material as preserved so
       mutate(forged);
       assert.throws(() => createActionProducedAtomicWritePlan(forged));
     }
+  });
+
+test('A1 preserved scene source ignores capacity changed by a prior atomic step',
+  async () => {
+    const plan = { party_id: 'party-1', actor_ref: 'actor:mikula',
+      result_items: [], output_destination_pin: {
+      schema: 'action_production_output_destination_pin_v1',
+      destination_kind: 'party_current_scene_position', anchor_id: 'anchor:shore',
+      item_capacity: 8, used_item_ids: [], scene_position_id: 'scene:shore',
+      scene_capacity: 8, scene_occupancy: 1
+    } };
+    const queries = [];
+    await lockAndVerifyActionProducedContext({ query: async (sql) => {
+      queries.push(sql);
+      if (sql.includes('SELECT p.g5_anchor_id')) {
+        return { rows: [{ anchor_id: 'anchor:shore', item_capacity: 8 }] };
+      }
+      if (sql.includes('party_journey_locations')) {
+        return { rows: [{ scene_position_id: 'scene:shore' }] };
+      }
+      return { rows: [] };
+    } }, plan);
+    assert.equal(queries.length, 3);
+    const anchored = { ...plan, output_destination_pin: {
+      schema: 'action_production_output_destination_pin_v1',
+      destination_kind: 'party_current_anchor', anchor_id: 'anchor:shore',
+      item_capacity: 8, used_item_ids: []
+    } };
+    await lockAndVerifyActionProducedContext({ query: async (sql) => ({
+      rows: sql.includes('SELECT p.g5_anchor_id')
+        ? [{ anchor_id: 'anchor:shore', item_capacity: 8 }] : []
+    }) }, anchored);
   });
 
 test('A1 loader accepts only one validated same-root ordinary overlay', async () => {

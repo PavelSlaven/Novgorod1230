@@ -123,6 +123,26 @@ test('turn step planner prompt has stated-goal adaptation triage', async () => {
   assert.match(prompt, /ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery\/domain flow/u);
 });
 
+test('turn step planner routes accessible items and visible environment through owners',
+  async () => {
+    const prompt = await capturePrompt(request({ player_safe_state: {
+      ordinary_resolution: { discovery_available: true },
+      items: [{ item_id: 'item:held-cloth', category_id: 'wool_cloth',
+        placement: { holder_character_id: 'actor_mikula',
+          physical_position: 'equipped' } }],
+      current_visible_context: { sensory_details: [
+        'Река течёт у самого берега.'
+      ], visible_objects: [{ entity_ref: { entity_kind: 'item',
+        entity_id: 'item:held-cloth' }, display_label: 'мокрая шерсть',
+      visible_status: 'у вас в руках' }] }
+    } }));
+    assert.match(prompt, /held, worn, or equipped by the current actor is an already accessible exact item ref/u);
+    assert.match(prompt, /physical manipulation or durable change uses its existing item owner/u);
+    assert.match(prompt, /focused inspection of any current visible item, including one held by the actor, seeks new detail/u);
+    assert.match(prompt, /sensory detail that physically places ordinary environmental material in the current scope is sufficient for ordinary_material_prerequisite/u);
+    assert.match(prompt, /never authorizes an authoritative, significant, hidden, or already-resolved fact/u);
+  });
+
 test('turn step planner keeps an ongoing wet-reed smoulder out of A1', async () => {
   const prompt = await capturePrompt(request({
     remaining_intent: 'Оставляю мокрый тростник тлеть.'

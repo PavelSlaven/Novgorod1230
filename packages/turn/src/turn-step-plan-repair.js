@@ -64,7 +64,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       if (unresolvedDomainRequest({ error: repairError, originalOutput })
           || unavailableOwnerAfterRepair(repairError)
           || rejectedSemanticChoice(repairError, structuralErrors)
-          || unresolvedSemanticGrounding(repairError)) {
+          || unresolvedSemanticGrounding(repairError)
+          || unresolvedContinuation(repairError)) {
         return { plan: noResultPlan(request), repaired: true };
       }
       if (repairError?.code === 'TURN_STEP_PLAN_INVALID') {
@@ -111,6 +112,13 @@ function unresolvedSemanticGrounding(error) {
   return error?.code === 'TURN_STEP_PLAN_INVALID'
     && Array.isArray(errors) && errors.length > 0
     && errors.every(({ code }) => SEMANTIC_GROUNDING_CODES.has(code));
+}
+
+function unresolvedContinuation(error) {
+  const errors = error?.details?.errors;
+  return error?.code === 'TURN_STEP_PLAN_INVALID'
+    && Array.isArray(errors) && errors.length > 0
+    && errors.every(({ code }) => code === 'continuation_progress');
 }
 
 function unresolvedDomainRequest({ error, originalOutput }) {

@@ -165,6 +165,23 @@ test('current scene retains a named item held by the player', () => {
   }]);
 });
 
+test('current scene carries committed physical facts of visible items', () => {
+  const state = committedState();
+  state.items.push({ item_id: 'used-board', name: 'обломки досок', state: {
+    ordinary_metadata: { semantic_facts: [{ fact_id: 'platform:1',
+      text: 'обломки уложены как простой настил' }] }
+  }, placement: { location_ref: 'shed', anchor_id: 'shed-anchor' } });
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  assert.deepEqual(current.current_visible_context.sensory_details,
+    ['обломки уложены как простой настил']);
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'used-board' },
+    display_label: 'обломки досок', recognition: 'recognized',
+    visible_status: 'available'
+  }]);
+});
+
 test('fact presentation reads an unseen committed fact generically', () => {
   const presentation = factPresentationForRef({ scenePresentation: {
     fact_presentations: [{ fact_ref: 'unseen:fact', text: 'На камне видна свежая зарубка.',

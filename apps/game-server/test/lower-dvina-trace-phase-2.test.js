@@ -15,6 +15,9 @@ import {
   assertPhase2CurrentStateVersion
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit-admission.js';
 import {
+  resolveInspectionConsequence
+} from '../src/runtime/lower-dvina-trace-phase-2-consequence.js';
+import {
   bundle,
   bundle9,
   fixture
@@ -544,7 +547,7 @@ test('exact replay does not rerun resolver, roll, time, body or clue materializa
   );
 });
 
-test('new repeated inspection follows the pinned retry policy without duplicating the clue', async () => {
+test('completed authored inspection is unavailable after its evidence pickup', async () => {
   const f = fixture();
   const rawText =
     'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.';
@@ -556,78 +559,62 @@ test('new repeated inspection follows the pinned retry policy without duplicatin
       raw_text: rawText
     }
   });
-  const repeated = await f.runtime.submitTurn({
+  await assert.rejects(() => f.runtime.submitTurn({
     partyId: f.partyId,
     input: {
       request_id: 'phase2-repeat-2',
       idempotency_key: 'phase2-repeat-2',
       raw_text: rawText
     }
-  });
+  }), { code: 'TURN_AVAILABLE_ACTION_SET_EMPTY' });
   assert.equal(first.clue.template_id, 'trace_ld_v1_item_blue_wool_fragment');
-  assert.equal(repeated.clue, null);
-  assert.notEqual(
-    first.body_update.proposal.activity_attempt_id,
-    repeated.body_update.proposal.activity_attempt_id
-  );
+  assert.equal(f.rollCount(), 1);
+  assert.equal(f.commitCount(), 1);
+  assert.equal(f.state.body_effect_history.length, 1);
   assert.equal(
     first.body_update.proposal.execution_variant_id,
     'initial_cold_exposure'
   );
-  assert.equal(
-    repeated.body_update.proposal.execution_variant_id,
-    'repeated_mild_shivering'
-  );
-  assert.deepEqual(repeated.body_update.proposal.exact_deltas, {
-    health: 0,
-    satiety: 0,
-    energy: -1
-  });
-  assert.deepEqual(
-    repeated.body_update.proposal.condition_transitions,
-    [{
-      condition_profile_ref: 'trace_ld_v1_condition_wet_clothing',
-      from: 'wet',
-      to: 'wet',
-      outcome: 'persists'
-    }, {
-      condition_profile_ref: 'trace_ld_v1_condition_cold_shivering',
-      from: 'mild_shivering',
-      to: 'mild_shivering',
-      outcome: 'persists'
-    }]
-  );
-  assert.equal(repeated.time_update.clock_after.whole_minutes, '333090');
-  assert.equal(repeated.body_update.state_after.energy, 38);
-  assert.equal(
-    repeated.body_update.state_after.active_conditions.find(
-      (condition) => condition.id === 'mild_shivering'
-    ).id,
-    'mild_shivering'
-  );
-  assert.deepEqual(repeated.observations, []);
-  assert.deepEqual(repeated.evidence, []);
-  const repeatedVisible = f.narratorInput().visible_context;
-  assert.equal(repeatedVisible.visible_scene, 'место крушения на берегу');
-  assert.equal(repeatedVisible.sensory_details.includes(
-    'В мокром песке видны босые следы.'), true);
-  assert.deepEqual(repeatedVisible.visible_changes, [
-    'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь не отступила.'
-  ]);
-  assert.equal(
-    f.lastWritePlan().write_targets.find(
-      ({ target }) => target === 'party_state'
-    ).value.availability.check_requests[0].retry_policy,
-    'reuse_committed_roll_for_same_activity_attempt_id');
-  assert.equal(f.rollCount(), 2);
-  assert.equal(f.commitCount(), 2);
-  assert.equal(f.state.body_effect_history.length, 2);
   assert.equal(
     f.state.items.filter(
       (item) => item.template_id === 'trace_ld_v1_item_blue_wool_fragment'
     ).length,
     1
   );
+});
+
+test('repeated inspection consequence does not re-present committed evidence', () => {
+  const consequence = resolveInspectionConsequence({
+    retrievedState: {
+      items: [{ template_id: 'trace_ld_v1_item_blue_wool_fragment' }],
+      knowledge: [{ fact_id: 'fact:already-observed' },
+        { fact_id: 'evidence:already-observed' }]
+    },
+    checks: { results: [{ check_id: 'check:inspection',
+      outcome: { success: true, band: 'success' } }] },
+    contracts: {
+      activity: { duration_minutes: 15 },
+      check: {
+        check_id: 'check:inspection',
+        precheck_automatic_observation_refs: [],
+        admitted_evidence_by_outcome: { success: ['evidence:already-observed'], failure: [] },
+        success_observation_refs: ['fact:already-observed'],
+        outcome_refs: { success: 'consequence:success', failure: 'consequence:failure' }
+      },
+      evidenceGraph: { evidence_records: [{
+        evidence_id: 'evidence:already-observed',
+        source_fact_refs: ['fact:already-observed']
+      }] }
+    },
+    inputDigest: 'a'.repeat(64)
+  });
+  assert.deepEqual(consequence.observations, []);
+  assert.deepEqual(consequence.knowledge_records, []);
+  assert.deepEqual(consequence.evidence_relations, []);
+  assert.deepEqual(consequence.visible_seed, {
+    observation_refs: [], evidence_refs: [], clue_ref: null,
+    check_outcome: 'success'
+  });
 });
 
 test('narration failure after factual commit returns its pending public result', async () => {

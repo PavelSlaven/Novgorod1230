@@ -57,6 +57,12 @@ export function createTracePhase2InspectionCommand({
     },
     availability(context) {
       const state = context.committed_state ?? context.retrievedState;
+      if ((state?.items ?? []).some((item) =>
+        item?.template_id === ids.blueWool)) {
+        return availability('blocked', false, [], [
+          'authored_inspection_already_completed'
+        ]);
+      }
       if (!tracePhase2PreconditionSatisfied({
         kind: 'committed_location',
         location_ref: contracts.locationRef

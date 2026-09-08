@@ -6,13 +6,10 @@ import {
   './lower-dvina-trace-player-safe-state.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
-import { scenePresentationForLocation } from
-  './lower-dvina-trace-scene-presentation.js';
+import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
 
-const ARRAY_FIELDS = [
-  'visible_changes', 'sensory_details', 'visible_npc', 'visible_objects',
-  'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'
-];
+const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
+  'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
 export function withLowerDvinaTraceCurrentScene({
   committedState,
   locationProfiles,
@@ -39,7 +36,11 @@ export function withLowerDvinaTraceCurrentScene({
   const profile = scenePresentation == null
     ? historicalLocationProfile(locationProfiles, locationRef)
     : scenePresentationForLocation({ scenePresentation, locationRef });
-  const sensoryDetails = profile.player_visible_physical_facts ?? [];
+  const sceneItems = visibleSceneItems(playerSafe.items, playerSafe.position,
+    playerSafe.actor_id);
+  const sensoryDetails = unique([...(profile.player_visible_physical_facts ?? []),
+    ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)
+  ]);
   const visibleLabels = new Map((initial?.visible_npc ?? []).map((npc) => [
     npc?.entity_ref?.entity_id, npc
   ]));
@@ -52,8 +53,7 @@ export function withLowerDvinaTraceCurrentScene({
     visible_changes: [],
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
-    visible_objects: visibleSceneObjects(
-      playerSafe.items, playerSafe.position, playerSafe.actor_id),
+    visible_objects: sceneItems.map(({ visibleObject }) => visibleObject),
     known_context: [profile.display_name],
     uncertainties: [],
     allowed_tensions: [],
@@ -65,7 +65,7 @@ export function withLowerDvinaTraceCurrentScene({
     current_visible_context: deepFreeze(current)
   };
 }
-function visibleSceneObjects(items, position, actorId) {
+function visibleSceneItems(items, position, actorId) {
   return (items ?? []).flatMap((item) => {
     const placement = item?.placement ?? {};
     const coLocated = placement.location_ref === position?.location_ref
@@ -74,9 +74,10 @@ function visibleSceneObjects(items, position, actorId) {
     const held = placement.holder_character_id === actorId;
     const itemId = item?.item_id ?? item?.instance_id;
     if ((!coLocated && !held) || !text(itemId) || !text(item?.name)) return [];
-    return [{ entity_ref: { entity_kind: 'item', entity_id: itemId },
+    return [{ physicalFacts: item.physical_facts ?? [], visibleObject: {
+      entity_ref: { entity_kind: 'item', entity_id: itemId },
       display_label: item.name, recognition: 'recognized',
-      visible_status: held ? 'у вас в руках' : 'available' }];
+      visible_status: held ? 'у вас в руках' : 'available' } }];
   });
 }
 function historicalLocationProfile(locationProfiles, locationRef) {

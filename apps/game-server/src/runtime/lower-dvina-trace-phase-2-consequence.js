@@ -60,6 +60,15 @@ export function resolveInspectionConsequence({
   const clueAlreadyCommitted = retrievedState.items.some(
     (item) => item.template_id === ids.blueWool
   );
+  const clueMaterialization = success && !clueAlreadyCommitted
+    ? contracts.blueWoolPickupTransition
+      ? materializeBlueWoolPickup({
+          retrievedState,
+          contracts,
+          consequenceRef: contracts.check.outcome_refs.success
+        })
+      : structuredClone(contracts.blueWoolClue)
+    : null;
   return {
     version: 1,
     schema: 'turn_consequence_package',
@@ -89,20 +98,11 @@ export function resolveInspectionConsequence({
       relation: 'discovered_during_inspection',
       proves: 'bounded_observation_only'
     })),
-    clue_materialization:
-      success && !clueAlreadyCommitted
-        ? contracts.blueWoolPickupTransition
-          ? materializeBlueWoolPickup({
-              retrievedState,
-              contracts,
-              consequenceRef: contracts.check.outcome_refs.success
-            })
-          : structuredClone(contracts.blueWoolClue)
-        : null,
+    clue_materialization: clueMaterialization,
     visible_seed: {
-      observation_refs: observationRefs,
-      evidence_refs: evidenceRefs,
-      clue_ref: success ? ids.blueWool : null,
+      observation_refs: newlyCommittedObservationRefs,
+      evidence_refs: newlyCommittedEvidenceRefs,
+      clue_ref: clueMaterialization == null ? null : ids.blueWool,
       check_outcome: checkResult.outcome.band
     },
     hidden_update: {

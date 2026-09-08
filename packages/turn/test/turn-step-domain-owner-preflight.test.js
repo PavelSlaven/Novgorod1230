@@ -152,6 +152,23 @@ test('rejected semantic choice retained by repair becomes a safe no-result',
     assert.equal(result.plan.reason_code, 'domain_operation_unavailable');
   });
 
+test('structural repair adding a forbidden choice becomes a safe no-result',
+  async () => {
+    let calls = 0;
+    const result = await runTurnStepLoop(input(), ports(
+      async (request) => {
+        calls += 1;
+        const value = plan(request);
+        return calls === 1
+          ? { ...value, interpretation: { adaptation: 'literal' } }
+          : { ...value, operation_choice: 'mismatched' };
+      }, null, null
+    ));
+    assert.equal(calls, 2);
+    assert.equal(result.step_traces[0].reason_code,
+      'domain_operation_unavailable');
+  });
+
 test('repeated non-progressing continuation becomes a safe no-result',
   async () => {
     let calls = 0;

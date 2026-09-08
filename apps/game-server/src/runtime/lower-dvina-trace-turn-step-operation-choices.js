@@ -41,10 +41,11 @@ function operationChoiceGrounding(operation, request) {
 }
 
 function rejectedSemanticChoice(repairContext, operation) {
-  return repairContext?.structural_errors?.some(({ code }) =>
-    code === 'operation_semantic_grounding') === true
-    && repairContext.original_output?.operations?.some((candidate) =>
-      isDeepStrictEqual(candidate, operation)) === true;
+  return repairContext?.structural_errors?.some((error) =>
+    error.code === 'operation_semantic_grounding'
+      && (isDeepStrictEqual(error.rejected_operation, operation)
+        || repairContext.original_output?.operations?.some((candidate) =>
+          isDeepStrictEqual(candidate, operation)) === true)) === true;
 }
 
 function operationChoiceId(operation,index,operations){const qualifier=operationQualifier(operation);const collision=operations.filter((candidate)=>candidate.op===operation.op&&operationQualifier(candidate)===qualifier).length>1;return['domain_operation',index+1,operation.op,qualifier,collision?semanticChoiceLabel(operation.description):null].filter((part)=>part!=null).join('_');}

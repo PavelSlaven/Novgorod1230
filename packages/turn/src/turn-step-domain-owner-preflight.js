@@ -24,6 +24,7 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
   const validate = ({ plan, request,
     prepared_chain_context: preparedChainContext }) => {
     const errors = [];
+    const resolvedDomainOperations = [];
     const marker = plan.continuation?.prepared_followup_ref;
     if (marker != null && semanticBindings.filter(({ command, binding }) =>
       availableOptions.has(command.option_id)
@@ -43,6 +44,9 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
         isDomainStepOperation)) {
         const owner = resolve({ operation, plan, request,
           preparedChainContext });
+        if (owner.bound_operation != null) resolvedDomainOperations.push({
+          path, bound_operation: structuredClone(owner.bound_operation)
+        });
         if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner,
           turnCommandError);
         if (owner.kind === 'missing' && !deferredPreparedDomainPlan({
@@ -56,7 +60,8 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
     };
     validateOwners();
     return services.turnStepSemanticGroundingValidator?.(deepFreeze({
-      plan: structuredClone(plan), request: structuredClone(request)
+      plan: structuredClone(plan), request: structuredClone(request),
+      resolved_domain_operations: resolvedDomainOperations
     }));
   };
   validate.resolve = resolve;

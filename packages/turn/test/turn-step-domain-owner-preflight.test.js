@@ -401,5 +401,6 @@ test('domain preflight delegates semantic grounding to the configured owner',
       check: null }, request: { player_safe_state: {} },
     prepared_chain_context: null };
     await assert.rejects(validate(value), expected);
-    assert.deepEqual(received, { plan: value.plan, request: value.request });
+    assert.deepEqual(received, { plan: value.plan, request: value.request,
+      resolved_domain_operations: [] });
   });

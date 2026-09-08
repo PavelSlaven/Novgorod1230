@@ -83,3 +83,21 @@ test('turn-step grounding audit accepts a strict pass', async () => {
   });
   assert.equal(await validate({ request, plan }), true);
 });
+
+test('operation grounding error identifies its bound exact operation',
+  async () => {
+    const bound = request.player_safe_state
+      .available_domain_operation_grounding[0].operation;
+    const discovery = { continuation: null, operations: [{ ...bound,
+      query: 'inspect ordinary boards' }] };
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run() { return { output: { pass: false,
+        concerns: [{ kind: 'operation_semantic_grounding' }] } }; } }
+    });
+    await assert.rejects(validate({ request, plan: discovery,
+      resolved_domain_operations: [{ path: '$.operations.0',
+        bound_operation: bound }] }), (error) => {
+      assert.deepEqual(error.details.errors[0].rejected_operation, bound);
+      return true;
+    });
+  });

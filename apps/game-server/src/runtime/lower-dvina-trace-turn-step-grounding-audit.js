@@ -50,7 +50,7 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
   if (typeof roleRunner?.run !== 'function') {
     throw new TypeError('Turn-step grounding auditor requires a role runner.');
   }
-  return async ({ plan, request }) => {
+  return async ({ plan, request, resolved_domain_operations: resolved = [] }) => {
     const audited = [...auditedOperations(plan)];
     if (audited.length === 0) return true;
     const response = await roleRunner.run({
@@ -68,7 +68,8 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     if (response.output.pass) return true;
     throw serverError('TURN_STEP_PLAN_INVALID',
       'Turn-step semantic grounding is invalid.', { details: { errors:
-        response.output.concerns.map(({ kind }) => concern(kind, audited)) } });
+        response.output.concerns.map(({ kind }) =>
+          concern(kind, audited, resolved)) } });
   };
 }
 
@@ -103,7 +104,7 @@ function groundingState(state = {}) {
   };
 }
 
-function concern(kind, audited) {
+function concern(kind, audited, resolved) {
   const operationPath = audited.length === 1 ? audited[0].path
     : audited.every(({ path }) => path.startsWith('$.check.outcomes.'))
       ? '$.check.outcomes' : '$.operations';
@@ -115,8 +116,15 @@ function concern(kind, audited) {
         : kind === 'material_transformation_grounding'
           ? `${operationPath}.action_production`
           : `${operationPath}.action_production.identity_mode`;
+  const rejected = kind === 'operation_semantic_grounding'
+    && audited.length === 1
+    ? resolved.find(({ path: candidate }) => candidate === audited[0].path)
+      ?.bound_operation : null;
   return { path, rule: kind, code: kind,
-    message: 'must remain grounded by the current intent and player-safe evidence' };
+    message: 'must remain grounded by the current intent and player-safe evidence',
+    ...(rejected == null ? {} : {
+      rejected_operation: structuredClone(rejected)
+    }) };
 }
 
 function valid(value) {

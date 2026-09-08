@@ -1,4 +1,5 @@
 import { deepFreeze } from '@rus/kernel';
+import { isDeepStrictEqual } from 'node:util';
 
 export function resolveTurnStepDomainOwner({
   operation, plan, request, actor, playerSafeState, committedState,
@@ -20,7 +21,11 @@ export function resolveTurnStepDomainOwner({
       player_safe_state: structuredClone(playerSafeState),
       committed_state: structuredClone(committedState)
     })) === true);
-  if (matches.length === 1) return { kind: 'binding', command: matches[0].command };
+  if (matches.length === 1) return {
+    kind: 'binding', command: matches[0].command,
+    bound_operation: boundOperation(matches[0].binding,
+      request.available_domain_operations)
+  };
   if (matches.length > 1) return { kind: 'ambiguous' };
   if (typeof services.turnStepBackgroundNpcResolver === 'function'
       && isBackgroundNpcSemanticRemainderInScope({ operation,
@@ -44,4 +49,14 @@ export function resolveTurnStepDomainOwner({
     return { kind: 'action_production' };
   }
   return { kind: 'missing' };
+}
+
+function boundOperation(binding, availableOperations = []) {
+  return availableOperations.find((available) => bindingOperations(binding)
+    .some((operation) => isDeepStrictEqual(operation, available))) ?? null;
+}
+
+function bindingOperations(binding) {
+  return binding.operation_dtos
+    ?? (binding.operation_dto == null ? [] : [binding.operation_dto]);
 }

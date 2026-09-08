@@ -32,6 +32,17 @@ test('validation and preflight fail before PostgreSQL setup', async () => {
   assert.deepEqual(order, ['docker', 'port', 'provider']);
 });
 
+test('local play starts without DeepSeek so provider can be selected in UI', async () => {
+  let providerCalled = false;
+  const stop = Object.assign(new Error('stop after provider gate'), { code: 'STOP' });
+  await assert.rejects(startLocalPlay({
+    env: {}, checkDocker: () => {}, isPortAvailable: async () => true,
+    providerProbe: async () => { providerCalled = true; return { ok: true }; },
+    ensurePostgres: async () => { throw stop; }
+  }), stop);
+  assert.equal(providerCalled, false);
+});
+
 test('occupied port fails before provider preflight and PostgreSQL setup', async () => {
   let providerCalled = false;
   let postgresCalled = false;

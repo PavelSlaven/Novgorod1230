@@ -7,9 +7,17 @@
 
 ## Владеет
 
-- проверкой Node.js, process-local `DEEPSEEK_API_KEY` и Docker;
+- проверкой Node.js и Docker; если `DEEPSEEK_API_KEY` задан, launcher проверяет
+  default provider до PostgreSQL setup, иначе запускает UI для выбора local/custom
+  OpenAI-compatible provider без требования DeepSeek;
 - owned local PostgreSQL container/volume, first-time production setup и повторным использованием party DB;
 - загрузкой current runtime-catalog pin, server env и HTTP readiness production server (`/api/v1/health`, `/api/v1/scenarios`).
+
+Local inference process остаётся внешним engine-neutral процессом: launcher не
+скачивает модель и не привязывает gameplay к vLLM/Ollama/LM Studio. Пользователь
+запускает любой сервер с OpenAI-compatible `chat/completions`, затем выбирает
+endpoint/model в UI и выполняет connection check. Подробности:
+[`docs/setup/LLM_PROVIDERS.md`](../../docs/setup/LLM_PROVIDERS.md).
 
 `gameplay-gap-campaign.mjs` — development-only driver реальных production
 HTTP turns для отдельно назначаемой gameplay-testing фазы (World Knowledge

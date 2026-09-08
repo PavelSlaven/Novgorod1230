@@ -482,7 +482,9 @@ network                → 0
 
 # 4. Model-role independence
 
-Игра не выбирает одну «модель для всего». Каждая semantic responsibility является отдельной логической LLM-role.
+Каждая semantic responsibility остаётся отдельной логической LLM-role, даже
+когда пользователь выбирает одну физическую model/provider configuration для
+всех active production roles.
 
 Минимальные роли:
 
@@ -495,7 +497,9 @@ narrator
 translation
 ```
 
-`translation` optional. Одна физическая модель может обслуживать несколько roles. Разные roles могут использовать разные providers.
+`translation` optional. Одна физическая модель может обслуживать все roles.
+Будущий advanced routing может назначать разные providers по roles, но не
+создаёт другой transport или gameplay owner.
 
 Допустимые backend classes:
 
@@ -553,38 +557,43 @@ Narrator не может:
 
 # 6. Пользовательская настройка моделей
 
-## 6.1. Simple presets
+## 6.1. Active simple modes
 
-Минимально:
-
-```text
-Полностью локально
-Сбалансированный
-Максимальное качество
-```
-
-Рекомендуемая semantics:
+Текущий пользовательский выбор:
 
 ```text
-Полностью локально:
-  все required roles → local
-
-Сбалансированный:
-  simulation roles → local
-  narrator → configured cloud provider
-
-Максимальное качество:
-  semantic roles → high-quality configured backend
-  narrator → high-quality configured backend
+Default DeepSeek
+Локальный OpenAI-compatible endpoint
+Произвольный OpenAI-compatible endpoint
 ```
 
-## 6.2. Advanced routing
+Semantics:
 
-Пользователь может назначить provider/model каждой role отдельно.
+```text
+Default:
+  roles → project DeepSeek role configuration
+
+Local/custom:
+  все production gameplay, narrator, planner, auditor и repair roles
+  → один явно выбранный OpenAI-compatible baseUrl/model/optional key
+```
+
+Local preset первым поддерживает
+`HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced`; base URL и model
+остаются редактируемыми. Endpoint обязан реализовать `chat/completions`.
+Readiness проверяется до Apply. Явный local/custom выбор не допускает fallback
+на DeepSeek, другую model или provider: connection/auth/model/timeout/invalid
+response возвращают typed failure, незавершённый ход не фиксируется.
+
+## 6.2. Future advanced routing
+
+Отдельное назначение provider/model каждой role не входит в текущий active UI.
 
 Изменение модели не меняет gameplay schemas, Knowledge Pack semantics или authoritative owners.
 
-API secrets не хранятся внутри Knowledge Pack или gameplay data.
+API secrets не хранятся внутри Knowledge Pack или gameplay data. Optional key
+может храниться только в локальном provider-config и не входит в public API,
+party save/replay, logs или telemetry.
 
 ---
 

@@ -46,7 +46,7 @@ test('LLM preferences restore non-secret fields without persisting API key', () 
   assert.doesNotMatch(values.get('rus.llm_settings'), /secret/u);
 });
 
-test('LLM local draft survives default server settings after restart', async () => {
+test('LLM settings reload replaces stale browser draft with server config', async () => {
   const store = createUiStore();
   store.setLlmSettingsDraft({
     mode: 'custom', base_url: 'http://127.0.0.1:8000/v1', model: 'local', api_key_present: false
@@ -58,8 +58,8 @@ test('LLM local draft survives default server settings after restart', async () 
   }).open();
   const state = store.getState();
   assert.equal(state.llmSettings.mode, 'default');
-  assert.equal(state.llmSettingsDraft.model, 'local');
-  assert.match(renderAppState(state), /name="model" value="local"/u);
+  assert.equal(state.llmSettingsDraft.model, null);
+  assert.match(renderAppState(state), /name="model" value=""/u);
 });
 
 test('LLM settings overlay has required controls and never renders key', () => {
@@ -70,10 +70,34 @@ test('LLM settings overlay has required controls and never renders key', () => {
   for (const label of ['По умолчанию', 'Свой OpenAI-compatible endpoint', 'API base URL', 'Model', 'Проверить', 'Применить', 'Сбросить к умолчанию']) {
     assert.match(html, new RegExp(label, 'u'));
   }
+  assert.match(html, /Локальная Gemma 4/u);
   assert.match(html, /type="password"/u);
   assert.doesNotMatch(html, /secret|value="[^"]+"[^>]*type="password"/u);
   assert.doesNotMatch(html, /name="llm_action" value="test" disabled/u);
   store.setLlmSettings({ mode: 'default' });
   html = renderAppState(store.getState());
   assert.match(html, /name="llm_action" value="test" disabled/u);
+});
+
+test('local mode fills supported preset and keeps fields editable', () => {
+  const fields = {
+    base_url: { disabled: true, value: '' },
+    model: { disabled: true, value: '' },
+    api_key: { disabled: true, value: '' },
+    test: { disabled: true }
+  };
+  const root = {
+    querySelectorAll: () => Object.values(fields),
+    querySelector: (selector) => selector.includes('base_url')
+      ? fields.base_url : selector.includes('model') ? fields.model : null
+  };
+  const store = createUiStore();
+  store.setLlmSettings({ mode: 'default', local_preset: {
+    base_url: 'http://127.0.0.1:8000/v1', model: 'supported-gemma'
+  } });
+  createLlmSettingsController({ root, api: {}, store, storage: null })
+    .selectMode('local');
+  assert.equal(fields.base_url.value, 'http://127.0.0.1:8000/v1');
+  assert.equal(fields.model.value, 'supported-gemma');
+  assert.equal(Object.values(fields).some(({ disabled }) => disabled), false);
 });

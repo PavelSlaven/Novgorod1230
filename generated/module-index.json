@@ -30,7 +30,7 @@
         "Запускается как обычный production server entry. `tools/local-play` снаружи подготавливает только local Docker/PostgreSQL, актуальные env/pin и HTTP readiness; server не владеет launcher, Docker bootstrap или local reset",
         "После чтения committed screen/state владеет server-side adapter, который",
         "Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые конструктивные категории neckline/sleeve/outer/fabric/trim",
-        "Владеет одним server-side in-memory LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Custom OpenAI-compatible base URL/model/key применяются атомарно к новым calls через `@rus/llm-runtime`; API key не входит в read model, persistence, save/replay или telemetry gameplay",
+        "Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `local`/`custom`, OpenAI-compatible base URL/model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. API key не входит в public read model, party save/replay, logs или telemetry; отдельного provider/gameplay path и silent fallback нет",
         "В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены",
         "Ведёт локальный диагностический `logs/<party_id>.jsonl` (каталог переопределяется `LOG_DIRECTORY`): отдельный append-only файл на партию с public runtime input/output/error, полным player intent, показанным экраном, длительностью и приватным LLM request/response trace. Credentials/API key, base URL и runtime provider override туда не передаются; non-secret provider/model, config hash и effective generation parameters сохраняются. PostgreSQL остаётся authoritative state",
         "Владеет одним logical context для `submitTurn`, который объединяет диагностику и одноразовые repair-claims, но не вводит общий deadline хода. Каждый runtime LLM-вызов следует каноническому production-limits invariant из `@rus/llm-runtime`. Diagnostics показывает union wall time параллельных calls и их sum duration. Повторный repair одного вида для той же immutable request identity блокируется до provider call",
@@ -51,7 +51,7 @@
         "маршрутизацией FirstGameScreen/TurnScreen",
         "feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics",
         "browser bootstrap и обработкой пользовательских намерений",
-        "компактным UI-only LLM settings overlay: browser вызывает только game-server",
+        "компактным LLM settings overlay для default, локального Gemma preset и",
         "существующим `renderLandscape(screen)` как единственным владельцем game",
         "selection landscape: известный exact `scene_asset_id` выбирает exact",
         "процедурной композицией landscape + active interlocutor в существующем",
@@ -624,7 +624,7 @@
       "dependencies": [],
       "name": "tools/local-play",
       "owns": [
-        "проверкой Node.js, process-local `DEEPSEEK_API_KEY` и Docker",
+        "проверкой Node.js и Docker; если `DEEPSEEK_API_KEY` задан, launcher проверяет",
         "owned local PostgreSQL container/volume, first-time production setup и повторным использованием party DB",
         "загрузкой current runtime-catalog pin, server env и HTTP readiness production server (`/api/v1/health`, `/api/v1/scenarios`)"
       ],

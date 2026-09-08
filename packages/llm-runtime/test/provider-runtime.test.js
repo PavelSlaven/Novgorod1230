@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createServer } from 'node:http';
 import test from 'node:test';
 
 import { TurnRuntimeRoles, resolveLlmExecutionConfig } from '../src/provider-config.js';
@@ -189,6 +190,73 @@ test('generic provider omits empty authorization and DeepSeek-only payload field
     assert.equal('reasoning_effort' in request.payload, false);
   } finally {
     globalThis.fetch = originalFetch;
+  }
+});
+
+test('local OpenAI-compatible endpoint serves selected Gemma model', async (t) => {
+  let request;
+  const server = createServer(async (incoming, response) => {
+    let body = '';
+    for await (const chunk of incoming) body += chunk;
+    request = { url: incoming.url, authorization: incoming.headers.authorization,
+      body: JSON.parse(body) };
+    response.writeHead(200, { 'content-type': 'application/json' });
+    response.end(JSON.stringify({ choices: [{ message: { content: '{}' } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => server.close());
+  const { port } = server.address();
+  const model = 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced';
+  const result = await executeRoleLlmCall({
+    scope: 'turn_runtime', roleId, messages: [],
+    runtimeProviderOverride: { compatibility: 'openai_compatible',
+      baseUrl: `http://127.0.0.1:${port}/v1`, model }
+  });
+  assert.equal(result.status, 'ok');
+  assert.equal(request.url, '/v1/chat/completions');
+  assert.equal(request.authorization, undefined);
+  assert.equal(request.body.model, model);
+  assert.equal(request.body.max_tokens, 20_000);
+});
+
+test('malformed successful response fails closed', async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: true, json: async () => ({}) });
+  try {
+    const result = await executeRoleLlmCall({
+      scope: 'turn_runtime', roleId, messages: [],
+      runtimeProviderOverride: customProvider
+    });
+    assert.equal(result.status, 'transport_error');
+    assert.equal(result.error.code, 'invalid_response');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('transport timeout remains typed with fixed 120 second configuration', async () => {
+  const originalFetch = globalThis.fetch;
+  const originalSetTimeout = globalThis.setTimeout;
+  const originalClearTimeout = globalThis.clearTimeout;
+  globalThis.setTimeout = (callback) => {
+    queueMicrotask(callback);
+    return 1;
+  };
+  globalThis.clearTimeout = () => {};
+  globalThis.fetch = async (_url, { signal }) => new Promise((resolve, reject) => {
+    signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+  });
+  try {
+    const result = await executeRoleLlmCall({
+      scope: 'turn_runtime', roleId, messages: [],
+      runtimeProviderOverride: customProvider
+    });
+    assert.equal(result.status, 'transport_error');
+    assert.equal(result.error.code, 'timeout');
+  } finally {
+    globalThis.fetch = originalFetch;
+    globalThis.setTimeout = originalSetTimeout;
+    globalThis.clearTimeout = originalClearTimeout;
   }
 });
 

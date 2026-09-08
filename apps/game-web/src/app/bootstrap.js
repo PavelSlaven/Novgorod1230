@@ -94,7 +94,7 @@ export function bootstrapGameWeb({
   });
   root.addEventListener('change', (event) => {
     if (event.target.matches?.('[data-llm-settings-form] input[name="mode"]')) {
-      llmSettings.setFieldsDisabled(event.target.value !== 'custom');
+      llmSettings.selectMode(event.target.value);
     }
   });
   root.addEventListener('click', async (event) => {

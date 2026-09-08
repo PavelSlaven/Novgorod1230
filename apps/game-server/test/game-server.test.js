@@ -62,6 +62,55 @@ test('unresolved ordinary discovery is a non-5xx conflict without private detail
   assert.equal(error.details.reason, 'budget_or_cap_exhausted');
 });
 
+test('provider failures have safe typed public errors', () => {
+  for (const [internal, external] of [
+    ['timeout', 'LLM_PROVIDER_TIMEOUT'],
+    ['transport_error', 'LLM_PROVIDER_UNREACHABLE'],
+    ['invalid_response', 'LLM_PROVIDER_RESPONSE_INVALID'],
+    ['json_parse_failed', 'LLM_PROVIDER_RESPONSE_INVALID'],
+    ['http_401', 'LLM_PROVIDER_AUTH_FAILED'],
+    ['http_404', 'LLM_PROVIDER_MODEL_INVALID'],
+    ['http_429', 'LLM_PROVIDER_RATE_LIMITED'],
+    ['http_503', 'LLM_PROVIDER_UNAVAILABLE'],
+    ['missing_api_key', 'LLM_PROVIDER_NOT_CONFIGURED']
+  ]) {
+    const response = errorEnvelope(Object.assign(new Error('private provider body'),
+      { code: internal, llm_provider_failure: true }));
+    assert.equal(response.status, 503);
+    assert.equal(response.body.error.code, external);
+    assert.doesNotMatch(JSON.stringify(response), /private provider body/u);
+  }
+});
+
+test('provider failure leaves party session unchanged', async (t) => {
+  const sessions = createInMemorySessionStore();
+  const root = createGameCompositionRoot({
+    newGameWorkflow: { run: async () => ({ status: 'approved',
+      artifact: stage26Fixture() }) },
+    turnWorkflow: { run: async () => {
+      throw Object.assign(new Error('provider failed'), {
+        code: 'timeout', llm_provider_failure: true
+      });
+    } },
+    sessionStore: sessions,
+    now: () => '2026-07-12T10:00:00.000Z'
+  });
+  await root.startNewGame({ start_text: 'Начало' });
+  await root.acknowledgeOpening('party-1', { client_ack_id: 'ack-1' });
+  const before = await sessions.load('party-1');
+  const server = createGameHttpServer({ root });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  const response = await fetch(
+    `http://127.0.0.1:${address.port}/api/v1/parties/party-1/turns`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ raw_text: 'Осмотреться' })
+    });
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).error.code, 'LLM_PROVIDER_TIMEOUT');
+  assert.deepEqual(await sessions.load('party-1'), before);
+});
+
 function turnResult() {
   return {
     version: 1,

@@ -30,6 +30,7 @@ export function readServerConfig(env = process.env) {
     port,
     maxBodyBytes,
     logDirectory: text(env.LOG_DIRECTORY) || null,
+    llmSettingsPath: text(env.RUS_LLM_SETTINGS_PATH) || null,
     runtimeRoute,
     cutoverStage: strictInteger(
       env.RUS_CUTOVER_STAGE,

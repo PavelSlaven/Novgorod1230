@@ -1135,6 +1135,13 @@ LLM не возвращает:
 - игроку не сообщается внутриигровой отказ;
 - возвращается техническая ошибка обработки хода.
 
+Все production primary/audit/repair calls используют единый provider owner с
+`maxTokens = 20_000` и transport timeout 120 секунд. При явно выбранном
+local/custom OpenAI-compatible provider один `runtimeProviderOverride`
+применяется ко всем ролям. Transport не делает fallback на DeepSeek или другую
+model/provider; connection, auth, model, timeout, malformed response и invalid
+JSON завершают ход typed technical failure до commit.
+
 ## 17. Активированная реализация
 
 ### 17.1. `@rus/turn`

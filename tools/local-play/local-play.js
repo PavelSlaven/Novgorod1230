@@ -28,9 +28,6 @@ export function validateLocalPlay({ env = process.env, nodeVersion = process.ver
   if (!Number.isInteger(major) || major < 22) {
     throw localPlayError('LOCAL_PLAY_NODE_UNSUPPORTED', 'Local play requires Node.js 22 or newer.');
   }
-  if (!String(env.DEEPSEEK_API_KEY ?? '').trim()) {
-    throw localPlayError('LOCAL_PLAY_PROVIDER_KEY_MISSING', 'DEEPSEEK_API_KEY is required.');
-  }
   const port = Number(env.RUS_SERVER_PORT ?? 3000);
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw localPlayError('LOCAL_PLAY_PORT_INVALID', 'RUS_SERVER_PORT must be an integer from 1 to 65535.');
@@ -103,14 +100,17 @@ export async function startLocalPlay({
   if (!(await isPortAvailable(port))) {
     throw localPlayError('LOCAL_PLAY_PORT_UNAVAILABLE', `Port ${port} is already in use.`);
   }
-  let provider;
-  try {
-    provider = await providerProbe(createProductionLlmRoleRunner({ env }));
-  } catch (error) {
-    throw providerPreflightError(error);
-  }
-  if (provider?.ok !== true) {
-    throw localPlayError('LOCAL_PLAY_PROVIDER_UNAVAILABLE', 'DeepSeek provider preflight failed.');
+  if (String(env.DEEPSEEK_API_KEY ?? '').trim()) {
+    let provider;
+    try {
+      provider = await providerProbe(createProductionLlmRoleRunner({ env }));
+    } catch (error) {
+      throw providerPreflightError(error);
+    }
+    if (provider?.ok !== true) {
+      throw localPlayError('LOCAL_PLAY_PROVIDER_UNAVAILABLE',
+        'Default provider preflight failed.');
+    }
   }
   const postgres = await ensurePostgres({ settings: localPostgresSettings });
   const worldPool = createPool({ connectionString: postgres.worldUrl, max: 1 });
@@ -155,14 +155,14 @@ function assertHealth(health) {
 function providerPreflightError(error) {
   if (error?.code === 'http_401' || error?.code === 'http_403') {
     return localPlayError('LOCAL_PLAY_PROVIDER_UNAUTHORIZED',
-      'DeepSeek provider authentication failed.');
+      'Default provider authentication failed.');
   }
   if (error?.code === 'timeout') {
     return localPlayError('LOCAL_PLAY_PROVIDER_TIMEOUT',
-      'DeepSeek provider preflight timed out.');
+      'Default provider preflight timed out.');
   }
   return localPlayError('LOCAL_PLAY_PROVIDER_UNAVAILABLE',
-    'DeepSeek provider preflight failed.');
+    'Default provider preflight failed.');
 }
 
 async function readSuccess(fetchImpl, url) {

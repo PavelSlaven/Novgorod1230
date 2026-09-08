@@ -1,9 +1,20 @@
 import { serverError } from '../errors.js';
 
-export function createLlmSettingsOwner({ qualifyCustom = null, now = Date.now } = {}) {
-  let active = defaultSnapshot();
-  let qualifiedO1Identity = null;
+export const LOCAL_LLM_PRESET = Object.freeze({
+  base_url: 'http://127.0.0.1:8000/v1',
+  model: 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced'
+});
+
+export function createLlmSettingsOwner({ qualifyCustom = null,
+  probeCustom = null, now = Date.now, initialRecord = null,
+  persistSettings = null } = {}) {
+  const restored = initialRecord == null
+    ? { active: defaultSnapshot(), identity: null }
+    : normalizeStoredRecord(initialRecord);
+  let active = restored.active;
+  let qualifiedO1Identity = restored.identity;
   let generation = 0;
+  let commitQueue = Promise.resolve();
   return Object.freeze({
     read() { return publicSnapshot(active); },
     providerSnapshot() { return active; },
@@ -11,29 +22,48 @@ export function createLlmSettingsOwner({ qualifyCustom = null, now = Date.now } 
     async apply(input) {
       const next = normalizeSettings(input, active);
       const applyingGeneration = ++generation;
-      const qualified = next.mode === 'custom'
+      const qualified = next.mode !== 'default'
         ? await qualify(next, qualifyCustom) : null;
-      if (applyingGeneration !== generation) throw serverError(
-        'LLM_SETTINGS_APPLY_STALE', 'LLM settings apply was superseded.', { status: 409 });
-      active = next;
-      qualifiedO1Identity = qualified;
-      return publicSnapshot(active);
+      return commit(async () => {
+        if (applyingGeneration !== generation) stale();
+        await persistSettings?.(storedRecord(next, qualified));
+        if (applyingGeneration !== generation) stale();
+        active = next;
+        qualifiedO1Identity = qualified;
+        return publicSnapshot(active);
+      });
     },
     async probe(input) {
-      const candidate = input?.mode === 'custom' && Object.hasOwn(input, 'baseUrl')
-        ? input : normalizeCustom(input, active);
+      const candidate = normalizeProvider(input, active);
       const started = now();
-      await qualify(candidate, qualifyCustom);
-      return Object.freeze({ ok: true, provider: 'openai_compatible',
-        model: candidate.model, category: 'ok', duration_ms: now() - started });
+      if (typeof probeCustom !== 'function') {
+        await qualify(candidate, qualifyCustom);
+        return Object.freeze({ ok: true, provider: 'openai_compatible',
+          model: candidate.model, category: 'ok', duration_ms: now() - started });
+      }
+      const result = await probeCustom(candidate);
+      return Object.freeze({
+        ok: result?.ok === true,
+        provider: 'openai_compatible',
+        model: candidate.model,
+        category: result?.ok === true ? 'ok'
+          : String(result?.category ?? 'transport_error'),
+        duration_ms: Number.isFinite(result?.duration_ms)
+          ? result.duration_ms : now() - started
+      });
     },
-    reset() {
-      generation += 1;
-      active = defaultSnapshot();
-      qualifiedO1Identity = null;
-      return publicSnapshot(active);
-    }
+    reset() { return this.apply({ mode: 'default' }); }
   });
+
+  function commit(operation) {
+    const result = commitQueue.then(operation, operation);
+    commitQueue = result.catch(() => {});
+    return result;
+  }
+  function stale() {
+    throw serverError('LLM_SETTINGS_APPLY_STALE',
+      'LLM settings apply was superseded.', { status: 409 });
+  }
 }
 
 async function qualify(candidate, qualifyCustom) {
@@ -50,7 +80,7 @@ async function qualify(candidate, qualifyCustom) {
 }
 
 export function normalizeLlmSettingsCandidate(input) {
-  return normalizeCustom(input);
+  return normalizeProvider(input);
 }
 
 function normalizeSettings(input, active) {
@@ -59,27 +89,75 @@ function normalizeSettings(input, active) {
     assertFields(input, ['mode']);
     return defaultSnapshot();
   }
-  if (input.mode === 'custom') return normalizeCustom(input, active);
-  invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be default or custom.');
+  if (input.mode === 'local' || input.mode === 'custom') {
+    return normalizeProvider(input, active);
+  }
+  invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be default, local, or custom.');
 }
 
-function normalizeCustom(input, active = null) {
+function normalizeProvider(input, active = null) {
   if (!plain(input)) invalid('LLM_SETTINGS_BODY_INVALID', 'LLM settings must be an object.');
   assertFields(input, ['mode', 'compatibility', 'base_url', 'model', 'api_key']);
-  if (input.mode !== 'custom') invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be custom.');
+  if (input.mode !== 'local' && input.mode !== 'custom') {
+    invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be local or custom.');
+  }
   if (input.compatibility != null && input.compatibility !== 'openai_compatible') invalid('LLM_SETTINGS_COMPATIBILITY_INVALID', 'compatibility must be openai_compatible.');
-  const baseUrl = normalizeUrl(input.base_url);
-  const model = requiredText(input.model, 'LLM_SETTINGS_MODEL_REQUIRED', 'model is required.');
+  const baseUrl = normalizeUrl(input.base_url
+    || (input.mode === 'local' ? LOCAL_LLM_PRESET.base_url : null));
+  const model = requiredText(input.model
+    || (input.mode === 'local' ? LOCAL_LLM_PRESET.model : null),
+  'LLM_SETTINGS_MODEL_REQUIRED', 'model is required.');
   const apiKey = optionalText(input.api_key, 'LLM_SETTINGS_API_KEY_INVALID', 'api_key must be a string.')
-    ?? (active?.mode === 'custom' && active.baseUrl === baseUrl ? active.apiKey : null);
-  return Object.freeze({ mode: 'custom', compatibility: 'openai_compatible', baseUrl, model, apiKey });
+    ?? (active?.mode !== 'default' && active?.baseUrl === baseUrl ? active.apiKey : null);
+  return Object.freeze({ mode: input.mode, compatibility: 'openai_compatible',
+    baseUrl, model, apiKey });
 }
 
 function defaultSnapshot() { return Object.freeze({ mode: 'default' }); }
 function publicSnapshot(snapshot) {
-  return Object.freeze(snapshot.mode === 'default'
-    ? { mode: 'default', base_url: null, model: null, api_key_present: false, compatibility: 'deepseek' }
-    : { mode: 'custom', compatibility: snapshot.compatibility, base_url: snapshot.baseUrl, model: snapshot.model, api_key_present: snapshot.apiKey != null });
+  return Object.freeze({
+    ...(snapshot.mode === 'default'
+      ? { mode: 'default', base_url: null, model: null,
+          api_key_present: false, compatibility: 'deepseek' }
+      : { mode: snapshot.mode, compatibility: snapshot.compatibility,
+          base_url: snapshot.baseUrl, model: snapshot.model,
+          api_key_present: snapshot.apiKey != null }),
+    local_preset: LOCAL_LLM_PRESET
+  });
+}
+
+function storedRecord(snapshot, identity) {
+  return Object.freeze({
+    version: 1,
+    settings: snapshot.mode === 'default' ? { mode: 'default' } : {
+      mode: snapshot.mode, compatibility: snapshot.compatibility,
+      base_url: snapshot.baseUrl, model: snapshot.model,
+      api_key: snapshot.apiKey
+    },
+    ordinary_materialization_identity: identity
+  });
+}
+
+function normalizeStoredRecord(record) {
+  if (!plain(record) || record.version !== 1 || !plain(record.settings)) {
+    throw serverError('LLM_SETTINGS_FILE_INVALID',
+      'Saved LLM settings are invalid.', { status: 500, public_exposure: 'internal' });
+  }
+  const active = normalizeSettings(record.settings, null);
+  const identity = active.mode === 'default' ? null
+    : normalizeIdentity(record.ordinary_materialization_identity);
+  return { active, identity };
+}
+
+function normalizeIdentity(value) {
+  const keys = ['provider', 'model', 'scope', 'role_id', 'config_hash'];
+  if (!plain(value) || keys.some((key) => typeof value[key] !== 'string'
+      || !value[key]) || value.scope !== 'turn_runtime'
+      || value.role_id !== 'ordinary_materialization') {
+    throw serverError('LLM_SETTINGS_FILE_INVALID',
+      'Saved LLM settings are invalid.', { status: 500, public_exposure: 'internal' });
+  }
+  return Object.freeze(Object.fromEntries(keys.map((key) => [key, value[key]])));
 }
 function normalizeUrl(value) {
   const raw = requiredText(value, 'LLM_SETTINGS_BASE_URL_REQUIRED', 'base_url is required.');

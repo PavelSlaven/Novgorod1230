@@ -12,12 +12,20 @@ import { createLlmTurnBudget } from './runtime/llm-turn-budget.js';
 import { createOrdinaryMaterializationStageBQualifier } from './runtime/ordinary-materialization-stage-b-qualification.js';
 import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from './internal/lower-dvina-trace-ordinary-materialization-profile.js';
 import { createPartyLog, createPartyLoggingRoot } from './infrastructure/filesystem/party-log.js';
+import { createLlmSettingsFileStore } from
+  './infrastructure/filesystem/llm-settings-file.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const config = assertModularStartupConfig(readServerConfig());
 const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile();
 const qualificationRunner = createProductionLlmRoleRunner({ env: process.env });
+const llmSettingsStore = createLlmSettingsFileStore({
+  ...(config.llmSettingsPath ? { filePath: config.llmSettingsPath } : {})
+});
 const llmSettings = createLlmSettingsOwner({
+  initialRecord: await llmSettingsStore.load(),
+  persistSettings: (record) => llmSettingsStore.save(record),
+  probeCustom: (candidate) => qualificationRunner.probe(candidate),
   qualifyCustom: createOrdinaryMaterializationStageBQualifier({
     roleRunner: qualificationRunner,
     evalContract: ordinaryProfile.stage_b_classification_eval

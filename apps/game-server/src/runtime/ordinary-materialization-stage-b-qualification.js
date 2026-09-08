@@ -46,6 +46,8 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
     return Object.freeze({ identity, outputs: Object.freeze(outputs), report });
   } catch (error) {
     if (error?.code === 'LLM_SETTINGS_ORDINARY_STAGE_B_QUALIFICATION_FAILED') throw error;
+    if (/^(?:timeout|transport_error|invalid_response|json_parse_failed|http_\d{3})$/u
+      .test(String(error?.code ?? ''))) throw error;
     throw qualificationError([]);
   }
 }

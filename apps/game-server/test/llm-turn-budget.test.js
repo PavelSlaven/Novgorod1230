@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createLlmTurnBudget, isRepairRole } from '../src/runtime/llm-turn-budget.js';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createProductionLlmRoleRunner } from '../src/infrastructure/provider/deepseek.js';
+import { PortraitLabRoles, TurnRuntimeRoles } from '@rus/llm-runtime';
 import { createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
@@ -156,6 +157,51 @@ test('every active role and an unseen role receive shared execution limits', asy
   }
   for (const call of calls) assert.deepEqual(call.overrides,
     { maxTokens: 20_000, requestTimeoutMs: 120_000 });
+});
+
+test('runtime provider override reaches every registered gameplay and portrait role', async () => {
+  const calls = [];
+  const runner = createLlmRoleRunnerAdapter({
+    settings: { providerSnapshot: () => ({ mode: 'local',
+      baseUrl: 'http://127.0.0.1:8000/v1', model: 'local-all-roles' }) },
+    execute: async (input) => {
+      calls.push(input);
+      return { status: 'ok', parsed_json: {}, provider: 'openai_compatible',
+        model: input.runtimeProviderOverride.model };
+    }
+  });
+  for (const role_id of new Set(Object.values(TurnRuntimeRoles))) {
+    await runner.run({ scope: 'turn_runtime', role_id });
+  }
+  for (const role_id of Object.values(PortraitLabRoles)) {
+    await runner.run({ scope: 'portrait_lab', role_id });
+  }
+  assert.equal(calls.length,
+    new Set(Object.values(TurnRuntimeRoles)).size
+      + Object.values(PortraitLabRoles).length);
+  for (const call of calls) {
+    assert.equal(call.runtimeProviderOverride.model, 'local-all-roles');
+    assert.equal(call.overrides.maxTokens, 20_000);
+    assert.equal(call.overrides.requestTimeoutMs, 120_000);
+  }
+});
+
+test('selected provider failure has no fallback call', async () => {
+  const calls = [];
+  const runner = createLlmRoleRunnerAdapter({
+    settings: { providerSnapshot: () => ({ mode: 'custom',
+      baseUrl: 'https://provider.example/v1', model: 'chosen-model' }) },
+    execute: async (input) => {
+      calls.push(input);
+      return { status: 'transport_error', provider: 'openai_compatible',
+        model: 'chosen-model', error: { code: 'transport_error' } };
+    }
+  });
+  await assert.rejects(runner.run({ scope: 'turn_runtime',
+    role_id: TurnRuntimeRoles.GAMEPLAY_NARRATOR }),
+  { code: 'transport_error' });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].runtimeProviderOverride.model, 'chosen-model');
 });
 
 test('turn context has no obsolete whole-turn deadline or aggregate LLM budget', async () => {

@@ -13,7 +13,7 @@
 - scoped client adapter для composition root.
 - отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
-Production `turn_runtime` использует Flash-first роли без heavy reasoning. Общего gameplay turn deadline нет. Custom OpenAI-compatible provider остаётся single-model configuration: transport не подбирает fallback model или provider.
+Production `turn_runtime` использует Flash-first роли без heavy reasoning. Общего gameplay turn deadline нет. Явно выбранный local/custom OpenAI-compatible provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider.
 
 ## Production limits
 
@@ -32,7 +32,7 @@ Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narr
 
 ## Публичный API
 
-`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`/`requestTimeoutMs`): `openai_compatible` нормализуется к одному `chat/completions` URL, а DeepSeek остаётся default. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
+`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`): `openai_compatible` нормализуется к одному `chat/completions` URL, а DeepSeek остаётся default. Runtime override не может менять production limits. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
 
 Portrait Lab использует одну role без repair/fallback chain; смысловой результат валидирует authoritative `portrait_spec_v1` owner вне transport слоя.
 

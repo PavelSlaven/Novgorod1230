@@ -119,11 +119,12 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     idempotency_key: 'phase-3-a-inspection',
     raw_text: 'Осмотреть место крушения подробно.'
   });
-  const movedA = await pathA.submitTurn(partyA.party_id, {
+  const movedAInput = {
     request_id: 'phase-3-a-move',
     idempotency_key: 'phase-3-a-move',
     raw_text: 'Дойти до рыбацкого стана.'
-  });
+  };
+  const movedA = await pathA.submitTurn(partyA.party_id, movedAInput);
   assert.equal(movedA.option_id, 'follow_path_to_fishing_camp');
   assert.equal(movedA.movement.result.elapsed_minutes, 8);
   assert.equal(movedA.check, null);
@@ -135,6 +136,26 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     'party_runtime.traveller_travel_states', partyA.party_id), 1);
   assert.equal(await traversalIntervalCount(pool, partyA.party_id), 1);
   assert.equal(await traversalLifecycleCount(pool, partyA.party_id), 5);
+  const beforeMoveReplay = await latestSnapshotRow(pool, partyA.party_id);
+  const restartedMove = buildRuntime({ pool, release, runtimeCatalogPin,
+    turnStepModel: async () => {
+      throw new Error('replay must not call turn-step model');
+    },
+    semanticResolver: async () => {
+      throw new Error('replay must not call semantic resolver');
+    } });
+  assert.deepEqual(
+    await restartedMove.submitTurn(partyA.party_id, movedAInput), movedA
+  );
+  assert.deepEqual(await latestSnapshotRow(pool, partyA.party_id),
+    beforeMoveReplay);
+  assert.equal(await count(pool,
+    'party_runtime.party_route_plans', partyA.party_id), 3);
+  assert.equal(await count(pool,
+    'party_runtime.party_route_plan_executions', partyA.party_id), 3);
+  await assert.rejects(() => restartedMove.submitTurn(partyA.party_id, {
+    ...movedAInput, raw_text: 'Иду по тропе к рыбацкому стану.'
+  }), { code: 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT' });
   const firstTalk = await pathA.submitTurn(partyA.party_id, {
     request_id: 'phase-3-a-talk',
     idempotency_key: 'phase-3-a-talk',
@@ -800,7 +821,11 @@ function buildRuntime({
   release,
   runtimeCatalogPin,
   rollForRequest = () => 0.99,
-  conversationModels = null
+  conversationModels = null,
+  turnStepModel = createLowerDvinaTraceTurnStepTestModel(),
+  semanticResolver = async (request) => ({
+    option_id: semanticOption(request.raw_text, request.action_set)
+  })
 }) {
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({
     pool,
@@ -821,15 +846,12 @@ function buildRuntime({
   });
   const { playerConversationModel, npcSemanticModel } =
     conversationModels ?? createM2ConversationModels();
-  const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,
     turnStepModel,
     playerConversationModel,
     npcSemanticModel,
-    semanticResolver: async (request) => ({
-      option_id: semanticOption(request.raw_text, request.action_set)
-    }),
+    semanticResolver,
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool: pool,
       narrationService

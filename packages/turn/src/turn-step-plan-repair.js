@@ -66,7 +66,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
             repairError, originalOutput, structuralErrors)
           || forbiddenOperationChoiceAfterRepair(repairError)
           || unresolvedSemanticGrounding(repairError)
-          || unresolvedContinuation(repairError)) {
+          || unresolvedContinuation(repairError)
+          || unresolvedReferenceAfterRepair(repairError, structuralErrors)) {
         return { plan: noResultPlan(request), repaired: true };
       }
       if (repairError?.code === 'TURN_STEP_PLAN_INVALID') {
@@ -120,6 +121,17 @@ function unresolvedContinuation(error) {
   return error?.code === 'TURN_STEP_PLAN_INVALID'
     && Array.isArray(errors) && errors.length > 0
     && errors.every(({ code }) => code === 'continuation_progress');
+}
+
+function unresolvedReferenceAfterRepair(error, initialErrors) {
+  const errors = error?.details?.errors;
+  const structural = new Set([
+    'required', 'type', 'additional_property', 'json_parse_failed'
+  ]);
+  return error?.code === 'TURN_STEP_PLAN_INVALID'
+    && Array.isArray(errors) && errors.length > 0
+    && errors.every(({ code }) => code === 'unknown_ref')
+    && initialErrors.some(({ code }) => structural.has(code));
 }
 
 function unresolvedDomainRequest(error) {

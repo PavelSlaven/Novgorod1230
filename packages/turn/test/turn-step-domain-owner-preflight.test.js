@@ -127,6 +127,36 @@ test('structurally incomplete domain request can repair to a safe no-result',
       'domain_operation_unavailable');
   });
 
+test('structural repair repeating an unknown ref becomes a safe no-result',
+  async () => {
+    const request = {
+      schema: 'turn_step_request_v1', request_id: 'request-1',
+      root_turn_id: 'turn-1', committed_state_version: 7,
+      working_revision: 0, step_index: 1, max_internal_steps: 8,
+      root_player_action: 'осмотреть предмет',
+      remaining_intent: 'осмотреть предмет', completed_steps: [],
+      actor: { actor_ref: 'actor-1' }, player_safe_state: {},
+      available_domain_operations: []
+    };
+    let calls = 0;
+    const result = await requestTurnStepPlanWithRepair({ request,
+      turnStepModel: async () => {
+        calls += 1;
+        const unavailable = plan(request, {
+          resolution: 'domain_request', goal_result: 'pending',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operations: [{ op: 'request_activity', actor_ref: 'actor-1',
+            activity_kind: 'wait', target_refs: ['mistyped-ref'],
+            description: 'осмотреть' }]
+        });
+        return calls === 1
+          ? { ...unavailable, interpretation: { adaptation: 'literal' } }
+          : unavailable;
+      } });
+    assert.equal(calls, 2);
+    assert.equal(result.plan.reason_code, 'domain_operation_unavailable');
+  });
+
 test('partial removal of unavailable owner becomes a safe direct no-result',
   async () => {
     let calls = 0;

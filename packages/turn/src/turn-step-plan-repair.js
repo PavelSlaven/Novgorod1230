@@ -63,7 +63,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
     } catch (repairError) {
       if (unresolvedDomainRequest(repairError)
           || unavailableOwnerAfterRepair(
-            repairError, originalOutput, structuralErrors)
+            repairError, originalOutput, structuralErrors, request)
           || forbiddenOperationChoiceAfterRepair(repairError)
           || unresolvedGroundingOrClosedShape(repairError)
           || unresolvedContinuation(repairError)
@@ -89,16 +89,29 @@ function forbiddenOperationChoiceAfterRepair(error) {
       path === '$.operation_choice' && code === 'additional_property');
 }
 
-function unavailableOwnerAfterRepair(error, originalOutput, initialErrors) {
+function unavailableOwnerAfterRepair(error, originalOutput, initialErrors,
+  request) {
   const repairedErrors = error?.details?.errors;
   const unavailable = ({ code }) => code === 'domain_owner_unavailable';
   const incompleteRemoval = ({ path, code }) => code === 'resolution'
     && ['$.activity.owner', '$.operations'].includes(path);
   return error?.code === 'TURN_STEP_PLAN_INVALID'
     && (originalOutput?.resolution !== 'domain_request'
-      || initialErrors.some(({ code }) => code !== 'domain_owner_unavailable'))
+      || initialErrors.some(({ code }) => code !== 'domain_owner_unavailable')
+      || repeatedPlayerSafeItemDiscovery(originalOutput, request))
     && Array.isArray(repairedErrors) && repairedErrors.length > 0
     && repairedErrors.every((item) => unavailable(item) || incompleteRemoval(item));
+}
+
+function repeatedPlayerSafeItemDiscovery(plan, request) {
+  const operation = plan?.operations?.length === 1 ? plan.operations[0] : null;
+  const target = operation?.target_refs?.length === 1
+    ? operation.target_refs[0] : null;
+  return operation?.op === 'request_discovery'
+    && ['inspect', 'search'].includes(operation.discovery_kind)
+    && typeof target === 'string'
+    && (request?.player_safe_state?.items ?? [])
+      .some(({ item_id: itemId }) => itemId === target);
 }
 
 const SAFE_NO_RESULT_CODES = new Set([

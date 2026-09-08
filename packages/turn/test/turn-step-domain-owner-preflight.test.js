@@ -105,6 +105,30 @@ test('repeated unavailable owner becomes a safe direct no-result', async () => {
   assert.equal(result.step_traces[0].reason_code, 'domain_operation_unavailable');
 });
 
+test('unseen item discovery without an owner becomes a safe direct no-result',
+  async () => {
+    let calls = 0;
+    const itemInput = input();
+    itemInput.initialWorkingProjection = { actor_ref: 'actor-1',
+      items: [{ item_id: 'item:wooden-spoon' }] };
+    const result = await runTurnStepLoop(itemInput, ports(
+      async (request) => {
+        calls += 1;
+        return plan(request, {
+          resolution: 'domain_request', goal_result: 'pending',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operations: [{ op: 'request_discovery', actor_ref: 'actor-1',
+            discovery_kind: 'inspect', target_refs: ['item:wooden-spoon'],
+            query: 'рассмотреть следы износа' }]
+        });
+      }, preflight(), null
+    ));
+    assert.equal(calls, 2);
+    assert.deepEqual(result.write_fragments, []);
+    assert.equal(result.step_traces[0].reason_code,
+      'domain_operation_unavailable');
+  });
+
 test('structurally incomplete domain request can repair to a safe no-result',
   async () => {
     let calls = 0;

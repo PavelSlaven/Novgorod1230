@@ -57,7 +57,9 @@ test('local play persists a free turn and replays it after a server restart',
     };
     const start = () => startLocalPlay({ env, localPostgresSettings: settings,
       ensurePostgres: (options) => ensureLocalPostgres({ ...options, dataRoot }),
-      provisionRuntime: async () => fixtureRuntime(), log: () => {} });
+      provisionRuntime: async ({ startLlm }) => {
+        assert.equal(startLlm, false); return fixtureRuntime();
+      }, log: () => {} });
     localPlay = await start();
 
     const requestId = `local-play-turn-${suffix}`;

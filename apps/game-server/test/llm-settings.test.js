@@ -42,29 +42,34 @@ test('LLM settings owner snapshots are immutable, redacted, atomic, and resettab
   assert.deepEqual(await owner.reset(), defaultSettings());
 });
 
-test('Apply generation rejects stale qualification after reset or newer Apply', async () => {
+test('Apply serializes qualification and rejects stale results', async () => {
   const pending = [];
+  let active = 0; let maxActive = 0;
   const owner = createLlmSettingsOwner({ qualifyCustom: (candidate) => new Promise((resolve) => {
-    pending.push({ candidate, resolve });
+    active += 1; maxActive = Math.max(maxActive, active);
+    pending.push({ candidate, resolve: (value) => { active -= 1; resolve(value); } });
   }) });
   const first = owner.apply(custom);
+  await tick();
   const reset = owner.reset();
-  pending[1].resolve({ ...identity(), model: LOCAL_LLM_PRESET.model });
-  await reset;
-  pending.splice(1, 1);
   pending.shift().resolve(identity());
   await assert.rejects(first, { code: 'LLM_SETTINGS_APPLY_STALE' });
+  await tick();
+  pending.shift().resolve({ ...identity(), model: LOCAL_LLM_PRESET.model });
+  await reset;
   assert.deepEqual(owner.read(), defaultSettings());
 
   const older = owner.apply(custom);
+  await tick();
   const newer = owner.apply({ ...custom, model: 'new-model' });
   const old = pending.shift();
-  const latest = pending.shift();
-  latest.resolve({ ...identity(), model: 'new-model' });
-  await newer;
   old.resolve(identity());
   await assert.rejects(older, { code: 'LLM_SETTINGS_APPLY_STALE' });
+  await tick();
+  pending.shift().resolve({ ...identity(), model: 'new-model' });
+  await newer;
   assert.equal(owner.read().model, 'new-model');
+  assert.equal(maxActive, 1);
   assert.equal(JSON.stringify(owner.read()).includes('secret-key'), false);
 });
 
@@ -247,3 +252,4 @@ function defaultSettings() { return { mode: 'local',
   base_url: LOCAL_LLM_PRESET.base_url, model: LOCAL_LLM_PRESET.model,
   api_key_present: false, compatibility: 'openai_compatible',
   local_preset: LOCAL_LLM_PRESET }; }
+function tick() { return new Promise((resolve) => setImmediate(resolve)); }

@@ -3750,16 +3750,20 @@ commit либо ожидаемый typed rejection с совпадающим err
 LLM fixture, canned response и network interception запрещены. Private traces
 читает только auditor после хода; PLAYER их не получает.
 
-`play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL,
-pinned Giga и local Gemma, запускает production server и owned processes, а
-runner гарантированно закрывает их. Development explorer и все production
-roles используют один явно зафиксированный local OpenAI-compatible endpoint.
-Каждая LLM call сохраняет единые `maxTokens = 20_000` и timeout 120 с.
+`play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL
+и pinned Giga, запускает production server и owned processes, а runner
+гарантированно закрывает их. По умолчанию он также provisions local Gemma.
+Для явно назначенного владельцем acceptance endpoint допустима та же Gemma на
+другом компьютере через OpenAI-compatible API; runner не запускает второй
+inference process на текущем ПК. Development explorer и все production roles
+используют один явно зафиксированный endpoint без fallback. Каждая LLM call
+сохраняет единые `maxTokens = 20_000` и timeout 120 с.
 
-Evidence фиксирует exact HEAD, Gemma model/revision/GGUF checksum,
-llama.cpp version/backend, Giga revision, provider config identity,
-GPU/VRAM/RAM/disk/runtime metadata, campaign/turn/trace IDs и private gap
-audit. Fixture-based unit/CI не заменяет этот evidence.
+Evidence фиксирует exact HEAD, Gemma model и revision/checksum либо точный
+served model identity для внешнего endpoint, inference version/backend, Giga
+revision, provider config identity, hardware/runtime metadata,
+campaign/turn/trace IDs и private gap audit. Fixture-based unit/CI не заменяет
+этот evidence.
 
 ### Saturation gate
 
@@ -3771,7 +3775,7 @@ unsupported premises в accepted traces — ноль. P2 должен быть r
 иметь независимо принятый bounded limit. Regression replay не считается unseen.
 Новый critical finding сбрасывает последовательность. Это ограниченное
 эмпирическое насыщение проверенного пространства, не математическая полнота
-мира. Verdict допустим только после трёх реальных browser/local-Gemma кампаний
+мира. Verdict допустим только после трёх реальных browser/Gemma кампаний
 на неизменном candidate и явного доказательства `unsupported accepted
 premises = 0`, `new P0/P1 = 0`.
 

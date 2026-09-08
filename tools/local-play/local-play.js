@@ -10,6 +10,8 @@ import { loadActiveRuntimeCatalogPin } from
 import {
   SPATIAL_V3_PRODUCTION_RELEASE
 } from '../../apps/game-server/src/composition/production-spatial-v3.js';
+import { createLlmSettingsFileStore } from
+  '../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js';
 import {
   ensureLocalPostgres,
   localPlayError
@@ -95,6 +97,7 @@ export async function startLocalPlay({
   createPool = (options) => new pg.Pool(options),
   provisionRuntime = provisionManagedRuntime,
   startManagedLlm = true,
+  loadLlmSettings = loadSavedLlmSettings,
   spawnServer = defaultSpawnServer,
   fetchImpl = fetch,
   sleep = delay,
@@ -105,8 +108,10 @@ export async function startLocalPlay({
   if (!(await isPortAvailable(port))) {
     throw localPlayError('LOCAL_PLAY_PORT_UNAVAILABLE', `Port ${port} is already in use.`);
   }
+  const savedLlmSettings = await loadLlmSettings(env);
   const managedRuntime = await provisionRuntime({ repositoryRoot: ROOT,
-    env, fetchImpl, log, startLlm: startManagedLlm });
+    env, fetchImpl, log, startLlm: startManagedLlm
+      && savedLlmSettings?.settings?.mode !== 'custom' });
   let postgres;
   try { postgres = await ensurePostgres({ settings: localPostgresSettings }); }
   catch (error) { await managedRuntime.close(); throw error; }
@@ -200,6 +205,12 @@ function runtimeStatus(runtime) {
 
 function defaultSpawnServer({ env }) {
   return spawn(process.execPath, ['apps/game-server/src/server.js'], { cwd: ROOT, env, stdio: 'inherit' });
+}
+
+function loadSavedLlmSettings(env) {
+  return createLlmSettingsFileStore({
+    ...(env.RUS_LLM_SETTINGS_PATH ? { filePath: env.RUS_LLM_SETTINGS_PATH } : {})
+  }).load();
 }
 
 function delay(milliseconds) { return new Promise((resolve) => setTimeout(resolve, milliseconds)); }

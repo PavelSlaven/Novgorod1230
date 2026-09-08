@@ -22,9 +22,10 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
     async apply(input) {
       const next = normalizeSettings(input, active);
       const applyingGeneration = ++generation;
-      const qualified = next.mode !== 'default'
-        ? await qualify(next, qualifyCustom) : null;
       return commit(async () => {
+        if (applyingGeneration !== generation) stale();
+        const qualified = next.mode !== 'default'
+          ? await qualify(next, qualifyCustom) : null;
         if (applyingGeneration !== generation) stale();
         await persistSettings?.(storedRecord(next, qualified));
         if (applyingGeneration !== generation) stale();

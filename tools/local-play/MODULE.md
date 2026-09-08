@@ -13,7 +13,8 @@
 - owned lifecycle inference, Giga worker, PostgreSQL и game-server, включая
   readiness, один restart inference и graceful shutdown;
 - default local Gemma provider для всех gameplay LLM roles и диагностикой до
-  партии; custom OpenAI-compatible provider остаётся явной альтернативой;
+  партии; сохранённый custom OpenAI-compatible provider читается до provisioning
+  и не запускает ненужный managed Gemma process;
 - загрузкой current runtime-catalog pin, server env и HTTP readiness production server (`/api/v1/health`, `/api/v1/scenarios`).
 
 Gameplay не зависит от engine API: launcher поднимает pinned `llama.cpp`, а

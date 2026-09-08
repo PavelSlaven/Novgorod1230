@@ -54,6 +54,7 @@ test('local play provisions, applies managed Gemma, and owns shutdown', async ()
   const postgres = { worldUrl: 'world', partyUrl: 'party', state: 'existing',
     close: async () => closed.push('postgres') };
   const result = await startLocalPlay({ env: {},
+    loadLlmSettings: async () => null,
     provisionRuntime: async ({ startLlm }) => {
       assert.equal(startLlm, true); return runtime;
     }, ensurePostgres: async () => postgres,
@@ -75,6 +76,7 @@ test('local play provisions, applies managed Gemma, and owns shutdown', async ()
 test('launcher always makes managed Gemma available on supported hardware', async () => {
   const stop = Object.assign(new Error('stop'), { code: 'STOP' });
   await assert.rejects(startLocalPlay({ env: {},
+    loadLlmSettings: async () => null,
     isPortAvailable: async () => true,
     provisionRuntime: async ({ startLlm }) => {
       assert.equal(startLlm, true); throw stop;
@@ -84,7 +86,18 @@ test('launcher always makes managed Gemma available on supported hardware', asyn
 test('an explicit external acceptance provider skips the owned Gemma process', async () => {
   const stop = Object.assign(new Error('stop'), { code: 'STOP' });
   await assert.rejects(startLocalPlay({ env: {}, startManagedLlm: false,
+    loadLlmSettings: async () => null,
     isPortAvailable: async () => true,
+    provisionRuntime: async ({ startLlm }) => {
+      assert.equal(startLlm, false); throw stop;
+  } }), stop);
+});
+
+test('saved custom provider skips managed Gemma before provisioning', async () => {
+  const stop = Object.assign(new Error('stop'), { code: 'STOP' });
+  await assert.rejects(startLocalPlay({ env: {},
+    isPortAvailable: async () => true,
+    loadLlmSettings: async () => ({ settings: { mode: 'custom' } }),
     provisionRuntime: async ({ startLlm }) => {
       assert.equal(startLlm, false); throw stop;
     } }), stop);

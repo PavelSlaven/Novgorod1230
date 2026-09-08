@@ -86,6 +86,7 @@ test('custom O1 call keeps its approved identity snapshot while it is in flight'
 test('custom Stage B qualification uses production messages and unique case refs', async () => {
   const contract = await evalContract();
   const calls = [];
+  let activeCalls = 0; let maxActiveCalls = 0;
   const candidate = { mode: 'custom', compatibility: 'openai_compatible',
     baseUrl: 'http://127.0.0.1:11434/v1', model: 'candidate', apiKey: null };
   const identity = { provider: 'openai_compatible', model: 'candidate',
@@ -101,6 +102,10 @@ test('custom Stage B qualification uses production messages and unique case refs
         return identity;
       },
       async run(input) {
+        activeCalls += 1;
+        maxActiveCalls = Math.max(maxActiveCalls, activeCalls);
+        await Promise.resolve();
+        activeCalls -= 1;
         calls.push(input);
         const request = JSON.parse(input.messages[1].content);
         const positive = request.request_id.endsWith('common-mundane-positive');
@@ -125,6 +130,7 @@ test('custom Stage B qualification uses production messages and unique case refs
     model: candidate.model, api_key: null });
   assert.equal(owner.read().mode, 'local');
   assert.equal(calls.length, contract.cases.length + 5);
+  assert.equal(maxActiveCalls, 1);
   assert.ok(calls.every((call) => call.overrides.requestTimeoutMs === 120000));
   assert.ok(calls.every((call) => call.provider_snapshot.model === 'candidate'));
   const requests = calls.map((call) => JSON.parse(call.messages[1].content));

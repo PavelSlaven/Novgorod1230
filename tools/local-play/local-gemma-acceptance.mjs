@@ -170,7 +170,8 @@ async function selectProvider(page, provider) {
   await page.click(
     '[data-llm-settings-form] button[name="llm_action"][value="apply"]');
   await page.waitForFunction(() => document.querySelector(
-    '.llm-settings-message')?.textContent?.includes('Настройки применены.'));
+    '.llm-settings-message')?.textContent?.includes('Настройки применены.'),
+  undefined, { timeout: 20 * 60_000 });
   await page.click('[data-overlay-close]');
 }
 

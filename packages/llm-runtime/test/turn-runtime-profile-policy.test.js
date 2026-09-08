@@ -34,6 +34,7 @@ test('custom provider keeps its model instead of turn default model', () => {
 test('semantic-choice roles do not require public DTO schemas from models', () => {
   for (const roleId of [TurnRuntimeRoles.TURN_STEP_PLANNER,
     TurnRuntimeRoles.TURN_STEP_PLANNER_REPAIR,
+    TurnRuntimeRoles.TURN_STEP_GROUNDING_AUDITOR,
     TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER,
     TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER_REPAIR,
     TurnRuntimeRoles.NPC_COMBAT_DECIDER,

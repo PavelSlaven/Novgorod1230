@@ -25,6 +25,7 @@ export const TurnRuntimeRoles = Object.freeze({
   INTENT_ROUTER: 'intent_router',
   TURN_STEP_PLANNER: 'turn_step_planner',
   TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair',
+  TURN_STEP_GROUNDING_AUDITOR: 'turn_step_grounding_auditor',
   WORLD_KNOWLEDGE_QUERY_PLANNER: 'world_knowledge_query_planner',
   GAMEPLAY_NARRATOR: 'gameplay_narrator',
   GAMEPLAY_NARRATOR_REPAIR: 'gameplay_narrator_format_repair',
@@ -90,6 +91,15 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
     expectedSchema: null, parseJson: true, targetInputTokens: 30000, comfortableInputTokens: 30000,
     hardInputLimitTokens: 100000, reserveOutputTokens: 4000, reserveRepairTokens: 4000
+  },
+  [TurnRuntimeRoles.TURN_STEP_GROUNDING_AUDITOR]: {
+    envPrefix: 'TURN_STEP_GROUNDING_AUDITOR', model: 'deepseek-v4-flash',
+    thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 20_000, temperature: 0, topP: 1,
+    outputContractMode: OutputContractModes.JSON_OBJECT,
+    expectedSchema: null, parseJson: true, targetInputTokens: 12_000,
+    comfortableInputTokens: 24_000, hardInputLimitTokens: 60_000,
+    reserveOutputTokens: 1_000, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.WORLD_KNOWLEDGE_QUERY_PLANNER]: {
     envPrefix: 'TURN_WORLD_KNOWLEDGE_QUERY_PLANNER',

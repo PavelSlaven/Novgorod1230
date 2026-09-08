@@ -52,8 +52,7 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       messages: [{ role: 'system', content: PROMPT }, { role: 'user',
         content: JSON.stringify({ remaining_intent: request.remaining_intent,
           player_safe_state: groundingState(request.player_safe_state),
-          operations: audited, continuation: plan.continuation }) }],
-      overrides: { temperature: 0, maxTokens: 2_000 }
+          operations: audited, continuation: plan.continuation }) }]
     });
     if (!valid(response?.output)) throw serverError(
       'TRACE_TURN_STEP_GROUNDING_AUDIT_INVALID',

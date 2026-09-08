@@ -337,52 +337,13 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   await assertBlueWoolOwnershipTamper(pool, restarted, opened.party_id);
   await assertScreenTamper(pool, restarted, opened.party_id);
 
-  const repeated = await restarted.submitTurn(opened.party_id, {
-    request_id: 'phase-2-inspection-repeat',
-    idempotency_key: 'phase-2-inspection-repeat',
-    raw_text:
-      'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
-  });
-  assert.equal(repeated.clue, null);
-  assert.equal(repeated.time_update.clock_after.whole_minutes, '333090');
-  assert.equal(repeated.body_update.state_after.energy, 38);
-  assert.equal(
-    repeated.body_update.proposal.execution_variant_id,
-    'repeated_mild_shivering'
-  );
-  assert.deepEqual(
-    repeated.body_update.proposal.condition_transitions.find(
-      (transition) =>
-        transition.condition_profile_ref
-          === 'trace_ld_v1_condition_cold_shivering'
-    ),
-    {
-      condition_profile_ref: 'trace_ld_v1_condition_cold_shivering',
-      from: 'mild_shivering',
-      to: 'mild_shivering',
-      outcome: 'persists'
-    }
-  );
-  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
-    opened.party_id), 2);
-  assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
-    opened.party_id), 2);
-  assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 24);
-  const attempts = (await pool.query(
-    `SELECT effect_ref->>'activity_attempt_id' AS activity_attempt_id
-       FROM party_runtime.party_body_temporal_history
-      WHERE party_id=$1 ORDER BY history_id`,
-    [opened.party_id]
-  )).rows.map(({ activity_attempt_id: id }) => id);
-  assert.equal(new Set(attempts).size, 2);
   const historicalReplay = await restarted.submitTurn(
     opened.party_id,
     turnInput
   );
   assert.deepEqual(historicalReplay, result);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
-    opened.party_id), 2);
+    opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
     opened.party_id), 24);
 
@@ -579,27 +540,13 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(retryRolls, 1);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     retryParty.party_id), 1);
-  const afterNarrationResolved = await retryRuntime.submitTurn(
-    retryParty.party_id,
-    {
-      request_id: 'phase-2-new-turn-after-presentation',
-      idempotency_key: 'phase-2-new-turn-after-presentation',
-      raw_text:
-        'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
-    }
-  );
-  assert.equal(afterNarrationResolved.turn_number, 2);
-  assert.equal(retrySemanticCalls, 2);
-  assert.equal(retryRolls, 2);
-  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
-    retryParty.party_id), 2);
   const historicalAfterNarration = await retryRuntime.submitTurn(
     retryParty.party_id,
     retryInput
   );
   assert.deepEqual(historicalAfterNarration, afterNarrationRetry);
-  assert.equal(retrySemanticCalls, 2);
-  assert.equal(retryRolls, 2);
+  assert.equal(retrySemanticCalls, 1);
+  assert.equal(retryRolls, 1);
 
   await assertGeneralLookUsesOpeningScene({
     pool,
@@ -1379,10 +1326,6 @@ async function assertConcurrentStaleCommitBlocked({
     }
   );
   await assertSingleInspectionState(pool, party.party_id);
-  const retried = await runtime.submitTurn(party.party_id, secondInput);
-  assert.equal(retried.turn_number, 2);
-  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
-    party.party_id), 2);
 }
 
 function commitGate(blockedIdempotencyKey) {

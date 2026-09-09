@@ -220,7 +220,8 @@ function visibleConversationChoiceExamples(request, choices) {
 }
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
-  const normalized = normalizeTurnStepOperationChoice(structuredClone(choice));
+  const normalized = canonicalizePlannerEnvelope(
+    normalizeTurnStepOperationChoice(structuredClone(choice)));
   const semantic = restoreExactOperationChoice(
     canonicalizeDiscoveryShape(normalized, request), operationChoices);
   const selected = selectedTurnStepOperation(semantic, operationChoices);
@@ -276,6 +277,38 @@ export function assembleTurnStepPlan(choice, request,
     ...(mismatchedSelectedOperations ? {
       operation_choice: semantic.operation_choice
     } : {})
+  };
+}
+
+function canonicalizePlannerEnvelope(semantic) {
+  if (semantic?.constructor !== Object) return semantic;
+  const interpretation = semantic.interpretation;
+  const nested = interpretation?.constructor === Object
+    ? interpretation.continuation : undefined;
+  let next = semantic;
+  if (nested !== undefined) {
+    const top = semantic.continuation;
+    const duplicate = isDeepStrictEqual(nested, top)
+      || (typeof nested === 'string'
+        && top?.constructor === Object
+        && nested === top.remaining_intent);
+    const recoverable = top === undefined && typeof nested === 'string'
+      && nested.trim().length > 0;
+    if (duplicate || recoverable) {
+      const cleanInterpretation = { ...interpretation };
+      delete cleanInterpretation.continuation;
+      next = { ...semantic, interpretation: cleanInterpretation,
+        ...(recoverable ? { continuation: {
+          remaining_intent: nested, depends_on_refs: []
+        } } : {}) };
+    }
+  }
+  return {
+    ...next,
+    reason_code: nonempty(next.reason_code)
+      ? next.reason_code : 'semantic_plan',
+    reason: nonempty(next.reason)
+      ? next.reason : 'Semantic plan assembled at the validated boundary.'
   };
 }
 
@@ -355,6 +388,10 @@ function strictPriorIntent(root, remaining) {
 function normalized(value) {
   return typeof value === 'string' ? value.normalize('NFKC').trim()
     .replace(/\s+/gu, ' ').toLocaleLowerCase('ru-RU') : null;
+}
+
+function nonempty(value) {
+  return typeof value === 'string' && value.trim().length > 0;
 }
 
 function bindActionProductionCarrierRefs(operations) {

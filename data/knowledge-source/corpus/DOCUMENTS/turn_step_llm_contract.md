@@ -1168,8 +1168,11 @@ LLM не возвращает:
 канонизирует только закрытые формы: строку `"null"`, одно-полевой
 `{"choice_id": ...}`, unique exact copied operation choice, single-target форму
 `request_discovery` с code-owned pending queue и точный duplicate
-`query`/`continuation`. Исходный later-continuation сохраняется за очередью без
-изменений. Неоднозначные случаи не угадываются.
+`query`/`continuation`. Exact misplaced/duplicated continuation удаляется из
+`interpretation` только при совпадении с top-level continuation; отсутствующие
+пустые diagnostic `reason_code`/`reason` заполняются нейтральными code-owned
+значениями. Исходный later-continuation сохраняется за очередью без изменений.
+Неоднозначные случаи не угадываются.
 
 LLM repair допускается один раз только для ошибки, требующей нового
 семантического выбора. Чисто структурная ошибка, которую deterministic

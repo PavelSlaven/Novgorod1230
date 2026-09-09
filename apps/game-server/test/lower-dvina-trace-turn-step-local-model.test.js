@@ -42,6 +42,35 @@ test('assembler restores an omitted player goal from the code-owned request', ()
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
 
+test('assembler removes an exact nested continuation duplicate and supplies diagnostics',
+  () => {
+    const input = request({ root_player_action: 'Осмотреть вещи, затем небо.',
+      remaining_intent: 'Осмотреть вещи, затем небо.' });
+    const continuation = { remaining_intent: 'затем осмотреть небо',
+      depends_on_refs: [] };
+    const semantic = { ...output(), interpretation: {
+      ...output().interpretation,
+      continuation: continuation.remaining_intent
+    }, continuation, reason_code: '', reason: '' };
+    const plan = assembleTurnStepPlan(semantic, input);
+    assert.equal(Object.hasOwn(plan.interpretation, 'continuation'), false);
+    assert.deepEqual(plan.continuation, continuation);
+    assert.equal(plan.reason_code, 'semantic_plan');
+    assert.equal(plan.reason,
+      'Semantic plan assembled at the validated boundary.');
+    assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+  });
+
+test('assembler leaves a conflicting nested continuation for strict rejection', () => {
+  const input = request();
+  const semantic = { ...output(), interpretation: {
+    ...output().interpretation, continuation: 'другое действие'
+  }, continuation: { remaining_intent: 'продолжить осмотр',
+    depends_on_refs: [] } };
+  const plan = assembleTurnStepPlan(semantic, input);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
+});
+
 test('assembler normalizes a quoted null operation choice', () => {
   const input = request();
   const operations = [{ op: 'request_discovery' }];

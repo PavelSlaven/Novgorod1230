@@ -205,7 +205,10 @@ code-owned candidate identity и передаётся model только как 
 `request_discovery` target до commit. Один discovery имеет общий лимит двух
 semantic calls; structural repair расходует оставшийся call, а
 Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Turn принимает positive только после independent
-supporting-basis/property/placement admission `@rus/items-property`, собирает
+WK-grounded Stage B `materialize` с хотя бы одним exact
+`world_knowledge_claim_refs` из текущего factual slice; code binding отвергает
+пустые и отсутствующие в slice refs до admission/commit. Затем выполняется
+supporting-basis/property/placement admission `@rus/items-property`, собирается
 один ordinary P16 plan после revalidation и передаёт его persistence owner;
 model call никогда не находится внутри physical transaction. Player-safe
 working projection получает только capability marker и approved concrete

@@ -307,6 +307,49 @@ test('Stage B requires a materialization kind and accepts a standalone common it
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
+test('grounded Stage B materializes only with a claim ref from its current slice',
+  async () => {
+    const request = presenceRequest('обычная верёвка');
+    const claimRef = 'claim:test-cordage';
+    const grounded = { ...request, world_knowledge: {
+      facts: [{ claim_ref: claimRef }], hard_constraints: []
+    } };
+    const semantic = { resolution: 'materialize',
+      semantic_materialization_kind: 'standalone_item',
+      semantic_admission_class: 'common_mundane', reason_code: 'found',
+      entities: [{ semantic_descriptor: { semantic_type: 'cordage',
+        name: 'обычная верёвка', facts: [] }, presence_expectation: 'routine',
+      mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
+        carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null } }] };
+    for (const refs of [undefined, ['claim:not-in-current-slice']]) {
+      const rejected = bindOrdinaryMaterializationPlan(grounded,
+        { ...semantic, ...(refs == null ? {} : {
+          world_knowledge_claim_refs: refs }) });
+      assert.notDeepEqual(validateOrdinaryMaterializationPlanV1(rejected,
+        request), []);
+    }
+    const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+    const model = createOrdinaryMaterializationModel({
+      stageBApprovalReceipt: approval,
+      worldKnowledgeGrounder: { async ground(input, purpose) {
+        assert.equal(purpose, 'materialization_support');
+        return { ...input, world_knowledge: grounded.world_knowledge };
+      } },
+      roleRunner: { async run(input) {
+        const supplied = JSON.parse(input.messages[1].content);
+        assert.deepEqual(supplied.world_knowledge, grounded.world_knowledge);
+        return { provider_record: modelIdentity(), output: { ...semantic,
+          world_knowledge_claim_refs: [claimRef] } };
+      } }
+    });
+    const admitted = await model(request, { repair: null });
+    assert.equal(admitted.resolution, 'materialize');
+    assert.equal(admitted.entities[0].semantic_descriptor.name,
+      'обычная верёвка');
+    assert.deepEqual(validateOrdinaryMaterializationPlanV1(admitted, request), []);
+  });
+
 test('production O1 binds incomplete Flash output to its request envelope', async () => {
   const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
   const request = { ...presenceRequest('верёвка'), policy_refs: {

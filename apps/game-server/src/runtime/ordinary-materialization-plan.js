@@ -104,6 +104,8 @@ export function bindOrdinaryMaterializationPlan(request, output) {
   const entity = output.entities[0];
   if (!plain(entity.semantic_descriptor)
       || !plain(entity.mechanics_proposal)
+      || !supportedWorldKnowledgeRefs(output.world_knowledge_claim_refs,
+        request.world_knowledge)
       || !text(authority.selected_supporting_basis_ref)
       || !authority.allowed_supporting_bases.some(({ basis_ref }) =>
         basis_ref === authority.selected_supporting_basis_ref)
@@ -129,6 +131,16 @@ export function bindOrdinaryMaterializationPlan(request, output) {
       mechanics_proposal: entity.mechanics_proposal }],
     reason_code: output.reason_code
   };
+}
+
+function supportedWorldKnowledgeRefs(refs, worldKnowledge) {
+  if (worldKnowledge == null) return true;
+  const supplied = new Set([
+    ...(worldKnowledge.facts ?? []),
+    ...(worldKnowledge.hard_constraints ?? [])
+  ].map(({ claim_ref: ref }) => ref).filter(text));
+  return Array.isArray(refs) && refs.length > 0
+    && refs.every((ref) => text(ref) && supplied.has(ref));
 }
 
 function noChangePlan(request, reasonCode) {

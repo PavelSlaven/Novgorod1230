@@ -34,7 +34,7 @@ export function createOrdinaryMaterializationModel({ roleRunner,
       mechanicsPolicy, semanticContext });
     const output = ordinaryMaterializationResponseOf(response);
     bindIdentity(expectedIdentity, exactModelIdentity(output.provider_record));
-    return bindOrdinaryMaterializationPlan(request, output.output);
+    return bindOrdinaryMaterializationPlan(modelRequest, output.output);
   };
   Object.defineProperty(model, 'verifyStageBCutover', {
     enumerable: false,
@@ -101,6 +101,9 @@ export function buildOrdinaryMaterializationMessages(request, { repair = null,
       'semantic_materialization_kind is your independent classification of the sought referent in complete candidate_hint, including every qualifier and relation. candidate_hint may be a natural-language search phrase: classify its referent, never the act of asking or searching. standalone_item means one discrete physical thing with independent, separable identity: it can be moved as the same object without changing the surrounding location. Classify the present referent, not a hypothetical portion or later transformation. An environmental accumulation or condition inseparable from its surface or location is non_item_detail. non_item_detail means an environmental trace, surface condition, spatial state, phenomenon, observation, or other non-item detail. Do not use non_item_detail merely because an item is absent, restricted, or mentioned in a search request. Do not convert non_item_detail into a portable object, item, resource, mechanics, ownership, route, person, history, or fact. For non_item_detail return no_change with no entities. This is not a vocabulary test: judge the whole candidate meaning, not individual nouns.',
       'semantic_admission_class is your independent classification of complete candidate_hint, including every qualifier and relation, not a classification of an abbreviated output descriptor: common_mundane, specialized_or_valuable, weapon_or_armament, currency_or_precious, document_like, or other_restricted. common_mundane applies only to an everyday non-special physical object; it is never a default. Do not ignore qualifiers, rename, or substitute a plainer ordinary object merely to fit common_mundane. If full candidate semantics has a specialized, valuable, weapon, currency, document, evidentiary, significant, hidden, prohibited, or technical role, use its non-common class even when resolution is absent, no_change, or authority_required. Do not copy server candidate admission class when full candidate semantics belongs to another class; server will fail closed.',
       'For materialize return one entity containing semantic_descriptor, presence_expectation, and mechanics_proposal. For a coherent standalone physical candidate that cannot be present, return absent or authority_required; use no_change for a non-object query or non-item detail.',
+      ...(request.world_knowledge == null ? [] : [
+        'For materialize also return top-level world_knowledge_claim_refs with one or more exact claim_ref values copied from supplied world_knowledge facts or hard_constraints. Every selected claim must directly support the proposed ordinary name, material, or kind in this context. If the supplied slice supports no suitable candidate, return no_change; never substitute model memory.'
+      ]),
       'Closed literal enums: density_band_proposal is null, sparse, ordinary, or dense; availability_class is common or context_bound; functional_bucket is household, work, storage, stock, furnishing_textile, maintenance_material, waste_scrap, personal_effect, arms, or other_ordinary; presence_expectation is routine, plausible, or exceptional.',
       'A null in the semantic response shape marks text you must supply. Never copy angle-bracket placeholders or return null for required semantic text.',
       'Write every supplied semantic descriptor, ordinary name, and physical fact in natural Russian suitable for later player-facing prose; never use English, field terminology, or a technical inventory label.',
@@ -141,7 +144,10 @@ function ordinarySemanticShape(request) {
   }
   return { resolution: 'materialize',
     semantic_materialization_kind: '<standalone_item or non_item_detail>',
-    semantic_admission_class: '<semantic admission class>', entities: [{
+    semantic_admission_class: '<semantic admission class>',
+    ...(request.world_knowledge == null ? {} : {
+      world_knowledge_claim_refs: ['<exact supplied claim_ref>']
+    }), entities: [{
     semantic_descriptor: { semantic_type: null, name: null, facts: [null] },
     presence_expectation: '<routine, plausible, or exceptional>',
     mechanics_proposal: { mass_grams: '<integer>',

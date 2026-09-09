@@ -1,61 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {
-  createTurnStepExecutionRegistry,
-  runTurnStepLoop
-} from '../src/turn-step-loop.js';
-
-function input(overrides = {}) {
-  return {
-    requestId: 'request-1',
-    rootTurnId: 'turn-1',
-    committedStateVersion: 7,
-    rootPlayerAction: 'беру камень и кладу его в сумку',
-    actor: { actor_ref: 'actor-1' },
-    initialWorkingProjection: {
-      actor_ref: 'actor-1',
-      visible_entities: [{ entity_ref: 'stone-1' }],
-      inventory: [],
-      elapsed_minutes: 0
-    },
-    ...overrides
-  };
-}
-
-function basePlan(request, overrides = {}) {
-  return {
-    schema: 'turn_step_plan_v1',
-    request_id: request.request_id,
-    committed_state_version: request.committed_state_version,
-    working_revision: request.working_revision,
-    step_index: request.step_index,
-    interpretation: {
-      player_goal: request.remaining_intent,
-      grounded_attempt: request.remaining_intent,
-      adaptation: 'literal'
-    },
-    resolution: 'direct',
-    goal_result: 'achieved',
-    activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
-    operations: [],
-    check: null,
-    continuation: null,
-    clarification: null,
-    direct_result_kind: null,
-    reason_code: 'direct_step',
-    reason: 'test plan',
-    ...overrides
-  };
-}
-
-function result(projection, summary, overrides = {}) {
-  return {
-    working_projection: projection,
-    summary,
-    write_fragments: [],
-    ...overrides
-  };
-}
+import { createTurnStepExecutionRegistry, runTurnStepLoop } from '../src/turn-step-loop.js';
+import { basePlan, checkPolicyRefs, input, policyProfilePin, ports, result } from './turn-step-loop-fixture.js';
 
 test('actor-step registry accepts conversation owner handoff', () => {
   const handler = () => {};
@@ -64,25 +10,6 @@ test('actor-step registry accepts conversation owner handoff', () => {
   });
   assert.equal(registry.domain({ op: 'request_conversation' }), handler);
 });
-
-function ports(overrides = {}) {
-  return {
-    turnStepModel: async (request) => basePlan(request),
-    projectPlayerSafeState: async ({ working_projection: projection }) => ({
-      actor_ref: projection.actor_ref,
-      visible_entities: projection.visible_entities,
-      inventory: projection.inventory,
-      elapsed_minutes: projection.elapsed_minutes
-    }),
-    revalidateCommittedState: async () => ({ state_version: 7 }),
-    executionRegistry: createTurnStepExecutionRegistry({
-      applySemanticActivity: async ({ working_projection: projection }) =>
-        result({ ...projection,
-          elapsed_minutes: projection.elapsed_minutes + 1 }, 'прошла минута')
-    }),
-    ...overrides
-  };
-}
 
 test('direct continuation sees the updated immutable working projection', async () => {
   const requests = [];
@@ -589,96 +516,6 @@ test('completed action remains at its visible player boundary', async () => {
   assert.equal(outcome.remaining_intent, null);
 });
 
-test('compound intent resumes from the committed domain boundary without replay',
-  async () => {
-    let inspections = 0;
-    let moves = 0;
-    let rolls = 0;
-    const firstRegistry = createTurnStepExecutionRegistry({
-      domain: {
-        request_discovery: async ({ working_projection: projection }) => {
-          inspections += 1;
-          return result({ ...projection, inspected: true }, 'осмотр завершён', {
-            player_response_boundary: true
-          });
-        }
-      }
-    });
-    const first = await runTurnStepLoop(input({
-      rootPlayerAction: 'осмотреть, взять ткань и идти'
-    }), ports({
-      executionRegistry: firstRegistry,
-      randomSource: { next: () => { rolls += 1; return 0.5; } },
-      turnStepModel: async (request) => basePlan(request, {
-        resolution: 'domain_request', goal_result: 'pending',
-        activity: { owner: 'domain', duration_class: null, effort: null },
-        operations: [{ op: 'request_discovery', actor_ref: 'actor-1',
-          discovery_kind: 'inspect', target_refs: ['stone-1'],
-          query: 'осмотреть берег' }],
-        continuation: { remaining_intent: 'взять ткань и идти',
-          depends_on_refs: ['stone-1'] }
-      })
-    }));
-    assert.equal(first.stop_reason, 'player_response');
-    assert.equal(first.remaining_intent, 'взять ткань и идти');
-    assert.equal(first.working_projection.inspected, true);
-
-    const secondRegistry = createTurnStepExecutionRegistry({
-      direct: {
-        move_entity: async ({ operation,
-          working_projection: projection }) => {
-          moves += 1;
-          return result({ ...projection,
-            inventory: [...projection.inventory, operation.entity_ref]
-          }, 'ткань взята');
-        }
-      },
-      domain: {
-        request_movement: async ({ working_projection: projection }) =>
-          result({ ...projection, moved: true }, 'путь начат', {
-            player_response_boundary: true
-          })
-      },
-      applySemanticActivity: async ({ working_projection: projection }) =>
-        result(projection, 'короткое действие')
-    });
-    const second = await runTurnStepLoop(input({
-      requestId: 'request-2', rootTurnId: 'turn-2',
-      committedStateVersion: 8,
-      rootPlayerAction: first.remaining_intent,
-      initialWorkingProjection: first.working_projection
-    }), ports({
-      executionRegistry: secondRegistry,
-      revalidateCommittedState: async () => ({ state_version: 8 }),
-      projectPlayerSafeState: async ({ working_projection: projection }) =>
-        structuredClone(projection),
-      randomSource: { next: () => { rolls += 1; return 0.5; } },
-      turnStepModel: async (request) => {
-        assert.equal(request.player_safe_state.inspected, true);
-        if (request.step_index === 1) return basePlan(request, {
-          goal_result: 'pending',
-          operations: [{ op: 'move_entity', entity_ref: 'stone-1',
-            placement: { relation: 'held_by', target_ref: 'actor-1' } }],
-          continuation: { remaining_intent: 'идти дальше',
-            depends_on_refs: ['stone-1'] }
-        });
-        assert.deepEqual(request.player_safe_state.inventory, ['stone-1']);
-        return basePlan(request, {
-          resolution: 'domain_request', goal_result: 'pending',
-          activity: { owner: 'domain', duration_class: null, effort: null },
-          operations: [{ op: 'request_movement', actor_ref: 'actor-1',
-            movement_kind: 'local', target_ref: 'stone-1' }]
-        });
-      }
-    }));
-    assert.equal(second.stop_reason, 'player_response');
-    assert.equal(second.working_projection.moved, true);
-    assert.deepEqual(second.working_projection.inventory, ['stone-1']);
-    assert.equal(inspections, 1);
-    assert.equal(moves, 1);
-    assert.equal(rolls, 0);
-  });
-
 test('invalid structure fails before semantic repair or execution', async () => {
   let calls = 0;
   const seenRepair = [];
@@ -772,26 +609,3 @@ test('execution registry exposes only contracts backed by registered handlers', 
     operationContract: { request_activity: { owner: '@rus/turn' } }
   }), /registered handler/u);
 });
-
-function checkPolicyRefs() {
-  return {
-    policy_profile_ref: 'test_generic_check_profile',
-    policy_profile_pin: policyProfilePin(),
-    check_policy_ref: {
-      entity_kind: 'check_policy', entity_id: 'test_check_policy',
-      authoring_version: '1'
-    },
-    consequence_policy_ref: {
-      entity_kind: 'consequence_policy',
-      entity_id: 'test_consequence_policy', authoring_version: '1'
-    }
-  };
-}
-
-function policyProfilePin() {
-  return {
-    artifact_id: 'test_turn_step_owner_profiles',
-    revision: 1,
-    digest: 'a'.repeat(64)
-  };
-}

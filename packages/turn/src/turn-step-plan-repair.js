@@ -34,6 +34,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       code: 'json_parse_failed', message: 'Planner output was not valid JSON.' }]
       : [...(error.details?.errors ?? [])];
     if (!parseFailure && originalOutput != null
+        && !structuralErrors.some(requiresSemanticRepair)
         && typeof semanticPlanValidator === 'function') {
       try {
         await semanticPlanValidator(deepFreeze({ plan: originalOutput,
@@ -43,6 +44,14 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         if (semanticError?.code !== 'TURN_STEP_PLAN_INVALID') throw semanticError;
         structuralErrors.push(...(semanticError.details?.errors ?? []));
       }
+    }
+    if (!structuralErrors.some(requiresSemanticRepair)) {
+      const failure = parseFailure
+        ? contractError('TURN_STEP_PLAN_INVALID', structuralErrors) : error;
+      failure.details = deepFreeze({ ...failure.details,
+        repair_attempted: false,
+        repair_suppressed: 'deterministic_structure_invalid' });
+      throw failure;
     }
     const repairContext = deepFreeze({ schema: 'turn_step_repair_context_v1',
       attempt: 2,
@@ -76,6 +85,22 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       throw normalizedError;
     }
   }
+}
+
+const SEMANTIC_REPAIR_CODES = new Set([
+  'action_production_identity_grounding',
+  'continuation_progress',
+  'direct_result_kind',
+  'domain_owner_unavailable',
+  'material_extent_shape',
+  'material_transformation_grounding',
+  'operation_semantic_grounding',
+  'source_placement_grounding',
+  'source_semantic_grounding'
+]);
+
+function requiresSemanticRepair({ code } = {}) {
+  return SEMANTIC_REPAIR_CODES.has(code);
 }
 
 export async function requestAndValidateTurnStepPlan({ request, turnStepModel,

@@ -127,15 +127,15 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'restore the matching supplied semantic mapping'), true);
   assert.equal(seen.messages[0].content.includes(
-    'one domain operation exactly equal to a supplied code-owned choice'), true);
+    'one domain operation exactly equal to a supplied code-owned choice'), false);
   assert.equal(seen.messages[0].content.includes(
     'never substitute a broad authored operation choice'), true);
   assert.equal(seen.messages[0].content.includes(
-    'For ordinary_discovery_query_identity follow the required ordinary discovery repair below'), true);
+    'For ordinary_discovery_query_identity follow the required ordinary discovery repair below'), false);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 
-test('ordinary discovery repair requires a lossless non-overlapping split',
+test('semantic repair prompt does not teach deterministic discovery rewrites',
   async () => {
     const remainingIntent = 'Осмотреть плащ и затем уйти с берега.';
     let prompt;
@@ -151,9 +151,7 @@ test('ordinary discovery repair requires a lossless non-overlapping split',
         code: 'ordinary_discovery_query_identity'
       }]
     });
-    assert.match(prompt,
-      /Required ordinary discovery repair:[\s\S]*without omission or overlap[\s\S]*whole intent is one focused inspect or search[\s\S]*set continuation to null[\s\S]*independent later action remains[\s\S]*exact trailing uncovered text[\s\S]*Never repeat continuation text inside query/u);
-    assert.match(prompt, /Осмотреть плащ и затем уйти с берега\./u);
+    assert.doesNotMatch(prompt, /Required ordinary discovery repair:/u);
   });
 
 test('repair drops a field rejected as an additional property', async () => {
@@ -319,7 +317,7 @@ test('one repair receives structural and semantic grounding errors together',
       code === 'source_semantic_grounding'), true);
   });
 
-test('primary JSON parse failure uses one structural repair only', async () => {
+test('primary JSON parse failure does not invoke semantic repair', async () => {
   const calls = [];
   const input = request();
   const model = createLowerDvinaTraceTurnStepModel({
@@ -334,20 +332,14 @@ test('primary JSON parse failure uses one structural repair only', async () => {
       }) };
     } }
   });
-  const result = await requestTurnStepPlanWithRepair({
+  await assert.rejects(requestTurnStepPlanWithRepair({
     request: input, turnStepModel: model
-  });
-  assert.equal(result.repaired, true);
-  assert.deepEqual(calls.map(({ role_id }) => role_id), [
-    'turn_step_planner', 'turn_step_planner_repair'
-  ]);
-  const repairPayload = JSON.parse(calls[1].messages[1].content);
-  assert.equal(JSON.stringify(repairPayload).includes('bad JSON'), false);
-  assert.deepEqual(repairPayload.original_output, {});
-  assert.equal(repairPayload.structural_errors.length > 0, true);
+  }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+    && error.details.repair_attempted === false);
+  assert.deepEqual(calls.map(({ role_id }) => role_id), ['turn_step_planner']);
 });
 
-test('repair preserves invalid output and supplied choices without inventing an operation',
+test('unknown operation choice fails without semantic repair',
   async () => {
     const calls = [];
     const input = request({ available_domain_operations: [{
@@ -365,28 +357,14 @@ test('repair preserves invalid output and supplied choices without inventing an 
         return { output: output() };
       } }
     });
-    const result = await requestTurnStepPlanWithRepair({
+    await assert.rejects(requestTurnStepPlanWithRepair({
       request: input, turnStepModel: model
-    });
-
-    const repairPayload = JSON.parse(calls[1].messages[1].content);
-    assert.equal(result.repaired, true);
-    assert.deepEqual(result.plan.operations, []);
-    assert.equal(repairPayload.original_output.resolution, 'domain_request');
-    assert.equal(repairPayload.original_output.operations, undefined);
-    assert.deepEqual(repairPayload.request.available_domain_operations,
-      input.available_domain_operations);
-    for (const call of calls) {
-      assert.match(call.messages[0].content,
-        /operation_choice is exactly one scalar supplied choice_id string or null/u);
-      assert.match(call.messages[0].content,
-        /"operation_choice":"domain_operation_1_request_movement_route"/u);
-    }
-    assert.match(calls[1].messages[0].content,
-      /replace an invalid object wrapper[\s\S]*with its inner supplied ID string/u);
+    }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+      && error.details.repair_attempted === false);
+    assert.equal(calls.length, 1);
   });
 
-test('repair accepts an exact copied code-owned choice without trusting a new DTO',
+test('canonicalizer restores an exact copied code-owned choice without repair',
   async () => {
     const operation = { op: 'request_discovery', actor_ref: 'actor_mikula',
       discovery_kind: 'inspect', target_refs: ['location:wreck'],
@@ -396,23 +374,136 @@ test('repair accepts an exact copied code-owned choice without trusting a new DT
     const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
       async run() {
         calls += 1;
-        if (calls === 1) return { output: {
-          ...output(), resolution: 'domain_request', operations: undefined,
-          operation_choice: undefined
-        } };
         return { output: { ...output(), resolution: 'domain_request',
           activity: { owner: 'domain', duration_class: null, effort: null },
-          operations: undefined,
-          operation_choice: 'domain_operation_1_request_discovery_inspect' } };
+          operations: [operation], operation_choice: null } };
       }
     } });
 
     const result = await requestTurnStepPlanWithRepair({ request: input,
       turnStepModel: model });
 
-    assert.equal(result.repaired, true);
-  assert.deepEqual(result.plan.operations, [operation]);
+    assert.equal(result.repaired, false);
+    assert.deepEqual(result.plan.operations, [operation]);
+    assert.equal(calls, 1);
 });
+
+test('canonicalizer unwraps a supplied choice id without repair', async () => {
+  const operation = { op: 'request_movement', actor_ref: 'actor_mikula',
+    movement_kind: 'route', target_ref: 'location:road' };
+  const input = request({ available_domain_operations: [operation],
+    player_safe_state: { visible_entities: [{ entity_ref: 'location:road' }] } });
+  let calls = 0;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run() { calls += 1; return { output: { ...output(),
+      resolution: 'domain_request',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operation_choice: {
+        choice_id: 'domain_operation_1_request_movement_route'
+      }, operations: [] } }; }
+  } });
+  const result = await requestTurnStepPlanWithRepair({ request: input,
+    turnStepModel: model });
+  assert.equal(result.repaired, false);
+  assert.deepEqual(result.plan.operations, [operation]);
+  assert.equal(calls, 1);
+});
+
+test('canonicalizer converts the literal null choice without repair',
+  async () => {
+    let calls = 0;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { calls += 1; return { output: { ...output(),
+        operation_choice: 'null' } }; }
+    } });
+    const result = await requestTurnStepPlanWithRepair({ request: request(),
+      turnStepModel: model });
+    assert.equal(result.repaired, false);
+    assert.deepEqual(result.plan.operations, []);
+    assert.equal(calls, 1);
+  });
+
+test('canonicalizer makes discovery single-target and preserves remaining refs',
+  async () => {
+    const intent = 'Осмотреть плащ и рубаху';
+    const input = request({ root_player_action: intent,
+      remaining_intent: intent,
+      player_safe_state: { visible_entities: [
+        { entity_ref: 'item:cloak' }, { entity_ref: 'item:shirt' }
+      ] } });
+    let calls = 0;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { calls += 1; return { output: { ...output(),
+        resolution: 'domain_request',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [{ op: 'request_discovery', actor_ref: 'actor_mikula',
+          discovery_kind: 'inspect',
+          target_refs: ['item:cloak', 'item:shirt'], query: intent }]
+      } }; }
+    } });
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model });
+    assert.equal(result.repaired, false);
+    assert.deepEqual(result.plan.operations[0].target_refs, ['item:cloak']);
+    assert.deepEqual(result.plan.continuation, { remaining_intent: intent,
+      depends_on_refs: [], pending_discovery: {
+        remaining_target_refs: ['item:shirt'], after: null
+      } });
+    assert.equal(calls, 1);
+  });
+
+test('canonicalizer preserves a later continuation behind discovery targets',
+  async () => {
+    const intent = 'Сравнить плащ, рубаху и пояс, затем идти к дороге';
+    const input = request({ root_player_action: intent,
+      remaining_intent: intent,
+      player_safe_state: { visible_entities: [
+        { entity_ref: 'item:cloak' }, { entity_ref: 'item:shirt' },
+        { entity_ref: 'item:belt' }, { entity_ref: 'road' }
+      ] } });
+    const after = { remaining_intent: 'идти к дороге',
+      depends_on_refs: ['road'] };
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: { ...output(),
+        resolution: 'domain_request',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [{ op: 'request_discovery', actor_ref: 'actor_mikula',
+          discovery_kind: 'inspect', target_refs: [
+            'item:cloak', 'item:shirt', 'item:belt'
+          ], query: 'Сравнить плащ, рубаху и пояс' }],
+        continuation: after
+      } }; }
+    } });
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model });
+    assert.deepEqual(result.plan.continuation, {
+      remaining_intent: 'Сравнить плащ, рубаху и пояс',
+      depends_on_refs: [], pending_discovery: {
+        remaining_target_refs: ['item:shirt', 'item:belt'], after
+      }
+    });
+  });
+
+test('canonicalizer removes only exact duplicate discovery continuation',
+  async () => {
+    const intent = 'Осмотреть плащ';
+    const input = request({ root_player_action: intent,
+      remaining_intent: intent,
+      player_safe_state: { visible_entities: [{ entity_ref: 'item:cloak' }] } });
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: { ...output(),
+        resolution: 'domain_request',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [{ op: 'request_discovery', actor_ref: 'actor_mikula',
+          discovery_kind: 'inspect', target_refs: ['item:cloak'], query: intent }],
+        continuation: { remaining_intent: intent, depends_on_refs: [] }
+      } }; }
+    } });
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model });
+    assert.equal(result.repaired, false);
+    assert.equal(result.plan.continuation, null);
+  });
 
 test('semantic repair cannot reselect the rejected exact operation', async () => {
   const operation = { op: 'request_discovery', actor_ref: 'actor_mikula',
@@ -444,7 +535,7 @@ test('semantic repair cannot reselect the rejected exact operation', async () =>
     /comparison counterpart or requested detail is missing[\s\S]*focused_ordinary_discovery[\s\S]*missing referent[\s\S]*complete comparison in continuation/u);
 });
 
-test('mismatched echoed operation cannot silently replace selected choice',
+test('mismatched echoed operation fails without semantic repair',
   async () => {
     const selected = { op: 'request_discovery', actor_ref: 'actor_mikula',
       discovery_kind: 'inspect', target_refs: ['location:wreck'],
@@ -469,22 +560,10 @@ test('mismatched echoed operation cannot silently replace selected choice',
       }
     } });
 
-    const result = await requestTurnStepPlanWithRepair({ request: input,
-      turnStepModel: model });
-
-    assert.equal(result.repaired, true);
-    assert.deepEqual(result.plan.operations, [ordinary]);
-    assert.deepEqual(calls.map(({ role_id }) => role_id), [
-      'turn_step_planner', 'turn_step_planner_repair'
-    ]);
-    const repair = JSON.parse(calls[1].messages[1].content);
-    assert.equal(repair.original_output.operation_choice,
-      'domain_operation_1_request_discovery_inspect');
-    assert.deepEqual(repair.original_output.operations, [ordinary]);
-    assert.match(calls[1].messages[0].content,
-      /operations must accompany operation_choice[\s\S]*exactly that selected DTO/u);
-    assert.match(calls[1].messages[0].content,
-      /domain_owner_unavailable on request_discovery with multiple target_refs[\s\S]*keep exactly one visible target[\s\S]*remaining targets plus the comparison in continuation/u);
+    await assert.rejects(requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+        && error.details.repair_attempted === false);
+    assert.equal(calls.length, 1);
   });
 
 test('planner errors other than primary JSON parsing do not repair', async () => {
@@ -533,14 +612,17 @@ test('invalid repaired plan does not receive a second repair', async () => {
   const model = createLowerDvinaTraceTurnStepModel({
     roleRunner: { async run(call) {
       calls.push(call);
-      if (calls.length === 1) throw Object.assign(new Error('bad JSON'), {
-        code: 'json_parse_failed'
-      });
+      if (calls.length === 1) return { output: output() };
       return { output: {} };
     } }
   });
   await assert.rejects(requestTurnStepPlanWithRepair({
-    request: request(), turnStepModel: model
+    request: request(), turnStepModel: model,
+    semanticPlanValidator: async () => { throw Object.assign(
+      new Error('semantic mismatch'), { code: 'TURN_STEP_PLAN_INVALID',
+        details: { errors: [{ path: '$.operations',
+          code: 'operation_semantic_grounding', message: 'wrong intent' }] }
+      }); }
   }), (error) => {
     assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
     assert.equal(error.details.repair_attempted, true);
@@ -589,7 +671,7 @@ test('unresolved grounding or closed shape fails after repair', async () => {
   assert.equal(calls, 4);
 });
 
-test('empty unrecoverable domain request fails after repair', async () => {
+test('empty domain request fails without semantic repair', async () => {
   const model = createLowerDvinaTraceTurnStepModel({
     roleRunner: { async run() { return { output: {
       ...output(), resolution: 'domain_request', goal_result: 'pending',
@@ -600,7 +682,7 @@ test('empty unrecoverable domain request fails after repair', async () => {
   await assert.rejects(() => requestTurnStepPlanWithRepair({
     request: request({ available_domain_operations: [] }), turnStepModel: model
   }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
-    && error.details.repair_attempted === true);
+    && error.details.repair_attempted === false);
 });
 
 test('turn step model fails closed for missing runner or non-object output', async () => {

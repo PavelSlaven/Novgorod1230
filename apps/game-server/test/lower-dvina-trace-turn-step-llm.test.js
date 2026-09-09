@@ -144,9 +144,13 @@ test('later generic ordinary discovery drops only an exact stale root query',
         reason: 'Повторный carrier.'
       } }; }
     } });
+    let auditCalls = 0;
     const validateGrounding =
       createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner: {
-        async run() { throw new Error('generic O1 must not call auditor'); }
+        async run() {
+          auditCalls += 1;
+          return { output: { pass: true, concerns: [] } };
+        }
       } });
     for (const repairContext of [null, {
       schema: 'turn_step_repair_context_v1', attempt: 2,
@@ -164,6 +168,7 @@ test('later generic ordinary discovery drops only an exact stale root query',
         resolved_domain_operations: [{ path: '$.operations.0',
           owner_kind: 'ordinary_discovery' }] }), true);
     }
+    assert.equal(auditCalls, 2);
     const unsafe = assembleTurnStepPlan({
       interpretation: { player_goal: rootIntent,
         grounded_attempt: 'Найти сухую ветку.', adaptation: 'literal' },
@@ -408,7 +413,7 @@ test('turn step adapter rejects a hand-written admitted operation', async () => 
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
 });
 
-test('turn step adapter rejects an exact copied operation choice', () => {
+test('turn step adapter restores an exact copied operation choice', () => {
   const candidate = { op: 'request_discovery', actor_ref: 'actor_mikula',
     discovery_kind: 'inspect', target_refs: ['shore'], query: 'Осмотреть.' };
   const input = request({ available_domain_operations: [candidate] });
@@ -421,8 +426,7 @@ test('turn step adapter rejects an exact copied operation choice', () => {
     reason: 'Нужен ordinary material.'
   }, input);
   assert.deepEqual(plan.operations, [candidate]);
-  assert.equal(plan.copied_operation_choice, true);
-  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
 
 test('turn step adapter does not guess between duplicate admitted raw operations', () => {

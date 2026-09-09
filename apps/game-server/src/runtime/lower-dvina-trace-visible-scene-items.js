@@ -1,6 +1,7 @@
 import { resolvePhysicalItemCondition } from '@rus/items-property';
 
-export function lowerDvinaTraceDirectResultChanges(input, sceneItems = []) {
+export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
+  body = {}) {
   const plans = input?.mode_resolution?.decision_trace?.step_traces ?? [];
   const kinds = new Set(plans.filter(({ approved_plan: plan, applied }) =>
     applied === true && plan?.resolution === 'direct'
@@ -13,8 +14,25 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = []) {
       ? ['Наблюдение завершено по уже доступным вам признакам.'] : []),
     ...(kinds.has('player_safe_item_observation')
       ? carriedItemObservationChanges(sceneItems) : []),
+    ...(kinds.has('player_safe_body_observation')
+      ? bodyObservationChanges(body) : []),
     ...(kinds.has('no_state_gesture')
       ? ['Вы завершили простой жест.'] : [])
+  ];
+}
+
+function bodyObservationChanges(body) {
+  const active = body?.active_conditions ?? [];
+  const labels = active.flatMap((condition) =>
+    text(condition?.label) ? [condition.label] : []);
+  if (active.length === 0) return [
+    'Осмотр тела не подтвердил активных телесных состояний; новое повреждение или диагноз не установлены.'
+  ];
+  return [
+    labels.length === active.length
+      ? `Подтверждённые вам телесные состояния: ${russianList(labels)}.`
+      : 'Осмотр подтвердил наличие активного телесного состояния.',
+    'Новое повреждение или диагноз этим осмотром не установлены.'
   ];
 }
 

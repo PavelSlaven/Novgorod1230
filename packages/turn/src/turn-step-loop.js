@@ -55,6 +55,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   let preparedChainContext = initialPreparedChainContext(
     ports.preparedEffectContext);
   let preparedFollowup = null;
+  let pendingDiscovery = null;
   const seen = new Set();
 
   while (stepIndex <= identity.maxInternalSteps) {
@@ -95,7 +96,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       player_safe_state: playerSafeState,
       available_domain_operations: availableDomainOperations,
       prepared_followup_candidates:
-        projectedPlayerSafeState?.prepared_followup_candidates ?? []
+        projectedPlayerSafeState?.prepared_followup_candidates ?? [],
+      pending_discovery: pendingDiscovery
     });
     if (seen.has(inputDigest)) {
       stopReason = 'no_progress';
@@ -103,19 +105,22 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     }
     seen.add(inputDigest);
 
-    const preparedPlan = await requestPreparedFollowupPlan({ request,
-      preparedFollowup, semanticPlanValidator: ports.semanticPlanValidator,
-      admitPreparedDomainPlan: ports.admitPreparedDomainPlan,
-      revalidateCommittedState: ports.revalidateCommittedState,
-      expectedVersion: identity.committedStateVersion,
-      workingProjection, preparedChainContext });
-    const { plan, repaired } = preparedPlan == null
+    const pendingResult = await requestPendingDiscoveryPlan({ request,
+      pendingDiscovery });
+    const preparedPlan = pendingResult == null
+      ? await requestPreparedFollowupPlan({ request,
+        preparedFollowup, semanticPlanValidator: ports.semanticPlanValidator,
+        admitPreparedDomainPlan: ports.admitPreparedDomainPlan,
+        revalidateCommittedState: ports.revalidateCommittedState,
+        expectedVersion: identity.committedStateVersion,
+        workingProjection, preparedChainContext }) : null;
+    const { plan, repaired } = pendingResult ?? (preparedPlan == null
       ? await requestTurnStepPlanWithRepair({ request,
           turnStepModel: ports.turnStepModel,
           semanticPlanValidator: ports.semanticPlanValidator,
           preparedChainContext
         })
-      : { plan: preparedPlan, repaired: false };
+      : { plan: preparedPlan, repaired: false });
     if (preparedPlan == null) {
       await revalidateBaseVersion({
         revalidateCommittedState: ports.revalidateCommittedState,
@@ -230,7 +235,9 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     }));
 
     const continuation = execution.continuation;
-    if (execution.boundary || preparedSequenceComplete) {
+    pendingDiscovery = nextPendingDiscovery({ plan, continuation });
+    if (execution.boundary || preparedSequenceComplete
+        || (pendingDiscovery != null && ordinaryPlans.length > 0)) {
       stopReason = 'player_response';
       remainingIntent = continuation?.remaining_intent ?? '';
       break;
@@ -288,6 +295,49 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       backgroundNpcSemanticPlans[0] ?? null,
     clarification
   });
+}
+
+async function requestPendingDiscoveryPlan({ request, pendingDiscovery }) {
+  if (pendingDiscovery == null) return null;
+  const plan = pendingDiscoveryPlan(request, pendingDiscovery);
+  return { plan: await requestAndValidateTurnStepPlan({ request,
+    turnStepModel: async () => plan }), repaired: false };
+}
+
+function pendingDiscoveryPlan(request, pending) {
+  const [targetRef, ...remainingTargetRefs] = pending.remainingTargetRefs;
+  const operation = { ...structuredClone(pending.operation),
+    target_refs: [targetRef] };
+  const continuation = remainingTargetRefs.length === 0
+    ? structuredClone(pending.after)
+    : { remaining_intent: operation.query, depends_on_refs: [],
+      pending_discovery: { remaining_target_refs: remainingTargetRefs,
+        after: structuredClone(pending.after) } };
+  return {
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: operation.query, adaptation: pending.adaptation },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [operation], check: null, continuation, clarification: null,
+    direct_result_kind: null, reason_code: 'canonical_discovery_followup',
+    reason: 'Code-owned single-target discovery continuation.'
+  };
+}
+
+function nextPendingDiscovery({ plan, continuation }) {
+  const pending = continuation?.pending_discovery;
+  const operation = plan.operations?.length === 1
+    && plan.operations[0]?.op === 'request_discovery'
+    ? plan.operations[0] : null;
+  return pending == null || operation == null ? null : {
+    operation: { ...structuredClone(operation), target_refs: [] },
+    remainingTargetRefs: structuredClone(pending.remaining_target_refs),
+    after: structuredClone(pending.after),
+    adaptation: plan.interpretation.adaptation
+  };
 }
 
 async function requestPreparedFollowupPlan({ request, preparedFollowup,

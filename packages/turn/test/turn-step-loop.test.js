@@ -140,6 +140,143 @@ test('direct continuation sees the updated immutable working projection', async 
   assert.equal(outcome.write_fragments.length, 1);
 });
 
+test('pending discovery executes each target without another model choice',
+  async () => {
+    const targets = ['item-a', 'item-b', 'item-c'];
+    const inspected = [];
+    let modelCalls = 0;
+    let semanticValidations = 0;
+    const executionRegistry = createTurnStepExecutionRegistry({
+      domain: { request_discovery: async ({ operation,
+        working_projection: projection }) => {
+        inspected.push(operation.target_refs[0]);
+        return result(projection, `inspected ${operation.target_refs[0]}`);
+      } },
+      applySemanticActivity: async ({ working_projection: projection }) =>
+        result(projection, 'moment')
+    });
+    const outcome = await runTurnStepLoop(input({
+      rootPlayerAction: 'сравнить три предмета',
+      initialWorkingProjection: { actor_ref: 'actor-1', inventory: [],
+        elapsed_minutes: 0, visible_entities: targets.map((entity_ref) => ({
+          entity_ref
+        })) }
+    }), ports({ executionRegistry,
+      semanticPlanValidator: async () => { semanticValidations += 1; },
+      turnStepModel: async (request) => {
+      modelCalls += 1;
+      return basePlan(request, { resolution: 'domain_request',
+        goal_result: 'pending',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [{ op: 'request_discovery', actor_ref: 'actor-1',
+          discovery_kind: 'inspect', target_refs: ['item-a'],
+          query: request.remaining_intent }],
+        continuation: { remaining_intent: request.remaining_intent,
+          depends_on_refs: [], pending_discovery: {
+            remaining_target_refs: ['item-b', 'item-c'], after: null
+          } }
+      });
+    } }));
+
+    assert.deepEqual(inspected, targets);
+    assert.equal(modelCalls, 1);
+    assert.equal(semanticValidations, 1);
+    assert.equal(outcome.stop_reason, 'terminal');
+    assert.equal(outcome.working_revision, 3);
+  });
+
+test('pending discovery stops before a second ordinary atomic plan',
+  async () => {
+    const inspected = [];
+    let modelCalls = 0;
+    const executionRegistry = createTurnStepExecutionRegistry({
+      domain: { request_discovery: async ({ operation,
+        working_projection: projection }) => {
+        inspected.push(operation.target_refs[0]);
+        return result(projection, 'ordinary discovery', {
+          ordinary_materialization_atomic_write_plan: {
+            schema: 'ordinary-plan', target: operation.target_refs[0]
+          }
+        });
+      } },
+      applySemanticActivity: async ({ working_projection: projection }) =>
+        result(projection, 'moment')
+    });
+    const outcome = await runTurnStepLoop(input({
+      rootPlayerAction: 'сравнить три предмета',
+      initialWorkingProjection: { actor_ref: 'actor-1', inventory: [],
+        elapsed_minutes: 0, visible_entities: ['item-a', 'item-b', 'item-c']
+          .map((entity_ref) => ({ entity_ref })) }
+    }), ports({ executionRegistry, turnStepModel: async (request) => {
+      modelCalls += 1;
+      return basePlan(request, { resolution: 'domain_request',
+        goal_result: 'pending',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [{ op: 'request_discovery', actor_ref: 'actor-1',
+          discovery_kind: 'inspect', target_refs: ['item-a'],
+          query: request.remaining_intent }],
+        continuation: { remaining_intent: request.remaining_intent,
+          depends_on_refs: [], pending_discovery: {
+            remaining_target_refs: ['item-b', 'item-c'], after: null
+          } }
+      });
+    } }));
+
+    assert.deepEqual(inspected, ['item-a']);
+    assert.equal(modelCalls, 1);
+    assert.equal(outcome.stop_reason, 'player_response');
+    assert.deepEqual(outcome.step_traces[0].approved_plan.continuation
+      .pending_discovery.remaining_target_refs, ['item-b', 'item-c']);
+    assert.equal(outcome.ordinary_materialization_atomic_write_plan.target,
+      'item-a');
+  });
+
+test('pending discovery restores the original continuation exactly',
+  async () => {
+    const targets = ['item-a', 'item-b', 'item-c'];
+    const inspected = [];
+    const modelRequests = [];
+    const executionRegistry = createTurnStepExecutionRegistry({
+      domain: { request_discovery: async ({ operation,
+        working_projection: projection }) => {
+        inspected.push(operation.target_refs[0]);
+        return result(projection, `inspected ${operation.target_refs[0]}`);
+      } },
+      applySemanticActivity: async ({ working_projection: projection }) =>
+        result(projection, 'moment')
+    });
+    const after = { remaining_intent: 'потом ждать',
+      depends_on_refs: [] };
+    const outcome = await runTurnStepLoop(input({
+      rootPlayerAction: 'сравнить три предмета, потом ждать',
+      initialWorkingProjection: { actor_ref: 'actor-1', inventory: [],
+        elapsed_minutes: 0, visible_entities: targets.map((entity_ref) => ({
+          entity_ref
+        })) }
+    }), ports({ executionRegistry, turnStepModel: async (request) => {
+      modelRequests.push(request.remaining_intent);
+      if (request.step_index > 1) return basePlan(request);
+      return basePlan(request, { resolution: 'domain_request',
+        goal_result: 'pending',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [{ op: 'request_discovery', actor_ref: 'actor-1',
+          discovery_kind: 'inspect', target_refs: ['item-a'],
+          query: 'сравнить три предмета' }],
+        continuation: { remaining_intent: 'сравнить три предмета',
+          depends_on_refs: [], pending_discovery: {
+            remaining_target_refs: ['item-b', 'item-c'], after
+          } }
+      });
+    } }));
+
+    assert.deepEqual(inspected, targets);
+    assert.deepEqual(modelRequests, [
+      'сравнить три предмета, потом ждать', 'потом ждать'
+    ]);
+    assert.equal(outcome.stop_reason, 'terminal');
+    assert.equal(outcome.working_revision, 4);
+  });
+
 test('later owner receives the sealed ordinary plan from the same root',
   async () => {
     const ordinaryPlan = { schema:
@@ -542,7 +679,7 @@ test('compound intent resumes from the committed domain boundary without replay'
     assert.equal(rolls, 0);
   });
 
-test('one structural repair is allowed before any execution', async () => {
+test('invalid structure fails before semantic repair or execution', async () => {
   let calls = 0;
   const seenRepair = [];
   const runtimePorts = ports({
@@ -554,11 +691,11 @@ test('one structural repair is allowed before any execution', async () => {
         : basePlan(request);
     }
   });
-  const outcome = await runTurnStepLoop(input(), runtimePorts);
-  assert.equal(calls, 2);
+  await assert.rejects(runTurnStepLoop(input(), runtimePorts),
+    (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+      && error.details.repair_attempted === false);
+  assert.equal(calls, 1);
   assert.equal(seenRepair[0], null);
-  assert.equal(seenRepair[1].schema, 'turn_step_repair_context_v1');
-  assert.equal(outcome.step_traces[0].repaired, true);
 
   let executions = 0;
   await assert.rejects(() => runTurnStepLoop(input(), ports({

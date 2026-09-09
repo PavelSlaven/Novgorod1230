@@ -21,8 +21,19 @@ export function turnStepOperationChoices(request, repairContext = null) {
 }
 
 export function normalizeTurnStepOperationChoice(choice) {
-  return choice?.operation_choice === 'null'
-    ? { ...choice, operation_choice: null } : choice;
+  const operationChoice = choice?.operation_choice;
+  if (operationChoice === 'null') return { ...choice, operation_choice: null };
+  if (plainChoiceWrapper(operationChoice)) {
+    return { ...choice, operation_choice: operationChoice.choice_id };
+  }
+  return choice;
+}
+
+function plainChoiceWrapper(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    && Object.getPrototypeOf(value) === Object.prototype
+    && Object.keys(value).length === 1
+    && typeof value.choice_id === 'string';
 }
 
 export function selectedTurnStepOperation(choice, operationChoices) {

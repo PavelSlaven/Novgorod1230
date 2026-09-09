@@ -19,7 +19,7 @@ test('ordinary discovery admits an unseen nested player-visible object', () => {
   }), true);
 });
 
-test('ordinary discovery admits only an all-visible item group', () => {
+test('ordinary discovery rejects multi-target requests even when all items are visible', () => {
   const playerSafeState = {
     ordinary_resolution: { discovery_available: true,
       container_resolution_available: false, scene_seed_available: false },
@@ -32,7 +32,7 @@ test('ordinary discovery admits only an all-visible item group', () => {
     target_refs: ['visible-cloak', 'visible-shirt'],
     query: 'осмотреть одежду' };
 
-  assert.equal(isOrdinaryDiscoveryInScope({ operation, playerSafeState }), true);
+  assert.equal(isOrdinaryDiscoveryInScope({ operation, playerSafeState }), false);
   assert.equal(isOrdinaryDiscoveryInScope({ operation: { ...operation,
     target_refs: ['visible-cloak', 'hidden-shirt'] }, playerSafeState }), false);
   assert.equal(isOrdinaryDiscoveryInScope({ operation: { ...operation,

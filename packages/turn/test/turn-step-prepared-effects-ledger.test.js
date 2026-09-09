@@ -167,7 +167,13 @@ test('prepared chain permits one repair before each invalid step executes',
           calls += 1;
           if (request.step_index === 1) return routePlan(request);
           return repair == null
-            ? { ...directPlan(request), request_id: 'forged' }
+            ? directPlan(request, {
+              goal_result: 'pending',
+              continuation: {
+                remaining_intent: request.remaining_intent,
+                depends_on_refs: []
+              }
+            })
             : directPlan(request);
         }
       }));
@@ -187,7 +193,13 @@ test('prepared chain permits one repair before each invalid step executes',
         executionRegistry: preparedRegistry(),
         turnStepModel(request) {
           calls += 1;
-          if (calls === 1) return { ...routePlan(request), request_id: 'forged' };
+          if (calls === 1) return {
+            ...routePlan(request),
+            continuation: {
+              remaining_intent: request.remaining_intent,
+              depends_on_refs: ['camp']
+            }
+          };
           return calls === 2 ? routePlan(request) : directPlan(request);
         }
       }));

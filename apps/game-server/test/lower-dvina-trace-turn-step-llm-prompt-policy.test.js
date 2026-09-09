@@ -144,7 +144,8 @@ test('turn step planner routes accessible items and visible environment through 
     assert.match(prompt, /sensory detail that physically places ordinary environmental material in the current scope is sufficient for ordinary_material_prerequisite/u);
     assert.match(prompt, /never authorizes an authoritative, significant, hidden, or already-resolved fact/u);
     assert.match(prompt, /Reviewing the identity, placement, or condition of supplied carried\/worn items[\s\S]*player_safe_item_observation[\s\S]*other facts already explicit in player-safe sensory context uses player_safe_observation/u);
-    assert.match(prompt, /player_safe_item_observation for reviewing the identity, placement, or condition[\s\S]*Preserve uncertainty[\s\S]*never infer local state, cause, forecast, timing/u);
+    assert.match(prompt, /Inspecting the actor body when request\.actor\.body is supplied[\s\S]*player_safe_body_observation[\s\S]*new injury or diagnosis unconfirmed[\s\S]*Clothing mentioned only as covering the body does not make that action an item or ordinary discovery/u);
+    assert.match(prompt, /player_safe_item_observation for reviewing the identity, placement, or condition[\s\S]*player_safe_body_observation for inspecting the actor body[\s\S]*Preserve uncertainty[\s\S]*never infer local state, cause, forecast, timing/u);
   });
 
 test('turn step planner keeps an ongoing wet-reed smoulder out of A1', async () => {

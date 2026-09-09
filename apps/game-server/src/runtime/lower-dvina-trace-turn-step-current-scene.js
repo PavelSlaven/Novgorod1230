@@ -104,7 +104,7 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
   if (!validCurrentScene(current)) failCurrentScene();
   const outcomeConstraints = directOutcomeConstraints(input);
   const directResultChanges = lowerDvinaTraceDirectResultChanges(input,
-    playerSafeSceneItems(input?.retrieved_state));
+    playerSafeSceneItems(input?.retrieved_state), body);
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([

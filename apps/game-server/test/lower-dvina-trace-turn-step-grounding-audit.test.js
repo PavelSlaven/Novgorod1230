@@ -33,11 +33,12 @@ test('turn-step grounding audit is skipped outside discovery and production',
     assert.equal(calls, 0);
   });
 
-test('exact generic discovery grounding is enforced without an LLM audit',
+test('generic discovery keeps deterministic intent identity before semantic audit',
   async () => {
     let calls = 0;
     const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
-      roleRunner: { async run() { calls += 1; throw new Error('must not run'); } }
+      roleRunner: { async run() { calls += 1; return { output: {
+        pass: true, concerns: [] } }; } }
     });
     const remainingIntent = 'обыскать полосу берега в поисках сухой верёвки';
     const genericRequest = { request_id: 'turn-step:generic', remaining_intent:
@@ -54,12 +55,12 @@ test('exact generic discovery grounding is enforced without an LLM audit',
       owner_kind: 'ordinary_discovery' }];
     assert.equal(await validate({ request: genericRequest,
       plan: genericPlan, resolved_domain_operations: ordinaryOwner }), true);
-    assert.equal(calls, 0);
-    await assert.rejects(validate({ request: genericRequest,
+    assert.equal(calls, 1);
+    assert.equal(await validate({ request: genericRequest,
       plan: genericPlan, resolved_domain_operations: [{
         path: '$.operations.0', owner_kind: 'external'
-      }] }), /must not run/u);
-    assert.equal(calls, 1);
+      }] }), true);
+    assert.equal(calls, 2);
     await assert.rejects(validate({ request: genericRequest, plan: {
       ...genericPlan, operations: [{ ...genericPlan.operations[0],
         query: 'искать на берегу следы лодки' }]
@@ -70,71 +71,54 @@ test('exact generic discovery grounding is enforced without an LLM audit',
       assert.equal(error.details.errors[0].path, '$.operations.0.query');
       return true;
     });
-    assert.equal(calls, 1);
+    assert.equal(calls, 2);
   });
 
-test('lossless ordinary item-group discovery bypasses opaque-ref LLM audit',
+test('body-under-clothing discovery is rejected while clothing inspection remains valid',
   async () => {
-    let calls = 0;
+    const seen = [];
     const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
-      roleRunner: { async run() { calls += 1; throw new Error('must not run'); } }
+      roleRunner: { async run(call) {
+        const payload = JSON.parse(call.messages[1].content);
+        seen.push(payload);
+        return { output: payload.remaining_intent.includes('под плащом')
+          ? { pass: false, concerns: [{ kind: 'operation_semantic_grounding' }] }
+          : { pass: true, concerns: [] } };
+      } }
     });
-    const query = 'Осмотреть плащ и рубаху';
-    const continuation = { remaining_intent: 'затем осмотреть берег.',
-      depends_on_refs: [] };
-    const remainingIntent = `${query}, ${continuation.remaining_intent}`;
+    const remainingIntent = 'Осмотреть боль в плече под плащом';
     const operation = { op: 'request_discovery', actor_ref: 'actor:1',
-      discovery_kind: 'inspect', target_refs: ['item:cloak', 'item:shirt'],
-      query };
-    const genericRequest = { request_id: 'turn-step:item-group',
+      discovery_kind: 'inspect', target_refs: ['item:cloak'],
+      query: remainingIntent };
+    const genericRequest = { request_id: 'turn-step:body-under-cloak',
       remaining_intent: remainingIntent, player_safe_state: {
         ordinary_resolution: { discovery_available: true,
           container_resolution_available: false, scene_seed_available: false },
         current_visible_context: { visible_objects: [
-          { entity_ref: { entity_kind: 'item', entity_id: 'item:cloak' } },
-          { entity_ref: { entity_kind: 'item', entity_id: 'item:shirt' } }
+          { entity_ref: { entity_kind: 'item', entity_id: 'item:cloak' } }
         ] }
-      } };
+      }, actor: { actor_ref: 'actor:1', body: { active_conditions: [{
+        id: 'shoulder_bruise', status: 'active'
+      }] } } };
     const owner = [{ path: '$.operations.0',
       owner_kind: 'ordinary_discovery' }];
-
-    assert.equal(await validate({ request: genericRequest,
-      plan: { operations: [operation], check: null, continuation },
+    await assert.rejects(validate({ request: genericRequest,
+      plan: { operations: [operation], check: null, continuation: null },
+      resolved_domain_operations: owner }), (error) => {
+      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+      assert.equal(error.details.errors[0].code,
+        'operation_semantic_grounding');
+      return true;
+    });
+    const clothingIntent = 'Осмотреть плащ: не порван ли он и насколько мокрый';
+    assert.equal(await validate({ request: { ...genericRequest,
+      remaining_intent: clothingIntent }, plan: { operations: [{ ...operation,
+        query: clothingIntent }], check: null, continuation: null },
       resolved_domain_operations: owner }), true);
-    assert.equal(calls, 0);
-    await assert.rejects(validate({ request: genericRequest,
-      plan: { operations: [operation], check: null, continuation: {
-        ...continuation, remaining_intent: 'затем уйти с берега.'
-      } }, resolved_domain_operations: owner }), (error) => {
-      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
-      assert.equal(error.details.errors[0].code,
-        'ordinary_discovery_query_identity');
-      return true;
-    });
-    assert.equal(calls, 0);
-
-    await assert.rejects(validate({ request: genericRequest,
-      plan: { operations: [{ ...operation, query: remainingIntent }],
-        check: null, continuation }, resolved_domain_operations: owner }),
-    (error) => {
-      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
-      assert.equal(error.details.errors[0].code,
-        'ordinary_discovery_query_identity');
-      return true;
-    });
-    assert.equal(calls, 0);
-
-    await assert.rejects(validate({ request: { ...genericRequest,
-      remaining_intent: 'Осмотреть плащ. Уйти с берега.' },
-      plan: { operations: [{ ...operation, target_refs: ['item:cloak'],
-        query: 'Осмотреть плащ уйти с берега' }], check: null,
-      continuation: null }, resolved_domain_operations: owner }), (error) => {
-      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
-      assert.equal(error.details.errors[0].code,
-        'ordinary_discovery_query_identity');
-      return true;
-    });
-    assert.equal(calls, 0);
+    assert.deepEqual(seen[0].actor_body.active_conditions,
+      genericRequest.actor.body.active_conditions);
+    assert.match(JSON.stringify(seen[0]), /shoulder_bruise/u);
+    assert.equal(seen.length, 2);
   });
 
 test('turn-step grounding audit returns repairable source errors', async () => {

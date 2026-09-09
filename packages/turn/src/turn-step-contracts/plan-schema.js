@@ -30,7 +30,9 @@ const planDefinitions = {
   semantic_activity: strictObject(['owner', 'duration_class', 'effort'], { owner: { const: 'semantic' }, duration_class: { enum: DURATION_CLASSES }, effort: { enum: EFFORTS }, requested_duration_minutes: { type: 'integer', minimum: 1, maximum: Number.MAX_SAFE_INTEGER } }),
   domain_activity: strictObject(['owner', 'duration_class', 'effort'], { owner: { const: 'domain' }, duration_class: { type: 'null' }, effort: { type: 'null' } }),
   additional_activity: strictObject(['duration_class', 'effort'], { duration_class: { enum: DURATION_CLASSES }, effort: { enum: EFFORTS } }),
-  continuation: { type: 'object', additionalProperties: false, required: ['remaining_intent', 'depends_on_refs'], properties: { remaining_intent: textSchema, depends_on_refs: { type: 'array', uniqueItems: true, items: refSchema }, prepared_followup_ref: nullableRefSchema } },
+  continuation_after: { type: 'object', additionalProperties: false, required: ['remaining_intent', 'depends_on_refs'], properties: { remaining_intent: textSchema, depends_on_refs: { type: 'array', uniqueItems: true, items: refSchema }, prepared_followup_ref: nullableRefSchema } },
+  pending_discovery: strictObject(['remaining_target_refs', 'after'], { remaining_target_refs: { type: 'array', minItems: 1, uniqueItems: true, items: refSchema }, after: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/continuation_after' }] } }),
+  continuation: { type: 'object', additionalProperties: false, required: ['remaining_intent', 'depends_on_refs'], properties: { remaining_intent: textSchema, depends_on_refs: { type: 'array', uniqueItems: true, items: refSchema }, prepared_followup_ref: nullableRefSchema, pending_discovery: { $ref: '#/$defs/pending_discovery' } } },
   clarification: strictObject(['question', 'target_refs'], { question: textSchema, target_refs: { type: 'array', uniqueItems: true, items: refSchema } }),
   fact: strictObject(['temp_ref', 'text'], { temp_ref: refSchema, text: textSchema }),
   quantity: strictObject(['value', 'unit'], { value: { type: 'number', exclusiveMinimum: 0 }, unit: textSchema }),
@@ -43,7 +45,7 @@ const planDefinitions = {
   set_entity_mechanics: strictObject(['op', 'entity_ref', 'mechanics', 'reason'], { op: { const: 'set_entity_mechanics' }, entity_ref: refSchema, mechanics: { $ref: '#/$defs/mechanics' }, reason: textSchema }),
   retire_entity: strictObject(['op', 'entity_ref', 'reason'], { op: { const: 'retire_entity' }, entity_ref: refSchema, reason: textSchema }),
   apply_body_event: strictObject(['op', 'actor_ref', 'mechanism', 'severity', 'body_part_ref', 'description'], { op: { const: 'apply_body_event' }, actor_ref: refSchema, mechanism: { enum: ['impact', 'cut', 'puncture', 'burn', 'strain', 'crush', 'fall', 'cold', 'heat', 'suffocation', 'poison', 'other'] }, severity: { enum: ['minor', 'moderate', 'severe', 'critical'] }, body_part_ref: nullableRefSchema, description: textSchema }),
-  request_discovery: strictObject(['op', 'actor_ref', 'discovery_kind', 'target_refs', 'query'], { op: { const: 'request_discovery' }, actor_ref: refSchema, discovery_kind: { enum: ['look', 'inspect', 'search', 'listen', 'remember', 'dig'] }, target_refs: { type: 'array', minItems: 1, uniqueItems: true, items: refSchema }, query: textSchema }),
+  request_discovery: strictObject(['op', 'actor_ref', 'discovery_kind', 'target_refs', 'query'], { op: { const: 'request_discovery' }, actor_ref: refSchema, discovery_kind: { enum: ['look', 'inspect', 'search', 'listen', 'remember', 'dig'] }, target_refs: { type: 'array', minItems: 1, maxItems: 1, uniqueItems: true, items: refSchema }, query: textSchema }),
   request_container_access: strictObject(['op', 'actor_ref', 'container_ref', 'access_kind'], { op: { const: 'request_container_access' }, actor_ref: refSchema, container_ref: refSchema, access_kind: { enum: ['open', 'close', 'unlock', 'force', 'open_and_view'] } }),
   request_movement: strictObject(['op', 'actor_ref', 'target_ref', 'movement_kind'], { op: { const: 'request_movement' }, actor_ref: refSchema, target_ref: refSchema, movement_kind: { enum: ['local', 'route', 'long_course'] }, route_ref: refSchema, description: textSchema }),
   action_production_descriptor: strictObject(['display_name', 'physical_description', 'qualitative_facts', 'removed_physical_fact_refs', 'inscription_text', 'physical_form', 'source_fact_delta'], { display_name: { anyOf: [{ type: 'null' }, textSchema] }, physical_description: { anyOf: [{ type: 'null' }, textSchema] }, qualitative_facts: { type: 'array', uniqueItems: true, items: textSchema }, removed_physical_fact_refs: { type: 'array', uniqueItems: true, items: refSchema }, inscription_text: { anyOf: [{ type: 'null' }, textSchema] }, physical_form: { anyOf: [{ type: 'null' }, { enum: ['compact', 'regular', 'long', 'bulky'] }] }, source_fact_delta: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/action_production_source_fact_delta' }] } }),
@@ -88,7 +90,7 @@ export const TURN_STEP_PLAN_V1_SCHEMA = deepFreeze({
     clarification: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/clarification' }] },
     direct_result_kind: { anyOf: [{ type: 'null' }, {
       enum: ['player_safe_observation', 'player_safe_item_observation',
-        'no_state_gesture'] }] },
+        'player_safe_body_observation', 'no_state_gesture'] }] },
     reason_code: textSchema,
     reason: textSchema
   }),

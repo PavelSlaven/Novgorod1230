@@ -18,6 +18,11 @@ const PROMPT = [
   'For discovery, the operation must cover the earliest focused information',
   'need. A fixed authored query must not replace a different ordinary search,',
   'material prerequisite, handling, or transformation.',
+  'When actor_body is supplied, inspecting the actor body is not discovery of',
+  'worn clothing merely because clothing covers it. Reject that wrong target',
+  'as operation_semantic_grounding. An explicit request to inspect the',
+  'clothing itself, including its wetness, damage, or condition, may still',
+  'ground discovery against that visible item.',
   'When available_domain_operation_grounding supplies a semantic_scope for',
   'the exact operation, treat that purpose and result_scope as its complete',
   'authority. Shared nouns, location, or inspect wording do not expand it.',
@@ -62,21 +67,24 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     const genericDiscovery = genericOrdinaryDiscovery({ audited, plan,
       request, resolved });
     if (genericDiscovery != null) {
-      if (preservesIntent(genericDiscovery.query, plan.continuation,
-          request.remaining_intent)) return true;
-      throw serverError('TURN_STEP_PLAN_INVALID',
-        'Ordinary discovery must preserve the current intent.', {
-          details: { errors: [{ path: `${audited[0].path}.query`,
-            rule: 'ordinary_discovery_query_identity',
-            code: 'ordinary_discovery_query_identity',
-            message: 'must equal remaining_intent without continuation or form a non-overlapping lossless prefix with it' }] }
-        });
+      if (plan.continuation?.pending_discovery == null
+          && !preservesIntent(genericDiscovery.query, plan.continuation,
+          request.remaining_intent)) {
+        throw serverError('TURN_STEP_PLAN_INVALID',
+          'Ordinary discovery must preserve the current intent.', {
+            details: { errors: [{ path: `${audited[0].path}.query`,
+              rule: 'ordinary_discovery_query_identity',
+              code: 'ordinary_discovery_query_identity',
+              message: 'must equal remaining_intent without continuation or form a non-overlapping lossless prefix with it' }] }
+          });
+      }
     }
     const response = await roleRunner.run({
       scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
       request_identity: request.request_id,
       messages: [{ role: 'system', content: PROMPT }, { role: 'user',
         content: JSON.stringify({ remaining_intent: request.remaining_intent,
+          actor_body: request.actor?.body ?? null,
           player_safe_state: groundingState(request.player_safe_state,
             audited),
           operations: audited, continuation: plan.continuation }) }]

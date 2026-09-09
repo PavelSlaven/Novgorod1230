@@ -52,7 +52,7 @@ test('move_entity rejects a player-safe placement that is already satisfied', ()
     true);
 });
 
-test('structural repair repeating an unknown ref fails technically',
+test('unknown ref fails technically without semantic repair',
   async () => {
     let calls = 0;
     await assert.rejects(() => requestTurnStepPlanWithRepair({ request,
@@ -61,8 +61,8 @@ test('structural repair repeating an unknown ref fails technically',
         return ++calls === 1
           ? { ...value, interpretation: { adaptation: 'literal' } } : value;
       } }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
-        && error.details.repair_attempted === true);
-    assert.equal(calls, 2);
+        && error.details.repair_attempted === false);
+    assert.equal(calls, 1);
   });
 
 test('direct result kind is structural and write-free', () => {
@@ -72,6 +72,15 @@ test('direct result kind is structural and write-free', () => {
   assert.equal(validateTurnStepPlan(observation, { request }).ok, true);
   assert.equal(validateTurnStepPlan({ ...observation,
     direct_result_kind: 'player_safe_item_observation' }, { request }).ok, true);
+  const bodyObservation = { ...observation,
+    direct_result_kind: 'player_safe_body_observation' };
+  assert.equal(validateTurnStepPlan(bodyObservation, { request }).ok, false);
+  assert.equal(validateTurnStepPlan(bodyObservation, { request: { ...request,
+    actor: { ...request.actor, body: {} } } }).ok, false);
+  assert.equal(validateTurnStepPlan(bodyObservation, { request: { ...request,
+    actor: { ...request.actor, body: { active_conditions: [{
+      id: 'hand_soreness', status: 'active'
+    }] } } } }).ok, true);
   assert.equal(validateTurnStepPlan({ ...observation,
     direct_result_kind: 'no_state_gesture' }, { request }).ok, true);
   for (const invalid of [

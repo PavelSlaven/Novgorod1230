@@ -149,7 +149,7 @@ test('Turn 10 admits refusal without a participation binding', async () => {
   ), false);
 });
 
-test('invented prepared followup marker repairs once then continues atomically',
+test('invented prepared followup marker fails structurally without mutation',
   async () => {
     const { state, contracts } = turn10State({ completedRest: false });
     let plannerCalls = 0;
@@ -175,22 +175,17 @@ test('invented prepared followup marker repairs once then continues atomically',
       npcSemanticModel: (request) => npcPlan(request, contracts),
       npcAutonomousModel: (request) => phase7AutonomousPlan(request, 'wait')
     });
-    await runtimeFixture.runtime.submitTurn({ partyId: runtimeFixture.partyId,
+    const before = structuredClone(runtimeFixture.state);
+    await assert.rejects(runtimeFixture.runtime.submitTurn({
+      partyId: runtimeFixture.partyId,
       input: { request_id: 'turn10-repaired-rest',
-        idempotency_key: 'turn10-repaired-rest', raw_text: COMPOUND_TURN_10 } });
+        idempotency_key: 'turn10-repaired-rest',
+        raw_text: COMPOUND_TURN_10 }
+    }), { code: 'TURN_STEP_PLAN_INVALID' });
 
-    assert.equal(plannerCalls, 3);
-    assert.equal(runtimeFixture.commitCount(), 1);
-    const factual = runtimeFixture.lastWritePlan().write_targets.find(
-      ({ target }) => target === 'party_state').value;
-    assert.equal(factual.consequence.phase7_kind, 'fire_rest');
-    assert.equal(factual.consequence.turn10_kind, 'companion_request');
-    assert.equal(runtimeFixture.state.phase7_fire_rest.status, 'completed');
-    assert.deepEqual(factual.time_update.prepared_effect_ledger.slices.map(
-      ({ owner_ref: owner }) => owner), [
-      'lower_dvina_trace.rest_by_fire_and_dry_clothing',
-      'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse'
-    ]);
+    assert.equal(plannerCalls, 1);
+    assert.equal(runtimeFixture.commitCount(), 0);
+    assert.deepEqual(runtimeFixture.state, before);
   });
 
 test('either fisher may choose either approved participation binding',

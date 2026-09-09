@@ -48,7 +48,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
         consequence.visible_seed.clarification);
       const ordinaryDetails = ordinarySceneDetails(seedEntries);
       const ordinaryPresence = ordinaryPresenceResolution(seedEntries);
-      const body = input.body_update?.state_after ?? {};
+      const body = currentBody(input);
       const base = hasVisibleDomainProjection(consequence)
         ? await fallback.project(input)
         : projectCurrentSceneForVisibleOverlay({
@@ -84,7 +84,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   const ordinaryPresence = ordinaryPresenceResolution(seedEntries);
   let base;
   if (ordinaryDetails.length > 0) {
-    const body = input.body_update?.state_after ?? {};
+    const body = currentBody(input);
     base = hasVisibleDomainProjection(consequence)
       ? await fallback.project(input)
       : projectCurrentSceneForVisibleOverlay({
@@ -100,7 +100,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
     await fallback.project(input), ordinaryPresence);
   const directSeeds = seedEntries
     .filter(([key, value]) => key.startsWith('turn_step_') && plain(value));
-  const body = input.body_update?.state_after ?? {};
+  const body = currentBody(input);
   const currentScene = projectCurrentSceneForNoOperationDirect({
     input,
     directSeedKeys: directSeeds.map(([key]) => key),
@@ -141,6 +141,11 @@ async function projectWithoutFire({ input, consequence, seedEntries,
       'hidden_fact', 'uncommitted_body_delta', 'uncommitted_time'
     ]
   }), ordinaryPresence);
+}
+
+function currentBody(input) {
+  return input.body_update?.state_after ?? input.retrieved_state?.body_state
+    ?? {};
 }
 
 function ordinarySceneDetails(entries) {

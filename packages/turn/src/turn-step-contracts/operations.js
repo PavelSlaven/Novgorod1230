@@ -201,7 +201,9 @@ function validateDiscovery(value, path, errors, trace) {
   enumValue(value.discovery_kind,
     ['look', 'inspect', 'search', 'listen', 'remember', 'dig'],
     `${path}.discovery_kind`, errors);
-  refs(value.target_refs, `${path}.target_refs`, errors, trace, { min: 1 });
+  refs(value.target_refs, `${path}.target_refs`, errors, trace, {
+    min: 1, max: 1
+  });
   requiredText(value.query, `${path}.query`, errors);
 }
 

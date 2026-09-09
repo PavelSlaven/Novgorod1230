@@ -76,6 +76,11 @@ function repairedInvalid(error) {
     && error.details.repair_attempted === true;
 }
 
+function structuralInvalid(error) {
+  return error.code === 'TURN_STEP_PLAN_INVALID'
+    && error.details.repair_attempted === false;
+}
+
 test('owner repairs before RNG or effects',
   async () => {
     let calls = 0;
@@ -189,7 +194,7 @@ test('repair retaining rejected choice fails technically',
     assert.equal(calls, 2);
   });
 
-test('repair adding forbidden choice fails technically',
+test('invalid structure fails before semantic repair',
   async () => {
     let calls = 0;
     await assert.rejects(() => runTurnStepLoop(input(), ports(
@@ -200,8 +205,8 @@ test('repair adding forbidden choice fails technically',
           ? { ...value, interpretation: { adaptation: 'literal' } }
           : { ...value, operation_choice: 'mismatched' };
       }, null, null
-    )), repairedInvalid);
-    assert.equal(calls, 2);
+    )), structuralInvalid);
+    assert.equal(calls, 1);
   });
 
 test('repeated non-progressing continuation fails technically',
@@ -218,7 +223,7 @@ test('repeated non-progressing continuation fails technically',
     assert.equal(calls, 2);
   });
 
-test('unresolved repaired domain request fails technically',
+test('unresolved structural domain request fails without semantic repair',
   async () => {
     let calls = 0;
     await assert.rejects(() => runTurnStepLoop(input(), ports(
@@ -233,8 +238,8 @@ test('unresolved repaired domain request fails technically',
                 remaining_intent: request.remaining_intent,
                 depends_on_refs: [] } };
       }, null, null
-    )), repairedInvalid);
-    assert.equal(calls, 2);
+    )), structuralInvalid);
+    assert.equal(calls, 1);
   });
 
 test('unrelated direct plan ignores active conversation', () => {
@@ -484,7 +489,7 @@ function activity(description) {
     target_refs: [], description };
 }
 
-test('structural then unavailable owner fails technically', async () => {
+test('invalid structure fails before owner resolution', async () => {
   let calls = 0;
   await assert.rejects(() => runTurnStepLoop(input(), ports(
     async (request) => {
@@ -493,8 +498,8 @@ test('structural then unavailable owner fails technically', async () => {
         ? { ...plan(request), request_id: 'forged' }
         : unavailableGenericPlan(request);
     }, preflight(), null
-  )), repairedInvalid);
-  assert.equal(calls, 2);
+  )), structuralInvalid);
+  assert.equal(calls, 1);
 });
 
 test('repair recomputes owner for changed plan context', () => {

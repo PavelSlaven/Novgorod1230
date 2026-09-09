@@ -241,6 +241,28 @@ test('continuation cannot repeat intent after a non-discovery domain step', () =
   assert.equal(validateTurnStepPlan(repeated, { request: source }).ok, true);
 });
 
+test('pending discovery is a strict single-target code carrier', () => {
+  const source = request();
+  const discovery = plan({ operations: [{ op: 'request_discovery',
+    actor_ref: 'actor_mikula', discovery_kind: 'inspect',
+    target_refs: ['sand_bank'], query: source.remaining_intent }],
+  continuation: { remaining_intent: source.remaining_intent,
+    depends_on_refs: [], pending_discovery: {
+      remaining_target_refs: ['chest_1'], after: {
+        remaining_intent: 'взять меч', depends_on_refs: ['chest_1']
+      }
+    } } });
+  assert.equal(validateTurnStepPlan(discovery, { request: source }).ok, true);
+
+  discovery.continuation.depends_on_refs = ['chest_1'];
+  assert.equal(validateTurnStepPlan(discovery, { request: source }).errors.some(
+    ({ code }) => code === 'carrier'), true);
+  discovery.continuation.depends_on_refs = [];
+  discovery.continuation.pending_discovery.after.pending_discovery = {};
+  assert.equal(validateTurnStepPlan(discovery, { request: source }).errors.some(
+    ({ code }) => code === 'additional_property'), true);
+});
+
 test('plan validation admits refs exposed through a plural ref array', () => {
   const source = request();
   source.player_safe_state.destination_refs = ['location:camp'];

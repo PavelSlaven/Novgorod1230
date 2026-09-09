@@ -275,6 +275,25 @@ test('direct player-safe observation reaches narration without new facts', () =>
         operations: [], check: null, direct_result_kind: 'no_state_gesture' }
     }] } }
   }), ['Вы завершили простой жест.']);
+  assert.deepEqual(lowerDvinaTraceDirectResultChanges({
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+      approved_plan: { resolution: 'direct', goal_result: 'partially_achieved',
+        operations: [], check: null,
+        direct_result_kind: 'player_safe_body_observation' }
+    }] } }
+  }, [], { active_conditions: [{ id: 'hand_soreness',
+    label: 'болезненность кисти' }] }), [
+    'Подтверждённые вам телесные состояния: болезненность кисти.',
+    'Новое повреждение или диагноз этим осмотром не установлены.'
+  ]);
+  const unlabeled = lowerDvinaTraceDirectResultChanges({ mode_resolution: {
+    decision_trace: { step_traces: [{ applied: true, approved_plan: {
+      resolution: 'direct', goal_result: 'partially_achieved', operations: [],
+      check: null, direct_result_kind: 'player_safe_body_observation'
+    } }] }
+  } }, [], { active_conditions: [{ id: 'hand_soreness' }] });
+  assert.equal(unlabeled.some((change) => change.includes('hand_soreness')),
+    false);
 });
 
 test('carried item observation exposes concrete player-safe belongings', () => {
@@ -309,6 +328,30 @@ test('carried item observation exposes concrete player-safe belongings', () => {
   assert.equal(visible.visible_changes.some((change) =>
     change.includes('полено')), false);
 });
+
+test('body observation projects the current confirmed condition without a body write',
+  async () => {
+    const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project: async () => assert.fail('fallback not expected') }
+    });
+    const state = committedState();
+    state.body_state = { active_conditions: [{ id: 'hand_soreness',
+      label: 'болезненность кисти' }] };
+    const visible = await projector.project({
+      consequence: { status: 'resolved', visible_seed: {
+        completed_steps: [{ step_index: 1, summary: 'осмотреть кисть' }]
+      } },
+      retrieved_state: state,
+      mode_resolution: { decision_trace: { remaining_intent: null,
+        step_traces: [{ applied: true, approved_plan: {
+          resolution: 'direct', goal_result: 'partially_achieved',
+          operations: [], check: null,
+          direct_result_kind: 'player_safe_body_observation'
+        } }] } }
+    });
+    assert.equal(visible.visible_changes.includes(
+      'Подтверждённые вам телесные состояния: болезненность кисти.'), true);
+  });
 
 test('ordinary scene seed augments the current scene in the same turn', async () => {
   const projector = createLowerDvinaTraceTurnStepVisibleProjector({

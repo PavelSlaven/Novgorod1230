@@ -56,6 +56,7 @@ export function newTemp(value, path, errors, trace) {
 
 export function refs(value, path, errors, trace, {
   min = 0,
+  max = Infinity,
   allowEmpty = false
 } = {}) {
   if (!Array.isArray(value)) {
@@ -65,6 +66,10 @@ export function refs(value, path, errors, trace, {
   if (!allowEmpty && value.length < min) {
     add(errors, path, 'min_items',
       `must contain at least ${min} reference(s)`);
+  }
+  if (value.length > max) {
+    add(errors, path, 'max_items',
+      `must contain at most ${max} reference(s)`);
   }
   const seen = new Set();
   value.forEach((entry, index) => {

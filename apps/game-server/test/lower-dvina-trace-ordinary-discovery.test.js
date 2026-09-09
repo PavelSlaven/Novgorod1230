@@ -369,7 +369,11 @@ test(`exhausted ${exhausted} returns a no-op before model or atomic plan`,
     assert.deepEqual(result.working_projection, input.working_projection);
     assert.deepEqual(result.write_fragments, []);
     assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
-    assert.equal(Object.hasOwn(result, 'consequence_fragment'), false);
+    assert.deepEqual(result.consequence_fragment, { visible_seed: {
+      ordinary_presence_seed: {
+        kind: 'ordinary_presence_seed', resolution: 'no_change'
+      }
+    } });
     assert.equal(result.player_response_boundary, true);
     assert.equal(aggregate.presence_resolutions.length, capped ? 1 : 0);
     assert.equal(aggregate.state_version, capped ? 2 : 1);

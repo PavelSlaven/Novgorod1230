@@ -48,7 +48,7 @@ test('turn step model sends the validated request to the isolated planner role',
     'ordinary_resolution.discovery_available is true',
     'exactly one request_discovery',
     'every matching current visible target_ref',
-    'do not summarize, shorten, translate, or omit its stated purpose',
+    'Do not summarize, translate, omit purpose',
     'never grant an impossible result',
     'skill proficiency is not',
     'no_experience still permits an attempt',
@@ -91,7 +91,7 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
         actor_ref: '<copy current actor ref from request>',
         discovery_kind: '<copy inspect or search from intent>',
         target_refs: ['<copy every matching current visible searched location or entity ref in intent order>'],
-        query: '<copy request.remaining_intent verbatim>' }], check: null
+        query: '<copy exact earliest discovery segment from request.remaining_intent>' }], check: null
     });
     const mapping = mappings.focused_ordinary_discovery;
     assert.equal(validateTurnStepPlan({
@@ -109,7 +109,7 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
       direct_result_kind: null,
       reason_code: 'ordinary_discovery', reason: 'Ищу обычную деталь.'
     }, { request: input }).ok, true);
-    assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary physical object, material, resource, or local physical detail[\s\S]*before and over[\s\S]*focused_ordinary_discovery exactly[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*every matching current visible target_ref[\s\S]*query copied verbatim from request\.remaining_intent[\s\S]*Code executes those targets one at a time/u);
+    assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary physical object, material, resource, or local physical detail[\s\S]*before and over[\s\S]*focused_ordinary_discovery exactly[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*every matching current visible target_ref[\s\S]*discovery is the whole remaining intent[\s\S]*exact earliest discovery prefix[\s\S]*exact uncovered suffix[\s\S]*Code executes discovery targets one at a time/u);
     assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*sought ordinary detail need not be visible[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
     assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
     assert.match(prompt, /general current situation, ongoing activity, or who is nearby are ordinary_scene_seed while scene_seed_available is true and visible_general_look afterward/u);

@@ -31,6 +31,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     throw new TypeError('ordinary finite-resource effect owner must be a function');
   }
   return async function resolve(request) {
+    if (request.operation?.target_refs?.length !== 1) {
+      return ordinaryNoop(request);
+    }
     const enabled = await loadDiscoveryContext(request);
     if (enabled == null) return ordinaryNoop(request);
     const modelBudget = semanticModelCallBudget(ordinaryMaterializationModel);

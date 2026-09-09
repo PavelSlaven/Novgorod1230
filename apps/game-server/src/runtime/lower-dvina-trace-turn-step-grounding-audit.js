@@ -59,13 +59,13 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
   return async ({ plan, request, resolved_domain_operations: resolved = [] }) => {
     const audited = [...auditedOperations(plan)];
     if (audited.length === 0) return true;
-    const genericDiscovery = standaloneGenericDiscovery({ audited, plan,
+    const genericDiscovery = genericOrdinaryDiscovery({ audited, plan,
       request, resolved });
     if (genericDiscovery != null) {
-      if (normalized(genericDiscovery.query)
-          === normalized(request.remaining_intent)) return true;
+      if (preservesIntent(genericDiscovery.query, plan.continuation,
+          request.remaining_intent)) return true;
       throw serverError('TURN_STEP_PLAN_INVALID',
-        'Ordinary discovery query must preserve the current intent.', {
+        'Ordinary discovery must preserve the current intent.', {
           details: { errors: [{ path: `${audited[0].path}.query`,
             rule: 'ordinary_discovery_query_identity',
             code: 'ordinary_discovery_query_identity',
@@ -93,14 +93,28 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
   };
 }
 
-function standaloneGenericDiscovery({ audited, plan, request, resolved }) {
+function genericOrdinaryDiscovery({ audited, plan, request, resolved }) {
   const owner = resolved.find(({ path }) => path === audited[0]?.path);
   if (audited.length !== 1 || plan.operations?.length !== 1
-      || plan.check != null || plan.continuation != null
+      || plan.check != null
       || owner?.owner_kind !== 'ordinary_discovery') return null;
   const operation = audited[0].operation;
   return isOrdinaryDiscoveryInScope({ operation,
     playerSafeState: request.player_safe_state }) ? operation : null;
+}
+
+function preservesIntent(query, continuation, remainingIntent) {
+  const remaining = normalized(remainingIntent);
+  const current = normalized(query);
+  if (continuation == null) return current === remaining;
+  const next = normalized(continuation.remaining_intent);
+  if (current == null || next == null || remaining == null
+      || current.length + next.length > remaining.length
+      || !remaining.startsWith(current) || !remaining.endsWith(next)) {
+    return false;
+  }
+  return !/[\p{L}\p{N}]/u.test(remaining.slice(current.length,
+    remaining.length - next.length));
 }
 
 function normalized(value) {

@@ -130,6 +130,8 @@ test('repair role receives original output, request, and structural errors', asy
     'one domain operation exactly equal to a supplied code-owned choice'), true);
   assert.equal(seen.messages[0].content.includes(
     'never substitute a broad authored operation choice'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'For ordinary_discovery_query_identity preserve the standalone request_discovery and copy request.remaining_intent verbatim into query'), true);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 

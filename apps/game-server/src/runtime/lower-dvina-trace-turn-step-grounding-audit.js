@@ -1,5 +1,6 @@
 import { serverError } from '../errors.js';
 import { isOrdinaryDiscoveryInScope } from '@rus/turn';
+import { isDeepStrictEqual } from 'node:util';
 
 const KINDS = new Set([
   'operation_semantic_grounding',
@@ -54,13 +55,26 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
   return async ({ plan, request, resolved_domain_operations: resolved = [] }) => {
     const audited = [...auditedOperations(plan)];
     if (audited.length === 0) return true;
-    if (exactGenericDiscovery({ audited, plan, request, resolved })) return true;
+    const genericDiscovery = standaloneGenericDiscovery({ audited, plan,
+      request, resolved });
+    if (genericDiscovery != null) {
+      if (normalized(genericDiscovery.query)
+          === normalized(request.remaining_intent)) return true;
+      throw serverError('TURN_STEP_PLAN_INVALID',
+        'Ordinary discovery query must preserve the current intent.', {
+          details: { errors: [{ path: `${audited[0].path}.query`,
+            rule: 'ordinary_discovery_query_identity',
+            code: 'ordinary_discovery_query_identity',
+            message: 'must equal the current remaining_intent' }] }
+        });
+    }
     const response = await roleRunner.run({
       scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
       request_identity: request.request_id,
       messages: [{ role: 'system', content: PROMPT }, { role: 'user',
         content: JSON.stringify({ remaining_intent: request.remaining_intent,
-          player_safe_state: groundingState(request.player_safe_state),
+          player_safe_state: groundingState(request.player_safe_state,
+            audited),
           operations: audited, continuation: plan.continuation }) }]
     });
     if (!valid(response?.output)) throw serverError(
@@ -75,15 +89,14 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
   };
 }
 
-function exactGenericDiscovery({ audited, plan, request, resolved }) {
+function standaloneGenericDiscovery({ audited, plan, request, resolved }) {
   const owner = resolved.find(({ path }) => path === audited[0]?.path);
   if (audited.length !== 1 || plan.operations?.length !== 1
       || plan.check != null || plan.continuation != null
-      || owner?.owner_kind !== 'ordinary_discovery') return false;
+      || owner?.owner_kind !== 'ordinary_discovery') return null;
   const operation = audited[0].operation;
   return isOrdinaryDiscoveryInScope({ operation,
-    playerSafeState: request.player_safe_state })
-    && normalized(operation.query) === normalized(request.remaining_intent);
+    playerSafeState: request.player_safe_state }) ? operation : null;
 }
 
 function normalized(value) {
@@ -110,7 +123,7 @@ function auditable(operation) {
       && operation.action_production != null;
 }
 
-function groundingState(state = {}) {
+function groundingState(state = {}, audited = []) {
   return {
     actor_id: state.actor_id, position: state.position,
     items: state.items ?? [], inventory: state.inventory ?? {},
@@ -120,7 +133,8 @@ function groundingState(state = {}) {
     observed_evidence_inspection:
       state.observed_evidence_inspection ?? null,
     available_domain_operation_grounding:
-      state.available_domain_operation_grounding ?? []
+      (state.available_domain_operation_grounding ?? []).filter(({ operation }) =>
+        audited.some((entry) => isDeepStrictEqual(entry.operation, operation)))
   };
 }
 

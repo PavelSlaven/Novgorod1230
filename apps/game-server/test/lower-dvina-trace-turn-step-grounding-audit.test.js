@@ -63,8 +63,14 @@ test('exact generic discovery grounding is enforced without an LLM audit',
     await assert.rejects(validate({ request: genericRequest, plan: {
       ...genericPlan, operations: [{ ...genericPlan.operations[0],
         query: 'искать на берегу следы лодки' }]
-    }, resolved_domain_operations: ordinaryOwner }), /must not run/u);
-    assert.equal(calls, 2);
+    }, resolved_domain_operations: ordinaryOwner }), (error) => {
+      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+      assert.equal(error.details.errors[0].code,
+        'ordinary_discovery_query_identity');
+      assert.equal(error.details.errors[0].path, '$.operations.0.query');
+      return true;
+    });
+    assert.equal(calls, 1);
   });
 
 test('turn-step grounding audit returns repairable source errors', async () => {
@@ -75,9 +81,8 @@ test('turn-step grounding audit returns repairable source errors', async () => {
         /operation_semantic_grounding[\s\S]*ordinary material[\s\S]*acquisition or gathering[\s\S]*practical use/u);
       assert.equal(JSON.parse(call.messages[1].content).operations[0]
         .operation.action_production.source_refs[0], 'knife:1');
-      assert.equal(JSON.parse(call.messages[1].content).player_safe_state
-        .available_domain_operation_grounding[0].semantic_scope.authority,
-      'authored_evidence_investigation');
+      assert.deepEqual(JSON.parse(call.messages[1].content).player_safe_state
+        .available_domain_operation_grounding, []);
       assert.equal(JSON.parse(call.messages[1].content).player_safe_state
         .observed_evidence_inspection.candidates[0].fact_ref,
       'fact:boot-track');
@@ -90,6 +95,56 @@ test('turn-step grounding audit returns repairable source errors', async () => {
     assert.equal(error.details.errors[0].code, 'source_semantic_grounding');
     return true;
   });
+});
+
+test('grounding audit omits an unrelated authored discovery scope',
+  async () => {
+    const genericRequest = { ...request,
+      remaining_intent: 'оценить прочность льда по трещинам и цвету',
+      player_safe_state: { ...request.player_safe_state,
+        position: { location_ref: 'location:river' },
+        ordinary_resolution: { discovery_available: true,
+          container_resolution_available: false, scene_seed_available: false },
+        available_domain_operation_grounding: [{
+          operation: { op: 'request_discovery', actor_ref: 'actor:1',
+            discovery_kind: 'inspect', target_refs: ['location:river'],
+            query: 'Осмотреть следы у проруби' },
+          semantic_scope: { authority: 'authored_evidence_investigation',
+            purpose: 'inspect authored tracks' }
+        }]
+      } };
+    const genericPlan = { continuation: null, operations: [{
+      op: 'request_discovery', actor_ref: 'actor:1', discovery_kind: 'inspect',
+      target_refs: ['location:river'],
+        query: genericRequest.remaining_intent
+    }] };
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run(call) {
+        const payload = JSON.parse(call.messages[1].content);
+        assert.deepEqual(payload.player_safe_state
+          .available_domain_operation_grounding, []);
+        return { output: { pass: true, concerns: [] } };
+      } }
+    });
+    assert.equal(await validate({ request: genericRequest, plan: genericPlan,
+      resolved_domain_operations: [{ path: '$.operations.0',
+        owner_kind: 'ordinary_discovery' }] }), true);
+  });
+
+test('grounding audit retains the exact authored discovery scope', async () => {
+  const operation = request.player_safe_state
+    .available_domain_operation_grounding[0].operation;
+  const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+    roleRunner: { async run(call) {
+      const [grounding] = JSON.parse(call.messages[1].content)
+        .player_safe_state.available_domain_operation_grounding;
+      assert.equal(grounding.semantic_scope.authority,
+        'authored_evidence_investigation');
+      return { output: { pass: true, concerns: [] } };
+    } }
+  });
+  assert.equal(await validate({ request, plan: { continuation: null,
+    operations: [operation] } }), true);
 });
 
 test('turn-step grounding audit includes generic-check outcome production',

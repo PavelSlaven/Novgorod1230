@@ -6,6 +6,7 @@ import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
 import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
 import { lowerDvinaTraceDirectResultChanges,
+  lowerDvinaTraceCarriedItemObservations,
   lowerDvinaTraceVisibleSceneItems,
   uniqueLowerDvinaTraceVisibleObjects } from
   './lower-dvina-trace-visible-scene-items.js';
@@ -102,7 +103,8 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
   const current = input?.retrieved_state?.current_visible_context;
   if (!validCurrentScene(current)) failCurrentScene();
   const outcomeConstraints = directOutcomeConstraints(input);
-  const directResultChanges = lowerDvinaTraceDirectResultChanges(input);
+  const directResultChanges = lowerDvinaTraceDirectResultChanges(input,
+    playerSafeSceneItems(input?.retrieved_state));
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
@@ -139,6 +141,11 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
       ...outcomeConstraints
     ])
   });
+}
+
+function playerSafeSceneItems(state) {
+  return lowerDvinaTraceCarriedItemObservations(state?.items,
+    state?.current_visible_context?.visible_objects);
 }
 export function projectDirectSeedChanges({ input, directSeedKeys }) {
   const seed = input?.consequence?.visible_seed ?? {};

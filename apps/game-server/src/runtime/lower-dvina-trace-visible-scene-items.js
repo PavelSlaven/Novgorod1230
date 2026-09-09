@@ -1,4 +1,6 @@
-export function lowerDvinaTraceDirectResultChanges(input) {
+import { resolvePhysicalItemCondition } from '@rus/items-property';
+
+export function lowerDvinaTraceDirectResultChanges(input, sceneItems = []) {
   const plans = input?.mode_resolution?.decision_trace?.step_traces ?? [];
   const kinds = new Set(plans.filter(({ approved_plan: plan, applied }) =>
     applied === true && plan?.resolution === 'direct'
@@ -9,6 +11,8 @@ export function lowerDvinaTraceDirectResultChanges(input) {
   return [
     ...(kinds.has('player_safe_observation')
       ? ['Наблюдение завершено по уже доступным вам признакам.'] : []),
+    ...(kinds.has('player_safe_item_observation')
+      ? carriedItemObservationChanges(sceneItems) : []),
     ...(kinds.has('no_state_gesture')
       ? ['Вы завершили простой жест.'] : [])
   ];
@@ -23,7 +27,8 @@ export function lowerDvinaTraceVisibleSceneItems(items, position, actorId) {
     const held = placement.holder_character_id === actorId;
     const itemId = item?.item_id ?? item?.instance_id;
     if ((!coLocated && !held) || !text(itemId)) return [];
-    return [{ physicalFacts: item.physical_facts ?? [], visibleObject: {
+    return [{ physicalFacts: item.physical_facts ?? [], held,
+      condition: resolvePhysicalItemCondition(item), visibleObject: {
       entity_ref: { entity_kind: 'item', entity_id: itemId },
       display_label: visibleItemLabel(item), recognition: 'recognized',
       visible_status: held
@@ -31,6 +36,50 @@ export function lowerDvinaTraceVisibleSceneItems(items, position, actorId) {
           ? 'у вас в руках' : 'при вас'
         : 'available' } }];
   });
+}
+
+export function lowerDvinaTraceCarriedItemObservations(items, visibleObjects) {
+  const visible = new Map((visibleObjects ?? []).filter(({ entity_ref: ref,
+    visible_status: status }) => ref?.entity_kind === 'item'
+      && text(ref.entity_id)
+      && ['при вас', 'у вас в руках'].includes(status))
+    .map((object) => [object.entity_ref.entity_id, object]));
+  return (items ?? []).flatMap((item) => {
+    const itemId = item?.item_id ?? item?.instance_id;
+    const visibleObject = visible.get(itemId);
+    return visibleObject == null ? [] : [{ held: true,
+      condition: resolvePhysicalItemCondition(item), visibleObject }];
+  });
+}
+
+function carriedItemObservationChanges(sceneItems) {
+  const carried = sceneItems.filter(({ held }) => held);
+  if (carried.length === 0) {
+    return ['Осмотр не дал подтверждённых сведений о состоянии вещей при вас.'];
+  }
+  const changes = [`При вас находятся ${russianList(carried.map(
+    ({ visibleObject }) => visibleObject.display_label))}.`];
+  for (const [condition, description] of [
+    ['serviceable', 'пригодное к обычному использованию'],
+    ['damaged', 'повреждённое']
+  ]) {
+    const matching = carried.filter((item) => item.condition === condition)
+      .map(({ visibleObject }) => visibleObject.display_label);
+    if (matching.length > 0) {
+      changes.push(`Подтверждено ${description} состояние: ${russianList(matching)}.`);
+    }
+  }
+  const unknown = carried.filter(({ condition }) => condition == null)
+    .map(({ visibleObject }) => visibleObject.display_label);
+  if (unknown.length > 0) {
+    changes.push(`Точное состояние не подтверждено: ${russianList(unknown)}.`);
+  }
+  return changes;
+}
+
+function russianList(values) {
+  return values.length < 2 ? values[0]
+    : `${values.slice(0, -1).join(', ')} и ${values.at(-1)}`;
 }
 
 export function uniqueLowerDvinaTraceVisibleObjects(values) {

@@ -71,6 +71,8 @@ test('direct result kind is structural and write-free', () => {
     direct_result_kind: 'player_safe_observation' };
   assert.equal(validateTurnStepPlan(observation, { request }).ok, true);
   assert.equal(validateTurnStepPlan({ ...observation,
+    direct_result_kind: 'player_safe_item_observation' }, { request }).ok, true);
+  assert.equal(validateTurnStepPlan({ ...observation,
     direct_result_kind: 'no_state_gesture' }, { request }).ok, true);
   for (const invalid of [
     { ...observation, direct_result_kind: null },

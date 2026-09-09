@@ -87,7 +87,8 @@ export const TURN_STEP_PLAN_V1_SCHEMA = deepFreeze({
     continuation: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/continuation' }] },
     clarification: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/clarification' }] },
     direct_result_kind: { anyOf: [{ type: 'null' }, {
-      enum: ['player_safe_observation', 'no_state_gesture'] }] },
+      enum: ['player_safe_observation', 'player_safe_item_observation',
+        'no_state_gesture'] }] },
     reason_code: textSchema,
     reason: textSchema
   }),

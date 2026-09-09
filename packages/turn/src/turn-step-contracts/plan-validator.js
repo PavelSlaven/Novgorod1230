@@ -83,7 +83,8 @@ export function validateTurnStepPlan(value, { request } = {}) {
 
 function validateDirectResultKind(plan, errors) {
   enumValue(plan.direct_result_kind, [null, 'player_safe_observation',
-    'no_state_gesture'], '$.direct_result_kind', errors);
+    'player_safe_item_observation', 'no_state_gesture'],
+  '$.direct_result_kind', errors);
   const requiresKind = plan.resolution === 'direct'
     && ['achieved', 'partially_achieved'].includes(plan.goal_result)
     && plan.activity?.owner === 'semantic'

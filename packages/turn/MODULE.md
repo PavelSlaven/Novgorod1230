@@ -33,9 +33,11 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 - Сводка уже player-safe carried/worn items и качественная оценка уже
   предъявленных sensory facts относятся к write-free direct observation, а не
   к ordinary materialization. Обязательный для успешного write-free direct
-  результата nullable `direct_result_kind` различает player-safe observation
-  и no-state gesture; code-owned presentation подтверждает только этот класс
-  результата и уже player-safe context;
+  результата nullable `direct_result_kind` различает общее player-safe
+  observation, осмотр уже player-safe carried/worn items и no-state gesture;
+  code-owned presentation подтверждает только этот класс результата и уже
+  player-safe context; для item observation оно явно проецирует текущие
+  held/worn labels и подтверждённое состояние;
   он не переносит свободный planner reason как факт. Поиск новой детали остаётся
   `request_discovery`; uncertainty и отсутствие локального exact forecast не
   должны превращать доступное наблюдение в игровой отказ.

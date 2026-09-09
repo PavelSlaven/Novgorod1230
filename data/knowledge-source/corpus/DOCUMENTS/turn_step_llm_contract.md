@@ -372,14 +372,19 @@ LLM возвращает не весь заявленный сценарий, а
 ### 8.2.1. Write-free direct result
 
 Обязательное nullable структурное поле `direct_result_kind` принимает
-`player_safe_observation`, `no_state_gesture` или `null`. Первые два значения
+`player_safe_observation`, `player_safe_item_observation`,
+`no_state_gesture` или `null`. Первые три значения
 разрешены только для прямого успешного или частично успешного write-free шага с
 `activity = semantic/moment/none`, пустыми `operations`, `check = null` и
 `clarification = null`; для такого шага `null` запрещён. Во всех остальных
 планах поле равно `null`.
 
 `player_safe_observation` подтверждает только завершение наблюдения; его
-содержание ограничено уже предъявленными player-safe facts. `no_state_gesture`
+содержание ограничено уже предъявленными player-safe facts.
+`player_safe_item_observation` отдельно классифицирует осмотр уже
+player-safe carried/worn items; код проецирует их текущие labels,
+placement и подтверждённое condition как обязательный результат, а не как
+необязательный ambient context. `no_state_gesture`
 подтверждает только выполнение простого жеста без нового состояния. Новая
 физическая деталь требует соответствующий domain/discovery path. Код проверяет
 эти условия; `reason` и `reason_code` остаются только диагностикой.

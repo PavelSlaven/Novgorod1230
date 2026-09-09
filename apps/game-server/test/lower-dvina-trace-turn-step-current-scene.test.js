@@ -277,6 +277,39 @@ test('direct player-safe observation reaches narration without new facts', () =>
   }), ['Вы завершили простой жест.']);
 });
 
+test('carried item observation exposes concrete player-safe belongings', () => {
+  const state = committedState();
+  state.items.push({ item_id: 'case', name: 'кожаный футляр',
+    condition_state: 'serviceable', placement: {
+      holder_character_id: state.actor_id, physical_position: 'worn_quick'
+    } }, { item_id: 'flask', name: 'глиняная фляга',
+    condition_state: 'damaged', placement: {
+      holder_character_id: state.actor_id, physical_position: 'hands'
+    } }, { item_id: 'nearby-log', name: 'полено',
+    condition_state: 'serviceable', placement: {
+      location_ref: 'shed', anchor_id: 'shed-anchor'
+    } });
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles
+  });
+  const visible = projectCurrentSceneForNoOperationDirect({ input: {
+    consequence: { status: 'resolved', visible_seed: {} },
+    retrieved_state: current, mode_resolution: { decision_trace: {
+      remaining_intent: null, step_traces: [{ applied: true, approved_plan: {
+        resolution: 'direct', goal_result: 'achieved', operations: [],
+        check: null, direct_result_kind: 'player_safe_item_observation'
+      } }] } }
+  }, directSeedKeys: [], body: {} });
+
+  assert.deepEqual(visible.visible_changes, [
+    'При вас находятся кожаный футляр и глиняная фляга.',
+    'Подтверждено пригодное к обычному использованию состояние: кожаный футляр.',
+    'Подтверждено повреждённое состояние: глиняная фляга.'
+  ]);
+  assert.equal(visible.visible_changes.some((change) =>
+    change.includes('полено')), false);
+});
+
 test('ordinary scene seed augments the current scene in the same turn', async () => {
   const projector = createLowerDvinaTraceTurnStepVisibleProjector({
     fallback: { project: async () => assert.fail('fallback not expected') }

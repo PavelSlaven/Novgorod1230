@@ -79,6 +79,8 @@ test('turn-step grounding audit returns repairable source errors', async () => {
       assert.equal(call.role_id, 'turn_step_grounding_auditor');
       assert.match(call.messages[0].content,
         /operation_semantic_grounding[\s\S]*ordinary material[\s\S]*acquisition or gathering[\s\S]*practical use/u);
+      assert.match(call.messages[0].content,
+        /ordinary belongings, supplies, tools, materials, reusable remnants[\s\S]*later practical use[\s\S]*not authored investigation[\s\S]*same[\s\S]*place, object, or prior event/u);
       assert.equal(JSON.parse(call.messages[1].content).operations[0]
         .operation.action_production.source_refs[0], 'knife:1');
       assert.deepEqual(JSON.parse(call.messages[1].content).player_safe_state

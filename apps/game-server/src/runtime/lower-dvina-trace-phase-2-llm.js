@@ -234,9 +234,9 @@ export function assembleTurnStepPlan(choice, request,
     clarification: semantic.clarification ?? null,
     reason_code: semantic.reason_code,
     reason: semantic.reason,
-    ...(mismatchedSelectedOperations || copiedExactOperation ? {
+    ...(mismatchedSelectedOperations ? {
       operation_choice: semantic.operation_choice
-    } : {})
+    } : copiedExactOperation ? { copied_operation_choice: true } : {})
   };
 }
 

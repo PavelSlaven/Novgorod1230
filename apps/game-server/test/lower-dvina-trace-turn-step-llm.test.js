@@ -347,7 +347,7 @@ test('turn step adapter rejects an exact copied operation choice', () => {
     reason: 'Нужен ordinary material.'
   }, input);
   assert.deepEqual(plan.operations, [candidate]);
-  assert.equal(plan.operation_choice, null);
+  assert.equal(plan.copied_operation_choice, true);
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
 });
 

@@ -1,5 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 import { isDeepStrictEqual } from 'node:util';
+import { isObservedEvidenceInspectionInScope } from
+  './turn-step-observed-evidence.js';
 
 export function resolveTurnStepDomainOwner({
   operation, plan, request, actor, playerSafeState, committedState,
@@ -38,6 +40,9 @@ export function resolveTurnStepDomainOwner({
       && typeof services.turnStepOrdinaryDiscoveryResolver === 'function'
       && isOrdinaryDiscoveryInScope({ operation, playerSafeState })) {
     return { kind: 'ordinary_discovery' };
+  }
+  if (isObservedEvidenceInspectionInScope({ operation, playerSafeState })) {
+    return { kind: 'observed_evidence' };
   }
   if (operation.op === 'request_world_process'
       && typeof services.turnStepWorldProcessResolver === 'function') {

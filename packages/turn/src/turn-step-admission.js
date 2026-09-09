@@ -5,6 +5,7 @@ import { assertValid, validateAvailabilityDecision, validateConsequencePackage }
 import { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
 import { createTurnStepDomainOwnerPreflight as createPreflight } from './turn-step-domain-owner-preflight.js';
 import { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
+import { resolveObservedEvidenceInspection } from './turn-step-observed-evidence.js';
 import { isBackgroundNpcSemanticRemainderInScope,
   resolveBackgroundNpcSemanticRemainder } from
   './turn-step-background-npc-remainder.js';
@@ -144,6 +145,7 @@ export async function resolveBoundTurnStepCommand({
             structuredClone(execution.prepared_chain_context)
         }));
       }
+      if (owner.kind === 'observed_evidence') return resolveObservedEvidenceInspection(execution);
       if (owner.kind === 'world_process') {
         const worldProcess = resolveWorldProcessRemainder({ operation,
           execution, projected, committedState, services });

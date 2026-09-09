@@ -10,7 +10,11 @@ export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
       || typeof operation.query !== 'string'
       || operation.query.trim().length === 0
       || capability == null) return false;
-  return exactVisibleScope(playerSafeState).has(operation.target_refs[0]);
+  return isCurrentVisibleDiscoveryRef(playerSafeState, operation.target_refs[0]);
+}
+
+export function isCurrentVisibleDiscoveryRef(playerSafeState, targetRef) {
+  return exactVisibleScope(playerSafeState).has(targetRef);
 }
 
 function ordinaryResolutionCapability(playerSafeState) {

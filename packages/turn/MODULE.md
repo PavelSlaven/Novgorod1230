@@ -209,6 +209,10 @@ receipt ранее выполненного adversarial Stage B classification e
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 
+Повторный `inspect` уже наблюдённого player-safe evidence ref имеет общий
+bounded owner: он не создаёт новую истину и возвращает только отсутствие
+достаточных подтверждённых данных; authored/external owner сохраняет приоритет.
+
 Active O2a добавляет authored wreck-shore ambient capability и first-entry
 context-bound finite stock подготовленной глины. Player-safe state показывает
 committed stock как обычный source только при отдельном approved disclosure

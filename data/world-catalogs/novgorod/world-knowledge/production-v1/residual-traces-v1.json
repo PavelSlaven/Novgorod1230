@@ -1,0 +1,343 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:residual-traces-unh-signs",
+      "title": "Finding Animal Signs [4-H Activity]",
+      "authors": [
+        "University of New Hampshire Cooperative Extension"
+      ],
+      "publication": "University Cooperative Extension, educational natural-history material",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.unh.edu/resource/finding-animal-signs-4-h-activity",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:residual-traces-maine-decay",
+      "title": "Activity 6: Crime Scene Scientists",
+      "authors": [
+        "University of Maine Cooperative Extension"
+      ],
+      "publication": "University Cooperative Extension, educational natural-history material",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.umaine.edu/4h/stem-toolkits/sustainable-fishing/activity-6-crime-scene-scientists/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-traces-animal-trace-types",
+      "source_ref": "source:residual-traces-unh-signs",
+      "anchor": {
+        "section": "Look for animal signs"
+      },
+      "note": "The source lists footprints, disturbed leaves/soil, holes, chewed leaves, scat and scratches as animal signs. This is a set of possible sign types, not an identification key or local occurrence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-traces-deadwood-feeding-signs",
+      "source_ref": "source:residual-traces-unh-signs",
+      "anchor": {
+        "section": "Hints; example photos"
+      },
+      "note": "Dead trees house insects; birds feeding on these insects can leave signs in the wood. Avoid identifying any hole as a particular bird or claiming every dead tree is occupied.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-traces-animal-trace-weather-decay",
+      "source_ref": "source:residual-traces-maine-decay",
+      "anchor": {
+        "section": "Background Information for Facilitators; Elaborate"
+      },
+      "note": "Time/disturbance decay signs: feathers blow away, weather/traffic wear down footprints, and scat decomposes into soil. No numerical decay clock is supplied.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:residual-traces-animal-sign-absence-limit",
+      "source_ref": "source:residual-traces-maine-decay",
+      "anchor": {
+        "section": "Background Information for Facilitators"
+      },
+      "note": "Inference from source's explicit decay and nonpermanence of traces: absence of surviving evidence cannot establish absence of earlier animal activity. This is an evidential limit, not presence or animal generation.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:residual-trace-formation-and-preservation",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-traces-animal-trace-types",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-trace-formation-and-preservation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Animal activity can leave footprints, droppings, chewed leaves, scratches, holes and disturbed leaves or soil."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-traces-animal-trace-types"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-traces-deadwood-feeding-signs",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-trace-formation-and-preservation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Dead wood can house insects, and birds feeding on them can leave signs on the tree."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-traces-deadwood-feeding-signs"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-traces-animal-trace-weather-decay",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-trace-formation-and-preservation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Signs persist differently: wind carries feathers away, weather and traffic wear down footprints, and droppings gradually decompose."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-traces-animal-trace-weather-decay"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:residual-traces-animal-sign-absence-limit",
+      "domain": "environment",
+      "subject_ref": "wk:environment:residual-trace-formation-and-preservation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "An absence of surviving signs does not prove that an animal never passed through: signs can decay or be displaced. Possible loss of signs is not itself evidence that an animal was present."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:residual-traces-animal-sign-absence-limit"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:residual-trace-formation-and-preservation",
+      "locale": "ru",
+      "labels": [
+        "Образование и сохранность следов животных"
+      ],
+      "short_definition": "Типы биологических следов и ограничения наблюдения.",
+      "search_aliases": [
+        "следы",
+        "помёт",
+        "погрызы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:residual-trace-formation-and-preservation",
+      "locale": "en",
+      "labels": [
+        "Animal sign formation and preservation"
+      ],
+      "short_definition": "Biological sign types and limits of observation.",
+      "search_aliases": [
+        "tracks",
+        "scat",
+        "feeding signs"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-traces-animal-trace-types",
+      "locale": "ru",
+      "runtime_text": "Следами деятельности животных могут быть отпечатки лап, помёт, погрызенные листья, царапины, норы и нарушенный слой листьев или почвы.",
+      "search_aliases": [
+        "следы животных",
+        "помёт",
+        "погрызы",
+        "царапины",
+        "нарушенная почва"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-traces-animal-trace-types",
+      "locale": "en",
+      "runtime_text": "Animal activity can leave footprints, droppings, chewed leaves, scratches, holes and disturbed leaves or soil.",
+      "search_aliases": [
+        "animal signs",
+        "scat",
+        "feeding signs",
+        "scratches",
+        "disturbed soil"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-traces-deadwood-feeding-signs",
+      "locale": "ru",
+      "runtime_text": "Мёртвая древесина может служить местом жизни насекомых, а кормящиеся ими птицы могут оставлять следы на дереве.",
+      "search_aliases": [
+        "мёртвая древесина",
+        "дупло",
+        "насекомые",
+        "кормовые следы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-traces-deadwood-feeding-signs",
+      "locale": "en",
+      "runtime_text": "Dead wood can house insects, and birds feeding on them can leave signs on the tree.",
+      "search_aliases": [
+        "dead wood",
+        "holes",
+        "insects",
+        "feeding signs"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-traces-animal-trace-weather-decay",
+      "locale": "ru",
+      "runtime_text": "Следы сохраняются неодинаково: ветер уносит перья, погода и движение по поверхности стирают отпечатки, помёт постепенно разлагается.",
+      "search_aliases": [
+        "давность следа",
+        "сохранность следов",
+        "ветер",
+        "погода",
+        "разложение помёта"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-traces-animal-trace-weather-decay",
+      "locale": "en",
+      "runtime_text": "Signs persist differently: wind carries feathers away, weather and traffic wear down footprints, and droppings gradually decompose.",
+      "search_aliases": [
+        "track age",
+        "sign preservation",
+        "wind",
+        "weather",
+        "scat decomposition"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-traces-animal-sign-absence-limit",
+      "locale": "ru",
+      "runtime_text": "Отсутствие сохранившихся следов не доказывает, что животное раньше не проходило здесь: признаки могут разрушиться или быть снесены. Но и возможная утрата следов не является доказательством присутствия животного.",
+      "search_aliases": [
+        "нет следов",
+        "животное прошло",
+        "следы исчезли"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:residual-traces-animal-sign-absence-limit",
+      "locale": "en",
+      "runtime_text": "An absence of surviving signs does not prove that an animal never passed through: signs can decay or be displaced. Possible loss of signs is not itself evidence that an animal was present.",
+      "search_aliases": [
+        "no tracks",
+        "animal passage",
+        "lost traces"
+      ]
+    }
+  ]
+}

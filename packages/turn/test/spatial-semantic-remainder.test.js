@@ -57,3 +57,23 @@ test('S1 live evaluation sends each validated intent outside production DTO', as
     && value.approved_envelope.required_semantic_requirements[0] === 'interior_space'
     && Object.keys(value).length === 8));
 });
+
+test('S1 receives factual compatibility without turning it into presence', async () => {
+  let input; let prompt;
+  await resolveSpatialSemanticDescriptor({ request: request(),
+    worldKnowledge: knowledge(), roleRunner: { async run({ messages }) {
+      prompt = messages[0].content;
+      input = JSON.parse(messages[1].content);
+      return { output: { schema: 'rus.s1_spatial_semantic_proposal.v1',
+        request_id: 'request:s1', name: 'Навес', description: 'Низкий навес.',
+        semantic_requirements: ['interior_space'] } };
+    } } });
+  assert.equal(input.world_knowledge.pack_revision, 'revision:test');
+  assert.match(prompt, /Compatibility does not prove current presence/u);
+});
+
+function knowledge() {
+  return { schema: 'world_knowledge_slice_v1', pack_ref: 'wk-pack:test',
+    pack_revision: 'revision:test', coverage: [], hard_constraints: [],
+    facts: [], disputes: [], gaps: [] };
+}

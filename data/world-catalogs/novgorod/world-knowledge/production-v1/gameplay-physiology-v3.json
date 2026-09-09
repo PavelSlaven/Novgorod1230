@@ -1,0 +1,1809 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-openstax-ap14-motor",
+      "title": "14.3 Motor Responses",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/14-3-motor-responses",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-openstax-ap23-deglutition",
+      "title": "23.3 The Mouth, Pharynx, and Esophagus",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/23-3-the-mouth-pharynx-and-esophagus",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-nlm-clinical-methods-cough-vomit",
+      "title": "Clinical Methods: The History, Physical, and Laboratory Examinations",
+      "authors": [
+        "Walker, H. K.",
+        "Hall, W. D.",
+        "Hurst, J. W."
+      ],
+      "publication": "NCBI Bookshelf, National Library of Medicine, NIH",
+      "source_kind": "scholarship",
+      "citation": "https://www.ncbi.nlm.nih.gov/books/NBK359/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-pmc-sneeze-reflex",
+      "title": "The sneeze reflex in physiological and pathological states: a mini review",
+      "authors": [],
+      "publication": "PubMed Central, National Library of Medicine, NIH",
+      "source_kind": "scholarship",
+      "citation": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12098519/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-nlm-clinical-methods-emesis",
+      "title": "Nausea and Vomiting",
+      "authors": [
+        "Maule, W. F."
+      ],
+      "publication": "Clinical Methods, 3rd edition; NCBI Bookshelf, National Library of Medicine, NIH",
+      "source_kind": "scholarship",
+      "citation": "https://www.ncbi.nlm.nih.gov/books/NBK410/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-nlm-gag-reflex",
+      "title": "Physiology, Gag Reflex",
+      "authors": [],
+      "publication": "NCBI Bookshelf, National Library of Medicine, NIH",
+      "source_kind": "scholarship",
+      "citation": "https://www.ncbi.nlm.nih.gov/books/NBK554502/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-nlm-mesh-startle",
+      "title": "Reflex, Startle",
+      "authors": [],
+      "publication": "Medical Subject Headings, National Library of Medicine, NIH",
+      "source_kind": "official_documentation",
+      "citation": "https://www.ncbi.nlm.nih.gov/mesh/D013216",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-openstax-ap-homeostasis",
+      "title": "1.5 Homeostasis",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/1-5-homeostasis",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-nhlbi-respiratory-failure",
+      "title": "Respiratory Failure — Symptoms",
+      "authors": [
+        "National Heart, Lung, and Blood Institute"
+      ],
+      "publication": "National Institutes of Health",
+      "source_kind": "official_documentation",
+      "citation": "https://www.nhlbi.nih.gov/health/respiratory-failure/symptoms",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-kent-nhs-choking",
+      "title": "Choking and what to do if it happens",
+      "authors": [
+        "Kent Community Health NHS Foundation Trust"
+      ],
+      "publication": "Kent Community Health NHS Foundation Trust",
+      "source_kind": "official_documentation",
+      "citation": "https://www.kentcht.nhs.uk/leaflet/choking-and-what-to-do-if-it-happens/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-who-drowning",
+      "title": "Drowning",
+      "authors": [
+        "World Health Organization"
+      ],
+      "publication": "World Health Organization",
+      "source_kind": "official_documentation",
+      "citation": "https://www.who.int/news-room/fact-sheets/detail/drowning",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-openstax-ap15-autonomic",
+      "title": "15.2 Autonomic Reflexes and Homeostasis",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/15-2-autonomic-reflexes-and-homeostasis",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-openstax-ap20-vascular",
+      "title": "20.4 Homeostatic Regulation of the Vascular System",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/20-4-homeostatic-regulation-of-the-vascular-system",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-openstax-ap26-water",
+      "title": "26.2 Water Balance",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/26-2-water-balance",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-niaaa-alcohol-overdose",
+      "title": "Understanding the Dangers of Alcohol Overdose",
+      "authors": [
+        "National Institute on Alcohol Abuse and Alcoholism"
+      ],
+      "publication": "National Institutes of Health",
+      "source_kind": "official_documentation",
+      "citation": "https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/understanding-dangers-of-alcohol-overdose",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-openstax-bn-stress",
+      "title": "12.1 What Is Stress?",
+      "authors": [],
+      "publication": "OpenStax Introduction to Behavioral Neuroscience",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/introduction-behavioral-neuroscience/pages/12-1-what-is-stress",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:candidate-openstax-bn-balance",
+      "title": "7.4 Balance: A Sense of Where You Are",
+      "authors": [],
+      "publication": "OpenStax Introduction to Behavioral Neuroscience",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/introduction-behavioral-neuroscience/pages/7-4-balance-a-sense-of-where-you-are",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-protective-withdrawal",
+      "source_ref": "source:candidate-openstax-ap14-motor",
+      "anchor": {"section":"Reflexes"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-blink-corneal-protection",
+      "source_ref": "source:candidate-openstax-ap14-motor",
+      "anchor": {"section":"Reflexes"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-swallowing-airway-protection",
+      "source_ref": "source:candidate-openstax-ap23-deglutition",
+      "anchor": {"section":"Deglutition; Pharyngeal Phase"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-cough-reflex-airway-irritation",
+      "source_ref": "source:candidate-nlm-clinical-methods-cough-vomit",
+      "anchor": {"section":"Chapter 6, Cough and Sputum Production"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+      "source_ref": "source:candidate-pmc-sneeze-reflex",
+      "anchor": {"section":"Regulation of the central nervous system"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+      "source_ref": "source:candidate-nlm-gag-reflex",
+      "anchor": {"section":"Introduction; reflex physiology"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-emesis-reflex-response",
+      "source_ref": "source:candidate-nlm-clinical-methods-emesis",
+      "anchor": {"section":"Chapter 84, Nausea and Vomiting; Definition; Basic Science"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+      "source_ref": "source:candidate-nlm-mesh-startle",
+      "anchor": {"section":"Scope note"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-shivering-thermogenesis",
+      "source_ref": "source:candidate-openstax-ap-homeostasis",
+      "anchor": {"section":"Homeostasis"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-oxygen-delivery-brain-function",
+      "source_ref": "source:candidate-nhlbi-respiratory-failure",
+      "anchor": {"section":"Symptoms"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+      "source_ref": "source:candidate-kent-nhs-choking",
+      "anchor": {"section":"What is choking?"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-drowning-respiratory-impairment",
+      "source_ref": "source:candidate-who-drowning",
+      "anchor": {"section":"Overview"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-low-brain-perfusion-awareness",
+      "source_ref": "source:candidate-openstax-ap15-autonomic",
+      "anchor": {"section":"Orthostatic Hypotension"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-blood-volume-perfusion-compensation",
+      "source_ref": "source:candidate-openstax-ap20-vascular",
+      "anchor": {"section":"Clinical Considerations in Vascular Homeostasis; Hemorrhage"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-dehydration-functional-risk",
+      "source_ref": "source:candidate-openstax-ap26-water",
+      "anchor": {"section":"Water Balance"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-alcohol-intoxication-impairment",
+      "source_ref": "source:candidate-niaaa-alcohol-overdose",
+      "anchor": {"section":"Symptoms"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-threat-autonomic-arousal",
+      "source_ref": "source:candidate-openstax-bn-stress",
+      "anchor": {"section":"The stress response"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:candidate-physiology-v3-vestibular-postural-correction",
+      "source_ref": "source:candidate-openstax-bn-balance",
+      "anchor": {"section":"Balance feedback; vestibulo-ocular reflex"},
+      "note": "Pending independent verification; proposed production payload only. Universal qualitative physiology; no diagnosis, treatment, exact mechanics, present actor state, historical practice, or outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-protective-withdrawal",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-blink-corneal-protection",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-swallowing-airway-protection",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-cough-reflex-airway-irritation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-sneeze-reflex-nasal-irritation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-gag-reflex-pharyngeal-stimulation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-emesis-reflex-response",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-startle-reflex-strong-sudden-stimulus",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-shivering-thermogenesis",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-oxygen-delivery-brain-function",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-drowning-respiratory-impairment",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-low-brain-perfusion-awareness",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-blood-volume-perfusion-compensation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-dehydration-functional-risk",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-alcohol-intoxication-impairment",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-threat-autonomic-arousal",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-protective-withdrawal",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-protective-withdrawal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_protective_withdrawal"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-protective-withdrawal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-blink-corneal-protection",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-blink-corneal-protection",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_blink_corneal_protection"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-blink-corneal-protection"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-swallowing-airway-protection",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-swallowing-airway-protection",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_swallowing_airway_protection"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-swallowing-airway-protection"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-cough-reflex-airway-irritation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_cough_reflex_airway_irritation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-cough-reflex-airway-irritation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-sneeze-reflex-nasal-irritation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_sneeze_reflex_nasal_irritation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-sneeze-reflex-nasal-irritation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-gag-reflex-pharyngeal-stimulation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_gag_reflex_pharyngeal_stimulation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-emesis-reflex-response",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-emesis-reflex-response",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_emesis_reflex_response"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-emesis-reflex-response"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-startle-reflex-strong-sudden-stimulus",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_startle_reflex_strong_sudden_stimulus"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-shivering-thermogenesis",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-shivering-thermogenesis",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_shivering_thermogenesis"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-shivering-thermogenesis"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-oxygen-delivery-brain-function",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_oxygen_delivery_brain_function"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-oxygen-delivery-brain-function"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_airway_obstruction_respiratory_impairment"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-airway-obstruction-respiratory-impairment"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-drowning-respiratory-impairment",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_drowning_respiratory_impairment"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-drowning-respiratory-impairment"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-low-brain-perfusion-awareness",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_low_brain_perfusion_awareness"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-low-brain-perfusion-awareness"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-blood-volume-perfusion-compensation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_blood_volume_perfusion_compensation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-blood-volume-perfusion-compensation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-dehydration-functional-risk",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-dehydration-functional-risk",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_dehydration_functional_risk"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-dehydration-functional-risk"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-alcohol-intoxication-impairment",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_alcohol_intoxication_impairment"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-alcohol-intoxication-impairment"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-threat-autonomic-arousal",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-threat-autonomic-arousal",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_threat_autonomic_arousal"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-threat-autonomic-arousal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:candidate-physiology-v3-vestibular-postural-correction",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "candidate_vestibular_postural_correction"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:candidate-physiology-v3-vestibular-postural-correction"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-protective-withdrawal",
+      "locale": "ru",
+      "labels": [
+        "Защитный рефлекс отдёргивания"
+      ],
+      "short_definition": "Защитный рефлекс отдёргивания",
+      "search_aliases": [
+        "Защитный рефлекс отдёргивания"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-protective-withdrawal",
+      "locale": "en",
+      "labels": [
+        "Protective withdrawal reflex"
+      ],
+      "short_definition": "Protective withdrawal reflex",
+      "search_aliases": [
+        "Protective withdrawal reflex"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-blink-corneal-protection",
+      "locale": "ru",
+      "labels": [
+        "Корнеальный мигательный рефлекс"
+      ],
+      "short_definition": "Корнеальный мигательный рефлекс",
+      "search_aliases": [
+        "Корнеальный мигательный рефлекс"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-blink-corneal-protection",
+      "locale": "en",
+      "labels": [
+        "Corneal blink reflex"
+      ],
+      "short_definition": "Corneal blink reflex",
+      "search_aliases": [
+        "Corneal blink reflex"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-swallowing-airway-protection",
+      "locale": "ru",
+      "labels": [
+        "Защита дыхательных путей при глотании"
+      ],
+      "short_definition": "Защита дыхательных путей при глотании",
+      "search_aliases": [
+        "Защита дыхательных путей при глотании"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-swallowing-airway-protection",
+      "locale": "en",
+      "labels": [
+        "Swallowing airway protection"
+      ],
+      "short_definition": "Swallowing airway protection",
+      "search_aliases": [
+        "Swallowing airway protection"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-cough-reflex-airway-irritation",
+      "locale": "ru",
+      "labels": [
+        "Кашлевой рефлекс при раздражении дыхательных путей"
+      ],
+      "short_definition": "Кашлевой рефлекс при раздражении дыхательных путей",
+      "search_aliases": [
+        "Кашлевой рефлекс при раздражении дыхательных путей"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-cough-reflex-airway-irritation",
+      "locale": "en",
+      "labels": [
+        "Cough reflex airway irritation"
+      ],
+      "short_definition": "Cough reflex airway irritation",
+      "search_aliases": [
+        "Cough reflex airway irritation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-sneeze-reflex-nasal-irritation",
+      "locale": "ru",
+      "labels": [
+        "Чихательный рефлекс при раздражении носа"
+      ],
+      "short_definition": "Чихательный рефлекс при раздражении носа",
+      "search_aliases": [
+        "Чихательный рефлекс при раздражении носа"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-sneeze-reflex-nasal-irritation",
+      "locale": "en",
+      "labels": [
+        "Sneeze reflex nasal irritation"
+      ],
+      "short_definition": "Sneeze reflex nasal irritation",
+      "search_aliases": [
+        "Sneeze reflex nasal irritation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-gag-reflex-pharyngeal-stimulation",
+      "locale": "ru",
+      "labels": [
+        "Рвотный рефлекс при раздражении глотки"
+      ],
+      "short_definition": "Рвотный рефлекс при раздражении глотки",
+      "search_aliases": [
+        "Рвотный рефлекс при раздражении глотки"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-gag-reflex-pharyngeal-stimulation",
+      "locale": "en",
+      "labels": [
+        "Gag reflex pharyngeal stimulation"
+      ],
+      "short_definition": "Gag reflex pharyngeal stimulation",
+      "search_aliases": [
+        "Gag reflex pharyngeal stimulation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-emesis-reflex-response",
+      "locale": "ru",
+      "labels": [
+        "Рефлекторная рвота"
+      ],
+      "short_definition": "Рефлекторная рвота",
+      "search_aliases": [
+        "Рефлекторная рвота"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-emesis-reflex-response",
+      "locale": "en",
+      "labels": [
+        "Emesis reflex response"
+      ],
+      "short_definition": "Emesis reflex response",
+      "search_aliases": [
+        "Emesis reflex response"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-startle-reflex-strong-sudden-stimulus",
+      "locale": "ru",
+      "labels": [
+        "Startle-рефлекс"
+      ],
+      "short_definition": "Startle-рефлекс",
+      "search_aliases": [
+        "Startle-рефлекс"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-startle-reflex-strong-sudden-stimulus",
+      "locale": "en",
+      "labels": [
+        "Startle reflex"
+      ],
+      "short_definition": "Startle reflex",
+      "search_aliases": [
+        "Startle reflex"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-shivering-thermogenesis",
+      "locale": "ru",
+      "labels": [
+        "Термогенез при дрожи"
+      ],
+      "short_definition": "Термогенез при дрожи",
+      "search_aliases": [
+        "Термогенез при дрожи"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-shivering-thermogenesis",
+      "locale": "en",
+      "labels": [
+        "Shivering thermogenesis"
+      ],
+      "short_definition": "Shivering thermogenesis",
+      "search_aliases": [
+        "Shivering thermogenesis"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-oxygen-delivery-brain-function",
+      "locale": "ru",
+      "labels": [
+        "Доставка кислорода и функция мозга"
+      ],
+      "short_definition": "Доставка кислорода и функция мозга",
+      "search_aliases": [
+        "Доставка кислорода и функция мозга"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-oxygen-delivery-brain-function",
+      "locale": "en",
+      "labels": [
+        "Oxygen delivery and brain function"
+      ],
+      "short_definition": "Oxygen delivery and brain function",
+      "search_aliases": [
+        "Oxygen delivery and brain function"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
+      "locale": "ru",
+      "labels": [
+        "Нарушение проходимости дыхательных путей"
+      ],
+      "short_definition": "Нарушение проходимости дыхательных путей",
+      "search_aliases": [
+        "Нарушение проходимости дыхательных путей"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-airway-obstruction-respiratory-impairment",
+      "locale": "en",
+      "labels": [
+        "Airway obstruction and respiratory impairment"
+      ],
+      "short_definition": "Airway obstruction and respiratory impairment",
+      "search_aliases": [
+        "Airway obstruction and respiratory impairment"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-drowning-respiratory-impairment",
+      "locale": "ru",
+      "labels": [
+        "Нарушение дыхания при утоплении"
+      ],
+      "short_definition": "Нарушение дыхания при утоплении",
+      "search_aliases": [
+        "Нарушение дыхания при утоплении"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-drowning-respiratory-impairment",
+      "locale": "en",
+      "labels": [
+        "Drowning respiratory impairment"
+      ],
+      "short_definition": "Drowning respiratory impairment",
+      "search_aliases": [
+        "Drowning respiratory impairment"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-low-brain-perfusion-awareness",
+      "locale": "ru",
+      "labels": [
+        "Снижение перфузии мозга и осознания"
+      ],
+      "short_definition": "Снижение перфузии мозга и осознания",
+      "search_aliases": [
+        "Снижение перфузии мозга и осознания"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-low-brain-perfusion-awareness",
+      "locale": "en",
+      "labels": [
+        "Low brain perfusion and awareness"
+      ],
+      "short_definition": "Low brain perfusion and awareness",
+      "search_aliases": [
+        "Low brain perfusion and awareness"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-blood-volume-perfusion-compensation",
+      "locale": "ru",
+      "labels": [
+        "Компенсация объёма крови и перфузии"
+      ],
+      "short_definition": "Компенсация объёма крови и перфузии",
+      "search_aliases": [
+        "Компенсация объёма крови и перфузии"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-blood-volume-perfusion-compensation",
+      "locale": "en",
+      "labels": [
+        "Blood volume perfusion compensation"
+      ],
+      "short_definition": "Blood volume perfusion compensation",
+      "search_aliases": [
+        "Blood volume perfusion compensation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-dehydration-functional-risk",
+      "locale": "ru",
+      "labels": [
+        "Функциональный риск обезвоживания"
+      ],
+      "short_definition": "Функциональный риск обезвоживания",
+      "search_aliases": [
+        "Функциональный риск обезвоживания"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-dehydration-functional-risk",
+      "locale": "en",
+      "labels": [
+        "Dehydration functional risk"
+      ],
+      "short_definition": "Dehydration functional risk",
+      "search_aliases": [
+        "Dehydration functional risk"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-alcohol-intoxication-impairment",
+      "locale": "ru",
+      "labels": [
+        "Нарушения при алкогольной интоксикации"
+      ],
+      "short_definition": "Нарушения при алкогольной интоксикации",
+      "search_aliases": [
+        "Нарушения при алкогольной интоксикации"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-alcohol-intoxication-impairment",
+      "locale": "en",
+      "labels": [
+        "Alcohol intoxication impairment"
+      ],
+      "short_definition": "Alcohol intoxication impairment",
+      "search_aliases": [
+        "Alcohol intoxication impairment"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-threat-autonomic-arousal",
+      "locale": "ru",
+      "labels": [
+        "Автономное возбуждение при воспринятой угрозе"
+      ],
+      "short_definition": "Автономное возбуждение при воспринятой угрозе",
+      "search_aliases": [
+        "Автономное возбуждение при воспринятой угрозе"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-threat-autonomic-arousal",
+      "locale": "en",
+      "labels": [
+        "Threat autonomic arousal"
+      ],
+      "short_definition": "Threat autonomic arousal",
+      "search_aliases": [
+        "Threat autonomic arousal"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
+      "locale": "ru",
+      "labels": [
+        "Вестибулярная постуральная коррекция"
+      ],
+      "short_definition": "Вестибулярная постуральная коррекция",
+      "search_aliases": [
+        "Вестибулярная постуральная коррекция"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:candidate-vestibular-postural-correction",
+      "locale": "en",
+      "labels": [
+        "Vestibular postural correction"
+      ],
+      "short_definition": "Vestibular postural correction",
+      "search_aliases": [
+        "Vestibular postural correction"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-protective-withdrawal",
+      "locale": "ru",
+      "runtime_text": "Болезненный или потенциально повреждающий стимул может вызвать непроизвольное защитное отдёргивание. Это не доказывает травму, сторону, силу, успех реакции или потерю контроля конкретного персонажа.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-protective-withdrawal",
+      "locale": "en",
+      "runtime_text": "A painful or potentially damaging stimulus can elicit involuntary protective withdrawal. This establishes no injury, body side, force, successful response, or loss of control by a concrete actor.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-blink-corneal-protection",
+      "locale": "ru",
+      "runtime_text": "Тактильное раздражение роговицы, а в связанном рефлексе яркий свет, могут вызвать непроизвольное мигание. Это не устанавливает зрение, состояние глаза, длительность или защитный исход.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-blink-corneal-protection",
+      "locale": "en",
+      "runtime_text": "Tactile stimulation of the cornea, and bright light in a related reflex, can elicit involuntary blinking. This establishes no vision, eye condition, duration, or protective outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-swallowing-airway-protection",
+      "locale": "ru",
+      "runtime_text": "Глотание начинается произвольно, но глоточная и пищеводная фазы непроизвольны; во время глоточной фазы дыхательные пути кратко защищаются. Это не доказывает безопасное прохождение конкретного болюса и не исключает аспирацию.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-swallowing-airway-protection",
+      "locale": "en",
+      "runtime_text": "Swallowing begins voluntarily, but its pharyngeal and esophageal phases are involuntary; during the pharyngeal phase the airway is briefly protected. This neither proves safe passage of a concrete bolus nor excludes aspiration.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+      "locale": "ru",
+      "runtime_text": "Раздражение дыхательных путей может вызвать кашлевой рефлекс, помогающий очищать дыхательные пути от секрета или частиц. Кашель может быть и произвольным; ни один вариант не доказывает устранение обструкции, её причину или сохранную вентиляцию.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+      "locale": "en",
+      "runtime_text": "Airway irritation can elicit a cough reflex that helps clear secretions or particles from the airways. Cough can also be voluntary; neither form proves obstruction relief, its cause, or intact ventilation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+      "locale": "ru",
+      "runtime_text": "Раздражение носовых ходов может вызвать непроизвольный чихательный рефлекс. Это не устанавливает причину раздражения, инфекцию, аллергию, распространение вещества или успех очищения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+      "locale": "en",
+      "runtime_text": "Nasal-passage irritation can elicit an involuntary sneeze reflex. This establishes no irritant cause, infection, allergy, substance spread, or successful clearance.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+      "locale": "ru",
+      "runtime_text": "Стимуляция задней части рта или глотки может вызвать непроизвольный глоточный рефлекс. Он отличается от произвольного решения глотать и сам по себе не доказывает безопасное глотание, аспирацию, удушье или рвоту.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+      "locale": "en",
+      "runtime_text": "Stimulation of the back of the mouth or pharynx can elicit an involuntary gag reflex. It differs from a voluntary decision to swallow and by itself proves neither safe swallowing, aspiration, choking, nor vomiting.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-emesis-reflex-response",
+      "locale": "ru",
+      "runtime_text": "Рвота — рефлекторное изгнание желудочного содержимого; она может следовать за разными центральными или периферическими сигналами и не всегда следует за тошнотой. Это не доказывает токсин, болезнь, содержимое желудка, устранение причины или защищённость дыхательных путей.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-emesis-reflex-response",
+      "locale": "en",
+      "runtime_text": "Emesis is reflexive expulsion of gastric contents; it can follow different central or peripheral signals and does not always follow nausea. This establishes no toxin, illness, gastric contents, removal of a cause, or protected airway.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+      "locale": "ru",
+      "runtime_text": "Неожиданный сильный стимул может вызвать сложный непроизвольный рефлекс вздрагивания с краткими мышечными и автономными изменениями. Это не доказывает угрозу, эмоцию, падение, конкретное действие или нарушение сознания.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+      "locale": "en",
+      "runtime_text": "An unexpected strong stimulus can elicit a complex involuntary startle reflex with brief muscular and autonomic changes. This establishes no threat, emotion, fall, concrete action, or impaired consciousness.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-shivering-thermogenesis",
+      "locale": "ru",
+      "runtime_text": "Непроизвольные сокращения при дрожи выделяют тепло и расходуют энергию. Это не доказывает холодовое воздействие, температуру тела, защиту от переохлаждения или продолжительность дрожи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-shivering-thermogenesis",
+      "locale": "en",
+      "runtime_text": "Involuntary contractions during shivering release heat and consume ATP. This establishes no cold exposure, body temperature, protection from hypothermia, or shivering duration.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+      "locale": "ru",
+      "runtime_text": "Низкий уровень кислорода в крови может вызывать сонливость или потерю сознания. Это не устанавливает причину, длительность, обратимость или состояние конкретного человека.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+      "locale": "en",
+      "runtime_text": "Low blood oxygen can cause drowsiness or loss of consciousness. This establishes no cause, duration, reversibility, or state of a particular person.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+      "locale": "ru",
+      "runtime_text": "Частичное или полное нарушение проходимости дыхательных путей может ухудшать дыхание и доставку кислорода. Это не устанавливает удушье, тяжесть обструкции, её причину, исход или способ устранения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+      "locale": "en",
+      "runtime_text": "Partial or complete airway obstruction can impair breathing and oxygen delivery. This establishes no choking diagnosis, obstruction severity, cause, outcome, or method of relief.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+      "locale": "ru",
+      "runtime_text": "Утопление — процесс нарушения дыхания вследствие погружения в жидкость. Не всякое погружение является утоплением: требуется нарушение дыхания; исходы могут различаться.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+      "locale": "en",
+      "runtime_text": "Drowning is the process of respiratory impairment from submersion/immersion in liquid. Not every submersion is drowning: respiratory impairment is required, and outcomes vary.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+      "locale": "ru",
+      "runtime_text": "Снижение поступления крови к мозгу может сопровождаться кратковременным головокружением или потерей равновесия. Это не устанавливает падение, потерю сознания или состояние конкретного человека.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+      "locale": "en",
+      "runtime_text": "Reduced blood delivery to the brain can be accompanied by brief dizziness or loss of balance. This establishes no fall, loss of consciousness, or state of a particular person.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+      "locale": "ru",
+      "runtime_text": "Значимая потеря крови или жидкости может уменьшать объём крови, давление и перфузию; организм может включать компенсаторные сердечно-сосудистые ответы, которые не гарантируют достаточную перфузию.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+      "locale": "en",
+      "runtime_text": "Significant blood or fluid loss can reduce blood volume, pressure, and perfusion; the body can initiate compensatory cardiovascular responses that do not guarantee adequate perfusion.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-dehydration-functional-risk",
+      "locale": "ru",
+      "runtime_text": "Продолжительная потеря воды без достаточного восполнения может нарушать обычное функционирование и в тяжёлых случаях сознание. Это не устанавливает объём, срок, жажду, конкретную степень обезвоживания или исход.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-dehydration-functional-risk",
+      "locale": "en",
+      "runtime_text": "Continued water loss without adequate replacement can impair normal function and, in severe cases, consciousness. This establishes no volume, duration, thirst, concrete dehydration degree, or outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
+      "locale": "ru",
+      "runtime_text": "Употребление алкоголя может нарушать двигательную координацию, способность принимать решения и сознание; при высоком воздействии может ослабляться глоточный рефлекс. Эффект зависит от количества, времени и индивидуальных факторов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
+      "locale": "en",
+      "runtime_text": "Alcohol consumption can impair motor coordination, decision-making, and consciousness; at high exposure the gag reflex can be impaired. Effects depend on amount, time, and individual factors.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-threat-autonomic-arousal",
+      "locale": "ru",
+      "runtime_text": "Воспринятая угроза может активировать симпатический стресс-ответ с изменениями внимания, дыхания, сердечной деятельности, потоотделения и мышечного напряжения; выраженность и поведение индивидуально варьируют.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-threat-autonomic-arousal",
+      "locale": "en",
+      "runtime_text": "A perceived threat can activate sympathetic stress arousal with changes in attention, breathing, cardiac activity, sweating, and muscle tension; magnitude and behavior vary individually.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-vestibular-postural-correction",
+      "locale": "ru",
+      "runtime_text": "Вестибулярные и проприоцептивные сигналы участвуют в ощущении положения и равновесия; смещение головы или тела может вызвать корректирующие движения глаз или тела. Это не устанавливает падение, устойчивость, диагноз или способность конкретного персонажа удержаться.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:candidate-physiology-v3-vestibular-postural-correction",
+      "locale": "en",
+      "runtime_text": "Vestibular and proprioceptive signals contribute to position and balance; displacement of the head or body can evoke corrective eye or body movements. This establishes no fall, stability, diagnosis, or a concrete actor’s ability to remain upright.",
+      "search_aliases": []
+    }
+  ]
+}

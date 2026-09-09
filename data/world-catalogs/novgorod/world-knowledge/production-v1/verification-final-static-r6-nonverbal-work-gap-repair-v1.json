@@ -1,0 +1,44 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-static-r6-nonverbal-work-shared-signals",
+      "claim_ref": "claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+      "claim_digest": "7b73dc53c5220d43347b50f69b76bec49bd4ed10d2862159155293ed92e59068",
+      "candidate_ref": "git:2dd6378b942abc4009370dd9f08b397551f2bf47:data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r6-nonverbal-work-gap-repair-v1.json#claim:r6-shared-risky-work-can-use-agreed-start-stop-hold-signals-before-handling",
+      "auditor_ref": "/root/verify_r6_nonverbal_work",
+      "independence_basis": "Independent review by an auditor who did not author the exact candidate; checked its editorial reconstruction, reused approved premises, universal social-behavior retrieval, claim/localization boundaries, and assembled authoring with candidate plus verification.",
+      "evidence_checked": ["evidence:r6-nonverbal-work-editorial"],
+      "review_ref": "verification/final-static-r6-nonverbal-work-gap-repair-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Universal conditional coordination premise for an already established shared task with meaningful handling risk only; no actual participants, task, load, leader, exact signal system, consent, cooperation, handling, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-static-r6-nonverbal-work-mutual-perception",
+      "claim_ref": "claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+      "claim_digest": "3aeed765224a7b4193870b82e5d0505f26ad2ad9c86e470c54c0192a3733508d",
+      "candidate_ref": "git:2dd6378b942abc4009370dd9f08b397551f2bf47:data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r6-nonverbal-work-gap-repair-v1.json#claim:r6-visual-or-tactile-signals-need-mutual-perception-and-confirmation",
+      "auditor_ref": "/root/verify_r6_nonverbal_work",
+      "independence_basis": "Independent review by an auditor who did not author the exact candidate; checked its editorial reconstruction, reused approved premises, universal social-behavior retrieval, claim/localization boundaries, and assembled authoring with candidate plus verification.",
+      "evidence_checked": ["evidence:r6-nonverbal-work-editorial"],
+      "review_ref": "verification/final-static-r6-nonverbal-work-gap-repair-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Universal qualitative communication condition only; no person, sensory diagnosis, actual perception, signal system, authority, consent, cooperation, task, handling, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:final-static-r6-nonverbal-work-capacity-adaptation",
+      "claim_ref": "claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+      "claim_digest": "a0577c2906633d9e215cbfb4d57c836a884b5a8e4c1b3451776d588c0e2f4ad2",
+      "candidate_ref": "git:2dd6378b942abc4009370dd9f08b397551f2bf47:data/world-catalogs/novgorod/world-knowledge/production-v1/final-static-r6-nonverbal-work-gap-repair-v1.json#claim:r6-communication-can-adapt-to-actual-sensory-capacity-without-social-inference",
+      "auditor_ref": "/root/verify_r6_nonverbal_work",
+      "independence_basis": "Independent review by an auditor who did not author the exact candidate; checked its editorial reconstruction, reused approved premises, universal social-behavior retrieval, claim/localization boundaries, and assembled authoring with candidate plus verification.",
+      "evidence_checked": ["evidence:r6-nonverbal-work-editorial"],
+      "review_ref": "verification/final-static-r6-nonverbal-work-gap-repair-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Universal qualitative adaptation premise only; no person, sensory diagnosis, inability, status, skill, means, authority, consent, cooperation, task, load, or outcome."
+    }
+  ]
+}

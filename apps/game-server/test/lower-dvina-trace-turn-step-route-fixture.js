@@ -340,7 +340,7 @@ function genericPlan(request) {
 }
 
 function plan(request, overrides) {
-  return {
+  const value = {
     schema: 'turn_step_plan_v1', request_id: request.request_id,
     committed_state_version: request.committed_state_version,
     working_revision: request.working_revision, step_index: request.step_index,
@@ -349,8 +349,14 @@ function plan(request, overrides) {
     resolution: 'direct', goal_result: 'achieved',
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
     operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'test', reason: 'production regression', ...overrides
   };
+  value.direct_result_kind = value.resolution === 'direct'
+      && ['achieved', 'partially_achieved'].includes(value.goal_result)
+      && value.operations.length === 0
+    ? 'player_safe_observation' : null;
+  return value;
 }
 
 function stateWithCommittedBlueWool(source) {

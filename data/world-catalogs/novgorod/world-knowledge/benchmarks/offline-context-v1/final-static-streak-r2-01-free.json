@@ -1,0 +1,183 @@
+{
+  "batch": "final-static-streak-r2-01",
+  "generator": "/root/r2_b1_free",
+  "sampling_component": "25 free corpus-blind adversarial cases; no assigned area",
+  "candidate_commit": "ebf4e837c82ac65ce99be3cb7fb22a1b22d9c3be",
+  "cases": [
+    {
+      "case_id": "fssr2-01-free-001",
+      "location": "wooden bridge over a drainage ditch near a Novgorod trading street",
+      "person": "a salt seller leading a loaded sledge",
+      "circumstances": "thaw has softened planks and one runner has broken through a gap",
+      "situation": "The seller asks passers-by to help unload sacks before the sledge tips, while buyers worry that wet salt will be lost."
+    },
+    {
+      "case_id": "fssr2-01-free-002",
+      "location": "riverbank below a village landing on Lake Ilmen",
+      "person": "a boy watching fishing nets",
+      "circumstances": "night frost has fixed the boats to shore ice, but midday sun has opened a black channel beside them",
+      "situation": "He sees an oar drifting beyond the new channel and considers reaching it with a pole before its owner returns."
+    },
+    {
+      "case_id": "fssr2-01-free-003",
+      "location": "smoke-darkened room of a town tanner",
+      "person": "a tanner's apprentice",
+      "circumstances": "a dog has dragged a half-cured hide from its frame into a puddle of lime water",
+      "situation": "The apprentice must decide whether to rinse and re-stretch the hide or hide damage until master notices it."
+    },
+    {
+      "case_id": "fssr2-01-free-004",
+      "location": "forest track between two clearings south of Novgorod",
+      "person": "a widow carrying a bundle of flax",
+      "circumstances": "fresh wheel ruts show that a cart passed after last rain, though road ahead is blocked by a fallen pine",
+      "situation": "She hears axe blows beyond tree and cannot tell whether men are clearing road or waiting behind it."
+    },
+    {
+      "case_id": "fssr2-01-free-005",
+      "location": "churchyard edge in a small settlement",
+      "person": "an elderly bell-ringer",
+      "circumstances": "a spring storm has torn loose a roof shingle and rain now falls onto stored firewood",
+      "situation": "He asks nearby children for help, but their mothers have warned them not to climb anything near church."
+    },
+    {
+      "case_id": "fssr2-01-free-006",
+      "location": "crowded market row beside fur stalls",
+      "person": "a visiting Kareli trader",
+      "circumstances": "his interpreter has gone to fetch food and a local buyer insists a bundle of squirrel pelts was counted short",
+      "situation": "Neither man shares enough language to settle whether two pelts are missing or stuck together in damp packing."
+    },
+    {
+      "case_id": "fssr2-01-free-007",
+      "location": "shallow ford on a tributary of the Volkhov",
+      "person": "a mounted messenger",
+      "circumstances": "his horse has lost a shoe and water is rising from rain upstream",
+      "situation": "He must choose between attempting ford immediately, finding a smith in nearby hamlet, or seeking longer route to a bridge."
+    },
+    {
+      "case_id": "fssr2-01-free-008",
+      "location": "communal bakehouse behind several town households",
+      "person": "a woman tending rye loaves",
+      "circumstances": "a coal has rolled beneath a bench where a sleeping cat has left straw bedding",
+      "situation": "Smoke is beginning to rise, and she has dough-covered hands while oven door stands open."
+    },
+    {
+      "case_id": "fssr2-01-free-009",
+      "location": "wet meadow beside a hay stack",
+      "person": "two brothers cutting reeds",
+      "circumstances": "they find a wax-sealed birch-bark strip tangled in last year's grass",
+      "situation": "One wants to take it to a literate neighbor; other fears touching a stranger's message may bring accusation."
+    },
+    {
+      "case_id": "fssr2-01-free-010",
+      "location": "courtyard of a potter near the city rampart",
+      "person": "a young potter",
+      "circumstances": "the firing kiln has developed a crack and rain clouds gather before glazed cups are dry",
+      "situation": "She weighs patching kiln with wet clay, moving cups indoors, or risking one hurried firing."
+    },
+    {
+      "case_id": "fssr2-01-free-011",
+      "location": "birch grove near a charcoal burner's hut",
+      "person": "a charcoal burner",
+      "circumstances": "his covered wood pile gives off white smoke from an unexpected side vent",
+      "situation": "He suspects rain has opened mound, but cannot leave it unattended while a child searches for a lost mitten nearby."
+    },
+    {
+      "case_id": "fssr2-01-free-012",
+      "location": "landing stage on the Volkhov at dusk",
+      "person": "a boatwoman returning with empty baskets",
+      "circumstances": "a foreign merchant has left a locked chest on her boat and gone ashore without explanation",
+      "situation": "River current is strengthening and her family expects boat home before dark."
+    },
+    {
+      "case_id": "fssr2-01-free-013",
+      "location": "field margin outside a village",
+      "person": "a ploughman",
+      "circumstances": "his ox has stopped and keeps turning its head toward a hoof caught in a twisted leather trace",
+      "situation": "The ploughman is alone, daylight is short, and a second ox is still harnessed to the heavy plough."
+    },
+    {
+      "case_id": "fssr2-01-free-014",
+      "location": "narrow lane beside a wealthy household's fence",
+      "person": "a girl carrying water",
+      "circumstances": "she hears a baby crying behind fence and sees smoke escaping through a gap under gate",
+      "situation": "No adult is visible in lane, and her wooden yoke makes climbing fence difficult."
+    },
+    {
+      "case_id": "fssr2-01-free-015",
+      "location": "winter camp beside a frozen marsh road",
+      "person": "a traveler with a lame foot",
+      "circumstances": "his companions have gone ahead for dry fuel, leaving a small fire and two tied packhorses",
+      "situation": "A stranger approaches from tree line asking to warm hands and borrow an axe."
+    },
+    {
+      "case_id": "fssr2-01-free-016",
+      "location": "cellar beneath a Novgorod household",
+      "person": "a household servant",
+      "circumstances": "a clay jar of fermented cabbage has cracked and brine is running toward sacks of grain",
+      "situation": "The mistress is away, keys to storeroom are on nail upstairs, and a rat has begun chewing at wet sack."
+    },
+    {
+      "case_id": "fssr2-01-free-017",
+      "location": "roadside shrine beside a crossroads",
+      "person": "a carpenter traveling with tools",
+      "circumstances": "he finds a wagon wheel pin lying in mud near fresh tracks that turn toward swamp",
+      "situation": "He may pursue wagon to return pin, leave it where found, or keep it as useful iron."
+    },
+    {
+      "case_id": "fssr2-01-free-018",
+      "location": "small boat among reed beds on Lake Ilmen",
+      "person": "a fisherman",
+      "circumstances": "his net has snagged on something heavy below water and a thunderstorm is moving over open lake",
+      "situation": "Pulling harder may free net or capsize boat; cutting it loses week's most valuable gear."
+    },
+    {
+      "case_id": "fssr2-01-free-019",
+      "location": "smithy doorway in a riverside hamlet",
+      "person": "a blacksmith's daughter",
+      "circumstances": "her father has collapsed from heat while a customer waits beside glowing iron",
+      "situation": "She knows bellows and water bucket but has never been allowed to strike work meant for another household."
+    },
+    {
+      "case_id": "fssr2-01-free-020",
+      "location": "upper room of a merchant's lodging",
+      "person": "a young scribe",
+      "circumstances": "ink has spilled across a debt list moments before two disputing traders arrive",
+      "situation": "Some names remain legible, but totals and one witness mark are blurred beyond certainty."
+    },
+    {
+      "case_id": "fssr2-01-free-021",
+      "location": "willow-lined bank outside a fishing village",
+      "person": "a woman gathering willow switches",
+      "circumstances": "she discovers a trapped beaver alive but badly tangled in an old cord",
+      "situation": "Its pelt would be valuable, yet freeing it risks bite and may anger whoever set trap."
+    },
+    {
+      "case_id": "fssr2-01-free-022",
+      "location": "storehouse lane near Novgorod market",
+      "person": "a night watchman",
+      "circumstances": "he smells fresh smoke from a shuttered storehouse but hears no flame crackle and sees no owner",
+      "situation": "Breaking seal may save goods or falsely accuse an absent trader of negligence."
+    },
+    {
+      "case_id": "fssr2-01-free-023",
+      "location": "peaty shore of a woodland lake",
+      "person": "a healer collecting plants",
+      "circumstances": "a child has followed her and slipped one leg into soft bog while reaching for bright berries",
+      "situation": "The healer has a staff and gathering basket but no rope, and child panics when told not to move."
+    },
+    {
+      "case_id": "fssr2-01-free-024",
+      "location": "covered passage between town yards",
+      "person": "a cooper delivering a barrel",
+      "circumstances": "he notices barrel hoop is loosening as client argues with someone inside house",
+      "situation": "Barrel contains lamp oil, and setting it down roughly could spill contents across dry boards."
+    },
+    {
+      "case_id": "fssr2-01-free-025",
+      "location": "edge of a rye field near a monastery road",
+      "person": "a novice sent to collect mushrooms",
+      "circumstances": "he finds a wounded hawk caught in a simple snare beside a sack marked with another household's sign",
+      "situation": "He must decide whether to tend bird, seek owner of sack, or hurry back before evening gate is barred."
+    }
+  ]
+}

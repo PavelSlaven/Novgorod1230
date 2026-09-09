@@ -1,5 +1,6 @@
 import { serverError } from '../errors.js';
-import { evaluateLowerDvinaTraceOrdinaryStageBModelOutputs } from
+import { evaluateLowerDvinaTraceOrdinaryStageBModelOutputs,
+  lowerDvinaTraceOrdinaryStageBQualificationCases } from
   '../internal/lower-dvina-trace-ordinary-stage-b-eval.js';
 import { buildOrdinaryMaterializationPresenceRequest } from
   './ordinary-materialization-seed-request.js';
@@ -7,38 +8,83 @@ import { validateOrdinaryMaterializationPlanV1 } from
   '@rus/contracts/ordinary-materialization-v1';
 import { buildOrdinaryMaterializationMessages, ordinaryMaterializationResponseOf } from
   './ordinary-materialization-llm.js';
+import { bindOrdinaryMaterializationPlan } from
+  './ordinary-materialization-plan.js';
 
 export function createOrdinaryMaterializationStageBQualifier({ roleRunner,
   evalContract } = {}) {
+  return async (candidate) => {
+    const result = await runOrdinaryMaterializationStageBQualification({
+      roleRunner, evalContract, candidate });
+    if (!result.report.pass) throw qualificationError(result.report.failed_case_ids);
+    return result.identity;
+  };
+}
+
+export async function runOrdinaryMaterializationStageBQualification({ roleRunner,
+  evalContract, candidate } = {}) {
   if (typeof roleRunner?.run !== 'function' || typeof roleRunner?.describe !== 'function') {
     throw new TypeError('Stage B qualification requires LLM role transport.');
   }
-  return async (candidate) => {
-    const invocation = { scope: 'turn_runtime', role_id: 'ordinary_materialization',
-      overrides: { temperature: 0, maxTokens: 20_000, requestTimeoutMs: 120_000 }, provider_snapshot: candidate };
-    const identity = roleRunner.describe(invocation);
-    try {
-      const responses = await Promise.all(evalContract.cases.map(async (probe) => {
+  const invocation = { scope: 'turn_runtime', role_id: 'ordinary_materialization',
+    overrides: { temperature: 0, maxTokens: 20_000, requestTimeoutMs: 120_000 }, provider_snapshot: candidate };
+  const identity = roleRunner.describe(invocation);
+  try {
+    const probes = lowerDvinaTraceOrdinaryStageBQualificationCases(evalContract);
+    if (probes == null) throw new Error('eval contract');
+    const outputs = [];
+    for (const probe of probes) {
+      try {
         const request = presenceRequest(probe);
-        const response = await roleRunner.run({ ...invocation,
-          messages: buildOrdinaryMaterializationMessages(request) });
-        const outputResponse = ordinaryMaterializationResponseOf(response);
-        if (!sameIdentity(identity, outputResponse.provider_record)) throw new Error('identity');
-        const output = outputResponse.output;
-        return { id: probe.id,
+        const output = await qualifiedOutput({ roleRunner, invocation, identity,
+          request });
+        outputs.push({ id: probe.id,
           resolution: validateOrdinaryMaterializationPlanV1(output, request).length === 0
             ? output.resolution : null,
-          entities: output.entities };
-      }));
-      const report = evaluateLowerDvinaTraceOrdinaryStageBModelOutputs({
-        eval_contract: evalContract, outputs: responses });
-      if (!report.pass) throw qualificationError(report.failed_case_ids);
-      return identity;
-    } catch (error) {
-      if (error?.code === 'LLM_SETTINGS_ORDINARY_STAGE_B_QUALIFICATION_FAILED') throw error;
-      throw qualificationError([]);
+          entities: output.entities });
+      } catch (error) {
+        if (/^(?:timeout|transport_error|invalid_response|json_parse_failed|http_\d{3})$/u
+          .test(String(error?.code ?? ''))) throw error;
+        outputs.push({ id: probe.id, resolution: null, entities: [] });
+      }
     }
-  };
+    const report = evaluateLowerDvinaTraceOrdinaryStageBModelOutputs({
+      eval_contract: evalContract, outputs });
+    return Object.freeze({ identity, outputs: Object.freeze(outputs), report });
+  } catch (error) {
+    if (error?.code === 'LLM_SETTINGS_ORDINARY_STAGE_B_QUALIFICATION_FAILED') throw error;
+    if (/^(?:timeout|transport_error|invalid_response|json_parse_failed|http_\d{3})$/u
+      .test(String(error?.code ?? ''))) throw error;
+    throw qualificationError([]);
+  }
+}
+
+async function qualifiedOutput({ roleRunner, invocation, identity, request }) {
+  const first = await invoke({ roleRunner, invocation, identity, request,
+    repair: null, mechanicsPolicy: qualificationMechanicsPolicy() });
+  const errors = validateOrdinaryMaterializationPlanV1(first, request);
+  if (errors.length === 0) return first;
+  return invoke({ roleRunner, invocation, identity, request,
+    mechanicsPolicy: qualificationMechanicsPolicy(), repair: {
+    schema: 'ordinary_materialization_repair_context_v1', original_output: null,
+    validation_errors: errors
+  } });
+}
+
+async function invoke({ roleRunner, invocation, identity, request, repair,
+  mechanicsPolicy }) {
+  const response = await roleRunner.run({ ...invocation, repair: repair !== null,
+    messages: buildOrdinaryMaterializationMessages(request, { repair,
+      mechanicsPolicy }) });
+  const outputResponse = ordinaryMaterializationResponseOf(response);
+  if (!sameIdentity(identity, outputResponse.provider_record)) throw new Error('identity');
+  return bindOrdinaryMaterializationPlan(request, outputResponse.output);
+}
+function qualificationMechanicsPolicy() {
+  return { policy_ref: 'stage-b', max_mass_grams: 20_000,
+    allowed_external_hand_costs: [0, 1, 2],
+    allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
+    max_packing_slot_cost: 16, max_quantity: 1 };
 }
 
 function qualificationError(failedCaseIds) {
@@ -51,7 +97,8 @@ function sameIdentity(expected, actual) {
   return ['provider', 'model', 'scope', 'role_id', 'config_hash'].every((key) =>
     expected?.[key] === actual?.[key]);
 }
-function presenceRequest({ id, query }) {
+function presenceRequest(probe) {
+  const { id, query } = probe;
   const scope_ref = { entity_kind: 'g6', entity_id: 'stage-b-qualification' };
   return buildOrdinaryMaterializationPresenceRequest({ objective_context: {
     request_id: `llm-settings:ordinary-stage-b:${id}`, scope_ref: { ...scope_ref },

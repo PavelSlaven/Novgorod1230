@@ -1,0 +1,72 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-orchard-osu-pruning",
+      "title": "Training and pruning your home orchard",
+      "authors": ["Jeff L. Olsen", "Neil Bell"],
+      "publication": "Oregon State University Extension, PNW 400",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.oregonstate.edu/catalog/pnw-400-training-pruning-your-home-orchard",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-peat-usgs-cut-peat",
+      "title": "Preparation and Use of Peat as Fuel",
+      "authors": ["United States Geological Survey"],
+      "publication": "USGS Bulletin 442-B, Cut Peat",
+      "source_kind": "official_documentation",
+      "citation": "https://pubs.usgs.gov/bul/442-B/report.pdf",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:place-orchard-peat-editorial",
+      "title": "Orchard and peat-work place reconstruction",
+      "authors": ["/root/place03_plants_peat"],
+      "publication": "Repository editorial reconstruction note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/research/place-orchard-peat-processes-v1.md",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:orchard-pruning-wound","source_ref":"source:place-orchard-osu-pruning","anchor":{"section":"How a tree heals pruning wounds"},"note":"Branch collars contain cells that limit decay fungi; tearing bark or cutting through the collar changes the wound context.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:orchard-pruning-season","source_ref":"source:place-orchard-osu-pruning","anchor":{"section":"When to prune"},"note":"Pruning season is conditional on tree kind, growth cycle and disease context; the source gives distinct treatment for sweet cherry.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:orchard-renovation-leaf-area","source_ref":"source:place-orchard-osu-pruning","anchor":{"section":"Pruning mature trees"},"note":"Young trees are pruned lightly to retain leaf area, and neglected mature fruit trees can be restored over several years rather than all at once.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:peat-cut-dry-stages","source_ref":"source:place-peat-usgs-cut-peat","anchor":{"section":"Cut peat"},"note":"Cut blocks are laid out, become partly dry after turning, then may be loosely stacked for further drying; this supports distinct wet-cut and drying states, not a required method.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:orchard-peat-editorial-place","source_ref":"source:place-orchard-peat-editorial","anchor":{"section":"Editorial contextual reconstruction"},"note":"Conditional ordinary-work composition: where a process is established, its freshly altered material, material left to dry, and unworked source need not be treated as one unchanged state.","review_status":"approved"}
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:orchard-tree-pruning-context","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:craft_technology:wet-cut-peat-drying-context","domain":"craft_technology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury","domain":"biology_physiology","subject_ref":"wk:biology_physiology:orchard-tree-pruning-context","predicate":"supported_fact","object":{"kind":"literal","value":"a_preserved_branch_collar_contains_cells_that_limit_decay_fungi_at_a_pruning_wound_while_bark_tearing_can_enlarge_the_injured_area"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:orchard-pruning-wound"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth","domain":"biology_physiology","subject_ref":"wk:biology_physiology:orchard-tree-pruning-context","predicate":"supported_fact","object":{"kind":"literal","value":"for_fruit_trees_pruning_can_be_done_after_freeze_risk_has_passed_and_before_spring_growth_begins_while_some_trees_have_a_distinct_active_growth_window_related_to_wound_disease_risk"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:orchard-pruning-season"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area","domain":"biology_physiology","subject_ref":"wk:biology_physiology:orchard-tree-pruning-context","predicate":"supported_fact","object":{"kind":"literal","value":"substantial_orchard_tree_reshaping_can_be_staged_over_time_while_retaining_leaf_area_remains_relevant_to_tree_condition"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:orchard-renovation-leaf-area"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying","domain":"craft_technology","subject_ref":"wk:craft_technology:wet-cut-peat-drying-context","predicate":"supported_fact","object":{"kind":"literal","value":"where_contextual_cut_peat_is_left_for_air_drying_turning_or_loose_stacking_can_expose_material_for_further_water_loss"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"low","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:peat-cut-dry-stages","evidence:orchard-peat-editorial-place"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:orchard-tree-pruning-context","locale":"ru","labels":["Обрезка садового дерева"],"short_definition":"Качественные связи обрезки, раны, сезона и листовой площади.","search_aliases":["обрезка","ветвь","садовое дерево"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:orchard-tree-pruning-context","locale":"en","labels":["Orchard tree pruning"],"short_definition":"Qualitative relations of pruning, wounds, season, and leaf area.","search_aliases":["pruning","branch","orchard tree"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:craft_technology:wet-cut-peat-drying-context","locale":"ru","labels":["Резной торф и сушка"],"short_definition":"Качественные связи свежесрезанного торфа, сушки и погоды.","search_aliases":["торф","резка торфа","сушка"]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:craft_technology:wet-cut-peat-drying-context","locale":"en","labels":["Cut peat and drying"],"short_definition":"Qualitative relations of fresh-cut peat, drying, and weather.","search_aliases":["peat","peat cutting","drying"]}
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury","locale":"ru","runtime_text":"Сохранённый веточный воротник содержит клетки, ограничивающие проникновение грибов гнили в рану; разрыв коры может увеличить повреждённую площадь. Это не инструкция обрезки, не диагноз гнили, не наличие дерева или исход ухода.","search_aliases":["веточный воротник","рана после обрезки"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-orchard-pruning-can-preserve-a-branch-collar-barrier-while-bark-tearing-enlarges-injury","locale":"en","runtime_text":"A preserved branch collar contains cells that limit decay fungi at a pruning wound, while bark tearing can enlarge the injured area. This is not a pruning instruction, decay diagnosis, tree presence, or care outcome.","search_aliases":["branch collar","pruning wound"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth","locale":"ru","runtime_text":"Для плодовых деревьев обрезка может приходиться на время после риска морозов и до весеннего роста, тогда как у некоторых деревьев есть отдельное окно активного роста, связанное с риском заражения через рану. Это не календарь Новгорода, не правило для всякого вида, диагноз или обязательная работа.","search_aliases":["сезон обрезки","обрезка до весеннего роста"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth","locale":"en","runtime_text":"For fruit trees, pruning can fall after freeze risk and before spring growth, while some trees have a distinct active-growth window related to infection through wounds. This is not a Novgorod calendar, rule for every species, diagnosis, or required work.","search_aliases":["pruning season","before spring growth"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area","locale":"ru","runtime_text":"Сильное изменение формы садового дерева можно растянуть во времени; сохранённая листовая площадь остаётся существенной для состояния дерева. Это не рецепт, срок, размер среза или исход конкретного дерева.","search_aliases":["омоложение сада","листовая площадь"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-orchard-heavy-renovation-can-trade-immediate-reshaping-against-retained-leaf-area","locale":"en","runtime_text":"Substantial orchard-tree reshaping can be staged over time, while retained leaf area remains relevant to tree condition. This is not a recipe, schedule, cut size, or outcome for a particular tree.","search_aliases":["orchard renovation","leaf area"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying","locale":"ru","runtime_text":"Если резной торф уже оставлен для воздушной сушки, переворачивание или рыхлая укладка могут открыть материал для дальнейшей потери воды. Это editorial reconstruction, не обязательный рецепт, местный способ, объём, топливо или готовность к использованию.","search_aliases":["переворачивание торфа","укладка торфа"]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:place-peat-cutting-can-use-turning-and-loose-stacking-to-expose-material-for-further-air-drying","locale":"en","runtime_text":"Where cut peat is already left for air-drying, turning or loose stacking can expose material for further water loss. This is editorial reconstruction, not a required recipe, local method, amount, fuel, or readiness for use.","search_aliases":["turning peat","stacking peat"]}
+  ]
+}

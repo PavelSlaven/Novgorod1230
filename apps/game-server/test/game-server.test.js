@@ -4,6 +4,9 @@ import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { computeStage26ScreenDigest } from '@rus/contracts';
+import { TurnWorkflowError } from '@rus/turn';
+import { WorldKnowledgeError } from '@rus/world-knowledge';
+import { errorEnvelope } from '../src/http/contracts.js';
 import {
   createGameCompositionRoot,
   createGameHttpServer,
@@ -44,6 +47,69 @@ function stage26Fixture() {
     }
   };
 }
+
+test('unresolved ordinary discovery is a non-5xx conflict without private details', () => {
+  const error = new TurnWorkflowError('TURN_ORDINARY_DISCOVERY_UNRESOLVED',
+    'Ordinary discovery prerequisite could not be resolved.',
+    { reason: 'budget_or_cap_exhausted' });
+  const response = errorEnvelope(error, { developerMode: true });
+  assert.equal(response.status, 409);
+  assert.deepEqual(response.body.error, {
+    code: 'TEMPORARY_ACTION_UNAVAILABLE',
+    message: 'Действие временно недоступно. Попробуйте ещё раз.'
+  });
+  assert.equal(JSON.stringify(response).includes('budget_or_cap'), false);
+  assert.equal(error.details.reason, 'budget_or_cap_exhausted');
+});
+
+test('provider failures have safe typed public errors', () => {
+  for (const [internal, external] of [
+    ['timeout', 'LLM_PROVIDER_TIMEOUT'],
+    ['transport_error', 'LLM_PROVIDER_UNREACHABLE'],
+    ['invalid_response', 'LLM_PROVIDER_RESPONSE_INVALID'],
+    ['json_parse_failed', 'LLM_PROVIDER_RESPONSE_INVALID'],
+    ['http_401', 'LLM_PROVIDER_AUTH_FAILED'],
+    ['http_404', 'LLM_PROVIDER_MODEL_INVALID'],
+    ['http_429', 'LLM_PROVIDER_RATE_LIMITED'],
+    ['http_503', 'LLM_PROVIDER_UNAVAILABLE'],
+    ['missing_api_key', 'LLM_PROVIDER_NOT_CONFIGURED']
+  ]) {
+    const response = errorEnvelope(Object.assign(new Error('private provider body'),
+      { code: internal, llm_provider_failure: true }));
+    assert.equal(response.status, 503);
+    assert.equal(response.body.error.code, external);
+    assert.doesNotMatch(JSON.stringify(response), /private provider body/u);
+  }
+});
+
+test('provider failure leaves party session unchanged', async (t) => {
+  const sessions = createInMemorySessionStore();
+  const root = createGameCompositionRoot({
+    newGameWorkflow: { run: async () => ({ status: 'approved',
+      artifact: stage26Fixture() }) },
+    turnWorkflow: { run: async () => {
+      throw Object.assign(new Error('provider failed'), {
+        code: 'timeout', llm_provider_failure: true
+      });
+    } },
+    sessionStore: sessions,
+    now: () => '2026-07-12T10:00:00.000Z'
+  });
+  await root.startNewGame({ start_text: 'Начало' });
+  await root.acknowledgeOpening('party-1', { client_ack_id: 'ack-1' });
+  const before = await sessions.load('party-1');
+  const server = createGameHttpServer({ root });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  const response = await fetch(
+    `http://127.0.0.1:${address.port}/api/v1/parties/party-1/turns`, {
+      method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ raw_text: 'Осмотреться' })
+    });
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).error.code, 'LLM_PROVIDER_TIMEOUT');
+  assert.deepEqual(await sessions.load('party-1'), before);
+});
 
 function turnResult() {
   return {
@@ -301,6 +367,30 @@ test('HTTP boundary hides runtime contract failures from the player', async (t) 
   });
   assert.equal(JSON.stringify(body).includes('TRACE_ROUTE_BODY'), false);
   assert.equal(JSON.stringify(body).includes('trace_ld_v1_body'), false);
+});
+
+test('HTTP boundary hides World Knowledge operational failures from the player', async (t) => {
+  const root = { submitTurn: async () => {
+    throw new WorldKnowledgeError('WORLD_KNOWLEDGE_UNAVAILABLE',
+      'Giga World Knowledge query encoding is unavailable.', {
+        cause_code: 'WK_EMBEDDING_WORKER_EXIT'
+      });
+  } };
+  const server = createGameHttpServer({ root });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  const response = await fetch(`http://127.0.0.1:${address.port}/api/v1/parties/party-1/turns`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ raw_text: 'Добыть рыбу' })
+  });
+  const body = await response.json();
+  assert.equal(response.status, 500);
+  assert.deepEqual(body.error, {
+    code: 'TEMPORARY_ACTION_UNAVAILABLE',
+    message: 'Действие временно недоступно. Попробуйте ещё раз.'
+  });
+  assert.equal(JSON.stringify(body).includes('WORLD_KNOWLEDGE'), false);
+  assert.equal(JSON.stringify(body).includes('WK_EMBEDDING'), false);
 });
 
 test('infrastructure adapters require explicit provider and database ports', async () => {

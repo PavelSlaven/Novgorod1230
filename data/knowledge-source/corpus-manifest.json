@@ -71,8 +71,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "14f35d4f24af3fd5e07c818206f0c4fa14eaeed586939561000617d0ac2b7835",
-      "bytes": 20344,
+      "sha256": "d2dcff517a41bb0f7cbe66f691be4b819dadc673767f482e4214bf7b0d058a1d",
+      "bytes": 24371,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -158,8 +158,8 @@
       "document_id": "items-and-property",
       "canonical_path": "corpus/DOCUMENTS/items_and_property.txt",
       "file_name": "items_and_property.txt",
-      "sha256": "c85657b5a362b2beb83d46140507c753ec8222383911a49bb2d9be99099b6d2f",
-      "bytes": 47244,
+      "sha256": "28509f7ee005387374b8e9325b0968e1991a7e65a90757e54c7199d034de2def",
+      "bytes": 47405,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/items_and_property.txt",
       "provenance_mode": "canonicalized_from_legacy",
@@ -371,8 +371,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "a48b4d63d36046c729f11a4e4fd4c7f01ce3a2fe53ad01216ee1fc3f332a610b",
-      "bytes": 83463,
+      "sha256": "24ec01aac0c3e8893d1bb5207cb0cb4233a61f259a9211f94bd2dd4732f5a134",
+      "bytes": 88912,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -424,6 +424,15 @@
       "provenance_mode": "canonicalized_from_legacy",
       "source_legacy_sha256": "b1fbf6343d479a2f5c9296b7c5dc2f35f0b93e2eb15fab867d23b9201bd01b3e",
       "source_legacy_bytes": 71231
+    },
+    {
+      "document_id": "world-knowledge-platform-implementation-contract",
+      "canonical_path": "corpus/DOCUMENTS/world_knowledge_platform_implementation_contract.md",
+      "file_name": "world_knowledge_platform_implementation_contract.md",
+      "sha256": "bc4df31f5497f1f651467d2d0067fe141a87b157ba79b40aae765850e5d69832",
+      "bytes": 149905,
+      "status": "active",
+      "provenance_mode": "native"
     },
     {
       "document_id": "world-regions",

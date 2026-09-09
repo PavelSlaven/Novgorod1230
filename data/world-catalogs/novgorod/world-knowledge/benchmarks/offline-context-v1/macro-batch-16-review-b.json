@@ -1,0 +1,458 @@
+{
+  "batch": "macro-batch-16",
+  "reviewer": "wk-only-independent-b",
+  "corpus_basis": "6502a91c26946785864a9f55b8c3d9e5b41b5d99",
+  "method": "WK-only reconstruction: each answer uses production runtime claims; exact state, force composition, authority, ownership and outcome remain conditional.",
+  "cases": [
+    {
+      "case_id": "mb16core-051",
+      "primary_domain": "military river crossing",
+      "answer_ru": "Переправа не предполагается безопасной: лодочник сначала оценивает берег, течение, погоду, груз и животное. Щиты и мешки стоит переносить очередями и держать груз низко и распределённо; лошадь, посадка и любое скопление на одном борту требуют отдельной оценки. При потере управляемости разумно отложить либо изменить подход.",
+      "claim_refs": ["claim:military-world-crossing-conditions-remain-local", "claim:military-world-crossing-needs-staged-load-handling", "claim:practical-boat-load", "claim:practical-boat-shore-transfer", "claim:practical-boat-weather-water"],
+      "inferences": ["Вооружённая группа, лошадь и лодка даны probe, но вместимость, глубина и успешность переправы не выводятся из WK."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-052",
+      "primary_domain": "siege fire and wind",
+      "answer_ru": "Дым и огонь у деревянной застройки требуют немедленно держать выходы свободными, отделять людей от горючего и учитывать ветер, видимость и доступ к воде. Сырость древесины не делает строения безопасными, а порывы могут менять направление дыма и огня; локализация и причина пожара не предполагаются.",
+      "claim_refs": ["claim:military-world-fire-and-smoke-need-access-and-separation", "claim:foundations-earth2-07-pressure-gradient-wind", "claim:water-can-cool-class-a-fire-fuel-and-flame", "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer"],
+      "inferences": ["Применение к конкретному сараю условно: WK не создаёт огонь, воду, пожарную команду или результат тушения."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-053",
+      "primary_domain": "urban defense work",
+      "answer_ru": "Коопера может освободить узкую улицу от собственных мешающих вещей, не загораживать ворота и проход, осмотреть доступную ему постройку и предложить труд либо материал только из реально имеющегося. Временная починка обороны конкурирует с людьми, инструментом, светом и обычным хозяйством; тревога не даёт ему автоматически права командовать или реквизировать имущество соседей.",
+      "claim_refs": ["claim:military-world-defence-repair-competes-for-people-and-material", "claim:military-world-gate-and-passage-use-needs-actual-access", "claim:military-world-small-group-coordination-needs-established-roles", "claim:military-world-armed-disruption-affects-civilian-work"],
+      "inferences": ["Существование атаки, распоряжений и конкретных запасов не задано."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-054",
+      "primary_domain": "battlefield first aid",
+      "answer_ru": "Сначала надо не стать ещё одной жертвой: оценить продолжающуюся опасность и возможность укрытия или переноса. При наружном кровотечении чистая ткань или повязка с прямым давлением может помочь его сдержать; холод и сырость делают важными укрытие и сухость. Тяжесть раны, диагноз и исход не определяются.",
+      "claim_refs": ["claim:military-world-established-casualty-needs-hazard-aware-help", "claim:care-direct-pressure-bleeding", "claim:military-world-carrying-an-injured-person-is-conditional", "claim:military-world-cold-and-wetness-need-practical-boundaries"],
+      "inferences": ["В probe уже дана кровоточащая рана, но не наличие перевязочного материала и не безопасный маршрут."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-055",
+      "primary_domain": "retreat and pursuit",
+      "answer_ru": "В дождливых сумерках отступление и преследование одинаково ограничены скользким берегом, ручьём, видимостью, усталостью и знанием места. Разумный следующий шаг — не бежать вслепую, а выбрать устойчивую опору, сохранять возможность укрыться и по доступным звукам или следам не делать уверенных выводов о числе преследователей.",
+      "claim_refs": ["claim:military-world-flight-and-pursuit-share-environmental-limits", "claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-traces-need-cautious-interpretation", "claim:military-world-exertion-competes-with-attention-and-recovery"],
+      "inferences": ["Кто движется сзади, расстояние и исход бегства неизвестны."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-056",
+      "primary_domain": "prisoners and movement",
+      "answer_ru": "Сопровождение удерживаемого человека добавляет группе потребности в наблюдении, свете, еде, питье, отдыхе и контроле движения; ранняя зимняя темнота и дорога делают укрытие и темп практическими ограничениями. Это не доказывает вину, правовой статус, способ связывания либо будущую судьбу пленного.",
+      "claim_refs": ["claim:military-world-custody-needs-attention-and-basic-needs", "claim:military-world-loads-need-order-and-passage", "claim:military-world-cold-and-wetness-need-practical-boundaries"],
+      "inferences": ["Конкретные права охраны и пленного остаются вне WK и зависят от состояния мира."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-057",
+      "primary_domain": "aftermath and civilian safety",
+      "answer_ru": "После установленного нарушения обычное хозяйство пересматривает укрытие, доступ к запасам, животных, приватность и труд. Дым, повреждения и слухи дают основание проверять доступные выходы и связи с роднёй, но сами по себе не доказывают близость опасности, размер ущерба или правильность слуха.",
+      "claim_refs": ["claim:military-world-armed-disruption-affects-civilian-work", "claim:military-world-recovery-starts-with-actual-condition-and-access", "claim:military-world-traces-need-cautious-interpretation", "claim:military-world-fire-and-smoke-need-access-and-separation"],
+      "inferences": ["Решение уйти или оставаться — социальное решение персонажей, не автоматический вывод из WK."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-058",
+      "primary_domain": "waterborne trade safety",
+      "answer_ru": "Перед отходом дополнительный груз сравнивают с уже имеющимся размещением и управляемостью: в малой лодке его держат низко и распределяют по бортам, а порядок погрузки должен сохранять проход. Усиливающийся ветер и течение могут помочь или мешать; вместимость, решение команды и безопасность рейса не заданы.",
+      "claim_refs": ["claim:practical-boat-load", "claim:practical-boat-unload-order", "claim:practical-boat-weather-water", "claim:transport-boat-cargo-dispatch"],
+      "inferences": ["Историческая совместимость грузовой лодки не создаёт данную лодку или права на груз."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-059",
+      "primary_domain": "mill water and machinery",
+      "answer_ru": "У движущейся мельницы упавший мешок не стоит хватать у механизма: одежду и руки может захватить привод, а осмотр либо обслуживание дают практическую причину остановить движение. Паводок дополнительно меняет воду, грунт и доступ; сначала оценивают безопасный подход и лишь затем спасают доступный груз.",
+      "claim_refs": ["claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing", "claim:military-world-crossing-conditions-remain-local", "claim:military-world-ground-and-weather-change-practical-options"],
+      "inferences": ["Тип мельницы, способ остановки и состояние мешка не известны."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-060",
+      "primary_domain": "bathhouse heat and humidity",
+      "answer_ru": "Сильное нагревание перед мытьём исторически совместимо, но чрезмерная жара и тяжёлый воздух требуют уменьшить воздействие: прекратить добавлять топливо, выйти в более свежий воздух и не делать из духоты лечебный эффект. Вентиляция способна уменьшать конденсацию, но не доказывает безопасную температуру или состав воздуха.",
+      "claim_refs": ["claim:bathing-house-heating-before-washing", "claim:practical-dwelling-smoke-draft", "claim:military-world-cold-and-wetness-need-practical-boundaries"],
+      "inferences": ["Печь, температура, состояние здоровья и способ проветривания конкретной бани не заданы."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-061",
+      "primary_domain": "workshop dust and breathing",
+      "answer_ru": "Пыль от резки и помола может раздражать дыхательные пути и вызывать кашель; в тесном сухом помещении работу разумно прервать, уменьшить взмучивание пыли, вынести часть операции наружу или обеспечить движение воздуха, если это доступно. Кашель не устанавливает диагноз и не доказывает, что воздух уже безопасен.",
+      "claim_refs": ["claim:candidate-physiology-v3-cough-reflex-airway-irritation", "claim:milling-grain-compression-shear-fracture"],
+      "inferences": ["Это практический перенос общего раздражения частиц; концентрация, болезнь и результат не известны."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-062",
+      "primary_domain": "market quality dispute",
+      "answer_ru": "Продавщица может осмотреть чашу вместе с покупателем, отделить видимую трещину от рассказа о сроке службы, спросить о пользовании и попытаться договориться о возврате, замене или иной мирной развязке. Если спор не решается, известны исторические категории рыночной покупки, свидетелей и обращения к власти, но не фиксированная процедура или исход.",
+      "claim_refs": ["claim:civic-public-market", "claim:rp-market-purchase-relates-proof-participant", "claim:social-authority-letter-relates-theft-inquiry"],
+      "inferences": ["Качество вещи, вина и обязательная гарантия не выводятся из WK."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-063",
+      "primary_domain": "elder care and household labor",
+      "answer_ru": "При внезапной неустойчивости разумно сначала обеспечить отцу место для отдыха, воду и наблюдение, а затем сообщить заказчику о задержке либо попросить близкого помочь с сетями. WK допускает координацию ухода и честное признание неопределённости, но не ставит диагноз по бессонной ночи и не назначает дочери обязательный выбор.",
+      "claim_refs": ["claim:healer-care-coordination-and-uncertainty", "claim:rp-mother-household-care-succession", "claim:acute-sleep-loss-performance"],
+      "inferences": ["Правовой текст о другом семейном случае не становится правилом этой семьи; решение остаётся договорным."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-064",
+      "primary_domain": "skill transmission within a household",
+      "answer_ru": "Восьмилетнему ребёнку можно показать наблюдаемую и посильную часть работы, дать выполнить её под наблюдением и остановить при риске или усталости; сложную операцию взрослый сохраняет за собой. Учебные письмо, чтение и счёт исторически засвидетельствованы, а развитие ребёнка имеет распознаваемые стадии, но это не готовая программа обучения именно льну.",
+      "claim_refs": ["claim:candidate-v7-museum-onfim-learning-writing-reading-counting", "claim:candidate-v3-child-development-has-recognizable-periods", "claim:military-world-training-links-practice-feedback-and-rest"],
+      "inferences": ["Перенос принципа постепенной практики на домашнее ремесло не определяет конкретный навык ребёнка."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-065",
+      "primary_domain": "music and communal recreation",
+      "answer_ru": "Песня и танец на сезонном сборе правдоподобны как досуг: находки гуслей XI–XIII веков подтверждают музыкальную культуру. Но обязанность загнать животных до темноты остаётся реальной хозяйственной задачей; юноша может помочь закончить её, договориться о замене или вернуться позже, не предполагая обязательного разрешения семьи.",
+      "claim_refs": ["claim:candidate-novgorod-museum-lyriform-gusli-xi-xiii-finds", "claim:animal-care-needs-presence", "claim:military-world-working-animal-care-intersects-travel"],
+      "inferences": ["Конкретная музыка, танец, семейный запрет и время возвращения не заданы."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-066",
+      "primary_domain": "service and household hierarchy",
+      "answer_ru": "Зависимой работнице следует коротко сообщить о конфликте поручений, уточнить у домохозяина или обоих членов семьи очередность и по возможности начать с того, что предотвращает немедленный ущерб гостям или хозяйству. Наёмная и зависимая работа исторически совместимы, но WK не выдумывает конкретную иерархию, наказание или право одного родственника отменять другого.",
+      "claim_refs": ["claim:social-hired-work-relates-business-record", "claim:military-world-message-needs-recipient-and-confirmation", "claim:military-world-small-group-coordination-needs-established-roles"],
+      "inferences": ["Срок службы и материальная зависимость из probe не превращаются в полный трудовой договор."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-067",
+      "primary_domain": "public authority and travel",
+      "answer_ru": "Путник может остановиться у подхода, не мешать проходу, спросить у дежурного или местного человека, кому показать груз и куда направиться, и подтвердить понятность ответа. Ворота и узкие подходы зависят от реального доступа, тесноты, груза, света и людей; WK не подтверждает контрольный режим, разрешение или обязанность платить.",
+      "claim_refs": ["claim:military-world-gate-and-passage-use-needs-actual-access", "claim:military-world-message-needs-recipient-and-confirmation", "claim:residual-government-law-v1-1230-chronicle-names-archbishop-posadnik-and-tysyatsky"],
+      "inferences": ["Упомянутые должности 1230 года не дают полномочий стражнику в этой сцене."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-068",
+      "primary_domain": "external visitors and local custom",
+      "answer_ru": "При языковой или обычайной неопределённости продавщица и её брат могут пользоваться короткими понятными вопросами, предметом сделки, жестом, повторением цены или назначения и проверкой понимания. Бытовые берестяные письма близки к живой древнерусской речи, а речной наём и договорённость о лодье исторически совместимы; это не гарантирует общий язык, тариф или свободное судно.",
+      "claim_refs": ["claim:candidate-v5-household-birch-letters-are-dialect-near-live-speech", "claim:transport-hired-boatman", "claim:transport-private-boat-arrangement", "claim:military-world-message-needs-recipient-and-confirmation"],
+      "inferences": ["Происхождение посетителя не определяет его язык, статус или право на перевозку."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-069",
+      "primary_domain": "religious calendar and travel",
+      "answer_ru": "Местный праздник может изменить доступность людей и обычный распорядок, поэтому носильщик сначала ищет ответственного либо оставляет сообщение через допустимого посредника, а не предполагает, что получатель на обычном рабочем месте. Корпус подтверждает календарные и церковные текстовые категории, но не даёт обязательность конкретного праздника, режим монастыря или приём посылки.",
+      "claim_refs": ["claim:social-church-calendar-text-relates-feast-list", "claim:religion-olenin-church-people", "claim:military-world-message-needs-recipient-and-confirmation"],
+      "inferences": ["Название и значение local feast даны только probe; конкретная практика остаётся условной."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-070",
+      "primary_domain": "crime suspicion and social response",
+      "answer_ru": "Исчезновение инструмента — повод сначала проверить общие места и спросить посетителей без превращения подозрения в обвинение. Можно зафиксировать, кто и когда видел вещь, привлечь соседей к поиску и при реальной необходимости обратиться к власти; письма о розыске кражи подтверждают саму категорию обращения, но не процедуру, вину или санкцию.",
+      "claim_refs": ["claim:military-world-traces-need-cautious-interpretation", "claim:social-authority-letter-relates-theft-inquiry", "claim:candidate-v7-gramota907-letter-to-posadnik-theft-inquiry"],
+      "inferences": ["Ни один посетитель не становится вором без дополнительного основания."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-071",
+      "primary_domain": "burial work and season",
+      "answer_ru": "После смерти родственники могут разделить срочные задачи: известить близких и доступного церковного человека, подготовить тело и доступную тару, оценить промёрзший грунт и дневной свет, попросить соседской помощи. Дощатые гробы и долблёные колоды имеют археологические аналоги, но не являются обязательным обрядом; глубина могилы, срок и доступ к кладбищу не заданы.",
+      "claim_refs": ["claim:burial-plank-coffin-nails", "claim:burial-hollowed-log-container", "claim:military-world-ground-and-weather-change-practical-options", "claim:religion-olenin-church-people"],
+      "inferences": ["Исторические примеры тары не создают материал, могилу или священника в текущей сцене."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-072",
+      "primary_domain": "marriage kinship and residence",
+      "answer_ru": "Новая родственница может передать просьбу, объяснить срочность и обсудить с обоими дворами доступность коня, труд и встречную помощь; расстояние и сезон делают отказ либо отсрочку правдоподобными. Брак сам по себе не даёт её родителям права на лошадь супруга и не определяет, кто примет решение.",
+      "claim_refs": ["claim:candidate-v7-npl-1220-tverdislav-wife-children-monastic-event", "claim:candidate-gramota8-wife-cow-redemption-letter", "claim:military-world-working-animal-care-intersects-travel", "claim:military-world-message-needs-recipient-and-confirmation"],
+      "inferences": ["Источники дают семейные и хозяйственные примеры, а не всеобщий порядок брака или заимствования."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-073",
+      "primary_domain": "personal naming and identification",
+      "answer_ru": "Помощник должен уточнить Ивана через ремесло, двор, родство, поручителя или место работы, а не выбирать первого ответившего. Корпус содержит личные имена и форму с отчеством; он подтверждает возможность таких уточнений, но не создаёт конкретного Ивана, систему обязательных отчеств или право раскрывать сведения.",
+      "claim_refs": ["claim:candidate-v5-gramota715-includes-mikhei-trasavich-name-form", "claim:candidate-v5-gramota109-names-zhiznomir-and-mikula", "claim:residual-v1-name-only-owner-labels-have-disputed-function"],
+      "inferences": ["Связка «Иван-коопера» из probe — способ практического различения, а не утверждение об идентичности."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-074",
+      "primary_domain": "recording household goods",
+      "answer_ru": "Для отправленных вещей можно сопоставлять память нескольких участниц, число и отличительные признаки связок, устную передачу и доступную простую запись или отметку. Берестяные тексты и долговые записи подтверждают бытовое письмо и учётные записи, но не доказывают, что спорная связка была записана, подлинна или принадлежит одной стороне.",
+      "claim_refs": ["claim:residual-v1-birch-writing-used-styli-on-inner-surface", "claim:gramota-73-debt-record", "claim:social-debt-records-accounting-amount", "claim:military-world-message-needs-recipient-and-confirmation"],
+      "inferences": ["Любая отметка — свидетельство для обсуждения, не автоматическое юридическое доказательство."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16core-075",
+      "primary_domain": "collective work obligations",
+      "answer_ru": "Вдова может заранее сообщить соседям о травме супруга, назвать оставшийся объём и предложить посильную взаимную помощь, еду или будущий труд; организация зависит от договорённости, времени, людей и погоды. Сельский коллективный хозяйственный контекст и наёмная работа исторически совместимы, но WK не создаёт обязательную повинность, норму выдачи помощи или согласие соседей.",
+      "claim_refs": ["claim:rural-household-economy-context", "claim:social-hired-work-relates-business-record", "claim:military-world-small-group-coordination-needs-established-roles", "claim:military-world-ground-and-weather-change-practical-options"],
+      "inferences": ["Травма и просьба не доказывают обязанность других дворов работать."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-001",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Не сходя с настила, женщина зовёт племянницу обратно и помогает ей с устойчивой точки; вода и насыщенный грунт делают шаг в сторону рискованным. Хлопок в камышах — повод держать дистанцию и наблюдать, а не объявлять вид животного или нападение.",
+      "claim_refs": ["claim:wetland-hydric-soil-depends-on-saturation", "claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-traces-need-cautious-interpretation"],
+      "inferences": ["Вид, размер и намерение животного не определяются звуком."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-002",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Рывки верёвки требуют прекратить тянуть с усилием, осмотреть доступную часть и не наклоняться над срубом; старая верёвка и ведро могут быть зацеплены или повреждены. Земляной запах воды — повод не считать её автоматически безопасной и спросить взрослого о колодце, но не диагноз загрязнения.",
+      "claim_refs": ["claim:military-world-loads-need-order-and-passage", "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water"],
+      "inferences": ["Запах не доказывает состав воды, а WK не задаёт устройство или владельца колодца."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-003",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Мокрые доски, сумерки и подозрительный звук под мостом требуют остановить лошадь, осмотреть мост с безопасной стороны и не загонять животное на неизвестную опору. Если переход сомнителен, ищут иной подход либо ждут света; лёгкий груз не доказывает безопасную конструкцию.",
+      "claim_refs": ["claim:military-world-crossing-conditions-remain-local", "claim:military-world-working-animal-care-intersects-travel", "claim:military-world-ground-and-weather-change-practical-options"],
+      "inferences": ["Причина стука и прочность моста неизвестны."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-004",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Шкуру из грязной воды следует вынуть, отделить от чистой работы и оценить повторную подготовку, не обещая пригодность. Кашель и раздражение глаз возле чана требуют отойти к свежему воздуху и не делать вывод о веществе или диагнозе по одному симптому.",
+      "claim_refs": ["claim:vegetable-tanning-prepared-hide", "claim:candidate-physiology-v3-cough-reflex-airway-irritation", "claim:military-world-wet-equipment-benefits-from-inspection"],
+      "inferences": ["Содержимое чана, степень порчи и безопасность обработки не заданы."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-005",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Примятое зерно и молчание коровы — наблюдения, а не доказательство хищника или кражи. Жнице разумно позвать брата, не идти одной в полосу высокой растительности и сначала восстановить видимость и безопасную связь; конкретное животное и его положение не предполагаются.",
+      "claim_refs": ["claim:military-world-traces-need-cautious-interpretation", "claim:military-world-ground-and-weather-change-practical-options", "claim:animal-care-needs-presence"],
+      "inferences": ["Следы не позволяют назвать вид или свежесть без дополнительных признаков."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-006",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Размокшую муку нужно отделить от сухого запаса и сообщить повару: влажность ограничивает хранение зерновых продуктов. Скребущееся животное при свече — повод не лезть за бочки вслепую и проверить доступное укрытие, но не повод называть вид или заражение.",
+      "claim_refs": ["claim:stored-grain-condition-depends-on-temperature-moisture", "claim:military-world-traces-need-cautious-interpretation", "claim:military-world-gate-and-passage-use-needs-actual-access"],
+      "inferences": ["Мука, животное и его путь доступа не имеют заданного количества или состояния."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-007",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Тяжёлая сеть, крошащийся молодой лёд и уходящий нос лодки требуют не тянуть всё разом: сохранить контроль над лодкой, оценить опору и при необходимости отпустить или закрепить часть нагрузки. Тонкий лёд не имеет заданного безопасного порога, а груз сети не определяет предмет или улов.",
+      "claim_refs": ["claim:military-world-crossing-needs-staged-load-handling", "claim:candidate-v2-ice-strength-depends-on-physical-conditions", "claim:practical-boat-weather-water", "claim:military-world-loads-need-order-and-passage"],
+      "inferences": ["Течение, вес груза и исход манёвра не заданы."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-008",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Повторные обрывы нити и мокрая полоса у окна дают практическую причину остановить участок работы, защитить пряжу от воды и осмотреть раму/щель. Ветер может загонять дождь через проём, а сырость и состояние волокна способны менять работу; это не доказывает причину каждого обрыва.",
+      "claim_refs": ["claim:research-wind-pressure-difference-can-force-rain-across-building-opening", "claim:textile-fibres-twist-yarn", "claim:military-world-wet-equipment-benefits-from-inspection"],
+      "inferences": ["Материал нити, исправность станка и масштаб течи неизвестны."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-009",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Страж наблюдает ограниченно: отмечает направление огней и дыма, подаёт установленный сигнал или вызывает смену, не объявляя по ним врага или пожар. Снег и мороз меняют опору, видимость и звук; задержка сменщика не отменяет необходимость бережно держать внимание и безопасный путь спуска.",
+      "claim_refs": ["claim:military-world-observation-is-bounded-by-conditions", "claim:military-world-watch-relief-keeps-attention-bounded", "claim:residual-nature-snow-wind-drift-visibility", "claim:military-world-traces-need-cautious-interpretation"],
+      "inferences": ["Сигнальный порядок, угроза и точное происхождение запаха не заданы."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-010",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "В овине дым под крышей — повод не посылать босого ребёнка внутрь, открыть доступный выход или прекратить сушку и оценить тягу, сохраняя пути выхода. Сырая солома и огонь требуют отделять людей и горючее; дым не доказывает, что помещение можно безопасно проветрить одним действием.",
+      "claim_refs": ["claim:military-world-fire-and-smoke-need-access-and-separation", "claim:research-fire-plume-can-transfer-combustion-products-to-an-upper-layer", "claim:military-world-ground-and-weather-change-practical-options"],
+      "inferences": ["Топка, причина дыма и состояние ребёнка не определены."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-011",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Следы и кусок ткани позволяют заметить нарушение грядки и осторожно искать владельца вещи либо сообщить ответственному, но не назвать человека или намерение. На размытых межах работа и движение требуют оценки грунта; мокрая зелень и корзина не создают право на урожай.",
+      "claim_refs": ["claim:military-world-traces-need-cautious-interpretation", "claim:military-world-ground-and-weather-change-practical-options", "claim:household-garden-shovel"],
+      "inferences": ["Археологическая совместимость огородного труда не определяет конкретную монастырскую собственность."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-012",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "После дождя густой дым у печи требует отойти от него, не добавлять топливо без осмотра и проверить доступные проёмы и пожарный риск. Потревоженная птица — лишь признак изменения среды, не свидетельство опасного зверя или причины дыма.",
+      "claim_refs": ["claim:military-world-fire-and-smoke-need-access-and-separation", "claim:military-world-traces-need-cautious-interpretation"],
+      "inferences": ["Устройство смолокурни, состав дыма и состояние печи не заданы."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-013",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Тележку из глубокой мокрой колеи лучше разгружать или вытягивать с проверкой опоры и прохода, не рывком. Намокшие свечи стоит отделить и просушить/осмотреть, не обещая пригодность; соседская ссора и посуда — отдельный звук, не причина поломки и не повод вмешиваться без необходимости.",
+      "claim_refs": ["claim:military-world-loads-need-order-and-passage", "claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-wet-equipment-benefits-from-inspection", "claim:military-world-traces-need-cautious-interpretation"],
+      "inferences": ["Причина ссоры, ущерб товару и право на помощь не определены."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-014",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "На мокрой кочке безопаснее не тянуться дальше без устойчивой опоры и пользоваться палкой для проверки. Плеск и укусы насекомых не определяют вид животного или растения; неизвестное растение нельзя считать съедобным по одному виду, а раздражение/воздействие зависят от конкретного вещества и пути контакта.",
+      "claim_refs": ["claim:military-world-ground-and-weather-change-practical-options", "claim:candidate-edible-plant-status-does-not-transfer-to-every-part", "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context", "claim:military-world-traces-need-cautious-interpretation"],
+      "inferences": ["Плеск и насекомые не дают диагноза, вида либо опасности беременности."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-015",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Ослабевшие меха уменьшают управляемость жаром, поэтому кузнец сначала безопасно отложит правку, осмотрит меха и горн, а чужой плащ уберёт от жара только если это безопасно. Ветер, пыль и снежная крупа меняют работу, а прожжённый рукав не доказывает причину или владельца плаща.",
+      "claim_refs": ["claim:ordinary-life-smith-fire-needs-managed-space", "claim:military-world-fire-and-smoke-need-access-and-separation", "claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-traces-need-cautious-interpretation"],
+      "inferences": ["Конструкция мехов и возможность ремонта не заданы."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-016",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Стертые знаки и мыши у мешка требуют отделить наблюдаемое: попросить поставщика пояснить запись, сопоставить её с доступной отметкой/памятью и не утверждать подлог без основания; мешок надо закрыть и оценить потери отдельно. Бытовые записи и счёт исторически совместимы, но не подтверждают содержание именно этой дощечки.",
+      "claim_refs": ["claim:social-debt-records-accounting-amount", "claim:residual-v1-birch-writing-used-styli-on-inner-surface", "claim:military-world-traces-need-cautious-interpretation", "claim:stored-grain-condition-depends-on-temperature-moisture"],
+      "inferences": ["Следы пальца не доказывают обман, а мыши не задают объём утраты."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-017",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Тяжёлое дыхание одной коровы и тревожное поведение стада требуют уменьшить тесноту, дать животным безопасный путь и наблюдать, а не называть болезнь или причину по одному признаку. При приближении грозы пастух учитывает ветер, видимость, опору и возможность укрытия; срок возврата не отменяет уход за наличным животным.",
+      "claim_refs": ["claim:animal-care-needs-presence", "claim:military-world-working-animal-care-intersects-travel", "claim:military-world-ground-and-weather-change-practical-options"],
+      "inferences": ["Точная причина тяжёлого дыхания остаётся неизвестной."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-018",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Бурное кипение требует убрать котёл с чрезмерного жара либо уменьшить огонь, не полагаясь на него как на универсальное средство безопасности. Продрогшего путника разумно укрыть от ветра и сырости, осмотреть руку и при необходимости позвать более опытную помощь; согревание и помощь не задают диагноз или исход.",
+      "claim_refs": ["claim:military-world-cold-and-wetness-need-practical-boundaries", "claim:healer-observation-and-questioning", "claim:healer-care-coordination-and-uncertainty"],
+      "inferences": ["Причина тугоподвижности руки и состояние пищи не известны."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-019",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "После ночного мороза верхняя корка может скрывать мокрую глину: подмастерье должен отойти из-под нависающего края, не подрубать его дальше и оценить сток/устойчивость до продолжения добычи. Осадок и вода меняют грунт, но не определяют прочность пласта или объём добываемой глины.",
+      "claim_refs": ["claim:military-world-ground-and-weather-change-practical-options", "claim:terrain-parent-material-assemblage", "claim:river-flow-affects-sediment-transport-deposition"],
+      "inferences": ["Региональная совместимость глин не является геотехническим расчётом данного склона."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-020",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Спутанность речи и жар — тревожные наблюдения, не готовый диагноз; взрослому нужно держать больного под наблюдением, дать доступное питьё, уменьшить дым и позвать опытную помощь, если она доступна. Повышенный дым требует обеспечить выход и не продолжать топить как обычно; ребёнку также нужна отдельная оценка, а не перенос диагноза от отца.",
+      "claim_refs": ["claim:candidate-v5-infections-cause-most-fevers", "claim:healer-observation-and-questioning", "claim:healer-care-coordination-and-uncertainty", "claim:military-world-fire-and-smoke-need-access-and-separation"],
+      "inferences": ["Лихорадка и спутанность не устанавливают инфекцию, угарный газ или лечение."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-021",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Лодку у края склона не тянут в одиночку: нужно остановить её движение, убрать людей из линии возможного срыва, привлечь артель и проверить треснувшую опору до нового подъёма. Перенос громоздкой лодки требует чистого пути, согласованного подъёма и остановок; высокая вода меняет берег и доступ.",
+      "claim_refs": ["claim:military-world-portage-is-coordinated-carry-work", "claim:military-world-loads-need-order-and-passage", "claim:military-world-ground-and-weather-change-practical-options", "claim:household-boat-repair-clamp"],
+      "inferences": ["Трещина не определяет несущую способность, а археологические скобы не создают ремонтный материал."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-022",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Отказ лошади поднимать ногу требует прекратить принуждение, осмотреть доступное копыто и сбрую, обеспечить устойчивое место и сообщить хозяину/всаднику о задержке. Надрез на ремне — наблюдение для отдельной проверки, не доказательство умысла; поездка с рабочим животным зависит от сбруи, отдыха, воды и безопасного разворота.",
+      "claim_refs": ["claim:military-world-working-animal-care-intersects-travel", "claim:animal-care-needs-presence", "claim:military-world-traces-need-cautious-interpretation", "claim:military-world-message-needs-recipient-and-confirmation"],
+      "inferences": ["Боль, причина надреза и право заменить ремень неизвестны."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-023",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Помощница сначала сохраняет безопасность у размокшего вала и оценивает, можно ли укрыть или перенести раненого. Для уже кровоточащей раны прямое давление чистой тканью может помочь; нужно различать нужду раненого и общий поток испуганных людей, не выдумывая диагноз, атаку или полномочия заставы.",
+      "claim_refs": ["claim:military-world-established-casualty-needs-hazard-aware-help", "claim:care-direct-pressure-bleeding", "claim:military-world-carrying-an-injured-person-is-conditional", "claim:military-world-ground-and-weather-change-practical-options"],
+      "inferences": ["Кровь на рукаве не определяет тяжесть, а крики не устанавливают источник угрозы."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-024",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Ребёнку не следует лезть в усилившийся ручей за корзиной: рыхлая глина и течение меняют опору. Болезненное сопение и шерсть — повод отступить к людям и сообщить взрослым, а не определять животное или пытаться помочь ему в ивняке; коробочку и иглу он может сохранить сухими.",
+      "claim_refs": ["claim:military-world-ground-and-weather-change-practical-options", "claim:military-world-traces-need-cautious-interpretation", "claim:river-flow-affects-sediment-transport-deposition", "claim:military-world-cold-and-wetness-need-practical-boundaries"],
+      "inferences": ["Вид и состояние животного, а также доступность корзины неизвестны."],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb16free-025",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Неровный ход колеса во время ливня — причина остановить доступное движение и не подходить к движущимся частям; мешок зерна и следы у входа оцениваются после безопасности людей и воды. Влажность влияет на хранение зерна, а быстро заполняемые водой следы не позволяют назвать человека или время его прохода.",
+      "claim_refs": ["claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing", "claim:stored-grain-condition-depends-on-temperature-moisture", "claim:military-world-traces-need-cautious-interpretation", "claim:military-world-ground-and-weather-change-practical-options"],
+      "inferences": ["Причина неравного хода, объём потери и личность босого человека не определены."],
+      "status": "covered",
+      "gaps": []
+    }
+  ]
+}

@@ -4,7 +4,8 @@ import { resolve } from 'node:path';
 import { canonicalDigest } from '@rus/materialization';
 import { LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST } from
   './lower-dvina-trace-ordinary-materialization-profile.js';
-import { validateLowerDvinaTraceOrdinaryStageBEval } from
+import { lowerDvinaTraceOrdinaryStageBQualificationCases,
+  validateLowerDvinaTraceOrdinaryStageBEval } from
   './lower-dvina-trace-ordinary-stage-b-eval.js';
 
 const PROFILE_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/'
@@ -12,7 +13,7 @@ const PROFILE_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/'
 const RECEIPT_PATH = 'data/model-evals/lower-dvina-trace/'
   + 'ordinary-stage-b-approval-v1.json';
 const RECEIPT_DIGEST =
-  'a420d57cc61af8cf96b8b8cc8070041c8055afc923d5c9b6570a1d7afadbcbed';
+  '3deeafa2257b3fadb8d80f30ea0d03203e22fe6686abb9449fa6210d9cb8de1f';
 
 export async function loadLowerDvinaTraceOrdinaryStageBApproval({
   rootDir = process.cwd()
@@ -41,7 +42,8 @@ export function validateLowerDvinaTraceOrdinaryStageBApproval(receipt,
 function valid(receipt, profile) {
   const contract = profile?.stage_b_classification_eval;
   const identity = receipt?.model_identity;
-  const caseIds = contract?.cases?.map(({ id }) => id).sort();
+  const caseIds = lowerDvinaTraceOrdinaryStageBQualificationCases(contract)
+    ?.map(({ id }) => id).sort();
   return validateLowerDvinaTraceOrdinaryStageBEval(contract)
     && exact(receipt, ['schema','version','profile_digest',
       'eval_contract_digest','model_identity','approved_case_ids',

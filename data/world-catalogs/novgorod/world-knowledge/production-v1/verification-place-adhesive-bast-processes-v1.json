@@ -1,0 +1,38 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place05-place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+      "claim_ref": "claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+      "claim_digest": "9d548102cce660092ff06205846c3418f5a38f6e3b6eb0b3d126da1cfcb2cc27",
+      "candidate_ref": "git:5d9f27e3d600d31e2897a4eefe2a286108ae1273:data/world-catalogs/novgorod/world-knowledge/production-v1/place-adhesive-bast-processes-v1.json#claim:place-adhesive-aqueous-collagen-gelatin-animal-glue-can-gel-on-cooling-and-dry-after-joining",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate author /root/place05_material_processes and root editorial integrator; actual source access limits recorded in review note.",
+      "evidence_checked": [
+        "evidence:adhesive-bast-animal-glue-gelatin-kind",
+        "evidence:adhesive-bast-gelatin-cooling-set",
+        "evidence:adhesive-bast-gelatin-adhesive-drying"
+      ],
+      "review_ref": "verification/place-adhesive-bast-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Conditional aqueous collagen/gelatin animal-glue composition only; no every-glue transfer, recipe, temperature, duration, clamping, bond strength, historical method or successful joint."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place05-place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+      "claim_ref": "claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+      "claim_digest": "4016c67d4823f756f5a4c674940e6d62bca97100780a9ff9478ca69ac140ec2e",
+      "candidate_ref": "git:5d9f27e3d600d31e2897a4eefe2a286108ae1273:data/world-catalogs/novgorod/world-knowledge/production-v1/place-adhesive-bast-processes-v1.json#claim:place-adhesive-linden-bast-soaking-can-support-separation-and-flexible-handling",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate author /root/place05_material_processes and root editorial integrator; actual source access limits recorded in review note.",
+      "evidence_checked": [
+        "evidence:adhesive-bast-linden-inner-bark-soaking-separation",
+        "evidence:adhesive-bast-linden-bast-fibre-character"
+      ],
+      "review_ref": "verification/place-adhesive-bast-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Editorial analogy for established linden bast in Novgorod 1200–1300, not local presence, historical attestation, fixed method, yield or generalization to nettle/all bast plants."
+    }
+  ]
+}

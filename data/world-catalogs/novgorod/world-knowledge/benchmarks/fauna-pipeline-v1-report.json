@@ -1,0 +1,2808 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_report_v1",
+  "benchmark_ref": "wk-pipeline:fauna-science-v1",
+  "pack_ref": "wk-pack:novgorod-1230",
+  "pack_revision": "revision:production-v1",
+  "embedding_profile_ref": "wk-embedding:giga-480m-0826:v1",
+  "backend": "configured production DeepSeek backend",
+  "correctness_measurement": "Automatic gate checks answer class and cited evidence refs. Answer prose is retained for independent grounding review; these metrics alone do not prove factual correctness of every sentence.",
+  "cost_measurement": {
+    "unit": "provider_reported_tokens",
+    "monetary_estimate_usd": null,
+    "reason": "The configured deepseek-v4-flash alias has no project-owned immutable price schedule; token usage is retained without inventing a rate."
+  },
+  "modes": {
+    "without_wk": {
+      "case_count": 14,
+      "factual_correctness": 1,
+      "unsupported_premise_rate": 0,
+      "planner_mean_ms": 0,
+      "retrieval_mean_ms": 0,
+      "query_embedding_cold_ms": 0,
+      "query_embedding_warm_mean_ms": 0,
+      "semantic_mean_ms": 1529.4475142857139,
+      "total_pipeline_mean_ms": 1529.4475142857139,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "semantic_usage": {
+        "prompt_tokens": 4905,
+        "completion_tokens": 1080,
+        "total_tokens": 5985
+      }
+    },
+    "structured_lexical": {
+      "case_count": 14,
+      "factual_correctness": 0.8571428571428571,
+      "unsupported_premise_rate": 0,
+      "planner_mean_ms": 1732.2961142857132,
+      "retrieval_mean_ms": 1.211200000000255,
+      "query_embedding_cold_ms": 0,
+      "query_embedding_warm_mean_ms": 0,
+      "semantic_mean_ms": 1408.6151428571422,
+      "total_pipeline_mean_ms": 3142.3896857142854,
+      "planner_usage": {
+        "prompt_tokens": 216823,
+        "completion_tokens": 1414,
+        "total_tokens": 218237
+      },
+      "semantic_usage": {
+        "prompt_tokens": 31096,
+        "completion_tokens": 1004,
+        "total_tokens": 32100
+      }
+    },
+    "hybrid": {
+      "case_count": 14,
+      "factual_correctness": 1,
+      "unsupported_premise_rate": 0,
+      "planner_mean_ms": 1627.004307142857,
+      "retrieval_mean_ms": 1.1324214285705239,
+      "query_embedding_cold_ms": 11264.310799999992,
+      "query_embedding_warm_mean_ms": 96.30313846153597,
+      "semantic_mean_ms": 1375.8200999999992,
+      "total_pipeline_mean_ms": 3899.3231142857135,
+      "planner_usage": {
+        "prompt_tokens": 216823,
+        "completion_tokens": 1518,
+        "total_tokens": 218341
+      },
+      "semantic_usage": {
+        "prompt_tokens": 31564,
+        "completion_tokens": 1039,
+        "total_tokens": 32603
+      }
+    }
+  },
+  "decision": {
+    "status": "pass",
+    "failures": [],
+    "production_mode": "hybrid",
+    "basis": "Only hybrid gates production: every hybrid answer must be accepted, cite relevant evidence, use no unsupported claim refs, and satisfy every expected evidence group on designated acceptance cases. Baselines remain measurements."
+  },
+  "runs": [
+    {
+      "mode": "without_wk",
+      "case_id": "ewe_maternal_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Овца отличает своих ягнят от чужих после рождения в основном по запаху, а также по зрительным и слуховым сигналам, которые формируются в первые часы после родов.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-ewe-lamb-recognition"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-ewe-lamb-recognition"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 2189.5933999999997,
+      "semantic_usage": {
+        "prompt_tokens": 352,
+        "completion_tokens": 68,
+        "total_tokens": 420,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 96
+      },
+      "total_pipeline_ms": 2189.5933999999997
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "goat_groups_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Natural goat social groups can change during movement and feeding by splitting into subgroups or merging, as individuals may temporarily separate to forage or travel and then reunite, depending on resource distribution and social bonds.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-goat-sociality"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-goat-sociality"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1459.8095999999996,
+      "semantic_usage": {
+        "prompt_tokens": 346,
+        "completion_tokens": 60,
+        "total_tokens": 406,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 90
+      },
+      "total_pipeline_ms": 1459.8095999999996
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "wolf_pup_care_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Волки живут стаями, которые представляют собой семейные группы, обычно состоящие из родительской пары (альфа-самца и альфа-самки) и их потомства разных возрастов. Иерархия в стае строгая, с доминирующей парой во главе. Уход за волчатами включает совместное воспитание: родители и другие члены стаи (часто старшие братья и сёстры) приносят пищу, охраняют и обучают молодняк. Волчата рождаются слепыми и беспомощными, поэтому первые недели они находятся в логове, где мать их кормит и согревает, а отец и другие члены стаи обеспечивают еду. Позже волчата постепенно включаются в жизнь стаи, учатся охотиться и соблюдать социальные правила.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-pack-pup-care"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-wolf-pack-sociality"
+        ],
+        [
+          "claim:fauna-mammals-wolf-pack-pup-care"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 2419.6004000000003,
+      "semantic_usage": {
+        "prompt_tokens": 351,
+        "completion_tokens": 223,
+        "total_tokens": 574,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 95
+      },
+      "total_pipeline_ms": 2419.6004000000003
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "horse_separation_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Separating a domestic horse from its herd can change its behavior because horses are social animals that rely on the herd for safety, social interaction, and routine. Isolation can cause stress, anxiety, and behavioral changes such as pacing, whinnying, or depression.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-domestic-horse-herd-sociality",
+        "claim:fauna-mammals-domestic-horse-separation-stress"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-domestic-horse-herd-sociality"
+        ],
+        [
+          "claim:fauna-mammals-domestic-horse-separation-stress"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1447.0764,
+      "semantic_usage": {
+        "prompt_tokens": 347,
+        "completion_tokens": 74,
+        "total_tokens": 421,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 91
+      },
+      "total_pipeline_ms": 1447.0764
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "bird_navigation_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Перелётные птицы используют различные ориентиры, включая солнце, звёзды, магнитное поле Земли, а также зрительные ориентиры на местности, такие как береговые линии, реки и горные хребты.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-bird-navigation"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-bird-navigation"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1342.4946999999993,
+      "semantic_usage": {
+        "prompt_tokens": 353,
+        "completion_tokens": 75,
+        "total_tokens": 428,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 97
+      },
+      "total_pipeline_ms": 1342.4946999999993
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "salmon_eel_migration_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Sea-bound European silver eels are in their adult reproductive migration to the Sargasso Sea, whereas Atlantic salmon returning from the sea are in their spawning migration to freshwater rivers. The eels are leaving European rivers and heading to the ocean to spawn, while the salmon are leaving the ocean and entering rivers to spawn.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-eel-migration",
+        "claim:fauna-salmon-anadromy"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-eel-migration"
+        ],
+        [
+          "claim:fauna-salmon-anadromy"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1685.1819999999989,
+      "semantic_usage": {
+        "prompt_tokens": 353,
+        "completion_tokens": 84,
+        "total_tokens": 437,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 97
+      },
+      "total_pipeline_ms": 1685.1819999999989
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "adder_defence_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Обыкновенная гадюка обычно старается избегать человека и при беспокойстве, как правило, уползает или затаивается, но если её загнать в угол или она почувствует непосредственную угрозу, может укусить в целях самозащиты.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-adder-defence"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-adder-defence"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1591.579600000001,
+      "semantic_usage": {
+        "prompt_tokens": 353,
+        "completion_tokens": 87,
+        "total_tokens": 440,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 97
+      },
+      "total_pipeline_ms": 1591.579600000001
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "bee_winter_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "A honeybee colony survives a cold temperate winter by clustering together for warmth, with the queen at the center, and consuming stored honey as an energy source to generate heat. The colony also reduces activity and relies on the insulation provided by the cluster and the hive structure.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-bee-winter-cluster"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-bee-winter-cluster"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1678.0121,
+      "semantic_usage": {
+        "prompt_tokens": 346,
+        "completion_tokens": 74,
+        "total_tokens": 420,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 90
+      },
+      "total_pipeline_ms": 1678.0121
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "dragonfly_development_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Стрекоза не проходит стадию куколки; её личинка (наяда) развивается в воде.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-dragonfly-lifecycle"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-dragonfly-lifecycle"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1230.7410999999993,
+      "semantic_usage": {
+        "prompt_tokens": 356,
+        "completion_tokens": 47,
+        "total_tokens": 403,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 100
+      },
+      "total_pipeline_ms": 1230.7410999999993
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "tick_movement_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Ticks do not jump; they reach a host by climbing onto vegetation and waiting in a position called 'questing,' then grabbing onto a passing animal as it brushes against them.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-tick-questing"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-tick-questing"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1469.5361999999986,
+      "semantic_usage": {
+        "prompt_tokens": 349,
+        "completion_tokens": 57,
+        "total_tokens": 406,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 93
+      },
+      "total_pipeline_ms": 1469.5361999999986
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "chicken_dust_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Курица принимает пылевую ванну, чтобы очистить перья и избавиться от паразитов.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-chicken-dust-bathing"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-chicken-dust-bathing"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1241.981300000003,
+      "semantic_usage": {
+        "prompt_tokens": 347,
+        "completion_tokens": 49,
+        "total_tokens": 396,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 91
+      },
+      "total_pipeline_ms": 1241.981300000003
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "crayfish_eggs_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Eggs are carried externally under the female's abdomen, attached to the pleopods (swimmerets) until they hatch.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-crayfish-egg-carrying"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-crayfish-egg-carrying"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1329.1430999999975,
+      "semantic_usage": {
+        "prompt_tokens": 348,
+        "completion_tokens": 47,
+        "total_tokens": 395,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 92
+      },
+      "total_pipeline_ms": 1329.1430999999975
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "squirrel_winter_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Обыкновенная белка не впадает в зимнюю спячку; при плохой погоде она пережидает ненастье в гнезде, оставаясь активной в течение зимы.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1164.9076999999997,
+      "semantic_usage": {
+        "prompt_tokens": 358,
+        "completion_tokens": 68,
+        "total_tokens": 426,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 102
+      },
+      "total_pipeline_ms": 1164.9076999999997
+    },
+    {
+      "mode": "without_wk",
+      "case_id": "fish_oxygen_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "A warm summer night can worsen oxygen shortage for fish because warmer water holds less dissolved oxygen, and at night, aquatic plants and algae stop producing oxygen through photosynthesis while continuing to consume oxygen through respiration, further depleting oxygen levels.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-fish-summer-night-oxygen"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-fish-summer-night-oxygen"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [],
+      "factual_premise_refs": [],
+      "unsupported_premise_refs": [],
+      "knowledge_query": null,
+      "planner_ms": 0,
+      "planner_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "retrieval_ms": 0,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "not_used",
+      "semantic_ms": 1162.6075999999994,
+      "semantic_usage": {
+        "prompt_tokens": 346,
+        "completion_tokens": 67,
+        "total_tokens": 413,
+        "prompt_tokens_details": {
+          "cached_tokens": 256
+        },
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 90
+      },
+      "total_pipeline_ms": 1162.6075999999994
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "ewe_maternal_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "После рождения овца образует связь со своими ягнятами и отличает их от неродственных ягнят.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-ewe-lamb-recognition"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-ewe-lamb-recognition"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-ewe-lamb-recognition",
+        "claim:fauna-ewe-lambing-seclusion",
+        "claim:fauna-sheep-flocking",
+        "claim:care-direct-pressure-bleeding"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-ewe-lamb-recognition"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-domestic-sheep"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "Как овца распознает своих ягнят после рождения?",
+          "Различение своих и чужих ягнят у овцы",
+          "Механизм узнавания ягнят матерью-овцой"
+        ]
+      },
+      "planner_ms": 1982.071799999998,
+      "planner_usage": {
+        "prompt_tokens": 15489,
+        "completion_tokens": 113,
+        "total_tokens": 15602
+      },
+      "retrieval_ms": 3.374199999998382,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1278.304,
+      "semantic_usage": {
+        "prompt_tokens": 1581,
+        "completion_tokens": 62,
+        "total_tokens": 1643,
+        "prompt_tokens_details": {
+          "cached_tokens": 1024
+        },
+        "prompt_cache_hit_tokens": 1024,
+        "prompt_cache_miss_tokens": 557
+      },
+      "total_pipeline_ms": 3265.2898999999998
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "goat_groups_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Natural goat social groups can merge and split while moving and feeding.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-goat-sociality"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-goat-sociality"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-doe-kid-care",
+        "claim:fauna-goat-sociality",
+        "claim:fauna-mammals-domestic-pig-competitive-displacement",
+        "claim:fauna-earthworm-soil-effects",
+        "claim:fauna-mammals-roe-deer-seasonal-grouping",
+        "claim:fauna-mammals-roe-deer-selective-seasonal-browsing",
+        "claim:fauna-animal-partial-migration",
+        "claim:fauna-mammals-domestic-cattle-startle-response",
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:fauna-mammals-brown-bear-seasonal-omnivory",
+        "claim:fauna-salmon-age-diet",
+        "claim:fauna-adder-male-contest"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-goat-sociality"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-domestic-goat"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "natural goat social groups",
+          "changes during movement",
+          "changes during feeding"
+        ]
+      },
+      "planner_ms": 1650.8087999999989,
+      "planner_usage": {
+        "prompt_tokens": 15483,
+        "completion_tokens": 75,
+        "total_tokens": 15558
+      },
+      "retrieval_ms": 0.8431000000018685,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1243.8172999999988,
+      "semantic_usage": {
+        "prompt_tokens": 2524,
+        "completion_tokens": 43,
+        "total_tokens": 2567,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1884
+      },
+      "total_pipeline_ms": 2895.7140999999974
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "wolf_pup_care_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Волки могут жить и охотиться семейными стаями. Волчья стая может обеспечивать и охранять детёнышей в период зависимости. Также стая может защищать территорию от вторгающихся волков и использует вой для связи.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-pack-pup-care"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-wolf-pack-sociality"
+        ],
+        [
+          "claim:fauna-mammals-wolf-pack-pup-care"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-mammals-wolf-carnivorous-diet",
+        "claim:fauna-mammals-wolf-howling-communication",
+        "claim:fauna-mammals-wolf-pack-pup-care",
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-territorial-defense",
+        "claim:fauna-mammals-ruminant-grazing-selectivity"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-pack-pup-care",
+        "claim:fauna-mammals-wolf-territorial-defense",
+        "claim:fauna-mammals-wolf-howling-communication"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-wolf"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "wolf pack social structure",
+          "wolf pup care and rearing"
+        ]
+      },
+      "planner_ms": 1695.1196999999993,
+      "planner_usage": {
+        "prompt_tokens": 15488,
+        "completion_tokens": 88,
+        "total_tokens": 15576
+      },
+      "retrieval_ms": 0.5538999999989755,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1683.721999999998,
+      "semantic_usage": {
+        "prompt_tokens": 1740,
+        "completion_tokens": 131,
+        "total_tokens": 1871,
+        "prompt_tokens_details": {
+          "cached_tokens": 1664
+        },
+        "prompt_cache_hit_tokens": 1664,
+        "prompt_cache_miss_tokens": 76
+      },
+      "total_pipeline_ms": 3379.5594999999994
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "horse_separation_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Separating a domestic horse from other horses can cause stress and anxious vocal behavior because domestic horses are social animals that evolutionarily live in herds.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-domestic-horse-herd-sociality",
+        "claim:fauna-mammals-domestic-horse-separation-stress"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-domestic-horse-herd-sociality"
+        ],
+        [
+          "claim:fauna-mammals-domestic-horse-separation-stress"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-mammals-domestic-horse-separation-stress",
+        "claim:fauna-mammals-domestic-horse-forage-behavior",
+        "claim:fauna-mammals-domestic-horse-herd-sociality",
+        "claim:fauna-chicken-allopreening",
+        "claim:fauna-chicken-flock-hierarchy",
+        "claim:fauna-chicken-brooding",
+        "claim:fauna-mammals-domestic-pig-competitive-displacement",
+        "claim:fauna-chicken-dust-bathing",
+        "claim:fauna-chicken-foraging",
+        "claim:fauna-ewe-lamb-recognition",
+        "claim:fauna-ewe-lambing-seclusion",
+        "claim:fauna-doe-kid-care"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-mammals-domestic-horse-separation-stress",
+        "claim:fauna-mammals-domestic-horse-herd-sociality"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-domestic-horse"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "domestic horse behavior when separated from herd",
+          "effect of social isolation on horse behavior",
+          "horse herd social structure and behavioral changes"
+        ]
+      },
+      "planner_ms": 2199.180800000002,
+      "planner_usage": {
+        "prompt_tokens": 15484,
+        "completion_tokens": 106,
+        "total_tokens": 15590
+      },
+      "retrieval_ms": 1.888699999995879,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1283.3104999999996,
+      "semantic_usage": {
+        "prompt_tokens": 2533,
+        "completion_tokens": 82,
+        "total_tokens": 2615,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "prompt_cache_hit_tokens": 1408,
+        "prompt_cache_miss_tokens": 1125
+      },
+      "total_pipeline_ms": 3484.5583000000042
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "bird_navigation_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "При миграции птицы могут ориентироваться по небесным, магнитным и ландшафтным признакам.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-bird-navigation"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-bird-navigation"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-bird-migration-energy",
+        "claim:fauna-bird-navigation",
+        "claim:fauna-bird-irruption-nomadism",
+        "claim:fauna-bird-migration-cues",
+        "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
+        "claim:fauna-dragonfly-foodweb",
+        "claim:fauna-bee-waggle",
+        "claim:environment-p1-bird-taxa",
+        "claim:environment-p1-wildfowl-season",
+        "claim:fauna-mammals-eurasian-lynx-prey-spectrum"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-bird-navigation"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology",
+          "environment"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-bird-migration",
+          "wk:environment:seasonal-bird-migration"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "ориентиры для перелётных птиц",
+          "какие ориентиры помогают птицам выбирать направление",
+          "навигация перелётных птиц",
+          "ориентация птиц при миграции"
+        ]
+      },
+      "planner_ms": 2094.4681999999957,
+      "planner_usage": {
+        "prompt_tokens": 15490,
+        "completion_tokens": 143,
+        "total_tokens": 15633
+      },
+      "retrieval_ms": 1.231100000004517,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1551.0290999999997,
+      "semantic_usage": {
+        "prompt_tokens": 2577,
+        "completion_tokens": 57,
+        "total_tokens": 2634,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1937
+      },
+      "total_pipeline_ms": 3646.9257
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "salmon_eel_migration_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Sea-bound European silver eels migrate to sea toward Sargasso Sea spawning grounds, whereas anadromous Atlantic salmon return to freshwater to spawn after rearing in rivers and migrating to sea.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-eel-migration",
+        "claim:fauna-salmon-anadromy"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-eel-migration"
+        ],
+        [
+          "claim:fauna-salmon-anadromy"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-salmon-repeat-spawning",
+        "claim:fauna-eel-migration",
+        "claim:fauna-salmon-age-diet",
+        "claim:fauna-salmon-anadromy",
+        "claim:fauna-salmon-homing",
+        "claim:fauna-eel-feeding",
+        "claim:fauna-mussel-fish-host"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-eel-migration",
+        "claim:fauna-salmon-anadromy"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-european-eel",
+          "wk:biology_physiology:fauna-atlantic-salmon"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "differences between European eel and Atlantic salmon in migration to sea and reproduction",
+          "European eel catadromous migration and spawning",
+          "Atlantic salmon anadromous migration and spawning"
+        ]
+      },
+      "planner_ms": 1983.7909,
+      "planner_usage": {
+        "prompt_tokens": 15490,
+        "completion_tokens": 115,
+        "total_tokens": 15605
+      },
+      "retrieval_ms": 1.867900000004738,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 2425.0757999999987,
+      "semantic_usage": {
+        "prompt_tokens": 1751,
+        "completion_tokens": 79,
+        "total_tokens": 1830,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1111
+      },
+      "total_pipeline_ms": 4410.9087
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "adder_defence_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Обыкновенная гадюка обычно предпочитает скрыться в растительности; укусы людей и домашних животных чаще связаны с беспокойством змеи.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-adder-defence"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-adder-defence"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-adder-chemical-sensing",
+        "claim:fauna-adder-cover-basking",
+        "claim:fauna-adder-defence",
+        "claim:fauna-adder-male-contest",
+        "claim:fauna-adder-viviparity",
+        "claim:fauna-adder-winter-refuge",
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:fauna-mammals-domestic-cattle-flight-zone",
+        "claim:fauna-mammals-domestic-cattle-startle-response",
+        "claim:fauna-animal-habituation",
+        "claim:seasonal-plant-development-depends-on-photoperiod",
+        "claim:fauna-chicken-brooding"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-adder-defence"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-common-adder"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "обыкновенная гадюка",
+          "реакция на беспокойство",
+          "поведение при приближении человека"
+        ]
+      },
+      "planner_ms": 1468.4919999999984,
+      "planner_usage": {
+        "prompt_tokens": 15490,
+        "completion_tokens": 86,
+        "total_tokens": 15576
+      },
+      "retrieval_ms": 0.6059999999997672,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1335.2752999999939,
+      "semantic_usage": {
+        "prompt_tokens": 2719,
+        "completion_tokens": 69,
+        "total_tokens": 2788,
+        "prompt_tokens_details": {
+          "cached_tokens": 2688
+        },
+        "prompt_cache_hit_tokens": 2688,
+        "prompt_cache_miss_tokens": 31
+      },
+      "total_pipeline_ms": 2804.5309999999954
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "bee_winter_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "In temperate climates, honeybees store honey and pollen, and in winter the workers and queen cluster and generate muscular heat.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-bee-winter-cluster"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-bee-winter-cluster"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-bee-winter-cluster",
+        "claim:fauna-bee-diurnal",
+        "claim:fauna-bee-swarming",
+        "claim:fauna-bee-waggle",
+        "claim:fauna-bee-worker-tasks",
+        "claim:care-direct-pressure-bleeding"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-bee-winter-cluster"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-honeybee"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "honeybee colony winter survival",
+          "cold temperate winter honeybee survival mechanisms"
+        ]
+      },
+      "planner_ms": 1430.5206000000035,
+      "planner_usage": {
+        "prompt_tokens": 15483,
+        "completion_tokens": 76,
+        "total_tokens": 15559
+      },
+      "retrieval_ms": 0.8663999999989755,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1254.291600000004,
+      "semantic_usage": {
+        "prompt_tokens": 1690,
+        "completion_tokens": 57,
+        "total_tokens": 1747,
+        "prompt_tokens_details": {
+          "cached_tokens": 768
+        },
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 922
+      },
+      "total_pipeline_ms": 2685.877800000002
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "dragonfly_development_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "no",
+      "answer_text": "Нет, у описанных стрекоз стадии куколки нет; яйцо развивается в водную личинку, затем во взрослую особь. Личинка развивается в воде.",
+      "answer_correct": false,
+      "relevant_claim_refs": [
+        "claim:fauna-dragonfly-lifecycle"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-dragonfly-lifecycle"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-dragonfly-adult-foraging",
+        "claim:fauna-dragonfly-emergence",
+        "claim:fauna-dragonfly-foodweb",
+        "claim:fauna-dragonfly-lifecycle",
+        "claim:fauna-dragonfly-male-territory",
+        "claim:fauna-mussel-fish-host",
+        "claim:plant-development-responds-to-light",
+        "claim:fauna-culex-dusk-rest",
+        "claim:fauna-culex-female-blood",
+        "claim:fauna-culex-life-cycle"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-dragonfly-lifecycle"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-dragonfly"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "стрекоза жизненный цикл стадия куколки",
+          "личинка стрекозы среда обитания развитие"
+        ]
+      },
+      "planner_ms": 1605.2981,
+      "planner_usage": {
+        "prompt_tokens": 15493,
+        "completion_tokens": 88,
+        "total_tokens": 15581
+      },
+      "retrieval_ms": 0.33320000000094296,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1272.8574000000008,
+      "semantic_usage": {
+        "prompt_tokens": 2421,
+        "completion_tokens": 76,
+        "total_tokens": 2497,
+        "prompt_tokens_details": {
+          "cached_tokens": 768
+        },
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 1653
+      },
+      "total_pipeline_ms": 2878.640999999996
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "tick_movement_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Ticks do not jump or fly; many wait on grasses or shrubs and attach to a host on contact. They use odors, heat, moisture, and vibrations to find hosts.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-tick-questing"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-tick-questing"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-tick-feeding",
+        "claim:fauna-tick-senses",
+        "claim:fauna-tick-questing",
+        "claim:fauna-bird-irruption-nomadism",
+        "claim:care-direct-pressure-bleeding",
+        "claim:fauna-animal-habituation",
+        "claim:fauna-ewe-lambing-seclusion",
+        "claim:fauna-animal-learning",
+        "claim:fauna-chicken-allopreening",
+        "claim:fauna-chicken-brooding",
+        "claim:fauna-chicken-dust-bathing",
+        "claim:fauna-chicken-flock-hierarchy"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-tick-questing",
+        "claim:fauna-tick-senses"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-tick"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "tick host-seeking behavior",
+          "tick questing mechanism",
+          "tick jumping ability",
+          "tick attachment to passing host"
+        ]
+      },
+      "planner_ms": 1510.9610999999932,
+      "planner_usage": {
+        "prompt_tokens": 15486,
+        "completion_tokens": 84,
+        "total_tokens": 15570
+      },
+      "retrieval_ms": 1.2514999999984866,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1450.1970999999976,
+      "semantic_usage": {
+        "prompt_tokens": 2537,
+        "completion_tokens": 76,
+        "total_tokens": 2613,
+        "prompt_tokens_details": {
+          "cached_tokens": 2432
+        },
+        "prompt_cache_hit_tokens": 2432,
+        "prompt_cache_miss_tokens": 105
+      },
+      "total_pipeline_ms": 2962.652599999994
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "chicken_dust_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Пылевая ванна курицы может включать разгрёбывание субстрата и распределение пыли по оперению.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-chicken-dust-bathing"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-chicken-dust-bathing"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-chicken-allopreening",
+        "claim:fauna-chicken-brooding",
+        "claim:fauna-chicken-dust-bathing",
+        "claim:fauna-chicken-flock-hierarchy",
+        "claim:fauna-chicken-foraging",
+        "claim:fauna-animal-habituation",
+        "claim:fauna-fish-summer-night-oxygen",
+        "claim:livestock-swine-membership",
+        "claim:population-material-leather-mould"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-chicken-dust-bathing"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:domestic-chicken-behavior"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "поведение курицы при пылевой ванне",
+          "что делает курица в пылевой ванне"
+        ]
+      },
+      "planner_ms": 1617.4288000000015,
+      "planner_usage": {
+        "prompt_tokens": 15484,
+        "completion_tokens": 90,
+        "total_tokens": 15574
+      },
+      "retrieval_ms": 0.36200000000098953,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 858.9435999999987,
+      "semantic_usage": {
+        "prompt_tokens": 2328,
+        "completion_tokens": 65,
+        "total_tokens": 2393,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1688
+      },
+      "total_pipeline_ms": 2476.8496000000014
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "crayfish_eggs_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Female broad-clawed crayfish carry their eggs, but the supplied facts do not specify the manner or location of egg carriage.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-crayfish-egg-carrying"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-crayfish-egg-carrying"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-crayfish-juvenile-activity",
+        "claim:fauna-crayfish-diet",
+        "claim:fauna-crayfish-egg-carrying",
+        "claim:fauna-crayfish-habitat",
+        "claim:fauna-culex-female-blood",
+        "claim:fauna-culex-dusk-rest",
+        "claim:fauna-dragonfly-foodweb",
+        "claim:care-direct-pressure-bleeding",
+        "claim:fauna-culex-life-cycle",
+        "claim:fauna-dragonfly-adult-foraging",
+        "claim:fauna-dragonfly-emergence",
+        "claim:fauna-dragonfly-lifecycle"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-crayfish-egg-carrying"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:broad-clawed-crayfish-behavior"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "How are eggs carried in noble crayfish Astacus astacus?",
+          "egg carrying mechanism in Astacus astacus",
+          "Astacus astacus egg attachment and transport"
+        ]
+      },
+      "planner_ms": 1486.740899999997,
+      "planner_usage": {
+        "prompt_tokens": 15485,
+        "completion_tokens": 116,
+        "total_tokens": 15601
+      },
+      "retrieval_ms": 1.6287000000011176,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1544.7373999999982,
+      "semantic_usage": {
+        "prompt_tokens": 2682,
+        "completion_tokens": 60,
+        "total_tokens": 2742,
+        "prompt_tokens_details": {
+          "cached_tokens": 896
+        },
+        "prompt_cache_hit_tokens": 896,
+        "prompt_cache_miss_tokens": 1786
+      },
+      "total_pipeline_ms": 3033.2508000000016
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "squirrel_winter_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "yes",
+      "answer_text": "Обыкновенная белка не впадает в спячку; в сильную непогоду она может оставаться в гнезде и выходить за пищей по необходимости.",
+      "answer_correct": false,
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-mammals-red-squirrel-forgotten-cache-germination",
+        "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+        "claim:fauna-mammals-red-squirrel-seed-cache"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-red-squirrel"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "hibernation behavior of red squirrel",
+          "activity of red squirrel in bad weather"
+        ]
+      },
+      "planner_ms": 1634.1464999999953,
+      "planner_usage": {
+        "prompt_tokens": 15495,
+        "completion_tokens": 95,
+        "total_tokens": 15590
+      },
+      "retrieval_ms": 0.256600000000617,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1273.011099999996,
+      "semantic_usage": {
+        "prompt_tokens": 1542,
+        "completion_tokens": 80,
+        "total_tokens": 1622,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 6
+      },
+      "total_pipeline_ms": 2907.5156999999963
+    },
+    {
+      "mode": "structured_lexical",
+      "case_id": "fish_oxygen_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "A warm summer night can worsen oxygen shortage for fish because warm water holds less dissolved oxygen, and at night respiration continues while photosynthesis does not occur, further reducing oxygen levels.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-fish-summer-night-oxygen"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-fish-summer-night-oxygen"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-fish-summer-night-oxygen",
+        "claim:fauna-fish-low-oxygen",
+        "claim:water-temperature-affects-aquatic-organism-range",
+        "claim:solute-concentration-reduces-available-water-for-many-microbes",
+        "claim:fermentation-depends-on-microbe-substrate-conditions",
+        "claim:fauna-tadpole-temperature",
+        "claim:fauna-dragonfly-emergence",
+        "claim:population-physics-evaporation-humidity",
+        "claim:population-material-wood-decay",
+        "claim:wetland-hydric-soil-depends-on-saturation",
+        "claim:population-material-clay-plasticity"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-fish-summer-night-oxygen"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology",
+          "environment",
+          "physics_material_science"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-fish-oxygen",
+          "wk:environment:water-temperature-aquatic-compatibility"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "effect of warm water temperature on dissolved oxygen concentration",
+          "relationship between water temperature and oxygen solubility",
+          "how warm summer nights affect oxygen levels in water for fish"
+        ]
+      },
+      "planner_ms": 1893.1174000000028,
+      "planner_usage": {
+        "prompt_tokens": 15483,
+        "completion_tokens": 139,
+        "total_tokens": 15622
+      },
+      "retrieval_ms": 1.893499999998312,
+      "query_embedding_ms": 0,
+      "vector_scan_ms": 0,
+      "vector_status": "structured_lexical_fallback",
+      "semantic_ms": 1266.039800000006,
+      "semantic_usage": {
+        "prompt_tokens": 2471,
+        "completion_tokens": 67,
+        "total_tokens": 2538,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1831
+      },
+      "total_pipeline_ms": 3161.1809000000067
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "ewe_maternal_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "После рождения овца образует связь со своими ягнятами и отличает их от неродственных ягнят.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-ewe-lamb-recognition"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-ewe-lamb-recognition"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-ewe-lamb-recognition",
+        "claim:fauna-ewe-lambing-seclusion",
+        "claim:fauna-sheep-flocking",
+        "claim:care-direct-pressure-bleeding"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-ewe-lamb-recognition"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-domestic-sheep"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "Как овца различает своих ягнят от чужих после рождения?",
+          "Механизм распознавания матерью своих детенышей у овец",
+          "Поведение овцы после рождения ягнят по отношению к своим и чужим ягнятам"
+        ]
+      },
+      "planner_ms": 2041.0580999999947,
+      "planner_usage": {
+        "prompt_tokens": 15489,
+        "completion_tokens": 128,
+        "total_tokens": 15617
+      },
+      "retrieval_ms": 0.8654999999998836,
+      "query_embedding_ms": 11264.310799999992,
+      "vector_scan_ms": 2.4985000000015134,
+      "vector_status": "ok",
+      "semantic_ms": 1779.3476000000082,
+      "semantic_usage": {
+        "prompt_tokens": 1581,
+        "completion_tokens": 62,
+        "total_tokens": 1643,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 45
+      },
+      "total_pipeline_ms": 15088.150800000003
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "goat_groups_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Natural goat social groups can merge and split while moving and feeding.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-goat-sociality"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-goat-sociality"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-goat-sociality",
+        "claim:fauna-doe-kid-care"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-goat-sociality"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-domestic-goat"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "natural goat social group changes during movement",
+          "natural goat social group changes during feeding"
+        ]
+      },
+      "planner_ms": 1463.031799999997,
+      "planner_usage": {
+        "prompt_tokens": 15483,
+        "completion_tokens": 95,
+        "total_tokens": 15578
+      },
+      "retrieval_ms": 0.8628999999928055,
+      "query_embedding_ms": 97.5677999999898,
+      "vector_scan_ms": 0.9439000000129454,
+      "vector_status": "ok",
+      "semantic_ms": 1202.5914000000048,
+      "semantic_usage": {
+        "prompt_tokens": 1033,
+        "completion_tokens": 43,
+        "total_tokens": 1076,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 393
+      },
+      "total_pipeline_ms": 2765.0725000000093
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "wolf_pup_care_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Волки могут жить и охотиться семейными стаями; стая может защищать территорию от вторгающихся волков и использовать вой для связи. В период зависимости стая может обеспечивать и охранять детёнышей.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-pack-pup-care"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-wolf-pack-sociality"
+        ],
+        [
+          "claim:fauna-mammals-wolf-pack-pup-care"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-mammals-wolf-territorial-defense",
+        "claim:fauna-mammals-wolf-pack-pup-care",
+        "claim:fauna-mammals-wolf-carnivorous-diet",
+        "claim:fauna-mammals-wolf-howling-communication",
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-eurasian-beaver-tail-slap-alarm",
+        "claim:fauna-adder-male-contest",
+        "claim:fauna-bee-diurnal",
+        "claim:fauna-bee-swarming",
+        "claim:fauna-bee-waggle",
+        "claim:fauna-bee-winter-cluster",
+        "claim:fauna-bee-worker-tasks"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-territorial-defense",
+        "claim:fauna-mammals-wolf-howling-communication",
+        "claim:fauna-mammals-wolf-pack-pup-care"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-wolf"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "структура стаи волков",
+          "уход за волчатами в стае",
+          "роль родителей и других членов стаи в выращивании волчат"
+        ]
+      },
+      "planner_ms": 1425.4775000000081,
+      "planner_usage": {
+        "prompt_tokens": 15488,
+        "completion_tokens": 92,
+        "total_tokens": 15580
+      },
+      "retrieval_ms": 0.4267000000108965,
+      "query_embedding_ms": 89.3292999999976,
+      "vector_scan_ms": 2.4719999999942956,
+      "vector_status": "ok",
+      "semantic_ms": 1576.2142000000022,
+      "semantic_usage": {
+        "prompt_tokens": 2752,
+        "completion_tokens": 126,
+        "total_tokens": 2878,
+        "prompt_tokens_details": {
+          "cached_tokens": 768
+        },
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 1984
+      },
+      "total_pipeline_ms": 3094.0044000000053
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "horse_separation_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Separating a domestic horse from other horses can cause stress and anxious vocal behavior because domestic horses are social animals that evolutionarily live in herds.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-domestic-horse-herd-sociality",
+        "claim:fauna-mammals-domestic-horse-separation-stress"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-domestic-horse-herd-sociality"
+        ],
+        [
+          "claim:fauna-mammals-domestic-horse-separation-stress"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-mammals-domestic-horse-separation-stress",
+        "claim:fauna-mammals-domestic-horse-forage-behavior",
+        "claim:fauna-mammals-domestic-horse-herd-sociality",
+        "claim:fauna-chicken-allopreening",
+        "claim:fauna-chicken-flock-hierarchy",
+        "claim:fauna-chicken-brooding",
+        "claim:fauna-mammals-domestic-pig-competitive-displacement",
+        "claim:fodder-healthy-horse-forage",
+        "claim:fauna-chicken-dust-bathing",
+        "claim:fauna-chicken-foraging",
+        "claim:fauna-ewe-lamb-recognition",
+        "claim:fauna-ewe-lambing-seclusion"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-mammals-domestic-horse-separation-stress",
+        "claim:fauna-mammals-domestic-horse-herd-sociality"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-domestic-horse"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "domestic horse behavior when separated from herd",
+          "effect of social isolation on horse behavior",
+          "horse herd social structure and individual behavior"
+        ]
+      },
+      "planner_ms": 1535.8417000000045,
+      "planner_usage": {
+        "prompt_tokens": 15484,
+        "completion_tokens": 106,
+        "total_tokens": 15590
+      },
+      "retrieval_ms": 1.7431999999971595,
+      "query_embedding_ms": 94.65760000000591,
+      "vector_scan_ms": 0.8420999999943888,
+      "vector_status": "ok",
+      "semantic_ms": 1398.6462000000029,
+      "semantic_usage": {
+        "prompt_tokens": 2603,
+        "completion_tokens": 82,
+        "total_tokens": 2685,
+        "prompt_tokens_details": {
+          "cached_tokens": 1536
+        },
+        "prompt_cache_hit_tokens": 1536,
+        "prompt_cache_miss_tokens": 1067
+      },
+      "total_pipeline_ms": 3031.7974000000104
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "bird_navigation_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "При миграции птицы могут ориентироваться по небесным, магнитным и ландшафтным признакам.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-bird-navigation"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-bird-navigation"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-bird-migration-energy",
+        "claim:fauna-bird-navigation",
+        "claim:fauna-bird-migration-cues",
+        "claim:fauna-bird-irruption-nomadism",
+        "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
+        "claim:environment-p1-wildfowl-season",
+        "claim:fauna-culex-dusk-rest",
+        "claim:fauna-mammals-wild-boar-group-offspring-protection",
+        "claim:fauna-mallard-residency",
+        "claim:environment-p1-bird-taxa",
+        "claim:fauna-mammals-eurasian-lynx-prey-spectrum",
+        "claim:care-waterproof-wound-cover"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-bird-navigation"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology",
+          "environment"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-bird-migration",
+          "wk:environment:seasonal-bird-migration"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "ориентиры для перелётных птиц при выборе направления",
+          "какие ориентиры используют перелётные птицы",
+          "навигация перелётных птиц",
+          "ориентация птиц во время миграции"
+        ]
+      },
+      "planner_ms": 1727.0353000000032,
+      "planner_usage": {
+        "prompt_tokens": 15490,
+        "completion_tokens": 147,
+        "total_tokens": 15637
+      },
+      "retrieval_ms": 1.095499999995809,
+      "query_embedding_ms": 97.20209999999497,
+      "vector_scan_ms": 1.670799999992596,
+      "vector_status": "ok",
+      "semantic_ms": 1480.6015999999945,
+      "semantic_usage": {
+        "prompt_tokens": 3155,
+        "completion_tokens": 57,
+        "total_tokens": 3212,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 2515
+      },
+      "total_pipeline_ms": 3307.6738999999943
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "salmon_eel_migration_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Sea-bound European silver eels migrate to sea toward Sargasso Sea spawning grounds, whereas anadromous Atlantic salmon return to freshwater to spawn. Additionally, Atlantic salmon need not die after spawning and can spawn again, while no such claim is provided for silver eels.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-eel-migration",
+        "claim:fauna-salmon-anadromy"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-eel-migration"
+        ],
+        [
+          "claim:fauna-salmon-anadromy"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-salmon-repeat-spawning",
+        "claim:fauna-salmon-homing",
+        "claim:fauna-salmon-age-diet",
+        "claim:fauna-salmon-anadromy",
+        "claim:fauna-eel-migration",
+        "claim:fauna-eel-feeding",
+        "claim:fauna-mussel-fish-host",
+        "claim:fauna-adder-defence",
+        "claim:fauna-bird-migration-energy",
+        "claim:fauna-bird-navigation",
+        "claim:fauna-bird-irruption-nomadism",
+        "claim:fauna-bird-migration-cues"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-eel-migration",
+        "claim:fauna-salmon-anadromy",
+        "claim:fauna-salmon-repeat-spawning"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-european-eel",
+          "wk:biology_physiology:fauna-atlantic-salmon"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "European eel migration to Sargasso Sea for spawning",
+          "Atlantic salmon return from sea to freshwater to spawn",
+          "differences in reproductive migration between European eel and Atlantic salmon"
+        ]
+      },
+      "planner_ms": 1446.431700000001,
+      "planner_usage": {
+        "prompt_tokens": 15490,
+        "completion_tokens": 113,
+        "total_tokens": 15603
+      },
+      "retrieval_ms": 1.9432999999989988,
+      "query_embedding_ms": 107.41289999999572,
+      "vector_scan_ms": 1.1208999999944353,
+      "vector_status": "ok",
+      "semantic_ms": 1891.4629999999888,
+      "semantic_usage": {
+        "prompt_tokens": 2425,
+        "completion_tokens": 106,
+        "total_tokens": 2531,
+        "prompt_tokens_details": {
+          "cached_tokens": 768
+        },
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 1657
+      },
+      "total_pipeline_ms": 3448.4857999999804
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "adder_defence_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Обыкновенная гадюка обычно предпочитает скрыться в растительности; укусы людей и домашних животных чаще связаны с беспокойством змеи.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-adder-defence"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-adder-defence"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-adder-defence",
+        "claim:fauna-adder-chemical-sensing",
+        "claim:fauna-adder-winter-refuge",
+        "claim:fauna-adder-cover-basking",
+        "claim:fauna-adder-male-contest",
+        "claim:fauna-adder-viviparity",
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:fauna-mammals-domestic-cattle-flight-zone",
+        "claim:fauna-mammals-domestic-cattle-startle-response",
+        "claim:fauna-animal-habituation",
+        "claim:seasonal-plant-development-depends-on-photoperiod",
+        "claim:fauna-chicken-brooding"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-adder-defence"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-common-adder"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "реакция обыкновенной гадюки на беспокойство человеком",
+          "поведение гадюки при приближении человека",
+          "защитное поведение гадюки"
+        ]
+      },
+      "planner_ms": 1835.774900000004,
+      "planner_usage": {
+        "prompt_tokens": 15490,
+        "completion_tokens": 114,
+        "total_tokens": 15604
+      },
+      "retrieval_ms": 0.9057000000029802,
+      "query_embedding_ms": 130.6704000000027,
+      "vector_scan_ms": 0.999100000000908,
+      "vector_status": "ok",
+      "semantic_ms": 1145.2001000000018,
+      "semantic_usage": {
+        "prompt_tokens": 2719,
+        "completion_tokens": 69,
+        "total_tokens": 2788,
+        "prompt_tokens_details": {
+          "cached_tokens": 2688
+        },
+        "prompt_cache_hit_tokens": 2688,
+        "prompt_cache_miss_tokens": 31
+      },
+      "total_pipeline_ms": 3113.638399999996
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "bee_winter_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "In temperate climates, honeybees store honey and pollen, and in winter the workers and queen cluster and generate muscular heat to survive the cold.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-bee-winter-cluster"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-bee-winter-cluster"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-bee-winter-cluster",
+        "claim:fauna-bee-swarming",
+        "claim:fauna-bee-waggle",
+        "claim:fauna-bee-diurnal",
+        "claim:fauna-bee-worker-tasks",
+        "claim:seasonal-bird-migration-affects-seasonal-food-climate-exposure",
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:cellular-atp-production-can-cause-metabolic-heat",
+        "claim:pre1300-novgorod-context-attests-shorter-cold-extreme-recurrence",
+        "claim:fauna-mammals-eurasian-beaver-seasonal-food-cache",
+        "claim:fauna-brown-bear-winter-denning",
+        "claim:environment-p1-horse-meat"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-bee-winter-cluster"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology",
+          "environment"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-honeybee",
+          "wk:biology_physiology:animal-homeostasis",
+          "wk:biology_physiology:metabolic-heat",
+          "wk:environment:seasonal-bird-migration"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "honeybee colony winter survival mechanisms",
+          "honeybee thermoregulation in winter cluster",
+          "honeybee food storage and consumption during winter",
+          "honeybee colony behavior in cold temperate climate"
+        ]
+      },
+      "planner_ms": 2090.4544999999925,
+      "planner_usage": {
+        "prompt_tokens": 15483,
+        "completion_tokens": 160,
+        "total_tokens": 15643
+      },
+      "retrieval_ms": 2.003099999987171,
+      "query_embedding_ms": 109.95419999999285,
+      "vector_scan_ms": 0.6923999999999069,
+      "vector_status": "ok",
+      "semantic_ms": 958.425900000002,
+      "semantic_usage": {
+        "prompt_tokens": 2537,
+        "completion_tokens": 61,
+        "total_tokens": 2598,
+        "prompt_tokens_details": {
+          "cached_tokens": 640
+        },
+        "prompt_cache_hit_tokens": 640,
+        "prompt_cache_miss_tokens": 1897
+      },
+      "total_pipeline_ms": 3161.5984000000026
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "dragonfly_development_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Стрекоза не проходит стадию куколки: у описанных стрекоз яйцо развивается в водную личинку, затем во взрослую особь, стадии куколки нет. Личинка развивается в воде.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-dragonfly-lifecycle"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-dragonfly-lifecycle"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-dragonfly-emergence",
+        "claim:fauna-dragonfly-adult-foraging",
+        "claim:fauna-dragonfly-lifecycle",
+        "claim:fauna-dragonfly-foodweb",
+        "claim:fauna-dragonfly-male-territory",
+        "claim:fauna-mussel-fish-host",
+        "claim:plant-development-responds-to-light",
+        "claim:fauna-culex-dusk-rest",
+        "claim:fauna-culex-female-blood",
+        "claim:fauna-culex-life-cycle"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-dragonfly-lifecycle"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-dragonfly"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "стрекоза жизненный цикл стадия куколки",
+          "личинка стрекозы среда обитания развитие"
+        ]
+      },
+      "planner_ms": 1699.28869999999,
+      "planner_usage": {
+        "prompt_tokens": 15493,
+        "completion_tokens": 88,
+        "total_tokens": 15581
+      },
+      "retrieval_ms": 0.7503999999898952,
+      "query_embedding_ms": 97.34619999999995,
+      "vector_scan_ms": 0.8864999999932479,
+      "vector_status": "ok",
+      "semantic_ms": 1343.4856999999902,
+      "semantic_usage": {
+        "prompt_tokens": 2421,
+        "completion_tokens": 87,
+        "total_tokens": 2508,
+        "prompt_tokens_details": {
+          "cached_tokens": 768
+        },
+        "prompt_cache_hit_tokens": 768,
+        "prompt_cache_miss_tokens": 1653
+      },
+      "total_pipeline_ms": 3141.8240999999834
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "tick_movement_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Ticks do not jump or fly; many wait on grasses or shrubs and attach to a host on contact. They use odors, heat, moisture, and vibrations to find hosts.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-tick-questing"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-tick-questing"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-tick-feeding",
+        "claim:fauna-tick-senses",
+        "claim:fauna-tick-questing",
+        "claim:fauna-bird-irruption-nomadism",
+        "claim:care-direct-pressure-bleeding",
+        "claim:fauna-animal-habituation",
+        "claim:fauna-ewe-lambing-seclusion",
+        "claim:fauna-animal-learning",
+        "claim:fauna-chicken-allopreening",
+        "claim:fauna-chicken-brooding",
+        "claim:fauna-chicken-dust-bathing",
+        "claim:fauna-chicken-flock-hierarchy"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-tick-questing",
+        "claim:fauna-tick-senses"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-tick"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "tick host-seeking behavior",
+          "tick questing mechanism",
+          "tick attachment to passing host"
+        ]
+      },
+      "planner_ms": 1502.8727000000072,
+      "planner_usage": {
+        "prompt_tokens": 15486,
+        "completion_tokens": 79,
+        "total_tokens": 15565
+      },
+      "retrieval_ms": 0.7639000000053784,
+      "query_embedding_ms": 77.15039999999863,
+      "vector_scan_ms": 1.0226000000111526,
+      "vector_status": "ok",
+      "semantic_ms": 1404.6533000000054,
+      "semantic_usage": {
+        "prompt_tokens": 2537,
+        "completion_tokens": 76,
+        "total_tokens": 2613,
+        "prompt_tokens_details": {
+          "cached_tokens": 2432
+        },
+        "prompt_cache_hit_tokens": 2432,
+        "prompt_cache_miss_tokens": 105
+      },
+      "total_pipeline_ms": 2986.5278000000108
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "chicken_dust_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Пылевая ванна курицы может включать разгрёбывание субстрата и распределение пыли по оперению.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-chicken-dust-bathing"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-chicken-dust-bathing"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-chicken-dust-bathing",
+        "claim:fauna-chicken-foraging",
+        "claim:fauna-chicken-allopreening",
+        "claim:fauna-chicken-brooding",
+        "claim:fauna-chicken-flock-hierarchy",
+        "claim:fauna-animal-habituation"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-chicken-dust-bathing"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:domestic-chicken-behavior"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "поведение курицы при пылевой ванне"
+        ]
+      },
+      "planner_ms": 1180.4375999999902,
+      "planner_usage": {
+        "prompt_tokens": 15484,
+        "completion_tokens": 77,
+        "total_tokens": 15561
+      },
+      "retrieval_ms": 0.4489000000030501,
+      "query_embedding_ms": 68.64370000000054,
+      "vector_scan_ms": 0.6027999999932945,
+      "vector_status": "ok",
+      "semantic_ms": 1378.2900000000081,
+      "semantic_usage": {
+        "prompt_tokens": 1767,
+        "completion_tokens": 65,
+        "total_tokens": 1832,
+        "prompt_tokens_details": {
+          "cached_tokens": 896
+        },
+        "prompt_cache_hit_tokens": 896,
+        "prompt_cache_miss_tokens": 871
+      },
+      "total_pipeline_ms": 2628.492200000008
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "crayfish_eggs_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Female broad-clawed crayfish carry their eggs, but the supplied facts do not specify how they are carried.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-crayfish-egg-carrying"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-crayfish-egg-carrying"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-crayfish-juvenile-activity",
+        "claim:fauna-crayfish-egg-carrying",
+        "claim:fauna-crayfish-diet",
+        "claim:fauna-crayfish-habitat"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-crayfish-egg-carrying"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:broad-clawed-crayfish-behavior"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "How are eggs carried in noble crayfish Astacus astacus?"
+        ]
+      },
+      "planner_ms": 1459.6732000000047,
+      "planner_usage": {
+        "prompt_tokens": 15485,
+        "completion_tokens": 78,
+        "total_tokens": 15563
+      },
+      "retrieval_ms": 1.0755000000062864,
+      "query_embedding_ms": 72.82219999999506,
+      "vector_scan_ms": 1.4529999999940628,
+      "vector_status": "ok",
+      "semantic_ms": 876.637699999992,
+      "semantic_usage": {
+        "prompt_tokens": 1445,
+        "completion_tokens": 57,
+        "total_tokens": 1502,
+        "prompt_tokens_details": {
+          "cached_tokens": 1408
+        },
+        "prompt_cache_hit_tokens": 1408,
+        "prompt_cache_miss_tokens": 37
+      },
+      "total_pipeline_ms": 2411.7418999999936
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "squirrel_winter_ru",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "Обыкновенная белка не впадает в зимнюю спячку; в сильную непогоду она может оставаться в гнезде и выходить за пищей по необходимости.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter",
+        "claim:fauna-mammals-red-squirrel-forgotten-cache-germination",
+        "claim:fauna-mammals-red-squirrel-nesting-escape-sites",
+        "claim:fauna-mammals-red-squirrel-seed-cache",
+        "claim:fauna-brown-bear-winter-denning",
+        "claim:fauna-earthworm-weather"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "ru",
+        "domains": [
+          "biology_physiology"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-red-squirrel"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "hibernation behavior of red squirrel",
+          "red squirrel activity during bad weather"
+        ]
+      },
+      "planner_ms": 1401.7553000000044,
+      "planner_usage": {
+        "prompt_tokens": 15495,
+        "completion_tokens": 94,
+        "total_tokens": 15589
+      },
+      "retrieval_ms": 0.4489000000030501,
+      "query_embedding_ms": 84.42059999999765,
+      "vector_scan_ms": 1.024699999994482,
+      "vector_status": "ok",
+      "semantic_ms": 1098.4412999999913,
+      "semantic_usage": {
+        "prompt_tokens": 1888,
+        "completion_tokens": 83,
+        "total_tokens": 1971,
+        "prompt_tokens_details": {
+          "cached_tokens": 1792
+        },
+        "prompt_cache_hit_tokens": 1792,
+        "prompt_cache_miss_tokens": 96
+      },
+      "total_pipeline_ms": 2586.1565999999875
+    },
+    {
+      "mode": "hybrid",
+      "case_id": "fish_oxygen_en",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "answer_class": "explain",
+      "answer_text": "A warm summer night can worsen oxygen shortage for fish because warm water holds less dissolved oxygen, and at night respiration continues while photosynthesis stops, further reducing oxygen levels.",
+      "answer_correct": true,
+      "relevant_claim_refs": [
+        "claim:fauna-fish-summer-night-oxygen"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-fish-summer-night-oxygen"
+        ]
+      ],
+      "forbidden_factual_premise_refs": [],
+      "available_claim_refs": [
+        "claim:fauna-fish-summer-night-oxygen",
+        "claim:fauna-fish-low-oxygen",
+        "claim:water-temperature-affects-aquatic-organism-range",
+        "claim:solute-concentration-reduces-available-water-for-many-microbes",
+        "claim:fermentation-depends-on-microbe-substrate-conditions",
+        "claim:fauna-mammals-roe-deer-selective-seasonal-browsing",
+        "claim:fauna-tadpole-temperature",
+        "claim:livestock-swine-comparative-diet",
+        "claim:fauna-fish-hearing-variability",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+        "claim:fauna-dragonfly-emergence",
+        "claim:population-physics-evaporation-humidity"
+      ],
+      "factual_premise_refs": [
+        "claim:fauna-fish-summer-night-oxygen"
+      ],
+      "unsupported_premise_refs": [],
+      "knowledge_query": {
+        "query_locale": "en",
+        "domains": [
+          "biology_physiology",
+          "environment",
+          "physics_material_science"
+        ],
+        "focus_refs": [
+          "wk:biology_physiology:fauna-fish-oxygen",
+          "wk:environment:water-temperature-aquatic-compatibility"
+        ],
+        "requested_predicates": [],
+        "search_hints": [
+          "effect of warm water temperature on dissolved oxygen concentration",
+          "relationship between water temperature and oxygen solubility",
+          "how warm summer nights affect oxygen levels in water bodies",
+          "fish oxygen requirements and hypoxia conditions"
+        ]
+      },
+      "planner_ms": 1968.9272999999957,
+      "planner_usage": {
+        "prompt_tokens": 15483,
+        "completion_tokens": 147,
+        "total_tokens": 15630
+      },
+      "retrieval_ms": 2.5203999999939697,
+      "query_embedding_ms": 124.76339999999618,
+      "vector_scan_ms": 1.5735999999888008,
+      "vector_status": "ok",
+      "semantic_ms": 1727.4833999999973,
+      "semantic_usage": {
+        "prompt_tokens": 2701,
+        "completion_tokens": 65,
+        "total_tokens": 2766,
+        "prompt_tokens_details": {
+          "cached_tokens": 1024
+        },
+        "prompt_cache_hit_tokens": 1024,
+        "prompt_cache_miss_tokens": 1677
+      },
+      "total_pipeline_ms": 3825.359400000001
+    }
+  ]
+}

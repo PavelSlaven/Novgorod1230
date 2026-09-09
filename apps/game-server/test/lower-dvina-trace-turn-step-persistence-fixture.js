@@ -15,7 +15,8 @@ export function prepare({
   operations,
   factual: factualValue = factual(),
   canonical = false,
-  commitEnvelope = null
+  commitEnvelope = null,
+  ambientPortionProfileRef = null
 }) {
   const writePlan = {
     turn_id: 'turn:p:1',
@@ -42,7 +43,8 @@ export function prepare({
   return prepareLowerDvinaTraceTurnStepPersistence({
     partyId: 'p', writePlan, state, snapshot: structuredClone(state),
     factual: canonical || commitEnvelope ? null : factualValue,
-    changeSetId: 'change-1', idemId: 'idem-1'
+    changeSetId: 'change-1', idemId: 'idem-1',
+    turnStepAmbientPortionProfileRef: ambientPortionProfileRef
   });
 }
 export function conditionState() {

@@ -68,11 +68,11 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
   for (let attempt = 0; attempt < 40; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 300));
     if (docker([
-      'exec', name, 'pg_isready', '-U', 'runtime_migration', '-d', 'runtime_migration'
+      'exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'runtime_migration', '-d', 'runtime_migration'
     ]).status === 0) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       if (docker([
-        'exec', name, 'pg_isready', '-U', 'runtime_migration', '-d', 'runtime_migration'
+        'exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'runtime_migration', '-d', 'runtime_migration'
       ]).status === 0) {
         ready = true;
         break;

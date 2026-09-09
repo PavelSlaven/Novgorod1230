@@ -1,0 +1,29 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {"schema":"world_knowledge_source_v1","source_ref":"source:static-soap-washington-saponification","title":"Saponification","authors":[],"publication":"University of Washington Department of Chemistry, Discussion","source_kind":"official_documentation","citation":"https://chem.washington.edu/lecture-demos/saponification","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"},
+    {"schema":"world_knowledge_source_v1","source_ref":"source:static-soap-rsc-detergent","title":"How does washing detergent work?","authors":[],"publication":"Royal Society of Chemistry Education, sections How do detergents work? and Washing clothes","source_kind":"official_documentation","citation":"https://edu.rsc.org/everyday-chemistry/how-does-washing-detergent-work/4018846.article","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}
+  ],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:static-soap-alkaline-hydrolysis","source_ref":"source:static-soap-washington-saponification","anchor":{"section":"Discussion, lines 27–29"},"note":"University of Washington defines saponification as alkaline hydrolysis of glyceryl trialkanoates forming glycerol and salts of long-chain carboxylic acids. It gives no ash concentration, heating protocol, historical availability or cleaning outcome.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:static-soap-amphiphilic-dispersion","source_ref":"source:static-soap-rsc-detergent","anchor":{"section":"How do detergents work?; Washing clothes"},"note":"RSC describes hydrophilic heads and hydrophobic hydrocarbon tails surrounding oil/grease in micelles, which can then be washed away. It does not establish a soap amount, textile, water, stain, agitation, complete removal or preservation outcome.","review_status":"approved"}
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:chemistry_process:static-soap-cleaning","domain":"chemistry_process","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap","domain":"chemistry_process","subject_ref":"wk:chemistry_process:static-soap-cleaning","predicate":"supported_fact","object":{"kind":"literal","value":"alkaline hydrolysis of triglycerides forms glycerol and salts of long-chain fatty acids that are soaps"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:static-soap-alkaline-hydrolysis"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water","domain":"chemistry_process","subject_ref":"wk:chemistry_process:static-soap-cleaning","predicate":"supported_fact","object":{"kind":"literal","value":"an amphiphilic cleaning molecule can surround oil or grease with hydrophobic tails inward and hydrophilic heads outward, dispersing it in water for removal"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:static-soap-amphiphilic-dispersion"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:chemistry_process:static-soap-cleaning","locale":"ru","labels":["Омыление и очистка мылом"],"short_definition":"Общие химические механизмы образования и действия мыла.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:chemistry_process:static-soap-cleaning","locale":"en","labels":["Saponification and soap cleaning"],"short_definition":"General chemical mechanisms of soap formation and cleaning.","search_aliases":[]}
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap","locale":"ru","runtime_text":"Щелочной гидролиз триглицеридов образует глицерин и соли длинноцепочечных жирных кислот — мыла.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:static-soap-alkaline-hydrolysis-of-triglycerides-forms-soap","locale":"en","runtime_text":"Alkaline hydrolysis of triglycerides forms glycerol and salts of long-chain fatty acids that are soaps.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water","locale":"ru","runtime_text":"Амфифильное очищающее вещество может окружать масло или жир гидрофобными хвостами внутрь и гидрофильными головками наружу, диспергируя его в воде для удаления.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:static-soap-amphiphilic-structure-can-disperse-oil-in-water","locale":"en","runtime_text":"An amphiphilic cleaning molecule can surround oil or grease with hydrophobic tails inward and hydrophilic heads outward, dispersing it in water for removal.","search_aliases":[]}
+  ]
+}

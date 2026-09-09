@@ -27,6 +27,7 @@ export function bootstrapGameWeb({
   store.setRememberedPartyId(partyStorage?.getItem?.(PARTY_STORAGE_KEY));
   store.setTheme(storedTheme(partyStorage) ?? preferredTheme());
   store.setLlmSettingsDraft(storedLlmSettings(partyStorage));
+  store.setLlmSettings({ mode: 'local', local_runtime: { ready: false, reasons: ['Проверяется готовность local runtime.'] } });
   const llmSettings = createLlmSettingsController({
     root, api, store, storage: partyStorage
   });
@@ -42,7 +43,8 @@ export function bootstrapGameWeb({
   api.listScenarios()
     .then((catalog) => store.setScenarios(catalog.scenarios))
     .catch(() => store.setScenarios([]));
-
+  api.getLlmSettings().then((settings) => { store.setLlmSettingsDraft(settings); store.setLlmSettings(settings); })
+    .catch(() => store.setLlmSettings({ mode: 'local', local_runtime: { ready: false, reasons: ['Не удалось проверить local runtime.'] } }));
   root.addEventListener('submit', async (event) => {
     const form = event.target;
     const FormElement = root.ownerDocument.defaultView.HTMLFormElement;
@@ -94,7 +96,7 @@ export function bootstrapGameWeb({
   });
   root.addEventListener('change', (event) => {
     if (event.target.matches?.('[data-llm-settings-form] input[name="mode"]')) {
-      llmSettings.setFieldsDisabled(event.target.value !== 'custom');
+      llmSettings.selectMode(event.target.value);
     }
   });
   root.addEventListener('click', async (event) => {

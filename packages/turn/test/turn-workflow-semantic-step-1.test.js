@@ -77,6 +77,7 @@ test('semantic loop stops at a registered domain command boundary', async () => 
         check: null,
         continuation: null,
         clarification: null,
+        direct_result_kind: null,
         reason_code: 'domain_inspection',
         reason: 'осмотр принадлежит владельцу discovery'
       };

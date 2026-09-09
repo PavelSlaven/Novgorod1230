@@ -21,6 +21,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   runtimeCatalogPin,
   initialOrdinaryProvisioner = null,
   initialOrdinaryScopeBinding = null,
+  worldKnowledge = null,
   rootDir = process.cwd()
 } = {}) {
   requirePool(partyPool, 'partyPool');
@@ -72,6 +73,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         worldBaseReferenceSnapshot,
         repository,
         stage25Ports,
+        worldKnowledge,
         rootDir
       });
     },

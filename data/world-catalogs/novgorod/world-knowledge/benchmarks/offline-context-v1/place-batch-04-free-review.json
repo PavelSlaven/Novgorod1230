@@ -1,0 +1,484 @@
+{
+  "schema": "wk_place_first_offline_review_v1",
+  "batch_id": "place-batch-04",
+  "reviewer_agent_identity": "/root",
+  "input_commit": "5a1f21dfcb05b99e4e6601831d615951cd117179",
+  "corpus_claim_count": 1392,
+  "classification_before_wk_lookup": true,
+  "method": "Free generator saw no WK, cartography or domain list. Root assigned open labels after input freeze and before review-specific WK lookup. Twenty-three practical/natural/physical cases and two mainly social space/access cases (009,015); no imposed free-domain quota. Static WK-only scene reconstruction, not live gameplay.",
+  "cases": [
+    {
+      "case_id": "place04-free-001",
+      "primary_domain": "wet-wharf-unloading-and-dry-fish",
+      "knowledge_need": "Разгрузка, течение, мокрая опора и сохранность сушёного продукта.",
+      "verdict": "covered",
+      "scene_ru": "На рабочей кромке берега сходятся вода, причал, тара и путь на торг. Данная роса оставляет мокрую опору, а корзины, люди и лодейный борт делят тесное пространство; рыбный запах, голоса и скрип могут усиливаться при разгрузке и стихать в паузах.",
+      "interaction_ru": "Вдова и сын могут переносить корзины поочерёдно на наблюдаемо подходящее место, освобождая проход и проверяя данную привязь. Сохранение сухости имеет смысл: возвращение влаги может вновь поддержать микробный рост, но ни внешний вид, ни прежняя сушка не доказывают безопасность рыбы.",
+      "variation_ru": "Сдвиг груза, течение и состояние контакта меняют удержание лодки и опору человека; целый канат не обещает неподвижность. Помощь сына и имеющаяся тара облегчают работу без создания дополнительных носильщиков.",
+      "claim_refs": [
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-activity-sensory-pulses",
+        "claim:place-outdoors-means-upkeep-and-environment",
+        "claim:population-physics-static-friction",
+        "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
+        "claim:drying-reduces-microbial-growth-conditions",
+        "claim:practical-food-preserve"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-002",
+      "primary_domain": "goat-browsing-and-wet-forest-edge",
+      "knowledge_need": "Кустарники, козы, мокрый грунт, следы и сбор хвороста.",
+      "verdict": "covered",
+      "scene_ru": "Просека не равномерно сухая площадка: колея, примятые стебли, кусты и лесная подстилка образуют разные участки опоры и обзора. Козы могут расходиться при кормлении и выбирать древесно-кустарниковый корм наряду с травами, поэтому исчезнувшая за кустом коза не становится автоматически потерянной.",
+      "interaction_ru": "Пастух может временно отложить хворост, обойти закрывающий обзор куст по доступной опоре и снова собрать животных в поле зрения. Палка и петля даны, но их наличие не гарантирует поимку; старый забор не доказывает, что посевы защищены.",
+      "variation_ru": "Влажный грунт легче продавливается под нагрузкой, а новый проход перекрывает следы. Сушка хвороста возможна без огня и зависит от воздуха и влаги; видимый пар из входа не означает кипящую листву.",
+      "claim_refs": [
+        "claim:place-outdoors-forest-structure-and-season",
+        "claim:place-outdoors-microterrain-patches",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:fauna-goat-sociality",
+        "claim:fauna-mammals-ruminant-grazing-selectivity",
+        "claim:population-physics-evaporation-below-boiling"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-003",
+      "primary_domain": "green-pottery-drying-and-wind",
+      "knowledge_need": "Мягкая глина, испарение, ветер, пыль и укрытие под навесом.",
+      "verdict": "covered",
+      "scene_ru": "Открытая сторона навеса даёт свет и впускает ветер с пылью; доски несут ещё мягкие сосуды, отдельно стоят печь и сухое топливо. Глина усыхает при потере воды, а более равномерное высыхание уменьшает риск коробления и трещин.",
+      "interaction_ru": "Ученица может удержать или переставить данное покрытие и выбрать менее обдуваемый участок существующих досок, не сдавливая мягкие горшки тканью. Это попытка изменить условия сушки, а не готовая схема обжига; остаточная поровая вода делает слишком быстрый нагрев существенным риском.",
+      "variation_ru": "Сила потока, степень высыхания и расположение навеса меняют результат. Чистая печь и запас дров не определяют готовность сосудов, качество партии или право ученицы начинать обжиг без хозяина.",
+      "claim_refs": [
+        "claim:population-material-clay-drying",
+        "claim:population-material-clay-steam",
+        "claim:population-physics-evaporation-humidity",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-004",
+      "primary_domain": "snow-drifted-road-load-and-horse",
+      "knowledge_need": "Заметённая дорога, груз, упряжь, холод и утомление лошади.",
+      "verdict": "covered",
+      "scene_ru": "Открытое поле оставляет возчика без древесного укрытия, а позёмка может засыпать прежнюю колею и ухудшить различимость даже без нового снегопада. Груз, сани, лошадь и сбившийся ремень составляют одну транспортную работу; темнеющий кустарник не подтверждает дорогу или убежище.",
+      "interaction_ru": "Возчик может остановить попытку движения, поправить доступную ременную петлю и осмотреть направление до возобновления тяги. Данная одышка и состояние упряжи требуют наблюдения; срок вечерней выпечки не доказывает способность пройти занос.",
+      "variation_ru": "Движение воздуха меняет теплообмен, снег — сопротивление и видимость; тёплая одежда и ограниченные средства задают пределы ожидания. Снижение работоспособности лошади не устанавливает его причину, а сохранность груза зависит от действительной укладки и удержания.",
+      "claim_refs": [
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:environment-p1-horse-transport",
+        "claim:population-tack-context",
+        "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause",
+        "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:population-physics-static-friction",
+        "claim:ordinary-life-linen-wool-clothing"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-005",
+      "primary_domain": "wet-hide-yard-effluent-and-flood",
+      "knowledge_need": "Мокрое кожевенное место, отходы, запах, ручей и проход.",
+      "verdict": "covered",
+      "scene_ru": "Кожевенный двор соединяет мокрые шкуры, колоды, чаны, навес и путь к ручью. Промывка и удаление приставших остатков могут давать отдельные жидкие и органические отходы; запах и вчерашние следы характеризуют работу, не состав каждого чана.",
+      "interaction_ru": "Хозяин с помощником может промывать доступные колоды, собирать отделяемые остатки и переносить сухие вещи от мокрой рабочей поверхности. Подошедшая вода заставляет заново выбирать рабочую кромку и проход детей: канава к ручью не доказывает безопасное удаление стока.",
+      "variation_ru": "Подъём воды, размокание грунта и распределение работы меняют опору, доступ и следы. Навес отделяет часть работы от осадков, но не делает все шкуры выделанной кожей и не обеспечивает сухость двора.",
+      "claim_refs": [
+        "claim:place-wet-hide-preparation-can-combine-washing-and-removal-of-attached-residue",
+        "claim:place-wet-hide-work-can-leave-liquid-effluent-and-removable-organic-residue",
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-activity-sensory-pulses",
+        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-006",
+      "primary_domain": "bath-heating-smoke-water-and-slip",
+      "knowledge_need": "Печь, нагрев воды, дым, вентиляция и глинистый проход.",
+      "verdict": "covered",
+      "scene_ru": "Небольшая баня объединяет очаг, воду, тару и тесный мокрый проход. Жар передаётся воде и окружающим поверхностям; дым у проёма, натоптанная глина и нехватка сухих дров делают перенос вёдер частью работы, а не отдельной безопасной зоной.",
+      "interaction_ru": "Хозяйка может прервать пребывание в дыму, оценить доступный выход воздуха и развести по времени топку и перенос тяжёлых вёдер через порог. Открытие проёма меняет дым и холод, но само по себе не подтверждает безопасный воздух: при горении возможен бесцветный, не имеющий запаха CO.",
+      "variation_ru": "Сырость топлива может уменьшить доступное для нагрева тепло, а погода и проём меняют движение воздуха. Помощь дочери и действительный запас дров влияют на темп, но дождевой источник и нагрев не устанавливают питьевую пригодность воды.",
+      "claim_refs": [
+        "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:foundations-thm-10-thermal-gradient-heat-flow",
+        "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:research-carbon-monoxide-can-accumulate-indoors",
+        "claim:research-carbon-monoxide-is-colorless-and-odorless",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-007",
+      "primary_domain": "fish-landing-net-debris-and-wake",
+      "knowledge_need": "Снасти, улов, жара, наносы и волна у отмели.",
+      "verdict": "covered",
+      "scene_ru": "Отмель сочетает воду у садка, песок для раскладки и путь к лодке; мокрая сеть, водная растительность и ветка образуют рабочую путаницу. Перебор улова добавляет рыбный запах и голоса к фону берега; заплата и вчерашняя работа не доказывают исправность всей сети.",
+      "interaction_ru": "Братья могут разбирать доступные ячеи и освобождать мешающую ветку, оставляя место для сети и переноса улова. При подходе уже заданной волны можно остановить перенос и проверить привязь и опору; ни кол, ни отсутствие ветра не гарантируют удержание лодки.",
+      "variation_ru": "Влага, температура, продолжительность работы и повторное загрязнение важны для улова. Садок дан, но сохранность всей рыбы или конкретный срок хранения из него не следуют; распределение труда братья могут менять по собственным возможностям.",
+      "claim_refs": [
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-activity-sensory-pulses",
+        "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+        "claim:population-physics-static-friction",
+        "claim:food-preservation-qualitative",
+        "claim:microbial-growth-depends-on-species-temperature-range",
+        "claim:work-intensity-duration"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-008",
+      "primary_domain": "woodland-beekeeping-smoke-and-access",
+      "knowledge_need": "Борть, тление, пчёлы, растительность и загромождённый подход.",
+      "verdict": "covered",
+      "scene_ru": "Поляна отличается от сомкнутого леса светом и обзором, но ветка перекрыла данный подход к дереву. Тлеющая древесина служит данному источнику дыма; дым может изменить защитную реакцию пчёл, не превращая борть в безопасный для одиночной работы объект.",
+      "interaction_ru": "Бортник может освободить доступный подход или выбрать другую наблюдаемую позицию, затем решить, продолжать ли осмотр. Дым способен ослабить восприятие тревожного сигнала, но избыток и горячий дым нежелательны, а верёвка и прежний лаз не обещают безопасного подъёма.",
+      "variation_ru": "Паузы в чужих шагах, густота крон, тление и активность пчёл меняют чувственную сцену. Уход за данными деревьями и конкретный дымарь — условия задачи, не свидетельство повсеместного приспособления, мёда или права на соседние борти.",
+      "claim_refs": [
+        "claim:place-outdoors-forest-structure-and-season",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:population-material-wood-combustion",
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-009",
+      "primary_domain": "market-canopy-space-negotiation",
+      "knowledge_need": "Погодное укрытие товаров, теснота и бытовое согласование места.",
+      "verdict": "covered",
+      "scene_ru": "Действующий ряд лавок занят выкладкой, бочками и чужой тарой; это сужает проход и обзор, тогда как навес выделяет более защищённую часть торговли. Пыль и голоса меняются с подвозом, а достаток торговца обеспечивает данную помощь и ларь, но не преимущественное право на общий край.",
+      "interaction_ru": "Он может свернуть часть отрезов, использовать собственный закрывающийся ларь и просить согласовать размещение корзин, не присваивая их и не объявляя пространство своим. Приказчик и помощники позволяют разделить перенос и разговор, если сами согласны и имеют доступ.",
+      "variation_ru": "Порывы, число покупателей и очередная разгрузка меняют тесноту. Плата или весы в гипотетическом входе не задают сбор, стоимость полотна, официальный порядок рынка или точную систему измерений.",
+      "claim_refs": [
+        "claim:place-outdoors-market-activity-and-empty-intervals",
+        "claim:place-outdoors-means-upkeep-and-environment",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:place-outdoors-activity-sensory-pulses",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:public-world-ordinary-speech-tracks-relationship-setting"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-010",
+      "primary_domain": "mill-debris-flow-and-injured-worker",
+      "knowledge_need": "Поток, запруда, сучья, мокрые мостки и ограничение руки.",
+      "verdict": "covered",
+      "scene_ru": "У запруды вода и принесённые сучья соседствуют с мокрыми мостками, приводом и сухим местом мешков. Поток переносит и задерживает древесные остатки, а мельничный привод связан с движущимися частями; остановленные жернова не означают остановленную воду.",
+      "interaction_ru": "Мельник может передать племяннику доступную тяжёлую часть, отложить недоступные сучья и осматривать механизм при остановленном движении. Больная рука ограничивает данное усилие; багор не доказывает возможность безопасно освободить любой затор или устойчивость мостков.",
+      "variation_ru": "Расход воды, зацепление сучьев и состояние опоры меняют работу и возможную задержку ожидающей заказчицы. Запасы зерна не обязаны намокнуть вместе с мостками, а чужие мешки не становятся платой за помощь.",
+      "claim_refs": [
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:work-intensity-duration",
+        "claim:population-physics-static-friction",
+        "claim:practical-food-grain-storage"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-011",
+      "primary_domain": "garden-drainage-shade-and-animal-access",
+      "knowledge_need": "Почва, сток, опора растений, тень и проход домашних птиц.",
+      "verdict": "covered",
+      "scene_ru": "У стены освещённость и влажность неодинаковы: затенённый край, гряды, колья и размокшая канавка образуют разные участки. Корни используют доступную воду, а рост зависит также от света и веществ; поэтому больше воды не означает автоматически лучшее состояние гороха.",
+      "interaction_ru": "Огородник может поправлять данную подвязку и доступную кромку стока, наблюдая, куда фактически уходит вода. Приближающиеся гуси делают калитку и проход практически важными; можно прикрыть доступный вход, но не считать всякое растение уже объеденным.",
+      "variation_ru": "Морось, стена, местные понижения и последующий проход меняют влагу и следы. Помощь внучки ограничена заданным временем; правка канавки не гарантирует осушение или урожай.",
+      "claim_refs": [
+        "claim:place-outdoors-microterrain-patches",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+        "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-012",
+      "primary_domain": "foggy-ferry-waiting-and-care",
+      "knowledge_need": "Видимость над водой, настил, груз, ребёнок и ожидание перевозчика.",
+      "verdict": "covered",
+      "scene_ru": "Туман сжимает видимость над водой: различимая лодочная тень не даёт точного расстояния, состояния перевозчика или свободного места. Мокрый шаткий настил, сухая доска с узлом и люди за спиной задают несколько разных опор и стесняют ожидание у кромки.",
+      "interaction_ru": "Женщина может держать ребёнка рядом, оставаться на наблюдаемой опоре и окликнуть перевозчика, не выводя наличие рейса из ожидания. Узел можно прижать к себе либо оставить на данной сухой доске, если это позволяет проход; мокрая жердь не превращается в гарантированную спасательную снасть.",
+      "variation_ru": "Рассеивание тумана увеличит видимость, но не исправит настил; новые путники меняют тесноту. Названные монеты условны и не доказывают новгородскую валюту, тариф или оплату конкретного права.",
+      "claim_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-microterrain-patches",
+        "claim:population-physics-static-friction",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:human-life-travel-conditions-can-justify-delay"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-013",
+      "primary_domain": "forge-preparation-frost-and-fire",
+      "knowledge_need": "Горн, топливо, инструменты, ледяная вода и пожарное соседство.",
+      "verdict": "covered",
+      "scene_ru": "В установленной кузнице горн нагревает металл, меха подают воздух, молоты работают на наковальне; уголь и вода занимают разные места подготовки. У входа холод, дым и ожидающий заказчик пересекаются с горячей работой, а наледь в ведре остаётся данным состоянием воды.",
+      "interaction_ru": "Подмастерье может готовить имеющееся топливо и переносить доступную воду, оставляя ход старшему кузнецу и удаляя горючий мусор от жара. Вода может охлаждать металл по процессу, но не всякая скоба требует закалки и не всякое охлаждение улучшает её.",
+      "variation_ru": "Тепло сначала расходуется и на плавление льда, а движение воздуха меняет теплообмен. Достаток мастерской, заданный запас и степень уборки определяют удобство, не универсальный комплект каждой кузницы или квалификацию любой девушки.",
+      "claim_refs": [
+        "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:population-physics-melting-vaporization-energy",
+        "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:place-outdoors-means-upkeep-and-environment"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-014",
+      "primary_domain": "hay-work-before-thunderstorm",
+      "knowledge_need": "Сушка травы, вода в канаве, погода, общая работа и грозовая опасность.",
+      "verdict": "covered",
+      "scene_ru": "На покосе валки, ещё не собранная трава, телега и канава делят рабочее пространство на полосы; более сухая кромка не означает сухого луга целиком. Корм заготавливают для сокращающегося выпаса, а ход сушки зависит от влажности и движения воздуха.",
+      "interaction_ru": "Семья может распределять доступные грабли и перенос между людьми, оставляя ход у канавы. Слышимый гром меняет приоритет: поиск рукавицы и спасение сена не делают открытый луг безопасным, а одинокое дерево не следует принимать за надёжное грозовое укрытие.",
+      "variation_ru": "Дождь способен вновь увлажнить траву; валок не равен готовому сухому сену. Достижимое капитальное здание может быть вариантом укрытия, но его наличие, доступ и путь не создаются ради успешного окончания работы.",
+      "claim_refs": [
+        "claim:practical-fodder-hay",
+        "claim:food-drying-depends-on-humidity-airflow",
+        "claim:population-physics-evaporation-humidity",
+        "claim:place-outdoors-season-work-space-reallocation",
+        "claim:place-outdoors-microterrain-patches",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+        "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-015",
+      "primary_domain": "guest-yard-access-and-broken-cart",
+      "knowledge_need": "Гостеприимство, чужое пространство, укрытие и повреждённая тележка.",
+      "verdict": "covered",
+      "scene_ru": "Гостевой двор уже занят чужими плащами и приготовленным очагом; навес одновременно даёт укрытие и стесняет проезд повреждённой тележки. Мокрая колея затрудняет движение, а трещина колеса может ухудшать целостность и прочность, не устанавливая неизбежный распад.",
+      "interaction_ru": "Ремесленник может объяснить сторожу затруднение, попросить временное место и согласовать освобождение въезда, затем осмотреть доступную часть колеса. Приём ограничен средствами и доверием; возможны отказ, ожидание, обмен малой работой или допущенная помощь, а не право на чужие припасы.",
+      "variation_ru": "Дождь, ночное закрытие и промокшие вещи усиливают значение укрытия. Собственный инструмент даёт возможную попытку ремонта, но не обеспечивает материал, запасное колесо, доступ к очагу или успешную починку.",
+      "claim_refs": [
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:human-life-visitors-add-resource-demands",
+        "claim:human-life-stay-can-enable-consented-exchange",
+        "claim:human-life-travel-conditions-can-justify-delay",
+        "claim:foundations-mat-02-wood-drying-crack-strength",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+        "claim:place-outdoors-means-upkeep-and-environment"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-016",
+      "primary_domain": "cellar-produce-damp-and-light",
+      "knowledge_need": "Хранение овощей, влага, порча, лестница и ограниченное освещение.",
+      "verdict": "covered",
+      "scene_ru": "Погреб различается по углам: у дальней стены капель, на лестнице путь поварихи, возле свечи ограниченная освещённая зона. Влага и температура значимы для микробного роста; прохлада может замедлять многие процессы, но ни название погреба, ни открытая щель не доказывают сохранность овощей.",
+      "interaction_ru": "Слуга может отделять уже явно подпорченные по входу кочаны, собирать рассыпавшуюся репу и держать лестницу свободной для прохода. Свечу и корзины можно переставить в пределах поручения, не превращая осмотр в диагноз всей партии.",
+      "variation_ru": "Капель, фактический воздухообмен, длительность хранения и обращение с тарой меняют условия. Нельзя обещать, что удаление плохих овощей обеззаразит остальные или что прохладное помещение безопасно для пищи.",
+      "claim_refs": [
+        "claim:microbial-growth-depends-on-available-moisture",
+        "claim:microbial-growth-depends-on-species-temperature-range",
+        "claim:low-temperature-reduces-many-microbial-metabolic-rates",
+        "claim:food-preservation-qualitative",
+        "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:place-outdoors-microterrain-patches"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-017",
+      "primary_domain": "boat-hauling-on-wet-shore",
+      "knowledge_need": "Вода в лодке, масса, ветер, верёвка и слабая береговая опора.",
+      "verdict": "covered",
+      "scene_ru": "У сарая лодка остаётся на границе воды и глинистой опоры; ветер, мокрая верёвка, дождевой груз внутри и стучащая дверь делают берег рабочим, а не просто пейзажным местом. Наличие сарая выше кромки не означает свободный устойчивый путь туда.",
+      "interaction_ru": "Лодочник может сначала вычерпывать доступную воду и осматривать удержание верёвки, а затем пробовать перемещение или искать помощь. Удалённая вода перестаёт быть частью переносимого груза; трение удерживает контакт лишь до зависящего от условий предела.",
+      "variation_ru": "Подъём воды, порывы и размокание глины меняют опору. Ограниченные силы старика и необходимость пауз не задают числовой грузоподъёмности, а сохранённое место в сарае не чинит трение верёвки о бревно.",
+      "claim_refs": [
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-microterrain-patches",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+        "claim:population-physics-static-friction",
+        "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
+        "claim:work-intensity-duration",
+        "claim:place-outdoors-activity-sensory-pulses"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-018",
+      "primary_domain": "roadside-well-suspended-sediment-and-load",
+      "knowledge_need": "Вода со взвесью, колодезное устройство, подход телеги и лямка сумы.",
+      "verdict": "covered",
+      "scene_ru": "Колодец у дороги связывает поднятую воду, край для тары и подход телеги с животным; мокрые места и чужие движения могут пересекаться. Песок, взмученный в данном ведре, относится к взвесям, но не объясняет весь состав воды.",
+      "interaction_ru": "Послушники могут отставить груз из прохода, поправить истёртую лямку и набрать доступную воду. Если воду оставить в покое, часть взвесей может осесть; прозрачность после этого не означает питьевую безопасность. Закрытый чехол остаётся защитой из входа, не доказательством сухости или подлинности письма.",
+      "variation_ru": "Новый подвод ведра может вновь взмутить воду, а прибытие телеги меняет тесноту. Фактическая опора, целость верёвки и доступная тара ограничивают работу; чужая лошадь не становится разрешённым транспортом.",
+      "claim_refs": [
+        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:population-physics-static-friction",
+        "claim:place-outdoors-activity-sensory-pulses"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-019",
+      "primary_domain": "flax-breaking-scutching-dust-and-space",
+      "knowledge_need": "Волокно и костра, обработка льна, свет, пыль и рабочее место.",
+      "verdict": "covered",
+      "scene_ru": "Сарай даёт затенённую рабочую зону и полосы света у щелей, а сухой лён и отдельная костра показывают переработку растительного материала. Мялка может разрушать древесную часть стебля; чесало — удалять остатки кострики из пригодных для этой операции волокон.",
+      "interaction_ru": "Сёстры могут поочерёдно работать имеющимися орудиями, отбирать отделившийся материал и поддерживать свободный ход у входа, где появляется курица. Нельзя из одного названия гребня вывести его пригодность или объявить каждое волокно готовым к прядению.",
+      "variation_ru": "Ветер через проём меняет свет и разнос лёгких остатков, а сырость могла бы изменить хранение и дальнейшую сушку. Семейная работа и отсутствие найма задают доступные руки; раннерусские аналоги орудий не фиксируют единую последовательность каждой мастерской.",
+      "claim_refs": [
+        "claim:fibre-flax-breaker-shive",
+        "claim:fibre-hackle-removes-shive",
+        "claim:material-water-linen-flax-origin",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:place-outdoors-activity-sensory-pulses"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-020",
+      "primary_domain": "exposed-tower-night-watch-and-brazier",
+      "knowledge_need": "Снег, ветер, видимость, дозор, жаровня и деревянная площадка.",
+      "verdict": "covered",
+      "scene_ru": "Верхняя площадка открыта порывам, снегу и ограниченной ночной видимости, тогда как заслон создаёт местное укрытие, а не равномерное тепло. Жаровня рядом с деревянным настилом соединяет источник тепла, горючий материал и возможность переноса горячих остатков.",
+      "interaction_ru": "Сторож может осмотреть доступное крепление стучащего заслона и расчистить наблюдаемый ход, не полагаясь на каменную подставку как гарантию от пожара. Огонь требует воздуха; закрывать площадку ради тепла нельзя мысленно приравнивать к безопасному воздухообмену.",
+      "variation_ru": "Порывы переносят тепло и снег, позёмка меняет видимость и опору, утомление ограничивает непрерывный обход. Служба по очереди, оружие и ожидаемая смена здесь заданы условно, а не выводятся как единый городской порядок.",
+      "claim_refs": [
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:population-material-wood-combustion",
+        "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:work-intensity-duration"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-021",
+      "primary_domain": "reed-backwater-footing-and-water-access",
+      "knowledge_need": "Мягкий берег, заросли, глубина, следы животных и доступ ребёнка к воде.",
+      "verdict": "covered",
+      "scene_ru": "Камыши закрывают часть обзора и прохода, а вязкая мелкая кромка соседствует с данным резким переходом к глубине. Крики птиц и круги на воде оживляют место, но сами по себе не сообщают безопасный путь или пригодность воды.",
+      "interaction_ru": "Девочка может остановиться на уже различимой опоре, поискать доступный подход без переноса веса в неизвестную глубину либо вернуться за помощью. Палка остаётся средством наблюдения, а не подтверждением несущего дна; более чистый вид не равен питьевой безопасности.",
+      "variation_ru": "Дождь и подъём воды могут скрыть прежнюю тропу, растительность — зацепить ведро или одежду. Если грозовая угроза уже слышна или видна, вода и открытый берег не становятся безопасным укрытием; точный прогноз из духоты не выводится.",
+      "claim_refs": [
+        "claim:place-outdoors-microterrain-patches",
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+        "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+        "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-022",
+      "primary_domain": "frosty-bakehouse-water-dough-and-heat",
+      "knowledge_need": "Лёд, вода, квашня, тесто, печь и достаток хозяйства.",
+      "verdict": "covered",
+      "scene_ru": "В пекарном навесе соседствуют холодная вода, тёплая стена, квашня, печь и сухой запас муки. Тепло передаётся от более тёплого к холодному, а плавление данной ледяной корки требует энергии; ожидание кухарки не отменяет этих процессов.",
+      "interaction_ru": "Пекарь может готовить доступную жидкую воду и замешивать муку в тесто, разводя перенос сухих припасов и горячую работу. Печь является средством выпечки; если применяется закваска, температура влияет на брожение, но наличие квашни само по себе её не доказывает.",
+      "variation_ru": "Мороз и сквозняк меняют теплопотери, достаток двора обеспечивает заданные припасы и место, а не гарантированный подъём и время готовности. Пекарь расходует только предоставленное для поручения, не создавая запас или право распоряжения им.",
+      "claim_refs": [
+        "claim:grain-processing-bread-liquid",
+        "claim:grain-processing-bread-dough-before-baking",
+        "claim:grain-processing-bread-oven-baking",
+        "claim:grain-processing-bread-optional-leaven",
+        "claim:household-dough-temperature-changes-proofing",
+        "claim:population-physics-melting-vaporization-energy",
+        "claim:foundations-thm-10-thermal-gradient-heat-flow",
+        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:place-outdoors-means-upkeep-and-environment"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-023",
+      "primary_domain": "winter-log-loading-and-shared-track",
+      "knowledge_need": "Древесина, опора, масса, сани, лошади и общий проход.",
+      "verdict": "covered",
+      "scene_ru": "Вырубка сочетает пни, свежие срезы, отложенные ветви, плотный снег и узкий путь саней. Уже погруженные брёвна меняют груз, а лежащее поперёк тропы бревно отделяет рабочую площадку от общего движения.",
+      "interaction_ru": "Дровосеки могут приостановить погрузку, согласовать перенос препятствия и повторно проверить данную увязку перед движением. Положение тяжести и площадь опоры важны для устойчивости неподвижного груза, а трение и верёвка не удерживают его безусловно.",
+      "variation_ru": "Проседание снега и новая чужая упряжь меняют опору и тесноту. Разрешение на работу и доля оплаты — входные условия, не новые права на весь лес; точная масса, состояние саней и запас сил требуют наблюдения.",
+      "claim_refs": [
+        "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:place-outdoors-forest-structure-and-season",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:population-physics-static-friction",
+        "claim:environment-p1-horse-transport",
+        "claim:work-intensity-duration"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-024",
+      "primary_domain": "herb-gathering-and-mixed-basket",
+      "knowledge_need": "Различение растений, срезка, влажность и хранение смешанного сбора без лечебных обещаний.",
+      "verdict": "covered",
+      "scene_ru": "Луговой край рядом с кладбищем различается по травостою, освещению и следам срезки; свободная тропа и нетронутые побеги не означают одинаковые растения на всей площади. Низкое солнце меняет доступный свет для перебора корзины.",
+      "interaction_ru": "Травница может отделить уже различимые свежие листья от старого сухого материала, связать отдельный сбор и выбрать доступное место для дальнейшей сушки. Испарение не требует огня, а влага, воздух и последующее хранение влияют на состояние сбора.",
+      "variation_ru": "Смешение и прежняя сухость не удостоверяют вид, лечебный эффект или безопасность растения. Опыт и заработок даны условно; место у кладбища не создаёт запрет, святыню, лекарственное свойство или право на любой сбор.",
+      "claim_refs": [
+        "claim:place-outdoors-microterrain-patches",
+        "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:population-physics-evaporation-below-boiling",
+        "claim:population-physics-evaporation-humidity",
+        "claim:drying-reduces-microbial-growth-conditions",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-free-025",
+      "primary_domain": "rain-raised-ford-and-ox-handling",
+      "knowledge_need": "Мутная вода, скрытая опора, глина, груз и поведение вола.",
+      "verdict": "covered",
+      "scene_ru": "Дорога входит в брод через размокшую глину и колею; мутная поднявшаяся вода скрыла прежнюю опору, поэтому знакомство с местом не равнозначно знанию нынешнего дна. Вол уже сопротивляется по входу, а натянутый повод и корзины занимают руки человека.",
+      "interaction_ru": "Крестьянин может остановить попытку, отставить доступные корзины на наблюдаемую опору и осмотреть иной подход либо отложить переправу. Можно пробовать вести животное имеющимся поводом, но причина сопротивления и успешность попытки не выводятся из одной реакции.",
+      "variation_ru": "Осадки и поток меняют наносы, видимость дна и проходимость кромки. Чужой безопасный маршрут, глубина, прочность повода и право пользоваться общим выгоном не появляются из желания добраться домой.",
+      "claim_refs": [
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:place-outdoors-microterrain-patches",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+        "claim:river-flow-affects-sediment-transport-deposition",
+        "claim:population-physics-static-friction",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance"
+      ],
+      "gaps": []
+    }
+  ]
+}

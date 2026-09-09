@@ -58,6 +58,24 @@ test('projects a committed player-safe item display name from item state', () =>
   assert.equal(item.state.display_name, 'клочок окрашенной шерсти');
 });
 
+test('projects safe held garment facts', () => {
+  const state = richCommittedState();
+  state.items.push({ item_id: 'linen-shirt', placement: {
+    holder_character_id: state.actor_id, physical_position: 'equipped'
+  }, state: { visual_profile_snapshot: {
+    schema: 'item_visual_profile_snapshot_v1', version: 1,
+    equipment_slot: 'base_garment', neckline: 'slit_round', sleeve_form: 'narrow',
+    outer_form: 'none', visible_fabric: 'light_linen', trim: 'none',
+    main_visible_color: 'undyed_linen', secondary_visible_color: null,
+    headwear_kind: 'none', hidden_inventory: 'private'
+  } } });
+  const item = projectLowerDvinaTracePlayerSafeState({
+    committed_state: state, actor_id: state.actor_id
+  }).player_safe_state.items.find(({ item_id: id }) => id === 'linen-shirt');
+  assert.equal(item.visual_profile_snapshot.visible_fabric, 'light_linen');
+  assert.equal(JSON.stringify(item).includes('private'), false);
+});
+
 test('combat projection does not disclose private NPC intents', () => {
   const committedState = richCommittedState();
   committedState.combat_sessions = [{ combat_id: 'combat-1',

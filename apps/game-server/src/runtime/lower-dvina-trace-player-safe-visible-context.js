@@ -12,6 +12,11 @@ const VISIBLE_CONTEXT_KEYS = new Set([
   'version', 'schema', 'visible_scene', 'visible_changes', 'sensory_details',
   'visible_npc', 'visible_objects', 'known_context', 'uncertainties'
 ]);
+const AMBIENT_ORDINARY_CAPABILITY = 'ambient_ordinary_capability';
+const AMBIENT_PORTION_BOUND_KEYS = new Set([
+  'quantity_unit', 'min_quantity', 'max_quantity', 'min_mass_grams',
+  'max_mass_grams'
+]);
 
 export function projectVisibleContext(value, {
   strict = false, path = 'visible_context'
@@ -48,20 +53,57 @@ function projectVisibleRefs(records, strict, path) {
       if (strict) throw projectionError(invalidCode(), `${path} is invalid.`);
       return undefined;
     }
+    const entityRef = projectEntityRef(record.entity_ref, strict, path);
+    const isAmbientCapability = entityRef?.entity_kind
+      === AMBIENT_ORDINARY_CAPABILITY;
     const allowed = new Set([
       'entity_ref', 'display_label', 'recognition', 'visible_status',
-      'observable_cues'
+      'observable_cues', ...(isAmbientCapability ? ['ambient_portion_bounds'] : [])
     ]);
     if (strict) assertAllowedKeys(record, allowed, `${path}[]`, invalidCode());
     return compact({
-      entity_ref: projectEntityRef(record.entity_ref, strict, path),
+      entity_ref: entityRef,
       display_label: text(record.display_label),
       recognition: text(record.recognition),
       visible_status: text(record.visible_status),
       observable_cues: projectObservableCues(record.observable_cues, strict,
-        `${path}[].observable_cues`)
+        `${path}[].observable_cues`),
+      ambient_portion_bounds: isAmbientCapability
+        ? projectAmbientPortionBounds(record.ambient_portion_bounds, strict,
+          `${path}[].ambient_portion_bounds`) : undefined
     });
   }).filter(Boolean);
+}
+
+function projectAmbientPortionBounds(value, strict, path) {
+  if (!plain(value)) {
+    if (strict) throw projectionError(invalidCode(), `${path} is invalid.`);
+    return undefined;
+  }
+  if (strict) assertAllowedKeys(value, AMBIENT_PORTION_BOUND_KEYS, path,
+    invalidCode());
+  const projected = compact({
+    quantity_unit: text(value.quantity_unit),
+    min_quantity: finite(value.min_quantity),
+    max_quantity: finite(value.max_quantity),
+    min_mass_grams: finite(value.min_mass_grams),
+    max_mass_grams: finite(value.max_mass_grams)
+  });
+  const valid = ['min_quantity', 'max_quantity', 'min_mass_grams',
+    'max_mass_grams'].every((key) => typeof value[key] === 'number'
+      && Number.isFinite(value[key]))
+    && Object.keys(projected).length === 5
+    && projected.quantity_unit.trim()
+    && projected.min_quantity > 0
+    && projected.max_quantity >= projected.min_quantity
+    && Number.isSafeInteger(projected.min_mass_grams)
+    && projected.min_mass_grams > 0
+    && Number.isSafeInteger(projected.max_mass_grams)
+    && projected.max_mass_grams >= projected.min_mass_grams;
+  if (!valid && strict) {
+    throw projectionError(invalidCode(), `${path} is invalid.`);
+  }
+  return valid ? projected : undefined;
 }
 
 function projectObservableCues(value, strict, path) {

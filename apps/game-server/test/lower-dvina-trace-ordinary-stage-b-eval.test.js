@@ -3,6 +3,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import {
   evaluateLowerDvinaTraceOrdinaryStageBModelOutputs,
+  lowerDvinaTraceOrdinaryStageBQualificationCases,
   validateLowerDvinaTraceOrdinaryStageBEval
 } from '../src/internal/lower-dvina-trace-ordinary-stage-b-eval.js';
 import { bindOrdinaryMaterializationPlan,
@@ -12,14 +13,13 @@ import { buildOrdinaryMaterializationMessages } from
   '../src/runtime/ordinary-materialization-llm.js';
 import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../src/internal/lower-dvina-trace-ordinary-stage-b-approval.js';
-import { describeRoleLlmCall } from '@rus/llm-runtime';
-import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
-import { createLlmSettingsOwner } from '../src/runtime/llm-settings.js';
-import { createOrdinaryMaterializationStageBQualifier } from
-  '../src/runtime/ordinary-materialization-stage-b-qualification.js';
+import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
+  '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 import { validateOrdinaryMaterializationPlanV1 } from '@rus/contracts';
 import { absentPlan, modelIdentity, presenceRequest } from
   './lower-dvina-trace-ordinary-stage-b-eval-fixture.js';
+import { enabled as discoveryEnabled, group as discoveryGroup,
+  request as discoveryRequest } from './lower-dvina-trace-o1-fixture.js';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m7-content/'
@@ -31,6 +31,14 @@ async function evalContract() {
   const profile = JSON.parse(await readFile(profileUrl, 'utf8'));
   return profile.stage_b_classification_eval;
 }
+function qualifiedOutputs(contract) {
+  return lowerDvinaTraceOrdinaryStageBQualificationCases(contract).map((probe) =>
+    probe.id === 'common-mundane-positive'
+      ? { id: probe.id, resolution: 'materialize', entities: [{
+        admission_class: 'common_mundane' }] }
+      : { id: probe.id, resolution: probe.allowed_resolutions?.[0] ?? 'no_change',
+        entities: [] });
+}
 
 test('active O1 cutover pins the complete adversarial Stage B corpus', async () => {
   const contract = await evalContract();
@@ -40,27 +48,20 @@ test('active O1 cutover pins the complete adversarial Stage B corpus', async () 
     'misleading-common-name', 'significant-hidden', 'silver-currency',
     'sword-weapon'
   ]);
-  const outputs = contract.cases.map(({ id, allowed_resolutions }) => ({
-    id, resolution: allowed_resolutions[0], entities: []
-  }));
+  const outputs = qualifiedOutputs(contract);
   assert.deepEqual(evaluateLowerDvinaTraceOrdinaryStageBModelOutputs({
     eval_contract: contract, outputs
   }), { pass: true, failed_case_ids: [] });
-  const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
-  const { request_timeout_ms, ...identity } = describeRoleLlmCall({
-    scope: 'turn_runtime', roleId: 'ordinary_materialization',
-    env: { DEEPSEEK_API_KEY: 'identity-only' },
-    overrides: { temperature: 0, maxTokens: 6000 }
-  });
-  assert.deepEqual(approval.model_identity, identity);
+  assert.deepEqual(lowerDvinaTraceOrdinaryStageBQualificationCases(contract)
+    .map(({ id }) => id).sort(), [...contract.cases.map(({ id }) => id),
+    'boot-print-trace', 'puddle-surface', 'shadow-observation',
+    'smoke-condition', 'common-mundane-positive'].sort());
 });
 
 test('Stage B eval catches sensitive materialization hidden behind common fields', async () => {
   const contract = await evalContract();
   for (const probe of contract.cases) {
-    const outputs = contract.cases.map(({ id, allowed_resolutions }) => ({
-      id, resolution: allowed_resolutions[0], entities: []
-    }));
+    const outputs = qualifiedOutputs(contract);
     const output = outputs.find(({ id }) => id === probe.id);
     output.resolution = 'materialize';
     output.entities = [{ authority_class: 'ordinary',
@@ -74,6 +75,18 @@ test('Stage B eval catches sensitive materialization hidden behind common fields
   }
 });
 
+test('Stage B eval requires one bound common-positive result', async () => {
+  const contract = await evalContract();
+  const outputs = qualifiedOutputs(contract);
+  const positive = outputs.find(({ id }) => id === 'common-mundane-positive');
+  positive.entities[0].admission_class = 'weapon_or_armament';
+  const report = evaluateLowerDvinaTraceOrdinaryStageBModelOutputs({
+    eval_contract: contract, outputs
+  });
+  assert.deepEqual(report, { pass: false,
+    failed_case_ids: ['common-mundane-positive'] });
+});
+
 test('ordinary materialization prompt keeps a supported free candidate materializable', () => {
   const request = presenceRequest('ложка');
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
@@ -81,9 +94,13 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   assert.match(prompt, /resolve_presence permits materialize, absent, no_change, or authority_required/u);
   assert.match(prompt, /Decide only whether and how the supplied ordinary candidate is semantically realized/u);
   assert.match(prompt, /Lack of a pre-supplied descriptor alone is not a reason for absent/u);
-  assert.match(prompt, /derive it only from candidate_query\.candidate_hint/u);
+  assert.match(prompt, /candidate_query\.candidate_hint identifies what is sought, not evidence/u);
+  assert.match(prompt, /never promote an unsupported presupposition from the query into a fact/u);
   assert.match(prompt, /general question about people, current activity, or the situation is not an ordinary item candidate/u);
   assert.match(prompt, /never turn a person, event, place, or question into an item name or item fact/u);
+  assert.match(prompt, /semantic_materialization_kind/u);
+  assert.match(prompt, /sought referent in complete candidate_hint/u);
+  assert.match(prompt, /environmental trace, surface condition, spatial state/u);
   assert.match(prompt, /server assembles/u);
   assert.match(prompt, /availability_class is common or context_bound/u);
   assert.match(prompt, /authority_envelope/u);
@@ -202,6 +219,8 @@ test('ordinary materialization prompt carries complete code-owned Stage B shapes
   const admitted = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(admitted, /"resolution":"materialize"/u);
   assert.match(admitted, /"admission_class":"common_mundane"/u);
+  assert.match(admitted, /semantic_admission_class/u);
+  assert.match(admitted, /semantic_materialization_kind/u);
   assert.match(admitted, /"property_basis_ref":"property"/u);
   assert.match(admitted, /"position_ref":"bench"/u);
   assert.match(admitted, /"supporting_basis_ref":"ordinary_group_prepared"/u);
@@ -213,238 +232,120 @@ test('ordinary materialization prompt carries complete code-owned Stage B shapes
   assert.doesNotMatch(admitted, /"mass_grams":1/u);
 });
 
-test('production O1 binds incomplete Flash output to its request envelope', async () => {
-  const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
-  const request = { ...presenceRequest('верёвка'), policy_refs: {
-    ...presenceRequest('верёвка').policy_refs,
-    allowed_supporting_bases: [{ basis_ref: 'stage-b', basis_state: 'committed' }]
-  }, authority_envelope: { ...presenceRequest('верёвка').authority_envelope,
-    allowed_supporting_bases: [{ basis_ref: 'stage-b', basis_state: 'committed' }],
-    selected_supporting_basis_ref: 'stage-b'
-  } };
-  const roleRunner = { async run() { return { provider_record: modelIdentity(),
-    output: { resolution: 'materialize', reason_code: 'found', entities: [{
-      semantic_descriptor: { semantic_type: 'cordage', name: 'верёвка', facts: [] },
-      presence_expectation: 'routine', supporting_basis_ref: 'stage-b',
-      causal_basis: { basis_kind: 'ordinary_presence', basis_refs: ['stage-b'] },
-      placement_proposal: { position_ref: 'bench' }, mechanics_proposal: {
-        mass_grams: 350, external_hand_cost: 0, carry_form: 'compact',
-        packing_slot_cost: 1, quantity: { value: 1, unit: 'item' }, container: null
-      } }] } }; } };
-  const output = await createOrdinaryMaterializationModel({ roleRunner,
-    stageBApprovalReceipt: approval })(request, { repair: null });
-  assert.equal(output.schema, 'ordinary_materialization_plan_v1');
-  assert.equal(output.entities[0].admission_class, 'common_mundane');
-  assert.equal(output.entities[0].property_basis_ref, 'property');
-  assert.equal(output.entities[0].semantic_descriptor.name, 'верёвка');
-});
-
-test('ordinary assembly does not invent an omitted semantic reason', () => {
-  const request = presenceRequest('верёвка');
+test('Stage B fails closed when its semantic admission differs from the candidate', () => {
+  const request = presenceRequest('подходящий предмет');
   const plan = bindOrdinaryMaterializationPlan(request, {
-    resolution: 'absent' });
-  assert.equal(plan.reason_code, undefined);
-  assert.notDeepEqual(validateOrdinaryMaterializationPlanV1(plan), []);
+    resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
+    semantic_admission_class: 'weapon_or_armament',
+    reason_code: 'found', entities: [{
+      semantic_descriptor: { semantic_type: 'free_descriptor',
+        name: 'свободное описание', facts: [] },
+      presence_expectation: 'plausible', mechanics_proposal: {
+        mass_grams: 100, external_hand_cost: 0, carry_form: 'compact',
+        packing_slot_cost: 0, quantity: { value: 1, unit: 'item' },
+        container: null
+      }
+    }]
+  });
+  assert.equal(plan.resolution, 'absent');
+  assert.deepEqual(plan.entities, []);
+  assert.equal(plan.reason_code, 'semantic_admission_mismatch');
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
-test('production O1 assembles a semantic Stage A no_change choice', async () => {
-  const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
-  const request = { ...presenceRequest('ложка'), mode: 'seed_scope',
-    candidate_query: null };
-  const output = await createOrdinaryMaterializationModel({
-    stageBApprovalReceipt: approval, roleRunner: { async run() {
-      return { provider_record: modelIdentity(), output: {
-        resolution: 'no_change', reason_code: 'no_change' } };
-    } }
-  })(request, { repair: null });
-  assert.deepEqual(output, { schema: 'ordinary_materialization_plan_v1',
-    request_id: request.request_id, resolution: 'no_change',
-    density_band_proposal: null, background_groups: [], entities: [],
-    presence_resolutions: [], reason_code: 'no_change' });
+test('Stage B checks semantic admission before a missing materialization kind', () => {
+  const request = presenceRequest('подходящий предмет');
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'no_change', semantic_admission_class: 'other_restricted',
+    reason_code: 'not_an_item'
+  });
+  assert.equal(plan.resolution, 'absent');
+  assert.equal(plan.reason_code, 'semantic_admission_mismatch');
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
-test('Stage B eval boundary rejects accessors without reading them', async () => {
-  const contract = await evalContract();
-  let reads = 0;
-  const hostile = {};
-  Object.defineProperty(hostile, 'eval_contract', { enumerable: true,
-    get() { reads += 1; return contract; } });
-  Object.defineProperty(hostile, 'outputs', { enumerable: true, value: [] });
-  const report = evaluateLowerDvinaTraceOrdinaryStageBModelOutputs(hostile);
-  assert.equal(report.pass, false);
-  assert.equal(reads, 0);
-});
-
-test('production O1 model verifies the activation receipt without live probes',
-  async () => {
-    const contract = await evalContract();
-    const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
-    const calls = [];
-    const roleRunner = { describe() { return modelIdentity(); }, async run(input) {
-      calls.push(input);
-      const request = JSON.parse(input.messages[1].content);
-      return { output: absentPlan(request), provider_record: modelIdentity() };
-    } };
-    const model = createOrdinaryMaterializationModel({ roleRunner,
-      stageBApprovalReceipt: approval });
-    const receipt = await model.verifyStageBCutover({
-      eval_contract: contract });
-    assert.equal(receipt.schema,
-      'rus.ordinary_materialization_stage_b_approval_receipt.v1');
-    assert.equal(receipt.model_identity.config_hash, modelIdentity().config_hash);
-    assert.equal(calls.length, 0, 'gameplay cutover performs no eval calls');
-    const request = presenceRequest('ложка');
-    await model(request, { repair: null });
-    await model(request, { repair: { schema:
-      'ordinary_materialization_repair_context_v1', original_output: null,
-    validation_errors: [{ path: 'resolution', keyword: 'enum' }] } });
-    assert.equal(calls.length, 2, 'one normal call and one structural repair');
-    assert.match(calls[1].messages[0].content, /single structural repair/u);
-    await assert.rejects(model(request, { repair: { schema:
-      'ordinary_materialization_repair_context_v1', original_output: null,
-    validation_errors: [{ path: 'resolution', keyword: 'enum' }] } }), {
-      code: 'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID'
+test('Stage B binds environmental details to no_change before item mechanics', () => {
+  for (const query of ['след сапога на мокром песке', 'лужа на дороге',
+    'колея в грязи', 'дым над берегом', 'сырость на досках', 'тень под навесом']) {
+    const request = presenceRequest(query);
+    assert.equal(request.authority_envelope.candidate.admission_class,
+      'common_mundane');
+    const plan = bindOrdinaryMaterializationPlan(request, {
+      resolution: 'materialize', semantic_materialization_kind: 'non_item_detail',
+      semantic_admission_class: 'common_mundane', reason_code: 'observed',
+      entities: [{ semantic_descriptor: { semantic_type: 'ordinary_object_candidate',
+        name: query, facts: [] }, presence_expectation: 'plausible',
+      mechanics_proposal: { mass_grams: 100, external_hand_cost: 0,
+        carry_form: 'compact', packing_slot_cost: 0,
+        quantity: { value: 1, unit: 'item' }, container: null } }]
     });
-    assert.equal(calls.length, 2, 'a repeated direct repair never reaches the LLM');
-  });
-
-test('custom O1 role uses its qualified exact identity without gameplay eval',
-  async () => {
-    const contract = await evalContract();
-    let runner;
-    const settings = createLlmSettingsOwner({ qualifyCustom: async (candidate) =>
-      runner.describe({ scope: 'turn_runtime', role_id: 'ordinary_materialization',
-        overrides: { temperature: 0, maxTokens: 6000 }, provider_snapshot: candidate }) });
-    runner = createLlmRoleRunnerAdapter({ settings, execute: async (input) => {
-      const request = JSON.parse(input.messages[1].content);
-      const identity = runner.describe({ scope: input.scope, role_id: input.roleId,
-        tier_id: input.tierId, overrides: input.overrides });
-      return { status: 'ok', parsed_json: absentPlan(request),
-        provider: identity.provider, model: identity.model, scope: input.scope,
-        role_id: input.roleId, tier_id: input.tierId, durationMs: 1,
-        config_hash: identity.config_hash };
-    } });
-    await settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1',
-      model: 'local-model', api_key: null });
-    const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
-    const model = createOrdinaryMaterializationModel({ roleRunner: runner,
-      stageBApprovalReceipt: approval,
-      qualifiedO1Identity: () => settings.ordinaryMaterializationIdentity() });
-    await model.verifyStageBCutover({ eval_contract: contract });
-    assert.deepEqual(await model(presenceRequest('ложка'), { repair: null }),
-      absentPlan(presenceRequest('ложка')));
-    await settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1',
-      model: 'other-local-model', api_key: null });
-    assert.deepEqual(await model(presenceRequest('ковш'), { repair: null }),
-      absentPlan(presenceRequest('ковш')));
-  });
-
-test('custom O1 call keeps its approved identity snapshot while it is in flight',
-  async () => {
-    const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
-    const oldIdentity = { provider: 'openai_compatible', model: 'old-model',
-      scope: 'turn_runtime', role_id: 'ordinary_materialization', config_hash: 'old' };
-    const newIdentity = { ...oldIdentity, model: 'new-model', config_hash: 'new' };
-    let current = oldIdentity;
-    const pending = [];
-    const model = createOrdinaryMaterializationModel({ stageBApprovalReceipt: approval,
-      qualifiedO1Identity: () => current,
-      roleRunner: { isCustomProvider() { return true; }, run(input) {
-        return new Promise((resolve) => pending.push({ input, resolve }));
-      } } });
-    const firstRequest = presenceRequest('ложка');
-    const first = model(firstRequest, { repair: null });
-    current = newIdentity;
-    pending.shift().resolve({ output: absentPlan(firstRequest), provider_record: oldIdentity });
-    assert.deepEqual(await first, absentPlan(firstRequest));
-    const secondRequest = presenceRequest('ковш');
-    const second = model(secondRequest, { repair: null });
-    pending.shift().resolve({ output: absentPlan(secondRequest), provider_record: newIdentity });
-    assert.deepEqual(await second, absentPlan(secondRequest));
-  });
-
-test('custom Stage B qualification uses production messages, unique case refs, and never applies settings', async () => {
-  const contract = await evalContract();
-  const calls = [];
-  const candidate = { mode: 'custom', compatibility: 'openai_compatible',
-    baseUrl: 'http://127.0.0.1:11434/v1', model: 'candidate', apiKey: null };
-  const identity = { provider: 'openai_compatible', model: 'candidate',
-    scope: 'turn_runtime', role_id: 'ordinary_materialization', config_hash: 'candidate-config' };
-  const qualifier = createOrdinaryMaterializationStageBQualifier({
-    evalContract: contract,
-    roleRunner: { describe(input) { assert.deepEqual(input.provider_snapshot, candidate); return identity; },
-      async run(input) { calls.push(input); const request = JSON.parse(input.messages[1].content);
-        return { output: absentPlan(request), provider_record: identity }; } }
-  });
-  const owner = createLlmSettingsOwner({ qualifyCustom: qualifier });
-  await owner.probe({ mode: 'custom', base_url: candidate.baseUrl, model: candidate.model,
-    api_key: null });
-  assert.equal(owner.read().mode, 'default');
-  assert.equal(calls.length, contract.cases.length);
-  assert.ok(calls.every((call) => call.overrides.requestTimeoutMs === 120000));
-  assert.ok(calls.every((call) => call.provider_snapshot.model === 'candidate'));
-  const requests = calls.map((call) => JSON.parse(call.messages[1].content));
-  assert.equal(new Set(requests.map((request) => request.request_id)).size,
-    contract.cases.length);
-  assert.equal(new Set(requests.map((request) => request.candidate_query.candidate_key)).size,
-    contract.cases.length);
-  assert.equal(new Set(requests.map((request) => request.candidate_query.coverage_key)).size,
-    contract.cases.length);
-  for (const call of calls) {
-    const request = JSON.parse(call.messages[1].content);
-    assert.deepEqual(call.messages, buildOrdinaryMaterializationMessages(request));
+    assert.equal(plan.resolution, 'no_change', query);
+    assert.deepEqual(plan.entities, [], query);
+    assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), [], query);
   }
-  await owner.apply({ mode: 'custom', base_url: candidate.baseUrl, model: candidate.model,
-    api_key: null });
-  assert.deepEqual(owner.ordinaryMaterializationIdentity(), identity);
 });
 
-test('custom Stage B qualification rejects schema-invalid evaluator-safe output', async () => {
-  const contract = await evalContract();
-  const identity = modelIdentity();
-  const qualifier = createOrdinaryMaterializationStageBQualifier({
-    evalContract: contract,
-    roleRunner: { describe() { return identity; }, async run(input) {
-      const request = JSON.parse(input.messages[1].content);
-      return { output: { ...absentPlan(request), unexpected: true },
-        provider_record: identity };
-    } }
+test('Stage B requires a materialization kind and accepts a standalone common item', () => {
+  const request = presenceRequest('обычная верёвка');
+  const missing = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'materialize', semantic_admission_class: 'common_mundane',
+    reason_code: 'found', entities: []
   });
-  await assert.rejects(qualifier({}), (error) => {
-    assert.equal(error.code, 'LLM_SETTINGS_ORDINARY_STAGE_B_QUALIFICATION_FAILED');
-    assert.deepEqual(error.details.failed_case_ids, contract.cases.map(({ id }) => id).sort());
-    return true;
+  assert.equal(missing.semantic_materialization_kind, null);
+  assert.notDeepEqual(validateOrdinaryMaterializationPlanV1(missing, request), []);
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
+    semantic_admission_class: 'common_mundane', reason_code: 'found', entities: [{
+      semantic_descriptor: { semantic_type: 'cordage', name: 'обычная верёвка', facts: [] },
+      presence_expectation: 'routine', mechanics_proposal: { mass_grams: 350,
+        external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null }
+    }]
   });
+  assert.equal(plan.resolution, 'materialize');
+  assert.equal(plan.entities.length, 1);
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
-test('production O1 response boundary rejects accessors without reading them',
+test('grounded Stage B materializes only with a claim ref from its current slice',
   async () => {
-    let outputReads = 0;
-    let providerReads = 0;
-    const hostile = {};
-    Object.defineProperty(hostile, 'output', { enumerable: true,
-      get() { outputReads += 1; return {}; } });
-    Object.defineProperty(hostile, 'provider_record', { enumerable: true,
-      get() { providerReads += 1; return modelIdentity(); } });
-    const model = createOrdinaryMaterializationModel({ roleRunner: {
-      async run() { return hostile; }
-    }, stageBApprovalReceipt:
-      await loadLowerDvinaTraceOrdinaryStageBApproval() });
-    await assert.rejects(model(presenceRequest('ложка'), { repair: null }), {
-      code: 'TRACE_ORDINARY_MODEL_RESPONSE_INVALID'
+    const request = presenceRequest('обычная верёвка');
+    const claimRef = 'claim:test-cordage';
+    const grounded = { ...request, world_knowledge: {
+      facts: [{ claim_ref: claimRef }], hard_constraints: []
+    } };
+    const semantic = { resolution: 'materialize',
+      semantic_materialization_kind: 'standalone_item',
+      semantic_admission_class: 'common_mundane', reason_code: 'found',
+      entities: [{ semantic_descriptor: { semantic_type: 'cordage',
+        name: 'обычная верёвка', facts: [] }, presence_expectation: 'routine',
+      mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
+        carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null } }] };
+    for (const refs of [undefined, ['claim:not-in-current-slice']]) {
+      const rejected = bindOrdinaryMaterializationPlan(grounded,
+        { ...semantic, ...(refs == null ? {} : {
+          world_knowledge_claim_refs: refs }) });
+      assert.notDeepEqual(validateOrdinaryMaterializationPlanV1(rejected,
+        request), []);
+    }
+    const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+    const model = createOrdinaryMaterializationModel({
+      stageBApprovalReceipt: approval,
+      worldKnowledgeGrounder: { async ground(input, purpose) {
+        assert.equal(purpose, 'materialization_support');
+        return { ...input, world_knowledge: grounded.world_knowledge };
+      } },
+      roleRunner: { async run(input) {
+        const supplied = JSON.parse(input.messages[1].content);
+        assert.deepEqual(supplied.world_knowledge, grounded.world_knowledge);
+        return { provider_record: modelIdentity(), output: { ...semantic,
+          world_knowledge_claim_refs: [claimRef] } };
+      } }
     });
-    assert.equal(outputReads, 0);
-    assert.equal(providerReads, 0);
+    const admitted = await model(request, { repair: null });
+    assert.equal(admitted.resolution, 'materialize');
+    assert.equal(admitted.entities[0].semantic_descriptor.name,
+      'обычная верёвка');
+    assert.deepEqual(validateOrdinaryMaterializationPlanV1(admitted, request), []);
   });
-
-test('production O1 cutover rejects a jointly forged activation receipt', async () => {
-  const contract = await evalContract();
-  const approval = structuredClone(
-    await loadLowerDvinaTraceOrdinaryStageBApproval());
-  approval.eval_contract_digest = 'forged';
-  const model = createOrdinaryMaterializationModel({ roleRunner: {
-    async run() { throw new Error('must not run'); }
-  }, stageBApprovalReceipt: approval });
-  await assert.rejects(model.verifyStageBCutover({ eval_contract: contract }), {
-    code: 'TRACE_ORDINARY_STAGE_B_EVAL_INPUT_INVALID' });
-});

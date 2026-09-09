@@ -24,6 +24,7 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
   const validate = ({ plan, request,
     prepared_chain_context: preparedChainContext }) => {
     const errors = [];
+    const resolvedDomainOperations = [];
     const marker = plan.continuation?.prepared_followup_ref;
     if (marker != null && semanticBindings.filter(({ command, binding }) =>
       availableOptions.has(command.option_id)
@@ -45,6 +46,12 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
           preparedChainContext });
         if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner,
           turnCommandError);
+        if (owner.kind !== 'missing') resolvedDomainOperations.push({ path,
+          owner_kind: owner.kind,
+          ...(owner.bound_operation == null ? {} : {
+            bound_operation: structuredClone(owner.bound_operation)
+          })
+        });
         if (owner.kind === 'missing' && !deferredPreparedDomainPlan({
           plan, path, preparedChainContext
         })) errors.push({ path,
@@ -54,7 +61,11 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
       if (errors.length !== 0) throw turnCommandError('TURN_STEP_PLAN_INVALID',
         'Semantic plan references an unavailable domain owner.', { errors });
     };
-    return validateOwners();
+    validateOwners();
+    return services.turnStepSemanticGroundingValidator?.(deepFreeze({
+      plan: structuredClone(plan), request: structuredClone(request),
+      resolved_domain_operations: resolvedDomainOperations
+    }));
   };
   validate.resolve = resolve;
   return validate;

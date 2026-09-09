@@ -178,6 +178,42 @@ test('prepared ordinary item becomes a visible A1 source for the next step',
       .semantic_grounding_available, true);
   });
 
+test('ambient capability is planner-only while prepared ordinary overlay works',
+  async () => {
+    const projector = createLowerDvinaTraceTurnStepPlayerSafeProjector({
+      admitAmbientOrdinaryPortion: { capabilities: [{
+        source_ref: 'source:sand', portion_profile_ref: 'portion:sand',
+        semantic_type: 'material_portion', public_name: 'горсть песка',
+        ambient_portion_bounds: { quantity_unit: 'handful', min_quantity: 1,
+          max_quantity: 1, min_mass_grams: 1, max_mass_grams: 1000 }
+      }] },
+      playerSafeStateProjector: async () => ({ player_safe_state: {
+        actor_id: 'actor', items: [], visible_context: {
+          visible_objects: [], sensory_details: [] }
+      } })
+    });
+    const item = { item_id: 'item:driftwood',
+      runtime_placement: { scene_position_id: 'shore-position' }, item_proposal: {
+        semantic_descriptor: { semantic_type: 'ordinary_wood',
+          name: 'длинная доска', facts: [] }
+      } };
+    const result = await projector({ committed_state: {},
+      prepared_ordinary_materialization_atomic_write_plan: {
+        resolution: 'materialize', item, next_aggregate: {
+          background_groups: [{ descriptor: 'На берегу сыро.' }]
+        }
+      } });
+    const hasAmbientCapability = (state) => state.visible_context.visible_objects
+      .some(({ entity_ref: ref }) =>
+        ref.entity_kind === 'ambient_ordinary_capability');
+    assert.equal(hasAmbientCapability(result.player_safe_state), true);
+    assert.equal(result.player_safe_state.items[0].item_id, item.item_id);
+    assert.equal(hasAmbientCapability(result.initial_working_projection), false);
+    assert.equal(result.initial_working_projection.items[0].item_id, item.item_id);
+    assert.equal(result.initial_working_projection.visible_context
+      .sensory_details.includes('На берегу сыро.'), true);
+  });
+
 test('A1 owner projects its validated semantic operation bounds', async () => {
   const loadedProfile = await loadLowerDvinaTraceA1Profile();
   const createOwner = createLowerDvinaTraceA1ProductionResolverFactory({

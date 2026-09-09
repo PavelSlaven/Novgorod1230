@@ -1,0 +1,20 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-food-contact-v1-raw-animal-food-cross-contact",
+      "claim_ref": "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+      "claim_digest": "ca8ae527bddd2cf2d8f06b27cf3df498c32f0b4346e9a768217711ea32246382",
+      "candidate_ref": "git:be39348f864afb0105f451eb9bc6752b1a3fc670:data/world-catalogs/novgorod/world-knowledge/production-v1/static-food-contact-v1.json#claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+      "auditor_ref": "/root/food_source_verifier",
+      "independence_basis": "Independent direct FDA source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:research-fda-raw-animal-food-cross-contact"
+      ],
+      "review_ref": "verification/static-food-contact-v1.md#claimresearch-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+      "verdict": "APPROVE",
+      "limits": "Supports a conditional transfer mechanism only; no actual raw food, pathogen presence, contamination, hand or utensil cleanliness, dose, illness, safety, historical practice, or scene outcome follows."
+    }
+  ]
+}

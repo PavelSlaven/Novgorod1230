@@ -5,6 +5,10 @@ import { assembleNpcConversationPlan, createLowerDvinaTraceNpcSemanticModel } fr
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { npcConversationCandidates } from
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
+import { ownNpcProjection } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-projections.js';
+import { createProductionWorldKnowledgeGrounder } from
+  '../src/runtime/world-knowledge-grounding.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 function request(required = {}) {
@@ -135,3 +139,100 @@ test('route contract candidate reaches initial and repair prompts', async () => 
   wrong.speech.claims[0].mentioned_entity_refs = [ref('route', 'route-other')];
   assert.equal(validateConversationContributionPlan(assembleNpcConversationPlan(wrong, input), input), false);
 });
+
+test('conversation production model receives planner-selected role, material, and workplace facts from trusted NPC role', async () => {
+  const input = request();
+  input.requested_at = { whole_minutes: String(365 * 1440),
+    subminute_numerator: '0', subminute_denominator: '1' };
+  input.npc = ownNpcProjection({ ref: input.npc_ref, instance_id: 'npc-1',
+    role_ref: { id: 'nov_role_fisher', source: 'approved_scenario_profile' },
+    identity_state: {}, machine_state: {} });
+  input.actor = { role_ref: 'untrusted-role' };
+  input.npc_safe_state = { role_ref: 'untrusted-safe-role' };
+  let query;
+  const worldKnowledge = conversationWorldKnowledge((value) => { query = value; });
+  worldKnowledge.calendar_profile = conversationCalendarProfile();
+  const calls = [];
+  const roleRunner = { async run(call) {
+    calls.push(call);
+    if (call.role_id === 'world_knowledge_query_planner') return { output: {
+      schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+      domains: ['npc_daily_life', 'material_culture', 'architecture_settlement'],
+      focus_refs: ['wk:npc_daily_life:fisher', 'wk:material_culture:work-clothing',
+        'wk:architecture_settlement:fishing-workspace'],
+      requested_predicates: ['supports_function'], search_hints: ['рыбак сеть одежда стоянка']
+    } };
+    return { output: plan(input) };
+  } };
+  const grounder = createProductionWorldKnowledgeGrounder({ worldKnowledge,
+    roleRunner, year: 1230, placeRefs: ['region_novgorod_land'] });
+  await createLowerDvinaTraceNpcSemanticModel({ roleRunner,
+    worldKnowledgeGrounder: grounder })(input);
+  assert.deepEqual(query.context.actor_facets, { role_ref: 'nov_role_fisher' });
+  assert.equal(query.context.time.year, 1231);
+  const modelPrompt = calls.find((call) =>
+    call.role_id === 'npc_conversation_responder').messages[1].content;
+  assert.match(modelPrompt, /Рыбацкая работа связана с сетями/u);
+  assert.match(modelPrompt, /Рабочая одежда защищает при хозяйственной работе/u);
+  assert.match(modelPrompt, /Рыбацкая стоянка — рабочее место/u);
+  const instructions = calls.find((call) =>
+    call.role_id === 'npc_conversation_responder').messages[0].content;
+  assert.match(instructions, /State only what supplied claims establish/u);
+  assert.match(instructions, /say that it is not established or unknown/u);
+  assert.match(instructions, /Do not expand insufficient evidence into an inventory of hypothetical missing components/u);
+  assert.match(instructions, /do not recite or apply a conditional historical rule whose stated trigger is not established/u);
+  assert.match(instructions, /preserve the limit without inferring a procedure or prohibition/u);
+});
+
+function conversationCalendarProfile() {
+  return { profile_id: 'conversation-calendar', version: '1', status: 'approved',
+    provenance: { source_id: 'test', source_version: '1' },
+    epoch: { game_timestamp: { whole_minutes: '0', subminute_numerator: '0',
+      subminute_denominator: '1' }, year: '1230', month: '1', day: '1' },
+    calendar_system: 'test', month_rules: { month_lengths: ['365'] },
+    leap_rules: { cycle_years: '1', leap_year_indexes: [], leap_month: '1', leap_days: '0' },
+    day_start_rule: { local_minute: '0' }, local_offset_rule: { offset_minutes: '0' },
+    daypart_rule: { ranges: [{ id: 'day', start_minute: '0', end_minute: '1440' }] },
+    season_rule: { ranges: [{ id: 'year', start_day: '1', end_day: '365' }] },
+    daylight_rule: { ranges: [{ id: 'light', start_day: '1', end_day: '365' }] } };
+}
+
+function conversationWorldKnowledge(onQuery) {
+  const concepts = [
+    ['wk:npc_daily_life:fisher', 'npc_daily_life'],
+    ['wk:material_culture:work-clothing', 'material_culture'],
+    ['wk:architecture_settlement:fishing-workspace', 'architecture_settlement']
+  ].map(([concept_ref, domain]) => ({ concept_ref, domain,
+    review_status: 'approved' }));
+  const predicate = { supports_function: {} };
+  const bundle = { manifest: { status: 'production', pack_ref: 'wk:test',
+    revision_id: 'revision:test', default_locale: 'ru', supported_locales: ['ru'],
+    domains: concepts.map(({ domain }) => domain) },
+  concepts, claims: concepts.map(({ domain }, index) => ({ claim_ref: `claim:${index}`, domain })),
+  exact_indexes: { concept_to_claim_refs: Object.fromEntries(concepts.map(({ concept_ref }, index) =>
+    [concept_ref, [`claim:${index}`]])) },
+  predicate_registry: Object.fromEntries(concepts.map(({ domain }) =>
+    [domain, predicate])), coverage_profiles: concepts.map(({ domain }) => ({
+    domain, status: 'production', runtime_requirement: 'required_when_selected',
+    purposes: ['conversation'] })) };
+  return { bundle, encoder: { encode: async () => new Float32Array(1) },
+    vector_index: { search: () => new Map() }, core: { resolveWorldKnowledge(value) {
+      onQuery(value);
+      return { schema: 'world_knowledge_slice_v1', pack_ref: 'wk:test',
+        pack_revision: 'revision:test', purpose: value.purpose, coverage: [],
+        verdict: 'supported', hard_constraints: [], disputes: [], gaps: [],
+        candidates: [], evidence_fragments: [], context_text: [
+          'Рыбацкая работа связана с сетями.',
+          'Рабочая одежда защищает при хозяйственной работе.',
+          'Рыбацкая стоянка — рабочее место.'
+        ].join('\n'), facts: concepts.map(({ concept_ref, domain }, index) => ({
+          claim_ref: `claim:${index}`, domain, predicate: 'supports_function',
+          polarity: 'support', object: { kind: 'literal', value: 'supported' },
+          runtime_text: [
+            'Рыбацкая работа связана с сетями.',
+            'Рабочая одежда защищает при хозяйственной работе.',
+            'Рыбацкая стоянка — рабочее место.'
+          ][index], qualifiers: {}, evidence_refs: [], subject_ref: concept_ref
+        })) };
+    } } };
+}

@@ -1,0 +1,343 @@
+{
+  "batch": 11,
+  "input_ref": "batch-11-core.json",
+  "generator_ref": "/root/mixed_b11_core",
+  "reviewer_ref": "/root",
+  "corpus_claim_count": 1330,
+  "candidate_commit": "f164358f3b451d4d03904f0e41ee0fc1f616215f",
+  "method": "Independent review of frozen generated inputs against full WK premises. Given conditions and explicitly bounded ordinary reconstruction may compose a response; no live gameplay.",
+  "cases": [
+    {
+      "case_id": "b11core-051",
+      "status": "covered",
+      "answer": "Наёмный возчик связан поручением, но онемение рук уже мешает дороге. Разумная реконструкция: поправить имеющиеся рукавицы и закрыть продуваемые участки одежды; сообщить лекарю о затруднении и искать достижимую защищённую остановку, а не считать открытое поле местом отдыха. Ветер меняет теплообмен; продолжение любой ценой не оправдано. За конём и упряжью также нужен уход. Диагноз обморожения, время до травмы и наличие ближайшего двора из этих данных не следуют.",
+      "claim_refs": [
+        "claim:ordinary-life-work-clothes-protect-and-move",
+        "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:public-world-foot-and-mounted-service-have-different-needs"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-052",
+      "status": "covered",
+      "answer": "Служанка несёт вещи пешком; ранг не меняет прочность дерева. Мокрый снег добавляет массу, а треск дан самой сценой. Не задерживаться под нагруженными старыми ветвями, выбрать обход вне их досягаемости, если он доступен; не стряхивать снег, стоя под веткой. Последнее — осторожная реконструкция из нагрузки и положения человека, не техника обрезки. Не предсказываем, какая ветвь и когда сломается.",
+      "claim_refs": [
+        "claim:residual-nature-snow-depth-not-load",
+        "claim:population-material-wood-loading",
+        "claim:foundations-mat-02-wood-drying-crack-strength"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-053",
+      "status": "covered",
+      "answer": "После переворота лодки важнее уменьшить холодовое воздействие на людей, чем ускорить сушку на сильном ветру. Рыбак с товарищем могут уйти в данную ложбину, использовать имеющийся плащ как защиту и сушить одежду отдельно от тела настолько, насколько остаётся чем укрыться. Воздух влияет на испарение и перенос тепла; мокрая одежда на ветру не даёт бесплатной сушки без охлаждения. Огонь возможен только при реально доступных средствах; не добавляем сухую смену, запас топлива или диагноз.",
+      "claim_refs": [
+        "claim:human-thermoregulation-depends-on-heat-exchange",
+        "claim:foundations-thm-01-convective-heat-transfer",
+        "claim:population-physics-evaporation-humidity",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-054",
+      "status": "covered",
+      "answer": "В сцене уже установлено слёживание соли в сырой кладовой. Хозяйка может выделить сухой из имеющихся сосудов под основной запас, держать его в наиболее защищённом от воды месте и брать рабочую порцию, не возвращая влагу в запас. Это бытовая аналогия хранения сухого продукта, не доказательство герметичности глиняного сосуда. Названные WK правила достаточны для такого ответа; молекулярный механизм слёживания, влажностный порог и срок сохранности не выдумываются. «Трактир» трактуется как условное обозначение хозяйства, кормящего проезжих, не установленный институт 1230 года.",
+      "claim_refs": [
+        "claim:ordinary-life-household-needs-heat-food-storage",
+        "claim:practical-food-grain-storage",
+        "claim:population-physics-evaporation-humidity"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-055",
+      "status": "covered",
+      "answer": "Рыбак с семьёй могут следить за осадками и заранее переместить развешанную рыбу под доступное сухое укрытие, сохраняя возможность движения воздуха. Если укрытия нет, это реальное ограничение работы, не повод придумать сушильню. Влажность и движение воздуха влияют на сушку; возвращение влаги меняет условия роста микробов. Солнечный день не доказывает готовность запаса или безопасность; ответ «точно успеет до дождя» невозможен без состояния рыбы и погоды.",
+      "claim_refs": [
+        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+        "claim:drying-reduces-microbial-growth-conditions",
+        "claim:population-drying-workspace"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-056",
+      "status": "covered",
+      "answer": "Подросток уже подвергается ударам града вместе с коровами. Имеющийся плащ можно использовать как временное прикрытие головы и тела, не обещая защиту от любого удара; двигаться к реально достижимому укрытию, не загоняя себя среди мечущихся животных. Удар зависит от контакта, одежда даёт ограниченное прикрытие. При грозовой угрозе одиночное дерево не становится безопасной заменой навеса. Точный размер града, степень травмы, поведение стада и безопасный маршрут не заданы.",
+      "claim_refs": [
+        "claim:force-contact-geometry",
+        "claim:ordinary-life-work-clothes-protect-and-move",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-057",
+      "status": "covered",
+      "answer": "Иней снаружи не доказывает, что вся вода уже замёрзла. Пивовар может перенести бочку в имеющееся более защищённое от мороза место либо уменьшить заполнение, если располагает реальной тарой и доступом. Основание — расширение воды при замерзании; перенос из посылки о порах и трещинах к замкнутому сосуду явно является физическим выводом. Не заявляем, что немного свободного места гарантирует целую бочку, не греем её резко и не назначаем температуру разрыва.",
+      "claim_refs": [
+        "claim:foundations-earth2-03-freeze-thaw-rock-fracture",
+        "claim:population-material-wood-loading",
+        "claim:ordinary-life-household-needs-heat-food-storage"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-058",
+      "status": "covered",
+      "answer": "Старшая может разбудить домашних и организовать перенос детей из дымного места, используя реальные дверь и выход дыма. Нужно улучшать воздух, но проветривание выпускает тепло: детей укрывают доступной одеждой и не оставляют в дыму ради сохранения тепла. Это координация ухода и компромисс вентиляции, не установленная конструкция дымохода. Концентрацию CO, диагноз детей и конкретное положение заслонки без устройства очага не выдумываем.",
+      "claim_refs": [
+        "claim:practical-dwelling-smoke-draft",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:human-thermoregulation-depends-on-heat-exchange"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-059",
+      "status": "covered",
+      "answer": "Возчику разумно остановить перекошенные сани там, где остановка осуществима, проверить положение мешков и распределить груз устойчивее относительно полозьев, удерживая тяжёлые части ниже. Это вывод из опоры и центра тяжести, не универсальная инструкция «поровну мешков»: массы разные. После изменения проверить, не съезжает ли груз и не цепляет ли снег повреждённый полоз. Не объявляем только массу доказанной причиной увода саней и не задаём грузоподъёмность коня.",
+      "claim_refs": [
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:force-contact-geometry",
+        "claim:transport-horse-sledge-equipment"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-060",
+      "status": "covered",
+      "answer": "Разносчица и муж могут остановиться, снять давящий перекошенный тюк и перераспределить его, используя данную верёвку вместо перетёртого участка лишь после проверки, что новая обвязка не продолжает тянуть тюк набок. Это обычная реконструкция из контакта, груза и доступного ремонта, без особого узла или гарантии. Не продолжают движение с уже данным натиранием. Осёл принимается только как условие задачи: эти refs не подтверждают обычность ослов у новгородских торговцев.",
+      "claim_refs": [
+        "claim:force-contact-geometry",
+        "claim:practical-textile-repair",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-061",
+      "status": "covered",
+      "answer": "Плотник не может гарантировать проход широкой телеги по старому настилу. Он сначала оценивает действительную ширину опоры и состояние досок; перенос груза частями возможен лишь если сам пеший проход допустим. Собственные доски не превращаются автоматически в рассчитанное усиление моста. Если опоры для колёс нет и безопасный перенос невозможен, остановка и поиск помощи — причинный результат, а не отсутствие ответа WK. Скользкость дана сценой; лёд как её причина не утверждается.",
+      "claim_refs": [
+        "claim:population-material-wood-loading",
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-062",
+      "status": "covered",
+      "answer": "Посыльный отвечает за передачу писем: заметив течь по шву, может переместить свёртки в защищённую часть сумки и прикрыть их имеющимся плащом, искать укрытие при доступном пути. Это реконструкция защиты вещи от данной воды, без создания водонепроницаемой упаковки. Материал писем не установлен самой сценой; knowledge_need называет бумагу, но его нельзя выдавать за обычный новгородский носитель 1230 года. Правило о пергаменте применяется только при установленном пергаменте; бересту не объявляем бумагой.",
+      "claim_refs": [
+        "claim:ordinary-life-work-clothes-protect-and-move",
+        "claim:static-parchment-or-vellum-should-not-be-wetted",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-063",
+      "status": "covered",
+      "answer": "Возчица прежде всего учитывает ребёнка и движение повозки к обочине. По возможности прекращает продвижение по спуску и действие скрипящего механизма, не добавляя резких действий и давления в тесном месте; проверяет повозку, когда это допускает положение. Лошадь может уходить от воспринимаемой угрозы, но «успокоить» не гарантированный эффект голоса или приёма. Тормоз, способ крепления, безопасная сторона схода и причина скрипа не заданы; нет универсального спасательного манёвра.",
+      "claim_refs": [
+        "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+        "claim:force-contact-geometry",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-064",
+      "status": "covered",
+      "answer": "Прачка с соседкой могут предложить дворам договориться об очереди и объёме очередного набора, проговорив срочные нужды и прежние обещания. Это не право прачки идти первой и не фиксированная городская норма. Если соглашения нет, можно попросить уже признанного участниками посредника. Два ведра — её средства, не привилегия; из засухи не выводим точный дебит или гарантию, что всем хватит воды.",
+      "claim_refs": [
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-local-authority-is-one-escalation-option"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-065",
+      "status": "covered",
+      "answer": "Купец может остановить передачу спорной части, уточнить, спорят ли о массе или мере объёма, и предложить совместную повторную проверку имеющимися весами с учётом тары. Попросить задержаться тех, кто действительно видел отмеривание; присутствие на торгу само по себе не делает человека свидетелем нужного момента. Массу нельзя автоматически перевести в объём одной общей нормой. Рассказ торговца или приезжего не устанавливает обман.",
+      "claim_refs": [
+        "claim:measurement-net-excludes-tare",
+        "claim:measurement-grain-mass-volume-density",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-dispute-starts-with-competing-accounts"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-066",
+      "status": "covered",
+      "answer": "Бедная вдова может сначала увести детей из-под повреждённой части, затем просить соседей о конкретном посильном деле: временном месте для семьи, доступном покрытии или совместной починке. У неё нет собственных работников — помощь требует согласия, времени и материала соседей. Можно обсудить ответную услугу позднее, но просьба не создаёт долг или обязанность. Не посылаем людей под неоценённую нагрузку и не обещаем ремонт всем двором по универсальному обычаю.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:population-material-wood-loading"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-067",
+      "status": "covered",
+      "answer": "Свёртки даны как выпавшие из чужой повозки, поэтому находка не делает их собственностью братьев. Подёнщик может предложить не делить их, выяснить, кто потерял груз, и сохранить сведения о месте обнаружения. Проверяется рассказ и путь вещи, а не только громкое «моё». Исторический свод — ограниченный правовой контекст, не автоматически исполняемая процедура этой сцены. Пустая тележка не доказывает право увезти груз себе.",
+      "claim_refs": [
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-068",
+      "status": "covered",
+      "answer": "Продавщица может объяснить известный срыв торговли и предложить отсрочку либо часть платы с понятным новым сроком, не обещая неизвестную будущую выручку. Забота об отце влияет на её нужды, но не отменяет соглашение сама по себе. Нужно установить стороны и содержание обязательства; паводок не создаёт автоматическое освобождение от платы. Принятие просьбы зависит от другой стороны, средств и доверия.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-status-and-ties-affect-access-not-guilt"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-069",
+      "status": "covered",
+      "answer": "Земледельцам разумно приостановить спорное расширение гряды, сверить сохранившиеся ориентиры и спросить тех, кто помнит положение межи до вспашки. Колышек пропал, но это не доказательство злого умысла соседа. Правовой текст придаёт межевым знакам значение, не устанавливая эту границу или штраф. При несогласии можно обратиться к принятому обоими посреднику, не создавать новую меру или должность.",
+      "claim_refs": [
+        "claim:residual-law-boundaries-and-marked-trees",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-local-authority-is-one-escalation-option"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-070",
+      "status": "covered",
+      "answer": "Кожевник может обратиться к действительно знакомому человеку, объяснить заимодавца, назначение займа и предложенный срок. Поручитель должен понимать и согласовать, за что именно берётся; известность не гарантирует безопасности сделки. Незаконченные шкуры не равны уже полученной выручке, а отношения и репутация могут помочь договориться без автоматического поручительства. Если согласия нет, остаётся менять условия или отложить покупку, не назначать человека ответственным без его слова.",
+      "claim_refs": [
+        "claim:social-guarantor-relates-transaction-obligation",
+        "claim:debt-needs-parties-and-basis",
+        "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-071",
+      "status": "covered",
+      "answer": "Торговка может оставить мальчика рядом под присмотром согласного взрослого и передать уже известному местному авторитету место и время находки, приметы и то немногое, что ребёнок сообщил. В шуме разумны короткие вопросы и повторения, не давление с требованием немедленно назвать дом. Не передавать мальчика любому, кто лишь заявит о родстве: уточнить сведения и найти знакомых. Староста не создаётся словом knowledge_need; если он не установлен, ищут признанного участниками помощника.",
+      "claim_refs": [
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:public-world-unfamiliar-speech-allows-clarification",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-local-authority-is-one-escalation-option"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-072",
+      "status": "covered",
+      "answer": "Пекарка может напомнить прежнее обещание и согласовать с двумя семьями ближайшую очередность, учитывая состояние уже подготовленного теста и реальное время освобождения печи. Опасение перекисания дано сценой; не приписываем часовой норматив. Возможны обмен очередью или помощь, но дрова одной семьи не дают безусловного права вытеснить другую. Важны ясные новые договорённости, а не фиктивная обязательная традиция общего двора.",
+      "claim_refs": [
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:ordinary-life-household-needs-heat-food-storage",
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-073",
+      "status": "covered",
+      "answer": "Конюх не обязан выбирать первого уверенного незнакомца. Можно отдельно уточнить приметы, обстоятельства потери и путь лошади, сопоставить рассказы с тем, что он сам наблюдал, и сообщить хозяину двора как своему реальному участнику отношений. Владение поводом и заявление не доказывают право собственности. При споре нужен доступный разбор, не продажа или передача по выдуманному правилу; лошадь тем временем требует реального ухода.",
+      "claim_refs": [
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:ordinary-life-worker-means-and-duty-vary"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-074",
+      "status": "covered",
+      "answer": "Ученица может разбудить мастерицу и соседей, громко звать хозяев дымящегося дома и точно сообщить, что видела дым, а не объявлять установленный пожар или его причину. Запертая дверь не доказывает отсутствия людей. Ведро не даёт универсальной возможности потушить всё; не входит одна в дым и не создаёт запас воды. Помощь и защита людей организуются доступными участниками; точное вскрытие, огонь и последствия остаются отдельными решениями.",
+      "claim_refs": [
+        "claim:practical-dwelling-smoke-draft",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-support-needs-available-person-and-resources"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    },
+    {
+      "case_id": "b11core-075",
+      "status": "covered",
+      "answer": "Сын и сестра могут отложить окончательный раздел, выяснить, какие инструменты действительно принадлежали отцу и какие договорённости знали родные, и пригласить принимаемого обеими сторонами опытного родственника или посредника. Сын не получает всё лишь по полу; статусная норма о боярском наследстве не переносится на любого ремесленника. Отсутствие письменной воли не доказывает отсутствие других оснований. Доли и решение не выдумываются; WK позволяет правдоподобно начать разбор без семейной войны.",
+      "claim_refs": [
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:residual-law-daughters-and-status-inheritance",
+        "claim:residual-law-widow-separate-property"
+      ],
+      "gaps": [],
+      "basis": "Referenced factual/general/editorial WK premises composed with the given scene; no new canonical authority, resource, exact outcome or unlabelled historical certainty."
+    }
+  ],
+  "input_frame_warnings": [
+    {
+      "case_id": "b11core-054",
+      "note": "Traktir label is not proof of an attested 1230 institution; response uses the given traveller-feeding household."
+    },
+    {
+      "case_id": "b11core-060",
+      "note": "Donkey accepted conditionally as supplied scene input, not evidence of normal Novgorod transport fauna."
+    },
+    {
+      "case_id": "b11core-062",
+      "note": "knowledge_need names paper, while letters/carrier in scene are otherwise unspecified. No universal paper literacy or local paper availability inferred."
+    }
+  ],
+  "summary": {
+    "covered": 25,
+    "substantial_gap": 0
+  }
+}

@@ -1,0 +1,669 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [{"schema":"world_knowledge_source_v1","source_ref":"source:reconstructed-practical-world-editorial","title":"Reconstructed practical world v1 editorial rationale","authors":["Novgorod1230 editorial team"],"publication":"Repository editorial reconstruction note","source_kind":"editorial_reconstruction","citation":"data/world-catalogs/novgorod/world-knowledge/research/reconstructed-practical-world-v1.md","rights":{"status":"approved","redistribution":"metadata_and_factual_summary"},"review_status":"approved"}],
+  "evidence": [
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-boat-load","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Boat work and shore transfer"},"note":"Editorial reconstruction: load arrangement affects a small vessel's usable space and handling; no boat, cargo, capacity, voyage, or outcome is asserted.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-boat-shore-transfer","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Boat work and shore transfer"},"note":"Editorial reconstruction: moving goods between shore and boat needs a reachable landing and controlled transfer; no landing, goods, or access is created.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-boat-weather-water","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Boat work and shore transfer"},"note":"Editorial reconstruction: rowing, wind, current, water condition, and route direction can jointly affect progress and control; no weather or route result follows.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-boat-leak","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Boat work and shore transfer"},"note":"Editorial reconstruction: unwanted water entering a vessel competes with travel and cargo care and can call for attention; no leak, repair, or damage is asserted.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-boat-unload-order","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Boat work and shore transfer"},"note":"Editorial reconstruction: loading and unloading order can be chosen for footing, access, and later handling; it fixes no procedure or actor decision.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-net-dry","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Nets and fishing gear"},"note":"Editorial reconstruction: a wet net can be spread where space permits to dry and be inspected; no net, weather, or location is materialized.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-net-repair","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Nets and fishing gear"},"note":"Editorial reconstruction: wear, breaks, and tangles can require sorting or repair before a net is convenient to use; no condition or repair success is asserted.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-net-space","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Nets and fishing gear"},"note":"Editorial reconstruction: laying out, recovering, and working a net benefits from clear space and attention to catches or snags; no shore, catch, or labour is created.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-dwelling-roof","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Dwelling, weather, and fire"},"note":"Editorial reconstruction: roof covering and its joints can need observation and repair after weather or use; no dwelling, roof state, or repair method follows.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-dwelling-rain-snow","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Dwelling, weather, and fire"},"note":"Editorial reconstruction: rain, snow, melt, and wind make shelter upkeep a practical concern; existing owners determine actual ingress, load, and damage.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-dwelling-smoke-draft","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Dwelling, weather, and fire"},"note":"Editorial reconstruction: ventilation can trade smoke removal against retained warmth and drafts; no fire, opening, smoke level, or occupant reaction is asserted.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-dwelling-fuel","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Dwelling, weather, and fire"},"note":"Editorial reconstruction: heating and cooking compete for available fuel, tending, and time; no fuel stock or household routine is created.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-food-milk","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Food, cooking, and storage"},"note":"Editorial reconstruction: available milk can be consumed fresh or worked into butter or curds; no animal, milk, quantity, safety claim, or recipe is asserted.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-food-preserve","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Food, cooking, and storage"},"note":"Editorial reconstruction: salting or drying can be considered when preserving meat or fish, with result depending on actual material and process; no food or storage result is created.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-food-cooking","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Food, cooking, and storage"},"note":"Editorial reconstruction: cooking requires heat, fuel, suitable means, and attention; it does not grant a hearth, vessel, ingredients, or prepared food.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-food-grain-storage","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Food, cooking, and storage"},"note":"Editorial reconstruction: stored grain needs protection from damp, loss, and unwanted access appropriate to actual storage; no grain or container is asserted.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-food-provisions","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Seasonal provision and livestock"},"note":"Editorial reconstruction: seasonal provision links present work and stores to future needs, without proving a stock, schedule, or shortage.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-fodder-hay","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Seasonal provision and livestock"},"note":"Editorial reconstruction: hay and other fodder can be gathered, kept, and allocated where livestock care requires it; no animal, hay, quantity, or owner is created.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-livestock-care","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Seasonal provision and livestock"},"note":"Editorial reconstruction: livestock care can involve feed, water, shelter, observation, and labour, with needs varying by animal and condition; no diagnosis or mandatory routine follows.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-season-work","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Seasonal provision and livestock"},"note":"Editorial reconstruction: seasonal tasks can compete for labour and favorable conditions, making delay or reprioritization plausible; no calendar or actor decision is fixed.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-textile-spin","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: fibres can be prepared and spun into thread; existing owners determine actual materials, tool access, time, and output.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-textile-weave","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: weaving needs a suitable setup and time, but warp and unfinished cloth can remain on that setup through an interruption; no loom, cloth, or worker is created.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-textile-cut","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: cutting cloth commits available material among intended pieces and offcuts; it grants no cloth or exact pattern.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-textile-sew","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: sewing can join cloth or mend a tear, while wear and future repair remain possible; no garment, seam, or repair quality is asserted.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-textile-repair","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: a repair can extend use of a textile while changing its appearance or requiring available material and time; no item or result is created.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-leather-cut","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: leather can be cut into components for a practical object, subject to actual material, dimensions, and access; no object is materialized.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-leather-stitch","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: stitching or fastening can assemble leather components, and a worn join can need attention; no stitch, shoe, or durability result is asserted.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-leather-patch","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: a patch can be considered to prolong use of a worn leather article when compatible material and attachment are available; no repair success is guaranteed.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-leather-shoe","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Cloth and leather work"},"note":"Editorial reconstruction: footwear condition can matter for walking and wet work, with fit, wear, and repair depending on its actual state; no shoes or movement outcome are asserted.","review_status":"approved"},
+    {"schema":"world_knowledge_evidence_v1","evidence_ref":"evidence:practical-work-tradeoff","source_ref":"source:reconstructed-practical-world-editorial","anchor":{"section":"Boundary"},"note":"Editorial reconstruction: ordinary maintenance, food work, transport, and craft draw on limited time, material, access, and labour; no numeric mechanics or actor choices are set.","review_status":"approved"}
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:material_culture:reconstructed-practical-boat-work","domain":"material_culture","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:craft_technology:reconstructed-practical-net-work","domain":"craft_technology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:architecture_settlement:reconstructed-practical-dwelling-upkeep","domain":"architecture_settlement","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:craft_technology:reconstructed-practical-food-provision","domain":"craft_technology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:npc_daily_life:reconstructed-practical-seasonal-work","domain":"npc_daily_life","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","domain":"craft_technology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-boat-load","domain":"material_culture","subject_ref":"wk:material_culture:reconstructed-practical-boat-work","predicate":"supported_fact","object":{"kind":"literal","value":"cargo_is_best_kept_low_and_distributed_between_sides_so_that_a_small_boat_is_less_awkward_to_handle"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-boat-load"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-boat-shore-transfer","domain":"material_culture","subject_ref":"wk:material_culture:reconstructed-practical-boat-work","predicate":"supported_fact","object":{"kind":"literal","value":"at_landing_or_unloading_a_sudden_pull_or_people_and_cargo_gathering_on_one_side_can_make_a_boat_less_steady"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-boat-shore-transfer"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-boat-weather-water","domain":"material_culture","subject_ref":"wk:material_culture:reconstructed-practical-boat-work","predicate":"supported_fact","object":{"kind":"literal","value":"rowing_can_make_headway_without_favorable_wind_while_wind_and_current_can_help_or_hinder_progress_and_control"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-boat-weather-water"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-boat-leak","domain":"material_culture","subject_ref":"wk:material_culture:reconstructed-practical-boat-work","predicate":"supported_fact","object":{"kind":"literal","value":"water_entering_a_boat_requires_bailing_or_landing_attention_and_can_divert_work_from_travel_or_cargo_care"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-boat-leak"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-boat-unload-order","domain":"material_culture","subject_ref":"wk:material_culture:reconstructed-practical-boat-work","predicate":"supported_fact","object":{"kind":"literal","value":"loading_and_unloading_order_can_be_chosen_to_keep_a_reachable_path_and_avoid_repeatedly_shifting_other_goods"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"low","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-boat-unload-order"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-net-dry","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-net-work","predicate":"supported_fact","object":{"kind":"literal","value":"after_use_a_wet_net_can_be_spread_out_to_dry_so_that_mesh_damage_and_tangles_are_easier_to_notice"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-net-dry"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-net-repair","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-net-work","predicate":"supported_fact","object":{"kind":"literal","value":"a_net_with_broken_mesh_or_tangles_can_be_sorted_and_mended_before_its_next_use"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-net-repair"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-net-space","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-net-work","predicate":"supported_fact","object":{"kind":"literal","value":"laying_out_or_recovering_a_net_needs_clear_space_and_attention_because_snags_and_tangles_make_later_work_slower"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-net-space"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-dwelling-roof","domain":"architecture_settlement","subject_ref":"wk:architecture_settlement:reconstructed-practical-dwelling-upkeep","predicate":"supported_fact","object":{"kind":"literal","value":"roof_covering_and_its_joints_can_be_checked_and_repaired_after_weather_or_wear_before_a_small_defect_becomes_more_troublesome"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-dwelling-roof"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-dwelling-rain-snow","domain":"architecture_settlement","subject_ref":"wk:architecture_settlement:reconstructed-practical-dwelling-upkeep","predicate":"supported_fact","object":{"kind":"literal","value":"rain_snow_melt_and_wind_make_roof_covering_drainage_and_shelter_upkeep_practical_concerns"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-dwelling-rain-snow"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-dwelling-smoke-draft","domain":"architecture_settlement","subject_ref":"wk:architecture_settlement:reconstructed-practical-dwelling-upkeep","predicate":"supported_fact","object":{"kind":"literal","value":"opening_a_dwelling_for_smoke_can_improve_air_but_can_also_admit_draft_and_lose_warmth"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-dwelling-smoke-draft"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-dwelling-fuel","domain":"architecture_settlement","subject_ref":"wk:architecture_settlement:reconstructed-practical-dwelling-upkeep","predicate":"supported_fact","object":{"kind":"literal","value":"heating_and_cooking_draw_on_fuel_tending_and_time_so_a_household_can_have_to_choose_between_competing_uses"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-dwelling-fuel"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-food-milk","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-food-provision","predicate":"supported_fact","object":{"kind":"literal","value":"milk_can_be_consumed_fresh_or_worked_into_butter_or_curds_when_the_material_time_and_means_are_available"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-food-milk"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-food-preserve","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-food-provision","predicate":"supported_fact","object":{"kind":"literal","value":"meat_or_fish_can_be_salted_or_dried_to_shift_food_use_beyond_the_fresh_catch_or_slaughter"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-food-preserve"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-food-cooking","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-food-provision","predicate":"supported_fact","object":{"kind":"literal","value":"cooking_requires_heat_fuel_a_suitable_vessel_or_surface_and_someone_to_attend_the_process"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-food-cooking"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-food-grain-storage","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-food-provision","predicate":"supported_fact","object":{"kind":"literal","value":"stored_grain_is_kept_as_dry_and_protected_from_loss_and_unwanted_access_as_the_actual_storage_allows"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-food-grain-storage"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-food-provisions","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:reconstructed-practical-seasonal-work","predicate":"supported_fact","object":{"kind":"literal","value":"seasonal_provision_links_present_work_and_stores_to_future_needs_so_current_consumption_can_compete_with_later_need"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-food-provisions"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-fodder-hay","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:reconstructed-practical-seasonal-work","predicate":"supported_fact","object":{"kind":"literal","value":"hay_and_other_fodder_can_be_gathered_kept_dry_and_allocated_when_livestock_must_be_carried_through_a_season_with_less_grazing"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-fodder-hay"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-livestock-care","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:reconstructed-practical-seasonal-work","predicate":"supported_fact","object":{"kind":"literal","value":"livestock_care_can_combine_feed_water_shelter_observation_and_labour_with_needs_varying_by_animal_and_condition"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-livestock-care"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-season-work","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:reconstructed-practical-seasonal-work","predicate":"supported_fact","object":{"kind":"literal","value":"seasonal_tasks_compete_for_labour_and_favorable_conditions_so_delay_or_reprioritization_can_have_practical_cost"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-season-work"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-textile-spin","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"prepared_fibre_can_be_spun_into_thread_before_thread_is_available_for_weaving_or_sewing"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-textile-spin"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-textile-weave","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"weaving_needs_a_suitable_setup_and_time_but_warp_and_unfinished_cloth_can_remain_on_that_setup_through_an_interruption"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-textile-weave"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-textile-cut","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"cutting_cloth_commits_material_to_garment_pieces_or_smaller_uses_and_leaves_offcuts_for_possible_later_use"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-textile-cut"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-textile-sew","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"sewing_joins_cut_cloth_and_can_close_a_tear_while_a_mended_garment_remains_subject_to_later_wear"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-textile-sew"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-textile-repair","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"cloth_can_be_saved_and_patched_or_resewn_when_the_remaining_material_and_time_make_repair_worthwhile"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-textile-repair"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-leather-cut","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"leather_can_be_cut_into_components_for_a_practical_object_with_the_actual_piece_size_and_condition_limiting_the_result"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-leather-cut"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-leather-stitch","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"cut_leather_components_can_be_stitched_or_fastened_together_and_a_worn_join_can_need_renewed_attention"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-leather-stitch"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-leather-patch","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"a_worn_leather_article_can_be_patched_to_prolong_use_when_compatible_material_and_an_attachment_method_are_available"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-leather-patch"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-leather-shoe","domain":"craft_technology","subject_ref":"wk:craft_technology:reconstructed-practical-cloth-leather-work","predicate":"supported_fact","object":{"kind":"literal","value":"wet_work_walking_and_repeated_flexing_make_footwear_condition_fit_and_repair_practically_relevant"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-leather-shoe"],"review_status":"approved","conflict_group_ref":null},
+{"schema":"world_knowledge_claim_v1","claim_ref":"claim:practical-work-tradeoff","domain":"npc_daily_life","subject_ref":"wk:npc_daily_life:reconstructed-practical-seasonal-work","predicate":"supported_fact","object":{"kind":"literal","value":"ordinary_maintenance_food_work_transport_and_craft_compete_for_limited_time_material_access_and_labour"},"polarity":"support","applicability":{"time":{"from":1200,"to":1300,"precision":"range"},"places":[{"place_ref":"region_novgorod_land","relation":"used_in"}]},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"editorial"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:practical-work-tradeoff"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:reconstructed-practical-boat-work",
+      "locale": "ru",
+      "labels": [
+        "Практика лодки и берега"
+      ],
+      "short_definition": "Редакционные практические предпосылки.",
+      "search_aliases": [
+        "лодка",
+        "берег",
+        "груз"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:reconstructed-practical-boat-work",
+      "locale": "en",
+      "labels": [
+        "Practical boat and shore work"
+      ],
+      "short_definition": "Editorial practical premises.",
+      "search_aliases": [
+        "boat",
+        "shore",
+        "cargo"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reconstructed-practical-net-work",
+      "locale": "ru",
+      "labels": [
+        "Работа с сетью"
+      ],
+      "short_definition": "Редакционные практические предпосылки.",
+      "search_aliases": [
+        "сеть",
+        "сушка",
+        "починка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reconstructed-practical-net-work",
+      "locale": "en",
+      "labels": [
+        "Net work"
+      ],
+      "short_definition": "Editorial practical premises.",
+      "search_aliases": [
+        "net",
+        "drying",
+        "mending"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-practical-dwelling-upkeep",
+      "locale": "ru",
+      "labels": [
+        "Содержание жилья"
+      ],
+      "short_definition": "Редакционные практические предпосылки.",
+      "search_aliases": [
+        "крыша",
+        "дым",
+        "топливо"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-practical-dwelling-upkeep",
+      "locale": "en",
+      "labels": [
+        "Dwelling upkeep"
+      ],
+      "short_definition": "Editorial practical premises.",
+      "search_aliases": [
+        "roof",
+        "smoke",
+        "fuel"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reconstructed-practical-food-provision",
+      "locale": "ru",
+      "labels": [
+        "Пища и припасы"
+      ],
+      "short_definition": "Редакционные практические предпосылки.",
+      "search_aliases": [
+        "молоко",
+        "рыба",
+        "зерно"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reconstructed-practical-food-provision",
+      "locale": "en",
+      "labels": [
+        "Food and provisions"
+      ],
+      "short_definition": "Editorial practical premises.",
+      "search_aliases": [
+        "milk",
+        "fish",
+        "grain"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:reconstructed-practical-seasonal-work",
+      "locale": "ru",
+      "labels": [
+        "Сезонный труд и уход"
+      ],
+      "short_definition": "Редакционные практические предпосылки.",
+      "search_aliases": [
+        "сено",
+        "корм",
+        "скот"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:reconstructed-practical-seasonal-work",
+      "locale": "en",
+      "labels": [
+        "Seasonal work and care"
+      ],
+      "short_definition": "Editorial practical premises.",
+      "search_aliases": [
+        "hay",
+        "fodder",
+        "livestock"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reconstructed-practical-cloth-leather-work",
+      "locale": "ru",
+      "labels": [
+        "Ткань и кожа"
+      ],
+      "short_definition": "Редакционные практические предпосылки.",
+      "search_aliases": [
+        "прядение",
+        "шитьё",
+        "обувь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reconstructed-practical-cloth-leather-work",
+      "locale": "en",
+      "labels": [
+        "Cloth and leather work"
+      ],
+      "short_definition": "Editorial practical premises.",
+      "search_aliases": [
+        "spinning",
+        "sewing",
+        "shoes"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-load",
+      "locale": "ru",
+      "runtime_text": "Груз в малой лодке держат ниже и распределяют по бортам, чтобы ею было легче управлять.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-load",
+      "locale": "en",
+      "runtime_text": "Cargo in a small boat is kept low and distributed between sides so handling remains easier.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-shore-transfer",
+      "locale": "ru",
+      "runtime_text": "При посадке и разгрузке рывок или скопление на одном борту делает лодку менее устойчивой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-shore-transfer",
+      "locale": "en",
+      "runtime_text": "At landing or unloading, a sudden pull or crowding one side makes a boat less steady.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-weather-water",
+      "locale": "ru",
+      "runtime_text": "Вёсла дают ход без попутного ветра; ветер и течение могут помочь либо помешать ходу и управлению.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-weather-water",
+      "locale": "en",
+      "runtime_text": "Oars give headway without favorable wind; wind and current can help or hinder progress and control.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-leak",
+      "locale": "ru",
+      "runtime_text": "Вода в лодке требует вычерпывания или высадки и отвлекает от пути либо груза.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-leak",
+      "locale": "en",
+      "runtime_text": "Water entering a boat needs bailing or landing attention and diverts work from travel or cargo.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-unload-order",
+      "locale": "ru",
+      "runtime_text": "Порядок погрузки и разгрузки выбирают, чтобы оставить проход и не перекладывать вещи без нужды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-boat-unload-order",
+      "locale": "en",
+      "runtime_text": "Loading order can preserve a path and avoid shifting goods again without need.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-net-dry",
+      "locale": "ru",
+      "runtime_text": "Мокрую сеть можно разложить для просушки, чтобы легче заметить повреждения и спутывание.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-net-dry",
+      "locale": "en",
+      "runtime_text": "A wet net can be spread to dry so damage and tangles are easier to notice.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-net-repair",
+      "locale": "ru",
+      "runtime_text": "Разрывы ячеек и спутывание сети разбирают или чинят до следующего использования.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-net-repair",
+      "locale": "en",
+      "runtime_text": "Broken mesh and tangles can be sorted or mended before the next use.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-net-space",
+      "locale": "ru",
+      "runtime_text": "Раскладка и выборка сети требуют свободного места: зацепы и клубки замедляют последующую работу.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-net-space",
+      "locale": "en",
+      "runtime_text": "Laying out and recovering a net need clear space; snags and tangles slow later work.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-dwelling-roof",
+      "locale": "ru",
+      "runtime_text": "Кровлю и стыки осматривают и чинят после погоды или износа, пока малый дефект не вырос.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-dwelling-roof",
+      "locale": "en",
+      "runtime_text": "Roof covering and joints can be checked and repaired after weather or wear before a small defect grows.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-dwelling-rain-snow",
+      "locale": "ru",
+      "runtime_text": "Дождь, снег, таяние и ветер делают покрытие, сток и содержание укрытия бытовой заботой.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-dwelling-rain-snow",
+      "locale": "en",
+      "runtime_text": "Rain, snow, melt, and wind make covering, drainage, and shelter upkeep practical concerns.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-dwelling-smoke-draft",
+      "locale": "ru",
+      "runtime_text": "Открытие для дыма улучшает воздух, но может впустить сквозняк и выпустить тепло.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-dwelling-smoke-draft",
+      "locale": "en",
+      "runtime_text": "Opening a dwelling for smoke improves air but can admit draft and lose warmth.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-dwelling-fuel",
+      "locale": "ru",
+      "runtime_text": "Обогрев и готовка требуют топлива, присмотра и времени, потому могут соперничать.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-dwelling-fuel",
+      "locale": "en",
+      "runtime_text": "Heating and cooking draw on fuel, tending, and time, so they can compete.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-milk",
+      "locale": "ru",
+      "runtime_text": "Молоко можно пить свежим или переработать в масло либо творог при наличии средств и времени.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-milk",
+      "locale": "en",
+      "runtime_text": "Milk can be consumed fresh or worked into butter or curds when means and time are available.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-preserve",
+      "locale": "ru",
+      "runtime_text": "Мясо или рыбу солят либо сушат, чтобы пользоваться ими после свежей добычи или забоя.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-preserve",
+      "locale": "en",
+      "runtime_text": "Meat or fish can be salted or dried for use beyond fresh catch or slaughter.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-cooking",
+      "locale": "ru",
+      "runtime_text": "Готовка требует жара, топлива, подходящей посуды или поверхности и присмотра.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-cooking",
+      "locale": "en",
+      "runtime_text": "Cooking requires heat, fuel, a suitable vessel or surface, and attention.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-grain-storage",
+      "locale": "ru",
+      "runtime_text": "Зерно стараются держать сухим и защищённым от потерь и чужого доступа настолько, насколько позволяет хранилище.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-grain-storage",
+      "locale": "en",
+      "runtime_text": "Stored grain is kept dry and protected from loss and unwanted access as actual storage allows.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-provisions",
+      "locale": "ru",
+      "runtime_text": "Заготовка связывает нынешний труд и запасы с будущими нуждами; текущее потребление может им соперничать.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-food-provisions",
+      "locale": "en",
+      "runtime_text": "Provisioning links present work and stores to future need; current consumption can compete with it.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-fodder-hay",
+      "locale": "ru",
+      "runtime_text": "Сено и иной корм собирают, держат сухими и распределяют, когда выпаса становится меньше.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-fodder-hay",
+      "locale": "en",
+      "runtime_text": "Hay and other fodder can be gathered, kept dry, and allocated when grazing is reduced.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-livestock-care",
+      "locale": "ru",
+      "runtime_text": "Уход за скотом может включать корм, воду, укрытие, наблюдение и труд; нужды меняются с животным и состоянием.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-livestock-care",
+      "locale": "en",
+      "runtime_text": "Livestock care can combine feed, water, shelter, observation, and labor; needs vary by animal and condition.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-season-work",
+      "locale": "ru",
+      "runtime_text": "Сезонные дела соперничают за людей и подходящую погоду, поэтому промедление имеет практическую цену.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-season-work",
+      "locale": "en",
+      "runtime_text": "Seasonal tasks compete for labor and favorable conditions, so delay has practical cost.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-spin",
+      "locale": "ru",
+      "runtime_text": "Подготовленное волокно прядут в нить, прежде чем оно станет доступно для ткачества или шитья.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-spin",
+      "locale": "en",
+      "runtime_text": "Prepared fibre can be spun into thread before it is available for weaving or sewing.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-weave",
+      "locale": "ru",
+      "runtime_text": "Ткачество требует устройства и времени, но основу и незавершённое полотно можно оставить на нём при перерыве.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-weave",
+      "locale": "en",
+      "runtime_text": "Weaving needs a suitable setup and time, but warp and unfinished cloth can remain on it through an interruption.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-cut",
+      "locale": "ru",
+      "runtime_text": "Раскрой распределяет ткань между деталями и меньшими употреблениями, оставляя обрезки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-cut",
+      "locale": "en",
+      "runtime_text": "Cutting cloth commits it among garment pieces or smaller uses and leaves offcuts.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-sew",
+      "locale": "ru",
+      "runtime_text": "Шитьё соединяет раскроенные детали и заделывает разрыв, но чинёная вещь продолжает изнашиваться.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-sew",
+      "locale": "en",
+      "runtime_text": "Sewing joins cut cloth and closes tears, while a mended garment can wear again.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-repair",
+      "locale": "ru",
+      "runtime_text": "Ткань берегут, латают или перешивают, если материал и время оправдывают починку.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-textile-repair",
+      "locale": "en",
+      "runtime_text": "Cloth can be saved, patched, or resewn when material and time justify repair.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-leather-cut",
+      "locale": "ru",
+      "runtime_text": "Кожу режут на детали; размер и состояние наличного куска ограничивают результат.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-leather-cut",
+      "locale": "en",
+      "runtime_text": "Leather can be cut into components; actual piece size and condition limit the result.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-leather-stitch",
+      "locale": "ru",
+      "runtime_text": "Детали из кожи сшивают или скрепляют; изношенный шов требует нового внимания.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-leather-stitch",
+      "locale": "en",
+      "runtime_text": "Leather components can be stitched or fastened; a worn join needs renewed attention.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-leather-patch",
+      "locale": "ru",
+      "runtime_text": "Изношенную кожаную вещь можно залатать при совместимом материале и способе крепления.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-leather-patch",
+      "locale": "en",
+      "runtime_text": "A worn leather article can be patched when compatible material and attachment are available.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-leather-shoe",
+      "locale": "ru",
+      "runtime_text": "Мокрая работа, ходьба и постоянное сгибание делают состояние, посадку и ремонт обуви практически важными.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-leather-shoe",
+      "locale": "en",
+      "runtime_text": "Wet work, walking, and repeated flexing make footwear condition, fit, and repair practically relevant.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-work-tradeoff",
+      "locale": "ru",
+      "runtime_text": "Обычный уход, пища, перевозка и ремесло соперничают за ограниченные время, материал, доступ и труд.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:practical-work-tradeoff",
+      "locale": "en",
+      "runtime_text": "Ordinary maintenance, food work, transport, and craft compete for limited time, material, access, and labor.",
+      "search_aliases": []
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# Independent source/domain verification — static practical residual v1
+
+Candidate `git:cab6d1aad718b3f1c9ed39949726231e5b971421:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json` was independently reviewed under World Knowledge §35.1. The reviewer did not author the candidate. Review used current RU/EN localizations, cited bindings, and the full assembled 1260-claim base plus candidate.
+
+## Approved practical premises
+
+- `claim:static-birch-bark-water-can-deform-layers` — the corrected Kluegl and Di Pietro source reports that water adsorption can produce swelling, shrinkage, bending, or rolling through differing layer response. [npj Heritage Science](https://www.nature.com/articles/s40494-020-00476-y). It gives no soaking duration, temperature, thickness, condition of a current sheet, or successful-bend guarantee.
+- `claim:static-birch-bark-form-can-be-held-during-humidification-drying` — the same source says conservators may block an artefact in the desired shape during humidification and drying to avoid deformation. [npj Heritage Science](https://www.nature.com/articles/s40494-020-00476-y). This is conservation handling, not a historical recipe or a guarantee against delamination.
+- `claim:static-yarn-twist-can-increase-fibre-cohesion` — NIST reports that twist entwines fibres and resists their mutual longitudinal slip. [NIST](https://nvlpubs.nist.gov/nistpubs/nbstechnologic/nbstechnologicpaperT278.pdf). The candidate correctly labels the cotton-to-general-staple-yarn relation inferred and medium confidence.
+- `claim:static-yarn-strength-can-fall-after-excessive-twist` — the same NIST study reports falling strength and kinking after excessive twist. [NIST](https://nvlpubs.nist.gov/nistpubs/nbstechnologic/nbstechnologicpaperT278.pdf). It remains a medium-confidence staple-yarn inference, not a flax value or recipe.
+- `claim:static-belt-friction-can-resist-relative-slip` and `claim:static-belt-slip-limit-depends-on-tension-friction-wrap` — Penn State Mechanics Map describes friction opposing belt/pulley sliding up to a limit and the flat-belt dependency on lower-side tension, static friction coefficient and contact angle. [Penn State Mechanics Map](https://mechanicsmap.psu.edu/websites/7_friction/7-7_belt_friction/beltfriction.html). Neither claim specifies a real drive or numerical setting.
+- `claim:static-wood-ash-water-can-produce-alkaline-runoff` — NPS describes water flowing through wood ash to collect caustic lye-infused runoff. [National Park Service](https://www.nps.gov/fosc/learn/education/laundress7.htm). The premise provides no concentration, treatment, or safety outcome.
+- `claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions` — Royal Society of Chemistry educational material states wool is susceptible to degradation in alkaline detergent conditions. [Royal Society of Chemistry](https://edu.rsc.org/feature/textile-conservation/2020240.article). It supplies no safe pH, duration, diagnosis, or textile-treatment result.
+
+The full assembled base has related material and yarn facts, but no material duplicate of these eight causal relations.

@@ -45,7 +45,7 @@ test('focused discovery outranks general look and preserves continuation', async
     assert.equal(plan.continuation.remaining_intent, 'then wait.');
   }
   for (const prompt of prompts) assert.match(prompt,
-    /focused perception clause[\s\S]*new physical detail or object[\s\S]*before visible_general_look[\s\S]*preserve it in continuation/u);
+    /Inspect\/search for a new physical detail is focused perception[\s\S]*use matching available_domain_operations first[\s\S]*A passive look cannot absorb a focused clause[\s\S]*visible_general_look/u);
 });
 
 test('ordinary material prerequisite has an explicit continuation mapping', async () => {
@@ -65,7 +65,7 @@ test('ordinary material prerequisite has an explicit continuation mapping', asyn
   assert.match(prompt,
     /"ordinary_material_prerequisite"[\s\S]*"query":"<name only the needed visible material or physically connected group>"[\s\S]*"continuation":\{"remaining_intent":"<complete intended handling or transformation>"/u);
   assert.match(prompt,
-    /take, use, or transform[\s\S]*use ordinary_material_prerequisite[\s\S]*never focused_ordinary_discovery/iu);
+    /Without a matching ambient_ordinary_capability or item entity_ref[\s\S]*take\/use\/transform[\s\S]*use ordinary_material_prerequisite[\s\S]*never focused_ordinary_discovery/iu);
   assert.match(prompt,
     /MUST win over action_production[\s\S]*Never substitute an unrelated inventory, worn, held, or merely listed item_ref/u);
   assert.match(prompt,
@@ -106,6 +106,27 @@ test('movement keeps supplied semantic label', async () => {
     reasonCode: 'movement', onPrompt: (prompt) => assert.match(prompt, /Follow marked path to settlement/u)
   });
   assert.deepEqual((await model(input)).operations, [movement]);
+});
+
+test('authored operation choice exposes its complete semantic scope', async () => {
+  const discovery = { op: 'request_discovery', actor_ref: 'actor:player',
+    discovery_kind: 'inspect', target_refs: ['location:wreck'],
+    query: 'Inspect the wreck evidence.' };
+  const semanticScope = { authority: 'authored_evidence_investigation',
+    purpose: 'investigate wreck circumstances',
+    result_scope: 'bounded authored observations and evidence' };
+  const input = request({ available_domain_operations: [discovery],
+    player_safe_state: { available_domain_operation_grounding: [{
+      operation: discovery, semantic_scope: semanticScope
+    }] } });
+  let prompt;
+  await modelFor(input, 'domain_operation_1_request_discovery_inspect', {
+    onPrompt: (value) => { prompt = value; }
+  })(input);
+  assert.match(prompt,
+    /player_safe_grounding.*semantic_scope.*authored_evidence_investigation.*investigate wreck circumstances/u);
+  assert.match(prompt,
+    /select it only when the current step matches that complete purpose and result scope/u);
 });
 
 test('ownerless ambient speech does not block its later domain action',

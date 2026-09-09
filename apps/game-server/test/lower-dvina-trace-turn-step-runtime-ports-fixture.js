@@ -94,7 +94,7 @@ export function preparedOrdinary(itemId) {
 }
 
 export function plan(request, overrides = {}) {
-  return { schema: 'turn_step_plan_v1', request_id: request.request_id,
+  const value = { schema: 'turn_step_plan_v1', request_id: request.request_id,
     committed_state_version: request.committed_state_version,
     working_revision: request.working_revision, step_index: request.step_index,
     interpretation: { player_goal: request.root_player_action,
@@ -102,8 +102,14 @@ export function plan(request, overrides = {}) {
     resolution: 'direct', goal_result: 'achieved',
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
     operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'ordinary_direct_action', reason: 'Обычное прямое действие.',
     ...overrides };
+  value.direct_result_kind = value.resolution === 'direct'
+      && ['achieved', 'partially_achieved'].includes(value.goal_result)
+      && value.operations.length === 0
+    ? 'no_state_gesture' : null;
+  return value;
 }
 
 export function genericCheck() {

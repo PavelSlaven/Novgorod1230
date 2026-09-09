@@ -1,0 +1,13 @@
+# Independent source/domain verification — static plant contact B05
+
+Candidate `git:a2548c2c20812ca6b16244c1ff18527919cf6636:data/world-catalogs/novgorod/world-knowledge/production-v1/static-plant-contact-b05.json` was independently reviewed under World Knowledge §35.1. Reviewer did not author candidate. Review opened cited source pages, checked current RU/EN localizations, qualifiers, evidence bindings, and calculated each digest against full assembled authoring: 1278-record descriptor plus `static-animal-care-traces-b05.json`, `static-ground-material-b05.json`, and `static-plant-contact-b05.json` (1295 records before verification fragments).
+
+## Approved premises
+
+- `claim:static-straw-is-a-traditional-horse-bedding-source` — **APPROVE**. Rutgers calls straw traditionally the most widely used horse-bedding source. This is horse context only: no medieval practice, human sleeping suitability, local straw, quantity, condition, access, or scene use. [Rutgers FS537](https://njaes.rutgers.edu/fs537/).
+- `claim:static-bedding-material-selection-depends-on-dryness-nonirritation-and-dust` — **APPROVE**. Rutgers lists non-irritability from dust/allergens among horse-bedding considerations and says bedding should remain dry before use. Candidate correctly marks its broader material-condition statement as inferred/medium. It does not make grass, reed, straw, or human bedding safe or suitable. [Rutgers FS537](https://njaes.rutgers.edu/fs537/).
+- `claim:static-fresh-ranunculaceae-sap-can-irritate-skin` — **APPROVE**. Cornell says sap from Ranunculaceae may redden, swell, or blister skin; page also distinguishes drying chemistry. No species/specimen identification, contact, dose, injury, allergy, ingestion, treatment, or outcome follows. [Cornell](https://poisonousplants.ansci.cornell.edu/toxicagents/ranunculoside.html).
+- `claim:static-phragmites-australis-modern-native-range-includes-northwest-european-russia` — **APPROVE**. Kew POWO lists Central, North, and Northwest European Russia among native areas. This is modern compatibility context, not medieval local attestation, a stand, stock, access, harvest, or use. [Kew POWO](https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30337627-2).
+- `claim:static-ranunculus-scel-modern-native-range-includes-northwest-european-russia` — **APPROVE**. Kew POWO lists North and Northwest European Russia among native areas. Same limit: modern compatibility, never medieval local attestation, specimen identity, contact, hazard, access, harvest, or use. [Kew POWO](https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:713776-1).
+
+No approved premise authorizes human-bedding suitability or treats modern distribution as historical local presence.

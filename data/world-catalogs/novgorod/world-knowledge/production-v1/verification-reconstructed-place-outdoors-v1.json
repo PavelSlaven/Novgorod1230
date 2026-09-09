@@ -1,0 +1,155 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-activity-sensory-pulses",
+      "claim_ref": "claim:place-outdoors-activity-sensory-pulses",
+      "claim_digest": "5a00eacb15b3047eb0ed9848d4a156b4dfc50eaeac34769dfa56a6fd61793b01",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-activity-sensory-pulses",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-activity-sensory-pulses"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Conditional sensory relation only; no activity, actor, residue, or scene state. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-cover-opening-and-work-visibility",
+      "claim_ref": "claim:place-outdoors-cover-opening-and-work-visibility",
+      "claim_digest": "f910b40ea0ea038fed3fbbf0a1ea6eff0919bc2d2d36fea2cd51f0f75733a667",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-cover-opening-and-work-visibility",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-cover-opening-and-work-visibility"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No fixed opening, shelter, brightness, weather, or work. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-traffic-wet-ground-and-ruts",
+      "claim_ref": "claim:place-outdoors-traffic-wet-ground-and-ruts",
+      "claim_digest": "9b9e7aee473d0443f7e025976cd5b3fd8578540488b3eeae56723207ec05ecff",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-traffic-wet-ground-and-ruts",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-traffic-wet-ground-and-ruts"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Wet-ground condition and traffic remain actual-state questions; no road assertion. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-microterrain-patches",
+      "claim_ref": "claim:place-outdoors-microterrain-patches",
+      "claim_digest": "042eab182bbd0866410ddec92a64f3c312ba40c03907247095d762cc79e387bc",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-microterrain-patches",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-microterrain-patches"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No terrain trait, resting place, carrying route, or work site is instantiated. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-clearing-and-trace-renewal",
+      "claim_ref": "claim:place-outdoors-clearing-and-trace-renewal",
+      "claim_digest": "eb3ffdb0bb2bad1580bb75a7b99f1c1e1dca8cf4742ad747d7ddcf51e7eb8e11",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-clearing-and-trace-renewal",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-clearing-and-trace-renewal"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Trace never identifies actor, age, purpose, or hidden event. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-means-upkeep-and-environment",
+      "claim_ref": "claim:place-outdoors-means-upkeep-and-environment",
+      "claim_digest": "3d811879cecb3005f93eb3de0bf1412ac963237365ca93c09a9ef20e29410080",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-means-upkeep-and-environment",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-means-upkeep-and-environment"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Means is not status proof; no stock, worker, repair, or cleanliness state. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-season-work-space-reallocation",
+      "claim_ref": "claim:place-outdoors-season-work-space-reallocation",
+      "claim_digest": "43e44615707f48fa6cb4f34eb05a518ba0855531507edc9abf8973014ccd74b1",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-season-work-space-reallocation",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-season-work-space-reallocation"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No calendar, household, storage, fuel, or crowd is created. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-shore-working-edge-composition",
+      "claim_ref": "claim:place-outdoors-shore-working-edge-composition",
+      "claim_digest": "c3a3dd2777f2b75e7d88f824619a65f07b75b6d0fcd81581a88805b4884895cf",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-shore-working-edge-composition",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-shore-working-edge-composition"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No landing, clean-water claim, shore work, animal, cargo, or access right. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-market-activity-and-empty-intervals",
+      "claim_ref": "claim:place-outdoors-market-activity-and-empty-intervals",
+      "claim_digest": "b93deec16e6b3ac31c02ae9bea55fec22abcc030e7b4736d46720f915d0b1904",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-market-activity-and-empty-intervals",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-market-activity-and-empty-intervals"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No market timetable, goods, people, watch, or trade authority. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-place-outdoors-forest-structure-and-season",
+      "claim_ref": "claim:place-outdoors-forest-structure-and-season",
+      "claim_digest": "b2d311c8e84d83ff6dc65dc2f1352857e8147d9f832ecf1f05b7f841c1238eed",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-outdoors-v1.json#claim:place-outdoors-forest-structure-and-season",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-outdoors-forest-structure-and-season"
+      ],
+      "review_ref": "verification/reconstructed-place-outdoors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No forest type, season, vegetation, route, or materialized object set. Editorial reconstruction, not direct historical attestation or current world state."
+    }
+  ]
+}

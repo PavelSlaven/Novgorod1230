@@ -8,10 +8,13 @@ import {
 // player-visible capability and supplies bounded physical measurements.
 export function createLowerDvinaTraceO2aAmbientPort({ profile, committedState } = {}) {
   const ambient = profile?.o2a_ambient;
-  const g6 = committedState?.position?.g6_id ?? committedState?.position?.g6_ref;
+  const position = committedState?.position;
+  const g6 = position?.g6_id ?? position?.g6_ref
+    ?? (position?.location_ref === ambient?.scope_binding?.position_ref
+      ? ambient?.scope_binding?.g6_ref : null);
   const actor = committedState?.actor_id;
   if (ambient?.status !== 'approved' || g6 !== ambient?.scope_binding?.g6_ref
-      || committedState?.position?.location_ref !== ambient?.scope_binding?.position_ref
+      || position?.location_ref !== ambient?.scope_binding?.position_ref
       || !text(actor)) return null;
   const snapshot = {
     schema: 'rus.items.ambient_ordinary_committed_context.v1', version: 1,
@@ -40,7 +43,14 @@ export function createLowerDvinaTraceO2aAmbientPort({ profile, committedState } 
   const capability = Object.freeze({ source_ref: ambient.source_ref,
     portion_profile_ref: ambient.portion_profile.profile_ref,
     semantic_type: ambient.portion_profile.semantic_type,
-    public_name: ambient.portion_profile.display_name });
+    public_name: ambient.portion_profile.display_name,
+    ambient_portion_bounds: Object.freeze({
+      quantity_unit: ambient.portion_profile.quantity_unit,
+      min_quantity: ambient.portion_profile.min_quantity,
+      max_quantity: ambient.portion_profile.max_quantity,
+      min_mass_grams: ambient.portion_profile.min_mass_grams,
+      max_mass_grams: ambient.portion_profile.max_mass_grams
+    }) });
   Object.defineProperties(admission, {
     capabilities: { value: Object.freeze([capability]), enumerable: true },
     supports: { value: (operation) => supports(operation,

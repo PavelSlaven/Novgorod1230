@@ -1,0 +1,80 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:flora-v3-tree-leaf-flower-sequence",
+      "claim_ref": "claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+      "claim_digest": "ef8a862fba10338989d734a614a3241fbb9b8d295a67664c53a38f706cd9fb24",
+      "candidate_ref": "git:a64d8a22da28280cf8382ad7095f6695b04992c4:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-flora-ecology-v3.json#claim:candidate-deciduous-tree-leaf-flower-emergence-varies-by-species",
+      "auditor_ref": "/root/physiology_research",
+      "independence_basis": "Independently reopened PMID 29900552 with Browser Harness and reconciled repaired title, authors, journal, DOI, Abstract anchor, and qualified RU/EN sequence claim.",
+      "evidence_checked": [
+        "evidence:candidate-flora-v3-tree-leaf-flower-sequence"
+      ],
+      "review_ref": "verification/gameplay-flora-ecology-v3.md#tree-leafflower-sequence--approve-after-repair",
+      "verdict": "APPROVE",
+      "limits": "PMID 29900552 Abstract supports qualified deciduous-species flower/leaf sequence variation only; no local taxon, calendar date, weather, current state, fruiting, yield, or scene fact. Earlier metadata-mismatch REJECT remains in report history."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:flora-v3-nettle-bast-fibre",
+      "claim_ref": "claim:candidate-nettle-bast-fibre-retting-decortication",
+      "claim_digest": "b4c3c7795da3c7d3435636886588991ef09323fc8be23f5a1db54364fedba2c3",
+      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-flora-ecology-v3.json#claim:candidate-nettle-bast-fibre-retting-decortication",
+      "auditor_ref": "/root/physiology_research",
+      "independence_basis": "Independently reopened PMC9230748 with Browser Harness and checked its retting/decortication process discussion.",
+      "evidence_checked": [
+        "evidence:candidate-flora-v3-nettle-bast-retting"
+      ],
+      "review_ref": "verification/gameplay-flora-ecology-v3.md#nettle-bast-fibre--approve",
+      "verdict": "APPROVE",
+      "limits": "Modern Urtica dioica process relation only; no Novgorod presence/practice, season, stock, access, tool, duration, yield, or scene output."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:flora-v3-flood-woody-debris",
+      "claim_ref": "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+      "claim_digest": "4bfd18270c1d796f7b5fb4876c917bbd0c3a258e63363d118c318a1be98b2bcd",
+      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-flora-ecology-v3.json#claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+      "auditor_ref": "/root/physiology_research",
+      "independence_basis": "Independently reopened full USGS primary-study abstract with Browser Harness: it directly reports flood transport/retention, hydrologic and in-channel-tree effects, and states retentive-obstacle significance is common across fluvial regimes.",
+      "evidence_checked": [
+        "evidence:candidate-flora-v3-flood-woody-debris-transport-retention"
+      ],
+      "review_ref": "verification/gameplay-flora-ecology-v3.md#flood-woody-debris--approve-after-reconciliation",
+      "verdict": "APPROVE",
+      "limits": "Conditional inferred mechanism only: not every flood, river, feature, or scene has debris/retention. No local debris, presence, access, quantity, ownership, safety, or outcome. Earlier scope concern remains in report history."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:flora-v3-poor-circulation-low-oxygen",
+      "claim_ref": "claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
+      "claim_digest": "d665797178d68dfc10a962e4db9afbea00216751fe30caa07623dbb75678e5c0",
+      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-flora-ecology-v3.json#claim:candidate-poor-water-circulation-can-contribute-low-dissolved-oxygen",
+      "auditor_ref": "/root/physiology_research",
+      "independence_basis": "Independently reopened the USGS page with Browser Harness and checked the exact paragraph naming poor flushing or circulation.",
+      "evidence_checked": [
+        "evidence:candidate-flora-v3-poor-circulation-low-oxygen"
+      ],
+      "review_ref": "verification/gameplay-flora-ecology-v3.md#poor-circulation-and-dissolved-oxygen--approve",
+      "verdict": "APPROVE",
+      "limits": "Possible contributor only; no waterbody state, dissolved-oxygen value, fish, mortality, cause sufficiency, remediation, or scene outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:flora-v3-rain-after-dry-spell-low-oxygen",
+      "claim_ref": "claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+      "claim_digest": "912c84f000e045b97d348d7a3f2f4e8cb8c8ff528342951a7f962d160c3b015b",
+      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-flora-ecology-v3.json#claim:candidate-rain-after-dry-spell-can-contribute-low-dissolved-oxygen",
+      "auditor_ref": "/root/physiology_research",
+      "independence_basis": "Independently reopened the USGS page with Browser Harness and checked the exact paragraph naming sudden rain after a dry spell.",
+      "evidence_checked": [
+        "evidence:candidate-flora-v3-rain-after-dry-spell-low-oxygen"
+      ],
+      "review_ref": "verification/gameplay-flora-ecology-v3.md#rain-after-dry-spell-and-dissolved-oxygen--approve",
+      "verdict": "APPROVE",
+      "limits": "Possible contributor only; no rainfall amount, runoff composition, waterbody, pollution, fish, oxygen value, causal sufficiency, or outcome."
+    }
+  ]
+}

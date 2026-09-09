@@ -84,6 +84,7 @@ export function completeAuthoredItemMechanics(bundle, profile) {
   return {
     ...structuredClone(profile),
     packing_slot_cost: matches[0].packing_slot_cost,
+    packing_bundle_size: 1,
     quantity: structuredClone(matches[0].quantity),
     container: matches[0].container
   };

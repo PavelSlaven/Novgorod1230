@@ -1,0 +1,44 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-plant-identification-v3-diagnostic-characters",
+      "claim_ref": "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
+      "claim_digest": "425d0775bff189fd19fbd725a281a9263bbad698d33c8e335786d397a46a629e",
+      "candidate_ref": "git:254653427d9739f68b2c4f2bc37f934460adf0f6:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-plant-identification-v3.json#claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Auditor independently read the UMN poison-hemlock identification and common-look-alikes anchor and matched its multi-part/habit example to the narrowed inferred/medium exact claim and RU/EN localization; auditor did not author the candidate commit.",
+      "evidence_checked": ["evidence:candidate-plant-id-v3-lookalike-differentiation"],
+      "review_ref": "verification/gameplay-plant-identification-v3.md#candidate-plant-identity-can-require-multiple-diagnostic-characters",
+      "verdict": "APPROVE",
+      "limits": "Qualified inferred plant-identity differentiation relation from one UMN example only. No taxon, local plant, actor expertise, observation, image/text identification or scene result is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-plant-identification-v3-food-part-bound",
+      "claim_ref": "claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+      "claim_digest": "1ac2234a714a33a5098826c8ba445da19dddeb9f827dabb33b30b80eb79d34df",
+      "candidate_ref": "git:254653427d9739f68b2c4f2bc37f934460adf0f6:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-plant-identification-v3.json#claim:candidate-edible-plant-status-does-not-transfer-to-every-part",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Auditor independently read the NLM MeSH definition and matched its explicit not-every-part statement to the exact normalized claim and RU/EN localization; auditor did not author the candidate commit.",
+      "evidence_checked": ["evidence:candidate-plant-id-v3-food-part-bound"],
+      "review_ref": "verification/gameplay-plant-identification-v3.md#candidate-edible-plant-status-does-not-transfer-to-every-part",
+      "verdict": "APPROVE",
+      "limits": "Part-bound food-use relation only. No plant, part, amount, season, processing, nutrition, safety, exposure, dose or outcome is established. MeSH is not safety or medical advice."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-plant-identification-v3-lookalike-differentiation",
+      "claim_ref": "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+      "claim_digest": "9882806d97ca2b5e42ab2e84365b9002331f1723a99537e62d4d1b56a9f88148",
+      "candidate_ref": "git:254653427d9739f68b2c4f2bc37f934460adf0f6:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-plant-identification-v3.json#claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Auditor independently read the UMN poison-hemlock identification and common-look-alikes content and matched its multi-character and hazard-category example to the qualified exact claim and RU/EN localization; auditor did not author the candidate commit.",
+      "evidence_checked": ["evidence:candidate-plant-id-v3-lookalike-differentiation"],
+      "review_ref": "verification/gameplay-plant-identification-v3.md#candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+      "verdict": "APPROVE",
+      "limits": "Qualified possible relation from one modern regional example only. No Novgorod presence, taxon/family hazard transfer, plant identification, diagnosis, exposure, dose, safety or outcome is established."
+    }
+  ]
+}

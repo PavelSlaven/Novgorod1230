@@ -1,13 +1,15 @@
 import { rememberLlmSettings } from './llm-settings-preferences.js';
 
 export function createLlmSettingsController({ root, api, store, storage }) {
-  return Object.freeze({ open, submit, setFieldsDisabled });
+  return Object.freeze({ open, submit, selectMode });
 
   async function open() {
     store.openOverlay('llm_settings');
     root.querySelector('[data-overlay-panel]')?.focus();
     try {
-      store.setLlmSettings(await api.getLlmSettings());
+      const settings = await api.getLlmSettings();
+      store.setLlmSettingsDraft(settings);
+      store.setLlmSettings(settings);
     } catch (error) {
       store.setLlmSettingsMessage({ kind: 'error', text: llmErrorText(error) });
     }
@@ -28,7 +30,7 @@ export function createLlmSettingsController({ root, api, store, storage }) {
       return;
     }
     const candidate = llmSettingsCandidate(values);
-    if (mode === 'custom' && (!candidate.base_url || !candidate.model)) {
+    if (!candidate.base_url || !candidate.model) {
       store.setLlmSettingsMessage({ kind: 'error', text: !candidate.base_url ? 'Укажи API base URL.' : 'Укажи model.' });
       return;
     }
@@ -50,15 +52,18 @@ export function createLlmSettingsController({ root, api, store, storage }) {
     }
   }
 
-  function setFieldsDisabled(disabled) {
-    root.querySelectorAll('[data-llm-settings-form] input[name="base_url"], [data-llm-settings-form] input[name="model"], [data-llm-settings-form] input[name="api_key"], [data-llm-settings-form] button[value="test"]')
-      .forEach((input) => { input.disabled = disabled; });
+  function selectMode(mode) {
+    if (mode !== 'local') return;
+    const preset = store.getState().llmSettings?.local_preset;
+    const baseUrl = root.querySelector('[data-llm-settings-form] input[name="base_url"]');
+    const model = root.querySelector('[data-llm-settings-form] input[name="model"]');
+    if (preset?.base_url && baseUrl) baseUrl.value = preset.base_url;
+    if (preset?.model && model) model.value = preset.model;
   }
 }
 
 export function llmSettingsCandidate(values) {
   const mode = values.get('mode');
-  if (mode === 'default') return { mode: 'default' };
   return {
     mode,
     base_url: String(values.get('base_url') ?? '').trim(),

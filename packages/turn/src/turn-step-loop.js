@@ -1,19 +1,22 @@
-import { isDeepStrictEqual } from 'node:util';
 import { deepFreeze, sha256 } from '@rus/kernel';
 import { turnFailure } from './errors.js';
 import { executeTurnStepActorStep } from './turn-step-actor-step.js';
-import {
-  buildTurnStepPreparedChainContext,
-  buildTurnStepPreparedEffectLedger
-} from './turn-step-prepared-effects.js';
+import { buildTurnStepPreparedEffectLedger } from './turn-step-prepared-effects.js';
 import {
   createTurnStepExecutionRegistry,
   requireTurnStepExecutionRegistry
 } from './turn-step-execution-registry.js';
+import { requestTurnStepPlanWithRepair } from './turn-step-plan-repair.js';
 import {
-  requestAndValidateTurnStepPlan,
-  requestTurnStepPlanWithRepair
-} from './turn-step-plan-repair.js';
+  initialPreparedChainContext,
+  nextPendingDiscovery,
+  preparedDirectContinuation,
+  requestPendingDiscoveryPlan,
+  requestPreparedFollowupPlan,
+  revalidateBaseVersion,
+  selectedPreparedFollowup,
+  traceFor
+} from './turn-step-loop-support.js';
 
 export {
   createTurnStepExecutionRegistry,
@@ -55,6 +58,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   let preparedChainContext = initialPreparedChainContext(
     ports.preparedEffectContext);
   let preparedFollowup = null;
+  let pendingDiscovery = null;
   const seen = new Set();
 
   while (stepIndex <= identity.maxInternalSteps) {
@@ -95,7 +99,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       player_safe_state: playerSafeState,
       available_domain_operations: availableDomainOperations,
       prepared_followup_candidates:
-        projectedPlayerSafeState?.prepared_followup_candidates ?? []
+        projectedPlayerSafeState?.prepared_followup_candidates ?? [],
+      pending_discovery: pendingDiscovery
     });
     if (seen.has(inputDigest)) {
       stopReason = 'no_progress';
@@ -103,19 +108,22 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     }
     seen.add(inputDigest);
 
-    const preparedPlan = await requestPreparedFollowupPlan({ request,
-      preparedFollowup, semanticPlanValidator: ports.semanticPlanValidator,
-      admitPreparedDomainPlan: ports.admitPreparedDomainPlan,
-      revalidateCommittedState: ports.revalidateCommittedState,
-      expectedVersion: identity.committedStateVersion,
-      workingProjection, preparedChainContext });
-    const { plan, repaired } = preparedPlan == null
+    const pendingResult = await requestPendingDiscoveryPlan({ request,
+      pendingDiscovery });
+    const preparedPlan = pendingResult == null
+      ? await requestPreparedFollowupPlan({ request,
+        preparedFollowup, semanticPlanValidator: ports.semanticPlanValidator,
+        admitPreparedDomainPlan: ports.admitPreparedDomainPlan,
+        revalidateCommittedState: ports.revalidateCommittedState,
+        expectedVersion: identity.committedStateVersion,
+        workingProjection, preparedChainContext }) : null;
+    const { plan, repaired } = pendingResult ?? (preparedPlan == null
       ? await requestTurnStepPlanWithRepair({ request,
           turnStepModel: ports.turnStepModel,
           semanticPlanValidator: ports.semanticPlanValidator,
           preparedChainContext
         })
-      : { plan: preparedPlan, repaired: false };
+      : { plan: preparedPlan, repaired: false });
     if (preparedPlan == null) {
       await revalidateBaseVersion({
         revalidateCommittedState: ports.revalidateCommittedState,
@@ -168,14 +176,20 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       registry,
       ports
     });
+    if (execution.ordinary_materialization_atomic_write_plan != null
+        && ordinaryPlans.length !== 0) {
+      stopReason = 'player_response';
+      remainingIntent = request.remaining_intent;
+      stepTraces.push(traceFor({
+        plan, request, repaired, applied: false, boundary: true
+      }));
+      break;
+    }
     workingProjection = execution.workingProjection;
     writeFragments.push(...execution.writeFragments);
     consequenceFragments.push(...execution.consequenceFragments);
     preparedEffects.push(...execution.preparedEffects);
     if (execution.ordinary_materialization_atomic_write_plan != null) {
-      if (ordinaryPlans.length !== 0) throw turnFailure(
-        'TURN_STEP_ORDINARY_PLAN_DUPLICATE',
-        'Only one ordinary atomic plan is allowed per turn.');
       ordinaryPlans.push(execution.ordinary_materialization_atomic_write_plan);
     }
     if (execution.action_production_atomic_write_plan != null) {
@@ -224,7 +238,9 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     }));
 
     const continuation = execution.continuation;
-    if (execution.boundary || preparedSequenceComplete) {
+    pendingDiscovery = nextPendingDiscovery({ plan, continuation });
+    if (execution.boundary || preparedSequenceComplete
+        || (pendingDiscovery != null && ordinaryPlans.length > 0)) {
       stopReason = 'player_response';
       remainingIntent = continuation?.remaining_intent ?? '';
       break;
@@ -282,135 +298,6 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       backgroundNpcSemanticPlans[0] ?? null,
     clarification
   });
-}
-
-async function requestPreparedFollowupPlan({ request, preparedFollowup,
-  semanticPlanValidator, admitPreparedDomainPlan, workingProjection,
-  preparedChainContext, revalidateCommittedState, expectedVersion }) {
-  if (typeof semanticPlanValidator !== 'function'
-    || typeof admitPreparedDomainPlan !== 'function'
-    || preparedFollowup == null || !request.available_domain_operations?.some(
-    (operation) => sameJson(operation, preparedFollowup.operation)
-  )) return null;
-  const plan = {
-    schema: 'turn_step_plan_v1',
-    request_id: request.request_id,
-    committed_state_version: request.committed_state_version,
-    working_revision: request.working_revision,
-    step_index: request.step_index,
-    interpretation: {
-      player_goal: request.root_player_action,
-      grounded_attempt: request.remaining_intent,
-      adaptation: preparedFollowup.adaptation
-    },
-    resolution: 'domain_request',
-    goal_result: 'pending',
-    activity: { owner: 'domain', duration_class: null, effort: null },
-    operations: [structuredClone(preparedFollowup.operation)],
-    check: null,
-    continuation: null,
-    clarification: null,
-    reason_code: 'prepared_followup',
-    reason: 'Prepared code-owned continuation remains applicable.'
-  };
-  try {
-    await requestAndValidateTurnStepPlan({ request,
-      turnStepModel: async () => plan,
-      semanticPlanValidator,
-      preparedChainContext });
-  } catch (error) {
-    if (error?.code === 'TURN_STEP_PLAN_INVALID') return null;
-    throw error;
-  }
-  await revalidateBaseVersion({ revalidateCommittedState, expectedVersion,
-    request, plan });
-  try {
-    return await admitPreparedDomainPlan(deepFreeze({
-      plan: structuredClone(plan),
-      request: structuredClone(request),
-      working_projection: structuredClone(workingProjection),
-      prepared_chain_context: structuredClone(preparedChainContext)
-    })) === true ? plan : null;
-  } catch (error) {
-    if (error?.code === 'TURN_STEP_PREPARED_DOMAIN_PLAN_UNSUPPORTED') {
-      return null;
-    }
-    throw error;
-  }
-}
-
-function selectedPreparedFollowup({ plan, request, continuation }) {
-  const marker = continuation?.prepared_followup_ref;
-  if (typeof marker !== 'string' || plan.operations?.length !== 1) return null;
-  const candidates = request.prepared_followup_candidates?.filter((value) =>
-    value.prepared_followup_ref === marker
-      && sameJson(value.precursor_operation, plan.operations[0])) ?? [];
-  return candidates.length !== 1 ? null : {
-    operation: structuredClone(candidates[0].operation),
-    adaptation: plan.interpretation.adaptation
-  };
-}
-
-function sameJson(left, right) {
-  return isDeepStrictEqual(left, right);
-}
-
-function initialPreparedChainContext(value) {
-  if (value == null) return null;
-  return buildTurnStepPreparedChainContext({ priorEffectCount: 0,
-    currentClock: value.current_clock, currentBodyState: value.current_body_state });
-}
-
-async function revalidateBaseVersion({
-  revalidateCommittedState,
-  expectedVersion,
-  request,
-  plan
-}) {
-  const current = await revalidateCommittedState(deepFreeze({
-    expected_state_version: expectedVersion,
-    root_turn_id: request.root_turn_id,
-    step_index: request.step_index,
-    plan: structuredClone(plan)
-  }));
-  if (current === true) return;
-  const actual = Number(current?.party_state?.state_version
-    ?? current?.state_version ?? current);
-  if (!Number.isSafeInteger(actual) || actual !== expectedVersion) {
-    throw turnFailure('TURN_STEP_STATE_STALE',
-      'Committed state changed during semantic step planning.', {
-        expected_state_version: expectedVersion,
-        actual_state_version: Number.isSafeInteger(actual) ? actual : null
-      });
-  }
-}
-
-function traceFor({ plan, request, repaired, applied, checkResult = null,
-  checkRequest = null,
-  boundary = false }) {
-  return {
-    step_index: plan.step_index,
-    working_revision: plan.working_revision,
-    resolution: plan.resolution,
-    goal_result: plan.goal_result,
-    repaired,
-    applied,
-    check_outcome: checkResult?.outcome?.band ?? null,
-    check_binding: checkRequest == null
-      ? null : structuredClone(checkRequest),
-    approved_plan: structuredClone(plan),
-    plan_request: structuredClone(request),
-    player_response_boundary: boundary,
-    reason_code: plan.reason_code
-  };
-}
-
-function preparedDirectContinuation(plan) {
-  return plan.resolution === 'direct'
-    && plan.operations.length === 0
-    && plan.activity?.owner === 'semantic'
-    && plan.activity.duration_class === 'moment'
-    && plan.activity.effort === 'none';
 }
 
 function normalizeInput(input) {

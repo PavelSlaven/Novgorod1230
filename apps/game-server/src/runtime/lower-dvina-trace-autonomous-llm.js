@@ -1,4 +1,5 @@
 import { serverError } from '../errors.js';
+import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
 
 const GENERIC_CHECK_OUTCOMES = Object.fromEntries([
   'clean_success', 'success', 'success_with_cost',
@@ -54,13 +55,16 @@ function hasAllowedAttributeRefs(request) {
     && request.decision_scope.allowed_attribute_refs.length > 0;
 }
 
-export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
+export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner,
+  worldKnowledgeGrounder = null } = {}) {
   if (typeof roleRunner?.run !== 'function') {
     throw dependencyError('Configured LLM role runner is required.');
   }
   return async function planNpcAutonomousAction(request, context = {}) {
     const repair = context.repair ?? null;
     const genericCheckAvailable = hasAllowedAttributeRefs(request);
+    const modelRequest = worldKnowledgeGrounder == null ? request
+      : await worldKnowledgeGrounder.ground(request, 'npc_decision');
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -103,6 +107,7 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
           'Use only the supplied subjective knowledge, perception, memory,',
           'goals, relationships, body state and available resources.',
           'Use only supplied refs and the registered operation contract.',
+          ...worldKnowledgeFactualClosure(modelRequest),
           'emit_interaction is only an observable nonverbal action; never put spoken words, dialogue, or a verbal message in its content.',
           'For hailing, asking, ordering aloud, calling, or replying, use request_conversation.',
           'Do not roll RNG or declare success, movement, destruction, escape,',
@@ -115,10 +120,10 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {
-          request,
+          request: modelRequest,
           original_output: repair.original_output,
           validation_errors: repair.validation_errors
-        } : request)
+        } : modelRequest)
       }],
       overrides: { temperature: 0, maxTokens: 20_000 }
     });

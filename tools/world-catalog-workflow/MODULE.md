@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Модуль также предоставляет нейтральные чистые projections утверждённых `world_base` records для Stage 8 и G5 materialization. Он не владеет runtime I/O, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.
+Автономный редакторский инструмент для регистрации ревизий региональной карты, структурной проверки G1-маски, построения координатной очереди, проверки G1-пакетов и fail-closed проверки authoring-каталогов materialization. Модуль также владеет internal CLI/authoring-компиляцией approved World Knowledge records в deterministic immutable bundle и предоставляет нейтральные чистые projections утверждённых `world_base` records для Stage 8 и G5 materialization. Он не владеет gameplay World Knowledge runtime, runtime I/O, не создаёт исторические факты и не изменяет `world_base` без явно переданного transaction adapter.
 
 Полный реестр публичных контрактов и ошибок находится в [CONTRACTS.md](CONTRACTS.md). Единственный package entrypoint — `./src/index.js`; прямой импорт внутренних файлов другими пакетами запрещён.
 
@@ -16,6 +16,26 @@
 - `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle`: draft-only manifest, canonical SHA-256, table registry, local/external FK, XOR и injected transaction adapter с readback digest/count и rollback.
 - Stage 3C contracts: `buildCatalogEditorialReadinessReport`, evidence/approval plans, verified legacy inventory и all-120-only revision promotion/rollback with atomic G4 status transitions and without activation.
 - `buildApprovedItemCatalogSnapshot` и `buildAllowedG5TemplateSet`: чистые immutable projections caller-provided approved `world_base` readback records, revision ID и catalog digest в Stage 8 catalog snapshot и разрешённый G5 template set.
+- internal `compile-world-knowledge` CLI: читает explicit authoring descriptor/pack, объединяет shards, строго валидирует approved sources/evidence/concepts/claims/profiles/localizations и детерминированно строит exact/structured/lexical indexes; compiler не экспортируется package entrypoint и не активирует gameplay;
+- production authoring approval: один независимый `APPROVE` на claim, exact
+  digest проверенного claim/localizations/concepts/predicate/evidence/sources,
+  evidence set и reviewer/candidate/limits metadata; runtime получает только
+  `verification_ref`, не editorial ledger;
+- `editorial_reconstruction` source для игровых реконструкций: существующие
+  inference qualifiers сохраняются при compile; реконструкция не выдаётся за
+  direct/high/attested факт и не создаёт hard exclusion. Независимый approval
+  проверяет её plausibility, не требует выдуманного внешнего свидетельства;
+- internal `build-world-knowledge-vectors` и
+  `benchmark-world-knowledge-vectors` CLI: строят pinned Giga-Embeddings flat
+  index из compiled production pack и сравнивают lexical/hybrid retrieval на
+  committed unseen-query benchmark. Model weights остаются в локальном
+  Hugging Face cache, не в Git. Provisioning и exact offline readiness
+  выполняются по `docs/setup/WORLD_KNOWLEDGE_GIGA_EMBEDDINGS.md` командой
+  `npm run world-knowledge:giga-readiness`;
+- internal `build-gameplay-gap-backlog --campaign FILE --audit FILE --out FILE`:
+  сохраняет structured backlog из реальных traces и независимого premise audit;
+  невалидный audit даёт blocked report и ненулевой exit code. Это development
+  authoring, без runtime auditor, research, fact approval или corpus mutation.
 
 ## Публичные интерфейсы
 
@@ -27,6 +47,8 @@
 | supplemental | `SUPPLEMENTAL_AUTHORING_TABLES`, `supplementalDigest`, `validateSupplementalCatalogBundle`, `applySupplementalCatalogBundle` | draft manifest + datasets + declared external IDs → deterministic validation или transactional adapter result |
 | Stage 3C readiness/promotion | `LEGACY_CLASSIFICATION_FIELD_REGISTRY`, `flattenLegacyRows`, `buildLegacyClassificationInventory`, `buildCatalogEditorialReadinessReport`, `buildEditorialEvidenceReviewPlan`, `buildCoherentEditorialApprovalPlan`, `buildRevisionPromotionPlan`, `buildAllTemplateRevisionPromotionPlan`, `validateApprovedDependencyClosure`, `applyRevisionPromotionPlan`, `buildRevisionRollbackPlan` | verified operator export + exact candidate/coverage digests + all-120 attestation → typed readiness/blocked plan или revision-pinned transactional promotion with exact G4 transitions and without activation |
 | approved runtime projections | `buildApprovedItemCatalogSnapshot`, `buildAllowedG5TemplateSet` | approved `world_base` records + revision ID + catalog digest (+ exact G4 for G5 projection) → immutable approved Stage 8 catalog snapshot / allowed G5 template set либо typed `RUNTIME_*` hard error |
+
+World Knowledge compiler остаётся internal authoring surface (`src/world-knowledge-pack.js` + CLI `compile-world-knowledge`), потому отсутствует в public package entrypoint.
 
 `validateSupplementalCatalogBundle` и `applySupplementalCatalogBundle` никогда не переводят `draft` records в `approved`, не активируют revision и не создают party/runtime candidates. Детали всех входов, результатов, ошибок и test cases приведены в [CONTRACTS.md](CONTRACTS.md).
 
@@ -63,6 +85,11 @@ PR17-specific `buildPr17Stage3CApprovalRequest`, `buildPr17Stage3CPromotionPlan`
 
 - `node --test tools/world-catalog-workflow/test/*.test.js` — public contracts, negative fixtures, dry-run, rollback и no-runtime boundary;
 - `node --test tools/world-catalog-workflow/test/runtime-catalog-loaders.test.js` — revision/digest pins, typed projection failures, Stage 8/13/14/16 consumption и repeat-entry;
+- `node --test tools/world-catalog-workflow/test/world-knowledge-pack.test.js` — strict schemas, shards/global refs, deterministic compile/indexes, ru/en canonical identity и anti-whitelist boundary;
+- `node tools/world-catalog-workflow/src/cli.js build-world-knowledge-vectors` —
+  пересобрать production vector metadata/`vectors.f32` exact pinned model;
+- `node tools/world-catalog-workflow/src/cli.js benchmark-world-knowledge-vectors`
+  — проверить committed lexical/hybrid benchmark и latency report;
 - `npm run test:world-catalog` — полный набор workflow;
 - `npm run world-db:import:stage3b1:dry-run` — manifest/digest/FK-derived dry-run Stage 3B-1.
 

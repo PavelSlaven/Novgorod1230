@@ -54,7 +54,7 @@ const SAFE_NPC_VALIDATION_SCOPES = new Set(['plan', 'interpretation',
   'speech_dominant_act']);
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
-  turnBudget = createLlmTurnBudget(), now = () => Date.now() } = {}) {
+  turnBudget = createLlmTurnBudget(), developerMode = false, now = () => Date.now() } = {}) {
   const storage = new AsyncLocalStorage(), reports = new Map(), logReports = new Map();
   const onCall = (record) => {
     telemetry?.onCall?.(record);
@@ -66,17 +66,22 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
     }
   };
   const onDetail = (record) => { const turn = storage.getStore(); if (turn) turn.details.push(record); telemetry?.onDetail?.(record); };
+  // Private development traces never enter the public diagnostic projection.
+  const recordGameplayTrace = developerMode !== true ? undefined : (record) => {
+    const turn = storage.getStore();
+    if (!turn) return;
+    try { turn.gameplay_traces.push(structuredClone(record)); }
+    catch { turn.gameplay_traces.push({ event: 'capture_failed', source_event: record?.event ?? null }); }
+  };
   return Object.freeze({
     turnBudget,
-    telemetry: Object.freeze({ onCall, onDetail }),
+    recordGameplayTrace, telemetry: Object.freeze({ onCall, onDetail, onGameplayTrace: recordGameplayTrace }),
     recordFailure(value) {
-      const turn = storage.getStore();
-      if (turn) turn.failure = safeTurnFailure(value);
+      const turn = storage.getStore(); if (turn) turn.failure = safeTurnFailure(value);
     },
     async runTurn({ party_id, request_id }, execute) {
-      const startedAt = now();
-      const turn = { party_id: text(party_id), request_id: text(request_id), calls: [],
-        started_at: startedAt, incidents: [], details: [] };
+      const startedAt = now(), turn = { party_id: text(party_id), request_id: text(request_id), calls: [],
+        started_at: startedAt, incidents: [], details: [], gameplay_traces: [] };
       if (!turn.party_id || !turn.request_id) throw new TypeError('party_id and request_id are required.');
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });
@@ -88,7 +93,8 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       } finally {
         const report = buildLlmTurnReport({ ...turn, turn_duration_ms: Math.max(0, now() - turn.started_at) });
         reports.delete(turn.party_id); reports.set(turn.party_id, report);
-        const queue = logReports.get(turn.party_id) ?? []; queue.push(Object.freeze({ ...report, calls: Object.freeze([...turn.details]) })); logReports.set(turn.party_id, queue);
+        const queue = logReports.get(turn.party_id) ?? []; queue.push(Object.freeze({ ...report, calls: Object.freeze([...turn.details]),
+          ...(developerMode === true ? { gameplay_traces: Object.freeze(turn.gameplay_traces) } : {}) })); logReports.set(turn.party_id, queue);
         while (reports.size > maxReports) { const oldest = reports.keys().next().value; reports.delete(oldest); logReports.delete(oldest); }
       }
     },
@@ -273,20 +279,17 @@ function safeNarrationFailure(value = {}) {
     ? [...new Set(details.concern_kinds.map(text)
       .filter((kind) => SAFE_NARRATION_CONCERN_KINDS.has(kind)))] : [];
   return Object.freeze({
-    code: 'TRACE_PHASE_2_NARRATION_REJECTED', phase,
+    code: 'TRACE_PHASE_2_NARRATION_REJECTED', phase, concern_kinds: Object.freeze(concernKinds),
     concern_count: Number.isInteger(concernCount) && concernCount >= 0
-      ? concernCount : 0,
-    concern_kinds: Object.freeze(concernKinds)
+      ? concernCount : 0
   });
 }
 function unionDuration(intervals) { let total = 0; let end = -Infinity; for (const [start, finish] of intervals.sort((a, b) => a[0] - b[0])) { if (finish <= end) continue; total += finish - Math.max(start, end); end = finish; } return total; }
 function usage(value = {}) {
   const total = nonNegative(value?.total_tokens ?? value?.totalTokens);
-  return Object.freeze({
-    input_tokens: number(value?.prompt_tokens ?? value?.input_tokens),
+  return Object.freeze({ input_tokens: number(value?.prompt_tokens ?? value?.input_tokens),
     output_tokens: number(value?.completion_tokens ?? value?.output_tokens),
-    ...(total === null ? {} : { total_tokens: total })
-  });
+    ...(total === null ? {} : { total_tokens: total }) });
 }
 function percentile(values, fraction) { if (!values.length) return 0; return values[Math.min(values.length - 1, Math.ceil(values.length * fraction) - 1)]; }
 function rate(value, total) { return total === 0 ? 0 : value / total; }

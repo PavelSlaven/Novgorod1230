@@ -1,0 +1,761 @@
+{
+  "batch": "macro-17",
+  "generator": "/root/macro_b17_core_gen",
+  "sampling_component": "stratified",
+  "sampling_plan": {
+    "practical_natural_physical": 61,
+    "social_institutional": 14
+  },
+  "cases": [
+    {
+      "case_id": "mb17core-001",
+      "primary_domain": "earthen-road-drainage",
+      "knowledge_need": "wet clay road, wheel ruts, drainage, and foot travel after thaw",
+      "need_group": "practical_natural_physical",
+      "location": "rural road beside a low field",
+      "person": { "age": "adult", "gender": "man", "occupation": "foot messenger", "means": "modest", "status": "free traveler", "relations": "serves a trading household" },
+      "circumstances": "late spring rain follows several days of thaw",
+      "situation": "The messenger considers leaving the road to avoid deep ruts and asks what ground and movement hazards to expect."
+    },
+    {
+      "case_id": "mb17core-002",
+      "primary_domain": "wooden-bridge-maintenance",
+      "knowledge_need": "timber deck wear, wet surfaces, load distribution, and temporary repair",
+      "need_group": "practical_natural_physical",
+      "location": "a small timber bridge on the approach to a village",
+      "person": { "age": "adult", "gender": "woman", "occupation": "cart driver", "means": "modest", "status": "free household worker", "relations": "carries a neighbor's grain" },
+      "circumstances": "morning frost has melted into water on the planks",
+      "situation": "One deck plank flexes under a wheel; the driver must decide whether to unload, cross slowly, or make a simple support."
+    },
+    {
+      "case_id": "mb17core-003",
+      "primary_domain": "river-current-and-ferrying",
+      "knowledge_need": "current, landing, wet footing, boat loading, and crossing choices",
+      "need_group": "practical_natural_physical",
+      "location": "a broad river landing below a town",
+      "person": { "age": "middle-aged", "gender": "man", "occupation": "boatman", "means": "modest", "status": "working river resident", "relations": "carries two unrelated travelers" },
+      "circumstances": "a gusty afternoon follows recent high water",
+      "situation": "The travelers want to take a laden boat across while the landing edge is soft and the current pulls past the usual approach."
+    },
+    {
+      "case_id": "mb17core-004",
+      "primary_domain": "winter-ice-and-snow-travel",
+      "knowledge_need": "snow cover, ice uncertainty, cold exposure, and route choice",
+      "need_group": "practical_natural_physical",
+      "location": "a frozen marsh-edge path between scattered homes",
+      "person": { "age": "older adult", "gender": "woman", "occupation": "household keeper", "means": "poor", "status": "village resident", "relations": "walks with her grandchild" },
+      "circumstances": "late winter sun has softened the snow surface",
+      "situation": "They consider cutting across a white open stretch rather than following the longer packed path."
+    },
+    {
+      "case_id": "mb17core-005",
+      "primary_domain": "forest-wayfinding",
+      "knowledge_need": "mixed-forest ground, visibility, tracks, daylight, and safe progress",
+      "need_group": "practical_natural_physical",
+      "location": "a conifer-and-birch woodland track",
+      "person": { "age": "young adult", "gender": "man", "occupation": "woodcutter", "means": "modest", "status": "free rural worker", "relations": "returns to his household" },
+      "circumstances": "an overcast autumn afternoon is becoming dim",
+      "situation": "The marked track divides around windfallen trees and he must choose a direction without turning a short walk into an unsafe night journey."
+    },
+    {
+      "case_id": "mb17core-006",
+      "primary_domain": "bog-and-peat-ground",
+      "knowledge_need": "soft ground, standing water, vegetation cues, and load-bearing limits",
+      "need_group": "practical_natural_physical",
+      "location": "a peat-cutting margin near a bog",
+      "person": { "age": "adult", "gender": "woman", "occupation": "peat cutter", "means": "poor", "status": "seasonal worker", "relations": "works alongside a sibling" },
+      "circumstances": "early summer after a wet week",
+      "situation": "The sledge begins to sink at the edge of the worked ground and the laborer looks for a way to recover it without worsening the rut."
+    },
+    {
+      "case_id": "mb17core-007",
+      "primary_domain": "field-crop-seasonality",
+      "knowledge_need": "crop maturity, weather risk, cutting conditions, and handling sheaves",
+      "need_group": "practical_natural_physical",
+      "location": "a rye field outside a small settlement",
+      "person": { "age": "adult", "gender": "woman", "occupation": "smallholder", "means": "modest", "status": "rural householder", "relations": "harvests with her spouse" },
+      "circumstances": "clouds threaten rain during late summer",
+      "situation": "They decide whether to continue cutting, bind what is down, or carry an unfinished portion toward shelter."
+    },
+    {
+      "case_id": "mb17core-008",
+      "primary_domain": "garden-soil-and-water",
+      "knowledge_need": "soil moisture, plant stress, drainage, and hand cultivation",
+      "need_group": "practical_natural_physical",
+      "location": "a fenced kitchen garden behind a town yard",
+      "person": { "age": "middle-aged", "gender": "man", "occupation": "garden worker", "means": "modest", "status": "town household servant", "relations": "works for a craft household" },
+      "circumstances": "a warm dry spell follows heavy planting",
+      "situation": "The gardener finds crusted soil around young plants and must choose how to loosen and water it without harming roots."
+    },
+    {
+      "case_id": "mb17core-009",
+      "primary_domain": "wild-flora-and-foraging",
+      "knowledge_need": "seasonal plant habitat, safe uncertainty, and low-impact gathering",
+      "need_group": "practical_natural_physical",
+      "location": "a sunny edge between meadow and woodland",
+      "person": { "age": "young adult", "gender": "woman", "occupation": "household worker", "means": "poor", "status": "village resident", "relations": "gathers for younger siblings" },
+      "circumstances": "early spring before regular garden produce is ready",
+      "situation": "The gatherer sees several similar leaf clusters and needs a cautious basis for deciding whether to take any for food."
+    },
+    {
+      "case_id": "mb17core-010",
+      "primary_domain": "tree-material-and-season",
+      "knowledge_need": "wood condition, branch selection, moisture, and splitting behavior",
+      "need_group": "practical_natural_physical",
+      "location": "a managed woodlot near a village",
+      "person": { "age": "adult", "gender": "man", "occupation": "carpenter", "means": "modest", "status": "independent craft worker", "relations": "repairs a neighbor's fence" },
+      "circumstances": "late autumn after leaf fall",
+      "situation": "The carpenter compares a recently fallen tree with standing saplings and needs to judge which material suits a short-lived fence repair."
+    },
+    {
+      "case_id": "mb17core-011",
+      "primary_domain": "animal-tracks-and-behavior",
+      "knowledge_need": "track interpretation, animal caution, habitat, and human safety",
+      "need_group": "practical_natural_physical",
+      "location": "a muddy riverbank below alder cover",
+      "person": { "age": "middle-aged", "gender": "man", "occupation": "fisher", "means": "modest", "status": "free river worker", "relations": "shares nets with a cousin" },
+      "circumstances": "dawn after overnight rain",
+      "situation": "Fresh prints and disturbed mud appear near the nets; the fisher wants to know what can reasonably be inferred before approaching."
+    },
+    {
+      "case_id": "mb17core-012",
+      "primary_domain": "bird-migration-and-seasonal-signs",
+      "knowledge_need": "bird seasonal movement, flock behavior, weather context, and limited inference",
+      "need_group": "practical_natural_physical",
+      "location": "an open floodplain meadow",
+      "person": { "age": "teenager", "gender": "girl", "occupation": "shepherd", "means": "poor", "status": "household dependent", "relations": "tends her family's animals" },
+      "circumstances": "a clear cool morning in autumn",
+      "situation": "Large bird flocks pass overhead and the shepherd wonders what that observation can and cannot indicate about the season and coming conditions."
+    },
+    {
+      "case_id": "mb17core-013",
+      "primary_domain": "livestock-shelter-and-feed",
+      "knowledge_need": "animal comfort, fodder protection, moisture, and routine care",
+      "need_group": "practical_natural_physical",
+      "location": "a small cattle shed beside a farmyard",
+      "person": { "age": "adult", "gender": "woman", "occupation": "cattle herder", "means": "modest", "status": "rural householder", "relations": "cares for household cattle" },
+      "circumstances": "cold rain and wind arrive before evening",
+      "situation": "The herder finds damp fodder near the doorway and must arrange the animals and feed for the night."
+    },
+    {
+      "case_id": "mb17core-014",
+      "primary_domain": "horse-tack-and-travel",
+      "knowledge_need": "tack fit, wet leather, animal fatigue, and safe pacing",
+      "need_group": "practical_natural_physical",
+      "location": "a road stop near woodland",
+      "person": { "age": "young adult", "gender": "man", "occupation": "mounted courier", "means": "modest", "status": "retained messenger", "relations": "carries a message for a town patron" },
+      "circumstances": "steady rain has soaked the route and the horse has traveled since morning",
+      "situation": "The courier notices a slipping strap and must decide what adjustment and rest are sensible before continuing."
+    },
+    {
+      "case_id": "mb17core-015",
+      "primary_domain": "fish-handling-and-preservation",
+      "knowledge_need": "freshness, temperature, cleanliness, salting or drying constraints",
+      "need_group": "practical_natural_physical",
+      "location": "a riverside fish-cleaning area",
+      "person": { "age": "adult", "gender": "woman", "occupation": "fisher", "means": "poor", "status": "free household worker", "relations": "brings food to her household" },
+      "circumstances": "a warm afternoon and a delayed trip home",
+      "situation": "The fisher needs to choose immediate handling that preserves the catch as well as practical conditions allow."
+    },
+    {
+      "case_id": "mb17core-016",
+      "primary_domain": "bees-and-smoke",
+      "knowledge_need": "insect behavior, smoke, weather, protective handling, and stings",
+      "need_group": "practical_natural_physical",
+      "location": "a woodland apiary clearing",
+      "person": { "age": "middle-aged", "gender": "man", "occupation": "beekeeper", "means": "modest", "status": "skilled rural worker", "relations": "supervises a young assistant" },
+      "circumstances": "a warm breezy day near flowering plants",
+      "situation": "The assistant wants to hurry the work with thicker smoke while bees are active around an opened hive."
+    },
+    {
+      "case_id": "mb17core-017",
+      "primary_domain": "grain-storage-and-pests",
+      "knowledge_need": "dry storage, signs of spoilage or pests, airflow, and separation",
+      "need_group": "practical_natural_physical",
+      "location": "a raised grain store",
+      "person": { "age": "older adult", "gender": "woman", "occupation": "household keeper", "means": "modest", "status": "rural householder", "relations": "manages shared family stores" },
+      "circumstances": "late winter during a damp spell",
+      "situation": "The keeper notices clumping and an unfamiliar smell in one portion of stored grain."
+    },
+    {
+      "case_id": "mb17core-018",
+      "primary_domain": "bread-and-oven-heat",
+      "knowledge_need": "retained heat, fuel, dough handling, and burn risk",
+      "need_group": "practical_natural_physical",
+      "location": "a household bake area",
+      "person": { "age": "adult", "gender": "woman", "occupation": "baker", "means": "modest", "status": "town householder", "relations": "bakes for a multigenerational home" },
+      "circumstances": "the hearth has been used for cooking earlier that day",
+      "situation": "The baker judges whether the oven is ready and how to avoid wasting dough or scorching it."
+    },
+    {
+      "case_id": "mb17core-019",
+      "primary_domain": "dairy-and-cool-storage",
+      "knowledge_need": "milk spoilage, cleanliness, cooling, and vessel use",
+      "need_group": "practical_natural_physical",
+      "location": "a shaded cellar under a farmyard storehouse",
+      "person": { "age": "young adult", "gender": "woman", "occupation": "dairy worker", "means": "poor", "status": "farm household member", "relations": "works with her mother" },
+      "circumstances": "hot weather follows morning milking",
+      "situation": "The worker has more fresh milk than can be used at once and considers what handling and storage conditions matter."
+    },
+    {
+      "case_id": "mb17core-020",
+      "primary_domain": "meat-processing-and-hygiene",
+      "knowledge_need": "carcass handling, contamination, cool conditions, and separation of tasks",
+      "need_group": "practical_natural_physical",
+      "location": "a farmyard work space",
+      "person": { "age": "adult", "gender": "man", "occupation": "household butcher", "means": "modest", "status": "rural householder", "relations": "works with an adult neighbor" },
+      "circumstances": "a cool morning after an animal has been slaughtered for food",
+      "situation": "They need to organize cutting and carrying so edible portions are kept as clean and usable as possible."
+    },
+    {
+      "case_id": "mb17core-021",
+      "primary_domain": "textile-care-and-weather",
+      "knowledge_need": "wet cloth, drying, abrasion, layering, and repair choices",
+      "need_group": "practical_natural_physical",
+      "location": "a town household yard",
+      "person": { "age": "adult", "gender": "woman", "occupation": "spinner", "means": "modest", "status": "craft household member", "relations": "mends clothing for her family" },
+      "circumstances": "wind follows a day of rain",
+      "situation": "A woolen outer garment is wet and rubbed thin at one elbow; the spinner must dry and mend it without damaging it further."
+    },
+    {
+      "case_id": "mb17core-022",
+      "primary_domain": "leather-and-footwear-repair",
+      "knowledge_need": "leather moisture, stitching, sole wear, and walking limits",
+      "need_group": "practical_natural_physical",
+      "location": "a cobbler's work corner",
+      "person": { "age": "adult", "gender": "man", "occupation": "itinerant peddler", "means": "modest", "status": "traveler", "relations": "travels with a trading companion" },
+      "circumstances": "the traveler expects to walk wet streets the next day",
+      "situation": "The traveler asks what a quick repair can realistically do and what condition still makes travel difficult."
+    },
+    {
+      "case_id": "mb17core-023",
+      "primary_domain": "pottery-and-thermal-shock",
+      "knowledge_need": "ceramic fragility, heating, cooling, and cracks",
+      "need_group": "practical_natural_physical",
+      "location": "a kitchen beside a winter hearth",
+      "person": { "age": "middle-aged", "gender": "woman", "occupation": "cook", "means": "modest", "status": "household worker", "relations": "prepares food for a craft family" },
+      "circumstances": "the cook wants to warm food quickly after bringing the pot in from cold air",
+      "situation": "The cook considers placing the cold vessel directly beside strong coals."
+    },
+    {
+      "case_id": "mb17core-024",
+      "primary_domain": "iron-tool-care",
+      "knowledge_need": "edge condition, rust, handles, force, and safe use",
+      "need_group": "practical_natural_physical",
+      "location": "a woodworker's shed",
+      "person": { "age": "adult", "gender": "man", "occupation": "carpenter", "means": "modest", "status": "independent artisan", "relations": "works with an apprentice" },
+      "circumstances": "tools have been stored through a damp week",
+      "situation": "The carpenter finds a plane iron lightly rusted and an axe handle loose before beginning work."
+    },
+    {
+      "case_id": "mb17core-025",
+      "primary_domain": "blacksmithing-heat-and-safety",
+      "knowledge_need": "forge heat, fuel, hot metal, sparks, and workspace hazards",
+      "need_group": "practical_natural_physical",
+      "location": "a small smithy with a charcoal hearth",
+      "person": { "age": "middle-aged", "gender": "woman", "occupation": "smith", "means": "modest", "status": "workshop owner", "relations": "trains a young relative" },
+      "circumstances": "wind begins entering through the open doorway",
+      "situation": "The helper reaches to move hot work with an unsuitable wooden stick while sparks are carried toward stored material."
+    },
+    {
+      "case_id": "mb17core-026",
+      "primary_domain": "lime-and-mortar-work",
+      "knowledge_need": "caustic material, water, setting conditions, and eye/skin precautions",
+      "need_group": "practical_natural_physical",
+      "location": "a repair site at a masonry store wall",
+      "person": { "age": "young adult", "gender": "man", "occupation": "mason's helper", "means": "poor", "status": "hired laborer", "relations": "works under a master mason" },
+      "circumstances": "dry weather follows a cool night",
+      "situation": "The helper mixes mortar and splashes the wet material on bare skin while trying to work faster."
+    },
+    {
+      "case_id": "mb17core-027",
+      "primary_domain": "rope-knots-and-loads",
+      "knowledge_need": "fiber rope condition, knots, friction, load direction, and inspection",
+      "need_group": "practical_natural_physical",
+      "location": "a riverside warehouse platform",
+      "person": { "age": "adult", "gender": "man", "occupation": "porter", "means": "poor", "status": "hired laborer", "relations": "works with two dockmates" },
+      "circumstances": "the rope has been wet from rain",
+      "situation": "The porter sees frayed strands near a knot and must decide how to manage the lift."
+    },
+    {
+      "case_id": "mb17core-028",
+      "primary_domain": "waterwheel-and-mill-work",
+      "knowledge_need": "moving machinery, water power variability, grain dust, and safe work distance",
+      "need_group": "practical_natural_physical",
+      "location": "a small watermill on a stream",
+      "person": { "age": "middle-aged", "gender": "woman", "occupation": "mill worker", "means": "modest", "status": "skilled worker", "relations": "helps run a family mill" },
+      "circumstances": "water rises after rain and the mill runs unevenly",
+      "situation": "The worker considers reaching close to the moving mechanism to clear a jam."
+    },
+    {
+      "case_id": "mb17core-029",
+      "primary_domain": "firewood-and-indoor-air",
+      "knowledge_need": "fuel dryness, smoke, ventilation, and carbon-monoxide danger",
+      "need_group": "practical_natural_physical",
+      "location": "a low-roofed winter dwelling",
+      "person": { "age": "adult", "gender": "woman", "occupation": "household keeper", "means": "poor", "status": "town resident", "relations": "cares for two children" },
+      "circumstances": "wind drives smoke back through a partly blocked opening",
+      "situation": "The parent wants more heat for sleeping children and considers closing the remaining opening."
+    },
+    {
+      "case_id": "mb17core-030",
+      "primary_domain": "water-safety-and-washing",
+      "knowledge_need": "contamination routes, heating limits, handwashing, and drinking choices",
+      "need_group": "practical_natural_physical",
+      "location": "a busy riverbank beside household washing",
+      "person": { "age": "adult", "gender": "man", "occupation": "cook", "means": "modest", "status": "lodging worker", "relations": "prepares a meal for travelers" },
+      "circumstances": "nearby people wash garments upstream",
+      "situation": "The cook must choose where and how to collect water for food preparation."
+    },
+    {
+      "case_id": "mb17core-031",
+      "primary_domain": "smoke-wind-and-visibility",
+      "knowledge_need": "smoke dispersion, wind shifts, visibility, and breathing discomfort",
+      "need_group": "practical_natural_physical",
+      "location": "a brush-clearing edge near homes",
+      "person": { "age": "adult", "gender": "woman", "occupation": "field worker", "means": "poor", "status": "seasonal laborer", "relations": "works with a friend" },
+      "circumstances": "a variable wind turns toward a neighboring yard",
+      "situation": "They have lit a small controlled fire and need to decide whether to feed it, contain it, or extinguish it."
+    },
+    {
+      "case_id": "mb17core-032",
+      "primary_domain": "cold-water-exposure",
+      "knowledge_need": "cold shock, wet clothing, heat loss, and immediate priorities",
+      "need_group": "practical_natural_physical",
+      "location": "a spring river shallows",
+      "person": { "age": "teenager", "gender": "boy", "occupation": "boat worker", "means": "poor", "status": "apprentice", "relations": "helps an uncle" },
+      "circumstances": "cold water after ice-out",
+      "situation": "The worker slips while pulling a boat line and comes out soaked before a long walk home."
+    },
+    {
+      "case_id": "mb17core-033",
+      "primary_domain": "heat-and-dehydration",
+      "knowledge_need": "work pacing, shade, drinking water, and warning signs",
+      "need_group": "practical_natural_physical",
+      "location": "an exposed hay meadow",
+      "person": { "age": "adult", "gender": "man", "occupation": "hay mower", "means": "modest", "status": "rural worker", "relations": "works beside his spouse" },
+      "circumstances": "a still, unusually hot midsummer day",
+      "situation": "One worker becomes dizzy and irritable while insisting on finishing a row before resting."
+    },
+    {
+      "case_id": "mb17core-034",
+      "primary_domain": "wound-care-and-infection",
+      "knowledge_need": "cleaning, bleeding control, contamination, watchful care, and limits of treatment",
+      "need_group": "practical_natural_physical",
+      "location": "a carpenter's yard",
+      "person": { "age": "young adult", "gender": "woman", "occupation": "carpenter's helper", "means": "poor", "status": "apprentice worker", "relations": "works for a household workshop" },
+      "circumstances": "work is underway far from a healer",
+      "situation": "Companions must decide what immediate care is sensible and what changes would require further help."
+    },
+    {
+      "case_id": "mb17core-035",
+      "primary_domain": "bone-and-joint-injury",
+      "knowledge_need": "immobilization, movement limits, swelling, and transport caution",
+      "need_group": "practical_natural_physical",
+      "location": "a forest work site",
+      "person": { "age": "adult", "gender": "man", "occupation": "woodland laborer", "means": "poor", "status": "hired worker", "relations": "works in a three-person crew" },
+      "circumstances": "the laborer cannot comfortably bear weight afterward",
+      "situation": "Fellow workers discuss whether to make the person walk out, carry them, or seek help in place."
+    },
+    {
+      "case_id": "mb17core-036",
+      "primary_domain": "digestive-illness-and-care",
+      "knowledge_need": "fluid loss, rest, food tolerance, hygiene, and severity signs",
+      "need_group": "practical_natural_physical",
+      "location": "a crowded roadside lodging",
+      "person": { "age": "older adult", "gender": "woman", "occupation": "cloth trader", "means": "modest", "status": "traveler", "relations": "travels with an adult daughter" },
+      "circumstances": "the traveler has little strength after a day of symptoms",
+      "situation": "A companion needs to arrange care and avoid making the condition or risk to others worse."
+    },
+    {
+      "case_id": "mb17core-037",
+      "primary_domain": "pregnancy-and-workload",
+      "knowledge_need": "ordinary physical limits, fatigue, lifting risk, rest, and asking for assistance",
+      "need_group": "practical_natural_physical",
+      "location": "a household store yard",
+      "person": { "age": "adult", "gender": "woman", "occupation": "grain worker", "means": "poor", "status": "hired household laborer", "relations": "supports a spouse and child" },
+      "circumstances": "a delivery must be moved before rain",
+      "situation": "The worker is asked to help lift sacks and must decide what work is reasonable and what support is needed."
+    },
+    {
+      "case_id": "mb17core-038",
+      "primary_domain": "infant-care-and-cold",
+      "knowledge_need": "infant vulnerability, warmth, feeding routine, smoke exposure, and caregiver workload",
+      "need_group": "practical_natural_physical",
+      "location": "a small dwelling in winter",
+      "person": { "age": "young adult", "gender": "woman", "occupation": "household keeper", "means": "poor", "status": "town resident", "relations": "cares for her infant" },
+      "circumstances": "the room is smoky while the caregiver must fetch water",
+      "situation": "The caregiver weighs leaving the infant briefly near the hearth against carrying the child outside."
+    },
+    {
+      "case_id": "mb17core-039",
+      "primary_domain": "night-light-and-vision",
+      "knowledge_need": "natural darkness, flame light limits, shadows, fire safety, and pace",
+      "need_group": "practical_natural_physical",
+      "location": "a narrow town lane between wooden yards",
+      "person": { "age": "older adult", "gender": "man", "occupation": "weaver", "means": "modest", "status": "town resident", "relations": "visits an ill neighbor" },
+      "circumstances": "moonless night with a damp breeze",
+      "situation": "The neighbor needs to find a familiar door without tripping, alarming residents, or exposing the flame to wind."
+    },
+    {
+      "case_id": "mb17core-040",
+      "primary_domain": "storm-and-building-protection",
+      "knowledge_need": "wind, loose roofing, falling objects, water entry, and safe shelter",
+      "need_group": "practical_natural_physical",
+      "location": "a village yard with timber buildings",
+      "person": { "age": "middle-aged", "gender": "woman", "occupation": "household head", "means": "modest", "status": "village householder", "relations": "coordinates adult relatives" },
+      "circumstances": "a summer thunderstorm approaches quickly",
+      "situation": "A roof covering has loosened and people must decide which exterior tasks are safe before the storm arrives."
+    },
+    {
+      "case_id": "mb17core-041",
+      "primary_domain": "floodplain-and-high-water",
+      "knowledge_need": "rising water, bank erosion, stored goods, and evacuation priorities",
+      "need_group": "practical_natural_physical",
+      "location": "a low riverside storage yard",
+      "person": { "age": "adult", "gender": "man", "occupation": "storekeeper", "means": "prosperous", "status": "town trader", "relations": "directs two hired helpers" },
+      "circumstances": "spring water is rising toward the lowest building",
+      "situation": "They must choose what to move first and which routes are still safe for carrying goods."
+    },
+    {
+      "case_id": "mb17core-042",
+      "primary_domain": "military-equipment-maintenance",
+      "knowledge_need": "weapon and protection condition, moisture, fit, inspection, and ordinary repair limits",
+      "need_group": "practical_natural_physical",
+      "location": "a militia muster yard",
+      "person": { "age": "adult", "gender": "man", "occupation": "tanner", "means": "modest", "status": "militia member", "relations": "leaves a spouse at home" },
+      "circumstances": "rain has soaked a shield covering and leather fittings",
+      "situation": "Before a day of travel, the soldier notices loosened fittings and must decide what maintenance is practical."
+    },
+    {
+      "case_id": "mb17core-043",
+      "primary_domain": "military-march-and-foot-care",
+      "knowledge_need": "pace, footwear, loads, fatigue, wet ground, and unit cohesion",
+      "need_group": "practical_natural_physical",
+      "location": "a forest road on a military march",
+      "person": { "age": "teenager", "gender": "boy", "occupation": "farm worker", "means": "poor", "status": "new militia recruit", "relations": "marches with older villagers" },
+      "circumstances": "the march has passed through mud since dawn",
+      "situation": "The recruit develops painful feet and falls behind while the group approaches a planned rest."
+    },
+    {
+      "case_id": "mb17core-044",
+      "primary_domain": "military-scouting-and-observation",
+      "knowledge_need": "cover, sightlines, sound, terrain, distance uncertainty, and cautious reporting",
+      "need_group": "practical_natural_physical",
+      "location": "a wooded rise above a road",
+      "person": { "age": "adult", "gender": "woman", "occupation": "scout", "means": "modest", "status": "armed retainer", "relations": "works with a trusted partner" },
+      "circumstances": "wind carries sound unevenly at dusk",
+      "situation": "They hear movement below but cannot clearly see its source and must decide what observation is possible before reporting."
+    },
+    {
+      "case_id": "mb17core-045",
+      "primary_domain": "military-camp-and-fire-discipline",
+      "knowledge_need": "shelter siting, smoke, fire spread, water, sanitation, and night routine",
+      "need_group": "practical_natural_physical",
+      "location": "a temporary camp near a treeline",
+      "person": { "age": "middle-aged", "gender": "man", "occupation": "armed leader", "means": "modest", "status": "retainer", "relations": "leads six companions and a pack handler" },
+      "circumstances": "evening wind shifts toward dry litter and nearby tents",
+      "situation": "The group prepares cooking fires and sleeping places while trying to avoid an obvious camp hazard."
+    },
+    {
+      "case_id": "mb17core-046",
+      "primary_domain": "military-bow-use-and-weather",
+      "knowledge_need": "bowstring moisture, footing, visibility, safe handling, and qualitative performance limits",
+      "need_group": "practical_natural_physical",
+      "location": "a muddy palisade approach",
+      "person": { "age": "young adult", "gender": "woman", "occupation": "archer", "means": "modest", "status": "town guard", "relations": "shares watch with an older guard" },
+      "circumstances": "cold drizzle and gusts reduce comfort and visibility",
+      "situation": "The archer considers remaining exposed with a ready bow versus protecting equipment and observing from cover."
+    },
+    {
+      "case_id": "mb17core-047",
+      "primary_domain": "military-horse-and-rough-ground",
+      "knowledge_need": "horse footing, rider control, tack, slope, and fatigue",
+      "need_group": "practical_natural_physical",
+      "location": "a rutted descent to a stream crossing",
+      "person": { "age": "adult", "gender": "man", "occupation": "mounted messenger", "means": "modest", "status": "retainer", "relations": "rides with a small patrol" },
+      "circumstances": "the ground is slick after rain",
+      "situation": "The riders want to descend quickly while the horses begin to hesitate at the steepest stretch."
+    },
+    {
+      "case_id": "mb17core-048",
+      "primary_domain": "military-river-crossing",
+      "knowledge_need": "ford uncertainty, current, equipment handling, group order, and cold-water risk",
+      "need_group": "practical_natural_physical",
+      "location": "a shallow-looking river ford",
+      "person": { "age": "adult", "gender": "woman", "occupation": "pack handler", "means": "poor", "status": "camp worker", "relations": "travels with a mixed armed group" },
+      "circumstances": "the water is swollen by rain upstream",
+      "situation": "The group must decide how to test and cross the ford without scattering people or soaking vulnerable gear."
+    },
+    {
+      "case_id": "mb17core-049",
+      "primary_domain": "military-wounds-and-evacuation",
+      "knowledge_need": "bleeding, movement limits, simple carrying, cold, and urgency",
+      "need_group": "practical_natural_physical",
+      "location": "a field edge after a brief clash",
+      "person": { "age": "adult", "gender": "man", "occupation": "foot soldier", "means": "poor", "status": "militia member", "relations": "travels with two village companions" },
+      "circumstances": "rain is beginning and the group fears another encounter",
+      "situation": "The companions must decide how to give immediate aid and move the injured person without claiming a definitive outcome."
+    },
+    {
+      "case_id": "mb17core-050",
+      "primary_domain": "military-aftermath-and-civilians",
+      "knowledge_need": "fire, displaced people, damaged supplies, safety, and practical recovery priorities",
+      "need_group": "practical_natural_physical",
+      "location": "a hamlet edge after armed men passed through",
+      "person": { "age": "adult", "gender": "woman", "occupation": "household keeper", "means": "modest", "status": "rural resident", "relations": "returns with children and an elder" },
+      "circumstances": "one outbuilding is smoking and animals are loose",
+      "situation": "The group must decide what dangers and immediate needs take priority before trying to assess losses."
+    },
+    {
+      "case_id": "mb17core-051",
+      "primary_domain": "military-defensive-works",
+      "knowledge_need": "wooden barriers, wet earth, visibility, fire, and labor limits",
+      "need_group": "practical_natural_physical",
+      "location": "a town earthwork and timber barrier",
+      "person": { "age": "adult", "gender": "man", "occupation": "ditch laborer", "means": "poor", "status": "town resident", "relations": "has family inside the town" },
+      "circumstances": "wet snow is falling near evening",
+      "situation": "The laborer is told to reinforce a weak-looking section and needs to understand what work and hazards are plausible."
+    },
+    {
+      "case_id": "mb17core-052",
+      "primary_domain": "boat-repair-and-waterproofing",
+      "knowledge_need": "hull leakage, wet wood, sealing limits, tools, and safe loading",
+      "need_group": "practical_natural_physical",
+      "location": "a quiet lakeshore landing",
+      "person": { "age": "middle-aged", "gender": "woman", "occupation": "boat owner", "means": "modest", "status": "free river worker", "relations": "works with an adult sibling" },
+      "circumstances": "a small leak appears after the boat grounds on a stone",
+      "situation": "They must decide what a shore-side repair can achieve before carrying people or cargo again."
+    },
+    {
+      "case_id": "mb17core-053",
+      "primary_domain": "household-waste-and-sanitation",
+      "knowledge_need": "waste placement, insects, water contamination, odors, and routine cleaning",
+      "need_group": "practical_natural_physical",
+      "location": "a densely used town yard",
+      "person": { "age": "young adult", "gender": "man", "occupation": "household worker", "means": "poor", "status": "town resident", "relations": "shares a yard with relatives" },
+      "circumstances": "warm weather makes smells and flies more noticeable",
+      "situation": "The worker must choose where to move kitchen waste while a shallow well and neighbors' paths are nearby."
+    },
+    {
+      "case_id": "mb17core-054",
+      "primary_domain": "bath-and-heat-safety",
+      "knowledge_need": "heated-room conditions, water, heat stress, burns, ventilation, and recovery",
+      "need_group": "practical_natural_physical",
+      "location": "a small bathhouse beside a household yard",
+      "person": { "age": "adult", "gender": "woman", "occupation": "field laborer", "means": "poor", "status": "hired worker", "relations": "rests with fellow workers" },
+      "circumstances": "the room has been heated strongly on a cold evening",
+      "situation": "The laborer wants to remain inside after becoming light-headed and is urged to take more heat."
+    },
+    {
+      "case_id": "mb17core-055",
+      "primary_domain": "weather-signs-and-work-planning",
+      "knowledge_need": "cloud, wind, humidity, uncertainty, and decisions under changing weather",
+      "need_group": "practical_natural_physical",
+      "location": "a river meadow with cut hay",
+      "person": { "age": "middle-aged", "gender": "woman", "occupation": "smallholder", "means": "modest", "status": "rural householder", "relations": "coordinates children and neighbors" },
+      "circumstances": "clouds build and the wind changes direction",
+      "situation": "The haymaker must choose whether to continue spreading hay, gather it, or shift workers to another task."
+    },
+    {
+      "case_id": "mb17core-056",
+      "primary_domain": "sound-and-settlement-awareness",
+      "knowledge_need": "sound travel, routine noises, distance uncertainty, and cautious interpretation",
+      "need_group": "practical_natural_physical",
+      "location": "a town lane near workshops and a churchyard",
+      "person": { "age": "young adult", "gender": "man", "occupation": "watch helper", "means": "poor", "status": "town resident", "relations": "works beside an older watchman" },
+      "circumstances": "fog muffles some sounds while others carry",
+      "situation": "The helper hears a repeated metallic sound and must decide what can reasonably be inferred before waking others."
+    },
+    {
+      "case_id": "mb17core-057",
+      "primary_domain": "hand-tools-and-mechanical-advantage",
+      "knowledge_need": "levers, wedges, pinch hazards, wood grain, and controlled force",
+      "need_group": "practical_natural_physical",
+      "location": "a building repair yard",
+      "person": { "age": "adult", "gender": "woman", "occupation": "building worker", "means": "modest", "status": "craft helper", "relations": "works with a sibling" },
+      "circumstances": "the timber rests unevenly on stones",
+      "situation": "One worker proposes prying it up by hand while the other looks for a safer way to shift it."
+    },
+    {
+      "case_id": "mb17core-058",
+      "primary_domain": "charcoal-and-fuel-storage",
+      "knowledge_need": "fuel dryness, dust, fire risk, moisture, and handling",
+      "need_group": "practical_natural_physical",
+      "location": "a covered fuel store beside a smithy",
+      "person": { "age": "teenager", "gender": "girl", "occupation": "fuel carrier", "means": "poor", "status": "workshop dependent", "relations": "helps a smith parent" },
+      "circumstances": "rainwater has entered through a damaged roof edge",
+      "situation": "The carrier needs to sort damp and dry fuel while a forge must be used later that day."
+    },
+    {
+      "case_id": "mb17core-059",
+      "primary_domain": "dyeing-and-water-chemistry",
+      "knowledge_need": "water temperature, mordants or plant dyes, vessel cleanliness, skin contact, and color variability",
+      "need_group": "practical_natural_physical",
+      "location": "a dyer's outdoor work area",
+      "person": { "age": "young adult", "gender": "woman", "occupation": "dyer apprentice", "means": "poor", "status": "apprentice", "relations": "works under a master dyer" },
+      "circumstances": "a sudden shower dilutes a prepared bath",
+      "situation": "The apprentice must decide what changes to the cloth and dye process are plausible rather than promising a fixed color."
+    },
+    {
+      "case_id": "mb17core-060",
+      "primary_domain": "fermentation-and-vessel-care",
+      "knowledge_need": "clean vessels, temperature, contamination, gas, and spoilage signs",
+      "need_group": "practical_natural_physical",
+      "location": "a household brewing corner",
+      "person": { "age": "middle-aged", "gender": "man", "occupation": "brewer", "means": "modest", "status": "household craft worker", "relations": "prepares drink for kin gathering" },
+      "circumstances": "the room warms unexpectedly after a change in weather",
+      "situation": "The brewer notices unusual froth and odor and must decide whether to separate, cool, or discard the batch."
+    },
+    {
+      "case_id": "mb17core-061",
+      "primary_domain": "seasonal-insects-and-food-protection",
+      "knowledge_need": "flies, food exposure, covering, timing, and spoilage risk",
+      "need_group": "practical_natural_physical",
+      "location": "an open market preparation area",
+      "person": { "age": "adult", "gender": "woman", "occupation": "food seller", "means": "modest", "status": "market trader", "relations": "works with a younger sibling" },
+      "circumstances": "a warm late-summer day with many insects",
+      "situation": "The seller prepares cooked food for later sale and must decide how to keep it from attracting insects and becoming unsafe."
+    },
+    {
+      "case_id": "mb17core-062",
+      "primary_domain": "household-status-and-clothing",
+      "knowledge_need": "role-appropriate clothing, repair, display, practicality, and uncertainty across means",
+      "need_group": "social_institutional",
+      "location": "a market-side household court",
+      "person": { "age": "middle-aged", "gender": "man", "occupation": "metalworker", "means": "prosperous", "status": "independent artisan", "relations": "receives a trading acquaintance" },
+      "circumstances": "a formal errand follows ordinary work in wet weather",
+      "situation": "The worker chooses how to appear presentable without assuming a uniform costume or fixed social rule."
+    },
+    {
+      "case_id": "mb17core-063",
+      "primary_domain": "kinship-and-household-obligation",
+      "knowledge_need": "care, labor negotiation, age, dependence, and plausible household expectations",
+      "need_group": "social_institutional",
+      "location": "a multigenerational town household",
+      "person": { "age": "adult", "gender": "woman", "occupation": "washer", "means": "poor", "status": "free town worker", "relations": "is daughter to the ill elder" },
+      "circumstances": "an older household member becomes ill during a busy work day",
+      "situation": "The family discusses who can provide care and what obligations or tensions may arise."
+    },
+    {
+      "case_id": "mb17core-064",
+      "primary_domain": "literacy-and-everyday-records",
+      "knowledge_need": "practical writing, counting, messengers, material records, and limits of literacy",
+      "need_group": "social_institutional",
+      "location": "a merchant's yard near the market",
+      "person": { "age": "young adult", "gender": "woman", "occupation": "trading household worker", "means": "modest", "status": "merchant kin", "relations": "manages deliveries for an absent parent" },
+      "circumstances": "a partner is away when goods are delivered",
+      "situation": "The household needs to leave a usable record of a delivery without assuming everyone involved reads or writes alike."
+    },
+    {
+      "case_id": "mb17core-065",
+      "primary_domain": "apprenticeship-and-skill-transfer",
+      "knowledge_need": "observation, supervised practice, correction, tools, and gradual responsibility",
+      "need_group": "social_institutional",
+      "location": "a cooper's workshop",
+      "person": { "age": "teenager", "gender": "boy", "occupation": "cooper's learner", "means": "poor", "status": "apprentice", "relations": "works under a non-kin master" },
+      "circumstances": "the learner wants to undertake a difficult fitting step alone",
+      "situation": "The craft worker decides how instruction, oversight, and a mistake can plausibly be handled."
+    },
+    {
+      "case_id": "mb17core-066",
+      "primary_domain": "market-exchange-and-quality",
+      "knowledge_need": "inspection, trust, measures, bargaining, reputation, and disputed quality",
+      "need_group": "social_institutional",
+      "location": "a busy town market",
+      "person": { "age": "adult", "gender": "woman", "occupation": "household buyer", "means": "modest", "status": "town resident", "relations": "shops for a craft household" },
+      "circumstances": "the seller's claimed quality is challenged in front of other traders",
+      "situation": "The buyer needs a plausible way to inspect, negotiate, or defer the purchase without imposing modern consumer rules."
+    },
+    {
+      "case_id": "mb17core-067",
+      "primary_domain": "debt-and-witnesses",
+      "knowledge_need": "oral commitments, records, witnesses, uncertainty, and settlement behavior",
+      "need_group": "social_institutional",
+      "location": "a riverside trading court",
+      "person": { "age": "middle-aged", "gender": "man", "occupation": "river trader", "means": "modest", "status": "free trader", "relations": "disputes with a former trading partner" },
+      "circumstances": "each recalls the agreement differently and bystanders heard only part",
+      "situation": "They consider what ordinary steps could clarify the dispute before it becomes a larger conflict."
+    },
+    {
+      "case_id": "mb17core-068",
+      "primary_domain": "authority-and-public-order",
+      "knowledge_need": "local authority, public disturbance, mediation, and limits of certainty",
+      "need_group": "social_institutional",
+      "location": "a crowded street near a market",
+      "person": { "age": "older adult", "gender": "woman", "occupation": "shopkeeper", "means": "modest", "status": "town resident", "relations": "knows nearby householders" },
+      "circumstances": "two strangers are shouting and blocking movement",
+      "situation": "The resident considers whether to seek neighbors, a local authority, or simply avoid escalation."
+    },
+    {
+      "case_id": "mb17core-069",
+      "primary_domain": "marriage-and-household-formation",
+      "knowledge_need": "family negotiation, household resources, ceremony, kin ties, and social variation",
+      "need_group": "social_institutional",
+      "location": "a village household preparing for a union",
+      "person": { "age": "young adult", "gender": "woman", "occupation": "household worker", "means": "modest", "status": "village resident", "relations": "negotiates with parents and intended spouse's kin" },
+      "circumstances": "the families have unequal means and disagree over timing",
+      "situation": "They discuss what practical and social arrangements may need consideration without treating one custom as universal."
+    },
+    {
+      "case_id": "mb17core-070",
+      "primary_domain": "religious-calendar-and-work",
+      "knowledge_need": "observance, communal expectation, variation, work timing, and respectful uncertainty",
+      "need_group": "social_institutional",
+      "location": "a town yard near a church",
+      "person": { "age": "adult", "gender": "man", "occupation": "leatherworker", "means": "modest", "status": "household head", "relations": "plans with spouse and apprentice" },
+      "circumstances": "a religious observance coincides with the intended work day",
+      "situation": "The household weighs an urgent task against likely communal and religious expectations."
+    },
+    {
+      "case_id": "mb17core-071",
+      "primary_domain": "hospitality-and-travel",
+      "knowledge_need": "hosting, reciprocity, household capacity, status, safety, and social caution",
+      "need_group": "social_institutional",
+      "location": "a roadside village home",
+      "person": { "age": "middle-aged", "gender": "woman", "occupation": "smallholder", "means": "modest", "status": "village householder", "relations": "lives with adult child" },
+      "circumstances": "nightfall and rain make onward travel difficult",
+      "situation": "The household must decide what help, questions, and boundaries are socially plausible."
+    },
+    {
+      "case_id": "mb17core-072",
+      "primary_domain": "reputation-and-rumor",
+      "knowledge_need": "hearsay, social memory, careful speech, consequences, and uncertainty",
+      "need_group": "social_institutional",
+      "location": "a communal water place",
+      "person": { "age": "teenager", "gender": "girl", "occupation": "water carrier", "means": "poor", "status": "household dependent", "relations": "knows both families by sight" },
+      "circumstances": "several people repeat the story but none claims direct knowledge",
+      "situation": "The worker decides whether to repeat, question, or withhold the rumor before meeting the neighbor."
+    },
+    {
+      "case_id": "mb17core-073",
+      "primary_domain": "recreation-and-social-space",
+      "knowledge_need": "games, music, gathering norms, age and status variation, and ordinary leisure",
+      "need_group": "social_institutional",
+      "location": "a town yard after a market day",
+      "person": { "age": "young adult", "gender": "man", "occupation": "potter's helper", "means": "modest", "status": "town resident", "relations": "gathers with peers and older kin nearby" },
+      "circumstances": "work is done and a small gathering forms",
+      "situation": "Someone proposes a game and music while another household worries about noise and propriety."
+    },
+    {
+      "case_id": "mb17core-074",
+      "primary_domain": "captivity-and-return",
+      "knowledge_need": "vulnerability, family response, negotiation uncertainty, material needs, and social consequences",
+      "need_group": "social_institutional",
+      "location": "a settlement after a local armed disturbance",
+      "person": { "age": "adult", "gender": "woman", "occupation": "weaver", "means": "poor", "status": "rural resident", "relations": "searches for her adult brother" },
+      "circumstances": "reports conflict about whether the person fled, was injured, or was taken",
+      "situation": "The family considers what practical, social, and cautious next steps are plausible without inventing a known fate."
+    },
+    {
+      "case_id": "mb17core-075",
+      "primary_domain": "intercommunity-mediation",
+      "knowledge_need": "messengers, gifts or obligations, authority, travel, and limits of local knowledge",
+      "need_group": "social_institutional",
+      "location": "a river settlement receiving visitors from upriver",
+      "person": { "age": "older adult", "gender": "man", "occupation": "boat trader", "means": "prosperous", "status": "respected householder", "relations": "speaks with neighboring household heads" },
+      "circumstances": "a disagreement over access to a landing has disrupted trade",
+      "situation": "The representative considers how a meeting or message could be arranged before the dispute hardens."
+    }
+  ]
+}

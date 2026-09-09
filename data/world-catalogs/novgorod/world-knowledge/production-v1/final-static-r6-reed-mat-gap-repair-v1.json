@@ -1,0 +1,100 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r6-reed-mat-editorial",
+      "title": "R6 reed mat preparation and interlacing: bounded editorial reconstruction",
+      "authors": ["PR92 World Knowledge editorial team"],
+      "publication": "PR92 research note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "research/final-static-r6-reed-mat-gap-repair.md",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r6-reed-mat-editorial",
+      "source_ref": "source:r6-reed-mat-editorial",
+      "anchor": {"section": "Candidate reusable premises"},
+      "note": "Candidate editorial bridge from already committed cut reeds and general material-condition/interlacing premises. It establishes no reed source, presence, access, quantity, tool, binding, skill, mat, durability, or outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "domain": "physics_material_science",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "already_present_freshly_cut_reed_stems_can_be_sorted_and_left_to_dry_or_otherwise_prepared_before_attempted_mat_work_without_prescribing_a_sequence_duration_tool_or_result"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "low", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:r6-reed-mat-editorial"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "suitable_prepared_flexible_continuous_reed_stems_can_be_overlapped_or_interlaced_and_locally_bound_into_a_mat_like_sheet_without_prescribing_a_recipe_or_supplying_binding_material"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "low", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:r6-reed-mat-editorial"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "a_reed_mat_like_sheet_s_practical_usability_depends_on_actual_stem_condition_continuity_interlacing_or_binding_and_drying_without_guaranteeing_load_durability_comfort_cleanliness_or_successful_floor_use"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "low", "directness": "editorial"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:r6-reed-mat-editorial"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing", "locale": "ru", "labels": ["Подготовка и переплетение тростника для циновки"], "short_definition": "Качественное отношение подготовки и соединения стеблей в циновкоподобное полотно.", "search_aliases": ["тростник циновка", "плетение стеблей"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:r6-reed-mat-preparation-and-interlacing", "locale": "en", "labels": ["Reed mat preparation and interlacing"], "short_definition": "Qualitative material relation of preparing and joining stems into a mat-like sheet.", "search_aliases": ["reed mat", "interlaced stems"]}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work", "locale": "ru", "runtime_text": "Уже срезанные свежие стебли тростника можно сортировать и оставить сушиться либо иначе подготовить перед попыткой сделать циновку; порядок, срок, орудие и результат не заданы.", "search_aliases": ["сушить тростник", "подготовить стебли"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-fresh-cut-reed-stems-can-need-sorting-drying-or-preparation-before-mat-work", "locale": "en", "runtime_text": "Already cut fresh reed stems can be sorted and left to dry or otherwise prepared before attempting mat work; no sequence, duration, tool, or result is specified.", "search_aliases": ["dry reed", "prepare stems"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat", "locale": "ru", "runtime_text": "Подходящие подготовленные гибкие непрерывные стебли можно накладывать или переплетать и местами связывать в циновкоподобное полотно; рецепт и связующий материал не подразумеваются.", "search_aliases": ["плести циновку", "связать тростник"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-suitable-prepared-reed-stems-can-be-interlaced-or-overlapped-and-bound-into-a-mat", "locale": "en", "runtime_text": "Suitable prepared flexible continuous reed stems can be overlapped or interlaced and locally bound into a mat-like sheet; no recipe or binding material is implied.", "search_aliases": ["weave reed mat", "bind reeds"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying", "locale": "ru", "runtime_text": "Пригодность циновкоподобного полотна зависит от состояния и целости стеблей, переплетения или связки и сушки; нагрузка, прочность, удобство, чистота и успешное напольное применение не гарантируются.", "search_aliases": ["прочность циновки", "состояние тростника"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:r6-reed-mat-usability-depends-on-stem-condition-continuity-interlacing-and-drying", "locale": "en", "runtime_text": "A mat-like reed sheet's usability depends on stem condition and continuity, interlacing or binding, and drying; load, durability, comfort, cleanliness, and successful floor use are not guaranteed.", "search_aliases": ["reed mat durability", "reed condition"]}
+  ]
+}

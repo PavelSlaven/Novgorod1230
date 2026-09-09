@@ -1,0 +1,457 @@
+{
+  "batch": "10",
+  "sampling_component": "stratified",
+  "reviewer": "/root/mixed_b10_core_c_review",
+  "corpus_claim_count": 1322,
+  "corpus_checkpoint": "6636736d7af725f07b6f0031745290aa7262ff3c",
+  "method": "Frozen inputs; WK-only full-bundle static review with explicit practical reconstruction; no live gameplay.",
+  "cases": [
+    {
+      "case_id": "b10core-051",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Нужны бытовая первая помощь, загрязнение и безопасное продолжение ручной работы."
+      },
+      "answer_ru": "Ей стоит прекратить работу на миг, промыть порез чистой водой, закрыть его чистой тканью и проверить, не мешает ли повязка уверенно держать нож. Если чистой защиты от грязи нет или хватка ненадёжна, разумный выбор — поручить опасную обрезку другому либо отложить её, а не продолжать из-за дождя. Это практическая реконструкция; WK не делает ткань стерильной и не предсказывает заживление.",
+      "claim_refs": [
+        "claim:care-waterproof-wound-cover",
+        "claim:wound-healing-time-dependent"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-052",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Ситуация о тепловой нагрузке и утомлении при физической работе."
+      },
+      "answer_ru": "Головокружение — повод выйти к тени, остановить жатву, пить из имеющейся фляги небольшими доступными порциями и сообщить линии, что ему нужен отдых. Можно вернуться лишь после улучшения самочувствия; иначе разумнее попросить подмену, чем продолжать с серпом. Точные пороги, объём питья и исход WK не задаёт.",
+      "claim_refs": [
+        "claim:exercise-heat-dissipation",
+        "claim:continued-sweating-can-cause-body-water-loss",
+        "claim:work-intensity-duration"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-053",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Это риск дыма, плохого воздуха и размещения для ночлега."
+      },
+      "answer_ru": "Коробейник может попросить оставить небольшое отверстие для тяги, поставить лежанку дальше от жаровни и не добавлять сырые дрова, пока они дают много дыма. Если спутники против сквозняка, варианты — сменить место в избе, дежурно следить за жаровней или искать сухое укрытие рядом; закрытые окна не делают дым безопасным. Конкретная вентиляция и состояние людей не установлены.",
+      "claim_refs": [
+        "claim:practical-dwelling-smoke-draft",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-054",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Нужны оценка детского состояния и ограничение нагрузки в жару."
+      },
+      "answer_ru": "Матери стоит остановиться в тени, дать ребёнку воду и прекратить требовать от него нести или быстро идти; собрать ягоды можно нести самой, оставить часть или позвать помощь. Если вялость и спотыкания не проходят, безопаснее отказаться от прямого пути и искать ближайших людей. Это осторожная реконструкция: WK не ставит ребёнку диагноз и не задаёт расстояние до дома.",
+      "claim_refs": [
+        "claim:candidate-v3-child-development-has-recognizable-periods",
+        "claim:exercise-heat-dissipation",
+        "claim:work-intensity-duration"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-055",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Практическая потребность касается выбора воды и ландшафтной неопределённости."
+      },
+      "answer_ru": "Охотнику лучше не принимать застойную лужу за безопасную только потому, что она ближе: разумно спуститься к слышимому потоку, осмотреть доступный участок и набрать воду там, если он действительно доступен. Если спуск небезопасен, варианты — экономить остаток и идти к известному месту либо повернуть назад, а не делать вывод о качестве по звуку воды. Кипячение не делает неизвестную воду автоматически пригодной при токсичных примесях, поэтому оно не отменяет эту осторожность.",
+      "claim_refs": [
+        "claim:foundations-earth-20-groundwater-recharge-discharge",
+        "claim:foundations-earth-26-runoff-contaminant-transport",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: claims позволяют дать осторожный выбор источника и не приписывают кипячению ложную гарантию; точная санитарная норма не нужна для ordinary choice.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-056",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Это непосредственная физическая безопасность огня в сухом лесу."
+      },
+      "answer_ru": "Надо сразу прекратить обычные дела: один человек тушит искру водой или засыпает её доступной землёй, другой разгребает горючую хвою вокруг, третий следит, не переносит ли ветер новые искры. Если огонь ушёл в подстилку или быстро растёт, работники должны отходить и звать помощь, а не пытаться сохранить корзины смолы. Вода может охлаждать обычное твёрдое горючее, но WK не обещает успеха или нужного объёма.",
+      "claim_refs": [
+        "claim:water-can-cool-class-a-fire-fuel-and-flame",
+        "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-057",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Нужна оценка опасности воды и индивидуального перехода с грузом."
+      },
+      "answer_ru": "Помощник может остаться на берегу, осмотреть изменившийся брод и точки опоры бревна, не проверяя их собственным весом над быстрым потоком. Срочность работы не обязывает переходить: разумны ожидание спада воды, возвращение или поиск известного перехода. Это решение при неустановленных условиях, а не обещание безопасного брода, численный порог скорости или универсальная техника верёвочной переправы.",
+      "claim_refs": [
+        "claim:foundations-phys-05-flow-regime-speed",
+        "claim:force-contact-geometry",
+        "claim:human-life-travel-conditions-can-justify-delay"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "initial_status": "remaining_gap",
+      "initial_gaps": [
+        "Нет claim о безопасной оценке брода, устойчивости бревна или переходе потока в одиночку с грузом."
+      ],
+      "triage_by": "/root",
+      "triage_note": "Root full-bundle triage: поток, геометрия и опора плюс явно изменившийся брод дают основание для осмотра и отсрочки. Case asks whether a crossing is sensible, not a guaranteed technique or numerical threshold."
+    },
+    {
+      "case_id": "b10core-058",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Запрос относится к опасности повисшего дерева и пределам ручного труда."
+      },
+      "answer_ru": "Сборщик может оставить зависшую берёзу и участок под ней нетронутыми, а с племянником собирать доступные свободно лежащие ветви вне этой зоны. Удаление или перемещение опоры меняет механическое равновесие; неизвестная нагрузка на зацепившиеся ветви делает попытку дёрнуть ствол непредсказуемой. Выбрать другое топливо или более опытную помощь — полезный обычный ответ, не инструкция по валке зависшего дерева.",
+      "claim_refs": [
+        "claim:force-contact-geometry",
+        "claim:population-material-wood-loading",
+        "claim:population-physics-elastic-recovery"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "initial_status": "remaining_gap",
+      "initial_gaps": [
+        "Нет factual coverage опасностей зависших деревьев и безопасных границ их разборки."
+      ],
+      "triage_by": "/root",
+      "triage_note": "Root triage: general support/load relations and the given hanging tree cover the requested choice of work limits; case does not require a tree-felling procedure."
+    },
+    {
+      "case_id": "b10core-059",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Это навигация при сниженной видимости рядом с мокрым опасным грунтом."
+      },
+      "answer_ru": "Ей стоит остановиться, не искать новый короткий путь через воду и вернуться по уже отмеченным вехам, держа спаду и инструменты так, чтобы не терять равновесие. Если знакомая линия не видна, варианты — ждать прояснения на твёрдом месте или позвать спутников, а не идти на звук вслепую. Туман уменьшает видимость, но WK не обещает, что маркеры или берег будут различимы.",
+      "claim_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-060",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Нужны выбор посильного топлива и оценка риска на скользком валежнике."
+      },
+      "answer_ru": "Вдова может брать лишь свободные лёгкие ветви на доступном нескользком участке, не вытаскивая древесину из-под переплетённых тяжёлых сучьев. Перемещение нагруженной ветви меняет опоры, а упруго согнутая часть может распрямиться; нельзя заранее знать величину движения. Разумно уменьшить ношу, обойти скользкий участок или дождаться внука, не связывая возраст с автоматической беспомощностью.",
+      "claim_refs": [
+        "claim:population-material-wood-loading",
+        "claim:population-physics-elastic-recovery",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:dry-friction"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "initial_status": "remaining_gap",
+      "initial_gaps": [
+        "Нет конкретного claim о безопасной заготовке валежника после ветровала."
+      ],
+      "triage_by": "/root",
+      "triage_note": "Root triage: wood loading/elastic response and capacity adaptation cover safe selection, not an exact storm-salvage recipe. No need for a claim named after this fixture."
+    },
+    {
+      "case_id": "b10core-061",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Ситуация требует осторожного поведения при неизвестном животном."
+      },
+      "answer_ru": "Девочка может остановиться, не идти в кусты на звук и, если путь отступления свободен, увеличить расстояние до шороха. Позвать кузину можно, когда это осуществимо без приближения к животному; палка, хлеб и свисток не гарантируют нужной реакции неизвестного вида. Это осторожный выбор при неполной видимости, а не универсальный протокол встречи с каждым крупным животным.",
+      "claim_refs": [
+        "claim:fauna-animal-signals",
+        "claim:public-world-support-needs-available-person-and-resources"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "initial_status": "remaining_gap",
+      "initial_gaps": [
+        "Нет claim о безопасном общем поведении при неожиданной встрече с неопознанным крупным животным."
+      ],
+      "triage_by": "/root",
+      "triage_note": "Root triage: unidentified species is a stated uncertainty, not a missing general safety guarantee. A useful non-approach/help option follows from the givens and permitted practical reasoning without asserting an animal response."
+    },
+    {
+      "case_id": "b10core-062",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Запрос о зимней проходимости и переносе груза."
+      },
+      "answer_ru": "Жнец может вернуться по уже известной линии следов, если она ещё различима, и уменьшить переносимую связку ради устойчивости. Снегоступы и видимая корка сами по себе не доказывают несущую способность над скрытой канавой; проверять её шагом с грузом нельзя считать надёжным способом. Если путь потерян, разумно остановиться на уже занятой опоре и попросить напарника помочь с ориентированием, оставив часть груза; несуществующий шест не добавляется.",
+      "claim_refs": [
+        "claim:residual-nature-snow-melt-refreeze-crust",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:force-contact-geometry",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
+      ],
+      "status": "covered",
+      "gaps": [],
+      "initial_status": "remaining_gap",
+      "initial_gaps": [
+        "Нет coverage скрытых дренажных каналов, несущей способности снежного покрова и безопасного переноса груза по нему."
+      ],
+      "triage_by": "/root",
+      "triage_note": "Root triage: hidden channels are given by the input, not something WK must discover. Snow crust/support and visibility premises cover a cautious choice without promising an unknown route or load capacity."
+    },
+    {
+      "case_id": "b10core-063",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Это обычная рыночная сделка, мера и взаимное доверие."
+      },
+      "answer_ru": "Продавщица может предложить осмотреть влажность и перевесить пучок при свидетелях на доступных весах, не соглашаясь молча на одну шкалу покупателя. Если общей меры нет, варианты — отложить спорный пучок, продать остальные или разойтись без сделки. Торг исторически относится к публичному пространству, а переговоры и вопросы возможны до эскалации; это не задаёт признанную меру льна или обязательный исход.",
+      "claim_refs": [
+        "claim:civic-public-market",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: для ordinary disputed sale достаточно market context, переговоров и ограниченного свидетельства; точная весовая норма не является необходимой посылкой.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-064",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Это кредит, обязательство и выбор между хозяйственным риском и отношениями."
+      },
+      "answer_ru": "Пекарь может дать меньше хлеба, предложить новую явную запись или отказать до расчёта по прежнему долгу; решение не обязано быть одинаковым для всех соседей. Ему стоит отделить сочувствие к болезни от факта нового обязательства и своей поставки муки. Долговые записи известны, но WK не устанавливает срок, проценты, взыскание или местную репутационную норму.",
+      "claim_refs": [
+        "claim:debt-record-practice",
+        "claim:debt-needs-parties-and-basis",
+        "claim:social-debt-record-may-contain-entry"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-065",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Ситуация о бартере при непроверенном качестве вещи и словах незнакомца."
+      },
+      "answer_ru": "Скорняк может осмотреть серп, сравнить его с тем, что знает о рабочих инструментах, и предложить меньшую сделку, пробу или отказ вместо цены в две шкуры сразу. Недавно заточенная кромка не доказывает ни качество металла, ни город происхождения, ни честность торговца. Это практическая реконструкция в публичном торговом контексте; WK не даёт фиксированной ценности серпа и шкур.",
+      "claim_refs": [
+        "claim:civic-public-market",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: вариант осмотра, торга или отказа не требует точной бартерной цены либо гарантии качества.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-066",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Нужны общие основания сделки и переговоры о спорном разделе выручки."
+      },
+      "answer_ru": "Продавщица может сначала разложить перед участниками известные вклады: улов, починку сетей, греблю и оговорённую оплату, затем предложить долю, отсроченный расчёт или позвать нейтрального знакомого до публичной ссоры. Равная доля не следует автоматически ни из хорошей выручки, ни из одного заявления гребца. Обязательство требует установленных сторон и основания, а переговоры могут предшествовать формальному разбору.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:social-guarantor-relates-transaction-obligation",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-dispute-can-use-questions-and-kin"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: вопрос требует выбора и переговоров, не единственной нормы раздела улова.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-067",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Это спор о недавно купленном товаре при ограниченной самостоятельности покупательницы."
+      },
+      "answer_ru": "Служанке стоит сразу вернуться к продавцу с тканью, жетоном и заметной слабой строчкой, попросить осмотр при людях и сообщить, что покупала для вдовы. Возможны обмен, уменьшение цены, приглашение хозяйки или отказ продавца; её жетон не доказывает автоматически скрытый дефект и не даёт ей чужих полномочий. Положение и связи могут влиять на доступ к поддержке, но не заменяют проверку самой вещи.",
+      "claim_refs": [
+        "claim:civic-public-market",
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-status-and-ties-affect-access-not-guilt"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: options и границы её представительства поддержаны без выдумывания правила возврата.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-068",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Ситуация объединяет дефицит общего ресурса и соседское соглашение."
+      },
+      "answer_ru": "Хозяйке не следует единолично решать за очередь: можно предложить сначала наполнить питьевые сосуды домов, затем обсудить отдельную выдачу для скота с соседями и учесть нужду больного старика. Если воды не хватает, варианты — очередь, ограничение по вёдрам или совместный поиск другого источника; ни один вариант не следует как готовое правило. Переговоры о распределении возможны до эскалации, а доступность подземной воды может снижаться при превышении пополнения.",
+      "claim_refs": [
+        "claim:foundations-earth-21-groundwater-withdrawal-balance",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-dispute-can-use-questions-and-kin"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: обычный выбор очереди или переговоров не требует зафиксированного местного водного обычая.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-069",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Нужны бытовое согласование соседей и пределы вывода из их просьб."
+      },
+      "answer_ru": "Бондарь может предложить тихие подготовительные дела, перенести самые громкие удары на ограниченное время либо позвать соседа договориться о часе, когда ребёнок отдыхает. Ему не нужно выбирать между полной остановкой и игнорированием: возможны частичная работа, помощь другого двора или перенос срока. Частные переговоры и вопросы до эскалации — допустимые варианты, но не готовое правило шума.",
+      "claim_refs": [
+        "claim:work-intensity-duration",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-dispute-can-use-questions-and-kin"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: кейс требует вариантов договорённости, а не юридической нормы шума.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-070",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Это семейная забота, жилищные пределы и добровольное хозяйственное решение."
+      },
+      "answer_ru": "Пряха может принять брата на короткий оговорённый срок, предложить ему работу и отдельное место лишь если это не ставит под угрозу еду и безопасность дома, либо попросить его искать иной кров. Отсутствие супруга делает обещание до посадочного сезона особенно разумным предметом осторожного разговора, а не обязательством. Гостеприимство ограничено средствами и доверием, а ночной гость добавляет спрос на еду, топливо, место и внимание.",
+      "claim_refs": [
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:human-life-reception-depends-on-trust-ties-means",
+        "claim:human-life-visitors-add-resource-demands",
+        "claim:human-life-stay-can-enable-consented-exchange"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: full bundle прямо покрывает ресурсные и доверительные пределы обычного гостеприимства.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-071",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Запрос относится к обычному городскому конфликту, свидетельствам и обращению за разбором."
+      },
+      "answer_ru": "Возчик может остановить спор, отметить повреждение колеса, попросить лавочников сказать, что они видели, и предложить служителю назвать хозяина до разъезда. Если договориться не удаётся, он может искать обращение к признанному местному авторитету или собранию, но не объявлять себя правым только из-за свидетелей. Их рассказ ограничен увиденным и услышанным, а статус сторон влияет на доступ к разбору, не на истину.",
+      "claim_refs": [
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: для сохранения претензии и выбора адресата покрыты переговоры, ограниченное свидетельство и обращение к авторитету; точная процедура не требуется.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-072",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Нужны религиозный контекст и срочная забота о конкретном животном."
+      },
+      "answer_ru": "Фермер может попросить родных сообщить в церковь или пойти позднее, а сам дать телёнку доступный уход и наблюдать его состояние; другой вариант — быстро найти замену, если она реально есть. Наличие праздников не доказывает, что именно этот мужчина обязан присутствовать либо что уход за больным животным имеет предписанный исход. WK также требует не выводить причину состояния животного из одного признака.",
+      "claim_refs": [
+        "claim:social-church-calendar-text-relates-feast-list",
+        "claim:animal-care-needs-presence",
+        "claim:static-animal-b06-animal-welfare-indicators-require-species-context",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: выбор между уходом, поиском подмены и поздним участием не требует выдумать обязательность службы или ветеринарный протокол.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-073",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Ситуация о доступе к учреждению, грамотности и оспариваемом обязательстве."
+      },
+      "answer_ru": "Вдова может попросить, чтобы грамотный знакомый или иной доступный человек прочёл запись вслух, передать краткую просьбу о слушании через привратника и вернуться в назначенное время, не отдавая единственный документ без отметки или свидетеля. Она может просить проверить основание долга, но не утверждать, что запись ложна, пока не известны стороны и содержание. Положение и связи могут влиять на доступ к поддержке, а признанный местный авторитет — один из вариантов эскалации, не гарантия слушания.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:social-debt-record-may-contain-entry",
+        "claim:social-hired-work-relates-business-record",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:public-world-status-and-ties-affect-access-not-guilt",
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: question asks plausible access and options, not a fixed monastery procedure; full bundle covers bounded access and escalation.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-074",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Это спор о границе, памяти свидетеля и риске пристрастности."
+      },
+      "answer_ru": "Пахарю стоит сказать только то, что он лично помнит о камне, полосах и прежней канаве, отделив это от догадок после паводка; он может предложить осмотр места обоими кузенами и другими знающими соседями. Родство — повод не решать спор одному, а не доказательство того, чья граница верна. Свидетельский рассказ ограничен увиденным и услышанным, а вопросы и знакомые могут помочь до обращения к авторитету.",
+      "claim_refs": [
+        "claim:rp-property-claim-relates-acquisition-chain",
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-local-authority-is-one-escalation-option"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: full bundle поддерживает ограниченное свидетельство и варианты разбора; точный межевой процесс не нужен для honest ordinary answer.",
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b10core-075",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Нужны основания трудового обязательства, статуса и возможные способы искать поддержку."
+      },
+      "answer_ru": "Пряха может попросить назвать исходную договорённость и расчёт аванса, предложить завершить только ясно согласованную часть либо искать родственника, знакомого свидетеля или местное разбирательство до отъезда. Слова купца сами по себе не доказывают ещё неделю работы: обязательство требует установленных сторон и основания. Наёмный или зависимый работник может меньше распоряжаться временем и результатом, но переговоры и обращение к местному авторитету остаются вариантами, не гарантией защиты.",
+      "claim_refs": [
+        "claim:social-hired-work-relates-business-record",
+        "claim:debt-needs-parties-and-basis",
+        "claim:candidate-gramota213-official-obligations-document",
+        "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:ordinary-life-help-can-create-reciprocity"
+      ],
+      "initial_status": "remaining_gap",
+      "triage_note": "Закрыто: existing claims cover bounded worker agency, negotiation and support options without inventing a fixed labour-law rule.",
+      "status": "covered",
+      "gaps": []
+    }
+  ],
+  "summary": {
+    "substantial_gap_cases": 0,
+    "distinct_substantial_gaps": [],
+    "covered_cases": 25,
+    "root_triage_note": "Five remaining exact-procedure/unknown-state demands resolved against existing general premises and the supplied conditions; initial findings retained. No corpus or input changes."
+  }
+}

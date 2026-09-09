@@ -1,0 +1,207 @@
+{
+  "batch": "reality-batch-01",
+  "reviewer": "/root/reality_gap_cross_triage",
+  "corpus_basis": {
+    "commit": "c092d563b5f20122b0e0fb23df19416468f8b6ad",
+    "runtime_bundle": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json"
+  },
+  "method": "Independent WK-only cross-triage of the 16 cases marked status=gap in reality-batch-01 review-a/review-b. A covered composition must support the central bounded reconstruction and may not invent authoritative presence or state, an exact value, price, law, route, diagnosis, outcome, or NPC choice. Missing facts in those latter categories are out_of_scope_state, not a WK factual gap. Repeated genuine gaps are grouped only as reusable factual families.",
+  "triage": [
+    {
+      "case_id": "rb01free-002",
+      "original_gap": "reusable-plant-identification-by-observable-morphology-and-safe-collection-limits",
+      "verdict": "covered_composable",
+      "rationale_ru": "Несколько признаков и общий облик уже являются допустимой основой различения, но ни сходство, ни народное описание не устанавливают вид или съедобность. Этого достаточно для наблюдения и отказа смешивать сомнительное с привычным без редкого вида либо лечебного исхода.",
+      "claim_refs": [
+        "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters",
+        "claim:final-nature-lookalike-risk-means-appearance-alone-does-not-establish-wild-plant-edibility"
+      ]
+    },
+    {
+      "case_id": "rb01free-012",
+      "original_gap": "reusable-plant-damage-observation-without-pest-or-edibility-diagnosis",
+      "verdict": "covered_composable",
+      "rationale_ru": "Неровные отверстия на капустных листьях совместимы с питанием улиток или слизней, но premise прямо запрещает объявлять их причиной конкретного следа. Поэтому можно осмотреть и отделить явно повреждённое, не ставя диагноз вредителя, съедобности или урожая.",
+      "claim_refs": [
+        "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes"
+      ]
+    },
+    {
+      "case_id": "rb01free-022",
+      "original_gap": "reusable-reed-or-marsh-plant-harvesting-condition-and-safe-cutting",
+      "verdict": "genuine_gap",
+      "family_ref": "wetland_reed_harvesting_condition_and_safe_cutting",
+      "rationale_ru": "Runtime подтверждает связь тростника с влажным местом, но не даёт reusable factual premise о выборе пригодных сухих стеблей и безопасной резке у воды. Присутствие камыша задано сценой, однако condition и harvesting practice не покрыты.",
+      "claim_refs": [
+        "claim:common-reed-rhizome-produces-stems-in-wetland-habitat"
+      ]
+    },
+    {
+      "case_id": "reality-core-010",
+      "original_gap": "releasable_load_bearing_rope_knot_behavior",
+      "verdict": "genuine_gap",
+      "family_ref": "releasable_load_bearing_rope_knot_behavior",
+      "rationale_ru": "Condition верёвки может уменьшать доступную прочность, но это не связывает удерживающую нагрузку петлю с развязыванием после работы. Локальная проба не заменяет reusable premise о поведении такого узла.",
+      "claim_refs": [
+        "claim:modern-fibre-rope-condition-can-reduce-available-strength"
+      ]
+    },
+    {
+      "case_id": "reality-core-016",
+      "original_gap": "wooden_door_hinge_and_frame_sag_repair",
+      "verdict": "genuine_gap",
+      "family_ref": "wooden_joinery_sag_diagnosis_and_temporary_stabilization",
+      "rationale_ru": "Нет central premise, связывающей провисание створки с петлями либо перекосом рамы и с временной правкой. Общие свойства древесины не задают эту механику соединения.",
+      "claim_refs": []
+    },
+    {
+      "case_id": "reality-core-018",
+      "original_gap": "temporary_stabilization_of_loose_wooden_seating",
+      "verdict": "genuine_gap",
+      "family_ref": "wooden_joinery_sag_diagnosis_and_temporary_stabilization",
+      "rationale_ru": "Сучки и усушка объясняют лишь возможную слабость древесины; они не покрывают осмотр расшатанного соединения и безопасную временную стабилизацию сиденья. Это та же reusable family неисправного деревянного соединения, что и провисшая створка.",
+      "claim_refs": [
+        "claim:foundations-mat-01-wood-knot-strength-bonding",
+        "claim:foundations-mat-02-wood-drying-crack-strength"
+      ]
+    },
+    {
+      "case_id": "reality-core-024",
+      "original_gap": "dried_herb_storage_aroma_and_mold_management",
+      "verdict": "genuine_gap",
+      "family_ref": "dried_herb_storage_aroma_and_mold_management",
+      "rationale_ru": "Влажность и airflow влияют на сушку вообще, но runtime не содержит premise о хранении уже высушенных трав: тени, подвешивании, сохранении запаха и ограничении плесени. Не следует выдавать generic drying relation за этот режим хранения.",
+      "claim_refs": [
+        "claim:food-drying-depends-on-humidity-airflow"
+      ]
+    },
+    {
+      "case_id": "reality-core-027",
+      "original_gap": "two_person_hand_litter_load_distribution_and_carrying",
+      "verdict": "covered_composable",
+      "rationale_ru": "Равновесие требует уравновешивания сил, а порядок движения и внимание к опоре уже применимы к людям и грузам. Это поддерживает качественную проверку и перераспределение разного веса между двумя носильщиками без обещания точной развесовки, силы или успешного прохода.",
+      "claim_refs": [
+        "claim:foundations-physical-b2-sta-01-static-force-equilibrium",
+        "claim:military-world-loads-need-order-and-passage"
+      ]
+    },
+    {
+      "case_id": "reality-core-032",
+      "original_gap": "working_horse_fatigue_heat_and_harness_rub_observations",
+      "verdict": "genuine_gap",
+      "family_ref": "working_horse_fatigue_heat_and_harness_rub_observations",
+      "rationale_ru": "После нагрузки допустимы постепенное снижение работы и наблюдение, но runtime не даёт reusable observations усталости, перегрева либо натёртости упряжью. Наличие конкретной лошади задано сценой; отсутствует именно factual observation family, не диагноз.",
+      "claim_refs": [
+        "claim:macro-b20-a-worked-horse-needs-gradual-cooling-and-observation-before-return-to-rest-or-work"
+      ]
+    },
+    {
+      "case_id": "reality-core-035",
+      "original_gap": "sick_or_dead_domestic_poultry_food_water_contamination_handling",
+      "verdict": "covered_composable",
+      "rationale_ru": "Уже есть composable separation premises: сырая птица не смешивается с другой пищей, отходы держат отдельно от воды и пищевых путей. Это покрывает осторожное обращение с заданной в сцене больной или погибшей птицей, не объявляя болезнь, заражение или результат.",
+      "claim_refs": [
+        "claim:candidate-v6-raw-animal-foods-should-be-separated-to-limit-cross-contamination",
+        "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact"
+      ]
+    },
+    {
+      "case_id": "reality-core-038",
+      "original_gap": "wet_firewood_observations_and_kindling_performance",
+      "verdict": "covered_composable",
+      "rationale_ru": "Контакт с водой меняет влажность древесины, а удаление влаги требует теплоты и оставляет меньше энергии для нагрева. Поэтому сырую растопку можно оценивать и пробовать малым огнём, не обещая воспламенение, температуру или запас топлива.",
+      "claim_refs": [
+        "claim:wood-liquid-moisture-change",
+        "claim:foundations-thm-06-moisture-vaporization-heat-demand",
+        "claim:foundations-thm-02-combustion-fuel-oxidizer"
+      ]
+    },
+    {
+      "case_id": "reality-core-039",
+      "original_gap": "minor_dirty_abrasion_first_aid",
+      "verdict": "genuine_gap",
+      "family_ref": "minor_dirty_abrasion_first_aid",
+      "rationale_ru": "Runtime допускает закрыть и наблюдать рану, но не даёт central premise о первичной очистке небольшой грязной ссадины и низкорисковом порядке обращения. Это factual first-aid family, не запрос диагноза или исхода.",
+      "claim_refs": [
+        "claim:reality-first-common-care-and-sanitation-need-observation-and-separation-r4"
+      ]
+    },
+    {
+      "case_id": "reality-core-040",
+      "original_gap": "human_wet_cold_exposure_hypothermia_observations_and_triage",
+      "verdict": "out_of_scope_state",
+      "rationale_ru": "Запрос требует отличить обычную усталость от переохлаждения и решить, продолжать ли путь: это индивидуальная диагностика и local triage/state, а не отсутствующая composable premise. Runtime может поддержать лишь недиагностическое прекращение воздействия и согревание; точное состояние и решение не должны материализоваться как WK fact.",
+      "claim_refs": [
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"
+      ]
+    },
+    {
+      "case_id": "reality-core-041",
+      "original_gap": "smoke_eye_and_throat_irritation_immediate_low_risk_response",
+      "verdict": "covered_composable",
+      "rationale_ru": "Exact runtime premise уже связывает дым или золу с раздражением глаз и ограничивает немедленную реакцию уменьшением воздействия и промыванием частиц доступной чистой водой. Травма, тяжесть и выздоровление не обещаются.",
+      "claim_refs": [
+        "claim:macro-b1819-smoke-or-ash-can-irritate-eyes-and-supports-clean-air-and-rinsing-response"
+      ]
+    },
+    {
+      "case_id": "reality-core-047",
+      "original_gap": "field_selection_of_lower_risk_drinking_water_source",
+      "verdict": "out_of_scope_state",
+      "rationale_ru": "Визуально объявить конкретную проточную воду относительно чистой либо непригодной означает выдать water-safety verdict для неизвестного источника. Runtime прямо запрещает считать кипячение доказательством пригодности воды с токсичными примесями; route, source state и safety outcome остаются вне WK.",
+      "claim_refs": [
+        "claim:candidate-macro-causal-v2-boiling-water-controls-many-microorganisms-but-not-chemicals-or-later-recontamination",
+        "claim:research-boiling-alone-does-not-establish-fuel-or-toxic-chemical-water-drinkability"
+      ]
+    },
+    {
+      "case_id": "reality-core-048",
+      "original_gap": "soil_texture_and_saturation_effect_on_temporary_stake_and_excavation_stability",
+      "verdict": "genuine_gap",
+      "family_ref": "soil_texture_and_saturation_effect_on_temporary_stake_and_excavation_stability",
+      "rationale_ru": "Runtime связывает текстуру с инфильтрацией и допускает воду в разных состояниях, но не даёт reusable comparison глины, песка и насыщенного грунта для удержания временного колышка либо ямы. Нельзя подменять этот missing stability relation local trial result.",
+      "claim_refs": [
+        "claim:soil-texture-affects-infiltration-rate",
+        "claim:foundations-earth-07-soil-water-states",
+        "claim:static-ground-b05-groundwater-seepage-can-enter-excavation"
+      ]
+    }
+  ],
+  "summary": {
+    "flagged": 16,
+    "genuine_gap": 8,
+    "covered_composable": 6,
+    "out_of_scope_state": 2,
+    "grouped_families": [
+      {
+        "family_ref": "wetland_reed_harvesting_condition_and_safe_cutting",
+        "case_ids": ["rb01free-022"]
+      },
+      {
+        "family_ref": "releasable_load_bearing_rope_knot_behavior",
+        "case_ids": ["reality-core-010"]
+      },
+      {
+        "family_ref": "wooden_joinery_sag_diagnosis_and_temporary_stabilization",
+        "case_ids": ["reality-core-016", "reality-core-018"]
+      },
+      {
+        "family_ref": "dried_herb_storage_aroma_and_mold_management",
+        "case_ids": ["reality-core-024"]
+      },
+      {
+        "family_ref": "working_horse_fatigue_heat_and_harness_rub_observations",
+        "case_ids": ["reality-core-032"]
+      },
+      {
+        "family_ref": "minor_dirty_abrasion_first_aid",
+        "case_ids": ["reality-core-039"]
+      },
+      {
+        "family_ref": "soil_texture_and_saturation_effect_on_temporary_stake_and_excavation_stability",
+        "case_ids": ["reality-core-048"]
+      }
+    ]
+  }
+}

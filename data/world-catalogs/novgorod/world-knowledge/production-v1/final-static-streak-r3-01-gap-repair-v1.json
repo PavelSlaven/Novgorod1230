@@ -1,0 +1,226 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r301-utah",
+      "title": "Aphid Pests on Vegetables",
+      "authors": [],
+      "publication": "Utah State University Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.usu.edu/planthealth/research/aphid-pests-on-vegetables",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:r301-tamu",
+      "title": "Diagnosing Insect and Mite Damage",
+      "authors": [],
+      "publication": "Texas A&M AgriLife Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://landscapeipm.tamu.edu/ipm-for-ornamentals/diagnosing-insect-and-mite-damage-ornamentals/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r301-utah",
+      "source_ref": "source:r301-utah",
+      "anchor": {
+        "section": "Aphid signs"
+      },
+      "note": "Aphid sap feeding, new growth, honeydew and ants; no species or local presence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:r301-tamu",
+      "source_ref": "source:r301-tamu",
+      "anchor": {
+        "section": "Diagnostic limits"
+      },
+      "note": "Plant deformity has multiple possible causes and needs inspection; no diagnosis or treatment.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:r301-sap-feeding-signs",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r301-new-growth",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r301-sap-feeding-signs",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Sap-sucking aphids can gather on succulent new growth and feeding can coincide with curled, yellowed, stunted, or distorted leaves and stems."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r301-utah"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r301-honeydew-ants",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r301-sap-feeding-signs",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Sticky honeydew and repeated ant movement on stems are compatible clues for honeydew-producing sap feeders, not proof of aphids or species."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r301-utah"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:r301-nondiagnostic",
+      "domain": "environment",
+      "subject_ref": "wk:environment:r301-sap-feeding-signs",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Leaf curl or distortion has multiple possible causes; inspection can support a tentative description without diagnosis, treatment, or outcome."
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:r301-utah",
+        "evidence:r301-tamu"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:r301-sap-feeding-signs",
+      "locale": "ru",
+      "labels": [
+        "Признаки сосущих насекомых"
+      ],
+      "short_definition": "Ограниченные полевые признаки без диагноза.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:r301-sap-feeding-signs",
+      "locale": "en",
+      "labels": [
+        "Sap-feeding insect signs"
+      ],
+      "short_definition": "Bounded field signs without diagnosis.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r301-new-growth",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Сосущие тли могут скапливаться на молодой сочной поросли; питание может совпадать со скрученными, желтеющими, низкорослыми или деформированными листьями и стеблями.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r301-new-growth",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Sap-sucking aphids can gather on succulent new growth and feeding can coincide with curled, yellowed, stunted, or distorted leaves and stems.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r301-honeydew-ants",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Липкая медвяная роса и повторяющееся движение муравьёв по стеблям — совместимые признаки сосущих насекомых, но не доказательство тлей или вида.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r301-honeydew-ants",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Sticky honeydew and repeated ant movement on stems are compatible clues for honeydew-producing sap feeders, not proof of aphids or species.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r301-nondiagnostic",
+      "locale": "ru",
+      "runtime_text": "INFERENCE: Скручивание или деформация листьев имеют несколько возможных причин; осмотр допускает осторожное описание без диагноза, лечения или исхода.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:r301-nondiagnostic",
+      "locale": "en",
+      "runtime_text": "INFERENCE: Leaf curl or distortion has multiple possible causes; inspection can support a tentative description without diagnosis, treatment, or outcome.",
+      "search_aliases": []
+    }
+  ]
+}

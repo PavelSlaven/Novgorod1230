@@ -1,0 +1,827 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fuel-kolchin-charcoal",
+      "source_ref": "source:ha-firesteel",
+      "anchor": {
+        "page": "40",
+        "section": "Chapter V, Топливо; pit charcoal-burning reconstruction"
+      },
+      "note": "Independent verification: root rendered and read the complete chapter. Pit process is Kolchin's reconstruction informed partly by later technical analogy; no stock, yield, duration, skill or scene process follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fuel-kolchin-lighting-cookware",
+      "source_ref": "source:ha-firesteel",
+      "anchor": {
+        "page": "166–168",
+        "section": "Figures 144–147; чапельник, светцы и подсвечники"
+      },
+      "note": "Independent verification: root rendered and read pp. 166–168. These are broad Ancient-Rus iron-form inferences, not a present lit object, candle, splinter, oven, pan or cookware set.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:charcoal",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:pit-charcoal-burning",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:charcoal-pit",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:iron-splinter-holder",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:iron-candlestick",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:iron-pan-lifter",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-charcoal-metallurgy-fuel",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:charcoal",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:metalworking-broad-context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-charcoal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-form",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:pit-charcoal-burning",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pit_charcoal_burning_is_kolchins_likely_reconstruction_for_ancient_rus"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-charcoal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-wood-input",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:pit-charcoal-burning",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wood"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-charcoal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-charcoal-pit-sealing",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:charcoal-pit",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "turf_and_clay_sealing_with_controlled_openings_is_part_of_kolchins_reconstructed_pit_process"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-charcoal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-air-sequence",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:pit-charcoal-burning",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wood_partially_burns_with_restricted_air_then_openings_are_closed_for_carbonization"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-charcoal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-charcoal-output",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:pit-charcoal-burning",
+      "predicate": "produces_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:charcoal"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-charcoal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-air-control",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:pit-charcoal-burning",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "air_access_is_regulated_during_the_reconstructed_charcoal_burning_process"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-charcoal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-iron-splinter-holder-form",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-splinter-holder",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "iron_splinter_holder_form_is_represented_in_kolchins_fig_146"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-lighting-cookware"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-iron-candlestick-form",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-candlestick",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "iron_candlestick_form_is_represented_in_kolchins_fig_146"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-lighting-cookware"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-iron-pan-lifter-use",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-pan-lifter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "iron_pan_lifter_inserts_and_removes_an_iron_frying_pan_from_an_oven"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-lighting-cookware"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fuel-iron-pan-lifter-form",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-pan-lifter",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "iron_pan_lifters_had_tanged_or_socketed_variants"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 900,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fuel-kolchin-lighting-cookware"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:charcoal",
+      "locale": "ru",
+      "labels": [
+        "Древесный уголь"
+      ],
+      "short_definition": "Обугленная древесина, используемая как топливо",
+      "search_aliases": [
+        "Древесный уголь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:charcoal",
+      "locale": "en",
+      "labels": [
+        "Charcoal"
+      ],
+      "short_definition": "Carbonized wood used as fuel",
+      "search_aliases": [
+        "Charcoal"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:pit-charcoal-burning",
+      "locale": "ru",
+      "labels": [
+        "Ямное углежжение"
+      ],
+      "short_definition": "Получение древесного угля в закрываемой яме",
+      "search_aliases": [
+        "Ямное углежжение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:pit-charcoal-burning",
+      "locale": "en",
+      "labels": [
+        "Pit charcoal-burning"
+      ],
+      "short_definition": "Making charcoal in a sealable pit",
+      "search_aliases": [
+        "Pit charcoal-burning"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:charcoal-pit",
+      "locale": "ru",
+      "labels": [
+        "Угольная яма"
+      ],
+      "short_definition": "Яма для исторически реконструируемого углежжения",
+      "search_aliases": [
+        "Угольная яма"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:charcoal-pit",
+      "locale": "en",
+      "labels": [
+        "Charcoal pit"
+      ],
+      "short_definition": "Pit for historically reconstructed charcoal-making",
+      "search_aliases": [
+        "Charcoal pit"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-splinter-holder",
+      "locale": "ru",
+      "labels": [
+        "Железный светец"
+      ],
+      "short_definition": "Железная стойка для лучины",
+      "search_aliases": [
+        "Железный светец"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-splinter-holder",
+      "locale": "en",
+      "labels": [
+        "Iron splinter holder"
+      ],
+      "short_definition": "Iron stand for a burning splinter",
+      "search_aliases": [
+        "Iron splinter holder"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-candlestick",
+      "locale": "ru",
+      "labels": [
+        "Железный подсвечник"
+      ],
+      "short_definition": "Железная опора для свечи",
+      "search_aliases": [
+        "Железный подсвечник"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-candlestick",
+      "locale": "en",
+      "labels": [
+        "Iron candlestick"
+      ],
+      "short_definition": "Iron holder for a candle",
+      "search_aliases": [
+        "Iron candlestick"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-pan-lifter",
+      "locale": "ru",
+      "labels": [
+        "Железный чапельник"
+      ],
+      "short_definition": "Железный инструмент для ввода и выемки сковороды из печи",
+      "search_aliases": [
+        "Железный чапельник"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-pan-lifter",
+      "locale": "en",
+      "labels": [
+        "Iron pan lifter"
+      ],
+      "short_definition": "Iron tool for inserting and removing a frying pan from an oven",
+      "search_aliases": [
+        "Iron pan lifter"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-charcoal-metallurgy-fuel",
+      "locale": "ru",
+      "runtime_text": "Древесный уголь исторически связывается с древнерусской металлургией как топливо; это не запас топлива в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-charcoal-metallurgy-fuel",
+      "locale": "en",
+      "runtime_text": "Charcoal is historically associated with Ancient Rus metallurgy as fuel; this is not a fuel stock in a scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-form",
+      "locale": "ru",
+      "runtime_text": "Колчин реконструирует ямное углежжение как вероятную форму древнерусского производства угля; это не готовая установка.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-form",
+      "locale": "en",
+      "runtime_text": "Kolchin reconstructs pit charcoal-burning as a likely Ancient Rus form of charcoal production; this is not a ready installation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-wood-input",
+      "locale": "ru",
+      "runtime_text": "В описанной реконструкции в яму укладывали поленья и сучья; конкретный вид, количество и источник древесины не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-wood-input",
+      "locale": "en",
+      "runtime_text": "In the described reconstruction, logs and branches were placed in the pit; wood type, quantity, and source are unspecified.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-charcoal-pit-sealing",
+      "locale": "ru",
+      "runtime_text": "В реконструкции угольную яму закрывали дёрном и замазывали глиной, оставляя отверстия для контроля воздуха; это не готовое сооружение.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-charcoal-pit-sealing",
+      "locale": "en",
+      "runtime_text": "In the reconstruction, the charcoal pit was covered with turf and sealed with clay while openings controlled air; this is not a ready structure.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-air-sequence",
+      "locale": "ru",
+      "runtime_text": "В реконструкции древесине сначала давали частично сгореть при слабом доступе воздуха, затем отверстия закрывали для обугливания.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-air-sequence",
+      "locale": "en",
+      "runtime_text": "In the reconstruction, wood first partly burned with restricted air, then the openings were closed for carbonization.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-charcoal-output",
+      "locale": "ru",
+      "runtime_text": "После обугливания углю давали остыть; это качественный результат процесса, не гарантированный выход.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-charcoal-output",
+      "locale": "en",
+      "runtime_text": "After carbonization the charcoal was allowed to cool; this is a qualitative process result, not a guaranteed yield.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-air-control",
+      "locale": "ru",
+      "runtime_text": "В реконструкции углежжение требует регулировать доступ воздуха; это не задаёт навыка, точного режима или длительности.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-pit-charcoal-burning-air-control",
+      "locale": "en",
+      "runtime_text": "In the reconstruction, charcoal-burning requires regulating air access; this does not establish skill, an exact regime, or duration.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-iron-splinter-holder-form",
+      "locale": "ru",
+      "runtime_text": "Железный светец представлен у Колчина как историческая форма; это не зажжённая лучина или освещение сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-iron-splinter-holder-form",
+      "locale": "en",
+      "runtime_text": "An iron splinter holder is represented by Kolchin as a historical form; this is not a lit splinter or scene lighting.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-iron-candlestick-form",
+      "locale": "ru",
+      "runtime_text": "Железный подсвечник представлен у Колчина как историческая форма; это не свеча, запас воска или свет в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-iron-candlestick-form",
+      "locale": "en",
+      "runtime_text": "An iron candlestick is represented by Kolchin as a historical form; this is not a candle, wax stock, or light in a scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-iron-pan-lifter-use",
+      "locale": "ru",
+      "runtime_text": "Чапельник служил для ввода железной сковороды в печь и её выемки; это не наличие печи, сковороды или готовой пищи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-iron-pan-lifter-use",
+      "locale": "en",
+      "runtime_text": "A pan lifter inserted and removed an iron frying pan from an oven; this is not the presence of an oven, pan, or prepared food.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-iron-pan-lifter-form",
+      "locale": "ru",
+      "runtime_text": "У чапельников засвидетельствованы хвостовиковые и втульчатые варианты; это не обязательная форма любого инструмента.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fuel-iron-pan-lifter-form",
+      "locale": "en",
+      "runtime_text": "Pan lifters are attested in tanged and socketed variants; this is not a required form for every tool.",
+      "search_aliases": []
+    }
+  ]
+}

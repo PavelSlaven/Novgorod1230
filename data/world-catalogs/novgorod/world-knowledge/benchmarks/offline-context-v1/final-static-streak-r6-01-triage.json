@@ -1,0 +1,68 @@
+{
+  "batch": "final-static-streak-r6-01",
+  "triager": "/root",
+  "corpus_basis": {
+    "commit": "d15cb80b5e06a94657c62fff75ca4f98f43ab752",
+    "bundle": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json",
+    "claim_count": 1703
+  },
+  "method": "WK-only cross-triage. Bounded common-sense composition is allowed; exact state, outcome, local custom, authority, price, diagnosis and numeric mechanics remain outside World Knowledge.",
+  "entries": [
+    {
+      "case_id": "r6-01-ca-023",
+      "verdict": "genuine_gap",
+      "rationale_ru": "Существующие premises позволяют осмотреть и собрать уже срезанный тростник, но не связывают подготовку стеблей с их переплетением или связыванием в циновкоподобное полотно.",
+      "claim_refs": [
+        "claim:reality-batch-01-wetland-reed-dry-intact-stems-can-be-distinguished-by-observation",
+        "claim:reality-batch-01-cut-reed-stems-can-be-gathered-before-moving-across-wet-ground"
+      ],
+      "proposed_family": "reed-stem-preparation-and-mat-interlacing"
+    },
+    {
+      "case_id": "r6-01-fr-002",
+      "verdict": "genuine_gap",
+      "rationale_ru": "Общая координация работ и проверка груза не объясняют, как заранее согласовать воспринимаемые всеми участниками start/stop/hold signals, когда речь или слух недоступны. Это переносимая premise для совместной рискованной работы, а не готовая система жестов.",
+      "claim_refs": [
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:reality-batch-01-rope-knot-can-be-checked-for-dressing-and-contact-before-loading"
+      ],
+      "proposed_family": "agreed-nonverbal-signals-for-shared-work"
+    },
+    {
+      "case_id": "r6-01-cb-035",
+      "verdict": "covered_composable",
+      "rationale_ru": "Для уже установленного публичного праздника поведение можно ограниченно соразмерять ролям, публичности и наблюдаемой реакции; конкретный обычай, обязанность или санкция не выводятся.",
+      "claim_refs": [
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-publicity-raises-reputation-risk"
+      ]
+    },
+    {
+      "case_id": "r6-01-fr-009",
+      "verdict": "covered_composable",
+      "rationale_ru": "Остановить громкую игру, наблюдать и проявить условное уважение можно как bounded social reconstruction; ни обязательный похоронный ритуал, ни реакция толпы не создаются.",
+      "claim_refs": [
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-publicity-raises-reputation-risk",
+        "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage"
+      ]
+    },
+    {
+      "case_id": "r6-01-fr-025",
+      "verdict": "covered_composable",
+      "rationale_ru": "Противоречивые ответы не доказывают болезнь или обман. Наблюдение, ограничение прохода по фактическим полномочиям и обращение к установленной authority дают правдивый ответ без выдуманной процедуры ворот.",
+      "claim_refs": [
+        "claim:military-world-gate-and-passage-use-needs-actual-access",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention"
+      ]
+    }
+  ],
+  "summary": {
+    "reviewed_cases": 100,
+    "covered": 98,
+    "genuine_gaps": 2,
+    "substantial_gaps": 2,
+    "acceptance_streak_after_batch": "0/3"
+  }
+}

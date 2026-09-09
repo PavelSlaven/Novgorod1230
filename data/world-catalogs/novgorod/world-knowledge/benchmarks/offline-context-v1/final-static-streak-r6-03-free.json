@@ -1,0 +1,136 @@
+{
+  "schema_version": "world_knowledge_static_acceptance_batch_v1",
+  "batch_id": "final-static-streak-r6-03-free",
+  "candidate_commit": "d15cb80b5e06a94657c62fff75ca4f98f43ab752",
+  "sampling": {
+    "kind": "free_adversarial",
+    "case_count": 25
+  },
+  "cases": [
+    {
+      "case_id": "r603fr01",
+      "situation": "A frightened boy insists a bright object fell from the sky into a reed bed and asks adults to retrieve it before night.",
+      "knowledge_need": "meteors, reed-bed terrain, night retrieval risks, and local reactions to unusual natural events"
+    },
+    {
+      "case_id": "r603fr02",
+      "situation": "A household discovers that its only spoon has been used as a tool for mixing pigment and now tastes bitter.",
+      "knowledge_need": "pigments, material contamination, household utensils, and risks of ingesting residue"
+    },
+    {
+      "case_id": "r603fr03",
+      "situation": "A traveler claims a distant town pays everyone in identical stamped pieces and demands that local sellers accept them.",
+      "knowledge_need": "medieval exchange media, authority of marks, foreign money, and merchant trust"
+    },
+    {
+      "case_id": "r603fr04",
+      "situation": "After a wedding feast, a dog has carried away a glove that may belong to a guest of higher standing.",
+      "knowledge_need": "feast etiquette, status signals in clothing, dogs in settlements, and returning lost property"
+    },
+    {
+      "case_id": "r603fr05",
+      "situation": "A child wants to build a tiny waterwheel in a ditch to grind a handful of grain.",
+      "knowledge_need": "small waterwheel mechanics, ditch flow, grain milling requirements, and child-scale construction limits"
+    },
+    {
+      "case_id": "r603fr06",
+      "situation": "A person says a dream proves a locked chest contains a relative's property and urges others to open it.",
+      "knowledge_need": "dream beliefs, ownership claims, locked property, witnesses, and limits of supernatural proof"
+    },
+    {
+      "case_id": "r603fr07",
+      "situation": "A singer arrives claiming that a raven has learned a message and can testify to what it heard.",
+      "knowledge_need": "raven behavior, oral messages, testimony, entertainment, and credibility in a dispute"
+    },
+    {
+      "case_id": "r603fr08",
+      "situation": "A family finds tracks of an unfamiliar animal around their stored food but never sees the creature.",
+      "knowledge_need": "animal tracks, common food pests and predators, storage protection, and uncertainty without sighting"
+    },
+    {
+      "case_id": "r603fr09",
+      "situation": "A visiting healer proposes sealing a feverish person's room completely to keep bad air from escaping.",
+      "knowledge_need": "period illness beliefs, ventilation, indoor air, fever care, and dangers of sealing a room"
+    },
+    {
+      "case_id": "r603fr10",
+      "situation": "A boatman offers to tow a houseboat upstream using geese instead of people or horses.",
+      "knowledge_need": "watercraft towing, geese strength and behavior, river current, and impossible transport claims"
+    },
+    {
+      "case_id": "r603fr11",
+      "situation": "An elderly woman asks whether a cracked mirror should be buried, repaired, or kept because it has reflected a deathbed.",
+      "knowledge_need": "mirrors, mourning beliefs, household objects, repair materials, and customary responses to death"
+    },
+    {
+      "case_id": "r603fr12",
+      "situation": "A messenger wants to hide a short warning inside a loaf so that a searcher will not notice it.",
+      "knowledge_need": "bread construction, concealed writing, moisture and heat risks, searches, and message handling"
+    },
+    {
+      "case_id": "r603fr13",
+      "situation": "A child brings home a nest with eggs and declares the birds will guard the family from thieves.",
+      "knowledge_need": "bird nesting, egg care, child behavior, household animals, and limits of animal protection"
+    },
+    {
+      "case_id": "r603fr14",
+      "situation": "Two travelers argue whether a distant glow beyond a forest is a city, a fire, or an illusion, and choose to walk toward it.",
+      "knowledge_need": "night lights, forest travel, distance judgment, fire risk, and navigation under uncertainty"
+    },
+    {
+      "case_id": "r603fr15",
+      "situation": "A debtor offers to repay a neighbor by teaching the neighbor's daughter secret letters he says he learned abroad.",
+      "knowledge_need": "debt settlement, literacy teaching, gender and household education, travel claims, and social value"
+    },
+    {
+      "case_id": "r603fr16",
+      "situation": "A carpenter is asked to make a wooden whistle loud enough to summon help across a river during fog.",
+      "knowledge_need": "wooden whistles, sound travel in fog, river conditions, signaling practices, and practical range limits"
+    },
+    {
+      "case_id": "r603fr17",
+      "situation": "A household cat returns wearing a strip of embroidered cloth tied around its neck.",
+      "knowledge_need": "household cats, embroidered textiles, property clues, neighborhood inquiry, and plausible interpretations"
+    },
+    {
+      "case_id": "r603fr18",
+      "situation": "A young man proposes coating his hands in wax so he can pull hot bread from an oven without tools.",
+      "knowledge_need": "wax thermal behavior, oven heat, burns, hand protection, and safe bread handling"
+    },
+    {
+      "case_id": "r603fr19",
+      "situation": "A passerby says a bridge plank is cursed because every person who steps on it slips, though rain has fallen all day.",
+      "knowledge_need": "wet timber, slip hazards, bridge upkeep, curse beliefs, and practical inspection"
+    },
+    {
+      "case_id": "r603fr20",
+      "situation": "A widow receives a sealed message in a language nobody nearby recognizes and fears it orders an arrest.",
+      "knowledge_need": "seals, unfamiliar scripts, literacy, legal fear, message custody, and trustworthy interpretation"
+    },
+    {
+      "case_id": "r603fr21",
+      "situation": "A group wants to release a trapped wolf beside a settlement to prove courage before a feast.",
+      "knowledge_need": "wolf behavior, trapping, settlement safety, feast bravado, and consequences of release"
+    },
+    {
+      "case_id": "r603fr22",
+      "situation": "A stranger says he can make rain by beating a copper basin and requests payment before trying.",
+      "knowledge_need": "rainmaking beliefs, copper vessels, weather causation, payment scams, and public credibility"
+    },
+    {
+      "case_id": "r603fr23",
+      "situation": "A merchant asks whether a parrot-like bird that repeats insults can be made to testify in a quarrel.",
+      "knowledge_need": "exotic speaking birds, insulting speech, legal testimony, merchant display, and evidentiary limits"
+    },
+    {
+      "case_id": "r603fr24",
+      "situation": "A teenager tries to build stilts from fresh branches to cross a flooded yard without wetting boots.",
+      "knowledge_need": "fresh-wood strength, stilt construction, floodwater hazards, footwear, and adolescent risk"
+    },
+    {
+      "case_id": "r603fr25",
+      "situation": "A family considers hanging garlic, fish bones, and a bell at its door after hearing unexplained scratching outside.",
+      "knowledge_need": "door charms, garlic and fish remains, bells, nocturnal animals, household fear, and practical security"
+    }
+  ]
+}

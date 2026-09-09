@@ -13,6 +13,7 @@ import { resolveOrdinaryMaterializationPresence,
   './ordinary-materialization-presence.js';
 import { resolveOrdinaryMaterializationSeedScope } from
   './ordinary-materialization-seed.js';
+import { turnFailure } from './errors.js';
 
 /** Common O1 owner; callers supply only committed context/profile adapters. */
 export function createOrdinaryMaterializationDiscoveryOwner({
@@ -30,6 +31,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     throw new TypeError('ordinary finite-resource effect owner must be a function');
   }
   return async function resolve(request) {
+    if (request.operation?.target_refs?.length !== 1) {
+      return ordinaryNoop(request);
+    }
     const enabled = await loadDiscoveryContext(request);
     if (enabled == null) return ordinaryNoop(request);
     const modelBudget = semanticModelCallBudget(ordinaryMaterializationModel);
@@ -53,7 +57,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           authority_context: seedAuthorityContext({ execution,
             objective: enabled.objective_context,
             scopeRef: enabled.ordinary_aggregate.scope_ref }) }),
-        semanticContext: enabled.seed_semantic_context ?? null,
+        semanticContext: enabled.semantic_context ?? null,
         ordinaryMaterializationModel: modelBudget.invoke,
         repairAvailable: modelBudget.hasRemaining,
         workingProjection: projection,
@@ -95,7 +99,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         requestIdentity: objective.request_id, resolution: 'no_change' });
     }
     const presenceObjective = { ...enabled.objective_context,
-      request_id: `${rootId}:ordinary:presence`,
+      request_id: `${rootId}:ordinary:presence:step:${request.request.step_index}`,
       policy_refs: presencePolicyRefs({
         policyRefs: enabled.objective_context.policy_refs,
         bases,
@@ -121,6 +125,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       candidate_context: candidateContext,
       selected_supporting_basis_ref: selectedSupportingBasisRef });
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
+      semanticContext: enabled.semantic_context ?? null,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
       workingProjection: projection,
@@ -129,7 +134,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           eval_contract: execution.stage_b_classification_eval
         }), codeOwnedResolution: enabled.code_owned_resolution ?? null,
       mechanicsPolicy: execution.mechanics_policy });
-    if (presence.status === 'already_resolved') return ordinaryNoop(request);
+    if (presence.status === 'already_resolved') {
+      return knownNegativeResolution(request, presence.known_resolution?.resolution);
+    }
     if (presence.status === 'no_change' && presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);
       return resolvedPlan({ request, enabled, partyId, scopeRef,
@@ -304,15 +311,25 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     .filter(({ kind }) => kind === 'seed')
     .flatMap(({ background_groups: groups }) => groups)
     .map(({ descriptor }) => descriptor);
+  const negativePresenceResolution = item == null
+    && transitions.at(-1)?.kind === 'resolve_presence'
+    && ['absent', 'no_change', 'authority_required'].includes(resolution)
+    ? resolution : null;
+  const visibleSeed = {
+    ...(sceneDetails.length === 0 ? {} : { ordinary_scene_seed: {
+      kind: 'ordinary_scene_seed', sensory_details: sceneDetails
+    } }),
+    ...(negativePresenceResolution == null ? {} : { ordinary_presence_seed: {
+      kind: 'ordinary_presence_seed', resolution: negativePresenceResolution
+    } })
+  };
   return Object.freeze({ working_projection: request.working_projection,
     write_fragments: [], summary: 'ordinary discovery resolved',
     duration_minutes: 0,
     ...(request.operation?.discovery_kind === 'look'
       ? { goal_result: 'achieved' } : {}),
-    ...(sceneDetails.length === 0 ? {} : { consequence_fragment: {
-      visible_seed: { ordinary_scene_seed: {
-        kind: 'ordinary_scene_seed', sensory_details: sceneDetails
-      } }
+    ...(Object.keys(visibleSeed).length === 0 ? {} : { consequence_fragment: {
+      visible_seed: visibleSeed
     } }),
     player_response_boundary: item == null || request.plan?.continuation == null,
     ordinary_materialization_atomic_write_plan: plan });
@@ -407,7 +424,23 @@ function ordinaryNoop(request) { return Object.freeze({
   working_projection: structuredClone(request?.working_projection ?? {}),
   write_fragments: [], summary: 'ordinary discovery unavailable',
   duration_minutes: 0,
+  consequence_fragment: { visible_seed: { ordinary_presence_seed: {
+    kind: 'ordinary_presence_seed', resolution: 'no_change'
+  } } },
   player_response_boundary: true }); }
+function knownNegativeResolution(request, resolution) {
+  if (!['absent', 'no_change', 'authority_required'].includes(resolution)) {
+    return ordinaryNoop(request);
+  }
+  return Object.freeze({
+    working_projection: structuredClone(request?.working_projection ?? {}),
+    write_fragments: [], summary: 'ordinary discovery resolved',
+    duration_minutes: 0, player_response_boundary: true,
+    consequence_fragment: { visible_seed: { ordinary_presence_seed: {
+      kind: 'ordinary_presence_seed', resolution
+    } } }
+  });
+}
 function ordinaryState(a) { return { seeded: a.seeded,
   density_band: a.density_band,
   remaining_identity_budget: a.remaining_identity_budget,

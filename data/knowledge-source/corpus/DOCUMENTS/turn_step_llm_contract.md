@@ -341,6 +341,7 @@ LLM возвращает не весь заявленный сценарий, а
   "check": null,
   "continuation": null,
   "clarification": null,
+  "direct_result_kind": null,
   "reason_code": "direct_step",
   "reason": "краткое диагностическое объяснение"
 }
@@ -367,6 +368,30 @@ LLM возвращает не весь заявленный сценарий, а
 - `not_achieved` — фактическая попытка выполнена, но цель не достигнута.
 
 Если `continuation` не равен `null`, `goal_result` должен быть `pending`.
+
+### 8.2.1. Write-free direct result
+
+Обязательное nullable структурное поле `direct_result_kind` принимает
+`player_safe_observation`, `player_safe_item_observation`,
+`player_safe_body_observation`, `no_state_gesture` или `null`. Первые четыре значения
+разрешены только для прямого успешного или частично успешного write-free шага с
+`activity = semantic/moment/none`, пустыми `operations`, `check = null` и
+`clarification = null`; для такого шага `null` запрещён. Во всех остальных
+планах поле равно `null`.
+
+`player_safe_observation` подтверждает только завершение наблюдения; его
+содержание ограничено уже предъявленными player-safe facts.
+`player_safe_item_observation` отдельно классифицирует осмотр уже
+player-safe carried/worn items; код проецирует их текущие labels,
+placement и подтверждённое condition как обязательный результат, а не как
+необязательный ambient context. `player_safe_body_observation` классифицирует
+самоосмотр при наличии player-safe `request.actor.body`: код подтверждает только
+уже переданные телесные признаки и явно не устанавливает новое повреждение или
+диагноз. Упоминание одежды лишь как преграды для осмотра тела не превращает
+такую попытку в item/ordinary discovery. `no_state_gesture`
+подтверждает только выполнение простого жеста без нового состояния. Новая
+физическая деталь требует соответствующий domain/discovery path. Код проверяет
+эти условия; `reason` и `reason_code` остаются только диагностикой.
 
 ### 8.3. `activity`
 
@@ -755,7 +780,19 @@ LLM может материализовать объект, который яв�
 
 LLM не придумывает значимый скрытый результат.
 
+`target_refs` содержит ровно один ref. Если model output перечисляет несколько
+targets, deterministic canonicalizer оставляет первый для текущего исполняемого
+шага и создаёт code-owned `continuation.pending_discovery`: ordered очередь
+остальных exact refs и неизменённый исходный `continuation` в поле `after`.
+Step loop исполняет очередь по одному target без нового planner choice, затем
+дословно восстанавливает `after`; ordinary/domain owner никогда не получает
+групповой discovery. Обычная player-response boundary завершает текущий root;
+необработанный остаток остаётся в approved continuation и не проталкивается
+через второй ordinary atomic plan.
+
 Для O1 этот же существующий request — единственный public путь к common ordinary detail; `request_ordinary_detail` не существует. После authored и committed discovery, exact persisted resolution и other code-first short circuits ordinary resolver вызывается только при meaningful engagement, когда concrete detail нужна factual projection. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A получает только committed objective context, не содержит candidate, raw player action, wishlist, desired use или narration suggestion и может подготовить лишь candidate-free seed/groups. Stage B имеет `evidence_weight: 0`; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`: это не noun/recipe allowlist и не permissions/classification/mechanics authority. Exact normalized retry использует persisted resolution без reroll; другой normalized query получает другую identity. Один discovery допускает максимум два semantic calls суммарно для Stage A, Stage B и structural repair; repair всегда расходует оставшийся call. Если Stage A repair исчерпал лимит, Stage B не вызывается и сохраняется seed-only. Positive `materialize` требует independent committed/prepared supporting basis, `common_mundane`/`common` admission, exact property basis, narrow existing placement и immutable mechanics snapshot в пределах bounded mechanics policy. Model-produced `absent`, `no_change` и `authority_required` — persisted first-class resolutions; preflight `no_change` из-за исчерпанного budget/cap остаётся transient и не создаёт granular record. Если в том же turn впервые выполнен Stage A, сохраняется seed-only P16 plan. Model call происходит вне physical transaction; revalidation и one atomic P16 commit сохраняют seed/basis, positive либо negative exact resolution. Planner и narrator видят только capability marker и approved visible concrete result.
+
+При наличии production World Knowledge Stage B может вернуть `materialize` только с непустым `world_knowledge_claim_refs`, состоящим из exact `claim_ref` текущего grounded slice; LLM выбирает семантически релевантные premises, а code binding проверяет membership. Пустой или чужой ref делает ответ структурно невалидным и после единственного repair завершает ход typed failure до commit/narration.
 
 O1 сам не активирует O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources. Значимые, hidden и informational facts, container contents и topology остаются code-owned. Независимо активированный O2b ниже не расширяет O1 discovery.
 
@@ -1127,13 +1164,33 @@ LLM не возвращает:
 - контейнерные циклы запрещены;
 - одна сущность не получает два итоговых размещения.
 
-При структурной ошибке допускается один repair-вызов LLM с перечнем только структурных нарушений.
+До строгой валидации model adapter однозначно и без семантических догадок
+канонизирует только закрытые формы: строку `"null"`, одно-полевой
+`{"choice_id": ...}`, unique exact copied operation choice, single-target форму
+`request_discovery` с code-owned pending queue и точный duplicate
+`query`/`continuation`. Exact misplaced/duplicated continuation удаляется из
+`interpretation` только при совпадении с top-level continuation; отсутствующие
+пустые diagnostic `reason_code`/`reason` заполняются нейтральными code-owned
+значениями. Исходный later-continuation сохраняется за очередью без изменений.
+Неоднозначные случаи не угадываются.
+
+LLM repair допускается один раз только для ошибки, требующей нового
+семантического выбора. Чисто структурная ошибка, которую deterministic
+canonicalizer не смог исправить однозначно, сразу возвращает typed technical
+failure. Prompt не является владельцем закрытых cardinality/schema invariants.
 
 Если repair снова невалиден:
 
 - состояние не меняется;
 - игроку не сообщается внутриигровой отказ;
 - возвращается техническая ошибка обработки хода.
+
+Все production primary/audit/repair calls используют единый provider owner с
+`maxTokens = 20_000` и transport timeout 120 секунд. При явно выбранном
+local/custom OpenAI-compatible provider один `runtimeProviderOverride`
+применяется ко всем ролям. Transport не делает fallback на DeepSeek или другую
+model/provider; connection, auth, model, timeout, malformed response и invalid
+JSON завершают ход typed technical failure до commit.
 
 ## 17. Активированная реализация
 

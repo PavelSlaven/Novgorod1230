@@ -1,0 +1,1719 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {
+    "physics_material_science": {
+      "responds_to": {
+        "subject_domains": [
+          "material_culture",
+          "physics_material_science"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Conditional material response or prerequisite, independent of historical availability and exact state/mechanics."
+      }
+    },
+    "biology_physiology": {
+      "requires_condition": {
+        "subject_domains": [
+          "material_culture"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Conditional material response or prerequisite, independent of historical availability and exact state/mechanics."
+      }
+    },
+    "chemistry_process": {
+      "requires_condition": {
+        "subject_domains": [
+          "material_culture"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Conditional material response or prerequisite, independent of historical availability and exact state/mechanics."
+      },
+      "responds_to": {
+        "subject_domains": [
+          "material_culture"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Conditional material response or prerequisite, independent of historical availability and exact state/mechanics."
+      }
+    }
+  },
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:odegaard-pine-pitch-2014",
+      "title": "Pine Pitch: New Treatment Protocols for a Brittle and Crumbly Conservation Problem",
+      "authors": [
+        "Nancy Odegaard et al."
+      ],
+      "publication": "AIC Objects Specialty Group Postprints 21 (2014), pp. 21–22",
+      "source_kind": "technical_reference",
+      "citation": "http://resources.culturalheritage.org/wp-content/uploads/sites/8/2015/03/osg021-02.pdf",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-wood-moisture",
+      "title": "Moisture Relations and Physical Properties of Wood",
+      "authors": [
+        "Samuel V. Glass",
+        "Samuel L. Zelinka"
+      ],
+      "publication": "USFS Wood Handbook, FPL-GTR-282, chapter 4 (2021)",
+      "source_kind": "scholarship",
+      "citation": "https://research.fs.usda.gov/treesearch/62243",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-wood-decay",
+      "title": "Biodeterioration of Wood",
+      "authors": [
+        "US Forest Service"
+      ],
+      "publication": "USFS Wood Handbook, FPL-GTR-282, chapter 14 (2021)",
+      "source_kind": "scholarship",
+      "citation": "https://research.fs.usda.gov/treesearch/62262",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-wood-mechanics",
+      "title": "Mechanical Properties of Wood",
+      "authors": [
+        "US Forest Service"
+      ],
+      "publication": "USFS Wood Handbook, FPL-GTR-282, chapter 5 (2021)",
+      "source_kind": "scholarship",
+      "citation": "https://research.fs.usda.gov/treesearch/62244",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-wood-fire",
+      "title": "Fire Safety of Wood Construction",
+      "authors": [
+        "US Forest Service"
+      ],
+      "publication": "USFS Wood Handbook, FPL-GTR-282, chapter 18 (2021)",
+      "source_kind": "scholarship",
+      "citation": "https://research.fs.usda.gov/treesearch/62266",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-leather",
+      "title": "Care of Alum, Vegetable and Mineral-tanned Leather",
+      "authors": [
+        "Canadian Conservation Institute"
+      ],
+      "publication": "CCI Notes, Relative humidity section",
+      "source_kind": "scholarship",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/conservation-preservation-publications/canadian-conservation-institute-notes/care-alum-vegetable-mineral-tanned-leather.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-iron-corrosion",
+      "title": "Experiment 7: Corrosion of Iron",
+      "authors": [
+        "University of Illinois Urbana-Champaign"
+      ],
+      "publication": "Materials Science and Technology, Review of Scientific Principles; Applications; Answers",
+      "source_kind": "scholarship",
+      "citation": "https://matse1.matse.illinois.edu/metals/j.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-textiles",
+      "title": "Caring for textiles and costumes",
+      "authors": [
+        "Renée Dancause",
+        "Janet Wagner",
+        "Jan Vuori"
+      ],
+      "publication": "Canadian Conservation Institute, Natural fibres",
+      "source_kind": "scholarship",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/preventive-conservation/guidelines-collections/textiles-costumes.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:population-pottery",
+      "title": "Stoneware Pottery",
+      "authors": [
+        "University of Alaska Fairbanks Geophysical Institute"
+      ],
+      "publication": "Alaska Science Forum, plasticity/drying/early firing/quartz inversion paragraphs",
+      "source_kind": "scholarship",
+      "citation": "https://www.gi.alaska.edu/index.php/alaska-science-forum/stoneware-pottery-0",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:aalto-ceramic-materials",
+      "title": "Ceramic Handbook: Ceramic Materials",
+      "authors": [
+        "Aalto University"
+      ],
+      "publication": "Ceramic materials Aalto 2021, OpenLearning",
+      "source_kind": "technical_reference",
+      "citation": "https://openlearning.aalto.fi/course/section.php?id=2034",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:pine-pitch-basket-coating",
+      "source_ref": "source:odegaard-pine-pitch-2014",
+      "anchor": {
+        "section": "Abstract; 1. Introduction, printed pp. 21–22"
+      },
+      "note": "Independent verification/verification-resin-properties.md RP-01–02, full source read: documented Southwest basket-coating system and severely oxidized collection only. Not generic resin sealing or Novgorod availability.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-material-wood-moisture",
+      "source_ref": "source:population-wood-moisture",
+      "anchor": {
+        "section": "Wood–Moisture Relations; Dimensional Stability, pp. 4-8–4-9 (2021)"
+      },
+      "note": "Qualitative factual paraphrase. Independent source checks: research/verification-population-causal-materials.md; verification/verification-wood-moisture.md WM-05/06 approves the conditional gain/loss and dimensional-direction refinement.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-material-wood-decay",
+      "source_ref": "source:population-wood-decay",
+      "anchor": {
+        "section": "Decay Fungi"
+      },
+      "note": "Qualitative factual paraphrase. Independent source check: research/verification-population-causal-materials.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-material-wood-mechanics",
+      "source_ref": "source:population-wood-mechanics",
+      "anchor": {
+        "section": "Factors Affecting Mechanical Properties"
+      },
+      "note": "Qualitative factual paraphrase. Independent source check: research/verification-population-causal-materials.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-material-wood-fire",
+      "source_ref": "source:population-wood-fire",
+      "anchor": {
+        "section": "Combustion of Wood"
+      },
+      "note": "Qualitative factual paraphrase. Independent source check: research/verification-population-causal-materials.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-material-leather",
+      "source_ref": "source:population-leather",
+      "anchor": {
+        "section": "Relative humidity"
+      },
+      "note": "Qualitative factual paraphrase. Independent source check: research/verification-population-causal-materials.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-material-iron-corrosion",
+      "source_ref": "source:population-iron-corrosion",
+      "anchor": {
+        "section": "Review of Scientific Principles; Applications; Answers to Questions 2"
+      },
+      "note": "Qualitative factual paraphrase. Independent source check: research/verification-population-causal-materials.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-material-textiles",
+      "source_ref": "source:population-textiles",
+      "anchor": {
+        "section": "Natural fibres: Wool; Silk"
+      },
+      "note": "Qualitative factual paraphrase. Independent source check: research/verification-population-causal-materials.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-material-pottery",
+      "source_ref": "source:population-pottery",
+      "anchor": {
+        "section": "Plasticity; drying; early firing; quartz inversion"
+      },
+      "note": "Qualitative factual paraphrase. Independent source check: research/verification-population-causal-materials.md.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:wood-liquid-absorption",
+      "source_ref": "source:population-wood-moisture",
+      "anchor": {
+        "page": "4-8",
+        "section": "Liquid Water Absorption (2021): opening comparison, capillary mechanism, directional uptake and displaced air"
+      },
+      "note": "Independent verification/verification-wood-moisture.md WM-01–04. Conditional universal material responses only; no present wetness, source, numeric rate, damage or historical actor expertise.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:clay-ceramic-transformation",
+      "source_ref": "source:aalto-ceramic-materials",
+      "anchor": {
+        "section": "Ceramics: paragraphs beginning Ceramics are clay fired at high temperatures and Ceramic change means"
+      },
+      "note": "Independent verification/verification-pottery-transformation-general.md PTG01–03. Universal conditional transformation and re-plasticization contrast only; no historical availability, scene inputs, numerical recipe or waterproofness.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:pine-pitch-coating",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:clay",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:silk",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pine-pitch-woven-basket-coating",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:pine-pitch-coating",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "documented_heated_pine_pitch_coating_made_woven_basket_system_water_tight"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:pine-pitch-basket-coating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:pine-pitch-severe-oxidation",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:pine-pitch-coating",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "described_severely_oxidized_pine_pitch_coatings_became_cracked_brittle_crumbly"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:pine-pitch-basket-coating"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-wood-moisture",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "surrounding_moisture"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-wood-moisture"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-wood-shrinkage",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "bound_water_gain_or_loss_below_fibre_saturation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-wood-moisture"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-wood-decay",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "susceptible_wood_fungi_moisture_oxygen_temperature_time"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-wood-decay"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-leather-dry",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:leather",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "very_dry_air"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-leather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-leather-mould",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:material_culture:leather",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "damp_mould_favouring_conditions_time"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-leather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-wood-combustion",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "sufficient_heat_oxygen_and_fuel_state"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-wood-fire"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-wood-pyrolysis",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "heat_with_limited_oxygen"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-wood-fire"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-wood-loading",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "grain_moisture_density_loading_mode"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-wood-mechanics"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-iron-coating",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:material_culture:iron",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "barrier_against_oxygen_and_moisture"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-iron-corrosion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-iron-rust",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:material_culture:iron",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "oxygen_moisture_exposure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-iron-corrosion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-copper-iron-contact",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:material_culture:iron",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "copper_contact_in_electrolyte"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-iron-corrosion"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-wet-wool",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:wool",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "wetting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-textiles"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-wet-silk",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:silk",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "wetting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-textiles"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-clay-plasticity",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:clay",
+      "predicate": "requires_condition",
+      "object": {
+        "kind": "literal",
+        "value": "suitable_clay_and_adsorbed_water"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-pottery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-clay-drying",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:clay",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "water_loss_and_drying_gradient"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-pottery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-clay-steam",
+      "domain": "chemistry_process",
+      "subject_ref": "wk:material_culture:clay",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "rapid_heating_of_pore_water"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-pottery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-material-clay-quartz",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:clay",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "rapid_quartz_phase_transition"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-material-pottery"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:wood-liquid-moisture-change",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "liquid_water_contact_can_change_moisture_faster_than_vapour_sorption"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "general_physical",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:wood-liquid-absorption"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:wood-liquid-fibre-saturation",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "liquid_uptake_can_exceed_fibre_saturation_vapour_sorption_usually_cannot"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:wood-liquid-absorption"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:wood-liquid-capillary-uptake",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "liquid_water_contact_capillary_wicking_in_cell_lumina"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:wood-liquid-absorption"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:wood-liquid-directional-uptake",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "exposed_end_grain_longitudinal_uptake_fastest_displaced_air_escape_affects_uptake"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:wood-liquid-absorption"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clay-fired-no-replasticization",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:clay",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "ceramic_transformation_in_firing_prevents_water_return_to_plastic_clay"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clay-ceramic-transformation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clay-firing-structural-transformation",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:clay",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "ceramic_firing_changes_clay_mineral_chemical_crystal_structure_to_durable_ceramic"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clay-ceramic-transformation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clay-dried-replasticization",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:material_culture:clay",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "dried_clay_before_ceramic_transformation_can_become_plastic_when_mixed_with_water"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clay-ceramic-transformation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pine-pitch-coating",
+      "locale": "ru",
+      "labels": [
+        "Сосновое пековое покрытие"
+      ],
+      "short_definition": "Пековое покрытие, идентифицированное в источнике; не любая сосновая смола, канифоль или уже обработанный предмет.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pine-pitch-coating",
+      "locale": "en",
+      "labels": [
+        "Pine-pitch coating"
+      ],
+      "short_definition": "Pitch coating identified by the source; not any pine resin, rosin or an already coated scene object.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:clay",
+      "locale": "ru",
+      "labels": [
+        "Глина"
+      ],
+      "short_definition": "Глина",
+      "search_aliases": [
+        "Глина"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:clay",
+      "locale": "en",
+      "labels": [
+        "Clay"
+      ],
+      "short_definition": "Clay",
+      "search_aliases": [
+        "Clay"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:silk",
+      "locale": "ru",
+      "labels": [
+        "Шёлк"
+      ],
+      "short_definition": "Шёлк",
+      "search_aliases": [
+        "Шёлк"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:silk",
+      "locale": "en",
+      "labels": [
+        "Silk"
+      ],
+      "short_definition": "Silk",
+      "search_aliases": [
+        "Silk"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pine-pitch-woven-basket-coating",
+      "locale": "ru",
+      "runtime_text": "В описанной Odegaard и соавторами традиции юго-запада Северной Америки нагретое сосновое пековое покрытие на плетёной корзине делало именно эту систему водонепроницаемой. Это наблюдение о сочетании определённого пека, плетёной основы и нанесённого покрытия, не общее свойство всякой смолы, доски, шва, лодки или тары. Оно не задаёт сцепление с древесиной, долговечность, рецепт, наличие материалов или новгородскую практику.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pine-pitch-woven-basket-coating",
+      "locale": "en",
+      "runtime_text": "In the Southwest North American tradition described by Odegaard and colleagues, a heated pine-pitch coating made that woven-basket system water-tight. This observation concerns identified pitch, a woven substrate and an applied coating, not a generic property of every resin, board, seam, boat or container. It supplies no adhesion to wood, durability, recipe, material presence or Novgorod practice.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pine-pitch-severe-oxidation",
+      "locale": "ru",
+      "runtime_text": "В обследованной Odegaard и соавторами коллекции пековых покрытий сильное окисление сопровождалось растрескиванием, хрупкостью и осыпанием. Это условное наблюдение о сильно окисленных покрытиях, не свойство свежей смолы и не утверждение о каждом старом покрытии. Оно не задаёт срок, климатический порог, вероятность разрушения или состояние конкретного предмета.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:pine-pitch-severe-oxidation",
+      "locale": "en",
+      "runtime_text": "In the pitch-coating collection examined by Odegaard and colleagues, severe oxidation was accompanied by cracking, brittleness and crumbling. This is a conditional observation about severely oxidized coatings, not a property of fresh resin or a statement about every old coating. It supplies no time to failure, climatic threshold, failure probability or condition of a particular object.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-moisture",
+      "locale": "ru",
+      "runtime_text": "Древесина обменивается влагой с воздухом; направление и величина зависят от влажности, температуры и исходного состояния дерева.",
+      "search_aliases": [
+        "Древесина обменивается влагой с воздухом; направление и величина зависят от влажности, температуры и исходного состояния дерева."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-moisture",
+      "locale": "en",
+      "runtime_text": "Wood exchanges moisture with air; direction and extent depend on humidity, temperature and initial wood condition.",
+      "search_aliases": [
+        "Wood exchanges moisture with air; direction and extent depend on humidity, temperature and initial wood condition."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-shrinkage",
+      "locale": "ru",
+      "runtime_text": "Ниже точки насыщения волокон поступление связанной воды вызывает разбухание древесины, а её потеря — усушку. Изменение обычно наибольшее в тангенциальном направлении, меньше в радиальном и небольшое вдоль волокон; величина зависит от породы и направления. Это не устанавливает влажность, размеры или повреждение конкретной детали.",
+      "search_aliases": [
+        "Разбухание древесины при увлажнении",
+        "Усушка древесины",
+        "Поперёк и вдоль волокон"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-shrinkage",
+      "locale": "en",
+      "runtime_text": "Below fibre saturation, gain of bound water swells wood and loss shrinks it. Dimensional change is usually greatest tangentially, less radially and slight along the grain; extent depends on species and direction. This does not establish a particular piece's moisture, dimensions or damage.",
+      "search_aliases": [
+        "Wood swelling on wetting",
+        "Wood shrinkage",
+        "Across and along the grain"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-decay",
+      "locale": "ru",
+      "runtime_text": "Грибковое разрушение древесины требует подходящей древесины, грибов, влаги, кислорода, температуры и времени; дождь сам по себе не означает уже произошедшую гниль.",
+      "search_aliases": [
+        "Грибковое разрушение древесины требует подходящей древесины, грибов, влаги, кислорода, температуры и времени; дождь сам по себе не означает уже произошедшую гниль."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-decay",
+      "locale": "en",
+      "runtime_text": "Fungal wood decay requires susceptible wood, fungi, moisture, oxygen, suitable temperature and time; rain alone does not establish existing rot.",
+      "search_aliases": [
+        "Fungal wood decay requires susceptible wood, fungi, moisture, oxygen, suitable temperature and time; rain alone does not establish existing rot."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-leather-dry",
+      "locale": "ru",
+      "runtime_text": "В очень сухих условиях кожа может терять гибкость и трескаться при изгибе; важны способ выделки, прежнее состояние и длительность.",
+      "search_aliases": [
+        "В очень сухих условиях кожа может терять гибкость и трескаться при изгибе; важны способ выделки, прежнее состояние и длительность."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-leather-dry",
+      "locale": "en",
+      "runtime_text": "Very dry conditions can stiffen leather and make it vulnerable to cracking when bent; tanning, prior condition and duration matter.",
+      "search_aliases": [
+        "Very dry conditions can stiffen leather and make it vulnerable to cracking when bent; tanning, prior condition and duration matter."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-leather-mould",
+      "locale": "ru",
+      "runtime_text": "Сырая кожа в благоприятных для плесени условиях может плесневеть и повреждаться; одной влажности недостаточно для утверждения, что плесень уже есть.",
+      "search_aliases": [
+        "Сырая кожа в благоприятных для плесени условиях может плесневеть и повреждаться; одной влажности недостаточно для утверждения, что плесень уже есть."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-leather-mould",
+      "locale": "en",
+      "runtime_text": "Damp leather in mould-favouring conditions can develop mould and damage; wetness alone does not establish present mould.",
+      "search_aliases": [
+        "Damp leather in mould-favouring conditions can develop mould and damage; wetness alone does not establish present mould."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-combustion",
+      "locale": "ru",
+      "runtime_text": "Дерево при достаточном нагреве и доступе кислорода может гореть, выделяя тепло, газы и остаток. Влажность, форма и воздух влияют на начало и ход горения.",
+      "search_aliases": [
+        "Дерево при достаточном нагреве и доступе кислорода может гореть, выделяя тепло, газы и остаток. Влажность, форма и воздух влияют на начало и ход горения."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-combustion",
+      "locale": "en",
+      "runtime_text": "Wood with sufficient heat and oxygen can burn, releasing heat, gases and residue. Moisture, shape and airflow affect ignition and burning.",
+      "search_aliases": [
+        "Wood with sufficient heat and oxygen can burn, releasing heat, gases and residue. Moisture, shape and airflow affect ignition and burning."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-pyrolysis",
+      "locale": "ru",
+      "runtime_text": "При нагреве дерева с ограниченным доступом кислорода образуются углистый остаток и летучие продукты; выход и температура не задаются названием процесса.",
+      "search_aliases": [
+        "При нагреве дерева с ограниченным доступом кислорода образуются углистый остаток и летучие продукты; выход и температура не задаются названием процесса."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-pyrolysis",
+      "locale": "en",
+      "runtime_text": "Heating wood with limited oxygen produces char and volatile products; yield and temperature are not determined by the process name.",
+      "search_aliases": [
+        "Heating wood with limited oxygen produces char and volatile products; yield and temperature are not determined by the process name."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-loading",
+      "locale": "ru",
+      "runtime_text": "Результат резания, раскалывания, сгибания или нагружения дерева зависит от волокон, влажности, плотности, геометрии и способа приложения нагрузки.",
+      "search_aliases": [
+        "Результат резания, раскалывания, сгибания или нагружения дерева зависит от волокон, влажности, плотности, геометрии и способа приложения нагрузки."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wood-loading",
+      "locale": "en",
+      "runtime_text": "Cutting, splitting, bending or loading wood depends on grain, moisture, density, geometry and loading mode.",
+      "search_aliases": [
+        "Cutting, splitting, bending or loading wood depends on grain, moisture, density, geometry and loading mode."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-iron-coating",
+      "locale": "ru",
+      "runtime_text": "Сплошное покрытие, изолирующее железо от влаги и кислорода, препятствует этому пути коррозии. Повреждённое или отсутствующее покрытие такой защиты не доказывает.",
+      "search_aliases": [
+        "Сплошное покрытие, изолирующее железо от влаги и кислорода, препятствует этому пути коррозии. Повреждённое или отсутствующее покрытие такой защиты не доказывает."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-iron-coating",
+      "locale": "en",
+      "runtime_text": "A continuous barrier isolating iron from moisture and oxygen inhibits this corrosion pathway; missing or damaged coating does not establish that protection.",
+      "search_aliases": [
+        "A continuous barrier isolating iron from moisture and oxygen inhibits this corrosion pathway; missing or damaged coating does not establish that protection."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-iron-rust",
+      "locale": "ru",
+      "runtime_text": "Железо при воздействии кислорода и влаги может ржаветь; поверхность, соли и длительность влияют на результат, а мгновенная потеря прочности не следует из одного намокания.",
+      "search_aliases": [
+        "Железо при воздействии кислорода и влаги может ржаветь; поверхность, соли и длительность влияют на результат, а мгновенная потеря прочности не следует из одного намокания."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-iron-rust",
+      "locale": "en",
+      "runtime_text": "Iron exposed to oxygen and moisture can rust; surface, salts and duration affect the result, and wetting alone does not imply instant loss of strength.",
+      "search_aliases": [
+        "Iron exposed to oxygen and moisture can rust; surface, salts and duration affect the result, and wetting alone does not imply instant loss of strength."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-copper-iron-contact",
+      "locale": "ru",
+      "runtime_text": "В электрическом контакте с железом в электролите медь не является жертвенной защитой железа: она менее активна. Нужны реальный контакт и электролит.",
+      "search_aliases": [
+        "В электрическом контакте с железом в электролите медь не является жертвенной защитой железа: она менее активна. Нужны реальный контакт и электролит."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-copper-iron-contact",
+      "locale": "en",
+      "runtime_text": "Copper electrically contacting iron in an electrolyte does not sacrificially protect it because copper is less active; actual contact and electrolyte are required.",
+      "search_aliases": [
+        "Copper electrically contacting iron in an electrolyte does not sacrificially protect it because copper is less active; actual contact and electrolyte are required."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wet-wool",
+      "locale": "ru",
+      "runtime_text": "Мокрые шерстяные волокна слабее сухих; результат натяжения зависит также от сечения, крутки, переплетения и износа. Это не правило для всех тканей.",
+      "search_aliases": [
+        "Мокрые шерстяные волокна слабее сухих; результат натяжения зависит также от сечения, крутки, переплетения и износа. Это не правило для всех тканей."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wet-wool",
+      "locale": "en",
+      "runtime_text": "Wet wool fibres are weaker than dry ones; tensile behaviour also depends on section, twist, construction and wear. This is not a rule for all textiles.",
+      "search_aliases": [
+        "Wet wool fibres are weaker than dry ones; tensile behaviour also depends on section, twist, construction and wear. This is not a rule for all textiles."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wet-silk",
+      "locale": "ru",
+      "runtime_text": "Шёлковые волокна при намокании становятся слабее; это свойство шёлка, а не любой ткани, и не подтверждение его доступности в конкретной сцене.",
+      "search_aliases": [
+        "Шёлковые волокна при намокании становятся слабее; это свойство шёлка, а не любой ткани, и не подтверждение его доступности в конкретной сцене."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-wet-silk",
+      "locale": "en",
+      "runtime_text": "Silk fibres become weaker when wet; this is silk-specific, not a property of all cloth or proof of its availability in a scene.",
+      "search_aliases": [
+        "Silk fibres become weaker when wet; this is silk-specific, not a property of all cloth or proof of its availability in a scene."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-clay-plasticity",
+      "locale": "ru",
+      "runtime_text": "Адсорбированная вода между пластинчатыми частицами глины помогает им смещаться при формовании. Любая почва не становится от воды пригодной гончарной глиной.",
+      "search_aliases": [
+        "Адсорбированная вода между пластинчатыми частицами глины помогает им смещаться при формовании. Любая почва не становится от воды пригодной гончарной глиной."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-clay-plasticity",
+      "locale": "en",
+      "runtime_text": "Adsorbed water between plate-like clay particles helps them slide during shaping. Adding water does not make arbitrary soil suitable potter's clay.",
+      "search_aliases": [
+        "Adsorbed water between plate-like clay particles helps them slide during shaping. Adding water does not make arbitrary soil suitable potter's clay."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-clay-drying",
+      "locale": "ru",
+      "runtime_text": "Глина усыхает при потере воды. Медленное равномерное высыхание уменьшает риск коробления и трещин, но не гарантирует целое изделие.",
+      "search_aliases": [
+        "Глина усыхает при потере воды. Медленное равномерное высыхание уменьшает риск коробления и трещин, но не гарантирует целое изделие."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-clay-drying",
+      "locale": "en",
+      "runtime_text": "Clay shrinks as it loses water. Slow even drying reduces warping and cracking risk but does not guarantee an intact object.",
+      "search_aliases": [
+        "Clay shrinks as it loses water. Slow even drying reduces warping and cracking risk but does not guarantee an intact object."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-clay-steam",
+      "locale": "ru",
+      "runtime_text": "Слишком быстрый нагрев глины с оставшейся поровой водой может вызвать разрыв от пара; важны вода, толщина и история нагрева.",
+      "search_aliases": [
+        "Слишком быстрый нагрев глины с оставшейся поровой водой может вызвать разрыв от пара; важны вода, толщина и история нагрева."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-clay-steam",
+      "locale": "en",
+      "runtime_text": "Heating clay with remaining pore water too quickly can cause steam-driven rupture; water content, thickness and heating history matter.",
+      "search_aliases": [
+        "Heating clay with remaining pore water too quickly can cause steam-driven rupture; water content, thickness and heating history matter."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-clay-quartz",
+      "locale": "ru",
+      "runtime_text": "В кварцсодержащей глине фазовое изменение кварца при нагреве сопровождается изменением объёма; слишком быстрый проход может вызвать трещины.",
+      "search_aliases": [
+        "В кварцсодержащей глине фазовое изменение кварца при нагреве сопровождается изменением объёма; слишком быстрый проход может вызвать трещины."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-material-clay-quartz",
+      "locale": "en",
+      "runtime_text": "In quartz-bearing clay, the quartz phase transition during heating changes volume; crossing it too quickly can cause cracks.",
+      "search_aliases": [
+        "In quartz-bearing clay, the quartz phase transition during heating changes volume; crossing it too quickly can cause cracks."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wood-liquid-moisture-change",
+      "locale": "ru",
+      "runtime_text": "При контакте с жидкой водой влажность древесины может меняться быстрее, чем при обмене влагой с воздухом. Это не устанавливает наличие воды, длительность контакта, поглощённое количество или повреждение.",
+      "search_aliases": [
+        "Впитывание воды древесиной"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wood-liquid-moisture-change",
+      "locale": "en",
+      "runtime_text": "With liquid-water contact, wood moisture content can change more rapidly than through water-vapour sorption. This establishes no water presence, contact duration, absorbed quantity or damage.",
+      "search_aliases": [
+        "Liquid water uptake by wood"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wood-liquid-fibre-saturation",
+      "locale": "ru",
+      "runtime_text": "Поглощение жидкой воды может поднять влажность древесины выше точки насыщения волокон; одна сорбция водяного пара обычно этого не делает. Порог для породы и текущая влажность детали здесь не заданы.",
+      "search_aliases": [
+        "Насыщение волокон",
+        "Жидкая вода и водяной пар"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wood-liquid-fibre-saturation",
+      "locale": "en",
+      "runtime_text": "Liquid-water absorption can raise wood moisture above fibre saturation; water-vapour sorption alone usually cannot. No species-specific threshold or current moisture state is supplied.",
+      "search_aliases": [
+        "Fibre saturation",
+        "Liquid water and water vapour"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wood-liquid-capillary-uptake",
+      "locale": "ru",
+      "runtime_text": "При контакте с жидкой водой её поступление в древесину происходит капиллярным всасыванием в полостях клеток. Это не задаёт проницаемость детали, скорость, количество или источник воды.",
+      "search_aliases": [
+        "Капиллярное впитывание древесиной"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wood-liquid-capillary-uptake",
+      "locale": "en",
+      "runtime_text": "With liquid-water contact, uptake in wood proceeds by capillary action in cell lumina. This supplies no piece-specific permeability, rate, quantity or water source.",
+      "search_aliases": [
+        "Capillary wicking in wood"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wood-liquid-directional-uptake",
+      "locale": "ru",
+      "runtime_text": "При открытом торце жидкая вода поступает в древесину быстрее вдоль волокон; на поступление влияет выход вытесняемого воздуха. Порода, структура, открытая поверхность и контакт с водой имеют значение; конкретная скорость, протечка или разрушение не следуют.",
+      "search_aliases": [
+        "Торец древесины",
+        "Вода вдоль волокон"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wood-liquid-directional-uptake",
+      "locale": "en",
+      "runtime_text": "With exposed end grain, liquid-water uptake is fastest along the grain; escape of displaced air also affects uptake. Species, structure, exposed face and liquid contact matter; no particular rate, leak or failure follows.",
+      "search_aliases": [
+        "Exposed end grain",
+        "Water uptake along grain"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clay-fired-no-replasticization",
+      "locale": "ru",
+      "runtime_text": "Глиняное тело, прошедшее керамическое превращение при обжиге, не возвращается водой в пластичное глиняное состояние. Простая сушка или произвольное нагревание этого не доказывают; разрушение, дробление и водопроницаемость этим не исключаются.",
+      "search_aliases": [
+        "Обожжённая глина и вода",
+        "Керамика не становится пластичной"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clay-fired-no-replasticization",
+      "locale": "en",
+      "runtime_text": "A clay body that has undergone ceramic transformation in firing does not return to a plastic clay state by water. Mere drying or arbitrary warming does not establish this transformation; breakage, crushing and water permeability are not excluded.",
+      "search_aliases": [
+        "Fired clay and water",
+        "Ceramic does not become plastic"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clay-firing-structural-transformation",
+      "locale": "ru",
+      "runtime_text": "Керамическое превращение при обжиге изменяет химико-кристаллическую структуру минералов глины и образует новый прочный керамический материал. Прочность здесь качественная: ни температура, ни плотность, ни водонепроницаемость, ни результат любого нагревания не заданы.",
+      "search_aliases": [
+        "Обжиг превращает глину в керамику",
+        "Структура минералов при обжиге"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clay-firing-structural-transformation",
+      "locale": "en",
+      "runtime_text": "Ceramic transformation in firing changes the chemical-crystal structure of clay minerals and forms a new durable ceramic material. Durability is qualitative: no temperature, density, waterproofness or result of arbitrary heating is specified.",
+      "search_aliases": [
+        "Firing transforms clay into ceramic",
+        "Clay mineral structure during firing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clay-dried-replasticization",
+      "locale": "ru",
+      "runtime_text": "Высушенное, но ещё не прошедшее керамическое превращение глиняное тело может при смешении с водой снова стать пластичным. Это не доказывает наличие воды, сохранность высушенного предмета или пригодность любого грунта как глины.",
+      "search_aliases": [
+        "Высушенная глина снова пластична с водой",
+        "До обжига"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clay-dried-replasticization",
+      "locale": "en",
+      "runtime_text": "A dried clay body that has not yet undergone ceramic transformation can become plastic again when mixed with water. This does not establish available water, survival of a dried object or suitability of arbitrary soil as clay.",
+      "search_aliases": [
+        "Dried clay becomes plastic with water",
+        "Before ceramic firing"
+      ]
+    }
+  ]
+}

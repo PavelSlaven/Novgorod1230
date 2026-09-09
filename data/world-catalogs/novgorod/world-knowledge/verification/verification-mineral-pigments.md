@@ -1,0 +1,27 @@
+# Independent verification — mineral pigments, St George Cathedral
+
+## Source check
+
+**Source:** O. S. Philippova, A. Yu. Dmitriev, T. I. Tsarevskaya & S. O. Dmitrieva, “Comprehensive study of 12th century wall painting fragments from the St. George Cathedral of the Yuryev Monastery in Veliky Novgorod (Russia) using complementary physico-chemical methods,” *Heritage Science* 10, 49 (2022), [DOI](https://doi.org/10.1186/s40494-022-00680-y), open-access PDF.
+
+I independently opened the OA publisher page through browser-harness and read its **Results**, **Discussion** and **Conclusions** sections. The source names the samples, analytical methods, observed cross-sections and mineral identifications. The verdicts below are deliberately no broader than the sampled cathedral fragments.
+
+**Applicability common to approvals:** St George Cathedral of the Yuryev Monastery, Veliky Novgorod, twelfth-century samples; c. 1230 is only a broad 1100–1300 historical-compatibility envelope, `medium/inferred`. This is specialist ecclesiastical wall painting, not ordinary household availability, a current object, a quarry, a workshop, a route, wealth, or a person’s possessions.
+
+| Candidate | Verdict | Production-safe wording | Checked anchor and rationale | Limits |
+|---|---|---|---|---|
+| MP-01 lime → plaster | **APPROVE_WITH_LIMITS** | The sampled St George wall plasters were almost entirely lime. | **Discussion → Materials of archaeological fragments → Plasters**: calcium predominates and “the plaster consists almost entirely of lime.” | Do not turn this into every Novgorod wall, lime procurement, or a mortar recipe. |
+| MP-02 yellow ochre → wall-paint layer | **APPROVE_WITH_LIMITS** | Yellow ochre was identified in a sampled St George wall-painting layer. | **Results → Investigation of unicolor archaeological samples → Elemental and mineral analysis**; iron/goethite evidence, Table 3 and Fig. 3a. | Sample/material association only; no universal palette or production method. |
+| MP-03 red ochre → wall-paint layer | **APPROVE_WITH_LIMITS** | Red ochre was identified in a sampled St George wall-painting layer. | Same **Results** subsection; hematite evidence, Table 3 and Fig. 3b. | Same limits. |
+| MP-04 celadonite → green wall-paint layer | **APPROVE_WITH_LIMITS** | Celadonite was identified as a green pigment in sampled St George wall painting. | Same **Results** subsection; IR examination identifies celadonite, Fig. 3c; Fig. 8d independently maps the green layer. | No claim that every green layer, painter, or building used celadonite. |
+| MP-05 lazurite → blue wall-paint layer | **APPROVE_WITH_LIMITS** | Lazurite was identified in a sampled blue St George wall-painting layer. | Same **Results** subsection concludes the blue colour is based on lazurite; Table 3, Fig. 3d, and Fig. 5. | No general access or local manufacture claim. |
+| MP-06 red lead → wall-paint layer | **APPROVE_WITH_LIMITS** | Red lead was identified in an orange sampled St George wall-painting layer. | Same **Results** subsection; XRF/Raman determination; Table 3. Fig. 7 confirms lead in P3’s orange layer. | Do not relabel the sampled orange as a general red-paint recipe or ordinary use. |
+| MP-07 carbon black → wall-paint layer | **APPROVE_WITH_LIMITS** | Carbon black was identified in sampled St George wall painting. | Same **Results** subsection; neutron methods and Raman identify carbon black; Table 4 and Fig. 4. | No fuel, soot-production, or universal black-pigment claim. |
+| MP-08 pigment plus lime basis | **APPROVE_WITH_LIMITS** | In the analysed blue sample, the lazurite and carbon-black layers were mixed on a lime basis. | **Results → Stratigraphic analysis of unicolor samples**, Fig. 5: uniform calcium distribution; FTIR supports the authors’ conclusion. | This is specifically the blue sample. Fig. 8d instead reports low calcium in its green layer, so reject “all colours mixed with lime binder” and any universal binder recipe. |
+| MP-09 lazurite over carbon-black ground | **APPROVE_WITH_LIMITS** | One analysed blue sequence has lazurite above a grey-black carbon-black layer, above lime plaster. | **Results → Stratigraphic analysis of unicolor samples**, Fig. 4d; **Discussion → Pigments** confirms the two-layer structure. | One sequence only—not a required ground, a general icon-painting rule, or a construction recipe. |
+| MP-10 mixed wet/dry plaster painting | **APPROVE_WITH_LIMITS** | The analysed St George fragments support an interpretation of combined *al fresco* and *fresco-secco* techniques. | **Discussion → Painting technique**; thin carbonation/diffusion supports fresco in some samples, while thin layers over dry plaster support dry-plaster work; **Conclusions** explicitly states combined techniques. | Technique compatibility for the sampled monument, not an instruction, sequence, or guarantee for every layer. |
+| MP-11 white-lead blackening (optional) | **APPROVE_WITH_LIMITS** | The authors interpret the blackened white-lead areas in the reconstructed St George image as chemical or biochemical deterioration over time. | **Discussion → Digital reconstruction**, Fig. 9. | Conservation-risk observation only; do not claim inevitability, a health effect, or a handling rule. |
+
+## Exclusions
+
+Not approved as production facts: organic-binder recipe (Discussion → Plasters leaves its type unknown); local pigment manufacture; a current fresco, church, material stock, route, social rank, or any actor knowledge. These rows describe historical material compatibility only.

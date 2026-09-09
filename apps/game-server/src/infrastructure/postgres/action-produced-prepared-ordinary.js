@@ -54,8 +54,10 @@ export function actionProducedPreparedOrdinaryRows(input, requested) {
 
 function preparedWorldRows(plan, input, requested) {
   const item = plan.item;
+  const presenceStep = ordinaryPresenceStep(input.root_turn_id,
+    plan.request_identity);
   if (item == null || plan.resolution !== 'materialize'
-      || plan.request_identity !== `${input.root_turn_id}:ordinary:presence`) {
+      || presenceStep == null || presenceStep >= input.step_index) {
     fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
   }
   if (!requested.includes(item.item_id)) return new Map();
@@ -91,9 +93,17 @@ function preparedWorldRows(plan, input, requested) {
     preparedOrdinary: {
       schema: 'action_production_prepared_ordinary_pin_v2',
       request_identity: plan.request_identity,
-      root_turn_id: input.root_turn_id
+      root_turn_id: input.root_turn_id,
+      step_index: presenceStep
     }
   }]]);
+}
+
+function ordinaryPresenceStep(rootTurnId, requestIdentity) {
+  const prefix = `${rootTurnId}:ordinary:presence:step:`;
+  const step = requestIdentity?.startsWith(prefix)
+    ? Number(requestIdentity.slice(prefix.length)) : null;
+  return Number.isSafeInteger(step) && step >= 1 && step <= 8 ? step : null;
 }
 
 export function actionProducedPreparedActionRows(input) {

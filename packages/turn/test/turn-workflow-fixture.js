@@ -97,6 +97,9 @@ export function createServices(log = [], overrides = {}) {
   const defaultMode = { selected_primary_mode: 'attention', secondary_modes: [], resolution_plan: { subsystems: ['visible_context_projection'], checks_to_run: ['visibility'], expected_writes: ['party_state', 'party_visible_context_package', 'party_narrator_output'], state_blocks_to_load: ['party_state', 'current_position', 'clock_weather_light', 'visible_context', 'relevant_hidden_state'] } };
   services.commandRegistry = createTurnCommandRegistry([{
     command_id: commandOverrides.command_id ?? 'inspect_cart', target_id: 'place-gate', expected_cost: { kind: 'time', value: 5 }, known_risks: [], reason_visible_to_actor: 'Осмотреть доступный объект.',
+    ...(commandOverrides.semantic_grounding == null ? {} : {
+      semantic_grounding: commandOverrides.semantic_grounding
+    }),
     semantic_binding: commandOverrides.semantic_binding ?? null,
     matches(context) { log.push('resolve_mode'); return (commandOverrides.matches ?? (() => true))(context); },
     mode: commandOverrides.mode ?? defaultMode,
@@ -173,6 +176,7 @@ export function turnStepPlan(request, overrides = {}) {
     check: null,
     continuation: null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: 'test_step',
     reason: 'Code-owned integration test plan.',
     ...overrides

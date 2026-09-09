@@ -12,6 +12,8 @@ import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
   '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
+import { lowerDvinaTraceDirectResultChanges } from
+  '../src/runtime/lower-dvina-trace-visible-scene-items.js';
 
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
@@ -59,11 +61,14 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
       kind: 'semantic_activity' } } }, retrieved_state: current, mode_resolution: {
       decision_trace: { remaining_intent: null,
         step_traces: [{ approved_plan: { resolution: 'direct',
+          interpretation: { player_goal: 'определить узор на досках',
+            grounded_attempt: 'поднести доску к глазам' },
           goal_result: 'not_achieved', operations: [], check: null } }] }
     } }, directSeedKeys: ['turn_step_1'], body: {} });
   assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
   assert.equal(JSON.stringify(direct).includes('injured_unable_to_walk'), false);
-  assert.deepEqual(direct.visible_changes, []);
+  assert.deepEqual(direct.visible_changes,
+    ['Не удалось достичь цели «определить узор на досках».']);
   assert.deepEqual(direct.uncertainties, []);
   assert.equal(direct.do_not_imply.includes('unconfirmed_attempt_success'), true);
 });
@@ -103,6 +108,33 @@ test('version zero scene retains safe labels and gains observable cues', () => {
     .recognition, 'unrecognized');
   assert.equal(current.current_visible_context.visible_npc[0]
     .observable_cues.identity.appearance.build, 'stocky');
+});
+
+test('version zero scene includes unnamed carried equipment with safe labels', () => {
+  const state = committedState();
+  state.party_state.state_version = 0;
+  state.items.push({ item_id: 'unseen-equipped-layer',
+    visual_profile_snapshot: { equipment_slot: 'outer_garment' },
+    placement: { holder_character_id: state.actor_id,
+      physical_position: 'equipped',
+      equipment_slot_category_id: 'outer_garment' } }, {
+    item_id: 'unseen-belt-tool', placement: {
+      holder_character_id: state.actor_id, physical_position: 'worn_quick' }
+  });
+
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles
+  });
+
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'unseen-equipped-layer' },
+    display_label: 'верхняя одежда', recognition: 'recognized',
+    visible_status: 'при вас'
+  }, {
+    entity_ref: { entity_kind: 'item', entity_id: 'unseen-belt-tool' },
+    display_label: 'предмет снаряжения', recognition: 'recognized',
+    visible_status: 'при вас'
+  }]);
 });
 
 test('current scene exposes only authored physical facts, never taxonomy IDs', () => {
@@ -162,6 +194,23 @@ test('current scene retains a named item held by the player', () => {
   }]);
 });
 
+test('current scene carries committed physical facts of visible items', () => {
+  const state = committedState();
+  state.items.push({ item_id: 'used-board', name: 'обломки досок', state: {
+    ordinary_metadata: { semantic_facts: [{ fact_id: 'platform:1',
+      text: 'обломки уложены как простой настил' }] }
+  }, placement: { location_ref: 'shed', anchor_id: 'shed-anchor' } });
+  const current = withLowerDvinaTraceCurrentScene({ committedState: state,
+    locationProfiles });
+  assert.deepEqual(current.current_visible_context.sensory_details,
+    ['обломки уложены как простой настил']);
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'used-board' },
+    display_label: 'обломки досок', recognition: 'recognized',
+    visible_status: 'available'
+  }]);
+});
+
 test('fact presentation reads an unseen committed fact generically', () => {
   const presentation = factPresentationForRef({ scenePresentation: {
     fact_presentations: [{ fact_ref: 'unseen:fact', text: 'На камне видна свежая зарубка.',
@@ -191,6 +240,119 @@ test('in-place production forbids narration from inventing source relocation', (
     'uncommitted_action_production_source_relocation'), true);
 });
 
+test('direct player-safe observation reaches narration without new facts', () => {
+  const state = committedState();
+  state.current_visible_context.sensory_details = ['Низкое сырое небо.'];
+  state.current_visible_context.visible_objects = [{
+    entity_ref: { entity_kind: 'item', entity_id: 'unseen-cloak' },
+    display_label: 'верхняя одежда', recognition: 'recognized',
+    visible_status: 'при вас'
+  }];
+  const visible = projectCurrentSceneForNoOperationDirect({ input: {
+    consequence: { status: 'resolved', visible_seed: {} },
+    retrieved_state: state, mode_resolution: { decision_trace: {
+      remaining_intent: null, step_traces: [{ approved_plan: {
+        resolution: 'direct', goal_result: 'achieved', operations: [],
+        check: null, direct_result_kind: 'player_safe_observation'
+      }, applied: true }] } }
+  }, directSeedKeys: [], body: {} });
+
+  assert.deepEqual(visible.visible_changes,
+    ['Наблюдение завершено по уже доступным вам признакам.']);
+  assert.deepEqual(visible.sensory_details, ['Низкое сырое небо.']);
+  assert.equal(visible.visible_objects[0].display_label, 'верхняя одежда');
+  assert.deepEqual(visible.uncertainties,
+    ['Наблюдение не подтверждает деталей сверх уже видимых признаков.']);
+  assert.deepEqual(lowerDvinaTraceDirectResultChanges({
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+      approved_plan: { resolution: 'direct', goal_result: 'achieved',
+        operations: [], check: null, reason_code: 'player_safe_observation' }
+    }] } }
+  }), []);
+  assert.deepEqual(lowerDvinaTraceDirectResultChanges({
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+      approved_plan: { resolution: 'direct', goal_result: 'achieved',
+        operations: [], check: null, direct_result_kind: 'no_state_gesture' }
+    }] } }
+  }), ['Вы завершили простой жест.']);
+  assert.deepEqual(lowerDvinaTraceDirectResultChanges({
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+      approved_plan: { resolution: 'direct', goal_result: 'partially_achieved',
+        operations: [], check: null,
+        direct_result_kind: 'player_safe_body_observation' }
+    }] } }
+  }, [], { active_conditions: [{ id: 'hand_soreness',
+    label: 'болезненность кисти' }] }), [
+    'Подтверждённые вам телесные состояния: болезненность кисти.',
+    'Новое повреждение или диагноз этим осмотром не установлены.'
+  ]);
+  const unlabeled = lowerDvinaTraceDirectResultChanges({ mode_resolution: {
+    decision_trace: { step_traces: [{ applied: true, approved_plan: {
+      resolution: 'direct', goal_result: 'partially_achieved', operations: [],
+      check: null, direct_result_kind: 'player_safe_body_observation'
+    } }] }
+  } }, [], { active_conditions: [{ id: 'hand_soreness' }] });
+  assert.equal(unlabeled.some((change) => change.includes('hand_soreness')),
+    false);
+});
+
+test('carried item observation exposes concrete player-safe belongings', () => {
+  const state = committedState();
+  state.items.push({ item_id: 'case', name: 'кожаный футляр',
+    condition_state: 'serviceable', placement: {
+      holder_character_id: state.actor_id, physical_position: 'worn_quick'
+    } }, { item_id: 'flask', name: 'глиняная фляга',
+    condition_state: 'damaged', placement: {
+      holder_character_id: state.actor_id, physical_position: 'hands'
+    } }, { item_id: 'nearby-log', name: 'полено',
+    condition_state: 'serviceable', placement: {
+      location_ref: 'shed', anchor_id: 'shed-anchor'
+    } });
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles
+  });
+  const visible = projectCurrentSceneForNoOperationDirect({ input: {
+    consequence: { status: 'resolved', visible_seed: {} },
+    retrieved_state: current, mode_resolution: { decision_trace: {
+      remaining_intent: null, step_traces: [{ applied: true, approved_plan: {
+        resolution: 'direct', goal_result: 'achieved', operations: [],
+        check: null, direct_result_kind: 'player_safe_item_observation'
+      } }] } }
+  }, directSeedKeys: [], body: {} });
+
+  assert.deepEqual(visible.visible_changes, [
+    'При вас находятся кожаный футляр и глиняная фляга.',
+    'Подтверждено пригодное к обычному использованию состояние: кожаный футляр.',
+    'Подтверждено повреждённое состояние: глиняная фляга.'
+  ]);
+  assert.equal(visible.visible_changes.some((change) =>
+    change.includes('полено')), false);
+});
+
+test('body observation projects the current confirmed condition without a body write',
+  async () => {
+    const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project: async () => assert.fail('fallback not expected') }
+    });
+    const state = committedState();
+    state.body_state = { active_conditions: [{ id: 'hand_soreness',
+      label: 'болезненность кисти' }] };
+    const visible = await projector.project({
+      consequence: { status: 'resolved', visible_seed: {
+        completed_steps: [{ step_index: 1, summary: 'осмотреть кисть' }]
+      } },
+      retrieved_state: state,
+      mode_resolution: { decision_trace: { remaining_intent: null,
+        step_traces: [{ applied: true, approved_plan: {
+          resolution: 'direct', goal_result: 'partially_achieved',
+          operations: [], check: null,
+          direct_result_kind: 'player_safe_body_observation'
+        } }] } }
+    });
+    assert.equal(visible.visible_changes.includes(
+      'Подтверждённые вам телесные состояния: болезненность кисти.'), true);
+  });
+
 test('ordinary scene seed augments the current scene in the same turn', async () => {
   const projector = createLowerDvinaTraceTurnStepVisibleProjector({
     fallback: { project: async () => assert.fail('fallback not expected') }
@@ -217,6 +379,52 @@ test('ordinary scene seed augments the current scene in the same turn', async ()
     recognition }) => ({ entity_ref, display_label, recognition })),
   state.current_visible_context.visible_npc);
   assert.equal(JSON.stringify(visible).includes('ordinary_scene_seed'), false);
+});
+
+for (const [resolution, change] of Object.entries({
+  absent: 'Искомое здесь не обнаружено.',
+  no_change: 'Попытка обнаружить искомое не дала определённого результата.',
+  authority_required:
+    'Эта попытка не позволяет установить, находится ли здесь искомое.'
+})) {
+  test(`persisted ordinary ${resolution} result is visible to the player`, async () => {
+    const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project: async () => assert.fail('fallback not expected') }
+    });
+    const visible = await projector.project({
+      consequence: { status: 'resolved', visible_seed: {
+        ordinary_scene_seed: { kind: 'ordinary_scene_seed',
+          sensory_details: ['На песке остались следы от пешни.'] },
+        ordinary_presence_seed: { kind: 'ordinary_presence_seed', resolution }
+      } },
+      retrieved_state: committedState(), body_update: { state_after: {} },
+      mode_resolution: { decision_trace: { remaining_intent: null,
+        step_traces: [{ approved_plan: { resolution: 'domain_request',
+          goal_result: 'pending', operations: [{ op: 'request_discovery' }],
+          check: null } }] } }
+    });
+    assert.deepEqual(visible.visible_changes, [change]);
+  });
+}
+
+test('unfinished domain prerequisite preserves the scene without inventing partial success', async () => {
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => assert.fail('fallback not expected') }
+  });
+  const state = committedState();
+  state.current_visible_context.sensory_details = ['На досках лежит мокрая трава.'];
+  const visible = await projector.project({
+    consequence: { status: 'partial', visible_seed: { completed_steps: [] } },
+    retrieved_state: state, body_update: { state_after: {} },
+    mode_resolution: { decision_trace: { remaining_intent: 'Скрутить траву в жгут.',
+      step_traces: [{ approved_plan: { resolution: 'domain_request',
+        goal_result: 'pending', operations: [{ op: 'request_discovery' }], check: null } }] } }
+  });
+  assert.equal(visible.visible_scene, state.current_visible_context.visible_scene);
+  assert.deepEqual(visible.sensory_details, ['На досках лежит мокрая трава.']);
+  assert.deepEqual(visible.visible_changes, []);
+  assert.deepEqual(visible.uncertainties, []);
+  assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));
 });
 
 function committedState() {

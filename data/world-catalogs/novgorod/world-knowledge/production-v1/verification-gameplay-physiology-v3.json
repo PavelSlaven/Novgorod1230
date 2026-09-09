@@ -1,0 +1,275 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-protective-withdrawal",
+      "claim_ref": "claim:candidate-physiology-v3-protective-withdrawal",
+      "claim_digest": "3a196411799b2470ca0c4c3dd6db9af92cc43fd31ac3eb23bd0090899e28ba16",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-protective-withdrawal",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-protective-withdrawal"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "Possible qualitative reflex only; no concrete injury, side, force, success, or control outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-blink-corneal-protection",
+      "claim_ref": "claim:candidate-physiology-v3-blink-corneal-protection",
+      "claim_digest": "d8ef37ab458444675ea367aac70a3591eb45462b750346ce9b561efcceed98ad",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-blink-corneal-protection",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-blink-corneal-protection"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "No concrete vision, eye condition, duration, or protective outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-swallowing-airway-protection",
+      "claim_ref": "claim:candidate-physiology-v3-swallowing-airway-protection",
+      "claim_digest": "067bd6e4a1101d89faaf8197392169930bea4da114068904fed7a17b3ac09e22",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-swallowing-airway-protection",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-swallowing-airway-protection"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "Does not establish safe passage of a concrete bolus or exclude aspiration."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-cough-reflex-airway-irritation",
+      "claim_ref": "claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+      "claim_digest": "cbaeeb6f2e16c2a86012f2c31a33486476982cc8fda7cc63b126fae25db498da",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-cough-reflex-airway-irritation",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-cough-reflex-airway-irritation"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "No obstruction relief, cause, or intact-ventilation conclusion."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-sneeze-reflex-nasal-irritation",
+      "claim_ref": "claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+      "claim_digest": "2b6e7bfd7afc6e9156feaf92916bfe6e4e0a42b27b8ce69050af5a72b159bec0",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-sneeze-reflex-nasal-irritation",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-sneeze-reflex-nasal-irritation"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "Verified through the same article's official PubMed record (PMID 40415887; DOI 10.3389/fnins.2025.1598027) after PMC access failure; no irritant cause or clearance outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-gag-reflex-pharyngeal-stimulation",
+      "claim_ref": "claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+      "claim_digest": "6aa71723fc87a1c75f31ce838a7abe8ff048c03c3a54e7c3514e44d3d3e2df40",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-gag-reflex-pharyngeal-stimulation"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "No safe swallowing, aspiration, choking, or vomiting conclusion."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-emesis-reflex-response",
+      "claim_ref": "claim:candidate-physiology-v3-emesis-reflex-response",
+      "claim_digest": "c8411659a1f8f4a6d77f8be5fbeea5c8f644307afd479f16e7dacac0b1bc5cfe",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-emesis-reflex-response",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-emesis-reflex-response"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "No toxin, illness, concrete gastric contents, cause removal, or airway conclusion."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-startle-reflex-strong-sudden-stimulus",
+      "claim_ref": "claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+      "claim_digest": "6d4bd9a0c2695bba826f043b59cc64582b56009db4d2985f5e4b9c209e55197f",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-startle-reflex-strong-sudden-stimulus"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "MeSH supports the narrow definition only; no threat, emotion, fall, action, or consciousness conclusion."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-shivering-thermogenesis",
+      "claim_ref": "claim:candidate-physiology-v3-shivering-thermogenesis",
+      "claim_digest": "4a3c3f2357840aeb3897918cee734a070d4bd3dba61e4e391887850a879f5362",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-shivering-thermogenesis",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-shivering-thermogenesis"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "No exposure, body temperature, duration, or successful protection conclusion."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-oxygen-delivery-brain-function",
+      "claim_ref": "claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+      "claim_digest": "67abce4ef27dcac65edf2ca4e602e1f0ba48023a65cc23005cd2f0d46b7cf55f",
+      "candidate_ref": "git:98656b4e3fc7582062ca67749abd8b56726656d3:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-oxygen-delivery-brain-function",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-oxygen-delivery-brain-function"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "Repaired text is limited to low blood oxygen and possible drowsiness/loss of consciousness; no cause, duration, reversibility, or concrete state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-airway-obstruction-respiratory-impairment",
+      "claim_ref": "claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+      "claim_digest": "8cbf05de3c53502d814067c8a2b521f402896057050deaba06e8e8659847cd4e",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-airway-obstruction-respiratory-impairment",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-airway-obstruction-respiratory-impairment"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "No concrete choking diagnosis, severity, cause, outcome, or relief method."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-drowning-respiratory-impairment",
+      "claim_ref": "claim:candidate-physiology-v3-drowning-respiratory-impairment",
+      "claim_digest": "26996d140293c1983ec4b773775bcb643ec9257c98296d65dec5277ed631d0db",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-drowning-respiratory-impairment",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-drowning-respiratory-impairment"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "No concrete drowning event or outcome follows from immersion alone."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-low-brain-perfusion-awareness",
+      "claim_ref": "claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+      "claim_digest": "872c124e01cc74c501d35abd8926459df36dfef3a40db94cd6d6a0d1a972d4d4",
+      "candidate_ref": "git:98656b4e3fc7582062ca67749abd8b56726656d3:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-low-brain-perfusion-awareness",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-low-brain-perfusion-awareness"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "Repaired text is limited to brief dizziness or loss of balance from reduced brain blood delivery; no fall, loss of consciousness, or concrete state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-blood-volume-perfusion-compensation",
+      "claim_ref": "claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+      "claim_digest": "c4833be33d63da856889d7a3abc94c1da2456723a66e31c5d7eac5be178cd41a",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-blood-volume-perfusion-compensation",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-blood-volume-perfusion-compensation"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "Qualitative homeostatic response only; no threshold, diagnosis, or concrete perfusion state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-dehydration-functional-risk",
+      "claim_ref": "claim:candidate-physiology-v3-dehydration-functional-risk",
+      "claim_digest": "887bd7d7d4de2da55f274b81901649399475d37c8f0ab381d368e0ab602c13bb",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-dehydration-functional-risk",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-dehydration-functional-risk"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "No volume, duration, thirst, concrete dehydration degree, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-alcohol-intoxication-impairment",
+      "claim_ref": "claim:candidate-physiology-v3-alcohol-intoxication-impairment",
+      "claim_digest": "b60c88ef9bede551bc3b36392018386e4a182278300a8db83c4a770bbd1556ee",
+      "candidate_ref": "git:98656b4e3fc7582062ca67749abd8b56726656d3:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-alcohol-intoxication-impairment",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-alcohol-intoxication-impairment"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "Repaired text is limited to motor coordination, decision-making, consciousness, and high-exposure gag-reflex impairment; effects remain amount/time/individual dependent."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-threat-autonomic-arousal",
+      "claim_ref": "claim:candidate-physiology-v3-threat-autonomic-arousal",
+      "claim_digest": "2819b17658bc8bedfc61b2d3119c12f4aaf8ee035a64fe68d445b8eef07e20cc",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-threat-autonomic-arousal",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-threat-autonomic-arousal"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "Does not determine a concrete actor's emotion, behavior, or degree of arousal."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-physiology-v3-vestibular-postural-correction",
+      "claim_ref": "claim:candidate-physiology-v3-vestibular-postural-correction",
+      "claim_digest": "5b9f5d0c1fef555b7ca9937de8572f02f150e8c27f6a8ed0890abf2217f5bfb5",
+      "candidate_ref": "git:24791d78f82174dbbb5f1399594e2947bab9ccd1:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-physiology-v3.json#claim:candidate-physiology-v3-vestibular-postural-correction",
+      "auditor_ref": "verification-auditor:independent-physiology-v3",
+      "independence_basis": "Independent source-anchor review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:candidate-physiology-v3-vestibular-postural-correction"
+      ],
+      "review_ref": "verification/gameplay-physiology-v3.md#independent-verification-gameplay-physiology-v3",
+      "verdict": "APPROVE",
+      "limits": "No fall, stability, diagnosis, or concrete ability to remain upright."
+    }
+  ]
+}

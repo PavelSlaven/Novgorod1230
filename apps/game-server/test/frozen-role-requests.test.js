@@ -100,6 +100,7 @@ test('unowned domain intent uses one direct planner step', async () => {
         resolution: 'direct', goal_result: 'achieved',
         activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
         operations: [], check: null, continuation: null, clarification: null,
+        direct_result_kind: 'no_state_gesture',
         reason_code: 'unowned_domain_capability', reason: 'No owner.'
       } };
     }

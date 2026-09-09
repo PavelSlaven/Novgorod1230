@@ -51,6 +51,7 @@ export function groundedPlan(input, current) {
     check: null,
     continuation: null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: current.reasonCode,
     reason: 'Фактическая попытка не создаёт невозможный результат.'
   };

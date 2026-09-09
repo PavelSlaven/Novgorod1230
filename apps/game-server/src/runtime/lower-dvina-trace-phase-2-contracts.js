@@ -1,4 +1,5 @@
-import { canonicalDigest } from '@rus/materialization';
+import { canonicalDigest, completeAuthoredItemMechanics } from
+  '@rus/materialization';
 import { serverError } from '../errors.js';
 import {
   assertTracePhase2ExecutionBinding
@@ -162,8 +163,8 @@ export function resolveTracePhase2Contracts({
     cluePlacementContract: structuredClone(cluePlacement),
     blueWoolPickupTransition:
       structuredClone(pickupTransition),
-    blueWoolInventoryProfile:
-      structuredClone(inventoryProfile),
+    blueWoolInventoryProfile: completeAuthoredItemMechanics(bundle,
+      inventoryProfile),
     blueWoolClue: {
       instance_id: `item:${state.party_id}:blue-wool`,
       template_id: item.item_template_id,

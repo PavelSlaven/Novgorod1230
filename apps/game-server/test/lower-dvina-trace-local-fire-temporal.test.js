@@ -322,5 +322,6 @@ function stepPlan(request,overrides){return{schema:'turn_step_plan_v1',
     request.root_player_action,grounded_attempt:request.remaining_intent,
     adaptation:'literal'},resolution:'direct',goal_result:'achieved',activity:{
     owner:'semantic',duration_class:'moment',effort:'none'},operations:[],
-  check:null,continuation:null,clarification:null,reason_code:'test',
+  check:null,continuation:null,clarification:null,direct_result_kind:
+    Object.keys(overrides).length===0?'player_safe_observation':null,reason_code:'test',
   reason:'temporal F1 production regression',...overrides};}

@@ -158,6 +158,7 @@ export function turn10StepPlan(request, contracts) {
       })
     } : null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: first ? 'rest_then_request_companions' : 'request_companions',
     reason: 'Каждая часть составной заявки передаётся её владельцу.'
   };

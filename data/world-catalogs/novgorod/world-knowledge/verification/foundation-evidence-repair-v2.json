@@ -1,0 +1,77 @@
+{
+  "schema": "world_knowledge_foundation_evidence_repair_v2",
+  "rows": [
+    {
+      "claim_ref": "claim:novgorod-wooden-urban-elements",
+      "evidence_refs": ["evidence:kolchin-settlement"],
+      "verdict": "APPROVE",
+      "limits": "Kolchin supports broad medieval urban-Novgorod wooden structures, streets and paving only; no concrete object, form, condition, stock or access.",
+      "review_ref": "research/verification-population-settlement-craft.md#reopened-source",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current RU/EN claim reconciled with the reopened Kolchin settlement source and SC urban building/paving candidates."
+    },
+    {
+      "claim_ref": "claim:novgorod-leather-items",
+      "evidence_refs": ["evidence:population-things-leather"],
+      "verdict": "APPROVE",
+      "limits": "Rybina's leather-object/footwear-workshop context supports broad medieval personal leather items, not a particular form, item, owner, workshop or presence.",
+      "review_ref": "research/verification-population-historical-context.md#candidate-verdicts",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current RU/EN claim reconciled with the independently reopened Rybina leather/workshop passage (PHC-14/15/18 limits)."
+    },
+    {
+      "claim_ref": "claim:novgorod-wood-bone-horn-classes",
+      "evidence_refs": [],
+      "verdict": "NEEDS_REVIEW",
+      "limits": "Rybina 2006 directly lists wood and bone in the Novgorod collection, but not horn/antler; Kolchin 1968 is a wooden-object catalogue. Neither covers all three classes, so no partial replacement for the UCL evidence is proposed.",
+      "review_ref": "verification/foundation-evidence-repair-v2.md#unsupported-whole-claim",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current source-owned reading: Rybina 2006's collection-material passage was compared with the current class claim; Kolchin 1968's catalogue scope was separately checked. The required horn/antler class is absent from the former and outside the latter."
+    },
+    {
+      "claim_ref": "claim:structural-and-object-wood",
+      "evidence_refs": ["evidence:kolchin-settlement", "evidence:population-things-overview"],
+      "verdict": "APPROVE",
+      "limits": "Kolchin covers structural urban wood; Rybina covers the material-object collection. Together they support only the broad paired class, not a present blank, object, function, stock or access.",
+      "review_ref": "research/verification-population-settlement-craft.md#reopened-source",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Whole-claim reconciliation uses two complementary independently reopened anchors, rather than treating either structural or artefactual evidence alone as sufficient."
+    },
+    {
+      "claim_ref": "claim:urban-wooden-coverings",
+      "evidence_refs": ["evidence:kolchin-settlement"],
+      "verdict": "APPROVE",
+      "limits": "Kolchin supports wooden urban buildings and roof/street coverings as broad medieval Novgorod categories; no particular construction, place, cover condition or access.",
+      "review_ref": "research/verification-population-settlement-craft.md#reopened-source",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current RU/EN claim reconciled with SC-01–09 and SC-13 urban settlement evidence in the reopened Kolchin source."
+    },
+    {
+      "claim_ref": "claim:woodworked-objects-and-waste",
+      "evidence_refs": [],
+      "verdict": "NEEDS_REVIEW",
+      "limits": "Kolchin 1968 directly establishes wooden objects and their production techniques, while Rybina 2006's only checked offcuts are leather. Neither supplies woodworking waste (chips, shavings, sawdust or equivalent), so no partial replacement for the UCL evidence is proposed.",
+      "review_ref": "verification/foundation-evidence-repair-v2.md#unsupported-whole-claim",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current source-owned reading: Kolchin 1968 catalogue scope and Rybina 2006 material/workshop passages were compared with the full conjunctive claim. They establish objects/technique and leather waste respectively, not woodworking waste."
+    },
+    {
+      "claim_ref": "claim:leather-broad-context",
+      "evidence_refs": ["evidence:population-things-leather"],
+      "verdict": "APPROVE",
+      "limits": "Broad medieval Novgorod leather-item context only; neither local tanning nor instant production, a present hide/item, workshop, skill, stock or access follows.",
+      "review_ref": "research/verification-population-historical-context.md#candidate-verdicts",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Current RU/EN claim reconciled with the independently reopened Rybina leather-object and workshop passage."
+    },
+    {
+      "claim_ref": "claim:work-waste-context",
+      "evidence_refs": ["evidence:population-things-leather", "evidence:ha-desyatinny"],
+      "verdict": "APPROVE",
+      "limits": "Leather offcuts and casting traces ground a contextual material-work relation only; they do not identify an author, date, occupation, hidden result, current workshop or waste in a scene.",
+      "review_ref": "verification/verification-household-agriculture.md#casting-supplement",
+      "auditor_ref": "/root/claim_verifier",
+      "independence_basis": "Whole-claim reconciliation uses independently reopened leather-workshop and Desyatinny casting-trace evidence; no claim is made for a specific waste type."
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place04-place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+      "claim_ref": "claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+      "claim_digest": "2807ae2adbabe37f43eb05520b73c01c49f4e150cd9c304d9d435cc9caef7d8a",
+      "candidate_ref": "git:a7fd3e4c2941cf07e7efa25f9647df5d3c179378:data/world-catalogs/novgorod/world-knowledge/production-v1/place-practical-processes-v1.json#claim:place-practical-hoop-fit-can-change-stave-contact-and-leakage-without-establishing-repair",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain verifier distinct from candidate author /root/place03_practical_processes and root editorial integrator; actual source access limits recorded in review note.",
+      "evidence_checked": [
+        "evidence:practical-cooper-hoop-compression"
+      ],
+      "review_ref": "verification/place-practical-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Modern staved-vessel mechanical inference only; no Novgorod tool set, necessary leak, repair procedure, tightness or successful repair follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place04-place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+      "claim_ref": "claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+      "claim_digest": "c6fe5fb6ea3340fc43fd38bec4f2487b832c73e550cfc39c01307db9cafbb074",
+      "candidate_ref": "git:a7fd3e4c2941cf07e7efa25f9647df5d3c179378:data/world-catalogs/novgorod/world-knowledge/production-v1/place-practical-processes-v1.json#claim:place-practical-settling-and-cloth-filtration-can-reduce-suspended-matter-not-prove-safe-water",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain verifier distinct from candidate author /root/place03_practical_processes and root editorial integrator; actual source access limits recorded in review note.",
+      "evidence_checked": [
+        "evidence:practical-water-settling-filtration",
+        "evidence:practical-cloth-filter-solids",
+        "evidence:practical-dissolved-solids-pass-filter"
+      ],
+      "review_ref": "verification/place-practical-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Qualitative modern treatment evidence only; no medieval method, household removal rate, disinfection, dissolved-substance removal or water-safety guarantee follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place04-place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+      "claim_ref": "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+      "claim_digest": "59d88f2cbb60f46d0df9205cf020db85a9973101b9ccbfc627dee2b991d28e36",
+      "candidate_ref": "git:a7fd3e4c2941cf07e7efa25f9647df5d3c179378:data/world-catalogs/novgorod/world-knowledge/production-v1/place-practical-processes-v1.json#claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain verifier distinct from candidate author /root/place03_practical_processes and root editorial integrator; actual source access limits recorded in review note.",
+      "evidence_checked": [
+        "evidence:practical-wick-capillary-feed",
+        "evidence:practical-wick-soot-limit"
+      ],
+      "review_ref": "verification/place-practical-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Bounded candle-to-wick-flame analogue only; no medieval lamp design, fuel, universal adjustment, brightness, consumption or individual sooting outcome follows."
+    }
+  ]
+}

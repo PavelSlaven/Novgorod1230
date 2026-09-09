@@ -138,7 +138,8 @@ function plan(request, ids) {
     resolution: 'domain_request', goal_result: 'pending',
     activity: { owner: 'domain', duration_class: null, effort: null },
     operations: [operation], check: null, continuation: null,
-    clarification: null, reason_code: 'phase9_alternative',
+    clarification: null, direct_result_kind: null,
+    reason_code: 'phase9_alternative',
     reason: 'approved owner' };
 }
 

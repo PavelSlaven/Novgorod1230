@@ -1,0 +1,456 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-arms-follow-means-role",
+      "claim_ref": "claim:public-world-arms-follow-means-role",
+      "claim_digest": "d281f9a8902414eb44157ed3915bc31bcc849af0aad92e014ba592de99662e64",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-arms-follow-means-role",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-warfare"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-weapons-shields-armour-have-distinct-tradeoffs",
+      "claim_ref": "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+      "claim_digest": "c7e6170f4ecd1cb27a73e5c5379ea9c50c0b63bc1de0ea5e358ba17e2949152a",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-weapons-shields-armour-have-distinct-tradeoffs",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-warfare"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-foot-and-mounted-service-have-different-needs",
+      "claim_ref": "claim:public-world-foot-and-mounted-service-have-different-needs",
+      "claim_digest": "d1a983b3954fa3822c92555e31c1d7f2aad9556973d8ecae19493d79a8fb289d",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-foot-and-mounted-service-have-different-needs",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-warfare"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-senior-can-coordinate-messenger-can-carry-word",
+      "claim_ref": "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+      "claim_digest": "4ef6ffd826316859957cd308b64c48575dc949cda544d86279783b88676e6c4b",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-warfare"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-armed-movement-consumes-food-fuel-attention",
+      "claim_ref": "claim:public-world-armed-movement-consumes-food-fuel-attention",
+      "claim_digest": "f63a9f483d29f64fbeb215d77414b3288ebef91e44d9dbf92893d4c0f8e367cb",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-armed-movement-consumes-food-fuel-attention",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-warfare"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-injured-person-needs-safe-carriage-or-shelter",
+      "claim_ref": "claim:public-world-injured-person-needs-safe-carriage-or-shelter",
+      "claim_digest": "6bc5d48a0ca677147dda37078b306f560994c46896cddb6a5a022052e51fe12b",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-injured-person-needs-safe-carriage-or-shelter",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-warfare",
+        "evidence:public-world-health"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-armed-loss-reaches-household",
+      "claim_ref": "claim:public-world-armed-loss-reaches-household",
+      "claim_digest": "923f086bb8e614995493f17feb7635a294f7d97449731624980f4dad90f5f25b",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-armed-loss-reaches-household",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-warfare"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-armed-presence-changes-public-risk",
+      "claim_ref": "claim:public-world-armed-presence-changes-public-risk",
+      "claim_digest": "b1ff57d0f835898f5ab7ed551be634166f765eb0de0ac992e82cdf9cdb732035",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-armed-presence-changes-public-risk",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-warfare"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-dispute-starts-with-competing-accounts",
+      "claim_ref": "claim:public-world-dispute-starts-with-competing-accounts",
+      "claim_digest": "3ad401950771558501003433a297a312324a72e7a11ca807cf69a43cf6562f87",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-dispute-starts-with-competing-accounts",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-disputes"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-dispute-can-use-questions-and-kin",
+      "claim_ref": "claim:public-world-dispute-can-use-questions-and-kin",
+      "claim_digest": "d6428da285c285841a30ffb6da4aec015dfaab2236445fc8316dbc65b6568e93",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-dispute-can-use-questions-and-kin",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-disputes"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-negotiation-can-precede-formal-escalation",
+      "claim_ref": "claim:public-world-negotiation-can-precede-formal-escalation",
+      "claim_digest": "be78083d7cf457dcb65e392b917011864fca0c57603621b1353a41ccd9cb9c88",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-negotiation-can-precede-formal-escalation",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-disputes"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-local-authority-is-one-escalation-option",
+      "claim_ref": "claim:public-world-local-authority-is-one-escalation-option",
+      "claim_digest": "2f3f3d1e2333ce1f9452bf043456b63f4289730d80dce3c69414eae9284a3b0e",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-local-authority-is-one-escalation-option",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-disputes"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-publicity-raises-reputation-risk",
+      "claim_ref": "claim:public-world-publicity-raises-reputation-risk",
+      "claim_digest": "399cbbc109ab26058a07984798cd72a12916ec4830f4e22e4f1206bfc7c28cd6",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-publicity-raises-reputation-risk",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-disputes"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-status-and-ties-affect-access-not-guilt",
+      "claim_ref": "claim:public-world-status-and-ties-affect-access-not-guilt",
+      "claim_digest": "fe6d129f62bb95bd735f9ba55c329dd123634f1783fde104a126547e9cf5fcae",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-status-and-ties-affect-access-not-guilt",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-disputes"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-witness-account-has-bounded-scope",
+      "claim_ref": "claim:public-world-witness-account-has-bounded-scope",
+      "claim_digest": "6b93a477f210cefde8b6b4866e7c095970a316cb5ee0f95888f4028289824a9f",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-witness-account-has-bounded-scope",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-disputes"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-ordinary-speech-tracks-relationship-setting",
+      "claim_ref": "claim:public-world-ordinary-speech-tracks-relationship-setting",
+      "claim_digest": "6ea1aa3f0310169e1a49ee211d825f7d5452447133c614dbbb96169df1517ab4",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-ordinary-speech-tracks-relationship-setting",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-language"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-church-and-official-speech-can-be-marked",
+      "claim_ref": "claim:public-world-church-and-official-speech-can-be-marked",
+      "claim_digest": "a9aaba8d9101613fcd37fbc3649e799d83da91b568fb65144594bb33119ec5e0",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-church-and-official-speech-can-be-marked",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-language"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-name-can-combine-personal-and-distinguishing-form",
+      "claim_ref": "claim:public-world-name-can-combine-personal-and-distinguishing-form",
+      "claim_digest": "cd5609e93d767b52b2429d07dba476397dc3aefd004885f8c331c6ae36ca230e",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-name-can-combine-personal-and-distinguishing-form",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-language"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-name-form-does-not-prove-status-or-kinship",
+      "claim_ref": "claim:public-world-name-form-does-not-prove-status-or-kinship",
+      "claim_digest": "89505107c838c7b792b2375f599f542091432c71fd4fbeedfd21f9d474204e03",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-name-form-does-not-prove-status-or-kinship",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-language"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-deference-can-be-calibrated-to-seniority-role",
+      "claim_ref": "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+      "claim_digest": "532ad26e918f07bbe0cee25f7746b46fb339d8e64f778f02ba4e2bf61c3427fe",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-deference-can-be-calibrated-to-seniority-role",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-language"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-speech-can-be-plain-without-modern-slang",
+      "claim_ref": "claim:public-world-speech-can-be-plain-without-modern-slang",
+      "claim_digest": "7cb0448c31f4f11f7b9b1ac93c642bb2c01af0f91f09411e7565951def9294e5",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-speech-can-be-plain-without-modern-slang",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-language"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-unfamiliar-speech-allows-clarification",
+      "claim_ref": "claim:public-world-unfamiliar-speech-allows-clarification",
+      "claim_digest": "ddc25aa43c252d6baff71f6a677f73d240dd38049ffb5639ca28e2a5261690db",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-unfamiliar-speech-allows-clarification",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-language"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-illness-can-reallocate-ordinary-work",
+      "claim_ref": "claim:public-world-illness-can-reallocate-ordinary-work",
+      "claim_digest": "3643dd2e19ad1e4591e859a948449932db1536098cd9dc4e9d9e851e353593fe",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-illness-can-reallocate-ordinary-work",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-health"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-rest-warmth-drink-food-are-contextual-support",
+      "claim_ref": "claim:public-world-rest-warmth-drink-food-are-contextual-support",
+      "claim_digest": "0fcc8c7068a2fc64524282766379f7e31a8091b06fad8a933753d70e367ce785",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-rest-warmth-drink-food-are-contextual-support",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-health"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-support-needs-available-person-and-resources",
+      "claim_ref": "claim:public-world-support-needs-available-person-and-resources",
+      "claim_digest": "807ab7a25943c39e0cce5cda1eded3cd5713afa69e71e6af31dc845eb64ef2a7",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-support-needs-available-person-and-resources",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-health"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-route-and-tool-can-be-adapted-to-capacity",
+      "claim_ref": "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+      "claim_digest": "2046011dbb1aa5ff51bed43ba1357eaf19dded82315373998ce07736463e18ab",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-health"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-help-access-can-be-limited",
+      "claim_ref": "claim:public-world-help-access-can-be-limited",
+      "claim_digest": "dab1310431908d29e67e76ea362b47e2c290054d7879a01f4a6e608a9d324d78",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-help-access-can-be-limited",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-health"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-health-disclosure-is-contextual",
+      "claim_ref": "claim:public-world-health-disclosure-is-contextual",
+      "claim_digest": "dbf2c46d6c1279310cf7bc1749448eba2efdd69f249f30c83771d2d04e410bcf",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-health-disclosure-is-contextual",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-health"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-community-response-to-impairment-varies",
+      "claim_ref": "claim:public-world-community-response-to-impairment-varies",
+      "claim_digest": "8536ff0ef061b4863b5a167b54fa76364baa65e676fc6f5bcb6202ef73d4af08",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-community-response-to-impairment-varies",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-health"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-public-world-v1-capacity-can-vary-day-to-day",
+      "claim_ref": "claim:public-world-capacity-can-vary-day-to-day",
+      "claim_digest": "02875a90fcd6cc7b82750f8faaf5d5d8e2b58d848fc8bc5e3f40ec03e47d07e3",
+      "candidate_ref": "git:6dff36d1d9345dba1290a6586c129ad78b049694:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-public-world-v1.json#claim:public-world-capacity-can-vary-day-to-day",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:public-world-health"
+      ],
+      "review_ref": "verification/reconstructed-public-world-v1.md#approved-public-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional public-world premise only; no entity, policy, legal rule, medical benefit, actor decision, scene state, or outcome."
+    }
+  ]
+}

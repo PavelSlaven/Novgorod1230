@@ -31,8 +31,8 @@ export function validateTurnStepPlan(value, { request } = {}) {
   if (!strict(value, '$', [
     'schema', 'request_id', 'committed_state_version', 'working_revision',
     'step_index', 'interpretation', 'resolution', 'goal_result', 'activity',
-    'operations', 'check', 'continuation', 'clarification', 'reason_code',
-    'reason'
+    'operations', 'check', 'continuation', 'clarification',
+    'direct_result_kind', 'reason_code', 'reason'
   ], errors)) return result(errors);
   constant(value.schema, 'turn_step_plan_v1', '$.schema', errors);
   requiredText(value.request_id, '$.request_id', errors);
@@ -66,9 +66,11 @@ export function validateTurnStepPlan(value, { request } = {}) {
     value.operations, '$.operations', request, errors);
   validateContinuation(value.continuation, '$.continuation', errors, trace,
     request?.prepared_followup_candidates);
+  validatePendingDiscoveryRelation(value, errors);
   validateClarification(value.clarification, '$.clarification', errors, trace);
   validateCheck(value.check, '$.check', errors, trace, request);
   validateResolution(value, operationKinds, errors);
+  validateDirectResultKind(value, errors, request);
   if (value.continuation != null && value.goal_result !== 'pending') {
     add(errors, '$.goal_result', 'continuation',
       'must be pending when continuation is present');
@@ -78,6 +80,35 @@ export function validateTurnStepPlan(value, { request } = {}) {
     validateContinuationProgress(value, request, operationKinds, errors);
   }
   return result(errors);
+}
+
+function validateDirectResultKind(plan, errors, request) {
+  enumValue(plan.direct_result_kind, [null, 'player_safe_observation',
+    'player_safe_item_observation', 'player_safe_body_observation',
+    'no_state_gesture'],
+  '$.direct_result_kind', errors);
+  const requiresKind = plan.resolution === 'direct'
+    && ['achieved', 'partially_achieved'].includes(plan.goal_result)
+    && plan.activity?.owner === 'semantic'
+    && plan.activity.duration_class === 'moment'
+    && plan.activity.effort === 'none'
+    && Array.isArray(plan.operations) && plan.operations.length === 0
+    && plan.check === null && plan.clarification === null;
+  if (requiresKind && plan.direct_result_kind === null) {
+    add(errors, '$.direct_result_kind', 'direct_result_kind',
+      'is required for a successful write-free direct result');
+  } else if (!requiresKind && plan.direct_result_kind !== null) {
+    add(errors, '$.direct_result_kind', 'direct_result_kind',
+      'is allowed only for a successful write-free direct result');
+  }
+  if (plan.direct_result_kind === 'player_safe_body_observation'
+      && (request?.actor?.body == null
+        || typeof request.actor.body !== 'object'
+        || Array.isArray(request.actor.body)
+        || !Array.isArray(request.actor.body.active_conditions))) {
+    add(errors, '$.direct_result_kind', 'direct_result_kind',
+      'requires a supplied player-safe actor body condition projection');
+  }
 }
 
 function validateContinuationProgress(plan, request, operationKinds, errors) {
@@ -131,7 +162,7 @@ function validateAdditionalActivity(value, path, errors) {
 }
 
 function validateContinuation(value, path, errors, trace = null,
-  preparedFollowupCandidates = []) {
+  preparedFollowupCandidates = [], allowPendingDiscovery = true) {
   if (value === null) return;
   if (!plain(value)) {
     strict(value, path, [], errors);
@@ -139,7 +170,8 @@ function validateContinuation(value, path, errors, trace = null,
   }
   if (!strict(value, path, [
     'remaining_intent', 'depends_on_refs'
-  ], errors, { optional: ['prepared_followup_ref'] })) {
+  ], errors, { optional: ['prepared_followup_ref',
+    ...(allowPendingDiscovery ? ['pending_discovery'] : [])] })) {
     return;
   }
   requiredText(value.remaining_intent, `${path}.remaining_intent`, errors);
@@ -153,6 +185,36 @@ function validateContinuation(value, path, errors, trace = null,
       add(errors, `${path}.prepared_followup_ref`, 'candidate',
         'must copy a request prepared followup candidate');
     }
+  }
+  if (allowPendingDiscovery && value.pending_discovery !== undefined) {
+    const pending = value.pending_discovery;
+    if (strict(pending, `${path}.pending_discovery`, [
+      'remaining_target_refs', 'after'
+    ], errors)) {
+      refs(pending.remaining_target_refs,
+        `${path}.pending_discovery.remaining_target_refs`, errors, trace);
+      validateContinuation(pending.after,
+        `${path}.pending_discovery.after`, errors, trace,
+        preparedFollowupCandidates, false);
+    }
+  }
+}
+
+function validatePendingDiscoveryRelation(plan, errors) {
+  const pending = plan.continuation?.pending_discovery;
+  if (pending === undefined) return;
+  const discovery = plan.operations?.length === 1
+    && plan.operations[0]?.op === 'request_discovery'
+    ? plan.operations[0] : null;
+  if (discovery == null) {
+    add(errors, '$.continuation.pending_discovery', 'operation',
+      'is allowed only after one request_discovery');
+    return;
+  }
+  if (plan.continuation.remaining_intent !== discovery.query
+      || plan.continuation.depends_on_refs.length !== 0) {
+    add(errors, '$.continuation.pending_discovery', 'carrier',
+      'must preserve the exact discovery query with no ordinary dependencies');
   }
 }
 

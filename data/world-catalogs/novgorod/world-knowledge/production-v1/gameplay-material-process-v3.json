@@ -1,0 +1,165 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:purdue-managing-dry-grain-storage",
+      "title": "Managing Dry Grain in Storage",
+      "authors": [],
+      "publication": "Purdue University Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://www.extension.purdue.edu/extmedia/aed/aed-20.html; sections ‘Grain Temperature and Moisture Migration’, ‘Aerate for Temperature Control’, and ‘Other Aeration Tips’.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:nistir-6191-fire-fighting-properties",
+      "title": "Fire Fighting Properties (NISTIR 6191)",
+      "authors": ["D. W. Stroup", "Daniel M. Madrzykowski"],
+      "publication": "National Institute of Standards and Technology, NISTIR 6191 (1998)",
+      "source_kind": "official_documentation",
+      "citation": "https://www.nist.gov/publications/fire-fighting-properties-nistir-6191 and https://nvlpubs.nist.gov/nistpubs/Legacy/IR/nistir6191.pdf; abstract and §1.1.1 ‘Overview of Fire Suppression’.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:fao-freshwater-fishery-technology-net-upkeep",
+      "title": "Role of Fishery Technology in Management and Development of Freshwater Fisheries in Africa",
+      "authors": [],
+      "publication": "Food and Agriculture Organization of the United Nations",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fao.org/4/AC674E/AC674E03.htm; §§3.1.1.6, 3.1.2.6, 3.1.3.6, 3.1.6.6.",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gmp3-purdue-moisture-migration",
+      "source_ref": "source:purdue-managing-dry-grain-storage",
+      "anchor": {"section": "Grain Temperature and Moisture Migration"},
+      "note": "Modern stored-grain relation: unequal temperatures drive air movement; moisture can accumulate in cooler grain by condensation/diffusion. Candidate prepared pending independent verification; it neither establishes grain, a store, nor present moisture.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gmp3-purdue-airflow-temperature",
+      "source_ref": "source:purdue-managing-dry-grain-storage",
+      "anchor": {"section": "Aerate for Temperature Control; Other Aeration Tips"},
+      "note": "Modern stored-grain relation: airflow manages grain temperature, while incomplete passage leaves unequal-temperature zones. Candidate prepared pending independent verification; no fan, building or outcome follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gmp3-nist-water-class-a-cooling",
+      "source_ref": "source:nistir-6191-fire-fighting-properties",
+      "anchor": {"section": "Abstract; §1.1.1 Overview of Fire Suppression"},
+      "note": "NIST identifies fuel cooling and flame cooling among water’s mechanisms for suppressing and extinguishing Class A fires, and defines Class A as ordinary combustibles including wood, textiles, rubber and plastics. Candidate prepared pending independent verification; this is not operational or safety guidance.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:gmp3-fao-net-upkeep",
+      "source_ref": "source:fao-freshwater-fishery-technology-net-upkeep",
+      "anchor": {"section": "§§3.1.1.6, 3.1.2.6, 3.1.3.6, 3.1.6.6"},
+      "note": "Modern freshwater-fisheries guidance describes regular mending and replacement of worn net parts as upkeep and shade suspension of an unused gillnet. Candidate prepared pending independent verification; no Novgorod fibre, net, owner or routine follows.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:stored-grain-moisture-migration", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:stored-grain-airflow-temperature-management", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:water-class-a-fire-cooling", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:physics_material_science:fishing-net-serviceability", "domain": "physics_material_science", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"}
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:stored-grain-moisture-migration",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "temperature_gradient_can_move_moisture_toward_cooler_grain_zone_where_it_can_deposit"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "common", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "general_physical", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gmp3-purdue-moisture-migration"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:stored-grain-airflow-can-reduce-temperature-differences",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:stored-grain-airflow-temperature-management",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "airflow_through_stored_grain_can_reduce_temperature_differences_when_it_reaches_the_grain"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "common", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gmp3-purdue-airflow-temperature"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:water-can-cool-class-a-fire-fuel-and-flame",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:water-class-a-fire-cooling",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "water_can_contribute_to_class_a_fire_suppression_by_fuel_and_flame_cooling"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "common", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gmp3-nist-water-class-a-cooling"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+      "domain": "physics_material_science",
+      "subject_ref": "wk:physics_material_science:fishing-net-serviceability",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "regular_mending_or_replacement_of_worn_net_parts_can_prolong_serviceability"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "common", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:gmp3-fao-net-upkeep"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:stored-grain-moisture-migration", "locale": "ru", "labels": ["Влагоперенос в хранимом зерне"], "short_definition": "Перенос и осаждение влаги при температурной неоднородности хранимого зерна.", "search_aliases": ["зерно конденсат", "влагоперенос хранение"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:stored-grain-moisture-migration", "locale": "en", "labels": ["Stored-grain moisture migration"], "short_definition": "Moisture transport and deposition caused by temperature differences in stored grain.", "search_aliases": ["grain moisture migration", "stored grain condensation"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:stored-grain-airflow-temperature-management", "locale": "ru", "labels": ["Воздушный температурный режим хранимого зерна"], "short_definition": "Качественное влияние прохождения воздуха на разницу температур в хранимом зерне.", "search_aliases": ["аэрация зерна", "воздух хранение зерна"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:stored-grain-airflow-temperature-management", "locale": "en", "labels": ["Stored-grain airflow temperature management"], "short_definition": "Qualitative effect of airflow on temperature differences in stored grain.", "search_aliases": ["grain aeration", "stored grain airflow"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:water-class-a-fire-cooling", "locale": "ru", "labels": ["Охлаждение водой пожара обычных твёрдых горючих материалов"], "short_definition": "Охлаждение топлива и пламени водой как механизм подавления горения обычных горючих материалов, включая древесину и ткани.", "search_aliases": ["вода охлаждение огня", "тушение древесины"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:water-class-a-fire-cooling", "locale": "en", "labels": ["Water cooling of a Class A fire"], "short_definition": "Fuel and flame cooling by water as a Class A fire-suppression mechanism.", "search_aliases": ["water fire cooling", "Class A suppression"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:fishing-net-serviceability", "locale": "ru", "labels": ["Пригодность рыболовной сети"], "short_definition": "Состояние сети, которое может поддерживаться починкой или заменой изношенных частей.", "search_aliases": ["починка сети", "износ сети"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:physics_material_science:fishing-net-serviceability", "locale": "en", "labels": ["Fishing-net serviceability"], "short_definition": "A net condition that can be maintained by mending or replacing worn parts.", "search_aliases": ["net mending", "net wear"]}
+  ],
+  "claim_localizations": [
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:stored-grain-temperature-gradient-can-migrate-moisture", "locale": "ru", "runtime_text": "Разница температур в хранимом зерне может переносить влагу к более холодной зоне, где она может осаждаться; наличие зерна, его состояние и результат не заданы.", "search_aliases": ["конденсат зерно", "влагоперенос хранение"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:stored-grain-temperature-gradient-can-migrate-moisture", "locale": "en", "runtime_text": "A temperature difference in stored grain can move moisture toward a cooler zone where it can deposit; no grain, state, or outcome is implied.", "search_aliases": ["grain moisture migration", "stored grain condensation"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:stored-grain-airflow-can-reduce-temperature-differences", "locale": "ru", "runtime_text": "Прохождение воздуха через хранимое зерно может уменьшать разницу температур, если воздух достигает зерна; устройство, поток и результат не заданы.", "search_aliases": ["аэрация зерна", "температура хранение"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:stored-grain-airflow-can-reduce-temperature-differences", "locale": "en", "runtime_text": "Airflow through stored grain can reduce temperature differences when it reaches the grain; no apparatus, flow, or outcome is implied.", "search_aliases": ["grain aeration", "storage temperature"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:water-can-cool-class-a-fire-fuel-and-flame", "locale": "ru", "runtime_text": "Вода может способствовать подавлению пожара обычных твёрдых горючих материалов, включая древесину и ткани, охлаждением топлива и пламени; успех, количество, безопасность и другие классы огня не подразумеваются.", "search_aliases": ["вода тушение огня", "охлаждение топлива"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:water-can-cool-class-a-fire-fuel-and-flame", "locale": "en", "runtime_text": "Water can contribute to Class A fire suppression by cooling fuel and flame; success, amount, safety, and other fire classes are not implied.", "search_aliases": ["water fire suppression", "fuel cooling"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability", "locale": "ru", "runtime_text": "Починка сети или замена её изношенных частей может продлевать пригодность сети; конкретная сеть, волокно, историческая практика и результат не подразумеваются.", "search_aliases": ["починка сети", "замена частей сети"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability", "locale": "en", "runtime_text": "Mending a net or replacing its worn parts can prolong serviceability; no particular net, fibre, historical practice, or outcome is implied.", "search_aliases": ["net mending", "replace worn net parts"]}
+  ]
+}

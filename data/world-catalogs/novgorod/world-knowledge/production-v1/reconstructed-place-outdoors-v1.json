@@ -1,0 +1,833 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "title": "Place-first outdoor environments — editorial reconstruction",
+      "authors": [
+        "Novgorod1230 editorial team"
+      ],
+      "publication": "Repository editorial reconstruction note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/research/reconstructed-place-outdoors-v1.md",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-activity-sensory-pulses",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "activity-sensory-pulses"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-cover-opening-and-work-visibility",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "cover-opening-and-work-visibility"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-traffic-wet-ground-and-ruts",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "traffic-wet-ground-and-ruts"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-microterrain-patches",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "microterrain-patches"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-clearing-and-trace-renewal",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "clearing-and-trace-renewal"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-means-upkeep-and-environment",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "means-upkeep-and-environment"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-season-work-space-reallocation",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "season-work-space-reallocation"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-shore-working-edge-composition",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "shore-working-edge-composition"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-market-activity-and-empty-intervals",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "market-activity-and-empty-intervals"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-outdoors-forest-structure-and-season",
+      "source_ref": "source:reconstructed-place-outdoors-editorial",
+      "anchor": {
+        "section": "forest-structure-and-season"
+      },
+      "note": "Editorial composition of existing environmental, settlement and ordinary-work premises; variants are conditional, not local historical attestation or current scene state.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:reconstructed-place-outdoors",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-activity-sensory-pulses",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Current work gives a place a changing sensory background: chopping and forging produce impacts, loading produces voices and creaks, and handling food, fish, fuel or manure produces different smells. Noise may subside quickly after work stops while smells and residues persist; these are plausible relations, not proof of a particular activity or actor."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-activity-sensory-pulses"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-cover-opening-and-work-visibility",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "An open square or field offers views along unobstructed directions but less shelter from wind and precipitation. Walls, canopies and dense undergrowth create shaded and screened patches; an opening or shelter edge can provide light for close work without making the whole room or wood equally bright."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-cover-opening-and-work-visibility"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-traffic-wet-ground-and-ruts",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Repeated feet, hooves and wheels alter the used strip of ground by flattening vegetation and leaving impressions or ruts in suitably wet ground. Depressions may retain water; filling, drainage and detours change passage without automatically providing a firm road."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-traffic-wet-ground-and-ruts"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-microterrain-patches",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A place type does not make every surface alike: a bank, meadow or wood can combine drier rises, wet hollows, roots, dense vegetation and open patches. Choosing a resting, carrying or working position depends on those local combinations rather than the environment name alone."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-microterrain-patches"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-clearing-and-trace-renewal",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Clearing, trampling, grazing and gathering alter vegetation and leave different combinations of cuts, broken material, flattened stems and bare ground. New growth, snow, water and later traffic may conceal or overwrite them; a single trace does not reliably identify an actor, exact age or purpose."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-clearing-and-trace-renewal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-means-upkeep-and-environment",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "Greater means can allow more covered space, convenient containers, dry fuel reserves, spare clothing and hired help, but do not prove cleanliness or good repair. A modest well-kept place and a wealthy neglected one are distinct plausible reconstructions; repairs, clearance and storage arrangements indicate upkeep more directly than status alone."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-means-upkeep-and-environment"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-season-work-space-reallocation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A household reallocates space with work and conditions: harvest and provisioning need room for carrying, drying and storage, wet weather calls for material protection, and cold for fuel and shelter care. The same yard, canopy or passage can become crowded and acquire different sounds and traces without implying a fixed calendar or stock."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-season-work-space-reallocation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-shore-working-edge-composition",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "At a worked shore, water access, footing, cargo space and the onward carrying path are connected. Washing, watering animals, fish work and loading may leave wet, trampled or dirty patches and interfere with one another; distinguish working zones rather than treating every edge as a convenient landing or clean-water source."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-shore-working-edge-composition"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-market-activity-and-empty-intervals",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "When trading is active, temporary displays, containers, deliveries and waiting people can narrow passages and block views. When trading work stops, some people and objects leave while litter, trampled ground and unloading traces may remain. This describes changing use, not a mandatory market timetable, stock or night watch."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-market-activity-and-empty-intervals"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:place-outdoors-forest-structure-and-season",
+      "domain": "environment",
+      "subject_ref": "wk:environment:reconstructed-place-outdoors",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "A woodland setting combines tree type, age and density, undergrowth, litter, deadwood and moisture. Leaf fall may open formerly screened directions, dense young branches may hinder long loads, and gaps and edges differ in light and vegetation. Coniferous, deciduous and mixed woods therefore need local combinations of traits rather than identical object sets."
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-outdoors-forest-structure-and-season"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reconstructed-place-outdoors",
+      "locale": "ru",
+      "labels": [
+        "Композиция открытых сред"
+      ],
+      "short_definition": "Редакторские связи поверхности, деятельности и условий места.",
+      "search_aliases": [
+        "среда",
+        "место",
+        "сезон",
+        "уход"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:reconstructed-place-outdoors",
+      "locale": "en",
+      "labels": [
+        "Outdoor environment composition"
+      ],
+      "short_definition": "Editorial relations between surfaces, activity and local conditions.",
+      "search_aliases": [
+        "environment",
+        "place",
+        "season",
+        "upkeep"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-activity-sensory-pulses",
+      "locale": "ru",
+      "runtime_text": "Текущая работа задаёт изменчивый чувственный фон места: рубка и ковка дают удары, погрузка — голоса и скрип, обращение с пищей, рыбой, топливом или навозом — разные запахи. После остановки работы шум может быстро стихнуть, а запахи и остатки сохраняться; это вероятная связь, не доказательство конкретного занятия или виновника.",
+      "search_aliases": [
+        "запах",
+        "звук",
+        "двор",
+        "торг",
+        "пристань"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-activity-sensory-pulses",
+      "locale": "en",
+      "runtime_text": "Current work gives a place a changing sensory background: chopping and forging produce impacts, loading produces voices and creaks, and handling food, fish, fuel or manure produces different smells. Noise may subside quickly after work stops while smells and residues persist; these are plausible relations, not proof of a particular activity or actor.",
+      "search_aliases": [
+        "smell",
+        "sound",
+        "yard",
+        "market",
+        "wharf"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-cover-opening-and-work-visibility",
+      "locale": "ru",
+      "runtime_text": "На открытой площади или поле проще обозревать незагороженные направления, но меньше укрытия от ветра и осадков. Стены, кроны и густой подлесок создают затенённые и закрытые участки; у проёма или края укрытия можно искать свет для мелкой работы, не считая всё помещение или лес одинаково светлым.",
+      "search_aliases": [
+        "обзор",
+        "тень",
+        "опушка",
+        "свет",
+        "укрытие"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-cover-opening-and-work-visibility",
+      "locale": "en",
+      "runtime_text": "An open square or field offers views along unobstructed directions but less shelter from wind and precipitation. Walls, canopies and dense undergrowth create shaded and screened patches; an opening or shelter edge can provide light for close work without making the whole room or wood equally bright.",
+      "search_aliases": [
+        "visibility",
+        "shade",
+        "forest edge",
+        "light",
+        "shelter"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-traffic-wet-ground-and-ruts",
+      "locale": "ru",
+      "runtime_text": "Повторный проход людей, копыт и колёс меняет используемую полосу земли: приминает растительность, оставляет отпечатки и при подходящем влажном грунте колеи. В углублениях может задерживаться вода; подсыпка, отвод стока и обход меняют удобство прохода, но не обеспечивают автоматически твёрдую дорогу.",
+      "search_aliases": [
+        "колея",
+        "грязь",
+        "улица",
+        "дорога",
+        "дождь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-traffic-wet-ground-and-ruts",
+      "locale": "en",
+      "runtime_text": "Repeated feet, hooves and wheels alter the used strip of ground by flattening vegetation and leaving impressions or ruts in suitably wet ground. Depressions may retain water; filling, drainage and detours change passage without automatically providing a firm road.",
+      "search_aliases": [
+        "rut",
+        "mud",
+        "street",
+        "road",
+        "rain"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-microterrain-patches",
+      "locale": "ru",
+      "runtime_text": "Тип места не делает всю поверхность одинаковой: на берегу, лугу или в лесу сухие возвышения могут соседствовать с влажными понижениями, корнями, густой растительностью и открытыми пятнами. Выбор места для стоянки, переноса груза или работы зависит от этих локальных сочетаний, а не одного названия среды.",
+      "search_aliases": [
+        "кочка",
+        "низина",
+        "луг",
+        "берег",
+        "лес",
+        "грунт"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-microterrain-patches",
+      "locale": "en",
+      "runtime_text": "A place type does not make every surface alike: a bank, meadow or wood can combine drier rises, wet hollows, roots, dense vegetation and open patches. Choosing a resting, carrying or working position depends on those local combinations rather than the environment name alone.",
+      "search_aliases": [
+        "hummock",
+        "hollow",
+        "meadow",
+        "bank",
+        "wood",
+        "ground"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-clearing-and-trace-renewal",
+      "locale": "ru",
+      "runtime_text": "Расчистка прохода, вытаптывание, выпас и сбор меняют растительность и оставляют разные сочетания срезов, обломков, примятых стеблей и оголённой земли. Новый рост, снег, вода и последующее движение могут скрывать или перекрывать эти следы; по одному следу нельзя надёжно установить человека, точную давность или цель.",
+      "search_aliases": [
+        "расчистка",
+        "след",
+        "выпас",
+        "тропа",
+        "сбор"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-clearing-and-trace-renewal",
+      "locale": "en",
+      "runtime_text": "Clearing, trampling, grazing and gathering alter vegetation and leave different combinations of cuts, broken material, flattened stems and bare ground. New growth, snow, water and later traffic may conceal or overwrite them; a single trace does not reliably identify an actor, exact age or purpose.",
+      "search_aliases": [
+        "clearance",
+        "trace",
+        "grazing",
+        "path",
+        "gathering"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-means-upkeep-and-environment",
+      "locale": "ru",
+      "runtime_text": "Больший достаток может позволять больше крытого места, удобную тару, запас сухого топлива, сменную одежду и наёмную помощь, но сам по себе не доказывает чистоту и исправность хозяйства. Бедное, но ухоженное место и богатое запущенное место — допустимые разные реконструкции; свежие починки, расчистка и способ хранения показывают уход надёжнее одного статуса хозяина.",
+      "search_aliases": [
+        "достаток",
+        "уход",
+        "запущенность",
+        "двор",
+        "ремонт"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-means-upkeep-and-environment",
+      "locale": "en",
+      "runtime_text": "Greater means can allow more covered space, convenient containers, dry fuel reserves, spare clothing and hired help, but do not prove cleanliness or good repair. A modest well-kept place and a wealthy neglected one are distinct plausible reconstructions; repairs, clearance and storage arrangements indicate upkeep more directly than status alone.",
+      "search_aliases": [
+        "means",
+        "upkeep",
+        "neglect",
+        "yard",
+        "repair"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-season-work-space-reallocation",
+      "locale": "ru",
+      "runtime_text": "Пространство хозяйства меняет использование по работе и условиям: урожай и заготовки требуют места для переноски, сушки и хранения, сырость — защиты материала, холод — топлива и ухода за укрытиями. Одни и те же двор, навес или проход могут становиться теснее и менять звуки и следы; точный календарь и запас из этого не следуют.",
+      "search_aliases": [
+        "сезон",
+        "урожай",
+        "сушка",
+        "зима",
+        "хозяйство"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-season-work-space-reallocation",
+      "locale": "en",
+      "runtime_text": "A household reallocates space with work and conditions: harvest and provisioning need room for carrying, drying and storage, wet weather calls for material protection, and cold for fuel and shelter care. The same yard, canopy or passage can become crowded and acquire different sounds and traces without implying a fixed calendar or stock.",
+      "search_aliases": [
+        "season",
+        "harvest",
+        "drying",
+        "winter",
+        "household"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-shore-working-edge-composition",
+      "locale": "ru",
+      "runtime_text": "На используемом берегу подход к воде, место опоры ног, пространство для груза и путь его дальнейшего переноса связаны между собой. Стирка, водопой, рыбная работа и погрузка могут оставлять мокрые, вытоптанные или загрязнённые участки и мешать друг другу; это повод различать рабочие зоны, а не считать любую кромку удобной пристанью или источником чистой воды.",
+      "search_aliases": [
+        "берег",
+        "погрузка",
+        "стирка",
+        "водопой",
+        "проход"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-shore-working-edge-composition",
+      "locale": "en",
+      "runtime_text": "At a worked shore, water access, footing, cargo space and the onward carrying path are connected. Washing, watering animals, fish work and loading may leave wet, trampled or dirty patches and interfere with one another; distinguish working zones rather than treating every edge as a convenient landing or clean-water source.",
+      "search_aliases": [
+        "shore",
+        "loading",
+        "washing",
+        "watering",
+        "passage"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-market-activity-and-empty-intervals",
+      "locale": "ru",
+      "runtime_text": "При действующей торговле временная выкладка, тара, подвоз и ожидающие люди могут сужать проход и перекрывать обзор. Когда торговая работа прекращается, часть вещей и людей уходит, а мусор, примятая земля и следы разгрузки могут остаться. Это изменчивое использование места, не обязательный распорядок рынка, ассортимент или ночной караул.",
+      "search_aliases": [
+        "торг",
+        "прилавок",
+        "разгрузка",
+        "ночь",
+        "толпа"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-market-activity-and-empty-intervals",
+      "locale": "en",
+      "runtime_text": "When trading is active, temporary displays, containers, deliveries and waiting people can narrow passages and block views. When trading work stops, some people and objects leave while litter, trampled ground and unloading traces may remain. This describes changing use, not a mandatory market timetable, stock or night watch.",
+      "search_aliases": [
+        "market",
+        "stall",
+        "unloading",
+        "night",
+        "crowd"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-forest-structure-and-season",
+      "locale": "ru",
+      "runtime_text": "Лесной фон складывается из деревьев, возраста и густоты насаждения, подлеска, подстилки, валежника и влажности. Листопад может открывать прежде закрытые направления, густые молодые ветви затруднять проход с длинным грузом, а просветы и опушки отличаться по освещению и растениям. Хвойный, лиственный и смешанный лес поэтому требуют локального сочетания признаков, а не одинакового набора вещей.",
+      "search_aliases": [
+        "хвойный лес",
+        "лиственный лес",
+        "подлесок",
+        "валежник",
+        "листопад"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:place-outdoors-forest-structure-and-season",
+      "locale": "en",
+      "runtime_text": "A woodland setting combines tree type, age and density, undergrowth, litter, deadwood and moisture. Leaf fall may open formerly screened directions, dense young branches may hinder long loads, and gaps and edges differ in light and vegetation. Coniferous, deciduous and mixed woods therefore need local combinations of traits rather than identical object sets.",
+      "search_aliases": [
+        "conifer wood",
+        "deciduous wood",
+        "undergrowth",
+        "deadwood",
+        "leaf fall"
+      ]
+    }
+  ]
+}

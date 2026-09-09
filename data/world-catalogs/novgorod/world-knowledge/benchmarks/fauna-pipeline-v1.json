@@ -1,0 +1,270 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_v1",
+  "benchmark_ref": "wk-pipeline:fauna-science-v1",
+  "cases": [
+    {
+      "case_id": "ewe_maternal_ru",
+      "locale": "ru",
+      "query_text": "Как овца отличает своих ягнят от чужих после рождения?",
+      "relevant_claim_refs": [
+        "claim:fauna-ewe-lamb-recognition"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-ewe-lamb-recognition"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "goat_groups_en",
+      "locale": "en",
+      "query_text": "How can natural goat social groups change during movement and feeding?",
+      "relevant_claim_refs": [
+        "claim:fauna-goat-sociality"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-goat-sociality"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "wolf_pup_care_ru",
+      "locale": "ru",
+      "query_text": "Как у волков устроены стая и уход за волчатами?",
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-wolf-pack-sociality",
+        "claim:fauna-mammals-wolf-pack-pup-care"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-wolf-pack-sociality"
+        ],
+        [
+          "claim:fauna-mammals-wolf-pack-pup-care"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "horse_separation_en",
+      "locale": "en",
+      "query_text": "Why can separating a domestic horse from its herd change its behavior?",
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-domestic-horse-herd-sociality",
+        "claim:fauna-mammals-domestic-horse-separation-stress"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-domestic-horse-herd-sociality"
+        ],
+        [
+          "claim:fauna-mammals-domestic-horse-separation-stress"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "bird_navigation_ru",
+      "locale": "ru",
+      "query_text": "Какие ориентиры помогают перелётным птицам выбирать направление пути?",
+      "relevant_claim_refs": [
+        "claim:fauna-bird-navigation"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-bird-navigation"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "salmon_eel_migration_en",
+      "locale": "en",
+      "query_text": "How do sea-bound European silver eels differ from Atlantic salmon returning from the sea to reproduce?",
+      "relevant_claim_refs": [
+        "claim:fauna-eel-migration",
+        "claim:fauna-salmon-anadromy"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-eel-migration"
+        ],
+        [
+          "claim:fauna-salmon-anadromy"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "adder_defence_ru",
+      "locale": "ru",
+      "query_text": "Как обыкновенная гадюка обычно реагирует на беспокойство человеком?",
+      "relevant_claim_refs": [
+        "claim:fauna-adder-defence"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-adder-defence"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "bee_winter_en",
+      "locale": "en",
+      "query_text": "How does a honeybee colony survive a cold temperate winter?",
+      "relevant_claim_refs": [
+        "claim:fauna-bee-winter-cluster"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-bee-winter-cluster"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "dragonfly_development_ru",
+      "locale": "ru",
+      "query_text": "Проходит ли стрекоза стадию куколки, и где развивается её личинка?",
+      "relevant_claim_refs": [
+        "claim:fauna-dragonfly-lifecycle"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-dragonfly-lifecycle"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "tick_movement_en",
+      "locale": "en",
+      "query_text": "Do ticks jump onto passing animals, or how do they reach a host?",
+      "relevant_claim_refs": [
+        "claim:fauna-tick-questing"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-tick-questing"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "chicken_dust_ru",
+      "locale": "ru",
+      "query_text": "Что делает курица при пылевой ванне?",
+      "relevant_claim_refs": [
+        "claim:fauna-chicken-dust-bathing"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-chicken-dust-bathing"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "crayfish_eggs_en",
+      "locale": "en",
+      "query_text": "How are eggs carried in the noble crayfish Astacus astacus?",
+      "relevant_claim_refs": [
+        "claim:fauna-crayfish-egg-carrying"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-crayfish-egg-carrying"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "squirrel_winter_ru",
+      "locale": "ru",
+      "query_text": "Впадает ли обыкновенная белка в зимнюю спячку и что делает при плохой погоде?",
+      "relevant_claim_refs": [
+        "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-mammals-red-squirrel-no-hibernation-weather-shelter"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "fish_oxygen_en",
+      "locale": "en",
+      "query_text": "Why can a warm summer night worsen oxygen shortage for fish?",
+      "relevant_claim_refs": [
+        "claim:fauna-fish-summer-night-oxygen"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:fauna-fish-summer-night-oxygen"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    }
+  ]
+}

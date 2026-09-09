@@ -12,12 +12,17 @@
   },
   "approved_case_ids": [
     "anachronism",
+    "boot-print-trace",
+    "common-mundane-positive",
     "evidence-clue",
     "letter-document",
     "misleading-common-name",
+    "puddle-surface",
+    "shadow-observation",
     "significant-hidden",
     "silver-currency",
+    "smoke-condition",
     "sword-weapon"
   ],
-  "result_digest": "828090cab96caa8e38cda1fc1d4f37ce081c87fcd68b0ed84180245c8b074cdd"
+  "result_digest": "d3e374fce553629f1c5b3af1aa127271a97a2731da067e5e1dd2adce9929c325"
 }

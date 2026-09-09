@@ -1,0 +1,1995 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:nahlik-novgorod-textiles-1963",
+      "title": "Ткани Новгорода. Опыт технологического анализа",
+      "authors": [
+        "Adam Nahlik"
+      ],
+      "publication": "Материалы и исследования по археологии СССР 123 (1963), pp. 228–313",
+      "source_kind": "scholarship",
+      "citation": "https://studfile.net/preview/12819794/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:clothing-rabinovich-1986",
+      "title": "Древняя одежда народов Восточной Европы: Древнерусская одежда IX–XIII вв.",
+      "authors": [
+        "М. Г. Рабинович"
+      ],
+      "publication": "Древняя одежда народов Восточной Европы, 1986, с. 40–111",
+      "source_kind": "scholarship",
+      "citation": "https://www.booksite.ru/ancient/reader/human_3_02.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:clothing-savenkova-2015",
+      "title": "Понёвы из средневекового Новгорода (по материалам археологических раскопок)",
+      "authors": [
+        "М. М. Савенкова"
+      ],
+      "publication": "Исторические, философские, политические и юридические науки… 11(61), 2015, с. 151–154",
+      "citation": "https://www.gramota.net/article/hss20151942/fulltext",
+      "source_kind": "scholarship",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:textile-ellagic-acid-analysis",
+      "source_ref": "source:nahlik-novgorod-textiles-1963",
+      "anchor": {
+        "section": "Printed p. 266, Textiles 1–3; early-medieval interpretation on pp. 266–267"
+      },
+      "note": "Independent verification/verification-fibre-preparation-dyeing.md: FPD-06, APPROVE_WITH_LIMITS. Printed text reproduction pp. 229, 266–268 independently read. Analytical textile observation, not local source stock or a recipe.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:textile-chrysin-analysis",
+      "source_ref": "source:nahlik-novgorod-textiles-1963",
+      "anchor": {
+        "section": "Printed p. 267, Textiles 4–6 and qualified early-medieval inference from openwork sample N-55/10189"
+      },
+      "note": "Independent verification/verification-fibre-preparation-dyeing.md: FPD-07, APPROVE_WITH_LIMITS. Printed text reproduction pp. 229, 266–268 independently read. Analytical textile observation, not local source stock or a recipe.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:textile-indigo-yellow-analysis",
+      "source_ref": "source:nahlik-novgorod-textiles-1963",
+      "anchor": {
+        "section": "Printed pp. 267–268, sample N-55/10165, thirteenth-century date and western-European guild-indicator edge threads"
+      },
+      "note": "Independent verification/verification-fibre-preparation-dyeing.md: FPD-08, APPROVE_WITH_LIMITS. Printed text reproduction pp. 229, 266–268 independently read. Analytical textile observation, not local source stock or a recipe.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:textile-lac-dye-analysis",
+      "source_ref": "source:nahlik-novgorod-textiles-1963",
+      "anchor": {
+        "section": "Printed p. 268, sample N-55/10150 and author's thirteenth-century inference for lac-dye use"
+      },
+      "note": "Independent verification/verification-fibre-preparation-dyeing.md: FPD-09 lac-only, APPROVE_WITH_LIMITS. Printed text reproduction pp. 229, 266–268 independently read. Analytical textile observation, not local source stock or a recipe.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:clothing-rabinovich-material",
+      "source_ref": "source:clothing-rabinovich-1986",
+      "anchor": {
+        "section": "Материал; Нательная одежда; Верхняя одежда; Обувь; Одежда в семье и обществе"
+      },
+      "note": "Broad Old-Rus IX–XIII synthesis. It supports conditional material and garment-form compatibility, never scene presence, possession, wealth or a complete outfit.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:clothing-nerev-coloured-wool",
+      "anchor": {
+        "page": "152",
+        "section": "XII-century Nerev textile fragment and preserved pattern threads"
+      },
+      "source_ref": "source:clothing-savenkova-2015",
+      "note": "Independent APPROVE_WITH_LIMITS in verification/verification-craft-preparation.md. Use only the narrowed corpus-level wording; 1220–1240 compatibility is inferred/medium, not direct layer dating or process proof.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:textile-colourants",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:tunic-shirt",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:belt"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:shirt-gusset",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:tunic-shirt"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:shirt-collar-button",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:tunic-shirt"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:porty-trousers",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:tunic-shirt"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:onuchi",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:kozhukh",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:svita",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:votola",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:svita"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:linen-textile",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:sheepskin",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:pointed-cap",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:povoi-headcover",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:textile-ellagic-acid-analysis",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:textile-colourants",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "nahlik_reports_ellagic_acid_mordant_dye_in_novgorod_textiles_1_to_3"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:textile-ellagic-acid-analysis"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:textile-chrysin-analysis",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:textile-colourants",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "nahlik_reports_chrysin_in_novgorod_textiles_4_to_6_with_author_named_mordant"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:textile-chrysin-analysis"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:textile-indigo-yellow-analysis",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:textile-colourants",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "nahlik_reports_indigo_and_unknown_yellow_colourant_in_thirteenth_century_sample_n55_10165"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:textile-indigo-yellow-analysis"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:textile-lac-dye-analysis",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:textile-colourants",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "nahlik_reports_lac_dye_in_sample_n55_10150_and_infers_thirteenth_century_use"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:textile-lac-dye-analysis"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-linen-plain-or-twill",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:woven-textile",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "old_rus_linen_textiles_used_plain_or_twill_weave"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-shirt-principal-garment",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:tunic-shirt",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "shirt_was_principal_and_sometimes_only_garment"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-tunic-shirt-folded-panel",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:tunic-shirt",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "tunic_like_shirt_cut_from_single_folded_panel"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-shirt-gussets",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:tunic-shirt",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "triangular_hem_gores_and_diamond_underarm_gussets_can_extend_tunic_shirt"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-male-shirt-belt",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:belt",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "male_shirt_can_be_belted_with_narrow_leather_belt_with_buckle_and_plates_or_woven_cord"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-rank-material-not-cut",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:tunic-shirt",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rank_difference_often_concerned_quantity_and_material_diversity_more_than_garment_cut"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-porty-cut",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:porty-trousers",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "narrow_trousers_reconstructed_from_straight_panels_with_gusset_and_drawstring_waist"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-onuchi-wrap",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:onuchi",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cloth_strips_can_be_wrapped_around_foot_and_shin"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-svita-outer-garment",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:svita",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "svita_is_attested_as_outer_garment_in_birch_bark_letter_141_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-votola-cloak",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:votola",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "sleeveless_votola_cloak_worn_over_svita_type_clothing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-wool",
+      "subject_ref": "wk:material_culture:wool",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:woven-textile"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-hemp",
+      "subject_ref": "wk:material_culture:hemp-fibre",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:woven-textile"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-linen",
+      "subject_ref": "wk:material_culture:linen-textile",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:woven-textile"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-wool-shirt",
+      "subject_ref": "wk:material_culture:wool",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:tunic-shirt"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-linen-shirt",
+      "subject_ref": "wk:material_culture:linen-textile",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:tunic-shirt"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-silk-shirt",
+      "subject_ref": "wk:material_culture:silk",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:tunic-shirt"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-bronze-button",
+      "subject_ref": "wk:material_culture:bronze",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:shirt-collar-button"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-bone-button",
+      "subject_ref": "wk:material_culture:bone",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:shirt-collar-button"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-sheepskin-kozhukh",
+      "subject_ref": "wk:material_culture:sheepskin",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:kozhukh"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "attested_use",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-button-shirt",
+      "subject_ref": "wk:material_culture:shirt-collar-button",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:tunic-shirt"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "supported_fact",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-pointed-cap-xii-depiction",
+      "subject_ref": "wk:material_culture:pointed-cap",
+      "object": {
+        "kind": "literal",
+        "value": "depicted_on_xii_century_gusli_player_bracelet"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "domain": "material_culture",
+      "predicate": "supported_fact",
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-rabinovich-material"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null,
+      "claim_ref": "claim:clothing-povoi-headcover",
+      "subject_ref": "wk:material_culture:povoi-headcover",
+      "object": {
+        "kind": "literal",
+        "value": "towel_like_headcover_wraps_head_and_covers_hair_in_author_images_and_text"
+      }
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:clothing-nerev-coloured-wool",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wool",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "twelfth_century_nerev_fragment_preserves_coloured_wool_pattern_threads"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:clothing-nerev-coloured-wool"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:textile-colourants",
+      "locale": "ru",
+      "labels": [
+        "Красители текстиля"
+      ],
+      "short_definition": "Материалы окраски текстиля; наблюдения в находках не доказывают местный источник или изготовление.",
+      "search_aliases": [
+        "Красильные вещества"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:textile-colourants",
+      "locale": "en",
+      "labels": [
+        "Textile colourants"
+      ],
+      "short_definition": "Textile colouring materials; observations in finds do not establish local sourcing or manufacture.",
+      "search_aliases": [
+        "Textile dyes"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tunic-shirt",
+      "locale": "ru",
+      "labels": [
+        "Туникообразная рубаха"
+      ],
+      "short_definition": "Рубаха туникообразного кроя.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tunic-shirt",
+      "locale": "en",
+      "labels": [
+        "Tunic-like shirt"
+      ],
+      "short_definition": "A shirt with tunic-like cut.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:shirt-gusset",
+      "locale": "ru",
+      "labels": [
+        "Ластовица рубахи"
+      ],
+      "short_definition": "Вставка, расширяющая рубаху.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:shirt-gusset",
+      "locale": "en",
+      "labels": [
+        "Shirt gusset"
+      ],
+      "short_definition": "An insert extending a shirt.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:shirt-collar-button",
+      "locale": "ru",
+      "labels": [
+        "Пуговица ворота рубахи"
+      ],
+      "short_definition": "Застёжка ворота рубахи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:shirt-collar-button",
+      "locale": "en",
+      "labels": [
+        "Shirt collar button"
+      ],
+      "short_definition": "A fastener for a shirt collar.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:porty-trousers",
+      "locale": "ru",
+      "labels": [
+        "Порты"
+      ],
+      "short_definition": "Узкие мужские штаны в исторической реконструкции.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:porty-trousers",
+      "locale": "en",
+      "labels": [
+        "Porty trousers"
+      ],
+      "short_definition": "Narrow men’s trousers in historical reconstruction.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:onuchi",
+      "locale": "ru",
+      "labels": [
+        "Онучи"
+      ],
+      "short_definition": "Полосы ткани для обмотки ноги.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:onuchi",
+      "locale": "en",
+      "labels": [
+        "Onuchi"
+      ],
+      "short_definition": "Cloth strips for wrapping the leg.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:kozhukh",
+      "locale": "ru",
+      "labels": [
+        "Кожух"
+      ],
+      "short_definition": "Зимняя верхняя одежда из шкуры мехом внутрь.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:kozhukh",
+      "locale": "en",
+      "labels": [
+        "Kozhukh"
+      ],
+      "short_definition": "Winter outerwear made with fur inward.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:svita",
+      "locale": "ru",
+      "labels": [
+        "Свита"
+      ],
+      "short_definition": "Верхняя одежда, названная в древнерусском контексте.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:svita",
+      "locale": "en",
+      "labels": [
+        "Svita"
+      ],
+      "short_definition": "Outer clothing named in an Old Rus context.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:votola",
+      "locale": "ru",
+      "labels": [
+        "Вотола"
+      ],
+      "short_definition": "Безрукавный плащ поверх верхней одежды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:votola",
+      "locale": "en",
+      "labels": [
+        "Votola"
+      ],
+      "short_definition": "A sleeveless cloak over outer clothing.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:linen-textile",
+      "locale": "ru",
+      "labels": [
+        "Льняная ткань"
+      ],
+      "short_definition": "Льняная ткань",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:linen-textile",
+      "locale": "en",
+      "labels": [
+        "Linen textile"
+      ],
+      "short_definition": "Linen textile",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sheepskin",
+      "locale": "ru",
+      "labels": [
+        "Овчина"
+      ],
+      "short_definition": "Овчина",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sheepskin",
+      "locale": "en",
+      "labels": [
+        "Sheepskin"
+      ],
+      "short_definition": "Sheepskin",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pointed-cap",
+      "locale": "ru",
+      "labels": [
+        "Островерхий колпак"
+      ],
+      "short_definition": "Островерхий колпак",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pointed-cap",
+      "locale": "en",
+      "labels": [
+        "Pointed cap"
+      ],
+      "short_definition": "Pointed cap",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:povoi-headcover",
+      "locale": "ru",
+      "labels": [
+        "Повой"
+      ],
+      "short_definition": "Повой",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:povoi-headcover",
+      "locale": "en",
+      "labels": [
+        "Povoi headcover"
+      ],
+      "short_definition": "Povoi headcover",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-ellagic-acid-analysis",
+      "locale": "ru",
+      "runtime_text": "В анализированных новгородских тканях 1–3 Нахлик сообщает элаговую кислоту как протравный краситель; для этих тканей он описывает коричнево-чёрный диапазон в зависимости от протравы. Для Новгородской земли 1100–1300 гг. это лишь вывод о совместимости средней уверенности из раннесредневекового контекста, не точный слой, местное крашение, растение-источник, состав ванны, запас или цвет предмета в сцене.",
+      "search_aliases": [
+        "Элаговая кислота",
+        "Протравный краситель"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-ellagic-acid-analysis",
+      "locale": "en",
+      "runtime_text": "For analysed Novgorod textiles 1–3, Nahlik reports ellagic acid as a mordant dye and describes a brown-to-black range depending on mordant. Its Novgorod-Land 1100–1300 applicability is only inferred, medium-confidence compatibility from the early-medieval context, not an exact layer, local dyeing, source plant, bath contents, stock or scene colour.",
+      "search_aliases": [
+        "Ellagic acid",
+        "Mordant dye"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-chrysin-analysis",
+      "locale": "ru",
+      "runtime_text": "Нахлик сообщает хрисин в новгородских тканях 4–6 и описывает жёлтую окраску шерсти на названной им «глиняной протраве». Термин автора не устанавливает применение обычной сырой глины. Применимость к Новгородской земле 1100–1300 гг. — вывод средней уверенности из авторского раннесредневекового контекста; это не местное изготовление, наличие красителя или протравы, полный рецепт, умение или результат окраски.",
+      "search_aliases": [
+        "Хрисин в ткани",
+        "Жёлтая окраска шерсти"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-chrysin-analysis",
+      "locale": "en",
+      "runtime_text": "Nahlik reports chrysin in Novgorod textiles 4–6 and describes yellow wool on the mordant he calls 'глиняная протрава'. The author's term does not establish ordinary raw clay as an input. Applicability to Novgorod Land in 1100–1300 is an inferred, medium-confidence interpretation of his early-medieval context, not local manufacture, available dye or mordant, a complete recipe, skill or a dyeing result.",
+      "search_aliases": [
+        "Chrysin in textiles",
+        "Yellow wool colourant"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-indigo-yellow-analysis",
+      "locale": "ru",
+      "runtime_text": "В XIII-вековом новгородском образце Н-55/10165 Нахлик сообщает индиго вместе с неизвестным жёлтым красителем и зелёную окраску ткани. Шесть жёлтых краевых нитей он считает признаком западноевропейского цехового производства, поэтому импортное происхождение остаётся возможным. Находка не доказывает местное выращивание, крашение, состав ванны, источник красителей или наличие ткани сейчас.",
+      "search_aliases": [
+        "Индиго и неизвестный жёлтый краситель",
+        "Зелёная новгородская ткань XIII века"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-indigo-yellow-analysis",
+      "locale": "en",
+      "runtime_text": "In thirteenth-century Novgorod sample N-55/10165, Nahlik reports indigo with an unidentified yellow colourant and green textile colour. He treats six yellow edge threads as a western-European guild-production indicator, so imported origin remains possible. The find proves neither local cultivation or dyeing, bath contents, a colourant source nor a present textile.",
+      "search_aliases": [
+        "Indigo and unidentified yellow colourant",
+        "Thirteenth-century green Novgorod textile"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-lac-dye-analysis",
+      "locale": "ru",
+      "runtime_text": "Нахлик сообщает лак-дей в новгородском образце Н-55/10150 и по присутствию этого красителя в тканях относит его применение к XIII веку. Это источник-обусловленный вывод средней уверенности для Новгородской земли 1200–1300 гг., не местное производство, происхождение сырья, торговый маршрут, рецепт, наличие красителя, навык или текущее крашение.",
+      "search_aliases": [
+        "Лак-дей в новгородской ткани"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:textile-lac-dye-analysis",
+      "locale": "en",
+      "runtime_text": "Nahlik reports lac-dye in Novgorod sample N-55/10150 and, from its presence in textiles, places its use in the thirteenth century. This is a source-qualified, medium-confidence inference for Novgorod Land in 1200–1300, not local production, raw-material origin, a trade route, recipe, available dye, skill or current dyeing.",
+      "search_aliases": [
+        "Lac-dye in Novgorod textiles"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-linen-plain-or-twill",
+      "locale": "ru",
+      "runtime_text": "Древнерусские льняные ткани могли иметь полотняное или саржевое переплетение; ни один вариант не обязателен для каждой ткани.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-linen-plain-or-twill",
+      "locale": "en",
+      "runtime_text": "Old Rus linen textiles could use plain or twill weave; neither is required for every cloth.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-shirt-principal-garment",
+      "locale": "ru",
+      "runtime_text": "Рубаха была главным, иногда единственным предметом одежды. Это не создаёт рубаху у конкретного персонажа.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-shirt-principal-garment",
+      "locale": "en",
+      "runtime_text": "A shirt was the principal, sometimes only garment. This creates no shirt for a particular character.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-tunic-shirt-folded-panel",
+      "locale": "ru",
+      "runtime_text": "Туникообразную рубаху могли кроить из одного перегнутого полотнища. Это историческая форма, не обязательная выкройка.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-tunic-shirt-folded-panel",
+      "locale": "en",
+      "runtime_text": "A tunic-like shirt could be cut from one folded panel. This is a historical form, not a mandatory pattern.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-shirt-gussets",
+      "locale": "ru",
+      "runtime_text": "Клинообразные вставки у подола и ромбические ластовицы под мышками могли расширять рубаху. Детали не предполагаются без конкретной вещи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-shirt-gussets",
+      "locale": "en",
+      "runtime_text": "Triangular hem inserts and diamond underarm gussets could extend a shirt. Details are not assumed without a particular garment.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-male-shirt-belt",
+      "locale": "ru",
+      "runtime_text": "Мужскую рубаху могли подпоясывать узким кожаным ремнём с пряжкой и бляшками либо тканым шнурком. Это не пояс конкретного человека.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-male-shirt-belt",
+      "locale": "en",
+      "runtime_text": "A male shirt could be belted with a narrow leather belt with buckle and plates or a woven cord. This is not a particular person’s belt.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-rank-material-not-cut",
+      "locale": "ru",
+      "runtime_text": "Различия одежды сословий часто касались количества и разнообразия вещей и материалов больше, чем покроя. Это не правило определения статуса по одежде.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-rank-material-not-cut",
+      "locale": "en",
+      "runtime_text": "Rank differences often concerned quantity and material diversity more than cut. This is not a rule for assigning status from dress.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-porty-cut",
+      "locale": "ru",
+      "runtime_text": "Порты реконструируются как узкие штаны из прямых полотнищ с ластовицей и поясом на вздержке. Реконструкция не задаёт размер или носителя.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-porty-cut",
+      "locale": "en",
+      "runtime_text": "Porty trousers are reconstructed as narrow straight-panel trousers with a gusset and drawstring waist. It sets neither size nor wearer.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-onuchi-wrap",
+      "locale": "ru",
+      "runtime_text": "Онучи могли быть полосами ткани, обматываемыми вокруг стопы и голени. Это не создаёт обувь или дорожную сцену.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-onuchi-wrap",
+      "locale": "en",
+      "runtime_text": "Onuchi could be cloth strips wrapped around foot and shin. This creates neither footwear nor a travel scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-svita-outer-garment",
+      "locale": "ru",
+      "runtime_text": "Свита упоминается как верхняя одежда в контексте берестяной грамоты №141. Упоминание не создаёт её в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-svita-outer-garment",
+      "locale": "en",
+      "runtime_text": "Svita is mentioned as outer clothing in the context of birch-bark letter 141. The mention creates none in a scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-votola-cloak",
+      "locale": "ru",
+      "runtime_text": "Вотола — безрукавный плащ, накидываемый поверх одежды типа свиты. Капюшон источником назван лишь возможным и здесь не утверждается.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-votola-cloak",
+      "locale": "en",
+      "runtime_text": "Votola is a sleeveless cloak worn over svita-type clothing. The source calls a hood only possible, so none is asserted here.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-wool",
+      "locale": "ru",
+      "runtime_text": "Шерстяные ткани входили в основные материалы древнерусской одежды; для обычных горожан и крестьян описано домотканое сукно.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-wool",
+      "locale": "en",
+      "runtime_text": "Wool fabrics were among the main Old-Rus clothing materials; homespun woollen cloth is described for ordinary townspeople and peasants.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-hemp",
+      "locale": "ru",
+      "runtime_text": "Конопляное волокно использовали в тканях древнерусской одежды. Это исторически совместимый материал, не запас волокна в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-hemp",
+      "locale": "en",
+      "runtime_text": "Hemp fibre was used in Old-Rus clothing textiles. This is a historically compatible material, not fibre stock in the scene.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-linen",
+      "locale": "ru",
+      "runtime_text": "Льняной холст входил в основные материалы древнерусской одежды, в том числе домотканой одежды крестьян и рядовых горожан.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-linen",
+      "locale": "en",
+      "runtime_text": "Linen cloth was a main Old-Rus clothing material, including homespun clothing of peasants and ordinary townspeople.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-wool-shirt",
+      "locale": "ru",
+      "runtime_text": "Рубахи могли шить из тонкой шерстяной ткани; это допустимый материал, а не обязательная ткань каждой рубахи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-wool-shirt",
+      "locale": "en",
+      "runtime_text": "Shirts could be sewn from fine woollen cloth; this is a compatible material, not the required cloth of every shirt.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-linen-shirt",
+      "locale": "ru",
+      "runtime_text": "Для древнерусских рубах использовали льняное полотно. Отношение не задаёт готовую вещь, размер или количество ткани.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-linen-shirt",
+      "locale": "en",
+      "runtime_text": "Linen cloth was used for Old-Rus shirts. The relation specifies no ready garment, dimensions or amount of cloth.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-silk-shirt",
+      "locale": "ru",
+      "runtime_text": "В источниковом описании встречаются рубахи богатых людей из шёлковых тканей. Это не позволяет определять статус конкретного человека по ткани.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-silk-shirt",
+      "locale": "en",
+      "runtime_text": "The source describes silk-fabric shirts among richer clothing examples. This does not establish a particular person's status from the fabric.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-bronze-button",
+      "locale": "ru",
+      "runtime_text": "Литые бронзовые пуговицы описаны как застёжки ворота рубахи; это один из исторических вариантов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-bronze-button",
+      "locale": "en",
+      "runtime_text": "Cast bronze buttons are described as shirt-collar fasteners, one of the historical alternatives.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-bone-button",
+      "locale": "ru",
+      "runtime_text": "Костяные пуговицы описаны как застёжки ворота рубахи наряду с бронзовыми; конкретный материал требует сведений о вещи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-bone-button",
+      "locale": "en",
+      "runtime_text": "Bone buttons are described alongside bronze ones as shirt-collar fasteners; an actual garment's material requires object-specific evidence.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-sheepskin-kozhukh",
+      "locale": "ru",
+      "runtime_text": "Овчинный кожух описан как зимняя одежда мехом внутрь. Это историческая форма, не гарантированная защита от любого холода.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-sheepskin-kozhukh",
+      "locale": "en",
+      "runtime_text": "A sheepskin kozhukh is described as winter clothing worn fur inward. This historical form does not guarantee protection from every cold exposure.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-button-shirt",
+      "locale": "ru",
+      "runtime_text": "Ворот рубахи мог застёгиваться на одну или несколько пуговиц. Это вариант устройства, не обязательная застёжка каждой рубахи.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-button-shirt",
+      "locale": "en",
+      "runtime_text": "A shirt collar could close with one or several buttons. This is a construction option, not a mandatory fastener on every shirt.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-pointed-cap-xii-depiction",
+      "locale": "ru",
+      "runtime_text": "Островерхий колпак изображён на гусляре на браслете XII века. Это совместимость формы, не обычный головной убор и не статус персонажа.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-pointed-cap-xii-depiction",
+      "locale": "en",
+      "runtime_text": "A pointed cap is depicted on a gusli player on a twelfth-century bracelet. This is form compatibility, not ordinary headwear or character status.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-povoi-headcover",
+      "locale": "ru",
+      "runtime_text": "Повой — полотенчатое покрывало, обматывающее голову и покрывающее волосы в источниковых изображениях и текстах. Это не обязательная норма, санкция или вещь в сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-povoi-headcover",
+      "locale": "en",
+      "runtime_text": "A povoi is a towel-like headcover wrapping the head and covering hair in source images and texts. This is not a compulsory norm, sanction, or scene item.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-nerev-coloured-wool",
+      "locale": "ru",
+      "runtime_text": "В XII-вековом фрагменте ткани Неревского раскопа сохранились цветные шерстяные нити в частях узора. Это более ранний пример исторической совместимости цветного шерстяного текстиля, не определение красителя, протравы, операции окрашивания, местной мастерской или текущей одежды.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:clothing-nerev-coloured-wool",
+      "locale": "en",
+      "runtime_text": "A twelfth-century Nerev-excavation textile fragment preserves coloured wool threads in parts of its pattern. This earlier example supports historical compatibility of coloured wool textiles, not a dye, mordant, dyeing operation, local workshop or present garment.",
+      "search_aliases": []
+    }
+  ]
+}

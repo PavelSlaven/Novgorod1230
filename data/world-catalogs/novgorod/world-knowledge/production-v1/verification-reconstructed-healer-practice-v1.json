@@ -1,0 +1,95 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-observation-and-questioning",
+      "claim_ref": "claim:healer-observation-and-questioning",
+      "claim_digest": "81f58c9e46a8b5a7005ca28abae538dd806c99b299c3f10b5e40163ba852c089",
+      "candidate_ref": "git:1a96aeafae1d13bd2e0bceec9e158f03f084311a:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-healer-practice-v1.json#claim:healer-observation-and-questioning",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility and source-domain review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_ref": "verification/reconstructed-healer-practice-v1.md#approved-healer-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional healer-role premise only; no diagnosis, medical protocol, remedy efficacy, credential, entity, possession, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-portable-and-household-kit",
+      "claim_ref": "claim:healer-portable-and-household-kit",
+      "claim_digest": "1e8de0524fc4a0609bfaa93c67b5dd7a5355f82abc0a6a49072b9b6512217fe3",
+      "candidate_ref": "git:1a96aeafae1d13bd2e0bceec9e158f03f084311a:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-healer-practice-v1.json#claim:healer-portable-and-household-kit",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility and source-domain review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_ref": "verification/reconstructed-healer-practice-v1.md#approved-healer-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional healer-role premise only; no diagnosis, medical protocol, remedy efficacy, credential, entity, possession, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-experience-and-reputation",
+      "claim_ref": "claim:healer-experience-and-reputation",
+      "claim_digest": "3e516141d1b476b6532eb2f2f115ddff43d7fcecf20d292b5cc9a657f52bad6c",
+      "candidate_ref": "git:1a96aeafae1d13bd2e0bceec9e158f03f084311a:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-healer-practice-v1.json#claim:healer-experience-and-reputation",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility and source-domain review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_ref": "verification/reconstructed-healer-practice-v1.md#approved-healer-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional healer-role premise only; no diagnosis, medical protocol, remedy efficacy, credential, entity, possession, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-livelihood-and-household-support",
+      "claim_ref": "claim:healer-livelihood-and-household-support",
+      "claim_digest": "f3a3566985cec2b49280d19a19970b37d6ccc403e392c98e8b20f9c3b31616ff",
+      "candidate_ref": "git:1a96aeafae1d13bd2e0bceec9e158f03f084311a:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-healer-practice-v1.json#claim:healer-livelihood-and-household-support",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility and source-domain review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_ref": "verification/reconstructed-healer-practice-v1.md#approved-healer-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional healer-role premise only; no diagnosis, medical protocol, remedy efficacy, credential, entity, possession, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-belief-and-bodily-attention",
+      "claim_ref": "claim:healer-belief-and-bodily-attention",
+      "claim_digest": "c1b5589f0ee1748c95c3a783d3a017c7fa6d6d1da143b1353c9448bf38088a27",
+      "candidate_ref": "git:1a96aeafae1d13bd2e0bceec9e158f03f084311a:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-healer-practice-v1.json#claim:healer-belief-and-bodily-attention",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility and source-domain review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_ref": "verification/reconstructed-healer-practice-v1.md#approved-healer-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional healer-role premise only; no diagnosis, medical protocol, remedy efficacy, credential, entity, possession, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-healer-practice-v1-care-coordination-and-uncertainty",
+      "claim_ref": "claim:healer-care-coordination-and-uncertainty",
+      "claim_digest": "444a5ab1fd278d22618208d9dd87184b17cb218bab006d8ab3b0f9b7bb4b1fe8",
+      "candidate_ref": "git:1a96aeafae1d13bd2e0bceec9e158f03f084311a:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-healer-practice-v1.json#claim:healer-care-coordination-and-uncertainty",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility and source-domain review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:reconstructed-healer-practice"
+      ],
+      "review_ref": "verification/reconstructed-healer-practice-v1.md#approved-healer-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional healer-role premise only; no diagnosis, medical protocol, remedy efficacy, credential, entity, possession, actor decision, scene state, or outcome."
+    }
+  ]
+}

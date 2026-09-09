@@ -1,7 +1,6 @@
 import { isDeepStrictEqual } from 'node:util';
 import { actionProducedAccessState,
   actionProducedControllerPermitted,
-  actionProducedControllerRef,
   actionProducedPlacementAccessible,
   validActionProducedAccessContainer } from
   './action-produced-contained-access.js';
@@ -10,6 +9,8 @@ import {
   exactActionProducedRecord as exact,
   failActionProducedPersistence as fail
 } from './action-produced-persistence-boundary.js';
+import { createActionProducedCommittedEntitySnapshot } from
+  './action-produced-committed-row-pin.js';
 
 const ROW_PIN_KEYS = [
   'role', 'item_id', 'item', 'placement', 'ownership', 'entity_snapshot',
@@ -171,9 +172,11 @@ function validPreparedOrdinary(value, pin, causalIdentity) {
       && provenance?.step_index === value.step_index;
   }
   return value.schema === 'action_production_prepared_ordinary_pin_v2'
-    && exact(value, ['schema', 'request_identity', 'root_turn_id'])
-    && causalIdentity.step_index > 1
-    && value.request_identity === `${value.root_turn_id}:ordinary:presence`
+    && exact(value, ['schema', 'request_identity', 'root_turn_id', 'step_index'])
+    && Number.isSafeInteger(value.step_index)
+    && value.step_index >= 1 && value.step_index < causalIdentity.step_index
+    && value.request_identity
+      === `${value.root_turn_id}:ordinary:presence:step:${value.step_index}`
     && provenance?.request_id === value.request_identity;
 }
 
@@ -205,15 +208,9 @@ function expectedEntity(pin, role, actorRef, finite,
       || !actionProducedControllerPermitted(ownership, role, actorRef)) {
     fail('ACTION_PRODUCED_PLAN_INVALID');
   }
-  return {
-    schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
-    commit_state: 'committed', role, entity_ref: pin.item_id,
-    state_version: String(item.state_version), lifecycle_state: 'active',
-    access_state: accessState, holder_ref: holderRef,
-    controller_ref: actionProducedControllerRef(ownership),
-    ownership_snapshot: structuredClone(ownership),
-    finite_resource: finite
-  };
+  return createActionProducedCommittedEntitySnapshot({ role,
+    itemId: pin.item_id, stateVersion: item.state_version,
+    accessState, holderRef, ownership, finiteResource: finite });
 }
 
 function validOwnership(value) {

@@ -1,0 +1,78 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_v1",
+  "benchmark_ref": "wk-pipeline:wild-flora-modern-v1",
+  "cases": [
+    {
+      "case_id": "mushroom_resemblance_ru",
+      "locale": "ru",
+      "query_text": "Какие ограничения на вывод о съедобности даёт внешнее сходство неизвестного шляпочного гриба со знакомым съедобным, и доказывает ли это знание персонажем вида?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:wild-mushroom-resemblance-not-edibility"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:wild-mushroom-resemblance-not-edibility"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "fungal_substrate_en",
+      "locale": "en",
+      "query_text": "How do most fungi obtain nutrients from their growing substrate, and does this establish a fruiting body, edible food or usable stock in the current scene?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:most-fungi-hyphae-substrate-nutrition"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:most-fungi-hyphae-substrate-nutrition"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "similar_berries_ru",
+      "locale": "ru",
+      "query_text": "Как сходство листьев и ягод толокнянки с брусникой ограничивает определение растения, и устанавливает ли оно наличие этих растений здесь в 1230 году?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:bearberry-lingonberry-resemblance-not-identification"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "mezereon_sap_en",
+      "locale": "en",
+      "query_text": "Which parts of mezereon contain poisonous sap, and does that fact establish a current plant, an actor's identification skill or a poisoning dose?",
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "relevant_claim_refs": [
+        "claim:mezereon-poisonous-sap-all-parts"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:mezereon-poisonous-sap-all-parts"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    }
+  ]
+}

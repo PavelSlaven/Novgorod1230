@@ -231,6 +231,7 @@ test('a known reverse route is offered and committed once without an authored co
             resolution: 'direct', goal_result: 'achieved',
             activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
             operations: [], check: null, continuation: null, clarification: null,
+            direct_result_kind: 'player_safe_observation',
             reason_code: 'complete_at_destination', reason: 'complete'
           };
         }
@@ -252,7 +253,8 @@ test('a known reverse route is offered and committed once without an authored co
           operations: [operation], check: null, continuation: {
             remaining_intent: 'осмотреться у рыбацкого стана',
             depends_on_refs: ['trace_ld_v1_loc_fishing_camp'] },
-          clarification: null, reason_code: 'known_route', reason: 'known route'
+          clarification: null, direct_result_kind: null,
+          reason_code: 'known_route', reason: 'known route'
         };
       } });
     const input = { request_id: 'known-route-reverse',

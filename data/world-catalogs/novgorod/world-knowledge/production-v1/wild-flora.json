@@ -1,0 +1,413 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:valday-flora",
+      "title": "Растительный мир",
+      "authors": [],
+      "publication": "ФГБУ «Национальный парк «Валдайский»",
+      "source_kind": "official_documentation",
+      "citation": "https://www.valdaypark.ru/flora",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:valday-similar-berries",
+      "title": "Похожие ягоды. Надо разобраться",
+      "authors": [
+        "И. Г. Хмельщикова"
+      ],
+      "publication": "ФГБУ «Национальный парк «Валдайский»",
+      "source_kind": "official_documentation",
+      "citation": "https://www.valdaypark.ru/tpost/cz3zea5421-pohozhie-yagodi-nado-razobratsya",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:wild-mushroom-resemblance-not-edibility",
+      "source_ref": "source:valday-flora",
+      "anchor": {
+        "section": "Шляпочные съедобные и ядовитые грибы"
+      },
+      "note": "Independently opened and normalized in verification/verification-wild-flora-modern.md. General biology or identification limit only; no historical presence, current specimen, actor competence, dose or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:most-fungi-hyphae-substrate-nutrition",
+      "source_ref": "source:valday-flora",
+      "anchor": {
+        "section": "Грибы"
+      },
+      "note": "Independently opened and normalized in verification/verification-wild-flora-modern.md. General biology or identification limit only; no historical presence, current specimen, actor competence, dose or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bearberry-lingonberry-resemblance-not-identification",
+      "source_ref": "source:valday-similar-berries",
+      "anchor": {
+        "section": "Сходство толокнянки и брусники; различия листьев и ягод"
+      },
+      "note": "Independently opened and normalized in verification/verification-wild-flora-modern.md. General biology or identification limit only; no historical presence, current specimen, actor competence, dose or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:mezereon-poisonous-sap-all-parts",
+      "source_ref": "source:valday-flora",
+      "anchor": {
+        "section": "Волчеягодник обыкновенный"
+      },
+      "note": "Independently opened and normalized in verification/verification-wild-flora-modern.md. General biology or identification limit only; no historical presence, current specimen, actor competence, dose or outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:wild-mushroom-identification",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:fungal-mycelium-nutrition",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:biology_physiology:fungal-decomposition"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:bearberry-lingonberry-identification",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:mezereon-toxicity",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:wild-mushroom-resemblance-not-edibility",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:wild-mushroom-identification",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "general_resemblance_to_known_edible_mushroom_does_not_establish_edibility"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:wild-mushroom-resemblance-not-edibility"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:most-fungi-hyphae-substrate-nutrition",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:fungal-mycelium-nutrition",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "most_fungi_absorb_substrate_nutrients_through_hyphal_network"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:most-fungi-hyphae-substrate-nutrition"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:bearberry-lingonberry-resemblance-not-identification",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:bearberry-lingonberry-identification",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "bearberry_leaves_and_berries_resemble_lingonberry_not_sufficient_identification"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bearberry-lingonberry-resemblance-not-identification"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:mezereon-poisonous-sap-all-parts",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:mezereon-toxicity",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "mezereon_all_parts_contain_poisonous_sap"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:mezereon-poisonous-sap-all-parts"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:wild-mushroom-identification",
+      "locale": "ru",
+      "labels": [
+        "Определение съедобности дикого гриба"
+      ],
+      "short_definition": "Внешнее сходство с известным съедобным грибом само по себе не подтверждает съедобность шляпочного гриба.",
+      "search_aliases": [
+        "похожий гриб",
+        "ядовитый гриб",
+        "определение грибов"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:wild-mushroom-identification",
+      "locale": "en",
+      "labels": [
+        "Wild mushroom edibility identification"
+      ],
+      "short_definition": "Resemblance to a known edible mushroom does not by itself establish that a cap mushroom is edible.",
+      "search_aliases": [
+        "mushroom lookalike",
+        "poisonous mushroom",
+        "fungus identification"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:fungal-mycelium-nutrition",
+      "locale": "ru",
+      "labels": [
+        "Грибница и питание грибов"
+      ],
+      "short_definition": "У большинства грибов питание обеспечивается сетью гиф: она проходит через субстрат и поглощает из него питательные вещества.",
+      "search_aliases": [
+        "грибница",
+        "гифы",
+        "питание гриба",
+        "субстрат"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:fungal-mycelium-nutrition",
+      "locale": "en",
+      "labels": [
+        "Fungal mycelium and nutrition"
+      ],
+      "short_definition": "Most fungi obtain nutrients through a network of hyphae that penetrates their growing substrate and absorbs nutrients from it.",
+      "search_aliases": [
+        "mycelium",
+        "hyphae",
+        "fungal nutrition",
+        "substrate"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:bearberry-lingonberry-identification",
+      "locale": "ru",
+      "labels": [
+        "Сходство толокнянки и брусники"
+      ],
+      "short_definition": "Листья и ягоды толокнянки похожи на листья и ягоды брусники; одного сходства недостаточно для определения растения.",
+      "search_aliases": [
+        "похожие лесные ягоды",
+        "брусника",
+        "толокнянка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:bearberry-lingonberry-identification",
+      "locale": "en",
+      "labels": [
+        "Bearberry and lingonberry resemblance"
+      ],
+      "short_definition": "Bearberry leaves and berries resemble those of lingonberry; resemblance alone does not identify the plant.",
+      "search_aliases": [
+        "similar wild berries",
+        "lingonberry",
+        "bearberry"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:mezereon-toxicity",
+      "locale": "ru",
+      "labels": [
+        "Ядовитый сок волчьего лыка"
+      ],
+      "short_definition": "Ядовитый сок волчьего лыка присутствует во всех частях растения.",
+      "search_aliases": [
+        "волчеягодник обыкновенный",
+        "волчье лыко",
+        "ядовитое растение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:mezereon-toxicity",
+      "locale": "en",
+      "labels": [
+        "Mezereon poisonous sap"
+      ],
+      "short_definition": "Poisonous sap is present throughout the mezereon plant.",
+      "search_aliases": [
+        "mezereon",
+        "poisonous plant",
+        "poisonous sap"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wild-mushroom-resemblance-not-edibility",
+      "locale": "ru",
+      "runtime_text": "Внешнее сходство с известным съедобным грибом само по себе не подтверждает съедобность шляпочного гриба.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:wild-mushroom-resemblance-not-edibility",
+      "locale": "en",
+      "runtime_text": "Resemblance to a known edible mushroom does not by itself establish that a cap mushroom is edible.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:most-fungi-hyphae-substrate-nutrition",
+      "locale": "ru",
+      "runtime_text": "У большинства грибов питание обеспечивается сетью гиф: она проходит через субстрат и поглощает из него питательные вещества.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:most-fungi-hyphae-substrate-nutrition",
+      "locale": "en",
+      "runtime_text": "Most fungi obtain nutrients through a network of hyphae that penetrates their growing substrate and absorbs nutrients from it.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:bearberry-lingonberry-resemblance-not-identification",
+      "locale": "ru",
+      "runtime_text": "Листья и ягоды толокнянки похожи на листья и ягоды брусники; одного сходства недостаточно для определения растения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:bearberry-lingonberry-resemblance-not-identification",
+      "locale": "en",
+      "runtime_text": "Bearberry leaves and berries resemble those of lingonberry; resemblance alone does not identify the plant.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mezereon-poisonous-sap-all-parts",
+      "locale": "ru",
+      "runtime_text": "Ядовитый сок волчьего лыка присутствует во всех частях растения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:mezereon-poisonous-sap-all-parts",
+      "locale": "en",
+      "runtime_text": "Poisonous sap is present throughout the mezereon plant.",
+      "search_aliases": []
+    }
+  ]
+}

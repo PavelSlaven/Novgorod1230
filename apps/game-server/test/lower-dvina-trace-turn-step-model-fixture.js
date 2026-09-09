@@ -149,6 +149,7 @@ function domainPlan(request, operation) {
     check: null,
     continuation: null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: 'delegate_existing_lower_dvina_owner',
     reason: 'Действие передаётся существующему владельцу механики.'
   };
@@ -199,6 +200,7 @@ function directPlan(request) {
     check: null,
     continuation: null,
     clarification: null,
+    direct_result_kind: 'player_safe_observation',
     reason_code: 'review_visible_surroundings',
     reason: 'Общий обзор использует уже видимую сцену.'
   };

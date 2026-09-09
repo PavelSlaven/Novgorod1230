@@ -1,0 +1,51 @@
+{
+  "schema": "wk_place_first_offline_review_v1",
+  "batch_id": "place-batch-05",
+  "reviewer_agent_identity": "/root/place05_scene_a",
+  "known_gap_replay": true,
+  "input_commit": "4a87b4f8b80832d19d459970950401dd82da7477",
+  "corpus_claim_count": 1399,
+  "method": "Bounded known-gap replay only: re-evaluates the three fixed prior cases against compiled-1399, including approved salt and poultry claims. It is not unseen sampling and does not change original 97/3 or 0/3 results.",
+  "cases": [
+    {
+      "case_id": "place05-core-018",
+      "verdict": "covered",
+      "scene_ru": "Сырая нижняя доска у стены и прикрытое оконце создают понятную проблему для мешков с солью. Кладовщик поднимает их на сухие доски, оставляя доступ к стене и полу для повторного осмотра; свеча даёт только местный свет.",
+      "interaction_ru": "Влага в контактах частиц поваренной соли может при последующем высыхании образовать кристаллические мостики и слежать массу. Поэтому перенос выше уменьшает прямой контакт тары с сырой поверхностью, но не обещает, что конкретная соль уже слежалась или останется полностью сухой.",
+      "variation_ru": "При новом поступлении влаги кладовщик снова проверит низ помещения и расположение мешков. Если воздух и состав соли иные, слёживание может не проявиться тем же образом.",
+      "claim_refs": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization",
+        "claim:place-outdoors-season-work-space-reallocation",
+        "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place05-core-034",
+      "verdict": "covered",
+      "scene_ru": "Тёплый ливень меняет условия работы у двора: сухой навес и низкий местами раздвинутый загон создают разные пути для данных уток. Ребёнок действует рядом со взрослыми, не превращая навес в автоматически закрытое или безопасное место.",
+      "interaction_ru": "Он подходит спокойно и размеренно, направляя птиц к доступному входу и не делая резких движений у раздвинутого края. Такой подход может не дать птицам чрезмерно возбудиться, но не обещает, что они послушаются, войдут все или останутся внутри.",
+      "variation_ru": "При усилении дождя и шуме взрослый может сузить проход или помочь с направлением. Если часть птиц уходит к воде, их реакция остаётся состоянием сцены, а не результатом команды.",
+      "claim_refs": [
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place05-free-019",
+      "verdict": "covered",
+      "scene_ru": "Сильный ветер перед грозой, сырая низина и открытое русло дают гусям несколько направлений ухода от стога. Подросток видит размятую тропу и использует её как более понятный путь, не считая свисток средством гарантированного подзыва.",
+      "interaction_ru": "Домашние гуси могут двигаться группой при перегоне, поэтому подросток может постепенно направлять несколько птиц к общему доступному проходу, наблюдая за остальными. Спокойный размеренный подход может ограничить возбуждение; хворостина или свисток не становятся доказанными управляющими сигналами, а строй и полный сбор не гарантированы.",
+      "variation_ru": "При первом порыве ветра он может сузить направление к стогу и ждать помощи семьи. Если ветер, вода или поведение птиц меняются, способ сбора меняется вместе с ними без новой команды или гарантированного результата.",
+      "claim_refs": [
+        "claim:place-domestic-geese-can-move-as-a-flock-when-herded",
+        "claim:place-poultry-approach-and-movement-can-affect-response-without-guaranteed-control",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"
+      ],
+      "gaps": []
+    }
+  ]
+}

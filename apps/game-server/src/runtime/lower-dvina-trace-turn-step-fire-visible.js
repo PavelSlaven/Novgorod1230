@@ -18,6 +18,12 @@ const SCENES = Object.freeze({
   'affect:continue:active': 'Огонь изменился, но продолжает гореть.',
   'affect:complete:completed': 'Огонь погас.'
 });
+const ORDINARY_PRESENCE_CHANGES = Object.freeze({
+  absent: 'Искомое здесь не обнаружено.',
+  no_change: 'Попытка обнаружить искомое не дала определённого результата.',
+  authority_required:
+    'Эта попытка не позволяет установить, находится ли здесь искомое.'
+});
 
 export function createLowerDvinaTraceTurnStepVisibleProjector({
   fallback
@@ -41,7 +47,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
       const ordinaryDetails = ordinarySceneDetails(seedEntries);
-      const body = input.body_update?.state_after ?? {};
+      const ordinaryPresence = ordinaryPresenceResolution(seedEntries);
+      const body = currentBody(input);
       const base = hasVisibleDomainProjection(consequence)
         ? await fallback.project(input)
         : projectCurrentSceneForVisibleOverlay({
@@ -50,8 +57,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             body
           });
       return enrichLowerDvinaTraceVisibleNpcCues({
-        visibleContext: overlayFireVisible(
-          overlayOrdinaryScene(base, ordinaryDetails), fireVisible),
+        visibleContext: overlayFireVisible(overlayOrdinaryPresence(
+          overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence), fireVisible),
         committedState: input.retrieved_state
       });
     }
@@ -74,29 +81,41 @@ export function projectLowerDvinaTraceFireVisible(entries, clarification) {
 async function projectWithoutFire({ input, consequence, seedEntries,
   fallback }) {
   const ordinaryDetails = ordinarySceneDetails(seedEntries);
+  const ordinaryPresence = ordinaryPresenceResolution(seedEntries);
+  let base;
   if (ordinaryDetails.length > 0) {
-    const body = input.body_update?.state_after ?? {};
-    const base = hasVisibleDomainProjection(consequence)
+    const body = currentBody(input);
+    base = hasVisibleDomainProjection(consequence)
       ? await fallback.project(input)
       : projectCurrentSceneForVisibleOverlay({
-          input, directSeedKeys: directSeedKeys(seedEntries), body
-        });
-    return overlayOrdinaryScene(base, ordinaryDetails);
+            input, directSeedKeys: directSeedKeys(seedEntries), body
+          });
+    return overlayOrdinaryPresence(
+      overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence);
   }
   const synthetic = plain(consequence?.visible_seed)
     && Array.isArray(consequence.visible_seed.completed_steps)
     && !hasVisibleDomainProjection(consequence);
-  if (!synthetic) return fallback.project(input);
+  if (!synthetic) return overlayOrdinaryPresence(
+    await fallback.project(input), ordinaryPresence);
   const directSeeds = seedEntries
     .filter(([key, value]) => key.startsWith('turn_step_') && plain(value));
-  const body = input.body_update?.state_after ?? {};
+  const body = currentBody(input);
   const currentScene = projectCurrentSceneForNoOperationDirect({
     input,
     directSeedKeys: directSeeds.map(([key]) => key),
     body
   });
-  if (currentScene != null) return currentScene;
-  return deepFreeze({
+  if (currentScene != null) return overlayOrdinaryPresence(
+    currentScene, ordinaryPresence);
+  // An unfinished domain handoff with no visible effects confirms no part of
+  // the player's goal. Keep the committed scene, not a synthetic success.
+  if (consequence.status === 'partial' && directSeeds.length === 0
+      && consequence.visible_seed.clarification == null) {
+    return overlayOrdinaryPresence(projectCurrentSceneForVisibleOverlay({
+      input, directSeedKeys: [], body }), ordinaryPresence);
+  }
+  return overlayOrdinaryPresence(deepFreeze({
     version: 1,
     schema: 'visible_context_package',
     visible_scene: 'Заявленное действие завершено.',
@@ -121,7 +140,12 @@ async function projectWithoutFire({ input, consequence, seedEntries,
     do_not_imply: [
       'hidden_fact', 'uncommitted_body_delta', 'uncommitted_time'
     ]
-  });
+  }), ordinaryPresence);
+}
+
+function currentBody(input) {
+  return input.body_update?.state_after ?? input.retrieved_state?.body_state
+    ?? {};
 }
 
 function ordinarySceneDetails(entries) {
@@ -143,6 +167,27 @@ function overlayOrdinaryScene(base, details) {
   if (details.length === 0) return base;
   return deepFreeze({ ...structuredClone(base), sensory_details:
     unique([...base.sensory_details, ...details]) });
+}
+
+function ordinaryPresenceResolution(entries) {
+  const seeds = entries.filter(([key]) => key === 'ordinary_presence_seed');
+  if (seeds.length === 0) return null;
+  if (seeds.length !== 1) ownerFail(
+    'TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
+  const value = seeds[0][1];
+  if (!plain(value) || value.kind !== 'ordinary_presence_seed'
+      || Object.keys(value).length !== 2
+      || !Object.hasOwn(ORDINARY_PRESENCE_CHANGES, value.resolution)) {
+    ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
+  }
+  return value.resolution;
+}
+
+function overlayOrdinaryPresence(base, resolution) {
+  if (resolution == null) return base;
+  return deepFreeze({ ...structuredClone(base), visible_changes: unique([
+    ...base.visible_changes, ORDINARY_PRESENCE_CHANGES[resolution]
+  ]) });
 }
 
 function overlayFireVisible(base, fireVisible) {

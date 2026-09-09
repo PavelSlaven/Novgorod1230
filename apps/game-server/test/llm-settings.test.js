@@ -1,11 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import {
   createGameCompositionRoot,
   createGameHttpServer,
   createInMemorySessionStore,
   createLlmRoleRunnerAdapter,
+  createLlmSettingsFileStore,
   createLlmSettingsOwner,
+  LOCAL_LLM_PRESET,
   listen
 } from '../src/index.js';
 
@@ -16,11 +21,12 @@ const custom = Object.freeze({
 
 test('LLM settings owner snapshots are immutable, redacted, atomic, and resettable', async () => {
   const owner = createLlmSettingsOwner({ qualifyCustom: async () => identity() });
-  assert.deepEqual(owner.read(), { mode: 'default', base_url: null, model: null, api_key_present: false, compatibility: 'deepseek' });
+  assert.deepEqual(owner.read(), defaultSettings());
   const applied = await owner.apply(custom);
   assert.deepEqual(applied, {
     mode: 'custom', compatibility: 'openai_compatible',
-    base_url: 'http://127.0.0.1:11434/v1', model: 'local-model', api_key_present: true
+    base_url: 'http://127.0.0.1:11434/v1', model: 'local-model',
+    api_key_present: true, local_preset: LOCAL_LLM_PRESET
   });
   assert.throws(() => { applied.model = 'changed'; }, TypeError);
   assert.equal(JSON.stringify(owner.read()).includes('secret-key'), false);
@@ -33,30 +39,37 @@ test('LLM settings owner snapshots are immutable, redacted, atomic, and resettab
   assert.equal(owner.providerSnapshot().apiKey, null);
   await owner.apply({ ...custom, api_key: 'replacement-key' });
   assert.equal(owner.providerSnapshot().apiKey, 'replacement-key');
-  assert.deepEqual(owner.reset(), { mode: 'default', base_url: null, model: null, api_key_present: false, compatibility: 'deepseek' });
+  assert.deepEqual(await owner.reset(), defaultSettings());
 });
 
-test('Apply generation rejects stale qualification after reset or newer Apply', async () => {
+test('Apply serializes qualification and rejects stale results', async () => {
   const pending = [];
+  let active = 0; let maxActive = 0;
   const owner = createLlmSettingsOwner({ qualifyCustom: (candidate) => new Promise((resolve) => {
-    pending.push({ candidate, resolve });
+    active += 1; maxActive = Math.max(maxActive, active);
+    pending.push({ candidate, resolve: (value) => { active -= 1; resolve(value); } });
   }) });
   const first = owner.apply(custom);
-  owner.reset();
+  await tick();
+  const reset = owner.reset();
   pending.shift().resolve(identity());
   await assert.rejects(first, { code: 'LLM_SETTINGS_APPLY_STALE' });
-  assert.deepEqual(owner.read(), { mode: 'default', base_url: null, model: null,
-    api_key_present: false, compatibility: 'deepseek' });
+  await tick();
+  pending.shift().resolve({ ...identity(), model: LOCAL_LLM_PRESET.model });
+  await reset;
+  assert.deepEqual(owner.read(), defaultSettings());
 
   const older = owner.apply(custom);
+  await tick();
   const newer = owner.apply({ ...custom, model: 'new-model' });
   const old = pending.shift();
-  const latest = pending.shift();
-  latest.resolve({ ...identity(), model: 'new-model' });
-  await newer;
   old.resolve(identity());
   await assert.rejects(older, { code: 'LLM_SETTINGS_APPLY_STALE' });
+  await tick();
+  pending.shift().resolve({ ...identity(), model: 'new-model' });
+  await newer;
   assert.equal(owner.read().model, 'new-model');
+  assert.equal(maxActive, 1);
   assert.equal(JSON.stringify(owner.read()).includes('secret-key'), false);
 });
 
@@ -91,8 +104,10 @@ test('custom qualification is atomic; probe does not apply it', async () => {
   assert.equal(owner.read().model, 'local-model');
   await assert.rejects(owner.probe({ ...custom, model: 'probe-model' }), { code: 'QUALIFICATION_FAILED' });
   assert.equal(owner.read().model, 'local-model');
-  owner.reset();
-  assert.equal(owner.ordinaryMaterializationIdentity(), null);
+  fail = false;
+  await owner.reset();
+  assert.equal(owner.ordinaryMaterializationIdentity().model,
+    LOCAL_LLM_PRESET.model);
 });
 
 test('role runner fixes custom provider settings at call start and tags probes separately', async () => {
@@ -112,7 +127,7 @@ test('role runner fixes custom provider settings at call start and tags probes s
   releaseFirst();
   await first;
   await runner.run({ scope: 'turn_runtime', role_id: 'intent_router' });
-  assert.equal(calls[0].runtimeProviderOverride, undefined);
+  assert.equal(calls[0].runtimeProviderOverride.model, LOCAL_LLM_PRESET.model);
   assert.equal(calls[1].runtimeProviderOverride.model, 'local-model');
   const description = runner.describe({ scope: 'turn_runtime', role_id: 'intent_router' });
   assert.equal(description.provider, 'openai_compatible');
@@ -141,7 +156,7 @@ test('LLM settings HTTP routes redact secrets and reject invalid input without c
   t.after(() => server.close());
   const url = `http://127.0.0.1:${address.port}/api/v1/llm-settings`;
   const get = await fetch(url);
-  assert.deepEqual((await get.json()).data, { mode: 'default', base_url: null, model: null, api_key_present: false, compatibility: 'deepseek' });
+  assert.deepEqual((await get.json()).data, defaultSettings());
   const apply = await fetch(url, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(custom) });
   const applyText = await apply.text();
   assert.equal(apply.status, 200);
@@ -155,7 +170,7 @@ test('LLM settings HTTP routes redact secrets and reject invalid input without c
   assert.equal(Number.isFinite(probeData.duration_ms), true);
   assert.equal(probeCalls, 0);
   const reset = await fetch(url, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'default' }) });
-  assert.deepEqual((await reset.json()).data, { mode: 'default', base_url: null, model: null, api_key_present: false, compatibility: 'deepseek' });
+  assert.deepEqual((await reset.json()).data, defaultSettings());
 });
 
 test('LLM settings probe HTTP route reuses key only for active endpoint', async (t) => {
@@ -193,5 +208,48 @@ test('LLM settings probe HTTP route reuses key only for active endpoint', async 
   assert.equal(owner.providerSnapshot().baseUrl, 'http://127.0.0.1:11434/v1');
 });
 
+test('local preset and private server config survive restart', async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), 'rus-llm-settings-'));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const store = createLlmSettingsFileStore({
+    filePath: join(directory, 'llm-settings.json')
+  });
+  const qualifyCustom = async (candidate) => ({ ...identity(),
+    model: candidate.model });
+  const first = createLlmSettingsOwner({ qualifyCustom,
+    persistSettings: (record) => store.save(record) });
+  const applied = await first.apply({ mode: 'local', api_key: 'local-secret' });
+  assert.equal(applied.mode, 'local');
+  assert.equal(applied.base_url, LOCAL_LLM_PRESET.base_url);
+  assert.equal(applied.model, LOCAL_LLM_PRESET.model);
+  assert.equal(JSON.stringify(applied).includes('local-secret'), false);
+  assert.match(await readFile(store.path, 'utf8'), /local-secret/u);
+
+  const restored = createLlmSettingsOwner({ qualifyCustom,
+    initialRecord: await store.load(),
+    persistSettings: (record) => store.save(record) });
+  assert.equal(restored.read().mode, 'local');
+  assert.equal(restored.read().api_key_present, true);
+  assert.equal(restored.providerSnapshot().apiKey, 'local-secret');
+  assert.equal(restored.ordinaryMaterializationIdentity().model,
+    LOCAL_LLM_PRESET.model);
+});
+
+test('readiness probe reports provider category without applying candidate', async () => {
+  const owner = createLlmSettingsOwner({ qualifyCustom: async () => identity(),
+    probeCustom: async () => ({ ok: false, category: 'timeout', duration_ms: 12 }) });
+  const before = owner.read();
+  assert.deepEqual(await owner.probe(custom), {
+    ok: false, provider: 'openai_compatible', model: 'local-model',
+    category: 'timeout', duration_ms: 12
+  });
+  assert.deepEqual(owner.read(), before);
+});
+
 function identity() { return { provider: 'openai_compatible', model: 'local-model',
   scope: 'turn_runtime', role_id: 'ordinary_materialization', config_hash: 'qualified' }; }
+function defaultSettings() { return { mode: 'local',
+  base_url: LOCAL_LLM_PRESET.base_url, model: LOCAL_LLM_PRESET.model,
+  api_key_present: false, compatibility: 'openai_compatible',
+  local_preset: LOCAL_LLM_PRESET }; }
+function tick() { return new Promise((resolve) => setImmediate(resolve)); }

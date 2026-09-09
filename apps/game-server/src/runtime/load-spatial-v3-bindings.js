@@ -3,7 +3,7 @@ import { isAbsolute, resolve } from 'node:path';
 import { serverError } from '../errors.js';
 
 export const SPATIAL_V3_PRODUCTION_BINDINGS_MODULE =
-  'builtin:spatial-v3-production-v14';
+  'builtin:spatial-v3-production-v15';
 
 export function resolveSpatialV3ProductionBindingsModule(config, env) {
   const selected = config.spatialV3BindingsModule
@@ -12,7 +12,7 @@ export function resolveSpatialV3ProductionBindingsModule(config, env) {
   if (selected !== SPATIAL_V3_PRODUCTION_BINDINGS_MODULE) {
     throw serverError(
       'RUNTIME_BINDINGS_MODULE_INACTIVE',
-      'Only the production-v14 spatial-v3 runtime binding may be selected.'
+      'Only the production-v15 spatial-v3 runtime binding may be selected.'
     );
   }
   return selected;
@@ -31,7 +31,7 @@ export async function loadSpatialV3RuntimeBindings(
   }
   const specifier = reference === SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
     ? new URL(
-        './releases/spatial-v3-production-v14-bindings.js',
+        './releases/spatial-v3-production-v15-bindings.js',
         import.meta.url
       ).href
     : reference.startsWith('.') || isAbsolute(reference)
@@ -60,6 +60,9 @@ const RELEASE_IDENTITY_FIELDS = Object.freeze([
   'world_revision_id',
   'world_catalog_digest',
   'world_catalog_manifest_sha256',
+  'world_knowledge_pack_ref',
+  'world_knowledge_pack_revision',
+  'world_knowledge_embedding_profile_ref',
   'dependency_pin_mode',
   'runtime_catalog_pin_schema',
   'runtime_catalog_scope',

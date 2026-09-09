@@ -469,7 +469,7 @@ function narration(request_id) { return { version: 1, schema: 'narration_flow_re
 async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
 async function waitForPostgres(name) {
   for (let i = 0; i < 30; i += 1) {
-    const ready = docker(['exec', name, 'pg_isready']).status === 0;
+    const ready = docker(['exec', name, 'pg_isready', '-h', '127.0.0.1']).status === 0;
     const acceptsQueries = ready && docker([
       'exec', name, 'psql', '-U', 'phase5', '-d', 'phase5', '-c', 'SELECT 1'
     ]).status === 0;

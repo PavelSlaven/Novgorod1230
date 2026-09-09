@@ -1,0 +1,455 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-boat-load",
+      "claim_ref": "claim:practical-boat-load",
+      "claim_digest": "4c3ddd7c6d4601fa5e659af874cebad241734d8e8f4504228c8e3f732d7dcbb0",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-boat-load",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-boat-load"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-boat-shore-transfer",
+      "claim_ref": "claim:practical-boat-shore-transfer",
+      "claim_digest": "dcc28c2c3eb3f84c358761ddc9bfac72a37d97f48c69893b4f4498d3b3d03754",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-boat-shore-transfer",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-boat-shore-transfer"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-boat-weather-water",
+      "claim_ref": "claim:practical-boat-weather-water",
+      "claim_digest": "8f46c1b4faf81ad21822b284f93779a7ff0f39e11c0b9c6ef7e13b135fb04db3",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-boat-weather-water",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-boat-weather-water"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-boat-leak",
+      "claim_ref": "claim:practical-boat-leak",
+      "claim_digest": "4c78d9ca9018875b33fd56a33520a9a970e2f7a0a90d0a21ef1b0d8d846796a0",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-boat-leak",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-boat-leak"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-boat-unload-order",
+      "claim_ref": "claim:practical-boat-unload-order",
+      "claim_digest": "78c0821bd8f9e5a60cb337aea47a760729305a155e3229a4141b570c4b10e96e",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-boat-unload-order",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-boat-unload-order"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-net-dry",
+      "claim_ref": "claim:practical-net-dry",
+      "claim_digest": "3e3b84b6a61947a76953d34b712d1b8bce4dc0e84b2497c1d4f0f50a84ca51b3",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-net-dry",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-net-dry"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-net-repair",
+      "claim_ref": "claim:practical-net-repair",
+      "claim_digest": "7163bd73d5e3f44c5cf43ec7ee295c54fe0c877eb687e85f0303956eb9cefaf8",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-net-repair",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-net-repair"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-net-space",
+      "claim_ref": "claim:practical-net-space",
+      "claim_digest": "60a8dd60c1d2b1f647e88b9fdb450cb5c6db9e739873add6846c62141960e83b",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-net-space",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-net-space"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-dwelling-roof",
+      "claim_ref": "claim:practical-dwelling-roof",
+      "claim_digest": "ba9a7c667fcc0225e0ec538196aaaf4f6fbed258a3887239b266d66ecdbaf91c",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-dwelling-roof",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-dwelling-roof"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-dwelling-rain-snow",
+      "claim_ref": "claim:practical-dwelling-rain-snow",
+      "claim_digest": "fe5f211e7ac0af6021f3d7ab9df9ca9c78f7c1fc6beb153bbd532ce2b969d7f2",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-dwelling-rain-snow",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-dwelling-rain-snow"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-dwelling-smoke-draft",
+      "claim_ref": "claim:practical-dwelling-smoke-draft",
+      "claim_digest": "76f3c2a37abad9b7bdc05a214ff377d88a06fbc94f3a3d7cf9a1042956fdcce8",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-dwelling-smoke-draft",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-dwelling-smoke-draft"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-dwelling-fuel",
+      "claim_ref": "claim:practical-dwelling-fuel",
+      "claim_digest": "0649796ef0b862910d732666423b8039074cd2d0d4de2f71eaf75f01d2d53d48",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-dwelling-fuel",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-dwelling-fuel"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-food-milk",
+      "claim_ref": "claim:practical-food-milk",
+      "claim_digest": "7f3b1c6e907a2fe21e6c73c6c39472b53266fea5ce632c5d406f8bb1fdd11488",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-food-milk",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-food-milk"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-food-preserve",
+      "claim_ref": "claim:practical-food-preserve",
+      "claim_digest": "7b7de2c664792d242cad031ca06c23628045fdb407e2b42f640f4f176f89efdb",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-food-preserve",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-food-preserve"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-food-cooking",
+      "claim_ref": "claim:practical-food-cooking",
+      "claim_digest": "ccf9ebbc462e16a34dd3c759eeadc8982c3ded0f1cb5f439788b87e81bd90b15",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-food-cooking",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-food-cooking"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-food-grain-storage",
+      "claim_ref": "claim:practical-food-grain-storage",
+      "claim_digest": "6cc7ca340b5073672940bd9856d466ed6d9bbe509daf83b90dac8e92f472fe53",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-food-grain-storage",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-food-grain-storage"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-food-provisions",
+      "claim_ref": "claim:practical-food-provisions",
+      "claim_digest": "5e7592c4f59fae493511515ed5f6a9ee869712a6e5b8eab0b84f18efc8115400",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-food-provisions",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-food-provisions"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-fodder-hay",
+      "claim_ref": "claim:practical-fodder-hay",
+      "claim_digest": "37e96470c7aa1c384bd40bc987f26f21de214747b1b18b029ae0fffc880a67e8",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-fodder-hay",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-fodder-hay"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-livestock-care",
+      "claim_ref": "claim:practical-livestock-care",
+      "claim_digest": "76cb2e4217c42d0dad2325a297018bec2e83eab2caaef3bac4cf2ed9ff32f141",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-livestock-care",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-livestock-care"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-season-work",
+      "claim_ref": "claim:practical-season-work",
+      "claim_digest": "3ffaae76757f33b5028d13eeb87262dd95440ff0ca75c266479a0afe3ec664bc",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-season-work",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-season-work"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-textile-spin",
+      "claim_ref": "claim:practical-textile-spin",
+      "claim_digest": "d27437117ef940f7ecb0d47242f36a2d5a9554b3989109245d2b5846ce1309c9",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-textile-spin",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-textile-spin"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-textile-weave",
+      "claim_ref": "claim:practical-textile-weave",
+      "claim_digest": "467c6606d7c081de449cfc3e63bcdbc952e530eb605a2e699c7f663133a28f42",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-textile-weave",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-textile-weave"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-textile-cut",
+      "claim_ref": "claim:practical-textile-cut",
+      "claim_digest": "638d65def5398812780acb1d1db4cf23a23d9c7ef4ff6a4ed52d5b6d1f8834cd",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-textile-cut",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-textile-cut"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-textile-sew",
+      "claim_ref": "claim:practical-textile-sew",
+      "claim_digest": "6025f7ba808fa201ffc3c764abd4df92e9305cf71daa00c2a1e40191c5ce49e7",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-textile-sew",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-textile-sew"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-textile-repair",
+      "claim_ref": "claim:practical-textile-repair",
+      "claim_digest": "f736902796eb0f9430cc9e1181a82fa7a9c77cd17380bd3910f43b5bbfad8b0b",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-textile-repair",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-textile-repair"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-leather-cut",
+      "claim_ref": "claim:practical-leather-cut",
+      "claim_digest": "eb7987fd9e20866345628faedcf2b1f956a7055a6aea3f3137fac3bef21013cf",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-leather-cut",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-leather-cut"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-leather-stitch",
+      "claim_ref": "claim:practical-leather-stitch",
+      "claim_digest": "2fe5e28b79bdb279b049d7028e0b41cf1f5e364870152875c5c9b0f6f8db8cc0",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-leather-stitch",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-leather-stitch"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-leather-patch",
+      "claim_ref": "claim:practical-leather-patch",
+      "claim_digest": "c7bc3c5d951e20fa763881bf2f9ad57da8e6671ff5f9d86039585d92ef788116",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-leather-patch",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-leather-patch"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-leather-shoe",
+      "claim_ref": "claim:practical-leather-shoe",
+      "claim_digest": "72f57fc88ccaf29969fed5b25421c26956640739b32629d6077f0953261e9287",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-leather-shoe",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-leather-shoe"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-practical-world-v1-work-tradeoff",
+      "claim_ref": "claim:practical-work-tradeoff",
+      "claim_digest": "44a7d81aa557f5b874b8d9898a3313c08958d78b7bfc1ef2d5a6e701025680f7",
+      "candidate_ref": "git:6210be80fea9039e058ff19e52db27061114c9f5:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-practical-world-v1.json#claim:practical-work-tradeoff",
+      "auditor_ref": "/root/residual_source_review",
+      "independence_basis": "Independent plausibility review of current RU/EN claim, editorial rationale, and full assembled base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": [
+        "evidence:practical-work-tradeoff"
+      ],
+      "review_ref": "verification/reconstructed-practical-world-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional practical premise only; no entity, material, access, quantity, actor decision, scene state, or outcome."
+    }
+  ]
+}

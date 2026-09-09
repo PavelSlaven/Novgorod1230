@@ -12,9 +12,11 @@ Browser-клиент, который получает только versioned pub
 - маршрутизацией FirstGameScreen/TurnScreen;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - browser bootstrap и обработкой пользовательских намерений.
-- компактным UI-only LLM settings overlay: browser вызывает только game-server
+- компактным LLM settings overlay для default, локального Gemma preset и
+  произвольного OpenAI-compatible endpoint: browser вызывает только game-server
   `/api/v1/llm-settings`; API key передаётся в Apply/Test и не сохраняется в
-  browser storage, а mode/base URL/model остаются UI preferences.
+  browser storage, logs или telemetry. Server возвращает сохранённые non-secret
+  поля после reload; gameplay provider и transport UI не выбирает сам.
 - существующим `renderLandscape(screen)` как единственным владельцем game
   landscape: он строит закрытую player-safe render model и гидратирует Canvas
   2D после замены корневого DOM;

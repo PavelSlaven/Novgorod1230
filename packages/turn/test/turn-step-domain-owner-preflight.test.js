@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createTurnStepDomainOwnerPreflight } from
   '../src/turn-step-admission.js';
+import { requestTurnStepPlanWithRepair } from
+  '../src/turn-step-plan-repair.js';
 import { createTurnStepExecutionRegistry, runTurnStepLoop } from
   '../src/turn-step-loop.js';
 import { createTurnCommandRegistry, runTurnWorkflow } from '../src/index.js';
@@ -30,6 +32,7 @@ function plan(request, extra = {}) {
     resolution: 'direct', goal_result: 'not_achieved',
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
     operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'direct_step', reason: 'видимая реальная попытка', ...extra
   };
 }
@@ -68,7 +71,17 @@ function ports(turnStepModel, semanticPlanValidator, randomSource) {
   };
 }
 
-test('unavailable generic owner repairs to direct plan before RNG or effects',
+function repairedInvalid(error) {
+  return error.code === 'TURN_STEP_PLAN_INVALID'
+    && error.details.repair_attempted === true;
+}
+
+function structuralInvalid(error) {
+  return error.code === 'TURN_STEP_PLAN_INVALID'
+    && error.details.repair_attempted === false;
+}
+
+test('owner repairs before RNG or effects',
   async () => {
     let calls = 0;
     let rolls = 0;
@@ -87,7 +100,149 @@ test('unavailable generic owner repairs to direct plan before RNG or effects',
     assert.deepEqual(result.write_fragments, []);
 });
 
-test('active conversation does not reject an unrelated direct plan', () => {
+test('repeated unavailable owner fails technically', async () => {
+  let calls = 0;
+  await assert.rejects(() => runTurnStepLoop(input(), ports(
+    async (request) => {
+      calls += 1;
+      const unavailable = unavailableGenericPlan(request);
+      return calls === 1
+        ? { ...unavailable, interpretation: { adaptation: 'literal' } }
+        : unavailable;
+    }, preflight(), null
+  )), repairedInvalid);
+  assert.equal(calls, 2);
+});
+
+test('unseen ownerless item inspection fails technically', async () => {
+    let calls = 0;
+    const itemInput = input();
+    itemInput.initialWorkingProjection = { actor_ref: 'actor-1',
+      items: [{ item_id: 'item:wooden-spoon' }] };
+    await assert.rejects(() => runTurnStepLoop(itemInput, ports(
+      async (request) => {
+        calls += 1;
+        return plan(request, { resolution: 'domain_request', goal_result: 'pending',
+          activity: { owner: 'domain', duration_class: null, effort: null }, operations: [{
+            op: 'request_discovery', actor_ref: 'actor-1', discovery_kind: 'inspect',
+            target_refs: ['item:wooden-spoon'], query: 'рассмотреть следы износа' }] });
+      }, preflight(), null
+    )), repairedInvalid);
+    assert.equal(calls, 2);
+  });
+
+test('incomplete domain repair fails technically',
+  async () => {
+    let calls = 0;
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
+      async (request) => {
+        calls += 1;
+        const unavailable = plan(request, {
+          resolution: 'domain_request', goal_result: 'pending',
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operations: [{ op: 'request_activity', actor_ref: 'actor-1',
+            activity_kind: 'wait', target_refs: [], description: 'ждать' }]
+        });
+        return calls === 1
+          ? { ...unavailable, interpretation: { adaptation: 'literal' } }
+          : unavailable;
+      }, preflight(), null
+    )), repairedInvalid);
+    assert.equal(calls, 2);
+  });
+
+test('partial owner removal fails technically',
+  async () => {
+    let calls = 0;
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
+      async (request) => {
+        calls += 1;
+        return calls === 1 ? unavailableGenericPlan(request) : plan(request, {
+          activity: { owner: 'domain', duration_class: null, effort: null },
+          operations: [{ op: 'request_activity', actor_ref: 'actor-1',
+            activity_kind: 'wait', target_refs: [], description: 'ждать' }]
+        });
+      }, preflight(), null
+    )), repairedInvalid);
+    assert.equal(calls, 2);
+  });
+
+test('repair retaining rejected choice fails technically',
+  async () => {
+    let calls = 0;
+    const request = {
+      schema: 'turn_step_request_v1', request_id: 'request-1',
+      root_turn_id: 'turn-1', committed_state_version: 7,
+      working_revision: 0, step_index: 1, max_internal_steps: 8,
+      root_player_action: 'осмотреть', remaining_intent: 'осмотреть',
+      completed_steps: [], actor: { actor_ref: 'actor-1' },
+      player_safe_state: {}
+    };
+    await assert.rejects(() => requestTurnStepPlanWithRepair({ request,
+      turnStepModel: async () => {
+        calls += 1;
+        const value = plan(request);
+        return calls === 1 ? value : { ...value, operation_choice: 'rejected' };
+      }, semanticPlanValidator: async ({ attempt }) => {
+        if (attempt !== 1) return;
+        throw Object.assign(new Error('semantic mismatch'), {
+          code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{
+            path: '$.operations.0', code: 'operation_semantic_grounding'
+          }] }
+        });
+      } }), repairedInvalid);
+    assert.equal(calls, 2);
+  });
+
+test('invalid structure fails before semantic repair',
+  async () => {
+    let calls = 0;
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
+      async (request) => {
+        calls += 1;
+        const value = plan(request);
+        return calls === 1
+          ? { ...value, interpretation: { adaptation: 'literal' } }
+          : { ...value, operation_choice: 'mismatched' };
+      }, null, null
+    )), structuralInvalid);
+    assert.equal(calls, 1);
+  });
+
+test('repeated non-progressing continuation fails technically',
+  async () => {
+    let calls = 0;
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
+      async (request) => {
+        calls += 1;
+        return plan(request, { goal_result: 'pending', continuation: {
+          remaining_intent: request.remaining_intent, depends_on_refs: []
+        } });
+      }, null, null
+    )), repairedInvalid);
+    assert.equal(calls, 2);
+  });
+
+test('unresolved structural domain request fails without semantic repair',
+  async () => {
+    let calls = 0;
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
+      async (request) => {
+        calls += 1;
+        const value = plan(request);
+        return calls === 1
+          ? { ...value, interpretation: { adaptation: 'literal' } }
+          : { ...value, resolution: 'domain_request', goal_result: 'pending',
+              activity: { owner: 'domain', duration_class: null, effort: null },
+              operations: undefined, continuation: {
+                remaining_intent: request.remaining_intent,
+                depends_on_refs: [] } };
+      }, null, null
+    )), structuralInvalid);
+    assert.equal(calls, 1);
+  });
+
+test('unrelated direct plan ignores active conversation', () => {
   const validate = preflight();
   const request = { player_safe_state: { active_interlocutor: {
     entity_ref: { entity_kind: 'npc', entity_id: 'npc:visible' }
@@ -98,11 +253,14 @@ test('active conversation does not reject an unrelated direct plan', () => {
     prepared_chain_context: null }));
 });
 
-test('planner receives only available exact domain operation DTOs', async () => {
+test('planner sees only available exact operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const wait = { ...dto, activity_kind: 'wait', description: 'Ждать.' };
+  const semanticGrounding = { authority: 'authored_activity',
+    purpose: 'help the injured person' };
   const run = async (available) => {
     const { services } = createServices([], { command: { matches: () => false,
+      semantic_grounding: semanticGrounding,
       availability: () => ({ version: 1, schema: 'turn_availability_decision', status: available ? 'available' : 'blocked', can_attempt: available, reasons: [], check_requests: [] }),
       semantic_binding: { binding_id: 'activity', operation: 'request_activity',
         operation_dtos: [dto, wait], matches: () => false } },
@@ -127,10 +285,14 @@ test('planner receives only available exact domain operation DTOs', async () => 
     await runTurnWorkflow(workflowInput(), services); return request;
   };
   assert.deepEqual((await run(true)).available_domain_operations, [dto, wait]);
+  assert.deepEqual((await run(true)).player_safe_state
+    .available_domain_operation_grounding, [dto, wait].map((operation) => ({
+      operation, semantic_scope: semanticGrounding
+    })));
   assert.deepEqual((await run(false)).available_domain_operations, []);
 });
 
-test('prepared followup candidates bind each available precursor to its successor',
+test('prepared followups bind each available precursor',
   async () => {
     const parentA = activity('prepare-a');
     const parentB = activity('prepare-b');
@@ -202,7 +364,7 @@ test('prepared followup candidates bind each available precursor to its successo
       request, prepared_chain_context: null }), { code: 'TURN_STEP_PLAN_INVALID' });
   });
 
-test('prepared continuation recomputes domain operation DTOs from current state', async () => {
+test('prepared continuation recomputes operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const { services } = createServices([], { command: {
     matches: () => false,
@@ -256,7 +418,7 @@ test('prepared continuation recomputes domain operation DTOs from current state'
   assert.deepEqual(requests.map((request) => request.available_domain_operations), [[dto], []]);
 });
 
-test('direct continuation does not reuse initial domain operation DTOs', async () => {
+test('direct continuation drops initial operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1',
     activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const { services } = createServices([], { command: { matches: () => false,
@@ -283,7 +445,7 @@ test('direct continuation does not reuse initial domain operation DTOs', async (
     [[dto], []]);
 });
 
-test('direct continuation retains the active conversation owner', async () => {
+test('direct continuation keeps conversation owner', async () => {
   const dto = { op: 'emit_interaction', actor_ref: 'party-1',
     target_actor_refs: ['npc-1'], interaction_kind: 'speech',
     content: 'Говорить.', instrument_refs: [] };
@@ -327,7 +489,7 @@ function activity(description) {
     target_refs: [], description };
 }
 
-test('structural then unavailable owner consumes no third repair', async () => {
+test('invalid structure fails before owner resolution', async () => {
   let calls = 0;
   await assert.rejects(() => runTurnStepLoop(input(), ports(
     async (request) => {
@@ -336,16 +498,11 @@ test('structural then unavailable owner consumes no third repair', async () => {
         ? { ...plan(request), request_id: 'forged' }
         : unavailableGenericPlan(request);
     }, preflight(), null
-  )), (error) => {
-    assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
-    assert.equal(error.details.repair_attempted, true);
-    assert.equal(error.details.errors[0].rule, 'domain_owner_unavailable');
-    return true;
-  });
-  assert.equal(calls, 2);
+  )), structuralInvalid);
+  assert.equal(calls, 1);
 });
 
-test('repair with same operation recomputes owner for changed plan context', () => {
+test('repair recomputes owner for changed plan context', () => {
   const validate = createTurnStepDomainOwnerPreflight({ externalRegistry: null,
     semanticBindings: [{ command: { option_id: 'choice' }, binding: {
       operation: 'request_activity', matches: ({ plan: value }) =>
@@ -362,7 +519,7 @@ test('repair with same operation recomputes owner for changed plan context', () 
   prepared_chain_context: null }));
 });
 
-test('active prepared chain defers one unavailable domain request', () => {
+test('prepared chain defers unavailable domain request', () => {
   const request = { remaining_intent: 'ждать', player_safe_state: {} };
   assert.doesNotThrow(() => preflight()({ plan: {
     resolution: 'domain_request', operations: [{ op: 'request_activity' }],
@@ -373,3 +530,28 @@ test('active prepared chain defers one unavailable domain request', () => {
     check: null
   }, request, prepared_chain_context: null }), { code: 'TURN_STEP_PLAN_INVALID' });
 });
+
+test('preflight delegates semantic grounding',
+  async () => {
+    let received = null;
+    const expected = Object.assign(new Error('source mismatch'), {
+      code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{
+        path: '$.operations', code: 'source_semantic_grounding'
+      }] }
+    });
+    const validate = createTurnStepDomainOwnerPreflight({
+      externalRegistry: { domain: () => () => {} }, semanticBindings: [],
+      availableOptions: new Set(), actor: {}, committedState: {},
+      services: { async turnStepSemanticGroundingValidator(value) {
+        received = value;
+        throw expected;
+      } }, isDomainStepOperation: () => true
+    });
+    const value = { plan: { operations: [{ op: 'request_activity' }],
+      check: null }, request: { player_safe_state: {} },
+    prepared_chain_context: null };
+    await assert.rejects(validate(value), expected);
+    assert.deepEqual(received, { plan: value.plan, request: value.request,
+      resolved_domain_operations: [{ path: '$.operations.0',
+        owner_kind: 'external' }] });
+  });

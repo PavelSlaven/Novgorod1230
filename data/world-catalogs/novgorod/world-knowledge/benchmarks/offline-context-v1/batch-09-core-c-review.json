@@ -1,0 +1,395 @@
+{
+  "batch": "09",
+  "sampling_component": "stratified",
+  "reviewer": "/root",
+  "corpus_claim_count": 1319,
+  "corpus_checkpoint": "869a62733394b10594e8a92305e0d93a85fa7ab9",
+  "method": "Frozen inputs; WK-only full-bundle static review with explicit practical reconstruction; no live gameplay.",
+  "cases": [
+    {
+      "case_id": "b09core-51",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Пастушок может спокойно собрать рассеявшихся овец и отвести стадо от мокрой низины к доступному более сухому участку с кормом и укрытием от ветра. Стадность помогает вести животных вместе; шерсть уменьшает теплопотери, но не отменяет потребности наблюдать состояние овец. Выбор сухого участка и спокойного темпа — практическая реконструкция, а не гарантия послушания стада.",
+      "claim_refs": [
+        "claim:fauna-sheep-flocking",
+        "claim:practical-livestock-care",
+        "claim:endotherm-insulation-reduces-heat-loss"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-52",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Хозяин может остановить упряжку, вместе с братом осмотреть посадку ярма и места давления, дать волам передышку и проверить доступ к воде. Более тяжёлая почва и неудобный контакт — возможные условия увеличения нагрузки, но замедление не доказывает одну причину. После осмотра разумно уменьшить нагрузку; лошадиные признаки нельзя автоматически переносить на вола.",
+      "claim_refs": [
+        "claim:practical-livestock-care",
+        "claim:population-physics-point-pressure",
+        "claim:static-animal-b06-animal-welfare-indicators-require-species-context"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-53",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Помощница может остановиться на расстоянии, смотреть на позу и голос собаки и попросить знакомого ей человека провести через двор. Обойти корзину, не тянуться к корму и не теснить животное — осторожный практический выбор при неизвестной реакции. Само соседство с остатками пищи не доказывает нападения или охранного намерения.",
+      "claim_refs": [
+        "claim:fauna-mammals-domestic-dog-multimodal-communication",
+        "claim:practical-livestock-care"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-54",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Пчеловод может сначала наблюдать вход, полёт рабочих и доступное цветение, не вскрывая жилище без цели; тёплая пора сама по себе не доказывает избыток мёда. WK объясняет защиту гнезда и зависимость сбора от фуражиров и корма. Однако заявленная потребность включает применение дыма, а качественного объяснения его воздействия на пчёл и ограничений применения в корпусе не найдено: заменить это советом только наблюдать было бы неполным ответом.",
+      "claim_refs": [
+        "claim:fauna-bee-worker-tasks",
+        "claim:research-honeybee-foraging-requires-suitable-light-temperature-and-weather",
+        "claim:research-surplus-honey-depends-on-forager-number-and-forage-availability"
+      ],
+      "status": "remaining_gap",
+      "gaps": [
+        "Qualitative effect and limits of smoke when handling a honeybee colony; avoid claiming guaranteed calming or inventing an attested 1230 device."
+      ]
+    },
+    {
+      "case_id": "b09core-55",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Носильщик может прервать путь, снять мокрую обувь в укрытии, использовать доступную сухую ткань и согреваться в умеренном тепле рядом со спутником. Не прижимать онемевшие ноги к горячему очагу — осторожный выбор, а не обещание лечения. Сохраняющееся онемение и ухудшение состояния дают повод просить помощи и отложить доставку, не объявляя заранее диагноз.",
+      "claim_refs": [
+        "claim:research-extreme-cold-can-cause-cold-stress",
+        "claim:human-thermoregulation-depends-on-heat-exchange",
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-56",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Ткачиха может остановить работу, при кровотечении прижать порез чистой тканью и защитить его от дальнейшего загрязнения. Если доступна заведомо чистая вода, осторожное удаление видимой грязи — практический выбор; случайная вода из рабочего сосуда чистой не считается. Часть работы можно временно передать коллегам, не обещая мгновенного заживления.",
+      "claim_refs": [
+        "claim:care-direct-pressure-bleeding",
+        "claim:foundations-life-45-infection-entry",
+        "claim:wound-healing-time-dependent"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-57",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Рабочие могут проверить доски, освободить проход и договориться, когда поднимать и опускать мешок. Разделение доступного груза на меньшие порции и совместный перенос уменьшают требуемое усилие каждого по сравнению с одиночным переносом того же груза — практическая композиция, не численный расчёт. На неровном пороге разумно идти медленнее, сохраняя опору и возможность поставить мешок.",
+      "claim_refs": [
+        "claim:foundations-physical-b2-sta-02-support-polygon-center-of-mass",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-58",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Девушка может сразу прекратить работу, позвать тётку и перейти в доступную тень для отдыха и питья, если она в сознании и может пить. Работа выделяет тепло, а жаркая среда мешает его отдаче; дурнота не устанавливает единственный диагноз. Возвращение к работе не следует считать обязательным только из-за найма, а ухудшение требует доступной помощи.",
+      "claim_refs": [
+        "claim:exercise-heat-dissipation",
+        "claim:research-extreme-heat-can-increase-body-heat-storage",
+        "claim:public-world-rest-warmth-drink-food-are-contextual-support"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-59",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Красильщица может отойти от сосуда на чистый воздух и предупредить супруга о дыме внутри. До продолжения работы разумно проверить путь отвода дыма и доступную вентиляцию, не оставляя горячий сосуд так, чтобы его могли опрокинуть. Это реконструкция безопасной организации работы, а не доказательство отсутствия опасных газов после исчезновения видимого дыма.",
+      "claim_refs": [
+        "claim:practical-dwelling-smoke-draft",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:public-world-route-and-tool-can-be-adapted-to-capacity"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-60",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность относится к уходу за животным или телесной работе и условиям среды."
+      },
+      "answer_ru": "Женщина может объяснить племяннику усталость, отдохнуть и обсудить меньший объём или перенос обещанного прядения. Недосып способен мешать сосредоточению и реакции; возраст сам по себе не делает её неспособной работать. Если недомогание нарастает, уместны наблюдение и помощь, а не обязательное выполнение прежнего объёма.",
+      "claim_refs": [
+        "claim:candidate-v5-sleep-deficiency-can-impair-focus-and-reaction",
+        "claim:public-world-illness-can-reallocate-ordinary-work",
+        "claim:public-world-capacity-can-vary-day-to-day"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-61",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Торговка может назвать цену и условленную меру, показать покупателю соль и отмерить порцию на виду. Если обмен идёт по массе, тару учитывают отдельно; одно название меры не заменяет согласования величины. Возможность торга и демонстрация качества — бытовая реконструкция, без выдуманного обязательного городского тарифа.",
+      "claim_refs": [
+        "claim:measurement-units-must-be-identified",
+        "claim:measurement-net-excludes-tare",
+        "claim:ordinary-life-public-reputation-follows-conduct"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-62",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Плотник может спокойно назвать добавившуюся работу и предложить согласовать продолжительность, оплату либо перенос части на другой день. Обращение к старшему мастеру уместно сделать уважительным, но бедность не лишает его возможности отказать. Это вариант переговоров, а не автоматически возникшее юридическое право или обязанность.",
+      "claim_refs": [
+        "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:ordinary-life-craftsman-income-varies-with-orders",
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-63",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Торговец может по очереди восстановить с покупателем предмет обмена, меру и уже переданное, отделяя личную память от услышанного. Знакомство с дядей даёт путь к уточнению или посредничеству, но не доказывает правоту племянника. На людях разумно сначала задавать вопросы и договариваться о сверке, а не объявлять мошенничество.",
+      "claim_refs": [
+        "claim:public-world-dispute-starts-with-competing-accounts",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-dispute-can-use-questions-and-kin"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-64",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Сапожница может выслушать жалобу, попросить показать обувь и осмотреть место повреждения вместе с покупателем. Если обнаружится исправимый недостаток, предложить починку или обсудить иной выход; происхождение поломки сначала остаётся вопросом. Спокойный разговор при свидетелях может сохранить отношения, но не гарантирует удовлетворения покупателя.",
+      "claim_refs": [
+        "claim:ordinary-life-master-has-work-responsibility",
+        "claim:ordinary-life-public-reputation-follows-conduct",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-65",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Хозяин может перераспределить посильные подготовительные работы между пришедшими и отложить опасную часть крыши до появления достаточного числа помощников. Позднее стоит узнать причину опоздания и согласовать, когда двоюродный брат сможет помочь. Прежний обмен трудом даёт ожидание взаимности, но не автоматически взыскиваемый долг.",
+      "claim_refs": [
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-66",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Хозяйка может пригласить родственника разделить доступную еду и обсудить с домочадцами место на лавке или настиле с подстилкой. Ночлег требует места, топлива и доверия; родство по браку облегчает просьбу, но не создаёт свободной комнаты. Возможны скромное размещение или помощь найти другой кров без обязательной обиды.",
+      "claim_refs": [
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:human-life-reception-depends-on-trust-ties-means",
+        "claim:human-life-visitors-add-resource-demands"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-67",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Соседка может показать, где забор сузил проход, спросить о замысле и предложить совместно проверить прежнее пользование тропой. Если воспоминания расходятся, можно позвать людей, которые видели прежнюю границу. Предложение сдвинуть участок ограды — переговорная реконструкция, не объявление точного сервитута или права собственности.",
+      "claim_refs": [
+        "claim:public-world-dispute-can-use-questions-and-kin",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:public-world-witness-account-has-bounded-scope"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-68",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Рыбак может сначала спросить бабушку, с чем нужна помощь, затем предложить близким распределить воду, пищу и тяжёлые дела по наличию времени. Сама она может сохранить посильные занятия; возраст не задаёт полного ухода автоматически. Родственные связи позволяют искать поддержку, но конкретные обязанности нужно согласовать, а не вывести только из пола и старшинства.",
+      "claim_refs": [
+        "claim:public-world-illness-can-reallocate-ordinary-work",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:human-life-kin-can-offer-contextual-support"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-69",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Девушка может кратко поздороваться и извиниться за собственные резкие слова, не возобновляя спор у общего колодца. Если соседка готова говорить, разумно отойти от очереди и уточнить разногласие спокойно. Это один правдоподобный способ примирения, не обязательная покорность зависимой девушки и не гарантия ответного извинения.",
+      "claim_refs": [
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-negotiation-can-precede-formal-escalation",
+        "claim:ordinary-life-public-and-private-conduct-differ"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-70",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Лодочник может найти хозяина телеги и попросить освободить проход, указав, кому мешает препятствие. Носильщик способен подтвердить только увиденное; его присутствие не даёт права самому увезти чужую телегу. При отказе возможна просьба о посредничестве к уже признанному на месте человеку, без выдуманного чиновника и наказания.",
+      "claim_refs": [
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:public-world-witness-account-has-bounded-scope",
+        "claim:public-world-negotiation-can-precede-formal-escalation"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-71",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Торговка может представиться, спросить хозяина двора о доступном ночлеге и отдельно оговорить размещение спутника и товара. Общий кров может быть тесным и требовать платы либо согласованной услуги, не обещая полной безопасности. Средства и статус помогают вести переговоры, но не дают автоматического приоритета над уже размещёнными гостями.",
+      "claim_refs": [
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:human-life-lodging-trades-space-privacy-comfort-security",
+        "claim:human-life-stay-can-enable-consented-exchange"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-72",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Лавочник может немедленно окликнуть соседей, предупредить людей у подозрительного дома и попросить свободного человека передать тревогу дальше. Дым нужно проверить с безопасного места: он ещё не доказывает масштаб пожара или вину хозяина. Разделить предупреждение, вывод людей и подготовку доступных средств — разумная координация, без учреждения современной пожарной службы.",
+      "claim_refs": [
+        "claim:public-world-senior-can-coordinate-messenger-can-carry-word",
+        "claim:public-world-local-authority-is-one-escalation-option",
+        "claim:ordinary-life-smith-fire-needs-managed-space"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-73",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Пекарка может негромко предложить посетителю помощь и спросить у знакомого прихожанина, где не мешать проходу и службе. Сыну можно показать спокойное поведение собственным примером. Конкретное место для человека и точная обрядовая формула не выводятся из его возраста; тихое сопровождение — бытовая реконструкция.",
+      "claim_refs": [
+        "claim:public-world-deference-can-be-calibrated-to-seniority-role",
+        "claim:public-world-church-and-official-speech-can-be-marked",
+        "claim:human-life-category-does-not-determine-means-ties-skill"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-74",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Вдовец может честно сказать, что дома мало припасов, и поделиться небольшой посильной долей, если это не лишает дочь необходимого. Другой вариант — спросить у ворот о доступной помощи или передать просьбу человеку, которому доверяет. Сочувствие не создаёт еду, обязательную сумму подаяния или гарантированную монастырскую раздачу.",
+      "claim_refs": [
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:ordinary-life-private-needs-shape-decisions",
+        "claim:human-life-kin-can-offer-contextual-support"
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "b09core-75",
+      "domain_fit": {
+        "matches": true,
+        "reason": "Фактическая потребность — бытовая координация, отношения, обмен или общественный обычай."
+      },
+      "answer_ru": "Пряха может выразить сочувствие, спросить близких умершего о нужной помощи и предложить взять на себя доступное бытовое дело — воду, еду либо присмотр за детьми, если они есть. Утрата меняет труд и заботы семьи, но не предписывает единую реакцию горюющих. Конкретный обряд и распоряжения о погребении остаются у уже участвующих родственников и общины; их нельзя выдумывать из одного факта смерти.",
+      "claim_refs": [
+        "claim:public-world-armed-loss-reaches-household",
+        "claim:public-world-support-needs-available-person-and-resources",
+        "claim:human-life-kin-can-offer-contextual-support"
+      ],
+      "status": "covered",
+      "gaps": []
+    }
+  ],
+  "summary": {
+    "cases": 25,
+    "covered_cases": 24,
+    "substantial_gap_cases": 1,
+    "domain_mismatch_cases": 0,
+    "distinct_substantial_gaps": [
+      "Honeybee response to smoke during ordinary colony handling."
+    ]
+  }
+}

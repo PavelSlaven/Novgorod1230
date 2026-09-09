@@ -1,0 +1,251 @@
+{
+  "schema": "wk_place_first_offline_review_v1",
+  "batch_id": "place-batch-04",
+  "reviewer_agent_identity": "place04_scene_c",
+  "input_commit": "5a1f21dfcb05b99e4e6601831d615951cd117179",
+  "corpus_claim_count": 1392,
+  "cases": [
+    {
+      "case_id": "place04-core-051",
+      "verdict": "covered",
+      "scene_ru": "В мастерской дождь оставил подпруг мокрым; старые отверстия уже не держат стежок, поэтому работа начинается с осмотра края и материала.",
+      "interaction_ru": "Шорник может распороть слабый участок, заново соединить совместимые кожаные края и не обещать прежнюю прочность мокрого ремня.",
+      "variation_ru": "После просушки и при ином состоянии выделки кожа ведёт себя иначе; степень повреждения не задаётся.",
+      "claim_refs": ["claim:practical-leather-stitch", "claim:material-water-leather-water-processing"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-052",
+      "verdict": "covered",
+      "scene_ru": "На мягкой после дождя гряде часть ростков ещё трудно различить, а осыпавшийся край требует осторожного шага.",
+      "interaction_ru": "Огородница может сначала различать растения по нескольким наблюдаемым признакам и выбирать только то, что уверенно считает сорным.",
+      "variation_ru": "Неопознанный молодой росток разумно оставить до появления новых признаков; вид культуры input не устанавливает.",
+      "claim_refs": ["claim:candidate-plant-identity-can-require-multiple-diagnostic-characters", "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-053",
+      "verdict": "covered",
+      "scene_ru": "На тихой опушке видны следы у примятой травы, но роса изменила состояние тонкой петли; следы не доказывают добычу.",
+      "interaction_ru": "Мальчик может осмотреть силок и зерно, поправить доступные части либо снять ловушку, не заявляя гарантированный улов.",
+      "variation_ru": "В иной сезон доступность птицы меняется; маскировка и точный успех не выводятся из одного следа.",
+      "claim_refs": ["claim:agriculture-fauna-hunting-economic-context", "claim:environment-p1-wildfowl-season", "claim:water-wetting-forces"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-054",
+      "verdict": "covered",
+      "scene_ru": "В сырой избе свежая глиняная кладка и дымоход остаются незавершёнными; у устья заметен раствор, а холодный влажный воздух меняет условия просушки.",
+      "interaction_ru": "Печник может закончить доступную кладку и отложить пробную растопку: для горения нужен приток окислителя, а влага отнимает часть доступного тепла.",
+      "variation_ru": "Состав кладки, срок сушки и удачность первой растопки требуют состояния и не задаются claims.",
+      "claim_refs": ["claim:clay-dried-replasticization", "claim:foundations-thm-06-moisture-vaporization-heat-demand", "claim:foundations-thm-09-combustion-oxygen-supply"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-055",
+      "verdict": "gap",
+      "scene_ru": "Келья допускает тихую работу с листами, досками и клеем, но имеющиеся claims не связывают холодный сквозняк и сухой воздух с постановкой или прочностью переплётного клея.",
+      "interaction_ru": "Можно показать прижим листов и ожидание, но нельзя обоснованно решить, как именно защитить край от холода или когда клей схватится.",
+      "variation_ru": "Нужна общая качественная связь условий сушки животного клея, без рецепта, температуры или срока.",
+      "claim_refs": ["claim:construction-animal-glue-pegged-planks", "claim:drying-reduces-microbial-growth-conditions"],
+      "gaps": ["Нет полезной общей premise о влиянии температуры, сквозняка и высыхания на клеевое соединение в обычной переплётной работе."],
+      "input_frame_note": "Листы, клей и келья заданы input; review не создаёт монастырскую практику, готовый переплёт или технологический рецепт."
+    },
+    {
+      "case_id": "place04-core-056",
+      "verdict": "covered",
+      "scene_ru": "У пристани лодка движется у сваи; мокрая вытоптанная кромка разделяет опору ног, место груза и путь к тележке, а намокший нижний мешок отделён от сухого.",
+      "interaction_ru": "Грузчик может сначала освободить проход, снимать мешки по одному и переносить намокший отдельно, удерживая лодку шестом без назначения грузоподъёмности.",
+      "variation_ru": "При иной загрузке или волнении порядок меняется; устойчивость и сохранность конкретного мешка не гарантированы.",
+      "claim_refs": ["claim:place-outdoors-shore-working-edge-composition", "claim:practical-boat-unload-order", "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-057",
+      "verdict": "gap",
+      "scene_ru": "Береговая заводь, всплывшие связки и потемневшая вода задают наблюдаемую сцену, но не объясняют, как замачивание именно лыка должно менять волокна.",
+      "interaction_ru": "Крестьянин может вынуть, снова утопить или осмотреть связки, однако полезный выбор длительности и признака готовности не покрыт.",
+      "variation_ru": "Нужна общая premise о мочке лубяных волокон; она не должна обещать наличие конкретного растения, запас или результат.",
+      "claim_refs": ["claim:candidate-nettle-bast-fibre-retting-decortication", "claim:construction-bast-vessel-fastening"],
+      "gaps": ["Есть связанная, но узкая premise о крапивном волокне; нет общей подтверждённой связи замачивания лыка с практическим состоянием волокон."],
+      "input_frame_note": "Лыко, озерцо и связки даны input; review не выводит местный ресурс или способ обработки по аналогии без claim."
+    },
+    {
+      "case_id": "place04-core-058",
+      "verdict": "covered",
+      "scene_ru": "Талая вода идёт по понижению к порогу и задерживается у подмытого края настила; ледяная корка делит проход на скользкие и более доступные участки.",
+      "interaction_ru": "Жительница может открыть канавку, увести поверхностный сток от двери и отметить либо временно ограничить опасный край, не приписывая доскам несущую способность.",
+      "variation_ru": "После нового таяния или дождя проход снова требует ухода; глубина канавки и расход воды не задаются.",
+      "claim_refs": ["claim:foundations-earth-24-water-cycle-fluxes", "claim:place-outdoors-traffic-wet-ground-and-ruts", "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard", "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-059",
+      "verdict": "covered",
+      "scene_ru": "Во влажном рыбацком навесе край сети замёрз и спутался, поэтому работа начинается с расправления доступного участка.",
+      "interaction_ru": "Рыбачка может разложить сеть, высушить её настолько, чтобы увидеть повреждение, и заштопать либо заменить изношенную часть.",
+      "variation_ru": "Размер ячеи и результат ремонта зависят от конкретной сети; claim не устанавливает их.",
+      "claim_refs": ["claim:practical-net-dry", "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-060",
+      "verdict": "covered",
+      "scene_ru": "У ворот сумерки и мокрый снег: наружная кожа сумы сырая, а свёрток можно отделить сухой тканью до продолжения дороги.",
+      "interaction_ru": "Посыльный может обернуть свёрток сухой тканью и проверить суму перед дорогой, не объявляя письмо доставленным или защищённым наверняка.",
+      "variation_ru": "Маршрут, посыльный и состояние записи не следуют из исторического примера частного письма.",
+      "claim_refs": ["claim:static-birch-bark-water-can-deform-layers", "claim:candidate-v5-gramota600-is-near-1230-private-letter", "claim:water-wetting-forces"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-061",
+      "verdict": "covered",
+      "initial_verdict": "gap",
+      "initial_gaps": ["Первичный поиск пропустил общие premises о туманной видимости и условной слышимости ориентиров."],
+      "scene_ru": "Туман сокращает видимость между соснами, а смытые следы не дают уверенного продолжения; дальний звон слышен, но его направление и дальность зависят от среды.",
+      "interaction_ru": "Путник может остановиться, ждать прояснения, вернуться к последнему уверенному месту или осторожно сопоставить слышимый звук с известным ему направлением, не превращая звон в гарантированный маршрут.",
+      "variation_ru": "При видимом горизонте и знакомых звёздах возможен иной ориентир; в тумане он недоступен, а ветер и температура меняют слышимость.",
+      "claim_refs": ["claim:foundations-earth-27-fog-visibility", "claim:sound-spreading-reduces-intensity", "claim:sound-wind-temperature-gradients-refract", "claim:residual-nature-stars-horizon-navigation", "claim:human-life-travel-conditions-can-justify-delay"],
+      "gaps": [],
+      "input_frame_note": "Туман, звон и прежняя тропа заданы input; review не превращает звон в доказанный ориентир или присутствие места."
+    },
+    {
+      "case_id": "place04-core-062",
+      "verdict": "covered",
+      "scene_ru": "Во дворе красильщицы ткань после ванны полощут в ограниченной воде; пыль и солнце меняют вид поверхности, но не доказывают выцветание.",
+      "interaction_ru": "Красильщица может держать полотно в движении и прополаскивать его, понимая, что равномерность контакта и закрепление зависят от условий процесса.",
+      "variation_ru": "Краситель, протрава, цвет и стойкость не следует угадывать без конкретного состава.",
+      "claim_refs": ["claim:textile-dye-application", "claim:place-dye-moving-submerged-textile-can-support-even-contact", "claim:textile-dye-mordant-fixation"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-063",
+      "verdict": "covered",
+      "scene_ru": "На лещиновой опушке сухая подстилка, просветы и нижние ветви дают неодинаковые места для сбора; сломанные ветви и пустая шелуха остаются следами, не объясняющими сами по себе их причину.",
+      "interaction_ru": "Собиратель может собирать доступные орехи с нижних ветвей шестом или руками и не ломать ветвь ради единичного плода.",
+      "variation_ru": "Вид куста, урожай и доля растащенных орехов не выводятся из региональной совместимости лещины.",
+      "claim_refs": ["claim:troitsky-gathered-plants-probably-link-to-southern-deciduous-woodland", "claim:place-outdoors-forest-structure-and-season", "claim:place-outdoors-clearing-and-trace-renewal"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-064",
+      "verdict": "covered",
+      "scene_ru": "После ходьбы мокрая обувь натирает пятку; у паломника есть вода, полотно и сухая запасная обмотка, но тяжесть повреждения неизвестна.",
+      "interaction_ru": "Он может уменьшить повторное трение, осмотреть кожу и сменить мокрую обмотку на сухую, не ставя диагноз и не обещая заживление к утру.",
+      "variation_ru": "При открытой ране или ухудшении нужен иной уход; это не выводится из одной натёртости.",
+      "claim_refs": ["claim:static-repeated-skin-friction-can-cause-blistering", "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context", "claim:wound-healing-time-dependent"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-065",
+      "verdict": "covered",
+      "scene_ru": "На холодном заднем дворе жир застыл на котлах, а забитый сток делает воду и место мытья ограниченным ресурсом работы.",
+      "interaction_ru": "Посудница может расчистить сток, соскрести доступный жир и беречь золу от попадания в глаза и на кожу.",
+      "variation_ru": "Сила щёлока, расход воды и чистота котлов не обещаются без состояния и точной механики.",
+      "claim_refs": ["claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it", "claim:static-wood-ash-can-irritate-skin-and-eyes", "claim:static-wood-ash-ph-raising-effect-varies-by-sample"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-066",
+      "verdict": "covered",
+      "initial_verdict": "gap",
+      "initial_gaps": ["Первичный поиск ошибочно потребовал фиксированный исторический порядок вместо общей premise о временно суженном проходе и координации."],
+      "scene_ru": "У хлебного ряда телеги, тара и ожидающие люди сужают проход; снег в колее делает манёвр медленнее, а свободный ход нужен для движущегося груза.",
+      "interaction_ru": "Староста может позвать помощника, освободить участок прохода и договориться с возницами, кто отступит или разгрузится первым; это локальная координация, не обязательный рыночный регламент.",
+      "variation_ru": "При меньшем числе людей или свободном проходе порядок может не понадобиться; полномочие старосты и согласие участников не выводятся claims.",
+      "claim_refs": ["claim:civic-public-market", "claim:place-outdoors-market-activity-and-empty-intervals", "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance", "claim:foundations-ms3-08-mutual-cooperation"],
+      "gaps": [],
+      "input_frame_note": "Староста, телеги и затор даны input; review не создаёт должностное полномочие или рыночный порядок."
+    },
+    {
+      "case_id": "place04-core-067",
+      "verdict": "covered",
+      "scene_ru": "После бури плетень лежит в проходе, колья расшатаны, ветви мешают проходу, а птица разбрелась по огороду.",
+      "interaction_ru": "Соседи могут расчистить проход, поднять секции вдвоём и временно удержать их верёвкой, пока хозяева закрепляют колья.",
+      "variation_ru": "Потребность в замене кольев и устойчивость плетня зависят от фактических повреждений.",
+      "claim_refs": ["claim:structural-and-object-wood", "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means", "claim:foundations-physical-b2-sta-01-static-force-equilibrium"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-068",
+      "verdict": "covered",
+      "scene_ru": "В общей горнице лавка у двери, солома у стены и место возле очага дают разные сочетания сухости, тепла, прохода и тесноты, а не одну заведомо лучшую постель.",
+      "interaction_ru": "Хозяйка может распределить промокших путников между доступными местами, оставив проход к очагу и учитывая, кому важнее тепло, сухость или место для вещей.",
+      "variation_ru": "Число людей, плата, право на ночлег и предпочтения конкретных путников остаются состоянием, а не следствием общей premise.",
+      "claim_refs": ["claim:human-life-lodging-trades-space-privacy-comfort-security", "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually", "claim:candidate-v5-sleep-is-basic-human-need"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-069",
+      "verdict": "covered",
+      "initial_verdict": "gap",
+      "initial_gaps": ["Первичный поиск не связал общий баланс сил и рычажное плечо с заданными input-весами."],
+      "scene_ru": "Пыльные чаши и неровная лавка делают показание весов неустойчивым, а ветер дополнительно мешает коромыслу; товар и гири остаются тем, что уже есть в сцене.",
+      "interaction_ru": "Помощник может очистить чаши, перенести весы на более ровную опору и дождаться спокойного положения коромысла, не заявляя цену или юридически обязательную меру.",
+      "variation_ru": "Любое смещение нагрузки или плеча меняет требуемое равновесие; точность гирь и честность обмена требуют state, а не WK.",
+      "claim_refs": ["claim:foundations-physical-b2-sta-01-static-force-equilibrium", "claim:foundations-physical-b2-sta-03-lever-force-arm-tradeoff", "claim:agriculture-fauna-borts-wax"],
+      "gaps": [],
+      "input_frame_note": "Весы и товар даны input; review не создаёт курс обмена, меру, право торговли или исход сделки."
+    },
+    {
+      "case_id": "place04-core-070",
+      "verdict": "covered",
+      "initial_verdict": "gap",
+      "initial_gaps": ["Первичный поиск пропустил approved premise об остановке и доступной укладке груза по запросу осмотра."],
+      "scene_ru": "У городского въезда мокрая дорога задерживает повозки; ослабший покров тюков можно подтянуть, а для уже заданного осмотра груз должен стать доступным.",
+      "interaction_ru": "Торговец может остановить телегу, открыть доступную часть поклажи по просьбе и затем уложить и закрепить её снова, не выдумывая пошлину, полномочие или состав проверки.",
+      "variation_ru": "Погода, свет и состояние дороги меняют задержку; конкретный платёж, исход досмотра и право заставы не следуют из claim.",
+      "claim_refs": ["claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling", "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"],
+      "gaps": [],
+      "input_frame_note": "Застава и ожидание досмотра заданы input; review не создаёт государственную практику, сбор или разрешение на проезд."
+    },
+    {
+      "case_id": "place04-core-071",
+      "verdict": "covered",
+      "scene_ru": "После дождя у деревянной церкви листья и вода делают дорожку к крыльцу скользкой перед утренней службой.",
+      "interaction_ru": "Прихожанка может смести листья и расстелить принесённую сухую траву как попытку сделать путь заметнее и суше, затем проверить опору перед приходом людей.",
+      "variation_ru": "Трава не гарантирует сцепление или видимость; число прихожан и состояние настила принадлежат input и текущему миру.",
+      "claim_refs": ["claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces", "claim:population-physics-static-friction", "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-072",
+      "verdict": "covered",
+      "scene_ru": "На тесном береговом склоне брёвна разной длины лежат вперемешку; перед воротом нужен свободный ход, а растянутый канат требует осмотра до подъёма.",
+      "interaction_ru": "Старший плотник может разделить брёвна по доступной длине, расчистить путь переноса и не нагружать сомнительный канат до осмотра его истирания и узлов.",
+      "variation_ru": "Доступная прочность каната, грузоподъёмность, точная конструкция моста и число работников не задаются.",
+      "claim_refs": ["claim:construction-rjaz-bridge-support", "claim:occupation-carpenter-role", "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance", "claim:modern-fibre-rope-condition-can-reduce-available-strength"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-073",
+      "verdict": "covered",
+      "scene_ru": "В конце зимы запасы муки лежат на полках, а отсыревший у стены мешок отделяется от более сухих вещей; щель в двери делает условия хранения неодинаковыми по месту.",
+      "interaction_ru": "Старшая может отмерять муку, отделить сомнительный мешок от сухих и не объявлять его содержимое годным либо испорченным без осмотра.",
+      "variation_ru": "Размер запаса, срок до помола и степень порчи не выводятся из общей связи влаги с хранением и микробным ростом.",
+      "claim_refs": ["claim:food-practices-rye-flour-bread", "claim:microbial-growth-depends-on-available-moisture", "claim:population-household-storage", "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces"],
+      "gaps": []
+    },
+    {
+      "case_id": "place04-core-074",
+      "verdict": "covered",
+      "initial_verdict": "gap",
+      "initial_gaps": ["Первичный поиск ошибочно счёл ordinary-договорённость о разделённом рабочем месте отсутствием обязательного печного обычая."],
+      "scene_ru": "У общей холодной печи снег у устья надо расчистить, а две порции теста конкурируют за одно рабочее место и утреннее время.",
+      "interaction_ru": "Соседки могут расчистить подход, договориться о последовательности растопки либо развести действия по очереди; это обычная координация общего пространства, не навязанный местный обычай.",
+      "variation_ru": "При иной тесноте, времени или числе семей договорённость меняется; распределение жара и исход выпечки не задаются.",
+      "claim_refs": ["claim:grain-processing-bread-oven-baking", "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually", "claim:foundations-ms-39-social-norm", "claim:foundations-ms3-08-mutual-cooperation"],
+      "gaps": [],
+      "input_frame_note": "Печь, тесто и две соседки даны input; review не создаёт право доступа, норму очереди или точную теплоёмкость."
+    },
+    {
+      "case_id": "place04-core-075",
+      "verdict": "covered",
+      "scene_ru": "В сумерках дождь меняет трение на сдвинутой доске настила; встречные люди с вёдрами сужают свободный ход, а нагрузка тележки передаётся в древесину неравномерно.",
+      "interaction_ru": "Ремесленник может остановить тележку, пропустить людей, осмотреть трещины и опору доски, затем переставить нагрузку либо обойти повреждённый участок при доступном пути.",
+      "variation_ru": "Ширина настила, масса тележки, трещины и прочность доски не заданы и требуют state/mechanics.",
+      "claim_refs": ["claim:urban-pavements", "claim:population-physics-sliding-friction", "claim:population-material-wood-loading", "claim:foundations-mat-02-wood-drying-crack-strength", "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance"],
+      "gaps": []
+    }
+  ]
+}

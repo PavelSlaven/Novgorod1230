@@ -1,0 +1,277 @@
+{
+  "schema_version": "world_knowledge_static_acceptance_batch_v1",
+  "batch_id": "final-static-streak-r6-01-core-a",
+  "candidate_commit": "d15cb80b5e06a94657c62fff75ca4f98f43ab752",
+  "sampling": {
+    "kind": "controlled_mixed",
+    "case_count": 38
+  },
+  "cases": [
+    {
+      "case_id": "r6-01-ca-001",
+      "primary_domain": "green-wood carpentry",
+      "need_group": "practical-natural-physical",
+      "situation": "He wants to brace the post with a newly cut pole before people use the porch. Person: young householder. Location: Novgorod yard. Circumstances: spring thaw; a porch post has shifted.",
+      "knowledge_need": "how fresh timber behaves in a load-bearing repair"
+    },
+    {
+      "case_id": "r6-01-ca-002",
+      "primary_domain": "grain drying",
+      "need_group": "practical-natural-physical",
+      "situation": "She must decide how to keep the grain from spoiling without ruining it by heat. Person: widow managing a household. Location: riverside storehouse. Circumstances: sacks were splashed during ferry unloading.",
+      "knowledge_need": "safe drying and storage conditions for damp grain"
+    },
+    {
+      "case_id": "r6-01-ca-003",
+      "primary_domain": "iron edge maintenance",
+      "need_group": "practical-natural-physical",
+      "situation": "He asks what preparation is needed before returning to work. Person: apprentice woodcutter. Location: workshop lane. Circumstances: axe bites poorly after striking grit.",
+      "knowledge_need": "ordinary sharpening limits and tool care"
+    },
+    {
+      "case_id": "r6-01-ca-004",
+      "primary_domain": "thatched roofing",
+      "need_group": "practical-natural-physical",
+      "situation": "A family needs a credible temporary repair before the next rain. Person: older roofer. Location: outer settlement. Circumstances: wind has lifted a patch of thatch.",
+      "knowledge_need": "weather-sensitive repair of a leaking roof"
+    },
+    {
+      "case_id": "r6-01-ca-005",
+      "primary_domain": "dairy preservation",
+      "need_group": "practical-natural-physical",
+      "situation": "She considers which ordinary handling keeps it usable. Person: goat keeper. Location: market-side dwelling. Circumstances: morning milk will not be used until evening.",
+      "knowledge_need": "short-term handling of fresh milk in warm weather"
+    },
+    {
+      "case_id": "r6-01-ca-006",
+      "primary_domain": "wool washing",
+      "need_group": "practical-natural-physical",
+      "situation": "She plans to wash and dry it before carding. Person: spinner. Location: stream bank. Circumstances: recently shorn fleece is dirty.",
+      "knowledge_need": "water, grease, drying, and seasonal constraints"
+    },
+    {
+      "case_id": "r6-01-ca-007",
+      "primary_domain": "river ice travel",
+      "need_group": "practical-natural-physical",
+      "situation": "He must judge whether an ice shortcut is a sensible attempt. Person: messenger on foot. Location: river crossing. Circumstances: late winter sun; tracks cross the surface.",
+      "knowledge_need": "visible signs and risks of weakening ice"
+    },
+    {
+      "case_id": "r6-01-ca-008",
+      "primary_domain": "clay vessel firing",
+      "need_group": "practical-natural-physical",
+      "situation": "She wants to fire them with the next kiln load. Person: novice potter. Location: potter's yard. Circumstances: several green bowls dried unevenly.",
+      "knowledge_need": "basic firing conditions and likely defects"
+    },
+    {
+      "case_id": "r6-01-ca-009",
+      "primary_domain": "horse harness fitting",
+      "need_group": "practical-natural-physical",
+      "situation": "He needs to adapt the harness before hauling a light cart. Person: carter. Location: roadside stable. Circumstances: a borrowed collar rubs one shoulder.",
+      "knowledge_need": "fit, chafing, and load transfer"
+    },
+    {
+      "case_id": "r6-01-ca-010",
+      "primary_domain": "garden soil amendment",
+      "need_group": "practical-natural-physical",
+      "situation": "She considers using ordinary waste and ash before sowing. Person: garden worker. Location: vegetable plot. Circumstances: beds are thin after repeated planting.",
+      "knowledge_need": "plausible household soil improvement"
+    },
+    {
+      "case_id": "r6-01-ca-011",
+      "primary_domain": "smoke ventilation",
+      "need_group": "practical-natural-physical",
+      "situation": "She needs a practical response while keeping a meal going. Person: mother with children. Location: small dwelling. Circumstances: damp fuel fills the room with smoke.",
+      "knowledge_need": "effects of smoke in a crowded wooden room"
+    },
+    {
+      "case_id": "r6-01-ca-012",
+      "primary_domain": "leather conditioning",
+      "need_group": "practical-natural-physical",
+      "situation": "He asks how to dry them without making them useless. Person: traveler. Location: gatehouse shelter. Circumstances: boots were soaked in cold slush.",
+      "knowledge_need": "care of soaked leather footwear"
+    },
+    {
+      "case_id": "r6-01-ca-013",
+      "primary_domain": "bread leavening",
+      "need_group": "practical-natural-physical",
+      "situation": "She must decide whether and how to continue the dough. Person: household baker. Location: baker's corner. Circumstances: starter seems slow on a cold morning.",
+      "knowledge_need": "fermentation timing and temperature"
+    },
+    {
+      "case_id": "r6-01-ca-014",
+      "primary_domain": "linen mending",
+      "need_group": "practical-natural-physical",
+      "situation": "She wants the garment serviceable for work, not decorative. Person: seamstress. Location: merchant household. Circumstances: a sleeve split beside an old seam.",
+      "knowledge_need": "repair methods appropriate to worn cloth"
+    },
+    {
+      "case_id": "r6-01-ca-015",
+      "primary_domain": "well-water hygiene",
+      "need_group": "practical-natural-physical",
+      "situation": "He must choose a cautious household action before cooking. Person: water carrier. Location: shared well. Circumstances: bucket brought up water with an unfamiliar smell.",
+      "knowledge_need": "ordinary response to visibly fouled drawn water"
+    },
+    {
+      "case_id": "r6-01-ca-016",
+      "primary_domain": "winter fuel management",
+      "need_group": "practical-natural-physical",
+      "situation": "She plans how to stretch fuel through a cold night. Person: elderly caretaker. Location: poor household. Circumstances: firewood pile is low and partly damp.",
+      "knowledge_need": "fuel choices, drying, and heat retention"
+    },
+    {
+      "case_id": "r6-01-ca-017",
+      "primary_domain": "fish preservation",
+      "need_group": "practical-natural-physical",
+      "situation": "He considers preserving part before taking the rest home. Person: small-scale fisher. Location: lake landing. Circumstances: catch exceeds what family can eat today.",
+      "knowledge_need": "salting and handling a perishable catch"
+    },
+    {
+      "case_id": "r6-01-ca-018",
+      "primary_domain": "wheel repair",
+      "need_group": "practical-natural-physical",
+      "situation": "He needs to get a modest load to the next settlement. Person: wagon driver. Location: country track. Circumstances: wheel rim has loosened after a rut.",
+      "knowledge_need": "limits of roadside repair to a wooden wheel"
+    },
+    {
+      "case_id": "r6-01-ca-019",
+      "primary_domain": "wound cleaning",
+      "need_group": "practical-natural-physical",
+      "situation": "He wants to keep working after tending the injury. Person: charcoal burner. Location: woodlot edge. Circumstances: hand was cut on a splintered tool handle.",
+      "knowledge_need": "credible first response to a shallow dirty cut"
+    },
+    {
+      "case_id": "r6-01-ca-020",
+      "primary_domain": "beehive tending",
+      "need_group": "practical-natural-physical",
+      "situation": "She intends to inspect it for a practical cause. Person: bee keeper. Location: forest apiary. Circumstances: one hive is unusually active near its entrance.",
+      "knowledge_need": "seasonal handling and sting risk"
+    },
+    {
+      "case_id": "r6-01-ca-021",
+      "primary_domain": "lime mortar",
+      "need_group": "practical-natural-physical",
+      "situation": "He prepares a repair in uncertain cool weather. Person: mason's helper. Location: churchyard wall. Circumstances: a small section of stone facing has opened.",
+      "knowledge_need": "mixing and curing constraints in masonry work"
+    },
+    {
+      "case_id": "r6-01-ca-022",
+      "primary_domain": "sick animal care",
+      "need_group": "practical-natural-physical",
+      "situation": "She must decide immediate husbandry steps before seeking further help. Person: herdswoman. Location: cattle shed. Circumstances: one calf eats little and coughs.",
+      "knowledge_need": "ordinary observation and isolation of a coughing calf"
+    },
+    {
+      "case_id": "r6-01-ca-023",
+      "primary_domain": "reed mat making",
+      "need_group": "practical-natural-physical",
+      "situation": "He decides whether they can be woven at once or need preparation. Person: mat maker. Location: marsh-edge village. Circumstances: fresh reeds were cut for floor mats.",
+      "knowledge_need": "material preparation and weaving practicality"
+    },
+    {
+      "case_id": "r6-01-ca-024",
+      "primary_domain": "cellar storage",
+      "need_group": "practical-natural-physical",
+      "situation": "She reorganizes supplies to reduce spoilage. Person: householder. Location: earth cellar. Circumstances: root vegetables share space with pickled barrels.",
+      "knowledge_need": "temperature, moisture, and separation of stored foods"
+    },
+    {
+      "case_id": "r6-01-ca-025",
+      "primary_domain": "rainwater runoff",
+      "need_group": "practical-natural-physical",
+      "situation": "He wants a low-tech way to protect the timber base. Person: tenant. Location: town yard. Circumstances: rain pools against the lower wall.",
+      "knowledge_need": "small-scale drainage around timber buildings"
+    },
+    {
+      "case_id": "r6-01-ca-026",
+      "primary_domain": "rope splicing",
+      "need_group": "practical-natural-physical",
+      "situation": "She needs to make it safe enough for routine light work. Person: dock laborer. Location: wharf. Circumstances: a hauling rope has begun to unravel.",
+      "knowledge_need": "fiber rope repair under working load"
+    },
+    {
+      "case_id": "r6-01-ca-027",
+      "primary_domain": "charcoal production",
+      "need_group": "practical-natural-physical",
+      "situation": "He considers adjusting the mound before the batch is lost. Person: collier. Location: forest clearing. Circumstances: smoke from a covered wood pile changes color.",
+      "knowledge_need": "air control and signs of an unsuccessful burn"
+    },
+    {
+      "case_id": "r6-01-ca-028",
+      "primary_domain": "dye plant preparation",
+      "need_group": "practical-natural-physical",
+      "situation": "She wants to prepare a small trial dye bath for yarn. Person: cloth dyer. Location: meadow margin. Circumstances: she has gathered a local dye plant.",
+      "knowledge_need": "seasonal collection and basic extraction handling"
+    },
+    {
+      "case_id": "r6-01-ca-029",
+      "primary_domain": "cold exposure",
+      "need_group": "practical-natural-physical",
+      "situation": "Adults decide how to warm him safely and realistically. Person: teenage errand runner. Location: roadside hut. Circumstances: arrives shivering with wet clothes.",
+      "knowledge_need": "signs and response to chilling after wet travel"
+    },
+    {
+      "case_id": "r6-01-ca-030",
+      "primary_domain": "lamp fuel",
+      "need_group": "practical-natural-physical",
+      "situation": "She adjusts a simple lamp and workplace conditions. Person: copyist. Location: scribal room. Circumstances: must work near dusk without wasting scarce fuel.",
+      "knowledge_need": "ordinary indoor lighting tradeoffs"
+    },
+    {
+      "case_id": "r6-01-ca-031",
+      "primary_domain": "neighborhood reciprocity",
+      "need_group": "social-institutional",
+      "situation": "The tenant considers a fitting response that preserves relations. Person: newly arrived tenant. Location: shared yard. Circumstances: neighbor helped raise a fence panel.",
+      "knowledge_need": "customary expectations around borrowed labor"
+    },
+    {
+      "case_id": "r6-01-ca-032",
+      "primary_domain": "market bargaining",
+      "need_group": "social-institutional",
+      "situation": "She needs to answer without turning a routine sale into a quarrel. Person: rural seller. Location: market row. Circumstances: buyer challenges quality of a simple household good.",
+      "knowledge_need": "status, trust, and ordinary negotiation conduct"
+    },
+    {
+      "case_id": "r6-01-ca-033",
+      "primary_domain": "craft apprenticeship",
+      "need_group": "social-institutional",
+      "situation": "Master must set an appropriate response and work assignment. Person: new apprentice. Location: smith's workshop. Circumstances: asks to attempt a task beyond current skill.",
+      "knowledge_need": "plausible authority and learning boundaries"
+    },
+    {
+      "case_id": "r6-01-ca-034",
+      "primary_domain": "household service",
+      "need_group": "social-institutional",
+      "situation": "She needs to decide whom to consult and which duty takes priority. Person: domestic worker. Location: merchant dwelling. Circumstances: two urgent chores conflict.",
+      "knowledge_need": "rank and obligation within a modest household"
+    },
+    {
+      "case_id": "r6-01-ca-035",
+      "primary_domain": "mourning etiquette",
+      "need_group": "social-institutional",
+      "situation": "They consider how to offer help without presuming authority. Person: neighboring family. Location: parish neighborhood. Circumstances: an elderly resident has died.",
+      "knowledge_need": "ordinary community response to bereavement"
+    },
+    {
+      "case_id": "r6-01-ca-036",
+      "primary_domain": "debt witness",
+      "need_group": "social-institutional",
+      "situation": "They want a socially credible way to avoid a later dispute. Person: two artisans. Location: tavern courtyard. Circumstances: one borrows tools for a short job.",
+      "knowledge_need": "why a small agreement may need public acknowledgement"
+    },
+    {
+      "case_id": "r6-01-ca-037",
+      "primary_domain": "religious observance",
+      "need_group": "social-institutional",
+      "situation": "He considers whether ordinary selling behavior should change. Person: traveling peddler. Location: town lane. Circumstances: arrives during a local religious occasion.",
+      "knowledge_need": "how routine observance shapes timing and conduct"
+    },
+    {
+      "case_id": "r6-01-ca-038",
+      "primary_domain": "child supervision",
+      "need_group": "social-institutional",
+      "situation": "Family decides a credible boundary and alternative task. Person: older sibling. Location: artisan yard. Circumstances: younger child wants to carry a sharp tool.",
+      "knowledge_need": "household authority and age-appropriate work"
+    }
+  ]
+}

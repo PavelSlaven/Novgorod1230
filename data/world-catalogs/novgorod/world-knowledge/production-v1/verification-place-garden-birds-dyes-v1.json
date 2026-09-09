@@ -1,0 +1,80 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
+      "claim_ref": "claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
+      "claim_digest": "4921a66fd77d2feba6cddf62fbf0e80c949a6a750b702168ad0fb942bbeb3043",
+      "candidate_ref": "git:37e407817f0c8fd30e5d9b7b93ac8923de7ac979:data/world-catalogs/novgorod/world-knowledge/production-v1/place-garden-birds-dyes-v1.json#claim:place-garden-snails-and-slugs-can-favor-moist-sheltered-conditions",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading, navigation-only child and access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-garden-snails-slugs-moisture-activity"
+      ],
+      "review_ref": "verification/place-garden-birds-dyes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Modern garden-snail/slug moisture, shelter and activity relation; no local species, abundance, forecast or rule for every gastropod."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
+      "claim_ref": "claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
+      "claim_digest": "f104661a056cdf176103e470f988570df22c585cfd99ce361e7fe56a5d0c3f1e",
+      "candidate_ref": "git:37e407817f0c8fd30e5d9b7b93ac8923de7ac979:data/world-catalogs/novgorod/world-knowledge/production-v1/place-garden-birds-dyes-v1.json#claim:place-garden-snails-and-slugs-can-feed-on-cabbage-leaves-and-leave-irregular-holes",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading, navigation-only child and access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-garden-snails-slugs-cabbage-feeding"
+      ],
+      "review_ref": "verification/place-garden-birds-dyes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Garden snails/slugs can feed on cabbage leaves; irregular holes do not establish a particular culprit, plant presence or severity."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
+      "claim_ref": "claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
+      "claim_digest": "b2195f913210e4f80526bc4f9484fb3b6ce7b892d33bb6153ae4a40bb274f1f9",
+      "candidate_ref": "git:37e407817f0c8fd30e5d9b7b93ac8923de7ac979:data/world-catalogs/novgorod/world-knowledge/production-v1/place-garden-birds-dyes-v1.json#claim:place-rock-pigeons-can-use-sheltered-built-sites-and-congregate-around-food",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading, navigation-only child and access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-garden-pigeon-built-sites-food"
+      ],
+      "review_ref": "verification/place-garden-birds-dyes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Modern rock-pigeon sheltered built-site and food/flocking ecology; no medieval local flock, nest, control advice, food safety or guaranteed response."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
+      "claim_ref": "claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
+      "claim_digest": "6482b69731695d535629558c4467a0832208695b00183f2b7350bb0930e5421d",
+      "candidate_ref": "git:37e407817f0c8fd30e5d9b7b93ac8923de7ac979:data/world-catalogs/novgorod/world-knowledge/production-v1/place-garden-birds-dyes-v1.json#claim:place-plant-leaves-can-serve-as-a-dye-source-with-sorrel-foliage-as-modern-example",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading, navigation-only child and access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-garden-leaf-dye-source"
+      ],
+      "review_ref": "verification/place-garden-birds-dyes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Universal leaf-to-dye material relation with modern sorrel-foliage example; no local plant, historical practice, exact colour, recipe, fibre, mordant or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
+      "claim_ref": "claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
+      "claim_digest": "129799e52707ea6788c944421ad1d0440fc95275522eb13aa27bfdba4327dd17",
+      "candidate_ref": "git:37e407817f0c8fd30e5d9b7b93ac8923de7ac979:data/world-catalogs/novgorod/world-knowledge/production-v1/place-garden-birds-dyes-v1.json#claim:place-established-emollient-or-occlusive-skin-preparation-can-trap-moisture",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading, navigation-only child and access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-skin-emollient-protective-film"
+      ],
+      "review_ref": "verification/place-garden-birds-dyes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Only actual emollient/occlusive skin preparation and dry-skin moisture retention; no automatic ordinary-fat suitability, prescription, cure, historical treatment or application to burns, infected or weeping skin."
+    }
+  ]
+}

@@ -24,10 +24,16 @@
 ## Текущий runtime
 
 Локальный запуск использует production release
-`spatial-v3-production-v14` с `builtin:production-spatial-v3` и
-`builtin:spatial-v3-production-v14`. Spatial v3 и Temporal World v4 —
+`spatial-v3-production-v15` с `builtin:production-spatial-v3` и
+`builtin:spatial-v3-production-v15`. Spatial v3 и Temporal World v4 —
 единственные владельцы authoritative reads/writes; runtime fallback запрещён.
 `versioned production activation cutover` завершён на stage `13`.
+
+Перед semantic LLM-вызовами свободного хода, ordinary materialization и
+решений NPC runtime v15 подмешивает компактный срез production World
+Knowledge pack для Новгородской земли около 1230 года. Гибридный поиск
+использует лексический индекс и локальную Giga-Embeddings модель; factual
+claims не создают state и не заменяют code-owned механику.
 
 Текущий сценарий — Lower Dvina Trace. Свободный ввод проходит через
 `turn_step_request_v1` → `turn_step_plan_v1`; время, RNG, mechanics и
@@ -72,20 +78,24 @@ LLM выбирает закрытые варианты либо возвраща
 
 ## Быстрый запуск
 
-Для локальной игры нужны Node.js 22+, Docker и ключ DeepSeek.
+Для локальной игры нужен только Node.js 22+. Первый запуск автоматически
+проверяет GPU/VRAM/RAM/диск и подготавливает managed PostgreSQL, pinned Python,
+Giga embeddings, CUDA `llama.cpp` и локальную Gemma 4. Веса лежат в обычном
+user-data/cache каталоге, загрузка продолжается после обрыва и не повторяется
+после проверки версии и checksum.
 
 ```powershell
 npm ci
-$env:DEEPSEEK_API_KEY = '...'
 npm run play:local
 ```
 
 После readiness откройте <http://127.0.0.1:3000>. Launcher создаёт локальную
-PostgreSQL при первом запуске; повторный `npm run play:local` использует ту же
-party DB, поэтому сохранения переживают остановку Node.js и Docker container.
+managed runtime при первом запуске; повторный `npm run play:local` работает
+offline и использует ту же party DB. Игра сама завершает принадлежащие ей
+server, inference и PostgreSQL процессы.
 
 `npm start` — low-level entry для уже подготовленного production environment;
-он не запускает Docker и не готовит базы.
+он не выполняет пользовательский provisioning.
 
 CLI-запуск без local launcher:
 

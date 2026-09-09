@@ -27,6 +27,16 @@ async function lockDestination(client, plan) {
      WHERE party_id=$1 AND actor_id=$2 AND status='active' FOR UPDATE`,
   [plan.party_id, plan.actor_ref]);
   const positions = [...direct.rows, ...carried.rows];
+  if (plan.result_items.length === 0) {
+    if (selected.rows.length !== 1
+        || selected.rows[0].anchor_id !== pin.anchor_id
+        || pin.destination_kind === 'party_current_scene_position'
+          && (positions.length !== 1
+            || positions[0].scene_position_id !== pin.scene_position_id)) {
+      fail('ACTION_PRODUCED_DESTINATION_STALE');
+    }
+    return;
+  }
   const used = pin.destination_kind === 'party_current_scene_position'
     ? { rows: [] } : await client.query(
     `SELECT p.item_id FROM party_runtime.party_item_placements p

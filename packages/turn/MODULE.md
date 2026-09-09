@@ -6,7 +6,7 @@
 
 ## Владеет
 
-- Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, revision-16 persisted combat session/intent lifecycle и automatic same-time exchange orchestration, combined logical write-plan composition и visible-package security gate.
+- Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, deterministic model-output canonicalization и одним semantic repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, revision-16 persisted combat session/intent lifecycle и automatic same-time exchange orchestration, combined logical write-plan composition и visible-package security gate.
 
 ## Не владеет
 
@@ -21,8 +21,26 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `resolveWorldProcessStep`, `validateWorldProcessStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, `spatialResult`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
-- `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
+- `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state и сохраняет ordered step traces. Model adapter до validator исправляет только однозначные closed формы (`"null"`, choice wrapper, unique exact operation choice, exact misplaced/duplicated continuation, отсутствующие diagnostic reason fields и single-target discovery); несколько discovery targets превращаются в typed code-owned очередь внутри существующего continuation и исполняются по одному без нового planner choice. Исходный later-continuation восстанавливается дословно после очереди; обычная player boundary останавливает root и оставляет остаток в approved continuation. Один LLM repair разрешён только для semantic mismatch. Неисправимая structural ошибка и любой повторно невалидный plan после semantic repair возвращают typed `TURN_STEP_PLAN_INVALID` до execution, commit и narration, без внутриигрового `not_achieved`. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
+- `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner. Gameplay call site не активирован, пока нет production coverage profile для текущего world runtime.
 - Internal ordinary hook применяет уже вычисленный pure aggregate result к общей working projection без собственного schema/type; raw ordinary transition остаётся ответственностью `@rus/materialization` reducer. Hook не экспортируется как второй projection owner и не активирует O1.
+- Общий ordinary discovery owner передаёт одну player-safe scene projection
+  в seed и presence, включая structural repair; candidate query имеет нулевой
+  evidence weight и не подтверждает соседние объекты, отношения или историю.
+  Исчерпание budget/cap без transition возвращает existing player-response no-op:
+  состояние неизменно, model/record/commit и technical failure отсутствуют; seed
+  transition того же turn всё ещё может запечатать собственный `no_change` plan.
+- Сводка уже player-safe carried/worn items и качественная оценка уже
+  предъявленных sensory facts относятся к write-free direct observation, а не
+  к ordinary materialization. Обязательный для успешного write-free direct
+  результата nullable `direct_result_kind` различает общее player-safe
+  observation, осмотр уже player-safe carried/worn items и no-state gesture;
+  code-owned presentation подтверждает только этот класс результата и уже
+  player-safe context; для item observation оно явно проецирует текущие
+  held/worn labels и подтверждённое состояние;
+  он не переносит свободный planner reason как факт. Поиск новой детали остаётся
+  `request_discovery`; uncertainty и отсутствие локального exact forecast не
+  должны превращать доступное наблюдение в игровой отказ.
 - S1 reaches only through existing `request_discovery/look` after higher-priority
   owners. Turn forwards the current player-safe position marker and does not
   choose local detail, capacity, topology, mechanics or a persistence path.
@@ -158,14 +176,18 @@ P16 change set и лишь затем запускает обычную narratio
 Revision 19 / `spatial-v3-production-v9` наследует этот orchestration без
 нового semantic mode; actor appearance materialization остаётся code-owned, а
 портрет строится только как read-time player-safe projection.
-Current `spatial-v3-production-v14` inherits the approved Phase-7 autonomous NPC
+Current `spatial-v3-production-v15` inherits the approved Phase-7 autonomous NPC
 actor-step profile. Общий current NPC actor-step path принимает только зарегистрированные
 и state-applicable owner capabilities с текущими NPC-safe refs; exact
 `operation_contract` и handler остаются общими owner contracts, без scenario
 action/ref/owner whitelist, special Жданко action logic или fallback. Жданко —
 первый activation participant/probe.
-The v14 cutover additionally pins revision 32 / M20 / Phase 1A v23 /
-Phase 1B v27 and only the profile-specific background-fisher N1 remainder.
+The v15 cutover additionally inherits revision 32 / M20 / Phase 1A v23 /
+Phase 1B v27 and the profile-specific background-fisher N1 remainder, then
+grounds open semantic calls with the production World Knowledge slice. The
+planner emits predicates and facets, while code supplies authoritative time,
+place, actor context and factual closure; the resulting claims never become
+state changes or exact mechanics by themselves.
 
 O1 активирует internal ordinary branch только внутри существующего
 `request_discovery`; нового public op и scenario-local resolver нет. После
@@ -185,7 +207,10 @@ code-owned candidate identity и передаётся model только как 
 `request_discovery` target до commit. Один discovery имеет общий лимит двух
 semantic calls; structural repair расходует оставшийся call, а
 Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Turn принимает positive только после independent
-supporting-basis/property/placement admission `@rus/items-property`, собирает
+WK-grounded Stage B `materialize` с хотя бы одним exact
+`world_knowledge_claim_refs` из текущего factual slice; code binding отвергает
+пустые и отсутствующие в slice refs до admission/commit. Затем выполняется
+supporting-basis/property/placement admission `@rus/items-property`, собирается
 один ordinary P16 plan после revalidation и передаёт его persistence owner;
 model call никогда не находится внутри physical transaction. Player-safe
 working projection получает только capability marker и approved concrete
@@ -198,14 +223,25 @@ receipt ранее выполненного adversarial Stage B classification e
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 
+Повторный `inspect` или сравнение уже наблюдённых evidence refs имеет общий
+bounded owner. Он принимает только exact refs из code-projected
+`observed_evidence_inspection` с player-safe presentation, не доверяет сырому
+`knowledge`, не создаёт новую истину и возвращает только отсутствие достаточных
+подтверждённых данных; authored/external owner сохраняет приоритет.
+
 Active O2a добавляет authored wreck-shore ambient capability и first-entry
 context-bound finite stock подготовленной глины. Player-safe state показывает
 committed stock как обычный source только при отдельном approved disclosure
 state; concealed capabilities остаются server-only. Unresolved remainder
 проецируется только через boolean `discovery_available`, без expected result,
 permission и capacity.
-Stage B может выбрать unlisted ordinary semantic type/name внутри approved class;
-source/property/permission/mechanics и пустой facts остаются code-owned gates. Сам `ambient_ordinary`
+Stage B может выбрать unlisted ordinary semantic type/name и независимо назвать
+admission class полного candidate с qualifiers/relations; при несовпадении с
+code-owned candidate owner fail-closed
+фиксирует `absent`. До item admission полный candidate также получает verdict
+`standalone_item|non_item_detail`; `non_item_detail` сохраняет `no_change`
+без item/mechanics/property/placement writes. source/property/permission/mechanics и пустой
+facts остаются code-owned gates. Сам `ambient_ordinary`
 не является O2a marker: legacy direct actions без
 этого capability сохраняют прежний path. Drifted binding не публикует capability,
 а forged ref не проходит current-ref validation. Generic finite effect связан с

@@ -1,48 +1,66 @@
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
+import { existsSync } from 'node:fs';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:net';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
 
 import pg from 'pg';
 
 import { createCanonicalPhase11LlmResponder } from '../helpers/lower-dvina-phase-11-llm.js';
 import { startLocalLlmProviderFixture } from '../helpers/local-llm-provider-fixture.js';
-import { LOCAL_POSTGRES } from '../../tools/local-play/local-postgres.js';
+import { createProductionLlmRoleRunner } from
+  '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+import { LOCAL_POSTGRES, ensureLocalPostgres, localDataRoot } from
+  '../../tools/local-play/local-postgres.js';
+import { MANAGED_RUNTIME_PINS } from '../../tools/local-play/managed-runtime.js';
 import { startLocalPlay } from '../../tools/local-play/local-play.js';
 
 test('local play persists a free turn and replays it after a server restart',
-  { timeout: 600_000 }, async (context) => {
-    assert.equal(docker(['version']).status, 0, 'Docker is required.');
+  { timeout: 600_000, skip: process.platform !== 'win32'
+      || process.arch !== 'x64' }, async (context) => {
     const suffix = randomUUID().replaceAll('-', '');
-    const settings = Object.freeze({
-      ...LOCAL_POSTGRES,
-      container: `novgorod-local-play-test-${suffix}`,
-      volume: `novgorod-local-play-test-data-${suffix}`
-    });
+    const directory = await mkdtemp(join(tmpdir(), 'novgorod-local-play-'));
+    const dataRoot = join(directory, 'data');
+    const settings = Object.freeze({ ...LOCAL_POSTGRES });
     const port = await freePort();
     const canonical = createCanonicalPhase11LlmResponder();
     const llm = await startLocalLlmProviderFixture({ respond: (request) =>
       request.body.messages?.[0]?.content === 'Return a JSON object with {"ok":true}.'
         ? { ok: true }
-        : canonical(request)
+        : canonical({ ...request, model: fixtureRoleModel(request.input) })
     });
-    let child = null;
+    const provider = Object.freeze({ mode: 'custom',
+      compatibility: 'openai_compatible', baseUrl: llm.baseUrl,
+      model: 'fixture-local-play', apiKey: null });
+    const identity = createProductionLlmRoleRunner({ settings: {
+      providerSnapshot: () => provider
+    } }).describe({ scope: 'turn_runtime', role_id: 'ordinary_materialization' });
+    const settingsPath = join(directory, 'llm-settings.json');
+    await writeFile(settingsPath, `${JSON.stringify({ version: 1,
+      settings: { mode: 'custom', compatibility: provider.compatibility,
+        base_url: provider.baseUrl, model: provider.model, api_key: null },
+      ordinary_materialization_identity: identity })}\n`);
+    let localPlay = null;
     context.after(async () => {
-      await stop(child);
+      await localPlay?.close().catch(() => {});
       await llm.close().catch(() => {});
-      removeTestResources(settings);
+      await rm(directory, { recursive: true, force: true });
     });
 
     const env = {
       ...process.env,
-      ...llm.env,
+      RUS_LLM_SETTINGS_PATH: settingsPath,
       RUS_SERVER_PORT: String(port)
     };
-    let localPlay = await startLocalPlay({ env, localPostgresSettings: settings,
-      log: () => {} });
-    child = localPlay.child;
-    assert.equal(llm.requests.length > 0, true, 'provider preflight must run before party creation');
+    const start = () => startLocalPlay({ env, localPostgresSettings: settings,
+      ensurePostgres: (options) => ensureLocalPostgres({ ...options, dataRoot }),
+      provisionRuntime: async ({ startLlm }) => {
+        assert.equal(startLlm, false); return fixtureRuntime();
+      }, log: () => {} });
+    localPlay = await start();
 
     const requestId = `local-play-turn-${suffix}`;
     const started = await post(port, '/api/v1/new-games', {
@@ -65,11 +83,8 @@ test('local play persists a free turn and replays it after a server restart',
     const beforeRestart = await committedState(localPlay.postgres.partyUrl, partyId);
     assert.equal(beforeRestart.state_version, beforeTurn.state_version + 1);
 
-    await stop(child);
-    assert.equal(docker(['container', 'stop', settings.container]).status, 0);
-    localPlay = await startLocalPlay({ env, localPostgresSettings: settings,
-      log: () => {} });
-    child = localPlay.child;
+    await localPlay.close();
+    localPlay = await start();
     assert.equal(localPlay.postgres.state, 'existing');
     const screen = await get(port,
       `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
@@ -132,25 +147,37 @@ function freePort() {
   });
 }
 
-function stop(child) {
-  if (!child || child.exitCode != null) return Promise.resolve();
-  child.kill('SIGTERM');
-  return new Promise((resolve) => child.once('exit', resolve));
+function fixtureRuntime() {
+  const managedRoot = localDataRoot();
+  const managedPython = join(managedRoot, 'runtime', 'giga-python',
+    'Scripts', 'python.exe');
+  const managedModel = join(managedRoot, 'models', 'giga',
+    MANAGED_RUNTIME_PINS.giga.revision);
+  return Object.freeze({
+    hardware: { supported: false, facts: {}, reasons: ['test fixture'] },
+    giga: { python: process.env.RUS_WORLD_KNOWLEDGE_PYTHON
+        ?? (existsSync(managedPython) ? managedPython : 'python'),
+      modelPath: process.env.RUS_WORLD_KNOWLEDGE_MODEL_PATH
+        ?? (existsSync(managedModel) ? managedModel : null),
+      hfHome: process.env.HF_HOME ?? null },
+    llm: null, async close() {}
+  });
 }
 
-function removeTestResources(settings) {
-  const container = docker(['container', 'inspect', settings.container]);
-  if (container.status === 0) {
-    assert.equal(JSON.parse(container.stdout)[0]?.Config?.Labels?.[settings.label], settings.labelValue);
-    assert.equal(docker(['container', 'rm', '-f', settings.container]).status, 0);
+function fixtureRoleModel(input) {
+  const value = input?.request ?? input;
+  if (value?.schema === 'world_knowledge_query_planner_request_v1') {
+    return 'fixture-world-knowledge-query-planner';
   }
-  const volume = docker(['volume', 'inspect', settings.volume]);
-  if (volume.status === 0) {
-    assert.equal(JSON.parse(volume.stdout)[0]?.Labels?.[settings.label], settings.labelValue);
-    assert.equal(docker(['volume', 'rm', settings.volume]).status, 0);
+  if (value?.schema === 'turn_step_request_v1') {
+    return 'fixture-turn-step-planner';
   }
-}
-
-function docker(args) {
-  return spawnSync('docker', args, { encoding: 'utf8', timeout: 60_000 });
+  if (value?.schema === 'narration_request') return 'fixture-gameplay-narrator';
+  if (value?.schema === 'narration_semantic_audit_request') {
+    return 'fixture-gameplay-narrator-auditor';
+  }
+  if (value?.remaining_intent && Array.isArray(value.operations)) {
+    return 'fixture-turn-step-grounding-auditor';
+  }
+  throw new Error(`Unexpected fixture request schema: ${value?.schema ?? 'none'}`);
 }

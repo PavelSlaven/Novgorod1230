@@ -1,0 +1,1488 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:yushkov-1939-resource-grounds",
+      "title": "Нариси з історії виникнення і початкового розвитку феодалізму в Київській Русі",
+      "authors": [
+        "С. В. Юшков"
+      ],
+      "publication": "Київ, 1939, розділ 2.I.1; публічна наукова репродукція",
+      "source_kind": "scholarship",
+      "citation": "http://litopys.org.ua/yushkov2/yush10.htm",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:novgorod-letter-986",
+      "title": "Новгородская берестяная грамота №986",
+      "authors": [
+        "National Research University Higher School of Economics",
+        "Institute of Slavic Studies, RAS"
+      ],
+      "publication": "Древнерусские берестяные грамоты corpus record",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/986/",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:merck-equine-feeding",
+      "title": "Feeding Practices in Horses and Other Equids",
+      "authors": [
+        "Nettie R. Liburt"
+      ],
+      "publication": "Merck Veterinary Manual, professional version; reviewed/updated February 2026",
+      "source_kind": "technical_reference",
+      "citation": "https://www.merckvetmanual.com/management-and-nutrition/nutrition-horses/feeding-practices-in-horses-and-other-equids",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:early-rus-hunting-ground-terms",
+      "source_ref": "source:yushkov-1939-resource-grounds",
+      "anchor": {
+        "section": "Розділ 2.I.1; літописна розповідь про Ольгу, ловища та перевесища"
+      },
+      "note": "TPU-07 independently APPROVE_WITH_LIMITS. Direct/high for terms in textual tradition; only inferred/medium earlier-Rus compatibility for Novgorod 1100–1300. Msta/Luga passage is not the location of the explicitly Dnieper/Desna perevesishcha. No trap mechanism, current site, stock or right. Dyachenko’s 1604 technical example is excluded.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:agriculture-fauna-fibre-cultivation-processing",
+      "source_ref": "source:population-processes-hemp",
+      "anchor": {
+        "page": "192",
+        "section": "XI-century textual cultivation attestation; hemp stems, fibre and tow"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS: verification/verification-agriculture-fauna-practices.md. Earlier fibre practice is inferred continuity; borts mean mainly rural tree-based practice, not a household hive. The XIV-century apiary reference is excluded.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:agriculture-fauna-hunting-fur-context",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "229–230",
+        "section": "Hunting and fur as medieval Novgorodian economic activity"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS: verification/verification-agriculture-fauna-practices.md. Earlier fibre practice is inferred continuity; borts mean mainly rural tree-based practice, not a household hive. The XIV-century apiary reference is excluded.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:agriculture-fauna-hunting-bow",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "233",
+        "section": "Complete one-piece ash bow from second-quarter-XIII layer"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS: verification/verification-agriculture-fauna-practices.md. Earlier fibre practice is inferred continuity; borts mean mainly rural tree-based practice, not a household hive. The XIV-century apiary reference is excluded.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:agriculture-fauna-tree-bort-practice",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "233–234",
+        "section": "Mainly rural borts, Nerev climbing hooks, honey and wax"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS: verification/verification-agriculture-fauna-practices.md. Earlier fibre practice is inferred continuity; borts mean mainly rural tree-based practice, not a household hive. The XIV-century apiary reference is excluded.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:harvest-tools-use",
+      "source_ref": "source:ha-firesteel",
+      "anchor": {
+        "page": "90–91",
+        "section": "Harvest tools and preserved sickle handles"
+      },
+      "note": "Independently approved with limits in verification/verification-harvest-husbandry.md. Pre-Mongol Rus or an earlier regional specimen supports inferred Novgorod compatibility, not a current tool, crop, animal, worker, stock or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:harvest-sheep-shears",
+      "source_ref": "source:ha-firesteel",
+      "anchor": {
+        "page": "88–89",
+        "section": "Iron and steel agricultural and productive implements"
+      },
+      "note": "Independently approved with limits in verification/verification-harvest-husbandry.md. Pre-Mongol Rus or an earlier regional specimen supports inferred Novgorod compatibility, not a current tool, crop, animal, worker, stock or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:harvest-sista-scythe",
+      "source_ref": "source:ha-firesteel",
+      "anchor": {
+        "page": "97–98",
+        "section": "Metallography of the XI–XII-century Sista kurgan 9 scythe"
+      },
+      "note": "Independently approved with limits in verification/verification-harvest-husbandry.md. Pre-Mongol Rus or an earlier regional specimen supports inferred Novgorod compatibility, not a current tool, crop, animal, worker, stock or exact mechanics.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fodder-hay-account",
+      "source_ref": "source:novgorod-letter-986",
+      "anchor": {
+        "record_id": "Novgorod 986",
+        "section": "Russian translation: hay entry; stratigraphic 1160s–mid-1190s; external late XII–early XIII date with possible earlier shift"
+      },
+      "note": "Independent verification/verification-fodder-practices.md: FP-01/FP-02 approved with limits. Historical resource context and universal biology are separate premises; no local feeding practice, current resource, animal, ration or outcome follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fodder-healthy-horse-forage",
+      "source_ref": "source:merck-equine-feeding",
+      "anchor": {
+        "section": "Opening feeding-practices statement: hay and/or pasture forage for most healthy horses"
+      },
+      "note": "Independent verification/verification-fodder-practices.md: FP-01/FP-02 approved with limits. Historical resource context and universal biology are separate premises; no local feeding practice, current resource, animal, ration or outcome follows.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:early-rus-hunting-resource-grounds",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:flax-hemp-cultivation",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:hemp-stem-processing",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:hemp-tow",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:one-piece-ash-hunting-bow",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:hunting-fur-procurement",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:tree-bort-practice",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:tree-climbing-hook",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:honey",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:sickle",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:sheep-shears",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:hay",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:horse-forage-feeding",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:early-rus-hunting-ground-terms",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:early-rus-hunting-resource-grounds",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "early_rus_chronicle_lovishcha_and_perevesishcha_in_princely_resource_ground_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:early-rus-hunting-ground-terms"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-flax-hemp-cultivation",
+      "domain": "environment",
+      "subject_ref": "wk:environment:flax-hemp-cultivation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "old_rus_flax_hemp_cultivation_attested_by_cited_eleventh_century_ustav"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-fibre-cultivation-processing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-hemp-stem-fibre",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:hemp-stem-processing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hemp_fibre_obtained_from_hemp_stems_in_historical_rus_practice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-fibre-cultivation-processing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-hemp-processing-tow",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:hemp-stem-processing",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "tow_was_waste_of_hemp_processing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-fibre-cultivation-processing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-tow-log-gaps",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:hemp-tow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hemp_tow_used_in_laying_logs_and_caulking_log_gaps"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-fibre-cultivation-processing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-ash-hunting-bow",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:one-piece-ash-hunting-bow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "complete_hunting_bow_cut_from_one_piece_of_ash_attested_second_quarter_thirteenth_century"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1225,
+          "to": 1250,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-hunting-bow"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-hunting-economic-context",
+      "domain": "environment",
+      "subject_ref": "wk:environment:hunting-fur-procurement",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hunting_fur_procurement_part_of_medieval_novgorod_regional_economy"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-hunting-fur-context"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-rural-tree-borts",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:tree-bort-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "tree_bort_practice_mainly_rural_novgorod_land_with_limited_archaeological_visibility"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-tree-bort-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-bort-climbing-hooks",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:tree-climbing-hook",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "nerev_tree_climbing_hook_parts_associated_with_obtaining_honey"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-tree-bort-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-borts-honey",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:tree-bort-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "honey_product_of_tree_bort_practice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-tree-bort-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:agriculture-fauna-borts-wax",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:tree-bort-practice",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wax_product_of_tree_bort_practice"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:agriculture-fauna-tree-bort-practice"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:harvest-sickle-crops-grasses",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:sickle",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "precision": "range",
+          "from": 1100,
+          "to": 1300
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:harvest-tools-use"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:harvest-sickle-wooden-handle",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:sickle",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "precision": "range",
+          "from": 1100,
+          "to": 1300
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:harvest-tools-use"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:harvest-sheep-shearing-scissors",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:sheep-shears",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "precision": "range",
+          "from": 1100,
+          "to": 1300
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:harvest-sheep-shears"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:harvest-scythe-iron-steel-specimen",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:scythe",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "supported"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "precision": "range",
+          "from": 1100,
+          "to": 1300
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:harvest-sista-scythe"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fodder-hay-account",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:hay",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hay_in_fragmentary_late_xii_early_xiii_novgorod_account"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fodder-hay-account"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fodder-healthy-horse-forage",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:horse-forage-feeding",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hay_and_pasture_forage_are_feeds_for_healthy_horses"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:fodder-healthy-horse-forage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:early-rus-hunting-resource-grounds",
+      "locale": "ru",
+      "labels": [
+        "Раннерусские промысловые угодья"
+      ],
+      "short_definition": "Ловища и перевесища в раннерусской летописной традиции",
+      "search_aliases": [
+        "ловища",
+        "перевесища",
+        "ловля"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:early-rus-hunting-resource-grounds",
+      "locale": "en",
+      "labels": [
+        "Early-Rus hunting-resource grounds"
+      ],
+      "short_definition": "Lovishcha and perevesishcha in early-Rus chronicle tradition",
+      "search_aliases": [
+        "lovishcha",
+        "perevesishcha",
+        "trapping context"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:flax-hemp-cultivation",
+      "locale": "ru",
+      "labels": [
+        "Выращивание льна и конопли"
+      ],
+      "short_definition": "Историческая совместимость культур; не поле, календарь или урожай.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:flax-hemp-cultivation",
+      "locale": "en",
+      "labels": [
+        "Flax and hemp cultivation"
+      ],
+      "short_definition": "Historical crop compatibility, not a field, calendar or harvest.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:hemp-stem-processing",
+      "locale": "ru",
+      "labels": [
+        "Обработка стеблей конопли"
+      ],
+      "short_definition": "Получение пенькового волокна и пакли; не точный рецепт.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:hemp-stem-processing",
+      "locale": "en",
+      "labels": [
+        "Hemp-stem processing"
+      ],
+      "short_definition": "Obtaining hemp fibre and tow, not an exact recipe.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hemp-tow",
+      "locale": "ru",
+      "labels": [
+        "Конопляная пакля"
+      ],
+      "short_definition": "Пакля как отход обработки конопли; не просмоленная пакля.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hemp-tow",
+      "locale": "en",
+      "labels": [
+        "Hemp tow"
+      ],
+      "short_definition": "Tow as hemp-processing waste; not tarred tow.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:one-piece-ash-hunting-bow",
+      "locale": "ru",
+      "labels": [
+        "Цельнодеревянный ясеневый охотничий лук"
+      ],
+      "short_definition": "Археологически засвидетельствованная форма; не текущее оружие или его параметры.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:one-piece-ash-hunting-bow",
+      "locale": "en",
+      "labels": [
+        "One-piece ash hunting bow"
+      ],
+      "short_definition": "Archaeologically attested form, not a present weapon or its performance.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:hunting-fur-procurement",
+      "locale": "ru",
+      "labels": [
+        "Охота и добыча пушнины"
+      ],
+      "short_definition": "Региональный промысловый контекст; не право, добыча или умение NPC.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:hunting-fur-procurement",
+      "locale": "en",
+      "labels": [
+        "Hunting and fur procurement"
+      ],
+      "short_definition": "Regional economic context, not a right, game or NPC expertise.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:tree-bort-practice",
+      "locale": "ru",
+      "labels": [
+        "Бортничество"
+      ],
+      "short_definition": "Преимущественно сельский древесный промысел; не домашний улей или пасека.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:tree-bort-practice",
+      "locale": "en",
+      "labels": [
+        "Tree-based wild-bee keeping"
+      ],
+      "short_definition": "Mainly rural tree-based practice, not a domestic hive or apiary.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tree-climbing-hook",
+      "locale": "ru",
+      "labels": [
+        "Крюк для подъёма на дерево"
+      ],
+      "short_definition": "Археологический контекст приспособлений для получения мёда.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tree-climbing-hook",
+      "locale": "en",
+      "labels": [
+        "Tree-climbing hook"
+      ],
+      "short_definition": "Archaeological context of climbing equipment for obtaining honey.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:honey",
+      "locale": "ru",
+      "labels": [
+        "Мёд"
+      ],
+      "short_definition": "Материальный продукт; существование, количество и безопасность определяются отдельно.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:honey",
+      "locale": "en",
+      "labels": [
+        "Honey"
+      ],
+      "short_definition": "Material product; presence, quantity and safety are established separately.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sickle",
+      "locale": "ru",
+      "labels": [
+        "Серп"
+      ],
+      "short_definition": "Серп",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sickle",
+      "locale": "en",
+      "labels": [
+        "Sickle"
+      ],
+      "short_definition": "Sickle",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sheep-shears",
+      "locale": "ru",
+      "labels": [
+        "Ножницы для стрижки овец"
+      ],
+      "short_definition": "Ножницы для стрижки овец",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sheep-shears",
+      "locale": "en",
+      "labels": [
+        "Sheep-shearing scissors"
+      ],
+      "short_definition": "Sheep-shearing scissors",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hay",
+      "locale": "ru",
+      "labels": [
+        "Сено"
+      ],
+      "short_definition": "Материал, упомянутый в исторической хозяйственной записи; конкретный запас не задаётся.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hay",
+      "locale": "en",
+      "labels": [
+        "Hay"
+      ],
+      "short_definition": "Material mentioned in a historical household account; no particular stock is supplied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:horse-forage-feeding",
+      "locale": "ru",
+      "labels": [
+        "Фуражное питание лошадей"
+      ],
+      "short_definition": "Биологическое отношение корма и здоровой лошади, отдельное от исторической практики и рациона.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:horse-forage-feeding",
+      "locale": "en",
+      "labels": [
+        "Horse forage feeding"
+      ],
+      "short_definition": "A biological feed relation for healthy horses, separate from historical practice or an individual ration.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:early-rus-hunting-ground-terms",
+      "locale": "ru",
+      "runtime_text": "В приводимой Юшковым раннерусской летописной традиции ловища и перевесища названы в контексте княжеских промысловых угодий. Перевесища прямо отнесены к Днепру и Десне, а не к Новгородской земле; соседнее упоминание Мсты и Луги не меняет их географию. Для Новгородской земли 1100–1300 гг. это лишь вывод средней уверенности о совместимой промысловой категории, не описание механизма ловушки. Он не доказывает нынешнее угодье, ловушку, сеть, верёвку, приманку, животное, улов, собственника, право, персонал, навык или доступ.",
+      "search_aliases": [
+        "ловища",
+        "перевесища"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:early-rus-hunting-ground-terms",
+      "locale": "en",
+      "runtime_text": "In the early-Rus chronicle tradition quoted by Yushkov, lovishcha and perevesishcha are named in a princely resource-ground context. The perevesishcha are explicitly on the Dnieper and Desna, not in Novgorod Land; the neighbouring Msta/Luga passage does not relocate them. For Novgorod Land in 1100–1300 this is only an inferred, medium-confidence compatible subsistence category, not a trap mechanism. It establishes no present ground, trap, net, rope, bait, animal, catch, owner, right, staff, skill or access.",
+      "search_aliases": [
+        "lovishcha",
+        "perevesishcha",
+        "trapping context"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-flax-hemp-cultivation",
+      "locale": "ru",
+      "runtime_text": "КСИА 232 связывает свидетельство выращивания льна и конопли на Руси с Уставом князя Ярослава XI века. Для Новгородской земли около 1230 года это вывод о совместимости культур по более раннему свидетельству, не местное поле, семена, работник, календарь или урожай.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-flax-hemp-cultivation",
+      "locale": "en",
+      "runtime_text": "KSIA 232 attributes evidence of flax and hemp cultivation in Rus to Prince Yaroslav's eleventh-century Ustav. For Novgorod Land around 1230 this is crop compatibility inferred from earlier evidence, not a local field, seed, worker, calendar or harvest.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-hemp-stem-fibre",
+      "locale": "ru",
+      "runtime_text": "В описанной историко-русской практике пеньковое волокно добывали из стеблей конопли. Это материально-процессная связь, не доказательство наличия растения или готового волокна; способ обработки, инструменты, количество, качество и результат конкретной работы не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-hemp-stem-fibre",
+      "locale": "en",
+      "runtime_text": "In the described historical-Rus practice, hemp fibre was obtained from hemp stems. This material-process relation proves neither a present plant nor prepared fibre; processing method, tools, quantity, quality and an individual work result are not specified.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-hemp-processing-tow",
+      "locale": "ru",
+      "runtime_text": "Пакля названа отходом обработки конопли в описании историко-русской практики. Связь допускает побочный материал обработки, но не создаёт запас, массу, качество или отход конкретной операции без реального сырья и работы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-hemp-processing-tow",
+      "locale": "en",
+      "runtime_text": "Tow is described as waste of hemp processing in the historical-Rus account. This supports a processing byproduct, not a stock, mass, quality or waste from an individual operation without actual input and work.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-tow-log-gaps",
+      "locale": "ru",
+      "runtime_text": "Конопляную паклю в описанной практике использовали при укладке брёвен и конопатке щелей сруба. Это исторически совместимое применение, не обязательный способ, просмоление, гарантия герметичности, существующий сруб, запас пакли или успешное уплотнение.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-tow-log-gaps",
+      "locale": "en",
+      "runtime_text": "In the described practice, hemp tow was used when laying logs and caulking log gaps. This historically compatible use is not a compulsory method, tar treatment, watertightness guarantee, existing log structure, tow stock or successful sealing.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-ash-hunting-bow",
+      "locale": "ru",
+      "runtime_text": "В Новгороде найден целый охотничий лук, вырезанный из одного куска ясеня, в слое второй четверти XIII века. Находка подтверждает категорию и форму, не наличие оружия, стрел, охотника, дичи, доступа, дальность, урон или результат охоты в текущей сцене.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-ash-hunting-bow",
+      "locale": "en",
+      "runtime_text": "A complete hunting bow cut from one piece of ash was found in Novgorod in a second-quarter-thirteenth-century layer. It attests a category and form, not present weapons, arrows, a hunter, game, access, range, damage or a current hunting outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-hunting-economic-context",
+      "locale": "ru",
+      "runtime_text": "Археологическая и письменная сводка относит охоту и добычу пушнины к важным промыслам средневекового Новгорода и его земли. Это региональный экономический контекст, не занятие каждого жителя, дичь, запас меха, навык, налоговая обязанность или право охоты конкретного NPC.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-hunting-economic-context",
+      "locale": "en",
+      "runtime_text": "The archaeological and documentary synthesis identifies hunting and fur procurement as important activities in medieval Novgorod and its land. This regional economic context establishes no activity of every resident, game, fur stock, skill, tax duty or individual NPC's hunting right.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-rural-tree-borts",
+      "locale": "ru",
+      "runtime_text": "Бортничество в сводке о Новгородской земле описано как занятие преимущественно сельских жителей, с ограниченной археологической представленностью. Речь о древесном промысле, не об обязательном городском быте, домашнем улье, пасеке, текущей пчелиной семье или умении NPC.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-rural-tree-borts",
+      "locale": "en",
+      "runtime_text": "The synthesis describes tree-based wild-bee keeping in Novgorod Land as mainly rural and weakly represented archaeologically. This is a tree-based activity, not default urban life, a domestic hive, apiary, present bee colony or NPC expertise.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-bort-climbing-hooks",
+      "locale": "ru",
+      "runtime_text": "На Неревском раскопе найдены части приспособлений с крюками для подъёма на деревья за мёдом. Это ограниченная связь оборудования с бортническим контекстом, не наличие крюка, дерева, дупла, мёда, доступа, навыка или безопасного подъёма сейчас.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-bort-climbing-hooks",
+      "locale": "en",
+      "runtime_text": "The Nerev excavation yielded parts of hook-equipped devices for climbing trees to obtain honey. This bounded equipment-function relation proves no present hook, tree, cavity, honey, access, skill or safe ascent.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-borts-honey",
+      "locale": "ru",
+      "runtime_text": "Мёд засвидетельствован как продукт бортничества в средневековой новгородской сводке. Это историческая связь промысла и продукта, не текущий урожай, запас, количество, съедобность, владелец или способ сбора.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-borts-honey",
+      "locale": "en",
+      "runtime_text": "Honey is attested as a product of tree-based wild-bee keeping in the medieval Novgorod synthesis. This historical activity-product relation creates no current harvest, stock, quantity, food-safety conclusion, owner or collection method.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-borts-wax",
+      "locale": "ru",
+      "runtime_text": "Воск также назван продуктом бортничества в средневековой новгородской сводке. Это не домашний улей, текущий запас, количество, технология переработки, право на продукт или торговая цена.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:agriculture-fauna-borts-wax",
+      "locale": "en",
+      "runtime_text": "Wax is also identified as a product of tree-based wild-bee keeping in the medieval Novgorod synthesis. This establishes no domestic hive, present stock, quantity, processing technology, entitlement to the product or trade price.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:harvest-sickle-crops-grasses",
+      "locale": "ru",
+      "runtime_text": "В домонгольском древнерусском материале серп описан как орудие уборки хлебных культур и трав. Это историческая совместимость для Новгородской земли, не обязательный способ всякой уборки и не наличие урожая, работника или серпа в сцене.",
+      "search_aliases": [
+        "серп уборка урожая"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:harvest-sickle-crops-grasses",
+      "locale": "en",
+      "runtime_text": "In pre-Mongol Old Rus material, the sickle is described as a tool for harvesting grain crops and grasses. This is historical compatibility for Novgorod Land, not a mandatory method for every harvest or the presence of a crop, worker or sickle.",
+      "search_aliases": [
+        "sickle crop harvest"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:harvest-sickle-wooden-handle",
+      "locale": "ru",
+      "runtime_text": "У древнерусского серпа черенок мог иметь деревянную рукоять; Колчин сообщает и о сохранившихся рукоятях. Это возможность конструкции, не универсальное устройство любого серпа, размеры рукояти или доступный материал.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:harvest-sickle-wooden-handle",
+      "locale": "en",
+      "runtime_text": "An Old Rus sickle tang could carry a wooden handle; Kolchin also reports preserved handles. This is a construction possibility, not a universal sickle design, handle dimensions or available material.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:harvest-sheep-shearing-scissors",
+      "locale": "ru",
+      "runtime_text": "Ножницы для стрижки овец названы среди древнерусских железных и стальных сельскохозяйственных и промысловых орудий. Это совместимый материально-производственный контекст, не наличие овец, шерсти, корма или навыка стрижки у конкретного NPC.",
+      "search_aliases": [
+        "стрижка овец ножницы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:harvest-sheep-shearing-scissors",
+      "locale": "en",
+      "runtime_text": "Sheep-shearing scissors are named among Old Rus iron and steel agricultural and productive implements. This is compatible material and work context, not the presence of sheep, wool or fodder, or a particular NPC's shearing skill.",
+      "search_aliases": [
+        "sheep shearing tools"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:harvest-scythe-iron-steel-specimen",
+      "locale": "ru",
+      "runtime_text": "Исследованная коса XI–XII вв. из Систы, курган 9 новгородской группы, сочетала стальную рабочую полосу с железной основой и боковыми частями. Это один ранний образец, не обязательная конструкция всех кос или числовая рецептура металла.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:harvest-scythe-iron-steel-specimen",
+      "locale": "en",
+      "runtime_text": "The examined XI–XII-century scythe from Sista, kurgan 9 of the Novgorod group, combined a steel working strip with an iron body and sides. This is one earlier specimen, not a mandatory construction for all scythes or a numerical metal recipe.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fodder-hay-account",
+      "locale": "ru",
+      "runtime_text": "Сено упомянуто в фрагментарной новгородской хозяйственной записи № 986, датируемой поздним XII — ранним XIII веком, с возможным сдвигом к более раннему времени. Для 1230 года это косвенная совместимость материала, не свидетельство заготовки, кормления, зимнего хранения, общего тарифа, количества или текущего запаса.",
+      "search_aliases": [
+        "сено хозяйственная запись"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fodder-hay-account",
+      "locale": "en",
+      "runtime_text": "Hay is mentioned in fragmentary Novgorod household record no. 986, dated to the late twelfth–early thirteenth century, with a possible earlier shift. For 1230 this is inferred material compatibility, not evidence of haymaking, feeding, winter storage, a general price, quantity or present stock.",
+      "search_aliases": [
+        "hay household account"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fodder-healthy-horse-forage",
+      "locale": "ru",
+      "runtime_text": "Сено и пастбищный фураж являются кормом для здоровых лошадей. Это общее биологическое отношение, не свидетельство средневековой практики, здоровья или диеты конкретной лошади, наличия корма, права доступа, рациона или результата кормления.",
+      "search_aliases": [
+        "лошадь корм сено фураж"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fodder-healthy-horse-forage",
+      "locale": "en",
+      "runtime_text": "Hay and pasture forage are feeds for healthy horses. This is a general biological relation, not evidence of medieval practice, a particular horse's health or diet, present feed, access rights, a ration or a feeding outcome.",
+      "search_aliases": [
+        "horse feed hay pasture forage"
+      ]
+    }
+  ]
+}

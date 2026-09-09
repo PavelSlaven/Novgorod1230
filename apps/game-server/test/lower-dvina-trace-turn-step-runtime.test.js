@@ -374,6 +374,7 @@ function domainPlan(request, operation) {
     check: null,
     continuation: null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: 'delegate_existing_lower_dvina_owner',
     reason: 'Действие передаётся существующему владельцу механики.'
   };
@@ -448,6 +449,7 @@ function discoveryPlan(request) {
     check: null,
     continuation: null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: 'inspect_visible_wreck',
     reason: 'Осмотр принадлежит существующему discovery owner.'
   };

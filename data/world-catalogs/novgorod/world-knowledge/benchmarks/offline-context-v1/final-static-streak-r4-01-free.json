@@ -1,0 +1,183 @@
+{
+  "batch": "final-static-streak-r4-01",
+  "generator": "r4-b1-free",
+  "sampling_component": "free",
+  "candidate_commit": "b6feb79880b8221d2f046367c00ef310b898f0cd",
+  "cases": [
+    {
+      "case_id": "fssr4-01-free-001",
+      "location": "a damp cellar beneath a Novgorod courtyard",
+      "person": "a household servant checking winter stores",
+      "circumstances": "meltwater has reached the bottom row of turnip baskets, while a faint sour smell comes from a covered jar beside them",
+      "situation": "The servant has one lamp, hears rats behind a plank wall, and must decide what can be moved before night frost returns."
+    },
+    {
+      "case_id": "fssr4-01-free-002",
+      "location": "a sandy bank below a boat landing on the Volkhov",
+      "person": "a fisherman mending a net at dawn",
+      "circumstances": "his bare hands have gone numb in wet wind, and the net carries a strip of river weed with unfamiliar small shells attached",
+      "situation": "A loaded boat is expected soon, but the bank has begun to crumble under the mooring stake."
+    },
+    {
+      "case_id": "fssr4-01-free-003",
+      "location": "the work floor of a village smithy",
+      "person": "a young apprentice carrying charcoal",
+      "circumstances": "rain blows through the open doorway onto the packed-earth floor and turns ash near the forge into slick paste",
+      "situation": "The master has left a heated iron bar on the anvil while a horse shifts uneasily outside the threshold."
+    },
+    {
+      "case_id": "fssr4-01-free-004",
+      "location": "a rye field beyond the town palisade",
+      "person": "a farmer inspecting a low patch after heavy rain",
+      "circumstances": "several stalks lie flattened and the soil holds standing water, while insects rise in clouds when he parts the leaves",
+      "situation": "He has to judge whether a drainage cut would help without sending more water toward the neighboring plot."
+    },
+    {
+      "case_id": "fssr4-01-free-005",
+      "location": "a narrow upper room in a merchant's house",
+      "person": "a woman spinning flax beside a window",
+      "circumstances": "a child has upset a bowl of hot gruel over a wool cloak drying by the stove",
+      "situation": "Steam fills the room, the child is crying and clutching one hand, and the firewood is nearly exhausted."
+    },
+    {
+      "case_id": "fssr4-01-free-006",
+      "location": "a spruce-and-pine forest track south of Novgorod",
+      "person": "a charcoal burner returning with a hand sledge",
+      "circumstances": "fresh snow hides the ruts, but one side of the sledge keeps sinking where the ground is softer than it looks",
+      "situation": "He hears cracking branches downhill and notices that his boot binding has begun to loosen."
+    },
+    {
+      "case_id": "fssr4-01-free-007",
+      "location": "a communal bakehouse in late afternoon",
+      "person": "an elderly baker tending the oven",
+      "circumstances": "a loaf has split deeply along one side and smoke is escaping from a crack in the clay dome",
+      "situation": "A queue of households waits with dough, while a gust through the door keeps changing the fire's draw."
+    },
+    {
+      "case_id": "fssr4-01-free-008",
+      "location": "a reed bed at the edge of Lake Ilmen",
+      "person": "a girl gathering thatching reeds",
+      "circumstances": "she finds a duck nest among the stems and sees a dark ripple moving toward the shallow water where she left her bundle",
+      "situation": "Clouds are lowering, and the path back across the marsh is already wet above her ankles."
+    },
+    {
+      "case_id": "fssr4-01-free-009",
+      "location": "a cooper's yard behind the market",
+      "person": "a porter rolling an empty cask",
+      "circumstances": "one hoop has slipped after the cask struck a stone, and sticky dark liquid from another barrel makes the boards underfoot slippery",
+      "situation": "The porter needs the cask for water before a cart leaves, but the cooper is busy heating hoops across the yard."
+    },
+    {
+      "case_id": "fssr4-01-free-010",
+      "location": "a willow footbridge over a flooded ditch",
+      "person": "a messenger on foot",
+      "circumstances": "the bridge deck flexes under his weight and a floating branch repeatedly catches on its downstream lashings",
+      "situation": "He carries a waxed packet under his tunic and can see an alternate ford only through waist-deep brown water."
+    },
+    {
+      "case_id": "fssr4-01-free-011",
+      "location": "a barn loft stacked with hay",
+      "person": "a stable worker feeding two oxen",
+      "circumstances": "one ox refuses its fodder and breathes noisily, while a lantern has been hung too close to loose hay by someone else",
+      "situation": "Outside, freezing rain begins to strike the roof and the worker is alone."
+    },
+    {
+      "case_id": "fssr4-01-free-012",
+      "location": "a roadside bathhouse at dusk",
+      "person": "a traveler warming up after a river crossing",
+      "circumstances": "his wool clothing is soaked through and he feels increasingly clumsy while other bathers are heating stones",
+      "situation": "He notices a patch of pale skin on his foot where his wet boot rubbed all day, but his horse and baggage remain outside in the rain."
+    },
+    {
+      "case_id": "fssr4-01-free-013",
+      "location": "a small garden beside a wooden dwelling",
+      "person": "a widow cutting greens for supper",
+      "circumstances": "tiny insects cluster beneath curled leaves, and a nearby cabbage has holes along its outer leaves",
+      "situation": "A hen has escaped into the beds, and a brief shower begins before she can bring the cut greens indoors."
+    },
+    {
+      "case_id": "fssr4-01-free-014",
+      "location": "a millpond spillway in spring",
+      "person": "a miller's assistant clearing debris",
+      "circumstances": "a mat of sticks and dead reeds has collected against the sluice, raising water beside the wheel",
+      "situation": "The current is strong, a loose board knocks against the mill wall, and the miller is not yet back from the village."
+    },
+    {
+      "case_id": "fssr4-01-free-015",
+      "location": "a textile stall under a market awning",
+      "person": "a tailor sorting cloth in drizzle",
+      "circumstances": "two folded lengths have been splashed by mud from a passing cart, one fine and one coarse, and their colors look altered while wet",
+      "situation": "He must protect the remaining stock as wind drives rain beneath the awning."
+    },
+    {
+      "case_id": "fssr4-01-free-016",
+      "location": "a shallow clay pit on the edge of a village",
+      "person": "a potter digging clay with her brother",
+      "circumstances": "the exposed clay face has softened after rain and a narrow crack opens above their working spot",
+      "situation": "Their basket is half full, but the cart path has become too muddy for a loaded wheelbarrow."
+    },
+    {
+      "case_id": "fssr4-01-free-017",
+      "location": "a dark passage beside a churchyard wall",
+      "person": "a boy taking a shortcut home",
+      "circumstances": "a heavy fog has muffled sounds, and he finds a small oil lamp still burning on the ground beside fresh boot prints",
+      "situation": "The lane ahead is unlit, his own cloak is thin, and evening bells have just stopped."
+    },
+    {
+      "case_id": "fssr4-01-free-018",
+      "location": "a boat shed on a low riverbank",
+      "person": "a boatbuilder examining a repaired hull",
+      "circumstances": "water seeps slowly through one seam after the first launch, and fresh pitch on the repair softens in direct sun",
+      "situation": "The owner wants to load the boat by morning, while the river level is falling and exposes sharp stones near the shed."
+    },
+    {
+      "case_id": "fssr4-01-free-019",
+      "location": "a peat-cutting ground beyond a wet meadow",
+      "person": "a laborer carrying a basket of peat bricks",
+      "circumstances": "one brick has crumbled into black dust after being dropped, and smoke from a nearby drying stack blows low across the pits",
+      "situation": "He begins coughing and cannot clearly see where firm ground ends near a water-filled cut."
+    },
+    {
+      "case_id": "fssr4-01-free-020",
+      "location": "a cramped room above a leatherworker's shop",
+      "person": "a cobbler cleaning a deep splinter from his palm",
+      "circumstances": "the hand is dirty from work, bleeding has slowed, and the splinter breaks when he tries to grasp it",
+      "situation": "He has orders due the next morning and the only other adult in the room is preparing a meal over a smoky hearth."
+    },
+    {
+      "case_id": "fssr4-01-free-021",
+      "location": "a meadow haystack after a thunderstorm",
+      "person": "a shepherd searching for a missing ewe",
+      "circumstances": "the haystack is warm and damp inside where rain penetrated, and he sees hoof marks leading toward a ditch filled with runoff",
+      "situation": "Lightning is still visible far away, while his dog circles a patch of flattened grass."
+    },
+    {
+      "case_id": "fssr4-01-free-022",
+      "location": "an upper landing in a wooden apartment house",
+      "person": "a child carrying a bucket of wash water",
+      "circumstances": "a step has cracked near the wall, and cold wind comes through a gap where roof snow has shifted",
+      "situation": "Below, people are carrying bundles outside after someone smelled smoke, but the child cannot see the source."
+    },
+    {
+      "case_id": "fssr4-01-free-023",
+      "location": "a low pasture beside a village road",
+      "person": "a drover leading a small group of cattle",
+      "circumstances": "one animal has caught a hind leg in a thorny brush tangle and the rest are drifting toward a patch of newly sown ground",
+      "situation": "The sun is setting, the road is rutted from rain, and the drover has only a staff and a length of rope."
+    },
+    {
+      "case_id": "fssr4-01-free-024",
+      "location": "a riverside kitchen garden before sunrise",
+      "person": "a cook collecting water and herbs",
+      "circumstances": "thin ice skins the puddles, while the riverbank path is slick with frost and a dog has disturbed something beneath a shrub",
+      "situation": "The cook needs to return before the household fire dies, but carries an uncovered wooden pail."
+    },
+    {
+      "case_id": "fssr4-01-free-025",
+      "location": "a busy lane beside a grain cart at midday",
+      "person": "a carter replacing a broken axle pin",
+      "circumstances": "the loaded cart leans toward a drainage ditch, its horse stamps at flies, and loose grain is spilling into mud from a split sack",
+      "situation": "Rain threatens again, traffic is backing up behind him, and he has an axe, cord, and spare wood but no forge."
+    }
+  ]
+}

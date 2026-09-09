@@ -201,6 +201,34 @@ test('M1 persists formal access on an existing authored container', () => {
   assert.equal(result.writes.updates.some(({ target_table: table, id }) =>
     table === 'party_items' && id === 'authored-item'), true);
 });
+
+test('M1 accepts owner-expanded ambient provenance only with a current source', () => {
+  const snapshot = structuredClone(mechanics('ambient-op', 500));
+  snapshot.provenance.source_kind = 'ordinary_direct_action_result';
+  snapshot.provenance.origin_kind = 'ambient_ordinary';
+  snapshot.provenance.source_refs = ['shore', 'profile:portion', 'context-digest'];
+  const operation = direct('create_entity', 'ambient-op', {
+    temp_ref: 'ambient-temp', entity_ref: 'runtime-item:ambient',
+    semantic_type: 'material_portion', name: 'горсть мокрого песка',
+    origin: { kind: 'ambient_ordinary', source_refs: [...snapshot.provenance.source_refs] },
+    facts: [], runtime_instance_mechanics_snapshot: snapshot,
+    placement: { holder_character_id: 'actor-1', physical_position: 'hands' }
+  });
+  assert.doesNotThrow(() => prepare({ state: baseState(), operations: [operation],
+    ambientPortionProfileRef: 'profile:portion' }));
+  const unknown = structuredClone(operation);
+  unknown.value.payload.origin.source_refs = ['profile:portion', 'context-digest'];
+  unknown.value.payload.runtime_instance_mechanics_snapshot.provenance.source_refs =
+    ['profile:portion', 'context-digest'];
+  assert.throws(() => prepare({ state: baseState(), operations: [unknown],
+    ambientPortionProfileRef: 'profile:portion' }), {
+    code: 'TRACE_TURN_STEP_REF_UNRESOLVED'
+  });
+  assert.throws(() => prepare({ state: baseState(), operations: [operation],
+    ambientPortionProfileRef: 'other:profile' }), {
+    code: 'TRACE_TURN_STEP_REF_UNRESOLVED'
+  });
+});
 test('M1 rejects container access payload detached from its code owner', () => {
   const forgedClose = direct('request_container_access', 'container-close', {
     container_ref: 'authored-item', access_kind: 'close',

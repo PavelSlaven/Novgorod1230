@@ -6,6 +6,8 @@ import {
 } from '@rus/turn';
 import { assembleTurnStepPlan, createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
+  '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
 test('turn step model sends the validated request to the isolated planner role', async () => {
@@ -42,16 +44,16 @@ test('turn step model sends the validated request to the isolated planner role',
     'Delegate movement',
     'A general look around already visible surroundings uses ordinary_scene_seed',
     'candidate-free scene seed',
-    'Focused inspect or search for hidden or new details uses discovery',
+    'focused inspect or search for an unspecified ordinary physical object',
     'ordinary_resolution.discovery_available is true',
     'exactly one request_discovery',
-    'one current visible target_ref',
-    'preserve the player query',
+    'every matching current visible target_ref',
+    'Do not summarize, translate, omit purpose',
     'never grant an impossible result',
     'skill proficiency is not',
     'no_experience still permits an attempt',
     'never report that the command or skill is missing',
-    'focused perception and is never achieved by visible_general_look',
+    'new physical detail',
     'create an absent referent',
     'move the actor for make_believe',
     'Classify interpretation.adaptation by the stated goal'
@@ -88,8 +90,8 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
       operations: [{ op: 'request_discovery',
         actor_ref: '<copy current actor ref from request>',
         discovery_kind: '<copy inspect or search from intent>',
-        target_refs: ['<copy one current visible searched location or entity ref>'],
-        query: '<copy player query>' }], check: null
+        target_refs: ['<copy every matching current visible searched location or entity ref in intent order>'],
+        query: '<copy exact earliest discovery segment from request.remaining_intent>' }], check: null
     });
     const mapping = mappings.focused_ordinary_discovery;
     assert.equal(validateTurnStepPlan({
@@ -104,15 +106,134 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
         target_refs: [input.player_safe_state.position.location_ref],
         query: input.remaining_intent }], check: mapping.check,
       continuation: null, clarification: null,
+      direct_result_kind: null,
       reason_code: 'ordinary_discovery', reason: 'Ищу обычную деталь.'
     }, { request: input }).ok, true);
-    assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary physical object, material, resource, or local physical detail[\s\S]*before and over[\s\S]*focused_ordinary_discovery exactly[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*one current visible target_ref[\s\S]*preserve the player query/u);
+    assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary physical object, material, resource, or local physical detail[\s\S]*before and over[\s\S]*focused_ordinary_discovery exactly[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*every matching current visible target_ref[\s\S]*discovery is the whole remaining intent[\s\S]*exact earliest discovery prefix[\s\S]*exact uncovered suffix[\s\S]*Code executes discovery targets one at a time/u);
     assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*sought ordinary detail need not be visible[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
     assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
     assert.match(prompt, /general current situation, ongoing activity, or who is nearby are ordinary_scene_seed while scene_seed_available is true and visible_general_look afterward/u);
-  assert.match(prompt, /required first handoff[\s\S]*tries to take, use, or transform an ordinary physical referent[\s\S]*no semantically matching item entity_ref[\s\S]*current visible sensory facts[\s\S]*ordinary referent merely sought in the current visible physical scope[\s\S]*request_discovery[\s\S]*continuation containing the complete intended handling or transformation[\s\S]*action_production owns the transformation/u);
+  assert.match(prompt, /Without a matching ambient_ordinary_capability or item entity_ref[\s\S]*must first acquire[\s\S]*ordinary_material_prerequisite[\s\S]*current visible sensory facts[\s\S]*ordinary referent merely sought in the current visible physical scope[\s\S]*request_discovery[\s\S]*continuation containing the complete intended handling or transformation[\s\S]*action_production owns the transformation/u);
   assert.match(prompt, /Every material physically incorporated[\s\S]*action_production is forbidden[\s\S]*Never smuggle an unreferenced material/u);
   }
+});
+
+test('later generic ordinary discovery drops only an exact stale root query',
+  async () => {
+    const rootIntent = 'Найти среди обломков сухой материал, прежде чем идти через кусты.';
+    const remainingIntent = 'прежде чем идти через кусты.';
+    const input = request({ root_player_action: rootIntent,
+      remaining_intent: remainingIntent, step_index: 2, working_revision: 1,
+      completed_steps: [{ step_index: 1, summary: 'Поиск выполнен.' }],
+      player_safe_state: {
+        position: { location_ref: 'shore' }, ordinary_resolution: {
+          discovery_available: true, container_resolution_available: false,
+          scene_seed_available: true
+        }
+      } });
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: {
+        interpretation: { player_goal: rootIntent,
+          grounded_attempt: remainingIntent, adaptation: 'literal' },
+        resolution: 'domain_request', operation_choice: null,
+        operations: [{ op: 'request_discovery', actor_ref: 'actor_mikula',
+          discovery_kind: 'search', target_refs: ['shore'],
+          query: rootIntent }], check: null, continuation: null,
+        clarification: null,
+        direct_result_kind: null, reason_code: 'ordinary_discovery',
+        reason: 'Повторный carrier.'
+      } }; }
+    } });
+    let auditCalls = 0;
+    const validateGrounding =
+      createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner: {
+        async run() {
+          auditCalls += 1;
+          return { output: { pass: true, concerns: [] } };
+        }
+      } });
+    for (const repairContext of [null, {
+      schema: 'turn_step_repair_context_v1', attempt: 2,
+      original_output: {}, structural_errors: [{
+        path: '$.operations.0.query', code: 'ordinary_discovery_query_identity',
+        message: 'must equal the current remaining_intent'
+      }]
+    }]) {
+      const plan = await model(input, repairContext);
+      assert.equal(plan.operations[0].query, remainingIntent);
+      assert.equal(plan.continuation, null);
+      const validation = validateTurnStepPlan(plan, { request: input });
+      assert.equal(validation.ok, true, JSON.stringify(validation.errors));
+      assert.equal(await validateGrounding({ plan, request: input,
+        resolved_domain_operations: [{ path: '$.operations.0',
+          owner_kind: 'ordinary_discovery' }] }), true);
+    }
+    assert.equal(auditCalls, 2);
+    const unsafe = assembleTurnStepPlan({
+      interpretation: { player_goal: rootIntent,
+        grounded_attempt: 'Найти сухую ветку.', adaptation: 'literal' },
+      resolution: 'domain_request', operation_choice: null,
+      operations: [{ op: 'request_discovery', actor_ref: 'actor_mikula',
+        discovery_kind: 'search', target_refs: ['shore'],
+        query: 'сухая ветка' }], check: null, continuation: {
+        remaining_intent: 'Потом идти.', depends_on_refs: []
+      }, clarification: null, direct_result_kind: null,
+      reason_code: 'ordinary_discovery', reason: 'Ищу ветку.'
+    }, { ...input, root_player_action:
+      'Найти сухую ветку. Разжечь огонь. Потом идти.', remaining_intent:
+      'Найти сухую ветку. Разжечь огонь. Потом идти.', step_index: 1 });
+    assert.equal(unsafe.operations[0].query, 'сухая ветка');
+    assert.equal(unsafe.continuation.remaining_intent, 'Потом идти.');
+    await assert.rejects(validateGrounding({ plan: unsafe,
+      request: { ...input, root_player_action:
+        'Найти сухую ветку. Разжечь огонь. Потом идти.', remaining_intent:
+        'Найти сухую ветку. Разжечь огонь. Потом идти.', step_index: 1 },
+      resolved_domain_operations: [{ path: '$.operations.0',
+        owner_kind: 'ordinary_discovery' }] }), {
+      code: 'TURN_STEP_PLAN_INVALID'
+    });
+  });
+
+test('turn step planner routes an exposed ambient portion through its capability ref', async () => {
+  const capabilityRef = 'capability:alluvial-silt-portion-v9';
+  const input = request({
+    root_player_action: 'Зачерпнуть пригоршню речного ила и сжать её.',
+    remaining_intent: 'Зачерпнуть пригоршню речного ила и сжать её.',
+    player_safe_state: { visible_context: { visible_objects: [{
+      entity_ref: { entity_kind: 'ambient_ordinary_capability', entity_id: capabilityRef },
+      display_label: 'пригоршня речного ила', recognition: 'code_owned_source_capability',
+      visible_status: 'available', ambient_portion_bounds: { quantity_unit: 'scoop',
+        min_quantity: 2, max_quantity: 4, min_mass_grams: 70, max_mass_grams: 900 }
+    }] } }
+  });
+  let prompt;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
+    prompt = call.messages[0].content;
+    return { output: {
+      interpretation: { player_goal: input.root_player_action,
+        grounded_attempt: 'Зачерпнуть пригоршню речного ила.', adaptation: 'literal' },
+      resolution: 'direct', goal_result: 'achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
+      operation_choice: null,
+      operations: [{ op: 'create_entity', temp_ref: 'taken-silt',
+        semantic_type: 'material_portion', name: 'пригоршня речного ила',
+        origin: { kind: 'ambient_ordinary', source_refs: [capabilityRef] }, facts: [],
+        mechanics: { mass_grams: 300, external_hand_cost: 1, carry_form: 'compact',
+          packing_slot_cost: 1, quantity: { value: 3, unit: 'scoop' }, container: null },
+        placement: { relation: 'held_by', target_ref: input.actor.actor_ref } }],
+      check: null, continuation: { remaining_intent: 'Сжать взятую порцию.',
+        depends_on_refs: ['taken-silt'] }, clarification: null,
+      reason_code: 'ambient_ordinary_portion_take', reason: 'Беру видимую порцию.'
+    } };
+  } } });
+  const plan = await model(input);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+  assert.deepEqual(plan.operations[0].origin,
+    { kind: 'ambient_ordinary', source_refs: [capabilityRef] });
+  assert.equal(plan.goal_result, 'pending');
+  assert.deepEqual(plan.continuation,
+    { remaining_intent: 'Сжать взятую порцию.', depends_on_refs: ['taken-silt'] });
+  assert.match(prompt, /ambient_ordinary_capability[\s\S]*exact code-owned permission and source[\s\S]*not an existing item alias or a discovery target[\s\S]*ambient_ordinary_portion_take before ordinary_material_prerequisite or action_production[\s\S]*sole origin\.source_refs[\s\S]*quantity\.unit from its ambient_portion_bounds[\s\S]*quantity\.value and mass_grams only within those exact min\/max bounds[\s\S]*effective type, name, mechanics, source, and profile values at commit[\s\S]*Never substitute any nearby, worn, held, or listed item ref[\s\S]*making that compound plan pending/u);
 });
 
 test('turn step planner and repair prompts map available container access exactly', async () => {
@@ -195,9 +316,9 @@ test('turn step planner prompt preserves only compound intent outside capability
     }
   }]);
   assert.match(prompt,
-    /direct preparation and action_production cannot share one plan[\s\S]*plan only move_entity now[\s\S]*still-unexecuted transformation in continuation/u);
+    /direct preparation and action_production cannot share one plan[\s\S]*explicit requested destination or spatial relation[\s\S]*no exact player-safe target ref[\s\S]*source's committed placement[\s\S]*preserve it as unexecuted continuation[\s\S]*item-local[\s\S]*never placement, attachment, holder, wearer, destination, or relocation[\s\S]*ordered explicit relocation, transformation, and placement[\s\S]*first move_entity now[\s\S]*each later placement again needs move_entity/u);
   assert.match(prompt,
-    /direct achieved plan with empty operations[\s\S]*must never claim that movement, item relocation, manipulation, transformation, speech, focused perception/u);
+    /Direct empty achieved or partially_achieved[\s\S]*player_safe_item_observation[\s\S]*supplied sensory facts[\s\S]*new physical detail/u);
   assert.match(prompt, /operation choice covers the intent[\s\S]*choice_id[\s\S]*Final continuation override for direct reality_limited or make_believe[\s\S]*stated action, purpose, manner, result, or qualifier[\s\S]*same grounding, not continuation[\s\S]*independently executable without that premise[\s\S]*every later sentence[\s\S]*continuation to null/u);
 });
 
@@ -266,145 +387,4 @@ test('turn step planner assembles exact domain operation and preserves independe
   assert.deepEqual(plan.operations, [candidate]);
   assert.equal(plan.continuation.remaining_intent,
     'Попросить спутника пойти со мной.');
-});
-
-test('turn step adapter rejects a hand-written admitted operation', async () => {
-  const candidate = { op: 'request_item_use', actor_ref: 'actor_mikula',
-    item_ref: 'container:road-bag', use_kind: 'operate', target_refs: [] };
-  const input = request({ available_domain_operations: [candidate],
-    player_safe_state: { visible_entities: [
-      { entity_ref: 'container:road-bag' }, { entity_ref: 'npc:zhdanko' }
-    ] } });
-  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
-    async run() { return { output: {
-      interpretation: { player_goal: 'Открыть сумку.',
-        grounded_attempt: 'Открыть сумку.', adaptation: 'literal' },
-      resolution: 'domain_request', operation_choice: null,
-      operations: [{ ...candidate, target_refs: ['npc:zhdanko'],
-        description: 'Забрать сумку.' }],
-      check: null, continuation: null, clarification: null,
-      reason_code: 'container_access', reason: 'Сумка доступна.'
-    } }; }
-  } });
-  const plan = await model(input);
-  assert.deepEqual(plan.operations, [{ ...candidate,
-    target_refs: ['npc:zhdanko'], description: 'Забрать сумку.' }]);
-  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
-});
-
-test('turn step adapter rejects an exact copied operation choice', () => {
-  const candidate = { op: 'request_discovery', actor_ref: 'actor_mikula',
-    discovery_kind: 'inspect', target_refs: ['shore'], query: 'Осмотреть.' };
-  const input = request({ available_domain_operations: [candidate] });
-  const plan = assembleTurnStepPlan({
-    interpretation: { player_goal: 'Найти доску.',
-      grounded_attempt: 'Найти доску.', adaptation: 'literal' },
-    resolution: 'domain_request', operation_choice: null,
-    operations: [candidate], check: null, continuation: null,
-    clarification: null, reason_code: 'ordinary_material_prerequisite',
-    reason: 'Нужен ordinary material.'
-  }, input);
-  assert.equal(plan.operations, undefined);
-  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
-});
-
-test('turn step adapter does not guess between duplicate admitted raw operations', () => {
-  const operation = { op: 'request_item_use', actor_ref: 'actor_mikula',
-    item_ref: 'container:road-bag', use_kind: 'operate', target_refs: [] };
-  const input = request();
-  const plan = assembleTurnStepPlan({
-    interpretation: { player_goal: 'Открыть сумку.',
-      grounded_attempt: 'Открыть сумку.', adaptation: 'literal' },
-    resolution: 'domain_request', operation_choice: null,
-    operations: [{ ...operation, target_refs: ['npc:zhdanko'],
-      description: 'Забрать сумку.' }],
-    check: null, continuation: null, clarification: null,
-    reason_code: 'container_access', reason: 'Сумка доступна.'
-  }, input, [
-    { choice_id: 'choice_1', operation },
-    { choice_id: 'choice_2', operation: { ...operation,
-      target_refs: ['npc:zhdanko'] } }
-  ]);
-  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
-});
-
-test('turn step choice ids distinguish competing admitted operation kinds',
-  async () => {
-    const discovery = { op: 'request_discovery', actor_ref: 'actor_mikula',
-      discovery_kind: 'inspect', target_refs: ['shore'], query: 'Осмотреть берег.' };
-    const fire = { op: 'request_world_process', actor_ref: 'actor_mikula',
-      process_action: 'start', process_ref: null, process_kind: 'fire',
-      source_refs: ['kindling'], target_refs: ['firesteel'],
-      description: 'Разжечь огонь.' };
-    const input = request({ available_domain_operations: [discovery],
-      player_safe_state: { local_world_process: { allowed: [fire] } } });
-    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
-      async run(call) {
-        assert.match(call.messages[0].content,
-          /domain_operation_1_request_discovery_inspect/u);
-        assert.match(call.messages[0].content,
-          /domain_operation_2_request_world_process_start/u);
-        return { output: {
-          interpretation: { player_goal: 'Разжечь огонь.',
-            grounded_attempt: 'Разжечь огонь.', adaptation: 'literal' },
-          resolution: 'domain_request',
-          operation_choice: 'domain_operation_2_request_world_process_start',
-          continuation: null, clarification: null, check: null,
-          reason_code: 'local_world_process_start', reason: 'Огонь доступен.'
-        } };
-      }
-    } });
-    const plan = await model(input);
-    assert.deepEqual(plan.operations, [fire]);
-  });
-
-test('turn step choice preserves the selected semantic input variant', async () => {
-  const fuel = { op: 'request_world_process', actor_ref: 'actor_mikula',
-    process_action: 'affect', process_ref: 'process:active',
-    process_kind: 'fire', source_refs: ['item:fuel'], target_refs: [],
-    description: 'Добавить топливо в огонь.' };
-  const cooling = { ...fuel, source_refs: ['item:cooling'],
-    description: 'Воздействовать водой на огонь.' };
-  const input = request({ player_safe_state: { local_world_process: {
-    allowed: [fuel, cooling] } } });
-  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
-    async run(call) {
-      assert.match(call.messages[0].content, /Добавить топливо в огонь/u);
-      assert.match(call.messages[0].content, /Воздействовать водой на огонь/u);
-      assert.match(call.messages[0].content,
-        /request_world_process_affect_добавить_топливо_в_огонь/u);
-      assert.match(call.messages[0].content,
-        /request_world_process_affect_воздействовать_водой_на_огонь/u);
-      return { output: {
-        interpretation: { player_goal: 'Охладить процесс.',
-          grounded_attempt: 'Применить охлаждающий состав.',
-          adaptation: 'literal' },
-        resolution: 'domain_request',
-        operation_choice:
-          'domain_operation_2_request_world_process_affect_воздействовать_водой_на_огонь',
-        continuation: null, clarification: null, check: null,
-        reason_code: 'world_process_affect', reason: 'Выбран подходящий вход.'
-      } };
-    }
-  } });
-  const plan = await model(input);
-  assert.deepEqual(plan.operations, [cooling]);
-});
-
-test('turn step assembly does not invent omitted semantic fields', () => {
-  const input = request();
-  const semantic = output();
-  delete semantic.operations;
-  delete semantic.check;
-  delete semantic.continuation;
-  delete semantic.clarification;
-  const plan = assembleTurnStepPlan(semantic, input);
-  assert.equal(plan.operations, undefined);
-  assert.equal(plan.check, undefined);
-  assert.equal(plan.continuation, undefined);
-  assert.equal(plan.clarification, undefined);
-  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
-  semantic.operations = [];
-  semantic.operation_choice = 'unknown_choice';
-  assert.equal(assembleTurnStepPlan(semantic, input).operations, undefined);
 });

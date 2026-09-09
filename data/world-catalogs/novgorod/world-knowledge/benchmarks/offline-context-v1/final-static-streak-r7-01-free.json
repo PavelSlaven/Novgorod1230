@@ -1,0 +1,33 @@
+{
+  "schema_version": "world_knowledge_static_acceptance_batch_v1",
+  "batch_id": "final-static-streak-r7-01-free",
+  "candidate_commit": "2286d4fcbc82a05da74dcbbd9960b8c0dedc40b8",
+  "sampling": { "kind": "free_adversarial", "case_count": 25 },
+  "cases": [
+    { "case_id": "r7-01-f001", "situation": "An explorer finds a cave where a small flame repeatedly dims near the floor.", "knowledge_need": "Explain real-world atmospheric hazards and safer observation methods." },
+    { "case_id": "r7-01-f002", "situation": "A person proposes using a copper vessel to store sour food for many days.", "knowledge_need": "Assess material-food interactions and practical alternatives." },
+    { "case_id": "r7-01-f003", "situation": "After lightning strikes nearby, a tree smolders internally but shows little surface flame.", "knowledge_need": "Explain delayed fire risk and safe response." },
+    { "case_id": "r7-01-f004", "situation": "A traveler notices one side of a hillside has many fresh cracks after long rain.", "knowledge_need": "Assess landslide warning signs and safe route choices." },
+    { "case_id": "r7-01-f005", "situation": "A household wants to reuse a cracked clay jar for carrying hot coals.", "knowledge_need": "Explain thermal and handling risks." },
+    { "case_id": "r7-01-f006", "situation": "A group hears distant continuous rumbling while crossing a narrow valley after snowfall.", "knowledge_need": "Interpret avalanche-related danger cues and immediate safer behavior." },
+    { "case_id": "r7-01-f007", "situation": "A wooden chest stored in an attic has pinholes and fine dust beneath it.", "knowledge_need": "Identify likely wood-boring damage and containment steps." },
+    { "case_id": "r7-01-f008", "situation": "A campfire burns with an unusual greenish tint after scrap material was added.", "knowledge_need": "Explain why flame color alone is uncertain and what fumes may imply." },
+    { "case_id": "r7-01-f009", "situation": "A person plans to drink melted snow directly during hard travel.", "knowledge_need": "Explain hydration, cooling, and contamination considerations." },
+    { "case_id": "r7-01-f010", "situation": "A flock of birds abruptly leaves reeds along a quiet shore.", "knowledge_need": "Discuss plausible disturbance causes and limits of inference." },
+    { "case_id": "r7-01-f011", "situation": "A sealed food container bulges after being left near a hearth.", "knowledge_need": "Explain gas pressure, spoilage risk, and safe handling." },
+    { "case_id": "r7-01-f012", "situation": "A person wants to use a polished metal dish as a signal mirror at dusk.", "knowledge_need": "Assess geometry, visibility, and realistic range limits." },
+    { "case_id": "r7-01-f013", "situation": "A stream appears clear but flows below a heavily used animal crossing.", "knowledge_need": "Explain why clarity does not establish water safety." },
+    { "case_id": "r7-01-f014", "situation": "A wagon wheel begins to wobble after one spoke is split.", "knowledge_need": "Explain mechanical progression of failure and travel limits." },
+    { "case_id": "r7-01-f015", "situation": "A barn has a strong ammonia-like odor and people working inside feel eye irritation.", "knowledge_need": "Assess ventilation and animal-waste gas hazards." },
+    { "case_id": "r7-01-f016", "situation": "Someone suggests covering a deep frostbitten hand with snow to warm it slowly.", "knowledge_need": "Explain why this is unsafe and what general first-aid priorities apply." },
+    { "case_id": "r7-01-f017", "situation": "A traveler finds a patch of ground warm enough to melt snow despite cold air.", "knowledge_need": "Offer plausible natural causes and safe investigation limits." },
+    { "case_id": "r7-01-f018", "situation": "A load of wet hay begins steaming in a tightly packed loft.", "knowledge_need": "Explain self-heating risk and urgent practical response." },
+    { "case_id": "r7-01-f019", "situation": "A person proposes crossing a bog by laying loose branches in a straight line.", "knowledge_need": "Assess flotation, anchoring, and route-selection risks." },
+    { "case_id": "r7-01-f020", "situation": "A dense fog forms rapidly over warm water as evening cools.", "knowledge_need": "Explain navigation hazards and why sound can mislead in fog." },
+    { "case_id": "r7-01-f021", "situation": "A suspected snakebite occurs far from help, but the species cannot be identified.", "knowledge_need": "Give general evidence-based first-aid priorities and harmful actions to avoid." },
+    { "case_id": "r7-01-f022", "situation": "A household discovers white crystalline deposits on the inside of a cellar wall.", "knowledge_need": "Explain moisture movement, salts, and structural implications." },
+    { "case_id": "r7-01-f023", "situation": "A shallow pond suddenly has many dead fish after a hot still night.", "knowledge_need": "Explain plausible oxygen and water-quality mechanisms without claiming a specific cause." },
+    { "case_id": "r7-01-f024", "situation": "A person wants to use a tightly wrapped cloth around a sprained ankle before walking several miles.", "knowledge_need": "Explain support versus circulation risk and practical reassessment." },
+    { "case_id": "r7-01-f025", "situation": "A wooden door swells shut after days of rain, trapping people in a room with a brazier.", "knowledge_need": "Explain swelling mechanics, ventilation danger, and low-risk escape priorities." }
+  ]
+}

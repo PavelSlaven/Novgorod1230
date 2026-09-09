@@ -1,0 +1,20 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place07-place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+      "claim_ref": "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+      "claim_digest": "f85485d22f6e1359542e7d0a48b877d116d6cc4e3412b0ead20412ac40066e06",
+      "candidate_ref": "git:1ff05f837ea5f8ab1691240135d7fd3864ea7449:data/world-catalogs/novgorod/world-knowledge/production-v1/place-skin-fat-context-v1.json#claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss",
+      "auditor_ref": "/root/place06_verify_publish",
+      "independence_basis": "Independent source/domain reviewer distinct from author /root/place07_ecology_dye_research and root editor; actual firsthand source reading, navigation-only child and access limits are recorded in the review note.",
+      "evidence_checked": [
+        "evidence:place-skin-fat-context-oily-film"
+      ],
+      "review_ref": "verification/place-skin-fat-context-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Conditional oily/fatty continuous hydrophobic surface-film relation only; no assertion that every fat, oil or wax is suitable, retained or tolerated, and no treatment, cure, historical medicine, recipe, dosage, burn, weeping-skin or infection claim."
+    }
+  ]
+}

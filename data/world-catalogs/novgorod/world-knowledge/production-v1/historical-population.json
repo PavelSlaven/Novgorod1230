@@ -1,0 +1,4485 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {
+    "material_culture": {
+      "attested_use": {
+        "subject_domains": [
+          "material_culture"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "material_culture",
+          "craft_technology"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Documented use or category compatibility; no present instance, stock, identity or permission is implied."
+      },
+      "historically_compatible": {
+        "subject_domains": [
+          "material_culture"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Historically supported availability/use in the stated context, not a guarantee of local presence."
+      }
+    },
+    "craft_technology": {
+      "requires_input": {
+        "subject_domains": [
+          "craft_technology"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "material_culture"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Material or component used by the explicitly described historical process; not a complete recipe or a sufficient condition."
+      },
+      "requires_tool": {
+        "subject_domains": [
+          "craft_technology"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "material_culture"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Tool function required by the explicitly described process, not an action whitelist or exact tool identity."
+      },
+      "produces_form": {
+        "subject_domains": [
+          "craft_technology"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "material_culture"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Documented form produced by this process, conditional on real inputs and execution, without quantities or guaranteed success."
+      },
+      "historically_compatible": {
+        "subject_domains": [
+          "craft_technology"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Historically supported availability/use in the stated context, not a guarantee of local presence."
+      }
+    },
+    "architecture_settlement": {
+      "supports_known_process": {
+        "subject_domains": [
+          "architecture_settlement"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "craft_technology"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Historical work context supports the stated process family; not individual expertise, compulsory activity or a materialization permission."
+      },
+      "historically_compatible": {
+        "subject_domains": [
+          "architecture_settlement"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Historically supported availability/use in the stated context, not a guarantee of local presence."
+      },
+      "attested_use": {
+        "subject_domains": [
+          "architecture_settlement"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "material_culture"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Documented use or category compatibility; no present instance, stock, identity or permission is implied."
+      }
+    },
+    "npc_daily_life": {
+      "supports_known_process": {
+        "subject_domains": [
+          "npc_daily_life"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "craft_technology"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Historical work context supports the stated process family; not individual expertise, compulsory activity or a materialization permission."
+      },
+      "compatible_work_context": {
+        "subject_domains": [
+          "npc_daily_life"
+        ],
+        "object_kinds": [
+          "concept_ref"
+        ],
+        "object_concept_domains": [
+          "architecture_settlement"
+        ],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "Historical occupational context compatible with this workplace family; concrete role, obligations and schedule remain authored."
+      }
+    }
+  },
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:rybina-fishing-2015",
+      "title": "Промыслы в средневековом Новгороде (по археологическим материалам)",
+      "authors": [
+        "E. A. Rybina"
+      ],
+      "publication": "Исторические исследования 3 (2015), 219–235",
+      "source_kind": "scholarship",
+      "citation": "https://cyberleninka.ru/article/n/promysly-v-srednevekovom-novgorode-po-arheologicheskim-materialam",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:rybina-things-2006",
+      "title": "Мир вещей средневекового Новгорода (по археологическим находкам)",
+      "authors": [
+        "E. A. Rybina"
+      ],
+      "publication": "Вестник Новгородского государственного университета (2006)",
+      "source_kind": "scholarship",
+      "citation": "https://cyberleninka.ru/article/n/mir-veschey-srednevekovogo-novgoroda-po-arheologicheskim-nahodkam",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:novgorod-museum-footwear",
+      "title": "Обувь древнего Новгорода X–XV веков",
+      "authors": [
+        "Novgorod State Museum-Reserve"
+      ],
+      "publication": "Museum exhibition record, 2021-12-28",
+      "source_kind": "catalogue",
+      "citation": "https://novgorodmuseum.ru/o-muzee-zapovednike/novosti/obuv-drevnego-novgoroda-x-xv-vekov",
+      "rights": {
+        "status": "approved",
+        "redistribution": "Original short factual paraphrases only; no source images or full text redistributed."
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-fishing-220",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "220",
+        "section": "Рыболовство"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-fishing-221",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "221",
+        "section": "Рыболовство"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-fishing-222",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "222",
+        "section": "Рыболовство"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-fishing-223",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "223",
+        "section": "Рыболовство"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-fishing-224",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "224",
+        "section": "Рыболовство"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-fishing-226",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "226",
+        "section": "Рыболовство"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-things-overview",
+      "source_ref": "source:rybina-things-2006",
+      "anchor": {
+        "section": "Collection overview; craft study; residential, household and production structures"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-things-leather",
+      "source_ref": "source:rybina-things-2006",
+      "anchor": {
+        "section": "Leather objects and footwear workshops"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-things-transport",
+      "source_ref": "source:rybina-things-2006",
+      "anchor": {
+        "section": "Horse and rider equipment"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:population-museum-footwear",
+      "source_ref": "source:novgorod-museum-footwear",
+      "anchor": {
+        "section": "XII–XIII-century workshops; tanned hides; footwear accessories"
+      },
+      "note": "Independently reopened and narrowed in research/verification-population-historical-context.md; historical compatibility does not imply present objects or universal NPC knowledge.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:wood",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:float"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:birch-bark",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:weight-fastening",
+        "wk:material_culture:float"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:pine-bark",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:float"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:bast",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:cordage",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:weight-fastening"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:flexible-rod",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:stone",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:sinker"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:iron",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:hook"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:leather",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:footwear",
+        "wk:material_culture:leather-carrier",
+        "wk:material_culture:strap"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:hide",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:wool",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:wool-footwear-lining"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:felt",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:wool-footwear-lining"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:net",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:float",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:sinker",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:hook",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:cutting-tool",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:piercing-tool",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:wooden-last",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:shoemaking"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:footwear",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:wool-footwear-lining",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:leather-carrier",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:strap",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:weight-fastening"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:vessel",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:boat",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:net-fishing"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:horse-tack",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:fish",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:dried-fish",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:net-fishing",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:cordage",
+        "wk:material_culture:float",
+        "wk:material_culture:sinker"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:bark-assembly",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:bast",
+        "wk:material_culture:birch-bark",
+        "wk:material_culture:cutting-tool",
+        "wk:material_culture:piercing-tool"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:rod-binding",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:cordage",
+        "wk:material_culture:flexible-rod"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:weight-fastening",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:stone"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:shoemaking",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:footwear",
+        "wk:material_culture:leather"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:weaving",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:woodworking",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:wood"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:fish-drying",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:material_culture:dried-fish"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:riverbank-workspace",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+    "related_refs": [
+      "wk:craft_technology:net-fishing",
+      "wk:environment:white-willow-riparian-habitat",
+      "wk:environment:common-reed-rhizome-habitat",
+      "wk:environment:water-temperature-aquatic-compatibility",
+      "wk:environment:secondary-clay-water-deposition",
+      "wk:material_culture:wood",
+      "wk:material_culture:stone",
+      "wk:material_culture:boat"
+    ],
+      "external_mappings": [
+        {
+          "system": "lower_dvina_trace.location_profile",
+          "ref": "trace_ld_v1_loc_wreck_shore"
+        }
+      ],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:fishing-workspace",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+    "related_refs": [
+      "wk:craft_technology:net-fishing",
+      "wk:material_culture:fish",
+      "wk:material_culture:boat",
+      "wk:craft_technology:fish-drying",
+      "wk:npc_daily_life:fisher",
+      "wk:biology_physiology:food-drying-airflow-humidity"
+    ],
+      "external_mappings": [
+        {
+          "system": "lower_dvina_trace.location_profile",
+          "ref": "trace_ld_v1_loc_fishing_camp"
+        }
+      ],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:drying-workspace",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+    "related_refs": [
+      "wk:craft_technology:fish-drying",
+      "wk:biology_physiology:food-drying-microbial-conditions",
+      "wk:biology_physiology:food-drying-airflow-humidity",
+      "wk:biology_physiology:stored-grain-condition",
+      "wk:material_culture:wood"
+    ],
+      "external_mappings": [
+        {
+          "system": "lower_dvina_trace.location_profile",
+          "ref": "trace_ld_v1_loc_old_drying_shed"
+        }
+      ],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:storage-workspace",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+    "related_refs": [
+      "wk:material_culture:vessel",
+      "wk:material_culture:leather",
+      "wk:biology_physiology:stored-grain-condition",
+      "wk:npc_daily_life:storage-worker"
+    ],
+      "external_mappings": [
+        {
+          "system": "lower_dvina_trace.location_profile",
+          "ref": "trace_ld_v1_loc_zhdanko_storehouse"
+        }
+      ],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:fisher",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+    "related_refs": [
+      "wk:craft_technology:net-fishing",
+      "wk:craft_technology:bark-assembly",
+      "wk:craft_technology:fish-drying",
+      "wk:material_culture:leather",
+      "wk:material_culture:wool",
+      "wk:material_culture:boat",
+      "wk:architecture_settlement:fishing-workspace"
+    ],
+      "external_mappings": [
+        {
+          "system": "lower_dvina_trace.participant_profile",
+          "ref": "trace_ld_v1_eremey_local_fisher_v1"
+        },
+        {
+          "system": "lower_dvina_trace.participant_profile",
+          "ref": "trace_ld_v1_background_fisher_v1"
+        }
+      ],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:boat-worker",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+    "related_refs": [
+      "wk:craft_technology:net-fishing",
+      "wk:material_culture:boat",
+      "wk:material_culture:leather",
+      "wk:material_culture:wool",
+      "wk:architecture_settlement:riverbank-workspace"
+    ],
+      "external_mappings": [
+        {
+          "system": "lower_dvina_trace.participant_profile",
+          "ref": "trace_ld_v1_onisim_hired_boatman_v1"
+        }
+      ],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:npc_daily_life:storage-worker",
+      "domain": "npc_daily_life",
+      "broader_refs": [],
+    "related_refs": [
+      "wk:architecture_settlement:storage-workspace",
+      "wk:material_culture:leather",
+      "wk:material_culture:wool",
+      "wk:biology_physiology:stored-grain-condition"
+    ],
+      "external_mappings": [
+        {
+          "system": "lower_dvina_trace.participant_profile",
+          "ref": "trace_ld_v1_ratsha_storehouse_helper_v1"
+        },
+        {
+          "system": "lower_dvina_trace.participant_profile",
+          "ref": "trace_ld_v1_zhdanko_storehouse_controller_v1"
+        }
+      ],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-net-floats",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:net-fishing",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:float"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-222"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-net-weights",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:net-fishing",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:sinker"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-222"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-net-cord",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:net-fishing",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:cordage"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-222"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-bark-float",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:birch-bark",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:float"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-223"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-pine-float",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:pine-bark",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:float"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-224"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-wood-float",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wood",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:float"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-224"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-stone-weight",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:stone",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:sinker"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-226"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-iron-hook",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:hook"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-221"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-bark-input",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:bark-assembly",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:birch-bark"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-223"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-bark-bast",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:bark-assembly",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:bast"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-223"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-bark-cut",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:bark-assembly",
+      "predicate": "requires_tool",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:cutting-tool"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-223"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-bark-pierce",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:bark-assembly",
+      "predicate": "requires_tool",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:piercing-tool"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-223"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-rod-input",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:rod-binding",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:flexible-rod"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-224"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-rod-cord",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:rod-binding",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:cordage"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-224"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-weight-stone",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:weight-fastening",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:stone"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-226"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-weight-strap",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:strap",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:weight-fastening"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-226"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-weight-cord",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:cordage",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:weight-fastening"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-226"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-weight-bark",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:birch-bark",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:weight-fastening"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-226"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-net-work",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:fisher",
+      "predicate": "supports_known_process",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:net-fishing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-221"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-boat-work",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:boat-worker",
+      "predicate": "supports_known_process",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:net-fishing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-222"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-fish-food",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:fish",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "food_and_exchange"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-220"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-fish-dried-form",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:fish-drying",
+      "predicate": "produces_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:dried-fish"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1150,
+          "to": 1350,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "role_bound",
+        "required_facets": ["role_ref"],
+        "required_values": { "role_ref": "nov_role_fisher" }
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-221"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-river-work",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:riverbank-workspace",
+      "predicate": "supports_known_process",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:net-fishing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-222"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-fishing-workspace",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:fishing-workspace",
+      "predicate": "supports_known_process",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:net-fishing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-221"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-drying-workspace",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:drying-workspace",
+      "predicate": "supports_known_process",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:fish-drying"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-221"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-household-storage",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:storage-workspace",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "household_structure_and_vessel_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-overview"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-storage-vessels",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:storage-workspace",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:vessel"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-overview"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-storage-role",
+      "domain": "npc_daily_life",
+      "subject_ref": "wk:npc_daily_life:storage-worker",
+      "predicate": "compatible_work_context",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:architecture_settlement:storage-workspace"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-overview"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-leather-shoes",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:leather",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:footwear"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-shoe-input",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:shoemaking",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:leather"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-shoe-form",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wooden-last",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:shoemaking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-leather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-shoe-output",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:shoemaking",
+      "predicate": "produces_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:footwear"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-leather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-leather-case",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:leather",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:leather-carrier"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-leather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-leather-straps",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:leather",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:strap"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-leather"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-wool-lining",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:wool",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wool-footwear-lining"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-felt-lining",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:felt",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wool-footwear-lining"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-weaving-practice",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:weaving",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "attested_craft"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-overview"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-woodwork-practice",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:woodworking",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "attested_craft"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-overview"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-woodwork-material",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:woodworking",
+      "predicate": "requires_input",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wood"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-overview"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-boat-context",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:boat",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:net-fishing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-fishing-222"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-tack-context",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:horse-tack",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "horse_rider_equipment"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1000,
+          "to": 1400,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-things-transport"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:population-hide-leather-distinction",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:hide",
+      "predicate": "historically_compatible",
+      "object": {
+        "kind": "literal",
+        "value": "prepared_before_shoemaking"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "common_cultural",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:population-museum-footwear"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wood",
+      "locale": "ru",
+      "labels": [
+        "Древесина"
+      ],
+      "short_definition": "Древесина: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Древесина"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wood",
+      "locale": "en",
+      "labels": [
+        "Wood"
+      ],
+      "short_definition": "Wood: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Wood"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:birch-bark",
+      "locale": "ru",
+      "labels": [
+        "Береста"
+      ],
+      "short_definition": "Береста: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Береста"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:birch-bark",
+      "locale": "en",
+      "labels": [
+        "Birch bark"
+      ],
+      "short_definition": "Birch bark: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Birch bark"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pine-bark",
+      "locale": "ru",
+      "labels": [
+        "Сосновая кора"
+      ],
+      "short_definition": "Сосновая кора: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Сосновая кора"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pine-bark",
+      "locale": "en",
+      "labels": [
+        "Pine bark"
+      ],
+      "short_definition": "Pine bark: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Pine bark"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:bast",
+      "locale": "ru",
+      "labels": [
+        "Лыко"
+      ],
+      "short_definition": "Лыко: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Лыко"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:bast",
+      "locale": "en",
+      "labels": [
+        "Bast"
+      ],
+      "short_definition": "Bast: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Bast"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:cordage",
+      "locale": "ru",
+      "labels": [
+        "Верёвка"
+      ],
+      "short_definition": "Верёвка: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Верёвка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:cordage",
+      "locale": "en",
+      "labels": [
+        "Cordage"
+      ],
+      "short_definition": "Cordage: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Cordage"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:flexible-rod",
+      "locale": "ru",
+      "labels": [
+        "Гибкий прут"
+      ],
+      "short_definition": "Гибкий прут: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Гибкий прут"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:flexible-rod",
+      "locale": "en",
+      "labels": [
+        "Flexible rod"
+      ],
+      "short_definition": "Flexible rod: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Flexible rod"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:stone",
+      "locale": "ru",
+      "labels": [
+        "Камень"
+      ],
+      "short_definition": "Камень: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Камень"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:stone",
+      "locale": "en",
+      "labels": [
+        "Stone"
+      ],
+      "short_definition": "Stone: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Stone"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron",
+      "locale": "ru",
+      "labels": [
+        "Железо"
+      ],
+      "short_definition": "Железо: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Железо"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron",
+      "locale": "en",
+      "labels": [
+        "Iron"
+      ],
+      "short_definition": "Iron: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Iron"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:leather",
+      "locale": "ru",
+      "labels": [
+        "Выделанная кожа"
+      ],
+      "short_definition": "Выделанная кожа: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Выделанная кожа"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:leather",
+      "locale": "en",
+      "labels": [
+        "Tanned leather"
+      ],
+      "short_definition": "Tanned leather: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Tanned leather"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hide",
+      "locale": "ru",
+      "labels": [
+        "Шкура"
+      ],
+      "short_definition": "Шкура: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Шкура"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hide",
+      "locale": "en",
+      "labels": [
+        "Hide"
+      ],
+      "short_definition": "Hide: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Hide"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wool",
+      "locale": "ru",
+      "labels": [
+        "Шерсть"
+      ],
+      "short_definition": "Шерсть: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Шерсть"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wool",
+      "locale": "en",
+      "labels": [
+        "Wool"
+      ],
+      "short_definition": "Wool: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Wool"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:felt",
+      "locale": "ru",
+      "labels": [
+        "Войлок"
+      ],
+      "short_definition": "Войлок: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Войлок"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:felt",
+      "locale": "en",
+      "labels": [
+        "Felt"
+      ],
+      "short_definition": "Felt: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Felt"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:net",
+      "locale": "ru",
+      "labels": [
+        "Рыболовная сеть"
+      ],
+      "short_definition": "Рыболовная сеть: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Рыболовная сеть"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:net",
+      "locale": "en",
+      "labels": [
+        "Fishing net"
+      ],
+      "short_definition": "Fishing net: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Fishing net"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:float",
+      "locale": "ru",
+      "labels": [
+        "Поплавок"
+      ],
+      "short_definition": "Поплавок: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Поплавок"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:float",
+      "locale": "en",
+      "labels": [
+        "Float"
+      ],
+      "short_definition": "Float: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Float"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sinker",
+      "locale": "ru",
+      "labels": [
+        "Грузило"
+      ],
+      "short_definition": "Грузило: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Грузило"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sinker",
+      "locale": "en",
+      "labels": [
+        "Sinker"
+      ],
+      "short_definition": "Sinker: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Sinker"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hook",
+      "locale": "ru",
+      "labels": [
+        "Рыболовный крючок"
+      ],
+      "short_definition": "Рыболовный крючок: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Рыболовный крючок"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:hook",
+      "locale": "en",
+      "labels": [
+        "Fishing hook"
+      ],
+      "short_definition": "Fishing hook: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Fishing hook"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:cutting-tool",
+      "locale": "ru",
+      "labels": [
+        "Режущий инструмент"
+      ],
+      "short_definition": "Режущий инструмент: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Режущий инструмент"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:cutting-tool",
+      "locale": "en",
+      "labels": [
+        "Cutting tool"
+      ],
+      "short_definition": "Cutting tool: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Cutting tool"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:piercing-tool",
+      "locale": "ru",
+      "labels": [
+        "Инструмент для отверстий"
+      ],
+      "short_definition": "Инструмент для отверстий: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Инструмент для отверстий"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:piercing-tool",
+      "locale": "en",
+      "labels": [
+        "Piercing tool"
+      ],
+      "short_definition": "Piercing tool: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Piercing tool"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wooden-last",
+      "locale": "ru",
+      "labels": [
+        "Сапожная колодка"
+      ],
+      "short_definition": "Сапожная колодка: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Сапожная колодка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wooden-last",
+      "locale": "en",
+      "labels": [
+        "Shoemaking last"
+      ],
+      "short_definition": "Shoemaking last: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Shoemaking last"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:footwear",
+      "locale": "ru",
+      "labels": [
+        "Кожаная обувь"
+      ],
+      "short_definition": "Кожаная обувь: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Кожаная обувь"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:footwear",
+      "locale": "en",
+      "labels": [
+        "Leather footwear"
+      ],
+      "short_definition": "Leather footwear: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Leather footwear"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wool-footwear-lining",
+      "locale": "ru",
+      "labels": [
+        "Шерстяные носки и вкладыши"
+      ],
+      "short_definition": "Шерстяные носки и вкладыши: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Шерстяные носки и вкладыши"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:wool-footwear-lining",
+      "locale": "en",
+      "labels": [
+        "Wool socks and footwear lining"
+      ],
+      "short_definition": "Wool socks and footwear lining: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Wool socks and footwear lining"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:leather-carrier",
+      "locale": "ru",
+      "labels": [
+        "Кожаный футляр или кошелёк"
+      ],
+      "short_definition": "Кожаный футляр или кошелёк: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Кожаный футляр или кошелёк"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:leather-carrier",
+      "locale": "en",
+      "labels": [
+        "Leather case or purse"
+      ],
+      "short_definition": "Leather case or purse: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Leather case or purse"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:strap",
+      "locale": "ru",
+      "labels": [
+        "Кожаный ремешок"
+      ],
+      "short_definition": "Кожаный ремешок: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Кожаный ремешок"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:strap",
+      "locale": "en",
+      "labels": [
+        "Leather strap"
+      ],
+      "short_definition": "Leather strap: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Leather strap"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:vessel",
+      "locale": "ru",
+      "labels": [
+        "Бытовая посуда"
+      ],
+      "short_definition": "Бытовая посуда: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Бытовая посуда"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:vessel",
+      "locale": "en",
+      "labels": [
+        "Household vessel"
+      ],
+      "short_definition": "Household vessel: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Household vessel"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:boat",
+      "locale": "ru",
+      "labels": [
+        "Лодка"
+      ],
+      "short_definition": "Лодка: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Лодка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:boat",
+      "locale": "en",
+      "labels": [
+        "Boat"
+      ],
+      "short_definition": "Boat: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Boat"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:horse-tack",
+      "locale": "ru",
+      "labels": [
+        "Конская сбруя"
+      ],
+      "short_definition": "Конская сбруя: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Конская сбруя"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:horse-tack",
+      "locale": "en",
+      "labels": [
+        "Horse tack"
+      ],
+      "short_definition": "Horse tack: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Horse tack"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:fish",
+      "locale": "ru",
+      "labels": [
+        "Рыба как продукт"
+      ],
+      "short_definition": "Рыба как продукт: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Рыба как продукт"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:fish",
+      "locale": "en",
+      "labels": [
+        "Fish as food"
+      ],
+      "short_definition": "Fish as food: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Fish as food"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:dried-fish",
+      "locale": "ru",
+      "labels": [
+        "Сушёная рыба"
+      ],
+      "short_definition": "Сушёная рыба: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Сушёная рыба"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:dried-fish",
+      "locale": "en",
+      "labels": [
+        "Dried fish"
+      ],
+      "short_definition": "Dried fish: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Dried fish"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:net-fishing",
+      "locale": "ru",
+      "labels": [
+        "Сетной рыбный промысел"
+      ],
+      "short_definition": "Сетной рыбный промысел: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Сетной рыбный промысел"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:net-fishing",
+      "locale": "en",
+      "labels": [
+        "Net fishing"
+      ],
+      "short_definition": "Net fishing: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Net fishing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:bark-assembly",
+      "locale": "ru",
+      "labels": [
+        "Резка и сшивание бересты"
+      ],
+      "short_definition": "Резка и сшивание бересты: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Резка и сшивание бересты"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:bark-assembly",
+      "locale": "en",
+      "labels": [
+        "Cutting and joining bark"
+      ],
+      "short_definition": "Cutting and joining bark: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Cutting and joining bark"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:rod-binding",
+      "locale": "ru",
+      "labels": [
+        "Сгибание и связывание прута"
+      ],
+      "short_definition": "Сгибание и связывание прута: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Сгибание и связывание прута"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:rod-binding",
+      "locale": "en",
+      "labels": [
+        "Bending and binding rods"
+      ],
+      "short_definition": "Bending and binding rods: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Bending and binding rods"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:weight-fastening",
+      "locale": "ru",
+      "labels": [
+        "Крепление грузила"
+      ],
+      "short_definition": "Крепление грузила: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Крепление грузила"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:weight-fastening",
+      "locale": "en",
+      "labels": [
+        "Attaching a weight"
+      ],
+      "short_definition": "Attaching a weight: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Attaching a weight"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:shoemaking",
+      "locale": "ru",
+      "labels": [
+        "Изготовление и ремонт обуви"
+      ],
+      "short_definition": "Изготовление и ремонт обуви: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Изготовление и ремонт обуви"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:shoemaking",
+      "locale": "en",
+      "labels": [
+        "Making and repairing footwear"
+      ],
+      "short_definition": "Making and repairing footwear: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Making and repairing footwear"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:weaving",
+      "locale": "ru",
+      "labels": [
+        "Ткачество"
+      ],
+      "short_definition": "Ткачество: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Ткачество"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:weaving",
+      "locale": "en",
+      "labels": [
+        "Weaving"
+      ],
+      "short_definition": "Weaving: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Weaving"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:woodworking",
+      "locale": "ru",
+      "labels": [
+        "Работа с деревом"
+      ],
+      "short_definition": "Работа с деревом: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Работа с деревом"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:woodworking",
+      "locale": "en",
+      "labels": [
+        "Woodworking"
+      ],
+      "short_definition": "Woodworking: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Woodworking"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:fish-drying",
+      "locale": "ru",
+      "labels": [
+        "Сушка рыбы"
+      ],
+      "short_definition": "Сушка рыбы: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Сушка рыбы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:fish-drying",
+      "locale": "en",
+      "labels": [
+        "Fish drying"
+      ],
+      "short_definition": "Fish drying: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Fish drying"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:riverbank-workspace",
+      "locale": "ru",
+      "labels": [
+        "Береговой рабочий контекст"
+      ],
+      "short_definition": "Береговой рабочий контекст: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Береговой рабочий контекст"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:riverbank-workspace",
+      "locale": "en",
+      "labels": [
+        "Riverbank working context"
+      ],
+      "short_definition": "Riverbank working context: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Riverbank working context"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:fishing-workspace",
+      "locale": "ru",
+      "labels": [
+        "Место рыбного промысла"
+      ],
+      "short_definition": "Место рыбного промысла: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Место рыбного промысла"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:fishing-workspace",
+      "locale": "en",
+      "labels": [
+        "Fishing workspace"
+      ],
+      "short_definition": "Fishing workspace: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Fishing workspace"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:drying-workspace",
+      "locale": "ru",
+      "labels": [
+        "Место сушки"
+      ],
+      "short_definition": "Место сушки: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Место сушки"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:drying-workspace",
+      "locale": "en",
+      "labels": [
+        "Drying workspace"
+      ],
+      "short_definition": "Drying workspace: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Drying workspace"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:storage-workspace",
+      "locale": "ru",
+      "labels": [
+        "Хозяйственное место хранения"
+      ],
+      "short_definition": "Хозяйственное место хранения: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Хозяйственное место хранения"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:storage-workspace",
+      "locale": "en",
+      "labels": [
+        "Household storage workspace"
+      ],
+      "short_definition": "Household storage workspace: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Household storage workspace"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:fisher",
+      "locale": "ru",
+      "labels": [
+        "Рыбак"
+      ],
+      "short_definition": "Рыбак: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Рыбак"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:fisher",
+      "locale": "en",
+      "labels": [
+        "Fisher"
+      ],
+      "short_definition": "Fisher: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Fisher"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:boat-worker",
+      "locale": "ru",
+      "labels": [
+        "Работник на лодке"
+      ],
+      "short_definition": "Работник на лодке: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Работник на лодке"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:boat-worker",
+      "locale": "en",
+      "labels": [
+        "Boat worker"
+      ],
+      "short_definition": "Boat worker: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Boat worker"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:storage-worker",
+      "locale": "ru",
+      "labels": [
+        "Хозяйственный работник хранения"
+      ],
+      "short_definition": "Хозяйственный работник хранения: материальная или функциональная категория; наличие и параметры задаёт состояние мира.",
+      "search_aliases": [
+        "Хозяйственный работник хранения"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:npc_daily_life:storage-worker",
+      "locale": "en",
+      "labels": [
+        "Storage worker"
+      ],
+      "short_definition": "Storage worker: a material or functional category; presence and parameters come from world state.",
+      "search_aliases": [
+        "Storage worker"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-net-floats",
+      "locale": "ru",
+      "runtime_text": "У засвидетельствованных сетей верхний край удерживали поплавки. Это свойство описанных сетей, не всех способов рыбной ловли.",
+      "search_aliases": [
+        "Сетной рыбный промысел",
+        "У засвидетельствованных сетей верхний край удерживали поплавки. Это свойство описанных сетей, не всех способов рыбной ловли."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-net-floats",
+      "locale": "en",
+      "runtime_text": "Attested fishing nets used floats at the upper edge; this describes these nets, not all fishing methods.",
+      "search_aliases": [
+        "Net fishing",
+        "Attested fishing nets used floats at the upper edge; this describes these nets, not all fishing methods."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-net-weights",
+      "locale": "ru",
+      "runtime_text": "К нижнему краю описанных сетей крепили грузила. Снасть требует совместимых креплений, но наличие её частей не гарантирует улов.",
+      "search_aliases": [
+        "Сетной рыбный промысел",
+        "К нижнему краю описанных сетей крепили грузила. Снасть требует совместимых креплений, но наличие её частей не гарантирует улов."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-net-weights",
+      "locale": "en",
+      "runtime_text": "The described nets carried weights at their lower edge. Compatible attachments are needed; components do not guarantee a catch.",
+      "search_aliases": [
+        "Net fishing",
+        "The described nets carried weights at their lower edge. Compatible attachments are needed; components do not guarantee a catch."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-net-cord",
+      "locale": "ru",
+      "runtime_text": "Верёвка соединяла поплавки с сетью; в раскопках встречены поплавки на верёвке.",
+      "search_aliases": [
+        "Сетной рыбный промысел",
+        "Верёвка соединяла поплавки с сетью; в раскопках встречены поплавки на верёвке."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-net-cord",
+      "locale": "en",
+      "runtime_text": "Cord connected floats with nets; some excavated floats remain threaded on cord.",
+      "search_aliases": [
+        "Net fishing",
+        "Cord connected floats with nets; some excavated floats remain threaded on cord."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-float",
+      "locale": "ru",
+      "runtime_text": "Берестяные полосы использовали для скрученных и сшитых поплавков; форма и соединение зависели от снасти.",
+      "search_aliases": [
+        "Береста",
+        "Берестяные полосы использовали для скрученных и сшитых поплавков; форма и соединение зависели от снасти."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-float",
+      "locale": "en",
+      "runtime_text": "Birch-bark strips were used for rolled and joined floats; their form and attachment depended on the gear.",
+      "search_aliases": [
+        "Birch bark",
+        "Birch-bark strips were used for rolled and joined floats; their form and attachment depended on the gear."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-pine-float",
+      "locale": "ru",
+      "runtime_text": "Сосновая кора служила материалом небольших поплавков для сетей и удочек.",
+      "search_aliases": [
+        "Сосновая кора",
+        "Сосновая кора служила материалом небольших поплавков для сетей и удочек."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-pine-float",
+      "locale": "en",
+      "runtime_text": "Pine bark was used for small net and angling floats.",
+      "search_aliases": [
+        "Pine bark",
+        "Pine bark was used for small net and angling floats."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wood-float",
+      "locale": "ru",
+      "runtime_text": "Из дерева делали поплавки разных форм; деревянное происхождение само по себе не задаёт грузоподъёмность.",
+      "search_aliases": [
+        "Древесина",
+        "Из дерева делали поплавки разных форм; деревянное происхождение само по себе не задаёт грузоподъёмность."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wood-float",
+      "locale": "en",
+      "runtime_text": "Wood was shaped into different floats; material identity alone does not determine load capacity.",
+      "search_aliases": [
+        "Wood",
+        "Wood was shaped into different floats; material identity alone does not determine load capacity."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-stone-weight",
+      "locale": "ru",
+      "runtime_text": "Камни служили грузилами, соединёнными со снастью через отверстие либо удерживающую обвязку.",
+      "search_aliases": [
+        "Камень",
+        "Камни служили грузилами, соединёнными со снастью через отверстие либо удерживающую обвязку."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-stone-weight",
+      "locale": "en",
+      "runtime_text": "Stones served as weights attached through a hole or retained by a surrounding binding.",
+      "search_aliases": [
+        "Stone",
+        "Stones served as weights attached through a hole or retained by a surrounding binding."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-iron-hook",
+      "locale": "ru",
+      "runtime_text": "Железо использовали для рыболовных крючков и острог; готовый инструмент требовал обработки металла.",
+      "search_aliases": [
+        "Железо",
+        "Железо использовали для рыболовных крючков и острог; готовый инструмент требовал обработки металла."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-iron-hook",
+      "locale": "en",
+      "runtime_text": "Iron was used for fishing hooks and spears; a finished tool required metalworking.",
+      "search_aliases": [
+        "Iron",
+        "Iron was used for fishing hooks and spears; a finished tool required metalworking."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-input",
+      "locale": "ru",
+      "runtime_text": "При изготовлении плоских поплавков соединяли подготовленные слои бересты.",
+      "search_aliases": [
+        "Резка и сшивание бересты",
+        "При изготовлении плоских поплавков соединяли подготовленные слои бересты."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-input",
+      "locale": "en",
+      "runtime_text": "Flat floats were made by joining prepared layers of birch bark.",
+      "search_aliases": [
+        "Cutting and joining bark",
+        "Flat floats were made by joining prepared layers of birch bark."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-bast",
+      "locale": "ru",
+      "runtime_text": "Слои бересты сшивали лыком через подготовленные отверстия; соединение не создаёт материал.",
+      "search_aliases": [
+        "Резка и сшивание бересты",
+        "Слои бересты сшивали лыком через подготовленные отверстия; соединение не создаёт материал."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-bast",
+      "locale": "en",
+      "runtime_text": "Bark layers were sewn together with bast through prepared holes; the joint does not create material.",
+      "search_aliases": [
+        "Cutting and joining bark",
+        "Bark layers were sewn together with bast through prepared holes; the joint does not create material."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-cut",
+      "locale": "ru",
+      "runtime_text": "Описанная обработка бересты включала резку острым ножом.",
+      "search_aliases": [
+        "Резка и сшивание бересты",
+        "Описанная обработка бересты включала резку острым ножом."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-cut",
+      "locale": "en",
+      "runtime_text": "The documented bark-working process included cutting with a sharp knife.",
+      "search_aliases": [
+        "Cutting and joining bark",
+        "The documented bark-working process included cutting with a sharp knife."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-pierce",
+      "locale": "ru",
+      "runtime_text": "Для сшивания слоёв бересты делали отверстия подходящим инструментом.",
+      "search_aliases": [
+        "Резка и сшивание бересты",
+        "Для сшивания слоёв бересты делали отверстия подходящим инструментом."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-bark-pierce",
+      "locale": "en",
+      "runtime_text": "Joining layers of bark required making holes with a suitable tool.",
+      "search_aliases": [
+        "Cutting and joining bark",
+        "Joining layers of bark required making holes with a suitable tool."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-rod-input",
+      "locale": "ru",
+      "runtime_text": "Тонкий гибкий прут сгибали в петлю; требуемая гибкость зависит от самого материала, а не названия результата.",
+      "search_aliases": [
+        "Сгибание и связывание прута",
+        "Тонкий гибкий прут сгибали в петлю; требуемая гибкость зависит от самого материала, а не названия результата."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-rod-input",
+      "locale": "en",
+      "runtime_text": "A thin flexible rod was bent into a loop; suitability depends on the material, not the desired result's name.",
+      "search_aliases": [
+        "Bending and binding rods",
+        "A thin flexible rod was bent into a loop; suitability depends on the material, not the desired result's name."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-rod-cord",
+      "locale": "ru",
+      "runtime_text": "Концы согнутого прута соединяли и обвязывали верёвкой.",
+      "search_aliases": [
+        "Сгибание и связывание прута",
+        "Концы согнутого прута соединяли и обвязывали верёвкой."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-rod-cord",
+      "locale": "en",
+      "runtime_text": "The ends of a bent rod were joined and bound with cord.",
+      "search_aliases": [
+        "Bending and binding rods",
+        "The ends of a bent rod were joined and bound with cord."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weight-stone",
+      "locale": "ru",
+      "runtime_text": "Грузило использовало имеющийся камень; отверстие или обвязка позволяли прикрепить его.",
+      "search_aliases": [
+        "Крепление грузила",
+        "Грузило использовало имеющийся камень; отверстие или обвязка позволяли прикрепить его."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weight-stone",
+      "locale": "en",
+      "runtime_text": "A weight used an existing stone; a hole or retaining binding provided attachment.",
+      "search_aliases": [
+        "Attaching a weight",
+        "A weight used an existing stone; a hole or retaining binding provided attachment."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weight-strap",
+      "locale": "ru",
+      "runtime_text": "Кожаный ремешок был одним из засвидетельствованных способов крепления каменного грузила.",
+      "search_aliases": [
+        "Кожаный ремешок",
+        "Кожаный ремешок был одним из засвидетельствованных способов крепления каменного грузила."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weight-strap",
+      "locale": "en",
+      "runtime_text": "A leather strip was one documented way to attach a stone weight.",
+      "search_aliases": [
+        "Leather strap",
+        "A leather strip was one documented way to attach a stone weight."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weight-cord",
+      "locale": "ru",
+      "runtime_text": "Верёвка была альтернативой кожаному ремешку при креплении грузила; оба материала одновременно не обязательны.",
+      "search_aliases": [
+        "Верёвка",
+        "Верёвка была альтернативой кожаному ремешку при креплении грузила; оба материала одновременно не обязательны."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weight-cord",
+      "locale": "en",
+      "runtime_text": "Cord could substitute for a leather strip when attaching a weight; both are not required together.",
+      "search_aliases": [
+        "Cordage",
+        "Cord could substitute for a leather strip when attaching a weight; both are not required together."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weight-bark",
+      "locale": "ru",
+      "runtime_text": "Берестяные полосы вместе с прутяным кольцом удерживали камень в одном из вариантов грузила.",
+      "search_aliases": [
+        "Береста",
+        "Берестяные полосы вместе с прутяным кольцом удерживали камень в одном из вариантов грузила."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weight-bark",
+      "locale": "en",
+      "runtime_text": "Bark strips and a rod ring retained the stone in one weight construction.",
+      "search_aliases": [
+        "Birch bark",
+        "Bark strips and a rod ring retained the stone in one weight construction."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-net-work",
+      "locale": "ru",
+      "runtime_text": "Новгородский рыбный промысел включал работу сетями; это допустимый профессиональный контекст, а не доказательство навыка конкретного человека.",
+      "search_aliases": [
+        "Рыбак",
+        "Новгородский рыбный промысел включал работу сетями; это допустимый профессиональный контекст, а не доказательство навыка конкретного человека."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-net-work",
+      "locale": "en",
+      "runtime_text": "Novgorod fishing included net work: a compatible occupation context, not proof of an individual's skill.",
+      "search_aliases": [
+        "Fisher",
+        "Novgorod fishing included net work: a compatible occupation context, not proof of an individual's skill."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-boat-work",
+      "locale": "ru",
+      "runtime_text": "При описанной ловле сети вытаскивали на берег или в лодку. Работа с лодкой допустима как хозяйственный контекст; найм и право на лодку задаются отдельно.",
+      "search_aliases": [
+        "Работник на лодке",
+        "При описанной ловле сети вытаскивали на берег или в лодку. Работа с лодкой допустима как хозяйственный контекст; найм и право на лодку задаются отдельно."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-boat-work",
+      "locale": "en",
+      "runtime_text": "The described nets could be recovered to shore or a boat. Boat work is a compatible economic context; employment and rights are separate.",
+      "search_aliases": [
+        "Boat worker",
+        "The described nets could be recovered to shore or a boat. Boat work is a compatible economic context; employment and rights are separate."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fish-food",
+      "locale": "ru",
+      "runtime_text": "Рыба засвидетельствована как пища и предмет хозяйственных отношений в средневековом Новгороде.",
+      "search_aliases": [
+        "Рыба как продукт",
+        "Рыба засвидетельствована как пища и предмет хозяйственных отношений в средневековом Новгороде."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fish-food",
+      "locale": "en",
+      "runtime_text": "Fish is attested as food and as an object of economic relations in medieval Novgorod.",
+      "search_aliases": [
+        "Fish as food",
+        "Fish is attested as food and as an object of economic relations in medieval Novgorod."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fish-dried-form",
+      "locale": "ru",
+      "runtime_text": "Термин сушёной рыбы известен по новгородской берестяной переписке. Это основание исторической совместимости процесса, не готовая рецептура или срок хранения.",
+      "search_aliases": [
+        "Сушка рыбы",
+        "Термин сушёной рыбы известен по новгородской берестяной переписке. Это основание исторической совместимости процесса, не готовая рецептура или срок хранения."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fish-dried-form",
+      "locale": "en",
+      "runtime_text": "Dried fish is documented in Novgorod birch-bark correspondence: historical compatibility of a process, not a recipe or shelf-life guarantee.",
+      "search_aliases": [
+        "Fish drying",
+        "Dried fish is documented in Novgorod birch-bark correspondence: historical compatibility of a process, not a recipe or shelf-life guarantee."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-river-work",
+      "locale": "ru",
+      "runtime_text": "Берег был рабочим контекстом описанной сетной ловли. Конкретный берег, доступ и существующие снасти определяются картой и состоянием партии.",
+      "search_aliases": [
+        "Береговой рабочий контекст",
+        "Берег был рабочим контекстом описанной сетной ловли. Конкретный берег, доступ и существующие снасти определяются картой и состоянием партии."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-river-work",
+      "locale": "en",
+      "runtime_text": "The shore was a working context for the described net fishing. The actual bank, access and gear come from the map and party state.",
+      "search_aliases": [
+        "Riverbank working context",
+        "The shore was a working context for the described net fishing. The actual bank, access and gear come from the map and party state."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fishing-workspace",
+      "locale": "ru",
+      "runtime_text": "Место рыбного промысла совместимо с подготовкой и использованием сетей и связанных материалов; конкретный стан остаётся авторским местом.",
+      "search_aliases": [
+        "Место рыбного промысла",
+        "Место рыбного промысла совместимо с подготовкой и использованием сетей и связанных материалов; конкретный стан остаётся авторским местом."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-fishing-workspace",
+      "locale": "en",
+      "runtime_text": "A fishing workspace is compatible with preparing and using nets and related materials; a particular camp remains an authored place.",
+      "search_aliases": [
+        "Fishing workspace",
+        "A fishing workspace is compatible with preparing and using nets and related materials; a particular camp remains an authored place."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-drying-workspace",
+      "locale": "ru",
+      "runtime_text": "Рабочее место сушки исторически совместимо с обработкой рыбы; форма постройки, отопление и содержимое этим не определяются.",
+      "search_aliases": [
+        "Место сушки",
+        "Рабочее место сушки исторически совместимо с обработкой рыбы; форма постройки, отопление и содержимое этим не определяются."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-drying-workspace",
+      "locale": "en",
+      "runtime_text": "A drying workspace is historically compatible with fish processing; this determines neither building form, heating nor contents.",
+      "search_aliases": [
+        "Drying workspace",
+        "A drying workspace is historically compatible with fish processing; this determines neither building form, heating nor contents."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-household-storage",
+      "locale": "ru",
+      "runtime_text": "Новгородские находки включают хозяйственные сооружения и бытовую посуду. Их использование как хозяйственного места хранения — ограниченная реконструкция, без заданных запасов или планировки.",
+      "search_aliases": [
+        "Хозяйственное место хранения",
+        "Новгородские находки включают хозяйственные сооружения и бытовую посуду. Их использование как хозяйственного места хранения — ограниченная реконструкция, без заданных запасов или планировки."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-household-storage",
+      "locale": "en",
+      "runtime_text": "Novgorod finds include household structures and vessels. A household storage context is a bounded reconstruction, without inferred stocks or layout.",
+      "search_aliases": [
+        "Household storage workspace",
+        "Novgorod finds include household structures and vessels. A household storage context is a bounded reconstruction, without inferred stocks or layout."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-storage-vessels",
+      "locale": "ru",
+      "runtime_text": "Бытовая посуда и переносные футляры образуют совместимые категории для хранения; конкретная ёмкость и её содержимое выбираются отдельным владельцем.",
+      "search_aliases": [
+        "Хозяйственное место хранения",
+        "Бытовая посуда и переносные футляры образуют совместимые категории для хранения; конкретная ёмкость и её содержимое выбираются отдельным владельцем."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-storage-vessels",
+      "locale": "en",
+      "runtime_text": "Household vessels and portable cases provide compatible storage categories; actual containers and contents are determined separately.",
+      "search_aliases": [
+        "Household storage workspace",
+        "Household vessels and portable cases provide compatible storage categories; actual containers and contents are determined separately."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-storage-role",
+      "locale": "ru",
+      "runtime_text": "Работа с хозяйственными вещами допустима в подтверждённом хозяйственном контексте. Управляющий и помощник — роли конкретного авторского профиля, не историческое звание из этого факта.",
+      "search_aliases": [
+        "Хозяйственный работник хранения",
+        "Работа с хозяйственными вещами допустима в подтверждённом хозяйственном контексте. Управляющий и помощник — роли конкретного авторского профиля, не историческое звание из этого факта."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-storage-role",
+      "locale": "en",
+      "runtime_text": "Handling household goods is compatible with an established household context. Controller and helper are authored profile roles, not historical titles established by this fact.",
+      "search_aliases": [
+        "Storage worker",
+        "Handling household goods is compatible with an established household context. Controller and helper are authored profile roles, not historical titles established by this fact."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-leather-shoes",
+      "locale": "ru",
+      "runtime_text": "В Новгороде кожаная обувь археологически засвидетельствована; форму и состояние выбирает профиль, а не профессия носителя.",
+      "search_aliases": [
+        "Выделанная кожа",
+        "В Новгороде кожаная обувь археологически засвидетельствована; форму и состояние выбирает профиль, а не профессия носителя."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-leather-shoes",
+      "locale": "en",
+      "runtime_text": "Leather footwear is archaeologically attested in Novgorod; form and condition come from a profile, not the wearer's occupation.",
+      "search_aliases": [
+        "Tanned leather",
+        "Leather footwear is archaeologically attested in Novgorod; form and condition come from a profile, not the wearer's occupation."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-shoe-input",
+      "locale": "ru",
+      "runtime_text": "Новгородские сапожники использовали выделанную кожу крупного и мелкого рогатого скота. Сырая шкура не равна готовой коже.",
+      "search_aliases": [
+        "Изготовление и ремонт обуви",
+        "Новгородские сапожники использовали выделанную кожу крупного и мелкого рогатого скота. Сырая шкура не равна готовой коже."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-shoe-input",
+      "locale": "en",
+      "runtime_text": "Novgorod shoemakers used tanned cattle and small-ruminant hides. Raw hide is not equivalent to prepared leather.",
+      "search_aliases": [
+        "Making and repairing footwear",
+        "Novgorod shoemakers used tanned cattle and small-ruminant hides. Raw hide is not equivalent to prepared leather."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-shoe-form",
+      "locale": "ru",
+      "runtime_text": "В мастерских изготовления и ремонта обуви найдены деревянные колодки, детали кроя и обрезки кожи; не всякий способ требует колодки.",
+      "search_aliases": [
+        "Сапожная колодка",
+        "В мастерских изготовления и ремонта обуви найдены деревянные колодки, детали кроя и обрезки кожи; не всякий способ требует колодки."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-shoe-form",
+      "locale": "en",
+      "runtime_text": "Shoemaking and repair workshops yielded wooden lasts, cut components and leather offcuts; not every method requires a last.",
+      "search_aliases": [
+        "Shoemaking last",
+        "Shoemaking and repair workshops yielded wooden lasts, cut components and leather offcuts; not every method requires a last."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-shoe-output",
+      "locale": "ru",
+      "runtime_text": "Изготовление и ремонт кожаной обуви были ремесленными занятиями; материальные следы включают готовую продукцию и обрезки.",
+      "search_aliases": [
+        "Изготовление и ремонт обуви",
+        "Изготовление и ремонт кожаной обуви были ремесленными занятиями; материальные следы включают готовую продукцию и обрезки."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-shoe-output",
+      "locale": "en",
+      "runtime_text": "Making and repairing leather footwear were crafts; material traces include products and offcuts.",
+      "search_aliases": [
+        "Making and repairing footwear",
+        "Making and repairing leather footwear were crafts; material traces include products and offcuts."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-leather-case",
+      "locale": "ru",
+      "runtime_text": "Кожаные ножны, футляры и кошельки засвидетельствованы в Новгороде; пустой футляр не доказывает содержимое.",
+      "search_aliases": [
+        "Выделанная кожа",
+        "Кожаные ножны, футляры и кошельки засвидетельствованы в Новгороде; пустой футляр не доказывает содержимое."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-leather-case",
+      "locale": "en",
+      "runtime_text": "Leather sheaths, cases and purses are attested in Novgorod; a case does not establish its contents.",
+      "search_aliases": [
+        "Tanned leather",
+        "Leather sheaths, cases and purses are attested in Novgorod; a case does not establish its contents."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-leather-straps",
+      "locale": "ru",
+      "runtime_text": "Кожаные ремни и пояса входят в новгородский археологический материал.",
+      "search_aliases": [
+        "Выделанная кожа",
+        "Кожаные ремни и пояса входят в новгородский археологический материал."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-leather-straps",
+      "locale": "en",
+      "runtime_text": "Leather straps and belts occur in the Novgorod archaeological material.",
+      "search_aliases": [
+        "Tanned leather",
+        "Leather straps and belts occur in the Novgorod archaeological material."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wool-lining",
+      "locale": "ru",
+      "runtime_text": "С обувью совместимы шерстяные носки и вкладыши. Их применение зависит от выбранного костюма, а не автоматически от профессии.",
+      "search_aliases": [
+        "Шерсть",
+        "Новгородский музей описывает шерстяные носки и вкладыши, связанные с обувью; это не полная реконструкция костюма."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-wool-lining",
+      "locale": "en",
+      "runtime_text": "Wool socks and lining are compatible with footwear; their use depends on the chosen clothing context, not automatically on occupation.",
+      "search_aliases": [
+        "Wool",
+        "The Novgorod museum documents wool socks and footwear-related lining, not a complete costume reconstruction."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-felt-lining",
+      "locale": "ru",
+      "runtime_text": "Войлок применялся для стелек; они не обязательны для каждой пары обуви.",
+      "search_aliases": [
+        "Войлок",
+        "Войлочные стельки известны в музейном обзоре средневековой обуви; они не обязательны для каждой пары."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-felt-lining",
+      "locale": "en",
+      "runtime_text": "Felt was used for insoles; they are not mandatory for every pair of footwear.",
+      "search_aliases": [
+        "Felt",
+        "Felt insoles appear in the museum survey of medieval footwear; they are not mandatory for every pair."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weaving-practice",
+      "locale": "ru",
+      "runtime_text": "Ткацкое ремесло засвидетельствовано археологическими исследованиями Новгорода.",
+      "search_aliases": [
+        "Ткачество",
+        "Ткацкое ремесло засвидетельствовано археологическими исследованиями Новгорода."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-weaving-practice",
+      "locale": "en",
+      "runtime_text": "Weaving is attested by archaeological studies of Novgorod.",
+      "search_aliases": [
+        "Weaving",
+        "Weaving is attested by archaeological studies of Novgorod."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-practice",
+      "locale": "ru",
+      "runtime_text": "Работа плотников и резчиков по дереву засвидетельствована новгородским археологическим материалом.",
+      "search_aliases": [
+        "Работа с деревом",
+        "Работа плотников и резчиков по дереву засвидетельствована новгородским археологическим материалом."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-practice",
+      "locale": "en",
+      "runtime_text": "Carpentry and wood carving are attested by Novgorod archaeological material.",
+      "search_aliases": [
+        "Woodworking",
+        "Carpentry and wood carving are attested by Novgorod archaeological material."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-material",
+      "locale": "ru",
+      "runtime_text": "Дерево служило материалом ремесленных изделий; обработка требует уже доступного исходного материала.",
+      "search_aliases": [
+        "Работа с деревом",
+        "Дерево служило материалом ремесленных изделий; обработка требует уже доступного исходного материала."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-woodwork-material",
+      "locale": "en",
+      "runtime_text": "Wood was used for crafted objects; working it requires an available material source.",
+      "search_aliases": [
+        "Woodworking",
+        "Wood was used for crafted objects; working it requires an available material source."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-boat-context",
+      "locale": "ru",
+      "runtime_text": "Лодка упомянута как один из контекстов извлечения сети; это не свидетельство судна на каждом берегу.",
+      "search_aliases": [
+        "Лодка",
+        "Лодка упомянута как один из контекстов извлечения сети; это не свидетельство судна на каждом берегу."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-boat-context",
+      "locale": "en",
+      "runtime_text": "A boat is documented as one context for recovering a net, not as a feature of every shore.",
+      "search_aliases": [
+        "Boat",
+        "A boat is documented as one context for recovering a net, not as a feature of every shore."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-tack-context",
+      "locale": "ru",
+      "runtime_text": "В новгородских находках есть детали седла, узды, стремена и другие элементы снаряжения коня и всадника; комплект и лошадь не возникают из этой категории.",
+      "search_aliases": [
+        "Конская сбруя",
+        "В новгородских находках есть детали седла, узды, стремена и другие элементы снаряжения коня и всадника; комплект и лошадь не возникают из этой категории."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-tack-context",
+      "locale": "en",
+      "runtime_text": "Novgorod finds include saddle, bridle, stirrup and other riding equipment; this category creates neither a complete set nor a horse.",
+      "search_aliases": [
+        "Horse tack",
+        "Novgorod finds include saddle, bridle, stirrup and other riding equipment; this category creates neither a complete set nor a horse."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-hide-leather-distinction",
+      "locale": "ru",
+      "runtime_text": "Кожевенное и сапожное ремесло различались; для описанной обуви использовали уже выделанные шкуры.",
+      "search_aliases": [
+        "Шкура",
+        "Музейный источник различает кожевенное и сапожное ремесло; для описанной обуви использовали выделанные шкуры."
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:population-hide-leather-distinction",
+      "locale": "en",
+      "runtime_text": "Tanning and shoemaking were distinct crafts; the described footwear used already prepared hides.",
+      "search_aliases": [
+        "Hide",
+        "The museum source distinguishes tanning from shoemaking; the described footwear used prepared hides."
+      ]
+    }
+  ]
+}

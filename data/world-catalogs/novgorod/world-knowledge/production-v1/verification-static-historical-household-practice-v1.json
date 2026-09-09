@@ -1,0 +1,20 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-historical-household-practice-v1-church-monthbook-day-commemoration",
+      "claim_ref": "claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+      "claim_digest": "b72ea14b1ec7c4b1f50438bbf77e76caa40e40e6866aea798486834c42a6f35b",
+      "candidate_ref": "git:11940d7b8c207aa8e83718aad5984504125000c3:data/world-catalogs/novgorod/world-knowledge/production-v1/static-historical-household-practice-v1.json#claim:historical-xiii-century-church-monthbook-associates-days-with-commemorations",
+      "auditor_ref": "/root/food_source_verifier",
+      "independence_basis": "Independent direct source review; auditor did not author this candidate.",
+      "evidence_checked": [
+        "evidence:research-xiii-century-church-monthbook-day-commemoration"
+      ],
+      "review_ref": "verification/static-historical-household-practice-v1.md#claimhistorical-xiii-century-church-monthbook-associates-days-with-commemorations",
+      "verdict": "APPROVE",
+      "limits": "Supports a thirteenth-century textual day-to-commemoration relation only; no local Novgorod use, observance, attendance, fasting, belief, character knowledge, or scene date follows."
+    }
+  ]
+}

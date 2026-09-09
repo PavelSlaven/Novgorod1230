@@ -1,0 +1,1046 @@
+{
+  "batch": "trade-economy-02-review-a",
+  "reviewer": "/root/pr92_final_auditor",
+  "corpus_basis": {
+    "commit": "bce717f0622e9659a283a6f902f5660b5a09f046",
+    "runtime_bundle": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json"
+  },
+  "method": "WK-only reconstruction from frozen input and exact committed production runtime. Local givens do not establish authoritative stock, price, legal rule, payment outcome, identity, route outcome or scene state. A gap is recorded only for a reusable central factual premise absent after composition.",
+  "cases": [
+    {
+      "case_id": "te02core-001",
+      "primary_domain": "barter comparison",
+      "answer_ru": "Зерно и лён можно осмотреть раздельно по состоянию и назначению, затем предложить обмен или отказаться; общего курса нет.",
+      "claim_refs": [
+        "claim:clothing-linen",
+        "claim:stored-grain-condition-depends-on-temperature-moisture"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-002",
+      "primary_domain": "partial payment",
+      "answer_ru": "Шерсть и отложенный остаток фиксируются как разные части предложения; передача части не равна окончательному расчёту.",
+      "claim_refs": [
+        "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement",
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-003",
+      "primary_domain": "measure and count",
+      "answer_ru": "Длины сопоставляют с одной общей повторяемой опорой; разные верёвки сохраняют неопределённость до сравнения.",
+      "claim_refs": [
+        "claim:trade-economy-linear-goods-can-be-compared-by-repeated-placement-against-a-shared-reference"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-004",
+      "primary_domain": "money and tender limits",
+      "answer_ru": "Куски считают и осматривают отдельно от соли; внешний вид не делает их установленным платёжным средством.",
+      "claim_refs": [
+        "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-005",
+      "primary_domain": "quality-adjusted exchange",
+      "answer_ru": "Повреждение орудия отделяют от пищи: осматривают крепёж, рабочую часть и возможную нагрузку ремонта, не назначая эквивалент.",
+      "claim_refs": [
+        "claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use",
+        "claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-006",
+      "primary_domain": "barter comparison",
+      "answer_ru": "Вклад каждого можно назвать отдельным предметом или работой; общий расход не создаёт фиксированной доли или цены.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-007",
+      "primary_domain": "partial payment",
+      "answer_ru": "Вес проверяют повторным сравнением, а воск — по наблюдаемым признакам партии; вес и качество не взаимозаменяемы.",
+      "claim_refs": [
+        "claim:trade-economy-balance-scale-repeatability-depends-on-components-condition-and-repeated-comparison-not-unknown-standard",
+        "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-008",
+      "primary_domain": "measure and count",
+      "answer_ru": "Неизвестный жетон держат отдельно, считают и сравнивают без вывода о подлинности, достоинстве или приёмке.",
+      "claim_refs": [
+        "claim:trade-economy-divisible-payment-metal-can-be-separated-and-compared-without-authentication-or-settlement"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-009",
+      "primary_domain": "money and tender limits",
+      "answer_ru": "Мокрую часть осматривают и отделяют от сухой; условие товара меняет разговор, но не доказывает вину или новую цену.",
+      "claim_refs": [
+        "claim:final-practical-wood-leather-textile-and-metal-equipment-can-show-condition-before-use",
+        "claim:final-practical-stored-goods-condition-can-change-with-air-moisture-and-time-without-fixed-rate"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-010",
+      "primary_domain": "quality-adjusted exchange",
+      "answer_ru": "Товар и будущая перевозка называются разными обещаниями; согласие, срок и результат не предполагаются.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-011",
+      "primary_domain": "barter comparison",
+      "answer_ru": "Нужно уточнить саму корзину, наполненность и способ сравнения; корзина не является заранее известной мерой.",
+      "claim_refs": [
+        "claim:measurement-units-must-be-identified"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-012",
+      "primary_domain": "partial payment",
+      "answer_ru": "Старую и свежую верёвку держат отдельными лотами, осматривают влагу и состояние; смешение не даёт общей пригодности.",
+      "claim_refs": [
+        "claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-013",
+      "primary_domain": "measure and count",
+      "answer_ru": "Труд называют отдельным невещественным вкладом, а доступность мельницы зависит от водного пути; доля не выводится.",
+      "claim_refs": [
+        "claim:macro-b19-watermill-work-depends-on-usable-flow-and-head-and-can-be-limited-by-the-water-path",
+        "claim:debt-needs-parties-and-basis"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-014",
+      "primary_domain": "money and tender limits",
+      "answer_ru": "Трещину осматривают на протечку и устойчивость; наличие сосуда в лоте не делает его исправным или равным другим вещам.",
+      "claim_refs": [
+        "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport",
+        "claim:clay-fired-no-replasticization"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-015",
+      "primary_domain": "quality-adjusted exchange",
+      "answer_ru": "Вклады партнёров записывают и держат различимыми; совместная покупка не создаёт ownership или долю без отдельного основания.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-016",
+      "primary_domain": "credit and record",
+      "answer_ru": "Можно сохранить стороны, предмет, основание и предполагаемый возврат; запись не решает спор.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-017",
+      "primary_domain": "pledge custody",
+      "answer_ru": "Частичная передача может быть отмечена, но acknowledgement не доказывает discharge.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-018",
+      "primary_domain": "account disagreement",
+      "answer_ru": "Плащ, хранение и дождевое состояние описываются раздельно; custody не создаёт title.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+        "claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-019",
+      "primary_domain": "delivery evidence",
+      "answer_ru": "Каждый рассказ сохраняют с его источником; разные accounts могут corroborate, но не доказывают truth.",
+      "claim_refs": [
+        "claim:final-social-observation-is-bounded-by-position-conditions-and-attention",
+        "claim:final-social-independent-accounts-can-corroborate-without-proving-truth"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-020",
+      "primary_domain": "bounded return inquiry",
+      "answer_ru": "Труд после пропуска возврата можно предложить как новое возможное arrangement без вывода о долге.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-021",
+      "primary_domain": "credit and record",
+      "answer_ru": "Отсутствующее имя — недостающий контекст: marker сам не создаёт obligation.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-022",
+      "primary_domain": "pledge custody",
+      "answer_ru": "Наблюдение carrier ограничено моментом handover; вес позже не доказывает прежний вес.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-023",
+      "primary_domain": "account disagreement",
+      "answer_ru": "Повторный счёт — claim, не proof; сравнивают записи и наблюдения.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-024",
+      "primary_domain": "delivery evidence",
+      "answer_ru": "Просьба о сроке может быть связана с сезоном, но не даёт grant.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-025",
+      "primary_domain": "bounded return inquiry",
+      "answer_ru": "Ремонт удерживаемой вещи отделяется от ownership и return.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+        "claim:final-social-competing-property-accounts-can-guide-bounded-return-inquiry"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-026",
+      "primary_domain": "credit and record",
+      "answer_ru": "Родство и слово кузена — social context, не authority.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-027",
+      "primary_domain": "pledge custody",
+      "answer_ru": "После ухода со stall сохраняют observation, shared measure и accounts без решения.",
+      "claim_refs": [
+        "claim:debt-needs-parties-and-basis",
+        "claim:final-social-retelling-can-preserve-or-change-source-and-detail"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-028",
+      "primary_domain": "storage moisture",
+      "answer_ru": "Мешки поднимают от влажного пола, осматривают запах, влагу и слои; это не предсказывает порчу.",
+      "claim_refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-029",
+      "primary_domain": "cargo handling",
+      "answer_ru": "Сушёную рыбу отделяют от дыма и готовой пищи; дым не даёт safety verdict.",
+      "claim_refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-030",
+      "primary_domain": "seasonal supply",
+      "answer_ru": "Керамику разделяют и фиксируют; мокрая колея повышает риск, но не задаёт исход.",
+      "claim_refs": [
+        "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load",
+        "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-031",
+      "primary_domain": "water transport",
+      "answer_ru": "Бочки держат под cover и осматривают воду/перемещение; thaw не создаёт маршрут.",
+      "claim_refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-032",
+      "primary_domain": "goods condition",
+      "answer_ru": "Мокрые сети и rope осматривают, сушат и при нужде ремонтируют; сушка не гарантирует reuse.",
+      "claim_refs": [
+        "claim:final-practical-wet-netting-and-cordage-can-need-inspection-drying-and-repair-before-reuse"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-033",
+      "primary_domain": "storage moisture",
+      "answer_ru": "Тёплый воздух и влага требуют condition checks и разделения, не вывода о spoilage.",
+      "claim_refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-034",
+      "primary_domain": "cargo handling",
+      "answer_ru": "Туман ограничивает наблюдение; load distribution проверяют отдельно от route safety.",
+      "claim_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:practical-boat-load"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-035",
+      "primary_domain": "seasonal supply",
+      "answer_ru": "Тяжёлое кладут устойчиво, хрупкое отделяют и фиксируют; конкретная телега остаётся state.",
+      "claim_refs": [
+        "claim:military-world-loads-need-order-and-passage",
+        "claim:mb14-practical-fragile-vessels-are-separated-and-cushioned-for-transport"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-036",
+      "primary_domain": "water transport",
+      "answer_ru": "Инвентаризация описывает наблюдаемый stock, но не будущую supply.",
+      "claim_refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-037",
+      "primary_domain": "goods condition",
+      "answer_ru": "Соль убирают из протечки и проверяют влажность/тару; это не устанавливает порчу.",
+      "claim_refs": [
+        "claim:place-salt-moisture-at-particle-contacts-can-cake-through-dissolution-and-recrystallization"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-038",
+      "primary_domain": "storage moisture",
+      "answer_ru": "Грязный берег — наблюдаемое footing condition; проходимость требует локальной проверки.",
+      "claim_refs": [
+        "claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-039",
+      "primary_domain": "cargo handling",
+      "answer_ru": "Семена отделяют и защищают; следы мышей не доказывают infestation.",
+      "claim_refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-040",
+      "primary_domain": "seasonal supply",
+      "answer_ru": "Железо укрывают от дождя и осматривают; риск corrosion не равен найденному повреждению.",
+      "claim_refs": [
+        "claim:iron-corrosion-moisture-oxygen"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-041",
+      "primary_domain": "water transport",
+      "answer_ru": "Еду держат в наиболее прохладном доступном состоянии и осматривают; время/жара не дают safety verdict.",
+      "claim_refs": [
+        "claim:trade-economy-fresh-fish-time-temperature-and-sensory-signs-limit-cautious-handling-not-safety-verdict"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-042",
+      "primary_domain": "goods condition",
+      "answer_ru": "Cargo сортируют и распределяют до gust; это не обещает voyage.",
+      "claim_refs": [
+        "claim:practical-boat-load",
+        "claim:practical-boat-shore-transfer"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-043",
+      "primary_domain": "storage moisture",
+      "answer_ru": "Открытая после сырости дверь меняет airflow context; stock проверяют, не предполагая spoilage.",
+      "claim_refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-044",
+      "primary_domain": "cargo handling",
+      "answer_ru": "Fodder и household food разделяют, чтобы ограничить contact; загрязнение не предполагается.",
+      "claim_refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-045",
+      "primary_domain": "seasonal supply",
+      "answer_ru": "Cover, cold и delay учитывают отдельно; snowfall не устанавливает транспортный исход.",
+      "claim_refs": [
+        "claim:final-practical-stored-organic-goods-need-condition-checks-for-moisture-odour-or-visible-change",
+        "claim:final-practical-storage-separation-and-air-movement-can-limit-interference-when-available"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-046",
+      "primary_domain": "household labour",
+      "answer_ru": "Bellows и fuel — различимые задачи; распределение труда возможно без вывода о skill или output.",
+      "claim_refs": [
+        "claim:ordinary-life-smith-forge-and-bellows",
+        "claim:macro-b21-wet-charcoal-needs-drying-or-heat-management-before-reliable-hot-forge-work"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-047",
+      "primary_domain": "craft workflow",
+      "answer_ru": "Очистка, помол и baking — последовательные процессы с временем и доступными means.",
+      "claim_refs": [
+        "claim:milling-grain-compression-shear-fracture",
+        "claim:grain-processing-bread-dough-before-baking",
+        "claim:grain-processing-bread-oven-baking"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-048",
+      "primary_domain": "food and fuel economy",
+      "answer_ru": "Натяжение основы сначала осматривают и регулируют контролируемо; это обслуживание не обещает готового ремонта или ткани.",
+      "claim_refs": [
+        "claim:macro-b19-uneven-warp-tension-is-a-condition-to-diagnose-before-controlled-adjustment",
+        "claim:ordinary-life-weaver-needs-yarn-and-loom-space"
+      ],
+      "inferences": [
+        "Состояние основы проверяют отдельно от результата работы."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-049",
+      "primary_domain": "care and work coordination",
+      "answer_ru": "Молоко охлаждают и используют promptly при доступной прохладе; это не safety verdict.",
+      "claim_refs": [
+        "claim:mb14-practical-milk-in-heat-needs-cooler-place-and-prompt-use"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-050",
+      "primary_domain": "production maintenance",
+      "answer_ru": "Cutting, drying и joining имеют разные condition constraints; порядок выбирают по реальному workpiece.",
+      "claim_refs": [
+        "claim:foundations-mat-02-wood-drying-crack-strength",
+        "claim:foundations-mat-06-wood-drying-property-change",
+        "claim:ordinary-life-carpenter-works-wood-with-tools"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-051",
+      "primary_domain": "household labour",
+      "answer_ru": "Флax work и childcare конкурируют за внимание и время; ни возраст, ни competence не предполагаются.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-052",
+      "primary_domain": "craft workflow",
+      "answer_ru": "Подсчёт firewood описывает stock, не достаточность на холод.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-053",
+      "primary_domain": "food and fuel economy",
+      "answer_ru": "Apprentice может участвовать под наблюдением; это не утверждает competence.",
+      "claim_refs": [
+        "claim:human-life-learning-tasks-can-match-capacity-risk",
+        "claim:human-life-learning-observation-practice-feedback"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-054",
+      "primary_domain": "care and work coordination",
+      "answer_ru": "Raw и ready food разделяют на тесном hearth; contact risk не доказывает contamination.",
+      "claim_refs": [
+        "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-055",
+      "primary_domain": "production maintenance",
+      "answer_ru": "Feed, water и mucking — разные care tasks; они не устанавливают condition animal.",
+      "claim_refs": [
+        "claim:practical-livestock-care",
+        "claim:military-world-animals-and-households-have-continuing-needs"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-056",
+      "primary_domain": "household labour",
+      "answer_ru": "Firing требует heat/weather assessment; ветер и rain не дают outcome.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-057",
+      "primary_domain": "craft workflow",
+      "answer_ru": "Roof repair и market work конкурируют по time/materials; priority не задан.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-058",
+      "primary_domain": "food and fuel economy",
+      "answer_ru": "Dust очищают до grinding как work-area condition; это не заявляет machine state.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-059",
+      "primary_domain": "care and work coordination",
+      "answer_ru": "Offcuts можно отделить как remnants; это не materializes finished goods.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-060",
+      "primary_domain": "production maintenance",
+      "answer_ru": "Wash day соединяет water, vessels и labour; participation не создаёт duty.",
+      "claim_refs": [
+        "claim:final-social-household-water-use-depends-on-access-vessels-and-labour"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-061",
+      "primary_domain": "household labour",
+      "answer_ru": "Guest meal и winter stores разделяют current use и reserve; total supply остаётся unknown.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-062",
+      "primary_domain": "craft workflow",
+      "answer_ru": "Wet hides отделяют от dry leather work; workspace separation не гарантирует result.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-063",
+      "primary_domain": "food and fuel economy",
+      "answer_ru": "Cordage repair и food preparation конкурируют за dry workspace/time.",
+      "claim_refs": [
+        "claim:ordinary-life-household-repairs-compete-with-new-goods",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-064",
+      "primary_domain": "travel logistics",
+      "answer_ru": "Совместная дорога допускает coordination, но mixed loads остаются различными и не создают joint ownership.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+        "claim:practical-boat-load"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-065",
+      "primary_domain": "shared cargo",
+      "answer_ru": "Rain, visibility и cargo distribution проверяются до departure; route outcome не выводится.",
+      "claim_refs": [
+        "claim:mb14-practical-boat-approach-balances-wind-current-and-oar-control",
+        "claim:practical-boat-load"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-066",
+      "primary_domain": "road and river risk",
+      "answer_ru": "Передача goods другому household сохраняет custody и delivery uncertainty, не ownership/result.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+        "claim:practical-boat-load"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-067",
+      "primary_domain": "partnership accounting",
+      "answer_ru": "Ношу, доступное место и труд можно сравнить, не назначая cost или hire outcome.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+        "claim:practical-boat-load"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-068",
+      "primary_domain": "carrying limits",
+      "answer_ru": "Overloaded cart и bridge требуют local inspection load, axle, footing and support; crossing не обещан.",
+      "claim_refs": [
+        "claim:military-world-crossing-conditions-remain-local",
+        "claim:military-world-crossing-needs-staged-load-handling"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-069",
+      "primary_domain": "travel logistics",
+      "answer_ru": "Watch arrangement можно обсудить как task; security outcome не возникает.",
+      "claim_refs": [
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:military-world-watch-relief-keeps-attention-bounded"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-070",
+      "primary_domain": "shared cargo",
+      "answer_ru": "Повреждённый strap осматривают по fastening/condition; repair и travel result не предполагаются.",
+      "claim_refs": [
+        "claim:final-practical-worn-fastening-or-covering-can-be-limited-repaired-replaced-or-deferred-conditionally"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-071",
+      "primary_domain": "road and river risk",
+      "answer_ru": "Лоты двух households держат различимыми при boat load; responsibilities не назначаются.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+        "claim:practical-boat-load"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-072",
+      "primary_domain": "partnership accounting",
+      "answer_ru": "Frost и packaging учитывают при хранении food/samples; safety и сохранность не гарантированы.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+        "claim:practical-boat-load"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-073",
+      "primary_domain": "carrying limits",
+      "answer_ru": "Floating debris описывают как obstacle observation; navigability требует local assessment.",
+      "claim_refs": [
+        "claim:final-nature-woody-debris-can-change-local-shore-or-channel-obstacles-without-predicting-passage"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-074",
+      "primary_domain": "travel logistics",
+      "answer_ru": "После delay accounts и goods distinction можно сохранить; dissolution не даёт legal result.",
+      "claim_refs": [
+        "claim:final-social-holding-or-custody-does-not-by-itself-establish-title",
+        "claim:practical-boat-load"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "te02core-075",
+      "primary_domain": "shared cargo",
+      "answer_ru": "Small parcel, child supervision и weather требуют доступной помощи и наблюдения; delivery outcome не предполагается.",
+      "claim_refs": [
+        "claim:human-life-category-does-not-determine-means-ties-skill",
+        "claim:human-life-learning-tasks-can-match-capacity-risk"
+      ],
+      "inferences": [
+        "Конкретные участники, запасы, цена, право и итог не выводятся из этих premises."
+      ],
+      "status": "covered",
+      "gaps": []
+    }
+  ]
+}

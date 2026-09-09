@@ -10,7 +10,12 @@ export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
       || typeof operation.query !== 'string'
       || operation.query.trim().length === 0
       || capability == null) return false;
-  return exactVisibleScope(playerSafeState).has(operation.target_refs[0]);
+  return isCurrentVisibleDiscoveryRef(playerSafeState,
+    operation.target_refs[0]);
+}
+
+export function isCurrentVisibleDiscoveryRef(playerSafeState, targetRef) {
+  return exactVisibleScope(playerSafeState).has(targetRef);
 }
 
 function ordinaryResolutionCapability(playerSafeState) {
@@ -37,12 +42,15 @@ function exactVisibleScope(...projections) {
       entity?.entity_ref);
     for (const entity of projection?.visible_objects ?? []) addRef(refs,
       entity?.entity_ref);
+    for (const entity of projection?.current_visible_context?.visible_objects
+      ?? []) addRef(refs, entity?.entity_ref);
   }
   return refs;
 }
 
 function addRef(refs, value) {
-  if (typeof value === 'string' && value.length > 0) refs.add(value);
+  const ref = typeof value === 'string' ? value : value?.entity_id;
+  if (typeof ref === 'string' && ref.length > 0) refs.add(ref);
 }
 
 function ownPlainDataRecord(value, keys) {

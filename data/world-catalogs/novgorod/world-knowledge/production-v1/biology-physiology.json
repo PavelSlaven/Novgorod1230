@@ -1,0 +1,2662 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {
+    "biology_physiology": {
+      "can_cause": {
+        "subject_domains": [
+          "biology_physiology"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Universal qualitative causal possibility; it neither diagnoses a state nor predicts an outcome."
+      },
+      "affects": {
+        "subject_domains": [
+          "biology_physiology"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Universal qualitative physiological relation; exact effect remains code-owned."
+      },
+      "responds_to": {
+        "subject_domains": [
+          "biology_physiology"
+        ],
+        "object_kinds": [
+          "literal"
+        ],
+        "object_concept_domains": [],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": [
+          "support",
+          "exclude"
+        ],
+        "cardinality": "multi_valued",
+        "applicability": "universal",
+        "consumer_meaning": "Universal biological response relation; it does not assert a present organism or state."
+      }
+    }
+  },
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-ap26-fluid",
+      "title": "26.1 Body Fluids and Fluid Compartments",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/26-1-body-fluids-and-fluid-compartments",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-ap24-heat",
+      "title": "24.6 Energy and Heat Balance",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/24-6-energy-and-heat-balance",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-ap10-muscle",
+      "title": "10.3 Muscle Fiber Contraction and Relaxation",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/10-3-muscle-fiber-contraction-and-relaxation",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-ap4-injury",
+      "title": "4.6 Tissue Injury and Aging",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/4-6-tissue-injury-and-aging",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-ap21-innate",
+      "title": "21.2 Barrier Defenses and the Innate Immune Response",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/21-2-barrier-defenses-and-the-innate-immune-response",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-bio33-animal",
+      "title": "33.1 Animal Form and Function",
+      "authors": [
+        "Clark, M. A. et al."
+      ],
+      "publication": "OpenStax Biology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/biology-2e/pages/33-1-animal-form-and-function",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-bio33-homeostasis",
+      "title": "33.3 Homeostasis",
+      "authors": [
+        "Clark, M. A. et al."
+      ],
+      "publication": "OpenStax Biology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/biology-2e/pages/33-3-homeostasis",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-bio31-nutrients",
+      "title": "31.1 Nutritional Requirements of Plants",
+      "authors": [
+        "Clark, M. A. et al."
+      ],
+      "publication": "OpenStax Biology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/biology-2e/pages/31-1-nutritional-requirements-of-plants",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-bio30-response",
+      "title": "30.6 Plant Sensory Systems and Responses",
+      "authors": [
+        "Clark, M. A. et al."
+      ],
+      "publication": "OpenStax Biology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/biology-2e/pages/30-6-plant-sensory-systems-and-responses",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-bio30-transport",
+      "title": "30.5 Transport of Water and Solutes in Plants",
+      "authors": [
+        "Clark, M. A. et al."
+      ],
+      "publication": "OpenStax Biology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/biology-2e/pages/30-5-transport-of-water-and-solutes-in-plants",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-bio24-fungi",
+      "title": "24.3 Ecology of Fungi",
+      "authors": [
+        "Clark, M. A. et al."
+      ],
+      "publication": "OpenStax Biology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/biology/pages/24-3-ecology-of-fungi",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:openstax-ap24-nutrition",
+      "title": "24.7 Nutrition and Diet",
+      "authors": [
+        "Betts, J. G. et al."
+      ],
+      "publication": "OpenStax Anatomy and Physiology 2e, Rice University",
+      "source_kind": "scholarship",
+      "citation": "https://openstax.org/books/anatomy-and-physiology-2e/pages/24-7-nutrition-and-diet",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:uky-ruminant-forage",
+      "title": "Why Cattle, Sheep, and Goats Can Eat Forages",
+      "authors": [
+        "Donna M. Amaral-Phillips"
+      ],
+      "publication": "University of Kentucky Department of Animal & Food Sciences",
+      "source_kind": "official_documentation",
+      "citation": "https://afs.mgcafe.uky.edu/content/why-cattle-sheep-and-goats-can-eat-forages",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:unh-swine-nutrition",
+      "title": "Swine Nutrition",
+      "authors": [],
+      "publication": "University of New Hampshire Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.unh.edu/resource/swine-nutrition",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:cdc-bleeding-care",
+      "title": "Preventing Diabetes-Related Amputations",
+      "authors": [
+        "U.S. Centers for Disease Control and Prevention"
+      ],
+      "publication": "CDC, 2024",
+      "source_kind": "technical_reference",
+      "citation": "https://www.cdc.gov/diabetes/diabetes-complications/preventing-diabetes-related-amputations.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:cdc-wound-water-protection",
+      "title": "Guidelines for Personal Hygiene During an Emergency",
+      "authors": [
+        "U.S. Centers for Disease Control and Prevention"
+      ],
+      "publication": "CDC, 2024",
+      "source_kind": "technical_reference",
+      "citation": "https://www.cdc.gov/water-emergency/safety/guidelines-for-personal-hygiene-during-an-emergency.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:cci-flayed-skin-processing",
+      "source_ref": "source:cci-leather-skin-fur",
+      "anchor": {
+        "section": "Skin structure and processing; Furs: quick cooling and prompt thorough cleansing"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS FPP01–02: verification/verification-fur-pelt-processing.md. Universal purpose and conditional biological risk relations, not historical technique, exact conditions or guaranteed preservation.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-fluid",
+      "source_ref": "source:openstax-ap26-fluid",
+      "anchor": {
+        "section": "Body Fluids; Body Water Content"
+      },
+      "note": "Cellular water/solute balance and sweating, qualitative only.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-heat",
+      "source_ref": "source:openstax-ap24-heat",
+      "anchor": {
+        "section": "Mechanisms of Heat Exchange"
+      },
+      "note": "Human/endotherm heat exchange; no exposure outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-muscle",
+      "source_ref": "source:openstax-ap10-muscle",
+      "anchor": {
+        "section": "Sources of ATP; Fatigue"
+      },
+      "note": "Skeletal-muscle mechanisms only; no action score or failure prediction.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-injury",
+      "source_ref": "source:openstax-ap4-injury",
+      "anchor": {
+        "section": "Tissue Injury and Repair"
+      },
+      "note": "Mechanism only, never first-aid advice.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-innate",
+      "source_ref": "source:openstax-ap21-innate",
+      "anchor": {
+        "section": "Barrier Defenses; Inflammatory Response"
+      },
+      "note": "Mechanism only, never diagnosis or treatment.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-animal",
+      "source_ref": "source:openstax-bio33-animal",
+      "anchor": {
+        "section": "Animal Bioenergetics"
+      },
+      "note": "Animal/endotherm scope where stated.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-homeostasis",
+      "source_ref": "source:openstax-bio33-homeostasis",
+      "anchor": {
+        "section": "Homeostasis; Thermoregulation"
+      },
+      "note": "General animal physiology only.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-plant-nutrients",
+      "source_ref": "source:openstax-bio31-nutrients",
+      "anchor": {
+        "section": "Nutritional Requirements of Plants; Essential Nutrients"
+      },
+      "note": "No crop, yield, local soil or presence follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-plant-response",
+      "source_ref": "source:openstax-bio30-response",
+      "anchor": {
+        "section": "Plant Responses to Light"
+      },
+      "note": "Species-specific timing and outcome unresolved.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-plant-transport",
+      "source_ref": "source:openstax-bio30-transport",
+      "anchor": {
+        "section": "Transport of Water and Solutes in Plants; Stomata"
+      },
+      "note": "Universal plant mechanism only.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-fungi",
+      "source_ref": "source:openstax-bio24-fungi",
+      "anchor": {
+        "section": "Decomposers and Recyclers"
+      },
+      "note": "No fungal presence, edibility or safety inference.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bp-food-energy",
+      "source_ref": "source:openstax-ap24-nutrition",
+      "anchor": {
+        "section": "Food and Metabolism"
+      },
+      "note": "No dietary recommendation or amount.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:uky-ruminant-forage",
+      "source_ref": "source:uky-ruminant-forage",
+      "anchor": {
+        "section": "Opening four paragraphs"
+      },
+      "note": "Ruminant classification and qualitative rumen fermentation, forage digestion and nutrient/energy relations only; no animal condition, ration, husbandry or historical practice.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:unh-swine-nutrition",
+      "source_ref": "source:unh-swine-nutrition",
+      "anchor": {
+        "section": "Nutrients"
+      },
+      "note": "Monogastric omnivore classification and comparative energy/fibre requirements only. Modern roughage/pasture management examples are excluded.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:direct-pressure-bleeding",
+      "source_ref": "source:cdc-bleeding-care",
+      "anchor": {
+        "section": "What to do when you get a cut on your foot"
+      },
+      "note": "Independent verification/verification-basic-care.md BC-01: conditional universal care relation only; no diagnosis, historical practice, current supplies, skill or guaranteed outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:wound-cover-contaminated-water",
+      "source_ref": "source:cdc-wound-water-protection",
+      "anchor": {
+        "section": "Protect wounds"
+      },
+      "note": "Independent verification/verification-basic-care.md BC-02: conditional universal care relation only; no diagnosis, historical practice, current supplies, skill or guaranteed outcome.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:flayed-skin-preservation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:fluid-osmotic-balance",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:sweating-water-loss",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:human-thermoregulation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:sweat-evaporation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:metabolic-heat",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:skeletal-muscle-energy",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:muscle-aerobic-energy",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:muscle-fatigue",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:tissue-injury-response",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:coagulation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:skin-barrier",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:animal-food-energy",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:endotherm-insulation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:animal-homeostasis",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:plant-growth-requirements",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:plant-root-uptake",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:plant-light-development",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:plant-photoperiod-response",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:stomatal-regulation",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:stomatal-opening-tradeoff",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:fungal-decomposition",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:dietary-macronutrient-energy",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:ruminant-digestion",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:swine-digestion",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:flayed-skin-processing-purpose",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:flayed-skin-preservation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "flayed_skin_processing_purpose"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-flayed-skin-processing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fur-skin-cooling-cleansing",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:flayed-skin-preservation",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "fur_skin_cooling_cleansing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:cci-flayed-skin-processing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fluid-osmotic-balance-depends-on-water-solutes",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:fluid-osmotic-balance",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "water_and_solute_balance_for_normal_cellular_function"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-fluid"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:continued-sweating-can-cause-body-water-loss",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:sweating-water-loss",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "progressive_body_water_loss"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-fluid"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:human-thermoregulation-depends-on-heat-exchange",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:human-thermoregulation",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "conduction_convection_radiation_and_evaporation_heat_exchange"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-heat"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:sweat-evaporation-reduces-surface-heat",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:sweat-evaporation",
+      "predicate": "reduces",
+      "object": {
+        "kind": "literal",
+        "value": "heat_retained_at_skin_surface"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-heat"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:cellular-atp-production-can-cause-metabolic-heat",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:metabolic-heat",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "metabolic_heat_generation"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-heat"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:skeletal-muscle-contraction-depends-on-atp",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:skeletal-muscle-energy",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "atp_availability"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-muscle"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:aerobic-muscle-atp-regeneration-depends-on-oxygen",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:muscle-aerobic-energy",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "oxygen_availability"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-muscle"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:muscle-fatigue",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "reduced_muscle_function_and_fatigue"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-muscle"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:tissue-injury-can-cause-inflammatory-repair-response",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:tissue-injury-response",
+      "predicate": "can_cause",
+      "object": {
+        "kind": "literal",
+        "value": "inflammation_and_initiation_of_tissue_repair"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-injury"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:coagulation-reduces-blood-loss",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:coagulation",
+      "predicate": "reduces",
+      "object": {
+        "kind": "literal",
+        "value": "blood_loss_from_damaged_blood_vessels"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-injury"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:intact-skin-reduces-pathogen-entry",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:skin-barrier",
+      "predicate": "reduces",
+      "object": {
+        "kind": "literal",
+        "value": "pathogen_entry_through_external_body_surfaces"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-innate"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:animal-energy-availability-depends-on-food-derived-nutrients",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:animal-food-energy",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "food_derived_nutrients"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-animal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:endotherm-insulation-reduces-heat-loss",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:endotherm-insulation",
+      "predicate": "reduces",
+      "object": {
+        "kind": "literal",
+        "value": "heat_loss_through_fur_fat_or_feathers"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-animal"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:animal-homeostasis-responds-to-internal-external-change",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:animal-homeostasis",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "internal_and_external_environmental_change"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-homeostasis"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:plant-growth-requirements",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "light_water_carbon_dioxide_and_essential_mineral_nutrients_for_photosynthetic_vascular_plants"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-plant-nutrients"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:plant-root-uptake",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "water_and_inorganic_nutrients_accessible_to_roots"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-plant-nutrients",
+        "evidence:bp-plant-transport"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:plant-development-responds-to-light",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:plant-light-development",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "light_quality_intensity_and_direction_in_light_responsive_plants"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-plant-response"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:seasonal-plant-development-depends-on-photoperiod",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:plant-photoperiod-response",
+      "predicate": "depends_on",
+      "object": {
+        "kind": "literal",
+        "value": "day_length_signal_for_flowering_winter_bud_set_and_vegetative_growth_in_photoperiod_responsive_plants"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-plant-response"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:stomatal-regulation",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "light_leaf_water_status_and_carbon_dioxide_concentration"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-plant-transport"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:stomatal-opening-affects-gas-water-exchange",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:stomatal-opening-tradeoff",
+      "predicate": "affects",
+      "object": {
+        "kind": "literal",
+        "value": "gas_exchange_and_water_vapor_loss"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-plant-transport"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fungal-decomposition-affects-nutrient-recycling",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:fungal-decomposition",
+      "predicate": "affects",
+      "object": {
+        "kind": "literal",
+        "value": "release_and_recycling_of_elements_from_organic_matter"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-fungi"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:dietary-macronutrients-support-cellular-energy",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:dietary-macronutrient-energy",
+      "predicate": "affects",
+      "object": {
+        "kind": "literal",
+        "value": "energy_available_for_molecular_cellular_and_organ_system_activity"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bp-food-energy"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:livestock-ruminant-membership",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ruminant-digestion",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "cattle_sheep_and_goats_are_ruminants"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:uky-ruminant-forage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:livestock-rumen-fermentation",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ruminant-digestion",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rumen_is_a_site_of_feed_fermentation_in_mature_ruminant_physiology"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:uky-ruminant-forage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:livestock-rumen-forage-digestion",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ruminant-digestion",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rumen_bacteria_help_digest_grass_hay_and_other_forages"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:uky-ruminant-forage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:livestock-rumen-fermentation-nutrients",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:ruminant-digestion",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "rumen_bacterial_fermentation_products_can_supply_energy_and_nutrients"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:uky-ruminant-forage"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:livestock-swine-membership",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:swine-digestion",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "swine_are_monogastric_omnivores"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:unh-swine-nutrition"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:livestock-swine-comparative-diet",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:swine-digestion",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "swine_generally_require_higher_energy_lower_fibre_diets_than_ruminants"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:unh-swine-nutrition"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:care-direct-pressure-bleeding",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:tissue-injury-response",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "clean_cloth_or_bandage_direct_pressure_can_help_control_external_bleeding"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:direct-pressure-bleeding"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:care-waterproof-wound-cover",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:tissue-injury-response",
+      "predicate": "responds_to",
+      "object": {
+        "kind": "literal",
+        "value": "waterproof_bandage_on_clean_open_wound_can_reduce_infection_chance_from_contaminated_water_exposure"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "common",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:wound-cover-contaminated-water"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:flayed-skin-preservation",
+      "locale": "ru",
+      "labels": [
+        "Сохранение снятой шкуры"
+      ],
+      "short_definition": "Сохранение снятой шкуры",
+      "search_aliases": [
+        "Сохранение снятой шкуры"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:flayed-skin-preservation",
+      "locale": "en",
+      "labels": [
+        "Flayed skin preservation"
+      ],
+      "short_definition": "Flayed skin preservation",
+      "search_aliases": [
+        "Flayed skin preservation"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:fluid-osmotic-balance",
+      "locale": "ru",
+      "labels": [
+        "Водно-солевой баланс"
+      ],
+      "short_definition": "Баланс воды и растворённых веществ в жидкостях тела.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:fluid-osmotic-balance",
+      "locale": "en",
+      "labels": [
+        "Fluid osmotic balance"
+      ],
+      "short_definition": "Water and solute balance in body fluids.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:sweating-water-loss",
+      "locale": "ru",
+      "labels": [
+        "Потоотделение и потеря воды"
+      ],
+      "short_definition": "Потоотделение связано с потерей воды телом.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:sweating-water-loss",
+      "locale": "en",
+      "labels": [
+        "Sweating and water loss"
+      ],
+      "short_definition": "Sweating is associated with body-water loss.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:human-thermoregulation",
+      "locale": "ru",
+      "labels": [
+        "Терморегуляция человека"
+      ],
+      "short_definition": "Тепловой обмен человеческого тела с окружением.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:human-thermoregulation",
+      "locale": "en",
+      "labels": [
+        "Human thermoregulation"
+      ],
+      "short_definition": "Human heat exchange with the surroundings.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:sweat-evaporation",
+      "locale": "ru",
+      "labels": [
+        "Испарение пота"
+      ],
+      "short_definition": "Испарение влаги с кожи переносит тепло.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:sweat-evaporation",
+      "locale": "en",
+      "labels": [
+        "Sweat evaporation"
+      ],
+      "short_definition": "Evaporation from skin transfers heat.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:metabolic-heat",
+      "locale": "ru",
+      "labels": [
+        "Метаболическое тепло"
+      ],
+      "short_definition": "Клеточное получение энергии выделяет тепло.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:metabolic-heat",
+      "locale": "en",
+      "labels": [
+        "Metabolic heat"
+      ],
+      "short_definition": "Cellular energy production releases heat.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:skeletal-muscle-energy",
+      "locale": "ru",
+      "labels": [
+        "Энергия скелетной мышцы"
+      ],
+      "short_definition": "Сокращение скелетной мышцы требует АТФ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:skeletal-muscle-energy",
+      "locale": "en",
+      "labels": [
+        "Skeletal-muscle energy"
+      ],
+      "short_definition": "Skeletal-muscle contraction requires ATP.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:muscle-aerobic-energy",
+      "locale": "ru",
+      "labels": [
+        "Аэробная энергия мышцы"
+      ],
+      "short_definition": "Аэробное восстановление АТФ в мышце связано с кислородом.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:muscle-aerobic-energy",
+      "locale": "en",
+      "labels": [
+        "Aerobic muscle energy"
+      ],
+      "short_definition": "Aerobic muscle ATP regeneration relies on oxygen.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:muscle-fatigue",
+      "locale": "ru",
+      "labels": [
+        "Утомление мышцы"
+      ],
+      "short_definition": "Снижение энергетических запасов связано с утомлением мышцы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:muscle-fatigue",
+      "locale": "en",
+      "labels": [
+        "Muscle fatigue"
+      ],
+      "short_definition": "Reduced energy reserves are associated with muscle fatigue.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:tissue-injury-response",
+      "locale": "ru",
+      "labels": [
+        "Ответ на повреждение ткани"
+      ],
+      "short_definition": "Повреждение ткани запускает воспалительный и восстановительный ответ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:tissue-injury-response",
+      "locale": "en",
+      "labels": [
+        "Tissue-injury response"
+      ],
+      "short_definition": "Tissue injury initiates inflammatory and repair responses.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:coagulation",
+      "locale": "ru",
+      "labels": [
+        "Свёртывание крови"
+      ],
+      "short_definition": "Свёртывание ограничивает потерю крови из повреждённых сосудов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:coagulation",
+      "locale": "en",
+      "labels": [
+        "Blood coagulation"
+      ],
+      "short_definition": "Coagulation limits blood loss from damaged vessels.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:skin-barrier",
+      "locale": "ru",
+      "labels": [
+        "Кожный барьер"
+      ],
+      "short_definition": "Неповреждённая кожа служит барьером для патогенов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:skin-barrier",
+      "locale": "en",
+      "labels": [
+        "Skin barrier"
+      ],
+      "short_definition": "Intact skin is a barrier to pathogens.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:animal-food-energy",
+      "locale": "ru",
+      "labels": [
+        "Энергия животных из пищи"
+      ],
+      "short_definition": "Животные получают используемую энергию из пищевых веществ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:animal-food-energy",
+      "locale": "en",
+      "labels": [
+        "Animal food energy"
+      ],
+      "short_definition": "Animals obtain usable energy from food-derived nutrients.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:endotherm-insulation",
+      "locale": "ru",
+      "labels": [
+        "Теплоизоляция эндотермов"
+      ],
+      "short_definition": "Шерсть, жир или перья уменьшают теплопотери эндотермов.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:endotherm-insulation",
+      "locale": "en",
+      "labels": [
+        "Endotherm insulation"
+      ],
+      "short_definition": "Fur, fat, or feathers reduce heat loss in endotherms.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:animal-homeostasis",
+      "locale": "ru",
+      "labels": [
+        "Гомеостаз животных"
+      ],
+      "short_definition": "Организм животного отвечает на внутренние и внешние изменения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:animal-homeostasis",
+      "locale": "en",
+      "labels": [
+        "Animal homeostasis"
+      ],
+      "short_definition": "Animal bodies respond to internal and external changes.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:plant-growth-requirements",
+      "locale": "ru",
+      "labels": [
+        "Условия роста растений"
+      ],
+      "short_definition": "Рост фотосинтезирующих сосудистых растений зависит от света, воды, углекислого газа и минеральных веществ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:plant-growth-requirements",
+      "locale": "en",
+      "labels": [
+        "Plant growth requirements"
+      ],
+      "short_definition": "Photosynthetic vascular plant growth needs light, water, carbon dioxide, and mineral nutrients.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:plant-root-uptake",
+      "locale": "ru",
+      "labels": [
+        "Поглощение корнями"
+      ],
+      "short_definition": "Корни поглощают доступные воду и неорганические вещества.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:plant-root-uptake",
+      "locale": "en",
+      "labels": [
+        "Plant-root uptake"
+      ],
+      "short_definition": "Roots absorb accessible water and inorganic nutrients.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:plant-light-development",
+      "locale": "ru",
+      "labels": [
+        "Свет и развитие растений"
+      ],
+      "short_definition": "Развитие растений отвечает на свойства света.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:plant-light-development",
+      "locale": "en",
+      "labels": [
+        "Plant light development"
+      ],
+      "short_definition": "Plant development responds to light properties.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:plant-photoperiod-response",
+      "locale": "ru",
+      "labels": [
+        "Фотопериодическая реакция растений"
+      ],
+      "short_definition": "Длина дня участвует в сезонном развитии некоторых растений.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:plant-photoperiod-response",
+      "locale": "en",
+      "labels": [
+        "Plant photoperiod response"
+      ],
+      "short_definition": "Day length participates in seasonal development of some plants.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:stomatal-regulation",
+      "locale": "ru",
+      "labels": [
+        "Регуляция устьиц"
+      ],
+      "short_definition": "Устьица отвечают на свет, водный статус листа и углекислый газ.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:stomatal-regulation",
+      "locale": "en",
+      "labels": [
+        "Stomatal regulation"
+      ],
+      "short_definition": "Stomata respond to light, leaf water status, and carbon dioxide.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:stomatal-opening-tradeoff",
+      "locale": "ru",
+      "labels": [
+        "Устьица: газообмен и потеря воды"
+      ],
+      "short_definition": "Открытые устьица сочетают газообмен с потерей водяного пара.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:stomatal-opening-tradeoff",
+      "locale": "en",
+      "labels": [
+        "Stomata: gas exchange and water loss"
+      ],
+      "short_definition": "Open stomata combine gas exchange with water-vapor loss.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:fungal-decomposition",
+      "locale": "ru",
+      "labels": [
+        "Разложение грибами"
+      ],
+      "short_definition": "Грибы разлагают органическое вещество и возвращают элементы в круговорот.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:fungal-decomposition",
+      "locale": "en",
+      "labels": [
+        "Fungal decomposition"
+      ],
+      "short_definition": "Fungi decompose organic matter and recycle elements.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:dietary-macronutrient-energy",
+      "locale": "ru",
+      "labels": [
+        "Энергия пищевых макронутриентов"
+      ],
+      "short_definition": "Углеводы, жиры и белки пищи дают энергию для функций организма.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:dietary-macronutrient-energy",
+      "locale": "en",
+      "labels": [
+        "Dietary macronutrient energy"
+      ],
+      "short_definition": "Dietary carbohydrates, lipids, and proteins supply energy for body functions.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:ruminant-digestion",
+      "locale": "ru",
+      "labels": [
+        "Пищеварение жвачных"
+      ],
+      "short_definition": "Биологическая классификация жвачных и качественные отношения рубцового пищеварения.",
+      "search_aliases": [
+        "жвачные",
+        "крупный рогатый скот",
+        "овцы",
+        "козы",
+        "рубец"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:ruminant-digestion",
+      "locale": "en",
+      "labels": [
+        "Ruminant digestion"
+      ],
+      "short_definition": "Ruminant biological classification and qualitative rumen digestion relations.",
+      "search_aliases": [
+        "ruminants",
+        "cattle",
+        "sheep",
+        "goats",
+        "rumen"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:swine-digestion",
+      "locale": "ru",
+      "labels": [
+        "Пищеварение свиней"
+      ],
+      "short_definition": "Однокамерное всеядное пищеварение и сравнительные потребности свиней в энергии и волокне.",
+      "search_aliases": [
+        "свиньи",
+        "всеядность"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:swine-digestion",
+      "locale": "en",
+      "labels": [
+        "Swine digestion"
+      ],
+      "short_definition": "Monogastric omnivore digestion and comparative energy and fibre requirements in swine.",
+      "search_aliases": [
+        "swine",
+        "pigs",
+        "omnivores"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:flayed-skin-processing-purpose",
+      "locale": "ru",
+      "runtime_text": "Обработка шкуры после снятия с животного направлена на её очистку и предотвращение гниения. Это связь цели обработки, а не гарантия или упорядоченный рецепт. Она не устанавливает конкретный способ обработки, наличную шкуру, работника, воду, время, доступ, историческую доступность или результат.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:flayed-skin-processing-purpose",
+      "locale": "en",
+      "runtime_text": "Processing a skin after flaying is directed toward cleansing it and preventing putrefaction. This is a purpose relation, not a guarantee or an ordered recipe. It establishes no particular processing method, present pelt, worker, water, time, access, historical availability or resulting object.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fur-skin-cooling-cleansing",
+      "locale": "ru",
+      "runtime_text": "Быстрое охлаждение и своевременная тщательная очистка меховой шкуры могут предотвращать бактериальный рост, который способен ослабить удержание волоса. Эта условная связь не задаёт температуру, срок, способ охлаждения, гарантию, наличную свежую шкуру, инструменты, работника или средневековую практику.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fur-skin-cooling-cleansing",
+      "locale": "en",
+      "runtime_text": "Quick cooling and prompt thorough cleansing of a fur-skin can prevent bacterial growth that can loosen the hair. This conditional relation supplies no temperature, deadline, cooling method, guarantee, current fresh pelt, tools, worker or medieval practice.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fluid-osmotic-balance-depends-on-water-solutes",
+      "locale": "ru",
+      "runtime_text": "Клеточная работа зависит от баланса воды и растворённых веществ; это не диагноз состояния.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fluid-osmotic-balance-depends-on-water-solutes",
+      "locale": "en",
+      "runtime_text": "Cellular function depends on water and solute balance; this is not a diagnosis.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:continued-sweating-can-cause-body-water-loss",
+      "locale": "ru",
+      "runtime_text": "Длительное потоотделение может вести к потере воды телом; исход не задан.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:continued-sweating-can-cause-body-water-loss",
+      "locale": "en",
+      "runtime_text": "Continued sweating can lead to body-water loss; no outcome is specified.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:human-thermoregulation-depends-on-heat-exchange",
+      "locale": "ru",
+      "runtime_text": "Терморегуляция человека использует проведение, конвекцию, излучение и испарение; это не прогноз состояния.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:human-thermoregulation-depends-on-heat-exchange",
+      "locale": "en",
+      "runtime_text": "Human thermoregulation uses conduction, convection, radiation, and evaporation; no state is predicted.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sweat-evaporation-reduces-surface-heat",
+      "locale": "ru",
+      "runtime_text": "Испарение пота у человека отводит тепло от поверхности кожи; это не совет.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:sweat-evaporation-reduces-surface-heat",
+      "locale": "en",
+      "runtime_text": "Human sweat evaporation transfers heat from skin; this is not advice.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:cellular-atp-production-can-cause-metabolic-heat",
+      "locale": "ru",
+      "runtime_text": "Клеточное получение энергии у человека выделяет тепло; величина не задана.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:cellular-atp-production-can-cause-metabolic-heat",
+      "locale": "en",
+      "runtime_text": "Human cellular energy production releases heat; no quantity is specified.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:skeletal-muscle-contraction-depends-on-atp",
+      "locale": "ru",
+      "runtime_text": "Сокращение скелетной мышцы зависит от АТФ; способность действия не следует из этого.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:skeletal-muscle-contraction-depends-on-atp",
+      "locale": "en",
+      "runtime_text": "Skeletal-muscle contraction depends on ATP; action capacity does not follow.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:aerobic-muscle-atp-regeneration-depends-on-oxygen",
+      "locale": "ru",
+      "runtime_text": "Аэробное восстановление АТФ в мышце зависит от кислорода; конкретная выносливость не задана.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:aerobic-muscle-atp-regeneration-depends-on-oxygen",
+      "locale": "en",
+      "runtime_text": "Aerobic muscle ATP regeneration depends on oxygen; no specific endurance follows.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+      "locale": "ru",
+      "runtime_text": "Снижение запасов АТФ может быть связано с утомлением мышцы; результат действия не задан.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reduced-atp-reserves-can-cause-muscle-fatigue",
+      "locale": "en",
+      "runtime_text": "Reduced ATP reserves can contribute to muscle fatigue; no action result is specified.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:tissue-injury-can-cause-inflammatory-repair-response",
+      "locale": "ru",
+      "runtime_text": "Повреждение ткани может запустить воспаление и восстановительный ответ; это не первая помощь.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:tissue-injury-can-cause-inflammatory-repair-response",
+      "locale": "en",
+      "runtime_text": "Tissue injury can initiate inflammation and repair response; this is not first-aid guidance.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:coagulation-reduces-blood-loss",
+      "locale": "ru",
+      "runtime_text": "Свёртывание ограничивает кровопотерю из повреждённых сосудов; это не способ лечения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:coagulation-reduces-blood-loss",
+      "locale": "en",
+      "runtime_text": "Coagulation limits blood loss from damaged vessels; this is not treatment guidance.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:intact-skin-reduces-pathogen-entry",
+      "locale": "ru",
+      "runtime_text": "Неповреждённая кожа уменьшает проникновение патогенов; диагноз и безопасность не подразумеваются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:intact-skin-reduces-pathogen-entry",
+      "locale": "en",
+      "runtime_text": "Intact skin reduces pathogen entry; no diagnosis or safety guarantee is implied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:animal-energy-availability-depends-on-food-derived-nutrients",
+      "locale": "ru",
+      "runtime_text": "Доступная животному энергия зависит от пищевых веществ; вид, рацион и запас не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:animal-energy-availability-depends-on-food-derived-nutrients",
+      "locale": "en",
+      "runtime_text": "Animal energy availability depends on food-derived nutrients; species, diet, and stock are unspecified.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:endotherm-insulation-reduces-heat-loss",
+      "locale": "ru",
+      "runtime_text": "Шерсть, жир или перья уменьшают теплопотери эндотермов; состояние конкретного животного не задано.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:endotherm-insulation-reduces-heat-loss",
+      "locale": "en",
+      "runtime_text": "Fur, fat, or feathers reduce endotherm heat loss; no individual state is asserted.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:animal-homeostasis-responds-to-internal-external-change",
+      "locale": "ru",
+      "runtime_text": "Организм животного отвечает на внутренние и внешние изменения; конкретная реакция не предсказана.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:animal-homeostasis-responds-to-internal-external-change",
+      "locale": "en",
+      "runtime_text": "Animal homeostasis responds to internal and external change; no particular response is predicted.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+      "locale": "ru",
+      "runtime_text": "Рост сосудистого растения зависит от света, воды, углекислого газа и минеральных веществ; рост или урожай не обещаны.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+      "locale": "en",
+      "runtime_text": "Vascular plant growth needs light, water, carbon dioxide, and minerals; no growth or yield is promised.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+      "locale": "ru",
+      "runtime_text": "Корни поглощают доступные воду и неорганические вещества; местная почва и растение не подразумеваются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:plant-root-uptake-depends-on-water-and-inorganic-nutrients",
+      "locale": "en",
+      "runtime_text": "Roots absorb accessible water and inorganic nutrients; no local soil or plant is implied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:plant-development-responds-to-light",
+      "locale": "ru",
+      "runtime_text": "Развитие растения отвечает на свойства света; вид и срок не заданы.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:plant-development-responds-to-light",
+      "locale": "en",
+      "runtime_text": "Plant development responds to light properties; species and timing are unspecified.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:seasonal-plant-development-depends-on-photoperiod",
+      "locale": "ru",
+      "runtime_text": "У фотопериодичных растений длина дня участвует в сезонном развитии; местный сезон не подразумевается.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:seasonal-plant-development-depends-on-photoperiod",
+      "locale": "en",
+      "runtime_text": "For photoperiod-responsive plants, day length participates in seasonal development; no local season is implied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+      "locale": "ru",
+      "runtime_text": "Устьица отвечают на свет, водный статус листа и углекислый газ; состояние растения не задано.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:stomatal-regulation-responds-to-light-water-carbon-dioxide",
+      "locale": "en",
+      "runtime_text": "Stomata respond to light, leaf water status, and carbon dioxide; no plant state is asserted.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:stomatal-opening-affects-gas-water-exchange",
+      "locale": "ru",
+      "runtime_text": "Открытые устьица влияют на газообмен и потерю водяного пара; результат для растения не задан.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:stomatal-opening-affects-gas-water-exchange",
+      "locale": "en",
+      "runtime_text": "Open stomata affect gas exchange and water-vapor loss; no plant outcome is specified.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fungal-decomposition-affects-nutrient-recycling",
+      "locale": "ru",
+      "runtime_text": "Грибы разлагают органическое вещество и участвуют в круговороте элементов; наличие или съедобность не подразумеваются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:fungal-decomposition-affects-nutrient-recycling",
+      "locale": "en",
+      "runtime_text": "Fungi decompose organic matter and recycle elements; presence or edibility is not implied.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:dietary-macronutrients-support-cellular-energy",
+      "locale": "ru",
+      "runtime_text": "Углеводы, жиры и белки пищи дают энергию для функций организма; норма питания не задаётся.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:dietary-macronutrients-support-cellular-energy",
+      "locale": "en",
+      "runtime_text": "Dietary carbohydrates, lipids, and proteins supply energy for body activity; no intake recommendation is made.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-ruminant-membership",
+      "locale": "ru",
+      "runtime_text": "Крупный рогатый скот, овцы и козы относятся к жвачным. Это биологическая классификация, не наличие животного, возраст, здоровье или безопасность любого растения.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-ruminant-membership",
+      "locale": "en",
+      "runtime_text": "Cattle, sheep and goats are ruminants. This is biological classification, not animal presence, age, health or safety of every plant.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-rumen-fermentation",
+      "locale": "ru",
+      "runtime_text": "В физиологии зрелого жвачного рубец является местом ферментации кормов; возраст и состояние конкретного животного остаются отдельными условиями. Это не рацион, диагноз или результат кормления.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-rumen-fermentation",
+      "locale": "en",
+      "runtime_text": "In mature ruminant physiology the rumen is a site of feed fermentation; an individual animal's age and condition remain separate conditions. This is not a ration, diagnosis or feeding outcome.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-rumen-forage-digestion",
+      "locale": "ru",
+      "runtime_text": "Рубцовые бактерии жвачного способствуют перевариванию травы, сена и иных фуражей. Это не подтверждает безопасность, наличие, достаточность или принятие конкретного корма, сезон, запас или умение кормить.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-rumen-forage-digestion",
+      "locale": "en",
+      "runtime_text": "Rumen bacteria in ruminants help digest grass, hay and other forages. This does not establish a particular feed's safety, presence, adequacy or acceptance, season, stock or feeding competence.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-rumen-fermentation-nutrients",
+      "locale": "ru",
+      "runtime_text": "Продукты ферментации рубцовых бактерий могут служить жвачному источником энергии и питательных веществ. Количество энергии, продуктивность, здоровье и результат кормления не задаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-rumen-fermentation-nutrients",
+      "locale": "en",
+      "runtime_text": "Rumen-bacterial fermentation products can serve as energy and nutrient sources for a ruminant. Energy amounts, productivity, health and feeding outcomes are not assigned.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-swine-membership",
+      "locale": "ru",
+      "runtime_text": "Свиньи — однокамерные всеядные. Классификация не означает, что любой корм безопасен или достаточен; историческая практика и наличие животного не устанавливаются.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-swine-membership",
+      "locale": "en",
+      "runtime_text": "Swine are monogastric omnivores. Classification does not make every feed safe or adequate; historical practice and animal presence are not established.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-swine-comparative-diet",
+      "locale": "ru",
+      "runtime_text": "По сравнению со жвачными рацион свиней обычно требует больше энергии и меньше волокна. Это сравнительное биологическое ограничение, не точный рацион, зерновой whitelist, запрет всех грубых кормов или средневековая практика.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:livestock-swine-comparative-diet",
+      "locale": "en",
+      "runtime_text": "Compared with ruminants, swine generally require diets higher in energy and lower in fibre. This is a comparative biological constraint, not an exact ration, grain whitelist, ban on all roughage or medieval practice.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:care-direct-pressure-bleeding",
+      "locale": "ru",
+      "runtime_text": "Прямое давление чистой тканью или повязкой на уже кровоточащую рану может помогать контролировать наружное кровотечение. Этот общий условный механизм не устанавливает тяжесть раны, усилие, длительность, успешную остановку крови, заживление, выживание, наличие чистого материала, умение персонажа или историческую практику. Контекст источника о диабетической стопе не задаёт диагноз персонажу.",
+      "search_aliases": [
+        "прямое давление чистая ткань рана наружное кровотечение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:care-direct-pressure-bleeding",
+      "locale": "en",
+      "runtime_text": "Direct pressure with a clean cloth or bandage on an already bleeding wound can help control external bleeding. This general conditional mechanism establishes no wound severity, force, duration, successful stoppage, healing, survival, clean-material availability, actor skill or historical practice. The source's diabetic-foot context does not diagnose an actor.",
+      "search_aliases": [
+        "direct pressure clean cloth wound external bleeding"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:care-waterproof-wound-cover",
+      "locale": "ru",
+      "runtime_text": "Для чистой открытой раны при релевантном контакте с загрязнённой водой водонепроницаемая повязка может снизить вероятность инфекции. Это не гарантия защиты, стерильности или заживления; обычная повязка без водонепроницаемости не является тем же условием. Факт не создаёт загрязнённую воду, рану, повязку, запас материала, диагноз, умение персонажа или историческую практику; исход определяется состоянием и механикой.",
+      "search_aliases": [
+        "чистая открытая рана водонепроницаемая повязка загрязнённая вода инфекция"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:care-waterproof-wound-cover",
+      "locale": "en",
+      "runtime_text": "For a clean open wound where contaminated-water exposure is relevant, a waterproof bandage can reduce the chance of infection. This guarantees neither protection, sterility nor healing; an ordinary bandage without waterproofing is not the same condition. The fact creates no contaminated water, wound, bandage, material stock, diagnosis, actor skill or historical practice; state and mechanics determine the outcome.",
+      "search_aliases": [
+        "clean open wound waterproof bandage contaminated water infection"
+      ]
+    }
+  ]
+}

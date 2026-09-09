@@ -53,3 +53,26 @@ test('N1 returns an audited observable proposal without repair cascade', async (
   assert.deepEqual(roles, ['npc_ordinary_semantic_remainder',
     'npc_ordinary_semantic_remainder_auditor']);
 });
+
+test('N1 proposal and audit receive the same bounded factual slice', async () => {
+  const inputs = [];
+  const worldKnowledge = { schema: 'world_knowledge_slice_v1',
+    pack_ref: 'wk-pack:test', pack_revision: 'revision:test', coverage: [],
+    hard_constraints: [], facts: [], disputes: [], gaps: [] };
+  await resolveNpcOrdinarySemanticRemainder({ request, worldKnowledge,
+    roleRunner: { async run({ role_id, messages }) {
+      inputs.push(JSON.parse(messages[1].content));
+      return role_id === 'npc_ordinary_semantic_remainder' ? { output: {
+        schema: 'npc_ordinary_semantic_remainder_proposal_v1',
+        request_id: request.request_id,
+        ordinary_descriptor: 'Человек в мокрой рубахе.',
+        ordinary_activity: null
+      } } : { output: {
+        schema: 'npc_ordinary_semantic_remainder_audit_v1',
+        request_id: request.request_id, approved: true, concern_kinds: []
+      } };
+    } } });
+  assert.equal(inputs.length, 2);
+  assert.ok(inputs.every((input) =>
+    input.world_knowledge.pack_revision === 'revision:test'));
+});

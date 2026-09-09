@@ -67,6 +67,7 @@ test('turn step planner prompt maps grounded and visible-look contracts',
       operations: mappings.impossible_absent_fantastical_referent.operations,
       check: mappings.impossible_absent_fantastical_referent.check,
       continuation: null, clarification: null,
+      direct_result_kind: null,
       reason_code: 'absent_fantastical_referent',
       reason: 'В мире нет такого объекта.'
     }, { request: input }).ok, true);
@@ -74,7 +75,8 @@ test('turn step planner prompt maps grounded and visible-look contracts',
       interpretation: { adaptation: 'literal' },
       resolution: 'direct', goal_result: 'achieved',
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-      operations: [], check: null
+      operations: [], check: null,
+      direct_result_kind: 'player_safe_observation'
     });
     assert.equal(mappings.ordinary_scene_seed, undefined);
     assert.match(prompt,
@@ -121,4 +123,37 @@ test('turn step planner prompt has stated-goal adaptation triage', async () => {
   assert.match(prompt, /Otherwise: real or ordinary referents with a physically limited action mean reality_limited/u);
   assert.match(prompt, /Otherwise: literal/u);
   assert.match(prompt, /ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery\/domain flow/u);
+});
+
+test('turn step planner routes accessible items and visible environment through owners',
+  async () => {
+    const prompt = await capturePrompt(request({ player_safe_state: {
+      ordinary_resolution: { discovery_available: true },
+      items: [{ item_id: 'item:held-cloth', category_id: 'wool_cloth',
+        placement: { holder_character_id: 'actor_mikula',
+          physical_position: 'equipped' } }],
+      current_visible_context: { sensory_details: [
+        'Река течёт у самого берега.'
+      ], visible_objects: [{ entity_ref: { entity_kind: 'item',
+        entity_id: 'item:held-cloth' }, display_label: 'мокрая шерсть',
+      visible_status: 'у вас в руках' }] }
+    } }));
+    assert.match(prompt, /held, worn, or equipped by the current actor is an already accessible exact item ref/u);
+    assert.match(prompt, /physical manipulation or durable change uses its existing item owner/u);
+    assert.match(prompt, /focused inspection of any current visible item, including one held by the actor, seeks new detail/u);
+    assert.match(prompt, /sensory detail that physically places ordinary environmental material in the current scope is sufficient for ordinary_material_prerequisite/u);
+    assert.match(prompt, /never authorizes an authoritative, significant, hidden, or already-resolved fact/u);
+    assert.match(prompt, /Reviewing the identity, placement, or condition of supplied carried\/worn items[\s\S]*player_safe_item_observation[\s\S]*other facts already explicit in player-safe sensory context uses player_safe_observation/u);
+    assert.match(prompt, /Inspecting the actor body when request\.actor\.body is supplied[\s\S]*player_safe_body_observation[\s\S]*new injury or diagnosis unconfirmed[\s\S]*Clothing mentioned only as covering the body does not make that action an item or ordinary discovery/u);
+    assert.match(prompt, /player_safe_item_observation for reviewing the identity, placement, or condition[\s\S]*player_safe_body_observation for inspecting the actor body[\s\S]*Preserve uncertainty[\s\S]*never infer local state, cause, forecast, timing/u);
+  });
+
+test('turn step planner keeps an ongoing wet-reed smoulder out of A1', async () => {
+  const prompt = await capturePrompt(request({
+    remaining_intent: 'Оставляю мокрый тростник тлеть.'
+  }));
+  assert.match(prompt, /action_production represents only a durable item-local physical result after the action ends/u);
+  assert.match(prompt, /Never use its physical_description, qualitative_facts, or source_fact_delta to claim, create, preserve, or describe an active, ongoing, self-propagating, or time-dependent world process/u);
+  assert.match(prompt, /process requires an exact supplied code-owned domain operation; select its matching choice_id/u);
+  assert.match(prompt, /Without one, return the honest reality_limited no-operation attempt with no process or physical-fact claim/u);
 });

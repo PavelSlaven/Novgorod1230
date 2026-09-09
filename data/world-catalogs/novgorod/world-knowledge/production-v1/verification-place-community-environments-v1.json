@@ -1,0 +1,80 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place04-place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+      "claim_ref": "claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+      "claim_digest": "b3e0fd1dff09e7d794a3963d67afa9d575d35bd736cce25744d942aabe0321dd",
+      "candidate_ref": "git:d5f59193a450415492c23b938faa6850ebe29828:data/world-catalogs/novgorod/world-knowledge/production-v1/place-community-environments-v1.json#claim:place-community-funeral-transfer-can-require-coordinated-carrying-and-passage",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent plausibility reviewer distinct from candidate author /root/place03_community_envelopes and root requirements/metadata integrator; verdict mechanically bound to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-community-funeral-passage"
+      ],
+      "review_ref": "verification/place-community-environments-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Editorial reconstruction, not external historical attestation. No rite, religion, burial right, grave, compulsory neighbour role, or fixed procession follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place04-place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+      "claim_ref": "claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+      "claim_digest": "dc45acb16e6d81e93e9c01b945d67228e5cb3369d0a6e556d9a9050c39bbb102",
+      "candidate_ref": "git:d5f59193a450415492c23b938faa6850ebe29828:data/world-catalogs/novgorod/world-knowledge/production-v1/place-community-environments-v1.json#claim:place-community-established-monastic-distribution-can-coordinate-serving-waiting-and-safe-passage",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent plausibility reviewer distinct from candidate author /root/place03_community_envelopes and root requirements/metadata integrator; verdict mechanically bound to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-community-monastic-distribution"
+      ],
+      "review_ref": "verification/place-community-environments-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Editorial reconstruction, not external historical attestation. No monastic duty, food supply, standing queue, entitlement, or customary distribution follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place04-place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+      "claim_ref": "claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+      "claim_digest": "9b5ed7c8b05c6920826400b1ff87255c26d81da9a62d4f4cc985ca24f26b2127",
+      "candidate_ref": "git:d5f59193a450415492c23b938faa6850ebe29828:data/world-catalogs/novgorod/world-knowledge/production-v1/place-community-environments-v1.json#claim:place-community-family-marriage-preparation-can-coordinate-ordinary-household-goods-without-transferring-title",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent plausibility reviewer distinct from candidate author /root/place03_community_envelopes and root requirements/metadata integrator; verdict mechanically bound to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-community-marriage-household"
+      ],
+      "review_ref": "verification/place-community-environments-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Editorial reconstruction, not external historical attestation. No marriage, consent, dowry contents, title, access, controller, or ownership transfer follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place04-place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+      "claim_ref": "claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+      "claim_digest": "99ff9dc136ddb8b929e548a598923797e7052bebbbdab34f1f67f624d329d3d9",
+      "candidate_ref": "git:d5f59193a450415492c23b938faa6850ebe29828:data/world-catalogs/novgorod/world-knowledge/production-v1/place-community-environments-v1.json#claim:place-community-requested-convoy-inspection-can-require-a-stop-and-accessible-load-handling",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent plausibility reviewer distinct from candidate author /root/place03_community_envelopes and root requirements/metadata integrator; verdict mechanically bound to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-community-convoy-inspection"
+      ],
+      "review_ref": "verification/place-community-environments-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Editorial reconstruction, not external historical attestation. No inspector authority, toll, compulsory inspection, detention, defined cargo, or delay duration follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place04-place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+      "claim_ref": "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+      "claim_digest": "1334a5895d27c593e95fa7c932984d85c8173e1bbf49630a8a0bfeae8df92b57",
+      "candidate_ref": "git:d5f59193a450415492c23b938faa6850ebe29828:data/world-catalogs/novgorod/world-knowledge/production-v1/place-community-environments-v1.json#claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent plausibility reviewer distinct from candidate author /root/place03_community_envelopes and root requirements/metadata integrator; verdict mechanically bound to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-community-local-watch"
+      ],
+      "review_ref": "verification/place-community-environments-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Editorial reconstruction, not external historical attestation. No city guard service, universal duty, defined shift, ordinary signal system, or right to detain anyone follows."
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-birch-bark-water-deformation",
+      "claim_ref": "claim:static-birch-bark-water-can-deform-layers",
+      "claim_digest": "985c9b721bf3c5de1c56c67bd9efd3b998c106ef562ae90775ee6061dc590f4b",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-birch-bark-water-can-deform-layers",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-bark-water-deformation"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Qualitative birch-bark moisture mechanism only; no soaking duration, temperature, thickness, successful bend, current-sheet condition, or outcome guarantee."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-birch-bark-form-drying",
+      "claim_ref": "claim:static-birch-bark-form-can-be-held-during-humidification-drying",
+      "claim_digest": "ff28cafeccaa8d4533338588ff27716a75fab60f197c2dde2a04b740a17e1bf0",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-birch-bark-form-can-be-held-during-humidification-drying",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-bark-form-drying"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Conservation-handling mechanism only; no historical recipe, duration, temperature, delamination prevention, or successful forming guarantee."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-yarn-twist-cohesion",
+      "claim_ref": "claim:static-yarn-twist-can-increase-fibre-cohesion",
+      "claim_digest": "7f2b8358235b9874b627dcacbe1d8afa7668e170682722be25c2df32c911be64",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-yarn-twist-can-increase-fibre-cohesion",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-yarn-cohesion"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Medium-confidence inference from Pima cotton to the stated qualitative staple-fibre-yarn mechanism only; no fibre-specific value, method, direction, strength, or historical textile outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-yarn-over-twist",
+      "claim_ref": "claim:static-yarn-strength-can-fall-after-excessive-twist",
+      "claim_digest": "00884ff45037df02f31b9208aa56e957aaccdaf2a279737427b45780d55be53c",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-yarn-strength-can-fall-after-excessive-twist",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-yarn-over-twist"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Medium-confidence inference from Pima cotton to the stated qualitative staple-fibre-yarn mechanism only; no optimum twist, flax value, method, strength, or historical textile outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-belt-friction-slip",
+      "claim_ref": "claim:static-belt-friction-can-resist-relative-slip",
+      "claim_digest": "353384d30c97e1b51ddadf46cd8191f0be15701acfba0766e54a2dd8fd0b8bf9",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-belt-friction-can-resist-relative-slip",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-belt-slip"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Qualitative friction mechanism only; no present belt, pulley, material, coefficient, transmission, or no-slip outcome is asserted."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-belt-slip-limit",
+      "claim_ref": "claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
+      "claim_digest": "f638b88d08a1b2466c7b7be542e7597952afa37d4ac3dc78aff5436df33d89b5",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-belt-slip-limit-depends-on-tension-friction-wrap",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-belt-limit"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Qualitative flat-belt dependency only; no numerical tension, friction value, contact angle, drive design, or operating outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-wood-ash-alkaline-runoff",
+      "claim_ref": "claim:static-wood-ash-water-can-produce-alkaline-runoff",
+      "claim_digest": "e6f39d97cb383a5ada2a26ffca5d555aaabb4c65a22daa7fcedec2a8812ffee8",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-wood-ash-water-can-produce-alkaline-runoff",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-ash-leaching"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Possible caustic alkaline runoff only; no concentration, method, safe handling, cleaning result, or period/place availability."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-practical-residual-v1-wool-alkaline-sensitivity",
+      "claim_ref": "claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
+      "claim_digest": "a4d9052025b059b184a2658295ad6a2c25be335144f0fafa77fc14f1d9063208",
+      "candidate_ref": "git:17077c740a00068c6bbe2f8e1096bef8a4465410:data/world-catalogs/novgorod/world-knowledge/production-v1/static-practical-residual-v1.json#claim:static-wool-is-sensitive-to-alkaline-cleaning-conditions",
+      "auditor_ref": "/root/food_bio_gap_research",
+      "independence_basis": "Independent source/domain review of current RU/EN claim, cited evidence, and full assembled 1260 base plus candidate; reviewer did not author candidate.",
+      "evidence_checked": ["evidence:static-practical-wool-alkali-risk"],
+      "review_ref": "verification/static-practical-residual-v1.md#approved-practical-premises",
+      "verdict": "APPROVE",
+      "limits": "Potential degradation mechanism only; no pH, duration, dye response, safe treatment, diagnosis, or condition of a particular textile."
+    }
+  ]
+}

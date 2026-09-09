@@ -1,5 +1,13 @@
 # @rus/game-server
 
+Development-only gameplay gap tracing использует существующий private party
+log и `llmDiagnostics`. При `developerMode: true` сохраняет исходный committed
+контекст, WK planner/query/consumer slice и owner commit/rejection. Эти поля
+не входят в публичный diagnostic report, player/NPC prompt или authoritative
+state. При выключенном developer mode capture callback отсутствует. Ошибка
+snapshot помечает trace неполной (`capture_failed`), не изменяя игровой исход.
+Gap Auditor работает отдельно в authoring workflow; в runtime не вызывается.
+
 ## Назначение
 
 Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
@@ -17,18 +25,26 @@ and adds no second transaction owner.
 ## Владеет
 
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
-- Запускается как обычный production server entry. `tools/local-play` снаружи подготавливает только local Docker/PostgreSQL, актуальные env/pin и HTTP readiness; server не владеет launcher, Docker bootstrap или local reset.
+- Запускается как обычный production server entry. `tools/local-play` снаружи
+  подготавливает owned embedded PostgreSQL, Gemma/Giga runtime, актуальные
+  env/pin и readiness; server не создаёт второй launcher или inference transport.
 - После чтения committed screen/state владеет server-side adapter, который
   фильтрует active interlocutor identity/equipment и добавляет неперсистентные
   presentation-only selectors: `portrait_spec_v1`, optional
   `active_interlocutor.portrait_asset_id` и optional top-level
   `scene_asset_id` к public response.
-- Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые конструктивные категории neckline/sleeve/outer/fabric/trim.
-- Владеет одним server-side in-memory LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Custom OpenAI-compatible base URL/model/key применяются атомарно к новым calls через `@rus/llm-runtime`; API key не входит в read model, persistence, save/replay или telemetry gameplay.
+- Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side
+  provider-selected LLM-вызовом, который преобразует свободный текст только в
+  валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые
+  конструктивные категории neckline/sleeve/outer/fabric/trim.
+- Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `local`/`custom`, OpenAI-compatible base URL/model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. API key не входит в public read model, party save/replay, logs или telemetry; отдельного provider/gameplay path и silent fallback нет.
 - В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены.
 - Ведёт локальный диагностический `logs/<party_id>.jsonl` (каталог переопределяется `LOG_DIRECTORY`): отдельный append-only файл на партию с public runtime input/output/error, полным player intent, показанным экраном, длительностью и приватным LLM request/response trace. Credentials/API key, base URL и runtime provider override туда не передаются; non-secret provider/model, config hash и effective generation parameters сохраняются. PostgreSQL остаётся authoritative state.
-- Владеет одним logical context для `submitTurn`, который объединяет диагностику и одноразовые repair-claims, но не вводит общий deadline хода. Каждый runtime LLM-вызов, включая repair, получает полный transport timeout 120 с и `maxTokens = 20_000`; длина ответа ограничивается prompt/schema. Diagnostics показывает union wall time параллельных calls и их sum duration. Повторный repair одного вида для той же immutable request identity блокируется до provider call.
+- Владеет одним logical context для `submitTurn`, который объединяет диагностику и одноразовые repair-claims, но не вводит общий deadline хода. Каждый runtime LLM-вызов следует каноническому production-limits invariant из `@rus/llm-runtime`. Diagnostics показывает union wall time параллельных calls и их sum duration. Повторный repair одного вида для той же immutable request identity блокируется до provider call.
+- Lower Dvina turn-step model adapter до core validator выполняет только однозначную canonicalization закрытых provider-shape ошибок: choice wrappers, exact misplaced/duplicated continuation, отсутствующие diagnostic reason fields и single-target `request_discovery`. Остальные targets и исходный later-continuation передаются core как typed code-owned pending queue; prompt её не строит и не ремонтирует. LLM repair остаётся только для semantic mismatch; неисправимая структура даёт typed technical failure без commit/narration.
 - Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
+
+При завершённом direct `not_achieved` current-scene projection передаёт недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи.
 
 ## Не владеет
 
@@ -89,8 +105,12 @@ call outside a physical transaction and Phase 4 admission. The existing
 code-first known-result gates; Stage A is candidate-free and Stage B has
 `evidence_weight = 0`, with identity/classification/policy fields built by
 code. Stage A concrete entities are forbidden; its density band is converted
-to numeric budget by a versioned code-owned policy. Normalized discovery query
-and exact target derive the code-owned candidate identity; the query reaches
+to numeric budget by a versioned code-owned policy. A normalized discovery
+query equal to the normalized remaining intent, with one visible target owned
+by ordinary discovery and no continuation or check, is structurally grounded
+without an LLM audit; altered or compound discovery still crosses the semantic
+auditor. The normalized query and exact target derive the code-owned candidate
+identity; the query reaches
 the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
 classification/mechanics authority. Exact normalized retry reuses the
 persisted resolution, while a different query has a different identity.
@@ -115,12 +135,17 @@ response exposes only the O1 discovery capability marker and approved visible
 result, and narration runs only after factual commit. O1 has no new HTTP/public
 operation. Active O2a includes the authored wreck-shore abundant sand and one
 first-entry context-bound finite prepared-clay stock. Player-safe state exposes
-that committed stock as an ordinary source only when its separate approved
-disclosure state is visible; concealed capabilities remain server-only. The
+approved ambient capability bounds for schema-valid direct extraction, while
+concealed capabilities remain server-only. The
 discovery marker is boolean and exposes no unresolved result, permission or
 capacity. Stage B may choose an
-unlisted ordinary semantic type/name inside the approved class, while the owner
-rechecks mechanics, property, permission and source. The `ambient_ordinary`
+unlisted ordinary semantic type/name and independently classifies the full
+candidate, including its qualifiers and relations, for admission;
+the owner accepts it only when that class matches the code-owned candidate, then
+rechecks mechanics, property, permission and source. Before item admission, the
+same full candidate must be `standalone_item` rather than `non_item_detail`;
+the latter binds to persisted `no_change` and cannot reach item mechanics,
+ownership or placement. The `ambient_ordinary`
 enum alone never selects O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
 their legacy admission. Migration 025 conservation and bounded initialization/decrement
 are active for every admitted `finite_source`; each selected source reloads its
@@ -261,7 +286,7 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
-The current versioned production activation cutover is `spatial-v3-production-v14`.
+The current versioned production activation cutover is `spatial-v3-production-v15`.
 The server and config expose only
 `builtin:production-spatial-v3`; v2 has no runtime selector or public
 composition export. Startup requires the complete Spatial-v3 bindings module
@@ -287,6 +312,20 @@ may persist and replay an audited semantic descriptor plus the exact activity
 already created by the code-owned materialized schedule; schedule state is
 never exposed to or authored by the N1 model. Broader N1 capability remains
 unactivated.
+Release v15 is the direct non-selectable child of v14. It pins
+`wk-pack:novgorod-1230@revision:production-v1` and
+`wk-embedding:giga-480m-0826:v1`. The server loads the compiled bilingual
+pack and flat vector index and starts the exact offline embedding worker at
+startup, then grounds player semantic resolution, S1/N1 ordinary
+materialization, conversation, and autonomous NPC decisions before their
+semantic LLM calls. Retrieved claims are bounded context only: domain owners
+still control current state, mechanics, persistence, access, and outcomes.
+The Giga/vector path is mandatory whenever v15 needs a WK slice. Missing local
+weights, startup/encode timeout, malformed vector or scan failure returns typed
+`WORLD_KNOWLEDGE_UNAVAILABLE` before the semantic consumer and P16 commit; no
+lexical gameplay fallback, mutation or failure ledger is created. HTTP hides
+the internal cause in its normal temporary-unavailable envelope, and a retry
+after encoder recovery follows the existing idempotency owner.
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,
 `runtime-catalog-boundary.test.js`,
 `test/spatial-v3/p16-committer-postgres.test.js`,

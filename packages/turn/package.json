@@ -34,6 +34,7 @@
     "@rus/presentation": "0.15.0",
     "@rus/time-events-history": "0.13.0",
     "@rus/visibility-knowledge-memory": "0.13.0",
-    "@rus/narration": "0.15.0"
+    "@rus/narration": "0.15.0",
+    "@rus/world-knowledge": "0.1.0"
   }
 }

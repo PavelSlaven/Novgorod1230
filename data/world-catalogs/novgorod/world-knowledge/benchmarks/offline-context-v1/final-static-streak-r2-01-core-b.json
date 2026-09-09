@@ -1,0 +1,378 @@
+{
+  "batch": "final-static-streak-r2-01",
+  "generator": "/root/r2_b1_core_b",
+  "method": "corpus-blind controlled generator; 22 practical plus 15 social rotating cases",
+  "candidate_commit": "ebf4e837c82ac65ce99be3cb7fb22a1b22d9c3be",
+  "cases": [
+    {
+      "case_id": "fssr2-01-core-b-001",
+      "primary_domain": "woodworking",
+      "knowledge_need": "сушка свежих досок перед плотницкой работой",
+      "need_group": "practical_natural_physical",
+      "location": "двор лесника",
+      "person": "молодой плотник",
+      "circumstances": "свежераспиленные доски нужны для двери, но после дождя они сырые",
+      "situation": "Плотник решает, как сложить доски и когда начинать работу, чтобы дверь не повело."
+    },
+    {
+      "case_id": "fssr2-01-core-b-002",
+      "primary_domain": "metals",
+      "knowledge_need": "безопасное охлаждение нагретого железного инструмента",
+      "need_group": "practical_natural_physical",
+      "location": "кузница",
+      "person": "подмастерье",
+      "circumstances": "после правки мотыги металл сильно нагрет, а мастер отвлёкся",
+      "situation": "Подмастерье должен убрать инструмент так, чтобы не обжечься и не испортить работу."
+    },
+    {
+      "case_id": "fssr2-01-core-b-003",
+      "primary_domain": "textiles",
+      "knowledge_need": "выведение свежего пятна с шерстяной ткани",
+      "need_group": "practical_natural_physical",
+      "location": "лавка суконщика",
+      "person": "помощница торговца",
+      "circumstances": "на светлый отрез сукна пролили жирный бульон",
+      "situation": "Помощница ищет способ обработать пятно, не сваляв и не обесцветив ткань."
+    },
+    {
+      "case_id": "fssr2-01-core-b-004",
+      "primary_domain": "leatherwork",
+      "knowledge_need": "размягчение пересохшего кожаного ремня",
+      "need_group": "practical_natural_physical",
+      "location": "конюшня",
+      "person": "конюх",
+      "circumstances": "ремень упряжи стал жёстким и трескается на сгибе",
+      "situation": "Конюх хочет привести ремень в порядок до утреннего выезда."
+    },
+    {
+      "case_id": "fssr2-01-core-b-005",
+      "primary_domain": "ceramics",
+      "knowledge_need": "сушка глиняной посуды перед обжигом",
+      "need_group": "practical_natural_physical",
+      "location": "гончарный навес",
+      "person": "гончарка",
+      "circumstances": "новые чаши подсохли снаружи, но донышки ещё холодные и влажные",
+      "situation": "Гончарка оценивает, можно ли ставить их ближе к печи без растрескивания."
+    },
+    {
+      "case_id": "fssr2-01-core-b-006",
+      "primary_domain": "food preparation",
+      "knowledge_need": "томление густой каши без пригорания",
+      "need_group": "practical_natural_physical",
+      "location": "общая кухня",
+      "person": "поварёнок",
+      "circumstances": "каша густеет в горшке, пока нужно заняться другим блюдом",
+      "situation": "Поварёнок должен сохранить еду горячей и не дать ей пристать ко дну."
+    },
+    {
+      "case_id": "fssr2-01-core-b-007",
+      "primary_domain": "fermentation",
+      "knowledge_need": "признаки нормального брожения теста",
+      "need_group": "practical_natural_physical",
+      "location": "пекарня",
+      "person": "пекарь",
+      "circumstances": "тесто после прохладной ночи поднялось неравномерно",
+      "situation": "Пекарь решает, ждать ли ещё или менять порядок выпечки."
+    },
+    {
+      "case_id": "fssr2-01-core-b-008",
+      "primary_domain": "water flow",
+      "knowledge_need": "отвод ручья от размытой тропы",
+      "need_group": "practical_natural_physical",
+      "location": "лесная дорога",
+      "person": "дорожный работник",
+      "circumstances": "вода после ливня режет колею и подмывает край пути",
+      "situation": "Работник выбирает, где сделать простой сток, чтобы проход не стал опаснее."
+    },
+    {
+      "case_id": "fssr2-01-core-b-009",
+      "primary_domain": "weather",
+      "knowledge_need": "защита собранного сена от внезапной росы",
+      "need_group": "practical_natural_physical",
+      "location": "луговой покос",
+      "person": "косарь",
+      "circumstances": "к вечеру сено ещё не увезено, а воздух быстро сыреет",
+      "situation": "Косарь решает, как сохранить корм до следующего утра."
+    },
+    {
+      "case_id": "fssr2-01-core-b-010",
+      "primary_domain": "plants",
+      "knowledge_need": "распознавание пересушивания огородных растений",
+      "need_group": "practical_natural_physical",
+      "location": "огород на песчаной почве",
+      "person": "огородница",
+      "circumstances": "листья лука поникли после жаркого ветреного дня",
+      "situation": "Огородница определяет, какие гряды поливать в первую очередь."
+    },
+    {
+      "case_id": "fssr2-01-core-b-011",
+      "primary_domain": "animals",
+      "knowledge_need": "наблюдение за усталостью вьючного животного",
+      "need_group": "practical_natural_physical",
+      "location": "лесной привал",
+      "person": "погонщик",
+      "circumstances": "осёл замедляется на подъёмах и часто останавливается",
+      "situation": "Погонщик решает, нужна ли разгрузка и отдых до следующего участка дороги."
+    },
+    {
+      "case_id": "fssr2-01-core-b-012",
+      "primary_domain": "body",
+      "knowledge_need": "уход после лёгкого ожога паром",
+      "need_group": "practical_natural_physical",
+      "location": "прачечный двор",
+      "person": "прачка",
+      "circumstances": "пар обжёг ей запястье, кожа покраснела и болит",
+      "situation": "Прачка хочет уменьшить боль и понять, когда нельзя продолжать работу."
+    },
+    {
+      "case_id": "fssr2-01-core-b-013",
+      "primary_domain": "load handling",
+      "knowledge_need": "распределение тяжёлого груза на носилках",
+      "need_group": "practical_natural_physical",
+      "location": "склад у причала",
+      "person": "грузчик",
+      "circumstances": "двое несут мешок, который тянет одни плечи сильнее других",
+      "situation": "Грузчик ищет способ перестроить груз, не уронив его и не надорвавшись."
+    },
+    {
+      "case_id": "fssr2-01-core-b-014",
+      "primary_domain": "ropework",
+      "knowledge_need": "осмотр верёвки перед подъёмом груза",
+      "need_group": "practical_natural_physical",
+      "location": "сарай",
+      "person": "кладовщик",
+      "circumstances": "старая пеньковая верёвка лежала во влажном углу",
+      "situation": "Кладовщик проверяет, годится ли она для подъёма бочонка."
+    },
+    {
+      "case_id": "fssr2-01-core-b-015",
+      "primary_domain": "fire safety",
+      "knowledge_need": "безопасное обращение с углями после топки",
+      "need_group": "practical_natural_physical",
+      "location": "кузнечный двор",
+      "person": "сторож",
+      "circumstances": "мастерская закрывается, но в горне ещё светятся угли",
+      "situation": "Сторож должен оставить двор без риска ночного возгорания."
+    },
+    {
+      "case_id": "fssr2-01-core-b-016",
+      "primary_domain": "shelter",
+      "knowledge_need": "устройство временного укрытия от косого дождя",
+      "need_group": "practical_natural_physical",
+      "location": "край леса",
+      "person": "путница",
+      "circumstances": "дождь усиливается, а до деревни ещё далеко",
+      "situation": "Путница выбирает место и способ быстро укрыть себя и поклажу."
+    },
+    {
+      "case_id": "fssr2-01-core-b-017",
+      "primary_domain": "soil",
+      "knowledge_need": "уплотнение рыхлого края ямы",
+      "need_group": "practical_natural_physical",
+      "location": "овощная яма",
+      "person": "хозяин двора",
+      "circumstances": "после дождя край ямы осыпается под ногами",
+      "situation": "Хозяин хочет укрепить подход, чтобы никто не сорвался при спуске."
+    },
+    {
+      "case_id": "fssr2-01-core-b-018",
+      "primary_domain": "sound",
+      "knowledge_need": "поиск источника стука в водяном колесе",
+      "need_group": "practical_natural_physical",
+      "location": "мельница",
+      "person": "мельник",
+      "circumstances": "при вращении появился ровный глухой стук",
+      "situation": "Мельник решает, можно ли продолжать помол до осмотра механизма."
+    },
+    {
+      "case_id": "fssr2-01-core-b-019",
+      "primary_domain": "tools",
+      "knowledge_need": "правильная заточка затупившегося серпа",
+      "need_group": "practical_natural_physical",
+      "location": "полевой стан",
+      "person": "жница",
+      "circumstances": "серп мнёт стебли и требует лишнего усилия",
+      "situation": "Жница хочет привести лезвие в порядок, не сделав его хрупким."
+    },
+    {
+      "case_id": "fssr2-01-core-b-020",
+      "primary_domain": "preservation",
+      "knowledge_need": "проветривание влажного зерна после перевозки",
+      "need_group": "practical_natural_physical",
+      "location": "амбар",
+      "person": "хранитель запасов",
+      "circumstances": "мешки промокли по дороге, а зерно нужно оставить на неделю",
+      "situation": "Хранитель выбирает, как разложить зерно, чтобы оно не согрелось и не заплесневело."
+    },
+    {
+      "case_id": "fssr2-01-core-b-021",
+      "primary_domain": "hygiene",
+      "knowledge_need": "очистка рабочей поверхности после разделки сырого мяса",
+      "need_group": "practical_natural_physical",
+      "location": "кухня трактира",
+      "person": "кухонная работница",
+      "circumstances": "на столе будут резать хлеб и овощи для следующего блюда",
+      "situation": "Работница готовит стол к новой работе, не перенося остатки пищи."
+    },
+    {
+      "case_id": "fssr2-01-core-b-022",
+      "primary_domain": "navigation",
+      "knowledge_need": "ориентирование в тумане по местным признакам",
+      "need_group": "practical_natural_physical",
+      "location": "заливной луг",
+      "person": "рыболов",
+      "circumstances": "утренний туман скрыл береговую тропу и знакомые ориентиры",
+      "situation": "Рыболов решает, ждать ли прояснения или искать безопасный путь к селению."
+    },
+    {
+      "case_id": "fssr2-01-core-b-023",
+      "primary_domain": "trade",
+      "knowledge_need": "уточнение условий обмена разнородных товаров",
+      "need_group": "social_institutional_human",
+      "location": "торговый ряд",
+      "person": "мелкий купец",
+      "circumstances": "покупатель предлагает часть платы тканью, а часть монетой",
+      "situation": "Купец хочет договориться о понятных условиях до передачи товара."
+    },
+    {
+      "case_id": "fssr2-01-core-b-024",
+      "primary_domain": "law",
+      "knowledge_need": "мирное начало разговора при споре о границе участка",
+      "need_group": "social_institutional_human",
+      "location": "край огорода",
+      "person": "сосед",
+      "circumstances": "новый забор оказался ближе к чужой гряде, чем ожидали",
+      "situation": "Сосед ищет порядок действий, чтобы сначала выяснить дело без драки."
+    },
+    {
+      "case_id": "fssr2-01-core-b-025",
+      "primary_domain": "family",
+      "knowledge_need": "согласование ухода за больным родственником",
+      "need_group": "social_institutional_human",
+      "location": "семейная изба",
+      "person": "старший сын",
+      "circumstances": "мать слегла, а взрослые родственники спорят о дежурстве",
+      "situation": "Сын хочет распределить помощь так, чтобы никто не остался без ясной обязанности."
+    },
+    {
+      "case_id": "fssr2-01-core-b-026",
+      "primary_domain": "lifecycle",
+      "knowledge_need": "уместная поддержка семьи после рождения ребёнка",
+      "need_group": "social_institutional_human",
+      "location": "двор молодой семьи",
+      "person": "соседка",
+      "circumstances": "в доме появился младенец, а родители измотаны",
+      "situation": "Соседка выбирает, чем помочь семье, не навязываясь в дом."
+    },
+    {
+      "case_id": "fssr2-01-core-b-027",
+      "primary_domain": "status",
+      "knowledge_need": "уважительное обращение к старшему в незнакомой артели",
+      "need_group": "social_institutional_human",
+      "location": "строительный двор",
+      "person": "новый работник",
+      "circumstances": "ему нужно попросить инструмент у человека, чью роль он не знает",
+      "situation": "Работник продумывает, как начать просьбу без фамильярности и унижения."
+    },
+    {
+      "case_id": "fssr2-01-core-b-028",
+      "primary_domain": "education",
+      "knowledge_need": "обучение ребёнка через посильное поручение",
+      "need_group": "social_institutional_human",
+      "location": "мастерская резчика",
+      "person": "мастер",
+      "circumstances": "ребёнок просит дать ему настоящее дело вместо наблюдения",
+      "situation": "Мастер выбирает задание, которое учит ремеслу и остаётся безопасным."
+    },
+    {
+      "case_id": "fssr2-01-core-b-029",
+      "primary_domain": "language",
+      "knowledge_need": "уточнение смысла незнакомого слова в разговоре",
+      "need_group": "social_institutional_human",
+      "location": "гостиный двор",
+      "person": "приезжая",
+      "circumstances": "собеседник употребил местное слово, от которого зависит договорённость",
+      "situation": "Приезжая хочет переспросить смысл так, чтобы не исказить его и не обидеть человека."
+    },
+    {
+      "case_id": "fssr2-01-core-b-030",
+      "primary_domain": "religion",
+      "knowledge_need": "уважительное поведение при прохождении похоронной процессии",
+      "need_group": "social_institutional_human",
+      "location": "городская улица",
+      "person": "возница",
+      "circumstances": "телега оказалась на узком пути перед процессией",
+      "situation": "Возница решает, как поступить, чтобы не мешать людям и не создать опасности."
+    },
+    {
+      "case_id": "fssr2-01-core-b-031",
+      "primary_domain": "leisure",
+      "knowledge_need": "разрешение ссоры во время общей игры",
+      "need_group": "social_institutional_human",
+      "location": "двор постоялого дома",
+      "person": "зритель",
+      "circumstances": "игроки спорят, был ли ход сделан по правилам",
+      "situation": "Зритель ищет способ остудить спор, не становясь на чью-либо сторону без основания."
+    },
+    {
+      "case_id": "fssr2-01-core-b-032",
+      "primary_domain": "government",
+      "knowledge_need": "передача просьбы общине через подходящего представителя",
+      "need_group": "social_institutional_human",
+      "location": "площадь у сборного места",
+      "person": "житель слободы",
+      "circumstances": "нужно сообщить о сломанном мостике к общему выпасу",
+      "situation": "Житель хочет донести просьбу тем, кто может организовать общую работу."
+    },
+    {
+      "case_id": "fssr2-01-core-b-033",
+      "primary_domain": "military",
+      "knowledge_need": "порядок поведения при учебном сборе дружины",
+      "need_group": "social_institutional_human",
+      "location": "сборный двор",
+      "person": "молодой помощник",
+      "circumstances": "он впервые пришёл с поручением и не знает, кому передать сообщение",
+      "situation": "Помощник должен найти уместный путь для срочного известия, не мешая строю."
+    },
+    {
+      "case_id": "fssr2-01-core-b-034",
+      "primary_domain": "hospitality",
+      "knowledge_need": "вежливое принятие гостя с ограниченными запасами",
+      "need_group": "social_institutional_human",
+      "location": "небольшая изба",
+      "person": "хозяйка",
+      "circumstances": "к вечеру пришёл знакомый путник, а еды дома немного",
+      "situation": "Хозяйка хочет предложить посильное гостеприимство без обещаний, которых не сможет выполнить."
+    },
+    {
+      "case_id": "fssr2-01-core-b-035",
+      "primary_domain": "public conduct",
+      "knowledge_need": "извинение за помеху в людном месте",
+      "need_group": "social_institutional_human",
+      "location": "узкий мост",
+      "person": "носильщик",
+      "circumstances": "он задел прохожего тяжёлой поклажей, но никто не упал",
+      "situation": "Носильщик хочет уладить случай сразу и освободить проход."
+    },
+    {
+      "case_id": "fssr2-01-core-b-036",
+      "primary_domain": "property",
+      "knowledge_need": "возврат вещи, оставленной в общей бане",
+      "need_group": "social_institutional_human",
+      "location": "банный двор",
+      "person": "посетитель",
+      "circumstances": "после мытья осталась чужая рукавица без явного хозяина",
+      "situation": "Посетитель решает, как сохранить вещь для владельца, не присваивая её."
+    },
+    {
+      "case_id": "fssr2-01-core-b-037",
+      "primary_domain": "work relations",
+      "knowledge_need": "ясное согласование смены при общей работе",
+      "need_group": "social_institutional_human",
+      "location": "береговая разгрузка",
+      "person": "работник артели",
+      "circumstances": "один из людей устал и просит подменить его раньше срока",
+      "situation": "Работник хочет обсудить замену так, чтобы груз не остался без людей и не возникла ссора."
+    }
+  ]
+}

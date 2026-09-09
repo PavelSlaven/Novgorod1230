@@ -1,0 +1,749 @@
+{
+  "batch": "macro-22-core",
+  "reviewer": "/root/macro_b22_review_a",
+  "corpus_basis": {
+    "commit": "326999a9063896680e57cafbcdc8fbaf8da9f8a1",
+    "runtime_bundle": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json"
+  },
+  "method": "WK-only reconstruction from the exact runtime bundle. A missing authoritative state, exact value, local outcome, diagnosis, or hidden fact is not treated as a factual gap; a reusable premise required for a plausible reconstruction is.",
+  "cases": [
+    {
+      "case_id": "mb22core-001",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Сырой растопочный материал и слабый обмен воздуха делают дым и качество воздуха практической проблемой: открыть доступный выход дыма, но учитывать сквозняк, холод и дождь; детей и работу можно отвести от наиболее дымного места. Концентрацию CO и исход нельзя выдумывать.",
+      "claim_refs": [
+        "claim:practical-dwelling-smoke-draft",
+        "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+        "claim:research-carbon-monoxide-can-accumulate-indoors"
+      ],
+      "inferences": [
+        "Сырой растопочный материал и слабый обмен воздуха делают дым и качество воздуха практической проблемой: открыть доступный выход дыма, но учитывать сквозняк, холод и дождь; детей и работу можно отвести от наиболее дымного места."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-002",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Сосуд и захват остаются горячими неодинаково; его берут щипцами и дают остывать наблюдаемым, постепенным образом, не полагая, что резкое охлаждение или одинаковая температура безопасны.",
+      "claim_refs": [
+        "claim:population-physics-conduction-gradient",
+        "claim:population-material-clay-steam",
+        "claim:mb14-practical-clay-firing-needs-gradual-observation"
+      ],
+      "inferences": [
+        "Сосуд и захват остаются горячими неодинаково; его берут щипцами и дают остывать наблюдаемым, постепенным образом, не полагая, что резкое охлаждение или одинаковая температура безопасны."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-003",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Вода удерживается в углублениях и колеях; можно расчистить ближайший проход и направить воду к более низкому безопасному участку либо подложить доски, но уклон, объём и окончательный дренаж остаются свойствами места.",
+      "claim_refs": [
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:place-outdoors-microterrain-patches"
+      ],
+      "inferences": [
+        "Вода удерживается в углублениях и колеях; можно расчистить ближайший проход и направить воду к более низкому безопасному участку либо подложить доски, но уклон, объём и окончательный дренаж остаются свойствами места."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-004",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Пламя, воздух и близкое волокно требуют разделения: убрать рыхлую пряжу от лампы, поставить лампу устойчиво и уменьшить сквозняк настолько, насколько это не ухудшит воздух. Универсальную настройку фитиля корпус не обещает.",
+      "claim_refs": [
+        "claim:place-practical-wick-capillary-feed-and-exposed-length-can-affect-soot-without-a-universal-adjustment",
+        "claim:foundations-thm-02-combustion-fuel-oxidizer",
+        "claim:military-world-fire-and-smoke-need-access-and-separation"
+      ],
+      "inferences": [
+        "Пламя, воздух и близкое волокно требуют разделения: убрать рыхлую пряжу от лампы, поставить лампу устойчиво и уменьшить сквозняк настолько, насколько это не ухудшит воздух."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-005",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Немедленно прекратить загрязняющую работу, убрать видимую грязь доступной чистой водой без объявления воды безопасной, прикрыть порез чистой тканью; при кровотечении применить давление. Тяжесть и инфекцию нельзя диагностировать из условия.",
+      "claim_refs": [
+        "claim:mb14-practical-deep-cut-first-response-is-pressure-and-help",
+        "claim:care-waterproof-wound-cover",
+        "claim:wound-healing-time-dependent"
+      ],
+      "inferences": [
+        "Немедленно прекратить загрязняющую работу, убрать видимую грязь доступной чистой водой без объявления воды безопасной, прикрыть порез чистой тканью; при кровотечении применить давление."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-006",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Искры, сухая подстилка, ветер и доступ кислорода создают риск распространения; первично отделить топливо и людей от очага, подавить искры доступной водой или землёй и не оставлять участок без наблюдения. Масштаб пожара не задан.",
+      "claim_refs": [
+        "claim:population-material-wood-combustion",
+        "claim:foundations-thm-09-combustion-oxygen-supply",
+        "claim:military-world-fire-and-smoke-need-access-and-separation"
+      ],
+      "inferences": [
+        "Искры, сухая подстилка, ветер и доступ кислорода создают риск распространения; первично отделить топливо и людей от очага, подавить искры доступной водой или землёй и не оставлять участок без наблюдения."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-007",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Берег, опора ног, доска, груз и дальнейший перенос образуют одну рабочую задачу: закрепить лодку, переносить по одному устойчивому грузу и не считать мокрый вытоптанный край безопасной площадкой. Глубина и прочность посадки требуют местной оценки.",
+      "claim_refs": [
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:river-landing-market-approaches",
+        "claim:military-world-crossing-conditions-remain-local"
+      ],
+      "inferences": [
+        "Берег, опора ног, доска, груз и дальнейший перенос образуют одну рабочую задачу: закрепить лодку, переносить по одному устойчивому грузу и не считать мокрый вытоптанный край безопасной площадкой."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-008",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Добавление воды на горячие камни увеличивает пар и меняет видимость и комфорт; в уже жарком, занятом помещении разумно сначала оценить выход, людей и возможность уменьшить воздействие, а не обещать безвредный режим.",
+      "claim_refs": [
+        "claim:bathing-house-heating-before-washing",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility",
+        "claim:military-world-fire-and-smoke-need-access-and-separation"
+      ],
+      "inferences": [
+        "Добавление воды на горячие камни увеличивает пар и меняет видимость и комфорт; в уже жарком, занятом помещении разумно сначала оценить выход, людей и возможность уменьшить воздействие, а не обещать безвредный режим."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-009",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Сначала отодвинуть запас от капли, приподнять его на доступную тару или сухую основу и отделить намокшее для осмотра; затем временно закрыть протечку. Состояние всего запаса и надёжность крыши не предрешены.",
+      "claim_refs": [
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Сначала отодвинуть запас от капли, приподнять его на доступную тару или сухую основу и отделить намокшее для осмотра; затем временно закрыть протечку."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-010",
+      "primary_domain": "water_fire_air",
+      "answer_ru": "Подтопленные камни меняют сцепление и опору; инструменты следует удерживать/переносить так, чтобы руки и баланс оставались свободны, пробовать дно посохом и отказаться либо искать иной переход при сомнении. Течение и глубина не выдумываются.",
+      "claim_refs": [
+        "claim:military-world-crossing-conditions-remain-local",
+        "claim:population-physics-static-friction",
+        "claim:military-world-ground-and-weather-change-practical-options"
+      ],
+      "inferences": [
+        "Подтопленные камни меняют сцепление и опору; инструменты следует удерживать/переносить так, чтобы руки и баланс оставались свободны, пробовать дно посохом и отказаться либо искать иной переход при сомнении."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-011",
+      "primary_domain": "materials_making",
+      "answer_ru": "Намокание и направление волокон важны для щели и прочности. Осмотр определяет, ограничится ли работа стягиванием/подгонкой или потребует замены повреждённой части; нельзя обещать, что любой колышек или обруч восстановит герметичность.",
+      "claim_refs": [
+        "claim:wood-liquid-directional-uptake",
+        "claim:population-material-wood-loading",
+        "claim:ordinary-life-carpenter-works-wood-with-tools"
+      ],
+      "inferences": [
+        "Намокание и направление волокон важны для щели и прочности."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-012",
+      "primary_domain": "materials_making",
+      "answer_ru": "Изношенный участок не следует считать прежнепрочным под нагрузкой: его исключают из ответственной тяги, переносят узел на целое волокно либо заменяют/подкрепляют после осмотра. Допустимая нагрузка и прочность конкретной верёвки не заданы.",
+      "claim_refs": [
+        "claim:population-joining-metal-fatigue",
+        "claim:population-physics-static-friction",
+        "claim:military-world-ground-and-weather-change-practical-options"
+      ],
+      "inferences": [
+        "Изношенный участок не следует считать прежнепрочным под нагрузкой: его исключают из ответственной тяги, переносят узел на целое волокно либо заменяют/подкрепляют после осмотра."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-013",
+      "primary_domain": "materials_making",
+      "answer_ru": "Трещина в уже нагреваемой керамике означает риск дальнейшего разрушения при тепле и жидкости; сосуд остужают и осматривают, не используя для ответственного кипячения до решения о ремонте или замене. Успех замазки не предполагается.",
+      "claim_refs": [
+        "claim:population-material-clay-steam",
+        "claim:ceramic-material-category",
+        "claim:population-physics-conduction-gradient"
+      ],
+      "inferences": [
+        "Трещина в уже нагреваемой керамике означает риск дальнейшего разрушения при тепле и жидкости; сосуд остужают и осматривают, не используя для ответственного кипячения до решения о ремонте или замене."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-014",
+      "primary_domain": "materials_making",
+      "answer_ru": "Оселок снимает материал с затупившейся кромки; жнец правит край контролируемо, проверяет его по работе и прекращает при повреждении, не назначая произвольный угол или остроту.",
+      "claim_refs": [
+        "claim:stone-whetstone-edge-maintenance",
+        "claim:foundations-mat-08-abrasive-hardness-material-removal"
+      ],
+      "inferences": [
+        "Оселок снимает материал с затупившейся кромки; жнец правит край контролируемо, проверяет его по работе и прекращает при повреждении, не назначая произвольный угол или остроту."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-015",
+      "primary_domain": "materials_making",
+      "answer_ru": "Мокрые кожаные ремни сушат в проветриваемом месте вдали от сильного жара, затем осматривают швы, отверстия и сгибы; сушка возможна без пламени, а перегрев коже вреден.",
+      "claim_refs": [
+        "claim:ordinary-life-shoes-protect-feet",
+        "claim:practical-leather-shoe",
+        "claim:population-physics-evaporation-below-boiling"
+      ],
+      "inferences": [
+        "Мокрые кожаные ремни сушат в проветриваемом месте вдали от сильного жара, затем осматривают швы, отверстия и сгибы; сушка возможна без пламени, а перегрев коже вреден."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-016",
+      "primary_domain": "materials_making",
+      "answer_ru": "Ремонт должен перекрыть ослабленную зону и распределить тягу при движении: подобрать заплату, закрепить края и помнить, что чинёная вещь продолжает изнашиваться. Точная конструкция стежка не нужна для качественной реконструкции.",
+      "claim_refs": [
+        "claim:practical-textile-sew",
+        "claim:practical-textile-cut",
+        "claim:ordinary-life-work-clothes-protect-and-move"
+      ],
+      "inferences": [
+        "Ремонт должен перекрыть ослабленную зону и распределить тягу при движении: подобрать заплату, закрепить края и помнить, что чинёная вещь продолжает изнашиваться."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-017",
+      "primary_domain": "materials_making",
+      "answer_ru": "Влажность и волокна меняют посадку древесины; столяр сравнивает перекос и трение, снимает материал малыми шагами либо даёт детали стабилизироваться, не предполагая одинаковое разбухание всех досок.",
+      "claim_refs": [
+        "claim:population-material-wood-loading",
+        "claim:wood-liquid-directional-uptake",
+        "claim:ordinary-life-carpenter-works-wood-with-tools"
+      ],
+      "inferences": [
+        "Влажность и волокна меняют посадку древесины; столяр сравнивает перекос и трение, снимает материал малыми шагами либо даёт детали стабилизироваться, не предполагая одинаковое разбухание всех досок."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-018",
+      "primary_domain": "materials_making",
+      "answer_ru": "Кузнец прогревает только рабочую зону, правит форму малыми ударами и постоянно сверяет с существующими отверстиями; нагретое железо куется качественно, но точный жар и успех совмещения не предопределены.",
+      "claim_refs": [
+        "claim:mb14-practical-iron-workability-is-qualitative-not-temperature",
+        "claim:population-physics-conduction-gradient",
+        "claim:ordinary-life-smith-fire-needs-managed-space"
+      ],
+      "inferences": [
+        "Кузнец прогревает только рабочую зону, правит форму малыми ударами и постоянно сверяет с существующими отверстиями; нагретое железо куется качественно, но точный жар и успех совмещения не предопределены."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-019",
+      "primary_domain": "materials_making",
+      "answer_ru": "Сначала оценить износ подошвы, верха и мест крепления; доступный кожаный лоскут и шитьё/крепление могут продлить службу, но мокрая ходьба и сгибание продолжают нагружать ремонт.",
+      "claim_refs": [
+        "claim:population-shoe-output",
+        "claim:practical-leather-cut",
+        "claim:practical-leather-shoe"
+      ],
+      "inferences": [
+        "Сначала оценить износ подошвы, верха и мест крепления; доступный кожаный лоскут и шитьё/крепление могут продлить службу, но мокрая ходьба и сгибание продолжают нагружать ремонт."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-020",
+      "primary_domain": "materials_making",
+      "answer_ru": "В сырости инструменты вытирают, отделяют от мокрого пола и хранят в более сухой таре с доступом воздуха; масло допустимо только если оно уже есть в состоянии, а не как созданный корпусом предмет.",
+      "claim_refs": [
+        "claim:population-material-wood-combustion",
+        "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel"
+      ],
+      "inferences": [
+        "В сырости инструменты вытирают, отделяют от мокрого пола и хранят в более сухой таре с доступом воздуха; масло допустимо только если оно уже есть в состоянии, а не как созданный корпусом предмет."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-021",
+      "primary_domain": "food_storage",
+      "answer_ru": "Намокшую часть отделяют и осматривают по запаху, налёту и состоянию, используют раньше лишь если она не вызывает сомнений, а сухой остаток защищают и проветривают. Безопасность конкретной партии нельзя объявлять по одному признаку.",
+      "claim_refs": [
+        "claim:static-harvested-root-cuts-and-bruises-can-increase-loss-and-decay-risk",
+        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing"
+      ],
+      "inferences": [
+        "Намокшую часть отделяют и осматривают по запаху, налёту и состоянию, используют раньше лишь если она не вызывает сомнений, а сухой остаток защищают и проветривают."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-022",
+      "primary_domain": "food_storage",
+      "answer_ru": "Тёплое свежее молоко требует скорого решения: употребить свежим либо при имеющихся времени и средствах направить на переработку; сосуд держать чище и прохладнее доступными средствами. Срок годности и выход не заданы.",
+      "claim_refs": [
+        "claim:practical-food-milk",
+        "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains"
+      ],
+      "inferences": [
+        "Тёплое свежее молоко требует скорого решения: употребить свежим либо при имеющихся времени и средствах направить на переработку; сосуд держать чище и прохладнее доступными средствами."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-023",
+      "primary_domain": "food_storage",
+      "answer_ru": "Печь и тесто допускают выпечку, но не гарантируют равномерность: пекарь оценивает жар разных зон, переставляет/делит посадку и не объявляет время готовности без состояния печи.",
+      "claim_refs": [
+        "claim:population-processes-oven-baking",
+        "claim:grain-processing-bread-dough-before-baking",
+        "claim:grain-processing-bread-oven-baking"
+      ],
+      "inferences": [
+        "Печь и тесто допускают выпечку, но не гарантируют равномерность: пекарь оценивает жар разных зон, переставляет/делит посадку и не объявляет время готовности без состояния печи."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-024",
+      "primary_domain": "food_storage",
+      "answer_ru": "Рыбу несут малыми устойчивыми партиями, не перегружая корзины, используют влажную ткань как уже имеющийся покров и избегают грязной рабочей зоны; тепло, давление и чистота являются отдельными ограничениями, а не гарантией сохранности.",
+      "claim_refs": [
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-fish-smoking-preservation-depends-on-combined-smoke-drying-heat-and-optional-salt",
+        "claim:military-world-ground-and-weather-change-practical-options"
+      ],
+      "inferences": [
+        "Рыбу несут малыми устойчивыми партиями, не перегружая корзины, используют влажную ткань как уже имеющийся покров и избегают грязной рабочей зоны; тепло, давление и чистота являются отдельными ограничениями, а не гарантией сохранности."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-025",
+      "primary_domain": "food_storage",
+      "answer_ru": "Мягкий нагрев отделяет жидкий жир, перегрев может его сжечь; дать массе остыть, отделить явный осадок через имеющуюся ткань и не применять сомнительный или горелый результат как безопасную пищу без обещания качества.",
+      "claim_refs": [
+        "claim:static-fat-storm-b10-gentle-heating-can-render-liquid-animal-fat-while-overheating-can-burn-it",
+        "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water"
+      ],
+      "inferences": [
+        "Мягкий нагрев отделяет жидкий жир, перегрев может его сжечь; дать массе остыть, отделить явный осадок через имеющуюся ткань и не применять сомнительный или горелый результат как безопасную пищу без обещания качества."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-026",
+      "primary_domain": "food_storage",
+      "answer_ru": "Следы грызунов требуют отделить затронутую часть, закрыть доступный запас и искать/заделывать пути входа; ни вид животного, ни безопасность зерна, ни полная непроницаемость не выводятся автоматически.",
+      "claim_refs": [
+        "claim:research-rodents-are-drawn-to-available-food-water-and-nesting-sites",
+        "claim:research-enclosing-food-and-sealing-openings-can-reduce-rodent-access"
+      ],
+      "inferences": [
+        "Следы грызунов требуют отделить затронутую часть, закрыть доступный запас и искать/заделывать пути входа; ни вид животного, ни безопасность зерна, ни полная непроницаемость не выводятся автоматически."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-027",
+      "primary_domain": "food_storage",
+      "answer_ru": "Неуверенная идентификация — достаточная причина не готовить и не пробовать растение: сходство с известным видом не подтверждает его определение, а известная съедобность растения не переносится автоматически на каждую часть.",
+      "claim_refs": [
+        "claim:bearberry-lingonberry-resemblance-not-identification",
+        "claim:mezereon-poisonous-sap-all-parts",
+        "claim:candidate-edible-plant-status-does-not-transfer-to-every-part"
+      ],
+      "inferences": [
+        "Неуверенная идентификация — достаточная причина не готовить и не пробовать растение: сходство с известным видом не подтверждает его определение, а известная съедобность растения не переносится автоматически на каждую часть."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-028",
+      "primary_domain": "food_storage",
+      "answer_ru": "Сушка и готовка конкурируют за тепло, место и внимание: мокрые вещи держат на расстоянии от искр и пищи, работу чередуют и наблюдают за очагом, не обещая одинаковую скорость сушки или готовности.",
+      "claim_refs": [
+        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:population-physics-evaporation-below-boiling",
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention"
+      ],
+      "inferences": [
+        "Сушка и готовка конкурируют за тепло, место и внимание: мокрые вещи держат на расстоянии от искр и пищи, работу чередуют и наблюдают за очагом, не обещая одинаковую скорость сушки или готовности."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-029",
+      "primary_domain": "food_storage",
+      "answer_ru": "Снег способен замедлить путь и ухудшить видимость, поэтому запасы делят на доступные порции, защищают от влаги и предусматривают задержку; длительность дороги и нужный объём пищи остаются фактическим состоянием маршрута.",
+      "claim_refs": [
+        "claim:human-life-travel-conditions-can-justify-delay",
+        "claim:residual-nature-snow-wind-drift-visibility",
+        "claim:practical-food-milk"
+      ],
+      "inferences": [
+        "Снег способен замедлить путь и ухудшить видимость, поэтому запасы делят на доступные порции, защищают от влаги и предусматривают задержку; длительность дороги и нужный объём пищи остаются фактическим состоянием маршрута."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-030",
+      "primary_domain": "food_storage",
+      "answer_ru": "Сырую рыбу и хлебную подготовку разделяют по времени или поверхности; доску очищают доступной водой и механически, затем дают высохнуть, не объявляя бытовую очистку стерилизацией или гарантией безопасности.",
+      "claim_refs": [
+        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:place-outdoors-shore-working-edge-composition"
+      ],
+      "inferences": [
+        "Сырую рыбу и хлебную подготовку разделяют по времени или поверхности; доску очищают доступной водой и механически, затем дают высохнуть, не объявляя бытовую очистку стерилизацией или гарантией безопасности."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-031",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "Смещающаяся лошадь с ушами назад требует пространства и спокойного обхода: не становиться позади или в зоне копыт, остановить работу и дать ей путь; причина поведения и наличие травмы не диагностируются.",
+      "claim_refs": [
+        "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+        "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog"
+      ],
+      "inferences": [
+        "Смещающаяся лошадь с ушами назад требует пространства и спокойного обхода: не становиться позади или в зоне копыт, остановить работу и дать ей путь; причина поведения и наличие травмы не диагностируются."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-032",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "Низкие холодные участки могут повреждать нежную зелень; сначала отделить обратимо увядшее от явно погибшего, уменьшить дальнейшее ночное воздействие доступным укрытием и не объявлять весь посев утраченным без наблюдения.",
+      "claim_refs": [
+        "claim:place-orchard-pruning-can-have-different-seasonal-windows-before-spring-growth-or-during-active-growth",
+        "claim:residual-nature-snow-melt-refreeze-crust"
+      ],
+      "inferences": [
+        "Низкие холодные участки могут повреждать нежную зелень; сначала отделить обратимо увядшее от явно погибшего, уменьшить дальнейшее ночное воздействие доступным укрытием и не объявлять весь посев утраченным без наблюдения."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-033",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "Следы могут быть лапами, помётом, погрызом или нарушенной почвой, но не называют виновника; защитить еду, осмотреть ограждение и сопоставить несколько признаков, сохраняя неопределённость о животном и времени.",
+      "claim_refs": [
+        "claim:residual-traces-animal-trace-types",
+        "claim:residual-traces-animal-trace-weather-decay",
+        "claim:military-world-traces-need-cautious-interpretation"
+      ],
+      "inferences": [
+        "Следы могут быть лапами, помётом, погрызом или нарушенной почвой, но не называют виновника; защитить еду, осмотреть ограждение и сопоставить несколько признаков, сохраняя неопределённость о животном и времени."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-034",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "На мягком участке выбирают более сухие/твёрдые пятна, уменьшают спешку и ведут животных по одному, не предполагая, что вся тропа одинакова или что конкретный скот пройдёт без увязания.",
+      "claim_refs": [
+        "claim:place-outdoors-microterrain-patches",
+        "claim:military-world-ground-and-weather-change-practical-options",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"
+      ],
+      "inferences": [
+        "На мягком участке выбирают более сухие/твёрдые пятна, уменьшают спешку и ведут животных по одному, не предполагая, что вся тропа одинакова или что конкретный скот пройдёт без увязания."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-035",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "Для топлива выбирать более сухие, не гнилые ветви; сырые ветви хуже загораются и требуют времени на сушку, тогда как гниль не следует считать надёжным горючим. Количество и качество конкретной древесины не выдумываются.",
+      "claim_refs": [
+        "claim:population-material-wood-combustion",
+        "claim:population-physics-evaporation-below-boiling",
+        "claim:place-outdoors-forest-structure-and-season"
+      ],
+      "inferences": [
+        "Для топлива выбирать более сухие, не гнилые ветви; сырые ветви хуже загораются и требуют времени на сушку, тогда как гниль не следует считать надёжным горючим."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-036",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "Ребёнка отводят от улья и не делают резких движений; если работа с семьёй уже нужна, дым должен быть прохладным и умеренным, потому что он может снизить защиту, но не гарантирует спокойствие пчёл.",
+      "claim_refs": [
+        "claim:static-bee-smoke-b09-smoke-can-temporarily-reduce-alarm-pheromone-perception-and-defense",
+        "claim:static-bee-smoke-b09-excessive-smoke-can-irritate-and-hot-smoke-is-unsuitable"
+      ],
+      "inferences": [
+        "Ребёнка отводят от улья и не делают резких движений; если работа с семьёй уже нужна, дым должен быть прохладным и умеренным, потому что он может снизить защиту, но не гарантирует спокойствие пчёл."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-037",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "Отдельное и малоподвижное животное наблюдают, отделяют от сомнительного корма и при ухудшении ищут доступную опытную помощь; один признак не даёт диагноза, лечения или прогноза.",
+      "claim_refs": [
+        "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
+        "claim:public-world-illness-can-reallocate-ordinary-work"
+      ],
+      "inferences": [
+        "Отдельное и малоподвижное животное наблюдают, отделяют от сомнительного корма и при ухудшении ищут доступную опытную помощь; один признак не даёт диагноза, лечения или прогноза."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-038",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "После высокой травы осмотреть тело и одежду на прикрепившихся клещей: многие из них поджидают хозяина на траве или кустарниках и цепляются при контакте. Сам проход не доказывает укус, инфекцию или болезнь.",
+      "claim_refs": [
+        "claim:fauna-tick-questing",
+        "claim:fauna-tick-senses",
+        "claim:fauna-tick-feeding"
+      ],
+      "inferences": [
+        "После высокой травы осмотреть тело и одежду на прикрепившихся клещей: многие из них поджидают хозяина на траве или кустарниках и цепляются при контакте."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-039",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "У кромки болота сочетаются мягкие понижения и более твёрдые пятна; связать груз, идти по проверяемой опоре и при ухудшении отказаться от части переноса или задержаться. Несущая способность не задана типом места.",
+      "claim_refs": [
+        "claim:place-outdoors-microterrain-patches",
+        "claim:military-world-ground-and-weather-change-practical-options",
+        "claim:human-life-travel-conditions-can-justify-delay"
+      ],
+      "inferences": [
+        "У кромки болота сочетаются мягкие понижения и более твёрдые пятна; связать груз, идти по проверяемой опоре и при ухудшении отказаться от части переноса или задержаться."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-040",
+      "primary_domain": "land_plants_animals",
+      "answer_ru": "Сначала вернуть животное на контролируемую сторону и закрепить привязь, затем осмотреть повреждение посева и ограждения; виновность, размер ущерба и обязанность возмещения не выводятся из одного ослабшего узла.",
+      "claim_refs": [
+        "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction",
+        "claim:residual-law-zakup-loss-context"
+      ],
+      "inferences": [
+        "Сначала вернуть животное на контролируемую сторону и закрепить привязь, затем осмотреть повреждение посева и ограждения; виновность, размер ущерба и обязанность возмещения не выводятся из одного ослабшего узла."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-041",
+      "primary_domain": "body_health",
+      "answer_ru": "Жара и длительная работа требуют снизить темп, сделать короткую паузу, пить из доступного безопасного источника и следить за состоянием; объём воды, диагноз и способность продолжать определяются конкретным человеком и состоянием.",
+      "claim_refs": [
+        "claim:activity-fluid-balance",
+        "claim:work-intensity-duration",
+        "claim:military-world-exertion-competes-with-attention-and-recovery"
+      ],
+      "inferences": [
+        "Жара и длительная работа требуют снизить темп, сделать короткую паузу, пить из доступного безопасного источника и следить за состоянием; объём воды, диагноз и способность продолжать определяются конкретным человеком и состоянием."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-042",
+      "primary_domain": "body_health",
+      "answer_ru": "Боль при нагрузке после подворачивания — основание прекратить проверять ногу под грузом, опереться на спутника/посох и изменить или отложить путь; это не позволяет назвать растяжение, перелом или срок восстановления.",
+      "claim_refs": [
+        "claim:foundations-life-18-muscle-movement",
+        "claim:public-world-capacity-can-vary-day-to-day",
+        "claim:military-world-ground-and-weather-change-practical-options"
+      ],
+      "inferences": [
+        "Боль при нагрузке после подворачивания — основание прекратить проверять ногу под грузом, опереться на спутника/посох и изменить или отложить путь; это не позволяет назвать растяжение, перелом или срок восстановления."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-043",
+      "primary_domain": "body_health",
+      "answer_ru": "Повторное мокрое трение может повредить кожу; уменьшить трение, высушить/прикрыть руки и сделать паузу, не выдавая обычный жир за лечение повреждённой кожи или гарантию дальнейшей работы.",
+      "claim_refs": [
+        "claim:static-repeated-skin-friction-can-cause-blistering",
+        "claim:static-reducing-repeat-friction-and-covering-blister-is-protective-context",
+        "claim:place-skin-oily-or-fatty-surface-film-can-reduce-evaporative-water-loss"
+      ],
+      "inferences": [
+        "Повторное мокрое трение может повредить кожу; уменьшить трение, высушить/прикрыть руки и сделать паузу, не выдавая обычный жир за лечение повреждённой кожи или гарантию дальнейшей работы."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-044",
+      "primary_domain": "body_health",
+      "answer_ru": "После падения с болью в бедре не тянуть и не заставлять вставать: оценить сознание, кровотечение и возможность дождаться помощи, поддерживать в удобном положении и переносить лишь при необходимости. Тип травмы не диагностируется.",
+      "claim_refs": [
+        "claim:candidate-macro-causal-v2-fracture-or-dislocation-can-limit-ordinary-movement-or-use",
+        "claim:public-world-capacity-can-vary-day-to-day",
+        "claim:military-world-ground-and-weather-change-practical-options"
+      ],
+      "inferences": [
+        "После падения с болью в бедре не тянуть и не заставлять вставать: оценить сознание, кровотечение и возможность дождаться помощи, поддерживать в удобном положении и переносить лишь при необходимости."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-045",
+      "primary_domain": "body_health",
+      "answer_ru": "Холод, темнота и усталость снижают внимание; держаться в движении в пределах задачи, использовать доступный сигнал и договорённую передачу наблюдения, а не обещать, что один человек безошибочно досмотрит смену.",
+      "claim_refs": [
+        "claim:acute-sleep-loss-performance",
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:military-world-exertion-competes-with-attention-and-recovery"
+      ],
+      "inferences": [
+        "Холод, темнота и усталость снижают внимание; держаться в движении в пределах задачи, использовать доступный сигнал и договорённую передачу наблюдения, а не обещать, что один человек безошибочно досмотрит смену."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-046",
+      "primary_domain": "body_health",
+      "answer_ru": "Работу остановить, быстро охлаждать небольшой термический ожог прохладной водой, не отрывать прилипшее и не мазать жиром; большая площадь, глубина или тревожное место требуют помощи. Тяжесть именно этого ожога не задана.",
+      "claim_refs": [
+        "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease",
+        "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area",
+        "claim:static-burn-severity-or-location-red-flags-need-urgent-qualified-care"
+      ],
+      "inferences": [
+        "Работу остановить, быстро охлаждать небольшой термический ожог прохладной водой, не отрывать прилипшее и не мазать жиром; большая площадь, глубина или тревожное место требуют помощи."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-047",
+      "primary_domain": "body_health",
+      "answer_ru": "Спазмы и жидкий стул неспецифичны: отдых, доступная безопасная жидкость и отказ от тяжёлой дороги разумны, при ухудшении искать помощь; нельзя назвать возбудитель, пищу-виновника или исход.",
+      "claim_refs": [
+        "claim:candidate-v6-foodborne-illness-can-have-nonspecific-gastrointestinal-or-fever-observations",
+        "claim:activity-fluid-balance",
+        "claim:public-world-illness-can-reallocate-ordinary-work"
+      ],
+      "inferences": [
+        "Спазмы и жидкий стул неспецифичны: отдых, доступная безопасная жидкость и отказ от тяжёлой дороги разумны, при ухудшении искать помощь; нельзя назвать возбудитель, пищу-виновника или исход."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-048",
+      "primary_domain": "body_health",
+      "answer_ru": "Снять мокрую одежду, укрыть сухой тканью/одеялом, согреть в помещении постепенно и наблюдать ребёнка; холодная вода повышает риск переохлаждения, но температура тела и исход не выводятся из падения.",
+      "claim_refs": [
+        "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+        "claim:candidate-physiology-v3-shivering-thermogenesis",
+        "claim:ordinary-life-work-clothes-protect-and-move"
+      ],
+      "inferences": [
+        "Снять мокрую одежду, укрыть сухой тканью/одеялом, согреть в помещении постепенно и наблюдать ребёнка; холодная вода повышает риск переохлаждения, но температура тела и исход не выводятся из падения."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-049",
+      "primary_domain": "weather_terrain_mobility",
+      "answer_ru": "Талый грунт и колеи меняют тягу и нагрузку: уменьшить или перераспределить груз, проверять животное и колёса, использовать доски только если они реально есть и остановиться при увязании. Грузоподъёмность не задаётся.",
+      "claim_refs": [
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:military-world-ground-and-weather-change-practical-options",
+        "claim:macro-b19-pack-loads-need-balance-and-condition-checks-on-an-animal"
+      ],
+      "inferences": [
+        "Талый грунт и колеи меняют тягу и нагрузку: уменьшить или перераспределить груз, проверять животное и колёса, использовать доски только если они реально есть и остановиться при увязании."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "mb22core-050",
+      "primary_domain": "weather_terrain_mobility",
+      "answer_ru": "При грозе не укрываться под одиноким высоким деревом и не оставаться у открытой воды; если достижимо капитальное строение, оно предпочтительно, иначе сокращают пребывание на открытом месте и ищут наименее открытый доступный путь без обещания безопасности.",
+      "claim_refs": [
+        "claim:static-fat-storm-b10-lightning-threat-leaves-no-safe-outdoor-position-and-excludes-isolated-trees-and-open-water",
+        "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option",
+        "claim:military-world-ground-and-weather-change-practical-options"
+      ],
+      "inferences": [
+        "При грозе не укрываться под одиноким высоким деревом и не оставаться у открытой воды; если достижимо капитальное строение, оно предпочтительно, иначе сокращают пребывание на открытом месте и ищут наименее открытый доступный путь без обещания безопасности."
+      ],
+      "status": "covered",
+      "gaps": []
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-material-process-v3-stored-grain-moisture",
+      "claim_ref": "claim:stored-grain-temperature-gradient-can-migrate-moisture",
+      "claim_digest": "14d5bbef6a72fc0be4a849a4c6b4d5fcd18f3d2da9db80e0ffe222a0dc03de16",
+      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-material-process-v3.json#claim:stored-grain-temperature-gradient-can-migrate-moisture",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Auditor independently reopened the Purdue source and compared its stated moisture-migration mechanism with the exact normalized claim and RU/EN localization; auditor did not author the candidate commit.",
+      "evidence_checked": ["evidence:gmp3-purdue-moisture-migration"],
+      "review_ref": "verification/gameplay-material-process-v3.md#stored-grain-temperature-gradient-can-migrate-moisture",
+      "verdict": "APPROVE",
+      "limits": "Qualitative stored-grain mechanism only. No grain, store, temperature difference, moisture value, quantity, species, spoilage, time, access, actor observation or outcome is established. Purdue's storage context does not supply a scene fact."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-material-process-v3-stored-grain-airflow",
+      "claim_ref": "claim:stored-grain-airflow-can-reduce-temperature-differences",
+      "claim_digest": "0f8f23b0794b51120e06d00070d207f0eee1d8e111446d6057941447decca836",
+      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-material-process-v3.json#claim:stored-grain-airflow-can-reduce-temperature-differences",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Auditor independently reopened the Purdue airflow sections and compared their complete-cycle condition with the exact normalized claim and RU/EN localization; auditor did not author the candidate commit.",
+      "evidence_checked": ["evidence:gmp3-purdue-airflow-temperature"],
+      "review_ref": "verification/gameplay-material-process-v3.md#stored-grain-airflow-can-reduce-temperature-differences",
+      "verdict": "APPROVE",
+      "limits": "Conditional airflow-through-grain relation only. No fan, storage structure, airflow rate, temperature value, completed cycle, current grain condition, safety, historical practice or outcome follows. The source concerns managed aeration."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-material-process-v3-water-class-a-cooling",
+      "claim_ref": "claim:water-can-cool-class-a-fire-fuel-and-flame",
+      "claim_digest": "503f8ef315af10425b528ddd7aa568aac9ee0e921351e4769d4b5b5e1f597a1d",
+      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-material-process-v3.json#claim:water-can-cool-class-a-fire-fuel-and-flame",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Auditor independently read the official NIST abstract and extracted §1.1.1 from the same NISTIR PDF after browser viewer and web PDF-reader failures. §1.1.1 explicitly defines Class A ordinary combustibles as including wood and textiles and states water's primary mechanism is fuel cooling; auditor did not author the candidate commit.",
+      "evidence_checked": ["evidence:gmp3-nist-water-class-a-cooling"],
+      "review_ref": "verification/gameplay-material-process-v3.md#water-can-cool-class-a-fire-fuel-and-flame",
+      "verdict": "APPROVE",
+      "limits": "Conditional Class A mechanism only. NISTIR §1.1.1 defines Class A ordinary combustibles as including wood and textiles, but establishes no actual fire class, fuel state, water amount, apparatus, tactic, safety, success, other fire class, current fire or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:gameplay-material-process-v3-net-serviceability",
+      "claim_ref": "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+      "claim_digest": "2805894eae9857916d53d674535648b7d41b10a0f5919327f514617cf08c3993",
+      "candidate_ref": "git:db45546e4ccdf5c743163b6fd045c0d031bce0fc:data/world-catalogs/novgorod/world-knowledge/production-v1/gameplay-material-process-v3.json#claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+      "auditor_ref": "/root/flora_ecology_research",
+      "independence_basis": "Auditor independently reopened the cited FAO upkeep anchors and compared their mending/replacement statements with the exact normalized claim and RU/EN localization; auditor did not author the candidate commit.",
+      "evidence_checked": ["evidence:gmp3-fao-net-upkeep"],
+      "review_ref": "verification/gameplay-material-process-v3.md#fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+      "verdict": "APPROVE",
+      "limits": "Conditional serviceability relation for the source's freshwater net types only. No Novgorod net, fibre, owner, wear state, repair material, repair quality, duration, historical practice, present resource or outcome is established."
+    }
+  ]
+}

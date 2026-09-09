@@ -1,0 +1,683 @@
+{
+  "batch": "reality-batch-02",
+  "reviewer": "/root/reality_clean_reviewer_b",
+  "corpus_basis": {
+    "commit": "cdee6e195c54c584f50e30bcc5f1b30ab4841dff",
+    "bundle": "production-v1/runtime-bundle.json"
+  },
+  "method": "WK-only: scenario givens establish local state; reconstruction uses only referenced runtime claims and marks no missing authoritative state as a corpus gap.",
+  "cases": [
+    {
+      "case_id": "reality2-core-051",
+      "primary_domain": "food",
+      "answer_ru": "Снять кашу с сильного жара, переложить верхний слой, не скрести пригоревшее дно в еду; осмотреть запах и вкус перед подачей.",
+      "claim_refs": [
+        "claim:food-practices-barley-porridge-soup"
+      ],
+      "inferences": [
+        "Запах гари дан сценой; порча и съедобность всей каши не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-052",
+      "primary_domain": "storage",
+      "answer_ru": "Ставить сосуды на ровную сухую опору, не нагружать нижние и разделять контакт мягкой прокладкой; переносить по одному при сомнительной устойчивости.",
+      "claim_refs": [
+        "claim:clay-fired-no-replasticization"
+      ],
+      "inferences": [
+        "Существование сосудов и теснота даны; их прочность и число не заданы."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-053",
+      "primary_domain": "repair",
+      "answer_ru": "Разгрузить корзину, стянуть распускающиеся волокна новой перевязью и проверить ручку коротким подъёмом; не нести прежний груз до проверки.",
+      "claim_refs": [
+        "claim:population-joining-bond-weak-link"
+      ],
+      "inferences": [
+        "Ослабление ручки дано; материал, груз и остаточная прочность не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-054",
+      "primary_domain": "hazards",
+      "answer_ru": "Отвести огонь и людей от пятна, засыпать или собрать масло негорючим впитывающим материалом, затем очистить проход; не лить воду на горящее масло.",
+      "claim_refs": [
+        "claim:macro-b19-burning-cooking-fat-needs-a-contained-fire-response-not-water",
+        "claim:final-practical-fire-response-needs-escape-distance-and-avoiding-unknown-electrical-liquid-or-oil-hazards"
+      ],
+      "inferences": [
+        "Разлив дан; возгорание, объём и состав масла не утверждаются."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-055",
+      "primary_domain": "person-object-environment",
+      "answer_ru": "Остановить работу, закрепить доску на устойчивой поверхности, встать с ножом от тела и резать короткими движениями; тупой нож не компенсировать силой.",
+      "claim_refs": [
+        "claim:stone-whetstone-edge-maintenance"
+      ],
+      "inferences": [
+        "Тупой нож и сдвиг доски даны; травма и наличие оселка не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-056",
+      "primary_domain": "water",
+      "answer_ru": "Сначала выбрать устойчивую точку выше скользкого края, поставить ведро ниже центра тяжести и наполнять малыми порциями, удерживая его за край или ручку.",
+      "claim_refs": [
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"
+      ],
+      "inferences": [
+        "Скользкий берег дан; глубина, течение и падение не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-057",
+      "primary_domain": "fire",
+      "answer_ru": "Немедленно сбить искры и убрать солому от жаровни; для тления обычной подстилки применить малое количество воды или накрыть, затем проверить соседние волокна.",
+      "claim_refs": [
+        "claim:water-can-cool-class-a-fire-fuel-and-flame",
+        "claim:final-practical-water-cooling-applies-to-ordinary-solid-combustibles-not-every-fire"
+      ],
+      "inferences": [
+        "Солома и искры даны; развившийся пожар не заявляется."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-058",
+      "primary_domain": "body",
+      "answer_ru": "Прекратить натирающее движение, осмотреть ладонь, защитить место от дальнейшего трения и изменить хват либо сделать паузу; при ухудшении не возвращаться к той же нагрузке.",
+      "claim_refs": [
+        "claim:candidate-v6-burn-consequences-depend-on-cause-depth-and-area"
+      ],
+      "inferences": [
+        "Состояние кожи дано как почти целое; диагноз, инфекция и срок заживления не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-059",
+      "primary_domain": "mechanics",
+      "answer_ru": "Подпереть створку, проверить нижнюю петлю и крепление, вернуть створку в соосность, затем затянуть или восстановить крепёж; не тащить дверь по порогу силой.",
+      "claim_refs": [
+        "claim:population-joining-bond-weak-link"
+      ],
+      "inferences": [
+        "Заедание и ослабление петли даны; вид крепежа и полный ремонт не заданы."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-060",
+      "primary_domain": "materials",
+      "answer_ru": "Убрать рыхлую грязь, уложить более крупный каменистый слой и сверху песчано-гравийную подсыпку, уплотняя её короткими слоями и оставляя сток в сторону.",
+      "claim_refs": [
+        "claim:terrain-parent-material-assemblage",
+        "claim:wet-granular-liquid-bridges-can-provide-capillary-cohesion"
+      ],
+      "inferences": [
+        "Мокрая выемка дана; доступные объёмы, уклон и несущая способность не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-061",
+      "primary_domain": "biology",
+      "answer_ru": "Держать сосуд в самом прохладном затенённом месте, обернуть влажной тканью или поставить в прохладную воду, избегая солнца; проверять молоко отдельно, не считать охлаждение гарантией сохранности.",
+      "claim_refs": [
+        "claim:lactic-fermentation-affects-acidity-and-food-proteins"
+      ],
+      "inferences": [
+        "Жара дана; температура, уже начавшееся скисание и безопасность молока не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-062",
+      "primary_domain": "fauna",
+      "answer_ru": "Не тянуть лапу силой: дать собаке успокоиться, подойти сбоку, удерживать голову вне досягаемости и снять репей коротким движением лишь при безопасном доступе; иначе позвать помощника.",
+      "claim_refs": [
+        "claim:animal-homeostasis-responds-to-internal-external-change",
+        "claim:animal-care-needs-presence"
+      ],
+      "inferences": [
+        "Собака, хромота и защита лапы даны; укус и причина боли не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-063",
+      "primary_domain": "flora",
+      "answer_ru": "Обкопать ком шире стеблей, поднять его снизу с влажной землёй, перенести без оголения корней и сразу посадить на новую глубину с поливом.",
+      "claim_refs": [
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals"
+      ],
+      "inferences": [
+        "Влажная почва и растение даны; вид, приживаемость и будущий рост не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-064",
+      "primary_domain": "weather",
+      "answer_ru": "При сгущающихся облаках и смене ветра снять уже сухое бельё и перенести под крышу; оставшееся проверить позже, не выдавая признаки за точный прогноз.",
+      "claim_refs": [
+        "claim:food-drying-depends-on-humidity-airflow"
+      ],
+      "inferences": [
+        "Наблюдаемые признаки даны; дождь, время начала и сила бури не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-065",
+      "primary_domain": "breakdowns",
+      "answer_ru": "Остановить жернова, убрать зерно с поверхности, осмотреть посадку и возможную помеху, затем провернуть вручную без нагрузки; не ломать механизм усилием.",
+      "claim_refs": [
+        "claim:stored-grain-condition-depends-on-temperature-moisture"
+      ],
+      "inferences": [
+        "Заедание дано; причина, повреждение камня и результат ремонта не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-066",
+      "primary_domain": "social",
+      "answer_ru": "Коротко объяснить, что балка тяжела для одного, прямо попросить о совместном подъёме и предложить удобное время или ответную помощь; отказ принять без давления.",
+      "claim_refs": [
+        "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3"
+      ],
+      "inferences": [
+        "Нужда в помощнике дана; согласие соседа не выводится."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-067",
+      "primary_domain": "trade",
+      "answer_ru": "Показать заплату до осмотра, назвать горшок пригодным только в пределах видимого состояния и дать покупателю проверить его; цену и согласие оставить предметом сделки.",
+      "claim_refs": [
+        "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits"
+      ],
+      "inferences": [
+        "Заплата и пригодность даны; прочность, цена и покупка не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-068",
+      "primary_domain": "social",
+      "answer_ru": "Освободить проход и место у тепла, развесить мокрое так, чтобы вещи не закрывали огонь, распределить сушку по очереди и спросить прежде чем занимать общее место.",
+      "claim_refs": [
+        "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel"
+      ],
+      "inferences": [
+        "Прибывшие люди и дождь даны; их решения и вместимость убежища не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-069",
+      "primary_domain": "law",
+      "answer_ru": "Сохранить треснувший инструмент и все части, не скрывать поломку, сообщить владельцу когда и при какой работе это произошло, предложив осмотр до спора о возмещении.",
+      "claim_refs": [
+        "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+        "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5"
+      ],
+      "inferences": [
+        "Заём и трещина даны; вина, правовая обязанность и итог не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-070",
+      "primary_domain": "religion",
+      "answer_ru": "Убрать шумную работу или перенести её дальше, говорить тише и не прерывать молящегося без необходимости; продолжать тихие безопасные дела можно.",
+      "claim_refs": [
+        "claim:final-social-established-observance-can-change-food-time-and-visiting-context"
+      ],
+      "inferences": [
+        "Молитва дана; правило, длительность и требуемый обряд не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-071",
+      "primary_domain": "trade",
+      "answer_ru": "Сравнить сухость, запах, примеси и сыпучесть обеих партий, взять малые пробы из разных мест и отделить наблюдаемое качество от цены и обещаний продавца.",
+      "claim_refs": [
+        "claim:stored-grain-condition-depends-on-temperature-moisture"
+      ],
+      "inferences": [
+        "Различия даны; масса, сорт, цена и безопасность не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-072",
+      "primary_domain": "social",
+      "answer_ru": "Сразу признать грязь, спросить, чем убрать её с пола, снять обувь у входа и помочь с видимой уборкой; не спорить о том, насколько она заметна.",
+      "claim_refs": [
+        "claim:final-social-washing-and-drying-can-change-visible-household-soil"
+      ],
+      "inferences": [
+        "Грязь на полу дана; реакция хозяина и итог чистки не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-073",
+      "primary_domain": "law",
+      "answer_ru": "Запомнить или обозначить место находки, не присваивать содержимое, расспросить людей поблизости об описании вещи и передать её только тому, кто может связать себя с потерей.",
+      "claim_refs": [
+        "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r4",
+        "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r5"
+      ],
+      "inferences": [
+        "Свёрток и место даны; владелец, содержимое и юридический итог не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-074",
+      "primary_domain": "religion",
+      "answer_ru": "Сначала спросить гостей, каких продуктов они избегают, приготовить простые доступные блюда без них и держать посуду раздельно; не объявлять состав пищи обязательным правилом.",
+      "claim_refs": [
+        "claim:final-social-established-observance-can-change-food-time-and-visiting-context"
+      ],
+      "inferences": [
+        "Ограничение гостей дано; календарь, правило и доступные продукты не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-core-075",
+      "primary_domain": "social",
+      "answer_ru": "Предложить очередь по приходу либо по уже начатому набору, оставлять проход к колодцу и наполнять сосуд без задержки; предложение не приписывает другим согласие.",
+      "claim_refs": [
+        "claim:reality-first-social-materiality-links-writing-learning-access-and-property-inquiry-r3"
+      ],
+      "inferences": [
+        "Очередь дана; решение остальных не выводится."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-001",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Осмотреть свежий надрез без касания лица, переносить смолу в закрываемой таре, работать в тени и держать огонь на расстоянии; липкие руки очистить до следующей работы.",
+      "claim_refs": [
+        "claim:macro-b20-heated-pitch-is-a-burn-and-fume-exposure-hazard-that-needs-cautious-handling"
+      ],
+      "inferences": [
+        "Смола, сосна и жара даны; огонь, объём и пригодность смолы не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-002",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Отобрать сухие щепки отдельно от сырой древесины, проверить тесто только по видимым признакам и запаху, затем растопить с устойчивой тягой; не объявлять всю кадку годной по одному признаку.",
+      "claim_refs": [
+        "claim:food-drying-depends-on-humidity-airflow",
+        "claim:lactic-fermentation-affects-acidity-and-food-proteins"
+      ],
+      "inferences": [
+        "Сырая ночь и тесто даны; степень влажности, брожение и выпечка не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-003",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Проверять наст перед шагом, срезать камыш от устойчивой опоры, связывать лёгкие охапки и не перегружать волокушу; при трещине льда отойти назад по своим следам.",
+      "claim_refs": [
+        "claim:candidate-v2-ice-strength-depends-on-physical-conditions",
+        "claim:common-reed-rhizome-produces-stems-in-wetland-habitat"
+      ],
+      "inferences": [
+        "Лёд, ветер и камыш даны; прочность льда и объём заготовки не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-004",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Убрать камни и мусор из глины, смешивать малыми порциями до однородной пластичности, работать на устойчивой доске и сушить изделия под укрытием без спешки.",
+      "claim_refs": [
+        "claim:clay-dried-replasticization",
+        "claim:clay-firing-structural-transformation"
+      ],
+      "inferences": [
+        "Глина, вода и песок даны; рецепт, обжиг и качество посуды не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-005",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Идти по одной доске, держать свёрток низко и свободной рукой искать опору, не спешить в тумане; при шатании остановиться или вернуться.",
+      "claim_refs": [
+        "claim:candidate-v2-ice-or-snow-can-be-a-slip-hazard"
+      ],
+      "inferences": [
+        "Скользкие доски и возраст даны; падение, глубина воды и прочность настила не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-006",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Проверить, не касается ли рыба огня и не ослабли ли верёвки, поддерживать ровный слабый жар и тягу, защищать продукт от насекомых, не объявляя всю заготовку сохранной.",
+      "claim_refs": [
+        "claim:research-exposed-fish-drying-depends-on-sun-heat-air-movement-and-invites-pests",
+        "claim:food-drying-reduces-microbial-growth-conditions"
+      ],
+      "inferences": [
+        "Рыба, дым и ветер даны; готовность, срок и безопасность не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-007",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Осмотреть растения с тропы или выбрать место с твёрдой опорой; не спускаться по осыпающимся камням и не тянуться за пределами устойчивой стойки.",
+      "claim_refs": [
+        "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters"
+      ],
+      "inferences": [
+        "Склон и растения ниже даны; вид растений, их ценность и безопасный спуск не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-008",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Осмотреть течь и обруч, согреть и высушить руки, понемногу подтягивать обруч с упором, проверяя посадку после каждого движения; не считать бочку герметичной до проверки.",
+      "claim_refs": [
+        "claim:population-material-wood-shrinkage",
+        "claim:wood-anisotropy-moisture"
+      ],
+      "inferences": [
+        "Рассохшаяся бочка и оттепель даны; состояние металла, течь и результат стяжки не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-009",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Нести воду малыми порциями по очищенному пути, согреть и проверить ремни сгибанием без рывка, работать при доступном свете и не считать осмотр началом поездки.",
+      "claim_refs": [
+        "claim:transport-horse-sledge-equipment",
+        "claim:static-animal-b06-perceived-threat-can-prompt-horse-flight"
+      ],
+      "inferences": [
+        "Лошадь, упряжь и мороз даны; исправность, маршрут и поездка не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-010",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Убрать лист от открытого огня, сушить его в ровном рассеянном тепле, очистить поверхность, закрепить свет и держать чернила отдельно; содержание не читать и не додумывать.",
+      "claim_refs": [
+        "claim:static-dim-light-reading-can-tire-eyes-without-harming-them",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"
+      ],
+      "inferences": [
+        "Мокрый лист и лучина даны; материал листа, текст и сохранность чернил не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-011",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Собирать сено против ветра в небольшие охапки, завязывать их и накрыть либо перенести в сухое место, защищая глаза и дыхание от пыли; не оценивать по этому запас всего двора.",
+      "claim_refs": [
+        "claim:macro-b17-high-moisture-stored-hay-can-heat-and-become-a-smoulder-fire-risk"
+      ],
+      "inferences": [
+        "Разметанное сено дано; влажность, масса и сохранность стога не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-012",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Подойти тихо, сначала осмотреть следы и натяжение издалека, затем удержать петлю и обращаться с возможным животным через безопасную сторону; пустой силок признать возможным исходом.",
+      "claim_refs": [
+        "claim:wild-food-and-fur-evidence"
+      ],
+      "inferences": [
+        "Силки и неизвестный результат даны; добыча, вид животного и исход не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-013",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Укрыть колесо от дальнейшей влаги и сначала осмотреть ось, посадку и трещины; тяжёлые детали подпирать, а не удерживать телом; признаки не равны доказанной прочности.",
+      "claim_refs": [
+        "claim:wood-anisotropy-moisture",
+        "claim:population-material-wood-shrinkage"
+      ],
+      "inferences": [
+        "Колесо, ось и дождь даны; причина дефекта и пригодность после ремонта не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-014",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Остановиться перед лужей, поставить воду на сухое место, предупредить идущих, убрать разлив доступной тканью или посудой; помогать людям без вывода о болезни.",
+      "claim_refs": [
+        "claim:final-social-separating-waste-from-water-and-food-paths-can-limit-contact"
+      ],
+      "inferences": [
+        "Вода, дымный запах и усталость даны; диагноз, причина запаха и состояние людей не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-015",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Осмотреть край с безопасной дистанции, отметить направление воды и свежие размывы, не вставать на нависший мокрый грунт, направить мелкий сток в сторону лишь где есть устойчивая опора.",
+      "claim_refs": [
+        "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
+        "claim:final-nature-thawed-wet-soil-can-detach-more-readily-than-its-bound-state"
+      ],
+      "inferences": [
+        "Подмыв дан; глубина, скорость размыва и обвал не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-016",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Закрепить заготовку, вести острый нож по направлению волокон от руки, снимать тонкую стружку короткими движениями и убрать стружку с рабочей поверхности.",
+      "claim_refs": [
+        "claim:wood-anisotropy-moisture",
+        "claim:stone-whetstone-edge-maintenance"
+      ],
+      "inferences": [
+        "Заготовка и обучение даны; порода, острота и результат резьбы не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-017",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Закрепить лодку верёвкой выше воды, вычерпывать воду малыми порциями, счищать ил без риска на скользких досках и убрать снасти в сухое место; не приписывать улов.",
+      "claim_refs": [
+        "claim:transport-boat-cargo-dispatch",
+        "claim:regional-fish-exploitation"
+      ],
+      "inferences": [
+        "Лодка, ил и течение даны; улов, исправность лодки и глубина воды не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-018",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Держать горшок подальше от края и жара, уступать проход уже обслуживаемым людям, договориться словами о порядке и не превращать праздничность в неизвестное обрядовое правило.",
+      "claim_refs": [
+        "claim:final-social-established-observance-can-change-food-time-and-visiting-context"
+      ],
+      "inferences": [
+        "Очередь и праздник даны; местный обряд, решение очереди и выпечка не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-019",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Резать торф устойчиво поставленной лопатой, складывать одинаковые куски на более сухом месте с промежутками для воздуха, не перегружать обувь вязкой почвой.",
+      "claim_refs": [
+        "claim:food-drying-depends-on-humidity-airflow",
+        "claim:wetland-hydric-soil-depends-on-saturation"
+      ],
+      "inferences": [
+        "Влажный торф и погода даны; запас, сроки сушки и качество топлива не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-020",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Прижать и накрыть волокно, поставить корзины с подветренной стороны, работать лицом не в пыль и не назначать цену до отдельной оценки товара.",
+      "claim_refs": [
+        "claim:agriculture-fauna-flax-hemp-cultivation",
+        "claim:trade-economy-wax-lot-quality-can-use-observable-purity-colour-and-sample-limits"
+      ],
+      "inferences": [
+        "Волокно и ветер даны; его вид, масса, цена и сделка не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-021",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Спускаться медленно с источником света, не нагружать мокрые ступени, осмотреть капли и полки по очереди, переставить тару из-под течи; не судить о неосмотренных припасах.",
+      "claim_refs": [
+        "claim:wood-liquid-moisture-change",
+        "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity"
+      ],
+      "inferences": [
+        "Капли, сырость и тара даны; источник течи, порча и запас не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-022",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Вести козу коротко и спокойно, не дёргать поводок на раскисшем месте, обходить ветви и двигаться малыми шагами, останавливаясь при потере видимости.",
+      "claim_refs": [
+        "claim:animal-homeostasis-responds-to-internal-external-change"
+      ],
+      "inferences": [
+        "Коза, дождь и тропа даны; реакция животного, падение и дальность пути не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-023",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Укрыться от ветра без разведения огня у строения, снять и отжать верхнюю сырость по возможности, сохранить сухой слой у тела и не приписывать часовне местные правила.",
+      "claim_refs": [
+        "claim:static-fat-storm-b10-a-reachable-substantial-building-can-be-a-lightning-shelter-option"
+      ],
+      "inferences": [
+        "Холод, снег и часовня даны; доступ внутрь, обычаи и безопасность огня не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-024",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Подвязать полёгшие стебли свободной петлёй к изгороди, работать с опорой для коленей и не определять животное по одним следам; осмотреть повреждения растения отдельно.",
+      "claim_refs": [
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+        "claim:candidate-plant-identity-can-require-multiple-diagnostic-characters"
+      ],
+      "inferences": [
+        "Стебли и следы даны; вид животного, вред и будущий рост не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    },
+    {
+      "case_id": "reality2-free-025",
+      "primary_domain": "free_adversarial",
+      "answer_ru": "Не заходить за движущимися брёвнами в воду, работать с берега длинным крюком и верёвкой только по устойчивой древесине, отказаться от тяжёлого или быстро идущего плавника.",
+      "claim_refs": [
+        "claim:candidate-river-flood-woody-debris-transport-retention-conditional",
+        "claim:research-flood-can-leave-high-water-mark-types"
+      ],
+      "inferences": [
+        "Древесина, лёд и течение даны; масса, доступность каждого бревна и безопасный захват не выводятся."
+      ],
+      "status": "covered",
+      "gaps": []
+    }
+  ]
+}

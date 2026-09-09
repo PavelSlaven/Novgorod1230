@@ -1,0 +1,28 @@
+{
+  "batch": "final-static-streak-r3-01",
+  "reviewer": "/root/r3_b1_triage",
+  "corpus_basis": "commit 63bea9e204d8af2464728688a69a5e57cd522523; full production-v1 runtime bundle; final-static-streak-r3-01 core-a, core-b, free, review-a and review-b inputs",
+  "runtime_bundle": "data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json",
+  "method": "Независимый WK-only cross-triage всех cases со status=gap из review-a/review-b против полного runtime. covered_composable допускает bounded conditional ответ из reusable claims и прозрачной common-sense composition; out_of_scope_state требует exact local/authoritative/code-owned состояния или исхода; genuine_gap оставлен только при отсутствии центральной reusable factual premise, существенно меняющей действие, объект или причинный результат.",
+  "triage": [
+    {
+      "case_id": "fssr3-01-core-a-026",
+      "original_gap": "Связь тли, муравьёв, скручивания бобовых листьев и риска новому росту.",
+      "verdict": "genuine_gap",
+      "rationale_ru": "Runtime допускает, что липкий налёт может происходить от сосущих сок насекомых, и отдельно говорит, что поедание растения животными может условно уменьшать рост. Но эти общие premises не дают переносимой связи тли или муравьёв с бобовыми побегами, скручиванием листьев и повреждением нового роста; также не дают основания определить момент осмотра без угадывания вредителя. Это отсутствующая центральная factual family, а не exact local state или outcome.",
+      "claim_refs": [
+        "claim:macro-b17-sticky-plant-coating-can-be-honeydew-but-appearance-does-not-identify-cause-or-safety",
+        "claim:research-herbivory-can-remove-plant-tissue-and-conditionally-reduce-growth-or-reproduction",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals"
+      ],
+      "proposed_family": "aphid-ant-bean-shoot-damage-and-nondiagnostic-inspection"
+    }
+  ],
+  "summary": {
+    "reviewed_flags": 1,
+    "covered_composable": 0,
+    "out_of_scope_state": 0,
+    "genuine_gaps": 1,
+    "substantial_gaps": 1
+  }
+}

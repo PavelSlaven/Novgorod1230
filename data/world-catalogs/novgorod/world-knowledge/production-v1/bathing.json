@@ -1,0 +1,355 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:bathing-pvl-likhachev",
+      "title": "Повесть временных лет",
+      "authors": [
+        "D. S. Likhachev (translation)"
+      ],
+      "publication": "Russian Virtual Library, Primary Chronicle translation",
+      "source_kind": "primary_text",
+      "citation": "https://ilibrary.ru/text/4339/p.1/index.html",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:bathing-stepanov-2015",
+      "title": "Усадьбы Т и У в Людином конце средневекового Новгорода (по материалам Троицкого раскопа)",
+      "authors": [
+        "A. M. Stepanov"
+      ],
+      "publication": "Исторические исследования 3 (2015)",
+      "source_kind": "scholarship",
+      "citation": "http://www.historystudies.msu.ru/ojs2/index.php/ISIS/rt/printerFriendly/50/133",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bathing-pvl-andrew-description",
+      "source_ref": "source:bathing-pvl-likhachev",
+      "anchor": {
+        "section": "Opening geographical narrative, Andrew episode: ‘as they say’; wooden bathhouses, heating, washing with water"
+      },
+      "note": "Independent disposition: verification/verification-bathing.md. The narrated journey is a legend, so this supports only cautious cultural compatibility, not Andrew’s visit, a dated bathhouse, medical effect, or compulsory procedure.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:bathing-stepanov-early-structure",
+      "source_ref": "source:bathing-stepanov-2015",
+      "anchor": {
+        "section": "First chronological period: estate U small structure, log courses, poles, sand fill and stones; comparison with Novgorod bathhouses"
+      },
+      "note": "Independent disposition: verification/verification-bathing.md. The second-half-X–first-half-XI structure is early archaeological corroboration of a bathhouse interpretation, not direct XII–XIII evidence or an identified stove.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:wooden-bathhouse",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:bathing-washing"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:bathing-washing",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:water",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:craft_technology:bathing-washing"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:bathing-wooden-bathhouse-wood",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:wooden-bathhouse",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:wood"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bathing-pvl-andrew-description",
+        "evidence:bathing-stepanov-early-structure"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:bathing-house-heating-before-washing",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:wooden-bathhouse",
+      "predicate": "attested_function",
+      "object": {
+        "kind": "literal",
+        "value": "chronicle_bathing_description_places_strong_heating_before_washing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bathing-pvl-andrew-description"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:bathing-washing-water",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:water",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:bathing-washing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:bathing-pvl-andrew-description"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:wooden-bathhouse",
+      "locale": "ru",
+      "labels": [
+        "Деревянная баня"
+      ],
+      "short_definition": "Банное сооружение, представленное в описании как деревянное.",
+      "search_aliases": [
+        "Баня",
+        "Банное сооружение"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:wooden-bathhouse",
+      "locale": "en",
+      "labels": [
+        "Wooden bathhouse"
+      ],
+      "short_definition": "A bathhouse represented as wooden in the description.",
+      "search_aliases": [
+        "Bathhouse",
+        "Wooden bath"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:bathing-washing",
+      "locale": "ru",
+      "labels": [
+        "Банное мытьё"
+      ],
+      "short_definition": "Мытьё как часть банной последовательности.",
+      "search_aliases": [
+        "Мытьё в бане",
+        "Банное мытьё"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:bathing-washing",
+      "locale": "en",
+      "labels": [
+        "Bathing wash"
+      ],
+      "short_definition": "Washing as part of a bathing sequence.",
+      "search_aliases": [
+        "Bath washing",
+        "Washing in a bathhouse"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:water",
+      "locale": "ru",
+      "labels": [
+        "Вода"
+      ],
+      "short_definition": "Вода как материал; конкретное применение и источник задаются отдельными связями.",
+      "search_aliases": [
+        "Вода для бани",
+        "Вода для мытья"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:water",
+      "locale": "en",
+      "labels": [
+        "Water"
+      ],
+      "short_definition": "Water as a material; uses and sources are separate relations.",
+      "search_aliases": [
+        "Bath water",
+        "Water for washing"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:bathing-wooden-bathhouse-wood",
+      "locale": "ru",
+      "runtime_text": "В легендарном летописном описании бани названы деревянными; это ограниченная культурная совместимость, не баня или запас древесины в сцене.",
+      "search_aliases": [
+        "Деревянная баня"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:bathing-wooden-bathhouse-wood",
+      "locale": "en",
+      "runtime_text": "The legendary chronicle description represents bathhouses as wooden; this is limited cultural compatibility, not a bathhouse or timber stock in a scene.",
+      "search_aliases": [
+        "Wooden bathhouse"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:bathing-house-heating-before-washing",
+      "locale": "ru",
+      "runtime_text": "Летописное описание ставит сильное нагревание перед мытьём; оно не задаёт печь, топливо, температуру, длительность или лечебный эффект.",
+      "search_aliases": [
+        "Нагревание бани",
+        "Баня перед мытьём"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:bathing-house-heating-before-washing",
+      "locale": "en",
+      "runtime_text": "The chronicle description places strong heating before washing; it supplies no stove, fuel, temperature, duration, or therapeutic effect.",
+      "search_aliases": [
+        "Bathhouse heating",
+        "Heating before washing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:bathing-washing-water",
+      "locale": "ru",
+      "runtime_text": "В легендарном летописном описании вода входит в последовательность банного мытья; это не источник воды, её количество, чистота или обязательный холодный этап.",
+      "search_aliases": [
+        "Вода для бани",
+        "Мытьё водой"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:bathing-washing-water",
+      "locale": "en",
+      "runtime_text": "In the legendary chronicle description, water is part of the bathing-wash sequence; this is not a water source, quantity, purity claim, or mandatory cold-water step.",
+      "search_aliases": [
+        "Bath water",
+        "Washing with water"
+      ]
+    }
+  ]
+}

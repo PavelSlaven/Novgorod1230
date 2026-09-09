@@ -37,12 +37,21 @@ export function ownNpcProjection(actor) {
       'The NPC own identity and subjective machine state are required.'
     );
   }
+  const roleRef = trustedRoleRef(actor.role_ref)
+    ?? trustedRoleRef(actor.social_role?.role_ref);
   return {
     participant_ref: actor.ref,
     instance_id: actor.instance_id,
     identity_state: structuredClone(actor.identity_state),
-    machine_state: structuredClone(actor.machine_state)
+    machine_state: structuredClone(actor.machine_state),
+    ...(roleRef == null ? {} : { social_role: { role_ref: roleRef } })
   };
+}
+
+function trustedRoleRef(value) {
+  if (typeof value === 'string' && value) return value;
+  return plainRecord(value) && typeof value.id === 'string' && value.id
+    ? value.id : null;
 }
 
 export function ownKnowledgeProjection(actor) {

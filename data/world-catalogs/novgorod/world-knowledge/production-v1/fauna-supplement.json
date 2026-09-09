@@ -1,0 +1,332 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:fauna-chicken-behavior-umd",
+      "title": "Sickness Behavior in Chickens (FS-1178)",
+      "authors": ["Ashlyn Snyder", "Jon Moyle", "Shawna Weimer"],
+      "publication": "University of Maryland Extension",
+      "source_kind": "official_documentation",
+      "citation": "https://extension.umd.edu/resource/sickness-behavior-chickens-fs-1178",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:fauna-noble-crayfish-geelen-1978",
+      "title": "The distribution of the crayfishes Orconectes limosus and Astacus astacus in the Netherlands",
+      "authors": ["J. F. M. Geelen"],
+      "publication": "Zoologische Bijdragen 23(1): 4–19; Naturalis Biodiversity Center repository",
+      "source_kind": "scholarship",
+      "citation": "https://repository.naturalis.nl/pub/317266/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:fauna-noble-crayfish-westin-gydemo-1988",
+      "title": "The locomotor activity patterns of juvenile noble crayfish (Astacus astacus) and the effect of shelter availability",
+      "authors": ["Lars Westin", "Rolf Gydemo"],
+      "publication": "Aquaculture 68(4): 361–367",
+      "source_kind": "scholarship",
+      "citation": "https://www.sciencedirect.com/science/article/pii/0044848688902505",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fauna-chicken-allopreening-social-bonds",
+      "source_ref": "source:fauna-chicken-behavior-umd",
+      "anchor": {"section": "What Does Normal Chicken Behavior Look Like — Preening"},
+      "note": "Independently verified in verification/verification-fauna-supplement-modern.md. Universal biology only; no current animal, group, intent, hierarchy, historical occurrence or actor knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fauna-chicken-dust-bathing-sequence",
+      "source_ref": "source:fauna-chicken-behavior-umd",
+      "anchor": {"section": "What Does Normal Chicken Behavior Look Like — Dust bathing"},
+      "note": "Independently verified universal behavioral sequence only; no available substrate, sanitation guarantee, care instruction or current activity.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fauna-chicken-foraging-scratch-peck",
+      "source_ref": "source:fauna-chicken-behavior-umd",
+      "anchor": {"section": "What Does Normal Chicken Behavior Look Like — Foraging"},
+      "note": "Independently verified general behavior only; no diet, food presence, successful feeding or actor knowledge.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fauna-chicken-flock-social-hierarchy",
+      "source_ref": "source:fauna-chicken-behavior-umd",
+      "anchor": {"section": "What Does Normal Chicken Behavior Look Like"},
+      "note": "Independently verified flock social hierarchy only; no current flock, rank, conflict or guaranteed social result.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fauna-chicken-broody-incubation",
+      "source_ref": "source:fauna-chicken-behavior-umd",
+      "anchor": {"section": "What Does Normal Chicken Behavior Look Like — Reproductive behaviors"},
+      "note": "Independently verified only for a broody hen and existing eggs; no fertility, clutch, hatching success, season or current state.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fauna-crayfish-habitat-shelter",
+      "source_ref": "source:fauna-noble-crayfish-geelen-1978",
+      "anchor": {"section": "Introduction", "page": "4"},
+      "note": "Independently verified modern species habitat relation only; no presence in a particular water body, water quality, shelter construction or historical occurrence.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fauna-crayfish-qualitative-diet",
+      "source_ref": "source:fauna-noble-crayfish-geelen-1978",
+      "anchor": {"section": "Introduction", "page": "4"},
+      "note": "Independently verified qualitative diet only; no exhaustive diet, prey presence, capture, frequency or current feeding.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fauna-crayfish-egg-carrying",
+      "source_ref": "source:fauna-noble-crayfish-geelen-1978",
+      "anchor": {"section": "Introduction", "page": "4"},
+      "note": "Independently verified reproductive behavior: females carry their eggs. No current clutch, egg count, season or offspring survival is asserted.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:fauna-crayfish-juvenile-shelter-nocturnal-activity",
+      "source_ref": "source:fauna-noble-crayfish-westin-gydemo-1988",
+      "anchor": {"section": "Abstract"},
+      "note": "Independently verified narrow laboratory result: juveniles, shelter available, natural-light conditions, summer–autumn. It is not a species-wide nocturnal rule; the abstract reports winter reversal and different activity without shelter.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:domestic-chicken-behavior",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:broad-clawed-crayfish-behavior",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fauna-chicken-allopreening",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:domestic-chicken-behavior",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "allopreening_directed_at_another_chicken_helps_maintain_positive_social_bonds"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:fauna-chicken-allopreening-social-bonds"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fauna-chicken-dust-bathing",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:domestic-chicken-behavior",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "dust_bathing_can_include_scratching_substrate_and_distributing_dust_through_feathers"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:fauna-chicken-dust-bathing-sequence"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fauna-chicken-foraging",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:domestic-chicken-behavior",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "foraging_can_include_scratching_or_pecking_at_potential_food_source"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:fauna-chicken-foraging-scratch-peck"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fauna-chicken-flock-hierarchy",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:domestic-chicken-behavior",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "chickens_are_flock_species_with_social_hierarchy"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:fauna-chicken-flock-social-hierarchy"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fauna-chicken-brooding",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:domestic-chicken-behavior",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "a_broody_hen_can_sit_on_and_incubate_eggs_until_hatching"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:fauna-chicken-broody-incubation"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fauna-crayfish-habitat",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:broad-clawed-crayfish-behavior",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "astacus_astacus_inhabits_running_or_standing_water_with_good_shelter"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:fauna-crayfish-habitat-shelter"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fauna-crayfish-diet",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:broad-clawed-crayfish-behavior",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "astacus_astacus_diet_can_include_invertebrates_tadpoles_vegetable_matter_and_dead_organisms"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:fauna-crayfish-qualitative-diet"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fauna-crayfish-egg-carrying",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:broad-clawed-crayfish-behavior",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "female_astacus_astacus_carry_their_eggs"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:fauna-crayfish-egg-carrying"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:fauna-crayfish-juvenile-activity",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:broad-clawed-crayfish-behavior",
+      "predicate": "supported_fact",
+      "object": {"kind": "literal", "value": "juvenile_astacus_astacus_with_shelter_showed_nocturnal_activity_in_summer_autumn_laboratory_natural_light_conditions"},
+      "polarity": "support",
+      "applicability": {"context_scope": "universal"},
+      "qualifiers": {"typicality": "unknown", "confidence": "high", "directness": "direct"},
+      "knowledge_access": {"class": "domain_internal_only", "required_facets": []},
+      "hard_exclusion": null,
+      "evidence_refs": ["evidence:fauna-crayfish-juvenile-shelter-nocturnal-activity"],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:domestic-chicken-behavior",
+      "locale": "ru",
+      "labels": ["Курица", "Домашняя курица", "Поведение домашней курицы"],
+      "short_definition": "Домашняя курица — стайная птица: она может искать корм клеванием и разгрёбыванием, чистить оперение, принимать пылевые ванны и, будучи наседкой, инкубировать яйца.",
+      "search_aliases": ["курица", "петух", "наседка", "домашняя птица"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:domestic-chicken-behavior",
+      "locale": "en",
+      "labels": ["Chicken", "Domestic chicken", "Domestic chicken behavior"],
+      "short_definition": "The domestic chicken is a flock bird that can forage by pecking and scratching, preen, dust-bathe, and, when broody, incubate eggs.",
+      "search_aliases": ["chicken", "hen", "rooster", "domestic poultry"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:broad-clawed-crayfish-behavior",
+      "locale": "ru",
+      "labels": ["Широкопалый рак", "Европейский речной рак", "Astacus astacus"],
+      "short_definition": "Широкопалый рак (Astacus astacus) живёт в текучей или стоячей воде с укрытиями; самки вынашивают икру.",
+      "search_aliases": ["широкопалый рак", "речной рак", "Astacus astacus", "рак"]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:broad-clawed-crayfish-behavior",
+      "locale": "en",
+      "labels": ["Broad-clawed crayfish", "Noble crayfish", "Astacus astacus"],
+      "short_definition": "The broad-clawed crayfish (Astacus astacus) inhabits running or standing water with shelter; females carry their eggs.",
+      "search_aliases": ["broad-clawed crayfish", "noble crayfish", "Astacus astacus", "crayfish"]
+    }
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-allopreening","locale":"ru","runtime_text":"Чистка оперения другой курицы может поддерживать положительные социальные связи.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-allopreening","locale":"en","runtime_text":"Preening directed at another chicken can help maintain positive social bonds.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-dust-bathing","locale":"ru","runtime_text":"Пылевая ванна курицы может включать разгрёбывание субстрата и распределение пыли по оперению.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-dust-bathing","locale":"en","runtime_text":"A chicken’s dust bath can include scratching substrate and distributing dust through feathers.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-foraging","locale":"ru","runtime_text":"Поиск корма у курицы может включать разгрёбывание или клевание потенциального источника пищи.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-foraging","locale":"en","runtime_text":"Chicken foraging can include scratching or pecking at a potential food source.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-flock-hierarchy","locale":"ru","runtime_text":"Курицы — стайный вид с социальной иерархией.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-flock-hierarchy","locale":"en","runtime_text":"Chickens are a flock species with a social hierarchy.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-brooding","locale":"ru","runtime_text":"Наседка может сидеть на яйцах и инкубировать их до вылупления.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-chicken-brooding","locale":"en","runtime_text":"A broody hen can sit on and incubate eggs until hatching.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-crayfish-habitat","locale":"ru","runtime_text":"Широкопалый рак населяет текучую или стоячую воду при наличии хороших укрытий.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-crayfish-habitat","locale":"en","runtime_text":"The broad-clawed crayfish inhabits running or standing water with good shelter.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-crayfish-diet","locale":"ru","runtime_text":"Широкопалый рак может питаться беспозвоночными, головастиками, растительным веществом и мёртвыми организмами.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-crayfish-diet","locale":"en","runtime_text":"The broad-clawed crayfish can feed on invertebrates, tadpoles, vegetable matter, and dead organisms.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-crayfish-egg-carrying","locale":"ru","runtime_text":"Самки широкопалого рака вынашивают икру.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-crayfish-egg-carrying","locale":"en","runtime_text":"Female broad-clawed crayfish carry their eggs.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-crayfish-juvenile-activity","locale":"ru","runtime_text":"В лабораторном опыте летом–осенью молодь широкопалого рака при доступном укрытии демонстрировала ночной паттерн двигательной активности.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:fauna-crayfish-juvenile-activity","locale":"en","runtime_text":"In a summer–autumn laboratory experiment, juvenile broad-clawed crayfish with shelter available showed a nocturnal locomotor-activity pattern.","search_aliases":[]}
+  ]
+}

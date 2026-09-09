@@ -5,14 +5,19 @@ import {
   validateNpcOrdinarySemanticRemainderRequest
 } from '@rus/npc-runtime';
 import { turnFailure } from './errors.js';
+import { worldKnowledgePromptData, worldKnowledgePromptInstructions } from
+  './world-knowledge-prompt.js';
 
 export async function resolveNpcOrdinarySemanticRemainder({ request,
-  roleRunner } = {}) {
+  roleRunner, worldKnowledge = null } = {}) {
   const safeRequest = snapshot(request);
   if (!validateNpcOrdinarySemanticRemainderRequest(safeRequest)) fail(
     'TURN_NPC_ORDINARY_REMAINDER_REQUEST_INVALID');
   if (typeof roleRunner?.run !== 'function') fail(
     'TURN_NPC_ORDINARY_REMAINDER_MODEL_MISSING');
+  let safeKnowledge;
+  try { safeKnowledge = worldKnowledgePromptData(worldKnowledge); }
+  catch { fail('TURN_NPC_ORDINARY_REMAINDER_KNOWLEDGE_INVALID'); }
   let response;
   try {
     response = await roleRunner.run({ scope: 'turn_runtime',
@@ -23,8 +28,11 @@ export async function resolveNpcOrdinarySemanticRemainder({ request,
         'schema must be npc_ordinary_semantic_remainder_proposal_v1 and request_id must be copied exactly.',
         'Write one concise natural Russian visual description of an ordinary person as currently observable in a XIII-century scene.',
         'Use only supplied player-safe observable_context. Do not infer meaning from IDs or invent a name, biography, motive, knowledge, relationship, possession, speech, injury, route, hidden fact, authority, schedule, mechanics, number, or new entity.',
-        'ordinary_descriptor is one concrete visual human detail consistent with supplied cues. ordinary_activity must be null because current work belongs to code-owned schedule state outside this player-safe semantic request.'
-      ].join(' ') }, { role: 'user', content: JSON.stringify(safeRequest) }],
+        'ordinary_descriptor is one concrete visual human detail consistent with supplied cues. ordinary_activity must be null because current work belongs to code-owned schedule state outside this player-safe semantic request.',
+        ...worldKnowledgePromptInstructions(safeKnowledge)
+      ].join(' ') }, { role: 'user', content: JSON.stringify(
+        safeKnowledge == null ? safeRequest : { request: safeRequest,
+          world_knowledge: safeKnowledge }) }],
       overrides: { temperature: 0, maxTokens: 20_000 }
     });
   } catch (error) {
@@ -37,12 +45,13 @@ export async function resolveNpcOrdinarySemanticRemainder({ request,
     fail('TURN_NPC_ORDINARY_REMAINDER_PROPOSAL_INVALID');
   }
   const audit = await auditProposal({ request: safeRequest, proposal,
-    roleRunner });
+    roleRunner, worldKnowledge: safeKnowledge });
   if (!audit.approved) fail('TURN_NPC_ORDINARY_REMAINDER_SEMANTIC_REJECTED');
   return deepFreeze(proposal);
 }
 
-async function auditProposal({ request, proposal, roleRunner }) {
+async function auditProposal({ request, proposal, roleRunner,
+  worldKnowledge }) {
   let response;
   try {
     response = await roleRunner.run({ scope: 'turn_runtime',
@@ -54,9 +63,11 @@ async function auditProposal({ request, proposal, roleRunner }) {
         'Judge whether ordinary_descriptor fits observable_context and remains only an ordinary visible descriptor; ordinary_activity must be null.',
         'Reject unsupported observations and any biography, motive, knowledge, relationship, possession, speech, injury, route, hidden fact, authority, schedule, mechanics, number, formal profile field, or new entity.',
         'Allowed concern_kinds: context_contradiction, forbidden_authority, formal_owner_overlap, new_entity.',
-        'approved=true requires an empty concern_kinds array; approved=false requires at least one concern.'
+        'approved=true requires an empty concern_kinds array; approved=false requires at least one concern.',
+        ...worldKnowledgePromptInstructions(worldKnowledge)
       ].join(' ') }, { role: 'user', content: JSON.stringify({ request,
-        proposal }) }], overrides: { temperature: 0, maxTokens: 20_000 }
+        proposal, ...(worldKnowledge == null ? {} : { world_knowledge:
+          worldKnowledge }) }) }], overrides: { temperature: 0, maxTokens: 20_000 }
     });
   } catch (error) {
     throw turnFailure('TURN_NPC_ORDINARY_REMAINDER_AUDIT_FAILED',

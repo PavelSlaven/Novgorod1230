@@ -5,6 +5,29 @@ import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createGameHttpServer, listen } from '../src/index.js';
 
+test('gameplay capture is opt-in, snapshots private data, and cannot alter turn outcome', async () => {
+  const ordinary = createLlmDiagnostics();
+  assert.equal(ordinary.recordGameplayTrace, undefined);
+  assert.equal(ordinary.telemetry.onGameplayTrace, undefined);
+  await ordinary.runTurn({ party_id: 'ordinary', request_id: 'request' }, async () => {});
+  assert.equal(Object.hasOwn(ordinary.takeLogReport({ party_id: 'ordinary' }), 'gameplay_traces'), false);
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const context = { hidden: 'private-context', value: 1 };
+  const output = await diagnostics.runTurn({ party_id: 'dev', request_id: 'request' }, async () => {
+    diagnostics.recordGameplayTrace({ event: 'turn_context', context });
+    context.value = 2;
+    diagnostics.telemetry.onGameplayTrace({ event: 'world_knowledge_resolved', claim_refs: ['claim:example'] });
+    diagnostics.recordGameplayTrace({ event: 'bad-capture', unsupported: () => {} });
+    return 'unchanged';
+  });
+  assert.equal(output, 'unchanged');
+  assert.equal(JSON.stringify(diagnostics.report({ party_id: 'dev' })).includes('private-context'), false);
+  const log = diagnostics.takeLogReport({ party_id: 'dev' });
+  assert.equal(log.gameplay_traces[0].context.value, 1);
+  assert.equal(log.gameplay_traces[0].context.hidden, 'private-context');
+  assert.deepEqual(log.gameplay_traces[2], { event: 'capture_failed', source_event: 'bad-capture' });
+});
+
 test('buildLlmTurnReport makes deterministic waterfall and aggregates', () => {
   const report = buildLlmTurnReport({ party_id: 'party-1', request_id: 'turn-1', calls: [
     { role: 'intent_router', provider: 'deepseek', model: 'm', durationMs: 10, status: 'ok', configHash: 'a', outputContractMode: 'json_object', tokenUsage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 } },

@@ -1,0 +1,44 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-v1-fuel-combustion-carbon-monoxide",
+      "claim_ref": "claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "claim_digest": "9872bbb662cef0ade0048988d10bc07a6f71163cc8981471411eaad02e66f14d",
+      "candidate_ref": "git:a060f68f0fcfe030ddd6dbdeca682c362c06a8f9:data/world-catalogs/novgorod/world-knowledge/production-v1/static-exposure-v1.json#claim:research-fuel-combustion-can-produce-carbon-monoxide",
+      "auditor_ref": "/root/claim_verifier/troitsky_primary",
+      "independence_basis": "Independent direct CDC source-anchor review of unchanged records; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-static-exposure-co-combustion"],
+      "review_ref": "verification/static-exposure-water-v1.md#production-relocation--a1ffc1e1f132854d367ac19ec267ee5b00605900",
+      "verdict": "APPROVE",
+      "limits": "CDC supports the qualitative relation only; no particular fuel, fire, amount, rate, place, exposure, symptom, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-v1-carbon-monoxide-indoors",
+      "claim_ref": "claim:research-carbon-monoxide-can-accumulate-indoors",
+      "claim_digest": "5aaf472d5a54948c03bf7df03592b87cefc001e253d90f469d8dbe965e98a994",
+      "candidate_ref": "git:a060f68f0fcfe030ddd6dbdeca682c362c06a8f9:data/world-catalogs/novgorod/world-knowledge/production-v1/static-exposure-v1.json#claim:research-carbon-monoxide-can-accumulate-indoors",
+      "auditor_ref": "/root/claim_verifier/troitsky_primary",
+      "independence_basis": "Independent direct CDC source-anchor review of unchanged records; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-static-exposure-co-indoor-accumulation"],
+      "review_ref": "verification/static-exposure-water-v1.md#production-relocation--a1ffc1e1f132854d367ac19ec267ee5b00605900",
+      "verdict": "APPROVE",
+      "limits": "CDC supports possible indoor accumulation only; no actual enclosure, ventilation, concentration, duration, person, symptom, diagnosis, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:static-exposure-v1-cold-water-immersion-hypothermia",
+      "claim_ref": "claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "claim_digest": "34161785e16978d88d8267448059be3f310f9a3787125f2995cafb005210c5d4",
+      "candidate_ref": "git:a060f68f0fcfe030ddd6dbdeca682c362c06a8f9:data/world-catalogs/novgorod/world-knowledge/production-v1/static-exposure-v1.json#claim:research-cold-water-immersion-can-cause-immersion-hypothermia",
+      "auditor_ref": "/root/claim_verifier/troitsky_primary",
+      "independence_basis": "Independent direct CDC/NIOSH source-anchor review of unchanged records; auditor did not author this candidate.",
+      "evidence_checked": ["evidence:research-static-exposure-cold-water-immersion"],
+      "review_ref": "verification/static-exposure-water-v1.md#production-relocation--a1ffc1e1f132854d367ac19ec267ee5b00605900",
+      "verdict": "APPROVE",
+      "limits": "No water temperature, duration, clothing, body state, impairment, injury, survival, treatment, outcome, or comparative speed conclusion."
+    }
+  ]
+}

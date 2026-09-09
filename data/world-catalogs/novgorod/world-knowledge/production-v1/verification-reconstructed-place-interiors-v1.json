@@ -1,0 +1,155 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
+      "claim_ref": "claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
+      "claim_digest": "ccbdb5acb9f83de4570596cd0f49c450d66d4cd8caa5d3f5543e53a13dfc9012",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-dwelling-interior-shares-work-rest-and-passage-contextually",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-dwelling"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No mandatory stove/hearth, furniture, layout, household, or ownership. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+      "claim_ref": "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+      "claim_digest": "c2a22a96c6386d363c4df138519fac7885f0b0e80223c8a791892229dfce7e59",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-dwelling"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No present opening, flame, smoke, fuel, weather, or room condition. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+      "claim_ref": "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+      "claim_digest": "7d09e105fc27433cdedd8af9375f5597358a7a347430f9c8e21f157a6a476e88",
+      "candidate_ref": "git:fbdeb1cb205a6edc7deae3b416be25f4d0a28c1f:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-dwelling"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No person, illness, task, privacy relation, or decision is supplied. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+      "claim_ref": "claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+      "claim_digest": "9f34188c65fb12ca65924cf967932fae70027a1cc0117b858da405245f43e25a",
+      "candidate_ref": "git:fbdeb1cb205a6edc7deae3b416be25f4d0a28c1f:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-dwelling-moisture-and-routine-can-leave-changeable-traces",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-domestic-traces"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Temporary trace only; no hidden history, weather, dirt, or safety result. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+      "claim_ref": "claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+      "claim_digest": "b03e5ea49052def372bd7ed4c76e1799a8b3c42963f2b9aa9744c3c60cbd0816",
+      "candidate_ref": "git:fbdeb1cb205a6edc7deae3b416be25f4d0a28c1f:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-dwelling-shelter-food-and-care-shape-small-life-opportunity",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-domestic-traces"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Opportunity is not vermin presence, infestation, harm, food, or care state. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+      "claim_ref": "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+      "claim_digest": "2221a4f0762d546bf5905a9b47a6797e77be4fd554a9114627c7e1c238a2dfd4",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-church"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No church, rite, candle, crowd, access rule, service, or observed state. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+      "claim_ref": "claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+      "claim_digest": "07a3864545a17d50f82debeebbf192dc636ca6f9598ed5e1d771e9d3efdf78fa",
+      "candidate_ref": "git:fbdeb1cb205a6edc7deae3b416be25f4d0a28c1f:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-church-interior-ordinary-presence-has-different-practical-paths",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-church"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Conditional on established people/place; no clerical office, entry right, roster, or liturgy. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+      "claim_ref": "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+      "claim_digest": "f564395d8b55e8ef13bd7b90e8a86d8ab5c8512f5cb9b85811448f16d3e15e63",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-church"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Ground versus steps stays material-specific; no event, weather, trace, or maintenance outcome. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+      "claim_ref": "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+      "claim_digest": "af6c373dc7d9d05a47c4dcb59abe5f0d61b69a3cb1d7248a56902ca1bae10e67",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-monastery"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No monastery, work, visitor, route, resource, or institutional authority. Editorial reconstruction, not direct historical attestation or current world state."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place-v1-reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+      "claim_ref": "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+      "claim_digest": "1c98c2c1471bb41f428896ac75a25c4406ddfcc687234b5b1ab1a92146f8468d",
+      "candidate_ref": "git:818d85f72e350624a91162a30cd3ad78d5c26663:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-place-interiors-v1.json#claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means",
+      "auditor_ref": "/root/place_premise_verifier",
+      "independence_basis": "Independent plausibility reviewer distinct from all three authors; root mechanically binds the recorded per-claim verdict to the frozen candidate and assembled pack.",
+      "evidence_checked": [
+        "evidence:place-interiors-monastery"
+      ],
+      "review_ref": "verification/reconstructed-place-interiors-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No repair duty, worker, material, schedule, weather, or completed upkeep. Editorial reconstruction, not direct historical attestation or current world state."
+    }
+  ]
+}

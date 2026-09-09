@@ -19,7 +19,7 @@ const CHROME_PATH = [
 ].find((candidate) => candidate && existsSync(candidate));
 const PHASE2_GENERAL_LOOK = ['look', 'Осмотреться'];
 
-test('Chromium restores a saved party through production-v14 and PostgreSQL', {
+test('Chromium restores a saved party through production-v15 and PostgreSQL', {
   timeout: 360_000,
   skip: !CHROME_PATH && 'Chrome or Chromium executable not found.'
 }, async (context) => {
@@ -30,7 +30,7 @@ test('Chromium restores a saved party through production-v14 and PostgreSQL', {
   const health = await fetch(`${environment.baseUrl}/api/v1/health`);
   assert.equal(health.ok, true);
   assert.equal((await health.json()).data.release_id,
-    'spatial-v3-production-v14');
+    'spatial-v3-production-v15');
   const browser = await chromium.launch({ executablePath: CHROME_PATH,
     headless: true, args: ['--no-sandbox', '--no-proxy-server'] });
   context.after(() => browser.close());
@@ -174,7 +174,7 @@ test('Chromium restores a saved party through production-v14 and PostgreSQL', {
       );
       assert.equal(restartedHealth.ok, true);
       assert.equal((await restartedHealth.json()).data.release_id,
-        'spatial-v3-production-v14');
+        'spatial-v3-production-v15');
       await page.goto(environment.baseUrl);
       await page.waitForSelector('[data-continue-party]');
       const restoredScreen = page.waitForResponse((candidate) =>

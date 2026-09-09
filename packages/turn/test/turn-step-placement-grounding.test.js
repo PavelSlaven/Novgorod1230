@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validateTurnStepPlan } from '../src/turn-step-contracts.js';
+import { requestTurnStepPlanWithRepair } from
+  '../src/turn-step-plan-repair.js';
 
 const actor = 'actor_mikula';
 const request = {
@@ -25,7 +27,8 @@ function plan(entity_ref, relation) {
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
     operations: [{ op: 'move_entity', entity_ref,
       placement: { relation, target_ref: actor } }], check: null,
-    continuation: null, clarification: null, reason_code: 'move',
+    continuation: null, clarification: null, direct_result_kind: null,
+    reason_code: 'move',
     reason: 'Вещь перемещается.'
   };
 }
@@ -47,4 +50,45 @@ test('move_entity rejects a player-safe placement that is already satisfied', ()
   request.player_safe_state.items[1].placement.physical_position = 'worn_quick';
   assert.equal(validateTurnStepPlan(plan('coat', 'worn_by'), { request }).ok,
     true);
+});
+
+test('unknown ref fails technically without semantic repair',
+  async () => {
+    let calls = 0;
+    await assert.rejects(() => requestTurnStepPlanWithRepair({ request,
+      turnStepModel: async () => {
+        const value = plan('mistyped-ref', 'held_by');
+        return ++calls === 1
+          ? { ...value, interpretation: { adaptation: 'literal' } } : value;
+      } }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+        && error.details.repair_attempted === false);
+    assert.equal(calls, 1);
+  });
+
+test('direct result kind is structural and write-free', () => {
+  const observation = { ...plan('cloth', 'worn_by'), operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_safe_observation' };
+  assert.equal(validateTurnStepPlan(observation, { request }).ok, true);
+  assert.equal(validateTurnStepPlan({ ...observation,
+    direct_result_kind: 'player_safe_item_observation' }, { request }).ok, true);
+  const bodyObservation = { ...observation,
+    direct_result_kind: 'player_safe_body_observation' };
+  assert.equal(validateTurnStepPlan(bodyObservation, { request }).ok, false);
+  assert.equal(validateTurnStepPlan(bodyObservation, { request: { ...request,
+    actor: { ...request.actor, body: {} } } }).ok, false);
+  assert.equal(validateTurnStepPlan(bodyObservation, { request: { ...request,
+    actor: { ...request.actor, body: { active_conditions: [{
+      id: 'hand_soreness', status: 'active'
+    }] } } } }).ok, true);
+  assert.equal(validateTurnStepPlan({ ...observation,
+    direct_result_kind: 'no_state_gesture' }, { request }).ok, true);
+  for (const invalid of [
+    { ...observation, direct_result_kind: null },
+    { ...observation, direct_result_kind: 'weather' },
+    { ...observation, goal_result: 'not_achieved' },
+    { ...observation, activity: { owner: 'semantic', duration_class: 'brief',
+      effort: 'none' } },
+    { ...observation, operations: plan('cloth', 'worn_by').operations }
+  ]) assert.equal(validateTurnStepPlan(invalid, { request }).ok, false);
 });

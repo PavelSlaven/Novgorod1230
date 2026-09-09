@@ -1,0 +1,537 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-carried-equipment-needs-secure-access",
+      "claim_ref": "claim:military-world-carried-equipment-needs-secure-access",
+      "claim_digest": "9ef11b0cca5f6f2889aabfaf8a43fff1901f4b784a685ae2ab8d515100a0ecec",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-carried-equipment-needs-secure-access",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-equipment"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-protective-layers-need-fit-and-adjustment",
+      "claim_ref": "claim:military-world-protective-layers-need-fit-and-adjustment",
+      "claim_digest": "c990aa078c75b90bfd9517d53679ecb21564a38928fcc2cf6d55aacb94ba70eb",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-protective-layers-need-fit-and-adjustment",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-equipment"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-wet-equipment-benefits-from-inspection",
+      "claim_ref": "claim:military-world-wet-equipment-benefits-from-inspection",
+      "claim_digest": "709d17f0a47005c47e4d26731f61f29ee7d42f2a822199fa32d804c5aa25ef08",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-wet-equipment-benefits-from-inspection",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-equipment"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-bow-and-arrows-need-condition-and-clear-handling",
+      "claim_ref": "claim:military-world-bow-and-arrows-need-condition-and-clear-handling",
+      "claim_digest": "fdf3ad23602941e57ca267fd0200615c8c5dcbf759903f5874362fa992c18268",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-bow-and-arrows-need-condition-and-clear-handling",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-equipment"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-long-implements-need-clearance",
+      "claim_ref": "claim:military-world-long-implements-need-clearance",
+      "claim_digest": "761780cf0d1f987205378b4043a2c5bd8272799385c4e8c44b7823970612f546",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-long-implements-need-clearance",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-equipment"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-field-maintenance-is-conditional",
+      "claim_ref": "claim:military-world-field-maintenance-is-conditional",
+      "claim_digest": "225f8494a76bafd31dc8338a31fa5bbc36440971e42afe5c5628a76d49261de7",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-field-maintenance-is-conditional",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-equipment",
+        "evidence:military-world-movement"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-loads-need-order-and-passage",
+      "claim_ref": "claim:military-world-loads-need-order-and-passage",
+      "claim_digest": "d033b9adca1562eb4038a7f2bc79650e2bc0477295090ffd4b6b5de85e41883a",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-loads-need-order-and-passage",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement",
+        "evidence:military-world-camp-crossing"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-working-animal-care-intersects-travel",
+      "claim_ref": "claim:military-world-working-animal-care-intersects-travel",
+      "claim_digest": "1d0c871381e47ca04ed2faf1df8e05bb06f79824946cadf09e04162bd130d327",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-working-animal-care-intersects-travel",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement",
+        "evidence:military-world-camp-crossing"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-crossing-needs-staged-load-handling",
+      "claim_ref": "claim:military-world-crossing-needs-staged-load-handling",
+      "claim_digest": "17e2cbb59563fe299b3444ae02b0e3073d914ff859ba089ba940fd5c2e24ea17",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-crossing-needs-staged-load-handling",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-camp-crossing"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-portage-is-coordinated-carry-work",
+      "claim_ref": "claim:military-world-portage-is-coordinated-carry-work",
+      "claim_digest": "848c1fba1252d3be7bb96e34a9dc1fbb17302e9eb62ff60ffa88ffb7b2ad7d43",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-portage-is-coordinated-carry-work",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-camp-crossing"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-training-links-practice-feedback-and-rest",
+      "claim_ref": "claim:military-world-training-links-practice-feedback-and-rest",
+      "claim_digest": "0c60d021e32a55becde89e703a292bd962c5e764cfd36f996b2dacd7816a98b5",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-training-links-practice-feedback-and-rest",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-exertion-competes-with-attention-and-recovery",
+      "claim_ref": "claim:military-world-exertion-competes-with-attention-and-recovery",
+      "claim_digest": "f1c76a9487417f98447fa9403f3991e7f96413b52bb7dca1d78b2d68837d25fd",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-exertion-competes-with-attention-and-recovery",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement",
+        "evidence:military-world-camp-crossing"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-cold-and-wetness-need-practical-boundaries",
+      "claim_ref": "claim:military-world-cold-and-wetness-need-practical-boundaries",
+      "claim_digest": "42b84554ddb0bed717d632d1e8fb33266cafb4882c11add79f5eaf29046d1ea9",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-cold-and-wetness-need-practical-boundaries",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-camp-crossing",
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-established-casualty-needs-hazard-aware-help",
+      "claim_ref": "claim:military-world-established-casualty-needs-hazard-aware-help",
+      "claim_digest": "325eb18d43a97cfc597100033d6c9702f4f799ba81cd14f4cdb34078910aad18",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-established-casualty-needs-hazard-aware-help",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-carrying-an-injured-person-is-conditional",
+      "claim_ref": "claim:military-world-carrying-an-injured-person-is-conditional",
+      "claim_digest": "43e69761bbca40b99812760c2af4b931209408d7ac5dea5b2660c523de0b22cf",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-carrying-an-injured-person-is-conditional",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-ground-and-weather-change-practical-options",
+      "claim_ref": "claim:military-world-ground-and-weather-change-practical-options",
+      "claim_digest": "0206b35c94cf56c82b0cbb907262ec2e503d27e6daba4a1bd7dc51a0e9dec521",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-ground-and-weather-change-practical-options",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-observation-is-bounded-by-conditions",
+      "claim_ref": "claim:military-world-observation-is-bounded-by-conditions",
+      "claim_digest": "e3055d482c7bf9b2bd3fb5ab93339f353cd4e0000bdd5c9969b60369efcde6aa",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-observation-is-bounded-by-conditions",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-traces-need-cautious-interpretation",
+      "claim_ref": "claim:military-world-traces-need-cautious-interpretation",
+      "claim_digest": "06b561bc1900c6efd8139cada585fa9daaabeb2a2e36cda4a858c838ba60312d",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-traces-need-cautious-interpretation",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-crossing-conditions-remain-local",
+      "claim_ref": "claim:military-world-crossing-conditions-remain-local",
+      "claim_digest": "c28f12d4ef309a8e92da1c2753708af2ac457dd15d4a28f90d8c0971563d4a99",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-crossing-conditions-remain-local",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-camp-crossing"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-passage-can-disturb-animals-and-work",
+      "claim_ref": "claim:military-world-passage-can-disturb-animals-and-work",
+      "claim_digest": "286810bae414c065871fd05c318346065871d92935d77a4fcc1cb145a8d88ca7",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-passage-can-disturb-animals-and-work",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-small-group-coordination-needs-established-roles",
+      "claim_ref": "claim:military-world-small-group-coordination-needs-established-roles",
+      "claim_digest": "c6ec3dd31386da3758bc6a49eba7432847e3d4a1fa9a21f538580871a276a737",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-small-group-coordination-needs-established-roles",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-message-needs-recipient-and-confirmation",
+      "claim_ref": "claim:military-world-message-needs-recipient-and-confirmation",
+      "claim_digest": "128ce27f2561aab7e4b4c6ae5d0ce8bd58cfbe185bd46a4a06ae37ca1accdf9e",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-message-needs-recipient-and-confirmation",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-watch-relief-keeps-attention-bounded",
+      "claim_ref": "claim:military-world-watch-relief-keeps-attention-bounded",
+      "claim_digest": "8e1635a11a282d7319111fd04312f60ca9994aa3c6b1b4c720f7f641d5618d04",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-watch-relief-keeps-attention-bounded",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-custody-needs-attention-and-basic-needs",
+      "claim_ref": "claim:military-world-custody-needs-attention-and-basic-needs",
+      "claim_digest": "0533f40e5ad93916951cc86d6db0a3950cfc3cd6c093cd661619a4161d705819",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-custody-needs-attention-and-basic-needs",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-flight-and-pursuit-share-environmental-limits",
+      "claim_ref": "claim:military-world-flight-and-pursuit-share-environmental-limits",
+      "claim_digest": "3fbf976d73e807592a6256a7e994617dd033a0698c0999bcfb05bee63d61ba00",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-flight-and-pursuit-share-environmental-limits",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-movement"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-defensive-structure-needs-local-inspection",
+      "claim_ref": "claim:military-world-defensive-structure-needs-local-inspection",
+      "claim_digest": "e0424472de60fd661901d83aa065da95373029bb740ca4f80583d289c7b2d60e",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-defensive-structure-needs-local-inspection",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-defence-repair-competes-for-people-and-material",
+      "claim_ref": "claim:military-world-defence-repair-competes-for-people-and-material",
+      "claim_digest": "ceee4992fb2aaf506ede479ed163c855ad9f5f6592a09158d46884a015f39eb4",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-defence-repair-competes-for-people-and-material",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-fire-and-smoke-need-access-and-separation",
+      "claim_ref": "claim:military-world-fire-and-smoke-need-access-and-separation",
+      "claim_digest": "48807bdba766d0412cb7610c14c9d5d91faa183398e063893abcd705e538866b",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-fire-and-smoke-need-access-and-separation",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-gate-and-passage-use-needs-actual-access",
+      "claim_ref": "claim:military-world-gate-and-passage-use-needs-actual-access",
+      "claim_digest": "620326d2dbb74e39b3971d667d64f736585cab044a3aa5bec2b468bfa94f1cd0",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-gate-and-passage-use-needs-actual-access",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-siege-work-is-labour-and-logistics-bound",
+      "claim_ref": "claim:military-world-siege-work-is-labour-and-logistics-bound",
+      "claim_digest": "55bd93b145617004134a681516db076e85fff69df4924252be7d4f633bdee07b",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-siege-work-is-labour-and-logistics-bound",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath",
+        "evidence:military-world-boundary"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-camp-needs-place-specific-arrangement",
+      "claim_ref": "claim:military-world-camp-needs-place-specific-arrangement",
+      "claim_digest": "8f88bc1c5c5d80f915cb4549c0d888b67918555ab291a2bc3792c79ead8a9157",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-camp-needs-place-specific-arrangement",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-camp-crossing"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-camp-work-areas-benefit-from-separation",
+      "claim_ref": "claim:military-world-camp-work-areas-benefit-from-separation",
+      "claim_digest": "86ce94be34f08fcd31dc284121c19354fefb540a87de88c4ebe1fbb6b8744b6b",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-camp-work-areas-benefit-from-separation",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-camp-crossing"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-animals-and-households-have-continuing-needs",
+      "claim_ref": "claim:military-world-animals-and-households-have-continuing-needs",
+      "claim_digest": "76852842d1ee862c167f1379b357f690c2f28b2992eedd20de625256d952ec2a",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-animals-and-households-have-continuing-needs",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-camp-crossing",
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-armed-disruption-affects-civilian-work",
+      "claim_ref": "claim:military-world-armed-disruption-affects-civilian-work",
+      "claim_digest": "ed6d4c7d5a05c6d5193161ec045e783d3ab746d81b780007baf142a795e9fb56",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-armed-disruption-affects-civilian-work",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:reconstructed-military-world-v1-recovery-starts-with-actual-condition-and-access",
+      "claim_ref": "claim:military-world-recovery-starts-with-actual-condition-and-access",
+      "claim_digest": "0e70d2ec2d34ec81b708094cef47154726bff12c66c44cf22b5c5bb7e218a15c",
+      "candidate_ref": "git:f62abfae9cff3e7efc4c466516027b8eb6d01770:data/world-catalogs/novgorod/world-knowledge/production-v1/reconstructed-military-world-v1.json#claim:military-world-recovery-starts-with-actual-condition-and-access",
+      "auditor_ref": "/root/military01_verifier",
+      "independence_basis": "Independent plausibility review of the frozen RU/EN claim, editorial rationale, candidate evidence and approved runtime anchors; reviewer did not author or alter the candidate.",
+      "evidence_checked": [
+        "evidence:military-world-aftermath"
+      ],
+      "review_ref": "verification/reconstructed-military-world-v1.md#per-claim-verdicts",
+      "verdict": "APPROVE",
+      "limits": "Editorial conditional military-world premise only; no force, actor, equipment, command, route, injury, custody, property, access, exact mechanic or outcome is established."
+    }
+  ]
+}

@@ -77,7 +77,8 @@ export function phase8Plan(request, ids, combatIntentKind = 'control') {
     resolution: 'domain_request', goal_result: 'pending',
     activity: { owner: 'domain', duration_class: null, effort: null },
     operations: [operation], check: null, continuation: null,
-    clarification: null, reason_code: combat ? 'combat_response' : 'accusation',
+    clarification: null, direct_result_kind: null,
+    reason_code: combat ? 'combat_response' : 'accusation',
     reason: 'Передать действие утверждённому владельцу домена.' };
 }
 

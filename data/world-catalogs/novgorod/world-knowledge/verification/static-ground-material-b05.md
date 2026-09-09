@@ -1,0 +1,12 @@
+# Independent source/domain verification — static ground material B05
+
+Candidate `git:5a9d9695e62ecb42e99c41d59e3055d5b056e773:data/world-catalogs/novgorod/world-knowledge/production-v1/static-ground-material-b05.json` was independently reviewed. Reviewer did not author candidate. Review checked current RU/EN localizations, qualifiers, cited evidence, and full assembled 1295-claim pack: 1278-claim descriptor base plus animal-care, ground-material, and plant-contact B05 candidate record arrays.
+
+## Approved premises
+
+- `claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load` — the USDA Forest Service synthesis identifies strong relations among soil moisture, soil strength, and trafficability, and discusses rutting/compaction with traffic in moist-to-wet conditions. This is a general material relation, not a local track or ground determination. [USDA Forest Service](https://research.fs.usda.gov/treesearch/65976).
+- `claim:static-ground-b05-groundwater-seepage-can-enter-excavation` — USACE ETL 1110-2-586 §2.1.1 states that groundwater control can intercept seepage that would otherwise emerge from excavation slopes or bottom. It supplies no local groundwater or safety determination. [USACE](https://www.publications.usace.army.mil/Portals/76/ETL%201110-2-586%20Change%201.pdf).
+- `claim:static-ground-b05-outer-birch-bark-has-distinct-suberin-lignin-extractive-composition` — Kumaniaev et al.'s cited experiment on `Betula pendula` reports bark suberin and lignin undergoing partial cleavage and an obtained gum composed of organosolv lignin and suberin oligomers. The narrowed claim remains limited to the analysed study material. [Green Chemistry](https://pubs.rsc.org/en/content/articlehtml/2020/gc/d0gc00405g).
+- `claim:static-ground-b05-cellulosic-and-protein-fibres-can-respond-differently-to-alkaline-cleaning` — Olguin et al.'s abstract reports that alkali transformed its cellulosic fabrics from cellulose I to cellulose II and dissolved its protein fabrics. This is an experimental comparison, not a cleaning instruction. [Journal of the Textile Institute](https://www.tandfonline.com/doi/abs/10.1080/00405000.2022.2144663).
+
+No reviewed premise establishes a local ground condition, water source, bark specimen, textile, treatment protocol, historical availability, or scene outcome. Full assembled pack has no material duplicate of these exact bounded relations.

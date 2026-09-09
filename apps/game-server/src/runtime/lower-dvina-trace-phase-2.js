@@ -16,17 +16,16 @@ import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-playe
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
-import {
-  buildTracePhase2TurnRequest,
-  buildTraceTurnWorkflowInput
-} from './lower-dvina-trace-phase-2-turn-request.js';
+import { buildTracePhase2TurnRequest, buildTraceTurnWorkflowInput } from
+  './lower-dvina-trace-phase-2-turn-request.js';
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { isExpectedPostCommitPresentationFailure } from './lower-dvina-trace-post-commit-failure.js';
 import { recoverTracePendingPresentation } from './lower-dvina-trace-presentation-recovery.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
-  playerConversationModel = null, npcSemanticModel = null, npcAutonomousModel = null, runNpcConversationExchange = null,
+  turnStepSemanticGroundingValidator = null, playerConversationModel = null,
+  npcSemanticModel = null, npcAutonomousModel = null, runNpcConversationExchange = null,
   npcOwnerCapabilities = [], createNpcOwnerCapabilities = null, npcCombatModel = null,
   actionProducedWeaponClassifier = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
@@ -42,7 +41,7 @@ export function createLowerDvinaTracePhase2Runtime({
   ordinaryDiscoveryEnablementMarker = null,
   ordinaryDiscoveryScopeBinding = null,
   createTurnStepAmbientOrdinaryPortionAdmission = null,
-  requireTurnStepAmbientOrdinaryAdmission = false,
+  requireTurnStepAmbientOrdinaryAdmission = false, turnStepAmbientPortionProfileRef = null,
   createTurnStepActionProductionOwner = null,
   actionProductionProfile = null,
   createTurnStepWorldProcessResolver = null, localFireProfile = null,
@@ -72,6 +71,7 @@ export function createLowerDvinaTracePhase2Runtime({
         const turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null;
         let replay = await repository.loadPhase2Replay({ partyId, idempotencyKey, turnBudget });
         if (replay) {
+          llmDiagnostics?.recordGameplayTrace?.({ event: 'turn_replay', idempotency_key: idempotencyKey });
           if (replay.input_digest !== inputDigest) {
             throw serverError('TRACE_PHASE_2_IDEMPOTENCY_CONFLICT', 'The idempotency identity is already bound to another input.', { status: 409 });
           }
@@ -99,6 +99,7 @@ export function createLowerDvinaTracePhase2Runtime({
           presentationIdempotencyKey: idempotencyKey,
           turnBudget,
         });
+        llmDiagnostics?.recordGameplayTrace?.({ event: 'turn_context', intent: rawText, authoritative_context: state });
         const scenarioDefinitionRevision = committedTraceScenarioDefinitionRevision(state);
         const phase2Bundle = await runWithinTurnDeadline(turnBudget, () =>
           phase2BundleLoader({ scenarioDefinitionRevision })
@@ -239,7 +240,7 @@ export function createLowerDvinaTracePhase2Runtime({
           turn10Contracts, phase8Contracts,
           phase9Contracts, phase10Contracts,
           registry, repository,
-          semanticResolver, turnStepModel,
+          semanticResolver, turnStepModel, turnStepSemanticGroundingValidator,
           npcAutonomousModel, npcCombatModel,
           playerSafeStateProjector,
           locationProfiles: bundle.location_topology_set.location_profiles,
@@ -267,11 +268,11 @@ export function createLowerDvinaTracePhase2Runtime({
                 })
               : null,
           requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
-          turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
+          turnStepAmbientPortionProfileRef, turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
           turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
           narrator, randomSourceFactory,
           randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,
-          decisionNow: now, turnBudget,
+          decisionNow: now, turnBudget, llmDiagnostics,
         });
         try {
           const result = await runTurnWorkflow(

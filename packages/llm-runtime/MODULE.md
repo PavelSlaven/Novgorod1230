@@ -13,7 +13,13 @@
 - scoped client adapter для composition root.
 - отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
-Production `turn_runtime` использует Flash-first роли без heavy reasoning. Каждый primary и repair вызов получает `maxTokens = 20_000` и transport timeout 120 с; желаемую длину ограничивают prompt/schema, а не тесный output limit. Общего gameplay turn deadline нет. Custom OpenAI-compatible provider остаётся single-model configuration: transport не подбирает fallback model или provider.
+Production `turn_runtime` использует Flash-first роли без heavy reasoning. Общего gameplay turn deadline нет. Явно выбранный local/custom OpenAI-compatible provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider.
+
+## Production limits
+
+Для каждого production LLM-вызова, включая primary, audit и repair, действуют `maxTokens = 20_000` и transport timeout 120 с. Требуемую длину ответа ограничивают prompt и schema, а не тесный token cap. Если модель системно не укладывается в эти пределы либо ограничение ломает JSON или смысл ответа, результат не обрезают и лимит не уменьшают: сокращают контекст, перерабатывают prompt или делят обработку на несколько вызовов.
+
+`world_knowledge_query_planner` — малая JSON-role для выбора только domains/refs/predicates/search hints. Она не определяет факты или gameplay outcome; request/response валидирует `@rus/world-knowledge`.
 
 Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and `gameplay_narrator_semantic_repair`; all are Flash JSON roles. Auditor returns `narration_audit`; semantic repair returns `narration_semantic_repair`. No fallback, Pro/router/senior role is configured.
 
@@ -26,7 +32,9 @@ Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narr
 
 ## Публичный API
 
-`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`/`requestTimeoutMs`): `openai_compatible` нормализуется к одному `chat/completions` URL, а DeepSeek остаётся default. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
+`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`): `openai_compatible` нормализуется к одному `chat/completions` URL. Пользовательский `play:local` передаёт managed Gemma как default override; low-level environment provider остаётся только явной deployment-конфигурацией. Runtime override не может менять production limits. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
+
+Поддерживаемый Gemma preset и его served alias получают OpenAI-compatible `chat_template_kwargs.enable_thinking=false`: полезный JSON/prose ответ не вытесняется скрытым reasoning. Произвольным custom-моделям нестандартное поле не добавляется.
 
 Portrait Lab использует одну role без repair/fallback chain; смысловой результат валидирует authoritative `portrait_spec_v1` owner вне transport слоя.
 
@@ -44,7 +52,7 @@ Domain modules, apps, legacy runtime, БД и UI.
 
 ## Инварианты
 
-Provider/model настройки выбираются только через role config; transport не сочиняет отсутствующий смысловой ответ и не создаёт fallback chain. Gameplay timeout — это роль/turn policy внешнего runtime owner, не общий 120-секундный transport safeguard.
+Provider/model настройки выбираются только через role config; transport не сочиняет отсутствующий смысловой ответ и не создаёт fallback chain. Production limits едины для всех ролей и не сужаются per-call overrides.
 
 ## Ошибки
 

@@ -1,0 +1,44 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-social-history-v2-gramota199-instructional-text",
+      "claim_ref": "claim:candidate-gramota199-onfim-instructional-text",
+      "claim_digest": "951700a8148f29cc1b36dc7b1f7285aa9f5ec27954dd79bd731603bdee2981ba",
+      "candidate_ref": "git:388649f0badeaca3082ffa8a1d2f6b1a874168e5:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-social-history-v2.json#claim:candidate-gramota199-onfim-instructional-text",
+      "auditor_ref": "/root/macro_claim_verifier",
+      "independence_basis": "Independent direct catalogue-record review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-gramota199-learning-text"],
+      "review_ref": "verification/macro-social-history-v2.md#candidate-gramota199-onfim-instructional-text",
+      "verdict": "APPROVE",
+      "limits": "Supports only this Novgorod whole document's 1240–1260 conditional date, instructional-text category, listed genre components and listed contents; it is not evidence of a 1230 school, child literacy rate, curriculum, learner, skill acquisition or present text."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-social-history-v2-gramota222-letter-to-posadnik",
+      "claim_ref": "claim:candidate-gramota222-letter-to-posadnik",
+      "claim_digest": "7b46beb17dd3e25048a921e7dc4378ac83dee32d018dd35c18d424c580f0cade",
+      "candidate_ref": "git:388649f0badeaca3082ffa8a1d2f6b1a874168e5:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-social-history-v2.json#claim:candidate-gramota222-letter-to-posadnik",
+      "auditor_ref": "/root/macro_claim_verifier",
+      "independence_basis": "Independent direct catalogue-record review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-gramota222-posadnik"],
+      "review_ref": "verification/macro-social-history-v2.md#candidate-gramota222-letter-to-posadnik",
+      "verdict": "APPROVE",
+      "limits": "Supports only this Novgorod private letter's 1200–1220 conditional date, named addressee and stated legal-financial subject; no current office-holder, posadnik competence, hierarchy, jurisdiction, procedure, tax, judgment or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-social-history-v2-gramota724-yugra-tribute-expedition",
+      "claim_ref": "claim:candidate-gramota724-yugra-tribute-expedition",
+      "claim_digest": "b431122a7689e49128d33b0a789a75b1248bff0e2b513c205e5648b2f53482d7",
+      "candidate_ref": "git:388649f0badeaca3082ffa8a1d2f6b1a874168e5:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-social-history-v2.json#claim:candidate-gramota724-yugra-tribute-expedition",
+      "auditor_ref": "/root/macro_claim_verifier",
+      "independence_basis": "Independent direct catalogue-record review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-gramota724-ugra-tribute"],
+      "review_ref": "verification/macro-social-history-v2.md#candidate-gramota724-yugra-tribute-expedition",
+      "verdict": "APPROVE",
+      "limits": "Supports only this Novgorod private letter's 1160–1180 conditional date and stated Savva/Yugra tribute-expedition/conflict content; no 1230 campaign, route, tribute right, troop, authority, foreign relation, location, party knowledge or outcome."
+    }
+  ]
+}

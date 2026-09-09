@@ -14,6 +14,8 @@ import { materializeNpcInstanceAppearances } from
 
 export { canonicalDigest, createRandomSource, deriveSeed, MATERIALIZER_VERSION, MaterializationError, RNG_VERSION } from './core.js';
 export { materializeActorBaseAppearance } from './actor-base-appearance.js';
+export { completeAuthoredItemMechanics } from
+  './lower-dvina-trace-selection.js';
 export {
   LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
   LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,

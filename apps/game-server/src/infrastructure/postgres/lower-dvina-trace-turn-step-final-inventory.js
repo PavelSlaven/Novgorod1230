@@ -35,7 +35,8 @@ function containerCapacityEvidenceChanged(state, committed) {
 
 function containerCapacityEvidence(state) {
   return {
-    items: (state.items ?? []).map((item) => ({
+    items: (state.items ?? []).filter((item) =>
+      item.placement?.container_id != null).map((item) => ({
       item_id: item.item_id ?? item.instance_id,
       template_id: item.template_id ?? null,
       quantity: item.quantity ?? null,

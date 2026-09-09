@@ -140,10 +140,9 @@ export function validateCommittedInventoryState(
   }) : Object.freeze({ pass: false, load_category: null, errors: mass.errors });
   if (mass.pass) errors.push(...load.errors);
   if (load.pass && load.load_category === 'overloaded') {
-    errors.push(inventoryIssue('INVENTORY_LOAD_EXCEEDED', 'capacity', {
-      total_mass_grams: mass.total_mass_grams,
-      strength: input.strength
-    }));
+    errors.push({ code: 'INVENTORY_LOAD_EXCEEDED', category: 'capacity',
+      details: { total_mass_grams: mass.total_mass_grams,
+        strength: input.strength } });
   }
   return Object.freeze({
     pass: errors.length === 0,

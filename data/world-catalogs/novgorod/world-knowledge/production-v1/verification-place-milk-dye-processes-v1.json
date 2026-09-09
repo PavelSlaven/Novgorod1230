@@ -1,0 +1,95 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-milk-acid-or-enzymic-coagulation-can-form-curd",
+      "claim_ref": "claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
+      "claim_digest": "e940dfa1a7ae36dddf9b621b8bcaf0c02bfe3ecbab5d4507eb7bc73d8961515e",
+      "candidate_ref": "git:5bcfb2d6776e39ea31c68dc6913c9c87d20e7e1c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-milk-dye-processes-v1.json#claim:place-milk-acid-or-enzymic-coagulation-can-form-curd",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-milk-curd-formation"
+      ],
+      "review_ref": "verification/place-milk-dye-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Universal relation only; no milk batch, ingredient, recipe, time, safety, or result follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-milk-fresh-curd-can-progressively-separate-from-whey",
+      "claim_ref": "claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
+      "claim_digest": "3105115c7148afdfffba3243bedce7da92578e25040c1364bc31ed21b233f576",
+      "candidate_ref": "git:5bcfb2d6776e39ea31c68dc6913c9c87d20e7e1c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-milk-dye-processes-v1.json#claim:place-milk-fresh-curd-can-progressively-separate-from-whey",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-milk-curd-whey-separation"
+      ],
+      "review_ref": "verification/place-milk-dye-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No rate, quantity, yield, firmness, edibility, or vessel state follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
+      "claim_ref": "claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
+      "claim_digest": "6c5b2f8d9197a808c4d871026d4a70547b66127ed7b1bf562c994657b9d1548b",
+      "candidate_ref": "git:5bcfb2d6776e39ea31c68dc6913c9c87d20e7e1c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-milk-dye-processes-v1.json#claim:place-milk-permeable-straining-support-can-retain-curd-while-whey-drains",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-milk-straining-support"
+      ],
+      "review_ref": "verification/place-milk-dye-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "No cloth, sieve, vessel, historical method, required technique, recipe, or successful separation follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-dye-textile-preparation-can-affect-uptake-evenness",
+      "claim_ref": "claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+      "claim_digest": "3a8a39f7edb8ab91185f4880c5a735aa98b430b73a61ff7e02a536f46f2fd674",
+      "candidate_ref": "git:5bcfb2d6776e39ea31c68dc6913c9c87d20e7e1c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-milk-dye-processes-v1.json#claim:place-dye-textile-preparation-can-affect-uptake-evenness",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-dye-preparation-and-evenness"
+      ],
+      "review_ref": "verification/place-milk-dye-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "The inferred general wording keeps no fibre, dye, bath, colour, contamination, or outcome."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+      "claim_ref": "claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+      "claim_digest": "f1f2703390592417a3f8eaa765847c5884747b1748cbaf1d1987913b7e534d69",
+      "candidate_ref": "git:5bcfb2d6776e39ea31c68dc6913c9c87d20e7e1c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-milk-dye-processes-v1.json#claim:place-dye-bath-to-fibre-transfer-can-change-with-process-conditions",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-dye-dye-fibre-process-conditions"
+      ],
+      "review_ref": "verification/place-milk-dye-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Inferred conditional relation only; no natural dye, universal temperature direction, uptake amount, fixation, evenness, or particular bath follows."
+    },
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:place03-place-dye-moving-submerged-textile-can-support-even-contact",
+      "claim_ref": "claim:place-dye-moving-submerged-textile-can-support-even-contact",
+      "claim_digest": "42ce4bcc176278830cea84f5c5e13051c413d068389584eb4df790090cfc9f6d",
+      "candidate_ref": "git:5bcfb2d6776e39ea31c68dc6913c9c87d20e7e1c:data/world-catalogs/novgorod/world-knowledge/production-v1/place-milk-dye-processes-v1.json#claim:place-dye-moving-submerged-textile-can-support-even-contact",
+      "auditor_ref": "/root/place02_publish",
+      "independence_basis": "Independent source/domain and plausibility reviewer distinct from candidate authors and root editorial integrator; recorded verdict bound mechanically to frozen full inputs.",
+      "evidence_checked": [
+        "evidence:place-dye-stirring-evenness"
+      ],
+      "review_ref": "verification/place-milk-dye-processes-v1.md",
+      "verdict": "APPROVE",
+      "limits": "Editorial contextual relation only; no tool, speed, dye, bath, present textile, required method, or even colour follows."
+    }
+  ]
+}

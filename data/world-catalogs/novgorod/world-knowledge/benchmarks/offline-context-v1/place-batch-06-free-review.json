@@ -1,0 +1,429 @@
+{
+  "schema": "wk_place_first_offline_review_v1",
+  "batch_id": "place-batch-06",
+  "reviewer_agent_identity": "/root",
+  "input_commit": "8504a4fd0f784e3a13c19345ea2ab69033afbffe",
+  "corpus_claim_count": 1399,
+  "classification_before_wk_lookup": true,
+  "method": "Root classified the 25 frozen inputs at 8504a4fd before review-specific WK lookup: 20 practical/natural/physical central needs and 5 social/institutional, without a free-component quota. Open labels may overlap; these do not constrain future generation. Independent static WK-only full-scene reading. 24 covered / 1 substantial leaf-dye material gap. Conditional ordinary alternatives are allowed (e.g. unspecified herd species), but actor expertise cannot substitute for missing useful knowledge. No live gameplay or external sources were used for these answers.",
+  "cases": [
+    {
+      "case_id": "place06-free-001",
+      "primary_domain": "shore_waiting_area_flood_and_cold",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "У берега мокрый снег смешивается с вытоптанной грязью; настил даёт отдельную опору, но просевший край и растущая вода меняют доступ к лодке. Ветер несёт голоса и плеск, ранний свет ещё не делает все щели заметными.",
+      "interaction_ru": "Перевозчица может отделить место ожидания от пути посадки и груза, держать людей на осмотренном участке и использовать рогожу как ограниченное прикрытие, если её можно удержать. Просадку она не устраняет одной верёвкой: перемещает ожидание либо задерживает посадку до проверки.",
+      "variation_ru": "Смена уровня воды требует нового выбора кромки. Свои лодка и снасти дают средства для перевозки, но отсутствие помощника и закрытый сарай ограничивают одновременные работы.",
+      "claim_refs": [
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-002",
+      "primary_domain": "clay_shading_and_drying",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "В жарком дворе сухая рабочая площадка соседствует с влажными следами глины у навеса. Полки, колья и полог позволяют отделить место сушки от прохода; открытые горшки нагреваются иначе, чем затенённые, а работа оставляет глиняные крошки.",
+      "interaction_ru": "Подмастерье может устроить устойчивую тень без касания мягких стенок и оставить воздуху проход. Глина усыхает при потере воды; более равномерная сушка уменьшает риск коробления, поэтому он не пытается ускорить её переносом к огню.",
+      "variation_ru": "При ветре важнее крепление полога, при дожде — защита от намокания. Доступ к общим материалам и подсобная роль не дают права самостоятельно запускать обжиг.",
+      "claim_refs": [
+        "claim:population-material-clay-drying",
+        "claim:population-physics-evaporation-humidity",
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:ordinary-life-apprentice-learns-and-assists"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-003",
+      "primary_domain": "wet_weather_writing_and_light",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "Под карнизом паперти остаётся узкая сухая полоса, рядом мокрый песок на стёртой ступени и следы выходивших людей. Дождь и разговоры слышны иначе у проёма и на открытом дворе; после службы освещение для мелких знаков убывает.",
+      "interaction_ru": "Переписчик может присесть или встать так, чтобы не перекрывать женщинам проход, прикрыть бересту плащом и продолжать различимую запись. Берестяное письмо допускает выцарапывание знаков; огниво само не создаёт готового светильника, поэтому при недостатке света запись откладывается.",
+      "variation_ru": "В сухой день пригодна более открытая площадка. Личная еда позволяет подождать, но не оплачивает автоматически комнату; починка водостока не делает всю паперть сухой.",
+      "claim_refs": [
+        "claim:residual-v1-birch-writing-used-styli-on-inner-surface",
+        "claim:reconstructed-church-interior-threshold-light-and-sound-shape-ordinary-perception",
+        "claim:reconstructed-churchyard-weather-foot-traffic-and-care-alter-observable-traces",
+        "claim:static-dim-light-reading-can-tire-eyes-without-harming-them"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-004",
+      "primary_domain": "meadow_harvest_and_plant_selection",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "Срезанные полосы, стоящие копны и примятая колёсами тропа отличаются от ещё высокой травы. На солнце пахнет скошенным растительным материалом, слышны работа косца и голоса у телеги; мошка уже задана сценой, а не обязательна на всяком лугу.",
+      "interaction_ru": "Подросток может брать небольшой пучок с разрешённой ему полосы, не входя в рабочий ход косца и не разбирая общий груз. Он отделяет узнаваемую траву от смешанного сбора; приятный запах сам по себе не превращает растение в пищу или лекарство.",
+      "variation_ru": "Роса или дождь меняют влажность покоса и тропы; новый рост со временем скрывает срезы. Личные мешок и серп дают возможность малого сбора, но не заменяют людей и транспорт общей работы.",
+      "claim_refs": [
+        "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:place-outdoors-microterrain-patches",
+        "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-005",
+      "primary_domain": "gift_and_sale_allocation",
+      "need_group": "social",
+      "verdict": "covered",
+      "scene_ru": "Закрывающийся рыбный ряд постепенно освобождает проход, но короба и сворачиваемая выкладка ещё сужают его. Рыбный запах, хруст снега и хлопающая занавесь сохраняются на холодном ветру; выскобленный прилавок показывает уход, а не бесконечный запас.",
+      "interaction_ru": "Торговка может предложить часть личного хлеба или свободного товара и прямо отделить её от уже отложенных заказов. Небольшое угощение, отказ либо приглашение позже — правдоподобные варианты по её расчёту и отношению к знакомому.",
+      "variation_ru": "На людях щедрость может иметь иную форму, чем наедине, без обязательного выигрыша репутации. Более богатый запас расширил бы выбор, но текущий холод не отменяет её хозяйственных ограничений.",
+      "claim_refs": [
+        "claim:place-outdoors-market-activity-and-empty-intervals",
+        "claim:place-outdoors-activity-sensory-pulses",
+        "claim:ordinary-life-hospitality-is-resource-and-trust-bounded",
+        "claim:ordinary-life-public-and-private-conduct-differ",
+        "claim:practical-food-provisions"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-006",
+      "primary_domain": "horse_water_and_travel",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "Высокий мутный ручей отделяет подсыпанный подход от размытого противоположного берега. Копытные следы показывают использование места, но не сегодняшнюю проходимость; у воды слышнее течение, почва у спуска может уступать под нагрузкой.",
+      "interaction_ru": "Кожевник может напоить лошадь с доступного устойчивого берега, пользуясь своим ведёрком, и дать ей паузу до решения о переходе. Уход включает воду и наблюдение; он не обязан загонять животное в брод только потому, что там были другие копыта.",
+      "variation_ru": "После нового дождя подход и поток требуют повторного осмотра. Один человек и вьючная лошадь ограничивают одновременное удержание груза и работу у воды; запас овса не доказывает ни её жажду, ни готовность немедленно идти.",
+      "claim_refs": [
+        "claim:practical-livestock-care",
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts",
+        "claim:research-flood-can-leave-high-water-mark-types"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-007",
+      "primary_domain": "textile_airing_and_grain_dust",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "На чердаке сухое хозяйственное место пересекается с открытым люком и пылью от пересыпаемого зерна. Свет у люка и темнота за мешками различаются; свежая солома и целая крыша не устраняют пыль от текущей работы.",
+      "interaction_ru": "Подёнщица может расправить свой платок на доступном участке верёвки, не перекрывая люк и не бросая его на зерно. Проветривание и испарение возможны без огня, но рядом с пылевым потоком платок может снова загрязняться, поэтому она меняет место либо ждёт паузы.",
+      "variation_ru": "При холодной сырой оттепели сушка отличается от летней. Подсобная роль ограничивает распоряжение чужим запасом; свободное время и собственная малая вещь позволяют только небольшую личную работу.",
+      "claim_refs": [
+        "claim:population-physics-evaporation-below-boiling",
+        "claim:population-physics-evaporation-humidity",
+        "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+        "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:place-outdoors-season-work-space-reallocation"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-008",
+      "primary_domain": "handwashing_and_moving_water_hazard",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "Ниже работающего колеса вода несёт пену и щепки; истоптанная отмель не равна неподвижной площадке. Плеск и стук привода создают шум, мокрая одежда или полотенце у движущейся части могут попасть в захват.",
+      "interaction_ru": "Ученик может набрать воду кружкой в доступном месте и ополоснуть руки, оставаясь вне хода колеса и не перегибаясь к нему. Видимая чистота не доказывает чистоту воды или рук; данная зола не объявляется готовым безопасным мылом.",
+      "variation_ru": "С подъёмом воды пригодная кромка смещается; при остановленном механизме меняется шум и рабочая ситуация, но не автоматически все риски. Личный набор для мытья не даёт права обслуживать привод.",
+      "claim_refs": [
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+        "claim:candidate-v6-clean-hands-and-surfaces-are-a-food-handling-control",
+        "claim:foundations-earth-26-runoff-contaminant-transport"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-009",
+      "primary_domain": "transplanting_and_practical_teaching",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "После грозы грядка и глубокая лужа в проходе имеют разные условия опоры и влажности. Подпёртый плетень отделяет участок от тянущейся козы, капли и мокрые следы показывают недавний дождь; свободное место в грядке ещё нужно рассмотреть.",
+      "interaction_ru": "Мать может показать сыну, как подготовить место мотыгой, поддержать росток и корни при переносе и полить нарушенную землю по её фактическому состоянию. Потеря корней мешает приживанию; объяснение, показ и небольшое поручение ребёнку не требуют формальной школы.",
+      "variation_ru": "Повторный дождь меняет необходимость полива и доступ через лужу. Собственный участок и помощь сына позволяют распределить работу, но не гарантируют сохранность от козы или выживание растения.",
+      "claim_refs": [
+        "claim:static-root-loss-can-cause-transplant-shock",
+        "claim:plant-growth-depends-on-light-water-carbon-dioxide-minerals",
+        "claim:human-life-learning-feedback-can-shape-practice",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-010",
+      "primary_domain": "outdoor_fish_cooking_and_fuel",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "Перед рассветом берег и мокрое крыльцо различимы хуже, чем днём; рядом вода, привязанная лодка и старое место огня. Возможные рыбные остатки и дым относятся к начатой готовке, а не к любому берегу; дрова сложены отдельно хозяином.",
+      "interaction_ru": "Лодочник может подготовить рыбу ножом и котелок на доступной рабочей поверхности, отдельно решив доступ к топливу и воде. При действительном огне нагрев меняет рыбную плоть, а крупа в воде может загущать жидкость; нужны присмотр и свободное место, не обязательный точный рецепт.",
+      "variation_ru": "Свет и ветер меняют работу у очага, сырость — расход усилий на огонь. Собственный улов и утварь не разрешают расходовать чужую поленницу; если топлива пока нет, подготовка не становится уже сваренной ухой.",
+      "claim_refs": [
+        "claim:practical-food-cooking",
+        "claim:research-fish-gutting-removes-viscera-and-blood-while-gall-bladder-damage-is-a-handling-risk",
+        "claim:research-heating-fish-denatures-proteins-reduces-water-binding-and-firms-flesh",
+        "claim:research-starch-gelatinization-can-thicken-an-aqueous-mixture",
+        "claim:place-outdoors-cover-opening-and-work-visibility"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-011",
+      "primary_domain": "cloth_price_and_colour_assessment",
+      "need_group": "social",
+      "verdict": "covered",
+      "scene_ru": "У мастерской холодный туман ограничивает вид на улицу; у двери свет отличается от глубины помещения. Колотушки мешают разговору, хворост у порога отделяет рабочий проход от мокрой земли; два куска сукна можно сравнивать в одном выбранном освещении.",
+      "interaction_ru": "Мастерица может показать край, длину и вид ткани, воспользоваться мерной тесьмой и обсудить требуемый объём и расчёт. Сдвиг к более светлому и тихому месту помогает осмотру и разговору, но не доказывает происхождение красителя, качество всей партии или обязательную цену.",
+      "variation_ru": "При ясном дневном свете сравнение проще, при шумной работе нужна пауза. Имеющиеся два куска и расчётный запас ограничивают сделку, а не позволяют считать мастерицу богатой по одной профессии.",
+      "claim_refs": [
+        "claim:place-outdoors-cover-opening-and-work-visibility",
+        "claim:sound-background-noise-masks-speech",
+        "claim:foundations-ms-06-visual-selection",
+        "claim:ordinary-life-craftsman-income-varies-with-orders",
+        "claim:ordinary-life-status-does-not-fix-wealth"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-012",
+      "primary_domain": "herd_direction_and_grazing",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "На выгоне открытая травяная полоса отличается от кустов и закрытого обзора рощи. Утоптанная калитка и свежие перевязки показывают используемый проход; ветер и крики ворон входят в фон, но не определяют реакцию каждого животного.",
+      "interaction_ru": "Пастух может направлять движение к доступной полосе, следя за ближайшими животными: если это овцы, их стадное согласование помогает объяснить групповое движение; если коровы, подход в индивидуальную зону может побуждать удаляться, а резкость — пугать. Собаку или свисток он использует по известному обучению, а не как гарантированную команду.",
+      "variation_ru": "Неуказанный вид стада остаётся открытым вариантом, не пробелом, требующим всех животных сразу. При другой растительности или погоде меняются проходы; соль и чужая ограда сами не доказывают возможность управлять всем стадом.",
+      "claim_refs": [
+        "claim:fauna-sheep-flocking",
+        "claim:fauna-mammals-domestic-cattle-flight-zone",
+        "claim:fauna-mammals-domestic-cattle-startle-response",
+        "claim:fauna-animal-learning",
+        "claim:place-outdoors-microterrain-patches"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-013",
+      "primary_domain": "wet_letter_carrier_and_heat",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "У кузницы мокрый мартовский проход соседствует с жаркой рабочей зоной. Под навесом копоть и грязь, изнутри слышны удары; ожидание лошади и путь кузнеца требуют оставить проход, а не раскладывать письмо у самого горна.",
+      "interaction_ru": "Посыльный может вынуть доступное письмо из чехла и устроить его в более сухом защищённом месте после согласования с работающим кузнецом. Сушка не требует прямого пламени; материал письма неизвестен, поэтому близкий жар и попытка распрямлять его силой не объявляются полезной универсальной обработкой.",
+      "variation_ru": "В сильный косой дождь защита навеса меняется, при остановке работы меняются жар и шум. Его небольшие дорожные средства не обеспечивают отдельную комнату; кожаный чехол не гарантирует ни водонепроницаемость, ни сохранность записи.",
+      "claim_refs": [
+        "claim:ordinary-life-smith-fire-needs-managed-space",
+        "claim:ordinary-life-smith-leaves-scale-ash-offcuts",
+        "claim:population-leather-case",
+        "claim:population-physics-evaporation-below-boiling",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-014",
+      "primary_domain": "targeted_night_call_and_acoustics",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "Ночная улица состоит из освещённого фонарём ближайшего участка, тёмных ворот и более дальнего переулка. Закрытые дворы и снег меняют слышимый фон; далёкий лай и дым не показывают, кто именно сейчас бодрствует.",
+      "interaction_ru": "Сторож может приблизиться к нужным воротам и подать тихий условленный стук, сделав паузу для ответа. Интенсивность звука обычно падает с расстоянием, поэтому близкий адресный сигнал позволяет попытаться обойтись без крика; отражения и фон мешают обещать, что услышит только хозяин.",
+      "variation_ru": "При ветре и иной температурной структуре слышимость изменится, при ярком дне проще заметить знак ответа. Остаток масла ограничивает обход, а условленность колотка не создаёт права войти во двор.",
+      "claim_refs": [
+        "claim:sound-spreading-reduces-intensity",
+        "claim:sound-background-noise-masks-speech",
+        "claim:sound-wind-temperature-gradients-refract",
+        "claim:place-community-local-temporary-watch-can-agree-attention-handover-and-signal",
+        "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-015",
+      "primary_domain": "hired_unloading_coordination",
+      "need_group": "social",
+      "verdict": "covered",
+      "scene_ru": "В дождливом гостином дворе под навесом сгущаются тюки и люди, тогда как открытая часть намокает. Подсыпанная колея и каменный лоток меняют отдельные пути; голоса спорящих и погрузочный скрип осложняют короткий разговор.",
+      "interaction_ru": "Слуга может показать конкретный тюк и поручение, договориться о порядке разгрузки и расчёте, заранее освободив путь от воза к месту укладки. Занятость возчика означает необходимость согласовать очередность, а не автоматически отнять его помощь у другого груза.",
+      "variation_ru": "С усилением дождя возрастает потребность в крытом месте, но не возникает новый склад. Выданные средства и поручение ограничивают объём договорённости; нехватка времени до закрытия ворот допускает частичный перенос или задержку.",
+      "claim_refs": [
+        "claim:place-outdoors-market-activity-and-empty-intervals",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:ordinary-life-worker-means-and-duty-vary",
+        "claim:ordinary-life-private-needs-shape-decisions",
+        "claim:sound-background-noise-masks-speech"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-016",
+      "primary_domain": "forest_rest_near_hot_process",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "В сосновой поляне открытый участок с дымом отличается от затенённой подстилки и сложенных рабочих поленьев. Кора и сухие пятна могут дать варианты для короткой стоянки, но действующая яма остаётся отдельной рабочей зоной; сумерки скрывают неровности.",
+      "interaction_ru": "Работник может выбрать осмотренную сухую опору вне хода горячей работы и устроить плащ так, чтобы не стеснять перемещение сменщика. Кору он использует лишь там, где это не нарушает общее дело; наличие дыма не позволяет объявить воздух безопасным или угадать точный процесс в яме.",
+      "variation_ru": "После дождя сухих мест меньше, а перемена ветра меняет положение дыма. Личный плащ и хлеб позволяют короткую паузу, но не заменяют укрытие на всю ночь; сезонная подстилка не одинакова во всех сосновых лесах.",
+      "claim_refs": [
+        "claim:place-outdoors-forest-structure-and-season",
+        "claim:place-outdoors-microterrain-patches",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:place-outdoors-means-upkeep-and-environment",
+        "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-017",
+      "primary_domain": "windy_landing_seed_transport",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "На причале порывы ветра и волны действуют рядом с узким настилом, лодкой и путём к огородной калитке. Светлые ремонтные доски выделяются среди старых; мокрые места и рогожи на грядах относятся к разным задачам, а звон лопаты — к текущей работе.",
+      "interaction_ru": "Послушник может сначала проверить доступную привязь и поставить корзину на устойчивую опору, затем переносить её по свободному ходу к грядам. Корзина собирает семена для переноса, но её открытость и удержание нужно учитывать при порывах; привязанная лодка не становится неподвижной площадкой.",
+      "variation_ru": "При другой воде меняется переход с лодки на берег, при тихой погоде меньше помех от порывов. Он пользуется порученными средствами обители, а не создаёт новые запасы или право перестраивать причал.",
+      "claim_refs": [
+        "claim:place-outdoors-shore-working-edge-composition",
+        "claim:population-physics-static-friction",
+        "claim:reconstructed-monastery-yard-can-coordinate-ordinary-outdoor-work-contextually",
+        "claim:reconstructed-place-upkeep-competes-with-weather-work-and-available-means"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-018",
+      "primary_domain": "cellar_food_identification_and_light",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "В прохладном подвале кадки и их крышки оставляют узкие проходы, а лучина даёт местный свет и тёмные промежутки. Песок на земляном полу и чистые дощечки показывают уход; запах зерна не доказывает содержимое каждой закрытой ёмкости.",
+      "interaction_ru": "Служанка может сравнить доступные метки и знакомое расположение, а при неясности осмотреть разрешённую кадку и отделить найденные яблоки от других запасов. Она держит огонь подальше от сухой тары и не принимает запертый чулан за свободную часть склада.",
+      "variation_ru": "Зимой прохлада может помогать отдельным припасам, но не доказывает сохранность всех яблок. При большем свете проще различать предметы; ограниченная корзинка и доступ задают объём переноски, а не новое имущество.",
+      "claim_refs": [
+        "claim:settlement-underfloor-storage",
+        "claim:population-storage-vessels",
+        "claim:foundations-ms-06-visual-selection",
+        "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel",
+        "claim:static-cool-storage-can-slow-respiration-of-harvested-produce"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-019",
+      "primary_domain": "stranger_transport_information",
+      "need_group": "social",
+      "verdict": "covered",
+      "scene_ru": "У весовой избы ожидание людей и разворачивающийся воз делят подметённую площадь на проход и места стоянки. Листья снова заносит ветром, мешки закрывают часть обзора, а голоса у входа слышны поверх дорожного шума.",
+      "interaction_ru": "Крестьянин может спросить ближайшего незанятого участника, кто возит к пристани, затем уточнить условия у названного перевозчика. Ответ незнакомца — сообщение для проверки, не готовый тариф и не заключённая перевозка; свой мешок он оставляет в доступном ему месте, не перекрывая воз.",
+      "variation_ru": "Дождь или наплыв товара усилили бы тесноту. Дневной запас еды и средств позволяет некоторое ожидание, но знание цены не возникает из того, что человек стоит возле весовой избы.",
+      "claim_refs": [
+        "claim:place-outdoors-market-activity-and-empty-intervals",
+        "claim:ordinary-life-private-needs-shape-decisions",
+        "claim:ordinary-life-status-does-not-fix-wealth",
+        "claim:sound-background-noise-masks-speech"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-020",
+      "primary_domain": "water_carrying_on_narrow_bridge",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "Мостик из жердей пересекает медленно текущую канаву; мокрый проход тесен для двух людей с водой. Прополотые края и ровные новые жерди меняют обзор и опору, но не убирают массу ноши и возможность скольжения.",
+      "interaction_ru": "Мальчик может идти с малым ведром отдельно от сестры, уступить ей проход и поставить сосуд на устойчивое место, если нужно переменить хват. Разделение ноши и последовательность движения позволяют помогать без обязательного равенства нагрузок; наполненные сосуды всё равно требуют удержания.",
+      "variation_ru": "После подсыхания поверхность меняется, после дождя оценивают контакт заново. Небольшая посильная работа может быть обучением через показ, а принадлежность гряд семье не делает ребёнка способным нести любой груз.",
+      "claim_refs": [
+        "claim:population-physics-static-friction",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:human-life-learning-feedback-can-shape-practice",
+        "claim:place-outdoors-traffic-wet-ground-and-ruts"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-021",
+      "primary_domain": "tool_storage_and_identification",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "Во дворе варки мокрый желоб, пар у двери и движение кадок отделяют рабочую полосу от более спокойного места у лавки. Ковши с насечками — уже данные личные вещи; их повторяющийся вид не означает одинаковую принадлежность.",
+      "interaction_ru": "Хозяйка может сравнить знакомые насечки, собрать свои пустые ковши и убрать их в доступный запираемый сундук, если там есть место. Это меняет доступность и путаницу с рабочими предметами, не доказывая кражу или намерение работников; сундук не обещает абсолютной защиты.",
+      "variation_ru": "К утру шум и занятость двора изменятся, но оставленные вещи не исчезают сами. Ключ и существующая тара дают конкретный вариант хранения; при отсутствии места пришлось бы согласовать другое размещение.",
+      "claim_refs": [
+        "claim:population-storage-vessels",
+        "claim:foundations-ms-06-visual-selection",
+        "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+        "claim:place-outdoors-activity-sensory-pulses"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-022",
+      "primary_domain": "dye_leaf_selection_and_teaching",
+      "need_group": "practical",
+      "verdict": "knowledge_gap",
+      "scene_ru": "На старом пути влажная трава и расчищенный ход соседствуют с оградой и кустами; майский рост меняет вид листьев, а птичий шорох не определяет вид растений. Корзины и нож позволяют собирать и разделять образцы, не превращая соседский огород в свободный источник.",
+      "interaction_ru": "По WK можно восстановить показ растения и объяснение ученице, различение похожих листьев и связь красителя с волокном. Но назвать хотя бы обоснованный вариант листового растительного сырья для красильного отвара здесь не получается: найденные сведения о красителях тканей не называют листья-источник, а общий растворитель не делает любой лист пригодным.",
+      "variation_ru": "Сезон и стадия роста должны менять пригодность сбора, но конкретная связь с красильным материалом отсутствует. Заданное умение травницы не заменяет содержания объяснения; это не требование точной рецептуры или гарантированного цвета.",
+      "claim_refs": [
+        "claim:place-outdoors-clearing-and-trace-renewal",
+        "claim:candidate-visually-similar-plants-can-differ-in-identity-and-hazard-properties",
+        "claim:human-life-learning-feedback-can-shape-practice",
+        "claim:textile-dye-application"
+      ],
+      "gaps": [
+        {
+          "need": "Назвать пригодное листовое растительное сырьё для красильного отвара и полезную связь части растения с крашением, без рецепта, гарантированного цвета или автоматического местного растения.",
+          "reason": "Existing dye application/mordant/textile-analysis premises do not identify a leaf-source relation; ordinary teaching alone cannot supply its missing content."
+        }
+      ]
+    },
+    {
+      "case_id": "place06-free-023",
+      "primary_domain": "sledge_suitability_and_availability",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "В сарае несколько саней и развешенная сбруя требуют места для осмотра и разворота, у открытой двери светлее, чем за полозьями. Сухая подсыпка и свежая смазка показывают разные действия ухода, а не готовность всех саней к одинаковому грузу.",
+      "interaction_ru": "Конюх может осмотреть полозья, соединения и место для ноши, уточнить занятость выбранных саней и освободить путь к двери. Связь саней, коня и упряжи исторически совместима; конкретную комплектность и пригодность он проверяет, не выводя её из богатства двора.",
+      "variation_ru": "Состояние снега и дороги меняет выбор транспорта, а ночь — удобство осмотра с фонарём. Доступ к ключам и сбруе позволяет подготовку, но не отменяет заданное ограничение на решение о дальнем выезде.",
+      "claim_refs": [
+        "claim:transport-horse-sledge-equipment",
+        "claim:transport-sledge-summer-cargo",
+        "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+        "claim:place-outdoors-means-upkeep-and-environment",
+        "claim:ordinary-life-worker-means-and-duty-vary"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-024",
+      "primary_domain": "net_repair_worksite",
+      "need_group": "practical",
+      "verdict": "covered",
+      "scene_ru": "Каменистая коса даёт неровную открытую площадку с отдельными ровными пятнами, лодкой у кромки и следами прежнего складывания камней. Вода ниже утреннего уровня открыла другой край, а крики чаек и плеск относятся к этому берегу, не ко всякому месту ремонта.",
+      "interaction_ru": "Рыбак может разложить сеть на доступном участке без выступов, осмотреть ячейки и спутывание и использовать свою иглу и бечёвку для починки. Свободное место и просушка облегчают осмотр; ни ремонт, ни присутствие снастей не обещают ночного улова.",
+      "variation_ru": "Сумерки затрудняют мелкую работу, дождь и подъём воды могут потребовать переноса. Его припасов хватает до утра по условию, но отсутствие навеса ограничивает длительную работу на открытой косе.",
+      "claim_refs": [
+        "claim:practical-net-space",
+        "claim:practical-net-dry",
+        "claim:practical-net-repair",
+        "claim:fishing-net-mending-or-worn-part-replacement-can-prolong-serviceability",
+        "claim:place-outdoors-shore-working-edge-composition"
+      ],
+      "gaps": []
+    },
+    {
+      "case_id": "place06-free-025",
+      "primary_domain": "shared_future_purchase",
+      "need_group": "social",
+      "verdict": "covered",
+      "scene_ru": "После мытья банные лавки и мокрый пол остаются рядом с тёплой печью и сухими дровами. Приоткрытая дверь меняет воздух и слышимость, разговор из предбанника достигает не всех углов одинаково; ночная сырость снаружи делает выход отдельным действием.",
+      "interaction_ru": "Плотник может дождаться товарища и обсудить, сколько досок нужно каждому, когда смотреть товар и кто сможет везти. Береста и уголь позволяют попытку личной заметки, но не создают уже признанный договор; доступная тележка товарища и его согласие — разные условия.",
+      "variation_ru": "В шумной общей бане удобнее отложить подробный разговор или перейти к доступному тихому месту. Малый запас средств ограничивает замысел покупки; совместная работа и взаимная помощь допускают переговоры, а не обязательный долг.",
+      "claim_refs": [
+        "claim:reconstructed-dwelling-interior-tasks-adjust-to-space-heat-and-attention",
+        "claim:sound-background-noise-masks-speech",
+        "claim:ordinary-life-help-can-create-reciprocity",
+        "claim:ordinary-life-private-needs-shape-decisions",
+        "claim:ordinary-life-household-repairs-compete-with-new-goods"
+      ],
+      "gaps": []
+    }
+  ]
+}

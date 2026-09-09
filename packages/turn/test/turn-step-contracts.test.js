@@ -7,114 +7,7 @@ import {
   validateTurnStepPlan,
   validateTurnStepRequest
 } from '../src/turn-step-contracts.js';
-
-function request(overrides = {}) {
-  return {
-    schema: 'turn_step_request_v1',
-    request_id: 'turn-request-42',
-    root_turn_id: 'turn-42',
-    committed_state_version: 17,
-    working_revision: 0,
-    step_index: 1,
-    max_internal_steps: 8,
-    root_player_action: 'открываю сундук и беру меч',
-    remaining_intent: 'открыть сундук и взять меч',
-    completed_steps: [],
-    actor: {
-      actor_ref: 'actor_mikula',
-      attributes: [{ attribute_ref: 'strength' }],
-      skills: [{ skill_ref: 'athletics' }]
-    },
-    player_safe_state: {
-      visible_entities: [
-        { entity_ref: 'chest_1', kind: 'container' },
-        { entity_ref: 'sand_bank', kind: 'environment' },
-        { entity_ref: 'npc_1', kind: 'actor' }
-      ],
-      positions: [{ location_ref: 'shore' }]
-    },
-    ...overrides
-  };
-}
-
-function plan(overrides = {}) {
-  return {
-    schema: 'turn_step_plan_v1',
-    request_id: 'turn-request-42',
-    committed_state_version: 17,
-    working_revision: 0,
-    step_index: 1,
-    interpretation: {
-      player_goal: 'открыть сундук и взять меч',
-      grounded_attempt: 'открыть сундук',
-      adaptation: 'literal'
-    },
-    resolution: 'domain_request',
-    goal_result: 'pending',
-    activity: { owner: 'domain', duration_class: null, effort: null },
-    operations: [{
-      op: 'request_container_access',
-      actor_ref: 'actor_mikula',
-      container_ref: 'chest_1',
-      access_kind: 'open_and_view'
-    }],
-    check: null,
-    continuation: {
-      remaining_intent: 'взять меч, если он окажется внутри',
-      depends_on_refs: ['chest_1']
-    },
-    clarification: null,
-    reason_code: 'container_contents_not_visible',
-    reason: 'содержимое закрытого сундука ещё неизвестно',
-    ...overrides
-  };
-}
-
-function directPlan(overrides = {}) {
-  return plan({
-    resolution: 'direct',
-    goal_result: 'achieved',
-    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
-    operations: [],
-    continuation: null,
-    reason_code: 'direct_step',
-    reason: 'шаг имеет непосредственный фактический результат',
-    ...overrides
-  });
-}
-
-function outcome(overrides = {}) {
-  return {
-    goal_result: 'achieved',
-    additional_activity: null,
-    operations: [],
-    continuation: null,
-    ...overrides
-  };
-}
-
-function genericPlan(overrides = {}) {
-  return directPlan({
-    resolution: 'generic_check',
-    goal_result: 'pending',
-    check: {
-      purpose: 'удалось ли удержаться на ногах',
-      attribute_ref: 'strength',
-      skill_ref: 'athletics',
-      difficulty_id: 'risky',
-      outcomes: {
-        clean_success: outcome(),
-        success: outcome(),
-        success_with_cost: outcome({ additional_activity: { duration_class: 'brief', effort: 'light' } }),
-        failure_with_consequence: outcome({ goal_result: 'not_achieved' }),
-        severe_failure: outcome({ goal_result: 'not_achieved' })
-      }
-    },
-    reason_code: 'generic_uncertainty',
-    reason: 'исход возможной попытки не определён',
-    ...overrides
-  });
-}
+import { directPlan, genericPlan, plan, request } from './turn-step-contracts-fixture.js';
 
 test('schemas are deeply frozen and expose strict v1 top-level contracts', () => {
   assert.equal(Object.isFrozen(TURN_STEP_REQUEST_V1_SCHEMA), true);
@@ -240,6 +133,28 @@ test('continuation cannot repeat intent after a non-discovery domain step', () =
   assert.equal(validateTurnStepPlan(repeated, { request: source }).ok, true);
 });
 
+test('pending discovery is a strict single-target code carrier', () => {
+  const source = request();
+  const discovery = plan({ operations: [{ op: 'request_discovery',
+    actor_ref: 'actor_mikula', discovery_kind: 'inspect',
+    target_refs: ['sand_bank'], query: source.remaining_intent }],
+  continuation: { remaining_intent: source.remaining_intent,
+    depends_on_refs: [], pending_discovery: {
+      remaining_target_refs: ['chest_1'], after: {
+        remaining_intent: 'взять меч', depends_on_refs: ['chest_1']
+      }
+    } } });
+  assert.equal(validateTurnStepPlan(discovery, { request: source }).ok, true);
+
+  discovery.continuation.depends_on_refs = ['chest_1'];
+  assert.equal(validateTurnStepPlan(discovery, { request: source }).errors.some(
+    ({ code }) => code === 'carrier'), true);
+  discovery.continuation.depends_on_refs = [];
+  discovery.continuation.pending_discovery.after.pending_discovery = {};
+  assert.equal(validateTurnStepPlan(discovery, { request: source }).errors.some(
+    ({ code }) => code === 'additional_property'), true);
+});
+
 test('plan validation admits refs exposed through a plural ref array', () => {
   const source = request();
   source.player_safe_state.destination_refs = ['location:camp'];
@@ -322,108 +237,6 @@ test('plan validation admits an exact player combat intent request', () => {
   assert.equal(invalid.ok, false);
   assert.equal(invalid.errors.some(({ code }) =>
     code === 'combat_intent_shape'), true);
-});
-
-test('sole turn plan boundary admits qualitative action production', () => {
-  const source = request();
-  source.player_safe_state.visible_objects = [
-    { entity_ref: { entity_kind: 'item', entity_id: 'item:pole' } },
-    { entity_ref: { entity_kind: 'item', entity_id: 'item:knife' } },
-    { entity_ref: { entity_kind: 'item', entity_id: 'item:stone' } }
-  ];
-  const action = plan({
-    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
-    operations: [{
-      op: 'request_item_use', actor_ref: 'actor_mikula',
-      item_ref: 'item:pole', use_kind: 'other',
-      target_refs: ['item:knife', 'item:stone'],
-      action_production: {
-        source_refs: ['item:pole'],
-        tool_refs: ['item:knife', 'item:stone'], requested_output_count: null,
-        identity_mode: 'preserve_source', origin: null,
-        result_class: 'partial_transformation',
-        material_extent: null,
-        result_descriptor: {
-          display_name: 'заострённая жердь',
-          physical_description: 'конец жерди физически заострён',
-          qualitative_facts: ['на конце видны свежие срезы'],
-          removed_physical_fact_refs: [],
-          inscription_text: null,
-          physical_form: 'long',
-          source_fact_delta: null
-        },
-        output_class: 'weapon_capable'
-      }
-    }],
-    continuation: null
-  });
-  assert.deepEqual(validateTurnStepPlan(action, { request: source }), {
-    ok: true, errors: []
-  });
-  const preparedAction = structuredClone(action);
-  preparedAction.operations.unshift({ op: 'move_entity',
-    entity_ref: 'item:pole', placement: {
-      relation: 'held_by', target_ref: 'actor_mikula' } });
-  const preparedValidation = validateTurnStepPlan(preparedAction,
-    { request: source });
-  assert.equal(preparedValidation.ok, false);
-  assert.equal(preparedValidation.errors.some(({ message }) =>
-    message.includes('does not support direct preparation')), true);
-
-  const unrelated = plan({
-    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' }
-  });
-  assert.equal(validateTurnStepPlan(unrelated, { request: source }).ok, false);
-
-  source.player_safe_state.items = [{ item_id: 'item:pole',
-    physical_fact_records: [{ fact_ref: 'fact:sharp',
-      text: 'конец заострён' }] }];
-  action.operations[0].action_production.result_descriptor
-    .removed_physical_fact_refs = ['fact:sharp'];
-  assert.equal(validateTurnStepPlan(action, { request: source }).ok, true);
-  action.operations[0].action_production.result_descriptor
-    .removed_physical_fact_refs = ['fact:unknown'];
-  assert.equal(validateTurnStepPlan(action, { request: source }).ok, false);
-  action.operations[0].action_production.result_descriptor
-    .removed_physical_fact_refs = [];
-
-  action.operations[0].action_production.result_descriptor.physical_form =
-    'forged_form';
-  assert.equal(validateTurnStepPlan(action, { request: source }).ok, false);
-
-  const partition = structuredClone(action);
-  partition.operations[0].action_production.result_descriptor.physical_form =
-    'compact';
-  partition.operations[0].action_production = {
-    ...partition.operations[0].action_production,
-    source_refs: ['item:pole'], tool_refs: ['item:knife', 'item:stone'],
-    requested_output_count: 2, identity_mode: 'independent_outputs',
-    origin: 'crafted', material_extent: 'minor'
-  };
-  partition.operations[0].action_production.result_descriptor
-    .source_fact_delta = {
-      physical_description: 'с жерди снята часть материала',
-      qualitative_facts: [], removed_physical_fact_refs: [],
-      physical_form: 'regular'
-    };
-  assert.equal(validateTurnStepPlan(partition, { request: source }).ok, true);
-  const multiPartial = structuredClone(partition);
-  multiPartial.operations[0].action_production.source_refs = [
-    'item:pole', 'item:stone'
-  ];
-  multiPartial.operations[0].action_production.tool_refs = ['item:knife'];
-  assert.equal(validateTurnStepPlan(multiPartial, { request: source }).ok,
-    false);
-  partition.operations[0].action_production.result_descriptor.display_name =
-    null;
-  assert.equal(validateTurnStepPlan(partition, { request: source }).ok, false);
-  partition.operations[0].action_production.result_descriptor.display_name =
-    'деревянный клин';
-  partition.operations[0].action_production.result_descriptor
-    .physical_description = null;
-  assert.equal(validateTurnStepPlan(partition, { request: source }).ok, true);
-  partition.operations[0].action_production.tool_refs = ['item:stone'];
-  assert.equal(validateTurnStepPlan(partition, { request: source }).ok, false);
 });
 
 test('relational validation fails closed on echoes, mixed resolutions and malformed checks', () => {

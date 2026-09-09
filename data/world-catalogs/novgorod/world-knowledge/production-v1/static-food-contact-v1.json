@@ -1,0 +1,115 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-fda-separating-food-cross-contamination",
+      "title": "Separating Food (Food Safety for Moms-to-Be)",
+      "authors": [
+        "U.S. Food and Drug Administration"
+      ],
+      "publication": "U.S. Food and Drug Administration, content current as of 2018-09-27",
+      "source_kind": "official_documentation",
+      "citation": "https://www.fda.gov/food/people-risk-foodborne-illness/separating-food-food-safety-moms-be",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-fda-raw-animal-food-cross-contact",
+      "source_ref": "source:research-fda-separating-food-cross-contamination",
+      "anchor": {
+        "section": "Separate, Don't Cross-Contaminate; Safely Separate; Clean Your Plate"
+      },
+      "note": "FDA defines cross-contamination as spread of pathogens from foods, hands, utensils or food-preparation surfaces to another food; it identifies raw animal foods as possible pathogen sources and describes raw-food bacteria contaminating cooked food on an unwashed plate. Conditional transfer mechanism only; no food, contamination, hygiene state, dose, illness, safety or scene outcome is established.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+      "domain": "biology_physiology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+      "domain": "biology_physiology",
+      "subject_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "pathogens_from_raw_animal_food_can_transfer_to_other_food_including_cooked_or_ready_to_eat_food_via_hands_utensils_or_food_preparation_surfaces"
+      },
+      "polarity": "support",
+      "applicability": {
+        "context_scope": "universal"
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "high",
+        "directness": "direct"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:research-fda-raw-animal-food-cross-contact"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+      "locale": "ru",
+      "labels": [
+        "Контакт сырой животной пищи с другой пищей"
+      ],
+      "short_definition": "Условная связь сырой животной пищи, контактных поверхностей и переноса возбудителей на другую пищу.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:biology_physiology:research-raw-animal-food-cross-contact",
+      "locale": "en",
+      "labels": [
+        "Raw animal food cross-contact"
+      ],
+      "short_definition": "Conditional relation between raw animal food, contact surfaces, and pathogen transfer to other food.",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+      "locale": "ru",
+      "runtime_text": "Возбудители с сырой животной пищи могут переноситься на другую пищу, в том числе приготовленную или готовую к употреблению, через руки, утварь или поверхности подготовки пищи. Это не устанавливает пищу, загрязнение, чистоту рук или утвари, дозу, болезнь, безопасность либо исход конкретной сцены.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:research-raw-animal-food-pathogens-can-transfer-to-other-food-via-contact-surfaces",
+      "locale": "en",
+      "runtime_text": "Pathogens from raw animal food can transfer to other food, including cooked or ready-to-eat food, through hands, utensils, or food-preparation surfaces. This establishes no food, contamination, hand or utensil cleanliness, dose, illness, safety, or outcome in a concrete scene.",
+      "search_aliases": []
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "verifications": [
+    {
+      "schema": "world_knowledge_verification_v1",
+      "verification_ref": "wk-verification:macro-social-history-v1-gramota334-private-letter",
+      "claim_ref": "claim:candidate-gramota334-named-private-letter-monetary-context",
+      "claim_digest": "9df4141b4e160f3245e489ae96686bafcc239295847fe76e2128462a448ee670",
+      "candidate_ref": "git:5f3cc388de08edd66b44bd15a4ba8c4b516cba95:data/world-catalogs/novgorod/world-knowledge/production-v1/macro-social-history-v1.json#claim:candidate-gramota334-named-private-letter-monetary-context",
+      "auditor_ref": "/root/macro_claim_verifier",
+      "independence_basis": "Independent direct catalogue-record review; auditor did not author the candidate.",
+      "evidence_checked": ["evidence:candidate-gramota334-private-letter"],
+      "review_ref": "verification/macro-social-history-v1.md#candidate-gramota334-named-private-letter-monetary-context",
+      "verdict": "APPROVE",
+      "limits": "Supports this complete document's city, 1220–1240 conditional date, private-letter genre, named sender/addressee, and monetary-business subject only; no general literacy or naming rule, debt amount or state, transfer, delivery, reading, or truth of a current message."
+    }
+  ]
+}

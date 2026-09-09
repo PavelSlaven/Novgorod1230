@@ -9,6 +9,8 @@ import { projectLowerDvinaTraceF1Capability } from
   './releases/lower-dvina-trace-f1-production.js';
 import { projectLowerDvinaTraceS1Capability } from
   './releases/lower-dvina-trace-s1-production.js';
+import { factPresentationForRef } from
+  './lower-dvina-trace-scene-presentation.js';
 
 export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   admitAmbientOrdinaryPortion,
@@ -24,6 +26,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   ordinaryDiscoveryScopeBinding,
   partyId,
   playerSafeStateProjector,
+  scenePresentation,
   workingProjectionAuthority
 }) {
   if (typeof playerSafeStateProjector !== 'function') return null;
@@ -34,8 +37,6 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       committed_state: committedState,
       working_projection_authority: workingProjectionAuthority
     });
-    projected = projectLowerDvinaTraceO2aCapabilities({ projected,
-      admission: admitAmbientOrdinaryPortion });
     const preparedOrdinaryPlan =
       input.prepared_ordinary_materialization_atomic_write_plan;
     const basePlayerSafeState = projectPreparedOrdinaryScene(
@@ -44,8 +45,11 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     const { active_interlocutor: _staleActiveInterlocutor,
       current_visible_context: _presentationOnlyCurrentContext,
       ...initialWorkingProjection } = basePlayerSafeState;
+    projected = projectLowerDvinaTraceO2aCapabilities({ projected: {
+      ...projected, player_safe_state: basePlayerSafeState },
+    admission: admitAmbientOrdinaryPortion });
     const actionState = projectLowerDvinaTraceA1Capability({
-      playerSafeState: basePlayerSafeState,
+      playerSafeState: projected.player_safe_state,
       loadedProfile: actionProductionProfile,
       resolverAvailable:
         typeof createTurnStepActionProductionOwner === 'function'
@@ -60,12 +64,14 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       playerSafeState, committedState,
       resolverAvailable: typeof createTurnStepSpatialSemanticResolver === 'function'
     });
-    const npcState = projectLowerDvinaTraceN1Capability({
-      playerSafeState: spatialState,
-      committedState,
-      loadedProfile: npcSemanticRemainderProfile,
-      resolverAvailable:
-        typeof createTurnStepBackgroundNpcResolver === 'function'
+    const npcState = projectObservedEvidenceInspection({
+      playerSafeState: projectLowerDvinaTraceN1Capability({
+        playerSafeState: spatialState,
+        committedState,
+        loadedProfile: npcSemanticRemainderProfile,
+        resolverAvailable:
+          typeof createTurnStepBackgroundNpcResolver === 'function'
+      }), scenePresentation
     });
     const base = { ...projected,
       initial_working_projection: initialWorkingProjection };
@@ -107,6 +113,31 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     return {...withSources,initial_working_projection:initialWorkingProjection,
       player_safe_state:projectLowerDvinaTraceTurnStepPlannerState({
         ...withScene,...capability})};
+  };
+}
+
+function projectObservedEvidenceInspection({ playerSafeState,
+  scenePresentation }) {
+  const presentations = scenePresentation?.fact_presentations;
+  if (!Array.isArray(presentations)) return playerSafeState;
+  const observedRefs = [...new Set((playerSafeState.knowledge ?? [])
+    .filter((entry) => entry?.knowledge_state === 'observed'
+      && typeof entry.fact_id === 'string')
+    .map(({ fact_id: ref }) => ref))];
+  const candidates = observedRefs.flatMap((factRef) => {
+    if (presentations.filter(({ fact_ref: ref }) => ref === factRef)
+      .length !== 1) return [];
+    const presentation = factPresentationForRef({ scenePresentation,
+      factRef });
+    return text(presentation.text) ? [{ fact_ref: factRef,
+      text: presentation.text }] : [];
+  });
+  return candidates.length === 0 ? playerSafeState : {
+    ...playerSafeState,
+    observed_evidence_inspection: {
+      semantic_grounding_available: true,
+      candidates
+    }
   };
 }
 

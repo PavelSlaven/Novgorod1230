@@ -6,6 +6,8 @@ import { buildCombinedWritePlan } from
   '../../packages/turn/src/spatial-v3-write-plan.js';
 import { actionProducedPhysicalKeys, createActionProducedAtomicWritePlan } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-atomic-write-plan.js';
+import { lockAndVerifyActionProducedContext } from
+  '../../apps/game-server/src/infrastructure/postgres/action-produced-persistence-context.js';
 import { actionProducedTraceActionRef } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-causal-binding.js';
 import { validateSpatialV3CombinedWritePlan } from
@@ -229,6 +231,82 @@ test('A1 loader derives committed access pins and rejects stale/hostile input',
       query: async () => { calls += 1; return { rows: [] }; }
     }, hostile), { code: 'ACTION_PRODUCED_LOAD_INVALID' });
     assert.equal(reads, 0); assert.equal(calls, 0);
+});
+
+test('A1 accepts loader-pinned committed ordinary scene material as preserved source',
+  async () => {
+    const row = { ...dbRow(), item_id: 'item:bark-strip',
+      anchor_id: null, item_scene_position_id: null,
+      scene_position_id: 'scene:shore', scene_occupies_capacity_units: 1,
+      scene_state_version: 1, holder_character_id: null,
+      physical_position: null, legal_status: 'ordinary_world_property_bound',
+      ownership_id: 'ownership:bark-strip', owner_character_id: null,
+      owner_external_ref: { entity_kind: 'ordinary_property_source',
+        entity_id: 'shore' }, controller_character_id: null,
+      claim_state: 'property_bound' };
+    const loaded = await loadActionProducedCommittedContext(loaderClient(
+      [row], [], 'anchor:shore', [], 'scene:shore'), {
+      ...loadInput(), source_refs: ['item:bark-strip'] });
+    const request = fixture();
+    request.committed_load = loaded;
+    request.transition_proposal = JSON.parse(JSON.stringify(
+      request.transition_proposal).replaceAll('item:pole', 'item:bark-strip'));
+    request.transition_proposal.qualitative_result.intended_transformation =
+      'bind bark strip into a tie';
+    request.transition_proposal.qualitative_result.result_descriptor
+      .display_name = 'bark tie';
+    const before = { state_version: '2', holder_ref: null,
+      controller_ref: null };
+    request.transition_proposal.source_transitions[0].before = before;
+    request.transition_proposal.source_transitions[0].after.holder_ref = null;
+    request.transition_proposal.source_transitions[0].after.controller_ref = null;
+    request.transition_proposal.results[0].holder_ref = null;
+    request.transition_proposal.results[0].controller_ref = null;
+    const plan = createActionProducedAtomicWritePlan(request);
+    assert.equal(plan.output_destination_pin.scene_position_id, 'scene:shore');
+    for (const mutate of [
+      (value) => { value.source_pins[0].entity_snapshot.access_state =
+        'immediate'; },
+      (value) => { value.source_pins[0].entity_snapshot.ownership_snapshot
+        .owner_external_ref.entity_id = 'forged'; },
+      (value) => { value.source_pins[0].entity_snapshot.state_version = '3'; }
+    ]) {
+      const forged = structuredClone(plan);
+      mutate(forged);
+      assert.throws(() => createActionProducedAtomicWritePlan(forged));
+    }
+  });
+
+test('A1 preserved scene source ignores capacity changed by a prior atomic step',
+  async () => {
+    const plan = { party_id: 'party-1', actor_ref: 'actor:mikula',
+      result_items: [], output_destination_pin: {
+      schema: 'action_production_output_destination_pin_v1',
+      destination_kind: 'party_current_scene_position', anchor_id: 'anchor:shore',
+      item_capacity: 8, used_item_ids: [], scene_position_id: 'scene:shore',
+      scene_capacity: 8, scene_occupancy: 1
+    } };
+    const queries = [];
+    await lockAndVerifyActionProducedContext({ query: async (sql) => {
+      queries.push(sql);
+      if (sql.includes('SELECT p.g5_anchor_id')) {
+        return { rows: [{ anchor_id: 'anchor:shore', item_capacity: 8 }] };
+      }
+      if (sql.includes('party_journey_locations')) {
+        return { rows: [{ scene_position_id: 'scene:shore' }] };
+      }
+      return { rows: [] };
+    } }, plan);
+    assert.equal(queries.length, 3);
+    const anchored = { ...plan, output_destination_pin: {
+      schema: 'action_production_output_destination_pin_v1',
+      destination_kind: 'party_current_anchor', anchor_id: 'anchor:shore',
+      item_capacity: 8, used_item_ids: []
+    } };
+    await lockAndVerifyActionProducedContext({ query: async (sql) => ({
+      rows: sql.includes('SELECT p.g5_anchor_id')
+        ? [{ anchor_id: 'anchor:shore', item_capacity: 8 }] : []
+    }) }, anchored);
   });
 
 test('A1 loader accepts only one validated same-root ordinary overlay', async () => {
@@ -492,7 +570,7 @@ test('weapon-capable A1 state persists no combat classification or damage',
   });
 
 function loaderClient(itemRows, resourceRows = [], accessAnchorId = null,
-  containerRows = []) {
+  containerRows = [], accessScenePositionId = null) {
   return { query: async (sql) => {
     if (sql.includes('FROM party_runtime.parties')) {
       return { rows: [{ state_version: 7 }] };
@@ -507,6 +585,11 @@ function loaderClient(itemRows, resourceRows = [], accessAnchorId = null,
     if (sql.includes('SELECT p.g5_anchor_id')) return { rows:
       accessAnchorId == null ? [] : [{ anchor_id: accessAnchorId,
         item_capacity: 8 }] };
+    if (sql.includes('FROM party_runtime.scene_position_nodes')) return {
+      rows: [{ capacity: 8, occupancy: 1 }] };
+    if (sql.includes('party_journey_locations')) return { rows:
+      accessScenePositionId == null ? [] : [{ scene_position_id:
+        accessScenePositionId }] };
     if (sql.includes('FROM party_runtime.party_item_placements')) {
       return { rows: [] };
     }

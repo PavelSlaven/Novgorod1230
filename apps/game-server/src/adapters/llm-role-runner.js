@@ -12,7 +12,10 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
       return describeRoleLlmCall({ scope, roleId: role_id, tierId: tier_id,
         overrides, ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}), env });
     },
-    isCustomProvider() { return settings?.providerSnapshot()?.mode === 'custom'; },
+    isCustomProvider() {
+      const mode = settings?.providerSnapshot()?.mode;
+      return mode === 'local' || mode === 'custom';
+    },
     async run({ scope, role_id = null, tier_id = null, messages = [],
       overrides = null, provider_snapshot = null, repair = false,
       request_identity = null } = {}) {
@@ -74,6 +77,7 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
         const error = new Error(result.error?.message ?? `LLM role ${role_id ?? '<unnamed>'} failed.`);
         error.code = result.error?.code ?? 'LLM_ROLE_FAILED';
         error.retryable = result.error?.retryable === true;
+        error.llm_provider_failure = true;
         throw error;
       }
       return Object.freeze({
@@ -112,7 +116,7 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
 }
 
 function toProviderOverride(snapshot) {
-  if (snapshot?.mode !== 'custom') return null;
+  if (snapshot?.mode !== 'local' && snapshot?.mode !== 'custom') return null;
   return Object.freeze({ compatibility: 'openai_compatible', baseUrl: snapshot.baseUrl, model: snapshot.model, apiKey: snapshot.apiKey ?? null });
 }
 function probeTelemetry(telemetry) {

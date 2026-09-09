@@ -1,0 +1,551 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {
+    "social_law_economy": {
+      "records": {
+        "subject_domains": ["social_law_economy"],
+        "object_kinds": ["concept_ref"],
+        "object_concept_domains": ["social_law_economy"],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support", "exclude"],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "A document-type relation attested in the stated historical context; it creates neither a current record nor its parties."
+      },
+      "may_contain": {
+        "subject_domains": ["social_law_economy"],
+        "object_kinds": ["concept_ref"],
+        "object_concept_domains": ["social_law_economy"],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support", "exclude"],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "An attested document-type content relation, not proof of an unmaterialized entry."
+      },
+      "relates_to": {
+        "subject_domains": ["social_law_economy"],
+        "object_kinds": ["concept_ref"],
+        "object_concept_domains": ["social_law_economy"],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support", "exclude"],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "A limited relation attested by a source record; it does not establish a general legal rule or authority."
+      },
+      "may_assert": {
+        "subject_domains": ["social_law_economy"],
+        "object_kinds": ["concept_ref"],
+        "object_concept_domains": ["social_law_economy"],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support", "exclude"],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "A claim-bearing record may state an allegation or demand; it never verifies title, outcome, or remedy."
+      },
+      "reports": {
+        "subject_domains": ["social_law_economy"],
+        "object_kinds": ["concept_ref"],
+        "object_concept_domains": ["social_law_economy"],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support", "exclude"],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "A message reports a stated circumstance; it does not confer a procedural role or authority."
+      },
+      "used_as_accounting_unit_in": {
+        "subject_domains": ["social_law_economy"],
+        "object_kinds": ["concept_ref"],
+        "object_concept_domains": ["social_law_economy"],
+        "unit_family": null,
+        "allowed_units": [],
+        "polarities": ["support", "exclude"],
+        "cardinality": "multi_valued",
+        "applicability": "contextual",
+        "consumer_meaning": "An attested accounting-unit occurrence; it does not define coinage, mass, rate, price, or available money."
+      }
+    }
+  },
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota224",
+      "title": "Берестяная грамота № 224 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/224/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota524",
+      "title": "Берестяная грамота № 524 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/524/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota76",
+      "title": "Берестяная грамота № 76 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/76/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota545",
+      "title": "Берестяная грамота № 545 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/545/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota913",
+      "title": "Берестяная грамота № 913 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/913/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota507",
+      "title": "Берестяная грамота № 507 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/507/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:gramota600",
+      "title": "Берестяная грамота № 600 (Новгород)",
+      "authors": [],
+      "publication": "Древнерусские берестяные грамоты / gramoty.ru",
+      "source_kind": "primary_text",
+      "citation": "https://gramoty.ru/birchbark/document/show/novgorod/600/",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:social-daily-economic-activities",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "219",
+        "section": "economic-activities"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS in verification/verification-social-daily-practices.md. Inferred/medium 1220–1240 compatibility, no current transaction, stock, duty or rate. SDP02 reuses the existing payment-register claim.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:social-daily-fur-sale-accounting",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "230",
+        "section": "fur-sale-accounting"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS in verification/verification-social-daily-practices.md. Inferred/medium 1220–1240 compatibility, no current transaction, stock, duty or rate. SDP02 reuses the existing payment-register claim.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:social-daily-honey-documentary-entry",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "233–234",
+        "section": "honey-documentary-entry"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS in verification/verification-social-daily-practices.md. Inferred/medium 1220–1240 compatibility, no current transaction, stock, duty or rate. SDP02 reuses the existing payment-register claim.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:social-daily-wax-commodity-context",
+      "source_ref": "source:rybina-fishing-2015",
+      "anchor": {
+        "page": "233–234",
+        "section": "wax-commodity-context"
+      },
+      "note": "Independent APPROVE_WITH_LIMITS in verification/verification-social-daily-practices.md. Inferred/medium 1220–1240 compatibility, no current transaction, stock, duty or rate. SDP02 reuses the existing payment-register claim.",
+      "review_status": "approved"
+    },
+    {"schema": "world_knowledge_evidence_v1", "evidence_ref": "evidence:gramota224", "source_ref": "source:gramota224", "anchor": {"record_id": "novgorod/224"}, "note": "Corpus metadata identifies a 1220–1240 Novgorod fragment as a business debt-list/record.", "review_status": "approved"},
+    {"schema": "world_knowledge_evidence_v1", "evidence_ref": "evidence:gramota600", "source_ref": "source:gramota600", "anchor": {"record_id": "novgorod/600"}, "note": "Corpus metadata and text identify a 13th-century private message concerning a river lawsuit and sent men.", "review_status": "approved"},
+    {"schema": "world_knowledge_evidence_v1", "evidence_ref": "evidence:gramota524", "source_ref": "source:gramota524", "anchor": {"record_id": "novgorod/524"}, "note": "Corpus metadata classifies this 1160–1180 Novgorod private letter as a loan request.", "review_status": "approved"},
+    {"schema": "world_knowledge_evidence_v1", "evidence_ref": "evidence:gramota76", "source_ref": "source:gramota76", "anchor": {"record_id": "novgorod/76"}, "note": "Corpus metadata classifies this 1200–1220 business fragment as mentioning a hired worker.", "review_status": "approved"},
+    {"schema": "world_knowledge_evidence_v1", "evidence_ref": "evidence:gramota545", "source_ref": "source:gramota545", "anchor": {"record_id": "novgorod/545"}, "note": "Corpus metadata gives the disjunctive category: church commemorations and/or icon order.", "review_status": "approved"},
+    {"schema": "world_knowledge_evidence_v1", "evidence_ref": "evidence:gramota913", "source_ref": "source:gramota913", "anchor": {"record_id": "novgorod/913"}, "note": "Corpus metadata identifies an XI-century Novgorod calendar record listing church feast days.", "review_status": "approved"},
+    {"schema": "world_knowledge_evidence_v1", "evidence_ref": "evidence:gramota507", "source_ref": "source:gramota507", "anchor": {"record_id": "novgorod/507"}, "note": "Corpus metadata identifies an early-13th-century exegetical fragment on the Lord's Prayer.", "review_status": "approved"}
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:social_law_economy:regional-economic-activities",
+      "domain": "social_law_economy",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:debt-record", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:accounting-amount", "wk:social_law_economy:debt-entry", "wk:social_law_economy:grivna-accounting-unit"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:accounting-amount", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:debt-entry", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:grivna-accounting-unit", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:debt-record"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:guarantor-reference", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:transaction-obligation"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:transaction-obligation", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:written-complaint", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:compensation-demand"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:compensation-demand", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:dispute-message", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:dispatch-of-persons"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:dispatch-of-persons", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:loan-request", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:loan-or-advance"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:loan-or-advance", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:hired-work-reference", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:business-record"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:business-record", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:religious-name-list", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:commemoration-or-icon-order"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:commemoration-or-icon-order", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:church-calendar-text", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:feast-list"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:feast-list", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:christian-exegetical-text", "domain": "social_law_economy", "broader_refs": [], "related_refs": ["wk:social_law_economy:urban-textual-context"], "external_mappings": [], "review_status": "approved"},
+    {"schema": "world_knowledge_concept_v1", "concept_ref": "wk:social_law_economy:urban-textual-context", "domain": "social_law_economy", "broader_refs": [], "related_refs": [], "external_mappings": [], "review_status": "approved"}
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-daily-economic-activities",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:regional-economic-activities",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "agriculture_craft_trade_part_of_medieval_novgorod_economy"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:social-daily-economic-activities"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-daily-fur-sale-accounting",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:business-record",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "thirteenth_century_fur_sale_record_pairs_commodity_lot_with_accounting_amount"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:social-daily-fur-sale-accounting"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-daily-honey-documentary-entry",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:accounting-or-commodity-entry",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "honey_occurs_in_debt_and_in_kind_tribute_documentary_contexts"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:social-daily-honey-documentary-entry"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:social-daily-wax-commodity-context",
+      "domain": "social_law_economy",
+      "subject_ref": "wk:social_law_economy:accounting-or-commodity-entry",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wax_from_tree_bort_practice_attested_in_commodity_exchange_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1220,
+          "to": 1240,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:social-daily-wax-commodity-context"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-debt-records-accounting-amount", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:debt-record", "predicate": "records", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:accounting-amount"}, "polarity": "support", "applicability": {"time": {"from": 1220, "to": 1240, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "attested", "confidence": "high", "directness": "direct"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota73"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-debt-record-may-contain-entry", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:debt-record", "predicate": "may_contain", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:debt-entry"}, "polarity": "support", "applicability": {"time": {"from": 1220, "to": 1240, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "attested", "confidence": "high", "directness": "direct"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota224"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-grivna-accounting-unit", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:grivna-accounting-unit", "predicate": "used_as_accounting_unit_in", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:debt-record"}, "polarity": "support", "applicability": {"time": {"from": 1220, "to": 1240, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "attested", "confidence": "high", "directness": "direct"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota73"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-guarantor-relates-transaction-obligation", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:guarantor-reference", "predicate": "relates_to", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:transaction-obligation"}, "polarity": "support", "applicability": {"time": {"from": 1220, "to": 1240, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "attested", "confidence": "medium", "directness": "direct"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota510"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-written-complaint-may-assert-compensation", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:written-complaint", "predicate": "may_assert", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:compensation-demand"}, "polarity": "support", "applicability": {"time": {"from": 1220, "to": 1240, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "attested", "confidence": "medium", "directness": "direct"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota510"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-dispute-message-reports-dispatch", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:dispute-message", "predicate": "reports", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:dispatch-of-persons"}, "polarity": "support", "applicability": {"time": {"from": 1220, "to": 1240, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "attested", "confidence": "medium", "directness": "direct"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota600"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-loan-request-relates-loan", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:loan-request", "predicate": "relates_to", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:loan-or-advance"}, "polarity": "support", "applicability": {"time": {"from": 1100, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota524"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-hired-work-relates-business-record", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:hired-work-reference", "predicate": "relates_to", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:business-record"}, "polarity": "support", "applicability": {"time": {"from": 1100, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota76"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-religious-name-list-relates-disjunctive-context", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:religious-name-list", "predicate": "relates_to", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:commemoration-or-icon-order"}, "polarity": "support", "applicability": {"time": {"from": 1100, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota545"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-church-calendar-text-relates-feast-list", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:church-calendar-text", "predicate": "relates_to", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:feast-list"}, "polarity": "support", "applicability": {"time": {"from": 1100, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota913"], "review_status": "approved", "conflict_group_ref": null},
+    {"schema": "world_knowledge_claim_v1", "claim_ref": "claim:social-christian-exegetical-text-relates-urban-context", "domain": "social_law_economy", "subject_ref": "wk:social_law_economy:christian-exegetical-text", "predicate": "relates_to", "object": {"kind": "concept_ref", "value": "wk:social_law_economy:urban-textual-context"}, "polarity": "support", "applicability": {"time": {"from": 1100, "to": 1300, "precision": "range"}, "places": [{"place_ref": "region_novgorod_land", "relation": "used_in"}]}, "qualifiers": {"typicality": "unknown", "confidence": "medium", "directness": "inferred"}, "knowledge_access": {"class": "common_cultural", "required_facets": []}, "hard_exclusion": null, "evidence_refs": ["evidence:gramota507"], "review_status": "approved", "conflict_group_ref": null}
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:regional-economic-activities",
+      "locale": "ru",
+      "labels": [
+        "Региональные хозяйственные занятия"
+      ],
+      "short_definition": "Средневековый хозяйственный контекст Новгородской земли, не профессия конкретного NPC.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:social_law_economy:regional-economic-activities",
+      "locale": "en",
+      "labels": [
+        "Regional economic activities"
+      ],
+      "short_definition": "Medieval Novgorod-Land economic context, not a particular NPC's profession.",
+      "search_aliases": []
+    },
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:debt-record", "locale": "ru", "labels": ["Долговая запись"], "short_definition": "Тип записи о долге", "search_aliases": ["долговая запись", "долговой список"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:debt-record", "locale": "en", "labels": ["Debt record"], "short_definition": "A record type concerning debt", "search_aliases": ["debt record", "debt list"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:accounting-amount", "locale": "ru", "labels": ["Счётная величина"], "short_definition": "Величина, указанная для счёта", "search_aliases": ["счётная величина"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:accounting-amount", "locale": "en", "labels": ["Accounting amount"], "short_definition": "An amount stated for accounting", "search_aliases": ["accounting amount"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:debt-entry", "locale": "ru", "labels": ["Долговая запись-строка"], "short_definition": "Отдельная позиция долгового списка", "search_aliases": ["долговая позиция"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:debt-entry", "locale": "en", "labels": ["Debt entry"], "short_definition": "An individual entry in a debt list", "search_aliases": ["debt entry"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:grivna-accounting-unit", "locale": "ru", "labels": ["Гривна как счётная единица"], "short_definition": "Счётная единица в записи", "search_aliases": ["гривна", "счётная единица"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:grivna-accounting-unit", "locale": "en", "labels": ["Grivna accounting unit"], "short_definition": "An accounting unit occurring in a record", "search_aliases": ["grivna", "accounting unit"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:guarantor-reference", "locale": "ru", "labels": ["Упоминание поручителя"], "short_definition": "Ссылка на поручителя в документе", "search_aliases": ["поручитель", "гарант"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:guarantor-reference", "locale": "en", "labels": ["Guarantor reference"], "short_definition": "A document reference to a guarantor", "search_aliases": ["guarantor", "surety"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:transaction-obligation", "locale": "ru", "labels": ["Сделка и обязательство"], "short_definition": "Контекст сделки и обязательства", "search_aliases": ["сделка", "обязательство"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:transaction-obligation", "locale": "en", "labels": ["Transaction and obligation"], "short_definition": "A transaction-and-obligation context", "search_aliases": ["transaction", "obligation"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:written-complaint", "locale": "ru", "labels": ["Письменное обвинение"], "short_definition": "Документ с обвинением или требованием", "search_aliases": ["обвинение", "жалоба"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:written-complaint", "locale": "en", "labels": ["Written complaint"], "short_definition": "A record stating an accusation or demand", "search_aliases": ["complaint", "accusation"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:compensation-demand", "locale": "ru", "labels": ["Требование возмещения"], "short_definition": "Заявленное требование возмещения", "search_aliases": ["возмещение", "требование"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:compensation-demand", "locale": "en", "labels": ["Compensation demand"], "short_definition": "A stated demand for compensation", "search_aliases": ["compensation", "demand"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:dispute-message", "locale": "ru", "labels": ["Сообщение о тяжбе"], "short_definition": "Письмо, сообщающее о споре", "search_aliases": ["тяжба", "сообщение о споре"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:dispute-message", "locale": "en", "labels": ["Dispute message"], "short_definition": "A message reporting a dispute", "search_aliases": ["lawsuit", "dispute message"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:dispatch-of-persons", "locale": "ru", "labels": ["Направление людей"], "short_definition": "Сообщённое направление людей", "search_aliases": ["направить людей", "послали людей"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:dispatch-of-persons", "locale": "en", "labels": ["Dispatch of persons"], "short_definition": "A reported sending of persons", "search_aliases": ["dispatch", "sent men"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:loan-request", "locale": "ru", "labels": ["Просьба о займе"], "short_definition": "Запрос займа или аванса", "search_aliases": ["заём", "аванс"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:loan-request", "locale": "en", "labels": ["Loan request"], "short_definition": "A request for a loan or advance", "search_aliases": ["loan", "advance"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:loan-or-advance", "locale": "ru", "labels": ["Заём или аванс"], "short_definition": "Категория запрошенного займа или аванса", "search_aliases": ["заём", "аванс"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:loan-or-advance", "locale": "en", "labels": ["Loan or advance"], "short_definition": "A requested loan-or-advance category", "search_aliases": ["loan", "advance"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:hired-work-reference", "locale": "ru", "labels": ["Упоминание наёмной работы"], "short_definition": "Упоминание наёмного работника в записи", "search_aliases": ["наёмный работник"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:hired-work-reference", "locale": "en", "labels": ["Hired-work reference"], "short_definition": "A record reference to hired work", "search_aliases": ["hired worker"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:business-record", "locale": "ru", "labels": ["Деловая запись"], "short_definition": "Категория деловой записи", "search_aliases": ["деловая запись"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:business-record", "locale": "en", "labels": ["Business record"], "short_definition": "A business-record category", "search_aliases": ["business record"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:religious-name-list", "locale": "ru", "labels": ["Церковный список имён"], "short_definition": "Список имён в церковном текстовом контексте", "search_aliases": ["список имён", "поминание"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:religious-name-list", "locale": "en", "labels": ["Religious name list"], "short_definition": "A name list in a religious textual context", "search_aliases": ["name list", "commemoration"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:commemoration-or-icon-order", "locale": "ru", "labels": ["Поминание или заказ икон"], "short_definition": "Неустранённая альтернатива классификации документа", "search_aliases": ["поминание", "заказ икон"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:commemoration-or-icon-order", "locale": "en", "labels": ["Commemoration or icon order"], "short_definition": "The unresolved documentary classification alternative", "search_aliases": ["commemoration", "icon order"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:church-calendar-text", "locale": "ru", "labels": ["Церковный календарный текст"], "short_definition": "Категория календарной церковной записи", "search_aliases": ["календарная запись", "церковные праздники"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:church-calendar-text", "locale": "en", "labels": ["Church calendar text"], "short_definition": "A church calendar-record category", "search_aliases": ["calendar record", "church feasts"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:feast-list", "locale": "ru", "labels": ["Перечень праздников"], "short_definition": "Перечень названий праздников", "search_aliases": ["перечень праздников"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:feast-list", "locale": "en", "labels": ["Feast list"], "short_definition": "A list of feast names", "search_aliases": ["feast list"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:christian-exegetical-text", "locale": "ru", "labels": ["Христианский экзегетический текст"], "short_definition": "Текст толкования христианской молитвы", "search_aliases": ["толкование", "Отче наш"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:christian-exegetical-text", "locale": "en", "labels": ["Christian exegetical text"], "short_definition": "A text interpreting a Christian prayer", "search_aliases": ["exegesis", "Lord's Prayer"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:urban-textual-context", "locale": "ru", "labels": ["Городской текстовый контекст"], "short_definition": "Контекст присутствия текстов в городской письменности", "search_aliases": ["городская письменность"]},
+    {"schema": "world_knowledge_concept_localization_v1", "concept_ref": "wk:social_law_economy:urban-textual-context", "locale": "en", "labels": ["Urban textual context"], "short_definition": "A context of texts in urban writing", "search_aliases": ["urban writing"]}
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-daily-economic-activities",
+      "locale": "ru",
+      "runtime_text": "Земледелие, ремесло и торговля названы в сводке среди составляющих хозяйства средневекового Новгорода наряду с промыслами. Это исторический контекст, не профессия NPC, рынок, запас, маршрут или требование иметь поле, мастерскую либо лавку в каждом доме.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-daily-economic-activities",
+      "locale": "en",
+      "runtime_text": "The synthesis names agriculture, craft and trade among medieval Novgorod's economic activities. This historical context assigns no NPC profession, market, stock or route and requires no field, workshop or shop in every household.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-daily-fur-sale-accounting",
+      "locale": "ru",
+      "runtime_text": "Новгородская грамота №420 XIII века фиксирует продажу пушного товара вместе со счётной денежной величиной. Это единичный пример товарной партии и суммы, не прямой факт о 1230 годе; цена не становится тарифом, курсом, массой монеты или доказательством текущей сделки и запаса.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-daily-fur-sale-accounting",
+      "locale": "en",
+      "runtime_text": "Thirteenth-century Novgorod letter no. 420 records a fur sale and an accounting monetary amount. This single commodity-lot-and-sum example is not a direct fact about 1230; its price becomes no tariff, exchange rate, coin mass or proof of a present transaction and stock.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-daily-honey-documentary-entry",
+      "locale": "ru",
+      "runtime_text": "Мёд встречается в новгородских долговых списках и материалах о натуральных податях, рассматриваемых средневековой сводкой. Это возможность товарной записи в соответствующем документальном контексте, не пчёлы, мёд в наличии, должник, кредитор, подать, право взыскания, количество или обязательство конкретного лица.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-daily-honey-documentary-entry",
+      "locale": "en",
+      "runtime_text": "Honey occurs in Novgorod debt lists and in-kind tribute material discussed by the medieval synthesis. This supports a commodity entry in the relevant documentary context, not present bees or honey, a debtor, creditor, tribute, enforcement right, amount or a particular person's obligation.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-daily-wax-commodity-context",
+      "locale": "ru",
+      "runtime_text": "Воск как продукт бортничества назван в средневековой новгородской сводке товаром, в том числе в письменных упоминаниях и контексте вывоза. Это историческая совместимость товарного обращения, не бортное дерево, запас, бортник, купец, торговый путь, цена, привилегия или завершённая продажа.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:social-daily-wax-commodity-context",
+      "locale": "en",
+      "runtime_text": "Wax as a product of tree-based wild-bee keeping is identified as a commodity in the medieval Novgorod synthesis, including documentary mentions and export context. This historical exchange compatibility establishes no bee tree, stock, beekeeper, merchant, trade route, price, privilege or completed sale.",
+      "search_aliases": []
+    },
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-debt-records-accounting-amount", "locale": "ru", "runtime_text": "Новгородская долговая запись 1220–1240 гг. фиксирует счётную величину; она не создаёт текущий долг, стороны или условия.", "search_aliases": ["долговая запись", "счётная величина"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-debt-records-accounting-amount", "locale": "en", "runtime_text": "A Novgorod debt record of 1220–1240 records an accounting amount; it creates no current debt, parties, or terms.", "search_aliases": ["debt record", "accounting amount"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-debt-record-may-contain-entry", "locale": "ru", "runtime_text": "Фрагмент новгородского долгового списка 1220–1240 гг. подтверждает тип записи с долговыми позициями, но не их содержание или действительность.", "search_aliases": ["долговой список", "долговая позиция"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-debt-record-may-contain-entry", "locale": "en", "runtime_text": "A 1220–1240 Novgorod debt-list fragment attests a record type with debt entries, not their content or validity.", "search_aliases": ["debt list", "debt entry"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-grivna-accounting-unit", "locale": "ru", "runtime_text": "В новгородской долговой записи 1220–1240 гг. гривна выступает счётной единицей; это не курс, масса, монета или наличные деньги.", "search_aliases": ["гривна", "счётная единица"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-grivna-accounting-unit", "locale": "en", "runtime_text": "In a 1220–1240 Novgorod debt record, grivna is an accounting unit; this is not a rate, mass, coin, or cash on hand.", "search_aliases": ["grivna", "accounting unit"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-guarantor-relates-transaction-obligation", "locale": "ru", "runtime_text": "В одном новгородском судебном документе 1220–1240 гг. упомянут поручитель в связи со сделкой и обязательством; это не общее правило поручительства.", "search_aliases": ["поручитель", "сделка"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-guarantor-relates-transaction-obligation", "locale": "en", "runtime_text": "One 1220–1240 Novgorod judicial record mentions a guarantor in a transaction-and-obligation context; it is not a general surety rule.", "search_aliases": ["guarantor", "transaction"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-written-complaint-may-assert-compensation", "locale": "ru", "runtime_text": "Новгородский судебный документ 1220–1240 гг. содержит требование возмещения; обвинение или требование не подтверждает исход спора.", "search_aliases": ["требование возмещения", "судебная запись"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-written-complaint-may-assert-compensation", "locale": "en", "runtime_text": "A 1220–1240 Novgorod judicial record contains a compensation demand; an accusation or demand does not establish the dispute outcome.", "search_aliases": ["compensation demand", "judicial record"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-dispute-message-reports-dispatch", "locale": "ru", "runtime_text": "Новгородское письмо первой половины XIII века сообщает о направлении людей в связи с речной тяжбой; оно не создаёт процессуальную роль или полномочие.", "search_aliases": ["тяжба", "направление людей"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-dispute-message-reports-dispatch", "locale": "en", "runtime_text": "A first-half-13th-century Novgorod letter reports sending men in connection with a river dispute; it creates no procedural role or authority.", "search_aliases": ["river dispute", "dispatch"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-loan-request-relates-loan", "locale": "ru", "runtime_text": "Новгородское письмо XII века классифицировано как просьба о займе. Это допускает лишь широкий исторический контекст займа, а не наличие кредитора, право на заём, ставку или условия в 1230 г.", "search_aliases": ["просьба о займе", "заём"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-loan-request-relates-loan", "locale": "en", "runtime_text": "A 12th-century Novgorod letter is classified as a loan request. It supports only a broad historical loan context, not a lender, entitlement, rate, or 1230 terms.", "search_aliases": ["loan request", "loan"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-hired-work-relates-business-record", "locale": "ru", "runtime_text": "Новгородский деловой фрагмент 1200–1220 гг. упоминает наёмного работника. Он поддерживает широкую историческую категорию наёмной работы, но не создаёт работника, оплату, срок, задачу или статус.", "search_aliases": ["наёмный работник", "деловая запись"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-hired-work-relates-business-record", "locale": "en", "runtime_text": "A 1200–1220 Novgorod business fragment mentions a hired worker. It supports a broad historical hired-work category, not a worker, wage, term, task, or status.", "search_aliases": ["hired worker", "business record"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-religious-name-list-relates-disjunctive-context", "locale": "ru", "runtime_text": "Новгородский список имён имеет неустранённую классификацию: церковные поминания и/или заказ икон. Это не создаёт обряд, церковь, лицо, икону или календарное правило.", "search_aliases": ["поминание", "заказ икон"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-religious-name-list-relates-disjunctive-context", "locale": "en", "runtime_text": "A Novgorod name list has the unresolved classification “church commemorations and/or icon order.” It creates no rite, church, person, icon, or calendar rule.", "search_aliases": ["commemoration", "icon order"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-church-calendar-text-relates-feast-list", "locale": "ru", "runtime_text": "Новгородская запись XI века перечисляет церковные праздники. Она поддерживает категорию календарного текста, но не дату, пост, обязанность, посещение или календарь 1230 г.", "search_aliases": ["календарная запись", "праздники"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-church-calendar-text-relates-feast-list", "locale": "en", "runtime_text": "An 11th-century Novgorod record lists church feasts. It supports a calendar-text category, not a 1230 date, fast, duty, attendance, or calendar.", "search_aliases": ["calendar record", "feasts"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-christian-exegetical-text-relates-urban-context", "locale": "ru", "runtime_text": "Ранне-XIII-вековой новгородский фрагмент толкования на «Отче наш» поддерживает широкий христианский текстовый контекст, но не веру, грамотность, знание доктрины или статус конкретного лица.", "search_aliases": ["Отче наш", "христианский текст"]},
+    {"schema": "world_knowledge_claim_localization_v1", "claim_ref": "claim:social-christian-exegetical-text-relates-urban-context", "locale": "en", "runtime_text": "An early-13th-century Novgorod Lord's-Prayer exegesis supports a broad Christian textual context, not a particular person's belief, literacy, doctrine knowledge, or status.", "search_aliases": ["Lord's Prayer", "Christian text"]}
+  ]
+}

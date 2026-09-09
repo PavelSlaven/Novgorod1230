@@ -1,0 +1,203 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:dmitruk-druzhnova-2020-soils",
+      "title": "Soil areas of the Novgorod region in the context of their agricultural use",
+      "authors": [
+        "N. G. Dmitruk",
+        "M. P. Druzhnova"
+      ],
+      "publication": "IOP Conference Series: Earth and Environmental Science 613 (2020), 012025",
+      "source_kind": "scholarship",
+      "citation": "https://iopscience.iop.org/article/10.1088/1755-1315/613/1/012025",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:terrain-quaternary-parent-materials",
+      "source_ref": "source:dmitruk-druzhnova-2020-soils",
+      "anchor": {
+        "section": "Abstract; section 1: Quaternary parent materials and accumulative glacial/fluvioglacial relief"
+      },
+      "note": "Independent disposition: verification/verification-terrain.md, TR-01/02/05 combined and TR-03 only. Modern regional soil geography supplies inferred coarse geological background, not medieval extraction, local source presence, modern floodplain distribution, or equivalence of administrative and historical boundaries.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:environment:regional-quaternary-deposits",
+      "domain": "environment",
+      "broader_refs": [],
+      "related_refs": [
+        "wk:environment:soil-texture-infiltration"
+      ],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:terrain-background",
+      "domain": "environment",
+      "subject_ref": "wk:environment:regional-quaternary-deposits",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "glacial_fluvioglacial_lacustrine_glacial_parent_materials_form_coarse_regional_geological_background"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:terrain-quaternary-parent-materials"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:terrain-parent-material-assemblage",
+      "domain": "environment",
+      "subject_ref": "wk:environment:regional-quaternary-deposits",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "regional_parent_material_assemblage_includes_loams_fluvioglacial_sand_gravel_pebbles_lacustrine_glacial_sand_clay"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:terrain-quaternary-parent-materials"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:regional-quaternary-deposits",
+      "locale": "ru",
+      "labels": [
+        "Региональные четвертичные отложения"
+      ],
+      "short_definition": "Общая геологическая рамка почвообразующих пород; конкретный источник требует отдельного основания.",
+      "search_aliases": [
+        "Геологический фон",
+        "Почвообразующие породы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:environment:regional-quaternary-deposits",
+      "locale": "en",
+      "labels": [
+        "Regional Quaternary deposits"
+      ],
+      "short_definition": "Broad geological parent-material context; an actual source needs separate grounding.",
+      "search_aliases": [
+        "Geological background",
+        "Soil parent materials"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:terrain-background",
+      "locale": "ru",
+      "runtime_text": "Современное почвенное исследование Новгородского региона описывает четвертичные ледниковые, водно-ледниковые и озёрно-ледниковые породы и аккумулятивный ледниковый рельеф. Для исторического контекста это лишь косвенная общая геологическая рамка, не поверхность, склон, маршрут или месторождение конкретной сцены.",
+      "search_aliases": [
+        "Ледниковые отложения",
+        "Водно-ледниковые породы",
+        "Геология Новгородского региона"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:terrain-background",
+      "locale": "en",
+      "runtime_text": "A modern soil study of the Novgorod region describes Quaternary glacial, fluvioglacial and lacustrine-glacial parent materials and accumulative glacial relief. In a historical context this is only inferred broad geological background, not a particular scene's surface, slope, route or deposit.",
+      "search_aliases": [
+        "Glacial deposits",
+        "Fluvioglacial materials",
+        "Novgorod regional geology"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:terrain-parent-material-assemblage",
+      "locale": "ru",
+      "runtime_text": "В описанном современным исследованием региональном составе почвообразующих пород есть валунные и песчаные суглинки, водно-ледниковые пески с гравием и галькой, озёрно-ледниковые пески и глины. Это косвенная геологическая совместимость классов, не наличие всех пород в одном месте, доступное сырьё, его чистота, количество или свидетельство средневековой добычи.",
+      "search_aliases": [
+        "Песок гравий галька",
+        "Суглинок глина",
+        "Почвообразующие породы"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:terrain-parent-material-assemblage",
+      "locale": "en",
+      "runtime_text": "The parent-material assemblage described by a modern regional study includes boulder and sandy loams, fluvioglacial sands with gravel and pebbles, and lacustrine-glacial sands and clays. This is inferred geological compatibility of classes, not their co-occurrence at a site, usable raw material, purity, quantity or evidence of medieval extraction.",
+      "search_aliases": [
+        "Sand gravel pebbles",
+        "Loam clay",
+        "Soil parent materials"
+      ]
+    }
+  ]
+}

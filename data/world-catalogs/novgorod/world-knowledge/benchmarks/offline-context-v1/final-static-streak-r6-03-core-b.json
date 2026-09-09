@@ -1,0 +1,270 @@
+{
+  "schema_version": "world_knowledge_static_acceptance_batch_v1",
+  "batch_id": "final-static-streak-r6-03-core-b",
+  "candidate_commit": "d15cb80b5e06a94657c62fff75ca4f98f43ab752",
+  "sampling": {
+    "kind": "controlled_mixed",
+    "case_count": 37
+  },
+  "cases": [
+    {
+      "case_id": "r603cb01",
+      "primary_domain": "flax processing",
+      "need_group": "practical_natural_physical",
+      "situation": "A family has retted flax and needs to prepare it for weaving.",
+      "knowledge_need": "flax stages, labor sequence, and seasonal constraints"
+    },
+    {
+      "case_id": "r603cb02",
+      "primary_domain": "wagon repair",
+      "need_group": "practical_natural_physical",
+      "situation": "A wagon axle begins to squeal and heat on a rough road.",
+      "knowledge_need": "wooden vehicle maintenance, friction, and safe travel"
+    },
+    {
+      "case_id": "r603cb03",
+      "primary_domain": "mushroom gathering",
+      "need_group": "practical_natural_physical",
+      "situation": "Foragers find unfamiliar mushrooms near a damp wood and consider supper.",
+      "knowledge_need": "edibility uncertainty, seasonal gathering, and caution"
+    },
+    {
+      "case_id": "r603cb04",
+      "primary_domain": "cellar cooling",
+      "need_group": "practical_natural_physical",
+      "situation": "A householder stores turnips as weather alternates between frost and thaw.",
+      "knowledge_need": "root storage, moisture, freezing, and spoilage"
+    },
+    {
+      "case_id": "r603cb05",
+      "primary_domain": "net mending",
+      "need_group": "practical_natural_physical",
+      "situation": "A fishing net has several torn meshes before a dawn outing.",
+      "knowledge_need": "net structure, mending, and effect on catch"
+    },
+    {
+      "case_id": "r603cb06",
+      "primary_domain": "lime mortar",
+      "need_group": "practical_natural_physical",
+      "situation": "A mason needs to patch a wall joint after a cold rain.",
+      "knowledge_need": "mortar materials, curing conditions, and weather limits"
+    },
+    {
+      "case_id": "r603cb07",
+      "primary_domain": "pig keeping",
+      "need_group": "practical_natural_physical",
+      "situation": "A pig has broken into a vegetable patch at planting time.",
+      "knowledge_need": "animal behavior, damage, fencing, and household response"
+    },
+    {
+      "case_id": "r603cb08",
+      "primary_domain": "herbal caution",
+      "need_group": "practical_natural_physical",
+      "situation": "Someone proposes an unknown bitter herb for a feverish child.",
+      "knowledge_need": "limits of folk remedies, poisoning risk, and prudent care"
+    },
+    {
+      "case_id": "r603cb09",
+      "primary_domain": "wet clothing",
+      "need_group": "practical_natural_physical",
+      "situation": "A washerwoman must dry wool garments indoors during several days of rain.",
+      "knowledge_need": "fabric drying, mildew risk, heat damage, and ventilation"
+    },
+    {
+      "case_id": "r603cb10",
+      "primary_domain": "well mechanics",
+      "need_group": "practical_natural_physical",
+      "situation": "The rope on a village well is fraying where it passes a wooden rim.",
+      "knowledge_need": "wear, simple lifting mechanisms, and accident prevention"
+    },
+    {
+      "case_id": "r603cb11",
+      "primary_domain": "grain milling",
+      "need_group": "practical_natural_physical",
+      "situation": "A household receives flour with grit in it and must decide whether it is usable.",
+      "knowledge_need": "milling, sieving, contamination, and food safety"
+    },
+    {
+      "case_id": "r603cb12",
+      "primary_domain": "spring flood",
+      "need_group": "practical_natural_physical",
+      "situation": "Water begins entering a low storehouse beside a stream.",
+      "knowledge_need": "flood behavior, salvaging goods, and structural limits"
+    },
+    {
+      "case_id": "r603cb13",
+      "primary_domain": "sawing timber",
+      "need_group": "practical_natural_physical",
+      "situation": "Two workers prepare boards from a log for a door repair.",
+      "knowledge_need": "timber selection, sawing labor, drying, and joinery consequences"
+    },
+    {
+      "case_id": "r603cb14",
+      "primary_domain": "fermented drink",
+      "need_group": "practical_natural_physical",
+      "situation": "A brewer notices a strange smell in a vessel meant for a household drink.",
+      "knowledge_need": "fermentation, vessel cleanliness, and spoilage judgment"
+    },
+    {
+      "case_id": "r603cb15",
+      "primary_domain": "pasture plants",
+      "need_group": "practical_natural_physical",
+      "situation": "A herder sees cattle eating near a patch of suspicious plants.",
+      "knowledge_need": "grazing risk, animal observation, and local plant caution"
+    },
+    {
+      "case_id": "r603cb16",
+      "primary_domain": "wax work",
+      "need_group": "practical_natural_physical",
+      "situation": "A household wants to make a few candles for a ceremony from saved wax.",
+      "knowledge_need": "wax handling, wick materials, and light quality"
+    },
+    {
+      "case_id": "r603cb17",
+      "primary_domain": "snow load",
+      "need_group": "practical_natural_physical",
+      "situation": "Heavy wet snow piles on an outbuilding roof overnight.",
+      "knowledge_need": "roof load, safe clearing, and collapse risk"
+    },
+    {
+      "case_id": "r603cb18",
+      "primary_domain": "poultry illness",
+      "need_group": "practical_natural_physical",
+      "situation": "Several ducks become listless after drinking from stagnant water.",
+      "knowledge_need": "animal health signs, water quality, isolation, and loss limits"
+    },
+    {
+      "case_id": "r603cb19",
+      "primary_domain": "vegetable pickling",
+      "need_group": "practical_natural_physical",
+      "situation": "A cook wants to preserve cabbage after a harvest but lacks a spare large barrel.",
+      "knowledge_need": "preservation vessels, salt, quantities as non-exact practice, and storage"
+    },
+    {
+      "case_id": "r603cb20",
+      "primary_domain": "riverbank erosion",
+      "need_group": "practical_natural_physical",
+      "situation": "A path beside a river has slumped after repeated rain.",
+      "knowledge_need": "soil erosion, route safety, and temporary marking"
+    },
+    {
+      "case_id": "r603cb21",
+      "primary_domain": "bone and horn",
+      "need_group": "practical_natural_physical",
+      "situation": "A craftworker wants a durable handle from animal material for a small tool.",
+      "knowledge_need": "workable materials, shaping, fastening, and ordinary uses"
+    },
+    {
+      "case_id": "r603cb22",
+      "primary_domain": "sleep and fatigue",
+      "need_group": "practical_natural_physical",
+      "situation": "A night watchman has been awake through cold rain and must stay alert until relief.",
+      "knowledge_need": "fatigue effects, warmth, food, light, and realistic limits"
+    },
+    {
+      "case_id": "r603cb23",
+      "primary_domain": "fishing boat upkeep",
+      "need_group": "practical_natural_physical",
+      "situation": "A small boat leaks through a seam before a planned trip.",
+      "knowledge_need": "wooden hull seams, caulking materials, and seaworthiness"
+    },
+    {
+      "case_id": "r603cb24",
+      "primary_domain": "ash and soap",
+      "need_group": "practical_natural_physical",
+      "situation": "A household saves ash from its hearth for washing rather than throwing it away.",
+      "knowledge_need": "ash uses, lye caution, and household chemistry"
+    },
+    {
+      "case_id": "r603cb25",
+      "primary_domain": "summer heat",
+      "need_group": "practical_natural_physical",
+      "situation": "A laborer working in direct sun becomes dizzy while carrying bundles.",
+      "knowledge_need": "heat stress, water, rest, shade, and work pacing"
+    },
+    {
+      "case_id": "r603cb26",
+      "primary_domain": "sheep shearing",
+      "need_group": "practical_natural_physical",
+      "situation": "A small flock must be shorn before persistent warm weather.",
+      "knowledge_need": "seasonal timing, animal handling, fleece condition, and tools"
+    },
+    {
+      "case_id": "r603cb27",
+      "primary_domain": "woven baskets",
+      "need_group": "practical_natural_physical",
+      "situation": "A gatherer needs a container for damp berries that will not crush them on the walk home.",
+      "knowledge_need": "basket materials, airflow, and handling fragile produce"
+    },
+    {
+      "case_id": "r603cb28",
+      "primary_domain": "thunderstorm safety",
+      "need_group": "practical_natural_physical",
+      "situation": "Field workers are caught far from buildings as a thunderstorm approaches.",
+      "knowledge_need": "weather signs, exposed-ground risk, and practical shelter choices"
+    },
+    {
+      "case_id": "r603cb29",
+      "primary_domain": "smoked meat",
+      "need_group": "practical_natural_physical",
+      "situation": "Meat is drying unevenly in a smokehouse after weather turns damp.",
+      "knowledge_need": "smoke, airflow, spoilage, and preservation limitations"
+    },
+    {
+      "case_id": "r603cb30",
+      "primary_domain": "waterproofing",
+      "need_group": "practical_natural_physical",
+      "situation": "A courier needs to protect a written note during a wet journey.",
+      "knowledge_need": "period-plausible wrapping, material limits, and moisture protection"
+    },
+    {
+      "case_id": "r603cb31",
+      "primary_domain": "guildless work",
+      "need_group": "social_institutional",
+      "situation": "A newcomer offers repair work near established craftspeople and draws suspicion.",
+      "knowledge_need": "workplace competition, local standing, and negotiation"
+    },
+    {
+      "case_id": "r603cb32",
+      "primary_domain": "child discipline",
+      "need_group": "social_institutional",
+      "situation": "A child damages a neighbor's tool while playing and adults must respond.",
+      "knowledge_need": "family responsibility, apology, restitution, and age expectations"
+    },
+    {
+      "case_id": "r603cb33",
+      "primary_domain": "lodging",
+      "need_group": "social_institutional",
+      "situation": "A stranger asks a household for shelter during a storm but carries little proof of identity.",
+      "knowledge_need": "hospitality, caution, status signals, and household safety"
+    },
+    {
+      "case_id": "r603cb34",
+      "primary_domain": "women's work networks",
+      "need_group": "social_institutional",
+      "situation": "Several neighbors organize shared work after one household's loom breaks.",
+      "knowledge_need": "mutual aid, labor exchange, household ties, and plausible coordination"
+    },
+    {
+      "case_id": "r603cb35",
+      "primary_domain": "public announcement",
+      "need_group": "social_institutional",
+      "situation": "A local official needs to gather residents for a matter affecting a lane.",
+      "knowledge_need": "credible communication channels, authority, and attendance expectations"
+    },
+    {
+      "case_id": "r603cb36",
+      "primary_domain": "pilgrim encounter",
+      "need_group": "social_institutional",
+      "situation": "A household debates whether to feed a passing religious traveller with an unfamiliar story.",
+      "knowledge_need": "charity, skepticism, religious culture, and household limits"
+    },
+    {
+      "case_id": "r603cb37",
+      "primary_domain": "inheritance household",
+      "need_group": "social_institutional",
+      "situation": "Siblings disagree over who may keep their late father's working tools.",
+      "knowledge_need": "family property, customary negotiation, gender and age considerations, and conflict limits"
+    }
+  ]
+}

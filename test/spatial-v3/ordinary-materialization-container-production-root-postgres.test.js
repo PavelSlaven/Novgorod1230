@@ -78,6 +78,8 @@ test('production root provisions active O2b and S1 in the first-entry P16',
     let loadedProfile=null;
     const root=await createSpatialV3ProductionCompositionRoot({
       config:{runtimeCatalogPinManifestDigest:hex},
+      worldKnowledgeEncoderFactory:()=>({ready:async()=>{},
+        encode:async()=>new Float32Array(1024),close:async()=>{}}),
       pools:{partyPool:pool,worldPool,async close(){
         if (!closed) { closed=true; await pool.end(); }
       }},

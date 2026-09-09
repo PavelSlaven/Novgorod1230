@@ -10,6 +10,10 @@ import { loadLowerDvinaTraceProductionMaterializationProfiles } from '../interna
 import { loadLowerDvinaTraceSpatialSemanticProfile } from '../internal/lower-dvina-trace-spatial-semantic-profile.js';
 import { loadLowerDvinaTraceN1Profile } from
   '../internal/lower-dvina-trace-n1-profile.js';
+import { loadProductionWorldKnowledge } from
+  '../internal/world-knowledge-production.js';
+import { loadLowerDvinaTraceMaterializationBundle } from
+  '../internal/lower-dvina-trace-phase-1a-bundle.js';
 import {
   SPATIAL_V3_TARGET_MIGRATIONS,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
@@ -45,6 +49,7 @@ export async function createSpatialV3ProductionCompositionRoot({
   now,
   pools: suppliedPools = null,
   bindingsFactory = null,
+  worldKnowledgeEncoderFactory = undefined,
   targetRootFactory = createSpatialV3ProductionComposition
 } = {}) {
   const pools = suppliedPools ?? createPostgresPools({ env, PoolClass });
@@ -65,7 +70,8 @@ export async function createSpatialV3ProductionCompositionRoot({
     const startup = { world_database: await probePostgresPool(pools.worldPool, 'world_base'), party_database: await probePostgresPool(pools.partyPool, 'party_runtime') };
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
     const [profiles, spatialSemanticProfile, scenePresentation,
-      npcSemanticRemainderProfile] = await Promise.all([
+      npcSemanticRemainderProfile, loadedWorldKnowledge,
+      scenarioBundle] = await Promise.all([
       loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
       loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() }),
       loadLowerDvinaTraceScenePresentation({
@@ -74,14 +80,26 @@ export async function createSpatialV3ProductionCompositionRoot({
       }),
       loadLowerDvinaTraceN1Profile({
         rootDir: config.rootDir ?? process.cwd()
+      }),
+      loadProductionWorldKnowledge({ rootDir: config.rootDir ?? process.cwd(),
+        python: env.RUS_WORLD_KNOWLEDGE_PYTHON ?? 'python',
+        requireEncoderReady: true,
+        ...(worldKnowledgeEncoderFactory == null ? {}
+          : { encoderFactory: worldKnowledgeEncoderFactory }) }),
+      loadLowerDvinaTraceMaterializationBundle({
+        rootDir: config.rootDir ?? process.cwd(),
+        scenarioDefinitionRevision: 32
       })
     ]);
+    const worldKnowledge = Object.freeze({ ...loadedWorldKnowledge,
+      calendar_profile: scenarioBundle.calendar_profile });
     const bindingContext = Object.freeze({ env, config,
       ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
       actionProductionProfile:profiles.actionProductionProfile, localFireProfile:profiles.localFireProfile,
       spatialSemanticProfile,
       npcSemanticRemainderProfile,
+      worldKnowledge,
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
     });
@@ -203,6 +221,10 @@ export async function createSpatialV3ProductionCompositionRoot({
           SPATIAL_V3_PRODUCTION_RELEASE.temporal_contract_id,
         world_revision_id:
           SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
+        world_knowledge_pack_ref:
+          SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_ref,
+        world_knowledge_pack_revision:
+          SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_revision,
         world_catalog_digest:
           SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest,
         world_catalog_manifest_sha256:
@@ -226,7 +248,7 @@ export async function createSpatialV3ProductionCompositionRoot({
         migration_readiness: Object.freeze(partyReadiness),
         dependencies: structuredClone(startup)
       }),
-      close: () => pools.close()
+      close: () => Promise.all([pools.close(), worldKnowledge.encoder.close()])
     });
   } catch (error) {
     await pools.close().catch(() => {});

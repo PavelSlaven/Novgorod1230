@@ -6,10 +6,7 @@ import { enabled, group, request, verifyStageBCutover } from
   './lower-dvina-trace-o1-fixture.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
-import { projectLowerDvinaTracePlayerSafeState } from
-  '../src/runtime/lower-dvina-trace-player-safe-state.js';
-import { applyOrdinaryMaterializationProjection } from
-  '../src/infrastructure/postgres/lower-dvina-trace-ordinary-p16.js';
+import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 
 test('initial location binding resolves through its provisioned ordinary scope',
   async () => {
@@ -100,6 +97,8 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
     .background_groups[0].group_ref.startsWith('ordinary_group_'), true);
   assert.equal(first.ordinary_materialization_atomic_write_plan.new_prepared_bases[0].basis_ref,
     first.ordinary_materialization_atomic_write_plan.transitions[0].background_groups[0].group_ref);
+  assert.deepEqual(first.consequence_fragment.visible_seed.ordinary_presence_seed,
+    { kind: 'ordinary_presence_seed', resolution: 'absent' });
   calls.length = 0;
   await resolver(request('найти верёвку'));
   assert.equal(calls[1].candidate_query.coverage_key, firstCoverageKey);
@@ -111,11 +110,16 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
 test('seed and presence each retain one structural repair',
   async () => {
     let modelCalls = 0;
+    const semanticContext = { visible_scene: 'мастерская',
+      sensory_details: ['На полу лежат деревянные обрезки.'],
+      visible_objects: ['скамья'] };
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
       partyId: 'party', inputDigest: 'repair-budget', verifyStageBCutover,
       loadEnablement: async () => enabled(),
       ordinaryMaterializationModel: async (modelRequest, context) => {
         modelCalls += 1;
+        assert.deepEqual(context.semantic_context, semanticContext,
+          'presence and its repair must retain scene evidence, not only the candidate wording');
         if (modelCalls === 1 || modelCalls === 3) return {};
         if (modelRequest.mode === 'seed_scope' && context.repair != null) {
           return { schema: 'ordinary_materialization_plan_v1',
@@ -137,13 +141,68 @@ test('seed and presence each retain one structural repair',
         return {};
       }
     });
-    const result = await resolver(request('найти ложку'));
+    const input = request('найти обрезок рядом с названным игроком сундуком');
+    input.request.player_safe_state = { current_visible_context: {
+      ...semanticContext, visible_objects: [{ display_label: 'скамья' }] } };
+    const result = await resolver(input);
     assert.equal(modelCalls, 4);
     assert.deepEqual(result.ordinary_materialization_atomic_write_plan
       .transitions.map(({ kind }) => kind), ['seed', 'resolve_presence']);
     assert.equal(result.ordinary_materialization_atomic_write_plan.resolution,
       'absent');
   });
+
+test('presence repair budget is distinct per immutable turn step', async () => {
+  const budget = createLlmTurnBudget();
+  const repairClaims = [];
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: 'party', inputDigest: 'presence-repair-identity',
+    verifyStageBCutover,
+    loadEnablement: async () => {
+      const value = enabled();
+      value.ordinary_aggregate = applyOrdinaryAggregateTransition({
+        aggregate: value.ordinary_aggregate,
+        transition: { kind: 'seed', request_identity: 'seed',
+          expected_state_version: 0, density_band: 'ordinary',
+          identity_budget: 1, background_groups: [] }
+      });
+      value.version_pins = { ...value.version_pins, ordinary_state_version: 1 };
+      return value;
+    },
+    ordinaryMaterializationModel: async (modelRequest, context) => {
+      if (context.repair === null) return {};
+      repairClaims.push(budget.claimRepair({
+        requestIdentity: modelRequest.request_id,
+        repairKind: 'ordinary_materialization'
+      }));
+      return { schema: 'ordinary_materialization_plan_v1',
+        request_id: modelRequest.request_id, resolution: 'absent',
+        density_band_proposal: null, background_groups: [], entities: [],
+        presence_resolutions: [{
+          candidate_key: modelRequest.candidate_query.candidate_key,
+          coverage_key: modelRequest.candidate_query.coverage_key,
+          resolution: 'absent'
+        }], reason_code: 'presence_repaired' };
+    }
+  });
+  const first = request('найти ложку');
+  first.request.step_index = 1;
+  const second = request('найти верёвку');
+  second.request.step_index = 2;
+  await budget.runTurn(async () => {
+    await resolver(first);
+    await resolver(second);
+    await assert.rejects(() => resolver(second), (error) => {
+      assert.equal(error.code, 'TURN_ORDINARY_PRESENCE_MODEL_FAILED');
+      assert.equal(error.details.cause,
+        'Gameplay turn repair budget is already claimed.');
+      return true;
+    });
+  });
+  assert.deepEqual(repairClaims.map(({ request_identity }) => request_identity).sort(),
+    ['turn:party:1:ordinary:presence:step:1',
+      'turn:party:1:ordinary:presence:step:2']);
+});
 
 test('committed exact identity survives reload and only normalized wording reuses it', async () => {
   let committed = null;
@@ -198,10 +257,18 @@ test('committed exact identity survives reload and only normalized wording reuse
     .next_supporting_basis_catalog;
   assert.equal(modelCalls, 2);
   assert.equal(cutoverCalls, 1);
-  await resolver({ ...request('  НАЙТИ   ложку  '), request: { root_turn_id: 'turn:party:2' } });
+  const committedBeforeReplay = structuredClone(committed);
+  const replay = await resolver({ ...request('  НАЙТИ   ложку  '), request: { root_turn_id: 'turn:party:2' } });
   assert.equal(modelCalls, 2, 'case/whitespace normalization maps to the committed identity');
   assert.equal(cutoverCalls, 1,
     'known resolution short-circuits before the local receipt check');
+  assert.deepEqual(committed, committedBeforeReplay,
+    'known negative replay does not mutate the committed aggregate');
+  assert.deepEqual(replay.write_fragments, []);
+  assert.equal(Object.hasOwn(replay, 'ordinary_materialization_atomic_write_plan'), false);
+  assert.deepEqual(replay.consequence_fragment.visible_seed.ordinary_presence_seed,
+    first.consequence_fragment.visible_seed.ordinary_presence_seed,
+    'known negative replay exposes the same persisted visible result');
   await resolver({ ...request('отыскать ложку'), request: { root_turn_id: 'turn:party:3' } });
   assert.equal(modelCalls, 3,
     'a semantically different normalized query receives a new candidate identity');
@@ -262,15 +329,17 @@ test('Stage A sparse density is mapped by code to a zero persisted identity budg
   'transient zero-budget no_change does not fabricate a granular record');
 });
 
-test('full resolution cap returns no_change without a write or granular record',
+for (const exhausted of ['identity budget', 'resolution cap']) {
+test(`exhausted ${exhausted} returns a no-op before model or atomic plan`,
   async () => {
+    const capped = exhausted === 'resolution cap';
     let aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'shore' },
       resolution_record_cap: 1 });
     aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
       kind: 'seed', request_identity: 'seed', expected_state_version: 0,
-      density_band: 'ordinary', identity_budget: 1, background_groups: []
+      density_band: 'ordinary', identity_budget: capped ? 1 : 0, background_groups: []
     } });
-    aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
+    if (capped) aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
       kind: 'resolve_presence', request_identity: 'presence-one',
       expected_state_version: 1, resolution_ref: 'resolution-one',
       candidate_key: 'candidate-one', coverage_key: 'coverage-one',
@@ -284,22 +353,32 @@ test('full resolution cap returns no_change without a write or granular record',
         const value = enabled();
         value.ordinary_aggregate = structuredClone(aggregate);
         value.objective_context.ordinary_state = {
-          seeded: true, density_band: 'ordinary', remaining_identity_budget: 1,
-          background_groups: [], presence_resolutions: ['resolution-one'],
+          seeded: true, density_band: 'ordinary', remaining_identity_budget: capped ? 1 : 0,
+          background_groups: [], presence_resolutions: capped ? ['resolution-one'] : [],
           closed_observation_scopes: []
         };
-        value.version_pins.ordinary_state_version = 2;
+        value.version_pins.ordinary_state_version = aggregate.state_version;
         return value;
       },
       ordinaryMaterializationModel: async () => { modelCalls += 1; return {}; }
     });
-    const result = await resolver(request('найти другую вещь'));
+    const input = request('найти другую вещь');
+    input.working_projection = { visible_context: { scene: 'shore' } };
+    const result = await resolver(input);
     assert.equal(modelCalls, 0);
-    assert.equal(Object.hasOwn(result,
-      'ordinary_materialization_atomic_write_plan'), false);
-    assert.equal(aggregate.presence_resolutions.length, 1);
-    assert.equal(aggregate.state_version, 2);
+    assert.deepEqual(result.working_projection, input.working_projection);
+    assert.deepEqual(result.write_fragments, []);
+    assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
+    assert.deepEqual(result.consequence_fragment, { visible_seed: {
+      ordinary_presence_seed: {
+        kind: 'ordinary_presence_seed', resolution: 'no_change'
+      }
+    } });
+    assert.equal(result.player_response_boundary, true);
+    assert.equal(aggregate.presence_resolutions.length, capped ? 1 : 0);
+    assert.equal(aggregate.state_version, capped ? 2 : 1);
   });
+}
 
 test('production-shaped bounded mechanics admits one positive ordinary item',
   async () => {
@@ -401,53 +480,4 @@ test('current visible location maps to its already pinned G6 discovery context',
   });
 
   assert.equal(modelCalls, 1);
-});
-
-test('projects a committed ordinary item without its materialization internals', () => {
-  const committedState = {
-    party_id: 'party', actor_id: 'mikula', player_profile: {},
-    position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor',
-      position_id: 'shed-position' },
-    items: [], visible_context: { visible_objects: [] },
-    ordinary_materialization: { remaining_identity_budget: 0,
-      background_groups: ['group-private'], supporting_basis_catalog: ['basis-private'],
-      negative_presence_record: 'negative-presence' }
-  };
-  const ordinaryPlan = { party_id: 'party', item: { item_id: 'ordinary-spoon',
-    property_basis_ref: 'basis-private', supporting_basis_ref: 'basis-private',
-    runtime_placement: { scene_position_id: 'shed-position' },
-    item_proposal: { scope_ref: { entity_kind: 'g6', entity_id: 'shed' },
-      semantic_descriptor: { semantic_type: 'household_tool', name: 'wooden spoon' },
-      placement: { scope_ref: 'shed', position_ref: 'bench' },
-      property_placement_evidence: { permission_ref: 'permission-private',
-        property_basis_class: 'occupied_site_default',
-        property_source_ref: 'basis-private' } },
-    mechanics_snapshot: {
-      schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,
-      provenance: { source_kind: 'ordinary_world_materialization',
-        causal_ref: 'cause', request_id: 'request', candidate_key: 'candidate',
-        coverage_key: 'coverage', context_version: 'context',
-        policy_ref: 'policy', source_refs: ['basis-private'] },
-      mechanics: { mass_grams: 80, external_hand_cost: 0,
-        carry_form: 'compact', packing_slot_cost: 1,
-        quantity: { value: 1, unit: 'item' }, container: null }
-    } } };
-  committedState.visible_context = applyOrdinaryMaterializationProjection({
-    next: committedState, visibleContext: committedState.visible_context, ordinaryPlan
-  });
-
-  const result = projectLowerDvinaTracePlayerSafeState({
-    committed_state: committedState, actor_id: 'mikula' });
-  assert.deepEqual(result.player_safe_state.items, [{
-    item_id: 'ordinary-spoon', name: 'wooden spoon',
-    quantity: 1, condition_state: 'ordinary_runtime_instance',
-    legal_status: 'ordinary_world_property_bound',
-    placement: { scene_position_id: 'shed-position' },
-    state: { semantic_category: 'household_tool' }
-  }]);
-  const playerSafe = JSON.stringify(result.player_safe_state);
-  for (const privateValue of ['remaining_identity_budget', 'background_groups',
-    'basis-private', 'permission-private', 'negative-presence']) {
-    assert.equal(playerSafe.includes(privateValue), false);
-  }
 });

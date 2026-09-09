@@ -5,11 +5,13 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const src = new URL('../src/', import.meta.url);
+const ioAdapters = new Set(['cli.js', 'world-knowledge-authoring-loader.js',
+  'world-knowledge-embeddings.js', 'world-knowledge-pipeline-eval.js']);
 
 test('pure modules have no hidden filesystem, network, time or randomness dependencies', async () => {
   const dir = fileURLToPath(src);
   for (const file of await readdir(dir)) {
-    if (!file.endsWith('.js') || file === 'cli.js') continue;
+    if (!file.endsWith('.js') || ioAdapters.has(file)) continue;
     const text = await readFile(join(dir, file), 'utf8');
     assert.doesNotMatch(text, /node:fs|node:http|node:https|fetch\s*\(|Date\.now\s*\(|new Date\s*\(|Math\.random\s*\(/u, file);
   }

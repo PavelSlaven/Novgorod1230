@@ -1,0 +1,49 @@
+{
+  "exact_head": "3033916161044786ef084385e6e0fba63f693765",
+  "reviewer": "/root/macro_b17_review_a",
+  "cases": [
+    {
+      "case_id": "mb17free-006",
+      "original_gap": "самонагрев, влажность, плесень и риск тления/пожара в плотно уложенном сене; безопасные первичные действия",
+      "verdict": "genuine_gap",
+      "rationale_ru": "WK покрывает хранение сена сухим, возможные плесени в корме и срочность выраженного вздутия с дыхательным расстройством у жвачного. Но не содержит связи плотного влажного сена с самонагревом, тлением либо пожарным риском. Без неё нельзя объяснить существенный признак горячего слоя и выбрать безопасную реакцию, не подменяя её догадкой.",
+      "claim_refs": [
+        "claim:practical-fodder-hay",
+        "claim:static-ruminant-feed-b11-some-feed-molds-can-produce-mycotoxins-with-animal-dependent-effects",
+        "claim:static-ruminant-feed-b11-marked-distension-and-respiratory-distress-warrant-prompt-qualified-assessment"
+      ]
+    },
+    {
+      "case_id": "mb17free-012",
+      "original_gap": "причины липкого налёта на культурных растениях и безопасная связь растительного/насекомого контакта с кожным раздражением",
+      "verdict": "genuine_gap",
+      "rationale_ru": "WK подтверждает историческую совместимость льна, а также отдельные примеры кожного раздражения от крапивы и свежего сока лютиковых. В нём нет общей factual связи между липким налётом на льне, возможными растительными или насекомыми причинами и зудящей реакцией после работы. Нельзя переносить свойства крапивы либо Ranunculaceae на лён; существенная семейная посылка отсутствует.",
+      "claim_refs": [
+        "claim:agriculture-fauna-flax-hemp-cultivation",
+        "claim:research-urtica-dioica-trichomes-can-produce-skin-sting-or-welts",
+        "claim:static-fresh-ranunculaceae-sap-can-irritate-skin",
+        "claim:foundations-haz-01-exposure-modifiers"
+      ]
+    },
+    {
+      "case_id": "mb17free-019",
+      "original_gap": "контакт кожи с неизвестной красильной или протравной ванной: безопасное немедленное удаление вещества, смывание, наблюдение и границы без назначения состава",
+      "verdict": "genuine_gap",
+      "rationale_ru": "WK описывает красильную ванну и необязательную протраву, а также то, что последствия химического воздействия зависят от вещества, пути, дозы и времени. Это не даёт общей безопасной первичной реакции на контакт с неизвестной тёплой красильной ванной; частная первая помощь при термическом ожоге и раздражение золой не переносятся автоматически. Следовательно, отсутствует reusable factual family, а не current-state или exact-mechanics деталь.",
+      "claim_refs": [
+        "claim:textile-dye-application",
+        "claim:textile-dye-mordant-fixation",
+        "claim:candidate-macro-causal-v2-toxic-exposure-can-occur-by-several-routes-and-effects-vary-with-context",
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:static-minor-thermal-burn-first-aid-is-cool-water-and-no-adherent-removal-or-grease"
+      ]
+    }
+  ],
+  "summary": {
+    "reviewed_cases": 3,
+    "genuine_gap": 3,
+    "covered_composable": 0,
+    "out_of_scope_state": 0,
+    "verdict": "all_three_require_reusable_factual_family_work"
+  }
+}

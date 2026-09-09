@@ -1,0 +1,448 @@
+{
+  "schema": "world_knowledge_pipeline_benchmark_v1",
+  "benchmark_ref": "wk-pipeline:scientific-foundations-v1",
+  "cases": [
+    {
+      "case_id": "foundations_reappraisal_en",
+      "locale": "en",
+      "query_text": "What did the laboratory negative-film task find about instructed cognitive reappraisal and reported negative emotional experience?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-01-reappraisal-negative-experience"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms4-01-reappraisal-negative-experience"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_uncertainty_ru",
+      "locale": "ru",
+      "query_text": "Как неопределённость и её представление могут влиять на процессы когнитивного контроля и принятия решений, согласно обзору исследований?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms4-03-uncertainty-cognitive-control"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms4-03-uncertainty-cognitive-control"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_antler_workability_ru",
+      "locale": "ru",
+      "query_text": "Чем олений рог отличается от кератинового рога и что опыт с естественно сброшенным рогом благородного оленя показал о воде и обрабатываемости?",
+      "relevant_claim_refs": [
+        "claim:foundations-physical-material3-01-antler-osseous-not-horn",
+        "claim:foundations-physical-material3-03-antler-water-workability"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-material3-01-antler-osseous-not-horn"
+        ],
+        [
+          "claim:foundations-physical-material3-03-antler-water-workability"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_acute_stress_ru",
+      "locale": "ru",
+      "query_text": "Как острый стресс может влиять на процессы принятия решений, согласно обзору исследований?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-04-acute-stress"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms3-04-acute-stress"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_apology_experiment_en",
+      "locale": "en",
+      "query_text": "What did the two-round trust-game experiment with 221 Chinese undergraduates find about apology and later re-investment?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms3-06-apology-reinvestment"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms3-06-apology-reinvestment"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_infection_routes_ru",
+      "locale": "ru",
+      "query_text": "Какие пути передачи возбудителей и входные ворота инфекции выделяет учебная схема CDC/NIOSH?",
+      "relevant_claim_refs": [
+        "claim:foundations-life-44-pathogen-transport",
+        "claim:foundations-life-45-infection-entry"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-44-pathogen-transport"
+        ],
+        [
+          "claim:foundations-life-45-infection-entry"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_chemical_exposure_en",
+      "locale": "en",
+      "query_text": "Why does contact with a chemical contaminant not by itself determine illness, and which exposure conditions matter?",
+      "relevant_claim_refs": [
+        "claim:foundations-haz-01-exposure-modifiers",
+        "claim:foundations-haz-02-exposure-not-illness"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-haz-01-exposure-modifiers"
+        ],
+        [
+          "claim:foundations-haz-02-exposure-not-illness"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_wet_slope_ru",
+      "locale": "ru",
+      "query_text": "Почему дождь или снеготаяние могут вызвать движение склона, уже близкого к потере устойчивости?",
+      "relevant_claim_refs": [
+        "claim:foundations-haz-04-slope-force-strength",
+        "claim:foundations-haz-05-slope-water-triggers"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-haz-04-slope-force-strength"
+        ],
+        [
+          "claim:foundations-haz-05-slope-water-triggers"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_air_resistance_ru",
+      "locale": "ru",
+      "query_text": "Почему лёгкий широкий лист и компактный груз падают в воздухе по-разному?",
+      "relevant_claim_refs": [
+        "claim:foundations-phys-01-air-drag-fall"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-01-air-drag-fall"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_impact_duration_en",
+      "locale": "en",
+      "query_text": "How can spreading the same change in momentum over a longer contact time affect the force?",
+      "relevant_claim_refs": [
+        "claim:foundations-phys-02-impulse-momentum-change"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-phys-02-impulse-momentum-change"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_wet_metal_contact_ru",
+      "locale": "ru",
+      "query_text": "Почему электрический контакт разных металлов во влажной проводящей среде может менять коррозию?",
+      "relevant_claim_refs": [
+        "claim:foundations-chm-12-galvanic-contact-corrosion"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-chm-12-galvanic-contact-corrosion"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_neutralization_en",
+      "locale": "en",
+      "query_text": "What can an acid–base neutralization produce, and what happens to heat when a strong acid reacts with a strong base?",
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-chm-01-acid-base-neutralization",
+        "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-b2-chm-01-acid-base-neutralization"
+        ],
+        [
+          "claim:foundations-physical-b2-chm-02-strong-acid-base-neutralization-heat"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_sound_medium_ru",
+      "locale": "ru",
+      "query_text": "Почему звуковая волна не проходит через вакуум?",
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-snd-02-sound-material-medium"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-b2-snd-02-sound-material-medium"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_horn_water_en",
+      "locale": "en",
+      "query_text": "What can happen when thin horn is put into contact with water?",
+      "relevant_claim_refs": [
+        "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-physical-b2-bnh-04-thin-horn-water-softening"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_digestion_absorption_ru",
+      "locale": "ru",
+      "query_text": "Чем расщепление пищи отличается от всасывания продуктов пищеварения?",
+      "relevant_claim_refs": [
+        "claim:foundations-life-10-digestion",
+        "claim:foundations-life-11-absorption"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-10-digestion"
+        ],
+        [
+          "claim:foundations-life-11-absorption"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_lung_gas_exchange_en",
+      "locale": "en",
+      "query_text": "How do oxygen and carbon dioxide move between air in lung alveoli and blood?",
+      "relevant_claim_refs": [
+        "claim:foundations-life-13-alveolar-exchange"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-life-13-alveolar-exchange"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_attention_task_ru",
+      "locale": "ru",
+      "query_text": "Почему человек, сосредоточенный на задаче, может не заметить часть видимых деталей?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms-06-visual-selection"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-06-visual-selection"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_practice_learning_en",
+      "locale": "en",
+      "query_text": "How can repeated movement practice and sensory feedback contribute to acquiring a skill?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms-12-practice-correction"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-12-practice-correction"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_attribution_ru",
+      "locale": "ru",
+      "query_text": "Почему один поступок наблюдатели могут объяснить и характером человека, и обстоятельствами?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms-20-attribution-alternatives"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-20-attribution-alternatives"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_persuasion_en",
+      "locale": "en",
+      "query_text": "What conditions can affect whether persuasion changes someone’s social judgment?",
+      "relevant_claim_refs": [
+        "claim:foundations-ms-25-persuasion-context"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-ms-25-persuasion-context"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_aquifer_recharge_ru",
+      "locale": "ru",
+      "query_text": "Почему длительный отбор подземной воды быстрее пополнения может понижать её уровень?",
+      "relevant_claim_refs": [
+        "claim:foundations-earth-21-groundwater-withdrawal-balance"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-earth-21-groundwater-withdrawal-balance"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_radiation_fog_en",
+      "locale": "en",
+      "query_text": "How can fog form near the ground during a clear calm moist night?",
+      "relevant_claim_refs": [
+        "claim:foundations-earth-28-radiation-fog"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-earth-28-radiation-fog"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    },
+    {
+      "case_id": "foundations_foggy_attention_ru",
+      "locale": "ru",
+      "query_text": "Как туман и сосредоточенность на другой зрительной задаче могут ограничить замеченные детали на дороге?",
+      "relevant_claim_refs": [
+        "claim:foundations-earth-27-fog-visibility",
+        "claim:foundations-ms-06-visual-selection"
+      ],
+      "accepted_answer_classes": [
+        "explain"
+      ],
+      "production_acceptance": true,
+      "expected_factual_premise_ref_groups": [
+        [
+          "claim:foundations-earth-27-fog-visibility"
+        ],
+        [
+          "claim:foundations-ms-06-visual-selection"
+        ]
+      ],
+      "forbidden_factual_premise_refs": []
+    }
+  ]
+}

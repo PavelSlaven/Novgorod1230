@@ -1,45 +1,58 @@
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
-import {
-  projectLowerDvinaTracePlayerSafeState,
-  projectLowerDvinaTraceVisibleNpcDetails
-} from
+import { projectLowerDvinaTracePlayerSafeState } from
   './lower-dvina-trace-player-safe-state.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
-import { scenePresentationForLocation } from
-  './lower-dvina-trace-scene-presentation.js';
+import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
+import { lowerDvinaTraceDirectResultChanges,
+  lowerDvinaTraceCarriedItemObservations,
+  lowerDvinaTraceVisibleSceneItems,
+  uniqueLowerDvinaTraceVisibleObjects } from
+  './lower-dvina-trace-visible-scene-items.js';
+import { enrichLowerDvinaTraceVisibleNpcCues } from
+  './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
+export { enrichLowerDvinaTraceVisibleNpcCues } from
+  './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 
-const ARRAY_FIELDS = [
-  'visible_changes', 'sensory_details', 'visible_npc', 'visible_objects',
-  'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'
-];
-export function withLowerDvinaTraceCurrentScene({
-  committedState,
-  locationProfiles,
-  scenePresentation = null
-}) {
+const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
+  'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
+export function withLowerDvinaTraceCurrentScene({ committedState,
+  locationProfiles, scenePresentation = null }) {
   const initial = committedState?.current_visible_context;
   const projectionSource = structuredClone(committedState);
   delete projectionSource.current_visible_context;
-  if (Number(committedState?.party_state?.state_version) === 0
-      && validCurrentScene(initial)) {
-    return {
-      ...committedState,
-      current_visible_context: enrichLowerDvinaTraceVisibleNpcCues({
-        visibleContext: initial,
-        committedState: projectionSource
-      })
-    };
-  }
   const playerSafe = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
     actor_id: projectionSource.actor_id
   }).player_safe_state;
+  const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
+    playerSafe.position,
+    playerSafe.actor_id);
+  if (Number(committedState?.party_state?.state_version) === 0
+      && validCurrentScene(initial)) {
+    const current = {
+      ...initial,
+      sensory_details: unique([...initial.sensory_details,
+        ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)]),
+      visible_objects: uniqueLowerDvinaTraceVisibleObjects([
+        ...initial.visible_objects,
+        ...sceneItems.map(({ visibleObject }) => visibleObject)])
+    };
+    return {
+      ...committedState,
+      current_visible_context: enrichLowerDvinaTraceVisibleNpcCues({
+        visibleContext: current,
+        committedState: projectionSource
+      })
+    };
+  }
   const locationRef = playerSafe.position?.location_ref;
   const profile = scenePresentation == null
     ? historicalLocationProfile(locationProfiles, locationRef)
     : scenePresentationForLocation({ scenePresentation, locationRef });
-  const sensoryDetails = profile.player_visible_physical_facts ?? [];
+  const sensoryDetails = unique([...(profile.player_visible_physical_facts ?? []),
+    ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)
+  ]);
   const visibleLabels = new Map((initial?.visible_npc ?? []).map((npc) => [
     npc?.entity_ref?.entity_id, npc
   ]));
@@ -52,8 +65,7 @@ export function withLowerDvinaTraceCurrentScene({
     visible_changes: [],
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
-    visible_objects: visibleSceneObjects(
-      playerSafe.items, playerSafe.position, playerSafe.actor_id),
+    visible_objects: sceneItems.map(({ visibleObject }) => visibleObject),
     known_context: [profile.display_name],
     uncertainties: [],
     allowed_tensions: [],
@@ -65,20 +77,6 @@ export function withLowerDvinaTraceCurrentScene({
     current_visible_context: deepFreeze(current)
   };
 }
-function visibleSceneObjects(items, position, actorId) {
-  return (items ?? []).flatMap((item) => {
-    const placement = item?.placement ?? {};
-    const coLocated = placement.location_ref === position?.location_ref
-      || [position?.g5_anchor_id, position?.anchor_id]
-        .includes(placement.g5_anchor_id ?? placement.anchor_id);
-    const held = placement.holder_character_id === actorId;
-    const itemId = item?.item_id ?? item?.instance_id;
-    if ((!coLocated && !held) || !text(itemId) || !text(item?.name)) return [];
-    return [{ entity_ref: { entity_kind: 'item', entity_id: itemId },
-      display_label: item.name, recognition: 'recognized',
-      visible_status: held ? 'у вас в руках' : 'available' }];
-  });
-}
 function historicalLocationProfile(locationProfiles, locationRef) {
   const matches = Array.isArray(locationProfiles)
     ? locationProfiles.filter(({ location_profile_id: id }) => id === locationRef)
@@ -87,11 +85,7 @@ function historicalLocationProfile(locationProfiles, locationRef) {
   return { display_name: matches[0].display_name,
     player_visible_physical_facts: [] };
 }
-export function projectCurrentSceneForNoOperationDirect({
-  input,
-  directSeedKeys,
-  body
-}) {
+export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys, body }) {
   if (input?.consequence?.visible_seed?.clarification != null) return null;
   const traces = input?.mode_resolution?.decision_trace?.step_traces;
   const current = input?.retrieved_state?.current_visible_context;
@@ -108,18 +102,26 @@ export function projectCurrentSceneForNoOperationDirect({
     input, directSeedKeys, body
   });
 }
-export function projectCurrentSceneForVisibleOverlay({
-  input,
-  directSeedKeys,
-  body
-}) {
+export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, body }) {
   const current = input?.retrieved_state?.current_visible_context;
   if (!validCurrentScene(current)) failCurrentScene();
+  const outcomeConstraints = directOutcomeConstraints(input);
+  const directResultChanges = lowerDvinaTraceDirectResultChanges(input,
+    playerSafeSceneItems(input?.retrieved_state), body);
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
       ...current.visible_changes,
-      ...projectDirectSeedChanges({ input, directSeedKeys })
+      ...projectDirectSeedChanges({ input, directSeedKeys }),
+      ...directResultChanges,
+      ...(outcomeConstraints.includes('unconfirmed_attempt_success')
+        ? input.mode_resolution.decision_trace.step_traces
+          .filter(({ approved_plan: plan }) => plan?.resolution === 'direct'
+            && plan.goal_result === 'not_achieved')
+          .map(({ approved_plan: plan }) =>
+            text(plan.interpretation?.player_goal)
+              ? `Не удалось достичь цели «${plan.interpretation.player_goal}».`
+              : 'Цель попытки не достигнута.') : [])
     ]),
     known_context: unique([
       ...current.known_context,
@@ -127,15 +129,26 @@ export function projectCurrentSceneForVisibleOverlay({
       ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
       ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
     ]),
-    uncertainties: unique(current.uncertainties),
+    uncertainties: unique([
+      ...current.uncertainties,
+      ...(!directResultChanges.includes(
+        'Наблюдение завершено по уже доступным вам признакам.') ? [] : [
+        'Наблюдение не подтверждает деталей сверх уже видимых признаков.'
+      ])
+    ]),
     do_not_imply: unique([
       ...current.do_not_imply,
       'hidden_fact',
       'uncommitted_body_delta',
       'uncommitted_time',
-      ...directOutcomeConstraints(input)
+      ...outcomeConstraints
     ])
   });
+}
+
+function playerSafeSceneItems(state) {
+  return lowerDvinaTraceCarriedItemObservations(state?.items,
+    state?.current_visible_context?.visible_objects);
 }
 export function projectDirectSeedChanges({ input, directSeedKeys }) {
   const seed = input?.consequence?.visible_seed ?? {};
@@ -233,45 +246,6 @@ function visibleNpc(npc, position, visibleLabels) {
   };
 }
 
-export function enrichLowerDvinaTraceVisibleNpcCues({
-  visibleContext,
-  committedState
-}) {
-  if (!validCurrentScene(visibleContext)) failCurrentScene();
-  const projectedNpcs = visibleContext.visible_npc.flatMap((npc) =>
-    npc?.entity_ref?.entity_kind === 'npc' && text(npc.entity_ref.entity_id)
-      ? [{ instance_id: npc.entity_ref.entity_id }] : []);
-  const details = new Map(projectLowerDvinaTraceVisibleNpcDetails({
-    visibleContext,
-    projectedNpcs,
-    committedNpcs: committedState?.npcs,
-    committedItems: committedState?.items
-  }).map((npc) => [npc.instance_id, npc]));
-  return deepFreeze({
-    ...structuredClone(visibleContext),
-    visible_npc: visibleContext.visible_npc.map((npc) => {
-      const detail = details.get(npc?.entity_ref?.entity_id);
-      const informative = detail != null
-        && (detail.visible_equipment.length > 0
-          || Object.keys(detail.presentation).length > 0
-          || detail.ordinary_remainder != null
-          || Object.keys(detail.identity_state).some((key) =>
-            key !== 'display_name'));
-      return !informative ? structuredClone(npc) : {
-        ...structuredClone(npc),
-        observable_cues: {
-          identity: structuredClone(detail.identity_state),
-          equipment: structuredClone(detail.visible_equipment),
-          outward_presentation: structuredClone(detail.presentation),
-          ...(detail.ordinary_remainder == null ? {} : {
-            ordinary_remainder: structuredClone(detail.ordinary_remainder)
-          })
-        }
-      };
-    })
-  });
-}
-
 function samePositionScope(npc, position) {
   const scopes = [['location_ref', 'location_ref'], ['anchor_id', 'g5_anchor_id'],
     ['g5_anchor_id', 'g5_anchor_id'], ['zone_ref', 'zone_ref']]
@@ -286,10 +260,9 @@ function text(value) {
 }
 
 function failCurrentScene() {
-  throw Object.assign(
-    new Error('The committed current scene cannot be projected safely.'),
-    { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID', status: 409 }
-  );
+  throw Object.assign(new Error(
+    'The committed current scene cannot be projected safely.'),
+  { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID', status: 409 });
 }
 
 function unique(values) {

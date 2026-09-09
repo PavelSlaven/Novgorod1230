@@ -83,6 +83,23 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           graphify --version
 
+      - name: Provision pinned World Knowledge encoder
+        if: steps.profile.outputs.profile == 'full'
+        run: |
+          python -m pip install -r tools/world-catalog-workflow/requirements-embeddings.txt
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from huggingface_hub import snapshot_download
+
+          profile = json.loads(Path(
+              "data/world-catalogs/novgorod/world-knowledge/embedding-profiles/giga-480m-0826-v1.json"
+          ).read_text(encoding="utf-8"))
+          snapshot_download(repo_id=profile["model_id"],
+                            revision=profile["model_revision"])
+          PY
+          npm run world-knowledge:giga-readiness
+
       - name: Validate tracked world_base source bundle
         if: steps.profile.outputs.profile == 'full'
         run: |

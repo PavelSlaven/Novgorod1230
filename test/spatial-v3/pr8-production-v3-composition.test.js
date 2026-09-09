@@ -27,11 +27,14 @@ import {
   assertModularStartupConfig,
   readServerConfig
 } from '../../apps/game-server/src/config.js';
+import { loadProductionWorldKnowledge } from
+  '../../apps/game-server/src/internal/world-knowledge-production.js';
 
 const TEST_PIN_MANIFEST_DIGEST = 'e'.repeat(64);
 const TEST_RELEASE = createSpatialV3ProductionRelease(
   TEST_PIN_MANIFEST_DIGEST
 );
+const TEST_WORLD_KNOWLEDGE = await loadProductionWorldKnowledge();
 const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
   schema: 'rus.runtime_catalog_pin.v2',
   catalog_scope: 'item_container_materialization_v2',
@@ -71,7 +74,7 @@ test('production-v6 trace runtime wires canonical packing and semantic NPC model
   assert.match(traceRuntimeSource, /from '@rus\/items-property'/u);
   assert.match(
     traceRuntimeSource,
-    /const npcRuntimePorts = createNpcRuntimePorts\(\{ roleRunner \}\)/u
+    /const npcRuntimePorts = createNpcRuntimePorts\(\{ roleRunner,\s+worldKnowledgeGrounder \}\)/u
   );
   assert.match(
     traceRuntimeSource,
@@ -118,6 +121,7 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
               .n1_profile_scenario_definition_revision
         }
       },
+      worldKnowledge: TEST_WORLD_KNOWLEDGE,
       release: TEST_RELEASE
     }
   );
@@ -142,9 +146,15 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
     '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad');
 });
 
-test('production-v14 is the sole release and pins the active N1 slice', () => {
+test('production-v15 is the sole release and pins World Knowledge', () => {
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.release_id,
-    'spatial-v3-production-v14');
+    'spatial-v3-production-v15');
+  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_ref,
+    'wk-pack:novgorod-1230');
+  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_revision,
+    'revision:production-v1');
+  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_embedding_profile_ref,
+    'wk-embedding:giga-480m-0826:v1');
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.runtime_selectable_in_canonical_production,
     false);
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins.world_revision_id,
@@ -169,10 +179,11 @@ test('production-v14 is the sole release and pins the active N1 slice', () => {
   });
 });
 
-test('production-v14 binding rejects the unversioned v13 and N1 mix', async () => {
+test('production-v15 binding rejects the unversioned v14 and knowledge mix', async () => {
   await assert.rejects(
     loadSpatialV3RuntimeBindings(SPATIAL_V3_PRODUCTION_BINDINGS_MODULE, {
-      release: { ...TEST_RELEASE, release_id: 'spatial-v3-production-v13' },
+      release: { ...TEST_RELEASE, release_id: 'spatial-v3-production-v14' },
+      worldKnowledge: TEST_WORLD_KNOWLEDGE,
       npcSemanticRemainderProfile: {
         digest: TEST_RELEASE.scenario_profile_exact_pins.n1_profile_digest,
         profile: {
@@ -184,7 +195,7 @@ test('production-v14 binding rejects the unversioned v13 and N1 mix', async () =
         }
       }
     }),
-    /exact spatial-v3-production-v14 semantic release/u
+    /exact spatial-v3-production-v15 semantic release/u
   );
 });
 
@@ -333,7 +344,7 @@ test('production release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v14 root is sole owner', async () => {
+test('production-v15 root is sole owner', async () => {
   assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins, {
     world_revision_id: 'novgorod_spatial_v3_production_v6_candidate_001',
     world_catalog_digest:
@@ -347,6 +358,7 @@ test('production-v14 root is sole owner', async () => {
       runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
     },
     pools: setup.pools,
+    worldKnowledgeEncoderFactory: readyWorldKnowledgeEncoder,
     bindingsFactory: setup.bindingsFactory,
     targetRootFactory: setup.targetRootFactory
   });
@@ -450,6 +462,7 @@ test('configured composition loader selects only the activated v6 release', asyn
         runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
       },
       pools: setup.pools,
+      worldKnowledgeEncoderFactory: readyWorldKnowledgeEncoder,
       bindingsFactory: setup.bindingsFactory,
       targetRootFactory: setup.targetRootFactory
     }
@@ -477,12 +490,18 @@ test('production composition rejects every binding except builtin v6', async () 
         runtimeCatalogPinManifestDigest: TEST_PIN_MANIFEST_DIGEST
       },
       pools: setup.pools,
+      worldKnowledgeEncoderFactory: readyWorldKnowledgeEncoder,
       targetRootFactory: setup.targetRootFactory
     }),
     (error) => error.code === 'RUNTIME_BINDINGS_MODULE_INACTIVE'
   );
   assert.equal(setup.closed(), 1);
 });
+
+function readyWorldKnowledgeEncoder() {
+  return Object.freeze({ ready: async () => {},
+    encode: async () => new Float32Array(1024), close: async () => {} });
+}
 
 test('production-v6 binding validation fails closed without every sole-owner port', () => {
   assert.throws(
@@ -740,7 +759,7 @@ test('restart extends the exact immutable catalog ledger through migration 030',
   assert.equal(statements.at(-1), 'COMMIT');
 });
 
-test('cutover config selects only builtin production-v14 binding', () => {
+test('cutover config selects only builtin production-v15 binding', () => {
   const configured = readServerConfig({
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
       TEST_PIN_MANIFEST_DIGEST
@@ -755,7 +774,7 @@ test('cutover config selects only builtin production-v14 binding', () => {
   );
   assert.equal(assertModularStartupConfig(configured), configured);
   assert.equal(SPATIAL_V3_PRODUCTION_BINDINGS_MODULE,
-    'builtin:spatial-v3-production-v14');
+    'builtin:spatial-v3-production-v15');
   assert.throws(
     () => assertModularStartupConfig(readServerConfig({
       RUS_SPATIAL_V3_BINDINGS_MODULE:

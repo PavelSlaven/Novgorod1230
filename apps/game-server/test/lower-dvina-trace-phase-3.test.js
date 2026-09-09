@@ -9,6 +9,7 @@ import {
   RNG_VERSION
 } from '@rus/materialization';
 import { createSeededRandomSource } from '@rus/checks-rng';
+import { WorldKnowledgeError } from '@rus/world-knowledge';
 import {
   createLowerDvinaTracePhase2Runtime
 } from '../src/runtime/lower-dvina-trace-phase-2.js';
@@ -133,6 +134,24 @@ test('evidence conversation is unavailable without the committed accessible item
   );
   assert.equal(f.commitCount(), 0);
   assert.equal(f.rollCount(), 0);
+});
+
+test('World Knowledge failure records no turn state and the same retry can commit', async () => {
+  const f = fixture({ failWorldKnowledgeOnce: true });
+  const before = structuredClone(f.state);
+  await assert.rejects(
+    () => f.submit({ key: 'phase3-wk-retry',
+      raw: 'Хочу пройти по заметной тропе туда, где расположились рыбаки.' }),
+    { code: 'WORLD_KNOWLEDGE_UNAVAILABLE' }
+  );
+  assert.deepEqual(f.state, before);
+  assert.equal(f.commitCount(), 0);
+  assert.equal(f.narratorRequests.length, 0);
+
+  const result = await f.submit({ key: 'phase3-wk-retry',
+    raw: 'Хочу пройти по заметной тропе туда, где расположились рыбаки.' });
+  assert.equal(result.option_id, 'follow_path_to_fishing_camp');
+  assert.equal(f.commitCount(), 1);
 });
 
 test('player and stale semantic choices cannot select an NPC decision option', async () => {
@@ -272,6 +291,7 @@ function fixture({
   blueWool = false,
   resolverOption = null,
   rollValue = 0.99,
+  failWorldKnowledgeOnce = false,
   contractBundle = bundle
 } = {}) {
   const partyId = 'party:trace-phase-3-unit';
@@ -304,6 +324,7 @@ function fixture({
   let visible = null;
   let commits = 0;
   let rolls = 0;
+  let worldKnowledgeFailures = 0;
   const repository = {
     async loadPhase2State() {
       return structuredClone(state);
@@ -364,6 +385,12 @@ function fixture({
     },
     semanticResolver: async (input) => {
       semanticRequests.push(structuredClone(input));
+      if (failWorldKnowledgeOnce && worldKnowledgeFailures++ === 0) {
+        throw new WorldKnowledgeError('WORLD_KNOWLEDGE_UNAVAILABLE',
+          'Production World Knowledge retrieval is unavailable.', {
+            cause_code: 'WK_EMBEDDING_WORKER_EXIT'
+          });
+      }
       return {
         option_id: resolverOption
           ?? chooseOption(input.raw_text, input.action_set)

@@ -41,11 +41,11 @@ test('legacy world schema migrates forward without losing existing rows', async 
   for (let attempt = 0; attempt < 40; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 300));
     if (docker([
-      'exec', name, 'pg_isready', '-U', 'legacy_migration', '-d', 'legacy_migration'
+      'exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'legacy_migration', '-d', 'legacy_migration'
     ]).status === 0) {
       await new Promise((resolve) => setTimeout(resolve, 500));
       if (docker([
-        'exec', name, 'pg_isready', '-U', 'legacy_migration', '-d', 'legacy_migration'
+        'exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'legacy_migration', '-d', 'legacy_migration'
       ]).status === 0) {
         ready = true;
         break;

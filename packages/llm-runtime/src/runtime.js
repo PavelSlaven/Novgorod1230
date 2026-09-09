@@ -173,7 +173,22 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
         requestSnapshot
       }, telemetry);
     }
-    const rawText = String(responseData?.choices?.[0]?.message?.content ?? '');
+    const content = responseData?.choices?.[0]?.message?.content;
+    if (typeof content !== 'string') {
+      return buildResult({
+        config,
+        startedAt,
+        status: 'transport_error',
+        error: {
+          code: 'invalid_response',
+          message: 'Provider returned an invalid response.',
+          retryable: false
+        },
+        configHash,
+        requestSnapshot
+      }, telemetry);
+    }
+    const rawText = content;
     const reasoningContent = responseData?.choices?.[0]?.message?.reasoning_content;
     if (config.parseJson) {
       const parsed = explainJsonObjectParse(rawText);

@@ -1,0 +1,91 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-cci-stitches-textile-conservation-2008",
+      "title": "Stitches Used in Textile Conservation — Canadian Conservation Institute (CCI) Notes 13/10",
+      "authors": ["Canadian Conservation Institute Textile Lab"],
+      "publication": "Canadian Conservation Institute Notes 13/10, revised 2008; page details 2019-05-02",
+      "source_kind": "official_documentation",
+      "citation": "https://www.canada.ca/en/conservation-institute/services/conservation-preservation-publications/canadian-conservation-institute-notes/stitches-textile-conservation.html",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-nps-fatty-acid-spew-leather-objects-2025",
+      "title": "Conserve O Gram 9/1: Fatty Acid Spew on Leather Objects",
+      "authors": ["National Park Service"],
+      "publication": "National Park Service Conserve O Gram 9/1, published 2025-01; updated 2025-07-02",
+      "source_kind": "official_documentation",
+      "citation": "https://www.nps.gov/articles/conserve-o-gram-9-1-leather-dressings.htm",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:research-usda-fsis-cross-contamination-2024",
+      "title": "What is Cross-Contamination?",
+      "authors": ["USDA Food Safety and Inspection Service"],
+      "publication": "USDA FSIS Knowledge Article, updated 2024-09-18",
+      "source_kind": "official_documentation",
+      "citation": "https://ask.fsis.usda.gov/article/What-is-Cross-Contamination",
+      "rights": {"status": "approved", "redistribution": "metadata_and_factual_summary"},
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-household-textile-stitch-support",
+      "source_ref": "source:research-cci-stitches-textile-conservation-2008",
+      "anchor": {"section": "Attaching Fragile Textiles to Support Fabrics — Self-couching stitch"},
+      "note": "Research draft pending independent verification. CCI says a self-couching stitch secures torn, frayed or weak textile areas to a new support fabric. This is a modern conditional conservation relation, not medieval practice, a current textile, thread, support, tool, skill, repair success, strength or item identity.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-household-leather-stitched-join-failure",
+      "source_ref": "source:research-nps-fatty-acid-spew-leather-objects-2025",
+      "anchor": {"section": "Research on Leather Dressings, treatment-report quotation beginning ‘The stitching attaching the sides to the sole’"},
+      "note": "Research draft pending independent verification. NPS records a shoe in which weakened and broken stitching attaching sides to the sole was followed by separation of the parts. The candidate is limited to a stitched leather assembly; it is not evidence that every leather object is stitched, nor of a current object, cause, load, repair, durability, medieval practice or outcome.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:research-household-raw-food-cross-contact",
+      "source_ref": "source:research-usda-fsis-cross-contamination-2024",
+      "anchor": {"section": "Opening definition and following paragraph beginning ‘This is especially true’"},
+      "note": "Research draft pending independent verification. USDA FSIS defines cross-contamination as transfer of harmful bacteria to food from other foods, cutting boards and utensils, and specifies raw meat, poultry, eggs and seafood versus cooked or ready-to-eat food. No food, bacteria, hands, utensil, contamination, cleaning, dose, illness, safety or historical practice is established.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:physics_material_science:research-textile-stitch-support","domain":"physics_material_science","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:physics_material_science:research-stitched-leather-component-join","domain":"physics_material_science","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"},
+    {"schema":"world_knowledge_concept_v1","concept_ref":"wk:biology_physiology:research-raw-food-cross-contact","domain":"biology_physiology","broader_refs":[],"related_refs":[],"external_mappings":[],"review_status":"approved"}
+  ],
+  "claims": [
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:research-stitching-can-secure-weak-textile-to-support","domain":"physics_material_science","subject_ref":"wk:physics_material_science:research-textile-stitch-support","predicate":"supported_fact","object":{"kind":"literal","value":"stitching_can_secure_a_torn_frayed_or_weak_textile_area_to_a_support_textile"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:research-household-textile-stitch-support"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:research-failure-of-stitched-leather-join-can-separate-components","domain":"physics_material_science","subject_ref":"wk:physics_material_science:research-stitched-leather-component-join","predicate":"supported_fact","object":{"kind":"literal","value":"failure_of_stitching_joining_components_of_a_leather_assembly_can_separate_the_components"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"medium","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:research-household-leather-stitched-join-failure"],"review_status":"approved","conflict_group_ref":null},
+    {"schema":"world_knowledge_claim_v1","claim_ref":"claim:research-raw-food-bacteria-can-transfer-via-hands-or-utensils","domain":"biology_physiology","subject_ref":"wk:biology_physiology:research-raw-food-cross-contact","predicate":"supported_fact","object":{"kind":"literal","value":"harmful_bacteria_can_transfer_from_raw_food_to_other_food_via_hands_or_utensils_including_cooked_or_ready_to_eat_food"},"polarity":"support","applicability":{"context_scope":"universal"},"qualifiers":{"typicality":"unknown","confidence":"high","directness":"direct"},"knowledge_access":{"class":"domain_internal_only","required_facets":[]},"hard_exclusion":null,"evidence_refs":["evidence:research-household-raw-food-cross-contact"],"review_status":"approved","conflict_group_ref":null}
+  ],
+  "concept_localizations": [
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:physics_material_science:research-textile-stitch-support","locale":"ru","labels":["Стежковая поддержка ослабленного текстиля"],"short_definition":"Условная связь стежков, повреждённого текстиля и поддерживающей ткани.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:physics_material_science:research-textile-stitch-support","locale":"en","labels":["Stitched support for weakened textile"],"short_definition":"Conditional relation between stitching, damaged textile, and support textile.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:physics_material_science:research-stitched-leather-component-join","locale":"ru","labels":["Стежковое соединение частей кожаного изделия"],"short_definition":"Условная связь стежкового соединения кожаных частей и их разделения при разрушении стежков.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:physics_material_science:research-stitched-leather-component-join","locale":"en","labels":["Stitched leather component join"],"short_definition":"Conditional relation between a stitched leather-component join and separation when it fails.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:research-raw-food-cross-contact","locale":"ru","labels":["Перекрёстный перенос бактерий с сырой пищи"],"short_definition":"Перенос бактерий с сырой пищи на другую пищу через руки или утварь.","search_aliases":[]},
+    {"schema":"world_knowledge_concept_localization_v1","concept_ref":"wk:biology_physiology:research-raw-food-cross-contact","locale":"en","labels":["Raw-food bacterial cross-contact"],"short_definition":"Transfer of bacteria from raw food to other food through hands or utensils.","search_aliases":[]}
+  ],
+  "claim_localizations": [
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:research-stitching-can-secure-weak-textile-to-support","locale":"ru","runtime_text":"Стежки могут закреплять порванный, осыпающийся или ослабленный участок текстиля на поддерживающей ткани. Это не устанавливает текстиль, нить, поддержку, инструмент, навык, историческую практику, прочность или результат ремонта в конкретной сцене.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:research-stitching-can-secure-weak-textile-to-support","locale":"en","runtime_text":"Stitching can secure a torn, frayed, or weak textile area to a support textile. This establishes no textile, thread, support, tool, skill, historical practice, strength, or repair result in a concrete scene.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:research-failure-of-stitched-leather-join-can-separate-components","locale":"ru","runtime_text":"В кожаном изделии, части которого соединены стежками, разрушение соединяющих стежков может привести к разделению частей. Это не устанавливает изделие, тип стежков, состояние шва, нагрузку, причину разрушения, ремонт, долговечность, историческую практику или исход в конкретной сцене.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:research-failure-of-stitched-leather-join-can-separate-components","locale":"en","runtime_text":"In a leather assembly whose components are joined by stitching, failure of the joining stitches can separate the components. This establishes no object, stitch type, seam condition, load, failure cause, repair, durability, historical practice, or outcome in a concrete scene.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:research-raw-food-bacteria-can-transfer-via-hands-or-utensils","locale":"ru","runtime_text":"Вредные бактерии могут переноситься с сырой пищи на другую пищу через руки или утварь, в том числе на приготовленную или готовую к употреблению пищу. Это не устанавливает пищу, бактерии, руки, утварь, загрязнение, очистку, дозу, болезнь, безопасность или историческую практику в конкретной сцене.","search_aliases":[]},
+    {"schema":"world_knowledge_claim_localization_v1","claim_ref":"claim:research-raw-food-bacteria-can-transfer-via-hands-or-utensils","locale":"en","runtime_text":"Harmful bacteria can transfer from raw food to other food through hands or utensils, including cooked or ready-to-eat food. This establishes no food, bacteria, hands, utensil, contamination, cleaning, dose, illness, safety, or historical practice in a concrete scene.","search_aliases":[]}
+  ]
+}

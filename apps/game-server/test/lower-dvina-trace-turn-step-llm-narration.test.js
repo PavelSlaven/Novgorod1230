@@ -84,6 +84,10 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.equal(calls[0].messages[0].content.includes(
     'Проходит минута, а у самой воды лежат <supplied current detail>'), true);
   for (const call of calls) {
+    assert.match(call.messages[0].content,
+      /Unsupported exclusivity or persistence MUST FAIL the audit as unsupported_world_state/);
+    assert.match(call.messages[0].content,
+      /explicit failed or incomplete attempt result in visible_context\.visible_changes is material/);
     assert.equal(call.messages[0].content.includes(
       'Narrate the player in second-person Russian'), true);
     assert.equal(call.messages[0].content.includes(

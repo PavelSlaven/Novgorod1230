@@ -1,0 +1,235 @@
+{
+  "schema": "wk_military_first_offline_review_v1",
+  "batch_id": "military-batch-01",
+  "reviewer_agent_identity": "/root/military01_wk_a",
+  "input_commit": "b67287b3",
+  "corpus_claim_count": 1414,
+  "method": "WK-only reconstruction from the frozen controlled-A input and compiled runtime bundle; no external knowledge, other military batches, cartography, or sources were consulted. A substantial gap means a central premise needed to answer the stated knowledge need is absent; a generic environmental fact does not substitute for it.",
+  "cases": [
+    {
+      "case_id": "military01-core-001",
+      "verdict": "substantial_gap",
+      "scene_ru": "У мокрого порога караульный уже имеет названные sidearm, shield, верхнюю одежду, лампу и gate fittings. Щит требует удержания для прикрытия, оружию нужны доступ и досягаемость; влага может менять состояние натуральных волокон, кожи, дерева и металлической поверхности.",
+      "interaction_ru": "Он может держать уже данный щит и оружие доступными, а мокрые предметы не считать неизменными. Однако WK не даёт способа расположить, надеть или обслужить конкретный гарнизонный набор и не выводит его готовность.",
+      "variation_ru": "Ветер, количество воды, вид кожи и конструкция предметов меняют состояние; ни исправность, ни скорость доступа не устанавливаются.",
+      "claim_refs": ["claim:public-world-weapons-shields-armour-have-distinct-tradeoffs", "claim:material-water-natural-fibres-water-swelling", "claim:material-water-vegetable-leather-water", "claim:foundations-chm-10-metal-environment-corrosion"],
+      "gaps": ["historically compatible ordinary watchman weapon-and-clothing carry arrangements", "wet-weather readiness and inspection of carried arms, shield, lamp, and gate fittings", "practical relation between a guard rotation, cover, access, and alert work"]
+    },
+    {
+      "case_id": "military01-core-002",
+      "verdict": "substantial_gap",
+      "scene_ru": "Во дворе уже заданы protective layers, helmet, belt, shield и зимняя одежда. WK устанавливает только качественное различие: armour носится поверх отдельных участков тела с неполной защитой, а shield удерживается для прикрытия; снег меняет структуру после вытаптывания.",
+      "interaction_ru": "Участники могут проверить данный worn fastening и не считать защиту полной. Но порядок надевания, регулировка посадки, совместимость слоёв, работа застёжек и подвижность в этом наборе не восстанавливаются из WK.",
+      "variation_ru": "Конструкция защиты, телосложение и состояние застёжки остаются неустановленными; из мороза не следует конкретная жёсткость одежды.",
+      "claim_refs": ["claim:public-world-weapons-shields-armour-have-distinct-tradeoffs", "claim:residual-nature-snow-grain-compaction", "claim:work-intensity-duration"],
+      "gaps": ["wearing, fitting, layering, and adjustment of historically compatible protective equipment", "mobility and work limitations of particular armour-and-clothing combinations", "field handling of a worn fastening before a call-out"]
+    },
+    {
+      "case_id": "military01-core-003",
+      "verdict": "substantial_gap",
+      "scene_ru": "Лесная кромка допускает неодинаковую плотность, подлесок, litter, влажность и освещение; густая растительность способна цеплять гибкие линии или выступающий груз. Для Новгорода засвидетельствована категория цельнодеревянного ясеневого hunting bow, но не этот лук или стрелы.",
+      "interaction_ru": "Лучник может сохранять уже заданные bow и arrows при себе и выбирать менее цепляющийся участок, не объявляя поле зрения или выстрел пригодными. WK не описывает protection, fitting, натяжение или работу мокрых string и arrow fittings.",
+      "variation_ru": "Порода дерева, подлесок, дождь и конструкция снаряжения меняют ситуацию; дальность, точность и outcome не заданы.",
+      "claim_refs": ["claim:place-outdoors-forest-structure-and-season", "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads", "claim:agriculture-fauna-ash-hunting-bow", "claim:place-outdoors-cover-opening-and-work-visibility"],
+      "gaps": ["wet-weather care and practical readiness of bowstrings, arrows, and fittings", "qualitative constraints of shooting and repositioning with a bow in rain and gusts", "historically compatible patrol archer carry and protection practices"]
+    },
+    {
+      "case_id": "military01-core-004",
+      "verdict": "substantial_gap",
+      "scene_ru": "На оттаивающей дороге повышенная влажность грунта может снижать проходимость и допускать колеи; копыта лошади несут вес, поглощают удар и дают сцепление. Новгородские находки включают saddle, bridle, stirrup и другое riding equipment, но не полный набор этой поездки.",
+      "interaction_ru": "Всадник может не считать скорость безопасной только потому, что она нужна, и наблюдать уже данную лошадь и tack. WK не сообщает, как управлять лошадью в таких колеях, когда дать ей отдых или как проверить мокрую упряжь.",
+      "variation_ru": "Глубина колей, animal condition, tack construction и маршрут меняют ход; скорость, повреждение и прибытие не следуют.",
+      "claim_refs": ["claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction", "claim:population-tack-context", "claim:work-intensity-duration"],
+      "gaps": ["mounted travel pace, control, rest, and risk management on thawing rutted ground", "functional inspection and care of wet tack during a journey", "military messenger travel practice and load constraints"]
+    },
+    {
+      "case_id": "military01-core-005",
+      "verdict": "substantial_gap",
+      "scene_ru": "Мокрый грунт и повторное движение могут оставлять колеи и воду в углублениях; длительная интенсивная работа ограничивается fatigue. Уже названные long weapon, shield or pack, food и water vessel не устанавливают их массу, распределение или порядок ношения.",
+      "interaction_ru": "Коло́нна может выбирать более используемую полосу и останавливаться, не обещая твёрдой дороги. WK не восстанавливает, что реально несёт foot soldier, как длинное оружие и груз сочетаются или как организован короткий halt.",
+      "variation_ru": "Нагрузка, footwear, ширина пути и влажность меняют темп; water safety, ration и продолжительность перехода неизвестны.",
+      "claim_refs": ["claim:place-outdoors-traffic-wet-ground-and-ruts", "claim:work-intensity-duration", "claim:activity-fluid-balance", "claim:public-world-armed-movement-consumes-food-fuel-attention"],
+      "gaps": ["ordinary military foot-march load, carry, and weapon-handling arrangements", "qualitative effects of footwear and wet feet on march management", "small-unit halt and movement coordination on a narrow wet track"]
+    },
+    {
+      "case_id": "military01-core-006",
+      "verdict": "substantial_gap",
+      "scene_ru": "Woodland combines trees, brush, roots, litter and differing openings; dense branches can hinder long loads. This makes the given lane physically constricted, but does not establish an infantry formation or enemy contact.",
+      "interaction_ru": "Лидер может не выставлять длинные предметы там, где они цепляются, и удерживать людей в доступном visual range. WK does not give spacing, mutual support, command response, or pole-weapon handling for a file in constricted ground.",
+      "variation_ru": "Плотность brush, ширина lane и предметы участников меняют проход; источник шума, tactics и outcome остаются неизвестными.",
+      "claim_refs": ["claim:place-outdoors-forest-structure-and-season", "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads", "claim:place-outdoors-cover-opening-and-work-visibility", "claim:public-world-senior-can-coordinate-messenger-can-carry-word"],
+      "gaps": ["infantry spacing, mutual support, and command in constricted woodland", "safe qualitative handling of long weapons among nearby people and brush", "response boundaries for uncertain movement or possible contact"]
+    },
+    {
+      "case_id": "military01-core-007",
+      "verdict": "substantial_gap",
+      "scene_ru": "Открытый склон даёт views в незакрытых направлениях, но меньше укрытия от wind; shrubs создают screened patches. Wind can change audibility and a near-sunset scene does not establish what distant details are identifiable.",
+      "interaction_ru": "Разведчик может наблюдать из доступного сочетания открытого и screened участка, не выдавая видимое за полный report. WK does not reconstruct concealment choices, reconnaissance reporting, horse handling while observing, or what military-relevant details can be distinguished.",
+      "variation_ru": "Свет, wind, shrubs и положение crossing меняют доступное наблюдение; distance, identities and intentions are not inferable.",
+      "claim_refs": ["claim:place-outdoors-cover-opening-and-work-visibility", "claim:sound-wind-temperature-gradients-refract", "claim:sound-spreading-reduces-intensity", "claim:population-tack-context"],
+      "gaps": ["reconnaissance observation, concealment, and reporting practices", "qualitative limits for identifying military movement at a river crossing", "quiet handling and positioning of a scout's horse"]
+    },
+    {
+      "case_id": "military01-core-008",
+      "verdict": "substantial_gap",
+      "scene_ru": "На causeway already given carts, pack animals и supplies проходят через narrow raised track with wet margins; wet soil can lose trafficability under load. Fog reduces visibility, while animal sounds or reeds alone do not establish a threat.",
+      "interaction_ru": "Эскорт может не трактовать любой звук как attack и учитывать, что carts и animals cannot simply occupy soft margins. WK does not supply ambush-risk assessment, escort positioning, baggage movement order, or harness repair practice.",
+      "variation_ru": "Влажность, load, fog и конкретный animal sound меняют ситуацию; наличие противника или безопасный passage не устанавливаются.",
+      "claim_refs": ["claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:foundations-earth-27-fog-visibility", "claim:population-wood-cart", "claim:animal-homeostasis-responds-to-internal-external-change"],
+      "gaps": ["ambush-risk recognition and escort movement at a marsh bottleneck", "campaign baggage, pack-animal, wheel, and harness handling on wet causeways", "meaningful distinction of ordinary environmental sounds from operational warning"]
+    },
+    {
+      "case_id": "military01-core-009",
+      "verdict": "substantial_gap",
+      "scene_ru": "У солдата already given shield, straps or fittings, knife, cord, spare leather и personal kit. Leather straps are attested and a stitched leather join can separate if its stitching fails, but that does not identify the shield attachment or a repair.",
+      "interaction_ru": "Он может inspect the given damaged attachment and avoid calling it permanently sound. WK does not provide temporary shield-strap repair methods, suitable tool use, time, or criteria for a serviceable but weakened result.",
+      "variation_ru": "Конструкция shield, место failure и состояние leather меняют repair; прочность и срок службы не следуют.",
+      "claim_refs": ["claim:population-leather-straps", "claim:research-failure-of-stitched-leather-join-can-separate-components", "claim:work-intensity-duration", "claim:ordinary-life-household-repairs-compete-with-new-goods"],
+      "gaps": ["field repair of shield attachments with carried materials", "qualitative residual weakness and inspection after a temporary repair", "historically compatible personal repair kit and repair-time practice"]
+    },
+    {
+      "case_id": "military01-core-010",
+      "verdict": "substantial_gap",
+      "scene_ru": "Open ground provides longer views but less shelter; the learner's fatigue is a real limit on sustained work. The named borrowed weapon and nearby people and animals do not establish training protocol, practice implement, or supervision method.",
+      "interaction_ru": "Старший может coordinate a small group where people and route exist, and the learner can stop when tired. WK does not tell how novice weapon handling is taught, how a safe practice space is maintained, or what counts as damaging borrowed gear.",
+      "variation_ru": "Расстояние до людей, конкретное оружие и fatigue меняют risk; skill, injury, and training outcome remain unknown.",
+      "claim_refs": ["claim:place-outdoors-cover-opening-and-work-visibility", "claim:work-intensity-duration", "claim:public-world-senior-can-coordinate-messenger-can-carry-word", "claim:public-world-weapons-shields-armour-have-distinct-tradeoffs"],
+      "gaps": ["ordinary novice weapons training and supervision practices", "practice-space safety and separation around people and animals", "historically compatible use and return care of borrowed weapons"]
+    },
+    {
+      "case_id": "military01-core-011",
+      "verdict": "substantial_gap",
+      "scene_ru": "The terrace, lower damp ground, bedrolls, cooking gear, tethering materials and animals are given by the probe. Rest, warmth, drink, food and company can be contextual support when safe and available, but no camp layout or safe water source follows.",
+      "interaction_ru": "Люди can distinguish the higher dry area from lower damp ground and avoid treating water or cover as automatically sufficient. WK does not reconstruct camp siting, drainage, fire placement, animal tethering, watch, or night security.",
+      "variation_ru": "Ground, wind, access and number of people and animals change placement; comfort, safety, fuel and water quality are not established.",
+      "claim_refs": ["claim:public-world-rest-warmth-drink-food-are-contextual-support", "claim:place-outdoors-cover-opening-and-work-visibility", "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction", "claim:research-cold-water-immersion-can-cause-immersion-hypothermia"],
+      "gaps": ["temporary military camp siting, drainage, fire, and security practices", "tethering, feeding, watering, and safeguarding animals in a field camp", "camp sleep and watch organization at a river crossing"]
+    },
+    {
+      "case_id": "military01-core-012",
+      "verdict": "substantial_gap",
+      "scene_ru": "The unit already has sacks, vessels, cooking materials, knives and pack transport. Provisioning links present stores to future need; temperature and moisture constrain stored grain, and continued water loss can impair function without a quantity or diagnosis.",
+      "interaction_ru": "Provisioner can account for already given stores as finite and not infer that food, fuel or safe water appears. WK does not provide campaign ration allocation, storage arrangement after jostling, meal preparation for a moving force, or safe-water decision procedure.",
+      "variation_ru": "Container condition, food type, heat and duration change risk; quantities, spoilage state and distribution remain unknown.",
+      "claim_refs": ["claim:practical-food-provisions", "claim:stored-grain-condition-depends-on-temperature-moisture", "claim:candidate-physiology-v3-dehydration-functional-risk", "claim:public-world-armed-movement-consumes-food-fuel-attention"],
+      "gaps": ["campaign food, fuel, and water allocation for a small travelling force", "portable-food storage and inspection after transport disturbance", "field cooking and spoilage management in warm conditions"]
+    },
+    {
+      "case_id": "military01-core-013",
+      "verdict": "substantial_gap",
+      "scene_ru": "The ford already has flowing water, rounded stones, muddy exit and the named people, animals, carts and loads. Cold-water immersion can impair muscle control and extreme cold can cause cold stress, while wet ground can rut under load.",
+      "interaction_ru": "The group can avoid treating a rush as safe and can keep specific items from unnecessary soaking where possible. WK does not supply crossing order, load handling, rope use, animal and cart management, or group coordination in a fast shallow ford.",
+      "variation_ru": "Current, depth, individual footing, load and animal behavior change passage; successful crossing, losses and injury are not inferred.",
+      "claim_refs": ["claim:research-cold-water-immersion-can-impair-muscle-control", "claim:research-extreme-cold-can-cause-cold-stress", "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction"],
+      "gaps": ["military-column river-crossing order and coordination", "qualitative handling of carts, animals, shields, arms, and loads at a ford", "use and limits of ropes or other crossing aids"]
+    },
+    {
+      "case_id": "military01-core-014",
+      "verdict": "substantial_gap",
+      "scene_ru": "Timber-and-earth walls are historically attested as a fortification class, and earlier Rurikovo examples show stacked oak logs; the probe already supplies a particular wet timber wall, tools and a ditch. These facts do not identify the damaged section's construction or capacity.",
+      "interaction_ru": "Carpenter can inspect the given timber and avoid presenting a temporary measure as finished fortification. WK does not restore emergency defensive carpentry, safe movement on a wet walkway, defensive work under alarm, or use of lanterns and rope around a wall.",
+      "variation_ru": "Actual damage, timber joints, load and visibility change options; integrity, defense value and completion are unknown.",
+      "claim_refs": ["claim:civic-wood-earth-wall", "claim:civic-defence-log-courses", "claim:population-material-wood-moisture", "claim:place-outdoors-cover-opening-and-work-visibility"],
+      "gaps": ["emergency maintenance and temporary repair of timber defenses", "defender and resident work organization during an alarm", "safe practical use of tools, light, rope, and material on a wet wall"]
+    },
+    {
+      "case_id": "military01-core-015",
+      "verdict": "substantial_gap",
+      "scene_ru": "The crowded wooden quarter, stores, hearths, roofs, footwear and heavy use are given. Shared lodging, food and warmth can trade privacy and comfort for support; household smoke and openings trade air against warmth, cold and ingress.",
+      "interaction_ru": "Households can treat food, fuel and attention as finite and not assume a fixed battle result. WK does not establish prolonged-siege water, waste, crowding, fire-risk, repair, household distribution, or civilian survival practices.",
+      "variation_ru": "Stock, weather, crowding and building condition change pressure; duration, ration, sanitation state and external action are not implied.",
+      "claim_refs": ["claim:human-life-lodging-trades-space-privacy-comfort-security", "claim:practical-dwelling-smoke-draft", "claim:public-world-armed-movement-consumes-food-fuel-attention", "claim:ordinary-life-household-needs-heat-food-storage"],
+      "gaps": ["prolonged-siege household resource, water, waste, and crowding management", "wooden-town fire-risk and repair constraints under hostile pressure", "civilian routines and support arrangements while defenses are manned"]
+    },
+    {
+      "case_id": "military01-core-016",
+      "verdict": "covered",
+      "scene_ru": "Раненый, мокрая грязная одежда, простая перевязка и укрытие за кромкой поля заданы входом. Прямое давление чистой доступной тканью может сдерживать наружное кровотечение, а холодная среда повышает риск быстрой потери тепла.",
+      "interaction_ru": "Помощник может отвести человека от непосредственной опасности лишь настолько, насколько позволяет избегать лишнего движения: при подозрении на травму шеи, спины, таза или бедра оно может усугубить вред. После установленного ранения могут понадобиться медленное перемещение, поддержка, перенос, укрытие или другие помощники; это не создаёт диагноза, протокола или обещания исхода.",
+      "variation_ru": "Тяжесть и место раны, чистота ткани, число помощников, путь и продолжающаяся опасность меняют доступные действия; лечение, инфекция, выживание и результат переноса не установлены.",
+      "claim_refs": ["claim:care-direct-pressure-bleeding", "claim:household-trauma-unnecessary-movement-can-worsen", "claim:public-world-injured-person-needs-safe-carriage-or-shelter", "claim:research-extreme-cold-can-cause-cold-stress"],
+      "gaps": []
+    },
+    {
+      "case_id": "military01-core-017",
+      "verdict": "substantial_gap",
+      "scene_ru": "Rain, mud, damaged personal equipment and scattered gear are given; natural fibres and vegetable-tanned leather can change with water, while corrosion is environmental interaction. These facts do not establish ownership, condition, injury, or recovery priority.",
+      "interaction_ru": "Survivor can inspect his already given equipment and not treat any item as dry, safe, usable, or his property merely because it is nearby. WK does not supply post-battle triage, salvage, recovery order, handling of blood-contaminated gear, or safe withdrawal practice.",
+      "variation_ru": "Darkness, rain, actual damage and other people change options; ownership, wound state and threat remain unknown.",
+      "claim_refs": ["claim:material-water-natural-fibres-water-swelling", "claim:material-water-vegetable-leather-water", "claim:foundations-chm-10-metal-environment-corrosion", "claim:place-outdoors-traffic-wet-ground-and-ruts"],
+      "gaps": ["post-battle recovery, companion checking, and withdrawal priorities", "inspection, cleaning, and salvage of wet or blood-exposed military equipment", "practical boundaries around scattered gear, ownership, and residual danger"]
+    },
+    {
+      "case_id": "military01-core-018",
+      "verdict": "substantial_gap",
+      "scene_ru": "The halt, guards, several prisoners, rope or bindings, food and cloaks are supplied by the probe. Armed travel consumes food, carrying capacity and attention; the 1223 chronicle records captives in one campaign but not ordinary custody practice or entitlement.",
+      "interaction_ru": "Guard can treat both captors and prisoners as people requiring finite food, shelter and attention, without deriving a legal outcome. WK does not explain custody, searching or securing weapons, movement, supervision, humane basic needs, or capture status.",
+      "variation_ru": "Number of people, route, fatigue and available materials change control; rights, release, violence and political result are not established.",
+      "claim_refs": ["claim:public-world-armed-movement-consumes-food-fuel-attention", "claim:candidate-v7-npl-1223-colyvan-captives-and-gold", "claim:public-world-rest-warmth-drink-food-are-contextual-support"],
+      "gaps": ["practical custody, movement, supervision, and disarmament of captured people", "food, shelter, and rest constraints for captors and prisoners on the move", "historically compatible capture status and treatment boundaries without inventing legal outcomes"]
+    },
+    {
+      "case_id": "military01-core-019",
+      "verdict": "substantial_gap",
+      "scene_ru": "Fog reduces visibility, wet ground can lower trafficability, and woodland is not a uniform surface. Fatigue limits sustained work, but the probe's sound does not identify a pursuer, distance or direction.",
+      "interaction_ru": "Runner can move through already given broken terrain without treating fog or sound as proof of who follows. WK does not give retreat, concealment, pursuit avoidance, route selection, or foot-versus-horse movement practices.",
+      "variation_ru": "Fog, wet leaves, stream, fatigue and actual followers change the path; friendly ground, pursuit and successful escape are unknown.",
+      "claim_refs": ["claim:foundations-earth-27-fog-visibility", "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load", "claim:place-outdoors-forest-structure-and-season", "claim:work-intensity-duration"],
+      "gaps": ["retreat and pursuit movement across broken woodland terrain", "qualitative evasion and route-choice constraints for a separated runner", "comparison of horse and foot movement under these conditions"]
+    },
+    {
+      "case_id": "military01-core-020",
+      "verdict": "substantial_gap",
+      "scene_ru": "The village, household, children, livestock, stores, wells and passing armed group are all supplied. Rural work is historically compatible with an established household, and armed movement consumes food, carrying capacity and household attention; neither creates a right to any household resource.",
+      "interaction_ru": "Household can keep already existing work and stores distinct from any unproven request or authority. WK does not reconstruct civilian safety, livestock handling, access to buildings, hospitality, fear, resource negotiation, or effects of a detachment's halt.",
+      "variation_ru": "Group size, authority, household means and animal state change the interaction; consent, payment, violence and social result are not inferred.",
+      "claim_refs": ["claim:agriculture-rural-role-context", "claim:public-world-armed-movement-consumes-food-fuel-attention", "claim:animal-care-needs-presence", "claim:settlement-post-fence-yard"],
+      "gaps": ["civilian household responses to an armed detachment seeking halt, food, or shelter", "practical effects of armed movement on children, livestock, work, privacy, and stores", "historically compatible authority, consent, and resource-negotiation boundaries"]
+    },
+    {
+      "case_id": "military01-core-021",
+      "verdict": "substantial_gap",
+      "scene_ru": "The retainer has the specified hand weapon, cloth or oil, simple tools and spare fastening material. Metal state changes through environmental interaction; a thin oil film can temporarily reduce rusting, but neither proposition identifies a weapon defect or certifies continued use.",
+      "interaction_ru": "He can clean and inspect visible marks without declaring the weapon safe or repaired. WK does not say which wood-and-metal weapon defects are material, how joints or fastenings are assessed, or what repair is credible after impacts.",
+      "variation_ru": "Weapon construction, location of marks, hidden cracking and future load change the answer; serviceability and repair durability are unknown.",
+      "claim_refs": ["claim:foundations-chm-10-metal-environment-corrosion", "claim:candidate-v9-thin-oil-film-temporarily-reduces-iron-rusting", "claim:wood-anisotropy-moisture", "claim:population-joining-metal-fatigue"],
+      "gaps": ["inspection criteria for wood-and-metal hand-weapon damage after impacts", "basic weapon maintenance and fastening repair methods", "boundaries between visible marks, uncertain defects, and credible continued use"]
+    },
+    {
+      "case_id": "military01-core-022",
+      "verdict": "substantial_gap",
+      "scene_ru": "The camp edge, carts, tree line, cold layers, weapon, shield, permitted light and finite light fuel are given. Darkness limits light; background noise can mask speech, sound weakens with distance, and a light can also alter what the sentry sees without establishing a watch procedure.",
+      "interaction_ru": "Sentry can avoid treating ordinary sounds as an attack and avoid assuming a light gives complete visibility. WK does not reconstruct watch relief, light and fire discipline, signal choices, silhouette management, or alert escalation.",
+      "variation_ru": "Cold, fuel, tree line, carts and background sounds change perception; intruder presence, audibility and response outcome remain unknown.",
+      "claim_refs": ["claim:sound-background-noise-masks-speech", "claim:sound-spreading-reduces-intensity", "claim:research-extreme-cold-can-cause-cold-stress", "claim:reconstructed-dwelling-interior-light-and-air-change-with-opening-weather-and-fuel"],
+      "gaps": ["night sentry routine, relief, and alert escalation", "camp light, fire, silhouette, and signal discipline", "qualitative discrimination of ordinary night sounds from actionable warning"]
+    },
+    {
+      "case_id": "military01-core-023",
+      "verdict": "substantial_gap",
+      "scene_ru": "Horse, tack, grooming items, feed, water access and mud are supplied. Hooves bear weight and provide traction; basic cleaning can remove debris around the frog; hay and pasture forage feed healthy horses. These do not supply a campaign ration, tethering arrangement or fitness assessment.",
+      "interaction_ru": "Rider can inspect the given hoof for debris, avoid treating the horse as inexhaustible, and not infer a diagnosis from performance. WK does not say how to feed, water, rest, tether, dry tack, or decide readiness before the column moves.",
+      "variation_ru": "Feed, water, health, weather and tack condition change needs; quantity, health and later speed remain unknown.",
+      "claim_refs": ["claim:place-equine-feet-bear-weight-absorb-shock-and-provide-traction", "claim:place-basic-equine-hoof-cleaning-can-remove-debris-around-the-frog", "claim:fodder-healthy-horse-forage", "claim:static-animal-b06-equine-gait-change-or-reduced-performance-does-not-identify-cause"],
+      "gaps": ["campaign horse feeding, watering, rest, tethering, and protection practice", "inspection and care of wet tack after travel", "qualitative readiness decisions for a working horse before resumed movement"]
+    },
+    {
+      "case_id": "military01-core-024",
+      "verdict": "substantial_gap",
+      "scene_ru": "The wooden lane, palisade, houses, yards, dry timber, thatch, wind, water vessels and small fire are supplied. Combustion needs oxidizer access; water can contribute to cooling a Class A fire, and wind affects smoke transport and dispersion. None of this fixes spread, access or the result.",
+      "interaction_ru": "Residents can treat the fire as a current material risk and not promise extinguishing, safe air or an unchanged defensive position. WK lacks fire-spread behaviour among dense dry wooden structures, organised response, evacuation/access choices, and interaction of fire control with local defense.",
+      "variation_ru": "Fuel arrangement, wind, water amount and access change the event; spread, injury, panic and defense outcome are unknown.",
+      "claim_refs": ["claim:foundations-thm-09-combustion-oxygen-supply", "claim:water-can-cool-class-a-fire-fuel-and-flame", "claim:research-atmospheric-conditions-affect-smoke-transport-and-dispersion", "claim:smoke-particles-can-attenuate-light-and-reduce-visibility"],
+      "gaps": ["fire spread and containment in dense dry wooden settlement fabric", "organised household and defender response around access, water, ladders, and smoke", "defensive-work tradeoffs during a nearby fire under wind"]
+    },
+    {
+      "case_id": "military01-core-025",
+      "verdict": "substantial_gap",
+      "scene_ru": "The dispersed force, river noise, brush, wind, rain, mud and messenger are given. A senior can coordinate a small group and a messenger can carry word where people and route exist; background noise can mask speech and sound intensity falls with distance.",
+      "interaction_ru": "Messenger can carry the stated instruction and avoid claiming that an incomplete message was heard or understood. WK does not reconstruct command transmission, acknowledgement, relay, position tracking, or correction of misunderstanding across a moving force.",
+      "variation_ru": "Wind, water noise, brush, route and positions change communication; message content, recipients, authority and resulting action are not established.",
+      "claim_refs": ["claim:public-world-senior-can-coordinate-messenger-can-carry-word", "claim:sound-background-noise-masks-speech", "claim:sound-spreading-reduces-intensity", "claim:static-ground-b05-wet-soil-can-reduce-trafficability-and-rut-under-load"],
+      "gaps": ["military command transmission, relay, acknowledgement, and correction practices", "communication limits across dispersed foot and mounted groups in noise and weather", "messenger route, authority, and position-tracking constraints during contact preparation"]
+    }
+  ]
+}

@@ -286,6 +286,9 @@ function plan(request, {
     check: null,
     continuation,
     clarification: null,
+    direct_result_kind: resolution === 'direct'
+      && ['achieved', 'partially_achieved'].includes(goalResult)
+      && operations.length === 0 ? 'no_state_gesture' : null,
     reason_code: 'test_step',
     reason: 'Проверка M1 security boundary.'
   };

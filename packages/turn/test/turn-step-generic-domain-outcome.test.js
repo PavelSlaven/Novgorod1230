@@ -165,6 +165,7 @@ function plan(request) {
     },
     continuation: null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: 'locked_container_check',
     reason: 'Замок требует общей code-owned проверки.'
   };

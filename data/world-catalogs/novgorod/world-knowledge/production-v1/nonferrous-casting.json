@@ -1,0 +1,1092 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:nonferrous-casting",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:copper",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:bronze",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:brass",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:tin",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:lead",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:gold",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:casting-crucible",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:pouring-ladle",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:casting-mould",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:sprue",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:defective-casting",
+      "domain": "material_culture",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:material_culture:iron-steel-firesteel",
+      "domain": "material_culture",
+      "broader_refs": [
+        "wk:material_culture:firesteel"
+      ],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-copper",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:copper",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:nonferrous-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-bronze",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:bronze",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:nonferrous-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-brass",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:brass",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:nonferrous-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-tin",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:tin",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:nonferrous-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-lead",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:lead",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:nonferrous-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-gold",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:gold",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:nonferrous-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-casting-crucible",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:casting-crucible",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:nonferrous-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-pouring-ladle",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:pouring-ladle",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:nonferrous-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-casting-mould",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:casting-mould",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:craft_technology:nonferrous-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-sprue",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:nonferrous-casting",
+      "predicate": "produces_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:sprue"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-defective-casting",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:nonferrous-casting",
+      "predicate": "produces_form",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:defective-casting"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-desyatinny"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-firesteel-iron",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-steel-firesteel",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:iron"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-firesteel"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:casting-firesteel-steel",
+      "domain": "material_culture",
+      "subject_ref": "wk:material_culture:iron-steel-firesteel",
+      "predicate": "attested_use",
+      "object": {
+        "kind": "concept_ref",
+        "value": "wk:material_culture:steel"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1100,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "attested",
+        "confidence": "medium",
+        "directness": "inferred"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:ha-firesteel"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:nonferrous-casting",
+      "locale": "ru",
+      "labels": [
+        "Литьё цветных металлов"
+      ],
+      "short_definition": "Литьё цветных металлов",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:nonferrous-casting",
+      "locale": "en",
+      "labels": [
+        "Nonferrous metal casting"
+      ],
+      "short_definition": "Nonferrous metal casting",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:copper",
+      "locale": "ru",
+      "labels": [
+        "Медь"
+      ],
+      "short_definition": "Медь",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:copper",
+      "locale": "en",
+      "labels": [
+        "Copper"
+      ],
+      "short_definition": "Copper",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:bronze",
+      "locale": "ru",
+      "labels": [
+        "Бронза"
+      ],
+      "short_definition": "Бронза",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:bronze",
+      "locale": "en",
+      "labels": [
+        "Bronze"
+      ],
+      "short_definition": "Bronze",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:brass",
+      "locale": "ru",
+      "labels": [
+        "Латунь"
+      ],
+      "short_definition": "Латунь",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:brass",
+      "locale": "en",
+      "labels": [
+        "Brass"
+      ],
+      "short_definition": "Brass",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tin",
+      "locale": "ru",
+      "labels": [
+        "Олово"
+      ],
+      "short_definition": "Олово",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:tin",
+      "locale": "en",
+      "labels": [
+        "Tin"
+      ],
+      "short_definition": "Tin",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:lead",
+      "locale": "ru",
+      "labels": [
+        "Свинец"
+      ],
+      "short_definition": "Свинец",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:lead",
+      "locale": "en",
+      "labels": [
+        "Lead"
+      ],
+      "short_definition": "Lead",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:gold",
+      "locale": "ru",
+      "labels": [
+        "Золото"
+      ],
+      "short_definition": "Золото",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:gold",
+      "locale": "en",
+      "labels": [
+        "Gold"
+      ],
+      "short_definition": "Gold",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:casting-crucible",
+      "locale": "ru",
+      "labels": [
+        "Литейный тигель"
+      ],
+      "short_definition": "Литейный тигель",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:casting-crucible",
+      "locale": "en",
+      "labels": [
+        "Casting crucible"
+      ],
+      "short_definition": "Casting crucible",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pouring-ladle",
+      "locale": "ru",
+      "labels": [
+        "Льячка"
+      ],
+      "short_definition": "Льячка",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:pouring-ladle",
+      "locale": "en",
+      "labels": [
+        "Pouring ladle"
+      ],
+      "short_definition": "Pouring ladle",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:casting-mould",
+      "locale": "ru",
+      "labels": [
+        "Литейная форма"
+      ],
+      "short_definition": "Литейная форма",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:casting-mould",
+      "locale": "en",
+      "labels": [
+        "Casting mould"
+      ],
+      "short_definition": "Casting mould",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sprue",
+      "locale": "ru",
+      "labels": [
+        "Литник"
+      ],
+      "short_definition": "Литник",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:sprue",
+      "locale": "en",
+      "labels": [
+        "Sprue"
+      ],
+      "short_definition": "Sprue",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:defective-casting",
+      "locale": "ru",
+      "labels": [
+        "Литейный брак"
+      ],
+      "short_definition": "Литейный брак",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:defective-casting",
+      "locale": "en",
+      "labels": [
+        "Defective casting"
+      ],
+      "short_definition": "Defective casting",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-steel-firesteel",
+      "locale": "ru",
+      "labels": [
+        "Кресало с железной основой и стальной ударной частью"
+      ],
+      "short_definition": "Кресало с железной основой и стальной ударной частью",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:material_culture:iron-steel-firesteel",
+      "locale": "en",
+      "labels": [
+        "Iron-base steel-edge firesteel"
+      ],
+      "short_definition": "Iron-base steel-edge firesteel",
+      "search_aliases": []
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-copper",
+      "locale": "ru",
+      "runtime_text": "Медь: материал засвидетельствован в литейном контексте XII века на Десятинном раскопе Новгорода. Это историческая совместимость, не обязательный состав любого литья и не наличие мастерской в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-copper",
+      "locale": "en",
+      "runtime_text": "Copper is attested as a material in the twelfth-century casting context at Novgorod's Desyatinny excavation. This supports historical compatibility, not a required composition for all casting or a workshop present in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-bronze",
+      "locale": "ru",
+      "runtime_text": "Бронза: материал засвидетельствован в литейном контексте XII века на Десятинном раскопе Новгорода. Это историческая совместимость, не обязательный состав любого литья и не наличие мастерской в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-bronze",
+      "locale": "en",
+      "runtime_text": "Bronze is attested as a material in the twelfth-century casting context at Novgorod's Desyatinny excavation. This supports historical compatibility, not a required composition for all casting or a workshop present in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-brass",
+      "locale": "ru",
+      "runtime_text": "Латунь: материал засвидетельствован в литейном контексте XII века на Десятинном раскопе Новгорода. Это историческая совместимость, не обязательный состав любого литья и не наличие мастерской в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-brass",
+      "locale": "en",
+      "runtime_text": "Brass is attested as a material in the twelfth-century casting context at Novgorod's Desyatinny excavation. This supports historical compatibility, not a required composition for all casting or a workshop present in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-tin",
+      "locale": "ru",
+      "runtime_text": "Олово: материал засвидетельствован в литейном контексте XII века на Десятинном раскопе Новгорода. Это историческая совместимость, не обязательный состав любого литья и не наличие мастерской в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-tin",
+      "locale": "en",
+      "runtime_text": "Tin is attested as a material in the twelfth-century casting context at Novgorod's Desyatinny excavation. This supports historical compatibility, not a required composition for all casting or a workshop present in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-lead",
+      "locale": "ru",
+      "runtime_text": "Свинец: материал засвидетельствован в литейном контексте XII века на Десятинном раскопе Новгорода. Это историческая совместимость, не обязательный состав любого литья и не наличие мастерской в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-lead",
+      "locale": "en",
+      "runtime_text": "Lead is attested as a material in the twelfth-century casting context at Novgorod's Desyatinny excavation. This supports historical compatibility, not a required composition for all casting or a workshop present in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-gold",
+      "locale": "ru",
+      "runtime_text": "Золото: материал засвидетельствован в литейном контексте XII века на Десятинном раскопе Новгорода. Это историческая совместимость, не обязательный состав любого литья и не наличие мастерской в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-gold",
+      "locale": "en",
+      "runtime_text": "Gold is attested as a material in the twelfth-century casting context at Novgorod's Desyatinny excavation. This supports historical compatibility, not a required composition for all casting or a workshop present in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-casting-crucible",
+      "locale": "ru",
+      "runtime_text": "Литейный тигель: инструмент засвидетельствован в литейном контексте XII века на Десятинном раскопе Новгорода. Это историческая совместимость, не обязательный инструмент любого литья и не наличие мастерской в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-casting-crucible",
+      "locale": "en",
+      "runtime_text": "Casting crucible is attested as equipment in the twelfth-century casting context at Novgorod's Desyatinny excavation. This supports historical compatibility, not a required tool for all casting or a workshop present in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-pouring-ladle",
+      "locale": "ru",
+      "runtime_text": "Льячка: инструмент засвидетельствован в литейном контексте XII века на Десятинном раскопе Новгорода. Это историческая совместимость, не обязательный инструмент любого литья и не наличие мастерской в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-pouring-ladle",
+      "locale": "en",
+      "runtime_text": "Pouring ladle is attested as equipment in the twelfth-century casting context at Novgorod's Desyatinny excavation. This supports historical compatibility, not a required tool for all casting or a workshop present in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-casting-mould",
+      "locale": "ru",
+      "runtime_text": "Литейная форма: инструмент засвидетельствован в литейном контексте XII века на Десятинном раскопе Новгорода. Это историческая совместимость, не обязательный инструмент любого литья и не наличие мастерской в 1230 году.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-casting-mould",
+      "locale": "en",
+      "runtime_text": "Casting mould is attested as equipment in the twelfth-century casting context at Novgorod's Desyatinny excavation. This supports historical compatibility, not a required tool for all casting or a workshop present in 1230.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-sprue",
+      "locale": "ru",
+      "runtime_text": "Литник засвидетельствован среди следов литья XII века на Десятинном раскопе. Это возможный технологический остаток, не заданный объём отходов и не обязательный исход каждой отливки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-sprue",
+      "locale": "en",
+      "runtime_text": "Sprue is attested among twelfth-century casting traces at Desyatinny. This is a possible process remnant, not a specified waste quantity or the necessary outcome of every casting.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-defective-casting",
+      "locale": "ru",
+      "runtime_text": "Литейный брак засвидетельствован среди следов литья XII века на Десятинном раскопе. Это возможный неудачный результат, не заданный объём отходов и не обязательный исход каждой отливки.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-defective-casting",
+      "locale": "en",
+      "runtime_text": "Defective casting is attested among twelfth-century casting traces at Desyatinny. This is a possible failed result, not a specified waste quantity or the necessary outcome of every casting.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-firesteel-iron",
+      "locale": "ru",
+      "runtime_text": "У исследованного овального новгородского кресала XII века засвидетельствована железная основа. Это конкретная исторически известная составная форма, не конструкция всех кресал и не готовый рецепт.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-firesteel-iron",
+      "locale": "en",
+      "runtime_text": "The studied oval twelfth-century Novgorod firesteel has an attested iron base. This is a documented composite form, not the construction of every firesteel or a complete recipe.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-firesteel-steel",
+      "locale": "ru",
+      "runtime_text": "У исследованного овального новгородского кресала XII века засвидетельствована приваренная стальная ударная часть. Это конкретная исторически известная составная форма, не конструкция всех кресал и не готовый рецепт.",
+      "search_aliases": []
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:casting-firesteel-steel",
+      "locale": "en",
+      "runtime_text": "The studied oval twelfth-century Novgorod firesteel has an attested welded steel striking portion. This is a documented composite form, not the construction of every firesteel or a complete recipe.",
+      "search_aliases": []
+    }
+  ]
+}

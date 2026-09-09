@@ -1,0 +1,654 @@
+{
+  "schema": "world_knowledge_authoring_fragment_v1",
+  "predicate_registry": {},
+  "sources": [
+    {
+      "schema": "world_knowledge_source_v1",
+      "source_ref": "source:reconstructed-place-work-editorial",
+      "title": "Reconstructed place and work v1 editorial rationale",
+      "authors": [
+        "/root/mixed_sampling_contract_audit"
+      ],
+      "publication": "Repository editorial reconstruction note",
+      "source_kind": "editorial_reconstruction",
+      "citation": "data/world-catalogs/novgorod/world-knowledge/research/reconstructed-place-work-v1.md",
+      "rights": {
+        "status": "approved",
+        "redistribution": "metadata_and_factual_summary"
+      },
+      "review_status": "approved"
+    }
+  ],
+  "evidence": [
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-work-surface",
+      "source_ref": "source:reconstructed-place-work-editorial",
+      "anchor": {
+        "section": "Place/work reconstruction"
+      },
+      "note": "Editorial: wet work can affect dry goods and hot work needs clearance from easy fuel; no surface or procedure is created.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-work-traces",
+      "source_ref": "source:reconstructed-place-work-editorial",
+      "anchor": {
+        "section": "Place/work reconstruction"
+      },
+      "note": "Editorial: shavings, scraps, chaff and spill traces differ by process; no product or actor follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-work-clearance",
+      "source_ref": "source:reconstructed-place-work-editorial",
+      "anchor": {
+        "section": "Place/work reconstruction"
+      },
+      "note": "Editorial: clearance reduces obstruction and exposure around hot, heavy or moving work; no layout or tool set follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-work-smith-mill",
+      "source_ref": "source:reconstructed-place-work-editorial",
+      "anchor": {
+        "section": "Place/work reconstruction"
+      },
+      "note": "Editorial: forge and mill relations are conditional work context, not fixed inventory, drive type or lock procedure.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-work-grain-vegetation",
+      "source_ref": "source:reconstructed-place-work-editorial",
+      "anchor": {
+        "section": "Place/work reconstruction"
+      },
+      "note": "Editorial: grain drying and threshing have distinct work relations; vegetation can snag flexible loads; no place state follows.",
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_evidence_v1",
+      "evidence_ref": "evidence:place-work-grain-drying-threshing",
+      "source_ref": "source:reconstructed-place-work-editorial",
+      "anchor": {
+        "section": "Place/work reconstruction"
+      },
+      "note": "Editorial: grain drying and threshing have distinct work relations; threshing needs movement space and leaves dust and chaff; no place state follows.",
+      "review_status": "approved"
+    }
+  ],
+  "concepts": [
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "domain": "craft_technology",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    },
+    {
+      "schema": "world_knowledge_concept_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-place-work-space",
+      "domain": "architecture_settlement",
+      "broader_refs": [],
+      "related_refs": [],
+      "external_mappings": [],
+      "review_status": "approved"
+    }
+  ],
+  "claims": [
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "shared_work_surface_can_require_sequencing_wet_hot_and_dry_tasks_to_avoid_obstruction_or_cross_contact"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-work-surface"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "wood_shavings_leather_scraps_chaff_and_spills_can_leave_different_ordinary_work_traces_without_identifying_a_finished_product"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-work-traces"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-place-work-space",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "spilled_dry_goods_at_floor_level_can_make_stored_material_more_accessible_to_ordinary_pests"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-work-traces"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-place-work-space",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "hot_heavy_or_moving_work_benefits_from_clear_working_space_and_unobstructed_handling_paths"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-work-clearance"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "where_a_smithing_process_is_established_a_forge_bellows_anvil_and_cooling_step_can_form_a_connected_work_context"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-work-smith-mill"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "an_operating_mill_requires_an_actual_power_drive_moving_mechanisms_and_condition_appropriate_servicing"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-work-smith-mill"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+      "domain": "craft_technology",
+      "subject_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "grain_drying_or_oven_work_and_a_threshing_floor_can_have_different_space_air_and_handling_needs"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-work-grain-drying-threshing"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    },
+    {
+      "schema": "world_knowledge_claim_v1",
+      "claim_ref": "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+      "domain": "architecture_settlement",
+      "subject_ref": "wk:architecture_settlement:reconstructed-place-work-space",
+      "predicate": "supported_fact",
+      "object": {
+        "kind": "literal",
+        "value": "dense_vegetation_can_snag_flexible_lines_or_projecting_loads_and_clearance_can_change_that_condition"
+      },
+      "polarity": "support",
+      "applicability": {
+        "time": {
+          "from": 1200,
+          "to": 1300,
+          "precision": "range"
+        },
+        "places": [
+          {
+            "place_ref": "region_novgorod_land",
+            "relation": "used_in"
+          }
+        ]
+      },
+      "qualifiers": {
+        "typicality": "unknown",
+        "confidence": "medium",
+        "directness": "editorial"
+      },
+      "knowledge_access": {
+        "class": "domain_internal_only",
+        "required_facets": []
+      },
+      "hard_exclusion": null,
+      "evidence_refs": [
+        "evidence:place-work-grain-vegetation"
+      ],
+      "review_status": "approved",
+      "conflict_group_ref": null
+    }
+  ],
+  "concept_localizations": [
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "locale": "ru",
+      "labels": [
+        "Рабочий поток места"
+      ],
+      "short_definition": "Качественные связи между этапами обычной работы и пространством.",
+      "search_aliases": [
+        "мастерская",
+        "работа",
+        "мельница",
+        "овин"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:craft_technology:reconstructed-place-work-flow",
+      "locale": "en",
+      "labels": [
+        "Place work flow"
+      ],
+      "short_definition": "Qualitative links between ordinary work stages and space.",
+      "search_aliases": [
+        "workshop",
+        "mill",
+        "threshing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-place-work-space",
+      "locale": "ru",
+      "labels": [
+        "Рабочее пространство и следы"
+      ],
+      "short_definition": "Качественные пределы пространства, следов и препятствий.",
+      "search_aliases": [
+        "проход",
+        "стружка",
+        "расчистка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_concept_localization_v1",
+      "concept_ref": "wk:architecture_settlement:reconstructed-place-work-space",
+      "locale": "en",
+      "labels": [
+        "Work space and traces"
+      ],
+      "short_definition": "Qualitative limits of work space, traces and obstructions.",
+      "search_aliases": [
+        "clearance",
+        "work traces",
+        "spill"
+      ]
+    }
+  ],
+  "claim_localizations": [
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+      "locale": "ru",
+      "runtime_text": "Мокрая работа может увлажнить оставленные рядом сухие ткань или зерно, а горячая обработка требует убрать от жара легко воспламеняющийся мусор. Поэтому на общей поверхности такие дела разумно разводить по очереди; это не задаёт процедуру или состояние места.",
+      "search_aliases": [
+        "мокрая работа",
+        "горячая работа"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-wet-hot-dry-tasks-can-require-sequencing",
+      "locale": "en",
+      "runtime_text": "Wet work can dampen nearby dry cloth or grain, while hot work needs easy fuel moved away from heat. Those tasks can therefore need sequencing on a shared surface; this establishes no procedure or place state.",
+      "search_aliases": [
+        "wet work",
+        "hot work"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+      "locale": "ru",
+      "runtime_text": "Стружка, кожаные обрезки, мякина и просыпи могут оставлять разные рабочие следы, но не называют готовую вещь.",
+      "search_aliases": [
+        "стружка",
+        "обрезки",
+        "мякина"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-process-residue-can-differ-by-material-work",
+      "locale": "en",
+      "runtime_text": "Shavings, leather scraps, chaff, and spills can leave different work traces without naming a finished product.",
+      "search_aliases": [
+        "shavings",
+        "scraps",
+        "chaff"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+      "locale": "ru",
+      "runtime_text": "Просыпанный сухой запас на полу может стать доступнее обычным вредителям.",
+      "search_aliases": [
+        "просыпь",
+        "вредители"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-spilled-dry-goods-can-increase-floor-level-pest-access",
+      "locale": "en",
+      "runtime_text": "Spilled dry goods at floor level can become more accessible to ordinary pests.",
+      "search_aliases": [
+        "spillage",
+        "pests"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+      "locale": "ru",
+      "runtime_text": "У горячей, тяжёлой или движущейся работы нужен свободный ход: загромождённый путь мешает переносу, а в движущемся узле ткань или рука могут быть захвачены. Это не фиксирует планировку или конкретную защиту.",
+      "search_aliases": [
+        "свободный проход",
+        "тяжёлая работа"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-hot-heavy-or-moving-work-benefits-from-clearance",
+      "locale": "en",
+      "runtime_text": "Hot, heavy, or moving work needs clear handling paths: obstruction hinders carrying, and cloth or a hand can be caught in a moving part. This fixes neither layout nor a specific guard.",
+      "search_aliases": [
+        "clearance",
+        "heavy work"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+      "locale": "ru",
+      "runtime_text": "Там, где кузнечная работа уже установлена, горн нагревает деталь, меха подают воздух, а молоток работает по ней на наковальне; вода может охлаждать деталь, когда этого требует процесс. Это не обязательный набор каждой мастерской и не универсальная термообработка.",
+      "search_aliases": [
+        "горн",
+        "меха",
+        "наковальня"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-smithy-can-conditionally-link-forge-bellows-anvil-and-quench",
+      "locale": "en",
+      "runtime_text": "Where smithing is already established, a forge heats a piece, bellows supply air, and a hammer works it on an anvil; water can cool it when that process needs cooling. This is neither mandatory workshop inventory nor universal heat treatment.",
+      "search_aliases": [
+        "forge",
+        "bellows",
+        "anvil"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+      "locale": "ru",
+      "runtime_text": "В мукомольной мельнице привод передаёт движение механизму и жерновам. Работа рядом с движущимися частями может подставлять одежду или руки под захват; необходимость осмотра или обслуживания даёт практическую причину остановить движение. Это не всеобщий исторический распорядок, не тип привода и не гарантия безопасного доступа после остановки.",
+      "search_aliases": [
+        "мельница",
+        "привод",
+        "обслуживание"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-mill-operation-depends-on-drive-moving-parts-and-servicing",
+      "locale": "en",
+      "runtime_text": "In a grain mill, the drive transmits motion to the mechanism and millstones. Work near moving parts can expose clothing or hands to entanglement; inspection or servicing gives a practical reason to stop motion. This is not a universal historical practice, drive type, or guarantee of safe access after stopping.",
+      "search_aliases": [
+        "mill",
+        "drive",
+        "servicing"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+      "locale": "ru",
+      "runtime_text": "Овин сушит колосья или снопы, тогда как ток даёт место для обмолота и отделения зерна от стеблей. Для взмахов при обмолоте нужно пространство, а пыль и мякина остаются следствием операции; огонь и сухое топливо здесь не одно и то же условие.",
+      "search_aliases": [
+        "овин",
+        "ток",
+        "сушка зерна"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-grain-drying-and-threshing-are-different-work-contexts",
+      "locale": "en",
+      "runtime_text": "A drying oven dries ears or sheaves, while a threshing floor provides room to beat grain from stalks. Threshing needs swing space, while dust and chaff are traces of that operation; fire and dry fuel are not the same condition.",
+      "search_aliases": [
+        "grain drying",
+        "threshing floor"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+      "locale": "ru",
+      "runtime_text": "Густая растительность может цеплять гибкие линии или выступающий груз; расчистка меняет это условие, если она была сделана.",
+      "search_aliases": [
+        "зацепить верёвку",
+        "расчистка"
+      ]
+    },
+    {
+      "schema": "world_knowledge_claim_localization_v1",
+      "claim_ref": "claim:reconstructed-place-work-vegetation-can-snag-flexible-lines-or-loads",
+      "locale": "en",
+      "runtime_text": "Dense vegetation can snag flexible lines or projecting loads; clearance changes this only when performed.",
+      "search_aliases": [
+        "snag line",
+        "clearance"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 import { requestTurnStepPlan } from './turn-step-contracts.js';
+import { contractError } from './turn-step-contracts/validation.js';
 
 export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   semanticPlanValidator = null,
@@ -29,12 +30,33 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       throw error;
     }
     if (parseFailure) originalOutput = {};
+    const structuralErrors = parseFailure ? [{ path: '$',
+      code: 'json_parse_failed', message: 'Planner output was not valid JSON.' }]
+      : [...(error.details?.errors ?? [])];
+    if (!parseFailure && originalOutput != null
+        && !structuralErrors.some(requiresSemanticRepair)
+        && typeof semanticPlanValidator === 'function') {
+      try {
+        await semanticPlanValidator(deepFreeze({ plan: originalOutput,
+          request: structuredClone(request), prepared_chain_context:
+            structuredClone(preparedChainContext), attempt: 1 }));
+      } catch (semanticError) {
+        if (semanticError?.code !== 'TURN_STEP_PLAN_INVALID') throw semanticError;
+        structuralErrors.push(...(semanticError.details?.errors ?? []));
+      }
+    }
+    if (!structuralErrors.some(requiresSemanticRepair)) {
+      const failure = parseFailure
+        ? contractError('TURN_STEP_PLAN_INVALID', structuralErrors) : error;
+      failure.details = deepFreeze({ ...failure.details,
+        repair_attempted: false,
+        repair_suppressed: 'deterministic_structure_invalid' });
+      throw failure;
+    }
     const repairContext = deepFreeze({ schema: 'turn_step_repair_context_v1',
       attempt: 2,
       original_output: structuredClone(originalOutput),
-      structural_errors: parseFailure ? [{ path: '$', code: 'json_parse_failed',
-        message: 'Planner output was not valid JSON.' }]
-        : structuredClone(error.details?.errors ?? [])
+      structural_errors: structuredClone(structuralErrors)
     });
     try {
       return {
@@ -49,52 +71,37 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         repaired: true
       };
     } catch (repairError) {
-      if (unresolvedDomainRequest({ error: repairError, originalOutput })) {
-        return { plan: noResultPlan(request), repaired: true };
-      }
-      if (repairError?.code === 'TURN_STEP_PLAN_INVALID') {
-        repairError.details = deepFreeze({
-          ...repairError.details,
+      const normalizedError = repairError?.code === 'json_parse_failed'
+        ? contractError('TURN_STEP_PLAN_INVALID', [{ path: '$',
+          code: 'json_parse_failed',
+          message: 'Planner repair output was not valid JSON.' }])
+        : repairError;
+      if (normalizedError?.code === 'TURN_STEP_PLAN_INVALID') {
+        normalizedError.details = deepFreeze({
+          ...normalizedError.details,
           repair_attempted: true
         });
       }
-      throw repairError;
+      throw normalizedError;
     }
   }
 }
 
-function unresolvedDomainRequest({ error, originalOutput }) {
-  return error?.code === 'TURN_STEP_PLAN_INVALID'
-    && originalOutput?.resolution === 'domain_request'
-    && Array.isArray(originalOutput?.operations)
-    && originalOutput.operations.length === 0
-    && (error.details?.errors ?? []).some(({ path, code, message }) =>
-      path === '$.operations' && code === 'resolution'
-        && message === 'domain_request requires exactly one domain operation');
-}
+const SEMANTIC_REPAIR_CODES = new Set([
+  'action_production_identity_grounding',
+  'continuation_progress',
+  'direct_result_kind',
+  'domain_owner_unavailable',
+  'material_extent_shape',
+  'material_transformation_grounding',
+  'operation_semantic_grounding',
+  'ordinary_discovery_query_identity',
+  'source_placement_grounding',
+  'source_semantic_grounding'
+]);
 
-function noResultPlan(request) {
-  return deepFreeze({
-    schema: 'turn_step_plan_v1',
-    request_id: request.request_id,
-    committed_state_version: request.committed_state_version,
-    working_revision: request.working_revision,
-    step_index: request.step_index,
-    interpretation: {
-      player_goal: request.root_player_action,
-      grounded_attempt: request.remaining_intent,
-      adaptation: 'literal'
-    },
-    resolution: 'direct',
-    goal_result: 'not_achieved',
-    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-    operations: [],
-    check: null,
-    continuation: null,
-    clarification: null,
-    reason_code: 'domain_operation_unavailable',
-    reason: 'Для этой попытки сейчас нет доступной точной операции.'
-  });
+function requiresSemanticRepair({ code } = {}) {
+  return SEMANTIC_REPAIR_CODES.has(code);
 }
 
 export async function requestAndValidateTurnStepPlan({ request, turnStepModel,

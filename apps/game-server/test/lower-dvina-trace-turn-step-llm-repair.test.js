@@ -170,6 +170,58 @@ test('repair drops a field rejected as an additional property', async () => {
   assert.equal('adaptation_type' in plan.interpretation, false);
 });
 
+test('unrelated repair cannot invent a code-owned operation selector',
+  async () => {
+    const operation = { op: 'request_discovery', actor_ref: 'actor_mikula',
+      discovery_kind: 'inspect', target_refs: ['location:wreck'],
+      query: 'Подробно осмотреть место крушения' };
+    const generic = { ...operation,
+      query: 'Осмотреть берег в поисках сухого топлива' };
+    const input = request({ remaining_intent: generic.query,
+      available_domain_operations: [operation] });
+    const original = { ...output(), interpretation: {
+      player_goal: generic.query, adaptation: 'literal'
+    }, resolution: 'domain_request', operations: [generic] };
+    delete original.operation_choice;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: { ...original,
+        interpretation: { ...original.interpretation,
+          grounded_attempt: generic.query },
+        operations: [operation],
+        operation_choice: 'domain_operation_1_request_discovery_inspect',
+        operation_family: 'request_discovery' } }; }
+    } });
+    const repaired = await model(input, { original_output: original,
+      structural_errors: [{ path: '$.interpretation.grounded_attempt',
+        code: 'required', message: 'is required' }] });
+    assert.deepEqual(repaired.operations, [generic]);
+    assert.equal(Object.hasOwn(repaired, 'operation_choice'), false);
+    assert.equal(Object.hasOwn(repaired, 'operation_family'), false);
+  });
+
+test('unrelated repair preserves the selected exact operation DTO', async () => {
+  const exact = { op: 'request_discovery', actor_ref: 'actor_mikula',
+    discovery_kind: 'inspect', target_refs: ['location:wreck'],
+    query: 'Подробно осмотреть место крушения' };
+  const unrelated = { ...exact, query: 'Искать обычное топливо' };
+  const input = request({ available_domain_operations: [exact] });
+  const original = { ...output(), interpretation: {
+    player_goal: input.root_player_action, adaptation: 'literal'
+  }, resolution: 'domain_request', operations: [exact] };
+  delete original.operation_choice;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run() { return { output: { ...original,
+      interpretation: { ...original.interpretation,
+        grounded_attempt: input.remaining_intent },
+      operations: [unrelated], operation_choice: null } }; }
+  } });
+  const repaired = await model(input, { original_output: original,
+    structural_errors: [{ path: '$.interpretation.grounded_attempt',
+      code: 'required', message: 'is required' }] });
+  assert.deepEqual(repaired.operations, [exact]);
+  assert.equal(Object.hasOwn(repaired, 'operation_choice'), false);
+});
+
 test('grounding repair keeps the model semantic result unchanged',
   async () => {
     const intent = 'Подбираю доску и делаю из неё опору.';

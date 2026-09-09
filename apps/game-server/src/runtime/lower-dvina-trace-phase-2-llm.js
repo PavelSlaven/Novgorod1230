@@ -123,15 +123,40 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
         || Array.isArray(response.output)) {
       throw dependencyError('Turn step planner returned no JSON object.');
     }
+    const repairedOutput = repairing ? preserveUnrelatedOperationSelection(
+      repairContext.original_output, response.output,
+      repairContext.structural_errors) : response.output;
     const semanticOutput = repairing
-      ? mergeRepairOutput(repairContext.original_output, response.output,
+      ? mergeRepairOutput(repairContext.original_output, repairedOutput,
           new Set(repairContext.structural_errors
             ?.filter(({ code }) => code === 'additional_property')
             .map(({ path }) => path) ?? []))
-      : response.output;
+      : repairedOutput;
     return assembleTurnStepPlan(semanticOutput, request, operationChoices);
   };
   return model;
+}
+
+function preserveUnrelatedOperationSelection(original, repaired, errors) {
+  if (!original || typeof original !== 'object' || Array.isArray(original)
+      || !repaired || typeof repaired !== 'object' || Array.isArray(repaired)
+      || !Array.isArray(errors) || errors.length === 0
+      || errors.some(operationSelectionRepair)) return repaired;
+  const result = { ...repaired };
+  for (const key of ['operation_choice', 'operation_family', 'operations']) {
+    if (Object.hasOwn(original, key)) result[key] = structuredClone(original[key]);
+    else delete result[key];
+  }
+  return result;
+}
+
+function operationSelectionRepair({ path, code } = {}) {
+  return typeof path === 'string' && [
+    '$.operations', '$.operation_choice', '$.operation_family', '$.resolution'
+  ].some((prefix) => path === prefix || path.startsWith(`${prefix}.`))
+    || ['json_parse_failed', 'continuation_progress',
+      'operation_semantic_grounding']
+      .includes(code);
 }
 
 function mergeRepairOutput(original, repaired, rejectedPaths, path = '$') {

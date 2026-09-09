@@ -27,7 +27,8 @@ import { resolveNpcOrdinarySemanticRemainder } from
 export { isBackgroundNpcSemanticRemainderInScope,
   resolveBackgroundNpcSemanticRemainder } from
   './turn-step-background-npc-remainder.js';
-import { isDomainStepOperation } from './turn-step-admission.js';
+import { isDomainStepOperation, isOrdinaryDiscoveryInScope } from
+  './turn-step-admission.js';
 import { createOrdinaryMaterializationDiscoveryOwner } from
   './ordinary-materialization-discovery.js';
 import { requestPlayerConversationContribution } from './player-conversation.js';
@@ -112,6 +113,7 @@ export {
   runAutonomousUpdates,
   spatialResult,
   isDomainStepOperation,
+  isOrdinaryDiscoveryInScope,
   requestWorldKnowledgeQueryPlan,
   resolveTurnStepWorldKnowledge
 };

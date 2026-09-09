@@ -104,8 +104,12 @@ call outside a physical transaction and Phase 4 admission. The existing
 code-first known-result gates; Stage A is candidate-free and Stage B has
 `evidence_weight = 0`, with identity/classification/policy fields built by
 code. Stage A concrete entities are forbidden; its density band is converted
-to numeric budget by a versioned code-owned policy. Normalized discovery query
-and exact target derive the code-owned candidate identity; the query reaches
+to numeric budget by a versioned code-owned policy. A normalized discovery
+query equal to the normalized remaining intent, with one visible target owned
+by ordinary discovery and no continuation or check, is structurally grounded
+without an LLM audit; altered or compound discovery still crosses the semantic
+auditor. The normalized query and exact target derive the code-owned candidate
+identity; the query reaches
 the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
 classification/mechanics authority. Exact normalized retry reuses the
 persisted resolution, while a different query has a different identity.

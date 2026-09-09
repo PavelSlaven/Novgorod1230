@@ -1,4 +1,5 @@
 import { serverError } from '../errors.js';
+import { isOrdinaryDiscoveryInScope } from '@rus/turn';
 
 const KINDS = new Set([
   'operation_semantic_grounding',
@@ -53,6 +54,7 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
   return async ({ plan, request, resolved_domain_operations: resolved = [] }) => {
     const audited = [...auditedOperations(plan)];
     if (audited.length === 0) return true;
+    if (exactGenericDiscovery({ audited, plan, request, resolved })) return true;
     const response = await roleRunner.run({
       scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
       request_identity: request.request_id,
@@ -71,6 +73,22 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
         response.output.concerns.map(({ kind }) =>
           concern(kind, audited, resolved)) } });
   };
+}
+
+function exactGenericDiscovery({ audited, plan, request, resolved }) {
+  const owner = resolved.find(({ path }) => path === audited[0]?.path);
+  if (audited.length !== 1 || plan.operations?.length !== 1
+      || plan.check != null || plan.continuation != null
+      || owner?.owner_kind !== 'ordinary_discovery') return false;
+  const operation = audited[0].operation;
+  return isOrdinaryDiscoveryInScope({ operation,
+    playerSafeState: request.player_safe_state })
+    && normalized(operation.query) === normalized(request.remaining_intent);
+}
+
+function normalized(value) {
+  return typeof value === 'string' ? value.normalize('NFKC').trim()
+    .replace(/\s+/gu, ' ').toLocaleLowerCase('ru-RU') : null;
 }
 
 function* auditedOperations(plan) {

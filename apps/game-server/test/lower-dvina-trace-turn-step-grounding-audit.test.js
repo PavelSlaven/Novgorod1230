@@ -30,6 +30,40 @@ test('turn-step grounding audit is skipped outside discovery and production',
     assert.equal(calls, 0);
   });
 
+test('exact generic discovery grounding is enforced without an LLM audit',
+  async () => {
+    let calls = 0;
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run() { calls += 1; throw new Error('must not run'); } }
+    });
+    const remainingIntent = 'обыскать полосу берега в поисках сухой верёвки';
+    const genericRequest = { request_id: 'turn-step:generic', remaining_intent:
+      remainingIntent, player_safe_state: {
+        position: { location_ref: 'location:riverbank' },
+        ordinary_resolution: { discovery_available: true,
+          container_resolution_available: false, scene_seed_available: false }
+      } };
+    const genericPlan = { continuation: null, operations: [{
+      op: 'request_discovery', actor_ref: 'actor:1', discovery_kind: 'search',
+      target_refs: ['location:riverbank'], query: remainingIntent
+    }] };
+    const ordinaryOwner = [{ path: '$.operations.0',
+      owner_kind: 'ordinary_discovery' }];
+    assert.equal(await validate({ request: genericRequest,
+      plan: genericPlan, resolved_domain_operations: ordinaryOwner }), true);
+    assert.equal(calls, 0);
+    await assert.rejects(validate({ request: genericRequest,
+      plan: genericPlan, resolved_domain_operations: [{
+        path: '$.operations.0', owner_kind: 'external'
+      }] }), /must not run/u);
+    assert.equal(calls, 1);
+    await assert.rejects(validate({ request: genericRequest, plan: {
+      ...genericPlan, operations: [{ ...genericPlan.operations[0],
+        query: 'искать на берегу следы лодки' }]
+    }, resolved_domain_operations: ordinaryOwner }), /must not run/u);
+    assert.equal(calls, 2);
+  });
+
 test('turn-step grounding audit returns repairable source errors', async () => {
   const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     roleRunner: { async run(call) {

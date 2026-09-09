@@ -44,11 +44,14 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
         isDomainStepOperation)) {
         const owner = resolve({ operation, plan, request,
           preparedChainContext });
-        if (owner.bound_operation != null) resolvedDomainOperations.push({
-          path, bound_operation: structuredClone(owner.bound_operation)
-        });
         if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner,
           turnCommandError);
+        if (owner.kind !== 'missing') resolvedDomainOperations.push({ path,
+          owner_kind: owner.kind,
+          ...(owner.bound_operation == null ? {} : {
+            bound_operation: structuredClone(owner.bound_operation)
+          })
+        });
         if (owner.kind === 'missing' && !deferredPreparedDomainPlan({
           plan, path, preparedChainContext
         })) errors.push({ path,

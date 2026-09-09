@@ -42,6 +42,14 @@ test('assembler restores an omitted player goal from the code-owned request', ()
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
 
+test('assembler normalizes a quoted null operation choice', () => {
+  const input = request();
+  const operations = [{ op: 'request_discovery' }];
+  const plan = assembleTurnStepPlan({ ...output(), resolution: 'domain_request',
+    operation_choice: 'null', operations }, input);
+  assert.deepEqual(plan.operations, operations);
+});
+
 test('assembler preserves typed direct result kind', () => {
   const input = request();
   const plan = assembleTurnStepPlan({ ...output(), resolution: 'direct',

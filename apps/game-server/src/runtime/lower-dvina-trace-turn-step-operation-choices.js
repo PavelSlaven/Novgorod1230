@@ -20,6 +20,19 @@ export function turnStepOperationChoices(request, repairContext = null) {
     repairContext, operation));
 }
 
+export function normalizeTurnStepOperationChoice(choice) {
+  return choice?.operation_choice === 'null'
+    ? { ...choice, operation_choice: null } : choice;
+}
+
+export function selectedTurnStepOperation(choice, operationChoices) {
+  const selected = operationChoices.find(({ choice_id }) =>
+    choice_id === choice.operation_choice);
+  return selected != null && (choice.operation_family == null
+      || choice.operation_family === selected.operation.op)
+    ? selected : undefined;
+}
+
 function operationChoiceGrounding(operation, request) {
   const suppliedScope = request.player_safe_state
     ?.available_domain_operation_grounding?.find((entry) =>

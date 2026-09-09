@@ -7,7 +7,8 @@ import { observedEvidencePrompts } from
 import { turnStepPlanMappings } from
   './lower-dvina-trace-turn-step-plan-mappings.js';
 import { assembleNpcConversationPlan, assemblePlayerConversationPlan } from './lower-dvina-trace-conversation-assembly.js';
-import { turnStepOperationChoices } from
+import { normalizeTurnStepOperationChoice, selectedTurnStepOperation,
+  turnStepOperationChoices } from
   './lower-dvina-trace-turn-step-operation-choices.js';
 import { turnStepRepairSpecificInstructions } from './lower-dvina-trace-turn-step-repair-prompt.js';
 import { groundTurnRequest, wkClosure } from './world-knowledge-grounding.js';
@@ -188,7 +189,7 @@ function visibleConversationChoiceExamples(request, choices) {
 }
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
-  const semantic = structuredClone(choice);
+  const semantic = normalizeTurnStepOperationChoice(structuredClone(choice));
   const selected = selectedTurnStepOperation(semantic, operationChoices);
   const mismatchedSelectedOperations = selected != null
     && Array.isArray(semantic.operations)
@@ -255,13 +256,6 @@ function bindActionProductionCarrierRefs(operations) {
       target_refs: [...production.source_refs.slice(1),
         ...production.tool_refs] };
   });
-}
-function selectedTurnStepOperation(choice, operationChoices) {
-  const selected = operationChoices.find(({ choice_id }) =>
-    choice_id === choice.operation_choice);
-  return selected != null && (choice.operation_family == null
-      || choice.operation_family === selected.operation.op)
-    ? selected : undefined;
 }
 function preparedFollowupPrompt(candidates) {
   return [

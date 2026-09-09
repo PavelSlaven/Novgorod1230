@@ -95,6 +95,7 @@ const SEMANTIC_REPAIR_CODES = new Set([
   'material_extent_shape',
   'material_transformation_grounding',
   'operation_semantic_grounding',
+  'ordinary_discovery_query_identity',
   'source_placement_grounding',
   'source_semantic_grounding'
 ]);

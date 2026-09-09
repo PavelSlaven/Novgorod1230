@@ -60,6 +60,59 @@ test('copied authored discovery is semantically rejected before its one repair',
     assert.equal(calls, 2);
   });
 
+test('lossy discovery wording gets one semantic repair without prompt rules',
+  async () => {
+    const intent =
+      'Осмотреть пояс и сумку на разрывы, затем проверить сухость грунта.';
+    const continuation = 'затем проверить сухость грунта.';
+    const input = request({ root_player_action: intent,
+      remaining_intent: intent, player_safe_state: {
+        visible_entities: [{ entity_ref: 'item:belt' }]
+      } });
+    let calls = 0;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run(call) {
+        calls += 1;
+        if (calls === 1) return { output: {
+          ...output(), resolution: 'domain_request', operations: [{
+            op: 'request_discovery', actor_ref: 'actor_mikula',
+            discovery_kind: 'inspect', target_refs: ['item:belt'],
+            query: 'Осмотреть пояс на повреждения'
+          }], continuation: { remaining_intent: continuation,
+            depends_on_refs: [] }
+        } };
+        assert.equal(call.role_id, 'turn_step_planner_repair');
+        assert.doesNotMatch(call.messages[0].content,
+          /Required ordinary discovery repair:/u);
+        return { output: {
+          ...output(), resolution: 'domain_request', operations: [{
+            op: 'request_discovery', actor_ref: 'actor_mikula',
+            discovery_kind: 'inspect', target_refs: ['item:belt'],
+            query: 'Осмотреть пояс и сумку на разрывы'
+          }], continuation: { remaining_intent: continuation,
+            depends_on_refs: [] }
+        } };
+      }
+    } });
+    const semanticPlanValidator = async ({ plan }) => {
+      if (plan.operations[0].query.includes('повреждения')) {
+        throw Object.assign(new Error('lossy discovery wording'), {
+          code: 'TURN_STEP_PLAN_INVALID', details: { errors: [{
+            path: '$.operations.0.query',
+            code: 'ordinary_discovery_query_identity'
+          }] }
+        });
+      }
+      return true;
+    };
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model, semanticPlanValidator });
+    assert.equal(result.repaired, true);
+    assert.equal(result.plan.operations[0].query,
+      'Осмотреть пояс и сумку на разрывы');
+    assert.equal(calls, 2);
+  });
+
 test('body inspection cannot remain an ordinary discovery of covering clothing',
   async () => {
     const intent = 'Осмотреть боль в кисти под рукавом';

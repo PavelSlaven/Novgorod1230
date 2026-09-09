@@ -221,7 +221,7 @@ function visibleConversationChoiceExamples(request, choices) {
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
   const normalized = canonicalizePlannerEnvelope(
-    normalizeTurnStepOperationChoice(structuredClone(choice)));
+    normalizeTurnStepOperationChoice(structuredClone(choice)), request);
   const semantic = restoreExactOperationChoice(
     canonicalizeDiscoveryShape(normalized, request), operationChoices);
   const selected = selectedTurnStepOperation(semantic, operationChoices);
@@ -280,7 +280,7 @@ export function assembleTurnStepPlan(choice, request,
   };
 }
 
-function canonicalizePlannerEnvelope(semantic) {
+function canonicalizePlannerEnvelope(semantic, request) {
   if (semantic?.constructor !== Object) return semantic;
   const interpretation = semantic.interpretation;
   const nested = interpretation?.constructor === Object
@@ -305,6 +305,12 @@ function canonicalizePlannerEnvelope(semantic) {
   }
   return {
     ...next,
+    interpretation: next.interpretation?.constructor === Object
+      && next.interpretation.adaptation === 'literal'
+      && !nonempty(next.interpretation.grounded_attempt)
+      ? { ...next.interpretation,
+        grounded_attempt: request.remaining_intent }
+      : next.interpretation,
     reason_code: nonempty(next.reason_code)
       ? next.reason_code : 'semantic_plan',
     reason: nonempty(next.reason)

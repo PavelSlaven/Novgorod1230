@@ -69,7 +69,7 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
           details: { errors: [{ path: `${audited[0].path}.query`,
             rule: 'ordinary_discovery_query_identity',
             code: 'ordinary_discovery_query_identity',
-            message: 'must equal the current remaining_intent' }] }
+            message: 'must equal remaining_intent without continuation or form a non-overlapping lossless prefix with it' }] }
         });
     }
     const response = await roleRunner.run({

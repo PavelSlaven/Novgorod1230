@@ -131,9 +131,30 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'never substitute a broad authored operation choice'), true);
   assert.equal(seen.messages[0].content.includes(
-    'For ordinary_discovery_query_identity preserve the standalone request_discovery and copy request.remaining_intent verbatim into query'), true);
+    'For ordinary_discovery_query_identity follow the required ordinary discovery repair below'), true);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
+
+test('ordinary discovery repair requires a lossless non-overlapping split',
+  async () => {
+    const remainingIntent = 'Осмотреть плащ и затем уйти с берега.';
+    let prompt;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run(call) {
+        prompt = call.messages[0].content;
+        return { output: output() };
+      }
+    } });
+    await model(request({ remaining_intent: remainingIntent }), {
+      original_output: {}, structural_errors: [{
+        path: '$.operations.0.query',
+        code: 'ordinary_discovery_query_identity'
+      }]
+    });
+    assert.match(prompt,
+      /Required ordinary discovery repair:[\s\S]*without omission or overlap[\s\S]*whole intent is one focused inspect or search[\s\S]*set continuation to null[\s\S]*independent later action remains[\s\S]*exact trailing uncovered text[\s\S]*Never repeat continuation text inside query/u);
+    assert.match(prompt, /Осмотреть плащ и затем уйти с берега\./u);
+  });
 
 test('repair drops a field rejected as an additional property', async () => {
   const input = request();

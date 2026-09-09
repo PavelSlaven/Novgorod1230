@@ -113,6 +113,17 @@ test('lossless ordinary item-group discovery bypasses opaque-ref LLM audit',
     });
     assert.equal(calls, 0);
 
+    await assert.rejects(validate({ request: genericRequest,
+      plan: { operations: [{ ...operation, query: remainingIntent }],
+        check: null, continuation }, resolved_domain_operations: owner }),
+    (error) => {
+      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+      assert.equal(error.details.errors[0].code,
+        'ordinary_discovery_query_identity');
+      return true;
+    });
+    assert.equal(calls, 0);
+
     await assert.rejects(validate({ request: { ...genericRequest,
       remaining_intent: 'Осмотреть плащ. Уйти с берега.' },
       plan: { operations: [{ ...operation, target_refs: ['item:cloak'],

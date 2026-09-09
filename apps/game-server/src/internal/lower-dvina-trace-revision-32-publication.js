@@ -7,39 +7,48 @@ import { assertLowerDvinaTracePhase1BWorldLineage } from
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 export const TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST =
   '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101';
-const PINS = Object.freeze({
+const HISTORICAL_PINS = Object.freeze({
   manifest: 'bb05aff9ae0ec901063e4e5807e187d221aaa20fc709950270d1d8ced4895df1',
   binding: '83cd8eca17879484867262199970bf0f70152f2adb69d22d8900a1466045e88a',
   definition: '0c4b5d4992393ecde511cb35426933b01fb51b47552e0f5a859df2bfd359ab1f',
   presentation: 'b0e68dabf6541bc76b24294f797746c34d7d3ab28c6732d71cba79336369750c',
   priorBinding: '2bcb6c037926a662d2fc3707561038bdd988746904f235c1ad146c87e29a00bf'
 });
+const OPENING_PINS = Object.freeze({
+  ...HISTORICAL_PINS,
+  manifest: '9973d7953c29f0f0d1dc70b23020852adf0bb8f77d3a2330faac82f6f8f912a1',
+  binding: 'cdf9b883779dbe90e6415b2f7d3d3b47cbfbe7fae176e2607af717c9cc98bc10',
+  priorBinding: HISTORICAL_PINS.binding
+});
 
 export async function loadLowerDvinaTraceRevision32Publication({
-  rootDir = process.cwd(), phase1AManifestDigest = null } = {}) {
+  rootDir = process.cwd(), phase1AManifestDigest = null,
+  publicationRevision = 27 } = {}) {
+  if (![27, 28].includes(publicationRevision)) fail();
+  const pins = publicationRevision === 28 ? OPENING_PINS : HISTORICAL_PINS;
   if (phase1AManifestDigest != null
       && phase1AManifestDigest !== TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST) {
     fail();
   }
   const paths = {
-    manifest: `${ROOT}/phase-1b-v27/manifest.json`,
-    binding: `${ROOT}/phase-1b-v27/publication-binding.json`,
+    manifest: `${ROOT}/phase-1b-v${publicationRevision}/manifest.json`,
+    binding: `${ROOT}/phase-1b-v${publicationRevision}/publication-binding.json`,
     phase1a: `${ROOT}/phase-1a-v23/manifest.json`,
     definition: `${ROOT}/phase-m20-content/definition.json`,
     presentation: `${ROOT}/phase-1b-v26/scene-presentation-v2.json`,
-    prior: `${ROOT}/phase-1b-v26/publication-binding.json`,
+    prior: `${ROOT}/phase-1b-v${publicationRevision - 1}/publication-binding.json`,
     compatibility: `${ROOT}/phase-1b-v22/publication-binding.json`
   };
   const loaded = Object.fromEntries(await Promise.all(Object.entries(paths)
     .map(async ([key, path]) => [key, await readJson(rootDir, path)])));
   const { manifest, binding, phase1a, definition, presentation, prior,
     compatibility } = loaded;
-  if (manifest.digest !== PINS.manifest
-      || binding.digest !== PINS.binding
+  if (manifest.digest !== pins.manifest
+      || binding.digest !== pins.binding
       || phase1a.digest !== TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST
-      || definition.digest !== PINS.definition
-      || presentation.digest !== PINS.presentation
-      || prior.digest !== PINS.priorBinding
+      || definition.digest !== pins.definition
+      || presentation.digest !== pins.presentation
+      || prior.digest !== pins.priorBinding
       || manifest.value?.content_refs?.publication_binding?.digest
         !== binding.digest
       || binding.value?.superseded_binding_ref?.digest !== prior.digest

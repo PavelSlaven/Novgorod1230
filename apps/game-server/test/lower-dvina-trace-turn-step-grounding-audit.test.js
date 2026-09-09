@@ -74,6 +74,71 @@ test('generic discovery keeps deterministic intent identity before semantic audi
     assert.equal(calls, 2);
   });
 
+test('material prerequisite preserves the full intent and audits its query',
+  async () => {
+    const attempts = [
+      { intent: 'Сплести корзину из ивовых прутьев', query: 'ивовые прутья' },
+      { intent: 'Сделать поплавок из куска бересты', query: 'кусок бересты' }
+    ];
+    let calls = 0;
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run(call) {
+        calls += 1;
+        const payload = JSON.parse(call.messages[1].content);
+        assert.equal(payload.continuation.remaining_intent,
+          payload.remaining_intent);
+        return { output: payload.operations[0].operation.query === 'следы лодки'
+          ? { pass: false,
+            concerns: [{ kind: 'operation_semantic_grounding' }] }
+          : { pass: true, concerns: [] } };
+      } }
+    });
+    const owner = [{ path: '$.operations.0',
+      owner_kind: 'ordinary_discovery' }];
+    const requestFor = (remaining_intent) => ({
+      request_id: `turn-step:${remaining_intent}`, remaining_intent,
+      player_safe_state: {
+        position: { location_ref: 'location:riverbank' },
+        ordinary_resolution: { discovery_available: true,
+          container_resolution_available: false, scene_seed_available: false }
+      }
+    });
+    const planFor = (remaining_intent, query) => ({
+      reason_code: 'find_needed_material', check: null,
+      operations: [{ op: 'request_discovery', actor_ref: 'actor:1',
+        discovery_kind: 'inspect', target_refs: ['location:riverbank'], query }],
+      continuation: { remaining_intent, depends_on_refs: [] }
+    });
+    for (const { intent, query } of attempts) {
+      assert.equal(await validate({ request: requestFor(intent),
+        plan: planFor(intent, query), resolved_domain_operations: owner }), true);
+    }
+    const unrelated = attempts[0].intent;
+    await assert.rejects(validate({ request: requestFor(unrelated),
+      plan: planFor(unrelated, 'следы лодки'),
+      resolved_domain_operations: owner }), (error) => {
+      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+      assert.equal(error.details.errors[0].code,
+        'operation_semantic_grounding');
+      return true;
+    });
+    const dropped = planFor(attempts[0].intent, attempts[0].query);
+    dropped.continuation.remaining_intent = 'Сплести корзину';
+    await assert.rejects(validate({ request: requestFor(attempts[0].intent),
+      plan: dropped, resolved_domain_operations: owner }), (error) => {
+      assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+      assert.deepEqual(error.details.errors.map(({ path, code }) =>
+        ({ path, code })), [
+        { path: '$.operations.0.query',
+          code: 'ordinary_discovery_query_identity' },
+        { path: '$.continuation.remaining_intent',
+          code: 'ordinary_discovery_query_identity' }
+      ]);
+      return true;
+    });
+    assert.equal(calls, 3);
+  });
+
 test('body-under-clothing discovery is rejected while clothing inspection remains valid',
   async () => {
     const seen = [];

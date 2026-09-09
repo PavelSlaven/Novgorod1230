@@ -1,19 +1,24 @@
 import { existsSync } from 'node:fs';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 
 import { chromium } from 'playwright-core';
+import pg from 'pg';
 import { createProductionLlmRoleRunner } from
   '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+import { createLowerDvinaTracePhase2PostgresRepository } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import { createPostgresSessionStore } from
+  '../../apps/game-server/src/infrastructure/postgres/session-store.js';
 import { LOCAL_LLM_PRESET } from
   '../../apps/game-server/src/runtime/llm-settings.js';
 import { auditEvent, createGameplayGapExplorer, gitSnapshot } from
   './gameplay-gap-campaign.mjs';
 import { startLocalPlay } from './local-play.js';
+import { ensureLocalPostgres } from './local-postgres.js';
 
 const CHROMIUM = [process.env.RUS_CHROMIUM_PATH,
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -22,39 +27,58 @@ const CHROMIUM = [process.env.RUS_CHROMIUM_PATH,
 
 export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
   focus, turns = 8, campaignId = `local-gemma-${randomUUID()}`,
-  sequence = 1, afterP0P1FixRef = null, start = startLocalPlay,
+  sequence = 1, afterP0P1FixRef = null, start = startIsolatedLocalPlay,
   launch = (options) => chromium.launch(options), snapshot = gitSnapshot,
-  chromiumPath = CHROMIUM, headless = false, provider = null } = {}) {
-  if (!outputDirectory || !focus || !Number.isInteger(turns) || turns < 1
+  chromiumPath = CHROMIUM, headless = false, provider = null,
+  resume = false, signal = null,
+  createCompletionObserver = defaultCompletionObserver,
+  createExplorer = createGameplayGapExplorer } = {}) {
+  if (!outputDirectory || !focus
+      || (turns !== null && (!Number.isInteger(turns) || turns < 1))
+      || typeof resume !== 'boolean'
       || !chromiumPath) throw new TypeError(
-    'outputDirectory, focus, positive turns and Chromium are required.');
+    'outputDirectory, focus, positive turns or completion mode, and Chromium are required.');
   const before = snapshot();
   if (before.dirty !== false) throw new Error(
-    'Local Gemma acceptance requires a clean unchanged checkout.');
+    'Browser acceptance requires a clean unchanged checkout.');
   const directory = resolve(outputDirectory);
   const logDirectory = join(directory, 'party-logs');
   const reportPath = join(directory, 'campaign.json');
   await mkdir(directory, { recursive: true });
-  const report = { schema: 'world_knowledge_gameplay_campaign_v1',
-    campaign_id: campaignId, explorer_ref: `local-gemma-explorer:${campaignId}`,
-    scenario_id: 'lower_dvina_trace_v1', mode: 'acceptance_candidate',
-    independent_unseen: true, sequence,
-    after_p0_p1_fix_ref: afterP0P1FixRef ?? before.head,
-    git: before, status: 'running', turns: [], trace_refs: [],
-    started_at: new Date().toISOString() };
+  let report;
+  if (resume) {
+    report = JSON.parse(await readFile(reportPath, 'utf8'));
+    assertResumableReport(report, { before, focus, sequence });
+    report.resume_count = Number(report.resume_count ?? 0) + 1;
+    report.failure_history = [...(report.failure_history ?? []),
+      ...(report.failure ? [report.failure] : [])];
+    delete report.failure;
+    report.status = 'running';
+  } else {
+    report = { schema: 'world_knowledge_gameplay_campaign_v1',
+      campaign_id: campaignId,
+      explorer_ref: `local-gemma-explorer:${campaignId}`,
+      scenario_id: 'lower_dvina_trace_v1', mode: 'acceptance_candidate',
+      independent_unseen: true, sequence, focus,
+      after_p0_p1_fix_ref: afterP0P1FixRef ?? before.head,
+      git: before, status: 'running', turns: [], trace_refs: [],
+      started_at: new Date().toISOString() };
+  }
   const save = () => writeFile(reportPath,
     `${JSON.stringify(report, null, 2)}\n`);
-  await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`,
+  if (resume) await save();
+  else await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`,
     { flag: 'wx' });
-  let local; let browser; let settingsDirectory;
+  let local; let browser; let settingsDirectory; let completionObserver;
   try {
-    if (provider) settingsDirectory = await mkdtemp(join(tmpdir(),
-      'novgorod-acceptance-llm-'));
+    settingsDirectory = join(directory, 'runtime');
+    await mkdir(settingsDirectory, { recursive: true });
     local = await start({ env: { ...process.env, RUS_DEVELOPER_MODE: 'true',
       LOG_DIRECTORY: logDirectory,
       ...(settingsDirectory ? { RUS_LLM_SETTINGS_PATH:
         join(settingsDirectory, 'settings.json') } : {}) },
-      startManagedLlm: provider == null });
+      startManagedLlm: provider == null,
+      acceptanceDataRoot: join(directory, 'postgres') });
     if (!provider && !local.managedRuntime?.llm) throw new Error(
       'Final acceptance requires the managed local Gemma runtime.');
     const selectedProvider = provider ?? { mode: 'local',
@@ -67,76 +91,102 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       runtime_metadata: provider.evidence.runtime,
       hardware_metadata: provider.evidence.hardware }
       : local.managedRuntime.llm.identity;
-    report.execution = { interface: 'chromium_playwright_dom_only',
+    const execution = { interface: 'chromium_playwright_dom_only',
       gameplay_transport: 'browser_ui_only',
       browser: { executable: chromiumPath, headless },
       llm_provider: identity,
       ...(!provider ? { local_runtime: identity } : {}),
       giga: local.managedRuntime.giga.identity,
       postgres: { version: local.postgres.version } };
+    if (resume && JSON.stringify(report.execution) !== JSON.stringify(execution)) {
+      throw new Error('Continuation must use the original provider and runtime identity.');
+    }
+    report.execution = execution;
     const settings = { providerSnapshot: () => selectedProvider };
-    const nextIntent = createGameplayGapExplorer({ focus,
+    const nextIntent = createExplorer({ focus,
       roleRunner: createProductionLlmRoleRunner({ settings }) });
     browser = await launch({ executablePath: chromiumPath, headless,
       args: ['--no-sandbox', '--no-proxy-server'] });
     const page = await browser.newPage();
     page.setDefaultTimeout(120_000);
+    if (resume) await page.addInitScript((partyId) =>
+      globalThis.localStorage.setItem('rus.party_id', partyId), report.party_id);
     await page.goto(local.url);
     await selectProvider(page, selectedProvider);
-    await page.waitForSelector('[data-start-new-game]:not([disabled])');
-    await page.click('[data-start-new-game]');
-    await page.waitForSelector('[data-new-game-screen]');
-    await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
+    if (resume) {
+      await page.waitForSelector('[data-continue-party]:not([disabled])');
+      await page.click('[data-continue-party]');
+    } else {
+      await page.waitForSelector('[data-start-new-game]:not([disabled])');
+      await page.click('[data-start-new-game]');
+      await page.waitForSelector('[data-new-game-screen]');
+      await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
+    }
     await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
-    const partyId = await page.evaluate(() =>
+    const partyId = resume ? report.party_id : await page.evaluate(() =>
       globalThis.localStorage.getItem('rus.party_id'));
     if (!partyId) throw new Error('Browser UI did not persist party identity.');
     report.party_id = partyId;
-    for (let index = 0; index < turns; index += 1) {
+    const entryDom = await playerDom(page);
+    if (resume) report.continuations = [...(report.continuations ?? []), {
+      resumed_at: new Date().toISOString(), player_dom: entryDom }];
+    else report.opening = { player_dom: entryDom };
+    completionObserver = await createCompletionObserver(local);
+    let terminal = await completionObserver.observe({ partyId,
+      playerDom: entryDom });
+    if (terminal.terminal) report.terminal = terminal;
+    await save();
+    if (report.pending_turn) {
+      const recovered = await capturePendingTurn({ report, page, identity,
+        logDirectory, partyId });
+      terminal = await completionObserver.observe({ partyId,
+        playerDom: recovered.trace.player_dom_after });
+      if (terminal.terminal) report.terminal = terminal;
+      await save();
+      if (recovered.event.event === 'turn.failed') throw new Error(
+        `Browser turn failed: ${recovered.event.error?.code ?? 'unknown error'}`);
+    }
+    for (let index = report.turns.length;
+      !terminal.terminal && (turns === null || index < turns);
+      index += 1) {
+      if (signal?.aborted) break;
       const domBefore = await playerDom(page);
-      const proposal = await nextIntent({ campaign_id: campaignId,
+      const proposal = await nextIntent({ campaign_id: report.campaign_id,
         turn_index: index, player_dom: domBefore,
         previous_intents: report.turns.map((turn) => turn.proposal.raw_text) });
       assertLocalProvider(proposal.explorer_provider, identity,
         'development PLAYER');
       const already = await completedTurnCount(logDirectory, partyId);
+      const traceRef = `${report.campaign_id}:trace:${index}`;
+      report.pending_turn = { trace_ref: traceRef,
+        campaign_id: report.campaign_id, explorer_ref: report.explorer_ref,
+        producer_ref: `production-runtime:${before.head}`, proposal,
+        player_dom_before: domBefore, after_count: already };
+      await save();
       await page.fill('[data-turn-form] textarea[name="raw_text"]',
         proposal.raw_text);
       await page.click('[data-turn-form] button[type="submit"]');
       await page.waitForSelector(
         '[data-turn-form] textarea:not([disabled]), .error',
         { timeout: 20 * 60_000 });
-      if (await page.locator('.error').count()) throw new Error(
-        `Browser turn failed: ${await page.locator('.error').innerText()}`);
-      const event = await readNextTurnEvent({ directory: logDirectory,
-        partyId, afterCount: already });
-      const audited = auditEvent(event);
-      for (const call of audited.llm.calls.filter(({ role_id }) => role_id)) {
-        assertLocalProvider(call, identity, `gameplay role ${call.role_id}`);
-      }
-      const traceRef = `${campaignId}:trace:${index}`;
-      const boundaries = audited.llm.gameplay_traces;
-      const trace = { trace_ref: traceRef, campaign_id: campaignId,
-        explorer_ref: report.explorer_ref,
-        producer_ref: `production-runtime:${before.head}`, proposal,
-        player_dom_before: domBefore, player_dom_after: await playerDom(page),
-        input: event.input, events: [audited],
-        accepted: boundaries.some((item) =>
-          item.event === 'owner_commit_completed'),
-        retrieved_claim_refs: retrievedClaims(boundaries),
-        code_mechanics_refs: codeRefs(traceRef, audited),
-        replay_of_gap_ids: [] };
-      trace.commit_status = trace.accepted ? 'committed' : 'not_committed';
-      trace.presentation_status = event.event === 'turn.completed'
-        ? 'completed' : 'failed';
-      report.turns.push(trace); report.trace_refs.push(traceRef);
+      const uiError = await page.locator('.error').count()
+        ? await page.locator('.error').innerText() : null;
+      const captured = await capturePendingTurn({ report, page, identity,
+        logDirectory, partyId });
+      const { event, trace } = captured;
+      terminal = await completionObserver.observe({ partyId,
+        playerDom: trace.player_dom_after });
+      if (terminal.terminal) report.terminal = terminal;
       await save();
+      if (uiError || event.event === 'turn.failed') throw new Error(
+        `Browser turn failed: ${uiError ?? event.error?.code ?? 'unknown error'}`);
     }
     report.git_after = snapshot();
     if (report.git_after.head !== before.head || report.git_after.dirty) {
-      throw new Error('Candidate changed during local Gemma acceptance.');
+      throw new Error('Candidate changed during browser acceptance.');
     }
-    report.status = 'captured';
+    report.status = signal?.aborted && !report.terminal
+      ? 'interrupted' : 'captured';
     return report;
   } catch (error) {
     report.status = 'failed'; report.failure = {
@@ -146,11 +196,97 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
     try { await save(); }
     finally {
       await browser?.close().catch(() => {});
+      await completionObserver?.close?.().catch(() => {});
       await local?.close().catch(() => {});
-      if (settingsDirectory) await rm(settingsDirectory,
-        { recursive: true, force: true });
     }
   }
+}
+
+export function phase10TerminalObservation({ state, session, playerDom: dom }) {
+  const completion = state?.completion;
+  const visible = state?.last_turn?.visible_package;
+  const screen = session?.screen;
+  const anchor = screen?.current_projection_anchor;
+  const narrationShown = typeof screen?.main_prose === 'string'
+    && screen.main_prose.length > 0 && String(dom ?? '').includes(screen.main_prose);
+  const terminal = completion?.status === 'committed'
+    && visible?.change_set_id === completion.change_set_id
+    && screen?.screen_status === 'ready'
+    && anchor?.package_id === visible?.package_id
+    && anchor?.package_digest === visible?.package_digest
+    && typeof anchor?.narration_output_digest === 'string'
+    && anchor.narration_output_digest.length > 0 && narrationShown;
+  return Object.freeze({ terminal,
+    completion_status: completion?.status ?? null,
+    screen_status: screen?.screen_status ?? null,
+    package_id: terminal ? anchor.package_id : null,
+    narration_output_digest: terminal ? anchor.narration_output_digest : null,
+    narration_shown: narrationShown });
+}
+
+async function capturePendingTurn({ report, page, identity, logDirectory,
+  partyId }) {
+  const pending = report.pending_turn;
+  const event = await readNextTurnEvent({ directory: logDirectory, partyId,
+    afterCount: pending.after_count });
+  const audited = auditEvent(event);
+  for (const call of audited.llm.calls.filter(({ role_id }) => role_id)) {
+    assertLocalProvider(call, identity, `gameplay role ${call.role_id}`);
+  }
+  const boundaries = audited.llm.gameplay_traces;
+  const trace = { trace_ref: pending.trace_ref,
+    campaign_id: pending.campaign_id, explorer_ref: pending.explorer_ref,
+    producer_ref: pending.producer_ref, proposal: pending.proposal,
+    player_dom_before: pending.player_dom_before,
+    player_dom_after: await playerDom(page), input: event.input,
+    events: [audited], accepted: boundaries.some((item) =>
+      item.event === 'owner_commit_completed'),
+    retrieved_claim_refs: retrievedClaims(boundaries),
+    code_mechanics_refs: codeRefs(pending.trace_ref, audited),
+    replay_of_gap_ids: [] };
+  trace.commit_status = trace.accepted ? 'committed' : 'not_committed';
+  trace.presentation_status = event.event === 'turn.completed'
+    ? 'completed' : 'failed';
+  report.turns.push(trace); report.trace_refs.push(trace.trace_ref);
+  delete report.pending_turn;
+  return { event, trace };
+}
+
+async function defaultCompletionObserver(local) {
+  if (!local?.postgres?.partyUrl) throw new Error(
+    'Acceptance completion observer requires the owned party database.');
+  const pool = new pg.Pool({ connectionString: local.postgres.partyUrl, max: 1 });
+  const repository = createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: pool,
+    committer: { async commit() { throw new Error('Read-only observer cannot commit.'); } }
+  });
+  const sessions = createPostgresSessionStore({ pool });
+  return Object.freeze({
+    async observe({ partyId, playerDom: dom }) {
+      const [state, session] = await Promise.all([
+        repository.loadPhase2State(partyId), sessions.load(partyId)
+      ]);
+      return phase10TerminalObservation({ state, session, playerDom: dom });
+    },
+    close: () => pool.end()
+  });
+}
+
+function assertResumableReport(report, { before, focus, sequence }) {
+  if (report?.schema !== 'world_knowledge_gameplay_campaign_v1'
+      || report.mode !== 'acceptance_candidate'
+      || report.independent_unseen !== true || !report.party_id
+      || !['running', 'interrupted', 'failed', 'captured'].includes(report.status)
+      || report.git?.head !== before.head || report.focus !== focus
+      || report.sequence !== sequence || report.terminal) {
+    throw new Error('Acceptance report is not a resumable continuation.');
+  }
+}
+
+function startIsolatedLocalPlay({ acceptanceDataRoot, ...options }) {
+  return startLocalPlay({ ...options,
+    ensurePostgres: (input) => ensureLocalPostgres({ ...input,
+      dataRoot: acceptanceDataRoot }) });
 }
 
 export async function playerDom(page) {
@@ -203,7 +339,7 @@ async function turnEvents(directory, partyId) {
 function assertLocalProvider(record, identity, label) {
   if (record?.provider !== 'openai_compatible'
       || record?.model !== identity.model) throw new Error(
-    `${label} did not use the selected Gemma provider.`);
+    `${label} did not use the selected acceptance provider.`);
 }
 
 export async function acceptanceProviderFromEnv(env = process.env) {
@@ -248,8 +384,13 @@ if (process.argv[1]
     process.argv.slice(2);
   if (!outputDirectory || !focus) throw new Error(
     'Usage: npm run gameplay:acceptance:local -- <output-directory> <focus> [turn-count] [sequence]');
+  const controller = new AbortController();
+  for (const event of ['SIGINT', 'SIGTERM']) process.once(event, () =>
+    controller.abort(event));
   const report = await runLocalGemmaBrowserAcceptance({ outputDirectory,
-    focus, turns: Number(count), sequence: Number(sequence),
+    focus, turns: count === 'completion' ? null : Number(count),
+    sequence: Number(sequence), signal: controller.signal,
+    resume: process.env.RUS_ACCEPTANCE_RESUME === 'true',
     provider: await acceptanceProviderFromEnv() });
   console.log(JSON.stringify({ campaign_id: report.campaign_id,
     status: report.status, turns: report.turns.length }));

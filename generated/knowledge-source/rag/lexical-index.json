@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "2a5972a32eb1f488dcfb82d6ab6248e1912f80f294a5ec4b2e0267f1dadaac0c",
+  "corpus_hash": "8f27b6f44e75195a75b71e972f347c66473df61452d537cff6e2d9460eef6d90",
   "chunk_count": 2734,
   "chunks": [
     {
@@ -1413,8 +1413,8 @@
       "section": "6. Compatibility navigation and superseded audit rules",
       "line_start": 98,
       "line_end": 143,
-      "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\n## 6. Compatibility navigation and superseded audit rules\n\nWorld Knowledge ranking (§§58–60 действующего контракта) сохраняет приоритет\nhard constraints, exact focus и requested predicates; внутри этих уровней\nquery relevance предшествует context specificity и qualifiers. Это порядок\nbounded retrieval, не изменение applicability, actor access или authority.\n\nWorld Knowledge §35.1 закрепляет production authoring approval: независимый\nper-claim verdict связан с точными claim/localization/evidence inputs.\nВладелец проверки — internal compiler `@rus/world-catalog-workflow`;\nruntime World Knowledge получает только `verification_ref`, без ledger.\n§98.1 требует отдельной category cartography и независимого поиска missing\nfamilies по location/materialization потребностям, не по числу claims/cells.\n\nWorld Knowledge §0.1 разделяет статическое наполнение и последующую\ngameplay-testing фазу. §112.12 задаёт target Gameplay Gap Auditor, trace\nrequirements, классификацию, lifecycle и saturation; наличие internal\ndevelopment tooling не активирует testing и не делает saturation gate\nкритерием статической готовности.",
-      "char_count": 1194
+      "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\n## 6. Compatibility navigation and superseded audit rules\n\nWorld Knowledge ranking (§§58–60 действующего контракта) сохраняет приоритет\nhard constraints, exact focus и requested predicates; внутри этих уровней\nquery relevance предшествует context specificity и qualifiers. Это порядок\nbounded retrieval, не изменение applicability, actor access или authority.\n\nWorld Knowledge §35.1 закрепляет production authoring approval: независимый\nper-claim verdict связан с точными claim/localization/evidence inputs.\nВладелец проверки — internal compiler `@rus/world-catalog-workflow`;\nruntime World Knowledge получает только `verification_ref`, без ledger.\n§98.1 требует отдельной category cartography и независимого поиска missing\nfamilies по location/materialization потребностям, не по числу claims/cells.\n\nWorld Knowledge §0.1 разделяет статическое наполнение и последующую\ngameplay-testing фазу. §112.12 задаёт active testing architecture Gameplay Gap\nAuditor, trace requirements, классификацию, lifecycle и saturation;\nактивированная testing-фаза не делает saturation gate критерием статической\nготовности.",
+      "char_count": 1182
     },
     {
       "id": "CONTRACT_INDEX.md:6. Compatibility navigation and superseded audit rules:1",
@@ -1422,7 +1422,7 @@
       "section": "6. Compatibility navigation and superseded audit rules",
       "line_start": 98,
       "line_end": 143,
-      "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\nацию, lifecycle и saturation; наличие internal\ndevelopment tooling не активирует testing и не делает saturation gate\nкритерием статической готовности.\n\nWorld Knowledge §0.2 разрешает честно отмеченную игровую реконструкцию из\nаналогий и здравого смысла. §35.1 использует тот же независимый approval для\nsource accuracy либо plausibility; точное свидетельство 1230 года для каждой\nordinary-детали не требуется. `editorial_reconstruction` — редакторское\nоснование, не внешний научный источник. Runtime owners и exact state неизменны.\n\n| Документ | Статус после этого index cutover | Replacement |\n|---|---|---|\n| [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |\n| [`llm_documentation_navigation.md`](llm_documentation_navigation.md) | `SUPERSEDED / REDIRECT` | this index |\n| [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |\n| [`.github/Правило вызова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |",
+      "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\nor, trace requirements, классификацию, lifecycle и saturation;\nактивированная testing-фаза не делает saturation gate критерием статической\nготовности.\n\nWorld Knowledge §0.2 разрешает честно отмеченную игровую реконструкцию из\nаналогий и здравого смысла. §35.1 использует тот же независимый approval для\nsource accuracy либо plausibility; точное свидетельство 1230 года для каждой\nordinary-детали не требуется. `editorial_reconstruction` — редакторское\nоснование, не внешний научный источник. Runtime owners и exact state неизменны.\n\n| Документ | Статус после этого index cutover | Replacement |\n|---|---|---|\n| [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |\n| [`llm_documentation_navigation.md`](llm_documentation_navigation.md) | `SUPERSEDED / REDIRECT` | this index |\n| [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |\n| [`.github/Правило вызова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |",
       "char_count": 1182
     },
     {
@@ -24502,38 +24502,38 @@
       "char_count": 888
     },
     {
-      "id": "world_knowledge_platform_implementation_contract.md:Реальный browser/local-model acceptance:0",
+      "id": "world_knowledge_platform_implementation_contract.md:Реальный browser/selected-model acceptance:0",
       "file": "world_knowledge_platform_implementation_contract.md",
-      "section": "Реальный browser/local-model acceptance",
+      "section": "Реальный browser/selected-model acceptance",
       "line_start": 3745,
-      "line_end": 3767,
-      "text": "## world_knowledge_platform_implementation_contract.md — Реальный browser/local-model acceptance\n### Реальный browser/local-model acceptance\n\nФинальный PLAYER работает через настоящий Chromium/Playwright. Он получает\nтолько фактический player-facing DOM, формирует свободное намерение и вводит\nего через те же textarea/button, что человек. Прямой gameplay REST, scripted\nLLM fixture, canned response и network interception запрещены. Private traces\nчитает только auditor после хода; PLAYER их не получает.\n\n`play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL\nи pinned Giga, запускает production server и owned processes, а runner\nгарантированно закрывает их. По умолчанию он также provisions local Gemma.\nДля явно назначенного владельцем acceptance endpoint допустима та же Gemma на\nдругом компьютере через OpenAI-compatible API; runner не запускает второй\ninference process на текущем ПК. Development explorer и все production roles\nиспользуют один явно зафиксированный endpoint без fallback. Каждая LLM call\nсохраняет единые `maxTokens = 20_000` и timeout 120 с.",
-      "char_count": 1090
+      "line_end": 3768,
+      "text": "## world_knowledge_platform_implementation_contract.md — Реальный browser/selected-model acceptance\n### Реальный browser/selected-model acceptance\n\nФинальный PLAYER работает через настоящий Chromium/Playwright. Он получает\nтолько фактический player-facing DOM, формирует свободное намерение и вводит\nего через те же textarea/button, что человек. Прямой gameplay REST, scripted\nLLM fixture, canned response и network interception запрещены. Private traces\nчитает только auditor после хода; PLAYER их не получает.\n\n`play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL\nи pinned Giga, запускает production server и owned processes, а runner\nгарантированно закрывает их. По умолчанию он также provisions local Gemma.\nДля явно назначенного владельцем acceptance endpoint/model допустим внешний\nOpenAI-compatible provider; runner не запускает второй inference process на\nтекущем ПК. Development explorer и все production roles используют один явно\nзафиксированный endpoint/model без fallback. Каждая LLM call\nсохраняет единые `maxTokens = 20_000` и timeout 120 с.",
+      "char_count": 1081
     },
     {
-      "id": "world_knowledge_platform_implementation_contract.md:Реальный browser/local-model acceptance:1",
+      "id": "world_knowledge_platform_implementation_contract.md:Реальный browser/selected-model acceptance:1",
       "file": "world_knowledge_platform_implementation_contract.md",
-      "section": "Реальный browser/local-model acceptance",
+      "section": "Реальный browser/selected-model acceptance",
       "line_start": 3745,
-      "line_end": 3767,
-      "text": "## world_knowledge_platform_implementation_contract.md — Реальный browser/local-model acceptance\nсе production roles\nиспользуют один явно зафиксированный endpoint без fallback. Каждая LLM call\nсохраняет единые `maxTokens = 20_000` и timeout 120 с.\n\nEvidence фиксирует exact HEAD, Gemma model и revision/checksum либо точный\nserved model identity для внешнего endpoint, inference version/backend, Giga\nrevision, provider config identity, hardware/runtime metadata,\ncampaign/turn/trace IDs и private gap audit. Fixture-based unit/CI не заменяет\nэтот evidence.",
-      "char_count": 557
+      "line_end": 3768,
+      "text": "## world_knowledge_platform_implementation_contract.md — Реальный browser/selected-model acceptance\nduction roles используют один явно\nзафиксированный endpoint/model без fallback. Каждая LLM call\nсохраняет единые `maxTokens = 20_000` и timeout 120 с.\n\nEvidence фиксирует exact HEAD, default Gemma model и revision/checksum либо\nточный selected served model identity для внешнего endpoint, inference\nversion/backend, Giga\nrevision, provider config identity, hardware/runtime metadata,\ncampaign/turn/trace IDs и private gap audit. Fixture-based unit/CI не заменяет\nэтот evidence.",
+      "char_count": 577
     },
     {
       "id": "world_knowledge_platform_implementation_contract.md:Saturation gate:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Saturation gate",
-      "line_start": 3768,
-      "line_end": 3783,
-      "text": "## world_knowledge_platform_implementation_contract.md — Saturation gate\n### Saturation gate\n\nПосле последнего P0/P1 исправления нужны три последовательные независимые\nunseen кампании на одном неизменном acceptance candidate с различающимися\nситуациями/стилями explorers и непересекающимися trace IDs. Во всех кампанийных\ntraces обязателен независимый premise audit; новых и незакрытых P0/P1 — ноль,\nunsupported premises в accepted traces — ноль. P2 должен быть replayed либо\nиметь независимо принятый bounded limit. Regression replay не считается unseen.\nНовый critical finding сбрасывает последовательность. Это ограниченное\nэмпирическое насыщение проверенного пространства, не математическая полнота\nмира. Verdict допустим только после трёх реальных browser/Gemma кампаний\nна неизменном candidate и явного доказательства `unsupported accepted\npremises = 0`, `new P0/P1 = 0`.\n\n---",
-      "char_count": 882
+      "line_start": 3769,
+      "line_end": 3784,
+      "text": "## world_knowledge_platform_implementation_contract.md — Saturation gate\n### Saturation gate\n\nПосле последнего P0/P1 исправления нужны три последовательные независимые\nunseen кампании на одном неизменном acceptance candidate с различающимися\nситуациями/стилями explorers и непересекающимися trace IDs. Во всех кампанийных\ntraces обязателен независимый premise audit; новых и незакрытых P0/P1 — ноль,\nunsupported premises в accepted traces — ноль. P2 должен быть replayed либо\nиметь независимо принятый bounded limit. Regression replay не считается unseen.\nНовый critical finding сбрасывает последовательность. Это ограниченное\nэмпирическое насыщение проверенного пространства, не математическая полнота\nмира. Verdict допустим только после трёх реальных browser/selected-model кампаний\nна неизменном candidate и явного доказательства `unsupported accepted\npremises = 0`, `new P0/P1 = 0`.\n\n---",
+      "char_count": 891
     },
     {
       "id": "world_knowledge_platform_implementation_contract.md:113. Full Definition of Done:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "113. Full Definition of Done",
-      "line_start": 3784,
-      "line_end": 3839,
+      "line_start": 3785,
+      "line_end": 3840,
       "text": "## world_knowledge_platform_implementation_contract.md — 113. Full Definition of Done\n# 113. Full Definition of Done\n\nНиже — совокупный target полной платформы. Статическая готовность и активный\ngameplay-testing остаются разными verdict по §0.1 и §112.12.\n\nПолная implementation-ready platform revision завершена, когда одновременно:",
       "char_count": 333
     },
@@ -24541,8 +24541,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:113. Full Definition of Done:1",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "113. Full Definition of Done",
-      "line_start": 3784,
-      "line_end": 3839,
+      "line_start": 3785,
+      "line_end": 3840,
       "text": "## world_knowledge_platform_implementation_contract.md — 113. Full Definition of Done\n и активный\ngameplay-testing остаются разными verdict по §0.1 и §112.12.\n\nПолная implementation-ready platform revision завершена, когда одновременно:\n\n1. contract зарегистрирован в статусе, совпадающем с exact versioned production cutover;\n2. current Stage 1 compiler/schema hardened;\n3. authoring поддерживает deterministic shards;\n4. все canonical record types strict validated;\n5. predicate signatures и typed objects validated;\n6. applicability/qualifiers/knowledge_access/profile fields strict validated;\n7. source/evidence lineage enforced;\n8. semi-raw archive inventoried/audited;\n9. useful archive facts migrated с provenance;\n10. unsupported archive material не promoted;\n11. coverage matrix существует по real question classes;\n12. immutable runtime bundle собирается deterministically;\n13. Knowledge Core pure/read-only существует;\n14. exact/structured/lexical retrieval работает;\n15. applicability/coverage/verdict/conflicts/ranking/packing deterministic;\n16. missing knowledge → unresolved;\n17. player free semantic boundary использует WK без второго planner/operation;\n18. covered factual need не отдан model memory;\n19. Grounding Auditor PASS;\n20. Giga exact revision/profile pinned при Stage 4;\n21. same Giga revision encodes corpus/query;\n22. flat hybrid retrieval benchmarked;\n23. vector score не является truth;\n24. location materialization получает factual envelope из WK;\n25. NPC generation получает factual envelope из WK;\n26. presence/materialization остаётся у existing owners;\n27. NPC/social/legal factual context grounded;\n28. actor knowledge boundary сохранена;\n29. runtime summarizer отсутствует;\n30. runtime knowledge web research = 0;\n31. ru/en share canonical facts;\n32. translation fallback не меняет structured truth;\n33. telemetry измеряет planner/retrieval/model/narrator separately;\n34. reference correctness eval проходит;\n35. active production WK need fail-closed возвращает\n    `WORLD_KNOWLEDGE_UNAVAILABLE` при любой Giga/vector operational failure;\n36. exact model snapshot заранее provisioned, runtime работает\n    `local_files_only`/offline и readiness smoke проходит на target hardware;\n37. retrieval Recall@K и noise измерены;\n38. unsupported-premise rate измерен;\n39. anti-script unseen probes проходят;\n40. committed gameplay state переживает reload/retry where applicable;\n41. fully-local profile существует и проходит offline gate;\n42. licenses/notices/source rights учтены для release;\n43. relevant `MODULE.md`/contract index/docs отражают фактический status и owner boundaries;\n44. required CI на exact merge HEAD зелёный.",
       "char_count": 2660
     },
@@ -24550,8 +24550,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:113. Full Definition of Done:2",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "113. Full Definition of Done",
-      "line_start": 3784,
-      "line_end": 3839,
+      "line_start": 3785,
+      "line_end": 3840,
       "text": "## world_knowledge_platform_implementation_contract.md — 113. Full Definition of Done\nдля release;\n43. relevant `MODULE.md`/contract index/docs отражают фактический status и owner boundaries;\n44. required CI на exact merge HEAD зелёный.\n\n---",
       "char_count": 241
     },
@@ -24559,8 +24559,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:114. Главные anti-regression и efficiency tests:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "114. Главные anti-regression и efficiency tests",
-      "line_start": 3840,
-      "line_end": 3841,
+      "line_start": 3841,
+      "line_end": 3842,
       "text": "## world_knowledge_platform_implementation_contract.md — 114. Главные anti-regression и efficiency tests\n# 114. Главные anti-regression и efficiency tests",
       "char_count": 154
     },
@@ -24568,8 +24568,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:Anti-regression:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Anti-regression",
-      "line_start": 3842,
-      "line_end": 3847,
+      "line_start": 3843,
+      "line_end": 3848,
       "text": "## world_knowledge_platform_implementation_contract.md — Anti-regression\n## Anti-regression\n\n> Если player или NPC делает разумную вещь, которой нет в Knowledge Pack, commands и recipes, остаётся ли общий semantic resolution path?\n\nЕсли нет только из-за отсутствия записи — World Knowledge превратилась в whitelist.",
       "char_count": 315
     },
@@ -24577,8 +24577,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:Grounding:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Grounding",
-      "line_start": 3848,
-      "line_end": 3853,
+      "line_start": 3849,
+      "line_end": 3854,
       "text": "## world_knowledge_platform_implementation_contract.md — Grounding\n## Grounding\n\n> Если для решения нужен factual premise из covered domain, можно ли проследить, что он пришёл из code-owned fact/mechanic или approved World Knowledge, а не из памяти main LLM?\n\nЕсли нет — integration не готова.",
       "char_count": 293
     },
@@ -24586,8 +24586,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:Coverage:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Coverage",
-      "line_start": 3854,
-      "line_end": 3857,
+      "line_start": 3855,
+      "line_end": 3858,
       "text": "## world_knowledge_platform_implementation_contract.md — Coverage\n## Coverage\n\n> Если representative gameplay question возвращает `unresolved`, profile честно отражает gap и создаётся authoring action, вместо silent model fallback?",
       "char_count": 231
     },
@@ -24595,8 +24595,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:Efficiency:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Efficiency",
-      "line_start": 3858,
-      "line_end": 3872,
+      "line_start": 3859,
+      "line_end": 3873,
       "text": "## world_knowledge_platform_implementation_contract.md — Efficiency\n## Efficiency\n\nПлатформа достигает основной цели, когда со временем одновременно выполняются:\n\n```text\nменьше factual/historical/scientific ошибок\n+ меньше unsupported factual premises\n+ меньше main-model input tokens\n+ меньше model recall/reasoning\n+ меньше cloud cost\n+ целево меньше semantic latency\n```\n\n---",
       "char_count": 379
     },
@@ -24604,8 +24604,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:115. Финальная architecture formula:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "115. Финальная architecture formula",
-      "line_start": 3873,
-      "line_end": 3895,
+      "line_start": 3874,
+      "line_end": 3896,
       "text": "## world_knowledge_platform_implementation_contract.md — 115. Финальная architecture formula\n# 115. Финальная architecture formula\n\n```text\nSOURCE KNOWLEDGE\n→ strong authoring/extraction agents\n→ independent source/domain audits\n→ structured approved language-independent factual primitives/relations\n→ coverage profiles by real game needs\n→ localized retrieval surfaces\n→ immutable local Knowledge Pack\n→ exact + structured + lexical + required Giga retrieval in active production\n→ deterministic applicability/conflicts/ranking/packing\n→ compact relevant factual slice\n→ replaceable semantic LLM using slice as factual premise set\n→ existing exact domain mechanics/materialization owners\n→ committed world\n→ actor-safe projection\n→ independently replaceable narrator\n```\n\nProduction target:\n\n> Игра полностью работает offline на скачанных весах и локальной World Knowledge Platform. Исторические, бытовые, физические, химические, биологические, социальные и иные gameplay-relevant знания являются собственной проверяемой частью системы. LLM используется для понимания и композиционного semantic reasoning, но не как скрытая энциклопедия, которой разрешено придумывать отсутствующие factual premises.",
       "char_count": 1201
     }

@@ -110,10 +110,10 @@ runtime World Knowledge получает только `verification_ref`, без
 families по location/materialization потребностям, не по числу claims/cells.
 
 World Knowledge §0.1 разделяет статическое наполнение и последующую
-gameplay-testing фазу. §112.12 задаёт target Gameplay Gap Auditor, trace
-requirements, классификацию, lifecycle и saturation; наличие internal
-development tooling не активирует testing и не делает saturation gate
-критерием статической готовности.
+gameplay-testing фазу. §112.12 задаёт active testing architecture Gameplay Gap
+Auditor, trace requirements, классификацию, lifecycle и saturation;
+активированная testing-фаза не делает saturation gate критерием статической
+готовности.
 
 World Knowledge §0.2 разрешает честно отмеченную игровую реконструкцию из
 аналогий и здравого смысла. §35.1 использует тот же независимый approval для

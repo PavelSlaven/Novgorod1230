@@ -16,6 +16,8 @@ import {
 import { hash } from '../src/runtime/first-playable/shared.js';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
+import { assertOpeningPublication } from
+  './lower-dvina-trace-opening-publication-assertions.js';
 import {
   canonicalDigest,
   MATERIALIZER_VERSION,
@@ -201,6 +203,9 @@ test('historical Phase 1A commits recover through their pinned publications', as
     });
   }
 });
+
+test('opening publication v28 applies to new parties and preserves v27 replay',
+  () => assertOpeningPublication({ fixture, createRuntime, release }));
 
 test('trace replay bypasses publication', async () => {
   const f = fixture();
@@ -498,7 +503,7 @@ function createRuntime(f, traceTurnRuntime = null) {
   return createLowerDvinaTracePublicRuntime({
     partyPool: { connect() {} },
     committer: { commit() {} },
-    release,
+    release: f.release ?? release,
     runtimeCatalogPin,
     idFactory: () => 'fixed-id',
     now: () => '2026-07-29T00:00:00.000Z',

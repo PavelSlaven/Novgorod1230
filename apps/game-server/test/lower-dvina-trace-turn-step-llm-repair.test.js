@@ -135,7 +135,7 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 
-test('semantic repair prompt does not teach deterministic discovery rewrites',
+test('semantic repair prompt preserves both discovery continuation shapes',
   async () => {
     const remainingIntent = 'Осмотреть плащ и затем уйти с берега.';
     let prompt;
@@ -151,7 +151,8 @@ test('semantic repair prompt does not teach deterministic discovery rewrites',
         code: 'ordinary_discovery_query_identity'
       }]
     });
-    assert.doesNotMatch(prompt, /Required ordinary discovery repair:/u);
+    assert.match(prompt,
+      /Required ordinary discovery repair:[\s\S]*material prerequisite[\s\S]*continuation is exactly[\s\S]*standalone focused discovery losslessly[\s\S]*exact uncovered suffix/u);
   });
 
 test('repair drops a field rejected as an additional property', async () => {

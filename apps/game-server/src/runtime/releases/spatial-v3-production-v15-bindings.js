@@ -1,5 +1,7 @@
 import { createSpatialV3ProductionBindings } from
   './spatial-v3-production-binding-shared.js';
+import { loadLowerDvinaTraceRevision32Publication } from
+  '../../internal/lower-dvina-trace-revision-32-publication.js';
 import {
   createLowerDvinaTraceNpcAutonomousModel,
   createLowerDvinaTraceNpcCombatModel,
@@ -31,11 +33,11 @@ export function createSpatialV3RuntimeBindings(context = {}) {
       || pins?.phase_1a_package_id !== 'lower_dvina_trace_phase_1a_v23'
       || pins?.phase_1a_manifest_digest
         !== '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101'
-      || pins?.phase_1b_package_id !== 'lower_dvina_trace_phase_1b_v27'
+      || pins?.phase_1b_package_id !== 'lower_dvina_trace_phase_1b_v28'
       || pins?.phase_1b_manifest_digest
-        !== 'bb05aff9ae0ec901063e4e5807e187d221aaa20fc709950270d1d8ced4895df1'
+        !== '9973d7953c29f0f0d1dc70b23020852adf0bb8f77d3a2330faac82f6f8f912a1'
       || pins?.phase_1b_binding_digest
-        !== '83cd8eca17879484867262199970bf0f70152f2adb69d22d8900a1466045e88a'
+        !== 'cdf9b883779dbe90e6415b2f7d3d3b47cbfbe7fae176e2607af717c9cc98bc10'
       || pins?.n1_profile_id !== 'lower_dvina_trace_n1_background_npc_v1'
       || pins?.n1_profile_revision !== 1
       || pins?.n1_profile_scenario_definition_revision !== 31
@@ -58,6 +60,8 @@ export function createSpatialV3RuntimeBindings(context = {}) {
   }
   return createSpatialV3ProductionBindings(context, {
     technicalCommandBoundary: 'production-v15',
+    publicationLoader: (options) => loadLowerDvinaTraceRevision32Publication({
+      ...options, publicationRevision: 28 }),
     createNpcRuntimePorts: ({ roleRunner, worldKnowledgeGrounder }) => ({
       playerConversationModel:
         createLowerDvinaTracePlayerConversationModel({ roleRunner }),

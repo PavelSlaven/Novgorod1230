@@ -325,7 +325,7 @@ test('private party log report retains full LLM request and response', async () 
     .includes('Осмотреться'), false);
 });
 
-test('private party log retains provider reasoning content', async () => {
+test('private party log omits provider reasoning and retains useful diagnostics', async () => {
   const originalFetch = globalThis.fetch;
   let providerRequest;
   globalThis.fetch = async (_url, init) => {
@@ -334,7 +334,8 @@ test('private party log retains provider reasoning content', async () => {
       ok: true,
       json: async () => ({ choices: [{ message: {
         content: '{"action":"look"}', reasoning_content: 'hidden reasoning'
-      } }] })
+      } }], usage: { prompt_tokens: 4, completion_tokens: 5,
+        total_tokens: 9 } })
     };
   };
   try {
@@ -352,7 +353,12 @@ test('private party log retains provider reasoning content', async () => {
     }));
     const report = diagnostics.takeLogReport({ party_id: 'party-reasoning' });
     assert.deepEqual(report.calls[0].request.messages, providerRequest.messages);
-    assert.equal(report.calls[0].response.reasoning_content, 'hidden reasoning');
+    assert.deepEqual(report.calls[0].response.parsed_json, { action: 'look' });
+    assert.equal(report.calls[0].response.raw_text, '{"action":"look"}');
+    assert.equal(report.calls[0].response.usage.total_tokens, 9);
+    assert.equal(Object.hasOwn(report.calls[0].response,
+      'reasoning_content'), false);
+    assert.equal(JSON.stringify(report).includes('hidden reasoning'), false);
   } finally {
     globalThis.fetch = originalFetch;
   }

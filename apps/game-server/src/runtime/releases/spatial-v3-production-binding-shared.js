@@ -105,6 +105,7 @@ export async function createSpatialV3ProductionBindings(
   } = {},
   {
     createNpcRuntimePorts,
+    publicationLoader,
     createPhase2RuntimeFactory = createLowerDvinaTracePhase2Runtime,
     technicalCommandBoundary = 'production-v2'
   } = {}
@@ -150,6 +151,7 @@ export async function createSpatialV3ProductionBindings(
         runtimeCatalogPin,
         activePhase1AManifestDigest: TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
         activeScenarioDefinitionRevision: 32,
+        publicationLoader,
         ...(typeof config.idFactory === 'function'
           ? { idFactory: config.idFactory }
           : {}),

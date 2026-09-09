@@ -3742,7 +3742,7 @@ Replay ссылается на реальную новую трассу и не�
 commit либо ожидаемый typed rejection с совпадающим error code и без commit.
 Простая смена status, HTTP 200 или unit fixture не заменяет replay.
 
-### Реальный browser/local-model acceptance
+### Реальный browser/selected-model acceptance
 
 Финальный PLAYER работает через настоящий Chromium/Playwright. Он получает
 только фактический player-facing DOM, формирует свободное намерение и вводит
@@ -3753,14 +3753,15 @@ LLM fixture, canned response и network interception запрещены. Private
 `play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL
 и pinned Giga, запускает production server и owned processes, а runner
 гарантированно закрывает их. По умолчанию он также provisions local Gemma.
-Для явно назначенного владельцем acceptance endpoint допустима та же Gemma на
-другом компьютере через OpenAI-compatible API; runner не запускает второй
-inference process на текущем ПК. Development explorer и все production roles
-используют один явно зафиксированный endpoint без fallback. Каждая LLM call
+Для явно назначенного владельцем acceptance endpoint/model допустим внешний
+OpenAI-compatible provider; runner не запускает второй inference process на
+текущем ПК. Development explorer и все production roles используют один явно
+зафиксированный endpoint/model без fallback. Каждая LLM call
 сохраняет единые `maxTokens = 20_000` и timeout 120 с.
 
-Evidence фиксирует exact HEAD, Gemma model и revision/checksum либо точный
-served model identity для внешнего endpoint, inference version/backend, Giga
+Evidence фиксирует exact HEAD, default Gemma model и revision/checksum либо
+точный selected served model identity для внешнего endpoint, inference
+version/backend, Giga
 revision, provider config identity, hardware/runtime metadata,
 campaign/turn/trace IDs и private gap audit. Fixture-based unit/CI не заменяет
 этот evidence.
@@ -3775,7 +3776,7 @@ unsupported premises в accepted traces — ноль. P2 должен быть r
 иметь независимо принятый bounded limit. Regression replay не считается unseen.
 Новый critical finding сбрасывает последовательность. Это ограниченное
 эмпирическое насыщение проверенного пространства, не математическая полнота
-мира. Verdict допустим только после трёх реальных browser/Gemma кампаний
+мира. Verdict допустим только после трёх реальных browser/selected-model кампаний
 на неизменном candidate и явного доказательства `unsupported accepted
 premises = 0`, `new P0/P1 = 0`.
 

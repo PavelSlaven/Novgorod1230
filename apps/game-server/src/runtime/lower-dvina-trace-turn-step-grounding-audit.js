@@ -18,6 +18,12 @@ const PROMPT = [
   'For discovery, the operation must cover the earliest focused information',
   'need. A fixed authored query must not replace a different ordinary search,',
   'material prerequisite, handling, or transformation.',
+  'When discovery leaves the complete remaining_intent unchanged as its',
+  'continuation, treat it only as a possible material prerequisite. Its query',
+  'must name only the ordinary referent, material, or physically connected',
+  'group actually needed by that continuation. Reject an unrelated query or a',
+  'query that performs, summarizes, or drops the later handling or',
+  'transformation as operation_semantic_grounding.',
   'When actor_body is supplied, inspecting the actor body is not discovery of',
   'worn clothing merely because clothing covers it. Reject that wrong target',
   'as operation_semantic_grounding. An explicit request to inspect the',
@@ -36,8 +42,14 @@ const PROMPT = [
   'fuel, food, or another resource for later practical use is ordinary search',
   'or acquisition, not authored investigation, even when it mentions the same',
   'place, object, or prior event. A fixed authored operation MUST fail for it.',
-  'For action_production, every physically changed, incorporated, or consumed',
-  'material needs its own source ref whose supplied item label, category,',
+  'For action_production, check source refs against materials physically',
+  'changed, incorporated, or consumed by THIS operation and its result',
+  'descriptor. Materials needed only by independent later continuation are',
+  'not required now. Still reject a missing material incorporated into the',
+  'current result, even when it is also mentioned in continuation.',
+  'An omitted earlier relocation or wrong action order is',
+  'operation_semantic_grounding, not source_semantic_grounding.',
+  'Every current material needs its own source ref whose item label, category,',
   'description, or facts identify that material. Unchanged implements are tool',
   'refs, never material sources. Sensory prose without an entity ref does not',
   'identify an item. If a needed ordinary material has no matching item ref,',
@@ -72,10 +84,16 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
           request.remaining_intent)) {
         throw serverError('TURN_STEP_PLAN_INVALID',
           'Ordinary discovery must preserve the current intent.', {
-            details: { errors: [{ path: `${audited[0].path}.query`,
-              rule: 'ordinary_discovery_query_identity',
-              code: 'ordinary_discovery_query_identity',
-              message: 'must equal remaining_intent without continuation or form a non-overlapping lossless prefix with it' }] }
+            details: { errors: [
+              { path: `${audited[0].path}.query`,
+                rule: 'ordinary_discovery_query_identity',
+                code: 'ordinary_discovery_query_identity',
+                message: 'must equal remaining_intent, form a non-overlapping lossless prefix, or name only a material prerequisite' },
+              { path: '$.continuation.remaining_intent',
+                rule: 'ordinary_discovery_query_identity',
+                code: 'ordinary_discovery_query_identity',
+                message: 'must preserve the exact uncovered suffix or the complete intent required after a material prerequisite' }
+            ] }
           });
       }
     }
@@ -115,6 +133,10 @@ function preservesIntent(query, continuation, remainingIntent) {
   const remaining = normalized(remainingIntent);
   const current = normalized(query);
   if (continuation == null) return current === remaining;
+  if (continuation.remaining_intent === remainingIntent
+      && Array.isArray(continuation.depends_on_refs)
+      && continuation.depends_on_refs.length === 0
+      && continuation.prepared_followup_ref == null) return true;
   const next = normalized(continuation.remaining_intent);
   if (current == null || next == null || remaining == null
       || current.length + next.length > remaining.length

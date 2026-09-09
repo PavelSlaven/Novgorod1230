@@ -35,7 +35,7 @@ consumer slice, structured model output и owner commit/rejection. Driver
 не создаёт новую и не меняет БД напрямую. Такая кампания не допускается
 в acceptance mode; исходный player-safe screen сохраняется в trace.
 `local-gemma-acceptance.mjs` — единственный финальный browser-only runner:
-по умолчанию поднимает тот же managed runtime, запускает настоящий Chromium, передаёт PLAYER
+по умолчанию поднимает тот же managed Gemma runtime, запускает настоящий Chromium, передаёт PLAYER
 только фактический DOM, вводит намерения через UI и сохраняет private traces.
 Он не вызывает gameplay REST напрямую и не объявляет saturation без отдельного
 premise audit. Acceptance candidate требует clean неизменного checkout; development-прогоны
@@ -50,15 +50,21 @@ Explorer делает отдельный model call из driver process; пер�
 Premise audit и backlog принадлежат development authoring workflow, не
 серверу игры. Аудитор не меняет party state, corpus, semantic plan или outcome.
 
-Финальная реальная кампания:
+Финальная реальная кампания с фиксированным числом ходов:
 `npm run gameplay:acceptance:local -- <output-directory> <focus> [turn-count] [sequence]`.
-Для явно выбранного внешнего Gemma endpoint runner читает
+Для прохождения до code-owned Phase 10 terminal вместо числа ходов передаётся
+`completion`. Прерванный после сохранённого хода прогон продолжается с той же
+party/DB и report при `RUS_ACCEPTANCE_RESUME=true`; continuation остаётся частью
+исходной unseen campaign и не считается отдельным regression или новым unseen.
+Для явно выбранного внешнего OpenAI-compatible endpoint/model runner читает
 `RUS_ACCEPTANCE_LLM_BASE_URL`, `RUS_ACCEPTANCE_LLM_MODEL` и optional
 `RUS_ACCEPTANCE_LLM_API_KEY_FILE`. Для воспроизводимого evidence обязательны
 `RUS_ACCEPTANCE_LLM_BACKEND`, `RUS_ACCEPTANCE_LLM_BACKEND_VERSION`,
 `RUS_ACCEPTANCE_LLM_RUNTIME_METADATA` и `RUS_ACCEPTANCE_LLM_HARDWARE_METADATA`;
 они описывают назначенный endpoint, а не текущий ПК. Ключ не передаётся через
 CLI, и локальная Gemma в этом режиме не запускается.
+Private terminal observer читает committed Phase 10 state и ready presentation
+через PostgreSQL owners только после хода; PLAYER по-прежнему получает лишь DOM.
 120 секунд ограничивают отдельный LLM transport call; browser runner ждёт весь
 составной ход до 20 минут, потому что он включает несколько последовательных
 production roles.

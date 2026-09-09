@@ -125,7 +125,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
     }
     const repairedOutput = repairing ? preserveUnrelatedOperationSelection(
       repairContext.original_output, response.output,
-      repairContext.structural_errors) : response.output;
+      repairContext.structural_errors, operationChoices) : response.output;
     const semanticOutput = repairing
       ? mergeRepairOutput(repairContext.original_output, repairedOutput,
           new Set(repairContext.structural_errors
@@ -137,7 +137,8 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
   return model;
 }
 
-function preserveUnrelatedOperationSelection(original, repaired, errors) {
+function preserveUnrelatedOperationSelection(original, repaired, errors,
+  operationChoices) {
   if (!original || typeof original !== 'object' || Array.isArray(original)
       || !repaired || typeof repaired !== 'object' || Array.isArray(repaired)
       || !Array.isArray(errors) || errors.length === 0
@@ -146,6 +147,11 @@ function preserveUnrelatedOperationSelection(original, repaired, errors) {
   for (const key of ['operation_choice', 'operation_family', 'operations']) {
     if (Object.hasOwn(original, key)) result[key] = structuredClone(original[key]);
     else delete result[key];
+  }
+  if (result.operation_choice == null && result.operations?.length === 1) {
+    const matches = operationChoices.filter(({ operation }) =>
+      isDeepStrictEqual(operation, result.operations[0]));
+    if (matches.length === 1) result.operation_choice = matches[0].choice_id;
   }
   return result;
 }

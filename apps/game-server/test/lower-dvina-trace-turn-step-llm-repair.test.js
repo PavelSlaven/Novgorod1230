@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { requestTurnStepPlan } from '@rus/turn';
+import { requestTurnStepPlan, validateTurnStepPlan } from '@rus/turn';
 import { requestTurnStepPlanWithRepair } from
   '../../../packages/turn/src/turn-step-loop.js';
 import { createTurnStepDomainOwnerPreflight } from
@@ -220,6 +220,8 @@ test('unrelated repair preserves the selected exact operation DTO', async () => 
       code: 'required', message: 'is required' }] });
   assert.deepEqual(repaired.operations, [exact]);
   assert.equal(Object.hasOwn(repaired, 'operation_choice'), false);
+  assert.equal(Object.hasOwn(repaired, 'copied_operation_choice'), false);
+  assert.equal(validateTurnStepPlan(repaired, { request: input }).ok, true);
 });
 
 test('grounding repair keeps the model semantic result unchanged',

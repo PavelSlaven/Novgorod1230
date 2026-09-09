@@ -70,6 +70,11 @@ function ports(turnStepModel, semanticPlanValidator, randomSource) {
   };
 }
 
+function repairedInvalid(error) {
+  return error.code === 'TURN_STEP_PLAN_INVALID'
+    && error.details.repair_attempted === true;
+}
+
 test('owner repairs before RNG or effects',
   async () => {
     let calls = 0;
@@ -89,9 +94,9 @@ test('owner repairs before RNG or effects',
     assert.deepEqual(result.write_fragments, []);
 });
 
-test('repeated unavailable owner safely stops', async () => {
+test('repeated unavailable owner fails technically', async () => {
   let calls = 0;
-  const result = await runTurnStepLoop(input(), ports(
+  await assert.rejects(() => runTurnStepLoop(input(), ports(
     async (request) => {
       calls += 1;
       const unavailable = unavailableGenericPlan(request);
@@ -99,18 +104,16 @@ test('repeated unavailable owner safely stops', async () => {
         ? { ...unavailable, interpretation: { adaptation: 'literal' } }
         : unavailable;
     }, preflight(), null
-  ));
+  )), repairedInvalid);
   assert.equal(calls, 2);
-  assert.deepEqual(result.write_fragments, []);
-  assert.equal(result.step_traces[0].reason_code, 'domain_operation_unavailable');
 });
 
-test('unseen ownerless item inspection safely stops', async () => {
+test('unseen ownerless item inspection fails technically', async () => {
     let calls = 0;
     const itemInput = input();
     itemInput.initialWorkingProjection = { actor_ref: 'actor-1',
       items: [{ item_id: 'item:wooden-spoon' }] };
-    const result = await runTurnStepLoop(itemInput, ports(
+    await assert.rejects(() => runTurnStepLoop(itemInput, ports(
       async (request) => {
         calls += 1;
         return plan(request, { resolution: 'domain_request', goal_result: 'pending',
@@ -118,16 +121,14 @@ test('unseen ownerless item inspection safely stops', async () => {
             op: 'request_discovery', actor_ref: 'actor-1', discovery_kind: 'inspect',
             target_refs: ['item:wooden-spoon'], query: 'рассмотреть следы износа' }] });
       }, preflight(), null
-    ));
+    )), repairedInvalid);
     assert.equal(calls, 2);
-    assert.deepEqual(result.write_fragments, []);
-    assert.equal(result.step_traces[0].reason_code, 'domain_operation_unavailable');
   });
 
-test('incomplete domain request repairs safely',
+test('incomplete domain repair fails technically',
   async () => {
     let calls = 0;
-    const result = await runTurnStepLoop(input(), ports(
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
       async (request) => {
         calls += 1;
         const unavailable = plan(request, {
@@ -140,16 +141,14 @@ test('incomplete domain request repairs safely',
           ? { ...unavailable, interpretation: { adaptation: 'literal' } }
           : unavailable;
       }, preflight(), null
-    ));
+    )), repairedInvalid);
     assert.equal(calls, 2);
-    assert.equal(result.step_traces[0].reason_code,
-      'domain_operation_unavailable');
   });
 
-test('partial owner removal safely stops',
+test('partial owner removal fails technically',
   async () => {
     let calls = 0;
-    const result = await runTurnStepLoop(input(), ports(
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
       async (request) => {
         calls += 1;
         return calls === 1 ? unavailableGenericPlan(request) : plan(request, {
@@ -158,14 +157,11 @@ test('partial owner removal safely stops',
             activity_kind: 'wait', target_refs: [], description: 'ждать' }]
         });
       }, preflight(), null
-    ));
+    )), repairedInvalid);
     assert.equal(calls, 2);
-    assert.deepEqual(result.write_fragments, []);
-    assert.equal(result.step_traces[0].reason_code,
-      'domain_operation_unavailable');
   });
 
-test('repair retaining rejected choice safely stops',
+test('repair retaining rejected choice fails technically',
   async () => {
     let calls = 0;
     const request = {
@@ -176,7 +172,7 @@ test('repair retaining rejected choice safely stops',
       completed_steps: [], actor: { actor_ref: 'actor-1' },
       player_safe_state: {}
     };
-    const result = await requestTurnStepPlanWithRepair({ request,
+    await assert.rejects(() => requestTurnStepPlanWithRepair({ request,
       turnStepModel: async () => {
         calls += 1;
         const value = plan(request);
@@ -188,15 +184,14 @@ test('repair retaining rejected choice safely stops',
             path: '$.operations.0', code: 'operation_semantic_grounding'
           }] }
         });
-      } });
+      } }), repairedInvalid);
     assert.equal(calls, 2);
-    assert.equal(result.plan.reason_code, 'domain_operation_unavailable');
   });
 
-test('repair adding forbidden choice safely stops',
+test('repair adding forbidden choice fails technically',
   async () => {
     let calls = 0;
-    const result = await runTurnStepLoop(input(), ports(
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
       async (request) => {
         calls += 1;
         const value = plan(request);
@@ -204,32 +199,28 @@ test('repair adding forbidden choice safely stops',
           ? { ...value, interpretation: { adaptation: 'literal' } }
           : { ...value, operation_choice: 'mismatched' };
       }, null, null
-    ));
+    )), repairedInvalid);
     assert.equal(calls, 2);
-    assert.equal(result.step_traces[0].reason_code,
-      'domain_operation_unavailable');
   });
 
-test('repeated non-progressing continuation safely stops',
+test('repeated non-progressing continuation fails technically',
   async () => {
     let calls = 0;
-    const result = await runTurnStepLoop(input(), ports(
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
       async (request) => {
         calls += 1;
         return plan(request, { goal_result: 'pending', continuation: {
           remaining_intent: request.remaining_intent, depends_on_refs: []
         } });
       }, null, null
-    ));
+    )), repairedInvalid);
     assert.equal(calls, 2);
-    assert.equal(result.step_traces[0].reason_code,
-      'domain_operation_unavailable');
   });
 
-test('unresolved repaired domain request safely stops',
+test('unresolved repaired domain request fails technically',
   async () => {
     let calls = 0;
-    const result = await runTurnStepLoop(input(), ports(
+    await assert.rejects(() => runTurnStepLoop(input(), ports(
       async (request) => {
         calls += 1;
         const value = plan(request);
@@ -241,10 +232,8 @@ test('unresolved repaired domain request safely stops',
                 remaining_intent: request.remaining_intent,
                 depends_on_refs: [] } };
       }, null, null
-    ));
+    )), repairedInvalid);
     assert.equal(calls, 2);
-    assert.equal(result.step_traces[0].reason_code,
-      'domain_operation_unavailable');
   });
 
 test('unrelated direct plan ignores active conversation', () => {
@@ -494,21 +483,17 @@ function activity(description) {
     target_refs: [], description };
 }
 
-test('structural then unavailable owner safely stops', async () => {
+test('structural then unavailable owner fails technically', async () => {
   let calls = 0;
-  const result = await runTurnStepLoop(input(), ports(
+  await assert.rejects(() => runTurnStepLoop(input(), ports(
     async (request) => {
       calls += 1;
       return calls === 1
         ? { ...plan(request), request_id: 'forged' }
         : unavailableGenericPlan(request);
     }, preflight(), null
-  ));
+  )), repairedInvalid);
   assert.equal(calls, 2);
-  assert.equal(result.stop_reason, 'terminal');
-  assert.equal(result.step_traces[0].goal_result, 'not_achieved');
-  assert.equal(result.step_traces[0].reason_code,
-    'domain_operation_unavailable');
 });
 
 test('repair recomputes owner for changed plan context', () => {

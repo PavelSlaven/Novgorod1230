@@ -320,9 +320,10 @@ test('semantic workflow applies at most eight drafts and commits once', async ()
   assert.equal(commits[0].command_trace.stop_reason, 'step_limit');
 });
 
-test('an invalid second plan gets one repair and leaves zero partial commits', async () => {
+test('malformed repair fails before commit or narration', async () => {
   const calls = [];
-  const { commits, services } = createServices([], {
+  const log = [];
+  const { commits, services } = createServices(log, {
     command: {
       matches: () => false,
       semantic_binding: {
@@ -334,7 +335,8 @@ test('an invalid second plan gets one repair and leaves zero partial commits', a
     playerSafeStateProjector: async () => ({
       actor: { actor_ref: 'party-1' },
       player_safe_state: {
-        visible_entities: [{ entity_ref: 'place-gate' }]
+        visible_entities: [{ entity_ref: 'place-gate' }],
+        items: [{ item_id: 'item:wooden-bowl' }]
       }
     }),
     turnStepExecutionRegistry: createTurnStepExecutionRegistry({
@@ -358,7 +360,18 @@ test('an invalid second plan gets one repair and leaves zero partial commits', a
           }
         });
       }
-      return { ...turnStepPlan(request), request_id: 'forged-request' };
+      if (repairContext != null) {
+        throw Object.assign(new Error('bad repair JSON'), {
+          code: 'json_parse_failed'
+        });
+      }
+      return turnStepPlan(request, {
+        resolution: 'domain_request', goal_result: 'pending',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [{ op: 'request_discovery', actor_ref: 'party-1',
+          discovery_kind: 'inspect', target_refs: ['item:wooden-bowl'],
+          query: 'осмотреть трещину на чаше' }]
+      });
     }
   });
 
@@ -373,6 +386,7 @@ test('an invalid second plan gets one repair and leaves zero partial commits', a
     { step: 2, repair: true }
   ]);
   assert.equal(commits.length, 0);
+  assert.equal(log.includes('narration'), false);
 });
 
 test('semantic draft revalidates its committed base immediately before commit', async () => {

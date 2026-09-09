@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 import { requestTurnStepPlan } from './turn-step-contracts.js';
+import { contractError } from './turn-step-contracts/validation.js';
 
 export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   semanticPlanValidator = null,
@@ -61,130 +62,20 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         repaired: true
       };
     } catch (repairError) {
-      if (unresolvedDomainRequest(repairError)
-          || unavailableOwnerAfterRepair(
-            repairError, originalOutput, structuralErrors, request)
-          || forbiddenOperationChoiceAfterRepair(repairError)
-          || unresolvedGroundingOrClosedShape(repairError)
-          || unresolvedContinuation(repairError)
-          || unresolvedReferenceAfterRepair(repairError, structuralErrors)) {
-        return { plan: noResultPlan(request), repaired: true };
-      }
-      if (repairError?.code === 'TURN_STEP_PLAN_INVALID') {
-        repairError.details = deepFreeze({
-          ...repairError.details,
+      const normalizedError = repairError?.code === 'json_parse_failed'
+        ? contractError('TURN_STEP_PLAN_INVALID', [{ path: '$',
+          code: 'json_parse_failed',
+          message: 'Planner repair output was not valid JSON.' }])
+        : repairError;
+      if (normalizedError?.code === 'TURN_STEP_PLAN_INVALID') {
+        normalizedError.details = deepFreeze({
+          ...normalizedError.details,
           repair_attempted: true
         });
       }
-      throw repairError;
+      throw normalizedError;
     }
   }
-}
-
-function forbiddenOperationChoiceAfterRepair(error) {
-  const repairedErrors = error?.details?.errors;
-  return error?.code === 'TURN_STEP_PLAN_INVALID'
-    && Array.isArray(repairedErrors) && repairedErrors.length > 0
-    && repairedErrors.every(({ path, code }) =>
-      path === '$.operation_choice' && code === 'additional_property');
-}
-
-function unavailableOwnerAfterRepair(error, originalOutput, initialErrors,
-  request) {
-  const repairedErrors = error?.details?.errors;
-  const unavailable = ({ code }) => code === 'domain_owner_unavailable';
-  const incompleteRemoval = ({ path, code }) => code === 'resolution'
-    && ['$.activity.owner', '$.operations'].includes(path);
-  return error?.code === 'TURN_STEP_PLAN_INVALID'
-    && (originalOutput?.resolution !== 'domain_request'
-      || initialErrors.some(({ code }) => code !== 'domain_owner_unavailable')
-      || repeatedPlayerSafeItemDiscovery(originalOutput, request))
-    && Array.isArray(repairedErrors) && repairedErrors.length > 0
-    && repairedErrors.every((item) => unavailable(item) || incompleteRemoval(item));
-}
-
-function repeatedPlayerSafeItemDiscovery(plan, request) {
-  const operation = plan?.operations?.length === 1 ? plan.operations[0] : null;
-  const target = operation?.target_refs?.length === 1
-    ? operation.target_refs[0] : null;
-  return operation?.op === 'request_discovery'
-    && ['inspect', 'search'].includes(operation.discovery_kind)
-    && typeof target === 'string'
-    && (request?.player_safe_state?.items ?? [])
-      .some(({ item_id: itemId }) => itemId === target);
-}
-
-const SAFE_NO_RESULT_CODES = new Set([
-  'operation_semantic_grounding',
-  'source_semantic_grounding',
-  'material_transformation_grounding',
-  'source_placement_grounding',
-  'action_production_identity_grounding',
-  'material_extent_shape',
-  'identity_shape',
-  'result_shape',
-  'writing_shape'
-]);
-
-function unresolvedGroundingOrClosedShape(error) {
-  const errors = error?.details?.errors;
-  return error?.code === 'TURN_STEP_PLAN_INVALID'
-    && Array.isArray(errors) && errors.length > 0
-    && errors.every(({ code }) => SAFE_NO_RESULT_CODES.has(code));
-}
-
-function unresolvedContinuation(error) {
-  const errors = error?.details?.errors;
-  return error?.code === 'TURN_STEP_PLAN_INVALID'
-    && Array.isArray(errors) && errors.length > 0
-    && errors.every(({ code }) => code === 'continuation_progress');
-}
-
-function unresolvedReferenceAfterRepair(error, initialErrors) {
-  const errors = error?.details?.errors;
-  const structural = new Set([
-    'required', 'type', 'additional_property', 'json_parse_failed'
-  ]);
-  return error?.code === 'TURN_STEP_PLAN_INVALID'
-    && Array.isArray(errors) && errors.length > 0
-    && errors.every(({ code }) => code === 'unknown_ref')
-    && initialErrors.some(({ code }) => structural.has(code));
-}
-
-function unresolvedDomainRequest(error) {
-  const errors = error?.details?.errors;
-  const unresolved = ({ path, code }) => path === '$.operations'
-    && code === 'resolution';
-  const related = (item) => unresolved(item)
-    || (item.path === '$.operations' && item.code === 'type')
-    || item.code === 'continuation_progress';
-  return error?.code === 'TURN_STEP_PLAN_INVALID'
-    && Array.isArray(errors) && errors.some(unresolved)
-    && errors.every(related);
-}
-
-function noResultPlan(request) {
-  return deepFreeze({
-    schema: 'turn_step_plan_v1',
-    request_id: request.request_id,
-    committed_state_version: request.committed_state_version,
-    working_revision: request.working_revision,
-    step_index: request.step_index,
-    interpretation: {
-      player_goal: request.root_player_action,
-      grounded_attempt: request.remaining_intent,
-      adaptation: 'literal'
-    },
-    resolution: 'direct',
-    goal_result: 'not_achieved',
-    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-    operations: [],
-    check: null,
-    continuation: null,
-    clarification: null,
-    reason_code: 'domain_operation_unavailable',
-    reason: 'Для этой попытки сейчас нет доступной точной операции.'
-  });
 }
 
 export async function requestAndValidateTurnStepPlan({ request, turnStepModel,

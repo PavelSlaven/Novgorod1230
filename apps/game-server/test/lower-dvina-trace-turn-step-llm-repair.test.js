@@ -465,7 +465,7 @@ test('invalid repaired plan does not receive a second repair', async () => {
   ]);
 });
 
-test('unresolved grounding or closed shape becomes a safe no-result', async () => {
+test('unresolved grounding or closed shape fails after repair', async () => {
   const input = request({ player_safe_state: {
     items: [{ item_id: 'boards', category_id: 'wooden_boards' }]
   } });
@@ -494,18 +494,16 @@ test('unresolved grounding or closed shape becomes a safe no-result', async () =
   } });
   for (const code of ['material_transformation_grounding',
     'material_extent_shape']) {
-    const result = await requestTurnStepPlanWithRepair({ request: input,
+    await assert.rejects(() => requestTurnStepPlanWithRepair({ request: input,
       turnStepModel: model,
-      semanticPlanValidator: async () => { throw invalid(code); } });
-    assert.equal(result.repaired, true);
-    assert.equal(result.plan.resolution, 'direct');
-    assert.equal(result.plan.goal_result, 'not_achieved');
-    assert.deepEqual(result.plan.operations, []);
+      semanticPlanValidator: async () => { throw invalid(code); }
+    }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+      && error.details.repair_attempted === true);
   }
   assert.equal(calls, 4);
 });
 
-test('empty unrecoverable domain request becomes a normal no-result', async () => {
+test('empty unrecoverable domain request fails after repair', async () => {
   const model = createLowerDvinaTraceTurnStepModel({
     roleRunner: { async run() { return { output: {
       ...output(), resolution: 'domain_request', goal_result: 'pending',
@@ -513,14 +511,10 @@ test('empty unrecoverable domain request becomes a normal no-result', async () =
       operations: [], operation_choice: null
     } }; } }
   });
-  const result = await requestTurnStepPlanWithRepair({
+  await assert.rejects(() => requestTurnStepPlanWithRepair({
     request: request({ available_domain_operations: [] }), turnStepModel: model
-  });
-  assert.equal(result.repaired, true);
-  assert.equal(result.plan.resolution, 'direct');
-  assert.equal(result.plan.goal_result, 'not_achieved');
-  assert.deepEqual(result.plan.operations, []);
-  assert.equal(result.plan.reason_code, 'domain_operation_unavailable');
+  }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+    && error.details.repair_attempted === true);
 });
 
 test('turn step model fails closed for missing runner or non-object output', async () => {

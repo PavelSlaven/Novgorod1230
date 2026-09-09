@@ -51,15 +51,15 @@ test('move_entity rejects a player-safe placement that is already satisfied', ()
     true);
 });
 
-test('structural repair repeating an unknown ref becomes a safe no-result',
+test('structural repair repeating an unknown ref fails technically',
   async () => {
     let calls = 0;
-    const result = await requestTurnStepPlanWithRepair({ request,
+    await assert.rejects(() => requestTurnStepPlanWithRepair({ request,
       turnStepModel: async () => {
         const value = plan('mistyped-ref', 'held_by');
         return ++calls === 1
           ? { ...value, interpretation: { adaptation: 'literal' } } : value;
-      } });
+      } }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+        && error.details.repair_attempted === true);
     assert.equal(calls, 2);
-    assert.equal(result.plan.reason_code, 'domain_operation_unavailable');
   });

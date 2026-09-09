@@ -423,7 +423,8 @@ test('unfinished domain prerequisite preserves the scene without inventing parti
   assert.equal(visible.visible_scene, state.current_visible_context.visible_scene);
   assert.deepEqual(visible.sensory_details, ['На досках лежит мокрая трава.']);
   assert.deepEqual(visible.visible_changes, []);
-  assert.deepEqual(visible.uncertainties, []);
+  assert.ok(visible.uncertainties.includes(
+    'Ещё не выполнено: «Скрутить траву в жгут.». Результат этой попытки не установлен.'));
   assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));
 });
 

@@ -62,6 +62,18 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
         'Semantic plan references an unavailable domain owner.', { errors });
     };
     validateOwners();
+    if (plan.continuation?.remaining_intent === request.remaining_intent
+        && plan.operations?.some((operation, index) =>
+          operation.op === 'request_discovery'
+          && resolvedDomainOperations.some(({ path, owner_kind: kind }) =>
+            path === `$.operations.${index}` && kind === 'binding'))) {
+      throw turnCommandError('TURN_STEP_PLAN_INVALID',
+        'Authored discovery must consume its investigation intent.', { errors: [{
+          path: '$.continuation.remaining_intent',
+          rule: 'continuation_progress', code: 'continuation_progress',
+          message: 'an authored investigation cannot be a material prerequisite; preserve only independent uncovered intent'
+        }] });
+    }
     return services.turnStepSemanticGroundingValidator?.(deepFreeze({
       plan: structuredClone(plan), request: structuredClone(request),
       resolved_domain_operations: resolvedDomainOperations

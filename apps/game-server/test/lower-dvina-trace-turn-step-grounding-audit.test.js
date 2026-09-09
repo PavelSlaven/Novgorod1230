@@ -33,6 +33,30 @@ test('turn-step grounding audit is skipped outside discovery and production',
     assert.equal(calls, 0);
   });
 
+test('ownerless speech crosses the existing grounding auditor before its factual commit', async () => {
+  for (const [intent, mode, words] of [
+    ['Говорю: «Кто здесь?»', 'intent_paraphrase', 'Я всё отдам за ответ.'],
+    ['Он сказал «Иди», а я зову на помощь.', 'verbatim', 'Иди']
+  ]) {
+    const utterance = { speaker_ref: 'actor:1', input_mode: mode,
+      utterance_text: words };
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run(call) {
+        const payload = JSON.parse(call.messages[1].content);
+        assert.deepEqual(payload.operations, [{ path: '$.utterance', utterance }]);
+        assert.equal(payload.remaining_intent, intent);
+        assert.match(call.messages[0].content, /cannot be rewritten by choosing intent_paraphrase/u);
+        return { output: { pass: false, concerns: [{
+          kind: 'operation_semantic_grounding' }] } };
+      } }
+    });
+    await assert.rejects(validate({ request: { ...request, remaining_intent: intent },
+      plan: { direct_result_kind: 'player_utterance', utterance, operations: [] } }),
+    (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+      && error.details.errors[0].path === '$.utterance');
+  }
+});
+
 test('generic discovery keeps deterministic intent identity before semantic audit',
   async () => {
     let calls = 0;

@@ -33,7 +33,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
     'step_index', 'interpretation', 'resolution', 'goal_result', 'activity',
     'operations', 'check', 'continuation', 'clarification',
     'direct_result_kind', 'reason_code', 'reason'
-  ], errors)) return result(errors);
+  ], errors, { optional: ['utterance'] })) return result(errors);
   constant(value.schema, 'turn_step_plan_v1', '$.schema', errors);
   requiredText(value.request_id, '$.request_id', errors);
   integer(value.committed_state_version, 0,
@@ -85,10 +85,12 @@ export function validateTurnStepPlan(value, { request } = {}) {
 function validateDirectResultKind(plan, errors, request) {
   enumValue(plan.direct_result_kind, [null, 'player_safe_observation',
     'player_safe_item_observation', 'player_safe_body_observation',
-    'no_state_gesture'],
+    'no_state_gesture', 'player_utterance'],
   '$.direct_result_kind', errors);
   const requiresKind = plan.resolution === 'direct'
-    && ['achieved', 'partially_achieved'].includes(plan.goal_result)
+    && (['achieved', 'partially_achieved'].includes(plan.goal_result)
+      || plan.direct_result_kind === 'player_utterance'
+        && plan.goal_result === 'pending' && plan.continuation != null)
     && plan.activity?.owner === 'semantic'
     && plan.activity.duration_class === 'moment'
     && plan.activity.effort === 'none'
@@ -109,11 +111,34 @@ function validateDirectResultKind(plan, errors, request) {
     add(errors, '$.direct_result_kind', 'direct_result_kind',
       'requires a supplied player-safe actor body condition projection');
   }
+  if (plan.direct_result_kind === 'player_utterance') {
+    if (strict(plan.utterance, '$.utterance',
+      ['speaker_ref', 'utterance_text', 'input_mode'], errors)) {
+      requiredText(plan.utterance.speaker_ref, '$.utterance.speaker_ref', errors);
+      if (request != null) constant(plan.utterance.speaker_ref,
+        request.actor?.actor_id ?? request.actor?.actor_ref,
+        '$.utterance.speaker_ref', errors);
+      requiredText(plan.utterance.utterance_text, '$.utterance.utterance_text', errors);
+      enumValue(plan.utterance.input_mode, ['verbatim', 'intent_paraphrase'],
+        '$.utterance.input_mode', errors);
+      if (request != null && plan.utterance.input_mode === 'verbatim'
+          && (typeof plan.utterance.utterance_text !== 'string'
+          || !request.remaining_intent.includes(plan.utterance.utterance_text))) {
+        add(errors, '$.utterance.utterance_text', 'direct_result_kind',
+          'must copy the explicitly spoken words from remaining_intent');
+      }
+    }
+  } else if (plan.utterance !== undefined) {
+    add(errors, '$.utterance', 'direct_result_kind',
+      'is allowed only for player_utterance');
+  }
 }
 
 function validateContinuationProgress(plan, request, operationKinds, errors) {
   if (plan.continuation?.remaining_intent !== request.remaining_intent) return;
   const domainKinds = operationKinds.filter((kind) => DOMAIN_OPS.has(kind));
+  // Discovery may acquire a missing material without consuming its later use.
+  // Owner preflight rejects an authored investigation using that exception.
   if (domainKinds.length > 0 && domainKinds.every(
     (kind) => kind === 'request_discovery')) return;
   add(errors, '$.continuation.remaining_intent', 'continuation_progress',

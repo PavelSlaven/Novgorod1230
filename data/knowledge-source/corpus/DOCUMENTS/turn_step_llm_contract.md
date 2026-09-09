@@ -373,7 +373,7 @@ LLM возвращает не весь заявленный сценарий, а
 
 Обязательное nullable структурное поле `direct_result_kind` принимает
 `player_safe_observation`, `player_safe_item_observation`,
-`player_safe_body_observation`, `no_state_gesture` или `null`. Первые четыре значения
+`player_safe_body_observation`, `no_state_gesture`, `player_utterance` или `null`. Первые четыре значения
 разрешены только для прямого успешного или частично успешного write-free шага с
 `activity = semantic/moment/none`, пустыми `operations`, `check = null` и
 `clarification = null`; для такого шага `null` запрещён. Во всех остальных
@@ -392,6 +392,29 @@ placement и подтверждённое condition как обязательн�
 подтверждает только выполнение простого жеста без нового состояния. Новая
 физическая деталь требует соответствующий domain/discovery path. Код проверяет
 эти условия; `reason` и `reason_code` остаются только диагностикой.
+
+`player_utterance` фиксирует короткую речь без подходящего supplied interaction
+owner через тот же direct `semantic/moment/none` шаг с пустыми operations.
+Обязателен объект `utterance` с ровно `speaker_ref`, `utterance_text`,
+`input_mode`: speaker равен текущему actor, `verbatim` дословно переносит
+заданные слова без обрамляющего действия, `intent_paraphrase` семантически
+конкретизирует свободное речевое намерение без заданной цитаты. Последний режим
+не разрешает переписывать явно заданные слова или добавлять незаявленные
+утверждения. После применения и P16 commit exact resolved text/speaker
+сохраняются в существующем `approved_plan` semantic trace, а player-safe
+projection явно показывает произнесённые слова. В остальных plans `utterance`
+отсутствует. При отдельном последующем действии допустимы `pending` и
+continuation только с неисполненным остатком; одна речь завершается `achieved`.
+Перед применением тот же semantic grounding auditor сверяет оба input modes
+с намерением текущего actor; чужая цитата, перефразирование заданных слов и
+добавленные обещания/claims отклоняются с одной существующей repair-попыткой.
+
+Это факт произнесения, а не истинности речевых claims. Он не устанавливает
+слышимость, аудиторию, knowledge, ответ или отсутствие ответа. Адресованная речь
+с доступным owner сохраняет conversation path. Broadcast perception вне
+conversation этим узким contract extension не активирована: actor без адресата
+не считается автоматически неуслышанным. Existing audience owner по-прежнему
+требует фактические per-listener perception results.
 
 ### 8.3. `activity`
 
@@ -436,6 +459,16 @@ LLM не возвращает точные изменения `health`, `energy`
 2. увеличивает `working_revision` и `step_index`;
 3. добавляет code-owned summary выполненного шага;
 4. передаёт `remaining_intent` в следующий LLM-вызов.
+
+Неизменённый полный intent допустим для discovery как prerequisite получения
+недостающего ordinary-материала. После разрешения owner authored investigation
+не может использовать это исключение: preflight отклоняет такой plan до RNG
+и commit. Соответствие информации определяется запрошенным вопросом и
+`semantic_scope/result_scope` операции, а не общими объектом или сценой.
+При законной player-response boundary скрытого продолжения нет; общий visible
+projector сохраняет уже полученные domain facts и отдельно показывает exact
+неисполненный остаток как попытку с неустановленным результатом, без выдуманных
+причин остановки или отрицательных наблюдений.
 
 ### 9.2. Продолжение после проверки
 

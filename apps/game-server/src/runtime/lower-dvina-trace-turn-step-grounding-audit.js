@@ -12,9 +12,17 @@ const KINDS = new Set([
 const PROMPT = [
   'Return only {"pass":true,"concerns":[]} or',
   '{"pass":false,"concerns":[{"kind":"<allowed kind>"}]}.',
-  'Audit only the supplied focused discovery or action_production against the',
+  'Audit only the supplied focused discovery, action_production or player utterance against the',
   'current remaining_intent and player-safe evidence. Refs are opaque.',
-  'Each operations entry contains its plan path and operation.',
+  'Each operations entry contains its plan path and operation or typed utterance.',
+  'A player utterance must express the current actor speech intention faithfully.',
+  'Verbatim words must be the words the player intends this actor to speak now,',
+  'not another quoted voice, hypothetical statement, or instruction. Explicitly',
+  'given words cannot be rewritten by choosing intent_paraphrase. For an unquoted',
+  'speech intention, intent_paraphrase may resolve wording but must not add claims,',
+  'promises, threats, answers, or commitments the player did not intend. Preserve',
+  'independent later actions in continuation; reject violations as',
+  'operation_semantic_grounding. The utterance itself proves no audience or response.',
   'For discovery, the operation must cover the earliest focused information',
   'need. A fixed authored query must not replace a different ordinary search,',
   'material prerequisite, handling, or transformation.',
@@ -32,6 +40,11 @@ const PROMPT = [
   'When available_domain_operation_grounding supplies a semantic_scope for',
   'the exact operation, treat that purpose and result_scope as its complete',
   'authority. Shared nouns, location, or inspect wording do not expand it.',
+  'Compare the question the player is trying to answer with the question this',
+  'operation can actually answer. Sharing a scene, object, or authored subject',
+  'is insufficient: reject when its result_scope cannot answer the requested',
+  'question. Do not substitute evidence about one property or event for a',
+  'different information need, or infer an answer from unrelated findings.',
   'A fixed authored evidence or scene investigation must fail',
   'operation_semantic_grounding whenever the current step seeks ordinary',
   'material, suitability for work, acquisition or gathering, manipulation,',
@@ -102,6 +115,7 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       request_identity: request.request_id,
       messages: [{ role: 'system', content: PROMPT }, { role: 'user',
         content: JSON.stringify({ remaining_intent: request.remaining_intent,
+          actor_ref: request.actor?.actor_id ?? request.actor?.actor_ref ?? null,
           actor_body: request.actor?.body ?? null,
           player_safe_state: groundingState(request.player_safe_state,
             audited),
@@ -153,6 +167,9 @@ function normalized(value) {
 }
 
 function* auditedOperations(plan) {
+  if (plan?.direct_result_kind === 'player_utterance') {
+    yield { path: '$.utterance', utterance: plan.utterance };
+  }
   for (const [index, operation] of (plan?.operations ?? []).entries()) {
     if (auditable(operation)) yield { path: `$.operations.${index}`, operation };
   }

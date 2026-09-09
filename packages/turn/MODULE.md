@@ -341,4 +341,13 @@ visible package после P16 commit.
 
 ## Тесты
 
+Короткая речь без supplied interaction owner поддерживает typed direct
+`player_utterance`: exact resolved text/current speaker и input mode находятся
+в validated approved plan и существующем persisted semantic trace. Quoted input
+сохраняется verbatim; unquoted speech intent конкретизируется единственным
+turn-step planner. Это не audience/knowledge owner и не ответ NPC. Broadcast
+perception вне conversation остаётся отдельным непройденным owner path.
+Domain preflight не допускает authored investigation с полностью неизменённым
+continuation под видом ordinary material prerequisite.
+
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.

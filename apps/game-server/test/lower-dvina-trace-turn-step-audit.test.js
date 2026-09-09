@@ -23,6 +23,26 @@ import {
 
 const unusedNarrationService = { async run() { throw new Error('unexpected narration'); } };
 
+test('existing commit envelope retains exact resolved utterance without conversation state', () => {
+  const envelope = commitEnvelope({ clarification: false, check: false });
+  const trace = envelope.loop_trace.step_traces[0];
+  const text = 'Нужна помощь!';
+  trace.plan_request.remaining_intent = `Кричу: «${text}»`;
+  trace.approved_plan.operations = [];
+  trace.approved_plan.activity = { owner: 'semantic', duration_class: 'moment',
+    effort: 'none' };
+  trace.approved_plan.direct_result_kind = 'player_utterance';
+  trace.approved_plan.utterance = {
+    speaker_ref: trace.plan_request.actor.actor_ref ?? trace.plan_request.actor.actor_id,
+    utterance_text: text, input_mode: 'verbatim'
+  };
+  assert.deepEqual(validateTurnStepCommitEnvelope(envelope).errors, []);
+  const reloaded = JSON.parse(JSON.stringify(envelope));
+  assert.deepEqual(reloaded.mode_resolution.decision_trace.step_traces[0]
+    .approved_plan.utterance, trace.approved_plan.utterance);
+  assert.deepEqual(reloaded.consequence.state_changes, []);
+});
+
 test('turn-step commit rejects extra nested player, completed-step and trace fields',
   () => {
     const cases = [

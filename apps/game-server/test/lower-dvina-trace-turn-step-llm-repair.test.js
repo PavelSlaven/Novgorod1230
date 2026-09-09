@@ -115,13 +115,13 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'does not prove that the selected operation consumed none of the intent'), true);
   assert.equal(seen.messages[0].content.includes(
-    'keep it and remove that covered event'), true);
+    'keep it and remove only that covered event'), true);
   assert.equal(seen.messages[0].content.includes(
     'never return the discarded later operation in operations'), true);
   assert.equal(seen.messages[0].content.includes(
-    'plus any preceding ownerless ambient utterance'), true);
+    'Never drop an earlier uncommitted utterance'), true);
   assert.equal(seen.messages[0].content.includes(
-    'preserve only independent actions after it'), true);
+    'preserve independent uncovered actions'), true);
   assert.equal(seen.messages[0].content.includes(
     'Re-plan only fields named by structural_errors; do not invent operations or refs.'), true);
   assert.equal(seen.messages[0].content.includes(

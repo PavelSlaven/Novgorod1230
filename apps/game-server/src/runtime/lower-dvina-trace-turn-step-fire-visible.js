@@ -37,12 +37,12 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];
       if (!seedEntries.some(([key]) => key.startsWith(FIRE_SEED_PREFIX))) {
-        return enrichLowerDvinaTraceVisibleNpcCues({
+        return overlayTurnStepResults(enrichLowerDvinaTraceVisibleNpcCues({
           visibleContext: await projectWithoutFire({
             input, consequence, seedEntries, fallback
           }),
           committedState: input.retrieved_state
-        });
+        }), input);
       }
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
@@ -56,12 +56,33 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
             directSeedKeys: directSeedKeys(seedEntries),
             body
           });
-      return enrichLowerDvinaTraceVisibleNpcCues({
+      return overlayTurnStepResults(enrichLowerDvinaTraceVisibleNpcCues({
         visibleContext: overlayFireVisible(overlayOrdinaryPresence(
           overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence), fireVisible),
         committedState: input.retrieved_state
-      });
+      }), input);
     }
+  });
+}
+
+function overlayTurnStepResults(base, input) {
+  const remaining = input?.mode_resolution?.decision_trace?.remaining_intent;
+  const utterances = (input?.mode_resolution?.decision_trace?.step_traces ?? [])
+    .filter(({ applied, approved_plan: plan }) => applied === true
+      && plan?.resolution === 'direct'
+      && plan.direct_result_kind === 'player_utterance')
+    .map(({ approved_plan: plan }) => plan.utterance.utterance_text);
+  if (!text(remaining) && utterances.length === 0) return base;
+  return deepFreeze({ ...structuredClone(base),
+    visible_changes: unique([...base.visible_changes,
+      ...utterances.map((utterance) => `Вы произнесли: «${utterance}»`)]),
+    uncertainties: unique([...base.uncertainties,
+      ...(text(remaining) ? [
+        `Ещё не выполнено: «${remaining}». Результат этой попытки не установлен.`] : [])]),
+    do_not_imply: unique([...base.do_not_imply,
+      ...(text(remaining) ? ['uncompleted_remaining_intent'] : []),
+      ...(utterances.length > 0 ? [
+        'unconfirmed_speech_audience_or_response', 'player_speech_claims_as_truth'] : [])])
   });
 }
 

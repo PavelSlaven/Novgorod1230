@@ -92,3 +92,27 @@ test('direct result kind is structural and write-free', () => {
     { ...observation, operations: plan('cloth', 'worn_by').operations }
   ]) assert.equal(validateTurnStepPlan(invalid, { request }).ok, false);
 });
+
+test('ownerless utterance preserves exact player words and speaker before later intent', () => {
+  const spoken = 'Эй, нужна помощь?';
+  const input = { ...request, remaining_intent:
+    `Кричу: «${spoken}» Затем проверяю навес.` };
+  const value = { ...plan('cloth', 'worn_by'), operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    goal_result: 'pending', direct_result_kind: 'player_utterance',
+    utterance: { speaker_ref: actor, utterance_text: spoken, input_mode: 'verbatim' },
+    continuation: { remaining_intent: 'Затем проверяю навес.', depends_on_refs: [] }
+  };
+  assert.deepEqual(validateTurnStepPlan(value, { request: input }).errors, []);
+  for (const invalid of [
+    { ...value, utterance: undefined },
+    { ...value, utterance: { ...value.utterance, speaker_ref: 'npc' } },
+    { ...value, utterance: { ...value.utterance, utterance_text: 'Мне ответили.' } },
+    { ...value, direct_result_kind: 'no_state_gesture' },
+    { ...value, goal_result: 'not_achieved', continuation: null }
+  ]) assert.equal(validateTurnStepPlan(invalid, { request: input }).ok, false);
+  const paraphrased = { ...value, utterance: { speaker_ref: actor,
+    utterance_text: 'Помогите!', input_mode: 'intent_paraphrase' } };
+  assert.equal(validateTurnStepPlan(paraphrased, { request: { ...input,
+    remaining_intent: 'Зову на помощь, затем проверяю навес.' } }).ok, true);
+});

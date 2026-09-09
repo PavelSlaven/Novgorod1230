@@ -129,7 +129,7 @@ test('authored operation choice exposes its complete semantic scope', async () =
     /select it only when the current step matches that complete purpose and result scope/u);
 });
 
-test('ownerless ambient speech does not block its later domain action',
+test('ownerless speech prompt preserves its step before the later domain action',
   async () => {
     const movement = { op: 'request_movement', actor_ref: 'actor:player',
       movement_kind: 'route', target_ref: 'location:camp',
@@ -144,7 +144,7 @@ test('ownerless ambient speech does not block its later domain action',
       onPrompt: (value) => { prompt = value; }
     })(input);
     assert.match(prompt,
-      /utterance not addressed to any supplied visible or active actor[\s\S]*select that domain action[\s\S]*Never repeat the utterance[\s\S]*whole request in continuation/u);
+      /utterance without a matching supplied interaction owner[\s\S]*direct player_utterance step[\s\S]*preserve their exact uncovered suffix[\s\S]*intent_paraphrase/u);
   });
 
 test('travel prompt prioritizes supplied movement over unrelated inspection', async () => {

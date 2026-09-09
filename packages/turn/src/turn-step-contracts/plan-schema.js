@@ -90,7 +90,10 @@ export const TURN_STEP_PLAN_V1_SCHEMA = deepFreeze({
     clarification: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/clarification' }] },
     direct_result_kind: { anyOf: [{ type: 'null' }, {
       enum: ['player_safe_observation', 'player_safe_item_observation',
-        'player_safe_body_observation', 'no_state_gesture'] }] },
+        'player_safe_body_observation', 'no_state_gesture', 'player_utterance'] }] },
+    utterance: strictObject(['speaker_ref', 'utterance_text', 'input_mode'], {
+      speaker_ref: refSchema, utterance_text: textSchema,
+      input_mode: { enum: ['verbatim', 'intent_paraphrase'] } }),
     reason_code: textSchema,
     reason: textSchema
   }),

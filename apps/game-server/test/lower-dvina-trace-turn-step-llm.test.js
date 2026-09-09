@@ -10,6 +10,23 @@ import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
+test('planner assembly preserves resolved ownerless speech for quoted and unquoted input', () => {
+  for (const [intent, text, mode] of [
+    ['Кричу: «Отзовитесь!»', 'Отзовитесь!', 'verbatim'],
+    ['Зову на помощь.', 'Помогите!', 'intent_paraphrase']
+  ]) {
+    const input = request({ root_player_action: intent, remaining_intent: intent });
+    const utterance = { speaker_ref: input.actor.actor_ref ?? input.actor.actor_id,
+      utterance_text: text, input_mode: mode };
+    const plan = assembleTurnStepPlan({ ...output(), resolution: 'direct',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      goal_result: 'achieved', operations: [], operation_choice: null,
+      direct_result_kind: 'player_utterance', utterance }, input);
+    assert.deepEqual(plan.utterance, utterance);
+    assert.deepEqual(validateTurnStepPlan(plan, { request: input }).errors, []);
+  }
+});
+
 test('turn step model sends the validated request to the isolated planner role', async () => {
   const calls = [];
   const expected = output();

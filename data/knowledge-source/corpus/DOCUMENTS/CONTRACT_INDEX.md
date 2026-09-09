@@ -230,4 +230,9 @@ An undeclared guide may still be relevant, but it must not silently override an 
 
 ## 10. Maintenance rule
 
+`turn_step_llm_contract.md` §8.2.1 также владеет узким direct `player_utterance`
+contract: exact resolved speech сохраняется через текущий turn semantic trace;
+broadcast audience/perception этим не активируются. §9.1 задаёт owner-aware
+discovery prerequisite и проекцию оставшегося intent при player boundary.
+
 Any PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.

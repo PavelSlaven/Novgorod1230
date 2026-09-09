@@ -1,43 +1,51 @@
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
-import {
-  projectLowerDvinaTracePlayerSafeState,
-  projectLowerDvinaTraceVisibleNpcDetails
-} from
+import { projectLowerDvinaTracePlayerSafeState,
+  projectLowerDvinaTraceVisibleNpcDetails } from
   './lower-dvina-trace-player-safe-state.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
 import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
+import { lowerDvinaTraceDirectObservationChanges,
+  lowerDvinaTraceVisibleSceneItems,
+  uniqueLowerDvinaTraceVisibleObjects } from
+  './lower-dvina-trace-visible-scene-items.js';
 
 const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
   'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
-export function withLowerDvinaTraceCurrentScene({
-  committedState,
-  locationProfiles,
-  scenePresentation = null
-}) {
+export function withLowerDvinaTraceCurrentScene({ committedState,
+  locationProfiles, scenePresentation = null }) {
   const initial = committedState?.current_visible_context;
   const projectionSource = structuredClone(committedState);
   delete projectionSource.current_visible_context;
-  if (Number(committedState?.party_state?.state_version) === 0
-      && validCurrentScene(initial)) {
-    return {
-      ...committedState,
-      current_visible_context: enrichLowerDvinaTraceVisibleNpcCues({
-        visibleContext: initial,
-        committedState: projectionSource
-      })
-    };
-  }
   const playerSafe = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
     actor_id: projectionSource.actor_id
   }).player_safe_state;
+  const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
+    playerSafe.position,
+    playerSafe.actor_id);
+  if (Number(committedState?.party_state?.state_version) === 0
+      && validCurrentScene(initial)) {
+    const current = {
+      ...initial,
+      sensory_details: unique([...initial.sensory_details,
+        ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)]),
+      visible_objects: uniqueLowerDvinaTraceVisibleObjects([
+        ...initial.visible_objects,
+        ...sceneItems.map(({ visibleObject }) => visibleObject)])
+    };
+    return {
+      ...committedState,
+      current_visible_context: enrichLowerDvinaTraceVisibleNpcCues({
+        visibleContext: current,
+        committedState: projectionSource
+      })
+    };
+  }
   const locationRef = playerSafe.position?.location_ref;
   const profile = scenePresentation == null
     ? historicalLocationProfile(locationProfiles, locationRef)
     : scenePresentationForLocation({ scenePresentation, locationRef });
-  const sceneItems = visibleSceneItems(playerSafe.items, playerSafe.position,
-    playerSafe.actor_id);
   const sensoryDetails = unique([...(profile.player_visible_physical_facts ?? []),
     ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)
   ]);
@@ -64,21 +72,6 @@ export function withLowerDvinaTraceCurrentScene({
     ...committedState,
     current_visible_context: deepFreeze(current)
   };
-}
-function visibleSceneItems(items, position, actorId) {
-  return (items ?? []).flatMap((item) => {
-    const placement = item?.placement ?? {};
-    const coLocated = placement.location_ref === position?.location_ref
-      || [position?.g5_anchor_id, position?.anchor_id]
-        .includes(placement.g5_anchor_id ?? placement.anchor_id);
-    const held = placement.holder_character_id === actorId;
-    const itemId = item?.item_id ?? item?.instance_id;
-    if ((!coLocated && !held) || !text(itemId) || !text(item?.name)) return [];
-    return [{ physicalFacts: item.physical_facts ?? [], visibleObject: {
-      entity_ref: { entity_kind: 'item', entity_id: itemId },
-      display_label: item.name, recognition: 'recognized',
-      visible_status: held ? 'у вас в руках' : 'available' } }];
-  });
 }
 function historicalLocationProfile(locationProfiles, locationRef) {
   const matches = Array.isArray(locationProfiles)
@@ -109,11 +102,13 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
   const current = input?.retrieved_state?.current_visible_context;
   if (!validCurrentScene(current)) failCurrentScene();
   const outcomeConstraints = directOutcomeConstraints(input);
+  const observationChanges = lowerDvinaTraceDirectObservationChanges(input);
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
       ...current.visible_changes,
       ...projectDirectSeedChanges({ input, directSeedKeys }),
+      ...observationChanges,
       ...(outcomeConstraints.includes('unconfirmed_attempt_success')
         ? input.mode_resolution.decision_trace.step_traces
           .filter(({ approved_plan: plan }) => plan?.resolution === 'direct'
@@ -129,7 +124,12 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
       ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
       ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
     ]),
-    uncertainties: unique(current.uncertainties),
+    uncertainties: unique([
+      ...current.uncertainties,
+      ...(observationChanges.length === 0 ? [] : [
+        'Наблюдение не подтверждает деталей сверх уже видимых признаков.'
+      ])
+    ]),
     do_not_imply: unique([
       ...current.do_not_imply,
       'hidden_fact',

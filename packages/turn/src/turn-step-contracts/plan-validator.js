@@ -33,7 +33,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
     'step_index', 'interpretation', 'resolution', 'goal_result', 'activity',
     'operations', 'check', 'continuation', 'clarification', 'reason_code',
     'reason'
-  ], errors)) return result(errors);
+  ], errors, { optional: ['observation_scope'] })) return result(errors);
   constant(value.schema, 'turn_step_plan_v1', '$.schema', errors);
   requiredText(value.request_id, '$.request_id', errors);
   integer(value.committed_state_version, 0,
@@ -69,6 +69,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
   validateClarification(value.clarification, '$.clarification', errors, trace);
   validateCheck(value.check, '$.check', errors, trace, request);
   validateResolution(value, operationKinds, errors);
+  validateObservationScope(value, errors);
   if (value.continuation != null && value.goal_result !== 'pending') {
     add(errors, '$.goal_result', 'continuation',
       'must be pending when continuation is present');
@@ -78,6 +79,21 @@ export function validateTurnStepPlan(value, { request } = {}) {
     validateContinuationProgress(value, request, operationKinds, errors);
   }
   return result(errors);
+}
+
+function validateObservationScope(plan, errors) {
+  if (plan.observation_scope === undefined) return;
+  constant(plan.observation_scope, 'player_safe_existing_facts',
+    '$.observation_scope', errors);
+  const valid = plan.resolution === 'direct'
+    && plan.goal_result !== 'not_achieved'
+    && plan.activity?.owner === 'semantic'
+    && plan.activity.duration_class === 'moment'
+    && plan.activity.effort === 'none'
+    && Array.isArray(plan.operations) && plan.operations.length === 0
+    && plan.check === null && plan.clarification === null;
+  if (!valid) add(errors, '$.observation_scope', 'observation_scope',
+    'requires a direct write-free player-safe observation');
 }
 
 function validateContinuationProgress(plan, request, operationKinds, errors) {

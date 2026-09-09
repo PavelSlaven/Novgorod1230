@@ -12,6 +12,8 @@ import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
   '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
+import { lowerDvinaTraceDirectObservationChanges } from
+  '../src/runtime/lower-dvina-trace-visible-scene-items.js';
 
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
@@ -106,6 +108,33 @@ test('version zero scene retains safe labels and gains observable cues', () => {
     .recognition, 'unrecognized');
   assert.equal(current.current_visible_context.visible_npc[0]
     .observable_cues.identity.appearance.build, 'stocky');
+});
+
+test('version zero scene includes unnamed carried equipment with safe labels', () => {
+  const state = committedState();
+  state.party_state.state_version = 0;
+  state.items.push({ item_id: 'unseen-equipped-layer',
+    visual_profile_snapshot: { equipment_slot: 'outer_garment' },
+    placement: { holder_character_id: state.actor_id,
+      physical_position: 'equipped',
+      equipment_slot_category_id: 'outer_garment' } }, {
+    item_id: 'unseen-belt-tool', placement: {
+      holder_character_id: state.actor_id, physical_position: 'worn_quick' }
+  });
+
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles
+  });
+
+  assert.deepEqual(current.current_visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'item', entity_id: 'unseen-equipped-layer' },
+    display_label: 'верхняя одежда', recognition: 'recognized',
+    visible_status: 'при вас'
+  }, {
+    entity_ref: { entity_kind: 'item', entity_id: 'unseen-belt-tool' },
+    display_label: 'предмет снаряжения', recognition: 'recognized',
+    visible_status: 'при вас'
+  }]);
 });
 
 test('current scene exposes only authored physical facts, never taxonomy IDs', () => {
@@ -209,6 +238,37 @@ test('in-place production forbids narration from inventing source relocation', (
 
   assert.equal(visible.do_not_imply.includes(
     'uncommitted_action_production_source_relocation'), true);
+});
+
+test('direct player-safe observation reaches narration without new facts', () => {
+  const state = committedState();
+  state.current_visible_context.sensory_details = ['Низкое сырое небо.'];
+  state.current_visible_context.visible_objects = [{
+    entity_ref: { entity_kind: 'item', entity_id: 'unseen-cloak' },
+    display_label: 'верхняя одежда', recognition: 'recognized',
+    visible_status: 'при вас'
+  }];
+  const visible = projectCurrentSceneForNoOperationDirect({ input: {
+    consequence: { status: 'resolved', visible_seed: {} },
+    retrieved_state: state, mode_resolution: { decision_trace: {
+      remaining_intent: null, step_traces: [{ approved_plan: {
+        resolution: 'direct', goal_result: 'achieved', operations: [],
+        check: null, observation_scope: 'player_safe_existing_facts'
+      }, applied: true }] } }
+  }, directSeedKeys: [], body: {} });
+
+  assert.deepEqual(visible.visible_changes,
+    ['Наблюдение завершено по уже доступным вам признакам.']);
+  assert.deepEqual(visible.sensory_details, ['Низкое сырое небо.']);
+  assert.equal(visible.visible_objects[0].display_label, 'верхняя одежда');
+  assert.deepEqual(visible.uncertainties,
+    ['Наблюдение не подтверждает деталей сверх уже видимых признаков.']);
+  assert.deepEqual(lowerDvinaTraceDirectObservationChanges({
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+      approved_plan: { resolution: 'direct', goal_result: 'achieved',
+        operations: [], check: null, reason_code: 'player_safe_observation' }
+    }] } }
+  }), []);
 });
 
 test('ordinary scene seed augments the current scene in the same turn', async () => {

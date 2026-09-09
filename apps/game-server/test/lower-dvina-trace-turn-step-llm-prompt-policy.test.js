@@ -141,6 +141,8 @@ test('turn step planner routes accessible items and visible environment through 
     assert.match(prompt, /focused inspection of any current visible item, including one held by the actor, seeks new detail/u);
     assert.match(prompt, /sensory detail that physically places ordinary environmental material in the current scope is sufficient for ordinary_material_prerequisite/u);
     assert.match(prompt, /never authorizes an authoritative, significant, hidden, or already-resolved fact/u);
+    assert.match(prompt, /Reviewing or qualitatively assessing facts already explicit[\s\S]*carried\/worn items and sensory conditions[\s\S]*direct achieved or partially achieved observation with observation_scope player_safe_existing_facts/u);
+    assert.match(prompt, /reviewing supplied gear and qualified assessment of sensory facts with World Knowledge[\s\S]*preserve uncertainty[\s\S]*never infer local state, cause, forecast, or timing/u);
   });
 
 test('turn step planner keeps an ongoing wet-reed smoulder out of A1', async () => {

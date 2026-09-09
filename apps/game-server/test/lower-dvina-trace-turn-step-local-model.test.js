@@ -41,3 +41,13 @@ test('assembler restores an omitted player goal from the code-owned request', ()
   assert.equal(plan.interpretation.player_goal, input.root_player_action);
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
+
+test('assembler preserves typed player-safe observation scope', () => {
+  const input = request();
+  const plan = assembleTurnStepPlan({ ...output(), resolution: 'direct',
+    goal_result: 'achieved', activity: { owner: 'semantic',
+      duration_class: 'moment', effort: 'none' }, operations: [],
+    continuation: null, observation_scope: 'player_safe_existing_facts' }, input);
+  assert.equal(plan.observation_scope, 'player_safe_existing_facts');
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+});

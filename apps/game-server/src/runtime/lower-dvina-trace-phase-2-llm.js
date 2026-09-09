@@ -71,7 +71,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             'Return only one JSON object containing the semantic choice for one turn step.',
             'Do not add Markdown, prose outside JSON, or unknown fields.',
             'Do not return schema, request_id, committed_state_version, working_revision, step_index, goal_result pending, or code-owned domain activity; the server assembles them. semantic activity may add requested_duration_minutes only for an exact duration explicitly stated by the player.',
-            'Return interpretation, resolution, operation_family, semantic goal_result/activity when applicable, operation_choice or semantic operations, check, continuation, clarification, reason_code, and reason. reason is one short conclusion sentence, never analysis, alternatives, self-correction, or repeated deliberation. If you notice a mistake, emit only the corrected final JSON.',
+            'Return interpretation, resolution, optional observation_scope, operation_family, goal_result/activity when applicable, operation_choice or operations, check, continuation, clarification, reason_code, and reason. reason is one short conclusion; no analysis, alternatives, self-correction, or repeated deliberation. If mistaken, emit only corrected final JSON.',
             `A direct semantic example is:\n${semanticTurnStepExample()}`,
             `Code-owned exact operation choices are:\n${JSON.stringify(operationChoices)}`,
             ...(operationChoices.some((choice) => choice.player_safe_grounding
@@ -232,6 +232,9 @@ export function assembleTurnStepPlan(choice, request,
     check: semantic.check ?? null,
     continuation: semantic.continuation ?? null,
     clarification: semantic.clarification ?? null,
+    ...(semantic.observation_scope == null ? {} : {
+      observation_scope: semantic.observation_scope
+    }),
     reason_code: semantic.reason_code,
     reason: semantic.reason,
     ...(mismatchedSelectedOperations ? {

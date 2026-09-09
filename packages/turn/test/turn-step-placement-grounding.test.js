@@ -63,3 +63,17 @@ test('structural repair repeating an unknown ref fails technically',
         && error.details.repair_attempted === true);
     assert.equal(calls, 2);
   });
+
+test('player-safe observation scope is structural and write-free', () => {
+  const observation = { ...plan('cloth', 'worn_by'), operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    observation_scope: 'player_safe_existing_facts' };
+  assert.equal(validateTurnStepPlan(observation, { request }).ok, true);
+  for (const invalid of [
+    { ...observation, observation_scope: 'weather' },
+    { ...observation, goal_result: 'not_achieved' },
+    { ...observation, activity: { owner: 'semantic', duration_class: 'brief',
+      effort: 'none' } },
+    { ...observation, operations: plan('cloth', 'worn_by').operations }
+  ]) assert.equal(validateTurnStepPlan(invalid, { request }).ok, false);
+});

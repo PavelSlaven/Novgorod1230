@@ -51,7 +51,7 @@ test('turn step model sends the validated request to the isolated planner role',
     'skill proficiency is not',
     'no_experience still permits an attempt',
     'never report that the command or skill is missing',
-    'focused perception and is never achieved by visible_general_look',
+    'New physical detail stays focused perception',
     'create an absent referent',
     'move the actor for make_believe',
     'Classify interpretation.adaptation by the stated goal'
@@ -239,7 +239,7 @@ test('turn step planner prompt preserves only compound intent outside capability
   assert.match(prompt,
     /direct preparation and action_production cannot share one plan[\s\S]*explicit requested destination or spatial relation[\s\S]*no exact player-safe target ref[\s\S]*source's committed placement[\s\S]*preserve it as unexecuted continuation[\s\S]*item-local[\s\S]*never placement, attachment, holder, wearer, destination, or relocation[\s\S]*ordered explicit relocation, transformation, and placement[\s\S]*first move_entity now[\s\S]*each later placement again needs move_entity/u);
   assert.match(prompt,
-    /direct achieved plan with empty operations[\s\S]*must never claim that movement, item relocation, manipulation, transformation, speech, focused perception/u);
+    /Direct empty achieved is only for player-safe observation[\s\S]*reviewing supplied gear[\s\S]*qualified assessment of sensory facts[\s\S]*New physical detail stays focused perception/u);
   assert.match(prompt, /operation choice covers the intent[\s\S]*choice_id[\s\S]*Final continuation override for direct reality_limited or make_believe[\s\S]*stated action, purpose, manner, result, or qualifier[\s\S]*same grounding, not continuation[\s\S]*independently executable without that premise[\s\S]*every later sentence[\s\S]*continuation to null/u);
 });
 

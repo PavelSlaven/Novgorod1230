@@ -368,6 +368,17 @@ LLM возвращает не весь заявленный сценарий, а
 
 Если `continuation` не равен `null`, `goal_result` должен быть `pending`.
 
+### 8.2.1. Player-safe observation
+
+Опциональное структурное поле
+`"observation_scope": "player_safe_existing_facts"` разрешено только для
+прямого write-free наблюдения с `activity = semantic/moment/none`, пустыми
+`operations`, `check = null`, `clarification = null` и результатом кроме
+`not_achieved`. Оно подтверждает только завершение наблюдения; его содержание
+ограничено уже предъявленными player-safe facts. Новая физическая деталь требует
+соответствующий domain/discovery path. Код проверяет эти условия; `reason` и
+`reason_code` остаются только диагностикой.
+
 ### 8.3. `activity`
 
 Для прямого шага и generic check:

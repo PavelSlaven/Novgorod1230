@@ -30,6 +30,13 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   Исчерпание budget/cap без transition возвращает existing player-response no-op:
   состояние неизменно, model/record/commit и technical failure отсутствуют; seed
   transition того же turn всё ещё может запечатать собственный `no_change` plan.
+- Сводка уже player-safe carried/worn items и качественная оценка уже
+  предъявленных sensory facts относятся к write-free direct observation, а не
+  к ordinary materialization. Typed `observation_scope` даёт
+  presentation только подтверждение наблюдения и уже player-safe context;
+  он не переносит свободный planner reason как факт. Поиск новой детали остаётся
+  `request_discovery`; uncertainty и отсутствие локального exact forecast не
+  должны превращать доступное наблюдение в игровой отказ.
 - S1 reaches only through existing `request_discovery/look` after higher-priority
   owners. Turn forwards the current player-safe position marker and does not
   choose local detail, capacity, topology, mechanics or a persistence path.

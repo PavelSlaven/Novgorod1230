@@ -72,7 +72,7 @@ planDefinitions.generic_check = strictObject(['purpose', 'attribute_ref', 'skill
 export const TURN_STEP_PLAN_V1_SCHEMA = deepFreeze({
   $schema: 'https://json-schema.org/draft/2020-12/schema',
   $id: 'urn:rus:turn:turn_step_plan_v1',
-  ...strictObject(['schema', 'request_id', 'committed_state_version', 'working_revision', 'step_index', 'interpretation', 'resolution', 'goal_result', 'activity', 'operations', 'check', 'continuation', 'clarification', 'reason_code', 'reason'], {
+  ...strictObject(['schema', 'request_id', 'committed_state_version', 'working_revision', 'step_index', 'interpretation', 'resolution', 'goal_result', 'activity', 'operations', 'check', 'continuation', 'clarification', 'direct_result_kind', 'reason_code', 'reason'], {
     schema: { const: 'turn_step_plan_v1' },
     request_id: textSchema,
     committed_state_version: { type: 'integer', minimum: 0 },
@@ -86,7 +86,8 @@ export const TURN_STEP_PLAN_V1_SCHEMA = deepFreeze({
     check: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/generic_check' }] },
     continuation: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/continuation' }] },
     clarification: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/clarification' }] },
-    observation_scope: { const: 'player_safe_existing_facts' },
+    direct_result_kind: { anyOf: [{ type: 'null' }, {
+      enum: ['player_safe_observation', 'no_state_gesture'] }] },
     reason_code: textSchema,
     reason: textSchema
   }),

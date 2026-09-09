@@ -32,8 +32,10 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   transition того же turn всё ещё может запечатать собственный `no_change` plan.
 - Сводка уже player-safe carried/worn items и качественная оценка уже
   предъявленных sensory facts относятся к write-free direct observation, а не
-  к ordinary materialization. Typed `observation_scope` даёт
-  presentation только подтверждение наблюдения и уже player-safe context;
+  к ordinary materialization. Обязательный для успешного write-free direct
+  результата nullable `direct_result_kind` различает player-safe observation
+  и no-state gesture; code-owned presentation подтверждает только этот класс
+  результата и уже player-safe context;
   он не переносит свободный planner reason как факт. Поиск новой детали остаётся
   `request_discovery`; uncertainty и отсутствие локального exact forecast не
   должны превращать доступное наблюдение в игровой отказ.

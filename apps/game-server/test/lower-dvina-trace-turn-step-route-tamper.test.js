@@ -194,6 +194,7 @@ test('production commit rejects rebuilt valid ledgers forged past owner outputs'
         const traces = structuredClone(
           forged.turn_step_commit.loop_trace.step_traces);
         traces[1].approved_plan.activity.duration_class = 'brief';
+        traces[1].approved_plan.direct_result_kind = null;
         bindStepTraceCopies(forged, traces);
         await assertForgedRejected(forged, scenario);
       });

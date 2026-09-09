@@ -114,6 +114,8 @@ export function bindCommitEnvelopeToBatch(envelope, batch) {
     ? trace.approved_plan.check.outcomes[trace.check_outcome] : null;
   if (selected) selected.operations = operations;
   else trace.approved_plan.operations = operations;
+  trace.approved_plan.direct_result_kind = selected || operations.length > 0
+    ? null : 'no_state_gesture';
   if (activities[0]) {
     trace.approved_plan.activity = {
       owner: 'semantic', duration_class: activities[0].duration_class,
@@ -273,6 +275,7 @@ function approvedPlanFixture(request, { clarification, check, question }) {
       ].map((band) => [band, structuredClone(outcome)])) } : null,
     continuation: null,
     clarification: structuredClone(question),
+    direct_result_kind: clarification || check ? null : 'no_state_gesture',
     reason_code: clarification ? 'material_ambiguity'
       : check ? 'generic_check' : 'direct_step',
     reason: 'test approved plan'

@@ -64,6 +64,7 @@ function plan(overrides = {}) {
       depends_on_refs: ['chest_1']
     },
     clarification: null,
+    direct_result_kind: null,
     reason_code: 'container_contents_not_visible',
     reason: 'содержимое закрытого сундука ещё неизвестно',
     ...overrides

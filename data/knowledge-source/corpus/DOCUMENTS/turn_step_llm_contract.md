@@ -341,6 +341,7 @@ LLM возвращает не весь заявленный сценарий, а
   "check": null,
   "continuation": null,
   "clarification": null,
+  "direct_result_kind": null,
   "reason_code": "direct_step",
   "reason": "краткое диагностическое объяснение"
 }
@@ -368,16 +369,20 @@ LLM возвращает не весь заявленный сценарий, а
 
 Если `continuation` не равен `null`, `goal_result` должен быть `pending`.
 
-### 8.2.1. Player-safe observation
+### 8.2.1. Write-free direct result
 
-Опциональное структурное поле
-`"observation_scope": "player_safe_existing_facts"` разрешено только для
-прямого write-free наблюдения с `activity = semantic/moment/none`, пустыми
-`operations`, `check = null`, `clarification = null` и результатом кроме
-`not_achieved`. Оно подтверждает только завершение наблюдения; его содержание
-ограничено уже предъявленными player-safe facts. Новая физическая деталь требует
-соответствующий domain/discovery path. Код проверяет эти условия; `reason` и
-`reason_code` остаются только диагностикой.
+Обязательное nullable структурное поле `direct_result_kind` принимает
+`player_safe_observation`, `no_state_gesture` или `null`. Первые два значения
+разрешены только для прямого успешного или частично успешного write-free шага с
+`activity = semantic/moment/none`, пустыми `operations`, `check = null` и
+`clarification = null`; для такого шага `null` запрещён. Во всех остальных
+планах поле равно `null`.
+
+`player_safe_observation` подтверждает только завершение наблюдения; его
+содержание ограничено уже предъявленными player-safe facts. `no_state_gesture`
+подтверждает только выполнение простого жеста без нового состояния. Новая
+физическая деталь требует соответствующий domain/discovery path. Код проверяет
+эти условия; `reason` и `reason_code` остаются только диагностикой.
 
 ### 8.3. `activity`
 

@@ -31,9 +31,9 @@ export function validateTurnStepPlan(value, { request } = {}) {
   if (!strict(value, '$', [
     'schema', 'request_id', 'committed_state_version', 'working_revision',
     'step_index', 'interpretation', 'resolution', 'goal_result', 'activity',
-    'operations', 'check', 'continuation', 'clarification', 'reason_code',
-    'reason'
-  ], errors, { optional: ['observation_scope'] })) return result(errors);
+    'operations', 'check', 'continuation', 'clarification',
+    'direct_result_kind', 'reason_code', 'reason'
+  ], errors)) return result(errors);
   constant(value.schema, 'turn_step_plan_v1', '$.schema', errors);
   requiredText(value.request_id, '$.request_id', errors);
   integer(value.committed_state_version, 0,
@@ -69,7 +69,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
   validateClarification(value.clarification, '$.clarification', errors, trace);
   validateCheck(value.check, '$.check', errors, trace, request);
   validateResolution(value, operationKinds, errors);
-  validateObservationScope(value, errors);
+  validateDirectResultKind(value, errors);
   if (value.continuation != null && value.goal_result !== 'pending') {
     add(errors, '$.goal_result', 'continuation',
       'must be pending when continuation is present');
@@ -81,19 +81,23 @@ export function validateTurnStepPlan(value, { request } = {}) {
   return result(errors);
 }
 
-function validateObservationScope(plan, errors) {
-  if (plan.observation_scope === undefined) return;
-  constant(plan.observation_scope, 'player_safe_existing_facts',
-    '$.observation_scope', errors);
-  const valid = plan.resolution === 'direct'
-    && plan.goal_result !== 'not_achieved'
+function validateDirectResultKind(plan, errors) {
+  enumValue(plan.direct_result_kind, [null, 'player_safe_observation',
+    'no_state_gesture'], '$.direct_result_kind', errors);
+  const requiresKind = plan.resolution === 'direct'
+    && ['achieved', 'partially_achieved'].includes(plan.goal_result)
     && plan.activity?.owner === 'semantic'
     && plan.activity.duration_class === 'moment'
     && plan.activity.effort === 'none'
     && Array.isArray(plan.operations) && plan.operations.length === 0
     && plan.check === null && plan.clarification === null;
-  if (!valid) add(errors, '$.observation_scope', 'observation_scope',
-    'requires a direct write-free player-safe observation');
+  if (requiresKind && plan.direct_result_kind === null) {
+    add(errors, '$.direct_result_kind', 'direct_result_kind',
+      'is required for a successful write-free direct result');
+  } else if (!requiresKind && plan.direct_result_kind !== null) {
+    add(errors, '$.direct_result_kind', 'direct_result_kind',
+      'is allowed only for a successful write-free direct result');
+  }
 }
 
 function validateContinuationProgress(plan, request, operationKinds, errors) {

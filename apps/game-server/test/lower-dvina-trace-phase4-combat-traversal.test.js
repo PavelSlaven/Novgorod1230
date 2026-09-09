@@ -285,6 +285,7 @@ function holdPlan(request, state, shed) {
       scope_ref: shed.location_profile_ref, destination_ref: null,
       force_limit: 'avoid_harm', risk_posture: 'ordinary' }],
     check: null, continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'combat_response',
     reason: 'Сохранить позицию до ближайшей временной границы.' };
 }

@@ -5,7 +5,7 @@ import { projectLowerDvinaTracePlayerSafeState,
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
 import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
-import { lowerDvinaTraceDirectObservationChanges,
+import { lowerDvinaTraceDirectResultChanges,
   lowerDvinaTraceVisibleSceneItems,
   uniqueLowerDvinaTraceVisibleObjects } from
   './lower-dvina-trace-visible-scene-items.js';
@@ -102,13 +102,13 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
   const current = input?.retrieved_state?.current_visible_context;
   if (!validCurrentScene(current)) failCurrentScene();
   const outcomeConstraints = directOutcomeConstraints(input);
-  const observationChanges = lowerDvinaTraceDirectObservationChanges(input);
+  const directResultChanges = lowerDvinaTraceDirectResultChanges(input);
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
       ...current.visible_changes,
       ...projectDirectSeedChanges({ input, directSeedKeys }),
-      ...observationChanges,
+      ...directResultChanges,
       ...(outcomeConstraints.includes('unconfirmed_attempt_success')
         ? input.mode_resolution.decision_trace.step_traces
           .filter(({ approved_plan: plan }) => plan?.resolution === 'direct'
@@ -126,7 +126,8 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
     ]),
     uncertainties: unique([
       ...current.uncertainties,
-      ...(observationChanges.length === 0 ? [] : [
+      ...(!directResultChanges.includes(
+        'Наблюдение завершено по уже доступным вам признакам.') ? [] : [
         'Наблюдение не подтверждает деталей сверх уже видимых признаков.'
       ])
     ]),
@@ -288,10 +289,9 @@ function text(value) {
 }
 
 function failCurrentScene() {
-  throw Object.assign(
-    new Error('The committed current scene cannot be projected safely.'),
-    { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID', status: 409 }
-  );
+  throw Object.assign(new Error(
+    'The committed current scene cannot be projected safely.'),
+  { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID', status: 409 });
 }
 
 function unique(values) {

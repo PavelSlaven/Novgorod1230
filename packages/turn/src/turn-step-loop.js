@@ -316,6 +316,7 @@ async function requestPreparedFollowupPlan({ request, preparedFollowup,
     check: null,
     continuation: null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: 'prepared_followup',
     reason: 'Prepared code-owned continuation remains applicable.'
   };

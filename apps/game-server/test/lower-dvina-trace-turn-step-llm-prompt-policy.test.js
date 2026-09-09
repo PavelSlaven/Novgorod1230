@@ -67,6 +67,7 @@ test('turn step planner prompt maps grounded and visible-look contracts',
       operations: mappings.impossible_absent_fantastical_referent.operations,
       check: mappings.impossible_absent_fantastical_referent.check,
       continuation: null, clarification: null,
+      direct_result_kind: null,
       reason_code: 'absent_fantastical_referent',
       reason: 'В мире нет такого объекта.'
     }, { request: input }).ok, true);
@@ -74,7 +75,8 @@ test('turn step planner prompt maps grounded and visible-look contracts',
       interpretation: { adaptation: 'literal' },
       resolution: 'direct', goal_result: 'achieved',
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-      operations: [], check: null
+      operations: [], check: null,
+      direct_result_kind: 'player_safe_observation'
     });
     assert.equal(mappings.ordinary_scene_seed, undefined);
     assert.match(prompt,
@@ -141,8 +143,8 @@ test('turn step planner routes accessible items and visible environment through 
     assert.match(prompt, /focused inspection of any current visible item, including one held by the actor, seeks new detail/u);
     assert.match(prompt, /sensory detail that physically places ordinary environmental material in the current scope is sufficient for ordinary_material_prerequisite/u);
     assert.match(prompt, /never authorizes an authoritative, significant, hidden, or already-resolved fact/u);
-    assert.match(prompt, /Reviewing or qualitatively assessing facts already explicit[\s\S]*carried\/worn items and sensory conditions[\s\S]*direct achieved or partially achieved observation with observation_scope player_safe_existing_facts/u);
-    assert.match(prompt, /reviewing supplied gear and qualified assessment of sensory facts with World Knowledge[\s\S]*preserve uncertainty[\s\S]*never infer local state, cause, forecast, or timing/u);
+    assert.match(prompt, /Reviewing or qualitatively assessing facts already explicit[\s\S]*carried\/worn items and sensory conditions[\s\S]*direct achieved or partially achieved observation with direct_result_kind player_safe_observation/u);
+    assert.match(prompt, /reviewing gear or sensory facts[\s\S]*Preserve uncertainty[\s\S]*never infer local state, cause, forecast, timing/u);
   });
 
 test('turn step planner keeps an ongoing wet-reed smoulder out of A1', async () => {

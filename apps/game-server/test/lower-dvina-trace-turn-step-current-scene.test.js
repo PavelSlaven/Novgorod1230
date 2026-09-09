@@ -12,7 +12,7 @@ import { factPresentationForRef } from
   '../src/runtime/lower-dvina-trace-scene-presentation.js';
 import { createLowerDvinaTraceTurnStepVisibleProjector } from
   '../src/runtime/lower-dvina-trace-turn-step-fire-visible.js';
-import { lowerDvinaTraceDirectObservationChanges } from
+import { lowerDvinaTraceDirectResultChanges } from
   '../src/runtime/lower-dvina-trace-visible-scene-items.js';
 
 const locationProfiles = [{ location_profile_id: 'shed',
@@ -253,7 +253,7 @@ test('direct player-safe observation reaches narration without new facts', () =>
     retrieved_state: state, mode_resolution: { decision_trace: {
       remaining_intent: null, step_traces: [{ approved_plan: {
         resolution: 'direct', goal_result: 'achieved', operations: [],
-        check: null, observation_scope: 'player_safe_existing_facts'
+        check: null, direct_result_kind: 'player_safe_observation'
       }, applied: true }] } }
   }, directSeedKeys: [], body: {} });
 
@@ -263,12 +263,18 @@ test('direct player-safe observation reaches narration without new facts', () =>
   assert.equal(visible.visible_objects[0].display_label, 'верхняя одежда');
   assert.deepEqual(visible.uncertainties,
     ['Наблюдение не подтверждает деталей сверх уже видимых признаков.']);
-  assert.deepEqual(lowerDvinaTraceDirectObservationChanges({
+  assert.deepEqual(lowerDvinaTraceDirectResultChanges({
     mode_resolution: { decision_trace: { step_traces: [{ applied: true,
       approved_plan: { resolution: 'direct', goal_result: 'achieved',
         operations: [], check: null, reason_code: 'player_safe_observation' }
     }] } }
   }), []);
+  assert.deepEqual(lowerDvinaTraceDirectResultChanges({
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+      approved_plan: { resolution: 'direct', goal_result: 'achieved',
+        operations: [], check: null, direct_result_kind: 'no_state_gesture' }
+    }] } }
+  }), ['Вы завершили простой жест.']);
 });
 
 test('ordinary scene seed augments the current scene in the same turn', async () => {

@@ -41,6 +41,7 @@ function basePlan(request, overrides = {}) {
     check: null,
     continuation: null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: 'direct_step',
     reason: 'test plan',
     ...overrides

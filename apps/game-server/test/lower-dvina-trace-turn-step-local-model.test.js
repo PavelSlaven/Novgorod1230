@@ -42,12 +42,28 @@ test('assembler restores an omitted player goal from the code-owned request', ()
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
 
-test('assembler preserves typed player-safe observation scope', () => {
+test('assembler preserves typed direct result kind', () => {
   const input = request();
   const plan = assembleTurnStepPlan({ ...output(), resolution: 'direct',
     goal_result: 'achieved', activity: { owner: 'semantic',
       duration_class: 'moment', effort: 'none' }, operations: [],
-    continuation: null, observation_scope: 'player_safe_existing_facts' }, input);
-  assert.equal(plan.observation_scope, 'player_safe_existing_facts');
+    continuation: null, direct_result_kind: 'player_safe_observation' }, input);
+  assert.equal(plan.direct_result_kind, 'player_safe_observation');
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+});
+
+test('source grounding repair gets a focused semantic instruction', async () => {
+  let prompt;
+  const input = request({ remaining_intent: 'Связать верёвкой доски.',
+    player_safe_state: { position: { location_ref: 'shore' } } });
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) { prompt = call.messages[0].content;
+      return { output: output() }; }
+  } });
+  await model(input, { original_output: output(), structural_errors: [{
+    path: '$.operations.0.action_production.source_refs',
+    code: 'source_semantic_grounding', message: 'missing material ref'
+  }] });
+  assert.match(prompt,
+    /Required source repair: discard action_production[\s\S]*one domain_request request_discovery[\s\S]*query naming only the missing ordinary material[\s\S]*Preserve the complete original action verbatim[\s\S]*Связать верёвкой доски/u);
 });

@@ -32,6 +32,7 @@ function plan(request, extra = {}) {
     resolution: 'direct', goal_result: 'not_achieved',
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
     operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'direct_step', reason: 'видимая реальная попытка', ...extra
   };
 }

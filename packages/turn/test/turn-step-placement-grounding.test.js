@@ -27,7 +27,8 @@ function plan(entity_ref, relation) {
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
     operations: [{ op: 'move_entity', entity_ref,
       placement: { relation, target_ref: actor } }], check: null,
-    continuation: null, clarification: null, reason_code: 'move',
+    continuation: null, clarification: null, direct_result_kind: null,
+    reason_code: 'move',
     reason: 'Вещь перемещается.'
   };
 }
@@ -64,13 +65,16 @@ test('structural repair repeating an unknown ref fails technically',
     assert.equal(calls, 2);
   });
 
-test('player-safe observation scope is structural and write-free', () => {
+test('direct result kind is structural and write-free', () => {
   const observation = { ...plan('cloth', 'worn_by'), operations: [],
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-    observation_scope: 'player_safe_existing_facts' };
+    direct_result_kind: 'player_safe_observation' };
   assert.equal(validateTurnStepPlan(observation, { request }).ok, true);
+  assert.equal(validateTurnStepPlan({ ...observation,
+    direct_result_kind: 'no_state_gesture' }, { request }).ok, true);
   for (const invalid of [
-    { ...observation, observation_scope: 'weather' },
+    { ...observation, direct_result_kind: null },
+    { ...observation, direct_result_kind: 'weather' },
     { ...observation, goal_result: 'not_achieved' },
     { ...observation, activity: { owner: 'semantic', duration_class: 'brief',
       effort: 'none' } },

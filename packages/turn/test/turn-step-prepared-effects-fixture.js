@@ -221,7 +221,7 @@ export function genericPlan(request) {
 }
 
 export function plan(request, overrides) {
-  return {
+  const value = {
     schema: 'turn_step_plan_v1',
     request_id: request.request_id,
     committed_state_version: request.committed_state_version,
@@ -232,9 +232,20 @@ export function plan(request, overrides) {
     resolution: 'direct', goal_result: 'achieved',
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
     operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'test_prepared_effect', reason: 'test',
     ...overrides
   };
+  if (!Object.hasOwn(overrides ?? {}, 'direct_result_kind')
+      && value.resolution === 'direct'
+      && ['achieved', 'partially_achieved'].includes(value.goal_result)
+      && value.activity?.duration_class === 'moment'
+      && value.activity?.effort === 'none'
+      && value.operations.length === 0 && value.check === null
+      && value.clarification === null) {
+    value.direct_result_kind = 'no_state_gesture';
+  }
+  return value;
 }
 
 export function available() {

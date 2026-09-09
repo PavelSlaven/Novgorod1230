@@ -51,7 +51,7 @@ test('turn step model sends the validated request to the isolated planner role',
     'skill proficiency is not',
     'no_experience still permits an attempt',
     'never report that the command or skill is missing',
-    'New physical detail stays focused perception',
+    'new physical detail',
     'create an absent referent',
     'move the actor for make_believe',
     'Classify interpretation.adaptation by the stated goal'
@@ -104,6 +104,7 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
         target_refs: [input.player_safe_state.position.location_ref],
         query: input.remaining_intent }], check: mapping.check,
       continuation: null, clarification: null,
+      direct_result_kind: null,
       reason_code: 'ordinary_discovery', reason: 'Ищу обычную деталь.'
     }, { request: input }).ok, true);
     assert.match(prompt, /ordinary_resolution\.discovery_available is true[\s\S]*exact code-owned authority[\s\S]*focused inspect or search[\s\S]*unspecified ordinary physical object, material, resource, or local physical detail[\s\S]*before and over[\s\S]*focused_ordinary_discovery exactly[\s\S]*exactly one request_discovery[\s\S]*discovery_kind inspect or search[\s\S]*actor_ref from request\.actor[\s\S]*one current visible target_ref[\s\S]*query copied verbatim from request\.remaining_intent[\s\S]*target_refs has one ref/u);
@@ -239,7 +240,7 @@ test('turn step planner prompt preserves only compound intent outside capability
   assert.match(prompt,
     /direct preparation and action_production cannot share one plan[\s\S]*explicit requested destination or spatial relation[\s\S]*no exact player-safe target ref[\s\S]*source's committed placement[\s\S]*preserve it as unexecuted continuation[\s\S]*item-local[\s\S]*never placement, attachment, holder, wearer, destination, or relocation[\s\S]*ordered explicit relocation, transformation, and placement[\s\S]*first move_entity now[\s\S]*each later placement again needs move_entity/u);
   assert.match(prompt,
-    /Direct empty achieved is only for player-safe observation[\s\S]*reviewing supplied gear[\s\S]*qualified assessment of sensory facts[\s\S]*New physical detail stays focused perception/u);
+    /Direct empty achieved or partially_achieved[\s\S]*reviewing gear or sensory facts[\s\S]*new physical detail/u);
   assert.match(prompt, /operation choice covers the intent[\s\S]*choice_id[\s\S]*Final continuation override for direct reality_limited or make_believe[\s\S]*stated action, purpose, manner, result, or qualifier[\s\S]*same grounding, not continuation[\s\S]*independently executable without that premise[\s\S]*every later sentence[\s\S]*continuation to null/u);
 });
 

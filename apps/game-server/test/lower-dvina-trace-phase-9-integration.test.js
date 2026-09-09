@@ -392,7 +392,8 @@ function plan(request, ids) {
     resolution: 'domain_request', goal_result: 'pending',
     activity: { owner: 'domain', duration_class: null, effort: null },
     operations: [operation], check: null, continuation: null,
-    clarification: null, reason_code: 'phase9_step', reason: 'approved owner' };
+    clarification: null, direct_result_kind: null,
+    reason_code: 'phase9_step', reason: 'approved owner' };
 }
 function activity(actor, targetRefs) { return { op: 'request_activity',
   actor_ref: actor, activity_kind: 'other', target_refs: targetRefs,

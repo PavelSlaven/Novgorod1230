@@ -28,7 +28,8 @@ test('a second ordinary plan becomes a player boundary without partial apply',
         check: null, continuation: {
           remaining_intent: request.step_index === 1
             ? 'искать дальше' : 'искать ещё дальше', depends_on_refs: [] },
-        clarification: null, reason_code: 'test', reason: 'test'
+        clarification: null, direct_result_kind: null,
+        reason_code: 'test', reason: 'test'
       }),
       projectPlayerSafeState: async ({ working_projection }) =>
         working_projection,

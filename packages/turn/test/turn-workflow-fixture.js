@@ -176,6 +176,7 @@ export function turnStepPlan(request, overrides = {}) {
     check: null,
     continuation: null,
     clarification: null,
+    direct_result_kind: null,
     reason_code: 'test_step',
     reason: 'Code-owned integration test plan.',
     ...overrides

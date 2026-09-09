@@ -1,12 +1,17 @@
-export function lowerDvinaTraceDirectObservationChanges(input) {
+export function lowerDvinaTraceDirectResultChanges(input) {
   const plans = input?.mode_resolution?.decision_trace?.step_traces ?? [];
-  return plans.some(({ approved_plan: plan, applied }) =>
+  const kinds = new Set(plans.filter(({ approved_plan: plan, applied }) =>
     applied === true && plan?.resolution === 'direct'
       && plan.goal_result !== 'not_achieved'
-      && plan.observation_scope === 'player_safe_existing_facts'
       && Array.isArray(plan.operations) && plan.operations.length === 0
-      && plan.check === null)
-    ? ['Наблюдение завершено по уже доступным вам признакам.'] : [];
+      && plan.check === null).map(({ approved_plan }) =>
+        approved_plan.direct_result_kind));
+  return [
+    ...(kinds.has('player_safe_observation')
+      ? ['Наблюдение завершено по уже доступным вам признакам.'] : []),
+    ...(kinds.has('no_state_gesture')
+      ? ['Вы завершили простой жест.'] : [])
+  ];
 }
 
 export function lowerDvinaTraceVisibleSceneItems(items, position, actorId) {

@@ -22,6 +22,7 @@ export function fixture({ direct = false, clarification = false, check = false,
       trace.approved_plan.goal_result = 'pending';
       trace.approved_plan.activity = {
         owner: 'domain', duration_class: null, effort: null };
+      trace.approved_plan.direct_result_kind = null;
       trace.approved_plan.operations = [{ op: 'request_discovery',
         actor_ref: 'actor-1', discovery_kind: 'inspect',
         target_refs: ['npc:fisher'], query: 'присмотреться' }];

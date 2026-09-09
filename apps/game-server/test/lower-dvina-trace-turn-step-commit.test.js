@@ -509,6 +509,7 @@ function genericPlan(request) {
         'failure_with_consequence', 'severe_failure'
       ].map((band) => [band, outcome])) },
     continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'generic_check', reason: 'production policy route test'
   };
 }

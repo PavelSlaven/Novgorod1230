@@ -32,4 +32,6 @@ test('turn step planner routes observed-evidence comparison before ordinary disc
     });
     assert.match(prompt,
       /observed_evidence_inspection\.semantic_grounding_available[\s\S]*before focused_ordinary_discovery[\s\S]*never target the current location[\s\S]*no new hidden conclusion/u);
+    assert.match(prompt,
+      /every physical fact or object being inspected or compared[\s\S]*comparison counterpart or requested detail is not supplied[\s\S]*query naming only that missing referent[\s\S]*complete comparison in continuation/u);
   });

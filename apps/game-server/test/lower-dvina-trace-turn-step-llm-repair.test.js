@@ -362,7 +362,9 @@ test('semantic repair cannot reselect the rejected exact operation', async () =>
   }] });
   assert.match(prompt, /Code-owned exact operation choices are:\n\[\]/u);
   assert.match(prompt,
-    /operation_semantic_grounding[\s\S]*rejected scope discovery[\s\S]*observed_evidence_inspection[\s\S]*exact supplied candidate refs/u);
+    /operation_semantic_grounding[\s\S]*every compared referent[\s\S]*observed_evidence_inspection[\s\S]*exact supplied candidate refs/u);
+  assert.match(prompt,
+    /comparison counterpart or requested detail is missing[\s\S]*focused_ordinary_discovery[\s\S]*missing referent[\s\S]*complete comparison in continuation/u);
 });
 
 test('mismatched echoed operation cannot silently replace selected choice',

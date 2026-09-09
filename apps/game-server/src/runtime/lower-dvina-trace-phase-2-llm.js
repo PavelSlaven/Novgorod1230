@@ -200,7 +200,7 @@ export function assembleTurnStepPlan(choice, request,
     ? structuredClone(semantic.operations)
     : selected
     ? [structuredClone(selected.operation)]
-    : semantic.operation_choice == null && !copiedExactOperation
+    : semantic.operation_choice == null
       ? structuredClone(semantic.operations) : undefined);
   const resolution = operations?.some(({ op }) => isDomainStepOperation(op))
     ? 'domain_request' : semantic.resolution;
@@ -234,7 +234,7 @@ export function assembleTurnStepPlan(choice, request,
     clarification: semantic.clarification ?? null,
     reason_code: semantic.reason_code,
     reason: semantic.reason,
-    ...(mismatchedSelectedOperations ? {
+    ...(mismatchedSelectedOperations || copiedExactOperation ? {
       operation_choice: semantic.operation_choice
     } : {})
   };

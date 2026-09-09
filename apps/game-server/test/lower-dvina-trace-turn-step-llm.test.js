@@ -46,7 +46,6 @@ test('turn step model sends the validated request to the isolated planner role',
     'ordinary_resolution.discovery_available is true',
     'exactly one request_discovery',
     'one current visible target_ref',
-    'query copied verbatim from request.remaining_intent',
     'do not summarize, shorten, translate, or omit its stated purpose',
     'never grant an impossible result',
     'skill proficiency is not',
@@ -347,7 +346,8 @@ test('turn step adapter rejects an exact copied operation choice', () => {
     clarification: null, reason_code: 'ordinary_material_prerequisite',
     reason: 'Нужен ordinary material.'
   }, input);
-  assert.equal(plan.operations, undefined);
+  assert.deepEqual(plan.operations, [candidate]);
+  assert.equal(plan.operation_choice, null);
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
 });
 

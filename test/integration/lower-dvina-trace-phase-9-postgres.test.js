@@ -317,7 +317,8 @@ function phase9Plan(request, ids) {
     resolution: 'domain_request', goal_result: 'pending',
     activity: { owner: 'domain', duration_class: null, effort: null },
     operations: [operation], check: null, continuation: null,
-    clarification: null, reason_code: 'phase9_step', reason: 'approved owner' };
+    clarification: null, direct_result_kind: null,
+    reason_code: 'phase9_step', reason: 'approved owner' };
 }
 
 async function seedPostCombatPhase9State(pool, partyId, ids) {

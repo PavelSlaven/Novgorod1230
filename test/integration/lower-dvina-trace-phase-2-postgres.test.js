@@ -917,6 +917,7 @@ function actionProductionPlan(request, sourceRef) {
           }
         }, output_class: 'ordinary_mundane' }
     }], check: null, continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'partial_authored_source_probe',
     reason: 'От источника отделяется самостоятельная часть.'
   };
@@ -939,6 +940,7 @@ function moveDetachedA1OutputTestModel(request) {
     operations: [{ op: 'move_entity', entity_ref: output.item_id,
       placement: { relation: 'held_by', target_ref: request.actor.actor_id } }],
     check: null, continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'reuse_detached_output',
     reason: 'Сохранённый предмет перемещается обычным owner.'
   };
@@ -980,6 +982,7 @@ function actorItemMoveTestModel(request) {
       }
     }],
     check: null, continuation: null, clarification: null,
+    direct_result_kind: null,
     reason_code: 'approved_item_move',
     reason: 'Обычное перемещение видимого предмета.'
   };

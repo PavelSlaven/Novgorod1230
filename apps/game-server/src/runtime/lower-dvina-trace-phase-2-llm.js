@@ -1,7 +1,11 @@
 import { isDeepStrictEqual } from 'node:util';
 import { isDomainStepOperation } from '@rus/turn';
 import { serverError } from '../errors.js';
-import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS } from './lower-dvina-trace-phase-2-llm-prompts.js';
+import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE } from './lower-dvina-trace-phase-2-llm-prompts.js';
+import { observedEvidencePrompts } from
+  './lower-dvina-trace-phase-2-turn-step-perception-prompt.js';
+import { turnStepPlanMappings } from
+  './lower-dvina-trace-turn-step-plan-mappings.js';
 import { assembleNpcConversationPlan, assemblePlayerConversationPlan } from './lower-dvina-trace-conversation-assembly.js';
 import { turnStepOperationChoices } from
   './lower-dvina-trace-turn-step-operation-choices.js';
@@ -90,6 +94,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             ...visibleConversationExamples,
             `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${turnStepPlanMappings(request)}`,
             ...TURN_STEP_PLANNER_INSTRUCTIONS,
+            ...observedEvidencePrompts(request, repairing),
             ...wkClosure(input),
             'Do not infer a fantastical referent from player intent: it is absent unless player-safe state identifies it as a visible entity or capability.',
             'Classify interpretation.adaptation by the stated goal, not whether the actor can pantomime it. First: an absent fantastical required referent means make_believe. Otherwise: real or ordinary referents with a physically limited action mean reality_limited. Otherwise: literal. An ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery/domain flow.',
@@ -144,19 +149,6 @@ function semanticTurnStepExample() {
   const { schema, request_id, committed_state_version, working_revision,
     step_index, ...semantic } = JSON.parse(TURN_STEP_PLAN_EXAMPLE);
   return JSON.stringify({ ...semantic, operation_choice: null });
-}
-
-function turnStepPlanMappings(request) {
-  const mappings = JSON.parse(TURN_STEP_PLAN_MAPPINGS);
-  if (request.player_safe_state?.ordinary_resolution
-      ?.discovery_available !== true) {
-    delete mappings.focused_ordinary_discovery;
-    delete mappings.ordinary_material_prerequisite;
-  }
-  if (request.player_safe_state?.ordinary_resolution
-      ?.scene_seed_available === true) delete mappings.visible_general_look;
-  else delete mappings.ordinary_scene_seed;
-  return JSON.stringify(mappings);
 }
 
 function activeConversationChoiceExample(request, choices) {

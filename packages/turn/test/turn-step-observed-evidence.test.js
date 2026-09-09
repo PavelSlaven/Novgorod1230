@@ -20,19 +20,38 @@ function preflight() {
     committedState: {}, services: {} });
 }
 
-test('only player-observed evidence receives the bounded owner', () => {
+test('only code-projected observed evidence receives the bounded owner', () => {
   const validate = preflight();
-  const request = { player_safe_state: { knowledge: [{
-    fact_id: 'fact:charred-post-mark', knowledge_state: 'observed'
-  }] } };
+  const request = { player_safe_state: {
+    knowledge: [{ fact_id: 'fact:raw-observation',
+      knowledge_state: 'observed' }],
+    observed_evidence_inspection: { semantic_grounding_available: true,
+      candidates: [
+        { fact_ref: 'fact:charred-post-mark', text: 'На столбе видна отметина.' },
+        { fact_ref: 'fact:worn-rope-mark', text: 'На канате заметен износ.' }
+      ] }
+  } };
   assert.doesNotThrow(() => validate({ plan: {
     resolution: 'domain_request', operations: [
-      operation('fact:charred-post-mark')], check: null
+      { ...operation('fact:charred-post-mark'),
+        target_refs: ['fact:charred-post-mark', 'fact:worn-rope-mark'] }
+    ], check: null
   }, request, prepared_chain_context: null }));
+  for (const targetRef of ['fact:unobserved-mark', 'fact:raw-observation']) {
+    assert.throws(() => validate({ plan: {
+      resolution: 'domain_request', operations: [operation(targetRef)],
+      check: null
+    }, request, prepared_chain_context: null }), {
+      code: 'TURN_STEP_PLAN_INVALID'
+    });
+  }
   assert.throws(() => validate({ plan: {
-    resolution: 'domain_request', operations: [
-      operation('fact:unobserved-mark')], check: null
-  }, request, prepared_chain_context: null }), {
+    resolution: 'domain_request', operations: [operation('fact:malformed')],
+    check: null
+  }, request: { player_safe_state: { observed_evidence_inspection: {
+    semantic_grounding_available: true,
+    candidates: [{ fact_ref: 'fact:malformed', text: '' }]
+  } } }, prepared_chain_context: null }), {
     code: 'TURN_STEP_PLAN_INVALID'
   });
   assert.equal(resolveObservedEvidenceInspection({
@@ -49,9 +68,11 @@ test('evidence limitation reaches normal turn presentation', async () => {
       matches: () => false
     } },
     playerSafeStateProjector: async () => ({
-      actor: { actor_ref: 'party-1' }, player_safe_state: { knowledge: [{
-        fact_id: 'fact:worn-rope-mark', knowledge_state: 'observed'
-      }] }
+      actor: { actor_ref: 'party-1' }, player_safe_state: {
+        observed_evidence_inspection: { semantic_grounding_available: true,
+          candidates: [{ fact_ref: 'fact:worn-rope-mark',
+            text: 'На канате заметен износ.' }] }
+      }
     }),
     turnStepModel: async (request) => turnStepPlan(request, {
       resolution: 'domain_request', goal_result: 'pending',

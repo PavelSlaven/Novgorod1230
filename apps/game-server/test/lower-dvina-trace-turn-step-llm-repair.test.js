@@ -342,7 +342,12 @@ test('semantic repair cannot reselect the rejected exact operation', async () =>
     discovery_kind: 'inspect', target_refs: ['location:wreck'],
     query: 'Inspect authored wreck evidence.' };
   const ordinary = { ...operation, query: 'Inspect ordinary boards.' };
-  const input = request({ available_domain_operations: [operation] });
+  const input = request({ available_domain_operations: [operation],
+    player_safe_state: { observed_evidence_inspection: {
+      semantic_grounding_available: true,
+      candidates: [{ fact_ref: 'fact:charred-post-mark',
+        text: 'На столбе видна отметина.' }]
+    } } });
   let prompt;
   const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
     async run(call) {
@@ -356,6 +361,8 @@ test('semantic repair cannot reselect the rejected exact operation', async () =>
     rejected_operation: operation
   }] });
   assert.match(prompt, /Code-owned exact operation choices are:\n\[\]/u);
+  assert.match(prompt,
+    /operation_semantic_grounding[\s\S]*rejected scope discovery[\s\S]*observed_evidence_inspection[\s\S]*exact supplied candidate refs/u);
 });
 
 test('mismatched echoed operation cannot silently replace selected choice',

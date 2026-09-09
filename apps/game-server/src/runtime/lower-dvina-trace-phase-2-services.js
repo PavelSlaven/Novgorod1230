@@ -103,6 +103,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
       partyId,
       playerSafeStateProjector,
+      scenePresentation,
       workingProjectionAuthority
     });
   const actionProductionOwner =

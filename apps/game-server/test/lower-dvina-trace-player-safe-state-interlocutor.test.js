@@ -54,3 +54,31 @@ test('active interlocutor stays planner-visible but out of initial working proje
   assert.doesNotThrow(() => projectLowerDvinaTracePlayerSafeState({ committed_state: committedState,
     working_projection: projected.initial_working_projection, actor_id: 'mikula' }));
 });
+
+test('planner receives exact player-safe presentations for observed evidence',
+  async () => {
+    const projector = createLowerDvinaTraceTurnStepPlayerSafeProjector({
+      scenePresentation: { fact_presentations: [
+        { fact_ref: 'fact:boot-track', text: 'В песке виден след сапога.',
+          source_basis: 'committed_player_visible_observation',
+          perception_requirement: 'committed_observation' },
+        { fact_ref: 'fact:hidden-mark', text: 'Скрытая отметина.',
+          source_basis: 'committed_player_visible_observation',
+          perception_requirement: 'committed_observation' }
+      ] },
+      playerSafeStateProjector: async () => ({ actor: {},
+        player_safe_state: { knowledge: [
+          { fact_id: 'fact:boot-track', knowledge_state: 'observed' },
+          { fact_id: 'fact:hidden-mark', knowledge_state: 'closed' },
+          { fact_id: 'fact:unpresented', knowledge_state: 'observed' }
+        ] } })
+    });
+    const result = await projector({ committed_state: {} });
+    assert.deepEqual(result.player_safe_state.observed_evidence_inspection, {
+      semantic_grounding_available: true,
+      candidates: [{ fact_ref: 'fact:boot-track',
+        text: 'В песке виден след сапога.' }]
+    });
+    assert.equal(JSON.stringify(result.player_safe_state)
+      .includes('Скрытая отметина.'), false);
+  });

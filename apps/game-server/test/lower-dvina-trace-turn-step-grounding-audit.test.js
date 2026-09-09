@@ -8,6 +8,9 @@ const request = {
   player_safe_state: { actor_id: 'actor:1', position: { position_id: 'shore' },
     items: [{ item_id: 'knife:1', category_id: 'personal_utility_knife' }],
     current_visible_context: { sensory_details: ['На берегу лежат доски.'] },
+    observed_evidence_inspection: { semantic_grounding_available: true,
+      candidates: [{ fact_ref: 'fact:boot-track',
+        text: 'В песке виден след сапога.' }] },
     available_domain_operation_grounding: [{
       operation: { op: 'request_discovery', query: 'authored evidence' },
       semantic_scope: { authority: 'authored_evidence_investigation',
@@ -75,6 +78,9 @@ test('turn-step grounding audit returns repairable source errors', async () => {
       assert.equal(JSON.parse(call.messages[1].content).player_safe_state
         .available_domain_operation_grounding[0].semantic_scope.authority,
       'authored_evidence_investigation');
+      assert.equal(JSON.parse(call.messages[1].content).player_safe_state
+        .observed_evidence_inspection.candidates[0].fact_ref,
+      'fact:boot-track');
       return { output: { pass: false,
         concerns: [{ kind: 'source_semantic_grounding' }] } };
     } }

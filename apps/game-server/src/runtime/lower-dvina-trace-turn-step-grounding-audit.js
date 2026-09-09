@@ -117,6 +117,8 @@ function groundingState(state = {}) {
     current_visible_context: state.current_visible_context ?? null,
     visible_context: state.visible_context ?? null,
     ordinary_resolution: state.ordinary_resolution ?? null,
+    observed_evidence_inspection:
+      state.observed_evidence_inspection ?? null,
     available_domain_operation_grounding:
       state.available_domain_operation_grounding ?? []
   };

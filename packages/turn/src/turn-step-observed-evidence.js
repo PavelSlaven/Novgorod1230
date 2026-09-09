@@ -1,17 +1,21 @@
 import { deepFreeze } from '@rus/kernel';
-import { isCurrentVisibleDiscoveryRef } from './turn-step-ordinary-discovery.js';
-
 export function isObservedEvidenceInspectionInScope({ operation,
   playerSafeState }) {
-  const target = operation?.target_refs?.length === 1
-    ? operation.target_refs[0] : null;
+  const targets = operation?.target_refs;
+  const capability = playerSafeState?.observed_evidence_inspection;
+  const candidates = capability?.candidates;
+  const available = new Set(capability?.semantic_grounding_available === true
+      && Array.isArray(candidates) && candidates.every((entry) =>
+        typeof entry?.fact_ref === 'string'
+        && typeof entry.text === 'string' && entry.text.trim().length > 0)
+    ? candidates.map(({ fact_ref: ref }) => ref) : []);
   return operation?.op === 'request_discovery'
     && operation.discovery_kind === 'inspect'
-    && typeof target === 'string'
+    && Array.isArray(targets) && targets.length > 0
+    && targets.every((target) => typeof target === 'string'
+      && available.has(target))
     && typeof operation.query === 'string' && operation.query.trim().length > 0
-    && !isCurrentVisibleDiscoveryRef(playerSafeState, target)
-    && (playerSafeState?.knowledge ?? []).some((entry) =>
-      entry?.fact_id === target && entry.knowledge_state === 'observed');
+    && available.size === candidates?.length;
 }
 
 export function resolveObservedEvidenceInspection(execution) {

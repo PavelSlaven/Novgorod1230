@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
-import { isDomainStepOperation } from '@rus/turn';
+import { isDomainStepOperation, isOrdinaryDiscoveryInScope } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE } from './lower-dvina-trace-phase-2-llm-prompts.js';
 import { observedEvidencePrompts } from
@@ -199,12 +199,16 @@ export function assembleTurnStepPlan(choice, request,
   const copiedExactOperation = semantic.operation_choice == null
     && semantic.operations?.some((operation) => operationChoices.some(
       (choice) => isDeepStrictEqual(operation, choice.operation)));
-  const operations = bindActionProductionCarrierRefs(mismatchedSelectedOperations
+  const selectedOperations = mismatchedSelectedOperations
     ? structuredClone(semantic.operations)
     : selected
     ? [structuredClone(selected.operation)]
     : semantic.operation_choice == null
-      ? structuredClone(semantic.operations) : undefined);
+      ? structuredClone(semantic.operations) : undefined;
+  const ordinaryDiscovery = canonicalOrdinaryDiscovery({ operations:
+    selectedOperations, semantic, request, copiedExactOperation });
+  const operations = bindActionProductionCarrierRefs(
+    ordinaryDiscovery?.operations ?? selectedOperations);
   const resolution = operations?.some(({ op }) => isDomainStepOperation(op))
     ? 'domain_request' : semantic.resolution;
   const domainRequest = resolution === 'domain_request';
@@ -233,7 +237,8 @@ export function assembleTurnStepPlan(choice, request,
       : semantic.activity,
     operations,
     check: semantic.check ?? null,
-    continuation: semantic.continuation ?? null,
+    continuation: ordinaryDiscovery == null
+      ? semantic.continuation ?? null : ordinaryDiscovery.continuation,
     clarification: semantic.clarification ?? null,
     direct_result_kind: semantic.direct_result_kind ?? null,
     reason_code: semantic.reason_code,
@@ -242,6 +247,36 @@ export function assembleTurnStepPlan(choice, request,
       operation_choice: semantic.operation_choice
     } : copiedExactOperation ? { copied_operation_choice: true } : {})
   };
+}
+
+function canonicalOrdinaryDiscovery({ operations, semantic, request,
+  copiedExactOperation }) {
+  if (semantic.operation_choice != null || copiedExactOperation
+      || semantic.check != null || operations?.length !== 1
+      || operations[0]?.target_refs?.length !== 1
+      || !isOrdinaryDiscoveryInScope({ operation: operations[0],
+        playerSafeState: request.player_safe_state })) return null;
+  if (semantic.continuation != null
+      || normalized(operations[0].query)
+        !== normalized(request.root_player_action)
+      || !strictPriorIntent(request.root_player_action,
+        request.remaining_intent)) return null;
+  return { operations: [{ ...operations[0], query: request.remaining_intent }],
+    continuation: null };
+}
+
+function strictPriorIntent(root, remaining) {
+  const whole = normalized(root);
+  const tail = normalized(remaining);
+  if (whole == null || tail == null || whole === tail || !whole.endsWith(tail)) {
+    return false;
+  }
+  return !/[\p{L}\p{N}]/u.test(whole.slice(0, -tail.length).at(-1));
+}
+
+function normalized(value) {
+  return typeof value === 'string' ? value.normalize('NFKC').trim()
+    .replace(/\s+/gu, ' ').toLocaleLowerCase('ru-RU') : null;
 }
 
 function bindActionProductionCarrierRefs(operations) {

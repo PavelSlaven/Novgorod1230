@@ -6,6 +6,8 @@ import {
 } from '@rus/turn';
 import { assembleTurnStepPlan, createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
+  '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
 test('turn step model sends the validated request to the isolated planner role', async () => {
@@ -115,6 +117,77 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
   assert.match(prompt, /Every material physically incorporated[\s\S]*action_production is forbidden[\s\S]*Never smuggle an unreferenced material/u);
   }
 });
+
+test('later generic ordinary discovery drops only an exact stale root query',
+  async () => {
+    const rootIntent = 'Найти среди обломков сухой материал, прежде чем идти через кусты.';
+    const remainingIntent = 'прежде чем идти через кусты.';
+    const input = request({ root_player_action: rootIntent,
+      remaining_intent: remainingIntent, step_index: 2, working_revision: 1,
+      completed_steps: [{ step_index: 1, summary: 'Поиск выполнен.' }],
+      player_safe_state: {
+        position: { location_ref: 'shore' }, ordinary_resolution: {
+          discovery_available: true, container_resolution_available: false,
+          scene_seed_available: true
+        }
+      } });
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: {
+        interpretation: { player_goal: rootIntent,
+          grounded_attempt: remainingIntent, adaptation: 'literal' },
+        resolution: 'domain_request', operation_choice: null,
+        operations: [{ op: 'request_discovery', actor_ref: 'actor_mikula',
+          discovery_kind: 'search', target_refs: ['shore'],
+          query: rootIntent }], check: null, continuation: null,
+        clarification: null,
+        direct_result_kind: null, reason_code: 'ordinary_discovery',
+        reason: 'Повторный carrier.'
+      } }; }
+    } });
+    const validateGrounding =
+      createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner: {
+        async run() { throw new Error('generic O1 must not call auditor'); }
+      } });
+    for (const repairContext of [null, {
+      schema: 'turn_step_repair_context_v1', attempt: 2,
+      original_output: {}, structural_errors: [{
+        path: '$.operations.0.query', code: 'ordinary_discovery_query_identity',
+        message: 'must equal the current remaining_intent'
+      }]
+    }]) {
+      const plan = await model(input, repairContext);
+      assert.equal(plan.operations[0].query, remainingIntent);
+      assert.equal(plan.continuation, null);
+      const validation = validateTurnStepPlan(plan, { request: input });
+      assert.equal(validation.ok, true, JSON.stringify(validation.errors));
+      assert.equal(await validateGrounding({ plan, request: input,
+        resolved_domain_operations: [{ path: '$.operations.0',
+          owner_kind: 'ordinary_discovery' }] }), true);
+    }
+    const unsafe = assembleTurnStepPlan({
+      interpretation: { player_goal: rootIntent,
+        grounded_attempt: 'Найти сухую ветку.', adaptation: 'literal' },
+      resolution: 'domain_request', operation_choice: null,
+      operations: [{ op: 'request_discovery', actor_ref: 'actor_mikula',
+        discovery_kind: 'search', target_refs: ['shore'],
+        query: 'сухая ветка' }], check: null, continuation: {
+        remaining_intent: 'Потом идти.', depends_on_refs: []
+      }, clarification: null, direct_result_kind: null,
+      reason_code: 'ordinary_discovery', reason: 'Ищу ветку.'
+    }, { ...input, root_player_action:
+      'Найти сухую ветку. Разжечь огонь. Потом идти.', remaining_intent:
+      'Найти сухую ветку. Разжечь огонь. Потом идти.', step_index: 1 });
+    assert.equal(unsafe.operations[0].query, 'сухая ветка');
+    assert.equal(unsafe.continuation.remaining_intent, 'Потом идти.');
+    await assert.rejects(validateGrounding({ plan: unsafe,
+      request: { ...input, root_player_action:
+        'Найти сухую ветку. Разжечь огонь. Потом идти.', remaining_intent:
+        'Найти сухую ветку. Разжечь огонь. Потом идти.', step_index: 1 },
+      resolved_domain_operations: [{ path: '$.operations.0',
+        owner_kind: 'ordinary_discovery' }] }), {
+      code: 'TURN_STEP_PLAN_INVALID'
+    });
+  });
 
 test('turn step planner routes an exposed ambient portion through its capability ref', async () => {
   const capabilityRef = 'capability:alluvial-silt-portion-v9';

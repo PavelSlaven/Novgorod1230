@@ -1,4 +1,5 @@
 import { TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST, TRACE_REVISION33_DEFINITION_DIGEST } from './lower-dvina-trace-revision-33-bundle.js';
+import { TRACE_SCENE_PRESENTATION_V3_DIGEST } from './lower-dvina-trace-scene-presentation.js';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -17,9 +18,10 @@ const HISTORICAL_PINS = Object.freeze({
 });
 const OPENING_PINS = Object.freeze({
   ...HISTORICAL_PINS,
-  manifest: '6c1eb16fff0eabd32ce836184b2cb14b6de5f59a65f4c95a4198397b8bfe630a',
-  binding: '2b853df7993671afaea9cfdad64647bf00b8eff89307854b06cad91f602c8b6c',
+  manifest: '23fa6c3bc5b2716b148a69c22bbbb6efdac9e88ebd068fe58782067a73e8aa6c',
+  binding: '3311695c856a1d25a981838bc40fb38b26389ce274c74c9574481e1cf7635ffd',
   definition: TRACE_REVISION33_DEFINITION_DIGEST,
+  presentation: TRACE_SCENE_PRESENTATION_V3_DIGEST,
   priorBinding: HISTORICAL_PINS.binding
 });
 
@@ -45,7 +47,8 @@ async function loadPublication({
     binding: `${ROOT}/phase-1b-v${publicationRevision}/publication-binding.json`,
     phase1a: `${ROOT}/phase-1a-v${publicationRevision === 28 ? 24 : 23}/manifest.json`,
     definition: `${ROOT}/phase-m${publicationRevision === 28 ? 21 : 20}-content/definition.json`,
-    presentation: `${ROOT}/phase-1b-v26/scene-presentation-v2.json`,
+    presentation: publicationRevision === 28 ? `${ROOT}/phase-1b-v28/scene-presentation-v3.json`
+      : `${ROOT}/phase-1b-v26/scene-presentation-v2.json`,
     prior: `${ROOT}/phase-1b-v${publicationRevision - 1}/publication-binding.json`,
     compatibility: `${ROOT}/phase-1b-v22/publication-binding.json`
   };

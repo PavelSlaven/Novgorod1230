@@ -26,6 +26,7 @@ import { applyLowerDvinaTraceWorkingProjection } from
   './lower-dvina-trace-player-safe-working.js';
 import { projectActiveConversationInterlocutor } from
   '@rus/visibility-knowledge-memory';
+import { perceivedRoutesForState } from './lower-dvina-trace-scene-presentation.js';
 import { projectLowerDvinaTraceVisibleNpcDetails } from
   './lower-dvina-trace-player-safe-npc-details.js';
 export { projectLowerDvinaTraceVisibleNpcDetails } from
@@ -35,7 +36,7 @@ export function projectLowerDvinaTracePlayerSafeState({
   committed_state: committedState,
   working_projection: workingProjection,
   working_projection_authority: workingProjectionAuthority,
-  actor_id: actorId
+  actor_id: actorId, scene_presentation: scenePresentation = null
 } = {}) {
   assertProjectionInput(committedState, actorId);
   const profile = committedState.player_profile ?? {};
@@ -51,6 +52,7 @@ export function projectLowerDvinaTracePlayerSafeState({
     { path: 'visible_context_package' }
   );
   const npcs = projectNpcs(committedState.npcs, { position });
+  const perceivedRoutes = perceivedRoutesForState({ scenePresentation, state: committedState });
   const visibleNpcIds = new Set((currentVisibleContext?.visible_npc ?? [])
     .flatMap(({ entity_ref: ref }) => ref?.entity_kind === 'npc'
       ? [ref.entity_id] : []).filter(Boolean));
@@ -93,7 +95,8 @@ export function projectLowerDvinaTracePlayerSafeState({
     npcs,
     interactions: projectInteractions(committedState.interactions),
     routes: projectRoutes(committedState.routes),
-    available_routes: projectRoutes(committedState.available_routes),
+    available_routes: projectRoutes(perceivedRoutes.length === 0 ? committedState.available_routes
+      : [...(committedState.available_routes ?? []), ...perceivedRoutes]),
     route_history: projectRouteHistory(committedState.route_history),
     route_knowledge: projectRouteKnowledge(committedState.route_knowledge),
     knowledge: projectKnowledge([...(profile.knowledge?.initial_records ?? []),

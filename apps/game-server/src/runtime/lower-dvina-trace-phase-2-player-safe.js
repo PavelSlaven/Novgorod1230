@@ -34,6 +34,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     const committedState = structuredClone(input.committed_state);
     let projected = await playerSafeStateProjector({
       ...input,
+      scene_presentation: scenePresentation,
       committed_state: committedState,
       working_projection_authority: workingProjectionAuthority
     });

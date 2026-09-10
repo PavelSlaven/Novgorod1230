@@ -246,7 +246,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
           skills: player.skill_profile_snapshot
         },
         body: { profile_ref: player.body_profile_ref, health: Number(player.health), energy: Number(player.energy), satiety: Number(player.satiety) },
-        position,
+        position: { ...position, location_ref: startSpatial.node_state.location_profile_ref },
         prepared_scenes: payload.immediate.prepared_scenes ?? [],
         ...(payload.first_entry_preparation == null ? {} : {
           first_entry_preparation: {

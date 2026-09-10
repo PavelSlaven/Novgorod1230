@@ -33,13 +33,14 @@ export function createTracePhase3MovementCommand({
   return {
     command_id: 'lower_dvina_trace.follow_path_to_fishing_camp',
     option_id: ids.moveOption,
-    label: 'Пройти по тропе к рыбацкому стану',
+    label: contracts.routePresentation?.label ?? 'Пройти по тропе к рыбацкому стану',
     target_id: ids.campLocation,
     approved_record: contracts.activityPins[0],
     preconditions,
     expected_cost: { kind: 'exact_time', value: 8 },
     known_risks: [],
-    reason_visible_to_actor: 'От берега к стану ведёт заметная местная тропа.',
+    reason_visible_to_actor: contracts.routePresentation?.label
+      ?? 'От берега к стану ведёт заметная местная тропа.',
     mode: mode('movement_route', [
       'movement', 'route', 'time_progression'
     ]),

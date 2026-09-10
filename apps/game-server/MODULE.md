@@ -412,3 +412,17 @@ knowledge, not objective truth or evidence of current presence. Safe summaries
 remain available to planner, narration and Character after reload. Textless
 acquired fact references require their own approved presentation; this path does
 not reconstruct hidden facts or claim complete Phase 9 knowledge delivery.
+
+Current scene presentation supplies perceived exits from the existing pinned
+movement bindings and source location. A visible path does not disclose its
+destination name, exact duration, safety or unseen occupants. The same safe
+route projection feeds planner context, movement labels and the Route panel;
+remembered routes use existing route knowledge/history after traversal. It is a
+read projection, not a second route store. Inspection and reload retain the
+visible path; movement recomposes routes for the actual destination.
+
+Current publication adds an authored shore path, its limit of sight and nearby
+water sound. These are approved current sensory premises, not deductions made
+by narration from the mere presence of water. Historical presentations remain
+pinned. Dynamic weather/light and complete acquired-fact presentation remain
+separate delivery gaps; this change does not activate weather simulation.

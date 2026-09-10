@@ -24,9 +24,11 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   delete projectionSource.current_visible_context;
   const { actor, player_safe_state: playerSafe } = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
+    scene_presentation: scenePresentation,
     actor_id: projectionSource.actor_id
   });
-  const selfKnowledge = projectKnownContext(actor, playerSafe.knowledge, playerSafe.interactions);
+  const selfKnowledge = [...projectKnownContext(actor, playerSafe.knowledge, playerSafe.interactions),
+    ...(playerSafe.available_routes ?? []).map(route => route.label).filter(Boolean)];
   const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
     playerSafe.position,
     playerSafe.actor_id);

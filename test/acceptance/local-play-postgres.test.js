@@ -85,6 +85,9 @@ test('local play persists a free turn and replays it after a server restart',
     assert.equal(started.screen.panels.inventory.data.zones.worn_quick.length, 1);
     assert.ok(started.screen.presentation_context.date_label);
     assert.ok(started.screen.presentation_context.time_label);
+    assert.match(started.screen.main_prose, /приметная тропа/u);
+    assert.match(started.screen.main_prose, /плеск воды/u);
+    assert.equal(started.screen.panels.route.data.movement.options[0].label, 'Приметная тропа за ивняк');
     await post(port, `/api/v1/parties/${encodeURIComponent(partyId)}/opening-ack`, {
       client_ack_id: `local-play-opening-${suffix}`
     });
@@ -117,6 +120,9 @@ test('local play persists a free turn and replays it after a server restart',
       const roleInputs = llm.requests.slice(callsBefore).map(({ input }) => input?.request ?? input);
       const plannerInput = roleInputs.find(input => input?.schema === 'turn_step_request_v1');
       const playerSafe = plannerInput.player_safe_state;
+      assert.ok(playerSafe.available_routes.some(route => route.label === 'Приметная тропа за ивняк'
+        && route.to_ref == null));
+      assert.equal(result.screen.panels.route.data.movement.options[0].label, 'Приметная тропа за ивняк');
       assert.match(plannerInput.actor.biography, /разорившегося кожевника/u);
       assert.ok(plannerInput.actor.memory.some(record => record.text.includes('Онисим')));
       assert.ok(playerSafe.knowledge.some(record => record.text.includes('Савва Твердич')));

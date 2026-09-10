@@ -7,6 +7,7 @@ import { projectLowerDvinaTracePlayerSafeState } from
 
 export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null }) {
   const { actor, player_safe_state: projection } = projectLowerDvinaTracePlayerSafeState({
+    scene_presentation: presentation?.scenePresentation,
     committed_state: screen.visible_context == null ? payload : {
       ...payload,
       current_visible_context: screen.visible_context

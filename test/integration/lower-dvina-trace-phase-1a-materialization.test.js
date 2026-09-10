@@ -722,7 +722,7 @@ test('tampered digest, missing mandatory record and damaged profile fail closed 
 test('current scene presentation uses its declared pin without changing historical replay', async () => {
   const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 33 });
   const historical = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 32 });
-  assert.equal(current.scene_presentation.revision, 2);
+  assert.equal(current.scene_presentation.revision, 3);
   assert.equal(current.artifact_pins.scene_presentation.digest,
     current.definition.immutable_content_refs.scene_presentation.digest);
   assert.equal(historical.scene_presentation.revision, 1);

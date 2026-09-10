@@ -4,20 +4,22 @@ import { resolve } from 'node:path';
 
 const V1_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v23/scene-presentation-v1.json';
 const V2_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v26/scene-presentation-v2.json';
+const V3_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json';
 export const TRACE_SCENE_PRESENTATION_DIGEST =
   '3f502cb872f662c74fdace184111b1ded2f3af286ce258a6707d4940ddd2d347';
 export const TRACE_SCENE_PRESENTATION_V2_DIGEST =
   'b0e68dabf6541bc76b24294f797746c34d7d3ab28c6732d71cba79336369750c';
+export const TRACE_SCENE_PRESENTATION_V3_DIGEST = '91f52897e3d3f1c0a64b362ee8b9119f1e398dfc8ebeed0aa3ae6a1785029f6f';
 
 export async function loadLowerDvinaTraceScenePresentation({
   rootDir = process.cwd(), scenarioDefinitionRevision
 } = {}) {
   if (![28, 29, 30, 31, 32, 33].includes(scenarioDefinitionRevision)) return null;
-  const version = scenarioDefinitionRevision >= 31 ? 2 : 1;
-  const raw = await readFile(resolve(rootDir, version === 2 ? V2_PATH : V1_PATH));
+  const version = scenarioDefinitionRevision === 33 ? 3 : scenarioDefinitionRevision >= 31 ? 2 : 1;
+  const raw = await readFile(resolve(rootDir, [V1_PATH, V2_PATH, V3_PATH][version - 1]));
   const digest = createHash('sha256').update(raw).digest('hex');
   const value = JSON.parse(raw);
-  if (digest !== (version === 2 ? TRACE_SCENE_PRESENTATION_V2_DIGEST : TRACE_SCENE_PRESENTATION_DIGEST)
+  if (digest !== [TRACE_SCENE_PRESENTATION_DIGEST, TRACE_SCENE_PRESENTATION_V2_DIGEST, TRACE_SCENE_PRESENTATION_V3_DIGEST][version - 1]
       || value?.schema !== 'rus.lower_dvina_trace_scene_presentation.v1'
       || value.presentation_id !== `lower_dvina_trace_scene_presentation_v${version}`
       || value.revision !== version || value.status !== 'approved'

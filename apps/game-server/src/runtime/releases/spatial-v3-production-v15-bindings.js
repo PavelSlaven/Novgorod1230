@@ -29,15 +29,15 @@ export function createSpatialV3RuntimeBindings(context = {}) {
         !== context.release.world_knowledge_embedding_profile_ref
       || pins?.scenario_definition_revision !== 33
       || pins?.scenario_definition_digest
-        !== '93b7a2eab07ab7e08b6557e3818a49d1c242a8bdafc68ab790a5b19dc92e3d9c'
+        !== '220b872de6b470c8482c982019f9e20e23422927018357fca2a2f07cc2308d5c'
       || pins?.phase_1a_package_id !== 'lower_dvina_trace_phase_1a_v24'
       || pins?.phase_1a_manifest_digest
         !== 'c1c6feaa072bc334a12703df17fe97df057c741cebc0ce0cf078527df87ee66b'
       || pins?.phase_1b_package_id !== 'lower_dvina_trace_phase_1b_v28'
       || pins?.phase_1b_manifest_digest
-        !== '6c1eb16fff0eabd32ce836184b2cb14b6de5f59a65f4c95a4198397b8bfe630a'
+        !== '23fa6c3bc5b2716b148a69c22bbbb6efdac9e88ebd068fe58782067a73e8aa6c'
       || pins?.phase_1b_binding_digest
-        !== '2b853df7993671afaea9cfdad64647bf00b8eff89307854b06cad91f602c8b6c'
+        !== '3311695c856a1d25a981838bc40fb38b26389ce274c74c9574481e1cf7635ffd'
       || pins?.n1_profile_id !== 'lower_dvina_trace_n1_background_npc_v1'
       || pins?.n1_profile_revision !== 1
       || pins?.n1_profile_scenario_definition_revision !== 31

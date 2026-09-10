@@ -1,5 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
+import { perceivedRoutesForState } from './lower-dvina-trace-scene-presentation.js';
 
 export const TRACE_PHASE_3_IDS = Object.freeze({
   moveOption: 'follow_path_to_fishing_camp',
@@ -206,6 +207,8 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
   }
   return Object.freeze({
     ids, movement, talk, evidenceTalk, check, route, routeBodyEffect,
+    routePresentation: perceivedRoutesForState({ scenePresentation: bundle.scene_presentation, state })
+      .find(value => value.route_ref === route.route_id),
     sourceEndpoint, destinationEndpoint, access, capacity,
     npcPolicy, executions, statementEffects, eremeyKnowledge,
     firstMapping, disclosureMapping, blueWoolPickup,

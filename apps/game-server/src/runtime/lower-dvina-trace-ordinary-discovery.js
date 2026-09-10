@@ -1,3 +1,6 @@
+import { applySemanticActivity } from './lower-dvina-trace-turn-step-delegated-ports.js';
+import { ordinaryDiscoveryActivity } from './lower-dvina-trace-turn-step-generic-owners.js';
+import { projectPreparedOrdinaryItem } from './lower-dvina-trace-phase-2-player-safe.js';
 import { createOrdinaryMaterializationDiscoveryOwner } from '@rus/turn';
 import {
   buildOrdinaryMaterializationPresenceRequest,
@@ -231,4 +234,28 @@ function validMechanicsPolicy(value) {
     && Array.isArray(value.allowed_carry_forms)
     && Number.isSafeInteger(value.max_packing_slot_cost)
     && Number.isSafeInteger(value.max_quantity);
+}
+
+/** Project the admitted ordinary result and apply its existing physical activity. */
+export async function prepareOrdinaryDiscoveryResult({ applied, execution,
+  state, semanticActivityOwner, workingProjectionAuthority }) {
+  const plan = applied?.ordinary_materialization_atomic_write_plan;
+  if (plan == null) return applied;
+  const projection = workingProjectionAuthority.admit(projectPreparedOrdinaryItem(
+    applied.working_projection, plan));
+  const activity = ordinaryDiscoveryActivity({ operation: execution.operation,
+    request: execution.request, ordinaryPlan: plan });
+  if (activity == null) return { ...applied, working_projection: projection };
+  const timed = await applySemanticActivity({ ...execution,
+    working_projection: projection,
+    operation: { op: 'apply_semantic_activity', activity }
+  }, state, semanticActivityOwner);
+  return { ...applied, ...timed, summary: applied.summary,
+    duration_minutes: timed.consequence_fragment.duration_minutes,
+    write_fragments: [...applied.write_fragments, ...timed.write_fragments],
+    consequence_fragment: { ...applied.consequence_fragment,
+      ...timed.consequence_fragment, visible_seed: {
+        ...applied.consequence_fragment?.visible_seed,
+        ...timed.consequence_fragment.visible_seed
+      } } };
 }

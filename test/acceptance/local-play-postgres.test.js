@@ -30,7 +30,8 @@ test('local play persists a free turn and replays it after a server restart',
     const llm = await startLocalLlmProviderFixture({ respond: (request) =>
       request.body.messages?.[0]?.content === 'Return a JSON object with {"ok":true}.'
         ? { ok: true }
-        : canonical({ ...request, model: fixtureRoleModel(request.input) })
+        : searchFixtureResponse(request.input)
+          ?? canonical({ ...request, model: fixtureRoleModel(request.input) })
     });
     const provider = Object.freeze({ mode: 'custom',
       compatibility: 'openai_compatible', baseUrl: llm.baseUrl,
@@ -74,7 +75,7 @@ test('local play persists a free turn and replays it after a server restart',
     const turnRequest = {
       request_id: requestId,
       idempotency_key: requestId,
-      raw_text: 'Осматриваюсь вокруг.'
+      raw_text: 'Перебрать речной сор в поисках щепки.'
     };
     const turn = await post(port,
       `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, turnRequest);
@@ -82,6 +83,12 @@ test('local play persists a free turn and replays it after a server restart',
     assert.equal(JSON.stringify(turn.screen).includes('hidden_truth'), false);
     const beforeRestart = await committedState(localPlay.postgres.partyUrl, partyId);
     assert.equal(beforeRestart.state_version, beforeTurn.state_version + 1);
+    assert.equal(Number(beforeRestart.clock.whole_minutes) - Number(beforeTurn.clock.whole_minutes), 15);
+    assert.equal(Number(beforeRestart.body.energy), Number(beforeTurn.body.energy) - 1);
+    assert.equal(beforeRestart.item_ids.length, beforeTurn.item_ids.length + 1);
+    assert.equal(beforeRestart.activities.length, 1);
+    assert.equal(Number(beforeRestart.activities[0].original_total_minutes), 15);
+    assert.equal(beforeRestart.activities[0].status, 'completed');
 
     await localPlay.close();
     localPlay = await start();
@@ -110,10 +117,16 @@ async function committedState(partyUrl, partyId) {
         WHERE p.party_id=$1`, [partyId]
     );
     assert.ok(row, 'committed party snapshot must exist');
-    return {
-      state_version: Number(row.state_version),
-      state_payload: row.state_payload
-    };
+    const [clock, body, items, activities] = await Promise.all([
+      pool.query('SELECT whole_minutes,subminute_numerator,subminute_denominator FROM party_runtime.party_clocks WHERE party_id=$1', [partyId]),
+      pool.query("SELECT health,energy,satiety FROM party_runtime.party_actor_body_states WHERE party_id=$1 AND actor_kind='player_character'", [partyId]),
+      pool.query('SELECT item_id FROM party_runtime.party_items WHERE party_id=$1 ORDER BY item_id', [partyId]),
+      pool.query('SELECT a.original_total_minutes,a.status FROM party_runtime.party_timed_activity_executions a JOIN party_runtime.party_command_idempotency i ON i.id=a.idempotency_record_id WHERE i.party_id=$1 ORDER BY a.id', [partyId])
+    ]);
+    return { state_version: Number(row.state_version), state_payload: row.state_payload,
+      clock: clock.rows[0], body: body.rows[0], item_ids: items.rows.map(({ item_id }) => item_id),
+      activities: activities.rows };
+
   } finally {
     await pool.end();
   }
@@ -180,4 +193,30 @@ function fixtureRoleModel(input) {
     return 'fixture-turn-step-grounding-auditor';
   }
   throw new Error(`Unexpected fixture request schema: ${value?.schema ?? 'none'}`);
+}
+
+function searchFixtureResponse(input) {
+  const request = input?.request ?? input;
+  if (request?.schema === 'turn_step_request_v1') return {
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{ op: 'request_discovery', actor_ref: request.actor.actor_id,
+      discovery_kind: 'search', target_refs: [request.player_safe_state.position.location_ref],
+      query: request.remaining_intent }], check: null, continuation: null,
+    clarification: null, direct_result_kind: null, reason_code: 'ordinary_search',
+    reason: 'Физический поиск обычной щепки.'
+  };
+  if (request?.schema !== 'ordinary_materialization_request_v1') return null;
+  if (request.mode === 'seed_scope') return { resolution: 'seeded',
+    density_band_proposal: 'ordinary', background_groups: [{ descriptor: 'Кусочки древесины среди речного сора.' }],
+    reason_code: 'seed' };
+  return { resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
+    semantic_admission_class: 'common_mundane', reason_code: 'ordinary_wood',
+    world_knowledge_claim_refs: [request.world_knowledge.facts[0].claim_ref],
+    entities: [{ semantic_descriptor: { semantic_type: 'wood_fragment', name: 'щепка', facts: [] },
+      presence_expectation: 'routine', mechanics_proposal: { mass_grams: 10,
+        external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null } }] };
 }

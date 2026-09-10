@@ -170,6 +170,13 @@ remain fail-closed. Currency identity,
 significant/hidden facts, template-less containers and O2b/A1/F1/N1 remain
 disabled. Negative resolutions contain no item and
 every failure rolls back.
+A new admitted ordinary `search` with `materialize` or `absent` result applies
+the existing `short/light` activity profile through the same activity, body,
+time and P16 owners. The atomic ordinary request identity binds this domain
+activity to its exact approved step. Preflight refusal, reused negative
+resolution and `inspect` material prerequisites do not execute that search.
+The item or negative resolution and the search cost commit together; retry
+replays the committed result without another activity or model call.
 
 Active O2b keeps the same public `request_container_access`. Production startup
 loads and SHA-validates revision 20 M8 / Phase 1A v16 / Phase 1B v15 plus one

@@ -24,6 +24,15 @@ export { createLowerDvinaTraceTurnStepVisibleProjector } from
 export const GENERIC_BODY_EFFECT_REF =
   'trace_ld_v1_turn_step_generic_body_effect_v1';
 
+/** A new admitted physical search uses the existing activity/time/body owner. */
+export function ordinaryDiscoveryActivity({ operation, request, ordinaryPlan }) {
+  if (operation?.op !== 'request_discovery' || operation.discovery_kind !== 'search'
+      || !['materialize', 'absent'].includes(ordinaryPlan?.resolution)
+      || ordinaryPlan.request_identity !==
+        `${request?.root_turn_id}:ordinary:presence:step:${request?.step_index}`) return null;
+  return { owner: 'semantic', duration_class: 'short', effort: 'light' };
+}
+
 const BODY_METRICS = ['health', 'satiety', 'energy'];
 
 export function createLowerDvinaTraceTurnStepGenericOwners({

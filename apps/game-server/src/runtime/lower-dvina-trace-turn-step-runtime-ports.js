@@ -14,8 +14,8 @@ import { createContainerAccessHandler, snapshotO2bCommittedContainerInput } from
   './lower-dvina-trace-turn-step-container-access.js';
 import { createLowerDvinaTracePreparedDomainEffect } from
   './lower-dvina-trace-turn-step-prepared-effects.js';
-import { projectPreparedOrdinaryItem } from
-  './lower-dvina-trace-phase-2-player-safe.js';
+import { prepareOrdinaryDiscoveryResult } from
+  './lower-dvina-trace-ordinary-discovery.js';
 export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEventOwner = null,
   committedState = null,
@@ -46,12 +46,9 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   const preparedOrdinaryDiscoveryResolver =
     typeof ordinaryDiscoveryResolver !== 'function' ? null
       : async (execution) => {
-          const applied = await ordinaryDiscoveryResolver(execution);
-          const plan = applied?.ordinary_materialization_atomic_write_plan;
-          if (plan == null) return applied;
-          return { ...applied, working_projection:
-            workingProjectionAuthority.admit(projectPreparedOrdinaryItem(
-              applied.working_projection, plan)) };
+          return prepareOrdinaryDiscoveryResult({
+            applied: await ordinaryDiscoveryResolver(execution), execution,
+            state, semanticActivityOwner, workingProjectionAuthority });
         };
   const containerAccessHandler = createContainerAccessHandler(state, {
     ordinaryContainerContentsResolver

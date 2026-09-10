@@ -1,3 +1,5 @@
+import { ordinaryDiscoveryActivity } from
+  '../../runtime/lower-dvina-trace-turn-step-generic-owners.js';
 import { canonicalDigest } from '@rus/materialization';
 import {
   planRuntimeContainerAccess,
@@ -16,8 +18,8 @@ const DIRECT = new Set([
 
 /** Every physical fragment must be authorized by the exact applied step. */
 export function validateTurnStepBatchPlanBindings({ batch, factual, state,
-  ambientPortionProfileRef = null }) {
-  const slots = expectedSlots(factual?.loop_trace?.step_traces ?? []);
+  ambientPortionProfileRef = null, ordinaryPlan = null }) {
+  const slots = expectedSlots(factual?.loop_trace?.step_traces ?? [], ordinaryPlan);
   const aliases = new Map();
   const materializedItems = [
     ...structuredClone(state.items ?? []),
@@ -62,7 +64,7 @@ export function validateTurnStepBatchPlanBindings({ batch, factual, state,
   }
 }
 
-function expectedSlots(traces) {
+function expectedSlots(traces, ordinaryPlan) {
   return traces.flatMap((trace) => {
     if (trace?.applied !== true) return [];
     const plan = trace.approved_plan;
@@ -72,7 +74,11 @@ function expectedSlots(traces) {
     const direct = operations.filter(({ op }) => DIRECT.has(op));
     const domain = operations.filter(({ op }) => !DIRECT.has(op)
       && op === 'request_container_access');
-    const activities = plan?.activity?.owner !== 'semantic' ? [] : [
+    const discoveryActivity = plan?.resolution !== 'domain_request'
+      || operations.length !== 1 ? null : ordinaryDiscoveryActivity({
+        operation: operations[0], request: trace.plan_request, ordinaryPlan });
+    const activities = plan?.activity?.owner !== 'semantic'
+      ? [discoveryActivity].filter(Boolean) : [
       plan?.activity,
       ...(selected?.additional_activity == null
         ? [] : [selected.additional_activity])

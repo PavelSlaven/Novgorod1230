@@ -97,6 +97,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   // Every envelope and owner binding is checked before the first mutation.
   if (writePlan.turn_step_commit != null) {
     validateBatchPlanBindings({ batch, factual: commit, state, actorRef,
+      ordinaryPlan: writePlan.ordinary_materialization_atomic_write_plan,
       turnStepAmbientPortionProfileRef });
   }
   for (const [index, fragment] of batch.operations.entries()) {
@@ -187,10 +188,10 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   };
 }
 
-function validateBatchPlanBindings({ batch, factual, state, actorRef,
+function validateBatchPlanBindings({ batch, factual, state, actorRef, ordinaryPlan,
   turnStepAmbientPortionProfileRef }) {
   if (actorRef === state.actor_id) {
-    validateTurnStepBatchPlanBindings({ batch, factual, state,
+    validateTurnStepBatchPlanBindings({ batch, factual, state, ordinaryPlan,
       ambientPortionProfileRef: turnStepAmbientPortionProfileRef });
     return;
   }

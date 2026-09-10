@@ -72,11 +72,40 @@ for (const resolution of ['absent', 'no_change', 'authority_required']) {
     committed = ordinaryPlan;
     const retryPorts = createPorts({ semanticActivityOwner: owners.semanticActivityOwner,
       ordinaryDiscoveryResolver: resolver });
-    const retry = await retryPorts.ordinaryDiscoveryResolver({ ...input,
-      request: { ...input.request, root_turn_id: 'turn:party:2' } });
+    const retryRequest = { ...input.request, root_turn_id: 'turn:party:2' };
+    const retry = await retryPorts.ordinaryDiscoveryResolver({ ...input, request: retryRequest });
     assert.equal(calls, 2, 'restored exact negative result does not reroll the model');
-    assert.equal(retry.duration_minutes, 0);
-    assert.deepEqual(retry.write_fragments, []);
+    assert.equal(retry.duration_minutes, 15);
+    assert.equal(retry.write_fragments.length, 1);
+    assert.equal(retry.ordinary_materialization_atomic_write_plan, undefined);
+    const cachedBinding = { ...binding, ordinaryPlan: null,
+      batch: { ...binding.batch, root_turn_id: retryRequest.root_turn_id, operations: retry.write_fragments },
+      factual: { loop_trace: { step_traces: [{ ...binding.factual.loop_trace.step_traces[0], plan_request: retryRequest }] } } };
+    assert.doesNotThrow(() => validateTurnStepBatchPlanBindings(cachedBinding));
+    for (const fragments of [[...retry.write_fragments, ...retry.write_fragments],
+      retry.write_fragments.map(fragment => ({ ...fragment, value: { ...fragment.value, step_index: 2 } })),
+      retry.write_fragments.map(fragment => ({ ...fragment, value: { ...fragment.value, effort: 'heavy' } }))]) {
+      assert.throws(() => validateTurnStepBatchPlanBindings({ ...cachedBinding,
+        batch: { ...cachedBinding.batch, operations: fragments } }),
+      { code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH' });
+    }
+    assert.throws(() => validateTurnStepBatchPlanBindings({ ...binding,
+      batch: { ...binding.batch, operations: [] } }),
+    { code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH' });
+    const recall = await retryPorts.ordinaryDiscoveryResolver({ ...input,
+      operation: { ...input.operation, discovery_kind: 'inspect' } });
+    assert.equal(recall.duration_minutes, 0);
+    assert.equal(calls, 2);
+    const firstTrace = { ...cachedBinding.factual.loop_trace.step_traces[0],
+      approved_plan: { ...input.plan, operations: [{ ...input.operation, discovery_kind: 'inspect' }] } };
+    const secondTrace = { ...cachedBinding.factual.loop_trace.step_traces[0], step_index: 2,
+      plan_request: { ...retryRequest, step_index: 2 } };
+    assert.doesNotThrow(() => validateTurnStepBatchPlanBindings({ ...cachedBinding,
+      ordinaryPlan: { ...ordinaryPlan, resolution: 'materialize',
+        request_identity: `${retryRequest.root_turn_id}:ordinary:presence:step:1` },
+      factual: { loop_trace: { step_traces: [firstTrace, secondTrace] } },
+      batch: { ...cachedBinding.batch, operations: retry.write_fragments.map(fragment => ({
+        ...fragment, value: { ...fragment.value, step_index: 2 } })) } }));
     committed = null;
     const inspect = await ports.ordinaryDiscoveryResolver({ ...input,
       operation: { ...input.operation, discovery_kind: 'inspect' } });

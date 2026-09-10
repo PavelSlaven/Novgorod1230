@@ -84,10 +84,14 @@ test('local play persists a free turn and replays it after a server restart',
       raw_text: 'Перебрать речной сор в поисках щепки.'
     };
     const attempts = [];
-    for (const [index, resolution] of ['no_change', 'authority_required', 'materialize'].entries()) {
+    const ordinaryCalls = () => llm.requests.filter(({ input }) =>
+      (input?.request ?? input)?.schema === 'ordinary_materialization_request_v1').length;
+    let initialOrdinaryCalls = 0;
+    for (const [index, resolution] of ['no_change', 'no_change', 'authority_required', 'materialize'].entries()) {
       fixtureResolution = resolution;
       turnRequest = { request_id: `${requestId}-${index}`, idempotency_key: `${requestId}-${index}`,
         raw_text: ['Перебрать сор в поисках обрывка ткани.',
+          'Перебрать сор в поисках обрывка ткани.',
           'Перебрать сор в поисках предмета неясного происхождения.',
           'Перебрать сор в поисках щепки.'][index] };
       const result = await post(port,
@@ -106,13 +110,18 @@ test('local play persists a free turn and replays it after a server restart',
       assert.equal(committed.item_ids.length, beforeTurn.item_ids.length + (resolution === 'materialize' ? 1 : 0));
       assert.equal(committed.activities.length, index + 1);
       assert.ok(committed.activities.every(activity => Number(activity.original_total_minutes) === 15 && activity.status === 'completed'));
+      if (index === 0) initialOrdinaryCalls = ordinaryCalls();
+      if (index === 1) {
+        assert.equal(ordinaryCalls(), initialOrdinaryCalls, 'a new repeated physical search reuses presence without model calls');
+        assert.deepEqual(committed.state_payload.ordinary_materialization_atomic_write_plan ?? null, null);
+      }
       attempts.push({ request: turnRequest, result });
     }
     const turn = attempts.at(-1).result;
     assert.equal(turn.screen.schema, 'lower_dvina_trace_turn_screen');
     assert.equal(JSON.stringify(turn.screen).includes('hidden_truth'), false);
     const beforeRestart = await committedState(localPlay.postgres.partyUrl, partyId);
-    assert.equal(beforeRestart.state_version, beforeTurn.state_version + 3);
+    assert.equal(beforeRestart.state_version, beforeTurn.state_version + 4);
 
     await localPlay.close();
     localPlay = await start();

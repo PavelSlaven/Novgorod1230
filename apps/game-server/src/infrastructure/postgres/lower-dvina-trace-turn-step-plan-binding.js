@@ -1,4 +1,4 @@
-import { ordinaryDiscoveryActivity } from
+import { ordinaryDiscoveryActivity, ordinarySearchActivity } from
   '../../runtime/lower-dvina-trace-turn-step-generic-owners.js';
 import { canonicalDigest } from '@rus/materialization';
 import {
@@ -19,7 +19,7 @@ const DIRECT = new Set([
 /** Every physical fragment must be authorized by the exact applied step. */
 export function validateTurnStepBatchPlanBindings({ batch, factual, state,
   ambientPortionProfileRef = null, ordinaryPlan = null }) {
-  const slots = expectedSlots(factual?.loop_trace?.step_traces ?? [], ordinaryPlan);
+  const slots = expectedSlots(factual?.loop_trace?.step_traces ?? [], ordinaryPlan, batch.operations);
   const aliases = new Map();
   const materializedItems = [
     ...structuredClone(state.items ?? []),
@@ -64,7 +64,9 @@ export function validateTurnStepBatchPlanBindings({ batch, factual, state,
   }
 }
 
-function expectedSlots(traces, ordinaryPlan) {
+function expectedSlots(traces, ordinaryPlan, fragments) {
+  const ordinaryTrace = traces.find(trace => trace.applied === true
+    && ordinaryPlan?.request_identity === `${trace.plan_request?.root_turn_id}:ordinary:presence:step:${trace.step_index}`);
   return traces.flatMap((trace) => {
     if (trace?.applied !== true) return [];
     const plan = trace.approved_plan;
@@ -76,7 +78,10 @@ function expectedSlots(traces, ordinaryPlan) {
       && op === 'request_container_access');
     const discoveryActivity = plan?.resolution !== 'domain_request'
       || operations.length !== 1 ? null : ordinaryDiscoveryActivity({
-        operation: operations[0], request: trace.plan_request, ordinaryPlan });
+        operation: operations[0], request: trace.plan_request, ordinaryPlan })
+        ?? ((ordinaryPlan == null || ordinaryTrace != null && ordinaryTrace !== trace) && fragments.some(fragment => fragment.target === 'party_events'
+          && fragment.value.step_index === trace.step_index)
+          ? ordinarySearchActivity(operations[0]) : null);
     const activities = plan?.activity?.owner !== 'semantic'
       ? [discoveryActivity].filter(Boolean) : [
       plan?.activity,

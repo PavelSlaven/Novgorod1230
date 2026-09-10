@@ -240,11 +240,11 @@ function validMechanicsPolicy(value) {
 export async function prepareOrdinaryDiscoveryResult({ applied, execution,
   state, semanticActivityOwner, workingProjectionAuthority }) {
   const plan = applied?.ordinary_materialization_atomic_write_plan;
-  if (plan == null) return applied;
-  const projection = workingProjectionAuthority.admit(projectPreparedOrdinaryItem(
-    applied.working_projection, plan));
+  const projection = plan == null ? applied.working_projection
+    : workingProjectionAuthority.admit(projectPreparedOrdinaryItem(
+      applied.working_projection, plan));
   const activity = ordinaryDiscoveryActivity({ operation: execution.operation,
-    request: execution.request, ordinaryPlan: plan });
+    request: execution.request, ordinaryPlan: plan, knownResolution: applied.known_resolution });
   if (activity == null) return { ...applied, working_projection: projection };
   const timed = await applySemanticActivity({ ...execution,
     working_projection: projection,

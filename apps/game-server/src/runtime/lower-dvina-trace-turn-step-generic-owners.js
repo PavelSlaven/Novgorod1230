@@ -25,12 +25,17 @@ export const GENERIC_BODY_EFFECT_REF =
   'trace_ld_v1_turn_step_generic_body_effect_v1';
 
 /** A new admitted physical search uses the existing activity/time/body owner. */
-export function ordinaryDiscoveryActivity({ operation, request, ordinaryPlan }) {
-  if (operation?.op !== 'request_discovery' || operation.discovery_kind !== 'search'
-      || !['materialize', 'absent', 'no_change', 'authority_required'].includes(ordinaryPlan?.resolution)
-      || ordinaryPlan.request_identity !==
-        `${request?.root_turn_id}:ordinary:presence:step:${request?.step_index}`) return null;
-  return { owner: 'semantic', duration_class: 'short', effort: 'light' };
+export function ordinaryDiscoveryActivity({ operation, request, ordinaryPlan, knownResolution = null }) {
+  const resolved = ['materialize', 'absent', 'no_change', 'authority_required'];
+  const fresh = resolved.includes(ordinaryPlan?.resolution)
+    && ordinaryPlan.request_identity ===
+      `${request?.root_turn_id}:ordinary:presence:step:${request?.step_index}`;
+  return fresh || ['absent', 'no_change', 'authority_required'].includes(knownResolution?.resolution)
+    ? ordinarySearchActivity(operation) : null;
+}
+export function ordinarySearchActivity(operation) {
+  return operation?.op === 'request_discovery' && operation.discovery_kind === 'search'
+    ? { owner: 'semantic', duration_class: 'short', effort: 'light' } : null;
 }
 
 const BODY_METRICS = ['health', 'satiety', 'energy'];

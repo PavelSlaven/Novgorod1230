@@ -178,15 +178,17 @@ disabled. Negative resolutions contain no item and
 every failure rolls back.
 A new admitted ordinary `search` with any normal presence decision applies
 the existing `short/light` activity profile through the same activity, body,
-time and P16 owners. The atomic ordinary request identity binds this domain
-activity to its exact approved step. Preflight refusal, reused negative
-resolution and `inspect` material prerequisites do not execute that search.
+time and P16 owners. The approved domain search binds this activity to its
+exact step; a fresh ordinary request requires it, and a known answer permits
+it without a new ordinary write. Preflight refusal and `inspect` material
+prerequisites do not execute that search.
 A model `no_change` or `authority_required` limits the answer, not the executed
 search. A presence preflight with no decision may retain a first scene seed,
 but creates no presence resolution and incurs no search activity.
 The admitted activity projects a performed search with its exact duration;
 its separate candidate query remains a question, never ownership or success.
-The item or negative resolution and the search cost commit together; retry
+A new physical search can reuse an existing negative presence answer without a model call or materialization write, while applying a new activity/body cost. The applied domain search authorizes that activity. Inspection/recall remains free.
+The item or negative resolution and the search cost commit together; transport retry
 replays the committed result without another activity or model call.
 
 Active O2b keeps the same public `request_container_access`. Production startup

@@ -984,7 +984,7 @@
       "source_location": {
         "file": "CONTRACT_INDEX.md",
         "line_start": 1,
-        "line_end": 238
+        "line_end": 239
       }
     },
     {
@@ -1204,6 +1204,18 @@
       }
     },
     {
+      "id": "canonical-document:situational-prose-requirements",
+      "type": "canonical_document",
+      "label": "situational_prose_requirements.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/situational_prose_requirements.md",
+      "source_location": {
+        "file": "situational_prose_requirements.md",
+        "line_start": 1,
+        "line_end": 270
+      }
+    },
+    {
       "id": "canonical-document:spatial-architecture-standard-g0-g6",
       "type": "canonical_document",
       "label": "spatial_architecture_standard_g0_g6.md",
@@ -1296,7 +1308,7 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1639
+        "line_end": 1644
       }
     },
     {

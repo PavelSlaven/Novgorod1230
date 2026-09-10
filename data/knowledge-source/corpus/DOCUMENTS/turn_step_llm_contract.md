@@ -1224,6 +1224,11 @@ local/custom OpenAI-compatible provider один `runtimeProviderOverride`
 применяется ко всем ролям. Transport не делает fallback на DeepSeek или другую
 model/provider; connection, auth, model, timeout, malformed response и invalid
 JSON завершают ход typed technical failure до commit.
+Каждый такой локальный игровой запрос явно передаёт
+`chat_template_kwargs.enable_thinking=false`, независимо от имени выбранной
+модели. Semantic quality обеспечивают world knowledge, безопасный контекст,
+code-owned validators и предусмотренные контрактом repair-вызовы; transport не
+включает reasoning автоматически и не эскалирует к thinking-модели.
 
 ## 17. Активированная реализация
 

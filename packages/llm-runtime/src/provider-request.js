@@ -4,10 +4,6 @@ export const LLM_REQUEST_TIMEOUT_MS = 120_000;
 const JSON_FORMAT_INSTRUCTION = Object.freeze({
   role: 'system', content: 'Return a valid json object.'
 });
-const NO_THINKING_OPENAI_MODELS = new Set([
-  'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced',
-  'gemma-4-26b-a4b-it'
-]);
 
 export function resolveRuntimeProviderOverride(override) {
   if (override == null) return { ok: true, config: null };
@@ -87,7 +83,7 @@ export function buildProviderRequestPayload(config, messages) {
     max_tokens: config.maxTokens,
     ...(config.responseFormat ? { response_format: config.responseFormat } : {}),
     ...(config.compatibility === 'openai_compatible'
-      && NO_THINKING_OPENAI_MODELS.has(config.model)
+      && config.thinking?.type === 'disabled'
       ? { chat_template_kwargs: { enable_thinking: false } } : {}),
     ...(config.compatibility === 'deepseek' && config.thinking ? { thinking: config.thinking } : {}),
     ...(config.compatibility === 'deepseek' && config.reasoningEffort ? { reasoning_effort: config.reasoningEffort } : {}),

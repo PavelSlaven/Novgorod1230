@@ -34,7 +34,7 @@ Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narr
 
 `executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`): `openai_compatible` нормализуется к одному `chat/completions` URL. Пользовательский `play:local` передаёт managed Gemma как default override; low-level environment provider остаётся только явной deployment-конфигурацией. Runtime override не может менять production limits. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
 
-Поддерживаемый Gemma preset и его served alias получают OpenAI-compatible `chat_template_kwargs.enable_thinking=false`: полезный JSON/prose ответ не вытесняется скрытым reasoning. Произвольным custom-моделям нестандартное поле не добавляется.
+Каждый игровой вызов через выбранный local/custom OpenAI-compatible provider получает `chat_template_kwargs.enable_thinking=false`. Правило не зависит от имени модели: смысловые ошибки разрешают knowledge/context, code-owned validation и явно предусмотренный repair, без reasoning fallback.
 
 Portrait Lab использует одну role без repair/fallback chain; смысловой результат валидирует authoritative `portrait_spec_v1` owner вне transport слоя.
 

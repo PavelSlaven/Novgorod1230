@@ -273,14 +273,14 @@ test('Stage B fails closed when its semantic admission differs from the candidat
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
-test('Stage B checks semantic admission before a missing materialization kind', () => {
+test('Stage B keeps unresolved non-item output without admitting its restricted class', () => {
   const request = presenceRequest('подходящий предмет');
   const plan = bindOrdinaryMaterializationPlan(request, {
     resolution: 'no_change', semantic_admission_class: 'other_restricted',
     reason_code: 'not_an_item'
   });
-  assert.equal(plan.resolution, 'authority_required');
-  assert.equal(plan.reason_code, 'semantic_admission_mismatch');
+  assert.equal(plan.resolution, 'no_change');
+  assert.equal(plan.reason_code, 'not_an_item');
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
@@ -386,5 +386,19 @@ test('Stage B preserves explicit authority failure across candidate classificati
   assert.equal(plan.reason_code, 'missing_document_authority');
   assert.equal(plan.presence_resolutions[0].resolution, 'authority_required');
   assert.deepEqual(plan.entities, []);
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
+});
+
+
+test('Stage B keeps an explicit unresolved answer before candidate classification', () => {
+  const request = presenceRequest('Бумаги либо иной предмет неизвестного происхождения');
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'no_change', semantic_admission_class: 'document_like',
+    semantic_materialization_kind: 'standalone_item', entities: [],
+    reason_code: 'insufficient_support'
+  });
+  assert.equal(plan.resolution, 'no_change');
+  assert.equal(plan.reason_code, 'insufficient_support');
+  assert.equal(plan.presence_resolutions[0].resolution, 'no_change');
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });

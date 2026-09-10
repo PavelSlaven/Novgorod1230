@@ -137,7 +137,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     if (presence.status === 'already_resolved') {
       return knownNegativeResolution(request, presence.known_resolution?.resolution);
     }
-    if (presence.status === 'no_change' && presence.decision === null) {
+    if (presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);
       return resolvedPlan({ request, enabled, partyId, scopeRef,
         inputDigest, sealAtomicWritePlan, transitions, newBases, bases,

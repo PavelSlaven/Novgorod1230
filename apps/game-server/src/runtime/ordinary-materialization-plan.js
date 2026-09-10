@@ -82,7 +82,7 @@ export function bindOrdinaryMaterializationPlan(request, output) {
   if (request.mode !== 'resolve_presence') return output;
   const authority = request.authority_envelope;
   if (authority?.stage !== 'resolve_presence') return output;
-  if (output.resolution === 'authority_required') {
+  if (['no_change', 'authority_required'].includes(output.resolution)) {
     return negativePlan(request, output.resolution, output.reason_code);
   }
   if (authority.selected_supporting_basis_ref != null) {

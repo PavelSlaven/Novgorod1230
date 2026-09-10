@@ -27,7 +27,7 @@ export const GENERIC_BODY_EFFECT_REF =
 /** A new admitted physical search uses the existing activity/time/body owner. */
 export function ordinaryDiscoveryActivity({ operation, request, ordinaryPlan }) {
   if (operation?.op !== 'request_discovery' || operation.discovery_kind !== 'search'
-      || !['materialize', 'absent'].includes(ordinaryPlan?.resolution)
+      || !['materialize', 'absent', 'no_change', 'authority_required'].includes(ordinaryPlan?.resolution)
       || ordinaryPlan.request_identity !==
         `${request?.root_turn_id}:ordinary:presence:step:${request?.step_index}`) return null;
   return { owner: 'semantic', duration_class: 'short', effort: 'light' };

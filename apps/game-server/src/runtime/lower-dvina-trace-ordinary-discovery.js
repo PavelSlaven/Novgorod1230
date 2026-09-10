@@ -256,6 +256,7 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
     consequence_fragment: { ...applied.consequence_fragment,
       ...timed.consequence_fragment, visible_seed: {
         ...applied.consequence_fragment?.visible_seed,
-        ...timed.consequence_fragment.visible_seed
+        ...Object.fromEntries(Object.entries(timed.consequence_fragment.visible_seed)
+          .map(([key, value]) => [key, { ...value, discovery_kind: 'search' }]))
       } } };
 }

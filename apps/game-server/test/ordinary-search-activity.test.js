@@ -1,3 +1,5 @@
+import { projectDirectSeedChanges } from '../src/runtime/lower-dvina-trace-turn-step-current-scene.js';
+import { canonicalDigest } from '@rus/materialization';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -14,7 +16,7 @@ const owners = createLowerDvinaTraceTurnStepGenericOwners({ profiles: JSON.parse
   artifactPin: { digest: createHash('sha256').update(raw).digest('hex') } });
 const clock = (minutes) => ({ whole_minutes: String(minutes), subminute_numerator: '0', subminute_denominator: '1' });
 
-for (const resolution of ['absent', 'authority_required']) {
+for (const resolution of ['absent', 'no_change', 'authority_required']) {
   test(`new ordinary search ${resolution} binds exact activity only after admission`, async () => {
     const input = request('Перебрать сор в поисках обрезка кожи.');
     input.request.step_index = 1;
@@ -51,11 +53,9 @@ for (const resolution of ['absent', 'authority_required']) {
       factual: { loop_trace: { step_traces: [{ applied: true, step_index: 1,
         approved_plan: input.plan, plan_request: input.request }] } } };
     assert.doesNotThrow(() => validateTurnStepBatchPlanBindings(binding));
-    if (resolution === 'authority_required') {
-      assert.equal(applied.duration_minutes, 0);
-      assert.deepEqual(applied.write_fragments, []);
-      return;
-    }
+    assert.deepEqual(projectDirectSeedChanges({ input: { consequence: applied.consequence_fragment },
+      directSeedKeys: Object.entries(applied.consequence_fragment.visible_seed)
+        .filter(([, value]) => value.kind === 'semantic_activity').map(([key]) => key) }), ['Поиск занял 15 минут.']);
     assert.equal(applied.duration_minutes, 15);
     assert.equal(applied.consequence_fragment.duration_minutes, 15);
     assert.equal(applied.body_state_after.energy, 99);
@@ -67,7 +67,7 @@ for (const resolution of ['absent', 'authority_required']) {
     assert.equal(time.semantic_activity_resolutions.length, 1);
     assert.equal(time.semantic_activity_resolutions[0].execution.ended_at.whole_minutes, '115');
     assert.throws(() => validateTurnStepBatchPlanBindings({ ...binding,
-      ordinaryPlan: { ...ordinaryPlan, resolution: 'authority_required' } }),
+      ordinaryPlan: { ...ordinaryPlan, request_identity: 'another-presence' } }),
     { code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH' });
     committed = ordinaryPlan;
     const retryPorts = createPorts({ semanticActivityOwner: owners.semanticActivityOwner,
@@ -103,3 +103,48 @@ function restoredEnablement(plan) {
     supporting_basis_catalog_digest: plan.next_supporting_basis_catalog_digest };
   return value;
 }
+
+
+test('missing supporting basis is preflight: first seed persists without search or presence, reload stays free', async () => {
+  const input = request('Перебрать сор ради незнакомого предмета.');
+  input.request.step_index = 1;
+  input.request.actor = { actor_id: 'mikula', body: { health: 100, satiety: 100,
+    energy: 100, active_conditions: [], body_parts: {} } };
+  input.operation = { ...input.operation, op: 'request_discovery',
+    actor_ref: 'mikula', discovery_kind: 'search' };
+  input.plan = { resolution: 'domain_request', activity: { owner: 'domain' },
+    operations: [input.operation] };
+  input.working_projection = projection();
+  let committed = null, calls = 0;
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
+    inputDigest: 'preflight', verifyStageBCutover, loadEnablement: async () => {
+      const value = restoredEnablement(committed);
+      value.execution_context.supporting_bases.forEach(basis => { basis.functional_buckets = ['household']; });
+      value.version_pins.supporting_basis_catalog_digest = canonicalDigest({
+        domain: 'ordinary_supporting_basis_catalog_v1',
+        supporting_bases: value.execution_context.supporting_bases });
+      return value;
+    }, ordinaryMaterializationModel: async modelRequest => {
+      calls += 1;
+      assert.equal(modelRequest.mode, 'seed_scope', 'presence has no compatible supporting basis');
+      return { schema: 'ordinary_materialization_plan_v1', request_id: modelRequest.request_id,
+        resolution: 'seeded', density_band_proposal: 'ordinary', background_groups: [{ ...group(), functional_bucket: 'household' }],
+        entities: [], presence_resolutions: [], reason_code: 'seed' };
+    } });
+  const ports = createPorts({ ordinaryDiscoveryResolver: resolver,
+    semanticActivityOwner: owners.semanticActivityOwner });
+  const first = await ports.ordinaryDiscoveryResolver(input);
+  committed = first.ordinary_materialization_atomic_write_plan;
+  assert.ok(committed, 'first encounter keeps its admitted scene seed');
+  assert.equal(first.duration_minutes, 0);
+  assert.deepEqual(first.write_fragments, []);
+  assert.deepEqual(committed.next_aggregate.presence_resolutions, []);
+  assert.ok(committed.transitions.every(transition => transition.kind !== 'resolve_presence'));
+  assert.notEqual(committed.request_identity, `${input.request.root_turn_id}:ordinary:presence:step:1`);
+  const reloaded = await createPorts({ ordinaryDiscoveryResolver: resolver,
+    semanticActivityOwner: owners.semanticActivityOwner }).ordinaryDiscoveryResolver(input);
+  assert.equal(reloaded.duration_minutes, 0);
+  assert.deepEqual(reloaded.write_fragments, []);
+  assert.equal(reloaded.ordinary_materialization_atomic_write_plan, undefined);
+  assert.equal(calls, 1);
+});

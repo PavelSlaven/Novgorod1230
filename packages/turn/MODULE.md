@@ -35,6 +35,9 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   Исчерпание budget/cap без transition возвращает existing player-response no-op:
   состояние неизменно, model/record/commit и technical failure отсутствуют; seed
   transition того же turn всё ещё может запечатать собственный `no_change` plan.
+  Presence preflight с `decision: null` не создаёт resolve_presence; сохраняется
+  только уже принятый seed. Нормальные модельные отрицательные решения
+  сохраняют собственную presence identity, отличную от seed и replay.
 - Сводка уже player-safe carried/worn items и качественная оценка уже
   предъявленных sensory facts относятся к write-free direct observation, а не
   к ordinary materialization. Обязательный для успешного write-free direct
@@ -247,7 +250,9 @@ state; concealed capabilities остаются server-only. Unresolved remainder
 проецируется только через boolean `discovery_available`, без expected result,
 permission и capacity.
 Stage B может выбрать unlisted ordinary semantic type/name и независимо назвать
-admission class полного candidate с qualifiers/relations; при несовпадении с
+admission class полного candidate с qualifiers/relations. Явные `no_change` и
+`authority_required` сохраняются до classification и ничего не admit-ят;
+для остальных verdict при несовпадении с
 code-owned candidate owner фиксирует `authority_required`, не физическое
 отсутствие. Exact retry сохраняет этот отказ, не reroll и не `absent`. До item admission полный candidate также получает verdict
 `standalone_item|non_item_detail`; `non_item_detail` сохраняет `no_change`

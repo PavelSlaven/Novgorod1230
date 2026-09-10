@@ -159,7 +159,9 @@ function directSeedChange(value) {
   if (value?.kind === 'semantic_activity') {
     const duration = Number(value.duration_minutes);
     return Number.isSafeInteger(duration) && duration > 0
-      ? `Прошло ${duration} ${minuteWord(duration)}.` : null;
+      ? value.discovery_kind === 'search'
+        ? `Поиск занял ${duration} ${minuteWord(duration)}.`
+        : `Прошло ${duration} ${minuteWord(duration)}.` : null;
   }
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';

@@ -27,10 +27,11 @@ test('local play persists a free turn and replays it after a server restart',
     const settings = Object.freeze({ ...LOCAL_POSTGRES });
     const port = await freePort();
     const canonical = createCanonicalPhase11LlmResponder();
+    let fixtureResolution = 'no_change';
     const llm = await startLocalLlmProviderFixture({ respond: (request) =>
       request.body.messages?.[0]?.content === 'Return a JSON object with {"ok":true}.'
         ? { ok: true }
-        : searchFixtureResponse(request.input)
+        : searchFixtureResponse(request.input, fixtureResolution)
           ?? canonical({ ...request, model: fixtureRoleModel(request.input) })
     });
     const provider = Object.freeze({ mode: 'custom',
@@ -72,23 +73,33 @@ test('local play persists a free turn and replays it after a server restart',
       client_ack_id: `local-play-opening-${suffix}`
     });
     const beforeTurn = await committedState(localPlay.postgres.partyUrl, partyId);
-    const turnRequest = {
+    let turnRequest = {
       request_id: requestId,
       idempotency_key: requestId,
       raw_text: 'Перебрать речной сор в поисках щепки.'
     };
-    const turn = await post(port,
-      `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, turnRequest);
+    const attempts = [];
+    for (const [index, resolution] of ['no_change', 'authority_required', 'materialize'].entries()) {
+      fixtureResolution = resolution;
+      turnRequest = { request_id: `${requestId}-${index}`, idempotency_key: `${requestId}-${index}`,
+        raw_text: ['Перебрать сор в поисках обрывка ткани.',
+          'Перебрать сор в поисках предмета неясного происхождения.',
+          'Перебрать сор в поисках щепки.'][index] };
+      const result = await post(port,
+        `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, turnRequest);
+      const committed = await committedState(localPlay.postgres.partyUrl, partyId);
+      assert.equal(Number(committed.clock.whole_minutes) - Number(beforeTurn.clock.whole_minutes), 15 * (index + 1));
+      assert.equal(Number(committed.body.energy), Number(beforeTurn.body.energy) - index - 1);
+      assert.equal(committed.item_ids.length, beforeTurn.item_ids.length + (resolution === 'materialize' ? 1 : 0));
+      assert.equal(committed.activities.length, index + 1);
+      assert.ok(committed.activities.every(activity => Number(activity.original_total_minutes) === 15 && activity.status === 'completed'));
+      attempts.push({ request: turnRequest, result });
+    }
+    const turn = attempts.at(-1).result;
     assert.equal(turn.screen.schema, 'lower_dvina_trace_turn_screen');
     assert.equal(JSON.stringify(turn.screen).includes('hidden_truth'), false);
     const beforeRestart = await committedState(localPlay.postgres.partyUrl, partyId);
-    assert.equal(beforeRestart.state_version, beforeTurn.state_version + 1);
-    assert.equal(Number(beforeRestart.clock.whole_minutes) - Number(beforeTurn.clock.whole_minutes), 15);
-    assert.equal(Number(beforeRestart.body.energy), Number(beforeTurn.body.energy) - 1);
-    assert.equal(beforeRestart.item_ids.length, beforeTurn.item_ids.length + 1);
-    assert.equal(beforeRestart.activities.length, 1);
-    assert.equal(Number(beforeRestart.activities[0].original_total_minutes), 15);
-    assert.equal(beforeRestart.activities[0].status, 'completed');
+    assert.equal(beforeRestart.state_version, beforeTurn.state_version + 3);
 
     await localPlay.close();
     localPlay = await start();
@@ -99,9 +110,11 @@ test('local play persists a free turn and replays it after a server restart',
     assert.deepEqual(await committedState(localPlay.postgres.partyUrl, partyId), beforeRestart);
     const llmCalls = llm.requests.length;
 
-    const replay = await post(port,
-      `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, turnRequest);
-    assert.deepEqual(replay, turn);
+    for (const attempt of attempts) {
+      const replay = await post(port,
+        `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, attempt.request);
+      assert.deepEqual(replay, attempt.result);
+    }
     assert.deepEqual(await committedState(localPlay.postgres.partyUrl, partyId), beforeRestart);
     assert.equal(llm.requests.length, llmCalls);
   });
@@ -195,7 +208,7 @@ function fixtureRoleModel(input) {
   throw new Error(`Unexpected fixture request schema: ${value?.schema ?? 'none'}`);
 }
 
-function searchFixtureResponse(input) {
+function searchFixtureResponse(input, resolution) {
   const request = input?.request ?? input;
   if (request?.schema === 'turn_step_request_v1') return {
     interpretation: { player_goal: request.root_player_action,
@@ -212,6 +225,8 @@ function searchFixtureResponse(input) {
   if (request.mode === 'seed_scope') return { resolution: 'seeded',
     density_band_proposal: 'ordinary', background_groups: [{ descriptor: 'Кусочки древесины среди речного сора.' }],
     reason_code: 'seed' };
+  if (resolution !== 'materialize') return { resolution, semantic_admission_class: 'document_like',
+    semantic_materialization_kind: 'standalone_item', reason_code: 'insufficient_support', entities: [] };
   return { resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
     semantic_admission_class: 'common_mundane', reason_code: 'ordinary_wood',
     world_knowledge_claim_refs: [request.world_knowledge.facts[0].claim_ref],

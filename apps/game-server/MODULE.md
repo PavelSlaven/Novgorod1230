@@ -60,6 +60,10 @@ and adds no second transaction owner.
   место, наблюдаемые вещи и sensory details синтетическим сообщением об успехе.
   Domain-native projection сохраняет приоритет; невыполненный intent остаётся
   отдельной неопределённостью и не доказывает частичное достижение цели.
+  Успешно применённый физический поиск связывает собственный no_change или
+  authority_required с activity seed: подтверждённой находки в этой попытке
+  нет. Это не доказывает отсутствия вещи в мире; inspect/preflight и другая
+  activity не получают такой вывод по соседнему query.
 - Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
 
 При завершённом direct `not_achieved` current-scene projection передаёт недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи.

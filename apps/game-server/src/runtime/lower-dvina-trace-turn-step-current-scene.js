@@ -152,16 +152,24 @@ function playerSafeSceneItems(state) {
 }
 export function projectDirectSeedChanges({ input, directSeedKeys }) {
   const seed = input?.consequence?.visible_seed ?? {};
-  return directSeedKeys.map((key) => directSeedChange(seed[key]))
+  return directSeedKeys.flatMap((key) => directSeedChange(seed[key]))
     .filter(Boolean);
 }
 function directSeedChange(value) {
   if (value?.kind === 'semantic_activity') {
     const duration = Number(value.duration_minutes);
-    return Number.isSafeInteger(duration) && duration > 0
-      ? value.discovery_kind === 'search'
-        ? `Поиск занял ${duration} ${minuteWord(duration)}.`
-        : `Прошло ${duration} ${minuteWord(duration)}.` : null;
+    if (!Number.isSafeInteger(duration) || duration <= 0) return null;
+    const elapsed = value.discovery_kind === 'search'
+      ? `Поиск занял ${duration} ${minuteWord(duration)}.`
+      : `Прошло ${duration} ${minuteWord(duration)}.`;
+    const result = value.discovery_result;
+    if (result == null) return elapsed;
+    if (value.discovery_kind !== 'search' || !plain(result)
+        || Object.keys(result).length !== 2
+        || !['no_change', 'authority_required'].includes(result.resolution)
+        || !text(result.query) || !result.query.trim()) failCurrentScene();
+    return [elapsed,
+      `В этой попытке поиска по вопросу «${result.query}» подтверждённой находки нет.`];
   }
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';

@@ -55,7 +55,9 @@ for (const resolution of ['absent', 'no_change', 'authority_required']) {
     assert.doesNotThrow(() => validateTurnStepBatchPlanBindings(binding));
     assert.deepEqual(projectDirectSeedChanges({ input: { consequence: applied.consequence_fragment },
       directSeedKeys: Object.entries(applied.consequence_fragment.visible_seed)
-        .filter(([, value]) => value.kind === 'semantic_activity').map(([key]) => key) }), ['Поиск занял 15 минут.']);
+        .filter(([, value]) => value.kind === 'semantic_activity').map(([key]) => key) }),
+      ['Поиск занял 15 минут.', ...(resolution === 'absent' ? [] : [
+        `В этой попытке поиска по вопросу «${input.operation.query}» подтверждённой находки нет.`])]);
     assert.equal(applied.duration_minutes, 15);
     assert.equal(applied.consequence_fragment.duration_minutes, 15);
     assert.equal(applied.body_state_after.energy, 99);
@@ -95,6 +97,7 @@ for (const resolution of ['absent', 'no_change', 'authority_required']) {
     const recall = await retryPorts.ordinaryDiscoveryResolver({ ...input,
       operation: { ...input.operation, discovery_kind: 'inspect' } });
     assert.equal(recall.duration_minutes, 0);
+    assert.equal(JSON.stringify(recall.consequence_fragment).includes('discovery_result'), false);
     assert.equal(calls, 2);
     const firstTrace = { ...cachedBinding.factual.loop_trace.step_traces[0],
       approved_plan: { ...input.plan, operations: [{ ...input.operation, discovery_kind: 'inspect' }] } };
@@ -166,6 +169,7 @@ test('missing supporting basis is preflight: first seed persists without search 
   committed = first.ordinary_materialization_atomic_write_plan;
   assert.ok(committed, 'first encounter keeps its admitted scene seed');
   assert.equal(first.duration_minutes, 0);
+  assert.equal(JSON.stringify(first.consequence_fragment).includes('discovery_result'), false);
   assert.deepEqual(first.write_fragments, []);
   assert.deepEqual(committed.next_aggregate.presence_resolutions, []);
   assert.ok(committed.transitions.every(transition => transition.kind !== 'resolve_presence'));
@@ -176,4 +180,22 @@ test('missing supporting basis is preflight: first seed persists without search 
   assert.deepEqual(reloaded.write_fragments, []);
   assert.equal(reloaded.ordinary_materialization_atomic_write_plan, undefined);
   assert.equal(calls, 1);
+});
+
+test('performed result belongs only to its search, not another unresolved query or activity', () => {
+  const query = 'Найти обрезок верёвки.';
+  const seed = { turn_step_search: { kind: 'semantic_activity', discovery_kind: 'search',
+    duration_minutes: 15, discovery_result: { resolution: 'no_change', query } },
+    turn_step_rest: { kind: 'semantic_activity', duration_minutes: 5 },
+    ordinary_presence_seed: { kind: 'ordinary_presence_seed', resolution: 'no_change',
+      query: 'Осмотреть роспись на чаше.' } };
+  const changes = projectDirectSeedChanges({ input: { consequence: { visible_seed: seed } },
+    directSeedKeys: ['turn_step_search', 'turn_step_rest'] });
+  assert.deepEqual(changes, ['Поиск занял 15 минут.',
+    `В этой попытке поиска по вопросу «${query}» подтверждённой находки нет.`,
+    'Прошло 5 минут.']);
+  assert.equal(changes.some(value => value.includes('роспись')), false);
+  seed.turn_step_rest.discovery_result = seed.turn_step_search.discovery_result;
+  assert.throws(() => projectDirectSeedChanges({ input: { consequence: { visible_seed: seed } },
+    directSeedKeys: ['turn_step_rest'] }), { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID' });
 });

@@ -250,6 +250,9 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
     working_projection: projection,
     operation: { op: 'apply_semantic_activity', activity }
   }, state, semanticActivityOwner);
+  const presence = applied.consequence_fragment?.visible_seed?.ordinary_presence_seed;
+  const searchResult = ['no_change', 'authority_required'].includes(presence?.resolution)
+    ? { resolution: presence.resolution, query: presence.query } : null;
   return { ...applied, ...timed, summary: applied.summary,
     duration_minutes: timed.consequence_fragment.duration_minutes,
     write_fragments: [...applied.write_fragments, ...timed.write_fragments],
@@ -257,6 +260,7 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
       ...timed.consequence_fragment, visible_seed: {
         ...applied.consequence_fragment?.visible_seed,
         ...Object.fromEntries(Object.entries(timed.consequence_fragment.visible_seed)
-          .map(([key, value]) => [key, { ...value, discovery_kind: 'search' }]))
+          .map(([key, value]) => [key, { ...value, discovery_kind: 'search',
+            ...(searchResult == null ? {} : { discovery_result: searchResult }) }]))
       } } };
 }

@@ -120,6 +120,11 @@ test('local play persists a free turn and replays it after a server restart',
         for (const item of sourceScene.visible_objects) assert.ok(visible.visible_objects.some(
           current => current.display_label === item.display_label));
         assert.ok(visible.visible_changes.includes('Поиск занял 15 минут.'));
+        if (resolution === 'no_change' || resolution === 'authority_required') {
+          assert.ok(visible.visible_changes.includes(
+            `В этой попытке поиска по вопросу «${turnRequest.raw_text}» подтверждённой находки нет.`));
+          assert.ok(visible.uncertainties.some(value => value.includes(`«${turnRequest.raw_text}»`)));
+        }
       }
       assert.equal(result.screen.panels.character.visible, true);
       assert.equal(result.screen.panels.inventory.visible, true);

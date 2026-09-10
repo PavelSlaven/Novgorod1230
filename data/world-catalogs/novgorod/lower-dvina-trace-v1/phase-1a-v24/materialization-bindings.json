@@ -333,5 +333,108 @@
         ]
       }
     ]
+  },
+  "player_dossier_projection": {
+    "historical_year": 1230,
+    "knowledge": {
+      "region_id": "gn_nov_g1_xp017_yp026",
+      "current_year": 1230,
+      "initially_forbidden_categories": [
+        "culprit_identity",
+        "executor_identity",
+        "hidden_motive",
+        "hidden_event_sequence"
+      ],
+      "initial_records": [
+        {
+          "id": "trace_ld_v1_player_received_assignment",
+          "knowledge_state": "known",
+          "category": "received_instruction",
+          "source_class": "received_instruction",
+          "text": "В нынешнюю торговую поездку вас отправил купец Савва Твердич. Вы выполняли его поручение, сопровождая доверенное вам имущество."
+        }
+      ]
+    },
+    "goals": {
+      "immediate_need": "прийти в себя после крушения",
+      "consequence_of_inaction": "переохлаждение и потеря следов происшествия"
+    },
+    "inventory_item_projections": {
+      "trace_ld_v1_item_mikula_knife": {
+        "use": "personal_travel_tool",
+        "risk": [],
+        "condition_state": "serviceable",
+        "legal_status": "owned",
+        "physical_position": "worn_quick",
+        "claim_state": "established"
+      }
+    },
+    "property_and_access": {
+      "rules": []
+    },
+    "relations": [
+      {
+        "relation_mode": "abstract_background_relation",
+        "external_owner_ref": "trace_ld_v1_external_owner_savva_tverdich",
+        "display_name": "Савва Твердич",
+        "relation": "купец, давший нынешнее поручение"
+      },
+      {
+        "npc_candidate_id": "onisim_boatman",
+        "display_name": "Онисим",
+        "relation": "нанятый лодочник в нынешней поездке",
+        "recognition_basis": "prior_admitted_perception",
+        "knowledge_state": "known"
+      }
+    ],
+    "start_place_connection": {
+      "selected_candidate_id": "trace_ld_v1_loc_wreck_shore",
+      "region_id": "gn_nov_g1_xp017_yp026",
+      "year": 1230,
+      "reason": "Вы ехали по реке с нанятым лодочником Онисимом, выполняя поручение купца Саввы Твердича. После крушения лодки вы пришли в себя на берегу Нижней Двины."
+    },
+    "audit_self_check": {
+      "pass": true,
+      "concerns": [],
+      "evidence": [
+        "lower_dvina_trace_phase_1a_materialization_bindings_v24",
+        "lower_dvina_trace_player_profile_mikula_v1",
+        "trace_ld_v1_participant_profile_set"
+      ]
+    },
+    "approved_empty_collections": [
+      "inventory_item_projections.trace_ld_v1_item_mikula_knife.risk",
+      "property_and_access.rules"
+    ],
+    "source_refs": {
+      "player_profile": "lower_dvina_trace_player_profile_mikula_v1",
+      "body_profile": "trace_ld_v1_body_start_after_crash",
+      "item_template": "trace_ld_v1_item_mikula_knife",
+      "location_profile": "trace_ld_v1_loc_wreck_shore",
+      "knowledge_rules": "trace_ld_v1_knowledge_lie_memory_rules",
+      "participant_profiles": "trace_ld_v1_participant_profile_set",
+      "external_owner": "trace_ld_v1_external_owner_savva_tverdich"
+    },
+    "origin": {
+      "biography": "Вы — сын разорившегося кожевника. В семье вы помогали с сырьём и товаром, участвовали в погрузке и выполняли хозяйственные поручения. Ремесло отца вам знакомо, но самостоятельным мастером вы не стали. После разорения отцовского дела вы зарабатываете, помогая торговым людям."
+    },
+    "memory": {
+      "records": [
+        {
+          "id": "trace_ld_v1_player_trade_experience",
+          "knowledge_state": "known",
+          "category": "own_experience",
+          "source_class": "own_action",
+          "text": "Вы сопровождали старших в торговых поездках: следили за счётом товара, различали владельческие знаки, переписывали простые записи и выполняли поручения."
+        },
+        {
+          "id": "trace_ld_v1_player_boat_journey",
+          "knowledge_state": "known",
+          "category": "own_experience",
+          "source_class": "prior_admitted_perception_or_message",
+          "text": "В нынешней поездке нанятый лодочник Онисим вёз вас и порученное имущество по реке. Вы помните его по совместной поездке. Путь оборвало крушение; вы пришли в себя на берегу Нижней Двины."
+        }
+      ]
+    }
   }
 }

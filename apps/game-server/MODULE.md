@@ -383,11 +383,17 @@ after encoder recovery follows the existing idempotency owner.
 composition, atomic transaction/lock/idempotency, exact persistence and the
 leased post-commit presentation lifecycle.
 
-Current unpublished publication v28 introduces the player by the approved name,
-role and ordinary work from player profile v2 before its existing wreck/body/shore
-facts. Opening authoring does not create a particular remembered voyage, cargo,
-mission or hidden cause. Historical publication prose remains unchanged.
+Current unpublished publication v28 introduces the player's family, trade work,
+received assignment and remembered river journey from the current authored
+dossier, before the wreck/body/shore facts. These premises persist in existing
+origin, memory, knowledge and relation fields. They establish no cargo contents,
+destination, cause of the wreck or present fate of remembered people/property.
+Historical publication prose and dossier content remain unchanged.
 
-Current-scene composition retains the safe projector's own actor name and role
-as self-bound `known_context` for the initial and later states. Narration gets
-this identity without raw dossier, hidden biography or merging a namesake NPC.
+Current-scene and final visible composition retain the safe projector's own
+identity, biography, memories and available player-safe knowledge text as
+`known_context`, including
+authored actions. This enriches the resulting scene without restoring old scene
+objects or people after movement. The Character panel receives the same safe
+self-history; hidden records and raw dossier metadata remain private. Prior
+relations do not automatically recognize an unidentified visible person.

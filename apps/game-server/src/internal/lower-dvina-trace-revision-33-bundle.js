@@ -5,7 +5,7 @@ import { validateNpcRoutineProfile } from '@rus/npc-runtime';
 import { ROOT, readBundleArtifact } from './lower-dvina-trace-s1-bundle-utils.js';
 
 export const TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST =
-  'dfa37d120ab43d1270ccf16476d67202aa9127b12fb532d73c260e1530d4f580';
+  'c1c6feaa072bc334a12703df17fe97df057c741cebc0ce0cf078527df87ee66b';
 export const TRACE_REVISION33_DEFINITION_DIGEST =
   '93b7a2eab07ab7e08b6557e3818a49d1c242a8bdafc68ab790a5b19dc92e3d9c';
 const ITEM_DISPLAY_OVERLAY_DIGEST = 'ff8c3cd970bbe27fcff3b4ead470d68b1855e976047c31c1fae1a690a46bcb50';
@@ -17,7 +17,7 @@ const artifacts = {
     'c52d9eaa4c1fe27b6f5a3bc0908671f482f7abf82f82ef3451c9b04a76f89aca'],
   phase_1a_manifest: ['phase-1a-v24/manifest.json', TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST],
   materialization_bindings: ['phase-1a-v24/materialization-bindings.json',
-    '61fce1eea908b14aeb5128ebd95485ae23906e35d8d722798012ffafd64bba7c']
+    '485a7f2fc1048ae37c88ed40ca8bfc4c8058aa97fdba2a46900536d03143f2fb']
 };
 export async function loadLowerDvinaTraceRevision33Bundle({ rootDir,
   historicalBundle, fail, freezeDeep, validateDefinitionPins }) {

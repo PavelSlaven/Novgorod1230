@@ -170,6 +170,16 @@ export function projectKnowledge(records, { strict = false } = {}) {
   });
 }
 
+export function projectKnownContext(actor, knowledge = []) {
+  return [...new Set([
+    ...(text(actor?.name) ? [`Вас зовут ${actor.name}.`] : []),
+    ...(text(actor?.role) ? [`Ваш род занятий: ${actor.role}.`] : []),
+    text(actor?.biography),
+    ...(actor?.memory ?? []), ...knowledge
+  ].map(value => typeof value === 'string' ? value : value?.text)
+    .filter(value => typeof value === 'string' && value.trim()))];
+}
+
 function admittedScenes(state) {
   const knownRoutes = new Set((state.route_knowledge ?? []).map((record) =>
     typeof record === 'string' ? record : record?.route_ref ?? record?.route_id)

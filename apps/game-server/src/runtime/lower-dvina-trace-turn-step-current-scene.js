@@ -1,6 +1,7 @@
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { projectLowerDvinaTracePlayerSafeState } from
   './lower-dvina-trace-player-safe-state.js';
+import { projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
 import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
@@ -25,10 +26,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     committed_state: projectionSource,
     actor_id: projectionSource.actor_id
   });
-  const selfKnowledge = [
-    ...(text(actor.name) ? [`Вас зовут ${actor.name}.`] : []),
-    ...(text(actor.role) ? [`Ваш род занятий: ${actor.role}.`] : [])
-  ];
+  const selfKnowledge = projectKnownContext(actor, playerSafe.knowledge);
   const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
     playerSafe.position,
     playerSafe.actor_id);

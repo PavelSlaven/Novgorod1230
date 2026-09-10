@@ -28,9 +28,9 @@ export async function assertOpeningPublication({ fixture, createRuntime, release
   assert.equal(next.screen.main_prose,
     current.public_projection.opening_projection.opening_prose);
   assert.notEqual(next.screen.main_prose, started.screen.main_prose);
-  assert.match(next.screen.main_prose, /^Вас зовут Микула\. Вы младший приказчик:/u);
-  for (const detail of ['в торговых поездках помогаете старшим', 'со счётом товара и простыми записями',
-    'после крушения', 'вас знобит', 'Сначала бы согреться и прийти в себя']) {
+  assert.match(next.screen.main_prose, /^Вас зовут Микула\. Вы — младший приказчик,/u);
+  for (const detail of ['сын разорившегося кожевника', 'купец Савва Твердич',
+    'Нанятый лодочник Онисим', 'Путь оборвало крушение', 'вас знобит', 'Прежде всего надо бы согреться']) {
     assert.equal(next.screen.main_prose.includes(detail), true);
   }
   assert.doesNotMatch(started.screen.main_prose, /Вас зовут Микула/u);

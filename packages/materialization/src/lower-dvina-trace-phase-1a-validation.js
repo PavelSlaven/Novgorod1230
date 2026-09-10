@@ -1,3 +1,4 @@
+import { assertLowerDvinaTracePlayerDossierProjection } from './lower-dvina-trace-player-dossier.js';
 import { canonicalDigest } from './core.js';
 import {
   assertLowerDvinaTracePhase3Bindings,
@@ -30,7 +31,7 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
   if (definitionRevision === revisions.m21) {
     if (bindings?.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v24'
         || bindings.scenario_definition_revision !== 33
-        || bundle.artifact_pins?.materialization_bindings?.digest !== '61fce1eea908b14aeb5128ebd95485ae23906e35d8d722798012ffafd64bba7c')
+        || bundle.artifact_pins?.materialization_bindings?.digest !== '485a7f2fc1048ae37c88ed40ca8bfc4c8058aa97fdba2a46900536d03143f2fb')
       fail('TRACE_PHASE_1A_BINDING_INVALID', 'Revision 33 requires Phase 1A v24.');
     return;
   }
@@ -152,53 +153,14 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
     fail('TRACE_START_SPATIAL_BINDING_INCOMPLETE', 'Start G5 node/anchor template and capacities must resolve exactly.');
   }
   if (phase3Definition) assertLowerDvinaTracePhase3Bindings(bundle, fail);
-  const dossier = bindings.player_dossier_projection;
-  const playerKnowledge = bundle.knowledge_lie_memory_rules.participant_knowledge_bindings
-    .filter((value) => value.participant_ref === 'player_clerk');
-  const knife = bundle.item_container_set.item_templates
-    .filter((value) => value.item_template_id === 'trace_ld_v1_item_mikula_knife');
-  const startYear = Number(bundle.body_environment_profiles.start_timestamp_specification
-    ?.calendar_date_contract?.exact_date?.year);
-  const itemProjection = dossier?.inventory_item_projections?.[knife[0]?.item_template_id];
-  if (playerKnowledge.length !== 1 || knife.length !== 1
-    || dossier?.historical_year !== startYear
-    || dossier.knowledge?.region_id !== location[0].region_ref
-    || dossier.knowledge?.current_year !== startYear
-    || canonicalDigest(dossier.knowledge?.initially_forbidden_categories)
-      !== canonicalDigest(playerKnowledge[0].initially_forbidden_categories)
-    || dossier.start_place_connection?.selected_candidate_id !== location[0].location_profile_id
-    || dossier.start_place_connection?.region_id !== location[0].region_ref
-    || dossier.start_place_connection?.year !== startYear
-    || !dossier.start_place_connection?.reason
-    || !dossier.goals?.immediate_need
-    || !dossier.goals?.consequence_of_inaction
-    || itemProjection?.use !== knife[0].causal_basis
-    || !Array.isArray(itemProjection?.risk)
-    || itemProjection.risk.length !== 0
-    || !itemProjection?.condition_state
-    || !itemProjection?.legal_status
-    || !itemProjection?.physical_position
-    || !itemProjection?.claim_state
-    || !Array.isArray(dossier.property_and_access?.rules)
-    || dossier.property_and_access.rules.length !== 0
-    || !Array.isArray(dossier.relations)
-    || dossier.relations.length !== 0
-    || !Array.isArray(dossier.approved_empty_collections)
-    || canonicalDigest(dossier.approved_empty_collections) !== canonicalDigest([
-      'inventory_item_projections.trace_ld_v1_item_mikula_knife.risk',
-      'property_and_access.rules',
-      'relations'
-    ])
-    || dossier.audit_self_check?.pass !== true) {
-    fail('TRACE_PLAYER_DOSSIER_BINDING_INCOMPLETE', 'Player dossier semantics must resolve from the approved Phase-1A binding.');
-  }
+  assertLowerDvinaTracePlayerDossierProjection({ bundle, bindings, location, fail });
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
   if (definitionRevision === revisions.m21) {
     if (bundle.phase_1a_manifest?.package_id !== 'lower_dvina_trace_phase_1a_v24'
         || bundle.phase_1a_manifest.scenario_definition_revision !== 33
-        || bundle.artifact_pins?.phase_1a_manifest?.digest !== 'dfa37d120ab43d1270ccf16476d67202aa9127b12fb532d73c260e1530d4f580')
+        || bundle.artifact_pins?.phase_1a_manifest?.digest !== 'c1c6feaa072bc334a12703df17fe97df057c741cebc0ce0cf078527df87ee66b')
       fail('TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID', 'Revision 33 requires Phase 1A v24.');
     return;
   }

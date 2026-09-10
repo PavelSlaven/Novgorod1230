@@ -29,6 +29,10 @@ Revision 33 инициализирует calendar routine через `@rus/npc-r
 approved profile. Current successor item templates use exact approved catalog
 labels; materialization writes them once to existing `state.display_name` for
 initial items and Stage 16 equipment. Historical template content is unchanged.
+The current dossier binding also supplies player-known biography, memories,
+received instructions and prior relations through the existing dossier fields.
+Materialization copies those authored premises; it creates neither a new NPC
+nor a current perceptual identification from a remembered relationship.
 Stage 24 сохраняет её в canonical schedule table в общей
 NewGame транзакции; подготовленный G6 при этом не materialize заранее.
 

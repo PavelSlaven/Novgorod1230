@@ -72,8 +72,11 @@ test('local play persists a free turn and replays it after a server restart',
       scenario_id: 'lower_dvina_trace_v1', request_id: `local-play-new-${suffix}`
     });
     const partyId = started.party_id;
-    assert.match(started.screen.main_prose, /^Вас зовут Микула\. Вы младший приказчик:/u);
+    assert.match(started.screen.main_prose, /^Вас зовут Микула\. Вы — младший приказчик,/u);
     assert.ok(renderScreen(started.screen).includes('<dt>Вы</dt><dd>Микула, младший приказчик</dd>'));
+    assert.match(started.screen.panels.character.data.biography, /разорившегося кожевника/u);
+    assert.match(started.screen.panels.character.data.memories, /Онисим/u);
+    assert.match(started.screen.panels.character.data.knowledge, /Савва Твердич/u);
     assert.equal(started.screen.panels.character.visible, true);
     assert.equal(started.screen.panels.inventory.visible, true);
     assert.ok(started.screen.panels.inventory.data.zones.worn_quick.some(item => item.label === 'хозяйственный нож'));
@@ -111,7 +114,14 @@ test('local play persists a free turn and replays it after a server restart',
         `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, turnRequest);
       const committed = await committedState(localPlay.postgres.partyUrl, partyId);
       const roleInputs = llm.requests.slice(callsBefore).map(({ input }) => input?.request ?? input);
-      const playerSafe = roleInputs.find(input => input?.schema === 'turn_step_request_v1').player_safe_state;
+      const plannerInput = roleInputs.find(input => input?.schema === 'turn_step_request_v1');
+      const playerSafe = plannerInput.player_safe_state;
+      assert.match(plannerInput.actor.biography, /разорившегося кожевника/u);
+      assert.ok(plannerInput.actor.memory.some(record => record.text.includes('Онисим')));
+      assert.ok(playerSafe.knowledge.some(record => record.text.includes('Савва Твердич')));
+      assert.equal(committed.state_payload.player_profile.origin.biography, plannerInput.actor.biography);
+      assert.deepEqual(committed.state_payload.player_profile.memory.records.map(record => record.text),
+        plannerInput.actor.memory.map(record => record.text));
       const sourceScene = playerSafe.current_visible_context;
       const profile = scenePresentationForLocation({ scenePresentation, locationRef: playerSafe.position.location_ref });
       const narrated = roleInputs.filter(input => input?.schema === 'narration_request');
@@ -120,6 +130,10 @@ test('local play persists a free turn and replays it after a server restart',
         assert.equal(visible.visible_scene, sourceScene.visible_scene);
         assert.ok(visible.known_context.includes('Вас зовут Микула.'));
         assert.ok(visible.known_context.includes('Ваш род занятий: младший приказчик.'));
+        assert.ok(visible.known_context.includes(plannerInput.actor.biography));
+        for (const record of [...plannerInput.actor.memory, ...playerSafe.knowledge]) {
+          assert.ok(visible.known_context.includes(record.text));
+        }
         assert.ok(profile.player_visible_physical_facts.length > 0);
         for (const detail of profile.player_visible_physical_facts) assert.ok(visible.sensory_details.includes(detail), JSON.stringify({ index, missing: detail, profile: profile.player_visible_physical_facts, narrated: visible.sensory_details }));
         for (const item of sourceScene.visible_objects) assert.ok(visible.visible_objects.some(

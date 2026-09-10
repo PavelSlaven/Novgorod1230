@@ -57,12 +57,12 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
       '93b7a2eab07ab7e08b6557e3818a49d1c242a8bdafc68ab790a5b19dc92e3d9c',
     phase_1a_package_id: 'lower_dvina_trace_phase_1a_v24',
     phase_1a_manifest_digest:
-      'dfa37d120ab43d1270ccf16476d67202aa9127b12fb532d73c260e1530d4f580',
+      'c1c6feaa072bc334a12703df17fe97df057c741cebc0ce0cf078527df87ee66b',
     phase_1b_package_id: 'lower_dvina_trace_phase_1b_v28',
     phase_1b_manifest_digest:
-      'a13c32581cf741d691b4277f76040042bd6760583d11feeb274d60cf2c63706a',
+      '6c1eb16fff0eabd32ce836184b2cb14b6de5f59a65f4c95a4198397b8bfe630a',
     phase_1b_binding_digest:
-      '2d43ad6b2dd12d25d7ec18ce8231535d1940afc66c2404690be84f1258b6a852',
+      '2b853df7993671afaea9cfdad64647bf00b8eff89307854b06cad91f602c8b6c',
     n1_profile_id: 'lower_dvina_trace_n1_background_npc_v1',
     n1_profile_revision: 1,
     n1_profile_scenario_definition_revision: 31,

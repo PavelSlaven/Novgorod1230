@@ -15,6 +15,8 @@ Browser-клиент, который получает только versioned pub
   вычисляет server из committed state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
+- Character отображает уже безопасные предысторию, память и известные сведения;
+  воспоминание о человеке не добавляет его в список присутствующих людей;
 - browser bootstrap и обработкой пользовательских намерений.
 - сохранением `{party_id, request}` незавершённого хода в `rus.pending_turn`
   до POST: retry и Continue после reload повторяют точный request/idempotency key.

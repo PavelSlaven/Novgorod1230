@@ -3,6 +3,8 @@ import { projectLowerDvinaTraceVisibleNpcDetails } from
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
+import { projectActor } from './lower-dvina-trace-player-safe-entities.js';
+import { projectKnowledge, projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
 
 const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
   'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
@@ -23,6 +25,11 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
   }).map((npc) => [npc.instance_id, npc]));
   return deepFreeze({
     ...structuredClone(visibleContext),
+    known_context: [...new Set([...visibleContext.known_context,
+      ...projectKnownContext(projectActor({ profile: committedState?.player_profile,
+        actorId: committedState?.actor_id }), projectKnowledge([
+          ...(committedState?.player_profile?.knowledge?.initial_records ?? []),
+          ...(committedState?.knowledge ?? [])]))])],
     visible_npc: visibleContext.visible_npc.map((npc) => {
       const detail = details.get(npc?.entity_ref?.entity_id);
       const informative = detail != null

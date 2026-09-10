@@ -8,10 +8,13 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   allowRepair = true
 }) {
   let originalOutput = null;
+  // Repair reuses this immutable snapshot and its existing grounding identity.
+  let modelRequest = null;
   try {
     return {
       plan: await requestAndValidateTurnStepPlan({ request,
         turnStepModel: async (safeRequest) => {
+          modelRequest = safeRequest;
           const output = await turnStepModel(safeRequest);
           originalOutput = structuredClone(output);
           return output;
@@ -34,7 +37,8 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       code: 'json_parse_failed', message: 'Planner output was not valid JSON.' }]
       : [...(error.details?.errors ?? [])];
     if (!parseFailure && originalOutput != null
-        && !structuralErrors.some(requiresSemanticRepair)
+        && (!structuralErrors.some(requiresSemanticRepair)
+          || canAuditSpeechBeforeRepair(originalOutput, structuralErrors))
         && typeof semanticPlanValidator === 'function') {
       try {
         await semanticPlanValidator(deepFreeze({ plan: originalOutput,
@@ -63,7 +67,7 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         plan: await requestAndValidateTurnStepPlan({
           request,
           turnStepModel: (safeRequest) =>
-            turnStepModel(safeRequest, repairContext),
+            turnStepModel(modelRequest ?? safeRequest, repairContext),
           semanticPlanValidator,
           preparedChainContext,
           attempt: 2
@@ -102,6 +106,18 @@ const SEMANTIC_REPAIR_CODES = new Set([
 
 function requiresSemanticRepair({ code } = {}) {
   return SEMANTIC_REPAIR_CODES.has(code);
+}
+
+function canAuditSpeechBeforeRepair(plan, errors) {
+  return errors.some(({ code }) => code === 'direct_result_kind')
+    && plan.resolution === 'direct'
+    && plan.direct_result_kind === 'player_utterance'
+    && (plan.operations == null
+      || Array.isArray(plan.operations) && plan.operations.length === 0)
+    && plan.check == null
+    && typeof plan.utterance?.speaker_ref === 'string'
+    && typeof plan.utterance?.utterance_text === 'string'
+    && ['verbatim', 'intent_paraphrase'].includes(plan.utterance?.input_mode);
 }
 
 export async function requestAndValidateTurnStepPlan({ request, turnStepModel,

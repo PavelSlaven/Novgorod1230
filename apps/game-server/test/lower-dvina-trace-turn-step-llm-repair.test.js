@@ -92,6 +92,7 @@ test('repair role receives original output, request, and structural errors', asy
   assert.deepEqual(payload.request, input);
   assert.deepEqual(payload.structural_errors, structuralErrors);
   assert.equal(seen.messages[0].content.includes('Repair only listed validation errors'), true);
+  assert.equal(seen.messages[0].content.includes('complete player_utterance envelope'), false);
   assert.match(seen.messages[0].content,
     /only error is.*activity\.owner[\s\S]*action production requires semantic activity[\s\S]*keep domain_request and the original action_production operation[\s\S]*duration_class and effort[\s\S]*Never clear operations or switch to direct/u);
   assert.equal(seen.messages[0].content.includes(

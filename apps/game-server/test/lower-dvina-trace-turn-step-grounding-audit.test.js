@@ -43,11 +43,10 @@ test('ownerless speech crosses the existing grounding auditor before its factual
     const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       roleRunner: { async run(call) {
         const payload = JSON.parse(call.messages[1].content);
-        assert.deepEqual(payload.operations, [{ path: '$.utterance', utterance }]);
+        assert.deepEqual(payload.utterance, utterance);
         assert.equal(payload.remaining_intent, intent);
-        assert.match(call.messages[0].content, /cannot be rewritten by choosing intent_paraphrase/u);
-        return { output: { pass: false, concerns: [{
-          kind: 'operation_semantic_grounding' }] } };
+        assert.match(call.messages[0].content, /Нельзя менять явную цитату через intent_paraphrase/u);
+        return { output: { speech_faithful: false, unexecuted_intent: null } };
       } }
     });
     await assert.rejects(validate({ request: { ...request, remaining_intent: intent },

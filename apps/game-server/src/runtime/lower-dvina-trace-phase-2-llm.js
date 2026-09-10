@@ -161,7 +161,8 @@ function preserveUnrelatedOperationSelection(original, repaired, errors,
 function operationSelectionRepair({ path, code } = {}) {
   return typeof path === 'string' && [
     '$.operations', '$.operation_choice', '$.operation_family', '$.resolution'
-  ].some((prefix) => path === prefix || path.startsWith(`${prefix}.`))
+  ].some((prefix) => path === prefix || path.startsWith(`${prefix}.`)
+    || path.startsWith(`${prefix}[`))
     || ['json_parse_failed', 'continuation_progress',
       'operation_semantic_grounding']
       .includes(code);

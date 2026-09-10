@@ -1,6 +1,19 @@
 export const TURN_STEP_PLAN_EXAMPLE = JSON.stringify({ schema: 'turn_step_plan_v1', request_id: '<request_id>', committed_state_version: 0, working_revision: 0, step_index: 1, interpretation: { player_goal: '<player_goal>', grounded_attempt: '<grounded_attempt>', adaptation: 'literal' }, resolution: 'direct', goal_result: 'not_achieved', activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' }, operations: [], check: null, continuation: null, clarification: null, direct_result_kind: null, reason_code: '<reason_code>', reason: '<reason>' });
 
 export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
+  player_utterance: {
+    interpretation: { adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance',
+    utterance: {
+      speaker_ref: '<copy current actor ref from request>',
+      utterance_text: '<exact intended spoken words without enclosing action; faithful wording only when no quotation was supplied>',
+      input_mode: '<verbatim for supplied words; intent_paraphrase for unquoted speech intent>'
+    },
+    operation_family: null, operation_choice: null,
+    operations: [], check: null, clarification: null, continuation: null
+  },
   reality_limited_physical_attempt: {
     interpretation: { adaptation: 'reality_limited' },
     resolution: 'direct', goal_result: 'not_achieved',

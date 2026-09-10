@@ -1,6 +1,7 @@
 import { serverError } from '../errors.js';
 import { isOrdinaryDiscoveryInScope } from '@rus/turn';
 import { isDeepStrictEqual } from 'node:util';
+import { auditFocusedSpeech } from './lower-dvina-trace-turn-step-speech-audit.js';
 
 const KINDS = new Set([
   'operation_semantic_grounding',
@@ -21,14 +22,8 @@ const PROMPT = [
   'Audit only the supplied focused discovery, action_production or player utterance against the',
   'current remaining_intent and player-safe evidence. Refs are opaque.',
   'Each operations entry contains its plan path and operation or typed utterance.',
-  'A player utterance must express the current actor speech intention faithfully.',
-  'Verbatim words must be the words the player intends this actor to speak now,',
-  'not another quoted voice, hypothetical statement, or instruction. Explicitly',
-  'given words cannot be rewritten by choosing intent_paraphrase. For an unquoted',
-  'speech intention, intent_paraphrase may resolve wording but must not add claims,',
-  'promises, threats, answers, or commitments the player did not intend. Preserve',
-  'independent later actions in continuation; reject violations as',
-  'operation_semantic_grounding. The utterance itself proves no audience or response.',
+  'Invalid mixed speech/operation plans fail operation_semantic_grounding;',
+  'valid write-free speech uses the focused speech audit.',
   'For discovery, the operation must cover the earliest focused information',
   'need. A fixed authored query must not replace a different ordinary search,',
   'material prerequisite, handling, or transformation.',
@@ -105,6 +100,14 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
   return async ({ plan, request, resolved_domain_operations: resolved = [] }) => {
     const audited = [...auditedOperations(plan)];
     if (audited.length === 0) return true;
+    if (plan.direct_result_kind === 'player_utterance'
+        && (plan.operations == null || plan.operations.length === 0)
+        && plan.check == null) {
+      if (await auditFocusedSpeech({ roleRunner, plan, request })) return true;
+      throw serverError('TURN_STEP_PLAN_INVALID',
+        'Turn-step semantic grounding is invalid.', { details: { errors:
+          [concern('operation_semantic_grounding', audited, resolved)] } });
+    }
     const genericDiscovery = genericOrdinaryDiscovery({ audited, plan,
       request, resolved });
     if (genericDiscovery != null
@@ -288,7 +291,6 @@ function valid(value) {
       && typeof entry === 'object' && !Array.isArray(entry)
       && Object.keys(entry).length === 1 && KINDS.has(entry.kind));
 }
-
 function validFocusedDiscovery(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value)
     && Object.keys(value).length === 2 && FOCUSED_DISCOVERY_MODES.has(value.mode)

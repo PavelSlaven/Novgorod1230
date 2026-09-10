@@ -2,6 +2,11 @@ export function turnStepRepairSpecificInstructions(repairContext, request) {
   const codes = new Set(repairContext?.structural_errors
     ?.map(({ code }) => code) ?? []);
   const instructions = [];
+  if (repairContext?.original_output?.direct_result_kind === 'player_utterance'
+      || repairContext?.structural_errors?.some(({ path }) =>
+        path === '$.utterance' || path?.startsWith('$.utterance.'))) instructions.push(
+    'For ownerless speech repair, use the complete player_utterance envelope: resolution direct, activity {"owner":"semantic","duration_class":"moment","effort":"none"}, direct_result_kind player_utterance, operation_family null, operation_choice null, operations [], check null, clarification null. utterance has exactly speaker_ref equal to the current actor, utterance_text containing only the intended spoken words, and input_mode verbatim for exact supplied words or intent_paraphrase for faithful unquoted speech intent. Speech creates no entity and executes no physical operation. A completed speech-only step uses goal_result achieved and continuation null. If any independent later action remains, use goal_result pending and continuation {"remaining_intent":"<exact uncovered later action text>","depends_on_refs":[]}; speaking never consumes later listening, observation, movement, or manipulation.'
+  );
   if (repairContext?.structural_errors?.some(({ path }) =>
     path === '$.utterance')) instructions.push(
     'Required speech repair: retain the current actor speech step and correct only its utterance and uncovered continuation. Explicit player words require verbatim and exact intended quotation; do not copy another voice. Unquoted speech intent uses intent_paraphrase with faithful words and no added claim, promise or commitment. Never replace rejected speech with discovery, a gesture, or silent omission.'

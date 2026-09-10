@@ -43,7 +43,7 @@ Narrator использует только confirmed player-safe факты; н�
 
 ## Инварианты
 
-- writer и format repair получают confirmed outcome в исходном request; auditor и semantic repair получают его отдельным evidence-полем `confirmed_outcome`; auditor отдельно получает optional player-safe `action_intent_context` только как non-evidence для обнаружения intent-to-success;
+- writer и format repair получают confirmed outcome в исходном request; auditor и semantic repair получают его отдельным evidence-полем `confirmed_outcome`; auditor отдельно получает optional player-safe `action_intent_context` с `evidence_scope: intent_only_non_evidence_of_execution_or_success`: это только заявленное намерение, не доказательство начала или продолжения действия, совершённой попытки, произнесённой речи либо успеха. Исполнение требует отдельного confirmed source; явно переданный остаток намерения ещё не исполнен, включая формулировки настоящего длительного действия;
 - semantic failure не превращается в deterministic prose fallback;
 - format repair и semantic repair независимы: каждый максимум один раз;
 - malformed audit/repair, не единственная replacement цельного synthetic segment и final audit failure блокируют flow;

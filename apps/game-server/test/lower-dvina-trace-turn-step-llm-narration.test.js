@@ -113,7 +113,7 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       'gameplay_narrator_semantic_repair'].includes(call.roleId)
       ? 'confirmed_outcome' : 'context.outcome';
     assert.equal(call.messages[0].content.includes(
-      `grounds only an attempt unless visible_context or ${outcomeField} confirms`), true);
+      `An action or speech requires separate confirmation in visible_context or ${outcomeField}`), true);
     assert.equal(call.messages[0].content.includes(
       'Do not turn source entries into a field-by-field or clause-by-clause ledger'), true);
     assert.ok(call.messages[0].content.includes('a separate confirmed visible_change may prove the attempt'));
@@ -132,9 +132,9 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.equal(calls[2].messages[0].content.includes('full narration'), true);
   assert.equal(calls[2].messages[0].content.includes('hidden state'), true);
   assert.equal(calls[2].messages[0].content.includes(
-    'action_intent_context may ground only'), true);
+    'action_intent_context establishes only the submitted intention'), true);
   assert.equal(calls[2].messages[0].content.includes(
-    'it never proves success, object use, a result, or a world/NPC state change'), true);
+    'It never proves a performed or ongoing attempt, speech, object use, success, result, or world/NPC state change'), true);
   assert.equal(calls[2].messages[0].content.includes(
     'faithful natural paraphrase of visible_context is supported'), true);
   assert.equal(calls[2].messages[0].content.includes(
@@ -169,6 +169,10 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     assert.ok(call.messages[0].content.includes('Do not impose a fixed sensory checklist'));
     assert.ok(call.messages[0].content.includes('never to exact committed speech: preserve that speech verbatim with its supplied speaker'));
     assert.ok(call.messages[0].content.includes('When elapsed time is the only supplied change'));
+    assert.ok(call.messages[0].content.includes('Player wording establishes only a submitted intention'));
+    assert.ok(call.messages[0].content.includes('Explicit remaining_intent is unperformed'));
+    assert.equal(call.messages[0].content.includes('grounds only an attempt'), false);
+    assert.equal(call.messages[0].content.includes('may ground only that the player attempted'), false);
     assert.ok(call.messages[0].content.includes('Opening may begin with identity or history'));
     assert.doesNotMatch(call.messages[0].content, /same sentence as a supplied current scene detail|Never emit a sentence whose only content is elapsed time/u);
   }
@@ -192,7 +196,7 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       known_context: ['A marked path leads toward the settlement.', 'health:5'],
       uncertainties: [question], allowed_tensions: [], do_not_imply: []
     }, action_intent_context: {
-      evidence_scope: 'intent_only_non_evidence_of_success',
+      evidence_scope: 'intent_only_non_evidence_of_execution_or_success',
       attempt: { text: 'Постучать в закрытую дверь.' }
     }, confirmed_outcome: {}, style_policy: {},
     segments: [{ segment_id: 's1', prose: 'The clearing is quiet.' }]

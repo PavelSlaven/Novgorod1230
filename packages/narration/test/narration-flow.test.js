@@ -279,9 +279,9 @@ test('keeps intent-only context separate from confirmed outcome', async () => {
   }));
   assert.equal(result.status, 'approved');
   assert.deepEqual(seen, [
-    { evidence_scope: 'intent_only_non_evidence_of_success',
+    { evidence_scope: 'intent_only_non_evidence_of_execution_or_success',
       attempt: actionIntent.attempt },
-    { evidence_scope: 'intent_only_non_evidence_of_success',
+    { evidence_scope: 'intent_only_non_evidence_of_execution_or_success',
       attempt: actionIntent.attempt }
   ]);
 });
@@ -296,7 +296,7 @@ test('passes confirmed outcome separately to audit and whole-prose repair', asyn
     auditor: { async audit(input) {
       audits += 1;
       assert.deepEqual(input.action_intent_context, {
-        evidence_scope: 'intent_only_non_evidence_of_success',
+        evidence_scope: 'intent_only_non_evidence_of_execution_or_success',
         attempt: { text: 'Выйти к воротам.' }
       });
       assert.deepEqual(input.confirmed_outcome, confirmedOutcome);
@@ -329,7 +329,7 @@ test('intent-only context does not ground an unsupported success claim', async (
     writer: { async generate() { return output('Вы открыли закрытую дверь.'); } },
     auditor: { async audit(input) {
       assert.equal(input.action_intent_context.evidence_scope,
-        'intent_only_non_evidence_of_success');
+        'intent_only_non_evidence_of_execution_or_success');
       return { version: 1, schema: 'narration_audit', pass: false,
         concerns: [{ segment_id: 's1', kind: 'unsupported_fact',
           reason: 'Success is absent from visible context.' }],

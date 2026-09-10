@@ -86,7 +86,7 @@ function actionIntentContext(request) {
   const source = request.context ?? {};
   if (source.attempt == null) return null;
   return {
-    evidence_scope: 'intent_only_non_evidence_of_success',
+    evidence_scope: 'intent_only_non_evidence_of_execution_or_success',
     attempt: clone(source.attempt)
   };
 }

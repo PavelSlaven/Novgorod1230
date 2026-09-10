@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
-import test from 'node:test';
+import test, { before, after } from 'node:test';
 import { chromium } from 'playwright-core';
 import { observePlayerPanels } from '../browser-player-observation.mjs';
 
@@ -9,12 +9,13 @@ const executable = [process.env.RUS_CHROMIUM_PATH,
   'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
   '/usr/bin/chromium', '/usr/bin/google-chrome'].find(path => path && existsSync(path));
 
-test('PLAYER opens public panels through Chromium and never sees diagnostic data', {
-  skip: !executable, timeout: 30_000
-}, async t => {
-  const browser = await chromium.launch({ executablePath: executable, headless: true });
-  t.after(() => browser.close());
-  const page = await browser.newPage();
+let browser, page;
+before(async () => {
+  if (!executable) return;
+  browser = await chromium.launch({ executablePath: executable, headless: true,
+    timeout: 45_000, args: ['--no-sandbox', '--no-proxy-server'] });
+  page = await browser.newPage();
+  page.setDefaultTimeout(5_000);
   await page.setContent(`<main>
     <button data-overlay-open="inventory">Ноша</button>
     <button data-overlay-open="journal">Летопись</button>
@@ -37,6 +38,12 @@ test('PLAYER opens public panels through Chromium and never sees diagnostic data
           document.getElementById('overlay').replaceChildren();
       });
     </script>`);
+}, { timeout: 60_000 });
+after(async () => { await browser?.close(); }, { timeout: 10_000 });
+
+test('PLAYER opens public panels through Chromium and never sees diagnostic data', {
+  skip: !executable, timeout: 30_000
+}, async () => {
   const panels = await observePlayerPanels(page);
   assert.equal(panels.length, 2);
   assert.match(panels[0], /Медная игла/u);

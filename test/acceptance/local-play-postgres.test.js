@@ -17,6 +17,8 @@ import { LOCAL_POSTGRES, ensureLocalPostgres, localDataRoot } from
   '../../tools/local-play/local-postgres.js';
 import { MANAGED_RUNTIME_PINS } from '../../tools/local-play/managed-runtime.js';
 import { startLocalPlay } from '../../tools/local-play/local-play.js';
+import { loadLowerDvinaTraceScenePresentation } from '../../apps/game-server/src/internal/lower-dvina-trace-scene-presentation.js';
+import { scenePresentationForLocation } from '../../apps/game-server/src/runtime/lower-dvina-trace-scene-presentation.js';
 
 test('local play persists a free turn and replays it after a server restart',
   { timeout: 600_000, skip: process.platform !== 'win32'
@@ -81,6 +83,9 @@ test('local play persists a free turn and replays it after a server restart',
     });
     const beforeTurn = await committedState(localPlay.postgres.partyUrl, partyId);
     const names = beforeTurn.owned_item_names;
+    const scenePresentation = await loadLowerDvinaTraceScenePresentation({
+      scenarioDefinitionRevision: beforeTurn.state_payload.materialization_trace.seed_context.scenario_definition_revision
+    });
     for (const name of ['хозяйственный нож', 'нижняя рубаха', 'верхняя шерстяная одежда']) assert.ok(names.includes(name));
     let turnRequest = {
       request_id: requestId,
@@ -98,9 +103,24 @@ test('local play persists a free turn and replays it after a server restart',
           'Перебрать сор в поисках обрывка ткани.',
           'Перебрать сор в поисках предмета неясного происхождения.',
           'Перебрать сор в поисках щепки.'][index] };
+      const callsBefore = llm.requests.length;
       const result = await post(port,
         `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, turnRequest);
       const committed = await committedState(localPlay.postgres.partyUrl, partyId);
+      const roleInputs = llm.requests.slice(callsBefore).map(({ input }) => input?.request ?? input);
+      const playerSafe = roleInputs.find(input => input?.schema === 'turn_step_request_v1').player_safe_state;
+      const sourceScene = playerSafe.current_visible_context;
+      const profile = scenePresentationForLocation({ scenePresentation, locationRef: playerSafe.position.location_ref });
+      const narrated = roleInputs.filter(input => input?.schema === 'narration_request');
+      assert.ok(narrated.length > 0, 'the real narrator receives the committed search projection');
+      for (const { visible_context: visible } of narrated) {
+        assert.equal(visible.visible_scene, sourceScene.visible_scene);
+        assert.ok(profile.player_visible_physical_facts.length > 0);
+        for (const detail of profile.player_visible_physical_facts) assert.ok(visible.sensory_details.includes(detail), JSON.stringify({ index, missing: detail, profile: profile.player_visible_physical_facts, narrated: visible.sensory_details }));
+        for (const item of sourceScene.visible_objects) assert.ok(visible.visible_objects.some(
+          current => current.display_label === item.display_label));
+        assert.ok(visible.visible_changes.includes('Поиск занял 15 минут.'));
+      }
       assert.equal(result.screen.panels.character.visible, true);
       assert.equal(result.screen.panels.inventory.visible, true);
       assert.equal(result.screen.panels.route.visible, true);

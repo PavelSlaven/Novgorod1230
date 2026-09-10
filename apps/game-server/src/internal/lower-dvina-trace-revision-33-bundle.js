@@ -1,5 +1,6 @@
 import { mergeItemContainerSet } from './lower-dvina-trace-character-appearance-bundle.js';
 import { canonicalDigest } from '@rus/materialization';
+import { TRACE_SCENE_PRESENTATION_V2_DIGEST } from './lower-dvina-trace-scene-presentation.js';
 import { validateNpcRoutineProfile } from '@rus/npc-runtime';
 import { ROOT, readBundleArtifact } from './lower-dvina-trace-s1-bundle-utils.js';
 
@@ -9,6 +10,7 @@ export const TRACE_REVISION33_DEFINITION_DIGEST =
   '93b7a2eab07ab7e08b6557e3818a49d1c242a8bdafc68ab790a5b19dc92e3d9c';
 const ITEM_DISPLAY_OVERLAY_DIGEST = 'ff8c3cd970bbe27fcff3b4ead470d68b1855e976047c31c1fae1a690a46bcb50';
 const artifacts = {
+  scene_presentation: ['phase-1b-v26/scene-presentation-v2.json', TRACE_SCENE_PRESENTATION_V2_DIGEST],
   item_container_set: ['phase-m21-content/item-container-set-overlay.json', ITEM_DISPLAY_OVERLAY_DIGEST],
   definition: ['phase-m21-content/definition.json', TRACE_REVISION33_DEFINITION_DIGEST],
   initial_npc_schedule_profile: ['phase-m21-content/initial-npc-schedule-profile.json',

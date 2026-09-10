@@ -113,7 +113,9 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   const ordinaryDetails = ordinarySceneDetails(seedEntries);
   const ordinaryPresence = ordinaryPresenceResolution(seedEntries);
   let base;
-  if (ordinaryDetails.length > 0
+  if (ordinaryDetails.length > 0 || ordinaryPresence != null
+      || seedEntries.some(([key, value]) => key.startsWith('turn_step_')
+        && value?.kind === 'semantic_activity')
       || seedEntries.some(([key]) => key === 'observed_evidence_inspection_seed')) {
     const body = currentBody(input);
     base = hasVisibleDomainProjection(consequence)

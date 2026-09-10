@@ -10,6 +10,21 @@ import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
+test('optional null utterance is absent while actual speech still requires its typed payload', () => {
+  const input = request();
+  for (const utterance of [null, undefined]) {
+    const plan = assembleTurnStepPlan({ ...output(), utterance }, input);
+    assert.equal(Object.hasOwn(plan, 'utterance'), false);
+    assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+    const speech = assembleTurnStepPlan({ ...output(), utterance,
+      direct_result_kind: 'player_utterance', goal_result: 'achieved' }, input);
+    assert.equal(validateTurnStepPlan(speech, { request: input }).ok, false);
+  }
+  const invalid = assembleTurnStepPlan({ ...output(), utterance: {} }, input);
+  assert.deepEqual(invalid.utterance, {});
+  assert.equal(validateTurnStepPlan(invalid, { request: input }).ok, false);
+});
+
 test('planner assembly preserves resolved ownerless speech for quoted and unquoted input', () => {
   for (const [intent, text, mode] of [
     ['Кричу: «Отзовитесь!»', 'Отзовитесь!', 'verbatim'],

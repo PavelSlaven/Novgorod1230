@@ -58,7 +58,7 @@ export function assembleTurnStepPlan(choice, request,
       ? semantic.continuation ?? null : ordinaryDiscovery.continuation,
     clarification: semantic.clarification ?? null,
     direct_result_kind: semantic.direct_result_kind ?? null,
-    ...(semantic.utterance === undefined ? {} : {
+    ...(semantic.utterance == null ? {} : {
       utterance: structuredClone(semantic.utterance)
     }),
     reason_code: semantic.reason_code,

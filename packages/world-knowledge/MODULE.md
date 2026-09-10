@@ -13,6 +13,10 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
 ## Владеет
 
 - query/bundle validation и slice construction;
+- bounded planner focus candidates из compiled lexical postings с теми же
+  tokenization/IDF и claim→concept MAX; русский last-letter stem расширяет
+  только начала индексных токенов. Domain filter и stable tie сохраняются;
+  exact lexical retrieval Core не получает это расширение;
 - exact, structured и localized lexical retrieval;
 - caller-provided vector scores и pure flat-vector scan; Core остаётся
   backend-neutral, а active production server требует этот input; vector
@@ -33,6 +37,7 @@ LLM calls, filesystem/network/DB, party state, presence/materialization, actor d
 
 ## API
 
+- `candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit)`;
 - `createWorldKnowledgeCore(bundle)` → frozen `{ resolveWorldKnowledge(query) }`;
 - `createWorldKnowledgeFlatVectorIndex(metadata, bytes,
   { conceptToClaimRefs? })` → frozen `{ search(vector, options) }`; optional

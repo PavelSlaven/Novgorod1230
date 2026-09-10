@@ -78,6 +78,13 @@ test('production grounding plans once and injects only an applicable bounded sli
     /Return requested_predicates as an empty array/u);
   assert.match(calls[0].messages[0].content,
     /include the approved classification or use-context relationship needed for that application/u);
+  assert.match(calls[0].messages[0].content,
+    /For conjunctive requirements, cover every mandatory relationship/u);
+  assert.match(calls[0].messages[0].content,
+    /explicit alternatives permit one result, retrieve at least one complete admissible alternative/u);
+  assert.match(calls[0].messages[0].content,
+    /shared mandatory qualifiers and applicable limits/u);
+  assert.doesNotMatch(calls[0].messages[0].content, /including each independent part of a multi-part question/u);
   const ownerMetadata = calls[0].messages[0].content.match(/Focus claim domains: (.*?)\. A focus concept namespace/u);
   assert.ok(ownerMetadata, 'planner must see actual claim owners, not only cross-domain exceptions');
   const owners = JSON.parse(ownerMetadata[1]);

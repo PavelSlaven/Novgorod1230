@@ -409,6 +409,37 @@ continuation только с неисполненным остатком; одн
 с намерением текущего actor; чужая цитата, перефразирование заданных слов и
 добавленные обещания/claims отклоняются с одной существующей repair-попыткой.
 
+В existing pre-repair speech seam допускается trial, меняющий только effort на
+`none`: исходный plan уже direct `player_utterance`, owner `semantic`, duration
+`moment`, без `requested_duration_minutes`, operations пуст, check/clarification
+null, speaker текущий, utterance непустой, dependencies и prepared/discovery
+carriers отсутствуют, effort принадлежит существующему enum. Полная validation
+trial против того же request должна устранить ошибку envelope/direct_result_kind;
+оставшиеся ошибки допускаются только для verbatim exact-copy и связи goal/continuation.
+Trial не применяется без последующего faithful focused audit и финальной strict validation.
+
+После faithful focused audit код может спроецировать проверенные speech metadata
+полного direct `semantic/moment/none` speech envelope первоначальной попытки:
+operations пуст, check/clarification null. Проверяемый plan должен быть валиден либо
+иметь только изолированные ошибки verbatim exact-copy или связи goal/continuation.
+Auditor независимо определяет `required_input_mode` из исходного намерения;
+ошибка substring-проверки сама по себе не разрешает `intent_paraphrase`.
+Его `unexecuted_intent` должен быть строгим дословным suffix исходного immutable
+`remaining_intent`, совпадать с прежним непустым continuation либо оканчиваться
+им, восстанавливая только потерянный префикс. `depends_on_refs` пуст,
+prepared/discovery carriers отсутствуют. Меняются только input mode на проверенный
+auditor mode, continuation на этот suffix и goal на `pending`; speaker, utterance
+text и остальные поля после trial неизменны. Corrected plan возвращается через existing
+semantic validator/preflight и проходит полную strict `validateTurnStepPlan` и
+freeze без дополнительного planner или audit. Та же bounded metadata projection
+допускается после единственного structurally valid repair и его faithful re-audit:
+`repaired:true` сохраняется, effort trial и structural recovery на repair не
+переносятся. Любая оставшаяся ошибка terminal; третьего planner/audit нет.
+Неверная/чужая цитата, новые claims,
+`speech_faithful=false`, malformed audit, неизвестные поля и любые другие ошибки
+сохраняют existing one-repair/fail-closed path. Удалять или заменять suffix этой
+проекцией нельзя.
+
 Это факт произнесения, а не истинности речевых claims. Он не устанавливает
 слышимость, аудиторию, knowledge, ответ или отсутствие ответа. Адресованная речь
 с доступным owner сохраняет conversation path. Broadcast perception вне

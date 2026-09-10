@@ -21,7 +21,7 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
     cachedOwners.set(key, owner);
     return owner;
   };
-  const validate = ({ plan, request,
+  const validate = ({ plan, request, allow_speech_metadata_projection = false,
     prepared_chain_context: preparedChainContext }) => {
     const errors = [];
     const resolvedDomainOperations = [];
@@ -76,7 +76,8 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
     }
     return services.turnStepSemanticGroundingValidator?.(deepFreeze({
       plan: structuredClone(plan), request: structuredClone(request),
-      resolved_domain_operations: resolvedDomainOperations
+      resolved_domain_operations: resolvedDomainOperations,
+      allow_speech_metadata_projection
     }));
   };
   validate.resolve = resolve;

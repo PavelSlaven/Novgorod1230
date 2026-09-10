@@ -2,7 +2,6 @@ import { serverError } from '../errors.js';
 import { isOrdinaryDiscoveryInScope } from '@rus/turn';
 import { isDeepStrictEqual } from 'node:util';
 import { auditFocusedSpeech } from './lower-dvina-trace-turn-step-speech-audit.js';
-
 const KINDS = new Set([
   'operation_semantic_grounding',
   'source_semantic_grounding',
@@ -97,13 +96,14 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
   if (typeof roleRunner?.run !== 'function') {
     throw new TypeError('Turn-step grounding auditor requires a role runner.');
   }
-  return async ({ plan, request, resolved_domain_operations: resolved = [] }) => {
+  return async ({ plan, request, resolved_domain_operations: resolved = [], allow_speech_metadata_projection = false }) => {
     const audited = [...auditedOperations(plan)];
     if (audited.length === 0) return true;
     if (plan.direct_result_kind === 'player_utterance'
         && (plan.operations == null || plan.operations.length === 0)
         && plan.check == null) {
-      if (await auditFocusedSpeech({ roleRunner, plan, request })) return true;
+      const result = await auditFocusedSpeech({ roleRunner, plan, request, allow_speech_metadata_projection });
+      if (result) return result;
       throw serverError('TURN_STEP_PLAN_INVALID',
         'Turn-step semantic grounding is invalid.', { details: { errors:
           [concern('operation_semantic_grounding', audited, resolved)] } });

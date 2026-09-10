@@ -22,6 +22,7 @@ function speechOutput(input, words, later = null) {
       : { remaining_intent: later, depends_on_refs: [] } };
 }
 
+
 test('focused speech audit rejects lost later actions and accepts exact suffix',
   async (t) => {
     for (const [speech, words, later] of [
@@ -82,19 +83,19 @@ test('focused speech audit fails closed on malformed extraction', async () => {
     const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       roleRunner: { async run() { return { output }; } }
     });
-    await assert.rejects(validate({ request: input,
+    await assert.rejects(validate({ request: input, allow_speech_metadata_projection: true,
       plan: speechOutput(input, 'Hello!') }), (error) =>
       error.code === 'TRACE_TURN_STEP_GROUNDING_AUDIT_INVALID');
   }
 });
 
-test('unquoted speech repairs once while conflicting nested plans fail closed with one WK retrieval', async (t) => {
+test('captured V4/V5 and unseen speech project audited metadata; missing tails repair and conflicting plans fail closed', async (t) => {
   for (const [intent, words, later] of [
     ['Зову Онисима и длинной ветвью осторожно прощупываю воду между обломками.',
       'Онисим!', 'и длинной ветвью осторожно прощупываю воду между обломками.'],
     ['Предупреждаю путника об обрыве, затем наблюдаю за тропой и отхожу от края.',
       'Осторожно, впереди обрыв!', 'затем наблюдаю за тропой и отхожу от края.']
-  ]) for (const shape of ['top-level', 'single-wrapper', 'mixed-wrapper']) await t.test(`${shape}: ${intent}`, async () => {
+  ]) for (const shape of ['top-level', 'single-wrapper', 'mixed-wrapper', 'light-effort']) await t.test(`${shape}: ${intent}`, async () => {
     const input = request({ remaining_intent: intent });
     const corrected = speechOutput(input, words, later);
     corrected.utterance.input_mode = 'intent_paraphrase';
@@ -118,14 +119,16 @@ test('unquoted speech repairs once while conflicting nested plans fail closed wi
           interpretation: corrected.interpretation, resolution: 'direct', goal_result: 'pending',
           activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
           operations: [], check: null, continuation, player_utterance: speech
-        } : { ...corrected, utterance, goal_result: 'achieved', continuation } };
+        } : { ...corrected, utterance, goal_result: 'achieved', continuation,
+          activity: { ...corrected.activity, effort: shape === 'light-effort' ? 'light' : 'none' } } };
       }
       const packet = JSON.parse(call.messages[1].content);
       assert.ok(packet.structural_errors.some(({ message }) =>
         message.includes('input_mode to intent_paraphrase')
           && message.includes(JSON.stringify(corrected.continuation))
           && message.includes('goal_result to pending')));
-      return { output: corrected };
+      return { output: shape === 'light-effort' ? { ...corrected,
+        utterance: { ...corrected.utterance, input_mode: 'verbatim' } } : corrected };
     } };
     const model = createLowerDvinaTraceTurnStepModel({ roleRunner,
       worldKnowledgeGrounder: { async ground(safeRequest) {
@@ -147,7 +150,7 @@ test('unquoted speech repairs once while conflicting nested plans fail closed wi
       return;
     }
     const result = await run();
-    assert.equal(result.repaired, true);
+    assert.equal(result.repaired, shape === 'single-wrapper');
     assert.equal(result.plan.utterance.input_mode, 'intent_paraphrase');
     assert.equal(Object.hasOwn(result.plan, 'player_utterance'), false);
     assert.equal(result.plan.direct_result_kind, 'player_utterance');
@@ -155,8 +158,10 @@ test('unquoted speech repairs once while conflicting nested plans fail closed wi
     assert.deepEqual(result.plan.continuation, corrected.continuation);
     assert.equal(result.plan.goal_result, 'pending');
     assert.equal(retrievals, 1);
-    assert.deepEqual(calls, ['turn_step_planner', 'turn_step_grounding_auditor',
-      'turn_step_planner_repair', 'turn_step_grounding_auditor']);
+    assert.deepEqual(calls, shape === 'single-wrapper'
+      ? ['turn_step_planner', 'turn_step_grounding_auditor',
+        'turn_step_planner_repair', 'turn_step_grounding_auditor']
+      : ['turn_step_planner', 'turn_step_grounding_auditor']);
   });
 });
 

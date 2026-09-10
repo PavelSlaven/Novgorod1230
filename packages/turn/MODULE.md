@@ -367,6 +367,18 @@ visible package после P16 commit.
 сохраняется verbatim; unquoted speech intent конкретизируется единственным
 turn-step planner. Это не audience/knowledge owner и не ответ NPC. Broadcast
 perception вне conversation остаётся отдельным непройденным owner path.
+Existing repair owner допускает только effort→none trial полного direct speech
+с semantic/moment activity без requested duration, effects, dependencies и carriers.
+Исходный effort принадлежит действующему enum; полная validation trial устраняет
+envelope error и оставляет только разрешённые copy/goal ошибки по §8.2.1.
+Semantic validator через domain preflight может вернуть bounded speech metadata
+projection по §8.2.1: допускается валидный initial speech envelope либо только
+изолированные verbatim exact-copy/goal-continuation ошибки. Core повторяет полную
+`validateTurnStepPlan` и freeze без второго model/audit call; любые другие ошибки
+initial plan не получают права на такую коррекцию.
+Structurally valid единственный repair после faithful re-audit получает ту же
+bounded metadata projection без дополнительного model/audit, с `repaired:true`.
+Effort trial/structural recovery остаются только до repair; новая ошибка terminal.
 Domain preflight не допускает authored investigation с полностью неизменённым
 continuation под видом ordinary material prerequisite.
 

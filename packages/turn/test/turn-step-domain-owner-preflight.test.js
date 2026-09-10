@@ -552,6 +552,7 @@ test('preflight delegates semantic grounding',
     prepared_chain_context: null };
     await assert.rejects(validate(value), expected);
     assert.deepEqual(received, { plan: value.plan, request: value.request,
+      allow_speech_metadata_projection: false,
       resolved_domain_operations: [{ path: '$.operations.0',
         owner_kind: 'external' }] });
   });

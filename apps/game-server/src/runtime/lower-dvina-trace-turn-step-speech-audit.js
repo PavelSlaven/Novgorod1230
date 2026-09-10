@@ -1,8 +1,9 @@
 import { serverError } from '../errors.js';
 
-const PROMPT = 'Верни только JSON с тремя ключами: speech_faithful (boolean), required_input_mode (verbatim или intent_paraphrase) и unexecuted_intent (строка или null). Проверяется только произнесение слов actor. Определи required_input_mode по исходному remaining_intent независимо от предложенного utterance.input_mode: verbatim только для явно заданных слов текущего actor; intent_paraphrase для свободного речевого намерения без заданной цитаты, даже если обращение короткое или его имя встречается в исходном тексте. speech_faithful=true только если первое действие — речь и utterance точно передаёт её смысл при required_input_mode. Неверный предложенный input_mode сам по себе не делает верные слова неверными: код отдельно сравнит режимы. Для verbatim слова должны быть словами текущего actor, а не чужой цитатой или условной репликой. Нельзя менять явную цитату через intent_paraphrase; свободное речевое намерение допускает верную формулировку без новых обещаний, угроз или утверждений. unexecuted_intent — весь дословный остаток remaining_intent ПОСЛЕ речевого действия, который произнесение слов ещё не выполняет. Скопируй остаток до самого конца исходной строки, сохранив начальные союзы и пунктуацию; не выписывай саму цитату или обрамляющее речевое действие. Слушание, осмотр, ожидание, движение, жесты и манипуляции вне реплики остаются неисполненными, даже в том же предложении. Если после речи нет отдельного действия, unexecuted_intent=null. Глаголы внутри произносимой цитаты сами по себе не являются действиями actor. Не добавляй объяснений или ключей.';
+const PROMPT = 'Верни только JSON с тремя ключами: speech_faithful (boolean), required_input_mode (verbatim или intent_paraphrase) и unexecuted_intent (строка или null). Проверяется только произнесение слов actor. speech_faithful=false, если явно длительная, повторяемая или ограниченная временем речь сведена к одной короткой реплике. Определи required_input_mode по исходному remaining_intent независимо от предложенного utterance.input_mode: verbatim только для явно заданных слов текущего actor; intent_paraphrase для свободного речевого намерения без заданной цитаты, даже если обращение короткое или его имя встречается в исходном тексте. speech_faithful=true только если первое действие — речь и utterance точно передаёт её смысл при required_input_mode. Неверный предложенный input_mode сам по себе не делает верные слова неверными: код отдельно сравнит режимы. Для verbatim слова должны быть словами текущего actor, а не чужой цитатой или условной репликой. Нельзя менять явную цитату через intent_paraphrase; свободное речевое намерение допускает верную формулировку без новых обещаний, угроз или утверждений. unexecuted_intent — весь дословный остаток remaining_intent ПОСЛЕ речевого действия, который произнесение слов ещё не выполняет. Скопируй остаток до самого конца исходной строки, сохранив начальные союзы и пунктуацию; не выписывай саму цитату или обрамляющее речевое действие. Слушание, осмотр, ожидание, движение, жесты и манипуляции вне реплики остаются неисполненными, даже в том же предложении. Если после речи нет отдельного действия, unexecuted_intent=null. Глаголы внутри произносимой цитаты сами по себе не являются действиями actor. Не добавляй объяснений или ключей.';
 
-export async function auditFocusedSpeech({ roleRunner, plan, request }) {
+export async function auditFocusedSpeech({ roleRunner, plan, request,
+  allow_speech_metadata_projection = false }) {
   const response = await roleRunner.run({
     scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
     request_identity: request.request_id,
@@ -32,6 +33,24 @@ export async function auditFocusedSpeech({ roleRunner, plan, request }) {
   const goalResult = remaining == null ? 'achieved' : 'pending';
   if (matches && plan.utterance.input_mode === mode
       && plan.goal_result === goalResult) return true;
+  if (allow_speech_metadata_projection === true && remaining != null
+      && plan.resolution === 'direct' && plan.direct_result_kind === 'player_utterance'
+      && plan.activity?.owner === 'semantic' && plan.activity.duration_class === 'moment'
+      && !Object.hasOwn(plan.activity, 'requested_duration_minutes')
+      && plan.activity.effort === 'none' && Array.isArray(plan.operations)
+      && plan.operations.length === 0 && plan.check === null && plan.clarification === null
+      && typeof continuation?.remaining_intent === 'string'
+      && continuation.remaining_intent.length > 0
+      && remaining.endsWith(continuation.remaining_intent)
+      && Array.isArray(continuation.depends_on_refs)
+      && continuation.depends_on_refs.length === 0
+      && continuation.prepared_followup_ref == null
+      && continuation.pending_discovery == null) {
+    return { corrected_plan: { ...plan, goal_result: 'pending',
+      utterance: { ...plan.utterance, input_mode: mode }, continuation: {
+        ...continuation, remaining_intent: remaining
+    } } };
+  }
   const expected = remaining == null ? null
     : { remaining_intent: remaining, depends_on_refs: [] };
   throw serverError('TURN_STEP_PLAN_INVALID',

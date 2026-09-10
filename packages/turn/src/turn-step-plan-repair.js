@@ -1,6 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
-import { requestTurnStepPlan } from './turn-step-contracts.js';
+import { requestTurnStepPlan, validateTurnStepPlan } from './turn-step-contracts.js';
 import { contractError } from './turn-step-contracts/validation.js';
+import { EFFORTS } from './turn-step-contracts/constants.js';
 
 export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
   semanticPlanValidator = null,
@@ -41,9 +42,14 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
           || canAuditSpeechBeforeRepair(originalOutput, structuralErrors))
         && typeof semanticPlanValidator === 'function') {
       try {
-        await semanticPlanValidator(deepFreeze({ plan: originalOutput,
+        const trial = speechMetadataTrial(originalOutput, request);
+        const result = await semanticPlanValidator(deepFreeze({ plan: trial ?? originalOutput,
           request: structuredClone(request), prepared_chain_context:
-            structuredClone(preparedChainContext), attempt: 1 }));
+            structuredClone(preparedChainContext), attempt: 1,
+          allow_speech_metadata_projection: trial != null }));
+        if (trial != null && (result === true || result?.corrected_plan != null)) return {
+          plan: validateAndFreezePlan(result?.corrected_plan ?? trial, request), repaired: false
+        };
       } catch (semanticError) {
         if (semanticError?.code !== 'TURN_STEP_PLAN_INVALID') throw semanticError;
         structuralErrors.push(...(semanticError.details?.errors ?? []));
@@ -120,12 +126,42 @@ function canAuditSpeechBeforeRepair(plan, errors) {
     && ['verbatim', 'intent_paraphrase'].includes(plan.utterance?.input_mode);
 }
 
+function speechMetadataTrial(plan, request) {
+  if (plan.resolution !== 'direct' || plan.direct_result_kind !== 'player_utterance'
+      || plan.activity?.owner !== 'semantic' || plan.activity.duration_class !== 'moment'
+      || Object.hasOwn(plan.activity, 'requested_duration_minutes')
+      || !EFFORTS.includes(plan.activity.effort) || !Array.isArray(plan.operations)
+      || plan.operations.length !== 0 || plan.check !== null || plan.clarification !== null
+      || plan.utterance?.speaker_ref !== (request.actor?.actor_id ?? request.actor?.actor_ref)
+      || typeof plan.utterance?.utterance_text !== 'string' || !plan.utterance.utterance_text.trim()
+      || !Array.isArray(plan.continuation?.depends_on_refs)
+      || plan.continuation.depends_on_refs.length !== 0
+      || plan.continuation.prepared_followup_ref != null
+      || plan.continuation.pending_discovery != null) return null;
+  const trial = { ...plan, activity: { ...plan.activity, effort: 'none' } };
+  const validation = validateTurnStepPlan(trial, { request });
+  return validation.errors.every(({ path, code }) =>
+      path === '$.utterance.utterance_text' && code === 'direct_result_kind'
+        || path === '$.goal_result' && code === 'continuation') ? trial : null;
+}
+
+function validateAndFreezePlan(plan, request) {
+  const validation = validateTurnStepPlan(plan, { request });
+  if (!validation.ok) throw contractError('TURN_STEP_PLAN_INVALID', validation.errors);
+  return deepFreeze(structuredClone(plan));
+}
+
 export async function requestAndValidateTurnStepPlan({ request, turnStepModel,
   semanticPlanValidator, preparedChainContext, attempt = 1 }) {
   const plan = await requestTurnStepPlan({ request, turnStepModel });
   if (typeof semanticPlanValidator === 'function') {
-    await semanticPlanValidator(deepFreeze({ plan, request: structuredClone(request),
-      prepared_chain_context: structuredClone(preparedChainContext), attempt }));
+    const result = await semanticPlanValidator(deepFreeze({ plan,
+      request: structuredClone(request),
+      prepared_chain_context: structuredClone(preparedChainContext), attempt,
+      allow_speech_metadata_projection: true }));
+    if (result?.corrected_plan != null) {
+      return validateAndFreezePlan(result.corrected_plan, request);
+    }
   }
   return plan;
 }

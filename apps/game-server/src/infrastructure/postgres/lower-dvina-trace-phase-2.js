@@ -1,4 +1,4 @@
-import { canonicalDigest } from '@rus/materialization'; import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a'; import { spatialResult } from '@rus/turn';
+import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js'; import { canonicalDigest } from '@rus/materialization'; import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a'; import { spatialResult } from '@rus/turn';
 import { json } from '../../runtime/first-playable/shared.js'; import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
 import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.js';
 import { assertPhase2NormalizedRows, phase2IntegrityError, validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
@@ -261,7 +261,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     }
     const combatState = publicCombatStateFromConsequence(payload.last_turn?.consequence);
     const screen = projectLowerDvinaTraceScreenPanels({
-      payload,
+      payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),
       screen: {
         ...structuredClone(result.screen),
         schema: 'lower_dvina_trace_turn_screen',

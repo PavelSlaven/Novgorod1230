@@ -9,6 +9,8 @@ Browser-клиент, который получает только versioned pub
 - HTTP API client `/api/v1`;
 - валидацией публичных API envelopes и screen contracts;
 - UI-only store;
+- отображением готового `presentation_context` в header; календарь и место
+  вычисляет server из committed state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - browser bootstrap и обработкой пользовательских намерений.

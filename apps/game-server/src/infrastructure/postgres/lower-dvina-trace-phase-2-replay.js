@@ -1,3 +1,4 @@
+import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js';
 import { canonicalDigest } from '@rus/materialization';
 import {
   computeSpatialV3CanonicalDigest
@@ -171,7 +172,7 @@ export async function loadHistoricalPhase2Replay({
     });
   }
   const screen = rebuildPhase2HistoricalScreen({
-    payload,
+    payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),
     turnId: row.turn_id,
     visiblePayload: row.visible_payload,
     narrationOutput: row.narration_output,

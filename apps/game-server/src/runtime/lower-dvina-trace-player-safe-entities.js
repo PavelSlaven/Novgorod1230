@@ -42,6 +42,8 @@ const BODY_PART_KEYS = new Set([
 export function projectActor({ profile, body, actorId }) {
   return compact({
     actor_id: actorId,
+    name: text(profile?.identity?.name),
+    role: text(profile?.social_status?.display_name),
     attributes: projectCapabilityMap(profile?.attributes, ATTRIBUTE_IDS,
       ['value', 'bonus']),
     skills: projectCapabilityMap(profile?.skills, SKILL_IDS,

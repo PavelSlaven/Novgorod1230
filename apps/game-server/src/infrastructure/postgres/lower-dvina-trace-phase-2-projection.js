@@ -187,7 +187,8 @@ export function rebuildPhase2HistoricalScreen({
   turnId,
   visiblePayload,
   narrationOutput,
-  narrationOutputDigest
+  narrationOutputDigest,
+  presentation = null
 }) {
   const visibleContext = phase2VisibleContextFromPayload(visiblePayload);
   const narration = {
@@ -202,7 +203,8 @@ export function rebuildPhase2HistoricalScreen({
     turnId,
     visibleContext,
     narration,
-    narrationOutputDigest
+    narrationOutputDigest,
+    presentation
   });
 }
 
@@ -211,12 +213,13 @@ export function buildPhase2ReadyScreen({
   turnId,
   visibleContext,
   narration,
-  narrationOutputDigest
+  narrationOutputDigest,
+  presentation = null
 }) {
   const combatState = publicCombatStateFromConsequence(
     payload.last_turn?.consequence);
   const screen = projectLowerDvinaTraceScreenPanels({
-    payload,
+    payload, presentation,
     screen: {
       ...createTurnScreenReadModel({
         partyId: payload.party_id,

@@ -74,7 +74,7 @@ function renderNewGame({ scenarios = [], newGameDraft = '', theme = 'light',
 }
 
 function renderContext(screen) {
-  const context = screen.visible_context ?? {};
+  const context = { ...screen.visible_context, ...screen.presentation_context };
   const candidates = [
     ['Место', context.location_label ?? context.place],
     ['Дата', context.date_label ?? context.calendar],

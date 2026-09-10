@@ -40,6 +40,12 @@ and adds no second transaction owner.
   presentation-only selectors: `portrait_spec_v1`, optional
   `active_interlocutor.portrait_asset_id` и optional top-level
   `scene_asset_id` к public response.
+- Общий screen projector строит Character/Inventory/Route из текущего committed
+  actor/body, player-safe вещей и code-owned inventory calculations. Opening,
+  pending, ready и historical replay используют тот же owner. Точные catalog
+  labels читаются по scenario pins; неизвестные/скрытые вещи не раскрываются.
+  Header получает готовые `presentation_context` place/date/time; этот DTO
+  не изменяет сохранённый `visible_context` и не является новой world truth.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side
   provider-selected LLM-вызовом, который преобразует свободный текст только в
   валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые

@@ -111,7 +111,7 @@ export function uniqueLowerDvinaTraceVisibleObjects(values) {
   });
 }
 
-function visibleItemLabel(item) {
+export function visibleItemLabel(item) {
   if (text(item?.name)) return item.name;
   const slot = item?.visual_profile_snapshot?.equipment_slot
     ?? item?.placement?.equipment_slot_category_id;

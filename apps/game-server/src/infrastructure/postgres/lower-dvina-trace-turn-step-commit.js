@@ -1,3 +1,4 @@
+import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js';
 import { canonicalDigest } from '@rus/materialization';
 import { requireTurnStepCommitEnvelope } from '@rus/turn';
 import { serverError } from '../../errors.js';
@@ -180,7 +181,8 @@ export async function commitLowerDvinaTraceTurnStep({
     changeSetId, idemId, turnStepAmbientPortionProfileRef
   });
   const pendingScreen = buildLowerDvinaTracePendingScreen({
-    state,
+    state: turnStep.snapshot,
+    presentation: await loadLowerDvinaTraceScreenPresentation(turnStep.snapshot),
     turnId: envelope.root_turn_id,
     nextVersion,
     turnNumber,

@@ -1,3 +1,4 @@
+import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js';
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../../errors.js';
 import {
@@ -156,7 +157,8 @@ export async function commitLowerDvinaTracePhase2({
   });
   const snapshot = turnStep.snapshot;
   const pendingScreen = buildLowerDvinaTracePendingScreen({
-    state, turnId: factual.mode_resolution.turn_id,
+    state: snapshot, presentation: await loadLowerDvinaTraceScreenPresentation(snapshot),
+    turnId: factual.mode_resolution.turn_id,
     nextVersion, turnNumber, visibleEnvelope
   });
   const writes = mergeLowerDvinaTraceTurnStepWrites(buildPhase2Writes({

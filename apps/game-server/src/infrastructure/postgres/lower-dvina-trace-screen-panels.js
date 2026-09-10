@@ -1,16 +1,18 @@
-import { createPeoplePanel } from '@rus/presentation';
+import { createPeoplePanel, createCharacterPanel, createRoutePanel } from '@rus/presentation';
+import { projectCalendar } from '@rus/time-events-history/calendar';
+import { projectTraceInventoryPanel } from './lower-dvina-trace-screen-inventory.js';
 
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
 
-export function projectLowerDvinaTraceScreenPanels({ payload, screen }) {
-  const projection = projectLowerDvinaTracePlayerSafeState({
+export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentation = null }) {
+  const { actor, player_safe_state: projection } = projectLowerDvinaTracePlayerSafeState({
     committed_state: screen.visible_context == null ? payload : {
       ...payload,
       current_visible_context: screen.visible_context
     },
     actor_id: payload.actor_id
-  }).player_safe_state;
+  });
   const activeInterlocutor = projection.active_interlocutor ?? null;
   const panels = structuredClone(screen.panels ?? {});
   const previousPeople = panels.people;
@@ -41,7 +43,36 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen }) {
   } else {
     delete panels.people;
   }
-  const projected = { ...screen, panels };
+  if (actor.body != null || actor.name != null) panels.character = createCharacterPanel(Object.fromEntries(Object.entries({
+    name: actor.name, role: actor.role, health: actor.body?.health,
+    energy: actor.body?.energy, satiety: actor.body?.satiety,
+    status: actor.body?.active_conditions?.map(condition => condition.label)
+      .filter(Boolean).join('; ') || undefined
+  }).filter(([, value]) => value !== undefined)));
+  const inventory = projectTraceInventoryPanel({ payload, projection,
+    itemLabels: presentation?.itemLabels ?? {} });
+  if (inventory != null) panels.inventory = inventory;
+  const visibleContext = {};
+  const location = presentation?.scenePresentation?.locations.find(
+    ({ location_ref: ref }) => ref === projection.position?.location_ref);
+  const place = location?.display_name ?? projection.current_visible_context?.visible_scene;
+  if (place) visibleContext.location_label = place;
+  if (projection.clock != null && presentation?.calendarProfile != null) {
+    const calendar = projectCalendar(projection.clock, presentation.calendarProfile);
+    const minutes = BigInt(calendar.local_time_of_day.numerator)
+      / BigInt(calendar.local_time_of_day.denominator);
+    visibleContext.date_label = `${calendar.day}.${calendar.month}.${calendar.year}`;
+    visibleContext.time_label = `${String(minutes / 60n).padStart(2, '0')}:${String(minutes % 60n).padStart(2, '0')}`;
+  }
+  if (place) {
+    const routes = [...(projection.routes ?? []), ...(projection.available_routes ?? [])]
+      .filter(route => route.from_ref === projection.position?.location_ref && route.label);
+    panels.route = createRoutePanel({ current_place: place, movement: {
+      options: routes.map(route => ({ label: route.label,
+        knowledge_state: route.known === true ? 'known' : 'uncertain' }))
+    } });
+  }
+  const projected = { ...screen, presentation_context: visibleContext, panels };
   const sceneAssetId = sceneAssetFor(projection.position);
   if (sceneAssetId === null) delete projected.scene_asset_id;
   else projected.scene_asset_id = sceneAssetId;

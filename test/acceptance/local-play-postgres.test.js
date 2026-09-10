@@ -69,6 +69,11 @@ test('local play persists a free turn and replays it after a server restart',
       scenario_id: 'lower_dvina_trace_v1', request_id: `local-play-new-${suffix}`
     });
     const partyId = started.party_id;
+    assert.equal(started.screen.panels.character.visible, true);
+    assert.equal(started.screen.panels.inventory.visible, true);
+    assert.ok(started.screen.panels.inventory.data.items.some(item => item.label === 'хозяйственный нож'));
+    assert.ok(started.screen.presentation_context.date_label);
+    assert.ok(started.screen.presentation_context.time_label);
     await post(port, `/api/v1/parties/${encodeURIComponent(partyId)}/opening-ack`, {
       client_ack_id: `local-play-opening-${suffix}`
     });
@@ -88,6 +93,14 @@ test('local play persists a free turn and replays it after a server restart',
       const result = await post(port,
         `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, turnRequest);
       const committed = await committedState(localPlay.postgres.partyUrl, partyId);
+      assert.equal(result.screen.panels.character.visible, true);
+      assert.equal(result.screen.panels.inventory.visible, true);
+      assert.equal(result.screen.panels.route.visible, true);
+      assert.equal(result.screen.panels.character.data.energy, Number(committed.body.energy));
+      assert.ok(result.screen.panels.inventory.data.items.some(item => item.label === 'хозяйственный нож'));
+      assert.ok(result.screen.presentation_context.location_label);
+      assert.ok(result.screen.presentation_context.date_label);
+      assert.notEqual(result.screen.presentation_context.time_label, started.screen.presentation_context.time_label);
       assert.equal(Number(committed.clock.whole_minutes) - Number(beforeTurn.clock.whole_minutes), 15 * (index + 1));
       assert.equal(Number(committed.body.energy), Number(beforeTurn.body.energy) - index - 1);
       assert.equal(committed.item_ids.length, beforeTurn.item_ids.length + (resolution === 'materialize' ? 1 : 0));

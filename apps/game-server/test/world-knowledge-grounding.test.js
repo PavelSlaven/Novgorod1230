@@ -147,7 +147,7 @@ test('independent hints retain their semantic candidates and merge repeated scor
     '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
     import.meta.url), 'utf8'));
   const template = bundle.claims.find(claim => claim.domain === 'physics_material_science');
-  bundle.claims = ['first', 'second', 'third', 'fourth'].map((id) => ({
+  bundle.claims = ['first', 'second', 'third', 'fourth', 'fifth'].map((id) => ({
     ...structuredClone(template), claim_ref: `claim:test-${id}`,
     applicability: { context_scope: 'universal' },
     localizations: Object.fromEntries(bundle.manifest.supported_locales.map(locale =>
@@ -166,21 +166,24 @@ test('independent hints retain their semantic candidates and merge repeated scor
   const traces = [];
   let coreCalls = 0;
   let finalScores;
+  let finalQuery;
   const hints = ['How does one physical relationship operate?',
     'What establishes a different independent relationship?'];
   const grounder = createProductionWorldKnowledgeGrounder({
     worldKnowledge: { bundle,
       core: { resolveWorldKnowledge(query, options) {
         coreCalls += 1;
+        finalQuery = query;
         finalScores = options.vectorScores;
         return core.resolveWorldKnowledge(query, options);
       } },
       encoder: { async encode(text) { encoded.push(text); return [encoded.length]; } },
       vector_index: { search(vector, options) {
         searches.push(options);
-        return vector[0] === 1
-          ? new Map([[refs[0], 0.8], [refs[2], 0.6], [refs[3], 0.5]])
-          : new Map([[refs[1], 0.9], [refs[0], 0.7]]);
+        const ranked = vector[0] === 1
+          ? [[refs[0], 0.8], [refs[2], 0.6], [refs[3], 0.5], [refs[4], 0.4]]
+          : [[refs[1], 0.9], [refs[0], 0.7]];
+        return new Map(ranked.slice(0, options.limit));
       } } },
     telemetry: { onGameplayTrace: trace => traces.push(trace) },
     roleRunner: { async run() { return { output: {
@@ -193,11 +196,13 @@ test('independent hints retain their semantic candidates and merge repeated scor
     input_locale: 'en', player_safe_state: {} }, 'semantic_resolution');
   assert.deepEqual(encoded, hints);
   assert.deepEqual(searches, hints.map(() => ({ locale: 'en',
-    domains: ['physics_material_science'], limit: 3 })));
+    domains: ['physics_material_science'], limit: finalQuery.budget.max_candidates })));
   assert.equal(coreCalls, 1);
+  assert.equal(finalQuery.budget.max_candidates, 12);
   assert.equal(finalScores.get(refs[0]), 0.8);
+  assert.equal(finalScores.get(refs[4]), 0.4);
   assert.deepEqual(new Set(grounded.world_knowledge.facts.map(fact => fact.claim_ref)), new Set(refs));
-  assert.equal(traces[0].retrieval_observability.vector_hit_count, 4);
+  assert.equal(traces[0].retrieval_observability.vector_hit_count, 5);
 });
 
 test('production normalization removes unavailable domains and refs without changing authority', async () => {

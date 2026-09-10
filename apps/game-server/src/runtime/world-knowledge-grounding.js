@@ -99,7 +99,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
           embeddingMs += Math.max(0, performance.now() - embeddingStarted);
           const vectorStarted = performance.now();
           const scores = worldKnowledge.vector_index.search(vector, {
-            locale: planned.plan.query_locale, domains: planned.plan.domains, limit: 3 });
+            locale: planned.plan.query_locale, domains: planned.plan.domains, limit: query.budget.max_candidates });
           vectorMs += Math.max(0, performance.now() - vectorStarted);
           for (const [ref, score] of scores) {
             vectorScores.set(ref, Math.max(vectorScores.get(ref) ?? -Infinity, score));

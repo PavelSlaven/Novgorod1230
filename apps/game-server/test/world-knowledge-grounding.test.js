@@ -142,14 +142,73 @@ function assertRetrievalObservability(observability, grounded) {
   }
 }
 
+test('independent hints retain their semantic candidates and merge repeated scores once', async () => {
+  const bundle = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
+    import.meta.url), 'utf8'));
+  const template = bundle.claims.find(claim => claim.domain === 'physics_material_science');
+  bundle.claims = ['first', 'second', 'third', 'fourth'].map((id) => ({
+    ...structuredClone(template), claim_ref: `claim:test-${id}`,
+    applicability: { context_scope: 'universal' },
+    localizations: Object.fromEntries(bundle.manifest.supported_locales.map(locale =>
+      [locale, { runtime_text: `Independent test premise ${id}.` }]))
+  }));
+  const refs = bundle.claims.map(claim => claim.claim_ref);
+  bundle.exact_indexes.concept_to_claim_refs = {};
+  bundle.exact_indexes.domain_to_claim_refs = { physics_material_science: refs };
+  bundle.exact_indexes.predicate_to_claim_refs = { [template.predicate]: refs };
+  bundle.lexical_indexes = Object.fromEntries(bundle.manifest.supported_locales.map(locale => [locale, {}]));
+  for (const key of ['time_to_claim_refs', 'place_to_claim_refs',
+    'actor_facet_to_claim_refs', 'conflict_group_to_claim_refs']) bundle.structured_indexes[key] = {};
+  const core = createWorldKnowledgeCore(bundle);
+  const encoded = [];
+  const searches = [];
+  const traces = [];
+  let coreCalls = 0;
+  let finalScores;
+  const hints = ['How does one physical relationship operate?',
+    'What establishes a different independent relationship?'];
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { bundle,
+      core: { resolveWorldKnowledge(query, options) {
+        coreCalls += 1;
+        finalScores = options.vectorScores;
+        return core.resolveWorldKnowledge(query, options);
+      } },
+      encoder: { async encode(text) { encoded.push(text); return [encoded.length]; } },
+      vector_index: { search(vector, options) {
+        searches.push(options);
+        return vector[0] === 1
+          ? new Map([[refs[0], 0.8], [refs[2], 0.6], [refs[3], 0.5]])
+          : new Map([[refs[1], 0.9], [refs[0], 0.7]]);
+      } } },
+    telemetry: { onGameplayTrace: trace => traces.push(trace) },
+    roleRunner: { async run() { return { output: {
+      schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
+      domains: ['physics_material_science'], focus_refs: [],
+      requested_predicates: [], search_hints: hints
+    } }; } }
+  });
+  const grounded = await grounder.ground({ semantic_input: hints.join(' '),
+    input_locale: 'en', player_safe_state: {} }, 'semantic_resolution');
+  assert.deepEqual(encoded, hints);
+  assert.deepEqual(searches, hints.map(() => ({ locale: 'en',
+    domains: ['physics_material_science'], limit: 3 })));
+  assert.equal(coreCalls, 1);
+  assert.equal(finalScores.get(refs[0]), 0.8);
+  assert.deepEqual(new Set(grounded.world_knowledge.facts.map(fact => fact.claim_ref)), new Set(refs));
+  assert.equal(traces[0].retrieval_observability.vector_hit_count, 4);
+});
+
 test('production normalization removes unavailable domains and refs without changing authority', async () => {
   const bundle = JSON.parse(await readFile(new URL(
     '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
     import.meta.url), 'utf8'));
   const inputs = [];
+  const encoded = [];
   const grounder = createProductionWorldKnowledgeGrounder({
     worldKnowledge: { bundle, core: createWorldKnowledgeCore(bundle),
-      encoder: { encode: async () => new Float32Array(1024) },
+      encoder: { encode: async (text) => { encoded.push(text); return new Float32Array(1024); } },
       vector_index: { search: () => new Map() } },
     roleRunner: { async run(call) {
       const input = JSON.parse(call.messages[1].content);
@@ -163,6 +222,7 @@ test('production normalization removes unavailable domains and refs without chan
   await grounder.ground({ semantic_input: 'Контекст места', player_safe_state: {} },
     'semantic_resolution');
   assert.equal(inputs.length, 1);
+  assert.deepEqual(encoded, ['Контекст места']);
 });
 
 test('an unused focus does not block a supplied physical premise or force its historical domain', async () => {
@@ -291,17 +351,21 @@ test('grounding fails closed when flat vector scan fails without calling Core', 
   const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
   const loaded = await loadProductionWorldKnowledge({ rootDir });
   let coreCalls = 0;
+  let scans = 0;
   const grounder = createProductionWorldKnowledgeGrounder({
     worldKnowledge: { ...loaded,
       core: { resolveWorldKnowledge() { coreCalls += 1; throw new Error('must not run'); } },
       encoder: { encode: async () => new Float32Array(1024) },
-      vector_index: { search() { throw Object.assign(new Error('bad vector scan'),
+      vector_index: { search() {
+        scans += 1;
+        if (scans === 1) return new Map();
+        throw Object.assign(new Error('bad vector scan'),
         { code: 'WK_VECTOR_SCAN_FAILED' }); } } },
     roleRunner: { async run() { return { output: {
       schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
       domains: ['environment'],
       focus_refs: ['wk:environment:regional-fish-exploitation'],
-      requested_predicates: [], search_hints: ['добыча рыбы']
+      requested_predicates: [], search_hints: ['добыча рыбы', 'сезон рыбной ловли']
     } }; } }
   });
 
@@ -313,6 +377,7 @@ test('grounding fails closed when flat vector scan fails without calling Core', 
       && error.details.cause_code === 'WK_VECTOR_SCAN_FAILED'
   );
   assert.equal(coreCalls, 0);
+  assert.equal(scans, 2);
 });
 
 test('NPC action grounding reads only the projected NPC role and historical context', async () => {

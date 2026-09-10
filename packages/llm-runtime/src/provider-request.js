@@ -100,6 +100,10 @@ function providerMessages(config, messages) {
   if (config.responseFormat?.type !== 'json_object'
       || messages.some(({ content }) => typeof content === 'string'
         && /json/iu.test(content))) return messages;
+  if (messages[0]?.role === 'system' && typeof messages[0].content === 'string') {
+    return [{ ...messages[0], content: `${JSON_FORMAT_INSTRUCTION.content}\n\n${messages[0].content}` },
+      ...messages.slice(1)];
+  }
   return [JSON_FORMAT_INSTRUCTION, ...messages];
 }
 

@@ -32,12 +32,23 @@ test('DeepSeek JSON mode adds its required format-only instruction', () => {
   assert.deepEqual(messages, [{ role: 'user', content: 'Choose one option.' }]);
 });
 
-test('OpenAI-compatible JSON mode adds the same protocol instruction', () => {
-  const messages = [{ role: 'system', content: 'Return one semantic choice.' }];
-  assert.deepEqual(providerPayload('openai_compatible', messages).messages, [
-    { role: 'system', content: 'Return a valid json object.' },
-    ...messages
-  ]);
+test('JSON mode adds its instruction to the existing first system message without changing the input', () => {
+  for (const compatibility of ['deepseek', 'openai_compatible']) {
+    const messages = Object.freeze([
+      Object.freeze({ role: 'system', content: 'Return one semantic choice.' }),
+      Object.freeze({ role: 'user', content: 'Choose one option.' })
+    ]);
+    const payload = providerPayload(compatibility, messages);
+    assert.deepEqual(payload.messages, [
+      { role: 'system', content: 'Return a valid json object.\n\nReturn one semantic choice.' },
+      messages[1]
+    ]);
+    assert.equal(messages[0].content, 'Return one semantic choice.');
+    assert.equal(payload.messages[1], messages[1]);
+    assert.deepEqual(providerPayload(compatibility, [messages[1]]).messages, [
+      { role: 'system', content: 'Return a valid json object.' }, messages[1]
+    ]);
+  }
 });
 
 test('JSON mode does not duplicate an existing JSON instruction', () => {

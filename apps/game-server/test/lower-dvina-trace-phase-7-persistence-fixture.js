@@ -1,5 +1,30 @@
+import { createNpcRoutineState, npcRoutineActivity } from '@rus/npc-runtime';
+import { npcRoutineCandidate } from '../src/runtime/npc-routine-temporal.js';
 import { phase7PlayerInput as playerInput } from
   './lower-dvina-trace-phase-7-runtime-fixture.js';
+
+export function addPhase7RoutineBoundary(state, boundaryMinute) {
+  const npc = state.npcs.find(({ instance_id: id }) => id === 'zhdanko-1');
+  const runtime = createNpcRoutineState({ started_at: state.clock, profile: {
+    schema: 'npc_routine_profile_v1', profile_id: 'work-routine', revision: 1, status: 'approved',
+    phases: ['work', 'rest'].map((state_id, index) => ({ state_id,
+      duration_minutes: index === 0 ? boundaryMinute - Number(state.clock.whole_minutes) : 60,
+      activity_ref: state_id, summary: state_id, activity_status: 'active',
+      runtime_status: 'available', can_continue_automatically: true, decision_required: false }))
+  } });
+  npc.machine_state.current_activity = npcRoutineActivity(runtime);
+  npc.machine_state.current_activity_ref = npc.machine_state.current_activity.activity_ref;
+  const schedule = { id: 'routine-zhdanko', party_id: state.party_id,
+    npc_id: npc.instance_id, state_version: 1, current_activity_execution_id: null,
+    causal_state_ref: { routine_state: runtime }, npc_snapshot: structuredClone(npc),
+    attention_state_ref: { entity_kind: 'condition_set', entity_id: 'attention' },
+    body_state_ref: { entity_kind: 'body_state', entity_id: 'body' },
+    knowledge_state_ref: { entity_kind: 'knowledge_fact', entity_id: 'knowledge' },
+    relationship_state_ref: { entity_kind: 'condition_set', entity_id: 'relations' } };
+  state.npc_schedule_runtime = [schedule];
+  state.temporal_boundary_candidates.push(npcRoutineCandidate(schedule));
+  return npc;
+}
 
 export function factualTurn(state, consequence, timeUpdate, bodyUpdate) {
   return { player_input: playerInput(state, 'persist'), mode_resolution: {

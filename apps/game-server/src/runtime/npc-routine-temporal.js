@@ -13,10 +13,10 @@ export function npcRoutineCandidate(row) {
     scheduled_at: structuredClone(runtime.next_transition_at),
     source_ref: { entity_kind: 'npc', entity_id: row.npc_id },
     primary_subject_ref: { entity_kind: 'npc', entity_id: row.npc_id },
-    scope_ref: { entity_kind: 'party', entity_id: row.party_id }, rule_ref: RULE,
-    policy_ref: POLICY, preconditions_digest: digest(runtime),
+    scope_ref: { entity_kind: 'party', entity_id: row.party_id }, rule_ref: structuredClone(RULE),
+    policy_ref: structuredClone(POLICY), preconditions_digest: digest(runtime),
     resolution_class: 'npc_schedule', interrupt_effect: 'background',
-    visibility_policy_ref: POLICY, idempotency_key: id,
+    visibility_policy_ref: structuredClone(POLICY), idempotency_key: id,
     subject_refs: [{ entity_kind: 'npc', entity_id: row.npc_id }], causal_parent_refs: [] };
 }
 

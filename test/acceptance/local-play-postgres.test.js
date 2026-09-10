@@ -310,6 +310,10 @@ function fixtureRoleModel(input) {
 
 function searchFixtureResponse(input, resolution) {
   const request = input?.request ?? input;
+  if (request?.operation?.op === 'request_discovery'
+      && request.operation.query === request.remaining_intent) return {
+    mode: 'focused_discovery', consumed_intent: request.remaining_intent
+  };
   if (resolution === 'inspect' && request?.schema === 'turn_step_request_v1') {
     return existingInspectionFixtureResponse(request);
   }

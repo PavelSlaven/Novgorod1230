@@ -36,7 +36,7 @@ test('validated opening projection supplies the initial current scene', () => {
     sensory_details: ['cold', 'wet', 'exposed'],
     visible_npc: [],
     visible_objects: [],
-    known_context: ['берег крушения', 'утро'],
+    known_context: ['берег крушения'],
     uncertainties: [],
     allowed_tensions: [],
     do_not_imply: []

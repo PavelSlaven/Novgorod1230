@@ -3,6 +3,8 @@ import test from 'node:test';
 import { validateNarrationOutput } from '@rus/narration';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
+import { enrichLowerDvinaTraceVisibleNpcCues } from
+  '../src/runtime/lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 import { assembleNarrationRoleOutput,
   createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
@@ -14,6 +16,46 @@ test('narration assembly does not default omitted semantic fields', () => {
   assert.equal(output.used_references, undefined);
   assert.equal(output.self_check, undefined);
   assert.equal(validateNarrationOutput(output).ok, false);
+});
+
+test('body delta reaches narration as grounded meaning without technical prose or invented shivering', async () => {
+  const possibleCold = { id: 'cold_with_possible_shivering', status: 'active' };
+  const visible = enrichLowerDvinaTraceVisibleNpcCues({
+    visibleContext: { version: 1, schema: 'visible_context_package', visible_scene: 'У костра.',
+      visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
+      known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [] },
+    committedState: { body_state: { active_conditions: [{ id: 'wet' }, possibleCold] } },
+    bodyAfter: { active_conditions: [{ id: 'damp' }, possibleCold] }
+  });
+  const prose = 'Одежда стала менее мокрой, но остаётся сырой.';
+  let auditCount = 0;
+  const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
+    async run(call) {
+      const input = JSON.parse(call.messages[1].content);
+      const context = input.visible_context ?? input.request?.visible_context;
+      assert.deepEqual(context, visible);
+      if (call.role_id === 'gameplay_narrator') {
+        assert.match(call.messages[0].content, /do not invent a diagnosis or additional symptoms/u);
+        return { output: { prose: 'Вас трясёт. {"before":"wet","after":"damp"}',
+          action_options: [], used_references: [], self_check: {} } };
+      }
+      if (call.role_id === 'gameplay_narrator_auditor') {
+        auditCount += 1;
+        return { output: auditCount === 1 ? { pass: false, concerns: [
+          { segment_choice: 'segment_1', kind: 'unsupported_fact', reason: 'Possible shivering is not confirmed.' },
+          { segment_choice: 'segment_1', kind: 'technical_presentation', reason: 'Body JSON is not literary prose.' }
+        ], evidence: ['Only wet-to-damp changed; cold has possible shivering.'] }
+          : { pass: true, concerns: [], evidence: ['Only the supported clothing change is stated.'] } };
+      }
+      return { output: { replacements: [{ prose }] } };
+    }
+  } });
+  const result = await narration.run({ version: 1, schema: 'narration_request',
+    request_id: 'body-delta', surface: 'turn', visible_context: visible, context: {} });
+  assert.equal(result.status, 'approved');
+  assert.equal(auditCount, 2);
+  assert.equal(result.approved_output.prose, prose);
+  assert.doesNotMatch(result.approved_output.prose, /[{}]|before|after|wet|damp|cold_with|дрож|тряс/u);
 });
 
 test('narration wires writer, audit, and coherent semantic repair roles', async () => {

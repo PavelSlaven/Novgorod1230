@@ -25,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 43);
+  assert.equal(corpus.corpus_version, 50);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -244,17 +244,17 @@ test('provider-ok invalid plan counts as validator failure and error in role/mod
     assert.equal(summary.error_rate, .75);
     assert.equal(summary.schema_failures, 1);
     assert.equal(summary.schema_failure_rate, .25);
-    assert.equal(summary.validator_failures, 1);
-    assert.equal(summary.validator_failure_rate, .25);
+    assert.equal(summary.validator_failures, 2);
+    assert.equal(summary.validator_failure_rate, .5);
     assert.equal(summary.rubric_failures, 1);
     assert.equal(summary.rubric_failure_rate, .25);
     assert.equal(report.aggregates.by_model['fixture-model'].errors, 3);
-    assert.equal(report.aggregates.by_role_model.turn_step_planner['fixture-model'].validator_failures, 1);
+    assert.equal(report.aggregates.by_role_model.turn_step_planner['fixture-model'].validator_failures, 2);
     assert.equal(report.aggregates.by_repair.repair.errors, 1);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
-test('planner fixture uses one production repair only after production validation rejects primary', async () => {
+test('planner fixture rejects an unknown continuation ref without semantic repair', async () => {
   const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   const invalidPrimary = structuredClone(fixture.expected_output);
   invalidPrimary.continuation = {
@@ -280,22 +280,18 @@ test('planner fixture uses one production repair only after production validatio
       baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
     } });
     const result = report.results[0];
-    assert.equal(calls, 2);
-    assert.equal(result.pass, true);
+    assert.equal(calls, 1);
+    assert.equal(result.pass, false);
     assert.equal(result.workflow.primary.valid, false);
-    assert.equal(result.workflow.repair_needed, true);
-    assert.equal(result.workflow.repair.role_id, 'turn_step_planner_repair');
-    assert.equal(result.workflow.repair.valid, true);
-    assert.deepEqual(result.workflow.final, {
-      source: 'repair', status: 'ok', valid: true,
-      rubric_pass: true,
-      quality_status: 'automated_passed', pass: true
-    });
-    assert.equal(report.aggregates.total.calls, 2);
+    assert.equal(result.workflow.repair_needed, false);
+    assert.equal(result.workflow.repair, null);
+    assert.equal(result.workflow.error_code, 'TURN_STEP_PLAN_INVALID');
+    assert.equal(result.workflow.repair_suppressed, 'deterministic_structure_invalid');
+    assert.equal(report.aggregates.total.calls, 1);
     assert.equal(report.aggregates.total.fixtures, 1);
-    assert.equal(report.aggregates.total.repairs, 1);
-    assert.equal(report.aggregates.total.input_tokens, 4);
-    assert.equal(report.aggregates.total.output_tokens, 6);
+    assert.equal(report.aggregates.total.repairs, 0);
+    assert.equal(report.aggregates.total.input_tokens, 2);
+    assert.equal(report.aggregates.total.output_tokens, 3);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
@@ -338,7 +334,7 @@ test('semantic-invalid structurally-valid repair fails the planner workflow verd
   const fixture = corpus.fixtures.find(({ id }) =>
     id === 'planner-general-look-spatial-grounding');
   const invalid = structuredClone(fixture.expected_output);
-  invalid.operations[0].target_refs.push('actor_mikula');
+  invalid.operations[0].target_refs = ['actor_mikula'];
   let calls = 0;
   const server = createServer(async (request, response) => {
     for await (const _ of request) {}
@@ -481,7 +477,7 @@ test('saved 26/27 planner failure is classified as branch A without a new API ca
     'A_production_validation_rejected');
 });
 
-test('planner invalid repair fails after exactly two calls', async () => {
+test('planner structurally invalid output fails after exactly one call', async () => {
   const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   let calls = 0;
   const server = createServer(async (request, response) => {
@@ -498,12 +494,13 @@ test('planner invalid repair fails after exactly two calls', async () => {
       compatibility: 'openai_compatible',
       baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
     } });
-    assert.equal(calls, 2);
+    assert.equal(calls, 1);
     assert.equal(report.results[0].pass, false);
-    assert.equal(report.results[0].workflow.repair_needed, true);
-    assert.equal(report.results[0].workflow.repair.valid, false);
+    assert.equal(report.results[0].workflow.repair_needed, false);
+    assert.equal(report.results[0].workflow.repair, null);
+    assert.equal(report.results[0].workflow.repair_suppressed, 'deterministic_structure_invalid');
     assert.equal(report.results[0].workflow.error_code, 'TURN_STEP_PLAN_INVALID');
-    assert.equal(report.aggregates.total.repairs, 1);
+    assert.equal(report.aggregates.total.repairs, 0);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 

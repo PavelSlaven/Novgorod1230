@@ -114,7 +114,7 @@ export function validatePreparedEffectCommit({
   validatePreparedRouteTraceLineage({
     route, routeTrace, directTrace, loopTrace: envelope.loop_trace,
     envelope, state, routeOnly: !hasDirect,
-    intermediateTraces
+    intermediateTraces, scenePresentation: turnStepApprovedOwners?.scenePresentation
   });
   if (hasDirect) validatePreparedDirectSlice({
     batch, direct, directTrace, route, turnStepApprovedOwners

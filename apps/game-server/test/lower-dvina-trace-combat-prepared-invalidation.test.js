@@ -317,7 +317,7 @@ function terminalProjection(envelope) {
   const projection = combatVisibleEnvelope({ partyId: 'party-1', factual,
     visibleContext, nextVersion: 8, turnNumber: 1,
     changeSetId: 'change-1', idemId: 'idem-1' });
-  const state = { party_id: 'party-1', opening_identity: {
+  const state = { party_id: 'party-1', actor_id: 'player-1', opening_identity: {
     opening_screen_digest: 'opening-1' } };
   return { envelope: projection, screen: combatPendingScreen({ state, factual,
     visibleEnvelope: projection, turnNumber: 1, nextVersion: 8 }),

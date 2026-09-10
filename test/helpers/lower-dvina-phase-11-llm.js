@@ -107,6 +107,10 @@ export function createCanonicalPhase11LlmResponder({
       return plan;
     }
     if (model === 'fixture-turn-step-grounding-auditor') {
+      if (input?.operation?.op === 'request_discovery'
+          && input.operation.query === input.remaining_intent) return {
+        mode: 'focused_discovery', consumed_intent: input.remaining_intent
+      };
       return { pass: true, concerns: [] };
     }
     if (['fixture-player-conversation-interpreter',

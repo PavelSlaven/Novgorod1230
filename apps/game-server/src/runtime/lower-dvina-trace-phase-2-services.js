@@ -180,7 +180,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
           turn10Contracts, phase8Contracts, phase9Contracts,
-          phase10Contracts, turnStepApprovedOwners, turnBudget,
+          phase10Contracts, turnStepApprovedOwners: {
+            ...turnStepApprovedOwners, scenePresentation
+          }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {
           context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_rejected',

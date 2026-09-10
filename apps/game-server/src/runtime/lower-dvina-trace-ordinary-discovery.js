@@ -248,7 +248,8 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
       applied.working_projection, plan));
   const activity = ordinaryDiscoveryActivity({ operation: execution.operation,
     request: execution.request, ordinaryPlan: plan, knownResolution: applied.known_resolution });
-  if (activity == null) return { ...applied, working_projection: projection };
+  if (activity == null) return plan == null ? applied
+    : { ...applied, working_projection: projection };
   const timed = await applySemanticActivity({ ...execution,
     working_projection: projection,
     operation: { op: 'apply_semantic_activity', activity }

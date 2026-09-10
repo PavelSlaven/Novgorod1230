@@ -8,7 +8,9 @@ export async function assertOpeningPublication({ fixture, createRuntime, release
   assert.equal(current.definition.revision, 33);
   assert.equal(oldPublication.definition.revision, 32);
   assert.equal(current.scene_presentation.presentation_id,
-    oldPublication.scene_presentation.presentation_id);
+    'lower_dvina_trace_scene_presentation_v3');
+  assert.equal(oldPublication.scene_presentation.presentation_id,
+    'lower_dvina_trace_scene_presentation_v2');
   assert.equal(current.manifest.superseded_package_ref.digest,
     oldPublication.manifest_digest);
   const previous = fixture({ publicationLoader: async () => oldPublication });

@@ -211,6 +211,7 @@ function conversationWorldKnowledge(onQuery) {
   concepts, claims: concepts.map(({ domain }, index) => ({ claim_ref: `claim:${index}`, domain })),
   exact_indexes: { concept_to_claim_refs: Object.fromEntries(concepts.map(({ concept_ref }, index) =>
     [concept_ref, [`claim:${index}`]])) },
+  lexical_indexes: { ru: {} },
   predicate_registry: Object.fromEntries(concepts.map(({ domain }) =>
     [domain, predicate])), coverage_profiles: concepts.map(({ domain }) => ({
     domain, status: 'production', runtime_requirement: 'required_when_selected',

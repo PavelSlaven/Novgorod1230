@@ -1,5 +1,6 @@
 import {
   approvedNarration,
+  fixtureContainerState,
   currentWorldBaseReferenceSnapshot,
   phase1AInstance,
   replaceState,
@@ -116,6 +117,7 @@ function fixture({
               holder_character_id: item.holder_character_id ?? null,
               holder_npc_id: item.holder_npc_id ?? null,
               physical_position: item.physical_position ?? null,
+              equipment_slot_category_id: item.equipment_slot_category_id ?? null,
             },
             ownership: {
               owner_character_id: item.owner_character_id ?? null,
@@ -127,15 +129,7 @@ function fixture({
             },
             state: structuredClone(item.state),
           })),
-          containers: (instance.immediate.containers ?? []).map((container) => ({
-            container_id: container.instance_id,
-            template_id: container.template_id,
-            anchor_id: container.anchor_id ?? null,
-            holder_npc_id: container.holder_npc_id ?? null,
-            closure_state: container.closure_state,
-            state: structuredClone(container.state),
-            state_version: 1,
-          })),
+          ...fixtureContainerState(instance.immediate.containers, partyId),
           knowledge: [],
           opening_identity: { opening_screen_digest: 'a'.repeat(64) },
           relevant_hidden_state: {

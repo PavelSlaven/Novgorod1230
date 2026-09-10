@@ -19,7 +19,8 @@ import { projectLowerDvinaTracePlayerSafeState } from
 const bundle13 = await loadScenarioBundle(13);
 
 export async function routeDirectScenario({ firstEntryOnly = false,
-  plannerPortrait = false, plannerPresentationOverlay = false } = {}) {
+  plannerPortrait = false, plannerPresentationOverlay = false,
+  scenePresentation = null } = {}) {
   const bootstrap = fixture({ scenarioBundle: bundle13,
     materializationBundle: bundle13, rollValue: 0 });
   await submit(bootstrap, turn('route-direct-bootstrap',
@@ -44,7 +45,8 @@ export async function routeDirectScenario({ firstEntryOnly = false,
     };
   }
   const semantic = fixture({
-    scenarioBundle: bundle13,
+    scenarioBundle: scenePresentation == null ? bundle13
+      : { ...bundle13, scene_presentation: scenePresentation },
     materializationBundle: bundle13,
     committedState: before,
     rollValue: 0.99,

@@ -9,6 +9,7 @@ import { projectKnowledge, projectKnownContext } from './lower-dvina-trace-playe
 
 const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
   'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
+const BODY_CHANGE_CONTEXT = 'Изменение состояния тела: ';
 
 export function enrichLowerDvinaTraceVisibleNpcCues({
   visibleContext,
@@ -35,12 +36,14 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
     !beforeConditions.some(before => JSON.stringify(condition) === JSON.stringify(before)));
   const conditionChanges = bodyAfter == null
     || removed.length + added.length === 0 ? [] : [
-      `Изменение состояния тела: ${JSON.stringify({ before: removed, after: added })}`];
+      `${BODY_CHANGE_CONTEXT}${JSON.stringify({ before: removed, after: added })}`];
   return deepFreeze({
     ...structuredClone(visibleContext),
-    visible_changes: [...new Set([...visibleContext.visible_changes, ...conditionChanges])],
-    known_context: [...new Set([...visibleContext.known_context.filter(value => !beforeContext.includes(value)),
-      ...afterContext,
+    visible_changes: [...new Set([...visibleContext.visible_changes,
+      ...(conditionChanges.length === 0 ? [] : ['Состояние вашего тела изменилось.'])])],
+    known_context: [...new Set([...visibleContext.known_context.filter(value =>
+      !beforeContext.includes(value) && !value.startsWith(BODY_CHANGE_CONTEXT)),
+      ...afterContext, ...conditionChanges,
       ...projectKnownContext(projectActor({ profile: committedState?.player_profile,
         actorId: committedState?.actor_id }), projectKnowledge([
           ...(committedState?.player_profile?.knowledge?.initial_records ?? []),

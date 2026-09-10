@@ -22,10 +22,18 @@ test('condition order is not a bodily event and unchanged symptoms stay supporti
   assert.deepEqual(unchanged.visible_changes, []);
   const changed = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: scene(), committedState,
     bodyAfter: { active_conditions: [headache, { id: 'damp', status: 'active' }] } });
-  assert.equal(changed.visible_changes.length, 1);
-  assert.doesNotMatch(changed.visible_changes[0], /headache/u);
-  assert.match(changed.visible_changes[0], /wet.*damp/u);
+  assert.deepEqual(changed.visible_changes, ['Состояние вашего тела изменилось.']);
+  const delta = changed.known_context.find(value => value.startsWith('Изменение состояния тела:'));
+  assert.doesNotMatch(delta, /headache/u);
+  assert.match(delta, /before.*wet.*after.*damp/u);
+  assert.doesNotMatch(changed.visible_changes[0], /[{}]|before|after|wet|damp/u);
   assert.ok(changed.known_context.some(value => value.includes('headache')));
+  const next = enrichLowerDvinaTraceVisibleNpcCues({
+    visibleContext: { ...scene(), known_context: changed.known_context },
+    committedState: { body_state: { active_conditions: [headache, { id: 'damp', status: 'active' }] } }
+  });
+  assert.ok(next.known_context.every(value => !value.startsWith('Изменение состояния тела:')));
+  assert.deepEqual(next.visible_changes, []);
 });
 
 test('a remembered player utterance is not recast as received testimony', () => {
@@ -51,9 +59,12 @@ test('final current body and calendar replace their earlier context on authored 
     const output = await projector.project({ retrieved_state: state, consequence,
       body_update: { state_after: bodyAfter }, time_update: { clock_after: clock(15) } });
     assert.ok(output.known_context.some(value => value.includes('07:15')));
-    assert.doesNotMatch(JSON.stringify(output.known_context), /07:00|wrist_discomfort|"wet"|PRIVATE_STORAGE/u);
+    const currentContext = output.known_context.filter(value => !value.startsWith('Изменение состояния тела:'));
+    assert.doesNotMatch(JSON.stringify(currentContext), /07:00|wrist_discomfort|"wet"|PRIVATE_STORAGE/u);
+    assert.doesNotMatch(JSON.stringify(output.known_context), /PRIVATE_STORAGE/u);
     assert.ok(output.known_context.some(value => value.includes('damp')));
-    assert.ok(output.visible_changes.some(value => value.includes('wrist_discomfort') && value.includes('damp')));
+    assert.ok(output.known_context.some(value => value.includes('wrist_discomfort') && value.includes('damp')));
+    assert.deepEqual(output.visible_changes, ['Состояние вашего тела изменилось.']);
     assert.deepEqual(output.sensory_details, before.sensory_details);
     assert.equal(output.visible_scene, before.visible_scene);
   }

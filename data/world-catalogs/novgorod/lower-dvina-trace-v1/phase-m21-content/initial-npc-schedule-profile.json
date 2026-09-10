@@ -1,0 +1,128 @@
+{
+  "schema": "rus.lower_dvina_trace_initial_npc_schedule_profile.v2",
+  "profile_id": "lower_dvina_trace_initial_npc_schedules_v2",
+  "revision": 2,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 33,
+  "owner": "@rus/npc-runtime",
+  "fallback_policy": "forbidden",
+  "entries": [
+    {
+      "participant_profile_ref": "trace_ld_v1_onisim_hired_boatman_v1",
+      "schedule_state": "interrupted",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_onisim_wreck_recovery_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_onisim_wreck_recovery_v1",
+        "summary": "После крушения лежит в старой сушильне; перевозка прервана, и продолжать её он не может.",
+        "status": "paused",
+        "can_continue_automatically": false
+      },
+      "routine_profile_ref": "ordinary_day_work_routine_v1"
+    },
+    {
+      "participant_profile_ref": "trace_ld_v1_eremey_local_fisher_v1",
+      "schedule_state": "working",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_eremey_net_work_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_eremey_net_work_v1",
+        "summary": "На рыбацкой стоянке осматривает и чинит принадлежащие ему сети.",
+        "status": "active",
+        "can_continue_automatically": true
+      },
+      "routine_profile_ref": "ordinary_day_work_routine_v1"
+    },
+    {
+      "participant_profile_ref": "trace_ld_v1_ratsha_storehouse_helper_v1",
+      "schedule_state": "working",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_ratsha_storehouse_work_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_ratsha_storehouse_work_v1",
+        "summary": "У старой сушильни выполняет порученную работу с лодкой и грузом.",
+        "status": "active",
+        "can_continue_automatically": true
+      },
+      "routine_profile_ref": "ordinary_day_work_routine_v1"
+    },
+    {
+      "participant_profile_ref": "trace_ld_v1_zhdanko_storehouse_controller_v1",
+      "schedule_state": "working",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_zhdanko_storehouse_work_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_zhdanko_storehouse_work_v1",
+        "summary": "У клети следит за запасами и распоряжается текущими работами.",
+        "status": "active",
+        "can_continue_automatically": true
+      },
+      "routine_profile_ref": "ordinary_day_work_routine_v1"
+    },
+    {
+      "participant_profile_ref": "trace_ld_v1_background_fisher_v1",
+      "schedule_state": "working",
+      "time_band": "day",
+      "schedule_profile_id": "trace_ld_v1_schedule_background_fisher_net_work_v1",
+      "current_activity": {
+        "activity_ref": "trace_ld_v1_schedule_background_fisher_net_work_v1",
+        "summary": "На рыбацкой стоянке чинит и укладывает снасти.",
+        "status": "active",
+        "can_continue_automatically": true
+      },
+      "routine_profile_ref": "ordinary_day_work_routine_v1"
+    }
+  ],
+  "routine_profiles": [
+    {
+      "schema": "npc_routine_profile_v1",
+      "profile_id": "ordinary_day_work_routine_v1",
+      "revision": 1,
+      "status": "approved",
+      "phases": [
+        {
+          "state_id": "morning_work",
+          "duration_minutes": 120,
+          "activity_ref": "ordinary_routine_work_v1",
+          "runtime_status": "available",
+          "activity_status": "active",
+          "summary": "Продолжает начатую дневную работу.",
+          "can_continue_automatically": true,
+          "decision_required": false
+        },
+        {
+          "state_id": "short_rest",
+          "duration_minutes": 15,
+          "activity_ref": "ordinary_routine_rest_v1",
+          "runtime_status": "available",
+          "activity_status": "paused",
+          "summary": "Прерывает работу для короткого отдыха.",
+          "can_continue_automatically": true,
+          "decision_required": false
+        },
+        {
+          "state_id": "day_work",
+          "duration_minutes": 705,
+          "activity_ref": "ordinary_routine_work_v1",
+          "runtime_status": "available",
+          "activity_status": "active",
+          "summary": "Возвращается к начатой дневной работе.",
+          "can_continue_automatically": true,
+          "decision_required": false
+        },
+        {
+          "state_id": "night_rest",
+          "duration_minutes": 600,
+          "activity_ref": "ordinary_routine_sleep_v1",
+          "runtime_status": "sleeping",
+          "activity_status": "active",
+          "summary": "Оставляет дневную работу и засыпает.",
+          "can_continue_automatically": true,
+          "decision_required": false
+        }
+      ],
+      "local_start_minute": 420
+    }
+  ]
+}

@@ -25,6 +25,10 @@
   общий Stage 16;
 - не вызывает LLM.
 
+Revision 33 инициализирует calendar routine через `@rus/npc-runtime` из
+approved profile. Stage 24 сохраняет её в canonical schedule table в общей
+NewGame транзакции; подготовленный G6 при этом не materialize заранее.
+
 ## Публичный API
 
 `materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
@@ -70,7 +74,7 @@ persisted formal placement.
 
 ## Допустимые зависимости
 
-`@rus/kernel` и стандартная библиотека Node.js.
+`@rus/kernel`, чистый routine API `@rus/npc-runtime` и стандартная библиотека Node.js.
 
 ## Запрещённые зависимости
 

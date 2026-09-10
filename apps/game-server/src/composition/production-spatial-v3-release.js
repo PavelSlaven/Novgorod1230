@@ -52,17 +52,17 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   runtime_selectable_in_canonical_production: false,
   scenario_binding_id: 'lower_dvina_late_summer_open_water_v1',
   scenario_profile_exact_pins: Object.freeze({
-    scenario_definition_revision: 32,
+    scenario_definition_revision: 33,
     scenario_definition_digest:
-      '0c4b5d4992393ecde511cb35426933b01fb51b47552e0f5a859df2bfd359ab1f',
-    phase_1a_package_id: 'lower_dvina_trace_phase_1a_v23',
+      'e3f9ed3adf251dc6b55e1d55df7fb42af11761d10db9e04672203b8ad50d8872',
+    phase_1a_package_id: 'lower_dvina_trace_phase_1a_v24',
     phase_1a_manifest_digest:
-      '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101',
+      '6b6351c6cec4a814966691e123887d8e96ab2b2ee3189c2ac2a754bb049fb80e',
     phase_1b_package_id: 'lower_dvina_trace_phase_1b_v28',
     phase_1b_manifest_digest:
-      '9973d7953c29f0f0d1dc70b23020852adf0bb8f77d3a2330faac82f6f8f912a1',
+      '2324ce6b41d3bda293900aaa135411e2554c5bbe0ca56736fb1c0938c62aa88d',
     phase_1b_binding_digest:
-      'cdf9b883779dbe90e6415b2f7d3d3b47cbfbe7fae176e2607af717c9cc98bc10',
+      'c700fe1bc61808258cd6a66826fb8f45026f2e0735a833dfb01d804c2d87a1db',
     n1_profile_id: 'lower_dvina_trace_n1_background_npc_v1',
     n1_profile_revision: 1,
     n1_profile_scenario_definition_revision: 31,

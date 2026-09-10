@@ -139,6 +139,9 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
     method: 'submitTurn'
   });
   assert.deepEqual(calls.map(({ method }) => method), ['submitTurn']);
+  const catalog = await bindings.targetCompositionPorts.releaseVerticalSliceExecutor.listScenarios();
+  assert.equal(catalog.scenarios[0].scenario_id, 'lower_dvina_trace_v1');
+  assert.equal(catalog.scenarios[0].available, true);
   assert.deepEqual(bindings.runtimeCatalogPin, TEST_RUNTIME_CATALOG_PIN);
   assert.equal(bindings.runtimeCatalogPin.compatible_world_revision_id,
     'novgorod_spatial_v3_production_v6_candidate_001');
@@ -160,17 +163,17 @@ test('production-v15 is the sole release and pins World Knowledge', () => {
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins.world_revision_id,
     'novgorod_spatial_v3_production_v6_candidate_001');
   assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.scenario_profile_exact_pins, {
-    scenario_definition_revision: 32,
+    scenario_definition_revision: 33,
     scenario_definition_digest:
-      '0c4b5d4992393ecde511cb35426933b01fb51b47552e0f5a859df2bfd359ab1f',
-    phase_1a_package_id: 'lower_dvina_trace_phase_1a_v23',
+      'e3f9ed3adf251dc6b55e1d55df7fb42af11761d10db9e04672203b8ad50d8872',
+    phase_1a_package_id: 'lower_dvina_trace_phase_1a_v24',
     phase_1a_manifest_digest:
-      '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101',
+      '6b6351c6cec4a814966691e123887d8e96ab2b2ee3189c2ac2a754bb049fb80e',
     phase_1b_package_id: 'lower_dvina_trace_phase_1b_v28',
     phase_1b_manifest_digest:
-      '9973d7953c29f0f0d1dc70b23020852adf0bb8f77d3a2330faac82f6f8f912a1',
+      '2324ce6b41d3bda293900aaa135411e2554c5bbe0ca56736fb1c0938c62aa88d',
     phase_1b_binding_digest:
-      'cdf9b883779dbe90e6415b2f7d3d3b47cbfbe7fae176e2607af717c9cc98bc10',
+      'c700fe1bc61808258cd6a66826fb8f45026f2e0735a833dfb01d804c2d87a1db',
     n1_profile_id: 'lower_dvina_trace_n1_background_npc_v1',
     n1_profile_revision: 1,
     n1_profile_scenario_definition_revision: 31,
@@ -694,7 +697,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger through migration 030', async () => {
+test('restart extends the exact immutable catalog ledger through migration 031', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -724,7 +727,7 @@ test('restart extends the exact immutable catalog ledger through migration 030',
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 19);
+  assert.equal(result.newly_applied, 20);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),

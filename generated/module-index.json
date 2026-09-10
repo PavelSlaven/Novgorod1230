@@ -239,7 +239,8 @@
       "dependencies": [
         "@rus/actors",
         "@rus/contracts",
-        "@rus/kernel"
+        "@rus/kernel",
+        "@rus/npc-runtime"
       ],
       "name": "@rus/materialization",
       "owns": [

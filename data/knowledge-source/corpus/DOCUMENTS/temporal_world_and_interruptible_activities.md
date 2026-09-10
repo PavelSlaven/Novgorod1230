@@ -2924,6 +2924,55 @@ invariants:
 
 ---
 
+## A.8. Committed NewGame temporal baseline
+
+Первая authoritative партия имеет state_version=0. Temporal request и provider
+принимают этот существующий committed baseline без подмены версии. Остальные
+поля и historical A.1–A.6 остаются неизменными.
+
+```yaml
+contract_name: temporal_boundary_provider_input
+storage: immutable_request
+identity:
+fields:
+  from_timestamp: required game_timestamp
+  limit_timestamp: required game_timestamp
+  party_state_version: required non_negative_decimal_string
+  relevant_state_projection: required json_object
+  calendar_profile_ref: required calendar_profile_ref
+  catalog_pins: required dependency_pin_set
+  provider_version: required authoring_version
+relations:
+  active_execution_refs: relation_set[entity_ref]
+invariants:
+  - Input is frozen and explicit; a provider performs no IO, mutation, event execution or semantic fallback.
+```
+
+```yaml
+contract_name: temporal_advance_request
+storage: immutable_request
+identity:
+fields:
+  party_id: required stable_id
+  turn_id: required stable_id
+  base_state_version: required non_negative_decimal_string
+  clock_before: required game_timestamp
+  clock_commit_mode: required enum[direct_party_clock, shared_root_transport_clock]
+  clock_owner_ref: required entity_ref
+  requested_execution_ref: required entity_ref
+  inclusive_limit_timestamp: required game_timestamp
+  active_scope: required controlled_remote_scope_mode
+  relevant_state_projection: required json_object
+  catalog_pins: required dependency_pin_set
+  temporal_resolution_policy_ref: required temporal_resolution_policy_ref
+  idempotency_context: required json_object
+relations:
+  provider_versions: relation_set[versioned_ref]
+invariants:
+  - Limit is not earlier than clock_before and request names exactly one authoritative clock owner.
+  - Provider inputs and state projection are complete; hidden reads and implicit providers are forbidden.
+```
+
 # Приложение B. Temporal typed-error amendment
 
 | Error code | Meaning | Required reaction | Retryability |

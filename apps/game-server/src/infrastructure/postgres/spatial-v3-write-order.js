@@ -77,6 +77,10 @@ function orderingParentKeys(write) {
     );
   }
   if (write?.target_table === 'party_npc_spatial_schedules'
+      && write.record?.current_position_node_id) {
+    parents.add(`party_runtime.scene_position_nodes:${write.record.current_position_node_id}`);
+  }
+  if (write?.target_table === 'party_npc_spatial_schedules'
       && write.record?.current_activity_execution_id) {
     parents.add(
       `party_runtime.party_timed_activity_executions:${write.record.current_activity_execution_id}`

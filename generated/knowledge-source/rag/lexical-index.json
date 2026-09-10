@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "dd806aa94407a10695ac7cfcf8dacf609eec70ce9eabad382211603e701ecdcb",
-  "chunk_count": 2736,
+  "corpus_hash": "d338c8ea1f5b081036595230aa595dc0bff369b16b99a742b23e1bde98120b56",
+  "chunk_count": 2738,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -20245,11 +20245,29 @@
       "char_count": 257
     },
     {
+      "id": "temporal_world_and_interruptible_activities.md:A.8. Committed NewGame temporal baseline:0",
+      "file": "temporal_world_and_interruptible_activities.md",
+      "section": "A.8. Committed NewGame temporal baseline",
+      "line_start": 2927,
+      "line_end": 2975,
+      "text": "## temporal_world_and_interruptible_activities.md — A.8. Committed NewGame temporal baseline\n## A.8. Committed NewGame temporal baseline\n\nПервая authoritative партия имеет state_version=0. Temporal request и provider\nпринимают этот существующий committed baseline без подмены версии. Остальные\nполя и historical A.1–A.6 остаются неизменными.\n\n```yaml\ncontract_name: temporal_boundary_provider_input\nstorage: immutable_request\nidentity:\nfields:\n  from_timestamp: required game_timestamp\n  limit_timestamp: required game_timestamp\n  party_state_version: required non_negative_decimal_string\n  relevant_state_projection: required json_object\n  calendar_profile_ref: required calendar_profile_ref\n  catalog_pins: required dependency_pin_set\n  provider_version: required authoring_version\nrelations:\n  active_execution_refs: relation_set[entity_ref]\ninvariants:\n  - Input is frozen and explicit; a provider performs no IO, mutation, event execution or semantic fallback.\n```",
+      "char_count": 969
+    },
+    {
+      "id": "temporal_world_and_interruptible_activities.md:A.8. Committed NewGame temporal baseline:1",
+      "file": "temporal_world_and_interruptible_activities.md",
+      "section": "A.8. Committed NewGame temporal baseline",
+      "line_start": 2927,
+      "line_end": 2975,
+      "text": "## temporal_world_and_interruptible_activities.md — A.8. Committed NewGame temporal baseline\n relation_set[entity_ref]\ninvariants:\n  - Input is frozen and explicit; a provider performs no IO, mutation, event execution or semantic fallback.\n```\n\n```yaml\ncontract_name: temporal_advance_request\nstorage: immutable_request\nidentity:\nfields:\n  party_id: required stable_id\n  turn_id: required stable_id\n  base_state_version: required non_negative_decimal_string\n  clock_before: required game_timestamp\n  clock_commit_mode: required enum[direct_party_clock, shared_root_transport_clock]\n  clock_owner_ref: required entity_ref\n  requested_execution_ref: required entity_ref\n  inclusive_limit_timestamp: required game_timestamp\n  active_scope: required controlled_remote_scope_mode\n  relevant_state_projection: required json_object\n  catalog_pins: required dependency_pin_set\n  temporal_resolution_policy_ref: required temporal_resolution_policy_ref\n  idempotency_context: required json_object\nrelations:\n  provider_versions: relation_set[versioned_ref]\ninvariants:\n  - Limit is not earlier than clock_before and request names exactly one authoritative clock owner.\n  - Provider inputs and state projection are complete; hidden reads and implicit providers are forbidden.\n```",
+      "char_count": 1268
+    },
+    {
       "id": "temporal_world_and_interruptible_activities.md:Приложение B. Temporal typed-error amendment:0",
       "file": "temporal_world_and_interruptible_activities.md",
       "section": "Приложение B. Temporal typed-error amendment",
-      "line_start": 2927,
-      "line_end": 2961,
+      "line_start": 2976,
+      "line_end": 3010,
       "text": "## temporal_world_and_interruptible_activities.md — Приложение B. Temporal typed-error amendment\n# Приложение B. Temporal typed-error amendment",
       "char_count": 143
     },
@@ -20257,8 +20275,8 @@
       "id": "temporal_world_and_interruptible_activities.md:Приложение B. Temporal typed-error amendment:1",
       "file": "temporal_world_and_interruptible_activities.md",
       "section": "Приложение B. Temporal typed-error amendment",
-      "line_start": 2927,
-      "line_end": 2961,
+      "line_start": 2976,
+      "line_end": 3010,
       "text": "## temporal_world_and_interruptible_activities.md — Приложение B. Temporal typed-error amendment\n# Приложение B. Temporal typed-error amendment\n\n| Error code | Meaning | Required reaction | Retryability |\n|---|---|---|---|\n| `time_timestamp_invalid` | GameTimestamp is malformed, noncanonical or inconsistent | Reject request/read; preserve factual state | no |\n| `time_elapsed_invalid` | ElapsedTime is malformed, negative or invalid for the control outcome | Reject request/result | no |\n| `time_calendar_profile_gap` | Required approved calendar profile is absent | Hard block; authoring repair | after_data_repair |\n| `time_owner_conflict` | More than one clock owner or a shared local update attempts to own time | Reject combined plan/commit | fresh_state |\n| `time_window_invalid` | Temporal limit or slice window is reversed or inconsistent | Reject request | no |\n| `temporal_execution_unbounded` | Active execution has no finite completion/recheck boundary | Hard block execution | after_data_repair |\n| `temporal_boundary_ambiguous` | Candidate identity/order/replacement has conflicting definitions | Reject resolution | after_data_repair |\n| `temporal_boundary_cycle` | Same-time causal dependency graph contains a cycle | Abort factual resolution | no |\n| `temporal_candidate_stale` | Candidate has no valid cancel/execute/replacement disposition | Reject resolution; re-read state | fresh_state |\n| `temporal_change_set_conflict` | Temporal proposals conflict or fail exact reconciliation | Reject combined plan/commit | fresh_state |\n| `activity_profile_gap` | Required approved activity profile is absent | Hard block; authoring repair | after_data_repair |\n| `activity_policy_gap` | Required activity policy ref or finite candidate set is absent | Hard block; authoring repair | after_data_repair |\n| `activity_precondition_stale` | Activity preconditions changed before resolution/commit | Re-resolve under pinned policy | fresh_state |\n| `activity_transition_invalid` | Activity status/attempt transition violates the canonical machine | Reject transition | no |\n| `event_rule_gap` | Required exact timer/event rule is absent | Hard block; authoring repair | after_data_repair |\n| `event_effect_gap` | Event has no approved registered effect profile | Hard block; authoring repair | after_data_repair |\n| `npc_schedule_gap` | Required NPC schedule/activity transition is absent | Hard block relevant transition | after_data_repair |\n| `npc_decision_policy_gap` | Bounded NPC option/policy set is missing or empty | Hard block decision | after_data_repair |\n| `perception_policy_gap` | Required propagation/attention/recognition policy is absent | Hard block perception update | after_data_repair |\n| `weather_profile_gap` | Required approved weather/light transition profile is absent | Hard block environment transition | after_data_repair |\n| `historical_phase_rule_gap` | Required source-backed historical phase/local rule is absent | Hard block historical transition | after_data_repair |\n| `remote_catch_up_rule_gap` | Required coarse aggregate catch-up rule is absent | Hard block scope activation | after_data_repair |\n| `propagation_rule_gap` | Required process path/timing/effect rule is absent | Hard block propagation | after_data_repair |\n| `visible_package_persistence_gap` | Hidden-safe visible package cannot be built or committed with facts | Abort factual commit | fresh_state |",
       "char_count": 3415
     },
@@ -20266,8 +20284,8 @@
       "id": "temporal_world_and_interruptible_activities.md:Приложение B. Temporal typed-error amendment:2",
       "file": "temporal_world_and_interruptible_activities.md",
       "section": "Приложение B. Temporal typed-error amendment",
-      "line_start": 2927,
-      "line_end": 2961,
+      "line_start": 2976,
+      "line_end": 3010,
       "text": "## temporal_world_and_interruptible_activities.md — Приложение B. Temporal typed-error amendment\nair |\n| `visible_package_persistence_gap` | Hidden-safe visible package cannot be built or committed with facts | Abort factual commit | fresh_state |\n\nExpected `blocked`, `paused`, `decision_required`, `stranded`, policy-authorized\nstale `cancel` and `committed_presentation_pending` остаются control/delivery\noutcomes и не превращаются в generic exceptions.\n\n---",
       "char_count": 461
     },
@@ -20275,8 +20293,8 @@
       "id": "temporal_world_and_interruptible_activities.md:Приложение C. Controlled vocabulary amendment:0",
       "file": "temporal_world_and_interruptible_activities.md",
       "section": "Приложение C. Controlled vocabulary amendment",
-      "line_start": 2962,
-      "line_end": 2997,
+      "line_start": 3011,
+      "line_end": 3046,
       "text": "## temporal_world_and_interruptible_activities.md — Приложение C. Controlled vocabulary amendment\n# Приложение C. Controlled vocabulary amendment\n\nAccepted Temporal baseline registry `data/contracts/spatial-v3/controlled-vocabularies.v2.json`\nнаследует все 13 закрытых B.0.1 registries версии 1.0.0, нормативно расширяет\n`controlled_entity_kind` и `controlled_write_target`, а также добавляет следующие\n8 закрытых registries. Полный current-target registry содержит ровно 21\nvocabulary и 498 values; aggregate digest:\n`c0529491f7cda2e22081e5fc0db5618aeabeebe5cbaebb1412961364fd42098c`.\nBaseline v1 и accepted Temporal v2 остаются immutable historical artifacts.",
       "char_count": 661
     },
@@ -20284,8 +20302,8 @@
       "id": "temporal_world_and_interruptible_activities.md:Приложение C. Controlled vocabulary amendment:1",
       "file": "temporal_world_and_interruptible_activities.md",
       "section": "Приложение C. Controlled vocabulary amendment",
-      "line_start": 2962,
-      "line_end": 2997,
+      "line_start": 3011,
+      "line_end": 3046,
       "text": "## temporal_world_and_interruptible_activities.md — Приложение C. Controlled vocabulary amendment\nigest:\n`c0529491f7cda2e22081e5fc0db5618aeabeebe5cbaebb1412961364fd42098c`.\nBaseline v1 и accepted Temporal v2 остаются immutable historical artifacts.\n\nВ `controlled_entity_kind` добавлены только именованные Temporal World entity\ntargets: `activity_profile`, `body_effect`, `body_state`, `calendar_profile`,\n`carrier_condition`, `environment_overlay_state`, `light_state`, `load_state`,\n`npc_decision_trace`, `participant_binding`, `party`, `perception_result`,\n`portal_access_state`, `propagation_process`, `remote_aggregate_state`,\n`resource_binding`, `runtime_calendar_snapshot`, `temporal_boundary_candidate`,\n`time_slice_result`, `visible_package_persistence_envelope` и `weather_state`.\nВ `controlled_write_target` добавлены только новые party-runtime contracts:\n`npc_decision_trace`, `participant_binding`, `perception_result`,\n`propagation_process_ref`, `remote_aggregate_state`, `resource_binding`,\n`time_slice_result` и `visible_package_persistence_envelope`. Immutable request,\nproposal, snapshot и combined-plan DTO не становятся write targets.",
       "char_count": 1154
     },
@@ -20293,8 +20311,8 @@
       "id": "temporal_world_and_interruptible_activities.md:Приложение C. Controlled vocabulary amendment:2",
       "file": "temporal_world_and_interruptible_activities.md",
       "section": "Приложение C. Controlled vocabulary amendment",
-      "line_start": 2962,
-      "line_end": 2997,
+      "line_start": 3011,
+      "line_end": 3046,
       "text": "## temporal_world_and_interruptible_activities.md — Приложение C. Controlled vocabulary amendment\n,\n`time_slice_result` и `visible_package_persistence_envelope`. Immutable request,\nproposal, snapshot и combined-plan DTO не становятся write targets.\n\n| Pseudo-type | Registry ID | Registry path | Version | Digest |\n|---|---|---|---|---|\n| `controlled_entity_kind` | `spatial.contract.entity_kind` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `f42ff9df9806f7406527bf24c22b012a33cebf855e9f51da2b6d9bc759831b0a` |\n| `controlled_write_target` | `spatial.runtime.write_target` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `673aad14e3b9951441d6f01327c5f691a8bf781e24f10ab3553c34d87169caa4` |\n| `controlled_activity_completion_model` | `temporal.activity_completion_model` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `769b059bf5fdb0545e96aa06e9fcc43becd7d2bf56b27261cc7b97c3fc35a43d` |\n| `controlled_activity_failure_class` | `temporal.activity_failure_class` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `1e5fbe79620fbaa49922828867c6035365c347c5eed521b235ee04c2845e5df9` |\n| `controlled_interruption_level` | `temporal.interruption_level` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `69a870463fef09429fe9b112e3057ee828adc7e7bdc66a11d5ed292c77c500dc` |\n| `controlled_perception_result` | `temporal.perception_result` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `2eadda37e480d532c408dace432b6fa1b945b2fc1137d6d1cb17f480d88ccc39` |\n| `controlled_temporal_resolution_class` | `temporal.resolution_class` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `cfd6204f09945bbda2c4fe723af01f2bca11fdd1202364c132293bb385e5d533` |\n| `controlled_temporal_advance_status` | `temporal.advance_status` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `8f63771d967c308dd0cda610b8b418934fada9ea77b9f9f982ce8daaf7c14e0c` |\n| `controlled_remote_scope_mode` | `temporal.remote_scope_mode` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `b49edbf5ceba5159b741d33e3b175921b22dad77b54872aef438b5cba85468f5` |\n| `controlled_propagation_process_kind` | `temporal.propagation_process_kind` | `data/contracts/spatial-v3/controlled-vocabularies.v2.json` | `2.0.0` | `eae3da75a6536935b5cd0214301dc5f2b722e3cf69d43d7f4258dca06d0032c4` |",
       "char_count": 2451
     },
@@ -20302,8 +20320,8 @@
       "id": "temporal_world_and_interruptible_activities.md:C.1. PR8 current-target vocabulary amendment:0",
       "file": "temporal_world_and_interruptible_activities.md",
       "section": "C.1. PR8 current-target vocabulary amendment",
-      "line_start": 2998,
-      "line_end": 3015,
+      "line_start": 3047,
+      "line_end": 3064,
       "text": "## temporal_world_and_interruptible_activities.md — C.1. PR8 current-target vocabulary amendment\n## C.1. PR8 current-target vocabulary amendment\n\nContract gap A.7 доказал, что approved Temporal authoring и\n`world_base.decision_command_catalog` используют stable entity kind\n`decision_command`, которого нет в immutable registry v2. Current-target\nregistry `data/contracts/spatial-v3/controlled-vocabularies.v3.json` наследует\nv2, добавляет только это значение в `controlled_entity_kind` и содержит\n21 vocabulary / 499 values. Aggregate digest:\n`a325d72c1a7eabd5717216371d61e7505444c7dbb75ca94c25ce25156deaa7db`.\n\n| Pseudo-type | Registry ID | Registry path | Version | Digest |\n|---|---|---|---|---|\n| `controlled_entity_kind` | `spatial.contract.entity_kind` | `data/contracts/spatial-v3/controlled-vocabularies.v3.json` | `3.0.0` | `3c3a2587415a41513f5bce842453d8bf79fb729ae107e64e37936dc51334c49a` |\n\nВсе остальные значения и consumer semantics наследуются из v2 без\nсодержательного расширения. Изменившиеся технические digests v3 обусловлены\nновыми version/path bindings и перечислены в generated registry; они не\nпереобъявляют semantic approval неизменённых values.",
       "char_count": 1170
     },

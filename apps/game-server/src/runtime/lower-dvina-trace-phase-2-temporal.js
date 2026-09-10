@@ -53,6 +53,8 @@ export function createTracePhase2TemporalAdvance({ contracts,
         entity_id:executionId}],active_execution_requires_boundary:false,
       available_event_ids:sourceCandidates.map(({boundary_id:id})=>id),
       cumulative_elapsed_minutes:0,processed_source_boundary_ids:[],
+      phase6_state: structuredClone(state),
+      npc_schedule_runtime: structuredClone(state.npc_schedule_runtime ?? []),
       local_fire_runtime:localFireProjection.local_fire_runtime};
     const request=buildTracePhase7TemporalRequest({state,contracts:null,
       executionId,limit:window.clock_after,commandIdempotencyKey:

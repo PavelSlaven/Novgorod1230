@@ -14,6 +14,11 @@
 
 ## Public API
 
+Temporal write integration может составить несколько ordered update proposals
+одной строки в один P16 CAS. Каждый следующий `previous_record` обязан совпасть
+с предыдущим фактическим record; base и resulting persisted version общие для
+одного commit. Append-only causal transitions сохраняются по отдельности.
+
 `selectTemporaryDispositionOptions` проверяет выбранные из raw intent ровно
 по одному option id на измерение из закрытого набора, построенного domain
 owner. Applicability и typed temporary-disposition proposal принадлежат

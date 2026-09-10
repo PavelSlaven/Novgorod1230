@@ -1,3 +1,4 @@
+import { TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST, TRACE_REVISION33_DEFINITION_DIGEST } from './lower-dvina-trace-revision-33-bundle.js';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -16,25 +17,34 @@ const HISTORICAL_PINS = Object.freeze({
 });
 const OPENING_PINS = Object.freeze({
   ...HISTORICAL_PINS,
-  manifest: '9973d7953c29f0f0d1dc70b23020852adf0bb8f77d3a2330faac82f6f8f912a1',
-  binding: 'cdf9b883779dbe90e6415b2f7d3d3b47cbfbe7fae176e2607af717c9cc98bc10',
+  manifest: '2324ce6b41d3bda293900aaa135411e2554c5bbe0ca56736fb1c0938c62aa88d',
+  binding: 'c700fe1bc61808258cd6a66826fb8f45026f2e0735a833dfb01d804c2d87a1db',
+  definition: TRACE_REVISION33_DEFINITION_DIGEST,
   priorBinding: HISTORICAL_PINS.binding
 });
 
-export async function loadLowerDvinaTraceRevision32Publication({
+export function loadLowerDvinaTraceRevision32Publication(options = {}) {
+  return loadPublication({ ...options, publicationRevision: 27 });
+}
+export function loadLowerDvinaTraceRevision33Publication(options = {}) {
+  return loadPublication({ ...options, publicationRevision: 28 });
+}
+async function loadPublication({
   rootDir = process.cwd(), phase1AManifestDigest = null,
   publicationRevision = 27 } = {}) {
   if (![27, 28].includes(publicationRevision)) fail();
+  const scenarioRevision = publicationRevision === 28 ? 33 : 32;
+  const phase1aDigest = publicationRevision === 28 ? TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST : TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST;
   const pins = publicationRevision === 28 ? OPENING_PINS : HISTORICAL_PINS;
   if (phase1AManifestDigest != null
-      && phase1AManifestDigest !== TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST) {
+      && phase1AManifestDigest !== phase1aDigest) {
     fail();
   }
   const paths = {
     manifest: `${ROOT}/phase-1b-v${publicationRevision}/manifest.json`,
     binding: `${ROOT}/phase-1b-v${publicationRevision}/publication-binding.json`,
-    phase1a: `${ROOT}/phase-1a-v23/manifest.json`,
-    definition: `${ROOT}/phase-m20-content/definition.json`,
+    phase1a: `${ROOT}/phase-1a-v${publicationRevision === 28 ? 24 : 23}/manifest.json`,
+    definition: `${ROOT}/phase-m${publicationRevision === 28 ? 21 : 20}-content/definition.json`,
     presentation: `${ROOT}/phase-1b-v26/scene-presentation-v2.json`,
     prior: `${ROOT}/phase-1b-v${publicationRevision - 1}/publication-binding.json`,
     compatibility: `${ROOT}/phase-1b-v22/publication-binding.json`
@@ -45,7 +55,7 @@ export async function loadLowerDvinaTraceRevision32Publication({
     compatibility } = loaded;
   if (manifest.digest !== pins.manifest
       || binding.digest !== pins.binding
-      || phase1a.digest !== TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST
+      || phase1a.digest !== phase1aDigest
       || definition.digest !== pins.definition
       || presentation.digest !== pins.presentation
       || prior.digest !== pins.priorBinding
@@ -57,7 +67,7 @@ export async function loadLowerDvinaTraceRevision32Publication({
       || binding.value?.content_refs?.scene_presentation?.digest
         !== presentation.digest
       || binding.value?.execution_identity?.scenario_definition_revision
-        !== 32) fail();
+        !== scenarioRevision) fail();
   await assertLowerDvinaTracePhase1BWorldLineage({ rootDir,
     compatibility: compatibility.value.world_compatibility, readJson });
   return Object.freeze({

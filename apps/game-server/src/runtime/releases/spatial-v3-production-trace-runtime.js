@@ -1,3 +1,4 @@
+import { npcRoutineTemporalRegistration } from '../npc-routine-temporal.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../../infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { createLowerDvinaTracePhase2DurableNarrator } from
@@ -146,6 +147,7 @@ export function createTraceTurnRuntime({
   const temporalAdvanceOwner = createTemporalAdvanceOwner({
     source_registrations: lowerDvinaTraceTemporalSourceRegistrations([
       ...(config.temporalBoundaryRegistrations ?? []),
+      npcRoutineTemporalRegistration(),
       ...(localFireProfile?.profile?.status==='approved'
         ?[lowerDvinaTraceLocalFireTemporalRegistration(
           localFireProfile.profile)]:[])

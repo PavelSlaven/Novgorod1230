@@ -1,10 +1,12 @@
 import { applyTracePhase7ScheduleState } from
   './lower-dvina-trace-phase-7-state-projection.js';
+import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
 import { tracePhase7ActorStep } from
   './lower-dvina-trace-phase-7-schedule-execution.js';
 
 export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
+  applyNpcRoutineTemporalResults(next, effect.time_update.temporal_results);
   next.clock = structuredClone(effect.time_update.clock_after);
   next.clock_weather_light = {
     ...structuredClone(next.clock_weather_light ?? {}),

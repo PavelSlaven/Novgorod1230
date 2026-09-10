@@ -1,6 +1,6 @@
 import { createSpatialV3ProductionBindings } from
   './spatial-v3-production-binding-shared.js';
-import { loadLowerDvinaTraceRevision32Publication } from
+import { loadLowerDvinaTraceRevision33Publication } from
   '../../internal/lower-dvina-trace-revision-32-publication.js';
 import {
   createLowerDvinaTraceNpcAutonomousModel,
@@ -27,17 +27,17 @@ export function createSpatialV3RuntimeBindings(context = {}) {
         !== context.release.world_knowledge_pack_revision
       || context.worldKnowledge?.embedding_profile?.embedding_profile_ref
         !== context.release.world_knowledge_embedding_profile_ref
-      || pins?.scenario_definition_revision !== 32
+      || pins?.scenario_definition_revision !== 33
       || pins?.scenario_definition_digest
-        !== '0c4b5d4992393ecde511cb35426933b01fb51b47552e0f5a859df2bfd359ab1f'
-      || pins?.phase_1a_package_id !== 'lower_dvina_trace_phase_1a_v23'
+        !== 'e3f9ed3adf251dc6b55e1d55df7fb42af11761d10db9e04672203b8ad50d8872'
+      || pins?.phase_1a_package_id !== 'lower_dvina_trace_phase_1a_v24'
       || pins?.phase_1a_manifest_digest
-        !== '6c77be86edc484d291a8f944c7886b61fe41f76287d1810efb70ff8e033c7101'
+        !== '6b6351c6cec4a814966691e123887d8e96ab2b2ee3189c2ac2a754bb049fb80e'
       || pins?.phase_1b_package_id !== 'lower_dvina_trace_phase_1b_v28'
       || pins?.phase_1b_manifest_digest
-        !== '9973d7953c29f0f0d1dc70b23020852adf0bb8f77d3a2330faac82f6f8f912a1'
+        !== '2324ce6b41d3bda293900aaa135411e2554c5bbe0ca56736fb1c0938c62aa88d'
       || pins?.phase_1b_binding_digest
-        !== 'cdf9b883779dbe90e6415b2f7d3d3b47cbfbe7fae176e2607af717c9cc98bc10'
+        !== 'c700fe1bc61808258cd6a66826fb8f45026f2e0735a833dfb01d804c2d87a1db'
       || pins?.n1_profile_id !== 'lower_dvina_trace_n1_background_npc_v1'
       || pins?.n1_profile_revision !== 1
       || pins?.n1_profile_scenario_definition_revision !== 31
@@ -60,7 +60,7 @@ export function createSpatialV3RuntimeBindings(context = {}) {
   }
   return createSpatialV3ProductionBindings(context, {
     technicalCommandBoundary: 'production-v15',
-    publicationLoader: (options) => loadLowerDvinaTraceRevision32Publication({
+    publicationLoader: (options) => loadLowerDvinaTraceRevision33Publication({
       ...options, publicationRevision: 28 }),
     createNpcRuntimePorts: ({ roleRunner, worldKnowledgeGrounder }) => ({
       playerConversationModel:

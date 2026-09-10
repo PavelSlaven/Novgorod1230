@@ -1053,6 +1053,12 @@
       "type": "sql"
     },
     {
+      "bytes": 2325,
+      "path": "schemas/party-db/031_party_runtime_deferred_npc_schedules.sql",
+      "sha256": "f25ae94fb5cc7b18e15f71d6a07012119ad46cc32b4eeb0576705ddf2031dd87",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

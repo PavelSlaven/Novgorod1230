@@ -53,6 +53,14 @@ and adds no second transaction owner.
 
 При завершённом direct `not_achieved` current-scene projection передаёт недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи.
 
+Revision 33 production temporal registration читает canonical NPC schedules,
+применяет approved routine transitions в текущем рабочем состоянии и сохраняет
+их через существующий P16. Несколько границ одного окна дают последовательные
+causal transitions и один CAS итогового состояния. Deferred prepared scope
+допустим до первого входа; first-entry связывает точную позицию без сброса
+занятия или времени. Сон меняет доступность NPC для разговора. Этот cutover
+не расширяет историческую Phase-7 activation свободных решений NPC.
+
 ## Не владеет
 
 Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.

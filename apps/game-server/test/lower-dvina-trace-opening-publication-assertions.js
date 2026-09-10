@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import { loadLowerDvinaTraceRevision32Publication } from
+import { loadLowerDvinaTraceRevision32Publication, loadLowerDvinaTraceRevision33Publication } from
   '../src/internal/lower-dvina-trace-revision-32-publication.js';
 
 export async function assertOpeningPublication({ fixture, createRuntime, release }) {
   const oldPublication = await loadLowerDvinaTraceRevision32Publication();
-  const current = await loadLowerDvinaTraceRevision32Publication({
-    publicationRevision: 28 });
-  assert.equal(current.definition.revision, oldPublication.definition.revision);
+  const current = await loadLowerDvinaTraceRevision33Publication();
+  assert.equal(current.definition.revision, 33);
+  assert.equal(oldPublication.definition.revision, 32);
   assert.equal(current.scene_presentation.presentation_id,
     oldPublication.scene_presentation.presentation_id);
   assert.equal(current.manifest.superseded_package_ref.digest,

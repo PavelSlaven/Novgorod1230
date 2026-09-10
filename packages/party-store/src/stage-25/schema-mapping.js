@@ -8,7 +8,7 @@ const READY_PHASE = 'awaiting_player_input';
 const PARTY_RUNTIME_V2_TARGETS = new Set([
   'parties', 'party_state_snapshots', 'party_positions', 'party_player_characters', 'party_character_knowledge', 'party_materialization_runs',
   'party_materialization_choices', 'party_g5_nodes', 'party_g5_edges', 'party_g5_anchors', 'party_npcs', 'party_npc_traits',
-  'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_containers', 'party_items', 'party_item_placements',
+  'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_npc_spatial_schedules', 'party_containers', 'party_items', 'party_item_placements',
   'party_ownership', 'party_decision_requests', 'party_decision_options', 'party_decision_results', 'party_change_sets',
   'party_autonomous_updates', 'party_visible_read_models', 'party_catalog_pins',
   'party_materialization_run_catalog_pins', 'party_v3_change_sets', 'party_actor_profile_bindings',
@@ -181,7 +181,7 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
   ...Object.fromEntries([
     'parties', 'party_state_snapshots', 'party_positions', 'party_player_characters', 'party_character_knowledge',
     'party_materialization_runs', 'party_materialization_choices', 'party_g5_nodes', 'party_g5_edges', 'party_g5_anchors',
-    'party_npcs', 'party_npc_traits', 'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_containers',
+    'party_npcs', 'party_npc_traits', 'party_npc_relations', 'party_npc_knowledge', 'party_npc_schedules', 'party_npc_spatial_schedules', 'party_containers',
     'party_items', 'party_item_placements', 'party_ownership', 'party_decision_requests', 'party_decision_options',
     'party_decision_results', 'party_change_sets', 'party_autonomous_updates', 'party_visible_read_models',
     'party_catalog_pins', 'party_materialization_run_catalog_pins', 'party_v3_change_sets',

@@ -1,3 +1,4 @@
+import { npcRoutineCandidate } from '../../runtime/npc-routine-temporal.js';
 import { serverError } from '../../errors.js';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
@@ -43,13 +44,16 @@ export async function loadTracePhase2TemporalSourceProof(
       [partyId]
     ),
     partyPool.query(
-      `SELECT id,npc_id,schedule_profile_ref,causal_state_ref,
+      `SELECT s.*,s.id,s.npc_id,s.schedule_profile_ref,s.causal_state_ref,
+              jsonb_build_object('instance_id',n.npc_id,'anchor_id',n.anchor_id,
+                'machine_state',n.machine_state) AS npc_snapshot,
               next_transition_at_whole_minutes::text,
               next_transition_at_subminute_numerator::text,
               next_transition_at_subminute_denominator::text
-         FROM party_runtime.party_npc_spatial_schedules
-        WHERE party_id=$1 AND status='active'
-        ORDER BY npc_id`,
+         FROM party_runtime.party_npc_spatial_schedules s
+         JOIN party_runtime.party_npcs n ON n.party_id=s.party_id AND n.npc_id=s.npc_id
+        WHERE s.party_id=$1
+        ORDER BY s.npc_id`,
       [partyId]
     ),
     partyPool.query(
@@ -80,7 +84,8 @@ export async function loadTracePhase2TemporalSourceProof(
       causalParentRefs: row.dependencies
     });
   });
-  const scheduleCandidates = schedules.rows.map((row) => candidate({
+  const scheduleCandidates = schedules.rows.filter((row) => row.status === 'active').map((row) =>
+    row.causal_state_ref?.routine_state ? npcRoutineCandidate(row) : candidate({
     boundaryId: `npc-schedule:${row.id}`,
     boundaryKind: 'npc_schedule',
     timestamp: timestampFrom(row, 'next_transition_at'),
@@ -143,6 +148,7 @@ export async function loadTracePhase2TemporalSourceProof(
     candidate_count: candidates.length,
     event_versions: eventVersions,
     local_fire_runtime: localFireRuntime,
+    npc_schedule_runtime: schedules.rows.filter((row) => row.causal_state_ref?.routine_state),
     candidates
   });
 }

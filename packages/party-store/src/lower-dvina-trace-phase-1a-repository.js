@@ -122,6 +122,13 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
           ORDER BY npc_id,time_band`,
         [partyId]
       )).rows;
+      const npcSpatialSchedules = Object.hasOwn(snapshot.state_payload?.persisted_projection ?? {}, 'npc_spatial_schedules')
+        ? (await query(`SELECT * FROM party_runtime.party_npc_spatial_schedules
+            WHERE party_id=$1 ORDER BY id`, [partyId])).rows.map((row) => ({ ...row,
+            state_version: Number(row.state_version),
+            ...Object.fromEntries(['next_transition_at_whole_minutes',
+              'next_transition_at_subminute_numerator', 'next_transition_at_subminute_denominator']
+              .map((key) => [key, row[key] == null ? null : Number(row[key])])) })) : null;
       const obligations = (await query(
         `SELECT obligation_id,policy_ref,policy_version,promisor_ref,
                 beneficiary_ref,witness_refs,scope_snapshot,current_state,
@@ -158,7 +165,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         startSpatial,
         preparedSpatial,
         npcs,
-        npcSchedules,
+        npcSchedules, npcSpatialSchedules,
         clock,
         run,
         choices,
@@ -302,7 +309,7 @@ function assertRoundTrip({
   startSpatial,
   preparedSpatial,
   npcs,
-  npcSchedules,
+  npcSchedules, npcSpatialSchedules,
   clock,
   run,
   choices,
@@ -401,6 +408,7 @@ function assertRoundTrip({
     includePreparedScenes: Object.hasOwn(expectedProjection?.spatial ?? {}, 'prepared_scenes'),
     includeNpcs: Object.hasOwn(expectedProjection ?? {}, 'npcs')
   });
+  if (npcSpatialSchedules != null) actualProjection.npc_spatial_schedules = npcSpatialSchedules;
   const expectedDigest = sha256(expectedProjection);
   if (expectedProjection?.schema !== 'rus.lower_dvina_trace_persisted_projection.v2'
     || payload.persisted_projection_digest !== expectedDigest

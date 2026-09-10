@@ -9,8 +9,8 @@ export function resolveFirstEntry({
   memberOrdinal = 0
 }) {
   const additionalMember = memberOrdinal > 0;
-  if (!(additionalMember ? [26, 27, 28, 29, 30, 31, 32].includes(scenarioRevision)
-    : [24, 25, 26, 27, 28, 29, 30, 31, 32].includes(scenarioRevision)) || !routeMovement(factual)) {
+  if (!(additionalMember ? [26, 27, 28, 29, 30, 31, 32, 33].includes(scenarioRevision)
+    : [24, 25, 26, 27, 28, 29, 30, 31, 32, 33].includes(scenarioRevision)) || !routeMovement(factual)) {
     return null;
   }
   const prepared = state.first_entry_preparation;
@@ -110,7 +110,24 @@ export function resolveFirstEntry({
   if (!lifecycle.ok) {
     fail('TRACE_PHASE_3_FIRST_ENTRY_LIFECYCLE_REJECTED', lifecycle.error);
   }
-  return lifecycle.extension;
+  const extension = structuredClone(lifecycle.extension);
+  const schedules = (state.npc_schedule_runtime ?? []).filter((row) =>
+    row.current_position_node_id == null
+    && row.causal_state_ref.deferred_placement?.snapshot_id === spatial.preparation_snapshot_id
+    && row.causal_state_ref.deferred_placement?.member_ordinal === spatial.preparation_member_ordinal);
+  if (schedules.length) {
+    extension.approved_write_sets.push({ inserts: [], appends: [], deletes: [],
+      updates: schedules.map((row) => ({ target_table: 'party_npc_spatial_schedules', id: row.id,
+        record: { id: row.id, party_id: partyId, npc_id: row.npc_id,
+          current_position_node_id: target.position_id, causal_state_ref: row.causal_state_ref,
+          state_version: Number(row.state_version) + 1, updated_change_set_id: changeSetId } })) });
+    for (const row of schedules) {
+      extension.expected_state_versions.push({ target_table: 'party_npc_spatial_schedules',
+        id: row.id, state_version: Number(row.state_version) });
+      extension.lock_context.physical_keys.push(`party_runtime.party_npc_spatial_schedules:${row.id}`);
+    }
+  }
+  return extension;
 }
 
 function firstEntryPhysicalWrites({ partyId, target, changeSetId }) {

@@ -73,7 +73,7 @@ export function selectParticipants(set, playerProfile, bindings, random, choices
 }
 
 export function completeAuthoredItemMechanics(bundle, profile) {
-  if (bundle.definition_revision !== 32) return structuredClone(profile);
+  if (bundle.definition_revision < 32) return structuredClone(profile);
   const profileRef = profile?.inventory_profile_id ?? profile?.id;
   const matches = bundle.a1_authored_item_mechanics_profile?.profiles
     ?.filter(({ profile_ref: ref }) => ref === profileRef) ?? [];

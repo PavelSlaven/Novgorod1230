@@ -48,7 +48,8 @@ export {
   resolveConversationListenerPerception,
   resolveConversationVisualPerception
 } from './perception.js';
-export { proposeNpcScheduleTransition } from './schedule.js';
+export { proposeNpcScheduleTransition, createNpcRoutineState, npcRoutineActivity, proposeNpcRoutineTransition,
+  validateNpcRoutineProfile } from './routine-schedule.js';
 export {
   buildNpcOrdinarySemanticRemainder,
   validateNpcOrdinarySemanticRemainder,

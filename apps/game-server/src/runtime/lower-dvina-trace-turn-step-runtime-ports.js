@@ -74,7 +74,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         handler(execution), workingProjectionAuthority)
     ]));
   const phase9ContainerOwner = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
-    28, 29, 30, 31, 32].includes(safeCommittedState
+    28, 29, 30, 31, 32, 33].includes(safeCommittedState
     ?.materialization_trace?.seed_context?.scenario_definition_revision)
     && (safeCommittedState.phase9 != null
       || safeCommittedState.last_turn?.consequence?.combat?.session_after
@@ -116,7 +116,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         current_body_state: structuredClone(safeCommittedState?.body_state)
       }),
       preparedEffectTimeOwner: (input) => prepareEffectTime(
-        input, safeCommittedState, temporalAdvance),
+        input, preparedDomainEffect.currentState(), temporalAdvance),
       preparedEffectBodyOwner: (input) => prepareEffectBody(
         input, safeCommittedState, bodyEffect),
       preparedEffectProjectionOwner: (input) => {

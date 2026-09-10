@@ -3,14 +3,8 @@ import { failLowerDvinaTraceMaterialization as fail } from './lower-dvina-trace-
 import { materializeS1FirstEntryPreparation } from './spatial-v3-s1-first-entry.js';
 import { materializeLowerDvinaTraceNpcSchedule, materializeNpcRelationships }
   from './lower-dvina-trace-npc.js';
-
-export function materializeLowerDvinaTracePreparedCamp({
-  input,
-  bundle,
-  runId,
-  participantSelections,
-  locationSelections
-}) {
+export function materializeLowerDvinaTracePreparedCamp({ input, bundle, runId,
+  participantSelections, locationSelections }) {
   const binding = bundle.materialization_bindings.camp_spatial_binding;
   const camp = locationSelections.find(
     (value) => value.slot_key === binding.location_profile_ref
@@ -18,13 +12,8 @@ export function materializeLowerDvinaTracePreparedCamp({
   if (!camp) {
     fail('TRACE_PHASE_3_CAMP_LOCATION_MISSING', 'The approved camp location selection is missing.');
   }
-  const nodeId = deterministicInstanceId(
-    input.party_id,
-    runId,
-    'g5_node',
-    binding.location_profile_ref,
-    0
-  );
+  const nodeId = deterministicInstanceId(input.party_id, runId, 'g5_node',
+    binding.location_profile_ref, 0);
   const anchorId = deterministicInstanceId(
     input.party_id,
     runId,
@@ -84,7 +73,6 @@ export function materializeLowerDvinaTracePreparedCamp({
   }
   return { scene, npcs, first_entry_preparation: firstEntry.preparation };
 }
-
 export function materializeLowerDvinaTraceFirstEntryPreparationMembers({ input,
   bundle, camp, shed, locationSelections }) {
   if (input.scenario_definition_revision < 26) return null;
@@ -118,7 +106,6 @@ export function materializeLowerDvinaTraceFirstEntryPreparationMembers({ input,
   });
   return { ...preparations[0], members: preparations };
 }
-
 export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections }) {
   const binding = bundle.materialization_bindings.phase_4_initial_state_binding;
   const spatial = binding?.drying_shed_spatial_binding;
@@ -171,7 +158,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     use_state: rope.use_state
   };
   if (input.scenario_definition_revision >= 12
-      && input.scenario_definition_revision <= 32) {
+      && input.scenario_definition_revision <= 33) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',
@@ -214,7 +201,6 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
   ratsha.machine_state.restraint_state = 'not_restrained';
   return { scene, npcs, onisim, ratsha, binding };
 }
-
 export function materializeLowerDvinaTracePreparedStorehouse({
   input,
   bundle,
@@ -385,7 +371,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   const weaponItem = weapon == null ? null : materializeStorehouseWeapon({
     input, bundle, runId, weapon, npc });
   const packet = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-    30, 31, 32].includes(input.scenario_definition_revision)
+    30, 31, 32, 33].includes(input.scenario_definition_revision)
     ? materializeHiddenPacket({ input, bundle, runId, container, npc,
       roadBagResource })
     : null;
@@ -400,7 +386,6 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   }
   return { scene, npc, container, weapon: weaponItem, packet };
 }
-
 function materializeHiddenPacket({ input, bundle, runId, container, npc,
   roadBagResource }) {
   const packet = bundle.materialization_bindings
@@ -456,7 +441,6 @@ function materializeHiddenPacket({ input, bundle, runId, container, npc,
     }
   };
 }
-
 function materializeStorehouseWeapon({ input, bundle, runId, weapon, npc }) {
   const template = requiredById(bundle.item_container_set.item_templates,
     'item_template_id', weapon.item_template_ref);
@@ -482,7 +466,6 @@ function materializeStorehouseWeapon({ input, bundle, runId, weapon, npc }) {
     weapon_contract: structuredClone(template.weapon_contract),
     inventory_profile_snapshot: structuredClone(profile) } };
 }
-
 function materializeNpc({ input, bundle, runId, participantSelections,
   placement, ordinal, anchorId, nodeId }) {
   const selection = participantSelections.find(
@@ -551,12 +534,13 @@ function materializeNpc({ input, bundle, runId, participantSelections,
     relationships: materializeNpcRelationships(bundle.participant_profile_set,
       placement.participant_slot_ref),
     ...(schedule.records == null ? {} : { schedule_records: schedule.records }),
+    ...(schedule.routineProfile == null ? {} : {
+      routine_profile: schedule.routineProfile }),
     knowledge_profile_snapshot: structuredClone(knowledgeScope),
     profile_candidate_set_digest: selection.candidate_set_digest,
     profile_record_digest: selection.record_digest
   };
 }
-
 function requiredById(values, key, id) {
   const matches = values.filter((value) => value?.[key] === id);
   if (matches.length !== 1) fail('TRACE_SCENARIO_REFERENCE_INVALID',

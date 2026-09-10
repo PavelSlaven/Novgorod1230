@@ -1,3 +1,4 @@
+import { loadLowerDvinaTraceRevision33Bundle } from './lower-dvina-trace-revision-33-bundle.js';
 import {
   loadLowerDvinaTraceRevision8Bundle,
   loadLowerDvinaTraceRevision9Bundle
@@ -207,6 +208,10 @@ export async function loadLowerDvinaTraceRevisionBundle({
       scenarioDefinitionRevision: 31, rootDir, loadRevision7Bundle, fail,
       freezeDeep, validateDefinitionPins }), fail, freezeDeep,
     validateDefinitionPins });
+  if (scenarioDefinitionRevision === 33) return loadLowerDvinaTraceRevision33Bundle({
+    rootDir, historicalBundle: await loadLowerDvinaTraceRevisionBundle({
+      scenarioDefinitionRevision: 32, rootDir, loadRevision7Bundle, fail, freezeDeep,
+      validateDefinitionPins }), fail, freezeDeep, validateDefinitionPins });
   fail(
     'TRACE_SCENARIO_REVISION_UNSUPPORTED',
     `Unsupported Lower Dvina scenario revision: ${scenarioDefinitionRevision}.`

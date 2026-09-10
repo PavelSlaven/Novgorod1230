@@ -149,8 +149,9 @@ export async function createSpatialV3ProductionBindings(
         committer,
         release,
         runtimeCatalogPin,
-        activePhase1AManifestDigest: TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
-        activeScenarioDefinitionRevision: 32,
+        activePhase1AManifestDigest: release.scenario_profile_exact_pins?.phase_1a_manifest_digest
+          ?? TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
+        activeScenarioDefinitionRevision: release.scenario_profile_exact_pins?.scenario_definition_revision ?? 32,
         publicationLoader,
         ...(typeof config.idFactory === 'function'
           ? { idFactory: config.idFactory }

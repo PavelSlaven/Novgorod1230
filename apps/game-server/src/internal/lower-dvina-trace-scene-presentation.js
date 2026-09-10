@@ -12,7 +12,7 @@ export const TRACE_SCENE_PRESENTATION_V2_DIGEST =
 export async function loadLowerDvinaTraceScenePresentation({
   rootDir = process.cwd(), scenarioDefinitionRevision
 } = {}) {
-  if (![28, 29, 30, 31, 32].includes(scenarioDefinitionRevision)) return null;
+  if (![28, 29, 30, 31, 32, 33].includes(scenarioDefinitionRevision)) return null;
   const version = scenarioDefinitionRevision >= 31 ? 2 : 1;
   const raw = await readFile(resolve(rootDir, version === 2 ? V2_PATH : V1_PATH));
   const digest = createHash('sha256').update(raw).digest('hex');

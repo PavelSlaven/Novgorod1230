@@ -99,9 +99,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
           embeddingMs += Math.max(0, performance.now() - embeddingStarted);
           const vectorStarted = performance.now();
           const scores = worldKnowledge.vector_index.search(vector, {
-            locale: planned.plan.query_locale, domains: planned.plan.domains,
-            limit: 3
-          });
+            locale: planned.plan.query_locale, domains: planned.plan.domains, limit: 3 });
           vectorMs += Math.max(0, performance.now() - vectorStarted);
           for (const [ref, score] of scores) {
             vectorScores.set(ref, Math.max(vectorScores.get(ref) ?? -Infinity, score));
@@ -217,7 +215,6 @@ async function runPlanner(roleRunner, request, repair, bundle) {
   });
   return response;
 }
-
 function modelSlice(slice) {
   return Object.freeze({ schema: slice.schema, pack_ref: slice.pack_ref,
     pack_revision: slice.pack_revision, purpose: slice.purpose,
@@ -226,14 +223,12 @@ function modelSlice(slice) {
     disputes: slice.disputes, gaps: slice.gaps,
     context_text: slice.context_text });
 }
-
 function localeOf(request, bundle) {
   const candidate = request.locale ?? request.input_locale
     ?? request.query_locale ?? 'ru';
   return bundle.manifest.supported_locales.includes(candidate)
     ? candidate : bundle.manifest.default_locale;
 }
-
 function semanticInputOf(request) {
   for (const value of [request.remaining_intent, request.root_player_action,
     request.utterance_text, request.semantic_input, request.reason]) {
@@ -241,7 +236,6 @@ function semanticInputOf(request) {
   }
   return JSON.stringify(request).slice(0, 8000) || 'factual context';
 }
-
 function situationSummaryOf(request) {
   return JSON.stringify({ actor: request.player_safe_state?.actor_id
       ?? request.npc_ref ?? null,

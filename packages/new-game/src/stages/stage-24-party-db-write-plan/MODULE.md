@@ -13,6 +13,10 @@
 - вызывает LLM только для аудита плана и ремонта формата audit envelope;
 - проверяет таблицы, поля, операции, ссылки, порядок batch, rollback, source trace и hidden/public boundary;
 - возвращает утверждённый `stage24_party_db_write_plan_result` для Stage 25.
+- Для routine-enabled NPC пишет `party_npc_spatial_schedules` в том же плане,
+  после NPC и prepared scope. До first entry exact position nullable; causal
+  placement ссылается на существующий prepared member или legacy anchor.
+  Legacy `party_npc_schedules` для этих NPC не дублирует canonical состояние.
 
 ## Не делает
 

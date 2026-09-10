@@ -28,6 +28,12 @@ export async function assertOpeningPublication({ fixture, createRuntime, release
   assert.equal(next.screen.main_prose,
     current.public_projection.opening_projection.opening_prose);
   assert.notEqual(next.screen.main_prose, started.screen.main_prose);
+  assert.match(next.screen.main_prose, /^Вас зовут Микула\. Вы младший приказчик:/u);
+  for (const detail of ['в торговых поездках помогаете старшим', 'со счётом товара и простыми записями',
+    'после крушения', 'вас знобит', 'Сначала бы согреться и прийти в себя']) {
+    assert.equal(next.screen.main_prose.includes(detail), true);
+  }
+  assert.doesNotMatch(started.screen.main_prose, /Вас зовут Микула/u);
   assert.equal(fresh.repository.sessions.get(next.party_id).stage26_result
     .publication_binding_revision, 28);
   assert.deepEqual((await createRuntime(fresh).getPartyScreen(next.party_id)).screen,

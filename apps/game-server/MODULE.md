@@ -382,3 +382,8 @@ after encoder recovery follows the existing idempotency owner.
 `temporal-world-postgres.test.js` and `presentation-store.test.js` cover
 composition, atomic transaction/lock/idempotency, exact persistence and the
 leased post-commit presentation lifecycle.
+
+Current unpublished publication v28 introduces the player by the approved name,
+role and ordinary work from player profile v2 before its existing wreck/body/shore
+facts. Opening authoring does not create a particular remembered voyage, cargo,
+mission or hidden cause. Historical publication prose remains unchanged.

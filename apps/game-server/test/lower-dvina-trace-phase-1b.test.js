@@ -684,6 +684,11 @@ function fixture({
       events.push('loadInternal');
       return {
         party_id: partyId,
+        player: { instance_id: visible.player.character_id, dossier: {
+          identity: { name: visible.player.name },
+          social_status: structuredClone(visible.player.social_status) } },
+        body: structuredClone(visible.body), timestamp: structuredClone(visible.timestamp),
+        position: structuredClone(visible.position), items: [], containers: [],
         request_identity: structuredClone(lastRequest)
       };
     },

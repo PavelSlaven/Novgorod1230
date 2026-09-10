@@ -26,3 +26,20 @@ test('inventory renders the domain serviceable condition and equipped zones as p
   assert.match(html, /Снаряжение/);
   assert.doesNotMatch(html, /serviceable/);
 });
+
+
+test('opening and turn identify the controlled character without opening a panel', () => {
+  for (const schema of ['first_game_screen', 'lower_dvina_trace_turn_screen']) {
+    const screen = { version: 1, schema, screen_status: 'ready', party_id: 'party',
+      main_prose: 'Берег.', panels: { character: { visible: true,
+        data: { name: 'Ульяна', role: 'ткачиха' } }, people: { visible: true,
+        data: { visible_npcs: [{ display_label: 'Данила' }] } } } };
+    const before = structuredClone(screen);
+    const html = renderScreen(screen);
+    assert.match(html, /<dt>Вы<\/dt><dd>Ульяна, ткачиха<\/dd>/u);
+    assert.doesNotMatch(html, /<dt>Вы<\/dt><dd>Данила/u);
+    assert.deepEqual(screen, before);
+    screen.panels.character.visible = false;
+    assert.doesNotMatch(renderScreen(screen), /<dt>Вы<\/dt>/u);
+  }
+});

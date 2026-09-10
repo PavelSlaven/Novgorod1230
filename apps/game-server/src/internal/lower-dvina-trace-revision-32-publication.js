@@ -17,8 +17,8 @@ const HISTORICAL_PINS = Object.freeze({
 });
 const OPENING_PINS = Object.freeze({
   ...HISTORICAL_PINS,
-  manifest: '8904d955156b3afd96f66cf46b9aa00703455662c9558a31b35e59cc01205599',
-  binding: 'ad69f1b98d8ffff94405f517d8a3abc1223b14df9f45858f1f931b52ae2b4d96',
+  manifest: 'a13c32581cf741d691b4277f76040042bd6760583d11feeb274d60cf2c63706a',
+  binding: '2d43ad6b2dd12d25d7ec18ce8231535d1940afc66c2404690be84f1258b6a852',
   definition: TRACE_REVISION33_DEFINITION_DIGEST,
   priorBinding: HISTORICAL_PINS.binding
 });

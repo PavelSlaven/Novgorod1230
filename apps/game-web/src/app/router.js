@@ -75,7 +75,12 @@ function renderNewGame({ scenarios = [], newGameDraft = '', theme = 'light',
 
 function renderContext(screen) {
   const context = { ...screen.visible_context, ...screen.presentation_context };
+  const character = screen.panels?.character?.visible === true
+    ? screen.panels.character.data : null;
+  const identity = scalar(character?.name) == null ? null
+    : [scalar(character.name), scalar(character.role)].filter(Boolean).join(', ');
   const candidates = [
+    ['Вы', identity],
     ['Место', context.location_label ?? context.place],
     ['Дата', context.date_label ?? context.calendar],
     ['Время', context.time_label ?? context.day_part_label],

@@ -1,3 +1,4 @@
+import { renderScreen } from '../../apps/game-web/src/index.js';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { existsSync } from 'node:fs';
@@ -71,6 +72,8 @@ test('local play persists a free turn and replays it after a server restart',
       scenario_id: 'lower_dvina_trace_v1', request_id: `local-play-new-${suffix}`
     });
     const partyId = started.party_id;
+    assert.match(started.screen.main_prose, /^Вас зовут Микула\. Вы младший приказчик:/u);
+    assert.ok(renderScreen(started.screen).includes('<dt>Вы</dt><dd>Микула, младший приказчик</dd>'));
     assert.equal(started.screen.panels.character.visible, true);
     assert.equal(started.screen.panels.inventory.visible, true);
     assert.ok(started.screen.panels.inventory.data.zones.worn_quick.some(item => item.label === 'хозяйственный нож'));
@@ -127,6 +130,7 @@ test('local play persists a free turn and replays it after a server restart',
         }
       }
       assert.equal(result.screen.panels.character.visible, true);
+      assert.ok(renderScreen(result.screen).includes('<dt>Вы</dt><dd>Микула, младший приказчик</dd>'));
       assert.equal(result.screen.panels.inventory.visible, true);
       assert.equal(result.screen.panels.route.visible, true);
       assert.equal(result.screen.panels.character.data.energy, Number(committed.body.energy));

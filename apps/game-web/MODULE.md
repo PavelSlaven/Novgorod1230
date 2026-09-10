@@ -9,6 +9,8 @@ Browser-клиент, который получает только versioned pub
 - HTTP API client `/api/v1`;
 - валидацией публичных API envelopes и screen contracts;
 - UI-only store;
+- постоянным указанием управляемого персонажа в header из уже публичных
+  `panels.character.data.name/role`; другие люди не становятся этим персонажем;
 - отображением готового `presentation_context` в header; календарь и место
   вычисляет server из committed state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen;

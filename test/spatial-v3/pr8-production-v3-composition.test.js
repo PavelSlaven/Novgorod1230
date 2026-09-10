@@ -171,9 +171,9 @@ test('production-v15 is the sole release and pins World Knowledge', () => {
       'dfa37d120ab43d1270ccf16476d67202aa9127b12fb532d73c260e1530d4f580',
     phase_1b_package_id: 'lower_dvina_trace_phase_1b_v28',
     phase_1b_manifest_digest:
-      '8904d955156b3afd96f66cf46b9aa00703455662c9558a31b35e59cc01205599',
+      'a13c32581cf741d691b4277f76040042bd6760583d11feeb274d60cf2c63706a',
     phase_1b_binding_digest:
-      'ad69f1b98d8ffff94405f517d8a3abc1223b14df9f45858f1f931b52ae2b4d96',
+      '2d43ad6b2dd12d25d7ec18ce8231535d1940afc66c2404690be84f1258b6a852',
     n1_profile_id: 'lower_dvina_trace_n1_background_npc_v1',
     n1_profile_revision: 1,
     n1_profile_scenario_definition_revision: 31,

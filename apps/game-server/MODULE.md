@@ -340,7 +340,13 @@ Release v15 is the direct non-selectable child of v14. It pins
 pack and flat vector index and starts the exact offline embedding worker at
 startup, then grounds player semantic resolution, S1/N1 ordinary
 materialization, conversation, and autonomous NPC decisions before their
-semantic LLM calls. Retrieved claims are bounded context only: domain owners
+semantic LLM calls. Ordinary WK planning receives the same admitted scene
+context as the materializer. Its information need retains the complete candidate
+query and code-owned admission/coverage/entity bounds; opaque IDs and policy refs
+are not natural-language retrieval vocabulary. Candidate focus recall uses the
+query and approved scene text. The full ordinary request still reaches its own
+semantic and code admission owners unchanged.
+Retrieved claims are bounded context only: domain owners
 still control current state, mechanics, persistence, access, and outcomes.
 The Giga/vector path is mandatory whenever v15 needs a WK slice. Missing local
 weights, startup/encode timeout, malformed vector or scan failure returns typed

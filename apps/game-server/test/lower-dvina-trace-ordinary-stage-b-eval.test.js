@@ -350,10 +350,13 @@ test('grounded Stage B materializes only with a claim ref from its current slice
         request), []);
     }
     const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+    const semanticContext = { visible_scene: 'Мокрый берег',
+      sensory_details: ['На песке мокрые обломки.'], visible_objects: [] };
     const model = createOrdinaryMaterializationModel({
       stageBApprovalReceipt: approval,
-      worldKnowledgeGrounder: { async ground(input, purpose) {
+      worldKnowledgeGrounder: { async ground(input, purpose, authoritative) {
         assert.equal(purpose, 'materialization_support');
+        assert.deepEqual(authoritative, { semantic_context: semanticContext });
         return { ...input, world_knowledge: grounded.world_knowledge };
       } },
       roleRunner: { async run(input) {
@@ -363,7 +366,8 @@ test('grounded Stage B materializes only with a claim ref from its current slice
           world_knowledge_claim_refs: [claimRef] } };
       } }
     });
-    const admitted = await model(request, { repair: null });
+    const admitted = await model(request, { repair: null,
+      semantic_context: semanticContext });
     assert.equal(admitted.resolution, 'materialize');
     assert.equal(admitted.entities[0].semantic_descriptor.name,
       'обычная верёвка');

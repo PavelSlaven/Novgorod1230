@@ -42,7 +42,8 @@ export function createOrdinaryMaterializationModel({ roleRunner,
     const expectedIdentity = approvedIdentity({ roleRunner, defaultApprovedIdentity,
       qualifiedO1Identity });
     const modelRequest = worldKnowledgeGrounder == null ? request
-      : await worldKnowledgeGrounder.ground(request, 'materialization_support');
+      : await worldKnowledgeGrounder.ground(request, 'materialization_support',
+          { semantic_context: semanticContext });
     const response = await runRole({ roleRunner, request: modelRequest, repair,
       mechanicsPolicy, semanticContext });
     const output = ordinaryMaterializationResponseOf(response);

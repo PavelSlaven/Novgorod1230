@@ -39,6 +39,7 @@ export async function loadLowerDvinaTraceRevision33Bundle({ rootDir,
       profile_id === entry.routine_profile_ref).length !== 1) return fail('TRACE_REVISION_33_CONTENT_INVALID');
   }
   bundle.definition_revision = 33;
+  bundle.manifest_digest = TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST;
   validateDefinitionPins(bundle);
   return freezeDeep(bundle);
 }

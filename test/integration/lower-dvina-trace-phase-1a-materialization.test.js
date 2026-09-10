@@ -26,6 +26,8 @@ import {
 } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { lowerDvinaTraceWorldSnapshot as worldSnapshot } from
   '../fixtures/lower-dvina-trace-world-snapshot.js';
+import { loadLowerDvinaTraceRevision33Publication } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle();
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
@@ -60,8 +62,11 @@ const revision32DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
 
 test('revision 33 materializes finite routines without activating deferred G6 scenes', async () => {
   const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 33 });
+  const publication = await loadLowerDvinaTraceRevision33Publication();
+  assert.equal(current.manifest_digest, publication.binding.phase_1a_manifest_ref.digest);
   const result = materializeLowerDvinaTracePartyInstance(request({
-    scenario_definition_revision: 33, scenario_manifest_digest: current.manifest_digest,
+    scenario_definition_revision: 33,
+    scenario_manifest_digest: publication.binding.phase_1a_manifest_ref.digest,
     world_revision_id: current.location_topology_set.spatial_source_ref.world_revision_id,
     world_catalog_digest: current.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
     domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(current), scenario_bundle: current

@@ -22,6 +22,7 @@ import { loadTracePhase2TemporalSourceProof } from '../../apps/game-server/src/i
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { resolveFirstEntry } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-3-first-entry.js';
+import { loadLowerDvinaTraceRevision33Publication } from '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
 
 test('new game persists canonical offscene routines atomically and replays', async (t) => {
   const adminUrl = process.env.RUS_TEST_POSTGRES_ADMIN_URL;
@@ -37,12 +38,14 @@ test('new game persists canonical offscene routines atomically and replays', asy
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   const bundle = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 33 });
+  const publication = await loadLowerDvinaTraceRevision33Publication();
   const schema = await readPartyDatabaseSchemaSnapshot(pool);
   const repository = createLowerDvinaTracePhase1ARepository({ query: pool.query.bind(pool) });
   const ports = createPostgresStage25Ports({ pool,
     postcommitProjector: createLowerDvinaTracePhase1APostcommitProjector({ repository }) });
   const request = { party_id: 'npc-routine-party', scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 33, scenario_manifest_digest: bundle.manifest_digest,
+    scenario_definition_revision: publication.binding.scenario_definition_ref.revision,
+    scenario_manifest_digest: publication.binding.phase_1a_manifest_ref.digest,
     world_revision_id: bundle.location_topology_set.spatial_source_ref.world_revision_id,
     world_catalog_digest: bundle.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
     materializer_version: MATERIALIZER_VERSION, rng_algorithm_id: RNG_VERSION,

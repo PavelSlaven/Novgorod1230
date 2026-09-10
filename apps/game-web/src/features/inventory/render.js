@@ -7,7 +7,7 @@ const LOAD_LABELS = Object.freeze({
   overloaded: 'Перегруз'
 });
 const CONDITION_LABELS = Object.freeze({
-  sound: 'исправно', intact: 'целое', worn: 'изношено',
+  serviceable: 'исправно', sound: 'исправно', intact: 'целое', worn: 'изношено',
   damaged: 'повреждено', broken: 'сломано'
 });
 const ACCESS_LABELS = Object.freeze({

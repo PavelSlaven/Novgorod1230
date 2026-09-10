@@ -13,3 +13,16 @@ test('turn header renders committed presentation context without requiring visib
   assert.match(html, /13:45/);
   assert.deepEqual(screen.visible_context, { visible_scene: 'Новая сцена' });
 });
+
+
+test('inventory renders the domain serviceable condition and equipped zones as player language', () => {
+  const screen = { version: 1, schema: 'lower_dvina_trace_turn_screen', screen_status: 'ready', party_id: 'party', main_prose: 'Берег.',
+    panels: { inventory: { visible: true, data: { zones: {
+      worn_quick: [{ label: 'Нож', condition: 'serviceable' }], equipped: [{ label: 'Рубаха', condition: 'serviceable' }]
+    } } } } };
+  const html = renderScreen(screen, { activeOverlay: 'inventory' });
+  assert.match(html, /Состояние: исправно/);
+  assert.match(html, /На теле/);
+  assert.match(html, /Снаряжение/);
+  assert.doesNotMatch(html, /serviceable/);
+});

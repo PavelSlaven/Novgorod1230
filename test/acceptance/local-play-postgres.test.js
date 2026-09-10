@@ -71,7 +71,9 @@ test('local play persists a free turn and replays it after a server restart',
     const partyId = started.party_id;
     assert.equal(started.screen.panels.character.visible, true);
     assert.equal(started.screen.panels.inventory.visible, true);
-    assert.ok(started.screen.panels.inventory.data.items.some(item => item.label === 'хозяйственный нож'));
+    assert.ok(started.screen.panels.inventory.data.zones.worn_quick.some(item => item.label === 'хозяйственный нож'));
+    assert.equal(started.screen.panels.inventory.data.zones.equipped.length, 2);
+    assert.equal(started.screen.panels.inventory.data.zones.worn_quick.length, 1);
     assert.ok(started.screen.presentation_context.date_label);
     assert.ok(started.screen.presentation_context.time_label);
     await post(port, `/api/v1/parties/${encodeURIComponent(partyId)}/opening-ack`, {
@@ -103,7 +105,7 @@ test('local play persists a free turn and replays it after a server restart',
       assert.equal(result.screen.panels.inventory.visible, true);
       assert.equal(result.screen.panels.route.visible, true);
       assert.equal(result.screen.panels.character.data.energy, Number(committed.body.energy));
-      assert.ok(result.screen.panels.inventory.data.items.some(item => item.label === 'хозяйственный нож'));
+      assert.ok(result.screen.panels.inventory.data.zones.worn_quick.some(item => item.label === 'хозяйственный нож'));
       assert.ok(result.screen.presentation_context.location_label);
       assert.ok(result.screen.presentation_context.date_label);
       assert.notEqual(result.screen.presentation_context.time_label, started.screen.presentation_context.time_label);

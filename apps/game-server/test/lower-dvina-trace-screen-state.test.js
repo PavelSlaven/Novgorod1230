@@ -29,7 +29,7 @@ test('screen rebuilds character, carried inventory and calendar without changing
   const screen = project(state);
   assert.equal(screen.panels.character.data.energy, 73);
   assert.equal(screen.panels.character.data.name, 'Гость');
-  assert.deepEqual(screen.panels.inventory.data.items.map(x => x.label), ['Костяное шило']);
+  assert.deepEqual(screen.panels.inventory.data.zones.hands.map(x => x.label), ['Костяное шило']);
   assert.equal(screen.panels.inventory.data.summary.total_mass_grams, 30);
   assert.equal(screen.panels.inventory.data.summary.hands_used, 1);
   assert.ok(screen.panels.route.visible);
@@ -42,7 +42,7 @@ test('screen rebuilds character, carried inventory and calendar without changing
   state.items[0].placement = { location_ref: state.position.location_ref };
   const next = project(state, screen);
   assert.equal(next.panels.character.data.energy, 60);
-  assert.deepEqual(next.panels.inventory.data.items, []);
+  assert.deepEqual(next.panels.inventory.data.zones.hands, []);
   assert.equal(next.panels.inventory.data.summary.total_mass_grams, 0);
   assert.notEqual(next.presentation_context.date_label, screen.presentation_context.date_label);
   assert.deepEqual(next.visible_context, visible);
@@ -56,5 +56,5 @@ test('catalog labels resolve exact template and never expose uncarried or hidden
   hidden.item_id = 'hidden'; hidden.state.display_name = 'Скрытый предмет';
   hidden.visibility_state = 'hidden'; hidden.placement = { location_ref: 'elsewhere' };
   state.items.push(hidden);
-  assert.deepEqual(project(state).panels.inventory.data.items.map(x => x.label), ['хозяйственный нож']);
+  assert.deepEqual(project(state).panels.inventory.data.zones.hands.map(x => x.label), ['хозяйственный нож']);
 });

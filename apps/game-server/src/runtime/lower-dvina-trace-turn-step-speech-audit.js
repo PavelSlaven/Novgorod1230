@@ -1,6 +1,6 @@
 import { serverError } from '../errors.js';
 
-const PROMPT = 'Верни только JSON с двумя ключами: speech_faithful (boolean) и unexecuted_intent (строка или null). Проверяется только произнесение слов actor. speech_faithful=true только если первое действие — речь и utterance точно передаёт её. Для verbatim слова должны быть словами текущего actor, а не чужой цитатой или условной репликой. Нельзя менять явную цитату через intent_paraphrase; свободное речевое намерение допускает верную формулировку без новых обещаний, угроз или утверждений. unexecuted_intent — весь дословный остаток remaining_intent ПОСЛЕ речевого действия, который произнесение слов ещё не выполняет. Скопируй остаток до самого конца исходной строки, сохранив союзы и пунктуацию; не выписывай саму цитату или обрамляющее речевое действие. Слушание, осмотр, ожидание, движение, жесты и манипуляции вне реплики остаются неисполненными, даже в том же предложении. Если после речи нет отдельного действия, unexecuted_intent=null. Глаголы внутри произносимой цитаты сами по себе не являются действиями actor. Не добавляй объяснений или ключей.';
+const PROMPT = 'Верни только JSON с тремя ключами: speech_faithful (boolean), required_input_mode (verbatim или intent_paraphrase) и unexecuted_intent (строка или null). Проверяется только произнесение слов actor. Определи required_input_mode по исходному remaining_intent независимо от предложенного utterance.input_mode: verbatim только для явно заданных слов текущего actor; intent_paraphrase для свободного речевого намерения без заданной цитаты, даже если обращение короткое или его имя встречается в исходном тексте. speech_faithful=true только если первое действие — речь и utterance точно передаёт её смысл при required_input_mode. Неверный предложенный input_mode сам по себе не делает верные слова неверными: код отдельно сравнит режимы. Для verbatim слова должны быть словами текущего actor, а не чужой цитатой или условной репликой. Нельзя менять явную цитату через intent_paraphrase; свободное речевое намерение допускает верную формулировку без новых обещаний, угроз или утверждений. unexecuted_intent — весь дословный остаток remaining_intent ПОСЛЕ речевого действия, который произнесение слов ещё не выполняет. Скопируй остаток до самого конца исходной строки, сохранив начальные союзы и пунктуацию; не выписывай саму цитату или обрамляющее речевое действие. Слушание, осмотр, ожидание, движение, жесты и манипуляции вне реплики остаются неисполненными, даже в том же предложении. Если после речи нет отдельного действия, unexecuted_intent=null. Глаголы внутри произносимой цитаты сами по себе не являются действиями actor. Не добавляй объяснений или ключей.';
 
 export async function auditFocusedSpeech({ roleRunner, plan, request }) {
   const response = await roleRunner.run({
@@ -28,21 +28,25 @@ export async function auditFocusedSpeech({ roleRunner, plan, request }) {
       && continuation.depends_on_refs.length === 0
       && continuation.prepared_followup_ref == null
       && continuation.pending_discovery == null;
-  if (matches) return true;
+  const mode = classification.required_input_mode;
+  const goalResult = remaining == null ? 'achieved' : 'pending';
+  if (matches && plan.utterance.input_mode === mode
+      && plan.goal_result === goalResult) return true;
   const expected = remaining == null ? null
     : { remaining_intent: remaining, depends_on_refs: [] };
   throw serverError('TURN_STEP_PLAN_INVALID',
     'Speech must preserve independent unexecuted intent.', { details: { errors: [{
       path: '$.utterance', rule: 'operation_semantic_grounding',
       code: 'operation_semantic_grounding',
-      message: `Keep the faithful utterance and its write-free activity; speech executes no later action. Set continuation exactly to ${JSON.stringify(expected)} and goal_result to ${remaining == null ? 'achieved' : 'pending'}.`
+      message: `Keep the faithful utterance and its write-free activity; speech executes no later action. Set utterance.input_mode to ${mode}, continuation exactly to ${JSON.stringify(expected)} and goal_result to ${goalResult}.`
     }] } });
 }
 
 function valid(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value)
-    && Object.keys(value).length === 2
+    && Object.keys(value).length === 3
     && typeof value.speech_faithful === 'boolean'
+    && ['verbatim', 'intent_paraphrase'].includes(value.required_input_mode)
     && (value.unexecuted_intent === null
       || typeof value.unexecuted_intent === 'string'
         && value.unexecuted_intent.trim().length > 0);

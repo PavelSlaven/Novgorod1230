@@ -1,5 +1,6 @@
 import { isDeepStrictEqual } from 'node:util';
 import { isDomainStepOperation, isOrdinaryDiscoveryInScope } from '@rus/turn';
+import { turnStepPlanMappings } from './lower-dvina-trace-turn-step-plan-mappings.js';
 import { normalizeTurnStepOperationChoice, selectedTurnStepOperation,
   turnStepOperationChoices } from
   './lower-dvina-trace-turn-step-operation-choices.js';
@@ -7,7 +8,7 @@ import { normalizeTurnStepOperationChoice, selectedTurnStepOperation,
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
   const normalized = canonicalizePlannerEnvelope(
-    normalizeTurnStepOperationChoice(structuredClone(choice)), request);
+    normalizeTurnStepOperationChoice(structuredClone(unwrapMapping(choice, request))), request);
   const semantic = restoreExactOperationChoice(
     canonicalizeDiscoveryShape(normalized, request), operationChoices);
   const selected = selectedTurnStepOperation(semantic, operationChoices);
@@ -36,7 +37,12 @@ export function assembleTurnStepPlan(choice, request,
   if (interpretation?.constructor === Object &&
       !interpretation.player_goal?.trim?.())
     interpretation.player_goal = request.root_player_action;
+  const preserved = { ...semantic };
+  delete preserved.operation_choice;
+  delete preserved.operation_family;
+  delete preserved.utterance;
   return {
+    ...preserved,
     schema: 'turn_step_plan_v1',
     request_id: request.request_id,
     committed_state_version: request.committed_state_version,
@@ -67,6 +73,14 @@ export function assembleTurnStepPlan(choice, request,
       operation_choice: semantic.operation_choice
     } : {})
   };
+}
+
+function unwrapMapping(choice, request) {
+  if (choice?.constructor !== Object) return choice;
+  const keys = Object.keys(choice);
+  return keys.length === 1 && choice[keys[0]]?.constructor === Object
+    && Object.hasOwn(JSON.parse(turnStepPlanMappings(request)), keys[0])
+    ? choice[keys[0]] : choice;
 }
 
 function canonicalizePlannerEnvelope(semantic, request) {

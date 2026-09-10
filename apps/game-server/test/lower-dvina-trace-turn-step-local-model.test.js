@@ -101,6 +101,32 @@ test('assembler preserves typed direct result kind', () => {
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
 
+test('assembler preserves unseen provider fields for strict rejection instead of silent action loss', () => {
+  const input = request();
+  for (const field of ['unexpected_action', 'unseen_observation_mapping']) {
+    const extra = { resolution: 'direct', grounded_attempt: 'открыть люк' };
+    const plan = assembleTurnStepPlan({ ...output(), [field]: extra }, input);
+    assert.deepEqual(plan[field], extra);
+    assert.ok(validateTurnStepPlan(plan, { request: input }).errors.some(({ path, code }) =>
+      path === `$.${field}` && code === 'additional_property'));
+  }
+});
+
+test('assembler unwraps only a single object under a mapping available in this request', () => {
+  const input = request();
+  const semantic = { ...output(), goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_safe_observation' };
+  const wrapped = { visible_general_look: semantic };
+  assert.deepEqual(assembleTurnStepPlan(wrapped, input), assembleTurnStepPlan(semantic, input));
+  assert.equal(validateTurnStepPlan(assembleTurnStepPlan(wrapped, input), { request: input }).ok, true);
+  for (const choice of [{ visible_general_look: null }, { visible_general_look: [] },
+    { visible_general_look: semantic, reason: 'ambiguous' }, { unknown_mapping: semantic },
+    { ordinary_scene_seed: semantic }]) {
+    assert.equal(validateTurnStepPlan(assembleTurnStepPlan(choice, input), { request: input }).ok, false);
+  }
+});
+
 test('source grounding repair gets a focused semantic instruction', async () => {
   let prompt;
   const input = request({ remaining_intent: 'Связать верёвкой доски.',

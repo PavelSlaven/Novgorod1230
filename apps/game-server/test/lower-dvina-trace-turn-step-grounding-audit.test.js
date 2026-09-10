@@ -46,7 +46,9 @@ test('ownerless speech crosses the existing grounding auditor before its factual
         assert.deepEqual(payload.utterance, utterance);
         assert.equal(payload.remaining_intent, intent);
         assert.match(call.messages[0].content, /Нельзя менять явную цитату через intent_paraphrase/u);
-        return { output: { speech_faithful: false, unexecuted_intent: null } };
+        return { output: { speech_faithful: false,
+          required_input_mode: intent.startsWith('Говорю') ? 'verbatim' : 'intent_paraphrase',
+          unexecuted_intent: null } };
       } }
     });
     await assert.rejects(validate({ request: { ...request, remaining_intent: intent },

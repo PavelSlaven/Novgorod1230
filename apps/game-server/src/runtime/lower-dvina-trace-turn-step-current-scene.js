@@ -21,10 +21,14 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
   const initial = committedState?.current_visible_context;
   const projectionSource = structuredClone(committedState);
   delete projectionSource.current_visible_context;
-  const playerSafe = projectLowerDvinaTracePlayerSafeState({
+  const { actor, player_safe_state: playerSafe } = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
     actor_id: projectionSource.actor_id
-  }).player_safe_state;
+  });
+  const selfKnowledge = [
+    ...(text(actor.name) ? [`Вас зовут ${actor.name}.`] : []),
+    ...(text(actor.role) ? [`Ваш род занятий: ${actor.role}.`] : [])
+  ];
   const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
     playerSafe.position,
     playerSafe.actor_id);
@@ -32,6 +36,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
       && validCurrentScene(initial)) {
     const current = {
       ...initial,
+      known_context: unique([...initial.known_context, ...selfKnowledge]),
       sensory_details: unique([...initial.sensory_details,
         ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)]),
       visible_objects: uniqueLowerDvinaTraceVisibleObjects([
@@ -66,7 +71,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
     visible_objects: sceneItems.map(({ visibleObject }) => visibleObject),
-    known_context: [profile.display_name],
+    known_context: [profile.display_name, ...selfKnowledge],
     uncertainties: [],
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']

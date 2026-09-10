@@ -118,6 +118,8 @@ test('local play persists a free turn and replays it after a server restart',
       assert.ok(narrated.length > 0, 'the real narrator receives the committed search projection');
       for (const { visible_context: visible } of narrated) {
         assert.equal(visible.visible_scene, sourceScene.visible_scene);
+        assert.ok(visible.known_context.includes('Вас зовут Микула.'));
+        assert.ok(visible.known_context.includes('Ваш род занятий: младший приказчик.'));
         assert.ok(profile.player_visible_physical_facts.length > 0);
         for (const detail of profile.player_visible_physical_facts) assert.ok(visible.sensory_details.includes(detail), JSON.stringify({ index, missing: detail, profile: profile.player_visible_physical_facts, narrated: visible.sensory_details }));
         for (const item of sourceScene.visible_objects) assert.ok(visible.visible_objects.some(

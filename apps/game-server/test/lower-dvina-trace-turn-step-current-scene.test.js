@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { assertCurrentSceneSelfIdentity } from './lower-dvina-trace-current-scene-self-identity.js';
 import {
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
@@ -71,6 +72,10 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
     ['Не удалось достичь цели «определить узор на досках».']);
   assert.deepEqual(direct.uncertainties, []);
   assert.equal(direct.do_not_imply.includes('unconfirmed_attempt_success'), true);
+});
+
+test('current scene binds safe self identity separately from a namesake NPC across reload', () => {
+  assertCurrentSceneSelfIdentity({ committedState, locationProfiles });
 });
 
 test('current scene never promotes an authored NPC name into player knowledge', () => {

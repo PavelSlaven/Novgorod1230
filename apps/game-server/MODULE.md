@@ -387,3 +387,7 @@ Current unpublished publication v28 introduces the player by the approved name,
 role and ordinary work from player profile v2 before its existing wreck/body/shore
 facts. Opening authoring does not create a particular remembered voyage, cargo,
 mission or hidden cause. Historical publication prose remains unchanged.
+
+Current-scene composition retains the safe projector's own actor name and role
+as self-bound `known_context` for the initial and later states. Narration gets
+this identity without raw dossier, hidden biography or merging a namesake NPC.

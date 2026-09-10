@@ -37,6 +37,9 @@ consumer slice, structured model output и owner commit/rejection. Driver
 `local-gemma-acceptance.mjs` — единственный финальный browser-only runner:
 по умолчанию поднимает тот же managed Gemma runtime, запускает настоящий Chromium, передаёт PLAYER
 только фактический DOM, вводит намерения через UI и сохраняет private traces.
+Перед выбором намерения runner открывает доступные игровые панели обычными
+кликами и передаёт PLAYER их видимый текст. Диагностика и настройки исключены;
+наблюдения панелей сохраняются рядом с исходным экраном в trace.
 Он не вызывает gameplay REST напрямую и не объявляет saturation без отдельного
 premise audit. Acceptance candidate требует clean неизменного checkout; development-прогоны
 из dirty tree не являются финальным acceptance evidence.

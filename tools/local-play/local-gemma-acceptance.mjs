@@ -19,6 +19,7 @@ import { auditEvent, createGameplayGapExplorer, gitSnapshot } from
   './gameplay-gap-campaign.mjs';
 import { startLocalPlay } from './local-play.js';
 import { ensureLocalPostgres } from './local-postgres.js';
+import { observePlayerPanels } from './browser-player-observation.mjs';
 
 const CHROMIUM = [process.env.RUS_CHROMIUM_PATH,
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -152,8 +153,10 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       index += 1) {
       if (signal?.aborted) break;
       const domBefore = await playerDom(page);
+      const panelsBefore = await observePlayerPanels(page);
       const proposal = await nextIntent({ campaign_id: report.campaign_id,
         turn_index: index, player_dom: domBefore,
+        player_panels: panelsBefore,
         previous_intents: report.turns.map((turn) => turn.proposal.raw_text) });
       assertLocalProvider(proposal.explorer_provider, identity,
         'development PLAYER');
@@ -162,7 +165,8 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       report.pending_turn = { trace_ref: traceRef,
         campaign_id: report.campaign_id, explorer_ref: report.explorer_ref,
         producer_ref: `production-runtime:${before.head}`, proposal,
-        player_dom_before: domBefore, after_count: already };
+        player_dom_before: domBefore, player_panels_before: panelsBefore,
+        after_count: already };
       await save();
       await page.fill('[data-turn-form] textarea[name="raw_text"]',
         proposal.raw_text);
@@ -279,6 +283,7 @@ async function capturePendingTurn({ report, page, identity, logDirectory,
     campaign_id: pending.campaign_id, explorer_ref: pending.explorer_ref,
     producer_ref: pending.producer_ref, proposal: pending.proposal,
     player_dom_before: pending.player_dom_before,
+    player_panels_before: pending.player_panels_before ?? [],
     player_dom_after: await playerDom(page), input: event.input,
     events: [audited], accepted: boundaries.some((item) =>
       item.event === 'owner_commit_completed'),

@@ -126,7 +126,7 @@ test('browser runner persists failed turn evidence before reporting failure', as
         innerText: async () => submitted ? 'Экран ошибки' : 'Начальный экран' };
       if (selector === '.error') return { count: async () => submitted ? 1 : 0,
         innerText: async () => 'План отклонён' };
-      return { async check() {} };
+      return { async check() {}, count: async () => 0 };
     }
   };
   const provider = { mode: 'custom', compatibility: 'openai_compatible',
@@ -204,7 +204,7 @@ test('browser runner resumes the same party and rejects changed identity',
       }, locator(selector) {
         if (selector === '[data-game-root]') return {
           innerText: async () => 'Продолженный экран' };
-        return { async check() {} };
+        return { async check() {}, count: async () => 0 };
       } };
     const common = { focus: 'resume contract', turns: null, sequence: 4,
       provider, chromiumPath: 'chromium', headless: true, resume: true,

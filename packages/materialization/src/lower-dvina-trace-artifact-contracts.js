@@ -384,6 +384,7 @@ export const M20_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
 export const M21_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   ...M20_ARTIFACT_CONTRACT_OVERRIDES,
   definition: ['rus.trace_scenario_definition.v1', 33],
+  item_container_set: ['rus.trace_item_container_set.v1', 6],
   phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 24],
   materialization_bindings: ['rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 24]
 });

@@ -78,6 +78,8 @@ test('local play persists a free turn and replays it after a server restart',
       client_ack_id: `local-play-opening-${suffix}`
     });
     const beforeTurn = await committedState(localPlay.postgres.partyUrl, partyId);
+    const names = beforeTurn.owned_item_names;
+    for (const name of ['хозяйственный нож', 'нижняя рубаха', 'верхняя шерстяная одежда']) assert.ok(names.includes(name));
     let turnRequest = {
       request_id: requestId,
       idempotency_key: requestId,
@@ -110,7 +112,12 @@ test('local play persists a free turn and replays it after a server restart',
       assert.equal(committed.item_ids.length, beforeTurn.item_ids.length + (resolution === 'materialize' ? 1 : 0));
       assert.equal(committed.activities.length, index + 1);
       assert.ok(committed.activities.every(activity => Number(activity.original_total_minutes) === 15 && activity.status === 'completed'));
-      if (index === 0) initialOrdinaryCalls = ordinaryCalls();
+      if (index === 0) {
+        initialOrdinaryCalls = ordinaryCalls();
+        const planner = llm.requests.map(({ input }) => input?.request ?? input)
+          .find(input => input?.schema === 'turn_step_request_v1');
+        for (const name of names) assert.ok(planner.player_safe_state.items.some(item => item.name === name));
+      }
       if (index === 1) {
         assert.equal(ordinaryCalls(), initialOrdinaryCalls, 'a new repeated physical search reuses presence without model calls');
         assert.deepEqual(committed.state_payload.ordinary_materialization_atomic_write_plan ?? null, null);
@@ -154,12 +161,13 @@ async function committedState(partyUrl, partyId) {
     assert.ok(row, 'committed party snapshot must exist');
     const [clock, body, items, activities] = await Promise.all([
       pool.query('SELECT whole_minutes,subminute_numerator,subminute_denominator FROM party_runtime.party_clocks WHERE party_id=$1', [partyId]),
-      pool.query("SELECT health,energy,satiety FROM party_runtime.party_actor_body_states WHERE party_id=$1 AND actor_kind='player_character'", [partyId]),
-      pool.query('SELECT item_id FROM party_runtime.party_items WHERE party_id=$1 ORDER BY item_id', [partyId]),
+      pool.query("SELECT actor_id,health,energy,satiety FROM party_runtime.party_actor_body_states WHERE party_id=$1 AND actor_kind='player_character'", [partyId]),
+      pool.query('SELECT i.item_id,i.state,ip.holder_character_id FROM party_runtime.party_items i JOIN party_runtime.party_item_placements ip ON ip.party_id=i.party_id AND ip.item_id=i.item_id WHERE i.party_id=$1 ORDER BY i.item_id', [partyId]),
       pool.query('SELECT a.original_total_minutes,a.status FROM party_runtime.party_timed_activity_executions a JOIN party_runtime.party_command_idempotency i ON i.id=a.idempotency_record_id WHERE i.party_id=$1 ORDER BY a.id', [partyId])
     ]);
     return { state_version: Number(row.state_version), state_payload: row.state_payload,
       clock: clock.rows[0], body: body.rows[0], item_ids: items.rows.map(({ item_id }) => item_id),
+      owned_item_names: items.rows.filter(item => item.holder_character_id === body.rows[0].actor_id).map(item => item.state.display_name),
       activities: activities.rows };
 
   } finally {

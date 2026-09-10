@@ -29,15 +29,15 @@ export function createSpatialV3RuntimeBindings(context = {}) {
         !== context.release.world_knowledge_embedding_profile_ref
       || pins?.scenario_definition_revision !== 33
       || pins?.scenario_definition_digest
-        !== 'e3f9ed3adf251dc6b55e1d55df7fb42af11761d10db9e04672203b8ad50d8872'
+        !== '93b7a2eab07ab7e08b6557e3818a49d1c242a8bdafc68ab790a5b19dc92e3d9c'
       || pins?.phase_1a_package_id !== 'lower_dvina_trace_phase_1a_v24'
       || pins?.phase_1a_manifest_digest
-        !== '6b6351c6cec4a814966691e123887d8e96ab2b2ee3189c2ac2a754bb049fb80e'
+        !== 'dfa37d120ab43d1270ccf16476d67202aa9127b12fb532d73c260e1530d4f580'
       || pins?.phase_1b_package_id !== 'lower_dvina_trace_phase_1b_v28'
       || pins?.phase_1b_manifest_digest
-        !== '2324ce6b41d3bda293900aaa135411e2554c5bbe0ca56736fb1c0938c62aa88d'
+        !== '8904d955156b3afd96f66cf46b9aa00703455662c9558a31b35e59cc01205599'
       || pins?.phase_1b_binding_digest
-        !== 'c700fe1bc61808258cd6a66826fb8f45026f2e0735a833dfb01d804c2d87a1db'
+        !== 'ad69f1b98d8ffff94405f517d8a3abc1223b14df9f45858f1f931b52ae2b4d96'
       || pins?.n1_profile_id !== 'lower_dvina_trace_n1_background_npc_v1'
       || pins?.n1_profile_revision !== 1
       || pins?.n1_profile_scenario_definition_revision !== 31

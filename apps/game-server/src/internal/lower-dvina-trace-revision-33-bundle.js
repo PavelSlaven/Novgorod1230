@@ -1,18 +1,21 @@
+import { mergeItemContainerSet } from './lower-dvina-trace-character-appearance-bundle.js';
 import { canonicalDigest } from '@rus/materialization';
 import { validateNpcRoutineProfile } from '@rus/npc-runtime';
 import { ROOT, readBundleArtifact } from './lower-dvina-trace-s1-bundle-utils.js';
 
 export const TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST =
-  '6b6351c6cec4a814966691e123887d8e96ab2b2ee3189c2ac2a754bb049fb80e';
+  'dfa37d120ab43d1270ccf16476d67202aa9127b12fb532d73c260e1530d4f580';
 export const TRACE_REVISION33_DEFINITION_DIGEST =
-  'e3f9ed3adf251dc6b55e1d55df7fb42af11761d10db9e04672203b8ad50d8872';
+  '93b7a2eab07ab7e08b6557e3818a49d1c242a8bdafc68ab790a5b19dc92e3d9c';
+const ITEM_DISPLAY_OVERLAY_DIGEST = 'ff8c3cd970bbe27fcff3b4ead470d68b1855e976047c31c1fae1a690a46bcb50';
 const artifacts = {
+  item_container_set: ['phase-m21-content/item-container-set-overlay.json', ITEM_DISPLAY_OVERLAY_DIGEST],
   definition: ['phase-m21-content/definition.json', TRACE_REVISION33_DEFINITION_DIGEST],
   initial_npc_schedule_profile: ['phase-m21-content/initial-npc-schedule-profile.json',
     'c52d9eaa4c1fe27b6f5a3bc0908671f482f7abf82f82ef3451c9b04a76f89aca'],
   phase_1a_manifest: ['phase-1a-v24/manifest.json', TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST],
   materialization_bindings: ['phase-1a-v24/materialization-bindings.json',
-    '13fb9ab93681a491d3629d574e88d951ecd6cd936b008d5fd3cace357710ff00']
+    '61fce1eea908b14aeb5128ebd95485ae23906e35d8d722798012ffafd64bba7c']
 };
 export async function loadLowerDvinaTraceRevision33Bundle({ rootDir,
   historicalBundle, fail, freezeDeep, validateDefinitionPins }) {
@@ -22,11 +25,13 @@ export async function loadLowerDvinaTraceRevision33Bundle({ rootDir,
     const path = `${ROOT}/${relative}`;
     const loaded = await readBundleArtifact(rootDir, path);
     if (loaded.digest !== digest) return fail('TRACE_REVISION_33_CONTENT_INVALID');
-    bundle[key] = key === 'materialization_bindings'
-      ? { ...bundle[key], ...loaded.value } : loaded.value;
+    bundle[key] = key === 'item_container_set'
+      ? mergeItemContainerSet(bundle[key], loaded.value, fail)
+      : key === 'materialization_bindings'
+        ? { ...bundle[key], ...loaded.value } : loaded.value;
     bundle.artifact_pins[key] = { key, path, digest,
-      canonical_digest: canonicalDigest(bundle[key]), schema: loaded.value.schema,
-      revision: loaded.value.revision };
+      canonical_digest: canonicalDigest(bundle[key]), schema: bundle[key].schema,
+      revision: bundle[key].revision };
   }
   const schedules = bundle.initial_npc_schedule_profile;
   if (schedules.schema !== 'rus.lower_dvina_trace_initial_npc_schedule_profile.v2'

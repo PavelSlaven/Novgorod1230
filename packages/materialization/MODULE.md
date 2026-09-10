@@ -26,7 +26,10 @@
 - не вызывает LLM.
 
 Revision 33 инициализирует calendar routine через `@rus/npc-runtime` из
-approved profile. Stage 24 сохраняет её в canonical schedule table в общей
+approved profile. Current successor item templates use exact approved catalog
+labels; materialization writes them once to existing `state.display_name` for
+initial items and Stage 16 equipment. Historical template content is unchanged.
+Stage 24 сохраняет её в canonical schedule table в общей
 NewGame транзакции; подготовленный G6 при этом не materialize заранее.
 
 ## Публичный API

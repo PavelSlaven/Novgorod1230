@@ -442,6 +442,13 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         bundle, item.state.inventory_profile_snapshot);
     }
   }
+  for (const item of immediate.items) {
+    const template = bundle.item_container_set.item_templates.find(
+      ({ item_template_id: id }) => id === item.template_id);
+    if (template?.display_name && item.state.display_name == null) {
+      item.state.display_name = template.display_name;
+    }
+  }
   const validationReport = {
     pass: true,
     checks: {

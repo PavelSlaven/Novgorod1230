@@ -1,3 +1,4 @@
+import { materializeInitialActorEquipment } from '@rus/new-game';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createNpcRoutineState, npcRoutineActivity } from '@rus/npc-runtime';
@@ -71,6 +72,15 @@ test('revision 33 materializes finite routines without activating deferred G6 sc
     world_catalog_digest: current.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
     domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(current), scenario_bundle: current
   }));
+  const equipped = materializeInitialActorEquipment(result);
+  const own = equipped.immediate.items.filter(item => item.holder_character_id === equipped.immediate.player.instance_id);
+  assert.deepEqual(own.map(item => item.state.display_name).sort(),
+    ['хозяйственный нож', 'нижняя рубаха', 'верхняя шерстяная одежда'].sort());
+  assert.equal(current.item_container_set.item_templates.find(item => item.item_template_id === 'trace_ld_v1_item_base_shirt')
+    .base_catalog_ref.template_id, 'item_tpl_nov_linen_shirt_v1');
+  assert.equal(revision32Bundle.item_container_set.item_templates.find(item => item.item_template_id === 'trace_ld_v1_item_base_shirt')
+    .base_catalog_ref.template_id, 'item_tpl_nov_linen_base_garment_v1');
+  assert.ok(revision32Bundle.item_container_set.item_templates.every(item => item.display_name == null));
   assert.equal(result.immediate.npcs.length, 6);
   const running = result.immediate.npcs.filter((npc) => npc.routine_state?.status === 'active');
   assert.equal(running.length, 5);

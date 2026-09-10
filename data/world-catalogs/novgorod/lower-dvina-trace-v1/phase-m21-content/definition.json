@@ -43,8 +43,8 @@
     },
     "item_container_set": {
       "id": "trace_ld_v1_item_container_set",
-      "revision": 5,
-      "digest": "edd3a46d9172041c5fefb5658e00b1aaa5b61c6ac5c086e4cd2de96434cb340e"
+      "revision": 6,
+      "digest": "ff8c3cd970bbe27fcff3b4ead470d68b1855e976047c31c1fae1a690a46bcb50"
     },
     "hidden_truth_candidate_set": {
       "id": "trace_ld_v1_hidden_truth_candidate_set",

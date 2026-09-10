@@ -47,6 +47,7 @@ export function materializeApprovedItems(candidates, { input, partyId, runId, an
       if (candidate.equipment_candidate_id && (!equipmentCandidate || equipmentCandidate.status !== 'approved' || equipmentCandidate.world_revision_id !== input.item_profile_candidate_set.world_revision_id)) throw new MaterializationError('EQUIPMENT_CANDIDATE_NOT_APPROVED', `${kind} ${candidateId} references unavailable equipment candidate.`);
       const totalMass = candidate.quantity * quantityRequirement.mass_grams_per_unit;
       const itemState = {
+        ...(candidate.display_name ? { display_name: candidate.display_name } : {}),
         ...(candidate.inventory_profile_snapshot ? {
           inventory_profile_snapshot:
             structuredClone(candidate.inventory_profile_snapshot)

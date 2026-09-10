@@ -233,6 +233,9 @@ bounded owner. Он принимает только exact refs из code-project
 `observed_evidence_inspection` с player-safe presentation, не доверяет сырому
 `knowledge`, не создаёт новую истину и возвращает только отсутствие достаточных
 подтверждённых данных; authored/external owner сохраняет приоритет.
+Результат сохраняет исходный вопрос в `observed_evidence_inspection_seed`;
+presentation передаёт его как открытый вопрос вместе с текущей сценой,
+без утверждения отсутствия предмета или нового вывода.
 
 Active O2a добавляет authored wreck-shore ambient capability и first-entry
 context-bound finite stock подготовленной глины. Player-safe state показывает

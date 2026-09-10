@@ -24,8 +24,10 @@ export function resolveObservedEvidenceInspection(execution) {
     write_fragments: [],
     summary: 'Наблюдение не содержит данных для нового достоверного вывода.',
     player_response_boundary: true,
-    consequence_fragment: { visible_seed: { ordinary_presence_seed: {
-      kind: 'ordinary_presence_seed', resolution: 'authority_required'
+    consequence_fragment: { visible_seed: { observed_evidence_inspection_seed: {
+      kind: 'observed_evidence_inspection_seed',
+      resolution: 'no_new_supported_conclusion',
+      query: execution.operation.query
     } } }
   });
 }

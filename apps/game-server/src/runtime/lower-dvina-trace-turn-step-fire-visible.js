@@ -67,16 +67,26 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
 
 function overlayTurnStepResults(base, input) {
   const remaining = input?.mode_resolution?.decision_trace?.remaining_intent;
+  const inspection = input?.consequence?.visible_seed?.observed_evidence_inspection_seed;
+  if (inspection != null && (!plain(inspection)
+      || inspection.kind !== 'observed_evidence_inspection_seed'
+      || inspection.resolution !== 'no_new_supported_conclusion'
+      || Object.keys(inspection).length !== 3
+      || typeof inspection.query !== 'string' || !inspection.query.trim())) {
+    ownerFail('TRACE_TURN_STEP_OBSERVED_EVIDENCE_VISIBLE_SEED_INVALID');
+  }
   const utterances = (input?.mode_resolution?.decision_trace?.step_traces ?? [])
     .filter(({ applied, approved_plan: plan }) => applied === true
       && plan?.resolution === 'direct'
       && plan.direct_result_kind === 'player_utterance')
     .map(({ approved_plan: plan }) => plan.utterance.utterance_text);
-  if (!text(remaining) && utterances.length === 0) return base;
+  if (!text(remaining) && utterances.length === 0 && inspection == null) return base;
   return deepFreeze({ ...structuredClone(base),
     visible_changes: unique([...base.visible_changes,
       ...utterances.map((utterance) => `Вы произнесли: «${utterance}»`)]),
     uncertainties: unique([...base.uncertainties,
+      ...(inspection == null ? [] : [
+        `Новый достоверный вывод не установлен. Вопрос остаётся открытым: «${inspection.query}».`]),
       ...(text(remaining) ? [
         `Ещё не выполнено: «${remaining}». Результат этой попытки не установлен.`] : [])]),
     do_not_imply: unique([...base.do_not_imply,
@@ -104,7 +114,8 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   const ordinaryDetails = ordinarySceneDetails(seedEntries);
   const ordinaryPresence = ordinaryPresenceResolution(seedEntries);
   let base;
-  if (ordinaryDetails.length > 0) {
+  if (ordinaryDetails.length > 0
+      || seedEntries.some(([key]) => key === 'observed_evidence_inspection_seed')) {
     const body = currentBody(input);
     base = hasVisibleDomainProjection(consequence)
       ? await fallback.project(input)

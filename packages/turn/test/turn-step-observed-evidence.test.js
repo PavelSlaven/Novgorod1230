@@ -55,9 +55,23 @@ test('only code-projected observed evidence receives the bounded owner', () => {
     code: 'TURN_STEP_PLAN_INVALID'
   });
   assert.equal(resolveObservedEvidenceInspection({
-    working_projection: {}
-  }).consequence_fragment.visible_seed.ordinary_presence_seed.resolution,
-  'authority_required');
+    working_projection: {}, operation: operation('fact:worn-rope-mark')
+  }).consequence_fragment.visible_seed.observed_evidence_inspection_seed.resolution,
+  'no_new_supported_conclusion');
+});
+
+test('observed evidence preserves the actual question without turning it into object discovery', () => {
+  for (const query of ['Какие следы перекрывают другие?', 'Есть ли связь между отметиной и износом каната?']) {
+    const projection = { known: ['видимые следы'] };
+    const result = resolveObservedEvidenceInspection({ working_projection: projection,
+      operation: { ...operation('fact:worn-rope-mark'), query } });
+    assert.deepEqual(result.working_projection, projection);
+    assert.deepEqual(result.write_fragments, []);
+    assert.deepEqual(result.consequence_fragment.visible_seed, {
+      observed_evidence_inspection_seed: { kind: 'observed_evidence_inspection_seed',
+        resolution: 'no_new_supported_conclusion', query }
+    });
+  }
 });
 
 test('evidence limitation reaches normal turn presentation', async () => {

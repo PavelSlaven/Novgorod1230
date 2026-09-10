@@ -69,9 +69,9 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.equal(calls[0].messages[0].content.includes(
     'Do not infer a causal bridge or exact success mechanism'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'Faithfully paraphrase mechanical source wording'), true);
+    'Preserve the supplied meaning without retaining mechanical or diagnostic source wording'), true);
   assert.equal(calls[0].messages[0].content.includes(
-    'visible_context.visible_changes is nonempty, convey every material new change'), true);
+    'visible_context.visible_changes is nonempty, convey each distinct mandatory meaning'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'relevant player-safe known_context'), true);
   assert.equal(calls[0].messages[0].content.includes(
@@ -115,7 +115,9 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     assert.equal(call.messages[0].content.includes(
       `grounds only an attempt unless visible_context or ${outcomeField} confirms`), true);
     assert.equal(call.messages[0].content.includes(
-      'do not turn source arrays into a one-fact-per-sentence catalogue'), true);
+      'Do not turn source entries into a field-by-field or clause-by-clause ledger'), true);
+    assert.ok(call.messages[0].content.includes('a separate confirmed visible_change may prove the attempt'));
+    assert.ok(call.messages[0].content.includes('one natural in-scene statement may satisfy both obligations'));
   }
   assert.equal(calls[0].scope, 'turn_runtime');
   assert.equal(calls[0].roleId, 'gameplay_narrator');
@@ -123,8 +125,10 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.equal(calls[1].messages[0].content.includes(repairShape), true);
   assert.equal(calls[1].messages[0].content.includes('request.visible_context'), true);
   assert.equal(calls[1].messages[0].content.includes(
-    'Convey every material visible_change naturally'), true);
+    'Convey each distinct mandatory meaning in visible_context.visible_changes naturally'), true);
   assert.equal(calls[2].roleId, 'gameplay_narrator_auditor');
+  assert.ok(calls[2].messages[0].content.includes('first assess output.prose as a whole'));
+  assert.ok(calls[2].messages[0].content.includes('For whole-output technical_presentation choose segment_1'));
   assert.equal(calls[2].messages[0].content.includes('full narration'), true);
   assert.equal(calls[2].messages[0].content.includes('hidden state'), true);
   assert.equal(calls[2].messages[0].content.includes(
@@ -189,7 +193,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   });
   assert.equal(calls[3].roleId, 'gameplay_narrator_semantic_repair');
   assert.equal(calls[3].messages[0].content.includes(
-    'entire supplied prose as one coherent paragraph'), true);
+    'retain or add natural paragraph breaks when useful'), true);
+  assert.doesNotMatch(calls[3].messages[0].content, /one coherent paragraph/u);
   assert.equal(calls[3].messages[0].content.includes(
     'Never emit a sentence whose only content is elapsed time'), true);
   assert.equal(calls[3].messages[0].content.includes(
@@ -207,7 +212,7 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.equal(calls[3].messages[0].content.includes(
     'For missing_visible_change'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'complete replacement must naturally convey every material visible_change once'), true);
+    'complete replacement must naturally convey each distinct mandatory meaning in visible_context.visible_changes once'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'confirmed_outcome contains the code-confirmed outcome'), true);
   assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'The clearing is quiet.', nearby_context: [] }]);

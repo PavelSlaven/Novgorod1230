@@ -57,7 +57,7 @@ test('ordinary lookup preserves approved scene and complete need without opaque-
   assert.equal(seedNeed.candidate_hint, null);
   assert.equal(seedNeed.candidate, null);
   assert.deepEqual(JSON.parse(calls[2].situation_summary), { visible: scene });
-  assert.ok(calls[2].available_knowledge_refs.length > 0);
+  assert.ok(Object.keys(calls[2].available_knowledge_refs).length > 0);
   const changedScene = { visible_scene: 'Сухой луг', sensory_details: [],
     visible_objects: ['Луговая трава'] };
   await grounder.ground(seed, 'materialization_support', { semantic_context: changedScene });

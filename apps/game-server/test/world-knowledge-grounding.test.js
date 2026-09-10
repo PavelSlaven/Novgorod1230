@@ -85,13 +85,12 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.match(calls[0].messages[0].content,
     /shared mandatory qualifiers and applicable limits/u);
   assert.doesNotMatch(calls[0].messages[0].content, /including each independent part of a multi-part question/u);
-  const ownerMetadata = calls[0].messages[0].content.match(/Focus claim domains: (.*?)\. A focus concept namespace/u);
-  assert.ok(ownerMetadata, 'planner must see actual claim owners, not only cross-domain exceptions');
-  const owners = JSON.parse(ownerMetadata[1]);
+  assert.doesNotMatch(calls[0].messages[0].content, /Focus claim domains:/u);
+  const owners = plannerRequest.available_knowledge_refs;
   assert.deepEqual(owners['wk:environment:regional-fish-exploitation'], ['environment']);
   assert.ok(Object.keys(owners).length <= 256);
   assert.ok(Object.keys(owners).every((ref) =>
-    plannerRequest.available_knowledge_refs.includes(ref)));
+    !calls[0].messages[0].content.includes(ref)));
   assert.equal(first, second);
   assert.equal(Object.hasOwn(request, 'world_knowledge'), false);
   assert.equal(first.world_knowledge.pack_revision, 'revision:production-v1');
@@ -112,7 +111,8 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.equal(gameplayTraces.length, 1);
   const trace = gameplayTraces[0];
   assert.equal(trace.event, 'world_knowledge_resolved');
-  assert.deepEqual(trace.planner_request, plannerRequest);
+  assert.deepEqual(trace.planner_request, { ...plannerRequest,
+    available_knowledge_refs: Object.keys(owners) });
   assert.deepEqual(trace.query.search_hints, ['рыбные ресурсы']);
   assert.deepEqual(trace.consumer_request, first);
   assert.deepEqual(trace.retrieved_slice.facts, first.world_knowledge.facts);
@@ -273,8 +273,9 @@ test('a material focus can retrieve its chemical facts without expanding selecte
       vector_index: { search: () => new Map() } },
     placeRefs: ['region_novgorod_land'], telemetry: { onDetail: row => diagnostics.push(row) },
     roleRunner: { async run(call) {
-      assert.ok(call.messages[0].content.includes(
-        '"wk:material_culture:vegetable-tanned-leather":["chemistry_process","physics_material_science"]'));
+      assert.deepEqual(JSON.parse(call.messages[1].content).available_knowledge_refs[
+        'wk:material_culture:vegetable-tanned-leather'],
+      ['chemistry_process', 'physics_material_science']);
       return { output: { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
         domains: ['chemistry_process'], focus_refs: ['wk:material_culture:vegetable-tanned-leather'],
         requested_predicates: [], search_hints: ['tanning prepared hide collagen tannins'] } };
@@ -439,7 +440,7 @@ test('player semantic grounding can request occupation context without assigning
     roleRunner: { async run(call) {
       const request = JSON.parse(call.messages[1].content);
       assert.ok(request.allowed_domains.includes('npc_daily_life'));
-      assert.ok(request.available_knowledge_refs.includes(
+      assert.ok(Object.hasOwn(request.available_knowledge_refs,
         'wk:npc_daily_life:resource-occupation-needs-setting'));
       return { output: {
         schema: 'world_knowledge_query_plan_v1', query_locale: 'en',

@@ -179,15 +179,14 @@ export function wkClosure(request) {
 export { wkClosure as worldKnowledgeFactualClosure };
 async function runPlanner(roleRunner, request, repair, bundle) {
   const claimDomains = new Map(bundle.claims.map(claim => [claim.claim_ref, claim.domain]));
-  const availableRefs = new Set(request.available_knowledge_refs);
-  const focusClaimDomains = Object.fromEntries(bundle.concepts
-    .filter(concept => availableRefs.has(concept.concept_ref))
-    .map(concept => [concept.concept_ref, [...new Set(
-      (bundle.exact_indexes.concept_to_claim_refs[concept.concept_ref] ?? [])
+  const focusClaimDomains = Object.fromEntries(request.available_knowledge_refs
+    .map(ref => [ref, [...new Set(
+      (bundle.exact_indexes.concept_to_claim_refs[ref] ?? [])
         .map(ref => claimDomains.get(ref))
         .filter(domain => request.allowed_domains.includes(domain))
-    )].sort()])
-    .filter(([, domains]) => domains.length > 0));
+    )].sort()]));
+  // Only the private model wire combines refs with their domain metadata.
+  const wireRequest = { ...request, available_knowledge_refs: focusClaimDomains };
   const response = await roleRunner.run({
     scope: 'turn_runtime',
     role_id: 'world_knowledge_query_planner',
@@ -202,16 +201,16 @@ async function runPlanner(roleRunner, request, repair, bundle) {
       'Choose the smallest sufficient set of the most specific approved focus_refs. Exact focus facts outrank fuzzy matches: do not add broad material, object or activity refs as background padding. Include a broad ref only when it directly supplies a separately needed factual relationship. An empty focus_refs array is valid when no supplied ref matches the need.',
       'When an answer would apply a general property to a named material, or infer or limit an activity from an observed tool, include the approved classification or use-context relationship needed for that application and select its owning domain as well. Do not assume that connecting premise from model memory.',
       'Search hints must express the requested properties, relations and conditions. For conjunctive requirements, cover every mandatory relationship. When explicit alternatives permit one result, retrieve at least one complete admissible alternative with its shared mandatory qualifiers and applicable limits; do not require every alternative to succeed. Select the owning domains for those hints: a hint outside the selected domains does not establish coverage. Scene-setting nouns do not automatically create separate information needs. Preserve the stated evidence, conclusion, and conditions; do not invent alternative histories, causes, entities, or explanations.',
-      'Express each search hint as a short direct proposition or question about the needed causal relationship, using plain words and basic word forms. Avoid abstract topic labels or nominal phrases that conceal the subject, action, and effect. A search proposition is a retrieval query, never an asserted factual answer.', `Focus claim domains: ${JSON.stringify(focusClaimDomains)}.`,
-      'A focus concept namespace is not necessarily the domain of its factual relationships. The map lists actual allowed claim domains from the compiled index, not factual answers. Select the domains owning the requested relationships, including relevant entries; do not select every listed domain automatically or exceed planner limits.',
+      'Express each search hint as a short direct proposition or question about the needed causal relationship, using plain words and basic word forms. Avoid abstract topic labels or nominal phrases that conceal the subject, action, and effect. A search proposition is a retrieval query, never an asserted factual answer.',
+      'Select focus_refs only from the keys of request.available_knowledge_refs, listed in relevance order. Its values are actual allowed claim domains from the compiled index, not factual answers; an empty array means no listed allowed claim domain. A focus concept namespace is not necessarily the domain of its factual relationships. Select the domains owning the requested relationships, including relevant entries; do not select every listed domain automatically or exceed planner limits.',
       'Return requested_predicates as an empty array. This semantic lookup preserves mixed typed and generic factual premises; restrictive predicate filters belong to exact code-owned queries.',
       'Do not return facts, outcomes, actions, party mutations, context overrides, or new refs.',
       repair == null ? 'Plan the smallest useful factual lookup.'
-        : `Replace the invalid output; repair only these structural errors: ${JSON.stringify(repair.structural_errors)} Remove every domain absent from request.allowed_domains. Remove unavailable focus_refs, or replace them only by verbatim refs from request.available_knowledge_refs. Do not return any domain or ref named as unavailable.`
+        : `Replace the invalid output; repair only these structural errors: ${JSON.stringify(repair.structural_errors)} Remove every domain absent from request.allowed_domains. Remove unavailable focus_refs, or replace them only by verbatim keys from request.available_knowledge_refs. Do not return any domain or ref named as unavailable.`
     ].join(' ') }, { role: 'user', content: JSON.stringify(repair == null
-      ? request : { request, original_output: repair.original_output,
+      ? wireRequest : { request: wireRequest, original_output: repair.original_output,
         structural_errors: repair.structural_errors,
-        repair_instruction: 'Return the corrected six-key plan, not original_output. Copy domains only from request.allowed_domains and remove every unavailable domain or focus_ref. Keep the information need in search_hints; an empty focus_refs array is valid. Never copy a rejected domain or ref.' }) }],
+        repair_instruction: 'Return the corrected six-key plan, not original_output. Copy domains only from request.allowed_domains and focus_refs only from keys of request.available_knowledge_refs. Keep the information need in search_hints; an empty focus_refs array is valid. Never copy a rejected domain or ref.' }) }],
     overrides: { temperature: 0 }
   });
   return response;

@@ -373,6 +373,10 @@ query and code-owned admission/coverage/entity bounds; opaque IDs and policy ref
 are not natural-language retrieval vocabulary. Candidate focus recall uses the
 query and approved scene text. The full ordinary request still reaches its own
 semantic and code admission owners unchanged.
+The private WK planner wire sends each ranked focus ref once as a key in
+`available_knowledge_refs`, with its allowed claim domains as the value (including
+empty arrays). Native planner requests retain the complete ordered ref array for
+validation and diagnostics; candidate and retrieval budgets are unchanged.
 Retrieved claims are bounded context only: domain owners
 still control current state, mechanics, persistence, access, and outcomes.
 The Giga/vector path is mandatory whenever v15 needs a WK slice. Missing local

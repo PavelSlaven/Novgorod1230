@@ -19,10 +19,9 @@ const SCENES = Object.freeze({
   'affect:complete:completed': 'Огонь погас.'
 });
 const ORDINARY_PRESENCE_CHANGES = Object.freeze({
-  absent: 'Искомое здесь не обнаружено.',
-  no_change: 'Попытка обнаружить искомое не дала определённого результата.',
-  authority_required:
-    'Эта попытка не позволяет установить, находится ли здесь искомое.'
+  absent: 'По этому вопросу отсутствие установлено',
+  no_change: 'Результат по этому вопросу не установлен',
+  authority_required: 'Имеющихся данных недостаточно для ответа'
 });
 
 export function createLowerDvinaTraceTurnStepVisibleProjector({
@@ -208,18 +207,22 @@ function ordinaryPresenceResolution(entries) {
     'TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
   const value = seeds[0][1];
   if (!plain(value) || value.kind !== 'ordinary_presence_seed'
-      || Object.keys(value).length !== 2
+      || Object.keys(value).length !== 3
+      || typeof value.query !== 'string' || !value.query.trim()
       || !Object.hasOwn(ORDINARY_PRESENCE_CHANGES, value.resolution)) {
     ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
   }
-  return value.resolution;
+  return value;
 }
 
-function overlayOrdinaryPresence(base, resolution) {
-  if (resolution == null) return base;
-  return deepFreeze({ ...structuredClone(base), visible_changes: unique([
-    ...base.visible_changes, ORDINARY_PRESENCE_CHANGES[resolution]
-  ]) });
+function overlayOrdinaryPresence(base, presence) {
+  if (presence == null) return base;
+  const { resolution, query } = presence;
+  const field = resolution === 'absent' ? 'visible_changes' : 'uncertainties';
+  return deepFreeze({ ...structuredClone(base), [field]: unique([
+    ...base[field], `${ORDINARY_PRESENCE_CHANGES[resolution]}: «${query}».`
+  ]), do_not_imply: unique([...base.do_not_imply,
+    'discovery_query_as_existence_ownership_or_executed_action']) });
 }
 
 function overlayFireVisible(base, fireVisible) {

@@ -320,7 +320,8 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
       kind: 'ordinary_scene_seed', sensory_details: sceneDetails
     } }),
     ...(negativePresenceResolution == null ? {} : { ordinary_presence_seed: {
-      kind: 'ordinary_presence_seed', resolution: negativePresenceResolution
+      kind: 'ordinary_presence_seed', resolution: negativePresenceResolution,
+      query: request.operation.query
     } })
   };
   return Object.freeze({ working_projection: request.working_projection,
@@ -425,7 +426,8 @@ function ordinaryNoop(request) { return Object.freeze({
   write_fragments: [], summary: 'ordinary discovery unavailable',
   duration_minutes: 0,
   consequence_fragment: { visible_seed: { ordinary_presence_seed: {
-    kind: 'ordinary_presence_seed', resolution: 'no_change'
+    kind: 'ordinary_presence_seed', resolution: 'no_change',
+    query: request.operation.query
   } } },
   player_response_boundary: true }); }
 function knownNegativeResolution(request, resolution) {
@@ -437,7 +439,7 @@ function knownNegativeResolution(request, resolution) {
     write_fragments: [], summary: 'ordinary discovery resolved',
     duration_minutes: 0, player_response_boundary: true,
     consequence_fragment: { visible_seed: { ordinary_presence_seed: {
-      kind: 'ordinary_presence_seed', resolution
+      kind: 'ordinary_presence_seed', resolution, query: request.operation.query
     } } }
   });
 }

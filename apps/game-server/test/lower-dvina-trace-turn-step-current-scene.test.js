@@ -382,10 +382,9 @@ test('ordinary scene seed augments the current scene in the same turn', async ()
 });
 
 for (const [resolution, change] of Object.entries({
-  absent: 'Искомое здесь не обнаружено.',
-  no_change: 'Попытка обнаружить искомое не дала определённого результата.',
-  authority_required:
-    'Эта попытка не позволяет установить, находится ли здесь искомое.'
+  absent: 'По этому вопросу отсутствие установлено',
+  no_change: 'Результат по этому вопросу не установлен',
+  authority_required: 'Имеющихся данных недостаточно для ответа'
 })) {
   test(`persisted ordinary ${resolution} result is visible to the player`, async () => {
     const projector = createLowerDvinaTraceTurnStepVisibleProjector({
@@ -395,7 +394,8 @@ for (const [resolution, change] of Object.entries({
       consequence: { status: 'resolved', visible_seed: {
         ordinary_scene_seed: { kind: 'ordinary_scene_seed',
           sensory_details: ['На песке остались следы от пешни.'] },
-        ordinary_presence_seed: { kind: 'ordinary_presence_seed', resolution }
+        ordinary_presence_seed: { kind: 'ordinary_presence_seed', resolution,
+          query: '  Найти мою грамоту или личную вещь  ' }
       } },
       retrieved_state: committedState(), body_update: { state_after: {} },
       mode_resolution: { decision_trace: { remaining_intent: null,
@@ -403,7 +403,13 @@ for (const [resolution, change] of Object.entries({
           goal_result: 'pending', operations: [{ op: 'request_discovery' }],
           check: null } }] } }
     });
-    assert.deepEqual(visible.visible_changes, [change]);
+    const result = `${change}: «  Найти мою грамоту или личную вещь  ».`;
+    assert.deepEqual(visible.visible_changes, resolution === 'absent' ? [result] : []);
+    assert.deepEqual(visible.uncertainties, resolution === 'absent' ? [] : [result]);
+    assert.equal(visible.visible_scene, committedState().current_visible_context.visible_scene);
+    assert.deepEqual(visible.visible_objects, committedState().current_visible_context.visible_objects);
+    assert.ok(visible.do_not_imply.includes(
+      'discovery_query_as_existence_ownership_or_executed_action'));
   });
 }
 

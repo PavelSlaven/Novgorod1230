@@ -18,6 +18,7 @@ test('narration assembly does not default omitted semantic fields', () => {
 
 test('narration wires writer, audit, and coherent semantic repair roles', async () => {
   const calls = [];
+  const question = 'Имеющихся данных недостаточно для ответа: «Найти мою грамоту».';
   const repairedOutput = { version: 1, schema: 'narration_output', output_id: 'narration-1', prose: 'The clearing is quiet.', action_options: [], used_references: [], self_check: {} };
   const turnBudget = createLlmTurnBudget();
   const narration = createLowerDvinaTraceNarrationService({
@@ -48,7 +49,7 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       visible_changes: ['A snapped branch lies nearby.', 'Fresh footprints cross the mud.'],
       sensory_details: [], visible_npc: [], visible_objects: [],
       known_context: ['A marked path leads toward the settlement.', 'health:5'],
-      uncertainties: [], allowed_tensions: [], do_not_imply: []
+      uncertainties: [question], allowed_tensions: [], do_not_imply: []
     }, context: {
       attempt: { text: 'Постучать в закрытую дверь.' },
       outcome: {}
@@ -84,6 +85,10 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
   assert.equal(calls[0].messages[0].content.includes(
     'Проходит минута, а у самой воды лежат <supplied current detail>'), true);
   for (const call of calls) {
+    assert.match(call.messages[0].content, /quoted query supplies only the question/);
+    const payload = JSON.parse(call.messages[1].content);
+    assert.deepEqual((payload.visible_context ?? payload.request?.visible_context).uncertainties,
+      [question], 'every narration role receives the same unresolved question');
     assert.match(call.messages[0].content,
       /Unsupported exclusivity or persistence MUST FAIL the audit as unsupported_world_state/);
     assert.match(call.messages[0].content,
@@ -176,7 +181,7 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       visible_changes: ['A snapped branch lies nearby.', 'Fresh footprints cross the mud.'],
       sensory_details: [], visible_npc: [], visible_objects: [],
       known_context: ['A marked path leads toward the settlement.', 'health:5'],
-      uncertainties: [], allowed_tensions: [], do_not_imply: []
+      uncertainties: [question], allowed_tensions: [], do_not_imply: []
     }, action_intent_context: {
       evidence_scope: 'intent_only_non_evidence_of_success',
       attempt: { text: 'Постучать в закрытую дверь.' }

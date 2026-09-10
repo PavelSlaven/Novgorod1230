@@ -221,7 +221,10 @@ model call никогда не находится внутри physical transact
 working projection получает только capability marker и approved concrete
 result, narration начинается лишь после commit. Exact positive/negative
 resolution/idempotency сохраняется, поэтому retry/reload не reroll-ит её для
-code-owned identity. Active cutover локально проверяет versioned approval
+code-owned identity. `ordinary_presence_seed` переносит exact query только как
+предмет вопроса: `absent` даёт scoped результат, `no_change` и
+`authority_required` — неопределённость. Query не доказывает существование,
+принадлежность или выполненное действие. Active cutover локально проверяет versioned approval
 receipt ранее выполненного adversarial Stage B classification eval, связанный
 с profile digest и exact production provider/model/config identity; gameplay
 не запускает probes. Любой sensitive `materialize` блокирует активацию.

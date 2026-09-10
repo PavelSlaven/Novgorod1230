@@ -98,7 +98,8 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
   assert.equal(first.ordinary_materialization_atomic_write_plan.new_prepared_bases[0].basis_ref,
     first.ordinary_materialization_atomic_write_plan.transitions[0].background_groups[0].group_ref);
   assert.deepEqual(first.consequence_fragment.visible_seed.ordinary_presence_seed,
-    { kind: 'ordinary_presence_seed', resolution: 'absent' });
+    { kind: 'ordinary_presence_seed', resolution: 'absent',
+      query: '  Найти   ЛОЖКУ ' });
   calls.length = 0;
   await resolver(request('найти верёвку'));
   assert.equal(calls[1].candidate_query.coverage_key, firstCoverageKey);
@@ -267,8 +268,9 @@ test('committed exact identity survives reload and only normalized wording reuse
   assert.deepEqual(replay.write_fragments, []);
   assert.equal(Object.hasOwn(replay, 'ordinary_materialization_atomic_write_plan'), false);
   assert.deepEqual(replay.consequence_fragment.visible_seed.ordinary_presence_seed,
-    first.consequence_fragment.visible_seed.ordinary_presence_seed,
-    'known negative replay exposes the same persisted visible result');
+    { ...first.consequence_fragment.visible_seed.ordinary_presence_seed,
+      query: '  НАЙТИ   ложку  ' },
+    'known negative replay retains the verdict and current exact question');
   await resolver({ ...request('отыскать ложку'), request: { root_turn_id: 'turn:party:3' } });
   assert.equal(modelCalls, 3,
     'a semantically different normalized query receives a new candidate identity');
@@ -371,7 +373,8 @@ test(`exhausted ${exhausted} returns a no-op before model or atomic plan`,
     assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
     assert.deepEqual(result.consequence_fragment, { visible_seed: {
       ordinary_presence_seed: {
-        kind: 'ordinary_presence_seed', resolution: 'no_change'
+        kind: 'ordinary_presence_seed', resolution: 'no_change',
+        query: input.operation.query
       }
     } });
     assert.equal(result.player_response_boundary, true);

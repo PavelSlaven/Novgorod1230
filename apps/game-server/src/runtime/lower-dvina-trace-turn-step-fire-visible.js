@@ -1,4 +1,5 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
+import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
 import {
   enrichLowerDvinaTraceVisibleNpcCues,
   projectCurrentSceneForNoOperationDirect,
@@ -67,6 +68,9 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
 }
 
 function overlayTurnStepResults(base, input) {
+  const itemInspections = Object.values(input?.consequence?.visible_seed ?? {})
+    .filter(seed => seed?.kind === 'existing_item_inspection')
+    .map(existingItemInspectionVisibleResult);
   const remaining = input?.mode_resolution?.decision_trace?.remaining_intent;
   const inspection = input?.consequence?.visible_seed?.observed_evidence_inspection_seed;
   if (inspection != null && (!plain(inspection)
@@ -81,11 +85,14 @@ function overlayTurnStepResults(base, input) {
       && plan?.resolution === 'direct'
       && plan.direct_result_kind === 'player_utterance')
     .map(({ approved_plan: plan }) => plan.utterance.utterance_text);
-  if (!text(remaining) && utterances.length === 0 && inspection == null) return base;
+  if (!text(remaining) && utterances.length === 0 && inspection == null
+      && itemInspections.length === 0) return base;
   return deepFreeze({ ...structuredClone(base),
     visible_changes: unique([...base.visible_changes,
+      ...itemInspections.flatMap(result => result.changes),
       ...utterances.map((utterance) => `Вы произнесли: «${utterance}»`)]),
     uncertainties: unique([...base.uncertainties,
+      ...itemInspections.map(result => result.uncertainty),
       ...(inspection == null ? [] : [
         `Новый достоверный вывод не установлен. Вопрос остаётся открытым: «${inspection.query}».`]),
       ...(text(remaining) ? [
@@ -117,7 +124,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   let base;
   if (ordinaryDetails.length > 0 || ordinaryPresence != null
       || seedEntries.some(([key, value]) => key.startsWith('turn_step_')
-        && value?.kind === 'semantic_activity')
+        && ['semantic_activity', 'existing_item_inspection'].includes(value?.kind))
       || seedEntries.some(([key]) => key === 'observed_evidence_inspection_seed')) {
     const body = currentBody(input);
     base = hasVisibleDomainProjection(consequence)

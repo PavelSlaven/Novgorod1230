@@ -1,4 +1,5 @@
 import { renderScreen } from '../../apps/game-web/src/index.js';
+import { existingInspectionFixtureResponse, assertPersistedExistingInspection } from './local-play-item-inspection.js';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { existsSync } from 'node:fs';
@@ -183,11 +184,21 @@ test('local play persists a free turn and replays it after a server restart',
       }
       attempts.push({ request: turnRequest, result });
     }
+    fixtureResolution = 'inspect';
+    const beforeInspection = await committedState(localPlay.postgres.partyUrl, partyId);
+    const inspectionCalls = llm.requests.length;
+    const inspectionRequest = { request_id: `${requestId}-inspect`, idempotency_key: `${requestId}-inspect`,
+      raw_text: 'Осмотреть две вещи при мне и понять причину их состояния. Затем решить, куда идти.' };
+    const inspectionResult = await post(port, `/api/v1/parties/${encodeURIComponent(partyId)}/turns`, inspectionRequest);
+    assertPersistedExistingInspection({ before: beforeInspection,
+      after: await committedState(localPlay.postgres.partyUrl, partyId), result: inspectionResult,
+      roleInputs: llm.requests.slice(inspectionCalls).map(({ input }) => input?.request ?? input) });
+    attempts.push({ request: inspectionRequest, result: inspectionResult });
     const turn = attempts.at(-1).result;
     assert.equal(turn.screen.schema, 'lower_dvina_trace_turn_screen');
     assert.equal(JSON.stringify(turn.screen).includes('hidden_truth'), false);
     const beforeRestart = await committedState(localPlay.postgres.partyUrl, partyId);
-    assert.equal(beforeRestart.state_version, beforeTurn.state_version + 4);
+    assert.equal(beforeRestart.state_version, beforeTurn.state_version + 5);
 
     await localPlay.close();
     localPlay = await start();
@@ -299,6 +310,9 @@ function fixtureRoleModel(input) {
 
 function searchFixtureResponse(input, resolution) {
   const request = input?.request ?? input;
+  if (resolution === 'inspect' && request?.schema === 'turn_step_request_v1') {
+    return existingInspectionFixtureResponse(request);
+  }
   if (request?.schema === 'turn_step_request_v1') return {
     interpretation: { player_goal: request.root_player_action,
       grounded_attempt: request.remaining_intent, adaptation: 'literal' },

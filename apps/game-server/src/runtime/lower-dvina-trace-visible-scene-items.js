@@ -95,6 +95,24 @@ function carriedItemObservationChanges(sceneItems) {
   return changes;
 }
 
+export function existingItemObservationChanges(item, actorId) {
+  const label = visibleItemLabel(item);
+  const placement = item.placement ?? {};
+  const carried = placement.holder_character_id === actorId;
+  const position = carried ? {
+    hands: 'у вас в руках', equipped: 'надето на вас',
+    worn: 'надето на вас', worn_quick: 'закреплено на вас',
+    external: 'снаружи вашей ноши', external_load: 'снаружи вашей ноши'
+  }[placement.physical_position] ?? 'при вас' : null;
+  const condition = resolvePhysicalItemCondition(item);
+  const state = { serviceable: 'пригодно к обычному использованию',
+    damaged: 'повреждено' }[condition];
+  return [`Вам доступен для наблюдения предмет: ${label}.`,
+    ...(position == null ? [] : [`Расположение предмета «${label}»: ${position}.`]),
+    ...(state == null ? [] : [`Состояние предмета «${label}»: ${state}.`]),
+    ...(item.physical_facts ?? []).map(fact => `У предмета «${label}»: ${fact}`)];
+}
+
 function russianList(values) {
   return values.length < 2 ? values[0]
     : `${values.slice(0, -1).join(', ')} и ${values.at(-1)}`;

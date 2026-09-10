@@ -19,6 +19,8 @@ import { bindCommittedSourceIdentity } from
   './lower-dvina-trace-ordinary-discovery-internal.js';
 import { snapshotOrdinaryMaterializationEnablement } from
   './ordinary-materialization-enablement-snapshot.js';
+import { resolveExistingItemInspection } from
+  './lower-dvina-trace-existing-item-inspection.js';
 
 /** Lower Dvina supplies profile/context adapters to the common @rus/turn owner. */
 export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
@@ -33,6 +35,7 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
     throw new TypeError('ordinary discovery requires enablement and verified model ports');
   }
   return createOrdinaryMaterializationDiscoveryOwner({
+    resolveExistingInspection: resolveExistingItemInspection,
     ordinaryMaterializationModel,
     verifyStageBCutover: (input) => verifyStageBCutover.call(
       ordinaryMaterializationModel, input),

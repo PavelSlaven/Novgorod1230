@@ -1,4 +1,5 @@
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
+import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
 import { projectLowerDvinaTracePlayerSafeState } from
   './lower-dvina-trace-player-safe-state.js';
 import { projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
@@ -161,6 +162,9 @@ export function projectDirectSeedChanges({ input, directSeedKeys }) {
     .filter(Boolean);
 }
 function directSeedChange(value) {
+  if (value?.kind === 'existing_item_inspection') {
+    return existingItemInspectionVisibleResult(value).changes;
+  }
   if (value?.kind === 'semantic_activity') {
     const duration = Number(value.duration_minutes);
     if (!Number.isSafeInteger(duration) || duration <= 0) return null;

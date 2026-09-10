@@ -82,12 +82,15 @@ export function bindOrdinaryMaterializationPlan(request, output) {
   if (request.mode !== 'resolve_presence') return output;
   const authority = request.authority_envelope;
   if (authority?.stage !== 'resolve_presence') return output;
+  if (output.resolution === 'authority_required') {
+    return negativePlan(request, output.resolution, output.reason_code);
+  }
   if (authority.selected_supporting_basis_ref != null) {
     if (!ADMISSION_CLASSES.has(output.semantic_admission_class)) {
       return { ...output, semantic_admission_class: null };
     }
     if (output.semantic_admission_class !== authority.candidate.admission_class) {
-      return negativePlan(request, 'absent', 'semantic_admission_mismatch');
+      return negativePlan(request, 'authority_required', 'semantic_admission_mismatch');
     }
     if (!MATERIALIZATION_KINDS.has(output.semantic_materialization_kind)) {
       return { ...output, semantic_materialization_kind: null };

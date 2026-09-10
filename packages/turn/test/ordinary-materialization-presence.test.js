@@ -300,3 +300,26 @@ test('O2a rejects model attempts to smuggle hidden, historical, or significant t
     { code: 'TURN_ORDINARY_PRESENCE_PLAN_REJECTED' }, fact);
   }
 });
+
+
+test('restricted model entity records missing authority without inventing absence on retry', async () => {
+  const raw = materialize();
+  raw.entities[0].admission_class = 'document_like';
+  const admittedEnvelope = envelope();
+  admittedEnvelope.request.policy_refs.allowed_admission_classes.push('document_like');
+  const output = await resolveOrdinaryMaterializationPresence(input(async () => raw,
+    { envelope: admittedEnvelope }));
+  assert.equal(output.status, 'authority_required');
+  assert.equal(output.pending_items_property_admission, null);
+  const aggregate = output.working_projection.ordinary_materialization_aggregate;
+  assert.equal(aggregate.presence_resolutions.length, 1);
+  assert.equal(aggregate.presence_resolutions[0].resolution, 'authority_required');
+  assert.deepEqual(aggregate.closed_observation_scopes, []);
+  let calls = 0;
+  const replay = await resolveOrdinaryMaterializationPresence(input(async () => {
+    calls += 1; return materialize();
+  }, { envelope: admittedEnvelope, workingProjection: output.working_projection }));
+  assert.equal(replay.status, 'already_resolved');
+  assert.equal(replay.known_resolution.resolution, 'authority_required');
+  assert.equal(calls, 0);
+});

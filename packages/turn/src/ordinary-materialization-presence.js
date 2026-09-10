@@ -38,7 +38,7 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
   if (input.identity.admission_class === 'common_mundane'
       && plan.entities.length === 1
       && RESTRICTED.has(plan.entities[0]?.admission_class)) {
-    return negative(input, { resolution: 'absent' }, projection, repaired);
+    return negative(input, { resolution: 'authority_required' }, projection, repaired);
   }
   const pending = positive(input, plan, projection, basisCatalog);
   return deepFreeze({ status: 'pending_items_property_admission', decision: decision(request, plan, repaired), pending_items_property_admission: pending, working_projection: projection });

@@ -108,6 +108,26 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   assert.doesNotMatch(prompt, /Schema-valid fallback skeleton/u);
 });
 
+test('Stage B keeps alternatives and shared qualifiers in one unchanged semantic query', () => {
+  const queries = [
+    'Найти бумаги или личные вещи, которые могли быть со мной в сундуке.',
+    'Найти королевскую печать или обрезок ткани.',
+    'Найти вещь из моего запертого мешка: кольцо либо пуговицу.',
+    'Найти монету и доказательство её принадлежности мне.'
+  ];
+  for (const query of queries) {
+    const request = presenceRequest(query);
+    const messages = buildOrdinaryMaterializationMessages(request);
+    assert.deepEqual(JSON.parse(messages[1].content), request);
+    assert.equal(request.candidate_query.candidate_hint, query);
+    assert.match(messages[0].content, /Explicit alternatives are existential/);
+    assert.match(messages[0].content, /every qualifier shared across alternatives/);
+    assert.match(messages[0].content, /Never drop a conjunct, shared ownership/);
+    assert.match(messages[0].content, /An absent verdict must be supported for the whole query/);
+    assert.match(messages[0].content, /when coverage is insufficient, return no_change/);
+  }
+});
+
 test('ordinary materialization prompt exposes exact code-owned mechanics bounds', () => {
   const prompt = buildOrdinaryMaterializationMessages(presenceRequest('обломок доски'), {
     mechanicsPolicy: { policy_ref: 'mechanics', max_mass_grams: 20_000,

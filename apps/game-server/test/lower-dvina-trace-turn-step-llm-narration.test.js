@@ -82,10 +82,10 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'do not add that nothing else was noticed'), true);
   assert.equal(calls[0].messages[0].content.includes(
     'unless that exact bodily effect is supplied'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'Проходит минута, а у самой воды лежат <supplied current detail>'), true);
   for (const call of calls) {
     assert.match(call.messages[0].content, /quoted query supplies only the question/);
+    assert.match(call.messages[0].content, /Preserve the supplied certainty of each factual proposition/);
+    assert.match(call.messages[0].content, /A hedge on one proposition does not by itself qualify another/);
     const payload = JSON.parse(call.messages[1].content);
     assert.deepEqual((payload.visible_context ?? payload.request?.visible_context).uncertainties,
       [question], 'every narration role receives the same unresolved question');
@@ -168,10 +168,9 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'still stands, waits, watches, looks, or remains somewhere MUST FAIL'), true);
   assert.equal(calls[2].messages[0].content.includes(
     'scene or its objects stayed unchanged'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'copy one complete supplied current scene detail without semantic shortening'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'MUST NOT classify that construction as standalone elapsed time'), true);
+  for (const call of calls) {
+    assert.doesNotMatch(call.messages[0].content, /copy one complete|<supplied current detail>|Спустя минуту у самой воды/u);
+  }
   assert.equal(calls[2].messages[0].content.includes(
     '"segment_choice":"segment_1"'), true);
   assert.deepEqual(JSON.parse(calls[2].messages[1].content), {
@@ -195,8 +194,6 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'Never emit a sentence whose only content is elapsed time'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'when elapsed time is the only visible change'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'A safe grammatical pattern is «Проходит минута'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'still stands, waits, watches, looks, or remains somewhere'), true);
   assert.equal(calls[3].messages[0].content.includes(

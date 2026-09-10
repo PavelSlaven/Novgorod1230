@@ -1,5 +1,10 @@
 # @rus/game-server
 
+Состав безопасного входа для художественной сцены сверяется с
+[ситуационными требованиями к прозе](../../data/knowledge-source/corpus/DOCUMENTS/situational_prose_requirements.md).
+Server передаёт актуальные восприятие, память, тело, время, причины и остаток
+действия от существующих owners; литературную композицию выполняет narration.
+
 Development-only gameplay gap tracing использует существующий private party
 log и `llmDiagnostics`. При `developerMode: true` сохраняет исходный committed
 контекст, WK planner/query/consumer slice и owner commit/rejection. Эти поля

@@ -157,15 +157,21 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'Actor movement wording MUST FAIL'), true);
   assert.equal(calls[2].messages[0].content.includes(
     'unless confirmed_outcome.movement_committed is true'), true);
-  assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
+  assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["<whole-scene literary quality and factual grounding>"]}'), true);
   assert.match(calls[2].messages[0].content,
     /"kind":"<one allowed concern kind>"/u);
   assert.match(calls[2].messages[0].content, /unsupported_success/u);
   assert.match(calls[2].messages[0].content, /technical_presentation/u);
   assert.equal(calls[2].messages[0].content.includes(
-    'Exact elapsed time is not standalone when it is woven into'), true);
-  assert.equal(calls.some((call) => call.messages[0].content.includes(
-    'same sentence as a supplied current scene detail')), true);
+    'A brief standalone temporal transition is allowed'), true);
+  for (const call of calls) {
+    assert.ok(call.messages[0].content.includes('Every distinct material perceived change'));
+    assert.ok(call.messages[0].content.includes('Do not impose a fixed sensory checklist'));
+    assert.ok(call.messages[0].content.includes('never to exact committed speech: preserve that speech verbatim with its supplied speaker'));
+    assert.ok(call.messages[0].content.includes('When elapsed time is the only supplied change'));
+    assert.ok(call.messages[0].content.includes('Opening may begin with identity or history'));
+    assert.doesNotMatch(call.messages[0].content, /same sentence as a supplied current scene detail|Never emit a sentence whose only content is elapsed time/u);
+  }
   assert.equal(calls[2].messages[0].content.includes(
     'without claiming a change of scene, body, position, or action'), true);
   assert.equal(calls[2].messages[0].content.includes(
@@ -196,9 +202,9 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'retain or add natural paragraph breaks when useful'), true);
   assert.doesNotMatch(calls[3].messages[0].content, /one coherent paragraph/u);
   assert.equal(calls[3].messages[0].content.includes(
-    'Never emit a sentence whose only content is elapsed time'), true);
+    'A brief standalone temporal transition is allowed'), true);
   assert.equal(calls[3].messages[0].content.includes(
-    'when elapsed time is the only visible change'), true);
+    'When elapsed time is the only visible change'), true);
   assert.equal(calls[3].messages[0].content.includes(
     'still stands, waits, watches, looks, or remains somewhere'), true);
   assert.equal(calls[3].messages[0].content.includes(

@@ -160,9 +160,10 @@ test('material prerequisite repair restores full intent and is revalidated',
             }, reason_code: 'semantic_plan' } };
         }
         const payload = JSON.parse(call.messages[1].content);
-        assert.equal(payload.operations[0].operation.query, entry.query);
-        assert.equal(payload.continuation.remaining_intent, entry.intent);
-        return { output: { pass: true, concerns: [] } };
+        assert.equal(payload.operation.query, entry.query);
+        assert.equal(payload.remaining_intent, entry.intent);
+        return { output: { mode: 'material_prerequisite',
+          consumed_intent: null } };
       } };
       const grounding =
         createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner });

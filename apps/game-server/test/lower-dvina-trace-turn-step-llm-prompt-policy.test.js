@@ -138,10 +138,10 @@ test('turn step planner routes accessible items and visible environment through 
         entity_id: 'item:held-cloth' }, display_label: 'мокрая шерсть',
       visible_status: 'у вас в руках' }] }
     } }));
-    assert.match(prompt, /held, worn, or equipped by the current actor is an already accessible exact item ref/u);
+    assert.match(prompt, /held, worn, or equipped by the current actor is an already accessible actionable exact item ref/u);
     assert.match(prompt, /physical manipulation or durable change uses its existing item owner/u);
     assert.match(prompt, /focused inspection of any current visible item, including one held by the actor, seeks new detail/u);
-    assert.match(prompt, /sensory detail that physically places ordinary environmental material in the current scope is sufficient for ordinary_material_prerequisite/u);
+    assert.match(prompt, /sensory detail that physically places ordinary environmental material in the current scope is sufficient only to ground ordinary_material_prerequisite[\s\S]*remains sensory-only[\s\S]*not an actionable item ref/u);
     assert.match(prompt, /never authorizes an authoritative, significant, hidden, or already-resolved fact/u);
     assert.match(prompt, /Reviewing the identity, placement, or condition of supplied carried\/worn items[\s\S]*player_safe_item_observation[\s\S]*other facts already explicit in player-safe sensory context uses player_safe_observation/u);
     assert.match(prompt, /Inspecting the actor body when request\.actor\.body is supplied[\s\S]*player_safe_body_observation[\s\S]*new injury or diagnosis unconfirmed[\s\S]*Clothing mentioned only as covering the body does not make that action an item or ordinary discovery/u);

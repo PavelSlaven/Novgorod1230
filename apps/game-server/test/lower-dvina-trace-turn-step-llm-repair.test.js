@@ -155,6 +155,22 @@ test('semantic repair prompt preserves both discovery continuation shapes',
       /Required ordinary discovery repair:[\s\S]*material prerequisite[\s\S]*continuation is exactly[\s\S]*standalone focused discovery losslessly[\s\S]*exact uncovered suffix/u);
   });
 
+test('operation grounding repair preserves physical acts after discovery',
+  async () => {
+    let prompt;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run(call) {
+        prompt = call.messages[0].content;
+        return { output: output() };
+      }
+    } });
+    await model(request(), { original_output: {}, structural_errors: [{
+      path: '$.operations.0', code: 'operation_semantic_grounding'
+    }] });
+    assert.match(prompt,
+      /Required operation grounding repair:[\s\S]*discovery only reveals or materializes[\s\S]*never acquires, relocates, transforms, handles, or uses[\s\S]*Words copied into a discovery query do not execute a physical act[\s\S]*every physical act[\s\S]*continuation[\s\S]*textual prefix/u);
+  });
+
 test('repair drops a field rejected as an additional property', async () => {
   const input = request();
   const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {

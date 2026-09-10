@@ -148,7 +148,7 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
     assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*sought ordinary detail need not be visible[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
     assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
     assert.match(prompt, /general current situation, ongoing activity, or who is nearby are ordinary_scene_seed while scene_seed_available is true and visible_general_look afterward/u);
-  assert.match(prompt, /Without a matching ambient_ordinary_capability or item entity_ref[\s\S]*must first acquire[\s\S]*ordinary_material_prerequisite[\s\S]*current visible sensory facts[\s\S]*ordinary referent merely sought in the current visible physical scope[\s\S]*request_discovery[\s\S]*continuation containing the complete intended handling or transformation[\s\S]*action_production owns the transformation/u);
+  assert.match(prompt, /Without a matching ambient_ordinary_capability or semantically matching actionable item entity_ref[\s\S]*ordinary_material_prerequisite[\s\S]*current visible sensory facts[\s\S]*sensory-only[\s\S]*not an actionable item ref[\s\S]*ordinary referent merely sought in the current visible physical scope[\s\S]*request_discovery[\s\S]*continuation containing the complete unexecuted physical intent[\s\S]*Discovery only reveals or materializes[\s\S]*appropriate owner performs acquisition, relocation, transformation, handling, or use/u);
   assert.match(prompt, /Every material physically incorporated[\s\S]*action_production is forbidden[\s\S]*Never smuggle an unreferenced material/u);
   }
 });
@@ -182,9 +182,10 @@ test('later generic ordinary discovery drops only an exact stale root query',
     let auditCalls = 0;
     const validateGrounding =
       createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner: {
-        async run() {
+        async run(call) {
           auditCalls += 1;
-          return { output: { pass: true, concerns: [] } };
+          return { output: { mode: 'focused_discovery', consumed_intent:
+            JSON.parse(call.messages[1].content).remaining_intent } };
         }
       } });
     for (const repairContext of [null, {

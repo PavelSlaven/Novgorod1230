@@ -63,9 +63,9 @@ test('ordinary material prerequisite has an explicit continuation mapping', asyn
     onPrompt: (value) => { prompt = value; }
   })(input);
   assert.match(prompt,
-    /"ordinary_material_prerequisite"[\s\S]*"query":"<name only the needed visible material or physically connected group>"[\s\S]*"continuation":\{"remaining_intent":"<complete intended handling or transformation>"/u);
+    /"ordinary_material_prerequisite"[\s\S]*"query":"<name only the needed ordinary referent, material, or physically connected group>"[\s\S]*"continuation":\{"remaining_intent":"<complete unexecuted acquisition, relocation, transformation, handling, and use intent>"/u);
   assert.match(prompt,
-    /Without a matching ambient_ordinary_capability or item entity_ref[\s\S]*take\/use\/transform[\s\S]*use ordinary_material_prerequisite[\s\S]*never focused_ordinary_discovery/iu);
+    /Without a matching ambient_ordinary_capability or semantically matching actionable item entity_ref[\s\S]*take\/use\/transform[\s\S]*sensory-only[\s\S]*not an actionable item ref[\s\S]*use ordinary_material_prerequisite[\s\S]*complete unexecuted physical intent[\s\S]*Discovery only reveals or materializes[\s\S]*action words copied into its query never execute/iu);
   assert.match(prompt,
     /MUST win over action_production[\s\S]*Never substitute an unrelated inventory, worn, held, or merely listed item_ref/u);
   assert.match(prompt,

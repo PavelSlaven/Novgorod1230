@@ -57,16 +57,26 @@ test('ownerless speech crosses the existing grounding auditor before its factual
   }
 });
 
-test('generic discovery keeps deterministic intent identity before semantic audit',
+test('generic discovery keeps deterministic intent identity before focused classification',
   async () => {
     let calls = 0;
     const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
-      roleRunner: { async run() { calls += 1; return { output: {
-        pass: true, concerns: [] } }; } }
+      roleRunner: { async run(call) {
+        calls += 1;
+        const payload = JSON.parse(call.messages[1].content);
+        if (payload.operation != null) assert.match(call.messages[0].content,
+          /осматривает, ищет или выбирает по указанным признакам[\s\S]*не приобретая, не перемещая, не изменяя и не используя/u);
+        return { output: payload.operation == null
+          ? { pass: true, concerns: [] }
+          : { mode: 'focused_discovery',
+            consumed_intent: payload.remaining_intent } };
+      } }
     });
     const remainingIntent = 'обыскать полосу берега в поисках сухой верёвки';
     const genericRequest = { request_id: 'turn-step:generic', remaining_intent:
-      remainingIntent, player_safe_state: {
+      remainingIntent, actor: { actor_ref: 'actor:1', body: {
+        active_conditions: []
+      } }, player_safe_state: {
         position: { location_ref: 'location:riverbank' },
         ordinary_resolution: { discovery_available: true,
           container_resolution_available: false, scene_seed_available: false }
@@ -109,12 +119,12 @@ test('material prerequisite preserves the full intent and audits its query',
       roleRunner: { async run(call) {
         calls += 1;
         const payload = JSON.parse(call.messages[1].content);
-        assert.equal(payload.continuation.remaining_intent,
-          payload.remaining_intent);
-        return { output: payload.operations[0].operation.query === 'следы лодки'
-          ? { pass: false,
-            concerns: [{ kind: 'operation_semantic_grounding' }] }
-          : { pass: true, concerns: [] } };
+        return { output: {
+          mode: payload.operation.query === 'следы лодки'
+            ? 'different_action' : 'material_prerequisite',
+          consumed_intent: payload.operation.query === 'следы лодки'
+            ? null : payload.operation.query
+        } };
       } }
     });
     const owner = [{ path: '$.operations.0',
@@ -162,6 +172,50 @@ test('material prerequisite preserves the full intent and audits its query',
     });
     assert.equal(calls, 3);
   });
+
+test('discovery cannot consume physical acts copied into its query', async () => {
+  const remainingIntent =
+    'Обматываю найденной лозой треснувшую рукоять, затем возвращаюсь к тропе.';
+  const discoveryQuery = 'Обматываю найденной лозой треснувшую рукоять';
+  const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+    roleRunner: { async run(call) {
+      assert.match(call.messages[0].content,
+        /Верни только JSON с двумя ключами[\s\S]*request_discovery выполняет относительно remaining_intent[\s\S]*mode="material_prerequisite"[\s\S]*физическое действие остаётся неисполненным/u);
+      const payload = JSON.parse(call.messages[1].content);
+      assert.equal(payload.operation.query, discoveryQuery);
+      assert.deepEqual(payload.effect_contract, {
+        may_consume_discovery_intent: true,
+        may_reveal_or_materialize: true,
+        may_acquire_referent: false,
+        may_relocate_referent: false,
+        may_transform_referent: false,
+        may_handle_referent: false,
+        may_use_referent: false,
+        unexecuted_physical_intent_must_remain_in_continuation: true
+      });
+      assert.deepEqual(Object.keys(payload).sort(), [
+        'effect_contract', 'operation', 'remaining_intent'
+      ]);
+      return { output: { mode: 'material_prerequisite',
+        consumed_intent: null } };
+    } }
+  });
+  await assert.rejects(validate({ request: {
+    request_id: 'turn-step:physical-prefix', remaining_intent: remainingIntent,
+    player_safe_state: {
+      position: { location_ref: 'location:yard' },
+      ordinary_resolution: { discovery_available: true,
+        container_resolution_available: false, scene_seed_available: false }
+    }
+  }, plan: { check: null, operations: [{ op: 'request_discovery',
+    actor_ref: 'actor:1', discovery_kind: 'inspect',
+    target_refs: ['location:yard'], query: discoveryQuery }],
+  continuation: { remaining_intent: 'затем возвращаюсь к тропе.',
+    depends_on_refs: [] } }, resolved_domain_operations: [{
+    path: '$.operations.0', owner_kind: 'ordinary_discovery'
+  }] }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
+    && error.details.errors[0].code === 'operation_semantic_grounding');
+});
 
 test('body-under-clothing discovery is rejected while clothing inspection remains valid',
   async () => {
@@ -236,7 +290,7 @@ test('turn-step grounding audit returns repairable source errors', async () => {
   });
 });
 
-test('grounding audit omits an unrelated authored discovery scope',
+test('focused ordinary classifier omits unrelated authored discovery scope',
   async () => {
     const genericRequest = { ...request,
       remaining_intent: 'оценить прочность льда по трещинам и цвету',
@@ -260,14 +314,51 @@ test('grounding audit omits an unrelated authored discovery scope',
     const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       roleRunner: { async run(call) {
         const payload = JSON.parse(call.messages[1].content);
-        assert.deepEqual(payload.player_safe_state
-          .available_domain_operation_grounding, []);
-        return { output: { pass: true, concerns: [] } };
+        assert.deepEqual(Object.keys(payload).sort(), [
+          'effect_contract', 'operation', 'remaining_intent'
+        ]);
+        return { output: { mode: 'focused_discovery',
+          consumed_intent: payload.remaining_intent } };
       } }
     });
     assert.equal(await validate({ request: genericRequest, plan: genericPlan,
       resolved_domain_operations: [{ path: '$.operations.0',
         owner_kind: 'ordinary_discovery' }] }), true);
+  });
+
+test('focused ordinary classifier fails closed on invalid mode or shape',
+  async () => {
+    const remainingIntent = 'Осмотреть скол на чаше';
+    const operation = { op: 'request_discovery', actor_ref: 'actor:1',
+      discovery_kind: 'inspect', target_refs: ['location:workshop'],
+      query: remainingIntent };
+    for (const output of [
+      { mode: 'unknown', consumed_intent: null },
+      { mode: 'focused_discovery', consumed_intent: 7 }
+    ]) {
+      const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+        roleRunner: { async run(call) {
+          const payload = JSON.parse(call.messages[1].content);
+          assert.deepEqual(payload.operation, operation);
+          assert.equal(payload.remaining_intent, remainingIntent);
+          assert.equal(payload.effect_contract.may_use_referent, false);
+          return { output };
+        } }
+      });
+      await assert.rejects(validate({ request: {
+        request_id: 'turn-step:invalid-focused-classifier', remaining_intent:
+          remainingIntent, player_safe_state: {
+            ordinary_resolution: { discovery_available: true,
+              container_resolution_available: false,
+              scene_seed_available: false },
+            position: { location_ref: 'location:workshop' }
+          }
+      }, plan: { operations: [operation], check: null, continuation: null },
+      resolved_domain_operations: [{ path: '$.operations.0',
+        owner_kind: 'ordinary_discovery' }] }), (error) =>
+        error.code === 'TRACE_TURN_STEP_GROUNDING_AUDIT_INVALID'
+          && error.status === 503);
+    }
   });
 
 test('grounding audit retains the exact authored discovery scope', async () => {

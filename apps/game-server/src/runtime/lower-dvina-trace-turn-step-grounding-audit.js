@@ -9,6 +9,12 @@ const KINDS = new Set([
   'source_placement_grounding',
   'action_production_identity_grounding'
 ]);
+const FOCUSED_DISCOVERY_MODES = new Set(['focused_discovery', 'material_prerequisite', 'different_action']);
+const DISCOVERY_EFFECT_CONTRACT = { may_consume_discovery_intent: true,
+  may_reveal_or_materialize: true, may_acquire_referent: false, may_relocate_referent: false,
+  may_transform_referent: false, may_handle_referent: false, may_use_referent: false,
+  unexecuted_physical_intent_must_remain_in_continuation: true };
+const FOCUSED_DISCOVERY_PROMPT = 'Верни только JSON с двумя ключами: mode и consumed_intent. consumed_intent — строка или null. Определи, что request_discovery выполняет относительно remaining_intent. mode="focused_discovery": игрок сейчас осматривает, ищет или выбирает по указанным признакам, не приобретая, не перемещая, не изменяя и не используя найденное; consumed_intent — точный начальный фрагмент этого поиска или выбора. mode="material_prerequisite": discovery только обнаруживает или материализует искомое для явно заявленного физического приобретения, перемещения, изменения, обращения или использования; физическое действие остаётся неисполненным. mode="different_action": discovery не покрывает начальное намерение. Следуй effect_contract. Не объясняй ответ и не добавляй ключи.';
 const PROMPT = [
   'Return only {"pass":true,"concerns":[]} or',
   '{"pass":false,"concerns":[{"kind":"<allowed kind>"}]}.',
@@ -26,6 +32,7 @@ const PROMPT = [
   'For discovery, the operation must cover the earliest focused information',
   'need. A fixed authored query must not replace a different ordinary search,',
   'material prerequisite, handling, or transformation.',
+  'Every discovery operation only reveals or materializes. It never acquires, relocates, transforms, handles, or uses the discovered referent. Any such physical act not executed by another current operation must remain in continuation, regardless of whether its words appear as a textual prefix of the discovery query. A query prefix is not a physical effect. Reject a plan that drops that unexecuted act as operation_semantic_grounding.',
   'A typed continuation.pending_discovery is a code-owned single-target',
   'discovery queue. Its remaining_intent carries the exact current operation',
   'query; pending_discovery.remaining_target_refs are the ordered remaining',
@@ -100,10 +107,10 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     if (audited.length === 0) return true;
     const genericDiscovery = genericOrdinaryDiscovery({ audited, plan,
       request, resolved });
-    if (genericDiscovery != null) {
-      if (plan.continuation?.pending_discovery == null
-          && !preservesIntent(genericDiscovery.query, plan.continuation,
-          request.remaining_intent)) {
+    if (genericDiscovery != null
+        && plan.continuation?.pending_discovery == null) {
+      if (!preservesIntent(genericDiscovery.query, plan.continuation,
+        request.remaining_intent)) {
         throw serverError('TURN_STEP_PLAN_INVALID',
           'Ordinary discovery must preserve the current intent.', {
             details: { errors: [
@@ -117,6 +124,26 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
                 message: 'must preserve the exact uncovered suffix or the complete intent required after a material prerequisite' }
             ] }
           });
+      }
+      if (isSimpleLocationDiscovery(genericDiscovery, request)) {
+        const focused = await roleRunner.run({
+          scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
+          request_identity: request.request_id,
+          messages: [{ role: 'system', content: FOCUSED_DISCOVERY_PROMPT }, {
+            role: 'user', content: JSON.stringify({ remaining_intent:
+              request.remaining_intent, operation: genericDiscovery,
+              effect_contract: DISCOVERY_EFFECT_CONTRACT }) }]
+        });
+        if (!validFocusedDiscovery(focused?.output)) throw serverError(
+          'TRACE_TURN_STEP_GROUNDING_AUDIT_INVALID',
+          'Turn-step grounding auditor returned an invalid result.', { status: 503 }
+        );
+        if (focusedDiscoveryGrounded({ classification: focused.output,
+          operation: genericDiscovery, continuation: plan.continuation,
+          remainingIntent: request.remaining_intent })) return true;
+        throw serverError('TURN_STEP_PLAN_INVALID',
+          'Turn-step semantic grounding is invalid.', { details: { errors:
+            [concern('operation_semantic_grounding', audited, resolved)] } });
       }
     }
     const response = await roleRunner.run({
@@ -151,15 +178,15 @@ function genericOrdinaryDiscovery({ audited, plan, request, resolved }) {
   return isOrdinaryDiscoveryInScope({ operation,
     playerSafeState: request.player_safe_state }) ? operation : null;
 }
-
+function isSimpleLocationDiscovery(operation, request) {
+  const locationRef = request.player_safe_state?.position?.location_ref;
+  return locationRef != null && operation.target_refs?.length === 1 && operation.target_refs[0] === locationRef;
+}
 function preservesIntent(query, continuation, remainingIntent) {
   const remaining = normalized(remainingIntent);
   const current = normalized(query);
   if (continuation == null) return current === remaining;
-  if (continuation.remaining_intent === remainingIntent
-      && Array.isArray(continuation.depends_on_refs)
-      && continuation.depends_on_refs.length === 0
-      && continuation.prepared_followup_ref == null) return true;
+  if (preservesCompleteIntent(continuation, remainingIntent)) return true;
   const next = normalized(continuation.remaining_intent);
   if (current == null || next == null || remaining == null
       || current.length + next.length > remaining.length
@@ -168,6 +195,23 @@ function preservesIntent(query, continuation, remainingIntent) {
   }
   return !/[\p{L}\p{N}]/u.test(remaining.slice(current.length,
     remaining.length - next.length));
+}
+
+function preservesCompleteIntent(continuation, remainingIntent) {
+  return continuation?.remaining_intent === remainingIntent &&
+    Array.isArray(continuation.depends_on_refs) && continuation.depends_on_refs.length === 0 &&
+    continuation.prepared_followup_ref == null;
+}
+
+function focusedDiscoveryGrounded({ classification, operation, continuation,
+  remainingIntent }) {
+  if (classification.mode === 'material_prerequisite') return preservesCompleteIntent(continuation, remainingIntent);
+  if (classification.mode !== 'focused_discovery'
+      || typeof classification.consumed_intent !== 'string'
+      || !remainingIntent.startsWith(classification.consumed_intent)
+      || normalized(operation.query) !== normalized(classification.consumed_intent)
+      || preservesCompleteIntent(continuation, remainingIntent)) return false;
+  return preservesIntent(classification.consumed_intent, continuation, remainingIntent);
 }
 
 function normalized(value) {
@@ -243,4 +287,11 @@ function valid(value) {
     && value.concerns.every((entry) => entry != null
       && typeof entry === 'object' && !Array.isArray(entry)
       && Object.keys(entry).length === 1 && KINDS.has(entry.kind));
+}
+
+function validFocusedDiscovery(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === 2 && FOCUSED_DISCOVERY_MODES.has(value.mode)
+    && (value.consumed_intent === null || typeof value.consumed_intent === 'string'
+      && value.consumed_intent.trim().length > 0);
 }

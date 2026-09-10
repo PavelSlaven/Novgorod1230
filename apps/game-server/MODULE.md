@@ -397,3 +397,18 @@ authored actions. This enriches the resulting scene without restoring old scene
 objects or people after movement. The Character panel receives the same safe
 self-history; hidden records and raw dossier metadata remain private. Prior
 relations do not automatically recognize an unidentified visible person.
+
+Final safe composition uses the actual body owner's `state_after` and time
+owner's `clock_after` for the resulting turn, across authored and general
+actions. Current qualitative conditions come from the existing safe body
+projection; changes retain their before/after meaning. Narration may translate
+supplied semantic condition states, but cannot add symptoms, diagnoses or
+intensity. Opening time and initial bodily prose are not timeless knowledge.
+
+Committed authored conversations expose only their player-facing `journal_text`
+and actual speaker through the existing safe interaction projection. Private NPC
+`memory_text` remains private. Recalled testimony is historical attributed
+knowledge, not objective truth or evidence of current presence. Safe summaries
+remain available to planner, narration and Character after reload. Textless
+acquired fact references require their own approved presentation; this path does
+not reconstruct hidden facts or claim complete Phase 9 knowledge delivery.

@@ -95,10 +95,10 @@ export function projectInteractions(records, { strict = false } = {}) {
     return compact({
       interaction_id: text(record.interaction_id ?? record.id),
       interaction_kind: text(record.interaction_kind ?? record.kind),
-      speaker_actor_id: text(record.speaker_actor_id),
+      speaker_actor_id: text(record.speaker_actor_id ?? record.npc_id),
       target_actor_ids: textArray(record.target_actor_ids),
       statement_ref: text(record.statement_ref),
-      content: text(record.content),
+      content: text(record.content ?? record.journal_text),
       occurred_at: scalarRecord(record.occurred_at, {
         strict, path: 'occurred_at', allowedKeys: OCCURRED_AT_KEYS
       })

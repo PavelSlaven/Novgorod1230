@@ -139,6 +139,7 @@ export function resolveTracePhase2Contracts({
   );
   return {
     activity,
+    calendarProfile: bundle.calendar_profile,
     accessPolicy,
     check,
     bodyEffect,

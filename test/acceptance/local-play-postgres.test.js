@@ -20,6 +20,7 @@ import { MANAGED_RUNTIME_PINS } from '../../tools/local-play/managed-runtime.js'
 import { startLocalPlay } from '../../tools/local-play/local-play.js';
 import { loadLowerDvinaTraceScenePresentation } from '../../apps/game-server/src/internal/lower-dvina-trace-scene-presentation.js';
 import { scenePresentationForLocation } from '../../apps/game-server/src/runtime/lower-dvina-trace-scene-presentation.js';
+import { projectBodyState } from '../../apps/game-server/src/runtime/lower-dvina-trace-player-safe-entities.js';
 
 test('local play persists a free turn and replays it after a server restart',
   { timeout: 600_000, skip: process.platform !== 'win32'
@@ -128,6 +129,11 @@ test('local play persists a free turn and replays it after a server restart',
       assert.ok(narrated.length > 0, 'the real narrator receives the committed search projection');
       for (const { visible_context: visible } of narrated) {
         assert.equal(visible.visible_scene, sourceScene.visible_scene);
+        const conditions = projectBodyState(committed.state_payload.body_state).active_conditions;
+        assert.ok(visible.known_context.includes(`Текущие состояния вашего тела: ${JSON.stringify(conditions)}`));
+        assert.ok(visible.known_context.some(value => value.startsWith('Текущее местное время: ')
+          && value.includes(result.screen.presentation_context.time_label)));
+        assert.equal(visible.known_context.some(value => value.includes('07:00')), false);
         assert.ok(visible.known_context.includes('Вас зовут Микула.'));
         assert.ok(visible.known_context.includes('Ваш род занятий: младший приказчик.'));
         assert.ok(visible.known_context.includes(plannerInput.actor.biography));

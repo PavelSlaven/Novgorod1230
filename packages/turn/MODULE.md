@@ -63,6 +63,10 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   current availability, semantic validation и applicability admission; иначе
   следующий step заново выбирается моделью. Prepared draft не резервирует
   будущую operation.
+- Финальный `remaining_intent` loop передаётся без потерь в существующий
+  decision trace для committed результата и player-safe projection. Narration
+  различает выполненные изменения и переданный невыполненный остаток;
+  отсутствие остатка не разрешает придумывать завершение всей исходной заявки.
 - `createTurnStepExecutionRegistry(...)` публикует через
   `operationContract()` только те semantic operations, для которых в этом же
   registry зарегистрирован фактический handler; request не получает

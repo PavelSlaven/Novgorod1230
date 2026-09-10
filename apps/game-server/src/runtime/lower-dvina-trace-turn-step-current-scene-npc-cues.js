@@ -3,7 +3,8 @@ import { projectLowerDvinaTraceVisibleNpcDetails } from
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
-import { projectActor } from './lower-dvina-trace-player-safe-entities.js';
+import { projectCalendar } from '@rus/time-events-history/calendar';
+import { projectActor, projectBodyState, projectInteractions } from './lower-dvina-trace-player-safe-entities.js';
 import { projectKnowledge, projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
 
 const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
@@ -11,7 +12,7 @@ const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
 
 export function enrichLowerDvinaTraceVisibleNpcCues({
   visibleContext,
-  committedState
+  committedState, bodyAfter = null, clockAfter = null, calendarProfile = null
 }) {
   if (!validCurrentScene(visibleContext)) failCurrentScene();
   const projectedNpcs = visibleContext.visible_npc.flatMap((npc) =>
@@ -23,13 +24,27 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
     committedNpcs: committedState?.npcs,
     committedItems: committedState?.items
   }).map((npc) => [npc.instance_id, npc]));
+  const beforeContext = currentActorContext(committedState?.body_state, committedState?.clock, calendarProfile);
+  const afterContext = currentActorContext(bodyAfter ?? committedState?.body_state,
+    clockAfter ?? committedState?.clock, calendarProfile);
+  const beforeConditions = projectBodyState(committedState?.body_state)?.active_conditions ?? [];
+  const afterConditions = projectBodyState(bodyAfter)?.active_conditions ?? [];
+  const removed = beforeConditions.filter(condition =>
+    !afterConditions.some(after => JSON.stringify(condition) === JSON.stringify(after)));
+  const added = afterConditions.filter(condition =>
+    !beforeConditions.some(before => JSON.stringify(condition) === JSON.stringify(before)));
+  const conditionChanges = bodyAfter == null
+    || removed.length + added.length === 0 ? [] : [
+      `Изменение состояния тела: ${JSON.stringify({ before: removed, after: added })}`];
   return deepFreeze({
     ...structuredClone(visibleContext),
-    known_context: [...new Set([...visibleContext.known_context,
+    visible_changes: [...new Set([...visibleContext.visible_changes, ...conditionChanges])],
+    known_context: [...new Set([...visibleContext.known_context.filter(value => !beforeContext.includes(value)),
+      ...afterContext,
       ...projectKnownContext(projectActor({ profile: committedState?.player_profile,
         actorId: committedState?.actor_id }), projectKnowledge([
           ...(committedState?.player_profile?.knowledge?.initial_records ?? []),
-          ...(committedState?.knowledge ?? [])]))])],
+          ...(committedState?.knowledge ?? [])]), projectInteractions(committedState?.interactions))])],
     visible_npc: visibleContext.visible_npc.map((npc) => {
       const detail = details.get(npc?.entity_ref?.entity_id);
       const informative = detail != null
@@ -51,6 +66,19 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
       };
     })
   });
+}
+
+function currentActorContext(body, clock, calendarProfile) {
+  const conditions = projectBodyState(body)?.active_conditions ?? [];
+  const result = conditions.length === 0 ? [] : [
+    `Текущие состояния вашего тела: ${JSON.stringify(conditions)}`];
+  if (clock != null && calendarProfile != null) {
+    const calendar = projectCalendar(clock, calendarProfile);
+    const minutes = BigInt(calendar.local_time_of_day.numerator)
+      / BigInt(calendar.local_time_of_day.denominator);
+    result.push(`Текущее местное время: ${calendar.day}.${calendar.month}.${calendar.year}, ${String(minutes / 60n).padStart(2, '0')}:${String(minutes % 60n).padStart(2, '0')}.`);
+  }
+  return result;
 }
 
 function validCurrentScene(value) {

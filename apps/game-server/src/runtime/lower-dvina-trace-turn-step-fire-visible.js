@@ -25,7 +25,7 @@ const ORDINARY_PRESENCE_CHANGES = Object.freeze({
 });
 
 export function createLowerDvinaTraceTurnStepVisibleProjector({
-  fallback
+  fallback, calendarProfile = null
 } = {}) {
   if (typeof fallback?.project !== 'function') {
     throw new TypeError('fallback visibleProjector.project is required');
@@ -40,7 +40,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
           visibleContext: await projectWithoutFire({
             input, consequence, seedEntries, fallback
           }),
-          committedState: input.retrieved_state
+          committedState: input.retrieved_state, calendarProfile,
+          bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after
         }), input);
       }
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
@@ -58,7 +59,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       return overlayTurnStepResults(enrichLowerDvinaTraceVisibleNpcCues({
         visibleContext: overlayFireVisible(overlayOrdinaryPresence(
           overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence), fireVisible),
-        committedState: input.retrieved_state
+        committedState: input.retrieved_state, calendarProfile,
+        bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after
       }), input);
     }
   });

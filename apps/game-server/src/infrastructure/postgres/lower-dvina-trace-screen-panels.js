@@ -46,7 +46,8 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
   if (actor.body != null || actor.name != null) panels.character = createCharacterPanel(Object.fromEntries(Object.entries({
     name: actor.name, role: actor.role, health: actor.body?.health,
     biography: actor.biography,
-    memories: actor.memory?.map(record => typeof record === 'string' ? record : record.text).filter(Boolean).join('\n'),
+    memories: [...(actor.memory ?? []).map(record => typeof record === 'string' ? record : record.text),
+      ...(projection.interactions ?? []).map(record => record.content)].filter(Boolean).join('\n'),
     knowledge: projection.knowledge?.map(record => typeof record === 'string' ? record : record.text).filter(Boolean).join('\n'),
     energy: actor.body?.energy, satiety: actor.body?.satiety,
     status: actor.body?.active_conditions?.map(condition => condition.label)

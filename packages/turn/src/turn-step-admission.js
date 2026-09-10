@@ -413,7 +413,7 @@ export async function resolveBoundTurnStepCommand({
       state_version: actionSet.state_version,
       working_revision: loopResult.working_revision,
       step_count: loopResult.step_traces.length,
-      stop_reason: loopResult.stop_reason,
+      stop_reason: loopResult.stop_reason, remaining_intent: loopResult.remaining_intent,
       selected_option_id: selectedCommands[0]?.option_id ?? null,
       step_traces: structuredClone(loopResult.step_traces)
     })

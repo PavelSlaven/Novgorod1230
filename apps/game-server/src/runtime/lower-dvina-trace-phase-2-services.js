@@ -44,7 +44,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
   } = context;
-  let committedPublicResult = null;
+  let committedPublicResult = null, commitAttempted = false;
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
@@ -171,6 +171,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     visibleProjector: createVisibleProjector(),
     partyStore: {
       async commit(writePlan) {
+        commitAttempted = true;
         turnBudget?.assertCanCommit();
         context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_requested',
           write_plan: writePlan });
@@ -221,7 +222,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
         return screen;
       }
     },
-    committedPublicResult: () => committedPublicResult
+    committedPublicResult: () => committedPublicResult,
+    commitAttempted: () => commitAttempted
   };
 }
 function addMinutes(value, minutes) { return new Date(Date.parse(value) + minutes * 60000).toISOString(); }

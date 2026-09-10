@@ -5,8 +5,47 @@ import { join } from 'node:path';
 import test from 'node:test';
 
 import { acceptanceProviderFromEnv, phase10TerminalObservation,
-  runLocalGemmaBrowserAcceptance } from
+  pendingBrowserRequest, pendingBrowserStorage, resumePendingTurn, runLocalGemmaBrowserAcceptance } from
   '../local-gemma-acceptance.mjs';
+
+test('runner recovers exact browser identity from persisted request or requested event', () => {
+  const input = { request_id: 'request:existing', idempotency_key: 'idem:existing',
+    raw_text: 'Осматриваю берег.' };
+  const pending = { after_count: 1, proposal: { raw_text: input.raw_text } };
+  const events = [{ event: 'turn.completed', input: { raw_text: 'прошлый ход' } },
+    { event: 'turn.requested', input }];
+  assert.deepEqual(pendingBrowserRequest(pending, events), input);
+  assert.deepEqual(pendingBrowserRequest({ ...pending, browser_request: input }, []), input);
+  assert.equal(pendingBrowserRequest(pending,
+    [...events, { event: 'turn.completed', input }]), null);
+  assert.equal(pendingBrowserRequest({ ...pending, after_count: 0 }, []), null);
+  const restored = pendingBrowserStorage('http://localhost:3000/play', {
+    party_id: 'party', pending_turn: pending }, events);
+  assert.deepEqual(restored.cookies, []);
+  assert.equal(restored.origins[0].origin, 'http://localhost:3000');
+  assert.deepEqual(JSON.parse(restored.origins[0].localStorage[1].value),
+    { party_id: 'party', request: input });
+});
+
+test('runner resumes a pre-click proposal once and consumes existing terminal events without a click', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'novgorod-pending-ui-'));
+  const report = { pending_turn: { after_count: 0,
+    proposal: { raw_text: 'Осматриваю берег.' } } };
+  let clicks = 0; const typed = [];
+  const page = { async fill(selector, text) { typed.push(text); },
+    async click() {
+      clicks += 1;
+      await writeFile(join(directory, 'party.jsonl'),
+        `${JSON.stringify({ event: 'turn.completed', input: { raw_text: typed.at(-1) } })}\n`);
+    }, async waitForSelector() {} };
+  try {
+    const input = { report, page, logDirectory: directory, partyId: 'party' };
+    await resumePendingTurn(input);
+    await resumePendingTurn(input);
+    assert.deepEqual(typed, ['Осматриваю берег.']);
+    assert.equal(clicks, 1);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
 
 test('acceptance provider reads an optional key from a file, never the CLI', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'novgorod-provider-test-'));
@@ -169,7 +208,11 @@ test('browser runner resumes the same party and rejects changed identity',
       } };
     const common = { focus: 'resume contract', turns: null, sequence: 4,
       provider, chromiumPath: 'chromium', headless: true, resume: true,
-      start, launch: async () => ({ async newPage() { return page; },
+      start, launch: async () => ({ async newPage({ storageState }) {
+        assert.deepEqual(storageState.origins[0].localStorage,
+          [{ name: 'rus.party_id', value: 'party:existing' }]);
+        return page;
+      },
         async close() {} }), createExplorer: () => async () => {
         throw new Error('Terminal continuation must not request a new turn.');
       }, createCompletionObserver: async () => ({

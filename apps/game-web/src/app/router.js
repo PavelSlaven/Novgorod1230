@@ -25,7 +25,7 @@ export function renderScreen(screen, options = {}) {
   const disabled = options.loading === true || !openingReady;
   const navigationDisabled = options.loading === true
     || options.openingStatus === 'pending';
-  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderCurrentTask(screen)}${renderProse(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft })}</section></main>${renderOverlay(screen, options)}</div>`;
+  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderCurrentTask(screen)}${renderProse(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft, pendingTurn: options.pendingTurn })}</section></main>${renderOverlay(screen, options)}</div>`;
 }
 
 export function renderAppState(state) {
@@ -40,6 +40,7 @@ export function renderAppState(state) {
     openingStatus: state.opening?.status,
     newGameDraft: state.newGameDraft,
     turnDraft: state.turnDraft,
+    pendingTurn: state.pendingTurn,
     llmSettings: state.llmSettings,
     llmSettingsDraft: state.llmSettingsDraft,
     llmSettingsMessage: state.llmSettingsMessage

@@ -12,6 +12,11 @@ Browser-клиент, который получает только versioned pub
 - маршрутизацией FirstGameScreen/TurnScreen;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - browser bootstrap и обработкой пользовательских намерений.
+- сохранением `{party_id, request}` незавершённого хода в `rus.pending_turn`
+  до POST: retry и Continue после reload повторяют точный request/idempotency key.
+  Успех либо доказанный отказ до commit снимает pending; неизвестный исход
+  сохраняет его. При восстановлении старого хода новый draft остаётся в поле,
+  а кнопка явно сообщает о восстановлении. Это identity запроса, не копия мира.
 - компактным LLM settings overlay для default, локального Gemma preset и
   произвольного OpenAI-compatible endpoint: browser вызывает только game-server
   `/api/v1/llm-settings`; API key передаётся в Apply/Test и не сохраняется в

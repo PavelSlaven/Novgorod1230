@@ -87,4 +87,3 @@ test('ownerless speech executes before discovery and keeps its lawful response b
   assert.deepEqual(outcome.write_fragments, []);
   assert.deepEqual(outcome.check_results, []);
 });
-

@@ -16,8 +16,7 @@ import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-playe
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
-import { buildTracePhase2TurnRequest, buildTraceTurnWorkflowInput } from
-  './lower-dvina-trace-phase-2-turn-request.js';
+import { buildTracePhase2TurnRequest, buildTraceTurnWorkflowInput, createTraceTurnRequestExecutor } from './lower-dvina-trace-phase-2-turn-request.js';
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { isExpectedPostCommitPresentationFailure } from './lower-dvina-trace-post-commit-failure.js';
@@ -56,6 +55,7 @@ export function createLowerDvinaTracePhase2Runtime({
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
 } = {}) {
   validatePhase2RuntimeDependencies({ repository, semanticResolver, narrator, randomSourceFactory, decisionSecret });
+  const executeRequest = createTraceTurnRequestExecutor();
   return Object.freeze({ llmTurnBudget,
     async validateSessionRead({ partyId, turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null }) { await repository.loadPhase2State(partyId, { turnBudget }); return true; },
     async recoverPendingPresentation({ partyId, session }) {
@@ -231,8 +231,7 @@ export function createLowerDvinaTracePhase2Runtime({
         });
         const issuedAt = now();
         const services = buildLowerDvinaTracePhase2Services({
-          partyId, requestId,
-          idempotencyKey, inputDigest,
+          partyId, requestId, idempotencyKey, inputDigest,
           issuedAt, state,
           contracts, phase3Contracts,
           phase4Contracts, phase5Contracts,
@@ -289,10 +288,12 @@ export function createLowerDvinaTracePhase2Runtime({
         } catch (error) {
           if (isExpectedPostCommitPresentationFailure(error)
               && services.committedPublicResult() != null) return services.committedPublicResult();
+          if (!services.commitAttempted()) error.turn_commit_status = 'not_started';
           throw error;
         }
       };
-      return executeTraceTurnWithDiagnostics(llmDiagnostics, { party_id: partyId, request_id: requestId }, executeAttempt);
+      return executeRequest({ partyId, idempotencyKey, inputDigest }, () =>
+        executeTraceTurnWithDiagnostics(llmDiagnostics, { party_id: partyId, request_id: requestId }, executeAttempt));
     },
   });
 }

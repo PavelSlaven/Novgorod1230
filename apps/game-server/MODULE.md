@@ -24,6 +24,13 @@ and adds no second transaction owner.
 
 ## Владеет
 
+- Phase 2 объединяет одновременные retries одной party/idempotency identity
+  в одну runtime promise до чтения replay. Другой input digest получает conflict.
+  Promise удаляется после завершения; durable replay и commit остаются у P16.
+  Это координация одного server process, не межпроцессная блокировка.
+  Только workflow failure до входа commit owner выдаёт публичный
+  `error.turn_commit_status: not_started`; replay и неопределённый commit
+  не получают этот признак.
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
 - Запускается как обычный production server entry. `tools/local-play` снаружи
   подготавливает owned embedded PostgreSQL, Gemma/Giga runtime, актуальные

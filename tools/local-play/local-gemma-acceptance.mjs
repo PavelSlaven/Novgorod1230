@@ -107,10 +107,10 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       roleRunner: createProductionLlmRoleRunner({ settings }) });
     browser = await launch({ executablePath: chromiumPath, headless,
       args: ['--no-sandbox', '--no-proxy-server'] });
-    const page = await browser.newPage();
+    const storageState = resume ? pendingBrowserStorage(local.url, report,
+      await turnLogEvents(logDirectory, report.party_id)) : undefined;
+    const page = await browser.newPage({ storageState });
     page.setDefaultTimeout(120_000);
-    if (resume) await page.addInitScript((partyId) =>
-      globalThis.localStorage.setItem('rus.party_id', partyId), report.party_id);
     await page.goto(local.url);
     await selectProvider(page, selectedProvider);
     if (resume) {
@@ -137,6 +137,7 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
     if (terminal.terminal) report.terminal = terminal;
     await save();
     if (report.pending_turn) {
+      await resumePendingTurn({ report, page, logDirectory, partyId });
       const recovered = await capturePendingTurn({ report, page, identity,
         logDirectory, partyId });
       terminal = await completionObserver.observe({ partyId,
@@ -166,6 +167,12 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       await page.fill('[data-turn-form] textarea[name="raw_text"]',
         proposal.raw_text);
       await page.click('[data-turn-form] button[type="submit"]');
+      const pending = await page.evaluate(() =>
+        JSON.parse(globalThis.localStorage.getItem('rus.pending_turn') ?? 'null'));
+      if (pending?.party_id === partyId) {
+        report.pending_turn.browser_request = pending.request;
+        await save();
+      }
       await page.waitForSelector(
         '[data-turn-form] textarea:not([disabled]), .error',
         { timeout: 20 * 60_000 });
@@ -200,6 +207,40 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       await local?.close().catch(() => {});
     }
   }
+}
+
+export function pendingBrowserStorage(url, report, events) {
+  const request = report.pending_turn && pendingBrowserRequest(report.pending_turn, events);
+  return { cookies: [], origins: [{ origin: new URL(url).origin, localStorage: [
+    { name: 'rus.party_id', value: report.party_id },
+    ...(request ? [{ name: 'rus.pending_turn', value: JSON.stringify({
+      party_id: report.party_id, request }) }] : [])
+  ] }] };
+}
+
+export function pendingBrowserRequest(pending, events) {
+  const terminal = events.filter(({ event }) =>
+    ['turn.completed', 'turn.failed'].includes(event));
+  if (terminal.length > pending.after_count) return null;
+  if (pending.browser_request) return pending.browser_request;
+  const lastTerminal = events.findLastIndex(({ event }) =>
+    ['turn.completed', 'turn.failed'].includes(event));
+  return events.slice(lastTerminal + 1).find(({ event, input }) =>
+    event === 'turn.requested' && input?.raw_text === pending.proposal.raw_text)
+    ?.input ?? null;
+}
+
+export async function resumePendingTurn({ report, page, logDirectory, partyId }) {
+  const events = await turnLogEvents(logDirectory, partyId);
+  if (events.filter(({ event }) => ['turn.completed', 'turn.failed'].includes(event))
+    .length > report.pending_turn.after_count) return;
+  // A saved proposal before the UI click has neither request identity nor event.
+  // If a request was sent, bootstrap restored its exact identity before Continue.
+  await page.fill('[data-turn-form] textarea[name="raw_text"]',
+    report.pending_turn.proposal.raw_text);
+  await page.click('[data-turn-form] button[type="submit"]');
+  await page.waitForSelector('[data-turn-form] textarea:not([disabled]), .error',
+    { timeout: 20 * 60_000 });
 }
 
 export function phase10TerminalObservation({ state, session, playerDom: dom }) {
@@ -328,13 +369,16 @@ async function readNextTurnEvent({ directory, partyId, afterCount }) {
   throw new Error('Private browser turn trace was not flushed.');
 }
 async function turnEvents(directory, partyId) {
+  return (await turnLogEvents(directory, partyId)).filter((event) =>
+    ['turn.completed', 'turn.failed'].includes(event.event));
+}
+async function turnLogEvents(directory, partyId) {
   const path = join(directory,
     `${partyId.replace(/[^A-Za-z0-9._-]+/gu, '_')}.jsonl`);
   const content = await readFile(path, 'utf8').catch((error) => {
     if (error.code === 'ENOENT') return ''; throw error;
   });
-  return content.split('\n').slice(0, -1).filter(Boolean).map(JSON.parse)
-    .filter((event) => ['turn.completed', 'turn.failed'].includes(event.event));
+  return content.split('\n').slice(0, -1).filter(Boolean).map(JSON.parse);
 }
 function assertLocalProvider(record, identity, label) {
   if (record?.provider !== 'openai_compatible'

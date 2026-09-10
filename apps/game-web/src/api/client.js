@@ -15,6 +15,9 @@ export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } =
         payload?.error?.message ?? `HTTP ${response.status}`
       );
       error.httpStatus = response.status;
+      if (payload?.error?.turn_commit_status === 'not_started') {
+        error.turn_commit_status = 'not_started';
+      }
       throw error;
     }
     return validateApiEnvelope(payload).data;

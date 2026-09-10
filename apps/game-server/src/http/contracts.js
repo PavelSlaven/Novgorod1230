@@ -37,7 +37,9 @@ export function errorEnvelope(error, { requestId = null, developerMode = false }
       schema: API_ERROR_SCHEMA,
       ok: false,
       request_id: requestId,
-      error: Object.freeze({ code, message })
+      error: Object.freeze({ code, message,
+        ...(error?.turn_commit_status === 'not_started'
+          ? { turn_commit_status: 'not_started' } : {}) })
     })
   });
 }

@@ -1,7 +1,28 @@
+import { removePendingTurn, storedPendingTurn, storePendingTurn } from './pending-turn.js';
+
 export function createTurnRequest(input) {
   const requestId = `web:turn:${globalThis.crypto?.randomUUID?.()
     ?? crypto.randomUUID()}`;
   return Object.freeze({ ...input, request_id: requestId, idempotency_key: requestId });
+}
+
+export async function submitRecoverableTurn(api, storage, partyId, input = {}) {
+  const pending = storedPendingTurn(storage, partyId)
+    ?? { party_id: partyId, request: createTurnRequest(input) };
+  storePendingTurn(storage, pending);
+  try {
+    const result = await submitTurnWithPresentationReplay(api, partyId, pending.request);
+    removePendingTurn(storage, pending);
+    return result;
+  } catch (error) {
+    // HTTP request validation rejects these before invoking any turn runtime.
+    // Transport, unknown and post-commit presentation failures retain identity.
+    if (error?.turn_commit_status === 'not_started' || (error?.httpStatus === 400
+        && ['REQUEST_BODY_INVALID', 'TURN_INPUT_REQUIRED'].includes(error.code))) {
+      removePendingTurn(storage, pending);
+    }
+    throw error;
+  }
 }
 
 export async function submitTurnWithPresentationReplay(api, partyId, request) {

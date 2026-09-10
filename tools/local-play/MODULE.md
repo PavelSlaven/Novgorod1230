@@ -56,6 +56,11 @@ Premise audit и backlog принадлежат development authoring workflow, 
 `completion`. Прерванный после сохранённого хода прогон продолжается с той же
 party/DB и report при `RUS_ACCEPTANCE_RESUME=true`; continuation остаётся частью
 исходной unseen campaign и не считается отдельным regression или новым unseen.
+Pending proposal сохраняется до UI click. При resume готовый terminal log event
+потребляется без нового click; иначе сохранённая browser identity либо точный
+`turn.requested` восстанавливается один раз через Playwright context storageState.
+Continue использует обычный browser recovery. Proposal без request/event вводится
+и отправляется через UI; reload не воскрешает уже снятый pending request.
 Для явно выбранного внешнего OpenAI-compatible endpoint/model runner читает
 `RUS_ACCEPTANCE_LLM_BASE_URL`, `RUS_ACCEPTANCE_LLM_MODEL` и optional
 `RUS_ACCEPTANCE_LLM_API_KEY_FILE`. Для воспроизводимого evidence обязательны

@@ -7,11 +7,8 @@ import { removeMatchingPendingOpeningAck, removeStoredPendingOpeningAck,
   './pending-opening-ack.js';
 import { storedLlmSettings } from './llm-settings-preferences.js';
 import { createLlmSettingsController } from './llm-settings.js';
-import {
-  createTurnRequest,
-  recoverPendingPresentation,
-  submitTurnWithPresentationReplay
-} from './turn-submission.js';
+import { storedPendingTurn } from './pending-turn.js';
+import { recoverPendingPresentation, submitRecoverableTurn } from './turn-submission.js';
 export { createTurnRequest, recoverPendingPresentation, submitTurnWithPresentationReplay } from
   './turn-submission.js';
 const PARTY_STORAGE_KEY = 'rus.party_id';
@@ -35,7 +32,8 @@ export function bootstrapGameWeb({
   const render = () => {
     const state = store.getState();
     root.ownerDocument.documentElement.dataset.theme = state.theme;
-    root.innerHTML = renderAppState(state);
+    root.innerHTML = renderAppState({ ...state,
+      pendingTurn: storedPendingTurn(partyStorage, state.partyId) });
     if (state.screen) void hydrateSceneCanvases(root, state.screen);
   };
   store.subscribe(render);
@@ -71,7 +69,7 @@ export function bootstrapGameWeb({
       const raw = String(new root.ownerDocument.defaultView.FormData(form)
         .get('raw_text') ?? '');
       store.setDraft('turn', raw);
-      if (!raw.trim()) {
+      if (!raw.trim() && !storedPendingTurn(partyStorage, store.getState().partyId)) {
         store.setError(uiError('TURN_INPUT_REQUIRED', 'Сформулируй действие.'));
         return;
       }
@@ -206,7 +204,9 @@ export function bootstrapGameWeb({
   async function continueParty() {
     const partyId = store.getState().rememberedPartyId; if (!partyId) return;
     try {
-      store.setLoading(); let result = await api.getPartyScreen(partyId);
+      store.setLoading(); let result = storedPendingTurn(partyStorage, partyId)
+        ? await submitRecoverableTurn(api, partyStorage, partyId)
+        : await api.getPartyScreen(partyId);
       result = recoverPendingPresentation(api, partyId, result.screen) ?? result;
       result = await result;
       const pendingAck = storedPendingOpeningAck(partyStorage, partyId);
@@ -231,10 +231,10 @@ export function bootstrapGameWeb({
   }
   async function submitTurn(input) {
     try {
+      const partyId = store.getState().partyId, pending = storedPendingTurn(partyStorage, partyId);
       store.setLoading();
-      const result = await submitTurnWithPresentationReplay(
-        api, store.getState().partyId, createTurnRequest(input));
-      store.clearDraft('turn');
+      const result = await submitRecoverableTurn(api, partyStorage, partyId, input);
+      if (!pending || pending.request.raw_text === input.raw_text) store.clearDraft('turn');
       store.setScreen(result.screen, { openingStatus: 'acknowledged' });
     } catch (error) {
       store.setError(error);

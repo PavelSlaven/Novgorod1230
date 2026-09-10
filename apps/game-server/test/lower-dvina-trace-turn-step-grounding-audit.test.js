@@ -335,3 +335,48 @@ test('operation grounding error identifies its bound exact operation',
       return true;
     });
   });
+
+
+test('grounding audit receives the exact typed discovery queue and independent after intent', async () => {
+  for (const [query, targets, after] of [
+    ['Осмотреть рубаху и верхнюю одежду: насколько они промокли?',
+      ['garment:base', 'garment:outer'], null],
+    ['Осмотреть рубаху и верхнюю одежду: насколько они промокли?',
+      ['garment:base', 'garment:outer'],
+      { remaining_intent: 'Затем снять верхнюю одежду.', depends_on_refs: [] }],
+    ['Проверить чашу и кувшин на трещины.', ['vessel:cup', 'vessel:jug'], null]
+  ]) {
+    const continuation = { remaining_intent: query, depends_on_refs: [],
+      pending_discovery: { remaining_target_refs: targets.slice(1), after } };
+    const queuedPlan = { check: null, continuation, operations: [{
+      op: 'request_discovery', actor_ref: 'actor:1', discovery_kind: 'inspect',
+      target_refs: targets.slice(0, 1), query }] };
+    const queuedRequest = { ...request, remaining_intent: after == null
+      ? query : `${query} ${after.remaining_intent}`, player_safe_state: {
+      ordinary_resolution: { discovery_available: true,
+        container_resolution_available: false, scene_seed_available: false },
+      visible_objects: targets.map(entity_id => ({
+        entity_ref: { entity_kind: 'item', entity_id } })) } };
+    const before = structuredClone({ queuedPlan, queuedRequest });
+    let calls = 0;
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run(call) {
+        calls += 1;
+        const prompt = call.messages[0].content;
+        assert.match(prompt, /remaining_intent carries the exact current operation query/u);
+        assert.match(prompt, /after:null means no later action/u);
+        assert.match(prompt, /Without pending_discovery, when discovery leaves/u);
+        assert.doesNotMatch(prompt, /When discovery leaves the complete remaining_intent unchanged/u);
+        const payload = JSON.parse(call.messages[1].content);
+        assert.deepEqual(payload.continuation, continuation);
+        assert.deepEqual(payload.operations[0].operation, queuedPlan.operations[0]);
+        assert.equal(payload.remaining_intent, queuedRequest.remaining_intent);
+        return { output: { pass: true, concerns: [] } };
+      } }
+    });
+    assert.equal(await validate({ request: queuedRequest, plan: queuedPlan,
+      resolved_domain_operations: [{ path: '$.operations.0', owner_kind: 'ordinary_discovery' }] }), true);
+    assert.equal(calls, 1);
+    assert.deepEqual({ queuedPlan, queuedRequest }, before);
+  }
+});

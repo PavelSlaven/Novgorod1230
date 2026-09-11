@@ -262,7 +262,7 @@ test('direct player-safe observation reaches narration without new facts', () =>
   }, directSeedKeys: [], body: {} });
 
   assert.deepEqual(visible.visible_changes,
-    ['Наблюдение завершено по уже доступным вам признакам.',
+    ['Вы внимательно изучили обстановку.',
       'Низкое сырое небо.', 'В поле зрения — раненый мужчина.']);
   assert.deepEqual(visible.sensory_details, ['Низкое сырое небо.']);
   assert.equal(visible.visible_objects[0].display_label, 'верхняя одежда');

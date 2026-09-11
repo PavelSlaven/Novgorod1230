@@ -345,7 +345,7 @@ for (const { durationClass, planned, elapsed, rawText, elapsedText } of [
   assert.equal(f.state.clock.whole_minutes, String(elapsed));
   assert.equal(envelope.consequence.duration_minutes, elapsed);
   assert.equal(Object.values(envelope.consequence.visible_seed).find((seed) => seed?.kind === 'semantic_activity').duration_minutes, elapsed);
-  assert.deepEqual(envelope.visible_context.visible_changes, [elapsedText]);
+  assert.deepEqual(envelope.visible_context.visible_changes, []);
   assert.equal(JSON.stringify(envelope.visible_context).includes(`Прошло ${planned}`), false);
   assert.equal(envelope.loop_trace.stop_reason, 'player_response');
   assert.equal(envelope.loop_trace.remaining_intent, 'Затем проверяю опору перед собой.');

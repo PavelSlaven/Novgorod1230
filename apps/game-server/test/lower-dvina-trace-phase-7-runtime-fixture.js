@@ -257,7 +257,7 @@ export async function persistPhase7Consequence({
     state,
     inputDigest: digest,
     visibleContext: {
-      visible_scene: 'У костра прошло полчаса.',
+      visible_scene: 'У костра одежда немного подсохла.',
       visible_changes: ['elapsed_30_minutes'],
       sensory_details: [],
       visible_npc: [],

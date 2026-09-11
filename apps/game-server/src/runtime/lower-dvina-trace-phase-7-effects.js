@@ -130,10 +130,9 @@ export function createTracePhase7VisibleProjector({ fallback }) {
         ({ outcome }) => outcome.role);
       return overlayCurrentScene(input, {
         fallbackScene: companionOutcomes.length === 0
-          ? 'У костра прошло полчаса. Одежда немного подсохла, стало теплее.'
-          : 'У костра прошло полчаса. После разговора определилось, кто пойдёт к Жданко, а кто останется с Онисимом.',
+          ? 'У костра одежда немного подсохла, стало теплее.'
+          : 'У костра после разговора определилось, кто пойдёт к Жданко, а кто останется с Онисимом.',
         changes: [
-          'Прошло полчаса.',
           ...transitions.flatMap(({ outcome }) => ({
             clothing_partially_dried: ['Одежда немного подсохла.'],
             shivering_reduced: ['Озноб ослаб.']

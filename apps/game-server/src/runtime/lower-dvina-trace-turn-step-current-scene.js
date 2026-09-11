@@ -139,33 +139,23 @@ function playerSafeSceneItems(state) {
 export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = null }) {
   const seed = input?.consequence?.visible_seed ?? {};
   const values = directSeedKeys.map((key) => seed[key]);
-  const durations = values.filter((value) => value?.kind === 'semantic_activity'
-    && value.discovery_kind == null && value.discovery_result == null
-    && Number.isSafeInteger(Number(value.duration_minutes)) && Number(value.duration_minutes) > 0);
-  const duration = durations.reduce((total, entry) => total + Number(entry.duration_minutes), 0);
   const speech = appliedPlan?.resolution === 'direct' && appliedPlan.direct_result_kind === 'player_utterance'
-    ? `Вы произнесли: «${appliedPlan.utterance.utterance_text}»` : null;
+    ? spokenChange(appliedPlan.utterance.utterance_text) : null;
   const observation = appliedPlan?.resolution === 'direct'
     && appliedPlan.direct_result_kind === 'player_safe_observation';
   const attempts = values.filter(value => value?.kind === 'transient_item_use'
     && Object.keys(value).length === 2 && text(value.description));
-  const bound = appliedPlan != null && duration > 0
-    && (speech != null || observation || attempts.length === 1);
-  let emittedDuration = false;
   const changes = values.flatMap((value) => {
-    if (bound && value === attempts[0]) return [];
-    if (!durations.includes(value)) return directSeedChange(value);
-    if (emittedDuration) return [];
-    emittedDuration = true;
-    if (bound) return speech != null
-      ? `За ${duration} ${minuteWord(duration, 'минуту')} вы произнесли: «${appliedPlan.utterance.utterance_text}».`
-      : observation
-        ? `За ${duration} ${minuteWord(duration, 'минуту')} вы завершили наблюдение по уже доступным вам признакам.`
-      : [`Вы в течение ${duration} ${minuteWord(duration, 'минуты', 'минут')} выполняли попытку: «${attempts[0].description}».`,
-        'В ходе этой попытки результат наблюдения не установлен.'];
-    return directSeedChange({ ...value, duration_minutes: duration });
+    if (appliedPlan != null && (value?.kind === 'semantic_activity'
+        || (attempts.length === 1 && value === attempts[0]))) return [];
+    return directSeedChange(value);
   }).filter(Boolean);
-  return speech != null && !bound ? [speech, ...changes] : changes;
+  if (speech != null) return [speech, ...changes];
+  if (observation) return ['Вы внимательно изучили обстановку.', ...changes];
+  if (appliedPlan != null && attempts.length === 1) return [
+    ...directSeedChange(attempts[0]), ...changes
+  ];
+  return changes;
 }
 export function materializedOrdinaryPresenceChange(value) {
   if (!plain(value) || value.kind !== 'ordinary_presence_seed' || value.resolution !== 'materialized'
@@ -177,7 +167,7 @@ export function materializedOrdinaryPresenceChange(value) {
 }
 function directSeedChange(value) {
   if (value?.kind === 'transient_item_use' && Object.keys(value).length === 2 && text(value.description))
-    return [`Вы выполнили попытку: «${value.description}».`,
+    return [`Вы выполнили попытку: «${value.description}»${/[.!?…]$/u.test(value.description) ? '' : '.'}`,
       'В ходе этой попытки результат наблюдения не установлен.'];
   if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value);
   if (value?.kind === 'existing_item_inspection') {
@@ -186,16 +176,14 @@ function directSeedChange(value) {
   if (value?.kind === 'semantic_activity') {
     const duration = Number(value.duration_minutes);
     if (!Number.isSafeInteger(duration) || duration <= 0) return null;
-    const elapsed = value.discovery_kind === 'search'
-      ? `Поиск занял ${duration} ${minuteWord(duration, 'минуту')}.`
-      : `${minuteWord(duration) === 'минута' ? 'Прошла' : 'Прошло'} ${duration} ${minuteWord(duration)}.`;
     const result = value.discovery_result;
-    if (result == null) return elapsed;
+    if (result == null) return value.discovery_kind === 'search'
+      ? 'Вы завершили поиск.' : null;
     if (value.discovery_kind !== 'search' || !plain(result)
         || Object.keys(result).length !== 2
         || !['no_change', 'authority_required'].includes(result.resolution)
         || !text(result.query) || !result.query.trim()) failCurrentScene();
-    return `За ${duration} ${minuteWord(duration, 'минуту')} поиска по вопросу «${result.query}» подтверждённой находки нет.`;
+    return `Поиск по вопросу «${result.query}» не дал подтверждённой находки.`;
   }
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';
@@ -226,15 +214,11 @@ function directSeedChange(value) {
   }
   failCurrentScene();
 }
-function minuteWord(value, singular = 'минута', paucal = 'минуты') {
-  const mod100 = value % 100;
-  if (mod100 >= 11 && mod100 <= 14) return 'минут';
-  if (value % 10 === 1) return singular;
-  if (value % 10 >= 2 && value % 10 <= 4) return paucal;
-  return 'минут';
-}
 function sentence(value) {
   return /[.!?…]$/u.test(value) ? value : `${value}.`;
+}
+function spokenChange(value) {
+  return `Вы произнесли: «${value}»${/[.!?…]$/u.test(value) ? '' : '.'}`;
 }
 function directOutcomeConstraints(input) {
   const trace = input?.mode_resolution?.decision_trace;

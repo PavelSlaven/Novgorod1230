@@ -69,6 +69,9 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     visibleContext.date_label = `${calendar.day}.${calendar.month}.${calendar.year}`;
     visibleContext.time_label = `${String(minutes / 60n).padStart(2, '0')}:${String(minutes % 60n).padStart(2, '0')}`;
   }
+  const elapsedLabel = exactElapsedLabel(
+    payload.last_turn?.time_update?.exact_elapsed?.exact_minutes);
+  if (elapsedLabel != null) visibleContext.turn_elapsed_label = elapsedLabel;
   if (place) {
     const routes = [...(projection.routes ?? []), ...(projection.available_routes ?? [])]
       .filter(route => route.from_ref === projection.position?.location_ref && route.label);
@@ -126,4 +129,13 @@ function decorateActiveInterlocutor({ activeInterlocutor, committedNpcs }) {
 
 function plain(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function exactElapsedLabel(value) {
+  if (!/^\d+$/u.test(value?.numerator ?? '')
+      || !/^\d+$/u.test(value?.denominator ?? '')) return null;
+  const numerator = BigInt(value.numerator);
+  const denominator = BigInt(value.denominator);
+  if (denominator === 0n) return null;
+  return `${denominator === 1n ? numerator : `${numerator}/${denominator}`} мин`;
 }

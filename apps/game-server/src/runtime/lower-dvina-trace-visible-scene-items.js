@@ -13,7 +13,7 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
         approved_plan.direct_result_kind));
   return [
     ...(kinds.has('player_safe_observation')
-      ? ['Наблюдение завершено по уже доступным вам признакам.',
+      ? ['Вы внимательно изучили обстановку.',
         ...lowerDvinaTraceObservedSceneChanges(
           input?.retrieved_state?.current_visible_context)] : []),
     ...(kinds.has('player_safe_item_observation')

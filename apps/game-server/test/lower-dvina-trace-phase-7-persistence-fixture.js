@@ -64,7 +64,7 @@ export function externalBoundary(partyId, ruleRef, policyRef, wholeMinutes) {
 }
 
 export function visibleContext() {
-  return { visible_scene: 'У костра прошло полчаса.',
+  return { visible_scene: 'У костра одежда немного подсохла.',
     visible_changes: ['elapsed_30_minutes'],
     sensory_details: ['Одежда немного подсохла.'], visible_npc: [],
     visible_objects: [], known_context: ['Одежда всё ещё сыровата.'],

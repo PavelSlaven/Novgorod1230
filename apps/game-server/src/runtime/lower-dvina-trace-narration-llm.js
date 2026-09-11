@@ -5,20 +5,18 @@ import { assembleNarrationAuditOutput, narrationAuditInstruction } from
 
 const PROSE_RULES = 'Write connected, restrained literary Russian in second person. '
   + 'Put the current beat first. Convey every required_current_beat source once '
-  + 'and preserve every proposition inside it: action, result, uncertainty, exact '
-  + 'duration, speaker and causal order. Required changes are ordered: narrate an earlier performed action '
+  + 'and preserve every proposition inside it: action, result, uncertainty, speaker '
+  + 'and causal order. Required changes are ordered: narrate an earlier performed action '
   + 'before a later one, and never subordinate the earlier action to the later action. '
   + 'Every unresolved-result proposition inside a required change must remain explicitly unknown; performed handling '
   + 'stays performed even when its observation result is unknown. A pending goal '
   + 'does not undo a committed operation. Preserve confirmed speech verbatim. '
   + 'Render an unexecuted continuation as an open next choice, never as performed. '
   + 'Use optional support selectively to compose the beat; do not recap unchanged '
-  + 'scene, inventory, body or NPC facts. Integrate a supplied duration into its '
-  + 'own action, never a wait, another action or static scenery. When other required '
-  + 'sources exist, never leave elapsed time as a standalone sentence: fold it into '
-  + 'the sentence that narrates the action or result completed during that time. When '
-  + 'several standalone elapsed sources accompany a sequence of performed actions, '
-  + 'combine their total and make it grammatically modify that action sequence. Sparse evidence '
+  + 'scene, inventory, body or NPC facts. Turn duration is code-owned UI metadata '
+  + 'and is not supplied to prose; never invent elapsed minutes or report time spent. '
+  + 'Combine related scene facts into a spatially coherent image instead of one '
+  + 'sentence per input field. Sparse evidence '
   + 'calls for concise prose, not invented connective facts or a service report.';
 
 const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certainty; '
@@ -46,7 +44,7 @@ export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
     auditor: { audit: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_auditor',
       narrationAuditInstruction(request), request) },
     semanticRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_semantic_repair',
-      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For elapsed_as_service_report, remove the standalone elapsed sentence and make elapsed time grammatically modify the supported performed action or action sequence; when several standalone elapsed sources accompany several performed actions, combine their total in that action sentence. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
+      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
   });
 }
 

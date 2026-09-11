@@ -108,7 +108,7 @@ test('applied player-safe observation exposes perceived facts and not static sel
   assert.deepEqual(unapplied.visible_changes, []);
 });
 
-test('ordinary seed plus real elapsed seed preserves new observation and drops old snapshot', async () => {
+test('ordinary seed keeps new observation and drops elapsed prose and old snapshot', async () => {
   const visible = await createLowerDvinaTraceTurnStepVisibleProjector({ fallback }).project({
     consequence: { status: 'resolved', visible_seed: {
       turn_step_1: { kind: 'semantic_activity', duration_minutes: 2 },
@@ -120,8 +120,8 @@ test('ordinary seed plus real elapsed seed preserves new observation and drops o
       approved_plan: { resolution: 'domain_request', goal_result: 'pending',
         operations: [{ op: 'request_discovery' }], check: null } }] } }
   });
-  await assertCurrentWire(visible, ['Прошло 2 минуты.', 'Под навесом видны свежие стружки.'],
-    ['При вас есть хозяйственный нож.']);
+  await assertCurrentWire(visible, ['Под навесом видны свежие стружки.'],
+    ['Прошло 2 минуты.', 'При вас есть хозяйственный нож.']);
 });
 
 test('real observation promotes an object-only result and unseen safe sibling without metadata', async () => {
@@ -171,7 +171,7 @@ test('general scene observation excludes every native carried placement; explici
     await assertCurrentWire(visible, nearby.length ? ['В поле зрения — перевёрнутая лодка: у воды.'] : [],
       items.map(({ name }) => name));
     if (!nearby.length) assert.deepEqual(visible.visible_changes,
-      ['Наблюдение завершено по уже доступным вам признакам.']);
+      ['Вы внимательно изучили обстановку.']);
     plan.direct_result_kind = 'player_safe_item_observation';
     const inspected = projectCurrentSceneForNoOperationDirect({ input, directSeedKeys: [], body: {} });
     for (const { name } of items) assert.ok(inspected.visible_changes.some((fact) => fact.includes(name)));
@@ -200,7 +200,7 @@ test('real observation preserves entity-bound human N1 cues without translating 
 });
 
 
-test('compound direct speech and failed later action preserve total elapsed time and both results', async () => {
+test('compound direct speech and failed later action preserve results without elapsed prose', async () => {
   const speech = 'Онисим!';
   const goal = 'длинной ветвью прощупать воду между обломками';
   const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
@@ -216,7 +216,7 @@ test('compound direct speech and failed later action preserve total elapsed time
       { applied: true, approved_plan: { resolution: 'direct', goal_result: 'not_achieved',
         operations: [], check: null, interpretation: { player_goal: goal } } }] }
     } });
-  assert.deepEqual(visible.visible_changes, ['Прошло 2 минуты.',
+  assert.deepEqual(visible.visible_changes, [
     `Вы произнесли: «${speech}»`, `Не удалось достичь цели «${goal}».`]);
   assert.deepEqual(visible.uncertainties, []);
 });

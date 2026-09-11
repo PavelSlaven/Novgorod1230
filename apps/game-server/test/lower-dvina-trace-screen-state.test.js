@@ -7,6 +7,8 @@ const presentation = await loadLowerDvinaTraceScreenPresentation({ materializati
   seed_context: { scenario_definition_revision: 33 } } });
 function payload() {
   return { party_id: 'party', actor_id: 'player', party_state: { state_version: 2 },
+    last_turn: { time_update: { exact_elapsed: { exact_minutes: {
+      numerator: '3', denominator: '2' } } } },
     player_profile: { identity: { name: 'Гость' }, attributes: { strength: { value: 10 } } },
     body_state: { health: 90, energy: 73, satiety: 81 },
     clock: { whole_minutes: '333060', subminute_numerator: '0', subminute_denominator: '1' },
@@ -35,6 +37,7 @@ test('screen rebuilds character, carried inventory and calendar without changing
   assert.ok(screen.panels.route.visible);
   assert.ok(screen.presentation_context.date_label);
   assert.match(screen.presentation_context.time_label, /^\d{2}:\d{2}$/);
+  assert.equal(screen.presentation_context.turn_elapsed_label, '3/2 мин');
   assert.deepEqual(screen.visible_context, visible);
   assert.deepEqual(JSON.parse(JSON.stringify(screen)), screen);
   state.body_state.energy = 60;

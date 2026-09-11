@@ -614,32 +614,24 @@ Narration auditor использует exact `request.segments[].segment_id` в�
 reviewed_segments, source_reviews, unsupported и literary_failures. Positional
 aliases и нормализация не допускаются; Adapter детерминированно собирает
 coverage/verdict, а final audit строго проверяется по IDs
-повторно сегментированной approved prose. Grounded цепочка без scene/action композиции,
-сцепленная главным образом bare/metadata отметками времени, проваливает существующие
-elapsed_as_service_report / weak_literary_composition checks. Длительность
-встраивается в подтверждённый физический эпизод и причинную сцену; нельзя
-добавлять ambience, реакции или одновременное действие ради связности.
-
-Subject + exact duration + supported physical action — встроенная длительность,
-в том числе в короткой sparse сцене; такая конструкция и краткость сами по себе
-не дают elapsed_as_service_report. Служебным остаётся bare/metadata time или
-перечень без сценической/физической композиции. При current beat private wire
+повторно сегментированной approved prose. Длительность хода не входит в private
+prose wire: её вычисляет temporal owner и показывает server-owned UI projection.
+Любая придуманная narrator временная величина является unsupported fact, а
+служебная формулировка дополнительно проваливает elapsed_as_service_report.
+При current beat private wire
 допускает visible_scene + sensory_details; narrator выбирает только относящиеся
 к этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.
 
-Temporal/aspect grounding сохраняет принадлежность elapsed своему applied step:
-sensory sky/weather/sound не получают эту длительность; задержка до начала действия
-не заменяет длительность выполненного действия. Sensory support связывает сцену,
-а не заполняет минуты. Source review требует все propositions каждого atomic
+Temporal/aspect grounding не позволяет выводить длительность из действия или
+sensory sky/weather/sound. Sensory support связывает сцену. Source review требует все propositions каждого atomic
 required source; неизвестный результат нельзя опустить или заменить
 failure/success. Речь передаётся естественно с дословным
 содержанием и speaker, discovery — через подтверждённое восприятие без status report.
 
-Applied-step causal projection связывает semantic_activity duration в самом source:
-speech получает «этот шаг занял N …», не утверждая непрерывность речи; single
-transient_item_use получает два соседних atomic current-beat source: выполненную
-за N минут попытку с exact description, затем отдельно неизвестный observation result.
+Applied-step causal projection оставляет semantic_activity duration temporal owner;
+single transient_item_use получает два соседних atomic current-beat source:
+выполненную попытку с exact description, затем отдельно неизвестный observation result.
 Каждый source получает собственный ref и проверяется независимо. Отдельный elapsed component этого step
-удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
+удаляется перед финальной сборкой; search передаёт только выполненное действие и результат.
 Narrator переводит evidence wording в естественную речь и конкретное движение,
-не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.
+не копирует служебные слова step/attempt и не добавляет минуты.

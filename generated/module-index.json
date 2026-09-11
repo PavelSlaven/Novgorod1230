@@ -62,7 +62,7 @@
         "валидацией публичных API envelopes и screen contracts",
         "UI-only store",
         "постоянным указанием управляемого персонажа в header из уже публичных",
-        "отображением готового `presentation_context` в header; календарь и место",
+        "отображением готового `presentation_context` в header; календарь, место и",
         "маршрутизацией FirstGameScreen/TurnScreen",
         "feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics",
         "чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome",

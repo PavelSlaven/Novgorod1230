@@ -19,7 +19,7 @@ export function narrationAuditInstruction(request) {
   };
   return `You are a strict evidence auditor of Russian game prose. Silently split
 each supplied segment into every factual proposition, including subordinate
-clauses, sensations, action, result, duration, causality and certainty. For every
+clauses, sensations, action, result, time claims, causality and certainty. For every
 proposition require one exact supporting ref or field from the supplied
 player-safe input. Plausibility is never evidence. An object or place never
 supports an unstated sound, smell, touch, motion, reaction or persistence. Never
@@ -41,18 +41,15 @@ action. current_beat_buried requires a required source to be present but displac
 an omitted source belongs only in source_reviews as []. Never add
 current_beat_buried merely because another required source has an empty review.
 Optional support may compose the current beat but a recap of unchanged
-support is static_context_dump. Integrated duration belongs to its supplied
-action. Evaluate all five checks independently: one failure never excuses a
-missed second failure. In a multi-source beat, a standalone elapsed-time sentence
-detached from its action is elapsed_as_service_report. If a segment contains only
-elapsed time and any other required source exists, record this failure even when
-the elapsed sentence exactly covers its own separate source. When elapsed time is the
-only required source, a short literary transition is valid.
+support is static_context_dump. Turn duration is code-owned UI metadata and is
+not supplied as prose evidence. Any invented elapsed time is unsupported_fact;
+service-like time reporting is also elapsed_as_service_report. Evaluate all five
+checks independently: one failure never excuses a missed second failure.
 
 Mandatory final cross-checks before JSON:
 1. Every sensory proposition without an exact supplied sensory fact is unsupported_sensory.
-2. When an elapsed source and another required source are mapped to different
-segments, the elapsed-only segment is elapsed_as_service_report.
+2. Any elapsed-time claim without an exact required source is unsupported_fact;
+service-like reporting also receives elapsed_as_service_report.
 3. current_beat_buried may describe only a source with a nonempty source review;
 never use it to restate or penalize an omitted source whose review is [].
 4. If prose reverses ordered performed actions or subordinates the earlier action

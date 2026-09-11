@@ -248,8 +248,7 @@ test('generic composition preserves domain body and handles direct visible',
     });
     assert.equal(scene.visible_scene, 'Уже видимый берег.');
     assert.deepEqual(scene.sensory_details, ['cold', 'wet']);
-    assert.deepEqual(scene.visible_changes,
-      ['Прошло 5 минут.']);
+    assert.deepEqual(scene.visible_changes, []);
     assert.equal(scene.known_context.includes('health:95'), true);
   });
 

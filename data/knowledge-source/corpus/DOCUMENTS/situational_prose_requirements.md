@@ -36,7 +36,7 @@ Player-safe projector передаёт только применимые к те
 - положение: current place/anchor, ближний план, дальние ориентиры, видимые проходы, направления, barriers и affordances;
 - среда: время, реальный свет, погода, видимость, слышимые процессы и их направление, если оно установлено;
 - тело: текущее воспринимаемое состояние и подтверждённые изменения без raw stats;
-- действие: выполненная попытка, существенные воспринимаемые confirmed results, elapsed time, расход/следствие и player-safe смысл неисполненного остатка;
+- действие: выполненная попытка, существенные воспринимаемые confirmed results, расход/следствие и player-safe смысл неисполненного остатка;
 - предметы: player-safe identity, положение, внешний вид, состояние, материальные изменения, source/result/waste;
 - NPC: stable identity/recognition, observable cues, current committed actions, exact perceived speech, отношения и память только в доступной герою форме;
 - живой мир: продолжающиеся и завершившиеся процессы, самостоятельные действия NPC, interruptions и последствия, воспринятые героем;
@@ -44,6 +44,11 @@ Player-safe projector передаёт только применимые к те
 - причинное сравнение: before/after либо remembered/current только там, где обе стороны разрешены проекцией.
 
 Не каждый ход требует каждого пункта. Projector выбирает полный фактический материал; narrator выбирает литературно уместные детали. Нельзя превращать этот раздел в sensory checklist, где каждый ответ обязан упомянуть зрение, слух, запах, погоду и тело.
+
+Точная длительность хода остаётся у temporal owner и не входит в обязательные
+источники прозы. Server проецирует из committed `last_turn.time_update.exact_elapsed`
+отдельную UI-подпись длительности рядом с итоговыми календарными часами. Narrator
+не повторяет эту служебную величину и не обязан упоминать время в каждом ответе.
 
 ## 4. Общая композиционная норма
 
@@ -145,21 +150,21 @@ Stage 23 проверяет это через обязательный `literary
 
 ## 10. Ожидание, процессы и живой мир
 
-**Необходимый контекст.** Exact elapsed; continuing/completed/interrupted activities; process transitions; autonomous NPC actions; environment/light/weather changes; body thresholds; perception results; unchanged facts только если они явно спроецированы.
+**Необходимый контекст.** Continuing/completed/interrupted activities; process transitions; autonomous NPC actions; environment/light/weather changes; body thresholds; perception results; unchanged facts только если они явно спроецированы. Exact elapsed остаётся в code-owned UI projection.
 
-**Обязательный смысл.** Время не является пустой цифрой: текст показывает фактически воспринятые изменения, завершение или продолжение причинных процессов и цену для тела. При других current facts точная длительность принадлежит тому же эпизоду, не отдельной служебной строке. Если единственный confirmed change — elapsed, допустим короткий литературный переход через supplied scene, без invented waiting action, изменения позиции или утверждения неизменности; голое сообщение длительности недостаточно.
+**Обязательный смысл.** Текст показывает фактически воспринятые изменения, завершение или продолжение причинных процессов и цену для тела. Точная длительность видна в панели статуса и не повторяется в прозе. Если единственное изменение — ход часов, достаточно grounded сцены без invented waiting action, изменения позиции или утверждения неизменности.
 
 **Литературная подача.** Сжатие времени через один-два подтверждённых изменяющихся признака. Parallel changes объединяются в последовательность по exact order. Background остаётся фоном; interruption становится новым центром сцены и объясняет остановку только supplied reason.
 
-**Избыточно/запрещено.** Служебная строка длительности, оторванная от сцены; mechanically forced присоединение времени к случайной детали; invented bustle; NPC frozen до следующего player input; утверждение, что предметы «всё ещё» на месте без basis; minute-by-minute montage; повтор всех processes. Оценивается литературный переход целиком, не наличие конкретной фразы или отдельного предложения.
+**Избыточно/запрещено.** Служебная строка длительности и mechanically forced присоединение времени к случайной детали; invented bustle; NPC frozen до следующего player input; утверждение, что предметы «всё ещё» на месте без basis; minute-by-minute montage; повтор всех processes. Оценивается литературный переход целиком, не наличие конкретной фразы или отдельного предложения.
 
-**Good / bad.** Good создаёт ощущение независимого мира и показывает новый decision boundary; при elapsed-only честный короткий grounded переход уже достаточен и не обязан симулировать событие. Bad превращает длительность в служебную строку без литературной функции либо декоративно оживляет мир событиями, которых нет в committed package.
+**Good / bad.** Good создаёт ощущение независимого мира и показывает новый decision boundary. Bad повторяет UI-время в прозе либо декоративно оживляет мир событиями, которых нет в committed package.
 
 **Unseen validation.** Пока герой чинит ремень, огонь догорает, знакомый NPC завершает работу и уходит, а дождь начинается после окончания ремонта. Проверить factual order, perceptual scope и отсутствие invented реакции героя.
 
 ## 11. Travel, arrival и return
 
-**Необходимый контекст.** Confirmed traversal outcome; route observations; промежуточные events/interruptions; elapsed; environment; body/load; destination/anchor; arrival exits/barriers; remembered prior state и current delta для return.
+**Необходимый контекст.** Confirmed traversal outcome; route observations; промежуточные events/interruptions; environment; body/load; destination/anchor; arrival exits/barriers; remembered prior state и current delta для return. Elapsed остаётся в панели статуса.
 
 **Обязательный смысл.** Для travel — продвижение, цена и существенные изменения пути; для arrival — completed movement и новая ориентация; для return — узнавание и только подтверждённые отличия от памяти. `paused`, `blocked`, `stranded` и `interrupted` различаются.
 
@@ -279,13 +284,13 @@ Confirmed_outcome/action_intent и role-specific output/segments/concerns/phase
 сохраняют существующую доступность. Uncertainty о вопросе не становится доказательством
 действия; явно неисполненный continuation остаётся неначатым, а результат неизвестным.
 Committed transient attempt в required change подтверждает выполненное физическое
-обращение/contact за applied duration. Открытым остаётся только observation/discovery
+обращение/contact. Открытым остаётся только observation/discovery
 result или новый факт. Narrator изображает совершённое движение конкретно, без
 пересказа attempt/status metadata и без выдуманной новой находки. goal_result pending
 не отменяет applied operation. Нельзя объявлять её неначатой либо навязывать выбор
 продолжить/изменить действие, если unexecuted continuation не передан.
 Projection transient attempt создаёт два соседних atomic current-beat source:
-первый отдельно подтверждает выполненное обращение и его duration, второй отдельно
+первый отдельно подтверждает выполненное обращение, второй отдельно
 сохраняет неизвестность observation result. Оба остаются changes с собственными
 request-local refs и проверяются независимо; модель не должна сама выделять
 неизвестный смысл из составной служебной строки.
@@ -316,15 +321,11 @@ audit и блокирует flow fail-closed; Adapter не синтезируе�
 Согласованный code-assembled FAIL использует существующий цельный repair без
 нового role/call; final audit повторяет тот же строгий seam.
 
-Temporal/aspectual overlap, длительность и persistence между фактами требуют
-явного основания: scene label не доказывает ambience, тишину или субъективный
-темп. `elapsed_as_service_report` включает механически приклеенное время через
-выдуманную связь, а не только отдельную служебную строку.
-Grouped required change объединяет result и elapsed/activity одного applied step:
-это явное основание его точной длительности. Грамматически вплетённая в действие
-explicit duration не является нарушением лишь из-за явного числа; isolated service
-datum по-прежнему запрещён. Группировка не доказывает overlap, persistence или
-длительность другого шага. Точная реплика и все propositions сохраняются.
+Temporal/aspectual overlap и persistence между фактами требуют явного основания:
+scene label не доказывает ambience, тишину или субъективный темп. Длительность
+хода не передаётся narrator как evidence. Любая придуманная временная величина
+является unsupported fact, а служебная формулировка дополнительно получает
+`elapsed_as_service_report`. Точная реплика и все propositions сохраняются.
 `weak_literary_composition` включает пересказ pending remainder как metadata
 или пояснение плана вместо конкретного открытого следующего выбора; один
 союз не делает набор фактов художественной сценой. Repair concerns не являются
@@ -383,32 +384,24 @@ Private narration auditor использует exact `request.segments[].segment
 reviewed_segments, source_reviews, unsupported и literary_failures. Positional
 aliases и нормализация не допускаются; Adapter детерминированно собирает
 coverage/verdict, а final audit строго проверяется по IDs
-повторно сегментированной approved prose. Grounded цепочка без scene/action композиции,
-сцепленная главным образом bare/metadata отметками времени, проваливает существующие
-elapsed_as_service_report / weak_literary_composition checks. Длительность
-встраивается в подтверждённый физический эпизод и причинную сцену; нельзя
-добавлять ambience, реакции или одновременное действие ради связности.
-
-Subject + exact duration + supported physical action — встроенная длительность,
-в том числе в короткой sparse сцене; такая конструкция и краткость сами по себе
-не дают elapsed_as_service_report. Служебным остаётся bare/metadata time или
-перечень без сценической/физической композиции. При current beat private wire
+повторно сегментированной approved prose. Длительность хода не входит в private
+prose wire: её вычисляет temporal owner и показывает server-owned UI projection.
+Любая придуманная narrator временная величина является unsupported fact, а
+служебная формулировка дополнительно проваливает elapsed_as_service_report.
+При current beat private wire
 допускает visible_scene + sensory_details; narrator выбирает только относящиеся
 к этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.
 
-Temporal/aspect grounding сохраняет принадлежность elapsed своему applied step:
-sensory sky/weather/sound не получают эту длительность; задержка до начала действия
-не заменяет длительность выполненного действия. Sensory support связывает сцену,
-а не заполняет минуты. Source review требует все propositions каждого atomic
+Temporal/aspect grounding не позволяет выводить длительность из действия или
+sensory sky/weather/sound. Sensory support связывает сцену. Source review требует все propositions каждого atomic
 required source; неизвестный результат нельзя опустить или заменить
 failure/success. Речь передаётся естественно с дословным
 содержанием и speaker, discovery — через подтверждённое восприятие без status report.
 
-Applied-step causal projection связывает semantic_activity duration в самом source:
-speech получает «этот шаг занял N …», не утверждая непрерывность речи; single
-transient_item_use получает два соседних atomic current-beat source: выполненную
-за N минут попытку с exact description, затем отдельно неизвестный observation result.
+Applied-step causal projection оставляет semantic_activity duration temporal owner;
+single transient_item_use получает два соседних atomic current-beat source:
+выполненную попытку с exact description, затем отдельно неизвестный observation result.
 Каждый source получает собственный ref и проверяется независимо. Отдельный elapsed component этого step
-удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
+удаляется перед финальной сборкой; search передаёт только выполненное действие и результат.
 Narrator переводит evidence wording в естественную речь и конкретное движение,
-не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.
+не копирует служебные слова step/attempt и не добавляет минуты.

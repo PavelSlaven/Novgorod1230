@@ -94,6 +94,7 @@ function renderContext(screen) {
     ['Место', context.location_label ?? context.place],
     ['Дата', context.date_label ?? context.calendar],
     ['Время', context.time_label ?? context.day_part_label],
+    ['Ход занял', context.turn_elapsed_label],
     ['Погода', context.weather_label],
     ['Состояние', context.status_label]
   ];

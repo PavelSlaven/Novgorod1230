@@ -71,7 +71,7 @@ for (const [name, intent, denial = false] of [
     mode_resolution: { decision_trace: { step_traces: [{ applied: true,
       step_index: input.step_index, approved_plan: approved }] } } });
   assert.deepEqual(visible.visible_changes, [
-    `Вы в течение 5 минут выполняли попытку: «${intent}».`,
+    `Вы выполнили попытку: «${intent}»`,
     'В ходе этой попытки результат наблюдения не установлен.'
   ]);
 });
@@ -207,7 +207,7 @@ for (const [name, intent, wrongDescription] of [
       mode_resolution: { decision_trace: { remaining_intent: null,
         step_traces: [{ step_index: input.step_index, applied: true, approved_plan: result.plan }] } } });
     assert.deepEqual(visible.visible_changes, [
-      `Вы в течение 5 минут выполняли попытку: «${intent}».`,
+      `Вы выполнили попытку: «${intent}»`,
       'В ходе этой попытки результат наблюдения не установлен.'
     ]);
   }

@@ -56,8 +56,8 @@ for (const resolution of ['absent', 'no_change', 'authority_required']) {
     assert.deepEqual(projectDirectSeedChanges({ input: { consequence: applied.consequence_fragment },
       directSeedKeys: Object.entries(applied.consequence_fragment.visible_seed)
         .filter(([, value]) => value.kind === 'semantic_activity').map(([key]) => key) }),
-      resolution === 'absent' ? ['Поиск занял 15 минут.'] : [
-        `За 15 минут поиска по вопросу «${input.operation.query}» подтверждённой находки нет.`]);
+      resolution === 'absent' ? ['Вы завершили поиск.'] : [
+        `Поиск по вопросу «${input.operation.query}» не дал подтверждённой находки.`]);
     assert.equal(applied.duration_minutes, 15);
     assert.equal(applied.consequence_fragment.duration_minutes, 15);
     assert.equal(applied.body_state_after.energy, 99);
@@ -192,8 +192,7 @@ test('performed result belongs only to its search, not another unresolved query 
   const changes = projectDirectSeedChanges({ input: { consequence: { visible_seed: seed } },
     directSeedKeys: ['turn_step_search', 'turn_step_rest'] });
   assert.deepEqual(changes, [
-    `За 15 минут поиска по вопросу «${query}» подтверждённой находки нет.`,
-    'Прошло 5 минут.']);
+    `Поиск по вопросу «${query}» не дал подтверждённой находки.`]);
   assert.equal(changes.some(value => value.includes('роспись')), false);
   seed.turn_step_rest.discovery_result = seed.turn_step_search.discovery_result;
   assert.throws(() => projectDirectSeedChanges({ input: { consequence: { visible_seed: seed } },

@@ -29,12 +29,10 @@ test('captured live snapshot candidates cannot displace the current speech and p
 
 test('private prose wire admits only scene and sensory support beside a current beat', async (t) => {
   const cases = [
-    { name: 'physical result, body and time with a pending second action',
-      changes: ['Прошло две минуты.', 'Сухой конец жерди отломлен.', 'Одежда стала менее мокрой.'],
+    { name: 'physical result and body with a pending second action',
+      changes: ['Сухой конец жерди отломлен.', 'Одежда стала менее мокрой.'],
       uncertainties: ['Перевязать отломленный конец вы ещё не успели; результат неизвестен.'],
-      prose: 'За две минуты вы отломили сухой конец жерди; одежда стала менее мокрой, а перевязать конец вы ещё не успели — результат пока неизвестен, и можно продолжить или передумать.' },
-    { name: 'elapsed-only scene transition', changes: ['Прошла одна минута.'], uncertainties: [],
-      prose: 'Минута миновала у тёмной речной воды.' },
+      prose: 'Вы отломили сухой конец жерди; одежда стала менее мокрой, а перевязать конец вы ещё не успели — результат пока неизвестен, и можно продолжить или передумать.' },
     { name: 'arrival with near, far and NPC support',
       changes: ['Вы вышли на пристань.', 'Рядом стоят мокрые сваи; вдали темнеет лес; у навеса виден Еремей.'], uncertainties: [],
       prose: 'Вы выходите на пристань: рядом стоят мокрые сваи, вдали темнеет лес, а у навеса виден Еремей.',
@@ -95,13 +93,13 @@ test('private prose wire admits only scene and sensory support beside a current 
 
 for (const sample of [
   { name: 'captured integrated five-minute probing',
-    change: 'Вы пять минут осторожно прощупывали длинной ветвью воду между обломками; результат наблюдения не установлен.',
+    change: 'Вы осторожно прощупывали длинной ветвью воду между обломками; результат наблюдения не установлен.',
     relevant: 'У воды лежат мокрые обломки.', other: ['Над берегом низкое серое небо.', 'За ивняком начинается тропа.'],
-    prose: 'Между мокрыми обломками вы пять минут осторожно прощупываете воду длинной ветвью; что скрывается под ними, пока неизвестно.' },
+    prose: 'Между мокрыми обломками вы осторожно прощупываете воду длинной ветвью; что скрывается под ними, пока неизвестно.' },
   { name: 'unseen integrated contact beside a rough bowl',
-    change: 'Вы две минуты проводили сухим лоскутом по краю глиняной чаши; результат наблюдения не установлен.',
+    change: 'Вы проводили сухим лоскутом по краю глиняной чаши; результат наблюдения не установлен.',
     relevant: 'Край глиняной чаши шероховатый.', other: ['За дверью виден двор.', 'У стены лежат поленья.'],
-    prose: 'По шероховатому краю глиняной чаши вы две минуты проводите сухим лоскутом; что это позволило заметить, пока неизвестно.' }
+    prose: 'По шероховатому краю глиняной чаши вы проводите сухим лоскутом; что это позволило заметить, пока неизвестно.' }
 ]) test(`${sample.name}: sensory selection supports sparse action, unchanged dump fails`, async () => {
   for (const dump of [false, true]) {
     const visible = { version: 1, schema: 'visible_context_package', visible_scene: 'Текущее место',
@@ -113,9 +111,7 @@ for (const sample of [
       calls.push(call.role_id);
       const wire = JSON.parse(call.messages[1].content);
       assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details });
-      assert.match(call.messages[0].content, call.role_id === 'gameplay_narrator_auditor'
-        ? /Integrated duration belongs to its supplied\s+action/u
-        : /Integrate a supplied duration into its own action/u);
+      assert.match(call.messages[0].content, /Turn duration is code-owned UI metadata/u);
       assert.match(call.messages[0].content, call.role_id === 'gameplay_narrator_auditor'
         ? /recap of unchanged\s+support is static_context_dump/u
         : /do not recap unchanged scene/u);
@@ -133,7 +129,7 @@ for (const sample of [
         literary_failures: pass ? [] : [{ check: 'static_context_dump',
           segment_choice: ids.at(-1), reason }],
         evidence: pass
-          ? ['Подлежащее, точная длительность и подтверждённое движение составляют физический эпизод.']
+          ? ['Подтверждённое движение составляет физический эпизод без служебного времени.']
           : [] };
       return { output: audit };
     } } });

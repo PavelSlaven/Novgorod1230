@@ -305,7 +305,7 @@ async function commit({ state, contracts, consequence }) {
       turn_id: consequence.phase7.autonomous.request.root_turn_id,
       decision_trace: { state_version: state.party_state.state_version,
         action_set_digest: 'action-set' } }, consequence, time_update, body_update },
-    state, inputDigest: digest, visibleContext: { visible_scene: 'У костра прошло полчаса.',
+    state, inputDigest: digest, visibleContext: { visible_scene: 'У костра одежда немного подсохла.',
       visible_changes: ['elapsed_30_minutes'], sensory_details: [], visible_npc: [],
       visible_objects: [], known_context: [], uncertainties: [] }, phase7Contracts: contracts });
 }

@@ -15,8 +15,9 @@ Browser-клиент, который получает только versioned pub
 - UI-only store;
 - постоянным указанием управляемого персонажа в header из уже публичных
   `panels.character.data.name/role`; другие люди не становятся этим персонажем;
-- отображением готового `presentation_context` в header; календарь и место
-  вычисляет server из committed state, `visible_context` остаётся без изменений;
+- отображением готового `presentation_context` в header; календарь, место и
+  exact длительность последнего committed хода вычисляет server из committed
+  state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome

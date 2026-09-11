@@ -140,10 +140,11 @@ test('local play persists a free turn and replays it after a server restart',
         for (const detail of profile.player_visible_physical_facts) assert.ok(visible.sensory_details.includes(detail), JSON.stringify({ index, missing: detail, profile: profile.player_visible_physical_facts, narrated: visible.sensory_details }));
         if (resolution === 'no_change' || resolution === 'authority_required') {
           assert.ok(beat.changes.some(({ text }) => text.includes(
-            `За 15 минут поиска по вопросу «${turnRequest.raw_text}» подтверждённой находки нет.`)));
+            `Поиск по вопросу «${turnRequest.raw_text}» не дал подтверждённой находки.`)));
           assert.ok(beat.uncertainties.some(({ text }) => text.includes(`«${turnRequest.raw_text}»`)));
         } else assert.ok(beat.changes.some(
-          ({ text }) => text.includes('Поиск занял 15 минут.')));
+          ({ text }) => text.includes('Обнаружено:')));
+        assert.equal(JSON.stringify(beat).includes('15 минут'), false);
       }
       assert.equal(result.screen.panels.character.visible, true);
       assert.ok(renderScreen(result.screen).includes('<dt>Вы</dt><dd>Микула, младший приказчик</dd>'));
@@ -153,6 +154,7 @@ test('local play persists a free turn and replays it after a server restart',
       assert.ok(result.screen.panels.inventory.data.zones.worn_quick.some(item => item.label === 'хозяйственный нож'));
       assert.ok(result.screen.presentation_context.location_label);
       assert.ok(result.screen.presentation_context.date_label);
+      assert.equal(result.screen.presentation_context.turn_elapsed_label, '15 мин');
       assert.notEqual(result.screen.presentation_context.time_label, started.screen.presentation_context.time_label);
       assert.equal(Number(committed.clock.whole_minutes) - Number(beforeTurn.clock.whole_minutes), 15 * (index + 1));
       assert.equal(Number(committed.body.energy), Number(beforeTurn.body.energy) - index - 1);

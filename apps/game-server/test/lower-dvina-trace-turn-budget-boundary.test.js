@@ -503,11 +503,12 @@ test('trace retry shares one turn budget context', async () => {
   assert.equal(contexts[0], contexts[1]);
 });
 
-test('a long valid turn still commits without an obsolete whole-turn deadline', async () => {
+test('a long valid turn commits before the six-minute reserve', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   const diagnostics = createLlmDiagnostics({ now: () => now, turnBudget: budget });
-  const f = fixture({ llmDiagnostics: diagnostics, beforeRandomSource() { now = 25_000; } });
+  const f = fixture({ llmDiagnostics: diagnostics,
+    beforeRandomSource() { now = 354_999; } });
   await f.runtime.submitTurn({ partyId: f.partyId, input: {
     request_id: 'budget-precommit', idempotency_key: 'budget-precommit',
     raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
@@ -515,11 +516,12 @@ test('a long valid turn still commits without an obsolete whole-turn deadline', 
   assert.equal(f.commitCount(), 1);
 });
 
-test('pre-commit reserve permits phase 2 repository commit before boundary', async () => {
+test('pre-commit reserve permits phase 2 repository commit with 5001ms left', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   const diagnostics = createLlmDiagnostics({ now: () => now, turnBudget: budget });
-  const f = fixture({ llmDiagnostics: diagnostics, beforeRandomSource() { now = 24_999; } });
+  const f = fixture({ llmDiagnostics: diagnostics,
+    beforeRandomSource() { now = 354_999; } });
   await f.runtime.submitTurn({ partyId: f.partyId, input: {
     request_id: 'budget-precommit-ok', idempotency_key: 'budget-precommit-ok',
     raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
@@ -528,22 +530,37 @@ test('pre-commit reserve permits phase 2 repository commit before boundary', asy
   assert.equal(f.lastCommitInput().turnBudget, budget);
 });
 
-test('a former whole-turn deadline does not suppress post-commit presentation', async () => {
+test('pre-commit reserve blocks phase 2 commit with 4999ms left', async () => {
+  let now = 0;
+  const budget = createLlmTurnBudget({ now: () => now });
+  const diagnostics = createLlmDiagnostics({ now: () => now,
+    turnBudget: budget });
+  const f = fixture({ llmDiagnostics: diagnostics,
+    beforeRandomSource() { now = 355_001; } });
+  await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId, input: {
+    request_id: 'budget-precommit-blocked',
+    idempotency_key: 'budget-precommit-blocked',
+    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+  } }), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+  assert.equal(f.commitCount(), 0);
+});
+
+test('deadline after factual commit returns pending presentation without another commit', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   const diagnostics = createLlmDiagnostics({ now: () => now, turnBudget: budget });
   const f = fixture({ llmDiagnostics: diagnostics,
-    beforeRandomSource() { now = 24_999; },
-    afterCommittedVisibleRead() { now = 30_000; } });
+    beforeRandomSource() { now = 354_999; },
+    afterCommittedVisibleRead() { now = 360_001; } });
   const result = await f.runtime.submitTurn({ partyId: f.partyId, input: {
     request_id: 'budget-post-commit-visible',
     idempotency_key: 'budget-post-commit-visible',
     raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
   } });
   assert.equal(f.commitCount(), 1);
-  assert.equal(result.screen.screen_status, 'ready');
-  assert.notEqual(f.narratorInput(), null);
-  assert.equal(f.events.includes('persist_screen'), true);
+  assert.equal(result.screen.screen_status, 'committed_presentation_pending');
+  assert.equal(f.narratorInput(), null);
+  assert.equal(f.events.includes('persist_screen'), false);
 });
 
 test('unexpected repository failure after factual commit remains visible', async () => {

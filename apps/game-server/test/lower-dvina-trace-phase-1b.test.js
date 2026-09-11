@@ -408,7 +408,7 @@ test('acknowledgement rejects a tampered trace marker before mutation', async ()
   assert.equal(session.delivery_ack_result, null);
 });
 
-test('initial session read does not impose an obsolete whole-turn deadline', async () => {
+test('initial session read remains inside the six-minute turn deadline', async () => {
   let now = 0;
   let exhaustRead = false;
   const budget = createLlmTurnBudget({ now: () => now });
@@ -416,7 +416,7 @@ test('initial session read does not impose an obsolete whole-turn deadline', asy
   const f = fixture({ onLoadSession({ options }) {
     if (!exhaustRead) return;
     assert.equal(options.turnBudget, budget);
-    now = 30_000;
+    now = 359_999;
   } });
   const opening = await createRuntime(f).startNewGame({
     scenario_id: 'lower_dvina_trace_v1', request_id: 'deadline-opening'
@@ -433,7 +433,7 @@ test('initial session read does not impose an obsolete whole-turn deadline', asy
   });
   assert.equal(submitted, 1);
   assert.equal(diagnostics.report({ party_id: opening.party_id,
-    request_id: 'deadline-initial-read' }).turn_duration_ms, 30_000);
+    request_id: 'deadline-initial-read' }).turn_duration_ms, 359_999);
 });
 
 test('first acknowledgement is immutable and exact replay performs no write', async () => {

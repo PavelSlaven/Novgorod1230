@@ -108,7 +108,8 @@ and adds no second transaction owner.
   Header получает готовые `presentation_context` place/date/time; этот DTO
   не изменяет сохранённый `visible_context` и не является новой world truth.
 - Тот же projector строит ordered `screen.checks` из committed check results:
-  generic и player-conversation checks, а в combat только шаги player actor.
+  generic, player-conversation, negotiation и treatment checks, а в combat
+  только шаги player actor.
   Он добавляет safe actor/action и modifier labels, удаляет check identity,
   audit/seed/policy refs и не публикует NPC checks без perception binding.
   Pending semantic/combat screen, ready screen и historical replay используют

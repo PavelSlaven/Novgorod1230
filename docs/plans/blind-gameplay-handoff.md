@@ -2,7 +2,7 @@
 
 **Назначение:** точка входа для CHIEF и разработчиков. **Не передавать PLAYER.**
 **Основной PR:** [#93](https://github.com/PavelSlaven/Novgorod1230/pull/93).
-**Полный план:** [v5 — автономная приёмка](blind-gameplay-autonomous-plan.md).
+**Полный план:** [v6 — автономная приёмка](blind-gameplay-autonomous-plan.md).
 **Статус:** продолжение реализации; готовность игры не подтверждена.
 
 ## Короткое поручение для нового чата
@@ -22,6 +22,10 @@
 > 30 секунд. Контекст, ограничения и незакрытые критерии находятся в указанных файлах;
 > история старого чата не требуется. До включения reasoning сравни подходящие кванты
 > без thinking на той же GPU0; сохраняй обязательный контекст, качество и бюджет хода.
+> Назначь отдельного RPG / D&D Mechanics & Dice Auditor: параметры, значимые checks,
+> броски в коде и корректная интерпретация переданного результата локальной LLM.
+> Добавь в UI видимый бросок, его сложность, результат и расшифровку modifiers из
+> code-owned результата; сохраняй эту информацию при reload/retry.
 
 ## С чего начать
 
@@ -114,6 +118,8 @@ gh pr checks 93 --repo PavelSlaven/Novgorod1230
 | Медленный составной ход | Построить реальный critical path, убрать повторную семантику у существующих owners; измерять browser submit → ready DOM |
 | Runtime policy ещё старая | Согласовать planned context/reasoning/role bindings с llm-runtime, settings, launcher и WK contracts; не включать target молча |
 | Кванты без thinking ещё не сравнены по новому протоколу | Проверить перспективные fitting quants одной исходной модели при одинаковых context/KV/template/sampling, затем качество на holdout и целый браузерный ход; см. раздел 11.3 плана |
+| RPG / D&D: сквозная приёмка бросков | Отдельный Mechanics & Dice Auditor проверяет параметры/checks/code-owned RNG, доставку результата и его интерпретацию реальной LLM; технические tests не заменяют browser evidence; см. раздел 16.1 плана |
+| UI: прозрачная проверка | Показывать player-relevant roll, сложность/DC, modifiers с источниками, итог и исход из code-owned projection; согласовать visibility contracts и persistence/reload; см. раздел 16.3 плана |
 | Достаточность observation/materialization | Различить допустимую неизвестность и незавершённую механику восприятия; не зафиксировать blanket unknown как решение |
 | Литературная и игровая приёмка | Полный независимый blind UI-run и отдельно локальный explorer; проза, время и мир проверяются целиком |
 | Финальная серия | Один полный сюжетный путь с эпилогом + две длительные alternative campaigns; outcomes и покрытие задать до запуска |
@@ -125,6 +131,70 @@ branches или parser, который узнаёт только опублик�
 
 Корректный вызов «Онисим!» не является дефектом кавычек. Не открывать его заново без
 нового свидетельства потери exact speech или изменения поведения.
+
+## Проверено по RPG / D&D и карточке броска
+
+Read-only аудит кода 850568c223f0b5d7b69e9f6a5f8ab7e18bcf8640 подтвердил
+code-owned d20, параметры/modifiers, выбор outcome и проверки commit. Это
+D&D-подобная система; конкретная редакция D&D не установлена. Текущая deployed DB
+и реальная интерпретация локальной LLM в этом аудите не проверялись.
+
+| Область | Результат и следующий шаг |
+|---|---|
+| Механика кода | VERIFIED кодом и 55 профильными tests; это не полный аудит всех боевых правил |
+| Persistence/replay | VERIFIED на unit/contract уровне; live PostgreSQL в этом аудите NOT RUN |
+| Доставка/интерпретация LLM | NOT VERIFIED: проследить фактический safe input для generic check и последующий ответ выбранной модели |
+| UI | NOT IMPLEMENTED: check есть в public turn response, но отсутствует в screen, который сохраняет web-клиент |
+| UI/boundary tests | 34/34 PASS существующих tests; они не проверяют ещё отсутствующую карточку |
+
+Карта существующих владельцев:
+
+- [checks-rng](../../packages/checks-rng/src/index.js): код владеет DC, RNG/d20,
+  attribute bonus, суммой modifiers, total, margin и outcome bands; private audit
+  содержит внутренние RNG-данные;
+- [actor-step](../../packages/turn/src/turn-step-actor-step.js) и
+  [scenario modifiers](../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-generic-owners.js):
+  admission, actor parameters/body/load и code-owned выбор outcome branch;
+- [commit validator](../../packages/turn/src/turn-step-commit-validator.js):
+  binding, арифметика и band независимо перепроверяются;
+- [public result projection](../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js)
+  уже выдаёт generic check отдельно от screen; conversation check лежит в другом
+  поле. Существующая фильтрация удаляет private audit. Значит UI gap нельзя
+  ошибочно описать как полное отсутствие DC/roll в HTTP;
+- [persisted turn state](../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-turn-step-state.js)
+  проецирует в last_turn только первый request/result через [0]. Проверить полноту
+  нескольких checks: это риск неполной public projection, а не доказательство
+  отсутствия остальных результатов в committed envelope/БД;
+- [web bootstrap](../../apps/game-web/src/app/bootstrap.js) сохраняет result.screen;
+  GET reload также возвращает screen. Top-level check в текущую историю не входит;
+- [narration stage](../../packages/turn/src/stages/narration.js) формирует узкий
+  context.outcome с movement marker. Сам по себе этот участок не доказывает
+  отсутствие смысла check во всём visible_context: проверить реальный payload,
+  выбранную branch и owner-visible consequences до назначения fix.
+
+Следующий packet по UI: существующий server/presentation owner строит единый
+упорядоченный player-safe список checks внутри persisted pending/ready/historical
+screen. Имя нового поля выбирается при согласовании schema; отдельный store/service
+не нужен. Сохранить actor/action binding, исходные значения/модификаторы и безопасные
+понятные подписи их источников. Web только отображает этот результат. Generic,
+conversation и combat не должны перекладывать сборку карточки на разные UI callers.
+Не публиковать все NPC/combat rows без проверки perception scope.
+
+Числовая карточка UI и художественная prose — разные представления. Существующий
+запрет raw DC/roll в narration не является запретом на явно запрошенную карточку.
+Обновить screen schema/visibility contract/consumers/tests, сохранив grounding прозы.
+Проверить ту же карточку после retry, pending-presentation recovery, reload и
+historical replay; для реального LLM verdict нужен новый browser trace.
+
+Фактически выполненные команды (код после этого менялся только в plan/handoff):
+
+~~~powershell
+node --test packages/checks-rng/test/domain.test.js packages/turn/test/turn-step-generic-domain-outcome.test.js apps/game-server/test/lower-dvina-trace-turn-step-generic-owners.test.js apps/game-server/test/lower-dvina-trace-turn-step-commit.test.js apps/game-server/test/lower-dvina-trace-narration-wire.test.js
+node --test apps/game-server/test/lower-dvina-trace-phase-2-public-boundary.test.js apps/game-web/test/game-web.test.js apps/game-web/test/turn-submission.test.js
+~~~
+
+Эти известные tests — техническая regression-база, не скрытые приёмочные случаи
+для PLAYER и не замена полной игры.
 
 ## Переносимые свидетельства
 

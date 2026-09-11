@@ -25,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 59);
+  assert.equal(corpus.corpus_version, 60);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -542,14 +542,26 @@ test('negative narration audit fixture rejects an unsupported visible claim', ()
   });
 });
 
-test('captured and unseen static recap false PASS fail the existing eval rubric', async () => {
-  const fixtures = corpus.fixtures.filter(({ id }) => id.endsWith('-static-recap'));
-  assert.equal(fixtures.length, 2);
-  const replies = fixtures.map(({ expected_output }) => ({
-    ...structuredClone(expected_output), pass: true, artistic_verdict: 'pass', technical_verdict: 'pass',
-    failure_checks: Object.fromEntries(Object.keys(expected_output.failure_checks).map((key) => [key, []])),
-    concerns: [], evidence: ['The scene is grounded and the current beat is complete.']
-  }));
+test('raw narration false PASS replies fail static-recap and missing-result rubrics', async () => {
+  const staticRecap = corpus.fixtures.find(({ id }) =>
+    id === 'gameplay-narrator-auditor-captured-static-recap');
+  const missingResult = corpus.fixtures.find(({ id }) =>
+    id === 'gameplay-narrator-auditor-missing-unresolved-result');
+  assert.deepEqual(missingResult.expected_output.source_reviews, [
+    { ref: 'visible_change_1', segment_choices: ['s1'] },
+    { ref: 'visible_change_2', segment_choices: [] }
+  ]);
+  assert.equal(missingResult.expected.required_values['concerns.0.kind'],
+    'missing_visible_change');
+  const fixtures = [staticRecap, missingResult];
+  const staticFalsePass = structuredClone(staticRecap.expected_output);
+  staticFalsePass.unsupported = [];
+  staticFalsePass.literary_failures = [];
+  staticFalsePass.evidence = ['The scene is grounded and the current beat is complete.'];
+  const missingResultFalsePass = structuredClone(missingResult.expected_output);
+  missingResultFalsePass.source_reviews[1].segment_choices = ['s1'];
+  missingResultFalsePass.evidence = ['Both required sources are fully conveyed.'];
+  const replies = [staticFalsePass, missingResultFalsePass];
   const server = createServer(async (request, response) => {
     for await (const _ of request) {}
     response.setHeader('Content-Type', 'application/json');
@@ -561,10 +573,15 @@ test('captured and unseen static recap false PASS fail the existing eval rubric'
       compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${server.address().port}/v1`,
       model: 'fixture-model'
     } });
+    const [staticResult, missingResultReport] = report.results;
+    assert.ok(staticResult.errors.includes('unexpected_value:pass'));
+    assert.ok(staticResult.errors.includes('unexpected_value:artistic_verdict'));
+    assert.ok(staticResult.errors.includes('unexpected_value:technical_verdict'));
+    assert.ok(missingResultReport.errors.includes('unexpected_value:pass'));
+    assert.ok(missingResultReport.errors.includes('unexpected_value:concerns.length'));
+    assert.ok(missingResultReport.errors.includes('unexpected_value:concerns.0.kind'));
     for (const result of report.results) {
       assert.equal(result.pass, false);
-      assert.ok(result.errors.includes('unexpected_value:pass'));
-      assert.ok(result.errors.includes('unexpected_value:artistic_verdict'));
       assert.equal(result.errors.some((error) => error.startsWith('validator:')), false);
       assert.equal(result.llm_calls, 1);
       assert.equal(result.repair_calls, 0);
@@ -656,7 +673,7 @@ test('planner, ordinary and NPC conversation semantic mismatches fail after owne
   const plannerOutput = structuredClone(planner.expected_output);
   plannerOutput.activity.effort = 'heavy';
   const ordinaryOutput = structuredClone(ordinary.expected_output);
-  ordinaryOutput.entities[0].semantic_descriptor.semantic_type = 'other_ordinary';
+  ordinaryOutput.semantic_admission_class = 'specialized_or_valuable';
   const conversationOutput = structuredClone(conversation.expected_output);
   conversationOutput.speech.dominant_act = 'question';
   const outputs = [plannerOutput, ordinaryOutput, conversationOutput];

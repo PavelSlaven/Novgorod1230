@@ -107,7 +107,7 @@ function overlayTurnStepResults(base, input) {
     if (plan.resolution === 'direct' && plan.goal_result === 'not_achieved') changes.push(
       text(plan.interpretation?.player_goal) ? `Не удалось достичь цели «${plan.interpretation.player_goal}».` : 'Цель попытки не достигнута.');
     changes.forEach(change => components.add(change));
-    return changes.length === 0 ? [] : [changes.join(' ')];
+    return changes;
   });
   projectDirectSeedChanges({ input, directSeedKeys: [...usedKeys] }).forEach(change => components.add(change));
   if (!text(remaining) && orderedChanges.length === 0 && inspection == null && itemInspections.length === 0) return base;

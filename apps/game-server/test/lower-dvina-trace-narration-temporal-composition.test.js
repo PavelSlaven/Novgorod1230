@@ -1,7 +1,20 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createLowerDvinaTraceNarrationService } from '../src/runtime/lower-dvina-trace-narration-llm.js';
-import { reviewedNarration } from './narration-audit-fixture.js';
+
+function audited(wire, {
+  sourceReviews = wire.required_current_beat.changes.concat(wire.required_current_beat.uncertainties)
+    .map(({ ref }) => ({ ref, segment_choices: wire.segments.map(({ segment_id }) => segment_id) })),
+  unsupported = [], literaryFailures = [], evidence = ['All required sources are covered.']
+} = {}) {
+  return {
+    reviewed_segments: wire.segments.map(({ segment_id }) => segment_id),
+    source_reviews: sourceReviews,
+    unsupported,
+    literary_failures: literaryFailures,
+    evidence
+  };
+}
 
 for (const sample of [
   { name: 'live-shaped speech and pending probing', words: 'Онисим!',
@@ -21,11 +34,12 @@ for (const sample of [
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
     const prompt = call.messages[0].content;
-    assert.match(prompt, /overlap, duration and persistence between facts require explicit supporting basis/u);
-    assert.match(prompt, /not ambience, silence or subjective tempo/u);
     const input = JSON.parse(call.messages[1].content);
-    if (call.role_id === 'gameplay_narrator') return { output: {
-      prose: sample.bad, action_options: [], used_references: [] } };
+    if (call.role_id === 'gameplay_narrator') {
+      assert.match(prompt, /Put the current beat first/u);
+      assert.match(prompt, /Ground every sensation, action, temporal relation and causal link/u);
+      return { output: { prose: sample.bad, action_options: [], used_references: [] } };
+    }
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
       assert.match(prompt, /concerns are not an exhaustive whitelist/u);
       assert.match(prompt, /shorten rather than embellish/u);
@@ -33,24 +47,21 @@ for (const sample of [
       assert.ok(input.concerns.some(({ kind }) => kind === 'unsupported_event'));
       return { output: { replacements: [{ prose: sample.repaired }] } };
     }
-    assert.match(prompt, /mechanically attached time report/u);
-    assert.match(prompt, /a pending remainder becomes metadata\/explanation/u);
-    const audit = { ...reviewedNarration(input.segments), pass: true,
-      artistic_verdict: 'pass', technical_verdict: 'pass', concerns: [],
-      evidence: ['Each supplied result is covered; the pending choice remains open.'],
-      coverage: { visible_change_1: ['s1'], visible_change_2: ['s1'],
-        uncertainty_1: [`s${input.segments.length}`] } };
+    assert.match(prompt, /Silently split[\s\S]*every factual proposition/u);
+    assert.match(prompt, /source_reviews must contain exactly/u);
+    const audit = audited(input, {
+      evidence: ['Each supplied result is covered; the pending choice remains open.']
+    });
     if (input.phase === 'initial') {
-      audit.pass = false;
-      audit.artistic_verdict = audit.technical_verdict = 'fail';
-      audit.failure_checks.elapsed_as_service_report = ['s1'];
-      audit.failure_checks.weak_literary_composition = [`s${input.segments.length}`];
-      audit.concerns = [
-        { segment_choice: 's1', kind: 'unsupported_event', reason: 'No overlap or duration basis links speaking to the elapsed interval.' },
-        { segment_choice: 's1', kind: 'technical_presentation', reason: 'Elapsed time is attached mechanically through an invented relation.' },
-        { segment_choice: `s${input.segments.length}`, kind: 'literary_quality', reason: 'The remainder is a planning report rather than an open concrete choice.' }
+      audit.unsupported = [{ segment_choice: 's1', kind: 'unsupported_event',
+        reason: 'No overlap or duration basis links speaking to the elapsed interval.' }];
+      audit.literary_failures = [
+        { check: 'elapsed_as_service_report', segment_choice: 's1',
+          reason: 'Elapsed time is attached mechanically through an invented relation.' },
+        { check: 'weak_literary_composition', segment_choice: `s${input.segments.length}`,
+          reason: 'The remainder is a planning report rather than an open concrete choice.' }
       ];
-      audit.evidence = ['The temporal relation is unsupported and the remainder reads as planning metadata.'];
+      audit.evidence = [];
     }
     return { output: audit };
   } } });
@@ -88,7 +99,8 @@ test('committed transient motion is performed while only its observation result 
   assert.deepEqual(visible.uncertainties, []);
   assert.ok(visible.visible_changes[2].includes(`«${description}»`));
   assert.equal(visible.visible_changes[0], 'Вы произнесли: «Онисим!»; этот шаг занял 1 минуту.');
-  assert.equal(visible.visible_changes[2], `Вы в течение 5 минут выполняли попытку: «${description}». Результат наблюдения не установлен.`);
+  assert.equal(visible.visible_changes[2], `Вы в течение 5 минут выполняли попытку: «${description}».`);
+  assert.equal(visible.visible_changes[3], 'В ходе этой попытки результат наблюдения не установлен.');
   assert.equal(visible.visible_changes.some(change => change.startsWith('Прошло ')), false);
   const prose = '«Онисим!» — зовёте вы: на оклик уходит минута. Обнаружив на берегу длинную ветвь, вы осторожно прощупываете ею воду между обломками в течение следующих пяти минут; что находится под водой, пока неясно.';
   const calls = [];
@@ -98,18 +110,17 @@ test('committed transient motion is performed while only its observation result 
     assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), visible.visible_changes);
     assert.deepEqual(wire.required_current_beat.uncertainties, []);
     assert.deepEqual(wire.optional_support, { visible_scene: scene.visible_scene, sensory_details: scene.sensory_details });
-    assert.match(call.messages[0].content, /physical handling\/contact happened for the supplied applied duration/u);
-    assert.match(call.messages[0].content, /goal_result pending does not mean an applied operation was unexecuted/u);
-    assert.doesNotMatch(call.messages[0].content, /Convey the concrete pending action as unstarted/u);
+    if (call.role_id === 'gameplay_narrator') {
+      assert.match(call.messages[0].content, /committed transient attempt is independent evidence of performed physical[\s\S]*contact/u);
+      assert.match(call.messages[0].content, /performed handling stays performed even when its observation result is unknown/u);
+    } else {
+      assert.match(call.messages[0].content, /source_reviews must contain exactly/u);
+    }
     if (call.role_id === 'gameplay_narrator') return { output: { prose, action_options: [], used_references: [] } };
     assert.equal(call.role_id, 'gameplay_narrator_auditor');
-    const pass = call.messages[0].content.includes('Do not turn an applied attempt into an unstarted action');
-    return { output: { ...reviewedNarration(wire.segments), pass,
-      artistic_verdict: 'pass', technical_verdict: 'pass',
-      coverage: Object.fromEntries(wire.required_current_beat.changes.map(({ ref }, index) => [ref, [`s${index + 1}`]])),
-      concerns: pass ? [] : [{ segment_choice: 's3', kind: 'unsupported_attempt',
-        reason: 'Прощупывание должно остаться неначатым, а не совершённым действием.' }],
-      evidence: [pass ? 'Committed handling happened; its observation outcome remains unknown.' : 'Attempt incorrectly treated as unstarted.'] } };
+    return { output: audited(wire, {
+      evidence: ['Committed handling happened; its observation outcome remains unknown.']
+    }) };
   } } });
   const result = await service.run({ version: 1, schema: 'narration_request', request_id: 'committed-transient',
     surface: 'turn', visible_context: visible, context: { outcome: { goal_result: 'pending' } } });
@@ -132,34 +143,36 @@ for (const sample of [
   const visible = { version: 1, schema: 'visible_context_package', visible_scene: 'У воды',
     visible_changes: [`Вы произнесли: «${sample.words}». Прошла 1 минута.`,
       `Обнаружено: «${sample.material}».`,
-      `Вы выполнили попытку: «${sample.attempt}». Прошло ${sample.duration} минут. Результат наблюдения не установлен.`],
+      `Вы выполнили попытку: «${sample.attempt}». Прошло ${sample.duration} минут.`,
+      'В ходе этой попытки результат наблюдения не установлен.'],
     uncertainties: [], sensory_details: [], visible_npc: [], visible_objects: [], known_context: [],
     allowed_tensions: [], do_not_imply: [] };
   const calls = [];
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
     const wire = JSON.parse(call.messages[1].content);
-    assert.match(call.messages[0].content, /chain of clauses without scene\/action composition, linked mainly by bare or metadata time announcements/u);
-    assert.match(call.messages[0].content, /Do not invent ambience, reactions or concurrent action/u);
-    if (call.role_id === 'gameplay_narrator') return { output: { prose: sample.bad, action_options: [], used_references: [] } };
+    if (call.role_id === 'gameplay_narrator') {
+      assert.match(call.messages[0].content, /Put the current beat first/u);
+      assert.match(call.messages[0].content, /Sparse evidence calls for concise prose/u);
+      return { output: { prose: sample.bad, action_options: [], used_references: [] } };
+    }
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
       assert.ok(wire.concerns.some(({ kind }) => kind === 'literary_quality'));
       return { output: { replacements: [{ prose: sample.good }] } };
     }
     const ids = wire.segments.map(({ segment_id }) => segment_id);
-    assert.match(call.messages[0].content, /exactly the supplied segment_id values; copy them unchanged/u);
+    assert.match(call.messages[0].content, /reviewed_segments must copy every[\s\S]*exactly once and in order/u);
     const pass = wire.phase === 'final';
     const finding = 'Короткие факты сцеплены главным образом отдельными отметками времени; причинная сцена не сложилась, хотя факты поддержаны.';
-    const audit = { ...reviewedNarration(wire.segments), pass,
-      artistic_verdict: pass ? 'pass' : 'fail', technical_verdict: pass ? 'pass' : 'fail',
-      coverage: Object.fromEntries(wire.required_current_beat.changes.map(({ ref }) => [ref, ids])),
-      concerns: pass ? [] : [{ segment_choice: ids[0], kind: 'literary_quality', reason: finding },
-        { segment_choice: ids[0], kind: 'technical_presentation', reason: finding }],
-      evidence: [pass ? 'Длительности принадлежат выполненным физическим эпизодам; открытый результат не подменён успехом или выдуманной реакцией.' : finding] };
-    if (!pass) {
-      audit.failure_checks.elapsed_as_service_report = [ids[0]];
-      audit.failure_checks.weak_literary_composition = [ids[0]];
-    }
+    const audit = audited(wire, {
+      literaryFailures: pass ? [] : [
+        { check: 'elapsed_as_service_report', segment_choice: ids[0], reason: finding },
+        { check: 'weak_literary_composition', segment_choice: ids[0], reason: finding }
+      ],
+      evidence: pass
+        ? ['Длительности принадлежат выполненным физическим эпизодам; открытый результат не подменён успехом или выдуманной реакцией.']
+        : []
+    });
     return { output: audit };
   } } });
   const result = await narrator.run({ version: 1, schema: 'narration_request', request_id: sample.name,
@@ -185,7 +198,8 @@ for (const sample of [
 ]) test(`${sample.name}: temporal aspect and every embedded uncertainty are mandatory`, async () => {
   const visible = { version: 1, schema: 'visible_context_package', visible_scene: 'Текущее место',
     visible_changes: [`Вы произнесли: «${sample.words}». Прошла 1 минута.`, `Обнаружено: «${sample.material}».`,
-      `Вы выполнили попытку: «${sample.action}». Результат наблюдения не установлен.`],
+      `Вы выполнили попытку: «${sample.action}».`,
+      'В ходе этой попытки результат наблюдения не установлен.'],
     uncertainties: [], sensory_details: sample.support, visible_npc: [], visible_objects: [],
     known_context: [], allowed_tensions: [], do_not_imply: [] };
   const calls = [];
@@ -193,33 +207,35 @@ for (const sample of [
     calls.push(call.role_id);
     const wire = JSON.parse(call.messages[1].content);
     const prompt = call.messages[0].content;
-    assert.match(prompt, /Exact elapsed time must modify that same applied action\/result, never the duration or persistence of static/u);
-    assert.match(prompt, /Distinguish action duration from delay before action/u);
-    assert.match(prompt, /Every unresolved-result proposition inside a required change must remain explicitly unknown/u);
-    assert.match(prompt, /render it naturally as speech in the scene, not a typed speech-event report/u);
-    if (call.role_id === 'gameplay_narrator') return { output: { prose: sample.bad, action_options: [], used_references: [] } };
+    if (call.role_id === 'gameplay_narrator') {
+      assert.match(prompt, /Integrate a supplied duration into its own action/u);
+      assert.match(prompt, /Every unresolved-result proposition inside a required change must remain explicitly unknown/u);
+      assert.match(prompt, /Preserve confirmed speech verbatim/u);
+      return { output: { prose: sample.bad, action_options: [], used_references: [] } };
+    }
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
       assert.ok(wire.concerns.some(({ kind }) => kind === 'missing_visible_change'));
       assert.ok(wire.concerns.some(({ kind }) => kind === 'unsupported_event'));
       return { output: { replacements: [{ prose: sample.good }] } };
     }
-    assert.match(prompt, /Coverage requires every proposition within the source/u);
+    assert.match(prompt, /source_reviews must contain exactly/u);
     const ids = wire.segments.map(({ segment_id }) => segment_id);
     const pass = wire.phase === 'final';
-    const audit = { ...reviewedNarration(wire.segments), pass, artistic_verdict: pass ? 'pass' : 'fail',
-      technical_verdict: pass ? 'pass' : 'fail',
-      coverage: { visible_change_1: ids, visible_change_2: ids, visible_change_3: pass ? ids : [] },
-      concerns: pass ? [] : [
-        { segment_choice: ids[1], kind: 'unsupported_event', reason: 'Длительность оклика перенесена на постоянство sensory support без основания.' },
-        { segment_choice: ids.at(-1), kind: 'technical_presentation', reason: 'Длительность выполненного контакта превращена в задержку до его начала.' },
-        { segment_choice: ids[0], kind: 'missing_visible_change', reason: 'Пропущено, что результат наблюдения остаётся неизвестным внутри visible_change_3.' },
-        { segment_choice: ids[0], kind: 'literary_quality', reason: 'Речь и находка поданы как последовательность записей отчёта.' }],
-      evidence: [pass ? 'Длительности относятся к оклику и контакту; sensory support не получает длительность. Результат явно неизвестен, речь дословна.'
-        : 'Все исходные слова известны, но временная связь и полнота смысла required change нарушены.'] };
-    if (!pass) {
-      audit.failure_checks.elapsed_as_service_report = [ids.at(-1)];
-      audit.failure_checks.weak_literary_composition = [ids[0]];
-    }
+    const audit = audited(wire, {
+      sourceReviews: wire.required_current_beat.changes.concat(wire.required_current_beat.uncertainties)
+        .map(({ ref }, index) => ({ ref, segment_choices: !pass && index === 3 ? [] : ids })),
+      unsupported: pass ? [] : [{ segment_choice: ids[1], kind: 'unsupported_event',
+        reason: 'Длительность оклика перенесена на постоянство sensory support без основания.' }],
+      literaryFailures: pass ? [] : [
+        { check: 'elapsed_as_service_report', segment_choice: ids.at(-1),
+          reason: 'Длительность выполненного контакта превращена в задержку до его начала.' },
+        { check: 'weak_literary_composition', segment_choice: ids[0],
+          reason: 'Речь и находка поданы как последовательность записей отчёта.' }
+      ],
+      evidence: pass
+        ? ['Длительности относятся к оклику и контакту; sensory support не получает длительность. Результат явно неизвестен, речь дословна.']
+        : []
+    });
     return { output: audit };
   } } });
   const result = await service.run({ version: 1, schema: 'narration_request', request_id: sample.name,

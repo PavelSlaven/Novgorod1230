@@ -70,9 +70,10 @@ for (const [name, intent, denial = false] of [
     consequence: { visible_seed: Object.assign({}, ...result.consequenceFragments.map(c => c.visible_seed)) },
     mode_resolution: { decision_trace: { step_traces: [{ applied: true,
       step_index: input.step_index, approved_plan: approved }] } } });
-  assert.equal(visible.visible_changes.length, 1);
-  assert.ok(visible.visible_changes[0].includes(intent));
-  assert.match(visible.visible_changes[0], /Результат наблюдения не установлен/u);
+  assert.deepEqual(visible.visible_changes, [
+    `Вы в течение 5 минут выполняли попытку: «${intent}».`,
+    'В ходе этой попытки результат наблюдения не установлен.'
+  ]);
 });
 
 test('transient use revalidates actor, current item control and visible targets; A1 stays unclaimed', () => {
@@ -205,7 +206,10 @@ for (const [name, intent, wrongDescription] of [
         turn_step_activity: { kind: 'semantic_activity', duration_minutes: 5 } } },
       mode_resolution: { decision_trace: { remaining_intent: null,
         step_traces: [{ step_index: input.step_index, applied: true, approved_plan: result.plan }] } } });
-    assert.ok(visible.visible_changes[0].includes(`«${intent}»`));
+    assert.deepEqual(visible.visible_changes, [
+      `Вы в течение 5 минут выполняли попытку: «${intent}».`,
+      'В ходе этой попытки результат наблюдения не установлен.'
+    ]);
   }
 });
 

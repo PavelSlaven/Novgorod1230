@@ -45,19 +45,19 @@ test('frozen role fixtures ship exact production-built messages', async () => {
   }
 });
 
-test('frozen narration auditor prompts retain both validator-valid forms', async () => {
+test('frozen narration auditor prompts require the raw source-review shape', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
   for (const fixture of corpus.fixtures.filter(({ role_id }) =>
     role_id === 'gameplay_narrator_auditor')) {
     const prompt = fixture.messages[0].content;
-    assert.equal(prompt.includes('"artistic_verdict":null,"technical_verdict":null,"pass":false'), true);
-    assert.match(prompt, /never angle-bracket placeholders/u);
-    assert.match(prompt, /reviewed_segments must contain each canonical segment choice exactly once/u);
-    assert.match(prompt, /failure_checks requires exactly these five keys/u);
-    assert.match(prompt, /arrays of canonical segment choices only, never prose/u);
-    assert.match(prompt, /action_intent supplies intention only/u);
-    assert.match(prompt, /Empty optional arrays are omissions/u);
-    assert.doesNotMatch(prompt, /scene_checks/u);
+    assert.match(prompt, /source_reviews must contain exactly/u);
+    assert.match(prompt, /Use \[\] for an omitted or partially\s+conveyed source/u);
+    assert.match(prompt, /an embedded unknown result must remain unknown/u);
+    assert.match(prompt, /unsupported contains only/u);
+    assert.match(prompt, /literary_failures contains only/u);
+    assert.doesNotMatch(prompt, /failure_checks/u);
+    assert.doesNotMatch(prompt, /artistic_verdict|technical_verdict|concerns/u);
+    assert.doesNotMatch(prompt, /"pass":/u);
   }
 });
 
@@ -160,18 +160,22 @@ async function narrationMessages(fixture) {
     if (next.role_id === 'gameplay_narrator_format_repair') return { output: fixture.expected_output };
     if (next.role_id === 'gameplay_narrator_semantic_repair') return { output: fixture.expected_output };
     auditCalls += 1;
-    return { output: target === 'gameplay_narrator_auditor' ? fixture.expected_output
-      : target === 'gameplay_narrator_semantic_repair' && auditCalls === 1
-        ? { pass: false, artistic_verdict: 'pass', technical_verdict: 'pass',
-          ...reviewedNarration(JSON.parse(next.messages[1].content).segments),
-          coverage: {  }, concerns: [{ segment_choice: `s${
-          JSON.parse(next.messages[1].content).segments.findIndex(({ segment_id }) =>
-            segment_id === payload.concerns[0].segment_id) + 1}`,
-          kind: payload.concerns[0].kind, reason: payload.concerns[0].reason }],
-        evidence: ['Unsupported sound.'] }
-        : { pass: true, artistic_verdict: 'pass', technical_verdict: 'pass',
-          ...reviewedNarration(JSON.parse(next.messages[1].content).segments),
-          coverage: {  }, concerns: [], evidence: ['Grounded.'] } };
+    if (target === 'gameplay_narrator_auditor') {
+      return { output: fixture.expected_output };
+    }
+    const wire = JSON.parse(next.messages[1].content);
+    const first = wire.segments[0]?.segment_id;
+    const coverage = Object.fromEntries([
+      ...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties
+    ].map(({ ref }) => [ref, first == null ? [] : [first]]));
+    const audit = reviewedNarration(wire.segments, coverage);
+    if (target === 'gameplay_narrator_semantic_repair' && auditCalls === 1) {
+      audit.unsupported = [{ segment_choice: `s${wire.segments.findIndex(({ segment_id }) =>
+        segment_id === payload.concerns[0].segment_id) + 1}`,
+      kind: payload.concerns[0].kind, reason: payload.concerns[0].reason }];
+      audit.evidence = [];
+    }
+    return { output: audit };
   } } });
   await narration.run(request);
   if (!call) throw new Error(`narration role was not called: ${target}`);

@@ -78,9 +78,8 @@ test('private prose wire admits only scene and sensory support beside a current 
       if (call.role_id === 'gameplay_narrator') return { output: {
         prose: sample.prose, action_options: [], used_references: [] } };
       const refs = [...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties];
-      return { output: { ...reviewedNarration(wire.segments),
-        coverage: Object.fromEntries(refs.map(({ ref }) => [ref, ['s1']])),
-        pass: true, artistic_verdict: 'pass', technical_verdict: 'pass', concerns: [],
+      return { output: { ...reviewedNarration(wire.segments,
+        Object.fromEntries(refs.map(({ ref }) => [ref, ['s1']]))),
         evidence: ['The current beat is grounded and optional context is selected.'] } };
     } } });
     const result = await narrator.run({ version: 1, schema: 'narration_request',
@@ -114,8 +113,12 @@ for (const sample of [
       calls.push(call.role_id);
       const wire = JSON.parse(call.messages[1].content);
       assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details });
-      assert.match(call.messages[0].content, /Subject plus exact duration plus supported physical action is integrated duration, including in a short sparse sequence/u);
-      assert.match(call.messages[0].content, /Dumping unrelated or all unchanged details fails static_context_dump/u);
+      assert.match(call.messages[0].content, call.role_id === 'gameplay_narrator_auditor'
+        ? /Integrated duration belongs to its supplied\s+action/u
+        : /Integrate a supplied duration into its own action/u);
+      assert.match(call.messages[0].content, call.role_id === 'gameplay_narrator_auditor'
+        ? /recap of unchanged\s+support is static_context_dump/u
+        : /do not recap unchanged scene/u);
       if (call.role_id === 'gameplay_narrator') return { output: {
         prose: dump ? `${sample.prose} ${visible.sensory_details.join(' ')}` : sample.prose,
         action_options: [], used_references: [] } };
@@ -126,11 +129,12 @@ for (const sample of [
       const ids = wire.segments.map(({ segment_id }) => segment_id);
       const pass = !dump || wire.phase === 'final';
       const reason = 'Неизменённые детали пересказаны списком; неотносящиеся к контакту факты отвлекают от физического эпизода.';
-      const audit = { ...reviewedNarration(wire.segments), pass, artistic_verdict: pass ? 'pass' : 'fail',
-        technical_verdict: 'pass', coverage: { visible_change_1: ids },
-        concerns: pass ? [] : [{ segment_choice: ids.at(-1), kind: 'literary_quality', reason }],
-        evidence: [pass ? 'Подлежащее, точная длительность и подтверждённое движение составляют физический эпизод; выбрана только относящаяся к нему sensory detail.' : reason] };
-      if (!pass) audit.failure_checks.static_context_dump = [ids.at(-1)];
+      const audit = { ...reviewedNarration(wire.segments, { visible_change_1: ids }),
+        literary_failures: pass ? [] : [{ check: 'static_context_dump',
+          segment_choice: ids.at(-1), reason }],
+        evidence: pass
+          ? ['Подлежащее, точная длительность и подтверждённое движение составляют физический эпизод.']
+          : [] };
       return { output: audit };
     } } });
     const result = await service.run({ version: 1, schema: 'narration_request', request_id: `${sample.name}-${dump}`,

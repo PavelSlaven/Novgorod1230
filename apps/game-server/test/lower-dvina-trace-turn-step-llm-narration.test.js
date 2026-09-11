@@ -42,17 +42,21 @@ test('body delta reaches narration as grounded meaning without technical prose o
       assert.deepEqual(input.required_current_beat.changes.map(({ text }) => text), visible.visible_changes);
       assert.equal(Object.hasOwn(input, 'visible_context'), false);
       if (call.role_id === 'gameplay_narrator') {
-        assert.match(call.messages[0].content, /never an added diagnosis or possible symptom asserted as fact/u);
+        assert.match(call.messages[0].content, /Add no hidden fact, diagnosis/u);
         return { output: { prose: 'Вас трясёт. {"before":"wet","after":"damp"}',
           action_options: [], used_references: [], self_check: {} } };
       }
       if (call.role_id === 'gameplay_narrator_auditor') {
         auditCount += 1;
-        return { output: auditCount === 1 ? { pass: false, artistic_verdict: 'pass', technical_verdict: 'fail', ...reviewedNarration(JSON.parse(call.messages[1].content).segments), coverage: { visible_change_1: [] }, concerns: [
-          { segment_choice: 's1', kind: 'unsupported_fact', reason: 'Possible shivering is not confirmed.' },
-          { segment_choice: 's1', kind: 'technical_presentation', reason: 'Body JSON is not literary prose.' }
-        ], evidence: ['Only wet-to-damp changed; cold has possible shivering.'] }
-          : { pass: true, artistic_verdict: 'pass', technical_verdict: 'pass', ...reviewedNarration(JSON.parse(call.messages[1].content).segments), coverage: { visible_change_1: ['s1'] }, concerns: [], evidence: ['Only the supported clothing change is stated.'] } };
+        const segments = JSON.parse(call.messages[1].content).segments;
+        return { output: auditCount === 1 ? {
+          ...reviewedNarration(segments, { visible_change_1: [] }),
+          unsupported: [{ segment_choice: 's1', kind: 'unsupported_fact',
+            reason: 'Possible shivering is not confirmed.' }],
+          literary_failures: [{ check: 'elapsed_as_service_report', segment_choice: 's1',
+            reason: 'Body JSON is not literary prose.' }], evidence: [] }
+          : { ...reviewedNarration(segments, { visible_change_1: ['s1'] }),
+            evidence: ['Only the supported clothing change is stated.'] } };
       }
       return { output: { replacements: [{ prose }] } };
     }
@@ -81,8 +85,13 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
               used_references: [], self_check: {} }
           : call.roleId === 'gameplay_narrator_auditor'
             ? calls.filter(({ roleId }) => roleId === 'gameplay_narrator_auditor').length === 1
-              ? { pass: false, artistic_verdict: 'pass', technical_verdict: 'pass', ...reviewedNarration(JSON.parse(call.messages[1].content).segments), coverage: { visible_change_1: [], visible_change_2: [], uncertainty_1: [] }, concerns: [{ segment_choice: 's1', kind: 'unsupported_fact', reason: 'Не подтверждено.' }], evidence: ['Нет в visible_context.'] }
-              : { pass: true, artistic_verdict: 'pass', technical_verdict: 'pass', ...reviewedNarration(JSON.parse(call.messages[1].content).segments), coverage: { visible_change_1: ['s1'], visible_change_2: ['s1'], uncertainty_1: ['s1'] }, concerns: [], evidence: ['Подтверждено.'] }
+              ? { ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+                { visible_change_1: [], visible_change_2: [], uncertainty_1: [] }),
+                unsupported: [{ segment_choice: 's1', kind: 'unsupported_fact',
+                  reason: 'Не подтверждено.' }], evidence: [] }
+              : { ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+                { visible_change_1: ['s1'], visible_change_2: ['s1'], uncertainty_1: ['s1'] }),
+                evidence: ['Подтверждено.'] }
             : call.roleId === 'gameplay_narrator_semantic_repair'
               ? { replacements: [{ prose: 'A snapped branch lies beside fresh footprints in the mud; where your charter is remains unknown.' }] }
               : null;
@@ -116,14 +125,15 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       [{ ref: 'uncertainty_1', text: question, status: 'unperformed_result_unknown' }]);
     assert.deepEqual(payload.optional_support, { visible_scene: 'The clearing is quiet.', sensory_details: [] });
     assert.deepEqual(payload.confirmed_outcome, {});
-    assert.match(call.messages[0].content, /Preserve confirmed speech verbatim with its supplied speaker/);
-    assert.match(call.messages[0].content, /preserve each proposition’s certainty/);
-    assert.match(call.messages[0].content, /A partial observation proves neither exclusivity nor persistence/);
-    assert.match(call.messages[0].content, /Failed\/incomplete attempts are mandatory results/);
-    assert.match(call.messages[0].content, /short scene-bearing literary transition/);
-    assert.match(call.messages[0].content, /Actor movement requires confirmed_outcome.movement_committed=true/);
-    assert.match(call.messages[0].content, /A feature never licenses unstated sound/);
-    assert.match(call.messages[0].content, /no swapped\/grouped traits, invented actions/);
+    if (call.roleId === 'gameplay_narrator_auditor') {
+      assert.match(call.messages[0].content, /strict evidence auditor/u);
+      assert.match(call.messages[0].content, /embedded unknown result must remain unknown/u);
+    } else {
+      assert.match(call.messages[0].content, /Preserve confirmed speech verbatim/u);
+      assert.match(call.messages[0].content, /preserve certainty/u);
+      assert.match(call.messages[0].content, /actor movement requires confirmed_outcome\.movement_committed=true/iu);
+      assert.match(call.messages[0].content, /Add no hidden fact, diagnosis/u);
+    }
   }
   const audit = JSON.parse(calls[2].messages[1].content);
   assert.deepEqual(audit.action_intent, {
@@ -157,10 +167,11 @@ test('narration treats exact known context as visible evidence and still blocks 
           const supported = JSON.parse(call.messages[1].content).output.prose
             .includes(known);
           return { output: supported
-            ? { pass: true, artistic_verdict: 'pass', technical_verdict: 'pass', ...reviewedNarration(JSON.parse(call.messages[1].content).segments), coverage: {  }, concerns: [], evidence: ['known context'] }
-            : { pass: false, artistic_verdict: 'pass', technical_verdict: 'pass', ...reviewedNarration(JSON.parse(call.messages[1].content).segments), coverage: {  }, concerns: [{ segment_choice: 's1',
-              kind: 'unsupported_world_state', reason: 'not visible' }],
-            evidence: ['not visible'] } };
+            ? { ...reviewedNarration(JSON.parse(call.messages[1].content).segments),
+              evidence: ['known context'] }
+            : { ...reviewedNarration(JSON.parse(call.messages[1].content).segments),
+              unsupported: [{ segment_choice: 's1', kind: 'unsupported_world_state',
+                reason: 'not visible' }], evidence: [] } };
         }
         return { output: { replacements: [{ prose }] } };
       }
@@ -174,8 +185,8 @@ test('narration treats exact known context as visible evidence and still blocks 
       }, context: {}
     });
     assert.equal(result.status, expectedStatus);
-    assert.equal(calls.find(({ role_id: role }) => role === 'gameplay_narrator_auditor')
-      .messages[0].content.includes('With no required beat, descriptive support is the scene result'), true);
+    assert.match(calls.find(({ role_id: role }) => role === 'gameplay_narrator_auditor')
+      .messages[0].content, /strict evidence auditor/u);
   });
 });
 
@@ -192,12 +203,13 @@ test('narration removes technical prose derived from a negative movement invaria
           auditCount += 1;
           const input = JSON.parse(call.messages[1].content);
           assert.equal(input.confirmed_outcome.position_changed, false);
-          return { output: auditCount === 1 ? { pass: false, artistic_verdict: 'pass', technical_verdict: 'fail', ...reviewedNarration(JSON.parse(call.messages[1].content).segments), coverage: { visible_change_1: [] }, concerns: [{
-            segment_choice: 's1', kind: 'technical_presentation',
-            reason: 'Negative movement invariant is not prose material.'
-          }], evidence: ['False outcome is a silent constraint.'] } : {
-            pass: true, artistic_verdict: 'pass', technical_verdict: 'pass', ...reviewedNarration(JSON.parse(call.messages[1].content).segments), coverage: { visible_change_1: ['s1'] }, concerns: [], evidence: ['Visible change only.']
-          } };
+          return { output: auditCount === 1 ? {
+            ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+              { visible_change_1: [] }),
+            literary_failures: [{ check: 'elapsed_as_service_report', segment_choice: 's1',
+              reason: 'Negative movement invariant is not prose material.' }], evidence: [] }
+            : { ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+              { visible_change_1: ['s1'] }), evidence: ['Visible change only.'] } };
         }
         return { output: { replacements: [{
           prose: 'У огня одежда немного подсохла.'

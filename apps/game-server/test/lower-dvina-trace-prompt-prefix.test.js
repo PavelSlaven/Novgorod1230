@@ -42,14 +42,12 @@ test('narration initial and final audits share all rules before dynamic shape an
       replacements: [{ prose: 'Впереди видны ворота. У них стоит телега.' }] } };
     const wire = JSON.parse(call.messages[1].content);
     prompts.push(call.messages[0].content);
-    const audit = { ...reviewedNarration(wire.segments), pass: true,
-      artistic_verdict: 'pass', technical_verdict: 'pass', concerns: [], coverage: {},
+    const audit = { ...reviewedNarration(wire.segments),
       evidence: ['Both scene facts retain their supplied certainty.'] };
     if (wire.phase === 'initial') {
-      audit.pass = false; audit.artistic_verdict = 'fail';
-      audit.failure_checks.weak_literary_composition = ['s1'];
-      audit.concerns = [{ segment_choice: 's1', kind: 'literary_quality',
-        reason: 'The scene needs its supplied spatial anchor.' }];
+      audit.literary_failures = [{ check: 'weak_literary_composition',
+        segment_choice: 's1', reason: 'The scene needs its supplied spatial anchor.' }];
+      audit.evidence = [];
     }
     return { output: audit };
   } } });
@@ -62,11 +60,11 @@ test('narration initial and final audits share all rules before dynamic shape an
   assert.equal(result.status, 'approved');
   assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
     'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
-  const marker = 'Return only this JSON shape';
+  const marker = 'Shape:';
   const prefix = prompts[0].slice(0, prompts[0].indexOf(marker));
   assert.equal(prompts[1].slice(0, prompts[1].indexOf(marker)), prefix);
-  assert.match(prefix, /concise substantive array/u);
-  assert.match(prefix, /retain every distinct concern/u);
+  assert.match(prefix, /strict evidence auditor/u);
+  assert.match(prefix, /Output only failures/u);
   assert.notEqual(prompts[0], prompts[1]);
   t.diagnostic(`Stable narration audit prefix: ${prefix.length} chars.`);
 });

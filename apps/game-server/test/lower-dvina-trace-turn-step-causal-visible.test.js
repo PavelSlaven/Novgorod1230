@@ -46,24 +46,25 @@ for (const [query, name, spoken, pending] of [
       step(2, { resolution: 'domain_request', operations: [operation] }),
       { ...step(3, { resolution: 'domain_request', operations: [{ op: 'request_item_use' }] }), applied: !pending } ] } } });
   const expected = [`Вы произнесли: «${spoken}»; этот шаг занял 1 минуту.`,
-    `Поиск занял 15 минут. Обнаружено: «${name}».`, ...(pending ? [] : [physical])];
+    'Поиск занял 15 минут.', `Обнаружено: «${name}».`, ...(pending ? [] : [physical])];
   assert.deepEqual(projected.visible_changes, expected);
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     const wire = JSON.parse(call.messages[1].content);
     assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), expected);
     assert.deepEqual(wire.required_current_beat.changes.map(({ ref }) => ref), expected.map((_, index) => `visible_change_${index + 1}`));
     assert.equal(wire.required_current_beat.uncertainties[0].ref, 'uncertainty_1');
-    assert.match(call.messages[0].content, /grouping explicitly supports that step’s exact duration/u);
-    assert.match(call.messages[0].content, /must not fail merely for being explicit/u);
+    assert.match(call.messages[0].content, call.role_id === 'gameplay_narrator_auditor'
+      ? /Integrated duration belongs to its supplied\s+action/u
+      : /Integrate a supplied duration into its own action/u);
     assert.deepEqual(wire.optional_support, { visible_scene: projected.visible_scene, sensory_details: projected.sensory_details });
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: `За прошедшую минуту вы произнесли: «${spoken}» Затем пятнадцать минут поиска принесли находку — ${name}. ${pending ? '' : physical + ' '}К осмотру опоры вы ещё не приступили; что он покажет, пока неизвестно. Можно продолжить задуманное или выбрать другое действие.`,
       action_options: [], used_references: [] } };
-    assert.match(call.messages[0].content, /isolated service datum/u);
-    return { output: { ...reviewedNarration(wire.segments), artistic_verdict: 'pass', technical_verdict: 'pass', pass: true, concerns: [],
-      evidence: ['Duration belongs to its applied step; no overlap or continuation is invented.'],
-      coverage: Object.fromEntries([...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties]
-        .map(({ ref }) => [ref, wire.segments.map((_, index) => `s${index + 1}`)])) } };
+    assert.match(call.messages[0].content, /standalone elapsed-time sentence/u);
+    return { output: { ...reviewedNarration(wire.segments,
+      Object.fromEntries([...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties]
+        .map(({ ref }) => [ref, wire.segments.map((_, index) => `s${index + 1}`)]))),
+      evidence: ['Duration belongs to its applied step; no overlap or continuation is invented.'] } };
   } } });
   assert.equal((await narrator.run({ version: 1, schema: 'narration_request', request_id: 'causal-o1-a1',
     surface: 'turn', visible_context: projected, context: {} })).status, 'approved');
@@ -227,7 +228,8 @@ for (const sample of [
         operations: [{ op: 'request_item_use', use_kind: 'other', description: sample.action }] } } ] } } });
   assert.deepEqual(visible.visible_changes, [
     `Вы произнесли: «${sample.speech}»; этот шаг занял ${sample.speechMinutes} ${sample.speechUnit}.`,
-    `Вы в течение ${sample.minutes} ${sample.unit} выполняли попытку: «${sample.action}». Результат наблюдения не установлен.`
+    `Вы в течение ${sample.minutes} ${sample.unit} выполняли попытку: «${sample.action}».`,
+    'В ходе этой попытки результат наблюдения не установлен.'
   ]);
   assert.deepEqual(visible.uncertainties, []);
   assert.equal(visible.visible_changes.some(change => /Прошл[ао]/u.test(change)), false);

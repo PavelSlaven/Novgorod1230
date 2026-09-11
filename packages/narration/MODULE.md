@@ -13,8 +13,9 @@ Native `narration_request` и `runNarrationFlow` принимают только
 - writer → deterministic structural validation → at most one format repair → semantic audit;
 - один synthetic whole-prose segment и не более одной цельной semantic rewrite;
 - full final semantic audit после semantic repair;
-- turn audit: полное `coverage` каждого индекса `visible_changes` и `uncertainties`
-  через immutable segment IDs, независимые `artistic_verdict` и `technical_verdict`;
+- turn audit: строгая проверка и code-owned сборка полного `coverage`,
+  `artistic_verdict`, `technical_verdict` и общего `pass` из private
+  source reviews и semantic/literary failures через immutable segment IDs;
 - историей генераций и ремонтов.
 
 ## Продуктовые принципы прозы
@@ -51,7 +52,7 @@ Narrator использует только confirmed player-safe факты; н�
 - committed transient-attempt required change подтверждает физическое handling/contact за applied duration; неизвестен только observation/discovery result. Проза конкретно изображает выполненное движение без attempt/status metadata. Только явно неисполненный continuation остаётся неначатым; pending goal не отменяет applied operation;
 - semantic failure не превращается в deterministic prose fallback;
 - format repair и semantic repair независимы: каждый максимум один раз;
-- initial malformed audit допускает единственный whole-prose semantic repair только при явном `pass:false` и непустом содержательном `concern.reason`; repair получает только reasons и code-owned whole-prose segment, без доверия malformed coverage/checks/aliases; прочие malformed initial audit блокируются;
+- initial malformed public audit допускает единственный whole-prose semantic repair только при явном `pass:false` и непустом содержательном `concern.reason`; repair получает только reasons и code-owned whole-prose segment, без доверия malformed coverage/checks/aliases. Production private auditor не возвращает public verdict/concerns: malformed private report Adapter преобразует в невалидный audit, поэтому flow блокируется fail-closed без синтеза concern;
 - malformed repair, не единственная replacement цельного synthetic segment и любой невалидный или failed final audit блокируют flow без второго semantic repair;
 - semantic repair заменяет весь текст целиком; code-owned reassembly не смешивает старую и новую прозу;
 - normal gameplay вызывает один LLM auditor, без router/senior cascade;
@@ -65,9 +66,14 @@ Narrator использует только confirmed player-safe факты; н�
   coverage, artistic verdict или fallback evidence для opening;
 - upstream repair не вызывает persistence.
 
-Narration auditor использует exact `request.segments[].segment_id` во всех
-reviewed_segments, failure_checks, coverage и concern.segment_choice. Positional
-aliases и нормализация не допускаются; final audit строго проверяется по IDs
+Production private auditor возвращает exact ordered `reviewed_segments`, ordered
+`source_reviews` `{ref,segment_choices}`, semantic `unsupported`,
+`literary_failures` и evidence. Он атомизирует propositions каждого source и
+помечает source покрытым только целиком. Adapter строго проверяет shape, порядок,
+refs, canonical choices, failure kinds/checks и reasons; затем детерминированно
+собирает public coverage, concerns, artistic/technical verdict и общий pass.
+Positional aliases и нормализация не допускаются; malformed private output
+fail-closed, final audit строго проверяется по immutable segment IDs
 повторно сегментированной approved prose. Grounded цепочка без scene/action композиции,
 сцепленная главным образом bare/metadata отметками времени, проваливает существующие
 elapsed_as_service_report / weak_literary_composition checks. Длительность
@@ -84,15 +90,16 @@ Subject + exact duration + supported physical action — встроенная д
 Temporal/aspect grounding сохраняет принадлежность elapsed своему applied step:
 sensory sky/weather/sound не получают эту длительность; задержка до начала действия
 не заменяет длительность выполненного действия. Sensory support связывает сцену,
-а не заполняет минуты. Coverage требует все propositions каждого required change,
-включая embedded неизвестный результат при пустом uncertainties; его нельзя
-опустить или заменить failure/success. Речь передаётся естественно с дословным
+а не заполняет минуты. Source review требует все propositions каждого atomic
+required source; неизвестный результат нельзя опустить или заменить
+failure/success. Речь передаётся естественно с дословным
 содержанием и speaker, discovery — через подтверждённое восприятие без status report.
 
 Applied-step causal projection связывает semantic_activity duration в самом source:
 speech получает «этот шаг занял N …», не утверждая непрерывность речи; single
-transient_item_use получает «в течение N … выполняли попытку» с exact description
-и явно неизвестным observation result. Отдельный elapsed component этого step
+transient_item_use получает два соседних atomic current-beat source: выполненную
+за N минут попытку с exact description, затем отдельно неизвестный observation result.
+Каждый source получает собственный ref и проверяется независимо. Отдельный elapsed component этого step
 удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
 Narrator переводит evidence wording в естественную речь и конкретное движение,
 не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.

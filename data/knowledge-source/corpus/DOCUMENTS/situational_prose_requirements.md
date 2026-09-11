@@ -240,18 +240,20 @@ Stage 23 проверяет это через обязательный `literary
 
 `PASS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой.
 
-В обычном ходе существующий auditor возвращает `coverage.visible_changes` и
+В обычном ходе итоговый `narration_audit` содержит `coverage.visible_changes` и
 `coverage.uncertainties`: записи `{source_index, segment_ids}` с нулевым индексом
 исходного массива и ссылками на immutable сегменты проверяемой прозы. Для `PASS`
 каждый исходный индекс указан ровно один раз, с хотя бы одним существующим
 сегментом; пустой исходный массив требует пустого coverage. Несколько исходных
 смыслов могут ссылаться на один сегмент. Ссылки обозначают выраженный в прозе
-смысл, а не наличие факта во входе. Пропущенные смыслы требуют `FAIL` и concern;
+смысл, а не наличие факта во входе. Пропущенные смыслы дают `FAIL` и concern;
 неизвестные индексы, сегменты, дубли и malformed coverage не принимаются кодом.
 Независимые `artistic_verdict` и `technical_verdict` имеют значения `pass|fail`;
 `fail` требует соответственно concern `literary_quality` или
 `technical_presentation`. Общий `PASS` требует оба verdict `pass`, полное
-coverage, отсутствие concerns и непустое evidence. Те же проверки действуют
+coverage, отсутствие concerns и непустое evidence. Public verdict и coverage
+собирает Adapter детерминированно из private source reviews и failures; LLM их
+не назначает. Те же проверки действуют
 после единственного существующего цельного semantic repair, без нового role
 или дополнительного каскада вызовов.
 
@@ -282,23 +284,38 @@ result или новый факт. Narrator изображает совершё�
 пересказа attempt/status metadata и без выдуманной новой находки. goal_result pending
 не отменяет applied operation. Нельзя объявлять её неначатой либо навязывать выбор
 продолжить/изменить действие, если unexecuted continuation не передан.
-Private coverage содержит request-local ключи `visible_change_N`/`uncertainty_N`:
-refs/text в required_current_beat задают таблицу источников, prompt даёт полный
-динамический JSON shape. Значения — только массивы segment choices,
-никогда prose. Adapter требует точный набор собственных ключей; неизвестные,
-пропущенные ключи, malformed значения, чужие/повторные choices блокируются.
-Индекс source принадлежит коду и выводится по исходному порядку. Пустые sources
-требуют `{}`; пустой массив choices допустим при `FAIL`, но блокирует `PASS`.
-Разные ключи могут ссылаться на один segment. Positional compatibility отсутствует.
-Модель сначала ищет нарушения. `reviewed_segments` содержит полный canonical
-набор segment choices без повторов. `failure_checks` требует ровно пять массивов
-offending choices: current_beat_buried, elapsed_as_service_report, static_context_dump,
-weak_literary_composition, unsupported_response_or_continuation. Чужие, повторные,
-noncanonical choices и malformed значения блокируются. Нарушение центра, выбора
-контекста или композиции требует artistic fail и `literary_quality` concern
-с model reason на каждый offending segment; служебное время — technical fail
-и `technical_presentation`; unsupported response/continuation — общий FAIL
-и соответствующий unsupported concern. Любое нарушение запрещает PASS.
+Projection transient attempt создаёт два соседних atomic current-beat source:
+первый отдельно подтверждает выполненное обращение и его duration, второй отдельно
+сохраняет неизвестность observation result. Оба остаются changes с собственными
+request-local refs и проверяются независимо; модель не должна сама выделять
+неизвестный смысл из составной служебной строки.
+
+Private auditor возвращает только exact shape с `reviewed_segments`,
+`source_reviews`, `unsupported`, `literary_failures` и `evidence`.
+`reviewed_segments` содержит полный canonical ordered набор segment choices.
+`source_reviews` содержит ровно ordered refs из `required_current_beat`; каждая
+запись `{ref,segment_choices}` получает choices только если все атомарные
+propositions source переданы с той же certainty. Частичное либо отсутствующее
+покрытие обозначается `[]`. Разные sources могут ссылаться на один segment.
+
+Перед ответом модель проверяет каждую factual proposition, включая subordinate
+clauses, и сообщает только failures. Semantic grounding failures находятся в
+`unsupported` как `{segment_choice,kind,reason}`. Художественные нарушения
+находятся в `literary_failures` как `{check,segment_choice,reason}` для пяти
+checks: current_beat_buried, elapsed_as_service_report, static_context_dump,
+weak_literary_composition, unsupported_response_or_continuation. Positive
+proposition reviews, verdict, concerns, source indices и public coverage модель
+не возвращает.
+
+Adapter требует exact own-key set, source refs/order, canonical unique choices,
+allowed semantic kinds/literary checks и непустые reasons. Затем код выводит
+source_index по исходному порядку, собирает coverage, missing_visible_change и
+остальные concerns, artistic/technical verdict и общий pass. Чистый отчёт требует
+непустое evidence. Любой malformed private output преобразуется в невалидный
+audit и блокирует flow fail-closed; Adapter не синтезирует repair concern.
+Согласованный code-assembled FAIL использует существующий цельный repair без
+нового role/call; final audit повторяет тот же строгий seam.
+
 Temporal/aspectual overlap, длительность и persistence между фактами требуют
 явного основания: scene label не доказывает ambience, тишину или субъективный
 темп. `elapsed_as_service_report` включает механически приклеенное время через
@@ -314,14 +331,7 @@ datum по-прежнему запрещён. Группировка не док
 исчерпывающим whitelist: все правила повторно применяются ко всей прозе,
 при sparse support текст сокращается, а не украшается выдуманными связями.
 PASS также требует двух pass verdicts, полной coverage, пустых concerns и непустого
-массива evidence. Старые positive checks не принимаются. Согласованный FAIL
-использует существующий цельный repair без нового role/call. Initial malformed
-audit с явным `pass:false` и непустым содержательным `concern.reason` также
-допускает этот единственный repair: используются только reasons и code-owned
-whole-prose segment, без доверия malformed coverage, failure_checks или aliases.
-Без содержательного concern malformed initial audit блокируется. Final audit
-всегда требует полной strict validation; повторный semantic repair запрещён.
-Положительные оценки и coverage не синтезируются adapter. Private writer и format
+массива evidence. Повторный semantic repair запрещён. Private writer и format
 repair не генерируют self-check flags: публичный `self_check={}` нейтрален,
 не содержит model approval и не заменяет независимый audit.
 
@@ -369,9 +379,10 @@ Opening сохраняет собственный утверждённый Stage
 
 Сами MODULE должны ссылаться только на canonical документ и кратко указывать собственную ответственность. Не копировать туда весь packet: иначе быстро появятся расходящиеся нормы.
 
-Narration auditor использует exact `request.segments[].segment_id` во всех
-reviewed_segments, failure_checks, coverage и concern.segment_choice. Positional
-aliases и нормализация не допускаются; final audit строго проверяется по IDs
+Private narration auditor использует exact `request.segments[].segment_id` во всех
+reviewed_segments, source_reviews, unsupported и literary_failures. Positional
+aliases и нормализация не допускаются; Adapter детерминированно собирает
+coverage/verdict, а final audit строго проверяется по IDs
 повторно сегментированной approved prose. Grounded цепочка без scene/action композиции,
 сцепленная главным образом bare/metadata отметками времени, проваливает существующие
 elapsed_as_service_report / weak_literary_composition checks. Длительность
@@ -388,15 +399,16 @@ Subject + exact duration + supported physical action — встроенная д
 Temporal/aspect grounding сохраняет принадлежность elapsed своему applied step:
 sensory sky/weather/sound не получают эту длительность; задержка до начала действия
 не заменяет длительность выполненного действия. Sensory support связывает сцену,
-а не заполняет минуты. Coverage требует все propositions каждого required change,
-включая embedded неизвестный результат при пустом uncertainties; его нельзя
-опустить или заменить failure/success. Речь передаётся естественно с дословным
+а не заполняет минуты. Source review требует все propositions каждого atomic
+required source; неизвестный результат нельзя опустить или заменить
+failure/success. Речь передаётся естественно с дословным
 содержанием и speaker, discovery — через подтверждённое восприятие без status report.
 
 Applied-step causal projection связывает semantic_activity duration в самом source:
 speech получает «этот шаг занял N …», не утверждая непрерывность речи; single
-transient_item_use получает «в течение N … выполняли попытку» с exact description
-и явно неизвестным observation result. Отдельный elapsed component этого step
+transient_item_use получает два соседних atomic current-beat source: выполненную
+за N минут попытку с exact description, затем отдельно неизвестный observation result.
+Каждый source получает собственный ref и проверяется независимо. Отдельный elapsed component этого step
 удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
 Narrator переводит evidence wording в естественную речь и конкретное движение,
 не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.

@@ -162,7 +162,8 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
     if (emittedDuration) return [];
     emittedDuration = true;
     if (bound) return speech != null ? `${speech}; этот шаг занял ${duration} ${minuteWord(duration, 'минуту')}.`
-      : `Вы в течение ${duration} ${minuteWord(duration, 'минуты', 'минут')} выполняли попытку: «${attempts[0].description}». Результат наблюдения не установлен.`;
+      : [`Вы в течение ${duration} ${minuteWord(duration, 'минуты', 'минут')} выполняли попытку: «${attempts[0].description}».`,
+        'В ходе этой попытки результат наблюдения не установлен.'];
     return directSeedChange({ ...value, duration_minutes: duration });
   }).filter(Boolean);
   return speech != null && !bound ? [speech, ...changes] : changes;
@@ -177,7 +178,8 @@ export function materializedOrdinaryPresenceChange(value) {
 }
 function directSeedChange(value) {
   if (value?.kind === 'transient_item_use' && Object.keys(value).length === 2 && text(value.description))
-    return `Вы выполнили попытку: «${value.description}». Результат наблюдения не установлен.`;
+    return [`Вы выполнили попытку: «${value.description}».`,
+      'В ходе этой попытки результат наблюдения не установлен.'];
   if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value);
   if (value?.kind === 'existing_item_inspection') {
     return existingItemInspectionVisibleResult(value).changes;

@@ -82,6 +82,10 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.match(calls[0].messages[0].content,
     /For conjunctive requirements, cover every mandatory relationship/u);
   assert.match(calls[0].messages[0].content,
+    /Never retrieve to predict whether an action will succeed, be heard/u);
+  assert.match(calls[0].messages[0].content,
+    /purpose, hope, or expected result does not itself create a factual need/u);
+  assert.match(calls[0].messages[0].content,
     /explicit alternatives permit one result, retrieve at least one complete admissible alternative/u);
   assert.match(calls[0].messages[0].content,
     /shared mandatory qualifiers and applicable limits/u);

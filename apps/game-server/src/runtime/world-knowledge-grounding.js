@@ -222,7 +222,8 @@ async function runPlanner(roleRunner, request, repair, bundle) {
       'schema must equal world_knowledge_query_plan_v1. The key is domains, never selected_domains.',
       'Do not echo the request object or any request metadata.',
       ...(request.purpose === 'semantic_resolution' ? [
-        'When this semantic step can be interpreted entirely from supplied current state and needs no historical, scientific, social, craft, material-property, or other factual premise, return the canonical NO_KNOWLEDGE_REQUIRED plan: valid query_locale and empty domains, focus_refs, requested_predicates, and search_hints. Do not use that empty plan merely because refs are unavailable or coverage may be missing; any factual need still requires a non-empty allowed domain and retrieval.'
+        'When this semantic step can be interpreted entirely from supplied current state and needs no historical, scientific, social, craft, material-property, or other factual premise, return the canonical NO_KNOWLEDGE_REQUIRED plan: valid query_locale and empty domains, focus_refs, requested_predicates, and search_hints. Do not use that empty plan merely because refs are unavailable or coverage may be missing; any factual need still requires a non-empty allowed domain and retrieval.',
+        'Retrieve only a factual premise required to interpret the current semantic action. Never retrieve to predict whether an action will succeed, be heard, reveal a current entity, or receive a response: current-world outcomes belong to code-owned state and may remain unknown. A purpose, hope, or expected result does not itself create a factual need. Perceiving already supplied current-scene facts and uttering words without an established response are NO_KNOWLEDGE_REQUIRED.'
       ] : [
         'This purpose requires at least one allowed domain. Never return an empty domains array.'
       ]),

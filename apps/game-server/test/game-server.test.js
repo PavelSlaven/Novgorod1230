@@ -291,8 +291,35 @@ test('API route matcher is declarative and bounded', () => {
   assert.deepEqual(matchApiRoute('POST', '/api/v1/portrait-spec'), { id: 'portrait_spec', status: 200 });
   assert.deepEqual(matchApiRoute('POST', '/api/v1/new-games'), { id: 'new_game', status: 201 });
   assert.deepEqual(matchApiRoute('POST', '/api/v1/parties/party-1/presentation-recovery'), { id: 'presentation_recovery', partyId: 'party-1', status: 200 });
+  assert.deepEqual(matchApiRoute('GET', '/api/v1/parties/party-1/turns/request%3A1/progress'), {
+    id: 'turn_progress', partyId: 'party-1', requestId: 'request:1', status: 200
+  });
   assert.equal(matchApiRoute('DELETE', '/api/v1/new-games'), null);
   assert.equal(matchApiRoute('GET', '/api/v2/health'), null);
+});
+
+test('HTTP publishes only exact player-safe live turn progress', async (t) => {
+  const seen = [];
+  const progress = { version: 1, schema: 'turn_progress_v1', status: 'running',
+    request_id: 'request:1', phase: 'saving_result', sequence: 3,
+    started_at: 1_000, phase_started_at: 2_000, commit_state: 'unconfirmed',
+    elapsed_seconds: 4, remaining_seconds: null };
+  const server = createGameHttpServer({ root: { getTurnProgress(input) {
+    seen.push(input);
+    return input.request_id === 'request:1' ? progress : null;
+  } } });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  const base = `http://127.0.0.1:${address.port}/api/v1/parties/party-1/turns`;
+  const live = await (await fetch(`${base}/request%3A1/progress`)).json();
+  const unknown = await (await fetch(`${base}/other/progress`)).json();
+  assert.deepEqual(seen, [
+    { party_id: 'party-1', request_id: 'request:1' },
+    { party_id: 'party-1', request_id: 'other' }
+  ]);
+  assert.deepEqual(live.data, progress);
+  assert.equal(unknown.data, null);
+  assert.equal(JSON.stringify(live).includes('provider'), false);
 });
 
 test('static asset resolver serves only allowlisted web paths', async () => {

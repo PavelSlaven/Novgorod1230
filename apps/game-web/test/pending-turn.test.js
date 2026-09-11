@@ -98,3 +98,37 @@ test('a failed local save prevents the first gameplay POST', async () => {
     'party', { raw_text: 'Жду.' }), /storage full/u);
   assert.equal(posts, 0);
 });
+
+test('turn progress polling uses exact request, never overlaps, stops, and is nonfatal', async () => {
+  const saved = storage();
+  let finishTurn, finishProgress, active = 0, maxActive = 0, polls = 0;
+  const api = {
+    submitTurn: async () => new Promise((resolve) => { finishTurn = resolve; }),
+    async getTurnProgress(partyId, requestId) {
+      assert.equal(partyId, 'party');
+      assert.match(requestId, /^web:turn:/u);
+      polls += 1; active += 1; maxActive = Math.max(maxActive, active);
+      await new Promise((resolve) => { finishProgress = resolve; });
+      active -= 1;
+      return { phase: 'understanding_action' };
+    }
+  };
+  const updates = [];
+  const pending = submitRecoverableTurn(api, saved, 'party', { raw_text: 'Жду.' },
+    { onProgress: (value) => updates.push(value), pollIntervalMs: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  assert.equal(maxActive, 1);
+  finishProgress();
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  finishTurn({ screen: { screen_status: 'ready' } });
+  await pending;
+  const stoppedAt = polls;
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  assert.equal(polls, stoppedAt);
+  assert.deepEqual(updates[0], { phase: 'understanding_action' });
+
+  await submitRecoverableTurn({
+    async submitTurn() { return { screen: { screen_status: 'ready' } }; },
+    async getTurnProgress() { throw new Error('status unavailable'); }
+  }, saved, 'party', { raw_text: 'Иду.' }, { onProgress() {}, pollIntervalMs: 1 });
+});

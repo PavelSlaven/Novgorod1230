@@ -79,6 +79,18 @@ and adds no second transaction owner.
   Только workflow failure до входа commit owner выдаёт публичный
   `error.turn_commit_status: not_started`; replay и неопределённый commit
   не получают этот признак.
+- Публикует player-safe progress только для exact active request через
+  `GET /api/v1/parties/:partyId/turns/:requestId/progress`. Ответ — nullable
+  `turn_progress_v1` со status `running`, request ID, monotonic sequence,
+  started/phase-start timestamps, factual `elapsed_seconds`, всегда
+  `remaining_seconds: null` и одной закрытой phase: `accepted`,
+  `understanding_action`, `resolving_world`, `saving_result`, `preparing_screen`
+  либо `recovering_saved_result`. `commit_state` остаётся `unconfirmed` до
+  одобрения commit stage и затем только `committed`; replay/presentation recovery
+  использует committed recovery phase. DTO не содержит ETA, percent, LLM role,
+  prompt, provider trace или hidden mechanics. Ordered workflow stage events
+  только обновляют этот request-scoped in-memory read model; ход и commit остаются
+  authoritative, завершённый либо неизвестный request возвращает null.
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
 - Запускается как обычный production server entry. `tools/local-play` снаружи
   подготавливает owned embedded PostgreSQL, Gemma/Giga runtime, актуальные

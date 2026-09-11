@@ -52,10 +52,14 @@ const SAFE_TURN_STEP_VALIDATION_SCOPES = new Set([
 const SAFE_NPC_VALIDATION_SCOPES = new Set(['plan', 'interpretation',
   'resolution', 'goal_result', 'activity', 'operations', 'check', 'reason',
   'speech_dominant_act']);
+const SAFE_TURN_PROGRESS_PHASES = new Set([
+  'accepted', 'understanding_action', 'resolving_world', 'saving_result',
+  'preparing_screen', 'recovering_saved_result'
+]);
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   turnBudget = createLlmTurnBudget(), developerMode = false, now = () => Date.now() } = {}) {
-  const storage = new AsyncLocalStorage(), reports = new Map(), logReports = new Map();
+  const storage = new AsyncLocalStorage(), reports = new Map(), logReports = new Map(), active = new Map();
   const onCall = (record) => {
     telemetry?.onCall?.(record);
     if (record?.call_type === 'probe') return;
@@ -76,13 +80,34 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   return Object.freeze({
     turnBudget,
     recordGameplayTrace, telemetry: Object.freeze({ onCall, onDetail, onGameplayTrace: recordGameplayTrace }),
+    recordProgress(phase, { commit_state = null } = {}) {
+      if (!SAFE_TURN_PROGRESS_PHASES.has(phase)) return;
+      const turn = storage.getStore();
+      if (!turn) return;
+      const commitState = commit_state === 'committed'
+        ? 'committed' : turn.live.commit_state;
+      if (turn.live.phase === phase && turn.live.commit_state === commitState) return;
+      turn.live.phase = phase;
+      turn.live.commit_state = commitState;
+      turn.live.sequence += 1;
+      turn.live.phase_started_at = now();
+    },
     recordFailure(value) {
       const turn = storage.getStore(); if (turn) turn.failure = safeTurnFailure(value);
     },
     async runTurn({ party_id, request_id }, execute) {
-      const startedAt = now(), turn = { party_id: text(party_id), request_id: text(request_id), calls: [],
-        started_at: startedAt, incidents: [], details: [], gameplay_traces: [] };
-      if (!turn.party_id || !turn.request_id) throw new TypeError('party_id and request_id are required.');
+      const startedAt = now(), partyId = text(party_id), requestId = text(request_id);
+      if (!partyId || !requestId) throw new TypeError('party_id and request_id are required.');
+      const liveKey = `${partyId}\0${requestId}`;
+      const live = active.get(liveKey) ?? {
+        party_id: partyId, request_id: requestId, started_at: startedAt,
+        phase: 'accepted', phase_started_at: startedAt, sequence: 0,
+        commit_state: 'unconfirmed', users: 0
+      };
+      live.users += 1;
+      const turn = { party_id: partyId, request_id: requestId, calls: [],
+        started_at: startedAt, incidents: [], details: [], gameplay_traces: [], live };
+      active.set(liveKey, live);
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });
       } catch (error) {
@@ -96,7 +121,15 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
         const queue = logReports.get(turn.party_id) ?? []; queue.push(Object.freeze({ ...report, calls: Object.freeze([...turn.details]),
           ...(developerMode === true ? { gameplay_traces: Object.freeze(turn.gameplay_traces) } : {}) })); logReports.set(turn.party_id, queue);
         while (reports.size > maxReports) { const oldest = reports.keys().next().value; reports.delete(oldest); logReports.delete(oldest); }
+        live.users -= 1;
+        if (live.users === 0 && active.get(liveKey) === live) active.delete(liveKey);
       }
+    },
+    progress({ party_id, request_id } = {}) {
+      const partyId = text(party_id), requestId = text(request_id);
+      if (!partyId || !requestId) return null;
+      const turn = active.get(`${partyId}\0${requestId}`);
+      return turn ? buildTurnProgress(turn, now()) : null;
     },
     report({ party_id, request_id } = {}) {
       const report = reports.get(text(party_id)) ?? null;
@@ -104,6 +137,23 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       return requestId === '' || report?.request_id === requestId ? report : null;
     },
     takeLogReport(input = {}) { return takeReport(logReports, input); }
+  });
+}
+
+export function buildTurnProgress(turn, currentTime = Date.now()) {
+  const elapsed = Math.max(0, currentTime - Number(turn?.started_at ?? currentTime));
+  return Object.freeze({
+    version: 1,
+    schema: 'turn_progress_v1',
+    status: 'running',
+    request_id: text(turn?.request_id),
+    phase: SAFE_TURN_PROGRESS_PHASES.has(turn?.phase) ? turn.phase : 'accepted',
+    sequence: nonNegativeInteger(turn?.sequence),
+    started_at: number(turn?.started_at),
+    phase_started_at: number(turn?.phase_started_at),
+    commit_state: turn?.commit_state === 'committed' ? 'committed' : 'unconfirmed',
+    elapsed_seconds: Math.floor(elapsed / 1000),
+    remaining_seconds: null
   });
 }
 
@@ -295,5 +345,6 @@ function percentile(values, fraction) { if (!values.length) return 0; return val
 function rate(value, total) { return total === 0 ? 0 : value / total; }
 function nonNegative(value) { return Number.isFinite(Number(value)) && Number(value) >= 0 ? Number(value) : null; }
 function number(value) { return nonNegative(value) ?? 0; }
+function nonNegativeInteger(value) { return Number.isInteger(value) && value >= 0 ? value : 0; }
 function text(value) { return String(value ?? '').trim(); }
 function takeReport(store, { party_id, request_id } = {}) { const partyId = text(party_id); const queue = store.get(partyId) ?? []; const requestId = text(request_id); const index = requestId ? queue.findIndex((report) => report.request_id === requestId) : 0; if (index < 0 || !queue[index]) return null; const [report] = queue.splice(index, 1); if (!queue.length) store.delete(partyId); return report; }

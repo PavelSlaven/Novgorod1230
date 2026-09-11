@@ -58,11 +58,15 @@ export function createLowerDvinaTracePhase2Runtime({
   const executeRequest = createTraceTurnRequestExecutor();
   return Object.freeze({ llmTurnBudget,
     async validateSessionRead({ partyId, turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null }) { await repository.loadPhase2State(partyId, { turnBudget }); return true; },
-    async recoverPendingPresentation({ partyId, session }) {
+    async recoverPendingPresentation({ partyId, session, requestId = null }) {
       return executeTraceTurnWithDiagnostics(llmDiagnostics, { party_id: partyId,
-        request_id: String(session?.screen?.turn_id ?? partyId) }, () =>
-          recoverTracePendingPresentation({ partyId, session, repository, narrator,
-            turnBudget: llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null }));
+        request_id: String(requestId ?? session?.screen?.turn_id ?? partyId) }, () => {
+          llmDiagnostics?.recordProgress?.('recovering_saved_result', {
+            commit_state: 'committed'
+          });
+          return recoverTracePendingPresentation({ partyId, session, repository, narrator,
+            turnBudget: llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null });
+        });
     },
     async submitTurn({ partyId, input = {} }) {
       const { requestId, idempotencyKey, rawText, inputDigest } =
@@ -75,6 +79,9 @@ export function createLowerDvinaTracePhase2Runtime({
           if (replay.input_digest !== inputDigest) {
             throw serverError('TRACE_PHASE_2_IDEMPOTENCY_CONFLICT', 'The idempotency identity is already bound to another input.', { status: 409 });
           }
+          llmDiagnostics?.recordProgress?.('recovering_saved_result', {
+            commit_state: 'committed'
+          });
           try {
             replay = await completePendingTracePhase10Replay({
               partyId,
@@ -281,7 +288,8 @@ export function createLowerDvinaTracePhase2Runtime({
               phase7Contracts, turn10Contracts, phase8, phase9Contracts
             }),
             services,
-            { now: issuedAt, requestId },
+            { now: issuedAt, requestId,
+              onEvent: (event) => recordWorkflowProgress(llmDiagnostics, event) },
           );
           return await runWithinTurnDeadline(turnBudget, () =>
             repository.persistPhase2Screen({ partyId, inputDigest, result, turnBudget }));
@@ -296,4 +304,17 @@ export function createLowerDvinaTracePhase2Runtime({
         executeTraceTurnWithDiagnostics(llmDiagnostics, { party_id: partyId, request_id: requestId }, executeAttempt));
     },
   });
+}
+
+function recordWorkflowProgress(diagnostics, event) {
+  if (event?.type === 'stage_started') {
+    const stageId = Number(event.stageId);
+    const phase = stageId <= 6 ? 'understanding_action'
+      : stageId <= 13 ? 'resolving_world'
+        : stageId === 14 ? 'saving_result' : 'preparing_screen';
+    diagnostics?.recordProgress?.(phase);
+  }
+  if (event?.type === 'stage_approved' && Number(event.stageId) === 14) {
+    diagnostics?.recordProgress?.('preparing_screen', { commit_state: 'committed' });
+  }
 }

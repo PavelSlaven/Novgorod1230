@@ -7,6 +7,7 @@ import {
   renderAppState,
   renderScreen,
   validateApiEnvelope,
+  validateTurnProgress,
   validatePublicScreen
 } from '../src/index.js';
 import { renderConversationPortrait } from
@@ -617,6 +618,34 @@ test('flow navigation is disabled only while a request or opening acknowledgemen
   assert.match(pending, /data-return-start disabled/u);
   const failed = renderScreen(firstScreen(), { openingStatus: 'failed' });
   assert.doesNotMatch(failed, /data-return-start disabled/u);
+});
+
+test('turn loading shows safe phase, elapsed time, commit state, and no fake ETA', () => {
+  const store = createUiStore();
+  store.setScreen(firstScreen());
+  store.setLoading({ phase: 'resolving_world', commit_state: 'unconfirmed',
+    elapsed_seconds: 42 });
+  let html = renderAppState(store.getState());
+  assert.match(html, /Определяем последствия/u);
+  assert.match(html, /Прошло 42 с/u);
+  assert.match(html, /Точное время окончания неизвестно/u);
+  assert.doesNotMatch(html, /%|осталось/u);
+  assert.match(html, /<strong role="status" aria-live="polite" aria-atomic="true">Определяем последствия<\/strong><span aria-hidden="true">Прошло 42 с/u);
+
+  store.setTurnProgress({ phase: 'recovering_saved_result',
+    commit_state: 'committed', elapsed_seconds: 43 });
+  html = renderAppState(store.getState());
+  assert.match(html, /Результат сохранён\. Восстанавливаем сохранённый результат/u);
+
+  assert.equal(validateTurnProgress({ version: 1, schema: 'turn_progress_v1',
+    status: 'running', request_id: 'request', phase: 'accepted', sequence: 0,
+    started_at: 1, phase_started_at: 1, commit_state: 'unconfirmed',
+    elapsed_seconds: 0, remaining_seconds: null }).phase, 'accepted');
+  assert.throws(() => validateTurnProgress({ version: 1,
+    schema: 'turn_progress_v1', status: 'running', request_id: 'request',
+    phase: 'npc_decision', sequence: 0, started_at: 1, phase_started_at: 1,
+    commit_state: 'unconfirmed', elapsed_seconds: 0, remaining_seconds: null }),
+  /player-safe/u);
 });
 
 test('overlays render allowlisted player-safe fields without JSON dumps or map geometry', () => {

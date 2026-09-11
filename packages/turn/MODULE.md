@@ -11,6 +11,11 @@ Narration boundary принимает только approved `surface: turn` че
 ## Владеет
 
 - Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, deterministic model-output canonicalization и одним semantic repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, revision-16 persisted combat session/intent lifecycle и automatic same-time exchange orchestration, combined logical write-plan composition и visible-package security gate.
+- `runTurnWorkflow` сохраняет существующие ordered stage events и может передать
+  clone каждого события через optional `options.onEvent`. Observer не добавляет
+  stage, phase или authority: его return не используется, callback не ожидается,
+  а synchronous exception игнорируется и не меняет workflow, result либо commit.
+  Public progress phases и request-scoped read model принадлежат server Adapter.
 
 ## Не владеет
 

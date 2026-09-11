@@ -29,6 +29,25 @@ export function validateApiEnvelope(value) {
   return value;
 }
 
+export function validateTurnProgress(value) {
+  if (value == null) return null;
+  const phases = ['accepted', 'understanding_action', 'resolving_world',
+    'saving_result', 'preparing_screen', 'recovering_saved_result'];
+  if (!plain(value) || value.version !== 1 || value.schema !== 'turn_progress_v1'
+      || value.status !== 'running' || !text(value.request_id)
+      || !phases.includes(value.phase) || !nonNegativeInteger(value.sequence)
+      || !nonNegativeInteger(value.started_at)
+      || !nonNegativeInteger(value.phase_started_at)
+      || !['unconfirmed', 'committed'].includes(value.commit_state)
+      || !nonNegativeInteger(value.elapsed_seconds)
+      || value.remaining_seconds !== null) {
+    throw webError('TURN_PROGRESS_INVALID',
+      'Turn progress must use the player-safe versioned shape.');
+  }
+  assertNoHiddenFields(value);
+  return value;
+}
+
 export function validatePublicScreen(screen) {
   if (!plain(screen) || screen.version !== 1) throw webError('SCREEN_INVALID', 'Versioned screen is required.');
   if (!['first_game_screen', 'turn_screen',
@@ -137,3 +156,4 @@ function forbidden(key) {
 }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function text(value) { return String(value ?? '').trim(); }
+function nonNegativeInteger(value) { return Number.isInteger(value) && value >= 0; }

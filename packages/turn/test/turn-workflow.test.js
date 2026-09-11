@@ -103,6 +103,20 @@ test('full modular turn runs a code command, approved check, commit and screen p
   assert.deepEqual(result.checkpoint.events.map((event) => event.stage_id), TURN_WORKFLOW_STAGE_IDS);
 });
 
+test('turn workflow exposes ordered stage events without changing its result', async () => {
+  const { services } = createServices();
+  const events = [];
+  const result = await runTurnWorkflow(input(), services, {
+    now: '2026-07-12T10:00:00.000Z',
+    onEvent: (event) => events.push(event)
+  });
+  assert.equal(result.status, 'resolved');
+  assert.deepEqual(events.filter(({ type }) => type === 'stage_started')
+    .map(({ stageId }) => stageId), TURN_WORKFLOW_STAGE_IDS.map((_, index) => index + 1));
+  assert.deepEqual(events.filter(({ type }) => type === 'stage_approved')
+    .map(({ stageId }) => stageId), TURN_WORKFLOW_STAGE_IDS.map((_, index) => index + 1));
+});
+
 test('persistence retains a completed local-fire temporal plan from an exact command',
   async () => {
     const completedFire = { schema: 'local_fire_atomic_write_plan_v1',

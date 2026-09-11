@@ -97,10 +97,12 @@ export function validateTurnRequest(body) {
 }
 
 export function validatePresentationRecoveryRequest(body) {
-  if (!plain(body) || Object.keys(body).length !== 0) {
-    throw serverError('REQUEST_BODY_INVALID', 'Presentation recovery body must be empty.', { status: 400 });
+  if (!plain(body) || Object.keys(body).some((key) => key !== 'request_id')
+      || (Object.hasOwn(body, 'request_id') && !text(body.request_id))) {
+    throw serverError('REQUEST_BODY_INVALID', 'Presentation recovery accepts only request_id.', { status: 400 });
   }
-  return body;
+  return Object.hasOwn(body, 'request_id')
+    ? { request_id: text(body.request_id) } : {};
 }
 
 export function validateLlmSettingsRequest(body) {

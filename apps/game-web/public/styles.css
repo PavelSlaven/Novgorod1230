@@ -383,6 +383,8 @@ textarea {
 .diagnostics pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 
 .request-status, .error-toast { position: fixed; z-index: 80; right: 1rem; bottom: 1rem; padding: .85rem 1rem; border: 1px solid var(--line); background: var(--paper-raised); box-shadow: 0 .75rem 2rem var(--shadow); font: .78rem/1.3 var(--font-ui); }
+.request-status { display: grid; gap: .2rem; max-width: min(24rem, calc(100vw - 2rem)); }
+.request-status span, .request-status small { color: var(--ink-muted); }
 .error-toast { display: flex; align-items: center; gap: 1rem; max-width: min(28rem, calc(100% - 2rem)); border-color: var(--cinnabar); }
 .error-toast button { background: transparent; font-size: 1.2rem; }
 

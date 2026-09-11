@@ -29,6 +29,16 @@ Browser-клиент, который получает только versioned pub
   Успех либо доказанный отказ до commit снимает pending; неизвестный исход
   сохраняет его. При восстановлении старого хода новый draft остаётся в поле,
   а кнопка явно сообщает о восстановлении. Это identity запроса, не копия мира.
+- Пока exact pending request отправляется либо восстанавливает committed
+  presentation, browser без overlap опрашивает
+  `GET /api/v1/parties/:partyId/turns/:requestId/progress`. Nullable
+  `turn_progress_v1` принимает только закрытые phases `accepted`,
+  `understanding_action`, `resolving_world`, `saving_result`, `preparing_screen`,
+  `recovering_saved_result`, commit_state `unconfirmed|committed`, factual
+  `elapsed_seconds` и `remaining_seconds: null`. UI показывает phase, elapsed и
+  факт commit без ETA/percent либо private role/provider/trace. Polling optional:
+  ошибка или null не прерывает authoritative turn/recovery, после их завершения
+  polling останавливается; reload продолжает тот же сохранённый request ID.
 - компактным LLM settings overlay для default, локального Gemma preset и
   произвольного OpenAI-compatible endpoint: browser вызывает только game-server
   `/api/v1/llm-settings`; API key передаётся в Apply/Test и не сохраняется в

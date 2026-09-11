@@ -204,8 +204,11 @@ export function bootstrapGameWeb({
   async function continueParty() {
     const partyId = store.getState().rememberedPartyId; if (!partyId) return;
     try {
-      store.setLoading(); let result = storedPendingTurn(partyStorage, partyId)
-        ? await submitRecoverableTurn(api, partyStorage, partyId)
+      const hasPendingTurn = storedPendingTurn(partyStorage, partyId) != null;
+      store.setLoading(hasPendingTurn ? initialTurnProgress() : null); let result = hasPendingTurn
+        ? await submitRecoverableTurn(api, partyStorage, partyId, {}, {
+          onProgress: (progress) => store.setTurnProgress(progress)
+        })
         : await api.getPartyScreen(partyId);
       result = recoverPendingPresentation(api, partyId, result.screen) ?? result;
       result = await result;
@@ -232,8 +235,10 @@ export function bootstrapGameWeb({
   async function submitTurn(input) {
     try {
       const partyId = store.getState().partyId, pending = storedPendingTurn(partyStorage, partyId);
-      store.setLoading();
-      const result = await submitRecoverableTurn(api, partyStorage, partyId, input);
+      store.setLoading(initialTurnProgress());
+      const result = await submitRecoverableTurn(api, partyStorage, partyId, input, {
+        onProgress: (progress) => store.setTurnProgress(progress)
+      });
       if (!pending || pending.request.raw_text === input.raw_text) store.clearDraft('turn');
       store.setScreen(result.screen, { openingStatus: 'acknowledged' });
     } catch (error) {
@@ -296,4 +301,7 @@ function availableLocalStorage() {
 }
 function uiError(code, message) {
   return Object.assign(new Error(message), { code });
+}
+function initialTurnProgress() {
+  return { phase: 'accepted', commit_state: 'unconfirmed', elapsed_seconds: 0 };
 }

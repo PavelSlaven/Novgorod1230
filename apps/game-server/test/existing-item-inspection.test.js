@@ -67,7 +67,7 @@ test('existing inspection reads current exact target without ordinary enablement
   const applied = await projector.project({ ...renderInput,
     mode_resolution: { decision_trace: { step_traces: [{ applied: true, step_index: 1,
       approved_plan: { resolution: 'domain_request', operations: [request.operation] } }] } } });
-  assert.deepEqual(applied.visible_changes, [seed.visible_changes.join(' ')]);
+  assert.deepEqual(applied.visible_changes, seed.visible_changes);
   assert.deepEqual(applied.uncertainties, visible.uncertainties);
   assert.ok(visible.uncertainties.some(text => text.includes(query)));
   assert.deepEqual(await projector.project(JSON.parse(JSON.stringify(renderInput))), visible);

@@ -118,6 +118,8 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.deepEqual(trace.planner_request, {
     schema: plannerRequest.schema, pack_ref: plannerRequest.pack_ref,
     purpose: plannerRequest.purpose, input_locale: plannerRequest.input_locale,
+    semantic_input: plannerRequest.semantic_input,
+    situation_summary: plannerRequest.situation_summary,
     allowed_domains: plannerRequest.allowed_domains,
     available_knowledge_refs: Object.keys(owners),
     planner_limits: plannerRequest.planner_limits

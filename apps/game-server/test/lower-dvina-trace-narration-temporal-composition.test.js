@@ -37,6 +37,7 @@ for (const sample of [
     const input = JSON.parse(call.messages[1].content);
     if (call.role_id === 'gameplay_narrator') {
       assert.match(prompt, /Put the current beat first/u);
+      assert.match(prompt, /Required changes are ordered:[\s\S]*never subordinate the earlier action/u);
       assert.match(prompt, /Ground every sensation, action, temporal relation and causal link/u);
       return { output: { prose: sample.bad, action_options: [], used_references: [] } };
     }
@@ -50,6 +51,7 @@ for (const sample of [
       return { output: { replacements: [{ prose: sample.repaired }] } };
     }
     assert.match(prompt, /Silently split[\s\S]*every factual proposition/u);
+    assert.match(prompt, /If prose reverses ordered performed actions[\s\S]*unsupported_event/u);
     assert.match(prompt, /source_reviews must contain exactly/u);
     const audit = audited(input, {
       evidence: ['Each supplied result is covered; the pending choice remains open.']

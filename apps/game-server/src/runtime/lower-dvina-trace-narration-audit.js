@@ -23,6 +23,8 @@ clauses, sensations, action, result, duration, causality and certainty. For ever
 proposition require one exact supporting ref or field from the supplied
 player-safe input. Plausibility is never evidence. An object or place never
 supports an unstated sound, smell, touch, motion, reaction or persistence. Never
+accept reversed causal order: required changes are ordered, so a later performed
+action cannot precede or grammatically contain an earlier performed action.
 use a style policy to license a new fact: an unlisted sensory property is
 unsupported_sensory even when it would be typical for the supplied object.
 skip a proposition because another claim in its sentence is supported. A
@@ -53,6 +55,8 @@ Mandatory final cross-checks before JSON:
 segments, the elapsed-only segment is elapsed_as_service_report.
 3. current_beat_buried may describe only a source with a nonempty source review;
 never use it to restate or penalize an omitted source whose review is [].
+4. If prose reverses ordered performed actions or subordinates the earlier action
+to the later one, record unsupported_event for the invented temporal relation.
 
 Return only the exact JSON shape shown below. reviewed_segments must copy every
 segment choice exactly once and in order. source_reviews must contain exactly

@@ -85,6 +85,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       packingCalculator: turnStepPackingCalculator
     }),
     semanticActivityOwner: turnStepSemanticActivityOwner,
+    idempotencyKey,
     temporalAdvance,
     workingProjectionAuthority
   });

@@ -1,29 +1,26 @@
 import { assembleTurnStepPlan } from '../src/runtime/lower-dvina-trace-turn-step-plan-assembly.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { runTurnStepLoop, buildTurnStepPreparedBodyUpdate,
-  buildTurnStepPreparedTimeUpdate } from '@rus/turn';
-import { createPorts, loopInput, plan, genericCheck, preparedOrdinary, speech, semanticOwners as owners } from
-  './lower-dvina-trace-turn-step-runtime-ports-fixture.js';
+import { runTurnStepLoop, buildTurnStepPreparedBodyUpdate, buildTurnStepPreparedTimeUpdate } from '@rus/turn';
+import { createPorts, loopInput, plan, genericCheck, preparedOrdinary, speech,
+  semanticOwners as owners } from './lower-dvina-trace-turn-step-runtime-ports-fixture.js';
 
 const body = { health: 100, satiety: 100, energy: 100, active_conditions: [], body_parts: {} };
 const at = (value) => ({ whole_minutes: String(value), subminute_numerator: '0', subminute_denominator: '1' });
 
 function setup({ temporalResult = null } = {}) {
-  const requests = [], revalidations = [], timeCalls = [], checks = [];
+  const requests=[], revalidations=[], timeCalls=[], checks=[];
   let rolls = 0;
   const runtime = createPorts({ committedState: {
     party_id: 'party', actor_id: 'mikula', party_state: { turn_number: 0 },
     body_state: body, clock: at(0), items: [] },
     semanticActivityOwner: owners.semanticActivityOwner, bodyEffect: owners.bodyEffect,
-    temporalAdvance: async (input) => {
-      timeCalls.push(input);
-      return { clock_before: input.clock_before,
+    temporalAdvance: async (input) => (timeCalls.push(input), {
+      clock_before: input.clock_before,
         clock_after: at(Number(input.clock_before.whole_minutes)
           + Number(input.exact_elapsed.exact_minutes.numerator)),
         exact_elapsed: input.exact_elapsed, nearest_boundary: null,
-        temporal_results: temporalResult == null ? [] : [temporalResult] };
-    } });
+        temporal_results: temporalResult == null ? [] : [temporalResult] }) });
   const input = { ...loopInput(), actor: { ...loopInput().actor, body },
     initialWorkingProjection: { ...loopInput().initialWorkingProjection, clock: at(0) } };
   return { requests, revalidations, timeCalls, checks, runtime, input,
@@ -36,18 +33,17 @@ function setup({ temporalResult = null } = {}) {
         preparedEffectBodyOwner: runtime.preparedEffectBodyOwner,
         preparedEffectProjectionOwner: runtime.preparedEffectProjectionOwner,
         projectPlayerSafeState: async ({ working_projection: projection }) => projection,
-        revalidateCommittedState: async ({ step_index: step }) => {
-          revalidations.push(step); return true;
-        },
-        turnStepModel: (request) => { requests.push(request); return model(request); },
+        revalidateCommittedState: async ({ step_index: step }) =>
+          (revalidations.push(step), true),
+        turnStepModel: request => (requests.push(request), model(request)),
         randomSource: { next() { rolls += 1; return 0.5; } },
-        resolveCheckContext: async (value) => { checks.push(value);
-          return runtime.resolveCheckContext(value); },
+        resolveCheckContext: async value => (checks.push(value),
+          runtime.resolveCheckContext(value)),
         ...overrides
       });
     } };
 }
-test('speech then ordinary physical probe executes from advanced clock/body after revalidation', async () => {
+test('speech then physical probe uses advanced clock/body', async () => {
   const state = setup();
   const suffix = 'Проверяю палкой плотность земли перед собой.';
   state.input.rootPlayerAction = `Предупреждаю спутников. ${suffix}`;
@@ -67,7 +63,7 @@ test('speech then ordinary physical probe executes from advanced clock/body afte
   assert.equal(buildTurnStepPreparedBodyUpdate(result.prepared_effect_ledger).state_after.energy, 99);
 });
 
-test('unseen warning then listening continues without a phrase-specific handler', async () => {
+test('unseen warning then listening continues generically', async () => {
   const state = setup();
   const suffix = 'Прислушиваюсь к шуму за дверью.';
   state.input.rootPlayerAction = `Прошу соблюдать тишину. ${suffix}`;
@@ -129,7 +125,7 @@ test('stale second step fails before RNG, effect and second time segment', async
   assert.equal(state.timeCalls.length, 1);
 });
 
-test('compound semantic root commits once and exact retry repeats no planner, RNG, time or effect', async () => {
+test('compound root commits once and exact retry has no repeated work', async () => {
   const { fixture, loadScenarioBundle } = await import('./lower-dvina-trace-phase-2-fixture.js');
   const bundle = await loadScenarioBundle(13);
   const requests = [];
@@ -139,7 +135,9 @@ test('compound semantic root commits once and exact retry repeats no planner, RN
       requests.push(request);
       const speaker = request.actor.actor_id ?? request.actor.actor_ref;
       if (request.step_index === 1) return { ...speech(request, suffix),
-        utterance: { speaker_ref: speaker, input_mode: 'intent_paraphrase', utterance_text: 'Осторожнее у воды.' } };
+        utterance: { speaker_ref: speaker, input_mode: 'intent_paraphrase',
+          utterance_text: 'Осторожнее у воды.',
+          delivery: { loudness: 2, duration_class: 'instant' } } };
       return plan(request, { resolution: 'generic_check', goal_result: 'pending',
         activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
         check: { ...genericCheck(), attribute_ref: 'strength', skill_ref: null } });
@@ -194,7 +192,8 @@ for (const source of ['prepared', 'invisible']) test(`admission refreshes speech
   const itemId = 'ordinary_item:chain-board', suffix = 'Приспособить доску как опору.';
   const prepared = preparedOrdinary(itemId);
   let discovered = null, produced = null;
-  const state = { party_id: 'party', actor_id: 'mikula', party_state: { turn_number: 0 },
+  const state = { party_id: 'party', actor_id: 'mikula',
+    party_state: { turn_number: 0, state_version: 1 },
     body_state: body, clock: at(0), position: { location_ref: 'shore' }, items: [],
     current_visible_context: { visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc-watch' },
       display_label: 'Сторож', visible_status: 'Бодрствует', observable_cues: ['держит глаза открытыми'] }] },
@@ -203,6 +202,7 @@ for (const source of ['prepared', 'invisible']) test(`admission refreshes speech
     causal_state_ref: { routine_state: { status: 'inactive' } },
     npc_snapshot: { machine_state: { status: 'asleep', secret: 'hidden-state' } } } };
   const runtime = createRuntime({ committedState: state,
+    idempotencyKey: `semantic-chain-${source}`,
     ordinaryDiscoveryResolver: async (execution) => {
       discovered = execution;
       prepared.request_identity = `${execution.request.root_turn_id}:ordinary:presence:step:${execution.request.step_index}`;
@@ -228,6 +228,7 @@ for (const source of ['prepared', 'invisible']) test(`admission refreshes speech
       turnStepPreparedEffectTimeOwner: runtime.preparedEffectTimeOwner,
       turnStepPreparedEffectBodyOwner: runtime.preparedEffectBodyOwner,
       turnStepPreparedEffectProjectionOwner: runtime.preparedEffectProjectionOwner,
+      turnStepPostAppliedActorStep: runtime.postAppliedActorStep,
       stateReader: { revalidate: async () => ({ state_version: 7 }) },
       playerSafeStateProjector: createProjector({
         playerSafeStateProjector: project,

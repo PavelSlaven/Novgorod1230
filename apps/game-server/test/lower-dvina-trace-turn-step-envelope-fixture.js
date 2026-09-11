@@ -99,6 +99,7 @@ export function commitEnvelope({ clarification, check }) {
         }) }],
       step_traces: decisionTrace.step_traces,
       check_results: result,
+      factual_events: [],
       clarification: question
     }
   };

@@ -16,7 +16,8 @@ function speechOutput(input, words, later = null) {
     interpretation: { player_goal: input.remaining_intent,
       grounded_attempt: words, adaptation: 'literal' },
     utterance: { speaker_ref: input.actor.actor_ref,
-      utterance_text: words, input_mode: 'verbatim' },
+      utterance_text: words, input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'instant' } },
     goal_result: later == null ? 'achieved' : 'pending',
     continuation: later == null ? null
       : { remaining_intent: later, depends_on_refs: [] } };

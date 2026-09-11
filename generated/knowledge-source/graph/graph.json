@@ -984,7 +984,7 @@
       "source_location": {
         "file": "CONTRACT_INDEX.md",
         "line_start": 1,
-        "line_end": 242
+        "line_end": 244
       }
     },
     {
@@ -1308,7 +1308,7 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1855
+        "line_end": 1859
       }
     },
     {

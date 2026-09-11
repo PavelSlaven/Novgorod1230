@@ -33,7 +33,8 @@ test('planner assembly preserves resolved ownerless speech for quoted and unquot
   ]) {
     const input = request({ root_player_action: intent, remaining_intent: intent });
     const utterance = { speaker_ref: input.actor.actor_ref ?? input.actor.actor_id,
-      utterance_text: text, input_mode: mode };
+      utterance_text: text, input_mode: mode,
+      delivery: { loudness: 2, duration_class: 'instant' } };
     const plan = assembleTurnStepPlan({ ...output(), resolution: 'direct',
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
       goal_result: 'achieved', operations: [], operation_choice: null,

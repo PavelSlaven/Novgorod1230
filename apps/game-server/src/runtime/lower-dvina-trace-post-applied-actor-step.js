@@ -1,66 +1,58 @@
+import { canonicalDigest } from '@rus/materialization';
+
 export function createLowerDvinaTracePostAppliedActorStepOwner({
-  committedState
+  committedState, idempotencyKey
 } = {}) {
-  return async ({ step_index: stepIndex, working_projection: projection,
-    factual_events: events }) => {
+  return async ({ working_projection: projection, factual_events: events }) => {
     if (events.length === 0) return empty(projection);
-    const perceivers = nearbyNpcRefs(committedState, events);
-    if (perceivers.length > 0) {
-      const error = new Error(
-        'Pinned Lower-Dvina perception snapshots are required for nearby NPCs.');
-      error.code = 'TRACE_POST_ACTION_PERCEPTION_PROFILE_GAP';
-      error.details = { perceiver_refs: perceivers,
-        event_refs: events.map(({ event_ref: ref }) => ref) };
-      throw error;
+    const partyId = committedState?.party_id;
+    const priorTurnNumber = Number(committedState?.party_state?.turn_number);
+    if (!text(partyId) || !Number.isSafeInteger(priorTurnNumber)
+        || priorTurnNumber < 0 || !text(idempotencyKey)) {
+      gap('TRACE_POST_ACTION_FACTUAL_EVENT_STATE_GAP');
     }
-    const closedAt = projection?.clock_weather_light?.clock
-      ?? projection?.clock;
-    const windows = events.map(({ event_ref, occurred_at }) => ({
-      event_ref: structuredClone(event_ref),
-      opened_at: structuredClone(occurred_at),
-      closed_at: structuredClone(closedAt ?? occurred_at),
-      status: 'completed',
-      perceived_actor_refs: [],
-      observable_response_event_refs: []
-    }));
-    return Object.freeze({
-      working_projection: structuredClone(projection),
-      write_fragments: [],
-      consequence_fragment: {
-        duration_minutes: 0,
-        visible_seed: Object.fromEntries(windows.map((window, index) => [
-          `turn_step_post_applied_world_response_${stepIndex}_${index + 1}`,
-          {
-            kind: 'post_applied_perception_window',
-            event_ref: structuredClone(window.event_ref),
-            status: window.status,
-            observable_response_event_refs:
-              structuredClone(window.observable_response_event_refs)
-          }
-        ])),
-        hidden_update: {},
-        state_changes: windows.map((window) => ({
-          kind: 'post_applied_perception_window', ...window
-        })),
-        suggested_actions: []
-      }
-    });
+    const turnNumber = priorTurnNumber + 1;
+    const changeSetId = `change:${partyId}:turn-step:${turnNumber}`;
+    const proposals = events.map((event) => eventWriteProposal({ event,
+      partyId, changeSetId, idempotencyKey }));
+    const temporal = {
+      version: 1, schema: 'turn_step_factual_event_persistence_result_v1',
+      clock_before: structuredClone(events[0].occurred_at),
+      clock_after: structuredClone(events.at(-1).occurred_at),
+      temporal_status: 'completed',
+      projection: structuredClone(projection),
+      combined_change_set: { proposals }
+    };
+    temporal.canonical_digest = canonicalDigest(temporal);
+    return Object.freeze({ working_projection: structuredClone(projection),
+      write_fragments: [], consequence_fragment: null,
+      temporal_results: [temporal] });
   };
 }
 
-function nearbyNpcRefs(state, events) {
-  const scopes = new Set(events.map(({ source_scope_ref: ref }) => ref.entity_id));
-  const anchor = state?.position?.g5_anchor_id;
-  return (state?.npcs ?? []).filter((npc) => {
-    const scope = npc.position_ref ?? npc.location_ref;
-    return (typeof scope === 'string' && scopes.has(scope))
-      || (typeof anchor === 'string' && npc.anchor_id === anchor);
-  }).map((npc) => ({ entity_kind: 'npc',
-    entity_id: npc.instance_id ?? npc.npc_id })).filter(({ entity_id }) =>
-    typeof entity_id === 'string' && entity_id.length > 0);
+function eventWriteProposal({ event, partyId, changeSetId, idempotencyKey }) {
+  const id = event.event_ref.entity_id, at = event.occurred_at;
+  const row = { target_schema: 'party_runtime',
+    target_table: 'party_temporal_events', id, record: {
+      event_id: id, party_id: partyId, event_kind: 'actor_factual_event',
+      status: 'resolved', scheduled_at_whole_minutes: at.whole_minutes,
+      scheduled_at_subminute_numerator: at.subminute_numerator,
+      scheduled_at_subminute_denominator: at.subminute_denominator,
+      rule_ref: structuredClone(event.rule_ref),
+      policy_ref: structuredClone(event.policy_ref),
+      preconditions_digest: canonicalDigest(event),
+      idempotency_key: `${idempotencyKey}:event:${id}`,
+      change_set_id: changeSetId, terminal_change_set_id: changeSetId,
+      state_version: 2 } };
+  return { write_set: { appends: [], inserts: [row], updates: [] },
+    expected_state_versions: [],
+    physical_keys: [`party_runtime.party_temporal_events:${id}`] };
 }
 
-function empty(projection) {
-  return Object.freeze({ working_projection: structuredClone(projection),
-    write_fragments: [], consequence_fragment: null });
+function gap(code, details = null) {
+  throw Object.assign(new Error(code), { code, details });
 }
+function text(value) { return typeof value === 'string' && value.length > 0; }
+function empty(projection) { return Object.freeze({
+  working_projection: structuredClone(projection), write_fragments: [],
+  consequence_fragment: null, temporal_results: [] }); }

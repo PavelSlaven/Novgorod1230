@@ -150,25 +150,9 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             ?.filter(({ code }) => code === 'additional_property')
             .map(({ path }) => path) ?? []))
       : repairedOutput;
-    return assembleTurnStepPlan(withConservativeSpeechDelivery(semanticOutput),
-      request, operationChoices);
+    return assembleTurnStepPlan(semanticOutput, request, operationChoices);
   };
   return model;
-}
-
-function withConservativeSpeechDelivery(output) {
-  if (output?.direct_result_kind !== 'player_utterance'
-      || output.utterance == null
-      || typeof output.utterance !== 'object'
-      || Array.isArray(output.utterance)
-      || output.utterance.delivery !== undefined) return output;
-  return {
-    ...output,
-    utterance: {
-      ...output.utterance,
-      delivery: { loudness: 1, duration_class: 'instant' }
-    }
-  };
 }
 
 function plannerRequestWire(input) {

@@ -6,7 +6,8 @@ import { commitLowerDvinaTracePhase2 } from
 import { bindCommitEnvelopeToBatch, commitEnvelope } from
   './lower-dvina-trace-turn-step-envelope-fixture.js';
 
-export function fixture({ direct = false, clarification = false, check = false,
+export function fixture({ direct = false, speech = false,
+  clarification = false, check = false,
   bodyEvent = false, authoredMove = false, envelopeOverride = null,
   temporalResults = [], backgroundNpcSemanticPlan = null }) {
   const state = baseState();
@@ -37,6 +38,7 @@ export function fixture({ direct = false, clarification = false, check = false,
     .player_safe_state.visible_entities.push({ entity_ref: 'authored-item' });
   const writeTargets = [];
   if (direct) writeTargets.push(operationBatch());
+  if (speech) writeTargets.push(speechBatch());
   if (bodyEvent) writeTargets.push(bodyOperationBatch(envelope));
   if (authoredMove) writeTargets.push(authoredMoveBatch(state.items[0]));
   const batch = writeTargets.find(
@@ -81,6 +83,19 @@ function operationBatch() {
         runtime_instance_mechanics_snapshot: mechanics(),
         placement: { holder_character_id: 'actor-1', physical_position: 'hands' }
       } } }, semanticActivity()] } };
+}
+
+function speechBatch() {
+  return { target: 'party_turn_step_operations', value: { version: 1,
+    schema: 'party_turn_step_operation_batch_v1', root_turn_id: 'turn:p:1',
+    committed_state_version: 3, operations: [speechActivity()] } };
+}
+
+function speechActivity() {
+  const activity = semanticActivity();
+  return { ...activity, value: { ...activity.value,
+    profile_ref: 'approved:moment-none', duration_class: 'moment',
+    duration_minutes: 1 } };
 }
 
 function bodyOperationBatch(envelope) {

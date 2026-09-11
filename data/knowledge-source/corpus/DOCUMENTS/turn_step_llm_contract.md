@@ -417,11 +417,15 @@ placement и подтверждённое condition как обязательн�
 `player_utterance` фиксирует короткую речь без подходящего supplied interaction
 owner через тот же direct `semantic/moment/none` шаг с пустыми operations.
 Обязателен объект `utterance` с ровно `speaker_ref`, `utterance_text`,
-`input_mode`: speaker равен текущему actor, `verbatim` дословно переносит
+`input_mode`, `delivery`: speaker равен текущему actor, `verbatim` дословно переносит
 заданные слова без обрамляющего действия, `intent_paraphrase` семантически
 конкретизирует свободное речевое намерение без заданной цитаты. Последний режим
 не разрешает переписывать явно заданные слова или добавлять незаявленные
-утверждения. После применения и P16 commit exact resolved text/speaker
+утверждения. `delivery` содержит ровно qualitative `loudness` (`1..4`: шёпот,
+обычный голос, повышенный голос, крик) и `duration_class` (`instant`, `brief`,
+`sustained`). Это LLM-owned семантика способа произнесения, а не audience:
+отсутствующее или malformed delivery отклоняется fail-closed и не заменяется
+тихим default. После применения и P16 commit exact resolved text/speaker
 сохраняются в существующем `approved_plan` semantic trace, а player-safe
 projection явно показывает произнесённые слова. В остальных plans `utterance`
 отсутствует. При отдельном последующем действии допустимы `pending` и

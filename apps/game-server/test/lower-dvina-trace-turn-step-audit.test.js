@@ -34,7 +34,8 @@ test('existing commit envelope retains exact resolved utterance without conversa
   trace.approved_plan.direct_result_kind = 'player_utterance';
   trace.approved_plan.utterance = {
     speaker_ref: trace.plan_request.actor.actor_ref ?? trace.plan_request.actor.actor_id,
-    utterance_text: text, input_mode: 'verbatim'
+    utterance_text: text, input_mode: 'verbatim',
+    delivery: { loudness: 4, duration_class: 'instant' }
   };
   assert.deepEqual(validateTurnStepCommitEnvelope(envelope).errors, []);
   const reloaded = JSON.parse(JSON.stringify(envelope));

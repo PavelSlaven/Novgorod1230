@@ -1,14 +1,21 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { applySemanticActivity } from '../src/runtime/lower-dvina-trace-turn-step-delegated-ports.js';
-import { initializeRuntimeState } from '../src/runtime/lower-dvina-trace-turn-step-item-operations.js';
-import { createLowerDvinaTracePostAppliedActorStepOwner } from '../src/runtime/lower-dvina-trace-post-applied-actor-step.js';
+import { applySemanticActivity } from
+  '../src/runtime/lower-dvina-trace-turn-step-delegated-ports.js';
+import { initializeRuntimeState } from
+  '../src/runtime/lower-dvina-trace-turn-step-item-operations.js';
+import { createLowerDvinaTracePostAppliedActorStepOwner } from
+  '../src/runtime/lower-dvina-trace-post-applied-actor-step.js';
 
-test('direct utterance adapter emits one text-free formal acoustic fact', async () => {
-  const clock = { whole_minutes: '10', subminute_numerator: '0',
-    subminute_denominator: '1' };
+const at = { whole_minutes: '10', subminute_numerator: '0',
+  subminute_denominator: '1' };
+const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const versionedRef = (entity_kind, entity_id) => ({ entity_kind, entity_id,
+  authoring_version: '1' });
+
+test('direct utterance emits exact delivery without speech text', async () => {
   const state = initializeRuntimeState({ party_id: 'party', actor_id: 'actor',
-    party_state: { turn_number: 0 }, clock,
+    party_state: { turn_number: 0 }, clock: at,
     position: { location_ref: 'shore' }, items: [] });
   const result = await applySemanticActivity({
     request: { root_turn_id: 'turn', step_index: 1,
@@ -20,8 +27,7 @@ test('direct utterance adapter emits one text-free formal acoustic fact', async 
     operation: { activity: { owner: 'semantic', duration_class: 'moment',
       effort: 'none' } },
     working_projection: { actor_id: 'actor', spatial_semantic: {
-      position_ref: 'shore' } },
-    check_result: null,
+      position_ref: 'shore' } }, check_result: null,
     prepared_chain_context: null
   }, state, { resolve: async () => ({
     profile_ref: 'semantic:moment:none',
@@ -31,54 +37,58 @@ test('direct utterance adapter emits one text-free formal acoustic fact', async 
     body_effect_ref: null, body_effect_profile_ref: 'body:none',
     exact_deltas: {}, body_state_after: {}
   }) });
-
-  assert.equal(result.factual_events.length, 1);
   assert.deepEqual(result.factual_events[0].perceptible_signal, {
-    channel: 'acoustic', emission_strength: 4, duration_class: 'instant'
-  });
-  assert.equal(result.factual_events[0].source_scope_ref.entity_id, 'shore');
+    channel: 'acoustic', emission_strength: 4, duration_class: 'instant' });
+  assert.deepEqual(result.factual_events[0].rule_ref, {
+    entity_kind: 'activity_profile', entity_id: 'semantic:moment:none',
+    authoring_version: '1' });
+  assert.deepEqual(result.factual_events[0].policy_ref, {
+    entity_kind: 'turn_step_owner_profile_set', entity_id: 'semantic',
+    authoring_version: '1' });
+  assert.deepEqual(result.factual_events[0].profile_pin, {
+    artifact_id: 'semantic', revision: 1, digest: 'a'.repeat(64) });
   assert.equal(JSON.stringify(result.factual_events).includes('Эй'), false);
 });
 
-test('completed no-perceiver window is explicit and does not invoke an NPC',
-  async () => {
-    const owner = createLowerDvinaTracePostAppliedActorStepOwner({
-      committedState: { position: { location_ref: 'shore',
-        g5_anchor_id: 'shore-anchor' }, npcs: [] }
-    });
-    const event = {
-      version: 1, schema: 'turn_step_factual_event_v1',
-      event_ref: { entity_kind: 'sound_event', entity_id: 'sound:1' },
-      occurred_at: { whole_minutes: '10', subminute_numerator: '0',
-        subminute_denominator: '1' },
-      source_ref: { entity_kind: 'player_character', entity_id: 'actor' },
-      source_scope_ref: { entity_kind: 'canonical_spatial_node',
-        entity_id: 'shore' },
-      perceptible_signal: { channel: 'acoustic', emission_strength: 4,
-        duration_class: 'instant' }
-    };
-    const result = await owner({ working_projection: { actor_id: 'actor' },
-      factual_events: [event] });
-    assert.deepEqual(result.consequence_fragment.state_changes[0], {
-      kind: 'post_applied_perception_window', event_ref: event.event_ref,
-      opened_at: event.occurred_at, closed_at: event.occurred_at,
-      status: 'completed', perceived_actor_refs: [],
-      observable_response_event_refs: []
-    });
-    assert.deepEqual(result.write_fragments, []);
+for (const [label, value] of [
+  ['speech', event()],
+  ['unseen visual physical event', event({ channel: 'visual',
+    eventKind: 'action_contract', id: 'physical:1',
+    ruleId: 'physical-event', policyId: 'physical-policy' })]
+]) test(`${label} persists without invented listener or response`, async () => {
+    const owner = ownerFor();
+    const result = await owner({ root_turn_id: 'turn:party:1', step_index: 1,
+      working_projection: {}, factual_events: [value] });
+    assert.equal(result.consequence_fragment, null);
+    const temporal = result.temporal_results[0];
+    assert.deepEqual(temporal.projection, {});
+    assert.equal(temporal.temporal_status, 'completed');
+    const row = temporal.combined_change_set.proposals[0]
+      .write_set.inserts[0];
+    assert.equal(row.target_table, 'party_temporal_events');
+    assert.equal(row.record.status, 'resolved');
+    assert.equal(row.record.state_version, 2);
   });
 
-test('nearby NPC fails on missing pinned perception profile instead of reacting',
-  async () => {
-    const owner = createLowerDvinaTracePostAppliedActorStepOwner({
-      committedState: { position: { location_ref: 'shore',
-        g5_anchor_id: 'shore-anchor' },
-      npcs: [{ instance_id: 'npc-1', anchor_id: 'shore-anchor' }] }
-    });
-    await assert.rejects(() => owner({ working_projection: {}, factual_events: [{
-      event_ref: { entity_kind: 'sound_event', entity_id: 'sound:1' },
-      occurred_at: { whole_minutes: '10', subminute_numerator: '0',
-        subminute_denominator: '1' },
-      source_scope_ref: { entity_id: 'shore' }
-    }] }), ({ code }) => code === 'TRACE_POST_ACTION_PERCEPTION_PROFILE_GAP');
+function ownerFor() {
+  return createLowerDvinaTracePostAppliedActorStepOwner({
+    committedState: { party_id: 'party', actor_id: 'actor',
+      party_state: { state_version: 7, turn_number: 0 } },
+    idempotencyKey: 'idem-1'
   });
+}
+
+function event({ channel = 'acoustic', eventKind = 'sound_event', id = 'sound:1',
+  ruleId = 'speech-event', policyId = 'speech-policy' } = {}) {
+  return { version: 1, schema: 'turn_step_factual_event_v1',
+    event_ref: ref(eventKind, id), occurred_at: structuredClone(at),
+    source_activity_ref: ref('semantic_activity', 'activity:1'),
+    source_ref: ref('player_character', 'actor'),
+    source_scope_ref: ref('canonical_spatial_node', 'shore'),
+    rule_ref: versionedRef('activity_profile', ruleId),
+    policy_ref: versionedRef('turn_step_owner_profile_set', policyId),
+    profile_pin: { artifact_id: policyId, revision: 1,
+      digest: 'a'.repeat(64) },
+    perceptible_signal: { channel, emission_strength: 4,
+      duration_class: 'instant' } };
+}

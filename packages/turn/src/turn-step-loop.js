@@ -50,6 +50,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const checkRequests = [];
   const writeFragments = [];
   const consequenceFragments = [];
+  const factualEvents = [];
+  const postAppliedTemporalResults = [];
   const preparedEffects = [];
   const ordinaryPlans = [];
   const actionProducedPlans = [];
@@ -194,6 +196,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       break;
     }
     workingProjection = postApplied.working_projection;
+    factualEvents.push(...execution.factualEvents);
+    postAppliedTemporalResults.push(...(postApplied.temporal_results ?? []));
     writeFragments.push(...execution.writeFragments);
     writeFragments.push(...(postApplied.write_fragments ?? []));
     consequenceFragments.push(...execution.consequenceFragments);
@@ -303,6 +307,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     check_requests: checkRequests,
     write_fragments: writeFragments,
     consequence_fragments: consequenceFragments,
+    factual_events: factualEvents,
+    post_applied_temporal_results: postAppliedTemporalResults,
     prepared_effect_ledger: preparedEffectLedger,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plans: actionProducedPlans,

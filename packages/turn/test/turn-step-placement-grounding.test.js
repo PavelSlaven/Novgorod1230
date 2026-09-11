@@ -100,7 +100,8 @@ test('ownerless utterance preserves exact player words and speaker before later 
   const value = { ...plan('cloth', 'worn_by'), operations: [],
     activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
     goal_result: 'pending', direct_result_kind: 'player_utterance',
-    utterance: { speaker_ref: actor, utterance_text: spoken, input_mode: 'verbatim' },
+    utterance: { speaker_ref: actor, utterance_text: spoken, input_mode: 'verbatim',
+      delivery: { loudness: 4, duration_class: 'instant' } },
     continuation: { remaining_intent: 'Затем проверяю навес.', depends_on_refs: [] }
   };
   assert.deepEqual(validateTurnStepPlan(value, { request: input }).errors, []);
@@ -112,7 +113,8 @@ test('ownerless utterance preserves exact player words and speaker before later 
     { ...value, goal_result: 'not_achieved', continuation: null }
   ]) assert.equal(validateTurnStepPlan(invalid, { request: input }).ok, false);
   const paraphrased = { ...value, utterance: { speaker_ref: actor,
-    utterance_text: 'Помогите!', input_mode: 'intent_paraphrase' } };
+    utterance_text: 'Помогите!', input_mode: 'intent_paraphrase',
+    delivery: { loudness: 3, duration_class: 'instant' } } };
   assert.equal(validateTurnStepPlan(paraphrased, { request: { ...input,
     remaining_intent: 'Зову на помощь, затем проверяю навес.' } }).ok, true);
 });

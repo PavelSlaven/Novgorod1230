@@ -435,6 +435,9 @@ test('forged check math, duplicate identities and loop progress fail pre-P16',
       }],
       ['loop progress', (envelope) => {
         envelope.loop_trace.next_step_index = 8;
+      }],
+      ['malformed factual event', (envelope) => {
+        envelope.loop_trace.factual_events = [{ schema: 'not-an-event' }];
       }]
     ];
     for (const [name, tamper] of cases) {
@@ -535,6 +538,7 @@ function envelopeFromLoop(loop) {
     completed_steps: structuredClone(loop.completed_steps),
     step_traces: structuredClone(loop.step_traces),
     check_results: structuredClone(loop.check_results),
+    factual_events: structuredClone(loop.factual_events ?? []),
     clarification: loop.clarification
   };
   return envelope;

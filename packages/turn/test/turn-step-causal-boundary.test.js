@@ -54,7 +54,8 @@ test('ordinary material prerequisite keeps the complete later handling', () => {
 test('ownerless speech executes before discovery and keeps its lawful response boundary', async () => {
   const requests = [];
   const utterance = { speaker_ref: 'actor-1', utterance_text: 'Эй, отзовитесь!',
-    input_mode: 'verbatim' };
+    input_mode: 'verbatim', delivery: { loudness: 4,
+      duration_class: 'instant' } };
   const outcome = await runTurnStepLoop(input({ rootPlayerAction:
     'Кричу: «Эй, отзовитесь!» Осматриваю настил, затем иду дальше.' }), ports({
     executionRegistry: createTurnStepExecutionRegistry({

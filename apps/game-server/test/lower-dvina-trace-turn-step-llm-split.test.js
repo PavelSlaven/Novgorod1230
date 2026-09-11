@@ -34,7 +34,7 @@ test('turn step adapter rejects a hand-written admitted operation', async () => 
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
 });
 
-test('production planner supplies a conservative delivery floor when omitted',
+test('production planner does not invent speech delivery when omitted',
   async () => {
     const input = request({ remaining_intent: 'Говорю: «Да.»',
       root_player_action: 'Говорю: «Да.»' });
@@ -52,8 +52,8 @@ test('production planner supplies a conservative delivery floor when omitted',
       } }; }
     } });
     const plan = await model(input);
-    assert.deepEqual(plan.utterance.delivery,
-      { loudness: 1, duration_class: 'instant' });
+    assert.equal(plan.utterance.delivery, undefined);
+    assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
   });
 
 test('turn step adapter restores an exact copied operation choice', () => {

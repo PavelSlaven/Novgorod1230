@@ -264,7 +264,9 @@ test('speech then terminal moderate semantic activity commits and recovers exact
     } : { resolution: 'generic_check', goal_result: 'pending', check: { ...genericCheck(), skill_ref: null },
       activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' } }),
       ...(request.step_index === 1 ? { direct_result_kind: 'player_utterance', utterance: {
-        speaker_ref: request.actor.actor_id, input_mode: 'intent_paraphrase', utterance_text: 'Осторожнее у края.' } } : {}) }) });
+        speaker_ref: request.actor.actor_id, input_mode: 'intent_paraphrase',
+        utterance_text: 'Осторожнее у края.',
+        delivery: { loudness: 2, duration_class: 'instant' } } } : {}) }) });
   f.state.inventory = { items: [], load_category: 'light', occupied_hands: 0 };
   const input = { request_id: 'speech-moderate', idempotency_key: 'speech-moderate',
     raw_text: 'Предупреждаю спутников, затем проверяю опору весом тела.' };

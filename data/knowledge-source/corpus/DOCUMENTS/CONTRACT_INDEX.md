@@ -233,6 +233,8 @@ An undeclared guide may still be relevant, but it must not silently override an 
 
 `turn_step_llm_contract.md` §8.2.1 также владеет узким direct `player_utterance`
 contract: exact resolved speech сохраняется через текущий turn semantic trace;
+broadcast-capable речь обязана нести explicit qualitative delivery, а missing или
+malformed delivery отклоняется без silent default;
 broadcast audience/perception этим не активируются. Единственный speech repair
 с isolated copy/goal metadata errors полного envelope получает bounded projection
 только через faithful re-audit и повторную strict validation; третьего planner нет.

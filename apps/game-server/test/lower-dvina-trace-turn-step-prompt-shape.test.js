@@ -33,7 +33,8 @@ test('flat compound speech example and unseen conceptual equivalent validate wit
     const input = request({ root_player_action: intent, remaining_intent: intent });
     const semantic = { ...structuredClone(example), interpretation: {
       player_goal: intent, grounded_attempt: words, adaptation: 'literal' },
-    utterance: { speaker_ref: input.actor.actor_ref, utterance_text: words, input_mode: 'intent_paraphrase' },
+    utterance: { speaker_ref: input.actor.actor_ref, utterance_text: words,
+      input_mode: 'intent_paraphrase', delivery: { loudness: 2, duration_class: 'instant' } },
     continuation: { remaining_intent: suffix, depends_on_refs: [] } };
     let calls = 0;
     const plan = await createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {

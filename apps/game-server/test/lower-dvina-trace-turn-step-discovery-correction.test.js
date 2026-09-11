@@ -273,7 +273,8 @@ for (const [name, template, needed, intent, words] of [
     if (call.role_id === 'turn_step_planner') return { output: payload.step_index === 1
       ? { ...output(), resolution: 'direct', goal_result: 'pending', direct_result_kind: 'player_utterance',
         activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-        utterance: { speaker_ref: 'actor_mikula', input_mode: 'verbatim', utterance_text: words },
+        utterance: { speaker_ref: 'actor_mikula', input_mode: 'verbatim',
+          utterance_text: words, delivery: { loudness: 2, duration_class: 'instant' } },
         continuation: { remaining_intent: intent, depends_on_refs: [] } }
       : { ...output(), operations: [{ op: 'request_item_use', actor_ref: 'actor_mikula', item_ref: template,
         use_kind: 'other', target_refs: [], description: intent }],

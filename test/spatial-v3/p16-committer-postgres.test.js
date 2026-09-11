@@ -460,6 +460,39 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   assert.equal((await client.query("SELECT state_version FROM party_runtime.party_clocks WHERE party_id='p' ")).rows[0].state_version, '2');
   assert.deepEqual(locks, [...locks].sort(), 'lock phases are globally sorted');
 
+  const factualEventPlan = await makePlan({
+    planId: 'factual-event-plan', idempotencyId: 'factual-event-idem',
+    idempotencyKey: 'factual-event-command-key',
+    changeSetId: 'factual-event-cs',
+    physicalKeys: ['party_runtime.party_temporal_events:factual-event'],
+    inserts: [{
+      target_table: 'party_temporal_events', id: 'factual-event', record: {
+        event_id: 'factual-event', party_id: 'p',
+        event_kind: 'actor_factual_event', status: 'resolved',
+        scheduled_at_whole_minutes: 10,
+        scheduled_at_subminute_numerator: 0,
+        scheduled_at_subminute_denominator: 1,
+        rule_ref: { entity_kind: 'activity_profile',
+          entity_id: 'speech-profile', authoring_version: '1' },
+        policy_ref: { entity_kind: 'turn_step_owner_profile_set',
+          entity_id: 'turn-step-owner-profiles', authoring_version: '1' },
+        preconditions_digest: hex,
+        idempotency_key: 'factual-event-command-key:event:factual-event',
+        change_set_id: 'factual-event-cs',
+        terminal_change_set_id: 'factual-event-cs', state_version: 2
+      }
+    }]
+  });
+  assert.equal((await committer.commit({ plan: factualEventPlan })).ok, true);
+  assert.deepEqual((await client.query(`SELECT status,state_version,
+    change_set_id,terminal_change_set_id
+    FROM party_runtime.party_temporal_events
+    WHERE event_id='factual-event'`)).rows[0], {
+    status: 'resolved', state_version: '2',
+    change_set_id: 'factual-event-cs',
+    terminal_change_set_id: 'factual-event-cs'
+  });
+
   const seededOrdinary = makeSeededOrdinaryState();
   const ordinaryBasisDigest = canonicalDigest({
     domain: 'ordinary_supporting_basis_catalog_v1',

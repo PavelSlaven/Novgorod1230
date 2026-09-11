@@ -3,6 +3,7 @@ import {
   validateTurnStepPlan,
   validateTurnStepRequest
 } from './turn-step-contracts.js';
+import { requireFactualEvents } from './post-applied-actor-step.js';
 
 export function validateTurnStepCommitChecks(errors, checks) {
   exactKeys(errors, checks, ['version', 'schema', 'requests', 'results'],
@@ -44,7 +45,7 @@ export function validateTurnStepLoopTrace(errors, value, envelope) {
     'version', 'schema', 'root_turn_id', 'request_id',
     'committed_state_version', 'status', 'stop_reason', 'working_revision',
     'next_step_index', 'remaining_intent', 'completed_steps', 'step_traces',
-    'check_results', 'clarification'
+    'check_results', 'factual_events', 'clarification'
   ], 'loop_trace');
   const allowedStops = new Set([
     'terminal', 'player_response', 'clarification_required', 'no_progress',
@@ -52,6 +53,13 @@ export function validateTurnStepLoopTrace(errors, value, envelope) {
   ]);
   validateCompletedSteps(errors, value.completed_steps, value.step_traces);
   validateStepTraces(errors, value.step_traces, envelope);
+  if (Array.isArray(value.factual_events)) {
+    try {
+      requireFactualEvents(value.factual_events);
+    } catch {
+      errors.push('loop_trace.factual_events must contain exact factual events');
+    }
+  }
   if (value.version !== 1
       || value.schema !== 'turn_step_commit_trace_v1'
       || !['resolved', 'player_response_required'].includes(value.status)
@@ -66,6 +74,7 @@ export function validateTurnStepLoopTrace(errors, value, envelope) {
       || value.step_traces.length < value.working_revision
       || value.step_traces.length > 8
       || !Array.isArray(value.check_results)
+      || !Array.isArray(value.factual_events)
       || !allowedStops.has(value.stop_reason)
       || (value.status === 'resolved') !== (value.stop_reason === 'terminal')
       || (value.clarification != null)

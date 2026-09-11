@@ -172,5 +172,6 @@ export function speech(request, suffix) {
     continuation: { remaining_intent: suffix, depends_on_refs: [] } }),
     direct_result_kind: 'player_utterance',
     utterance: { speaker_ref: 'mikula', input_mode: 'intent_paraphrase',
-      utterance_text: 'Не подходите близко.' } };
+      utterance_text: 'Не подходите близко.',
+      delivery: { loudness: 2, duration_class: 'instant' } } };
 }

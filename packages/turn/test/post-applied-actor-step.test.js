@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createTurnStepExecutionRegistry, runTurnStepLoop } from '../src/turn-step-loop.js';
 import { basePlan, input, ports, result } from './turn-step-loop-fixture.js';
+import { buildTimeUpdateStage } from '../src/stages/time-update.js';
 
 const cases = [
   ['speech/acoustic', { channel: 'acoustic', emission_strength: 4 }],
@@ -9,6 +10,7 @@ const cases = [
   ['arrival/presence', { channel: 'visual', emission_strength: 2 }],
   ['wait/schedule', { channel: 'visual', emission_strength: 1 }]
 ];
+const pin = { artifact_id: 'policy', revision: 1, digest: 'a'.repeat(64) };
 
 for (const [label, perceptible_signal] of cases) {
   test(`${label} crosses the same post-applied factual seam`, async () => {
@@ -17,11 +19,18 @@ for (const [label, perceptible_signal] of cases) {
       version: 1,
       schema: 'turn_step_factual_event_v1',
       event_ref: { entity_kind: 'action_event', entity_id: `event:${label}` },
+      source_activity_ref: { entity_kind: 'semantic_activity',
+        entity_id: `activity:${label}` },
       occurred_at: { whole_minutes: '10', subminute_numerator: '0',
         subminute_denominator: '1' },
       source_ref: { entity_kind: 'player_character', entity_id: 'actor-1' },
       source_scope_ref: { entity_kind: 'canonical_spatial_node',
         entity_id: 'shore' },
+      rule_ref: { entity_kind: 'activity_profile', entity_id: 'activity',
+        authoring_version: '1' },
+      policy_ref: { entity_kind: 'turn_step_owner_profile_set',
+        entity_id: 'policy', authoring_version: '1' },
+      profile_pin: pin,
       perceptible_signal
     };
     const executionRegistry = createTurnStepExecutionRegistry({
@@ -41,9 +50,29 @@ for (const [label, perceptible_signal] of cases) {
     assert.deepEqual(seen[0].factual_events, [factual]);
     assert.equal('plan' in seen[0], false);
     assert.equal('raw_text' in seen[0], false);
+    assert.deepEqual(outcome.factual_events, [factual]);
     assert.equal(outcome.stop_reason, 'terminal');
   });
 }
+
+test('post-applied temporal results join the existing atomic time update',
+  async () => {
+    const temporal = { schema: 'temporal_advance_result_v1',
+      combined_change_set: { proposals: [{ write_set: {
+        schema: 'spatial_v3_perception_reaction_write_set_v1'
+      } }] } };
+    const outcome = await runTurnStepLoop(input(), ports({
+      postAppliedActorStep: async ({ working_projection }) => ({
+        working_projection, write_fragments: [], consequence_fragment: null,
+        temporal_results: [temporal]
+      })
+    }));
+    const update = await buildTimeUpdateStage({ retrievedState: { clock: {
+      whole_minutes: '10', subminute_numerator: '0',
+      subminute_denominator: '1' } }, consequence: { duration_minutes: 0 },
+    postAppliedTemporalResults: outcome.post_applied_temporal_results });
+    assert.deepEqual(update.temporal_results, [temporal]);
+  });
 
 test('no materialized perception candidates does not synthesize a decision',
   async () => {
@@ -67,11 +96,18 @@ test('nonempty factual events fail when the common world owner is absent',
         working_projection, 'sound', { factual_events: [{
           version: 1, schema: 'turn_step_factual_event_v1',
           event_ref: { entity_kind: 'sound_event', entity_id: 'sound:1' },
+          source_activity_ref: { entity_kind: 'semantic_activity',
+            entity_id: 'activity:1' },
           occurred_at: { whole_minutes: '10', subminute_numerator: '0',
             subminute_denominator: '1' },
           source_ref: { entity_kind: 'player_character', entity_id: 'actor-1' },
           source_scope_ref: { entity_kind: 'canonical_spatial_node',
             entity_id: 'shore' },
+          rule_ref: { entity_kind: 'activity_profile', entity_id: 'activity',
+            authoring_version: '1' },
+          policy_ref: { entity_kind: 'turn_step_owner_profile_set',
+            entity_id: 'policy', authoring_version: '1' },
+          profile_pin: pin,
           perceptible_signal: { channel: 'acoustic', emission_strength: 4,
             duration_class: 'instant' }
         }] })

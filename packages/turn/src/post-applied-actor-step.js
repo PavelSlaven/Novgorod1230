@@ -16,7 +16,8 @@ export async function advancePostAppliedActorStep({
     return deepFreeze({
       working_projection: structuredClone(working_projection),
       write_fragments: [],
-      consequence_fragment: null
+      consequence_fragment: null,
+      temporal_results: []
     });
   }
   if (typeof owner !== 'function') throw turnFailure(
@@ -32,6 +33,11 @@ export async function advancePostAppliedActorStep({
   if (!plain(result) || !plain(result.working_projection)) {
     throw turnFailure('TURN_STEP_POST_APPLIED_RESULT_INVALID',
       'Post-applied actor-step owner must return working_projection.');
+  }
+  if (result.temporal_results != null
+      && !Array.isArray(result.temporal_results)) {
+    throw turnFailure('TURN_STEP_POST_APPLIED_RESULT_INVALID',
+      'Post-applied actor-step temporal_results must be an ordered array.');
   }
   return deepFreeze(structuredClone(result));
 }
@@ -52,17 +58,35 @@ export function requireFactualEvents(value) {
 
 function validateFactualEvent(event, index) {
   const path = `factual_events[${index}]`;
-  const keys = ['version', 'schema', 'event_ref', 'occurred_at', 'source_ref',
-    'source_scope_ref', 'perceptible_signal'];
+  const keys = ['version', 'schema', 'event_ref', 'source_activity_ref',
+    'occurred_at', 'source_ref', 'source_scope_ref', 'rule_ref', 'policy_ref',
+    'profile_pin', 'perceptible_signal'];
   if (!plain(event) || !exactKeys(event, keys)
       || event.version !== 1
       || event.schema !== 'turn_step_factual_event_v1'
-      || !ref(event.event_ref) || !ref(event.source_ref)
-      || !ref(event.source_scope_ref) || !timestamp(event.occurred_at)
+      || !ref(event.event_ref) || !ref(event.source_activity_ref)
+      || event.source_activity_ref.entity_kind !== 'semantic_activity'
+      || !ref(event.source_ref)
+      || !ref(event.source_scope_ref) || !versionedRef(event.rule_ref)
+      || !versionedRef(event.policy_ref) || !profilePin(event.profile_pin)
+      || event.rule_ref.entity_kind !== 'activity_profile'
+      || event.policy_ref.entity_id !== event.profile_pin.artifact_id
+      || event.policy_ref.authoring_version
+        !== String(event.profile_pin.revision)
+      || event.rule_ref.authoring_version
+        !== String(event.profile_pin.revision)
+      || !timestamp(event.occurred_at)
       || !signal(event.perceptible_signal)) {
     throw turnFailure('TURN_STEP_FACTUAL_EVENTS_INVALID',
       `${path} must match turn_step_factual_event_v1.`);
   }
+}
+
+function profilePin(value) {
+  return plain(value) && exactKeys(value, ['artifact_id', 'revision', 'digest'])
+    && typeof value.artifact_id === 'string' && value.artifact_id.length > 0
+    && Number.isSafeInteger(value.revision) && value.revision >= 1
+    && typeof value.digest === 'string' && /^[a-f0-9]{64}$/u.test(value.digest);
 }
 
 function signal(value) {
@@ -88,6 +112,15 @@ function ref(value) {
   return plain(value) && exactKeys(value, ['entity_kind', 'entity_id'])
     && typeof value.entity_kind === 'string' && value.entity_kind.length > 0
     && typeof value.entity_id === 'string' && value.entity_id.length > 0;
+}
+
+function versionedRef(value) {
+  return plain(value)
+    && exactKeys(value, ['entity_kind', 'entity_id', 'authoring_version'])
+    && typeof value.entity_kind === 'string' && value.entity_kind.length > 0
+    && typeof value.entity_id === 'string' && value.entity_id.length > 0
+    && typeof value.authoring_version === 'string'
+    && /^[1-9]\d*$/u.test(value.authoring_version);
 }
 
 function exactKeys(value, required, optional = []) {

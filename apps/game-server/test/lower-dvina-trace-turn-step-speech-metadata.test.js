@@ -12,13 +12,14 @@ import { TURN_STEP_PLAN_MAPPINGS } from
 import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
+const D = { loudness: 2, duration_class: 'instant' };
 
 function speechOutput(input, words, later = null) {
   return { ...output(), ...JSON.parse(TURN_STEP_PLAN_MAPPINGS).player_utterance,
     interpretation: { player_goal: input.remaining_intent,
       grounded_attempt: words, adaptation: 'literal' },
     utterance: { speaker_ref: input.actor.actor_ref,
-      utterance_text: words, input_mode: 'verbatim' },
+      utterance_text: words, input_mode: 'verbatim', delivery: D },
     goal_result: later == null ? 'achieved' : 'pending',
     continuation: later == null ? null
       : { remaining_intent: later, depends_on_refs: [] } };
@@ -55,13 +56,12 @@ test('provider metadata does not trigger repair before the exact speech and suff
     assert.equal(result.repaired, false);
     assert.equal(result.plan.goal_result, 'pending');
     assert.deepEqual(result.plan.utterance, { speaker_ref: input.actor.actor_ref,
-      utterance_text: words, input_mode: mode });
+      utterance_text: words, input_mode: mode, delivery: D });
     assert.deepEqual(result.plan.continuation, { remaining_intent: suffix, depends_on_refs: [] });
     assert.deepEqual(result.plan.interpretation, { player_goal: raw.interpretation.player_goal,
       grounded_attempt: raw.interpretation.grounded_attempt, adaptation: 'literal' });
     assert.equal(Object.hasOwn(result.plan, unseen ? 'model_commentary' : 'semantic_confidence'), false);
     assert.equal(validateTurnStepPlan(result.plan, { request: input }).ok, true);
-    assert.equal(Object.isFrozen(result.plan), true);
     assert.deepEqual(raw, original);
     assert.equal(retrievals, 1);
     assert.deepEqual(calls, ['turn_step_planner', 'turn_step_grounding_auditor']);

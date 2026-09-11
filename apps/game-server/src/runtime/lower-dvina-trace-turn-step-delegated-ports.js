@@ -262,7 +262,7 @@ export async function applySemanticActivity(execution, state,
   const withBody = {
     ...output,
     body_state_after: structuredClone(resolved.body_state_after),
-    factual_events: semanticFactualEvents(execution, identity, state)
+    factual_events: semanticFactualEvents(execution, identity, state, resolved)
   };
   return preparedEffectRequest == null ? deepFreeze(withBody) : deepFreeze({
     ...withBody,
@@ -270,7 +270,7 @@ export async function applySemanticActivity(execution, state,
   });
 }
 
-function semanticFactualEvents(execution, identity, state) {
+function semanticFactualEvents(execution, identity, state, resolved) {
   const utterance = execution.plan?.direct_result_kind === 'player_utterance'
     ? execution.plan.utterance : null;
   const delivery = utterance?.delivery;
@@ -283,19 +283,22 @@ function semanticFactualEvents(execution, identity, state) {
   return [{
     version: 1,
     schema: 'turn_step_factual_event_v1',
-    event_ref: {
-      entity_kind: 'sound_event',
-      entity_id: deterministicRef('sound-event', identity.activity_id)
-    },
+    event_ref: { entity_kind: 'sound_event',
+      entity_id: deterministicRef('sound-event', identity.activity_id) },
+    source_activity_ref: { entity_kind: 'semantic_activity',
+      entity_id: identity.activity_id },
     occurred_at: structuredClone(occurredAt),
-    source_ref: {
-      entity_kind: 'player_character',
-      entity_id: utterance.speaker_ref
-    },
-    source_scope_ref: {
-      entity_kind: 'canonical_spatial_node',
-      entity_id: sourceScope
-    },
+    source_ref: { entity_kind: 'player_character',
+      entity_id: utterance.speaker_ref },
+    source_scope_ref: { entity_kind: 'canonical_spatial_node',
+      entity_id: sourceScope },
+    rule_ref: { entity_kind: 'activity_profile',
+      entity_id: resolved.profile_ref,
+      authoring_version: String(resolved.profile_pin.revision) },
+    policy_ref: { entity_kind: 'turn_step_owner_profile_set',
+      entity_id: resolved.profile_pin.artifact_id,
+      authoring_version: String(resolved.profile_pin.revision) },
+    profile_pin: structuredClone(resolved.profile_pin),
     perceptible_signal: {
       channel: 'acoustic',
       emission_strength: delivery.loudness,

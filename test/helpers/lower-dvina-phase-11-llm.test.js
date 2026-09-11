@@ -332,10 +332,14 @@ test('canonical narration fixture satisfies the current raw adapter contract and
     const input = JSON.parse(call.messages[1].content);
     const output = await responder({ model: `fixture-${call.role_id.replaceAll('_', '-')}`, input });
     if (call.role_id === 'gameplay_narrator_auditor') {
-      assert.equal(Object.keys(output).length, 8);
+      assert.deepEqual(Object.keys(output), ['reviewed_segments',
+        'source_reviews', 'unsupported', 'literary_failures', 'evidence']);
       assert.deepEqual(output.reviewed_segments, input.segments.map(({ segment_id }) => segment_id));
-      assert.deepEqual(Object.keys(output.coverage), ['visible_change_1', 'visible_change_2', 'uncertainty_1']);
-      for (const ids of Object.values(output.coverage)) assert.deepEqual(ids, output.reviewed_segments);
+      assert.deepEqual(output.source_reviews.map(({ ref }) => ref),
+        ['visible_change_1', 'visible_change_2', 'uncertainty_1']);
+      for (const review of output.source_reviews) {
+        assert.deepEqual(review.segment_choices, output.reviewed_segments);
+      }
       assert.equal('schema' in output, false);
     }
     return { output };

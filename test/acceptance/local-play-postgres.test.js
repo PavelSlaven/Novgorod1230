@@ -138,12 +138,12 @@ test('local play persists a free turn and replays it after a server restart',
         assert.equal(visible.visible_scene, sourceScene.visible_scene);
         assert.ok(profile.player_visible_physical_facts.length > 0);
         for (const detail of profile.player_visible_physical_facts) assert.ok(visible.sensory_details.includes(detail), JSON.stringify({ index, missing: detail, profile: profile.player_visible_physical_facts, narrated: visible.sensory_details }));
-        assert.ok(beat.changes.some(({ text }) => text.includes('Поиск занял 15 минут.')));
         if (resolution === 'no_change' || resolution === 'authority_required') {
           assert.ok(beat.changes.some(({ text }) => text.includes(
-            `В этой попытке поиска по вопросу «${turnRequest.raw_text}» подтверждённой находки нет.`)));
+            `За 15 минут поиска по вопросу «${turnRequest.raw_text}» подтверждённой находки нет.`)));
           assert.ok(beat.uncertainties.some(({ text }) => text.includes(`«${turnRequest.raw_text}»`)));
-        }
+        } else assert.ok(beat.changes.some(
+          ({ text }) => text.includes('Поиск занял 15 минут.')));
       }
       assert.equal(result.screen.panels.character.visible, true);
       assert.ok(renderScreen(result.screen).includes('<dt>Вы</dt><dd>Микула, младший приказчик</dd>'));
@@ -324,8 +324,8 @@ function searchFixtureResponse(input, resolution) {
   return { resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
     semantic_admission_class: 'common_mundane', reason_code: 'ordinary_wood',
     world_knowledge_claim_refs: [request.world_knowledge.facts[0].claim_ref],
-    entities: [{ semantic_descriptor: { semantic_type: 'wood_fragment', name: 'щепка', facts: [] },
-      presence_expectation: 'routine', mechanics_proposal: { mass_grams: 10,
+    entities: [{ semantic_type: 'wood_fragment', presence_expectation: 'routine',
+      mechanics_proposal: { mass_grams: 10,
         external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null } }] };
 }

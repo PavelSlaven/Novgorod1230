@@ -232,6 +232,8 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
   };
   const disclosed = await pathB.submitTurn(partyB.party_id, disclosureInput);
   assert.equal(disclosed.check.outcome.success, true);
+  assert.equal(disclosed.screen.checks.length, 1);
+  assert.equal(disclosed.screen.checks[0].roll, disclosed.check.roll);
   assert.deepEqual(disclosed.conversation.semantic_exchange, {
     response_kind: 'route_disclosure',
     npc_utterance: 'От лагеря иди к старой сушильне по тропе.',

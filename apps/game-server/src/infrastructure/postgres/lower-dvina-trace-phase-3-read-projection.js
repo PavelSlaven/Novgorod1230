@@ -1,6 +1,10 @@
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
-import { phase2ScreenDigest, phase2VisibleContextFromPayload } from './lower-dvina-trace-phase-2-projection.js';
+import {
+  phase2ScreenDigest,
+  phase2VisibleContextFromPayload,
+  projectPlayerSafeChecks
+} from './lower-dvina-trace-phase-2-projection.js';
 import { phase3ActivityRef } from './lower-dvina-trace-phase-3-state.js';
 
 export function visibleEnvelopeFor({
@@ -64,6 +68,7 @@ export function pendingScreenFor({ state, factual, visibleEnvelope }) {
     },
     visible_context:
       phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    checks: projectPlayerSafeChecks(state),
     main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.'
   };
   screen.screen_digest = phase2ScreenDigest(screen);

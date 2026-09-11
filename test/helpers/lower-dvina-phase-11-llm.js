@@ -807,8 +807,7 @@ function narrationOutput(request) {
     ...(input.required_current_beat?.uncertainties ?? [])];
   return {
     prose: sources.length ? sources.map(({ text }) => text).join('\n\n')
-      : input.optional_support?.visible_scene ?? '',
-    action_options: [], used_references: []
+      : input.optional_support?.visible_scene ?? ''
   };
 }
 
@@ -816,13 +815,12 @@ function narrationAudit(input) {
   const ids = input.segments.map(({ segment_id }) => segment_id);
   return {
     reviewed_segments: ids,
-    failure_checks: {
-      current_beat_buried: [], elapsed_as_service_report: [], static_context_dump: [],
-      weak_literary_composition: [], unsupported_response_or_continuation: []
-    },
-    coverage: Object.fromEntries([...input.required_current_beat.changes,
-      ...input.required_current_beat.uncertainties].map(({ ref }) => [ref, [...ids]])),
-    artistic_verdict: 'pass', technical_verdict: 'pass', pass: true, concerns: [],
+    source_reviews: [...input.required_current_beat.changes,
+      ...input.required_current_beat.uncertainties].map(({ ref }) => ({
+      ref, segment_choices: [...ids]
+    })),
+    unsupported: [],
+    literary_failures: [],
     evidence: ['Каждое обязательное изменение и открытый результат воспроизведены из required_current_beat; все переданные сегменты проверены без добавленных фактов.']
   };
 }

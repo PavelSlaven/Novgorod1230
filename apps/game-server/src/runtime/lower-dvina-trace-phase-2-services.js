@@ -213,6 +213,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
         turnBudget?.assertWithinDeadline();
         const screen = {
           ...defaultScreen,
+          checks: structuredClone(
+            committedPublicResult?.screen?.checks ?? []
+          ),
           delivery_state: { ...defaultScreen.delivery_state, generated_at: issuedAt },
           scenario_id: 'lower_dvina_trace_v1',
           screen_kind: 'trace_turn',

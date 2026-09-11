@@ -92,20 +92,18 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       let vectorMs = 0;
       const vectorScores = new Map();
       try {
-        const hints = planned.plan.search_hints.length > 0
-          ? planned.plan.search_hints : [plannerRequest.semantic_input];
-        for (const hint of hints) {
-          const embeddingStarted = performance.now();
-          const vector = await worldKnowledge.encoder.encode(hint);
-          embeddingMs += Math.max(0, performance.now() - embeddingStarted);
-          const vectorStarted = performance.now();
-          const scores = worldKnowledge.vector_index.search(vector, {
-            locale: planned.plan.query_locale, domains: planned.plan.domains, limit: query.budget.max_candidates });
-          vectorMs += Math.max(0, performance.now() - vectorStarted);
-          for (const [ref, score] of scores) {
-            vectorScores.set(ref, Math.max(vectorScores.get(ref) ?? -Infinity, score));
-          }
-        }
+        const embeddingInput = planned.plan.search_hints.length > 0
+          ? planned.plan.search_hints.join('\n') : plannerRequest.semantic_input;
+        const embeddingStarted = performance.now();
+        const vector = await worldKnowledge.encoder.encode(embeddingInput);
+        embeddingMs += Math.max(0, performance.now() - embeddingStarted);
+        const vectorStarted = performance.now();
+        const scores = worldKnowledge.vector_index.search(vector, {
+          locale: planned.plan.query_locale, domains: planned.plan.domains,
+          limit: query.budget.max_candidates
+        });
+        vectorMs += Math.max(0, performance.now() - vectorStarted);
+        for (const [ref, score] of scores) vectorScores.set(ref, score);
       } catch (error) {
         throw new WorldKnowledgeError('WORLD_KNOWLEDGE_UNAVAILABLE',
           'Production World Knowledge retrieval is unavailable.', {

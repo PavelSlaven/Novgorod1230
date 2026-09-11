@@ -193,6 +193,7 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       modeResolution: state.modeResolution,
       visibleContext: state.persistedVisibleContext,
       consequence: state.consequence,
+      checks: state.checks,
       retrievedState: state.revalidatedState,
       narrator: services.narrator
     }), context)),

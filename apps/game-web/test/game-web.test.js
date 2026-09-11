@@ -64,6 +64,38 @@ test('public screen contract accepts versioned read models and rejects hidden fi
   assert.throws(() => assertNoHiddenFields({ nested: { private_motives: [] } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
 });
 
+test('turn screen validates and renders committed check arithmetic', () => {
+  const check = {
+    ordinal: 1, actor_label: '<Микула>',
+    action_label: 'Перепрыгнуть канаву', die: 'd20',
+    formula: 'd20 + модификаторы', roll: 12, difficulty: 15,
+    modifiers: [
+      { kind: 'attribute', label: 'Характеристика: Ловкость', value: 2 },
+      { kind: 'skill', label: 'Навык: Атлетика', value: 1 },
+      { kind: 'state', label: 'Состояние', value: -1 },
+      { kind: 'equipment', label: 'Снаряжение и нагрузка', value: -2 },
+      { kind: 'circumstances', label: 'Обстоятельства', value: 0 }
+    ], total: 12, outcome: { band: 'success_with_cost', margin: -3,
+      success: false, cost_required: true, severe_failure: false,
+      roll_note: null }, consequence_label: null
+  };
+  const screen = { ...firstScreen(), schema: 'lower_dvina_trace_turn_screen',
+    turn_id: 'turn-1', turn_number: 1,
+    input_panel: { input_contract: 'intent_not_fact' }, checks: [check] };
+  assert.doesNotThrow(() => validatePublicScreen(screen));
+  const html = renderScreen(screen);
+  assert.match(html, /d20: <strong>12<\/strong>/u);
+  assert.match(html, /против сложности <strong>15<\/strong>/u);
+  assert.match(html, /успех с ценой/u);
+  assert.match(html, /Навык: Атлетика<\/dt><dd>\+1/u);
+  assert.match(html, /&lt;Микула&gt;/u);
+  assert.doesNotMatch(html, /<Микула>/u);
+  assert.throws(() => validatePublicScreen({ ...screen,
+    checks: [{ ...check, modifiers: check.modifiers.slice(1) }] }), {
+    code: 'SCREEN_CHECKS_INVALID'
+  });
+});
+
 test('public screen validates exact optional scene affordances', () => {
   const valid = {
     ...firstScreen(),

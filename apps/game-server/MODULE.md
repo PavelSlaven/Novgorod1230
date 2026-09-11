@@ -95,6 +95,12 @@ and adds no second transaction owner.
   labels читаются по scenario pins; неизвестные/скрытые вещи не раскрываются.
   Header получает готовые `presentation_context` place/date/time; этот DTO
   не изменяет сохранённый `visible_context` и не является новой world truth.
+- Тот же projector строит ordered `screen.checks` из committed check results:
+  generic и player-conversation checks, а в combat только шаги player actor.
+  Он добавляет safe actor/action и modifier labels, удаляет check identity,
+  audit/seed/policy refs и не публикует NPC checks без perception binding.
+  Pending semantic/combat screen, ready screen и historical replay используют
+  ту же persisted арифметику; presentation recovery не reroll-ит её.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side
   provider-selected LLM-вызовом, который преобразует свободный текст только в
   валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые
@@ -481,6 +487,8 @@ weights, startup/encode timeout, malformed vector or scan failure returns typed
 lexical gameplay fallback, mutation or failure ledger is created. HTTP hides
 the internal cause in its normal temporary-unavailable envelope, and a retry
 after encoder recovery follows the existing idempotency owner.
+Один WK need объединяет approved search hints в один query text и выполняет
+ровно один Giga encode и один vector lookup перед одним Core resolution.
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,
 `runtime-catalog-boundary.test.js`,
 `test/spatial-v3/p16-committer-postgres.test.js`,

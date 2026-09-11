@@ -2,6 +2,7 @@ import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-p
 import {
   phase2ScreenDigest,
   phase2VisibleContextFromPayload,
+  projectPlayerSafeChecks,
   publicCombatStateFromConsequence
 } from './lower-dvina-trace-phase-2-projection.js';
 
@@ -32,6 +33,7 @@ export function buildLowerDvinaTracePendingScreen({
     },
     visible_context:
       phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    checks: projectPlayerSafeChecks(state),
     ...(combatState == null ? {} : { combat_state: combatState }),
     main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.'
   } });

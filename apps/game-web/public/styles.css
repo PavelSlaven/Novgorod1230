@@ -328,6 +328,18 @@ textarea {
 .current-task p { margin: 0; font-size: .9rem; line-height: 1.45; }
 .prose { padding: 0; border: 0; background: transparent; font-size: clamp(1.08rem, 2.2vw, 1.25rem); line-height: 1.85; }
 .prose p { margin: 0; white-space: pre-wrap; }
+.check-history { display: grid; gap: .75rem; margin-top: 1.25rem; }
+.check-card { padding: .85rem 1rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--paper-raised); }
+.check-action, .check-summary, .check-formula { margin: 0; }
+.check-action { color: var(--ink-muted); font: 600 .72rem/1.5 var(--font-ui); }
+.check-summary { display: flex; flex-wrap: wrap; gap: .35rem 1rem; margin-top: .35rem; font: .86rem/1.5 var(--font-ui); }
+.check-outcome { color: var(--accent); font-weight: 700; }
+.check-card details { margin-top: .55rem; font: .78rem/1.5 var(--font-ui); }
+.check-card summary { cursor: pointer; color: var(--ink-muted); }
+.check-formula { margin-top: .45rem; color: var(--ink-muted); }
+.check-modifiers { display: grid; gap: .2rem; margin: .45rem 0 0; }
+.check-modifiers div { display: flex; justify-content: space-between; gap: 1rem; }
+.check-modifiers dt, .check-modifiers dd { margin: 0; }
 .actions { display: grid; gap: 1.2rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
 .suggested-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
 .action-chip { padding: .55rem .85rem; border: 1px solid var(--line); background: transparent; color: var(--ink-muted); font: 500 .76rem/1.2 var(--font-ui); }

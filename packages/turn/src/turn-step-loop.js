@@ -224,7 +224,10 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       checkRequests.push(execution.checkRequest);
     }
     const summary = plan.interpretation.grounded_attempt;
-    completedSteps.push({ step_index: stepIndex, summary });
+    completedSteps.push({ step_index: stepIndex, summary,
+      ...(execution.checkResult == null ? {} : {
+        check_outcome: execution.checkResult.outcome.band
+      }) });
     workingRevision += 1;
     stepTraces.push(traceFor({
       plan,

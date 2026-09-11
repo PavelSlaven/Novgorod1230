@@ -307,8 +307,8 @@
       "file_name": "situational_prose_requirements.md",
       "status": "active",
       "provenance_mode": "native",
-      "sha256": "4c5617f5938c8d1825a62a796c7c48db08c82d98072102aade3363f1aa78738b",
-      "bytes": 60261
+      "sha256": "6bc8d45c692cf606e00f4e5378ec73dab4cb333e4a4cb62faf206130ea8de965",
+      "bytes": 60608
     },
     {
       "document_id": "spatial-architecture-standard-g0-g6",
@@ -380,8 +380,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "5ff4377cbee97e3fcc70bcce16c846451b45206118233fe9fb54e5f0e106c31b",
-      "bytes": 113786,
+      "sha256": "5f94506895d4a8f8c89625399c21088d974a8b311f7d6ac9f9358e30726337f9",
+      "bytes": 114301,
       "status": "active",
       "provenance_mode": "native"
     },

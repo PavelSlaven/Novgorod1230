@@ -162,7 +162,7 @@ function assertRetrievalObservability(observability, grounded) {
   }
 }
 
-test('independent hints retain their semantic candidates and merge repeated scores once', async () => {
+test('all hints use one combined query embedding and one vector lookup', async () => {
   const bundle = JSON.parse(await readFile(new URL(
     '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
     import.meta.url), 'utf8'));
@@ -197,12 +197,11 @@ test('independent hints retain their semantic candidates and merge repeated scor
         finalScores = options.vectorScores;
         return core.resolveWorldKnowledge(query, options);
       } },
-      encoder: { async encode(text) { encoded.push(text); return [encoded.length]; } },
+      encoder: { async encode(text) { encoded.push(text); return [1]; } },
       vector_index: { search(vector, options) {
         searches.push(options);
-        const ranked = vector[0] === 1
-          ? [[refs[0], 0.8], [refs[2], 0.6], [refs[3], 0.5], [refs[4], 0.4]]
-          : [[refs[1], 0.9], [refs[0], 0.7]];
+        const ranked = [[refs[0], 0.8], [refs[1], 0.9],
+          [refs[2], 0.6], [refs[3], 0.5], [refs[4], 0.4]];
         return new Map(ranked.slice(0, options.limit));
       } } },
     telemetry: { onGameplayTrace: trace => traces.push(trace) },
@@ -214,9 +213,9 @@ test('independent hints retain their semantic candidates and merge repeated scor
   });
   const grounded = await grounder.ground({ semantic_input: hints.join(' '),
     input_locale: 'en', player_safe_state: {} }, 'semantic_resolution');
-  assert.deepEqual(encoded, hints);
-  assert.deepEqual(searches, hints.map(() => ({ locale: 'en',
-    domains: ['physics_material_science'], limit: finalQuery.budget.max_candidates })));
+  assert.deepEqual(encoded, [hints.join('\n')]);
+  assert.deepEqual(searches, [{ locale: 'en',
+    domains: ['physics_material_science'], limit: finalQuery.budget.max_candidates }]);
   assert.equal(coreCalls, 1);
   assert.equal(finalQuery.budget.max_candidates, 12);
   assert.equal(finalScores.get(refs[0]), 0.8);
@@ -373,7 +372,7 @@ test('grounding fails closed when query encoding fails, then retries without lex
   assert.equal(encoderCalls, 2);
 });
 
-test('grounding fails closed when flat vector scan fails without calling Core', async () => {
+test('grounding fails closed when the single vector scan fails without calling Core', async () => {
   const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
   const loaded = await loadProductionWorldKnowledge({ rootDir });
   let coreCalls = 0;
@@ -384,7 +383,6 @@ test('grounding fails closed when flat vector scan fails without calling Core', 
       encoder: { encode: async () => new Float32Array(1024) },
       vector_index: { search() {
         scans += 1;
-        if (scans === 1) return new Map();
         throw Object.assign(new Error('bad vector scan'),
         { code: 'WK_VECTOR_SCAN_FAILED' }); } } },
     roleRunner: { async run() { return { output: {
@@ -403,7 +401,7 @@ test('grounding fails closed when flat vector scan fails without calling Core', 
       && error.details.cause_code === 'WK_VECTOR_SCAN_FAILED'
   );
   assert.equal(coreCalls, 0);
-  assert.equal(scans, 2);
+  assert.equal(scans, 1);
 });
 
 test('NPC action grounding reads only the projected NPC role and historical context', async () => {

@@ -19,6 +19,8 @@ Browser-клиент, который получает только versioned pub
   вычисляет server из committed state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
+- чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome
+  виден сразу, полная формула и signed modifiers доступны через `<details>`;
 - Character отображает уже безопасные предысторию, память и известные сведения;
   воспоминание о человеке не добавляет его в список присутствующих людей;
 - browser bootstrap и обработкой пользовательских намерений.
@@ -89,6 +91,8 @@ fallback для historical parties.
 - только app router заменяет корневой DOM;
 - feature renderers являются чистыми функциями;
 - пользовательский текст отправляется как intent, а не как факт мира.
+- browser не вычисляет total/outcome, не бросает кубик и не сохраняет отдельную
+  dice history: retry/reload получают ту же server-owned screen projection.
 - landscape использует только canonical `env.*` transition profile и
   `spatial.g3.*` category из закрытых allowlist; отсутствующее/неизвестное
   значение остаётся neutral, а label, prose и node ID не анализируются;

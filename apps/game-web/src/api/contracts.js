@@ -41,10 +41,39 @@ export function validatePublicScreen(screen) {
     .includes(screen.schema)) {
     if (!text(screen.turn_id) || !Number.isInteger(Number(screen.turn_number))) throw webError('TURN_SCREEN_ID_INVALID', 'turn_id and turn_number are required.');
     if (screen.input_panel?.input_contract !== 'intent_not_fact') throw webError('INPUT_CONTRACT_INVALID', 'Turn input must use intent_not_fact.');
+    validateChecks(screen.checks ?? []);
   }
   validateSceneAffordances(screen);
   assertNoHiddenFields(screen);
   return screen;
+}
+
+function validateChecks(checks) {
+  const modifierKinds = ['attribute', 'skill', 'state', 'equipment',
+    'circumstances'];
+  const outcomeBands = ['clean_success', 'success', 'success_with_cost',
+    'failure_with_consequence', 'severe_failure'];
+  const valid = Array.isArray(checks) && checks.every((check, index) =>
+    plain(check) && check.ordinal === index + 1
+    && text(check.actor_label) && text(check.action_label)
+    && check.die === 'd20' && text(check.formula)
+    && Number.isInteger(check.roll) && check.roll >= 1 && check.roll <= 20
+    && Number.isInteger(check.difficulty) && Number.isFinite(check.total)
+    && Array.isArray(check.modifiers)
+    && check.modifiers.length === modifierKinds.length
+    && check.modifiers.every((modifier, modifierIndex) =>
+      plain(modifier) && modifier.kind === modifierKinds[modifierIndex]
+      && text(modifier.label) && Number.isFinite(modifier.value))
+    && plain(check.outcome) && outcomeBands.includes(check.outcome.band)
+    && Number.isFinite(check.outcome.margin)
+    && typeof check.outcome.success === 'boolean'
+    && typeof check.outcome.cost_required === 'boolean'
+    && typeof check.outcome.severe_failure === 'boolean'
+    && (check.outcome.roll_note === null
+      || ['natural_1', 'natural_20'].includes(check.outcome.roll_note))
+    && (check.consequence_label === null || text(check.consequence_label)));
+  if (!valid) throw webError('SCREEN_CHECKS_INVALID',
+    'Screen checks must use the ordered player-safe shape.');
 }
 
 function validateSceneAffordances(screen) {

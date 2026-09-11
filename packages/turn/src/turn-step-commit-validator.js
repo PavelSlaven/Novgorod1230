@@ -50,7 +50,7 @@ export function validateTurnStepLoopTrace(errors, value, envelope) {
     'terminal', 'player_response', 'clarification_required', 'no_progress',
     'step_limit'
   ]);
-  validateCompletedSteps(errors, value.completed_steps);
+  validateCompletedSteps(errors, value.completed_steps, value.step_traces);
   validateStepTraces(errors, value.step_traces, envelope);
   if (value.version !== 1
       || value.schema !== 'turn_step_commit_trace_v1'
@@ -77,11 +77,21 @@ export function validateTurnStepLoopTrace(errors, value, envelope) {
   }
 }
 
-function validateCompletedSteps(errors, steps) {
+function validateCompletedSteps(errors, steps, traces) {
   if (!Array.isArray(steps)) return;
-  if (steps.some((step, index) => !hasExact(step, [
-    'step_index', 'summary'
-  ]) || step.step_index !== index + 1 || !text(step.summary))) {
+  const outcomes = new Set(['clean_success', 'success', 'success_with_cost',
+    'failure_with_consequence', 'severe_failure']);
+  if (steps.some((step, index) => {
+    const trace = Array.isArray(traces) ? traces.find((candidate) =>
+      candidate?.step_index === step?.step_index && candidate?.applied) : null;
+    const expected = trace?.check_outcome ?? null;
+    return !(hasExact(step, ['step_index', 'summary'])
+      || hasExact(step, ['step_index', 'summary', 'check_outcome']))
+      || step.step_index !== index + 1 || !text(step.summary)
+      || (expected === null && Object.hasOwn(step, 'check_outcome'))
+      || (expected !== null && (step.check_outcome !== expected
+        || !outcomes.has(step.check_outcome)));
+  })) {
     errors.push('completed_steps must contain exact ordered step summaries');
   }
 }

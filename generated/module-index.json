@@ -33,6 +33,7 @@
         "Запускается как обычный production server entry. `tools/local-play` снаружи",
         "После чтения committed screen/state владеет server-side adapter, который",
         "Общий screen projector строит Character/Inventory/Route из текущего committed",
+        "Тот же projector строит ordered `screen.checks` из committed check results:",
         "Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side",
         "Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `local`/`custom`, OpenAI-compatible base URL/model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. API key не входит в public read model, party save/replay, logs или telemetry; отдельного provider/gameplay path и silent fallback нет",
         "В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены",
@@ -62,6 +63,7 @@
         "отображением готового `presentation_context` в header; календарь и место",
         "маршрутизацией FirstGameScreen/TurnScreen",
         "feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics",
+        "чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome",
         "Character отображает уже безопасные предысторию, память и известные сведения",
         "browser bootstrap и обработкой пользовательских намерений",
         "сохранением `{party_id, request}` незавершённого хода в `rus.pending_turn`",
@@ -390,6 +392,7 @@
         "optional exact `portrait_spec_v1` внутри player-safe active interlocutor",
         "additive presentation data in versioned read models: presentation carries it",
         "visible-only validation и leak rejection",
+        "ordered `TurnScreen.checks` с уже вычисленными player-safe d20, DC,",
         "compatibility `createPublicViewModel`",
         "first-screen delivery attempt, acknowledgement и Stage 27 intent handoff"
       ],

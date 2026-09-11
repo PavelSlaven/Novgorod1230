@@ -7,7 +7,8 @@ import { appendNpcDecisionTraceWrites } from
   './npc-semantic-conversation-decision-writes.js';
 import { appendCombatTraversalWrites } from
   './lower-dvina-trace-combat-traversal-writes.js';
-import { phase2ScreenDigest, phase2VisibleContextFromPayload } from
+import { phase2ScreenDigest, phase2VisibleContextFromPayload,
+  projectPlayerSafeChecks } from
   './lower-dvina-trace-phase-2-projection.js';
 
 export function combatVisibleEnvelope({ partyId, factual, visibleContext,
@@ -59,6 +60,10 @@ export function combatPendingScreen({ state, factual, visibleEnvelope,
       narration_output_digest: null },
     visible_context: phase2VisibleContextFromPayload(
       visibleEnvelope.visible_payload),
+    checks: projectPlayerSafeChecks({ ...state, last_turn: {
+      ...(state.last_turn ?? {}), raw_text: factual.player_input?.raw_text,
+      consequence: factual.consequence
+    } }),
     main_prose: combatEnded ? 'Боевая сцена завершена.'
       : 'Боевая сцена сохранена; требуется следующее решение.' };
   screen.screen_digest = phase2ScreenDigest(screen);

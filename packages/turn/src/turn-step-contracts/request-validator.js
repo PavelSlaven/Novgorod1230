@@ -32,9 +32,17 @@ export function validateTurnStepRequest(value) {
   } else {
     value.completed_steps.forEach((step, index) => {
       const path = `$.completed_steps[${index}]`;
-      if (!strict(step, path, ['step_index', 'summary'], errors)) return;
+      if (!strict(step, path, ['step_index', 'summary'], errors,
+        { optional: ['check_outcome'] })) return;
       integer(step.step_index, 1, `${path}.step_index`, errors);
       requiredText(step.summary, `${path}.summary`, errors);
+      if (step.check_outcome !== undefined && ![
+        'clean_success', 'success', 'success_with_cost',
+        'failure_with_consequence', 'severe_failure'
+      ].includes(step.check_outcome)) {
+        add(errors, `${path}.check_outcome`, 'enum',
+          'must be a check outcome band');
+      }
       if (step.step_index !== index + 1) {
         add(errors, `${path}.step_index`, 'sequence',
           'must be consecutive from 1');

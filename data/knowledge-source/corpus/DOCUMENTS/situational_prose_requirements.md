@@ -173,7 +173,7 @@ Stage 23 проверяет это через обязательный `literary
 
 ## 12. Combat, injury, failure и death
 
-**Необходимый контекст.** Ordered combat events; actors/targets; distance/position; exact perceived statements; check result band без raw roll; harm/body/item/movement consequences; current threats; combat status; elapsed; death cause/timer/terminal result.
+**Необходимый контекст.** Ordered combat events; actors/targets; distance/position; exact perceived statements; check result band и margin без raw roll/DC/audit; harm/body/item/movement consequences; current threats; combat status; elapsed; death cause/timer/terminal result. Для generic player check narrator получает тот же safe band/margin и action binding, чтобы не превращать частичный успех в полный либо неудачу в успех; числовую арифметику показывает отдельная UI-card, не проза.
 
 **Обязательный смысл.** Кто сделал что, кому и с каким воспринимаемым результатом; как изменились положение, способность действовать, предметы и угроза; закончился ли бой или управление вернулось игроку. Injury описывается только supplied symptoms/location/severity. Failure сохраняет попытку и её конкретное последствие. Death называется только после code-owned terminal outcome.
 

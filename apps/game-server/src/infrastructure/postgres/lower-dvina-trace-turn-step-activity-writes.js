@@ -5,7 +5,6 @@ import {
 } from '@rus/turn';
 import { serverError } from '../../errors.js';
 import { row } from './first-playable/plan-shared.js';
-
 export function requireTurnStepSemanticActivityTimeline({
   factual, batch, expectedClockBefore
 }) {
@@ -61,7 +60,6 @@ export function requireTurnStepSemanticActivityTimeline({
       (resolution) => [resolution.activity_id, resolution]))
   };
 }
-
 function timeReconciliationFail(reason, details = {}) {
   throw serverError(
     'TRACE_TURN_STEP_TIME_RECONCILIATION_FAILED',
@@ -69,7 +67,6 @@ function timeReconciliationFail(reason, details = {}) {
     { status: 409, details: { reason, ...details } }
   );
 }
-
 export function appendTurnStepSemanticActivityWrites({
   writes,
   activities,
@@ -114,7 +111,6 @@ export function appendTurnStepSemanticActivityWrites({
     ));
   }
 }
-
 function executionRecord({
   activity, partyId, state, factual, changeSetId, idemId,
   resolution, duration, order
@@ -127,9 +123,9 @@ function executionRecord({
     series_ordinal: 0,
     activity_snapshot: activitySnapshot(activity, order),
     original_total_minutes: duration,
-    cumulative_elapsed_numerator: duration,
+    cumulative_elapsed_numerator: exactIntegralMinutes(resolution.attempt.actual_time),
     cumulative_elapsed_denominator: 1,
-    remaining_time_numerator: 0,
+    remaining_time_numerator: duration - exactIntegralMinutes(resolution.attempt.actual_time),
     remaining_time_denominator: 1,
     next_attempt_ordinal: resolution.attempt.attempt_ordinal + 1,
     status: execution.status,
@@ -167,10 +163,9 @@ function executionRecord({
       committed_state_version: state.party_state.state_version,
       activity: activitySnapshot(activity, order)
     }),
-    terminal_reason_code: 'turn_step_semantic_activity_completed'
+    terminal_reason_code: semanticActivityResultCode(resolution)
   };
 }
-
 function attemptRecord({
   activity, factual, changeSetId, idemId, turnNumber,
   resolution, duration, order
@@ -194,7 +189,7 @@ function attemptRecord({
     planned_time_denominator: 1,
     actual_time_numerator: actual,
     actual_time_denominator: 1,
-    remaining_after_numerator: 0,
+    remaining_after_numerator: duration - actual,
     remaining_after_denominator: 1,
     cumulative_time_before_numerator: 0,
     cumulative_time_before_denominator: 1,
@@ -204,7 +199,7 @@ function attemptRecord({
     clock_commit_mode: 'direct_party_clock',
     execution_context_snapshot: activityContext(activity, order),
     result_kind: attempt.result_kind,
-    result_code: 'turn_step_semantic_activity_completed',
+    result_code: semanticActivityResultCode(resolution),
     dynamic_dependency_pins: {},
     result_change_set_id: changeSetId,
     idempotency_record_id: idemId,
@@ -215,7 +210,7 @@ function attemptRecord({
     ended_at_whole_minutes: endedAt.whole_minutes,
     ended_at_subminute_numerator: endedAt.subminute_numerator,
     ended_at_subminute_denominator: endedAt.subminute_denominator,
-    reason_code: 'turn_step_semantic_activity_completed',
+    reason_code: semanticActivityResultCode(resolution),
     progress_before: {},
     progress_after: {},
     resource_reservations: [],
@@ -237,7 +232,6 @@ function attemptRecord({
     }
   };
 }
-
 function activitySnapshot(activity, order) {
   const duration = activity.owner_resolution.execution.original_duration;
   return {
@@ -257,12 +251,10 @@ function activitySnapshot(activity, order) {
     body_effect_profile_ref: activity.body_effect_profile_ref
   };
 }
-
 function positiveIntegralMinutes(value) {
   const number = exactIntegralMinutes(value);
   return number != null && number > 0 ? number : null;
 }
-
 function exactIntegralMinutes(value) {
   const exact = value?.exact_minutes;
   if (exact?.denominator !== '1'
@@ -271,7 +263,6 @@ function exactIntegralMinutes(value) {
   const number = Number(exact.numerator);
   return Number.isSafeInteger(number) ? number : null;
 }
-
 function activityContext(activity, order) {
   return {
     root_turn_id: activity.root_turn_id,
@@ -281,7 +272,6 @@ function activityContext(activity, order) {
     effort: activity.effort
   };
 }
-
 function fail(reason, details = {}) {
   throw serverError(
     'TRACE_TURN_STEP_SEMANTIC_ACTIVITY_PERSISTENCE_GAP',
@@ -289,11 +279,14 @@ function fail(reason, details = {}) {
     { status: 409, details: { reason, ...details } }
   );
 }
-
 function reconciliationFail(reason, details = {}) {
   throw serverError(
     'TRACE_TURN_STEP_SEMANTIC_ACTIVITY_RECONCILIATION_FAILED',
     'Semantic activity differs from the temporal owner output.',
     { status: 409, details: { reason, ...details } }
   );
+}
+function semanticActivityResultCode(resolution) {
+  return resolution.execution.status === 'completed'
+    ? 'turn_step_semantic_activity_completed' : 'turn_step_semantic_activity_interrupted';
 }

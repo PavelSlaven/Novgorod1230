@@ -2,10 +2,8 @@ import { createTurnStepExecutionRegistry } from '@rus/turn';
 import { applyBodyEvent, applySemanticActivity,
   resolveLowerDvinaTraceTurnStepCheckContext } from
   './lower-dvina-trace-turn-step-delegated-ports.js';
-import {
-  createItemOperationHandlers,
-  initializeRuntimeState
-} from './lower-dvina-trace-turn-step-item-operations.js';
+import { createItemOperationHandlers, createTransientItemUseHandler, initializeRuntimeState } from
+  './lower-dvina-trace-turn-step-item-operations.js';
 import { applyInventoryTransition, matchesItem, requireProjectedItem } from
   './lower-dvina-trace-turn-step-item-support.js';
 import { applyActionProducedRuntimeProjection } from
@@ -89,12 +87,9 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   return Object.freeze({
     executionRegistry: createTurnStepExecutionRegistry({
       direct,
-      domain,
-      applySemanticActivity: (execution) =>
-        admitResult(
-          applySemanticActivity(execution, state, semanticActivityOwner),
-          workingProjectionAuthority
-        )
+      domain: { ...domain, request_item_use: createTransientItemUseHandler() },
+      applySemanticActivity: (execution) => admitResult(
+        applySemanticActivity(execution, state, semanticActivityOwner), workingProjectionAuthority)
     }),
     ...(preparedDomainEffect == null ? {} : {
       preparedDomainEffect: Object.freeze({
@@ -118,9 +113,18 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         input, safeCommittedState, bodyEffect),
       preparedEffectProjectionOwner: (input) => {
         preparedDomainEffect.advanceState(input);
-        let projection = input.working_projection;
-        for (const plan of input.prepared_effect?.time_update
-          ?.local_fire_atomic_write_plans ?? []) {
+        let projection = structuredClone(input.working_projection);
+        if ((input.prepared_effect.time_update.temporal_results ?? []).some(
+          (result) => result.combined_change_set?.proposals?.some(
+            (proposal) => proposal.npc_routine_transition != null))) {
+          // Rebuild NPC views from advanced authoritative state on the next
+          // projection; old working aliases would otherwise mask the transition.
+          for (const key of ['npcs', 'visible_npcs', 'scene_npcs',
+            'visible_context', 'visible_context_package', 'current_visible_context']) {
+            delete projection[key];
+          }
+        }
+        for (const plan of input.prepared_effect?.time_update?.local_fire_atomic_write_plans ?? []) {
           projection = applyLocalFireRuntimeProjection({ projection,
             actor: input.actor, plan, state, resolveItemMechanics });
         }
@@ -209,13 +213,11 @@ async function prepareEffectTime(input, committedState, temporalAdvance) {
   if (!Number.isSafeInteger(duration) || duration < 0) {
     throw new TypeError('Prepared effect duration must be integral.');
   }
-  const exactElapsed = {
-    exact_minutes: { numerator: String(duration), denominator: '1' }
-  };
+  const exactElapsed = { exact_minutes: { numerator: String(duration), denominator: '1' } };
   const result = await temporalAdvance({
     clock_before: structuredClone(
       input.prepared_chain_context.current_clock),
-    exact_elapsed: exactElapsed,
+    exact_elapsed: exactElapsed, effect_kind: input.effect_kind,
     relevant_state: structuredClone(committedState),
     consequence: structuredClone(input.consequence),
     working_projection: structuredClone(input.working_projection),
@@ -254,7 +256,8 @@ async function prepareEffectBody(input, committedState, bodyEffect) {
       state_after: structuredClone(after)
     });
   }
-  if (input.effect_kind === 'semantic_activity'
+  if ((input.effect_kind === 'semantic_activity'
+        && input.consequence?.body_effect_ref == null)
       || input.consequence?.generic_known_route === true
       || Number(input.consequence?.duration_minutes) === 0) {
     return Object.freeze({

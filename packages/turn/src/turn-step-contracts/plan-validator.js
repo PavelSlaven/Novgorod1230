@@ -376,7 +376,9 @@ function validateResolution(plan, kinds, errors) {
     const actionProduction = plan.operations?.find((operation) =>
       operation?.op === 'request_item_use'
         && operation.action_production != null);
-    const expectedOwner = actionProduction ? 'semantic' : 'domain';
+    const transientUse = plan.operations?.some(operation => operation?.op === 'request_item_use'
+      && operation.use_kind === 'other' && typeof operation.description === 'string');
+    const expectedOwner = actionProduction || transientUse ? 'semantic' : 'domain';
     if (plan.activity?.owner !== expectedOwner) {
       add(errors, '$.activity.owner', 'resolution',
         actionProduction

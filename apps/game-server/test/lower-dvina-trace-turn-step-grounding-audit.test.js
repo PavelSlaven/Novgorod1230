@@ -58,7 +58,7 @@ test('ownerless speech crosses the existing grounding auditor before its factual
   }
 });
 
-test('generic discovery keeps deterministic intent identity before focused classification',
+test('generic discovery keeps deterministic intent identity after focused classification',
   async () => {
     let calls = 0;
     const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
@@ -106,7 +106,7 @@ test('generic discovery keeps deterministic intent identity before focused class
       assert.equal(error.details.errors[0].path, '$.operations.0.query');
       return true;
     });
-    assert.equal(calls, 2);
+    assert.equal(calls, 3);
   });
 
 test('material prerequisite preserves the full intent and audits its query',
@@ -120,11 +120,11 @@ test('material prerequisite preserves the full intent and audits its query',
       roleRunner: { async run(call) {
         calls += 1;
         const payload = JSON.parse(call.messages[1].content);
+        assert.deepEqual(payload.continuation.depends_on_refs, []);
         return { output: {
           mode: payload.operation.query === 'следы лодки'
             ? 'different_action' : 'material_prerequisite',
-          consumed_intent: payload.operation.query === 'следы лодки'
-            ? null : payload.operation.query
+          consumed_intent: null
         } };
       } }
     });
@@ -171,7 +171,7 @@ test('material prerequisite preserves the full intent and audits its query',
       ]);
       return true;
     });
-    assert.equal(calls, 3);
+    assert.equal(calls, 4);
   });
 
 test('discovery cannot consume physical acts copied into its query', async () => {
@@ -195,7 +195,7 @@ test('discovery cannot consume physical acts copied into its query', async () =>
         unexecuted_physical_intent_must_remain_in_continuation: true
       });
       assert.deepEqual(Object.keys(payload).sort(), [
-        'effect_contract', 'operation', 'remaining_intent'
+        'continuation', 'effect_contract', 'operation', 'player_safe_state', 'remaining_intent'
       ]);
       return { output: { mode: 'material_prerequisite',
         consumed_intent: null } };
@@ -316,7 +316,7 @@ test('focused ordinary classifier omits unrelated authored discovery scope',
       roleRunner: { async run(call) {
         const payload = JSON.parse(call.messages[1].content);
         assert.deepEqual(Object.keys(payload).sort(), [
-          'effect_contract', 'operation', 'remaining_intent'
+          'continuation', 'effect_contract', 'operation', 'player_safe_state', 'remaining_intent'
         ]);
         return { output: { mode: 'focused_discovery',
           consumed_intent: payload.remaining_intent } };

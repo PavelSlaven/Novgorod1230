@@ -90,7 +90,7 @@ test('Stage B eval requires one bound common-positive result', async () => {
 test('ordinary materialization prompt keeps a supported free candidate materializable', () => {
   const request = presenceRequest('ложка');
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
-  assert.match(prompt, /seed_scope permits only seeded or no_change/u);
+  assert.doesNotMatch(prompt, /seed_scope|density_band_proposal|background_groups/u);
   assert.match(prompt, /resolve_presence permits materialize, absent, no_change, or authority_required/u);
   assert.match(prompt, /Decide only whether and how the supplied ordinary candidate is semantically realized/u);
   assert.match(prompt, /Lack of a pre-supplied descriptor alone is not a reason for absent/u);
@@ -196,7 +196,8 @@ test('ordinary materialization prompt maps Stage A to its candidate-free fallbac
   assert.match(prompt, /"descriptor":null/u);
   assert.match(prompt, /Never copy angle-bracket placeholders/u);
   assert.match(prompt, /natural Russian suitable for later player-facing prose/u);
-  assert.match(prompt, /"basis_refs":\["basis"\]/u);
+  assert.doesNotMatch(prompt, /resolve_presence|candidate_hint|mechanics_proposal|"basis_refs"/u);
+  assert.doesNotMatch(prompt, /request-derived authoritative envelope/u);
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
 });
 
@@ -225,7 +226,7 @@ test('ordinary seed prompt receives a player-safe scene basis without reading re
   assert.match(prompt, /do not restate, paraphrase, combine, or summarize/u);
 });
 
-test('ordinary materialization prompt carries complete code-owned Stage B shapes', () => {
+test('ordinary materialization prompt ends with only its semantic Stage B shape', () => {
   const source = presenceRequest('любой предмет');
   const preparedBasis = 'ordinary_group_prepared';
   const request = { ...source, policy_refs: { ...source.policy_refs,
@@ -238,18 +239,22 @@ test('ordinary materialization prompt carries complete code-owned Stage B shapes
     selected_supporting_basis_ref: preparedBasis } };
   const admitted = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(admitted, /"resolution":"materialize"/u);
-  assert.match(admitted, /"admission_class":"common_mundane"/u);
+
   assert.match(admitted, /semantic_admission_class/u);
   assert.match(admitted, /semantic_materialization_kind/u);
-  assert.match(admitted, /"property_basis_ref":"property"/u);
-  assert.match(admitted, /"position_ref":"bench"/u);
-  assert.match(admitted, /"supporting_basis_ref":"ordinary_group_prepared"/u);
-  assert.match(admitted, /"mass_grams":"<semantic_integer_mass_grams>"/u);
-  assert.match(admitted, /"external_hand_cost":"<semantic_integer_external_hand_cost>"/u);
-  assert.match(admitted, /"packing_slot_cost":"<semantic_integer_packing_slot_cost>"/u);
+  assert.match(admitted, /"semantic_type":"<specific ordinary semantic type>"/u);
+  assert.match(admitted, /not null or a copied placeholder/u);
+
+
+
+  assert.match(admitted, /"mass_grams":"<integer>"/u);
+  assert.match(admitted, /"external_hand_cost":"<integer>"/u);
+  assert.match(admitted, /"packing_slot_cost":"<integer>"/u);
   assert.match(admitted,
     /never copy the player's intended use, action, goal, or hoped-for result/u);
-  assert.doesNotMatch(admitted, /"mass_grams":1/u);
+  assert.doesNotMatch(admitted, /"mass_grams":1|"property_basis_ref"|"position_ref"|"supporting_basis_ref"|request-derived authoritative envelope/u);
+  const shape = JSON.parse(admitted.split("Return only this semantic shape: ").at(-1));
+  assert.deepEqual(Object.keys(shape).sort(), ["entities", "reason_code", "resolution", "semantic_admission_class", "semantic_materialization_kind"]);
 });
 
 test('Stage B fails closed when its semantic admission differs from the candidate', () => {
@@ -334,6 +339,8 @@ test('grounded Stage B materializes only with a claim ref from its current slice
     const grounded = { ...request, world_knowledge: {
       facts: [{ claim_ref: claimRef }], hard_constraints: []
     } };
+    const prompt = buildOrdinaryMaterializationMessages(grounded)[0].content;
+    assert.match(prompt, /positive materialize requires at least one exact in-slice claim_ref[\s\S]*otherwise return no_change\. Return only this semantic shape:/u);
     const semantic = { resolution: 'materialize',
       semantic_materialization_kind: 'standalone_item',
       semantic_admission_class: 'common_mundane', reason_code: 'found',
@@ -342,7 +349,7 @@ test('grounded Stage B materializes only with a claim ref from its current slice
       mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
         carry_form: 'compact', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null } }] };
-    for (const refs of [undefined, ['claim:not-in-current-slice']]) {
+    for (const refs of [undefined, [], ['claim:not-in-current-slice']]) {
       const rejected = bindOrdinaryMaterializationPlan(grounded,
         { ...semantic, ...(refs == null ? {} : {
           world_knowledge_claim_refs: refs }) });

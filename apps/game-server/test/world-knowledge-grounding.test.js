@@ -9,6 +9,7 @@ import { createProductionWorldKnowledgeGrounder } from
   '../src/runtime/world-knowledge-grounding.js';
 import { loadLowerDvinaTraceMaterializationBundle } from
   '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
+import { createLowerDvinaTraceTurnStepModel } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
 test('production loader requires the exact encoder readiness at startup', async () => {
   let readyCalls = 0;
@@ -27,7 +28,7 @@ test('production loader requires the exact encoder readiness at startup', async 
   assert.equal(loaded.vector_index.dimension, 1024);
 });
 
-test('production grounding plans once and injects only an applicable bounded slice', async () => {
+test('production grounding plans once and injects only an applicable bounded slice', async (t) => {
   const calls = [];
   const diagnostics = [];
   const gameplayTraces = [];
@@ -120,6 +121,18 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.deepEqual(trace.retrieval_observability,
     diagnostics[0].retrieval_observability);
   assert.equal(Object.hasOwn(first, 'gameplay_traces'), false);
+  const beforeConsumer = structuredClone(first);
+  let consumerWire;
+  await createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
+    consumerWire = JSON.parse(call.messages[1].content);
+    return { output: {} };
+  } } })(first);
+  const { context_text, ...structured } = first.world_knowledge;
+  assert.deepEqual(consumerWire, { ...first, world_knowledge: structured });
+  assert.ok(context_text.includes(first.world_knowledge.facts[0].runtime_text));
+  assert.deepEqual(first, beforeConsumer);
+  assert.deepEqual(trace.consumer_request, beforeConsumer);
+  t.diagnostic(`Production WK wire reduction: ${JSON.stringify(first).length - JSON.stringify(consumerWire).length} chars.`);
 });
 
 function assertRetrievalObservability(observability, grounded) {

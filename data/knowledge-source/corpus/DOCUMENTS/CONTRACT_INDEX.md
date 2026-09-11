@@ -71,7 +71,7 @@ Contract Auditor не копирует весь generated module index сюда 
 | [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |
 | [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details |
 | [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant, обязательный non-thinking gameplay mode и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |
-| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |
+| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; request-local keyed private coverage получает code-owned source indices, beat-only scene anchor при current results, negative failure checks и полный reviewed set согласуются с model verdict/concerns; opening сохраняет Stage 23 audit; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |
 | [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |
 | [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |
 | [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |
@@ -233,7 +233,10 @@ An undeclared guide may still be relevant, but it must not silently override an 
 
 `turn_step_llm_contract.md` §8.2.1 также владеет узким direct `player_utterance`
 contract: exact resolved speech сохраняется через текущий turn semantic trace;
-broadcast audience/perception этим не активируются. §9.1 задаёт owner-aware
+broadcast audience/perception этим не активируются. Единственный speech repair
+с isolated copy/goal metadata errors полного envelope получает bounded projection
+только через faithful re-audit и повторную strict validation; третьего planner нет.
+§9.1 задаёт owner-aware
 discovery prerequisite и проекцию оставшегося intent при player boundary.
 
 Any PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.

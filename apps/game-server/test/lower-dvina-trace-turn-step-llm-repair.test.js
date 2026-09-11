@@ -91,12 +91,12 @@ test('repair role receives original output, request, and structural errors', asy
     { resolution: 'domain_request', operation_choice: 'missing' });
   assert.deepEqual(payload.request, input);
   assert.deepEqual(payload.structural_errors, structuralErrors);
-  assert.equal(seen.messages[0].content.includes('Repair only listed validation errors'), true);
+  assert.equal(seen.messages[0].content.includes('Repair the listed errors and their dependent causal fields'), true);
   assert.equal(seen.messages[0].content.includes('complete player_utterance envelope'), false);
   assert.match(seen.messages[0].content,
     /only error is.*activity\.owner[\s\S]*action production requires semantic activity[\s\S]*keep domain_request and the original action_production operation[\s\S]*duration_class and effort[\s\S]*Never clear operations or switch to direct/u);
   assert.equal(seen.messages[0].content.includes(
-    'owner absence is not evidence of impossibility or fantasy'), true);
+    'Owner absence does not establish physical impossibility or fantasy'), true);
   assert.equal(seen.messages[0].content.includes(
     'Never combine move_entity and action_production in one plan'), true);
   assert.equal(seen.messages[0].content.includes(
@@ -108,7 +108,7 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'For action_production_identity_grounding'), true);
   assert.equal(seen.messages[0].content.includes(
-    'remove the unavailable domain operation instead of preserving it'), true);
+    'remove the unavailable domain operation and use a lawful direct reality_limited attempt'), true);
   assert.equal(seen.messages[0].content.includes(
     'For continuation_progress, preserve the original action order'), true);
   assert.equal(seen.messages[0].content.includes(
@@ -124,7 +124,7 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'preserve independent uncovered actions'), true);
   assert.equal(seen.messages[0].content.includes(
-    'Re-plan only fields named by structural_errors; do not invent operations or refs.'), true);
+    'Re-plan fields named by structural_errors and their causally dependent fields; use supplied semantic mappings and existing refs, never invent refs.'), true);
   assert.equal(seen.messages[0].content.includes(
     'restore the matching supplied semantic mapping'), true);
   assert.equal(seen.messages[0].content.includes(

@@ -1,4 +1,4 @@
-import { createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
+import { createRuntimeInstanceMechanicsSnapshot, runtimeItemIsAccessibleInPlace } from '@rus/items-property';
 import {
   applied,
   collectCurrentRefs,
@@ -23,6 +23,7 @@ import {
   persistedPlacement,
   requireAvailableTempRef,
   reserveTempRef,
+  requireProjectedItem,
   requireOrigin
 } from './lower-dvina-trace-turn-step-item-support.js';
 
@@ -244,4 +245,32 @@ function failAmbientAdmission() {
   throw Object.assign(new Error('TRACE_TURN_STEP_AMBIENT_ADMISSION_REQUIRED'), {
     code: 'TRACE_TURN_STEP_AMBIENT_ADMISSION_REQUIRED'
   });
+}
+
+export function createTransientItemUseHandler() {
+  return Object.assign(execution => {
+    const { operation, working_projection: projection, request, plan } = execution;
+    requireProjection(projection);
+    const actorRef = request.actor?.actor_id ?? request.actor?.actor_ref;
+    if (operation.actor_ref !== actorRef || projection.actor_id !== actorRef) {
+      fail('TRACE_TURN_STEP_ITEM_USE_ACTOR_INVALID');
+    }
+    const refs = collectCurrentRefs(execution);
+    requireRefs(operation.target_refs, refs, 'target_refs');
+    const item = requireProjectedItem(projection, operation.item_ref);
+    if (!runtimeItemIsAccessibleInPlace(item, { actor_id: actorRef, position: projection.position,
+      visible_objects: execution.request.player_safe_state?.current_visible_context?.visible_objects
+        ?? projection.current_visible_context?.visible_objects })) {
+      fail('TRACE_TURN_STEP_ITEM_USE_ACCESS_INVALID');
+    }
+    return { working_projection: structuredClone(projection), write_fragments: [],
+      summary: operation.description, goal_result: plan.continuation == null ? 'achieved' : 'pending',
+      consequence_fragment: { visible_seed: {
+        [`turn_step_item_use_${request.step_index}`]: {
+          kind: 'transient_item_use', description: operation.description
+        }
+      } } };
+  }, { supports: operation => operation?.op === 'request_item_use'
+    && operation.use_kind === 'other' && operation.action_production == null
+    && typeof operation.description === 'string' && operation.description.trim().length > 0 });
 }

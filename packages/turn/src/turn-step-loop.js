@@ -134,7 +134,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     }
     const preparedContinuationAllowed = preparedPlan != null
       || preparedEffects.length === 0
-      || preparedDirectContinuation(plan)
+      || preparedDirectContinuation(plan, preparedEffects)
       || (plan.resolution === 'domain_request'
         && typeof ports.admitPreparedDomainPlan === 'function'
         && await ports.admitPreparedDomainPlan(deepFreeze({
@@ -215,11 +215,10 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         execution.background_npc_semantic_atomic_write_plan);
     }
     preparedChainContext = execution.preparedChainContext;
-    if (preparedEffects.length > 2) {
-      throw turnFailure('TURN_STEP_PREPARED_EFFECT_COUNT_INVALID',
-        'A turn-step loop can prepare at most route and direct effect slices.');
-    }
-    const preparedSequenceComplete = preparedEffects.length === 2;
+    // Existing domain-command persistence admits only its prepared pair;
+    // semantic-only chains use the ordinary eight-step loop limit.
+    const preparedDomainBoundary = preparedEffects.length >= 2
+      && preparedEffects.some(({ effect }) => effect.effect_kind === 'domain_command');
     if (execution.checkResult) {
       checkResults.push(execution.checkResult);
       checkRequests.push(execution.checkRequest);
@@ -234,12 +233,12 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       applied: true,
       checkResult: execution.checkResult,
       checkRequest: execution.checkRequest,
-      boundary: execution.boundary || preparedSequenceComplete
+      boundary: execution.boundary || preparedDomainBoundary
     }));
 
     const continuation = execution.continuation;
     pendingDiscovery = nextPendingDiscovery({ plan, continuation });
-    if (execution.boundary || preparedSequenceComplete
+    if (execution.boundary || preparedDomainBoundary
         || (pendingDiscovery != null && ordinaryPlans.length > 0)) {
       stopReason = 'player_response';
       remainingIntent = continuation?.remaining_intent ?? '';

@@ -64,6 +64,11 @@ test('existing inspection reads current exact target without ordinary enablement
   assert.equal(visible.visible_scene, 'Берег.');
   assert.deepEqual(visible.sensory_details, currentScene().sensory_details);
   assert.deepEqual(visible.visible_changes, seed.visible_changes);
+  const applied = await projector.project({ ...renderInput,
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true, step_index: 1,
+      approved_plan: { resolution: 'domain_request', operations: [request.operation] } }] } } });
+  assert.deepEqual(applied.visible_changes, [seed.visible_changes.join(' ')]);
+  assert.deepEqual(applied.uncertainties, visible.uncertainties);
   assert.ok(visible.uncertainties.some(text => text.includes(query)));
   assert.deepEqual(await projector.project(JSON.parse(JSON.stringify(renderInput))), visible);
   const native = createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
@@ -72,7 +77,7 @@ test('existing inspection reads current exact target without ordinary enablement
   const combined = await native.project({ ...renderInput, consequence: {
     ...renderInput.consequence, phase3_kind: 'movement' } });
   assert.equal(combined.visible_scene, 'У навеса.');
-  assert.deepEqual(combined.visible_changes, ['Вы подошли к навесу.', ...seed.visible_changes]);
+  assert.deepEqual(combined.visible_changes, ['Вы подошли к навесу.', ...currentScene().sensory_details, ...seed.visible_changes]);
 });
 
 test('concealed or closed-container contents never enter the existing inspection path', async () => {

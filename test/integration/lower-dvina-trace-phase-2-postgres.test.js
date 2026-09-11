@@ -567,6 +567,8 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
       runtimeCatalogPin
     })
   );
+  await t.test('prepared semantic body history survives pending presentation recovery and row tamper checks',
+    () => assertPreparedSemanticBodyRecovery({ pool, release, runtimeCatalogPin }));
   await assertConcurrentStaleCommitBlocked({
     pool,
     release,
@@ -1408,7 +1410,7 @@ function approvedNarration(request) {
     },
     final_audit: {
       version: 1,
-      schema: 'narration_audit',
+      schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] },
       pass: true,
       concerns: [],
       evidence: ['persisted visible context']
@@ -1548,4 +1550,57 @@ async function waitForPostgres(name) {
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   throw new Error('PostgreSQL did not become ready');
+}
+
+
+async function assertPreparedSemanticBodyRecovery({ pool, release, runtimeCatalogPin }) {
+  const { plan, genericCheck } = await import('../../apps/game-server/test/lower-dvina-trace-turn-step-runtime-ports-fixture.js');
+  let planners = 0, rolls = 0, narrations = 0;
+  const options = { pool, release, runtimeCatalogPin,
+    randomValue: 0.5, randomDrawObserver() { rolls += 1; },
+    turnStepModel(request) {
+      planners += 1;
+      if (request.step_index === 1) return { ...plan(request, { goal_result: 'pending',
+        continuation: { remaining_intent: 'Проверяю устойчивость опоры.', depends_on_refs: [] } }),
+        direct_result_kind: 'player_utterance', utterance: { speaker_ref: request.actor.actor_id,
+          input_mode: 'intent_paraphrase', utterance_text: 'Не подходите к краю.' } };
+      return plan(request, { resolution: 'generic_check', goal_result: 'pending',
+        check: { ...genericCheck(), skill_ref: null },
+        activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' } });
+    },
+    repositoryDecorator(repository) { return { ...repository, async loadPhase2State(...args) {
+      const state = await repository.loadPhase2State(...args);
+      return { ...state, inventory: { ...state.inventory, load_category: 'light' } };
+    } }; },
+    narrationService: { async run(request) {
+      narrations += 1;
+      if (narrations === 1) throw new Error('retryable presentation failure');
+      return approvedNarration(request);
+    } }
+  };
+  const runtime = buildRuntime(options);
+  const opened = await runtime.startNewGame({ scenario_id: 'lower_dvina_trace_v1', request_id: 'prepared-body-recovery-party' });
+  await runtime.acknowledgeOpening(opened.party_id, { client_ack_id: 'prepared-body-recovery-ack' });
+  const input = { request_id: 'prepared-body-recovery', idempotency_key: 'prepared-body-recovery',
+    raw_text: 'Предупреждаю спутников. Проверяю устойчивость опоры.' };
+  const pending = await runtime.submitTurn(opened.party_id, input);
+  assert.equal(pending.screen.screen_status, 'committed_presentation_pending');
+  assert.equal(pending.time_update.exact_elapsed.exact_minutes.numerator, '2');
+  assert.deepEqual(pending.body_update.proposal.exact_deltas, { health: 0, satiety: -1, energy: -2 });
+  const restarted = buildRuntime(options);
+  const recovered = await restarted.submitTurn(opened.party_id, input);
+  assert.equal(recovered.screen.screen_status, 'ready');
+  assert.equal(planners, 2); assert.equal(rolls, 1); assert.equal(narrations, 2);
+  assert.deepEqual(await restarted.submitTurn(opened.party_id, input), recovered);
+  const rows = (await pool.query(`SELECT history_id,effect_ref FROM party_runtime.party_body_temporal_history WHERE party_id=$1`, [opened.party_id])).rows;
+  assert.equal(rows.length, 1);
+  for (const forged of [ { ...rows[0].effect_ref, entity_id: 'wrong-owner' },
+    { ...rows[0].effect_ref, proposal_digest: 'a'.repeat(64) } ]) {
+    await assert.rejects(() => pool.query(
+      `UPDATE party_runtime.party_body_temporal_history SET effect_ref=$2::jsonb WHERE history_id=$1`,
+      [rows[0].history_id, JSON.stringify(forged)]), { message: 'temporal history is append-only' });
+  }
+  assert.equal((await pool.query(
+    `SELECT count(*)::int AS count FROM party_runtime.party_timed_activity_executions WHERE activity_snapshot->>'root_turn_id'=$1`,
+    [recovered.screen.turn_id])).rows[0].count, 2);
 }

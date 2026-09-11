@@ -1,6 +1,6 @@
 import { isDeepStrictEqual } from 'node:util';
-import { isDomainStepOperation, isOrdinaryDiscoveryInScope } from '@rus/turn';
-import { turnStepPlanMappings } from './lower-dvina-trace-turn-step-plan-mappings.js';
+import { isDomainStepOperation, isOrdinaryDiscoveryInScope, TURN_STEP_PLAN_V1_SCHEMA } from '@rus/turn';
+import { allTurnStepPlanMappings, turnStepPlanMappings } from './lower-dvina-trace-turn-step-plan-mappings.js';
 import { normalizeTurnStepOperationChoice, selectedTurnStepOperation,
   turnStepOperationChoices } from
   './lower-dvina-trace-turn-step-operation-choices.js';
@@ -32,14 +32,18 @@ export function assembleTurnStepPlan(choice, request,
   const domainRequest = resolution === 'domain_request';
   const actionProduction = Array.isArray(operations) && operations.some((operation) =>
     operation?.op === 'request_item_use'
-      && operation.action_production != null);
-  const interpretation = semantic.interpretation;
+      && (operation.action_production != null || typeof operation.description === 'string'));
+  const interpretation = projectFields(semantic.interpretation,
+    TURN_STEP_PLAN_V1_SCHEMA.$defs.interpretation.properties);
+  if (semantic.interpretation?.constructor === Object
+      && Object.hasOwn(semantic.interpretation, 'continuation'))
+    interpretation.continuation = semantic.interpretation.continuation;
   if (interpretation?.constructor === Object &&
       !interpretation.player_goal?.trim?.())
     interpretation.player_goal = request.root_player_action;
-  const preserved = { ...semantic };
-  delete preserved.operation_choice;
-  delete preserved.operation_family;
+  const preserved = projectFields(semantic, TURN_STEP_PLAN_V1_SCHEMA.properties);
+  for (const key of Object.keys(allTurnStepPlanMappings()))
+    if (Object.hasOwn(semantic, key)) preserved[key] = semantic[key];
   delete preserved.utterance;
   return {
     ...preserved,
@@ -73,6 +77,12 @@ export function assembleTurnStepPlan(choice, request,
       operation_choice: semantic.operation_choice
     } : {})
   };
+}
+
+function projectFields(value, properties) {
+  return value?.constructor === Object
+    ? Object.fromEntries(Object.entries(value).filter(([key]) => Object.hasOwn(properties, key)))
+    : value;
 }
 
 function unwrapMapping(choice, request) {
@@ -139,7 +149,16 @@ function canonicalizeDiscoveryShape(semantic, request) {
   if (cleaned?.operation_choice != null || cleaned?.operations?.length !== 1
       || cleaned.operations[0]?.op !== 'request_discovery') return cleaned;
   let after = continuation;
-  const operation = cleaned.operations[0];
+  let operation = cleaned.operations[0];
+  const locationRef = request.player_safe_state?.position?.location_ref;
+  const currentScope = { ...operation, target_refs: [locationRef] };
+  if (cleaned.check == null && operation.target_refs?.length === 0
+      && !request.available_domain_operations?.some(available => isDeepStrictEqual(available, operation))
+      && isOrdinaryDiscoveryInScope({ operation: currentScope,
+        playerSafeState: request.player_safe_state })) {
+    operation = currentScope;
+    cleaned.operations = [operation];
+  }
   if (after != null
       && Array.isArray(after.depends_on_refs)
       && after.depends_on_refs.length === 0
@@ -173,10 +192,21 @@ function withoutPendingDiscovery(continuation) {
 function canonicalOrdinaryDiscovery({ operations, semantic, request }) {
   if (semantic.operation_choice != null
       || semantic.check != null || operations?.length !== 1
-      || operations[0]?.target_refs?.length !== 1
-      || !isOrdinaryDiscoveryInScope({ operation: operations[0],
-        playerSafeState: request.player_safe_state })) return null;
-  if (semantic.continuation != null
+      || operations[0]?.op !== 'request_discovery'
+      || operations[0]?.target_refs?.length !== 1) return null;
+  if (semantic.interpretation?.adaptation === 'literal'
+      && semantic.continuation?.remaining_intent === request.remaining_intent
+      && semantic.continuation?.depends_on_refs?.length === 0
+      && semantic.continuation.pending_discovery == null
+      && semantic.continuation.prepared_followup_ref == null
+      && normalized(operations[0].query) !== normalized(request.remaining_intent)
+      && isOrdinaryDiscoveryInScope({ operation: { ...operations[0], discovery_kind: 'inspect' },
+        playerSafeState: request.player_safe_state })) {
+    return { operations: [{ ...operations[0], discovery_kind: 'inspect' }],
+      continuation: semantic.continuation };
+  }
+  if (!isOrdinaryDiscoveryInScope({ operation: operations[0],
+      playerSafeState: request.player_safe_state }) || semantic.continuation != null
       || normalized(operations[0].query)
         !== normalized(request.root_player_action)
       || !strictPriorIntent(request.root_player_action,

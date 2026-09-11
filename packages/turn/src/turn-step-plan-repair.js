@@ -1,6 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 import { requestTurnStepPlan, validateTurnStepPlan } from './turn-step-contracts.js';
 import { contractError } from './turn-step-contracts/validation.js';
+import { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
 import { EFFORTS } from './turn-step-contracts/constants.js';
 
 export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
@@ -37,17 +38,25 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
     const structuralErrors = parseFailure ? [{ path: '$',
       code: 'json_parse_failed', message: 'Planner output was not valid JSON.' }]
       : [...(error.details?.errors ?? [])];
+    const denialTrial = parseFailure ? null
+      : literalDenialMetadataTrial(originalOutput, request, structuralErrors);
+    const materialTrial = parseFailure ? null
+      : missingMaterialTrial(originalOutput, request, structuralErrors);
+    const projectionTrial = denialTrial ?? materialTrial;
     if (!parseFailure && originalOutput != null
         && (!structuralErrors.some(requiresSemanticRepair)
-          || canAuditSpeechBeforeRepair(originalOutput, structuralErrors))
+          || canAuditSpeechBeforeRepair(originalOutput, structuralErrors) || projectionTrial != null)
         && typeof semanticPlanValidator === 'function') {
       try {
         const trial = speechMetadataTrial(originalOutput, request);
-        const result = await semanticPlanValidator(deepFreeze({ plan: trial ?? originalOutput,
+        const result = await semanticPlanValidator(deepFreeze({ plan: projectionTrial ?? trial ?? originalOutput,
           request: structuredClone(request), prepared_chain_context:
             structuredClone(preparedChainContext), attempt: 1,
-          allow_speech_metadata_projection: trial != null }));
-        if (trial != null && (result === true || result?.corrected_plan != null)) return {
+          allow_speech_metadata_projection: trial != null,
+          ...(denialTrial == null ? {} : { allow_denial_metadata_projection: true }),
+          ...(denialTrial == null && materialTrial == null ? {} : { material_prerequisite_candidate: true }) }));
+        if (trial != null && result === true
+            || (trial != null || projectionTrial != null) && result?.corrected_plan != null) return {
           plan: validateAndFreezePlan(result?.corrected_plan ?? trial, request), repaired: false
         };
       } catch (semanticError) {
@@ -68,12 +77,16 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
       original_output: structuredClone(originalOutput),
       structural_errors: structuredClone(structuralErrors)
     });
+    let repairedOutput = null;
     try {
       return {
         plan: await requestAndValidateTurnStepPlan({
           request,
-          turnStepModel: (safeRequest) =>
-            turnStepModel(modelRequest ?? safeRequest, repairContext),
+          turnStepModel: async (safeRequest) => {
+            const output = await turnStepModel(modelRequest ?? safeRequest, repairContext);
+            repairedOutput = structuredClone(output);
+            return output;
+          },
           semanticPlanValidator,
           preparedChainContext,
           attempt: 2
@@ -81,6 +94,18 @@ export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
         repaired: true
       };
     } catch (repairError) {
+      if (repairError?.code === 'TURN_STEP_PLAN_INVALID'
+          && canAuditRepairedSpeechMetadata(repairedOutput, request)
+          && typeof semanticPlanValidator === 'function') {
+        try {
+          const result = await semanticPlanValidator(deepFreeze({
+            plan: structuredClone(repairedOutput), request: structuredClone(request),
+            prepared_chain_context: structuredClone(preparedChainContext), attempt: 2,
+            allow_speech_metadata_projection: true
+          }));
+          return { plan: validateAndFreezePlan(result?.corrected_plan ?? repairedOutput, request), repaired: true };
+        } catch (auditError) { repairError = auditError; }
+      }
       const normalizedError = repairError?.code === 'json_parse_failed'
         ? contractError('TURN_STEP_PLAN_INVALID', [{ path: '$',
           code: 'json_parse_failed',
@@ -114,6 +139,42 @@ function requiresSemanticRepair({ code } = {}) {
   return SEMANTIC_REPAIR_CODES.has(code);
 }
 
+function singleTransientOperation(plan) {
+  const op = plan?.operations?.length === 1 ? plan.operations[0] : null;
+  return plan?.interpretation?.adaptation === 'literal' && plan.check === null
+    && plan.continuation === null && plan.clarification === null && plan.direct_result_kind === null
+    && op?.op === 'request_item_use' && op.use_kind === 'other' && op.action_production == null
+    && typeof op.description === 'string' && op.description.trim().length > 0 ? op : null;
+}
+
+function missingMaterialTrial(plan, request, errors) {
+  const op = singleTransientOperation(plan);
+  const unknownSource = ({ path, code }) => code === 'unknown_ref'
+    && [ '$.operations[0].item_ref', '$.operations.0.item_ref' ].includes(path);
+  if (op == null || errors.length === 0 || !errors.every(error => unknownSource(error)
+    || error.path === '$.operations.0.item_ref' && error.code === 'source_placement_grounding')
+    || request.player_safe_state?.items?.some(item => (item.item_id ?? item.instance_id) === op.item_ref)) return null;
+  const operation = { op: 'request_discovery', actor_ref: request.actor?.actor_id ?? request.actor?.actor_ref,
+    discovery_kind: 'inspect', target_refs: [request.player_safe_state?.position?.location_ref],
+    query: request.remaining_intent };
+  if (!isOrdinaryDiscoveryInScope({ operation, playerSafeState: request.player_safe_state })) return null;
+  const trial = { ...plan, resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null }, operations: [operation] };
+  return validateTurnStepPlan(trial, { request }).ok ? trial : null;
+}
+
+function literalDenialMetadataTrial(plan, request, errors) {
+  if (plan?.interpretation?.adaptation !== 'literal' || plan.resolution !== 'direct'
+      || plan.goal_result !== 'not_achieved' || !Array.isArray(plan.operations)
+      || plan.operations.length !== 0 || plan.check !== null || plan.continuation !== null
+      || plan.clarification !== null || typeof plan.direct_result_kind !== 'string'
+      || !plan.direct_result_kind.trim()
+      || !errors.some(({ path, code }) => path === '$.direct_result_kind' && code === 'enum')
+      || !errors.every(({ path }) => path === '$.direct_result_kind')) return null;
+  const trial = { ...plan, direct_result_kind: null };
+  return validateTurnStepPlan(trial, { request }).ok ? trial : null;
+}
+
 function canAuditSpeechBeforeRepair(plan, errors) {
   return errors.some(({ code }) => code === 'direct_result_kind')
     && plan.resolution === 'direct'
@@ -126,8 +187,8 @@ function canAuditSpeechBeforeRepair(plan, errors) {
     && ['verbatim', 'intent_paraphrase'].includes(plan.utterance?.input_mode);
 }
 
-function speechMetadataTrial(plan, request) {
-  if (plan.resolution !== 'direct' || plan.direct_result_kind !== 'player_utterance'
+function speechMetadataEnvelope(plan, request) {
+  if (plan?.resolution !== 'direct' || plan.direct_result_kind !== 'player_utterance'
       || plan.activity?.owner !== 'semantic' || plan.activity.duration_class !== 'moment'
       || Object.hasOwn(plan.activity, 'requested_duration_minutes')
       || !EFFORTS.includes(plan.activity.effort) || !Array.isArray(plan.operations)
@@ -137,12 +198,30 @@ function speechMetadataTrial(plan, request) {
       || !Array.isArray(plan.continuation?.depends_on_refs)
       || plan.continuation.depends_on_refs.length !== 0
       || plan.continuation.prepared_followup_ref != null
-      || plan.continuation.pending_discovery != null) return null;
+      || plan.continuation.pending_discovery != null) return false;
+  return true;
+}
+
+function isSpeechMetadataError({ path, code }) {
+  return path === '$.utterance.utterance_text' && code === 'direct_result_kind'
+    || path === '$.goal_result' && code === 'continuation';
+}
+
+function canAuditRepairedSpeechMetadata(plan, request) {
+  if (!speechMetadataEnvelope(plan, request) || plan.activity.effort !== 'none'
+      || typeof plan.continuation.remaining_intent !== 'string'
+      || !plan.continuation.remaining_intent.trim()
+      || plan.continuation.remaining_intent === request.remaining_intent
+      || !request.remaining_intent.endsWith(plan.continuation.remaining_intent)) return false;
+  const validation = validateTurnStepPlan(plan, { request });
+  return !validation.ok && validation.errors.every(isSpeechMetadataError);
+}
+
+function speechMetadataTrial(plan, request) {
+  if (!speechMetadataEnvelope(plan, request)) return null;
   const trial = { ...plan, activity: { ...plan.activity, effort: 'none' } };
   const validation = validateTurnStepPlan(trial, { request });
-  return validation.errors.every(({ path, code }) =>
-      path === '$.utterance.utterance_text' && code === 'direct_result_kind'
-        || path === '$.goal_result' && code === 'continuation') ? trial : null;
+  return validation.errors.every(isSpeechMetadataError) ? trial : null;
 }
 
 function validateAndFreezePlan(plan, request) {

@@ -112,7 +112,7 @@ function approvedNarration(requestId) {
       used_references: [],
       self_check: { no_new_world_facts: true }
     },
-    final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded in visible context.'] },
+    final_audit: { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['Grounded in visible context.'] },
     repair_request: null,
     generation_history: [],
     audit_history: [],

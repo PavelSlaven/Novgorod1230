@@ -68,8 +68,7 @@ test('current scene keeps prior player-safe co-located NPC observations only', (
     } }, directSeedKeys: ['turn_step_1'], body: {} });
   assert.deepEqual(direct.visible_npc, current.current_visible_context.visible_npc);
   assert.equal(JSON.stringify(direct).includes('injured_unable_to_walk'), false);
-  assert.deepEqual(direct.visible_changes,
-    ['Не удалось достичь цели «определить узор на досках».']);
+  assert.deepEqual(direct.visible_changes, []);
   assert.deepEqual(direct.uncertainties, []);
   assert.equal(direct.do_not_imply.includes('unconfirmed_attempt_success'), true);
 });
@@ -263,7 +262,8 @@ test('direct player-safe observation reaches narration without new facts', () =>
   }, directSeedKeys: [], body: {} });
 
   assert.deepEqual(visible.visible_changes,
-    ['Наблюдение завершено по уже доступным вам признакам.']);
+    ['Наблюдение завершено по уже доступным вам признакам.',
+      'Низкое сырое небо.', 'В поле зрения — раненый мужчина.']);
   assert.deepEqual(visible.sensory_details, ['Низкое сырое небо.']);
   assert.equal(visible.visible_objects[0].display_label, 'верхняя одежда');
   assert.deepEqual(visible.uncertainties,
@@ -409,7 +409,8 @@ for (const [resolution, change] of Object.entries({
           check: null } }] } }
     });
     const result = `${change}: «  Найти мою грамоту или личную вещь  ».`;
-    assert.deepEqual(visible.visible_changes, resolution === 'absent' ? [result] : []);
+    assert.deepEqual(visible.visible_changes, ['На песке остались следы от пешни.',
+      ...(resolution === 'absent' ? [result] : [])]);
     assert.deepEqual(visible.uncertainties, resolution === 'absent' ? [] : [result]);
     assert.equal(visible.visible_scene, committedState().current_visible_context.visible_scene);
     assert.deepEqual(visible.visible_objects, committedState().current_visible_context.visible_objects);

@@ -83,6 +83,8 @@ Player-safe projector передаёт только применимые к те
 
 **Good / bad.** Good даёт герою биографическую непрерывность и сценическую ориентацию. Bad можно без потери смысла перенести любому безымянному герою в любое место либо он сообщает только «вы на берегу, вам холодно».
 
+Stage 23 проверяет это через обязательный `literary_composition_check` существующего semantic auditor. Factual-only approval недостаточен: dossier/report/padding дают `NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION` и semantic prose repair; adapter только передаёт approved prose. Отсутствующие во входе биография и ставка не изобретаются ради check.
+
 **Unseen validation.** Другая стартовая ситуация: не кораблекрушение, а ночной постой после торговой дороги. Тот же writer должен связать другого героя, другую память, закрытый выход, дальний звук и телесное состояние без нового шаблона или branch.
 
 ## 6. Новое место
@@ -145,11 +147,11 @@ Player-safe projector передаёт только применимые к те
 
 **Необходимый контекст.** Exact elapsed; continuing/completed/interrupted activities; process transitions; autonomous NPC actions; environment/light/weather changes; body thresholds; perception results; unchanged facts только если они явно спроецированы.
 
-**Обязательный смысл.** Время не является пустой цифрой: текст показывает фактически воспринятые изменения, завершение или продолжение причинных процессов и цену для тела. Если единственный confirmed change — elapsed, проза передаёт точное течение времени без invented waiting action, изменения позиции или утверждения неизменности. Допустимы и связь с текущей деталью, и отдельная короткая ритмическая временная фраза, если она работает как литературный переход, а не как системный отчёт.
+**Обязательный смысл.** Время не является пустой цифрой: текст показывает фактически воспринятые изменения, завершение или продолжение причинных процессов и цену для тела. При других current facts точная длительность принадлежит тому же эпизоду, не отдельной служебной строке. Если единственный confirmed change — elapsed, допустим короткий литературный переход через supplied scene, без invented waiting action, изменения позиции или утверждения неизменности; голое сообщение длительности недостаточно.
 
 **Литературная подача.** Сжатие времени через один-два подтверждённых изменяющихся признака. Parallel changes объединяются в последовательность по exact order. Background остаётся фоном; interruption становится новым центром сцены и объясняет остановку только supplied reason.
 
-**Избыточно/запрещено.** Служебная строка длительности, оторванная от ритма сцены; mechanically forced присоединение времени к случайной детали; invented bustle; NPC frozen до следующего player input; утверждение, что предметы «всё ещё» на месте без basis; minute-by-minute montage; повтор всех processes. Само по себе отдельное grounded «Минул час» не является дефектом.
+**Избыточно/запрещено.** Служебная строка длительности, оторванная от сцены; mechanically forced присоединение времени к случайной детали; invented bustle; NPC frozen до следующего player input; утверждение, что предметы «всё ещё» на месте без basis; minute-by-minute montage; повтор всех processes. Оценивается литературный переход целиком, не наличие конкретной фразы или отдельного предложения.
 
 **Good / bad.** Good создаёт ощущение независимого мира и показывает новый decision boundary; при elapsed-only честный короткий grounded переход уже достаточен и не обязан симулировать событие. Bad превращает длительность в служебную строку без литературной функции либо декоративно оживляет мир событиями, которых нет в committed package.
 
@@ -238,6 +240,104 @@ Player-safe projector передаёт только применимые к те
 
 `PASS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой.
 
+В обычном ходе существующий auditor возвращает `coverage.visible_changes` и
+`coverage.uncertainties`: записи `{source_index, segment_ids}` с нулевым индексом
+исходного массива и ссылками на immutable сегменты проверяемой прозы. Для `PASS`
+каждый исходный индекс указан ровно один раз, с хотя бы одним существующим
+сегментом; пустой исходный массив требует пустого coverage. Несколько исходных
+смыслов могут ссылаться на один сегмент. Ссылки обозначают выраженный в прозе
+смысл, а не наличие факта во входе. Пропущенные смыслы требуют `FAIL` и concern;
+неизвестные индексы, сегменты, дубли и malformed coverage не принимаются кодом.
+Независимые `artistic_verdict` и `technical_verdict` имеют значения `pass|fail`;
+`fail` требует соответственно concern `literary_quality` или
+`technical_presentation`. Общий `PASS` требует оба verdict `pass`, полное
+coverage, отсутствие concerns и непустое evidence. Те же проверки действуют
+после единственного существующего цельного semantic repair, без нового role
+или дополнительного каскада вызовов.
+
+Private wire сохраняет обязательные текущие факты в `required_current_beat`
+с changes `{ref,text}` и uncertainties `{ref,text,status:unperformed_result_unknown}`,
+`constraints` содержит do_not_imply/allowed_tensions/style_policy.
+При любом change или uncertainty `optional_support` содержит только
+visible_scene и текущие grounded sensory_details, если они переданы. Writer выбирает
+только относящиеся к текущему beat детали; весь sensory snapshot не пересказывается.
+Static NPC/object/inventory/body arrays, known_context и snapshot metadata
+не поступают writer/auditor/repair.
+Новые существенные факты должны приходить через visible_changes. Существующие
+projection owners продвигают воспринимаемые признаки applied observation,
+destination facts, видимых NPC и подтверждённый маршрут arrival, а также
+факты текущего ordinary scene seed. Причинное основание задаёт результат owner,
+а не текст заявки или заголовок сцены; snapshot self-knowledge не продвигается.
+Дополнять текущий
+результат пересказом static snapshot нельзя. Эти данные остаются authoritative
+и доступны профильным panels. Если оба source arrays пусты и сама сцена является
+результатом, descriptive support сохраняется для scene-only/perception prose.
+Raw visible_context не дублируется; used_references остаётся пустым.
+Confirmed_outcome/action_intent и role-specific output/segments/concerns/phase
+сохраняют существующую доступность. Uncertainty о вопросе не становится доказательством
+действия; явно неисполненный continuation остаётся неначатым, а результат неизвестным.
+Committed transient attempt в required change подтверждает выполненное физическое
+обращение/contact за applied duration. Открытым остаётся только observation/discovery
+result или новый факт. Narrator изображает совершённое движение конкретно, без
+пересказа attempt/status metadata и без выдуманной новой находки. goal_result pending
+не отменяет applied operation. Нельзя объявлять её неначатой либо навязывать выбор
+продолжить/изменить действие, если unexecuted continuation не передан.
+Private coverage содержит request-local ключи `visible_change_N`/`uncertainty_N`:
+refs/text в required_current_beat задают таблицу источников, prompt даёт полный
+динамический JSON shape. Значения — только массивы segment choices,
+никогда prose. Adapter требует точный набор собственных ключей; неизвестные,
+пропущенные ключи, malformed значения, чужие/повторные choices блокируются.
+Индекс source принадлежит коду и выводится по исходному порядку. Пустые sources
+требуют `{}`; пустой массив choices допустим при `FAIL`, но блокирует `PASS`.
+Разные ключи могут ссылаться на один segment. Positional compatibility отсутствует.
+Модель сначала ищет нарушения. `reviewed_segments` содержит полный canonical
+набор segment choices без повторов. `failure_checks` требует ровно пять массивов
+offending choices: current_beat_buried, elapsed_as_service_report, static_context_dump,
+weak_literary_composition, unsupported_response_or_continuation. Чужие, повторные,
+noncanonical choices и malformed значения блокируются. Нарушение центра, выбора
+контекста или композиции требует artistic fail и `literary_quality` concern
+с model reason на каждый offending segment; служебное время — technical fail
+и `technical_presentation`; unsupported response/continuation — общий FAIL
+и соответствующий unsupported concern. Любое нарушение запрещает PASS.
+Temporal/aspectual overlap, длительность и persistence между фактами требуют
+явного основания: scene label не доказывает ambience, тишину или субъективный
+темп. `elapsed_as_service_report` включает механически приклеенное время через
+выдуманную связь, а не только отдельную служебную строку.
+Grouped required change объединяет result и elapsed/activity одного applied step:
+это явное основание его точной длительности. Грамматически вплетённая в действие
+explicit duration не является нарушением лишь из-за явного числа; isolated service
+datum по-прежнему запрещён. Группировка не доказывает overlap, persistence или
+длительность другого шага. Точная реплика и все propositions сохраняются.
+`weak_literary_composition` включает пересказ pending remainder как metadata
+или пояснение плана вместо конкретного открытого следующего выбора; один
+союз не делает набор фактов художественной сценой. Repair concerns не являются
+исчерпывающим whitelist: все правила повторно применяются ко всей прозе,
+при sparse support текст сокращается, а не украшается выдуманными связями.
+PASS также требует двух pass verdicts, полной coverage, пустых concerns и непустого
+массива evidence. Старые positive checks не принимаются. Согласованный FAIL
+использует существующий цельный repair без нового role/call. Initial malformed
+audit с явным `pass:false` и непустым содержательным `concern.reason` также
+допускает этот единственный repair: используются только reasons и code-owned
+whole-prose segment, без доверия malformed coverage, failure_checks или aliases.
+Без содержательного concern malformed initial audit блокируется. Final audit
+всегда требует полной strict validation; повторный semantic repair запрещён.
+Положительные оценки и coverage не синтезируются adapter. Private writer и format
+repair не генерируют self-check flags: публичный `self_check={}` нейтрален,
+не содержит model approval и не заменяет независимый audit.
+
+Центр ответа — текущие confirmed changes и uncertainties. Незавершённое действие
+ясно остаётся ещё не начатым, его результат неизвестен; возможность продолжить
+замысел или изменить решение передаётся естественно, без системного отчёта.
+Точное произнесённое слово сохраняется. Прошедшее время вплетается в текущий
+эпизод: служебная временная заставка с последующей статической сводкой не проходит
+техническую приёмку. Даже фактически верный пересказ берега, тела или инвентаря
+не проходит художественную приёмку, если вытесняет смысл текущего результата.
+При малом количестве подтверждённого материала краткая связная сцена достаточна.
+Само произнесение не подтверждает слышимость, ответ или отсутствие ответа:
+для реакции слушателя требуется отдельный confirmed perception/conversation fact.
+Opening сохраняет собственный утверждённый Stage 23 audit: turn coverage и
+художественный verdict не синтезируются задним числом для опубликованной сцены.
+
 Проверки не должны искать обязательные слова и конструкции. Рисковая карта полного qualification/acceptance покрытия для каждого класса включает:
 
 - один позитивный grounded case;
@@ -268,3 +368,35 @@ Player-safe projector передаёт только применимые к те
 - [`combat_system.md`](combat_system.md), §§12–15, 27–29 — injury, death, aftermath и recovery.
 
 Сами MODULE должны ссылаться только на canonical документ и кратко указывать собственную ответственность. Не копировать туда весь packet: иначе быстро появятся расходящиеся нормы.
+
+Narration auditor использует exact `request.segments[].segment_id` во всех
+reviewed_segments, failure_checks, coverage и concern.segment_choice. Positional
+aliases и нормализация не допускаются; final audit строго проверяется по IDs
+повторно сегментированной approved prose. Grounded цепочка без scene/action композиции,
+сцепленная главным образом bare/metadata отметками времени, проваливает существующие
+elapsed_as_service_report / weak_literary_composition checks. Длительность
+встраивается в подтверждённый физический эпизод и причинную сцену; нельзя
+добавлять ambience, реакции или одновременное действие ради связности.
+
+Subject + exact duration + supported physical action — встроенная длительность,
+в том числе в короткой sparse сцене; такая конструкция и краткость сами по себе
+не дают elapsed_as_service_report. Служебным остаётся bare/metadata time или
+перечень без сценической/физической композиции. При current beat private wire
+допускает visible_scene + sensory_details; narrator выбирает только относящиеся
+к этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.
+
+Temporal/aspect grounding сохраняет принадлежность elapsed своему applied step:
+sensory sky/weather/sound не получают эту длительность; задержка до начала действия
+не заменяет длительность выполненного действия. Sensory support связывает сцену,
+а не заполняет минуты. Coverage требует все propositions каждого required change,
+включая embedded неизвестный результат при пустом uncertainties; его нельзя
+опустить или заменить failure/success. Речь передаётся естественно с дословным
+содержанием и speaker, discovery — через подтверждённое восприятие без status report.
+
+Applied-step causal projection связывает semantic_activity duration в самом source:
+speech получает «этот шаг занял N …», не утверждая непрерывность речи; single
+transient_item_use получает «в течение N … выполняли попытку» с exact description
+и явно неизвестным observation result. Отдельный elapsed component этого step
+удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
+Narrator переводит evidence wording в естественную речь и конкретное движение,
+не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.

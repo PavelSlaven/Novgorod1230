@@ -34,12 +34,12 @@ export function assertPersistedExistingInspection({ before, after, roleInputs, r
   const names = targets.map(id => plans[0].player_safe_state.items.find(item => item.item_id === id).name);
   const narrations = roleInputs.filter(input => input?.schema === 'narration_request');
   assert.ok(narrations.length > 0);
-  for (const { visible_context: visible } of narrations) {
+  for (const { optional_support: visible, required_current_beat: beat } of narrations) {
     assert.equal(visible.visible_scene, plans[0].player_safe_state.current_visible_context.visible_scene);
-    for (const name of names) assert.ok(visible.visible_changes.some(change => change.includes(name)));
-    assert.ok(visible.visible_changes.some(change => change.includes('пригодно к обычному использованию')));
-    assert.ok(visible.uncertainties.some(value => value.includes(plans[0].remaining_intent)));
-    assert.ok(visible.uncertainties.some(value => value.includes(trace.remaining_intent)));
+    for (const name of names) assert.ok(beat.changes.some(({ text }) => text.includes(name)));
+    assert.ok(beat.changes.some(({ text }) => text.includes('пригодно к обычному использованию')));
+    assert.ok(beat.uncertainties.some(({ text }) => text.includes(plans[0].remaining_intent)));
+    assert.ok(beat.uncertainties.some(({ text }) => text.includes(trace.remaining_intent)));
   }
   assert.equal(result.screen.panels.inventory.visible, true);
 }

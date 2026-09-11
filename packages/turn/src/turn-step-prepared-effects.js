@@ -1,12 +1,10 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
-import {
-  compareRationalMinutes,
+import { compareRationalMinutes,
   normalizeElapsedTime,
   normalizeGameTimestamp,
   subtractGameTimestamp
 } from '@rus/time-events-history';
 import { turnFailure } from './errors.js';
-
 const LEDGER_SCHEMA='turn_step_prepared_effect_ledger_v1',SLICE_SCHEMA='turn_step_prepared_effect_slice_v1';
 const EFFECT_KINDS = new Set(['domain_command', 'semantic_activity']);
 const RAW_KEYS = new Set([
@@ -24,12 +22,10 @@ const LEDGER_KEYS = new Set([
   'ledger_digest'
 ]);
 export function buildTurnStepPreparedChainContext({
-  priorEffectCount,
-  currentClock,
-  currentBodyState
+  priorEffectCount, currentClock, currentBodyState
 }) {
   if (!Number.isSafeInteger(priorEffectCount) || priorEffectCount < 0
-      || priorEffectCount > 2 || !plain(currentClock)
+      || !plain(currentClock)
       || !plain(currentBodyState)) {
     invalid('Prepared effect chain context is invalid.');
   }
@@ -105,6 +101,12 @@ export async function orchestrateTurnStepPreparedEffect({
       }));
   return deepFreeze({
     ...structuredClone(result),
+    player_response_boundary: result.player_response_boundary === true
+      || (timeUpdate.temporal_results ?? []).some((temporal) =>
+        temporal.temporal_status === 'paused'
+        || temporal.trace?.stopped_after_current_batch === true
+        || temporal.visible_package_candidate?.player_safe_interruption != null
+        || temporal.visible_package_candidate?.visible_payload?.player_safe_interruption != null),
     local_fire_atomic_write_plans:[...structuredClone(result
       .local_fire_atomic_write_plans??[]),...structuredClone(timeUpdate
       .local_fire_atomic_write_plans??[])],
@@ -114,9 +116,7 @@ export async function orchestrateTurnStepPreparedEffect({
   });
 }
 export function buildTurnStepPreparedEffectLedger({
-  rootTurnId,
-  committedStateVersion,
-  effects
+  rootTurnId, committedStateVersion, effects
 }) {
   if (!text(rootTurnId)
       || !Number.isSafeInteger(committedStateVersion)
@@ -221,13 +221,12 @@ export function requireTurnStepPreparedEffectLedger(value) {
   }
   return deepFreeze(ledger);
 }
-
 export function buildTurnStepPreparedTimeUpdate(value) {
   const ledger = requireTurnStepPreparedEffectLedger(value);
   const first = ledger.slices[0];
   const last = ledger.slices.at(-1);
   const duration = ledger.slices.reduce((sum, slice) =>
-    sum + requireIntegralDuration(slice.consequence.duration_minutes), 0);
+    sum + requireIntegralDuration(Number(slice.time_update.exact_elapsed.exact_minutes.numerator)), 0);
   assertExactWindow({
     clockBefore: first.time_update.clock_before,
     clockAfter: last.time_update.clock_after,
@@ -256,7 +255,6 @@ export function buildTurnStepPreparedTimeUpdate(value) {
     prepared_effect_ledger: structuredClone(ledger)
   });
 }
-
 export function buildTurnStepPreparedBodyUpdate(value) {
   const ledger = requireTurnStepPreparedEffectLedger(value);
   const applied = ledger.slices.filter(
@@ -282,15 +280,22 @@ export function buildTurnStepPreparedBodyUpdate(value) {
     prepared_effect_ledger_digest: ledger.ledger_digest
   });
 }
-
 export function bindTurnStepPreparedConsequence(value, ledgerValue) {
   const ledger = requireTurnStepPreparedEffectLedger(ledgerValue);
+  const consequence = structuredClone(requireObject(value, 'consequence'));
+  for (const slice of ledger.slices) {
+    if (slice.effect_kind !== 'semantic_activity') continue;
+    for (const [key, seed] of Object.entries(slice.consequence.visible_seed ?? {})) {
+      if (seed?.kind === 'semantic_activity' && consequence.visible_seed?.[key] != null)
+        consequence.visible_seed[key].duration_minutes = Number(slice.time_update.exact_elapsed.exact_minutes.numerator);
+    }
+  }
   return deepFreeze({
-    ...structuredClone(requireObject(value, 'consequence')),
+    ...consequence,
+    duration_minutes: Number(buildTurnStepPreparedTimeUpdate(ledger).exact_elapsed.exact_minutes.numerator),
     prepared_effect_ledger_digest: ledger.ledger_digest
   });
 }
-
 function requireRawEffect(value) {
   const raw = requireObject(value, 'prepared effect');
   if (!exactKeys(raw, RAW_KEYS)
@@ -310,7 +315,6 @@ function requireRawEffect(value) {
   validateEffectState(raw);
   return raw;
 }
-
 function requirePreparedRequest(value) {
   const request = requireObject(value, 'prepared effect request');
   const keys = new Set([
@@ -325,7 +329,6 @@ function requirePreparedRequest(value) {
   }
   return request;
 }
-
 function advanceWorkingClock(value, clockAfter) {
   const projection = requireObject(value, 'working projection');
   return {
@@ -339,7 +342,6 @@ function advanceWorkingClock(value, clockAfter) {
     } : {})
   };
 }
-
 function validateSlice(slice, {
   ordinal,
   rootTurnId,
@@ -369,6 +371,8 @@ function validateSlice(slice, {
     });
   }
   validateEffectState(slice);
+  if (previous != null && previous.consequence.duration_minutes !== Number(previous.time_update.exact_elapsed.exact_minutes.numerator))
+    invalid('An interrupted prepared effect must end the chain.');
   const expectedPrevious = previous?.slice_digest ?? sha256({
     schema: 'turn_step_prepared_effect_chain_seed_v1',
     root_turn_id: rootTurnId,
@@ -388,7 +392,6 @@ function validateSlice(slice, {
     invalid('Prepared effect slice chain or digest is invalid.', { ordinal });
   }
 }
-
 function validateEffectState(effect) {
   const duration = requireIntegralDuration(
     effect.consequence.duration_minutes);
@@ -399,7 +402,12 @@ function validateEffectState(effect) {
   }, `prepared effect ${effect.step_index}`);
   const exact = normalizeElapsedTime(effect.time_update.exact_elapsed);
   if (exact.exact_minutes.denominator !== '1'
-      || exact.exact_minutes.numerator !== String(duration)) {
+      || (exact.exact_minutes.numerator !== String(duration)
+        && !(effect.effect_kind === 'semantic_activity'
+          && effect.consequence.body_effect_ref == null && effect.body_update.applied === false
+          && Number(exact.exact_minutes.numerator) < duration
+          && effect.time_update.temporal_results?.some((result) =>
+            result.trace?.stopped_after_current_batch === true)))) {
     invalid('Prepared effect consequence and exact time differ.', {
       step_index: effect.step_index
     });
@@ -420,7 +428,6 @@ function validateEffectState(effect) {
     });
   }
 }
-
 function validBodyUpdate(value) {
   return plain(value)
     && value.schema === 'turn_body_update'
@@ -428,7 +435,6 @@ function validBodyUpdate(value) {
     && plain(value.state_after)
     && (value.applied === true ? plain(value.proposal) : value.proposal === null);
 }
-
 function assertExactWindow({ clockBefore, clockAfter, exactElapsed }, label) {
   try {
     const before = normalizeGameTimestamp(clockBefore);
@@ -445,7 +451,6 @@ function assertExactWindow({ clockBefore, clockAfter, exactElapsed }, label) {
     });
   }
 }
-
 function requireIntegralDuration(value) {
   const number = Number(value ?? 0);
   if (!Number.isSafeInteger(number) || number < 0) {
@@ -453,11 +458,9 @@ function requireIntegralDuration(value) {
   }
   return number;
 }
-
 function exactMinutes(value) {
   return { exact_minutes: { numerator: String(value), denominator: '1' } };
 }
-
 function requireObject(value, label) {
   if (!plain(value)) invalid(`${label} must be a JSON object.`);
   try {
@@ -466,30 +469,24 @@ function requireObject(value, label) {
     invalid(`${label} must be detached JSON data.`);
   }
 }
-
 function exactKeys(value, keys) {
   return plain(value)
     && Object.keys(value).length === keys.size
     && Object.keys(value).every((key) => keys.has(key));
 }
-
 function same(left, right) {
   return sha256(left) === sha256(right);
 }
-
 function plain(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
-
 function text(value) {
   return typeof value === 'string' && value.trim() === value
     && value.length > 0;
 }
-
 function digest(value) {
   return typeof value === 'string' && /^[a-f0-9]{64}$/u.test(value);
 }
-
 function invalid(message, details = {}) {
   throw turnFailure(
     'TURN_STEP_PREPARED_EFFECT_INVALID',

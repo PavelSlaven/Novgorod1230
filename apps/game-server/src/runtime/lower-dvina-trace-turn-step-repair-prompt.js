@@ -1,3 +1,5 @@
+import { allTurnStepPlanMappings } from './lower-dvina-trace-turn-step-plan-mappings.js';
+
 export function turnStepRepairSpecificInstructions(repairContext, request) {
   const codes = new Set(repairContext?.structural_errors
     ?.map(({ code }) => code) ?? []);
@@ -23,5 +25,16 @@ export function turnStepRepairSpecificInstructions(repairContext, request) {
   if (codes.has('ordinary_discovery_query_identity')) instructions.push(
     `Required ordinary discovery repair: repair the query and continuation together. If discovery is a material prerequisite for taking, using, handling, or transforming an ordinary referent, query names only that needed referent, material, or physically connected group and continuation is exactly {"remaining_intent":${JSON.stringify(request.remaining_intent)},"depends_on_refs":[]}. Do not invent refs, outcomes, or execute the later action. Otherwise preserve standalone focused discovery losslessly: query is the complete request.remaining_intent with no continuation, or its exact earliest discovery prefix while continuation.remaining_intent is the exact uncovered suffix. Never summarize, omit, or rewrite either part.`
   );
+  if (repairContext?.structural_errors?.length === 1
+      && repairContext.structural_errors[0].path === '$.resolution'
+      && repairContext.structural_errors[0].code === 'operation_semantic_grounding') {
+    const mapping = allTurnStepPlanMappings().ordinary_material_prerequisite;
+    mapping.continuation.remaining_intent = request.remaining_intent;
+    Object.assign(mapping, { operation_choice: null, operation_family: null,
+      direct_result_kind: null, clarification: null });
+    instructions.push(
+    `Required literal denial repair: First check supplied items for the semantically matching actionable referent. If it already exists and the intent is transient non-transforming handling/contact, use transient_item_use with that stable item_ref; use it in place when current-visible and its placement matches current position; preserve placement and add move_entity only for explicit requested relocation. Never repeat discovery for that same known item or invent an item transformation. Otherwise, for a missing ordinary referent, MUST use ordinary_material_prerequisite with interpretation.adaptation literal, resolution domain_request, goal_result pending, activity owner domain. Emit exactly one request_discovery with discovery_kind inspect, current actor_ref and one current visible scope ref. query must be only a nominal description of the missing ordinary referent, material, or physically connected group; exclude acquisition, relocation, handling, use, transformation, purpose and every action clause. query must not equal or copy request.remaining_intent. Preserve continuation exactly as {"remaining_intent":${JSON.stringify(request.remaining_intent)},"depends_on_refs":[]}. Discovery does not execute any part of this physical intent. This resolution error invalidates the complete causal shape: replace the original operations, activity, goal_result and continuation together, even though the error path names only $.resolution. Do not preserve the rejected direct denial or its missing-operation rationale. Lack of a registered handler for the later physical act does not prevent discovery of its ordinary prerequisite. For a missing referent only, return this semantic mapping with its nominal query and current refs filled from the request: ${JSON.stringify(mapping)}`
+    );
+  }
   return instructions;
 }

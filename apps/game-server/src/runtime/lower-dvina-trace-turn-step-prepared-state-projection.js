@@ -1,3 +1,5 @@
+import { projectNpcs } from './lower-dvina-trace-player-safe-entities.js';
+import { projectVisibleContext } from './lower-dvina-trace-player-safe-visible-context.js';
 import { applyTracePhase7ScheduleState } from
   './lower-dvina-trace-phase-7-state-projection.js';
 import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
@@ -7,6 +9,23 @@ import { tracePhase7ActorStep } from
 export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
   applyNpcRoutineTemporalResults(next, effect.time_update.temporal_results);
+  if ((effect.time_update.temporal_results ?? []).some((result) =>
+    result.combined_change_set?.proposals?.some((proposal) => proposal.npc_routine_transition))) {
+    const npcs = projectNpcs(next.npcs, { position: next.position }) ?? [];
+    delete next.visible_npcs;
+    delete next.scene_npcs;
+    for (const key of ['current_visible_context', 'visible_context', 'visible_context_package']) {
+      const context = projectVisibleContext(next[key]);
+      if (context == null) continue;
+      next[key] = { ...context, visible_npc: (context.visible_npc ?? []).flatMap((entry) => {
+        const npc = npcs.find((record) => [record.instance_id, record.npc_id, record.actor_id]
+          .includes(entry?.entity_ref?.entity_id));
+        if (npc == null) return [];
+        const { visible_status: _status, observable_cues: _cues, ...identity } = entry;
+        return [{ ...identity, ...(npc.status == null ? {} : { visible_status: npc.status }) }];
+      }) };
+    }
+  }
   next.clock = structuredClone(effect.time_update.clock_after);
   next.clock_weather_light = {
     ...structuredClone(next.clock_weather_light ?? {}),

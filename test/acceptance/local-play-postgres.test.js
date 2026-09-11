@@ -21,7 +21,6 @@ import { MANAGED_RUNTIME_PINS } from '../../tools/local-play/managed-runtime.js'
 import { startLocalPlay } from '../../tools/local-play/local-play.js';
 import { loadLowerDvinaTraceScenePresentation } from '../../apps/game-server/src/internal/lower-dvina-trace-scene-presentation.js';
 import { scenePresentationForLocation } from '../../apps/game-server/src/runtime/lower-dvina-trace-scene-presentation.js';
-import { projectBodyState } from '../../apps/game-server/src/runtime/lower-dvina-trace-player-safe-entities.js';
 
 test('local play persists a free turn and replays it after a server restart',
   { timeout: 600_000, skip: process.platform !== 'win32'
@@ -134,28 +133,16 @@ test('local play persists a free turn and replays it after a server restart',
       const profile = scenePresentationForLocation({ scenePresentation, locationRef: playerSafe.position.location_ref });
       const narrated = roleInputs.filter(input => input?.schema === 'narration_request');
       assert.ok(narrated.length > 0, 'the real narrator receives the committed search projection');
-      for (const { visible_context: visible } of narrated) {
+      for (const { optional_support: visible, required_current_beat: beat } of narrated) {
+        assert.deepEqual(Object.keys(visible).sort(), ['sensory_details', 'visible_scene']);
         assert.equal(visible.visible_scene, sourceScene.visible_scene);
-        const conditions = projectBodyState(committed.state_payload.body_state).active_conditions;
-        assert.ok(visible.known_context.includes(`Текущие состояния вашего тела: ${JSON.stringify(conditions)}`));
-        assert.ok(visible.known_context.some(value => value.startsWith('Текущее местное время: ')
-          && value.includes(result.screen.presentation_context.time_label)));
-        assert.equal(visible.known_context.some(value => value.includes('07:00')), false);
-        assert.ok(visible.known_context.includes('Вас зовут Микула.'));
-        assert.ok(visible.known_context.includes('Ваш род занятий: младший приказчик.'));
-        assert.ok(visible.known_context.includes(plannerInput.actor.biography));
-        for (const record of [...plannerInput.actor.memory, ...playerSafe.knowledge]) {
-          assert.ok(visible.known_context.includes(record.text));
-        }
         assert.ok(profile.player_visible_physical_facts.length > 0);
         for (const detail of profile.player_visible_physical_facts) assert.ok(visible.sensory_details.includes(detail), JSON.stringify({ index, missing: detail, profile: profile.player_visible_physical_facts, narrated: visible.sensory_details }));
-        for (const item of sourceScene.visible_objects) assert.ok(visible.visible_objects.some(
-          current => current.display_label === item.display_label));
-        assert.ok(visible.visible_changes.includes('Поиск занял 15 минут.'));
+        assert.ok(beat.changes.some(({ text }) => text.includes('Поиск занял 15 минут.')));
         if (resolution === 'no_change' || resolution === 'authority_required') {
-          assert.ok(visible.visible_changes.includes(
-            `В этой попытке поиска по вопросу «${turnRequest.raw_text}» подтверждённой находки нет.`));
-          assert.ok(visible.uncertainties.some(value => value.includes(`«${turnRequest.raw_text}»`)));
+          assert.ok(beat.changes.some(({ text }) => text.includes(
+            `В этой попытке поиска по вопросу «${turnRequest.raw_text}» подтверждённой находки нет.`)));
+          assert.ok(beat.uncertainties.some(({ text }) => text.includes(`«${turnRequest.raw_text}»`)));
         }
       }
       assert.equal(result.screen.panels.character.visible, true);

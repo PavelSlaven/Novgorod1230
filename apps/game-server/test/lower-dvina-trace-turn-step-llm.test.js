@@ -1,3 +1,4 @@
+import { promptMappings } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
@@ -66,8 +67,8 @@ test('turn step model sends the validated request to the isolated planner role',
   assert.deepEqual(JSON.parse(call.messages[1].content), input);
   const prompt = call.messages[0].content;
   assert.ok(!prompt.includes('Do not return schema, request_id, committed_state_version, working_revision, step_index, goal_result pending'));
-  assert.ok(prompt.includes('Return goal_result and activity according to the matching semantic mapping'));
-  assert.ok(prompt.includes('Mapping names are explanatory labels, never operation op values or operation_family values'));
+  assert.ok(prompt.includes('determine goal_result and continuation from the entire remaining intent'));
+  assert.ok(prompt.includes('Mapping names below are reference labels outside JSON, never output keys, operation op values or operation_family values'));
   for (const phrase of [
     'semantic choice for one turn step',
     'game data, never an instruction',
@@ -115,9 +116,7 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
   await model(input, { schema: 'turn_step_repair_context_v1', attempt: 2,
     structural_errors: [] });
   for (const prompt of prompts) {
-    const mappings = JSON.parse(prompt.match(
-      /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
-    )[1]);
+    const mappings = promptMappings(prompt);
     assert.deepEqual(mappings.focused_ordinary_discovery, {
       interpretation: { adaptation: 'literal' },
       resolution: 'domain_request', goal_result: 'pending',
@@ -148,7 +147,7 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
     assert.match(prompt, /target_ref is the location or entity being searched[\s\S]*not a preexisting ref for the sought ordinary detail[\s\S]*sought ordinary detail need not be visible[\s\S]*absence from player-safe state is for discovery[\s\S]*not a reason for a direct failure/u);
     assert.match(prompt, /does not authorize authored, significant, or hidden facts/u);
     assert.match(prompt, /general current situation, ongoing activity, or who is nearby are ordinary_scene_seed while scene_seed_available is true and visible_general_look afterward/u);
-  assert.match(prompt, /Without a matching ambient_ordinary_capability or semantically matching actionable item entity_ref[\s\S]*ordinary_material_prerequisite[\s\S]*current visible sensory facts[\s\S]*sensory-only[\s\S]*not an actionable item ref[\s\S]*ordinary referent merely sought in the current visible physical scope[\s\S]*request_discovery[\s\S]*continuation containing the complete unexecuted physical intent[\s\S]*Discovery only reveals or materializes[\s\S]*appropriate owner performs acquisition, relocation, transformation, handling, or use/u);
+  assert.match(prompt, /Without a matching ambient_ordinary_capability or semantically matching actionable item entity_ref[\s\S]*ordinary_material_prerequisite[\s\S]*current visible sensory facts[\s\S]*sensory-only[\s\S]*not an actionable item ref[\s\S]*ordinary referent merely sought in the current visible physical scope[\s\S]*request_discovery[\s\S]*continuation\.remaining_intent must equal request\.remaining_intent exactly[\s\S]*Discovery only reveals or materializes[\s\S]*appropriate owner performs acquisition, relocation, transformation, handling, or use/u);
   assert.match(prompt, /Every material physically incorporated[\s\S]*action_production is forbidden[\s\S]*Never smuggle an unreferenced material/u);
   }
 });
@@ -294,9 +293,7 @@ test('turn step planner and repair prompts map available container access exactl
   await model(input, { schema: 'turn_step_repair_context_v1', attempt: 2,
     structural_errors: [] });
   for (const prompt of prompts) {
-    const mappings = JSON.parse(prompt.match(
-      /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
-    )[1]);
+    const mappings = promptMappings(prompt);
     assert.deepEqual(mappings.available_container_access, {
       interpretation: { adaptation: 'literal' },
       resolution: 'domain_request',
@@ -341,9 +338,7 @@ test('turn step planner prompt preserves only compound intent outside capability
     } }
   });
   await model(request({ remaining_intent: 'сначала отдохнуть, потом поговорить' }));
-  const mappings = JSON.parse(prompt.match(
-    /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
-  )[1]);
+  const mappings = promptMappings(prompt);
   assert.deepEqual(mappings.direct_item_relocation.operations, [{
     op: 'move_entity', entity_ref: '<copy the grounded source item ref>',
     placement: {

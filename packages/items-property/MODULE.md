@@ -25,6 +25,9 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 
 - `normalizeItem`
 - `validateItem`
+- `runtimeItemIsAccessibleInPlace` — current actor control либо current-visible
+  item с точным совпадением всех placement scope refs; concealed, blocked,
+  foreign-held, contained и attached item не получает доступ через этот путь
 - `physicalAccessTier`
 - `calculateCarriedWeight`
 - `resolveLoadCategory`

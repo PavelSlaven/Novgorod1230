@@ -2,7 +2,7 @@ import { buildTurnStepPreparedBodyUpdate, buildTurnStepPreparedTimeUpdate,
   requireTurnStepPreparedEffectLedger } from '@rus/turn';
 import { isPreparedDirectContinuation, preparedEffectFail, samePreparedValue,
   validateAuthoritativePreparedRoute, validatePreparedBodyReplay,
-  validatePreparedDirectSlice, validLocalFireIntermediateTrace } from
+  validatePreparedDirectSlice, validatePreparedSemanticSlices, validLocalFireIntermediateTrace } from
   './lower-dvina-trace-turn-step-prepared-effect-authority.js';
 import { validatePreparedRouteTraceLineage } from
   './lower-dvina-trace-turn-step-prepared-route-lineage.js';
@@ -10,8 +10,7 @@ import { mergePreparedRecord, samePreparedTimeBase } from
   './lower-dvina-trace-turn-step-prepared-effect-values.js';
 import { projectPosition } from
   '../../runtime/lower-dvina-trace-player-safe-world.js';
-import {
-  isPreparedTurn10Ledger,
+import { isPreparedTurn10Ledger,
   validatePreparedTurn10
 } from './lower-dvina-trace-turn-10-prepared-validation.js';
 import {
@@ -28,17 +27,11 @@ import { PHASE9_PREPARED_COMMANDS, validatePreparedPhase9 } from
   './lower-dvina-trace-phase-9-prepared-validation.js';
 const ROUTE_COMMAND = 'lower_dvina_trace.follow_path_to_fishing_camp';
 const KNOWN_ROUTE_COMMAND = 'lower_dvina_trace.follow_admitted_known_route:';
-const COMBAT_COMMAND = 'lower_dvina_trace.respond_in_active_combat'; const DEFERRED_DOMAIN_OPERATIONS = new Set([
-  'request_discovery', 'request_container_access', 'request_movement',
+const COMBAT_COMMAND = 'lower_dvina_trace.respond_in_active_combat'; const DEFERRED_DOMAIN_OPERATIONS = new Set(['request_discovery', 'request_container_access', 'request_movement',
   'request_item_use', 'request_activity', 'emit_interaction', 'request_combat'
 ]);
 export function validatePreparedEffectCommit({
-  batch,
-  envelope,
-  factual,
-  state,
-  phase3Contracts,
-  turnStepApprovedOwners,
+  batch, envelope, factual, state, phase3Contracts, turnStepApprovedOwners,
   localFirePlans = []
 }) {
   const ledgerValue = envelope?.time_update?.prepared_effect_ledger;
@@ -51,15 +44,30 @@ export function validatePreparedEffectCommit({
   }
   const slices = ledger.slices;
   const traces = envelope.loop_trace?.step_traces;
+  if (slices.every((slice) => slice.effect_kind === 'semantic_activity')) {
+    const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
+    const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+    if (ledger.root_turn_id !== batch?.root_turn_id
+        || ledger.committed_state_version !== batch?.committed_state_version
+        || !samePreparedValue(expectedBody, envelope.body_update)
+        || !samePreparedTimeBase(expectedTime, envelope.time_update)
+        || envelope.consequence?.prepared_effect_ledger_digest !== ledger.ledger_digest
+        || Number(envelope.consequence?.duration_minutes)
+          !== Number(expectedTime.exact_elapsed.exact_minutes.numerator)
+        || ['consequence', 'time_update', 'body_update',
+          'player_input', 'mode_resolution'].some((key) =>
+          !samePreparedValue(envelope[key], factual?.[key]))) {
+      preparedEffectFail('semantic ledger aggregate differs from factual commit');
+    }
+    validatePreparedSemanticSlices({ ledger, batch, envelope, state, turnStepApprovedOwners });
+    return { prepared: true, semanticBodySlice: slices.find(
+      (slice) => slice.body_update.applied === true) ?? null };
+  }
   if (isPreparedTurn10Ledger(ledger)) {
-    return validatePreparedTurn10({
-      ledger, traces, envelope, factual, state, batch
-    });
+    return validatePreparedTurn10({ ledger, traces, envelope, factual, state, batch });
   }
   if (isPreparedPhase7RestLedger(ledger)) {
-    return validatePreparedPhase7Rest({
-      ledger, traces, envelope, factual, state, batch
-    });
+    return validatePreparedPhase7Rest({ ledger, traces, envelope, factual, state, batch });
   }
   if (ledger.slices.length === 1
       && ledger.slices[0].owner_ref === COMBAT_COMMAND) {
@@ -202,9 +210,7 @@ function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
   return { prepared: true, combatSlice: slice };
 }
 function validateRouteOnlyBoundaryTrace({
-  routeTrace,
-  directTrace,
-  loopTrace
+  routeTrace, directTrace, loopTrace
 }) {
   const continuation = routeTrace.approved_plan?.continuation;
   const deferredRequired = routeTrace.approved_plan?.goal_result === 'pending'
@@ -256,10 +262,7 @@ function validateRouteOnlyBoundaryTrace({
   }
 }
 function expectedPreparedConsequence({
-  route,
-  direct,
-  loopTrace,
-  ledgerDigest
+  route, direct, loopTrace, ledgerDigest
 }) {
   const base = structuredClone(route.consequence);
   const fragment = direct?.consequence ?? {};

@@ -174,7 +174,7 @@ test('material prerequisite repair restores full intent and is revalidated',
             owner_kind: 'ordinary_discovery' }] }) });
       assert.equal(result.repaired, true);
       assert.equal(result.plan.continuation.remaining_intent, entry.intent);
-      assert.deepEqual(roles, ['turn_step_planner',
+      assert.deepEqual(roles, ['turn_step_planner', 'turn_step_grounding_auditor',
         'turn_step_planner_repair', 'turn_step_grounding_auditor']);
     }
   });

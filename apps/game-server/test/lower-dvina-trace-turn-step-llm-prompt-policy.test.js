@@ -1,3 +1,4 @@
+import { promptMappings } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validateTurnStepPlan } from '@rus/turn';
@@ -39,9 +40,7 @@ test('turn step planner prompt maps grounded and visible-look contracts',
   async () => {
     const input = request();
     const prompt = await capturePrompt(input);
-    const mappings = JSON.parse(prompt.match(
-      /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
-    )[1]);
+    const mappings = promptMappings(prompt);
     assert.deepEqual(mappings.reality_limited_physical_attempt, {
       interpretation: { adaptation: 'reality_limited' },
       resolution: 'direct', goal_result: 'not_achieved',
@@ -100,9 +99,7 @@ test('turn step planner offers scene seed instead of direct look while unseeded'
       position: { location_ref: 'location:shore' }, ordinary_resolution: {
         discovery_available: true, container_resolution_available: false,
         scene_seed_available: true } } }));
-    const mappings = JSON.parse(prompt.match(
-      /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
-    )[1]);
+    const mappings = promptMappings(prompt);
     assert.equal(mappings.visible_general_look, undefined);
     assert.deepEqual(mappings.ordinary_scene_seed, {
       interpretation: { adaptation: 'literal' },
@@ -156,4 +153,13 @@ test('turn step planner keeps an ongoing wet-reed smoulder out of A1', async () 
   assert.match(prompt, /Never use its physical_description, qualitative_facts, or source_fact_delta to claim, create, preserve, or describe an active, ongoing, self-propagating, or time-dependent world process/u);
   assert.match(prompt, /process requires an exact supplied code-owned domain operation; select its matching choice_id/u);
   assert.match(prompt, /Without one, return the honest reality_limited no-operation attempt with no process or physical-fact claim/u);
+});
+
+
+test('stable planner keeps the material prerequisite query nominal and full action in continuation', async () => {
+  const prompt = await capturePrompt();
+  assert.match(prompt, /query containing only a nominal description/u);
+  assert.match(prompt, /with no acquisition, relocation, handling, use, transformation, purpose or action clause/u);
+  assert.match(prompt, /For this material prerequisite query must not equal or copy request.remaining_intent/u);
+  assert.match(prompt, /continuation.remaining_intent must equal request.remaining_intent exactly/u);
 });

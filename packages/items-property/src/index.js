@@ -61,6 +61,7 @@ export {
   runtimeItemContentsAreOpen,
   runtimeItemIsTerminal,
   runtimeItemRecordIsConcealed,
+  runtimeItemIsAccessibleInPlace,
   runtimeItemStateValues
 } from './runtime-item-visibility.js';
 export { calculatePackingSlots } from './packing-slots.js';

@@ -41,7 +41,8 @@ export async function assertTurnStepBodyHistoryRows(pool, payload, headRow) {
 function assertCurrentEffect(history, payload) {
   const envelope = payload.last_turn?.turn_step_commit;
   if (!envelope) return;
-  const batch = payload.last_turn?.turn_step_operation_batch;
+  let batch = payload.last_turn?.turn_step_operation_batch;
+  let bodyFactual = envelope;
   const current = history.filter(({ effect_ref: effect }) =>
     effect?.root_turn_id === envelope.root_turn_id);
   const preparedLedger = envelope.time_update?.prepared_effect_ledger;
@@ -67,9 +68,22 @@ function assertCurrentEffect(history, payload) {
         || envelope.body_update?.prepared_effect_ledger_digest !== digest
         || envelope.consequence?.prepared_effect_ledger_digest !== digest
         || !same(envelope.body_update,
-          buildTurnStepPreparedBodyUpdate(ledger))
-        || current.length !== 0) invalid();
-    return;
+          buildTurnStepPreparedBodyUpdate(ledger))) invalid();
+    if (ledger.slices.some((slice) => slice.effect_kind !== 'semantic_activity')) {
+      if (current.length !== 0) invalid();
+      return;
+    }
+    const applied = ledger.slices.filter((slice) => slice.body_update.applied === true);
+    if (applied.length > 1 || (applied.length === 1 && applied[0] !== ledger.slices.at(-1))) invalid();
+    if (applied.length === 1) {
+      const slice = applied[0];
+      const operations = batch?.operations?.filter(({ target, value }) =>
+        target === 'party_events' && value?.activity_id === slice.operation_ref) ?? [];
+      if (operations.length !== 1 || operations[0].value.step_index !== slice.step_index
+          || operations[0].value.profile_ref !== slice.owner_ref) invalid();
+      bodyFactual = { ...envelope, consequence: slice.consequence, body_update: slice.body_update };
+      batch = { ...batch, operations };
+    }
   }
   if (batch == null) {
     if (current.length !== 0) invalid();
@@ -86,7 +100,7 @@ function assertCurrentEffect(history, payload) {
   let effectRef;
   try {
     effectRef = buildTurnStepBodyEffectRef({
-      factual: envelope,
+      factual: bodyFactual,
       batch
     });
   } catch {

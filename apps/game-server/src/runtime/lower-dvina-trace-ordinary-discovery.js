@@ -258,6 +258,8 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
   const searchResult = ['no_change', 'authority_required'].includes(presence?.resolution)
     ? { resolution: presence.resolution, query: presence.query } : null;
   return { ...applied, ...timed, summary: applied.summary,
+    player_response_boundary: applied.player_response_boundary === true
+      || timed.player_response_boundary === true,
     duration_minutes: timed.consequence_fragment.duration_minutes,
     write_fragments: [...applied.write_fragments, ...timed.write_fragments],
     consequence_fragment: { ...applied.consequence_fragment,

@@ -215,7 +215,11 @@ test('production prepared route advances prior fire and hides retired fuel',
       'Микула пришёл в рыбацкий стан. Огонь разгорелся.');
     assert.deepEqual(visible.visible_changes,[
       'Вы добрались от места крушения до рыбацкого стана.',
-      'turn_step_world_process_1:local_fire:started']);
+      'turn_step_world_process_1:local_fire:started',
+      'Рабочий стан стоит у берега Нижней Двины.',
+      'В поле зрения — Еремей.',
+      'Обратная тропа к месту крушения теперь известна.']);
+    assert.equal(new Set(visible.visible_changes).size, visible.visible_changes.length);
     assert.equal(visible.visible_changes.some((change)=>
       change.includes(':complete')),false);
   });

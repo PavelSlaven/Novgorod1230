@@ -40,6 +40,27 @@ function qualifiedOutputs(contract) {
         entities: [] });
 }
 
+test('authority classification precedes non-item shape without relaxing the qualification gate', async () => {
+  for (const query of ['след сапога на мокрой глине',
+    'физический след, доказывающий участие неизвестного человека',
+    'скрытая отметина, позволяющая установить подлинное происхождение вещи']) {
+    const prompt = buildOrdinaryMaterializationMessages(presenceRequest(query))[0].content;
+    assert.ok(prompt.indexOf('First classify mandatory authority requirements')
+      < prompt.indexOf('semantic_materialization_kind is your independent classification'));
+    assert.match(prompt, /authority_required with its non-common semantic_admission_class and no entities, even when semantic_materialization_kind is non_item_detail/u);
+    assert.match(prompt, /ordinary non_item_detail without a mandatory unavailable authority requirement, return no_change/u);
+    assert.doesNotMatch(prompt, /For non_item_detail return no_change/u);
+  }
+  const contract = await evalContract();
+  const outputs = qualifiedOutputs(contract);
+  for (const probe of contract.cases) {
+    const changed = outputs.map(output => output.id === probe.id
+      ? { ...output, resolution: 'no_change' } : output);
+    assert.deepEqual(evaluateLowerDvinaTraceOrdinaryStageBModelOutputs({
+      eval_contract: contract, outputs: changed }).failed_case_ids, [probe.id]);
+  }
+});
+
 test('production O1 binds incomplete Flash output to its request envelope', async () => {
   const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
   const request = { ...presenceRequest('верёвка'), policy_refs: {
@@ -75,7 +96,7 @@ test('ordinary assembly does not invent an omitted semantic reason', () => {
   assert.notDeepEqual(validateOrdinaryMaterializationPlanV1(plan), []);
 });
 
-test('O1 production path drops unsupported provenance before preparing item', async () => {
+for (const firstType of ['ordinary_wood', null, undefined]) test(`O1 binds specific type and repairs invalid initial type (${firstType})`, async () => {
   const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
   const enabled = discoveryEnabled();
   enabled.execution_context.stage_b_classification_eval = await evalContract();
@@ -86,7 +107,8 @@ test('O1 production path drops unsupported provenance before preparing item', as
         background_groups: [{ descriptor: discoveryGroup().descriptor }],
         reason_code: 'seed' } : { resolution: 'materialize', reason_code: 'found',
         semantic_materialization_kind: 'standalone_item', semantic_admission_class: 'common_mundane',
-        entities: [{ semantic_descriptor: { semantic_type: 'ordinary_wood',
+        entities: [{ semantic_descriptor: { ...(calls === 2 && firstType === undefined ? {}
+          : { semantic_type: calls === 2 ? firstType : 'ordinary_wood' }),
           name: 'обломок доски', facts: ['фрагмент недавнего груза с разбитой телеги'] },
         presence_expectation: 'routine', mechanics_proposal: { mass_grams: 350,
           external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
@@ -97,9 +119,10 @@ test('O1 production path drops unsupported provenance before preparing item', as
     ordinaryMaterializationModel: model });
   const plan = (await resolver(discoveryRequest('найти обломок доски')))
     .ordinary_materialization_atomic_write_plan;
-  assert.equal(calls, 2);
+  assert.equal(calls, firstType === 'ordinary_wood' ? 2 : 3);
   assert.deepEqual(plan.item.item_proposal.semantic_descriptor, {
-    semantic_type: 'ordinary_wood', name: 'обломок доски', facts: []
+    semantic_type: 'ordinary_wood',
+    name: 'обломок доски', facts: []
   });
 });
 

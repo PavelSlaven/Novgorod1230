@@ -160,9 +160,16 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     next, authoredItems, authoredContainers, entities,
     context, batch,
     writePlan, idemId });
-  context.bodyHistory = preparedEffect.prepared ? null
+  const bodySlice = preparedEffect.semanticBodySlice;
+  context.bodyHistory = preparedEffect.prepared && bodySlice == null ? null
     : prepareTurnStepBodyHistory({
-        partyId, state, factual: commit, batch, changeSetId, idemId
+        partyId, state, factual: bodySlice == null ? commit : {
+          ...commit, consequence: bodySlice.consequence,
+          body_update: bodySlice.body_update
+        }, batch: bodySlice == null ? batch : {
+          ...batch, operations: batch.operations.filter(({ target, value }) =>
+            target === 'party_events' && value.activity_id === bodySlice.operation_ref)
+        }, changeSetId, idemId
       });
   if (context.bodyHistory != null) {
     next.turn_step_body_history = [

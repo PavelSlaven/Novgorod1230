@@ -188,7 +188,7 @@ export function createCanonicalPhase11LlmResponder({
       .includes(model)) {
       return narrationOutput(input);
     }
-    if (model === 'fixture-gameplay-narrator-auditor') return narrationAudit();
+    if (model === 'fixture-gameplay-narrator-auditor') return narrationAudit(input);
     throw new Error(`Unexpected production LLM model: ${model}`);
   };
 }
@@ -802,23 +802,27 @@ function entityByTemplate(entities, templateId, idField) {
 }
 
 function narrationOutput(request) {
-  const narrationRequest = request.request ?? request;
+  const input = request.request ?? request;
+  const sources = [...(input.required_current_beat?.changes ?? []),
+    ...(input.required_current_beat?.uncertainties ?? [])];
   return {
-    version: 1,
-    schema: 'narration_output',
-    output_id: narrationRequest.request_id,
-    prose: 'События хода завершены; видимые последствия сохранены.',
-    action_options: [], used_references: [],
-    self_check: { no_new_world_facts: true }
+    prose: sources.length ? sources.map(({ text }) => text).join('\n\n')
+      : input.optional_support?.visible_scene ?? '',
+    action_options: [], used_references: []
   };
 }
 
-function narrationAudit() {
+function narrationAudit(input) {
+  const ids = input.segments.map(({ segment_id }) => segment_id);
   return {
-    version: 1,
-    schema: 'narration_audit',
-    pass: true,
-    concerns: [],
-    evidence: ['Нарратив основан на видимом контексте.']
+    reviewed_segments: ids,
+    failure_checks: {
+      current_beat_buried: [], elapsed_as_service_report: [], static_context_dump: [],
+      weak_literary_composition: [], unsupported_response_or_continuation: []
+    },
+    coverage: Object.fromEntries([...input.required_current_beat.changes,
+      ...input.required_current_beat.uncertainties].map(({ ref }) => [ref, [...ids]])),
+    artistic_verdict: 'pass', technical_verdict: 'pass', pass: true, concerns: [],
+    evidence: ['Каждое обязательное изменение и открытый результат воспроизведены из required_current_beat; все переданные сегменты проверены без добавленных фактов.']
   };
 }

@@ -1,14 +1,14 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
+import { lowerDvinaTraceObservedSceneChanges } from './lower-dvina-trace-visible-scene-items.js';
 import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
 import {
   enrichLowerDvinaTraceVisibleNpcCues,
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
-  projectDirectSeedChanges
+  projectDirectSeedChanges, materializedOrdinaryPresenceChange
 } from './lower-dvina-trace-turn-step-current-scene.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
-
 const SCHEMA =
   'rus.lower_dvina_trace_turn_step_world_process_visible_result.v1';
 const FIRE_SEED_PREFIX = 'turn_step_world_process_';
@@ -24,7 +24,6 @@ const ORDINARY_PRESENCE_CHANGES = Object.freeze({
   no_change: 'Результат по этому вопросу не установлен',
   authority_required: 'Имеющихся данных недостаточно для ответа'
 });
-
 export function createLowerDvinaTraceTurnStepVisibleProjector({
   fallback, calendarProfile = null
 } = {}) {
@@ -37,36 +36,40 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const seedEntries = plain(consequence?.visible_seed)
         ? Object.entries(consequence.visible_seed) : [];
       if (!seedEntries.some(([key]) => key.startsWith(FIRE_SEED_PREFIX))) {
-        return overlayTurnStepResults(enrichLowerDvinaTraceVisibleNpcCues({
-          visibleContext: await projectWithoutFire({
-            input, consequence, seedEntries, fallback
-          }),
-          committedState: input.retrieved_state, calendarProfile,
-          bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after
-        }), input);
+        return finishVisibleProjection(await projectWithoutFire({
+          input, consequence, seedEntries, fallback
+        }), input, calendarProfile);
       }
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
       const ordinaryDetails = ordinarySceneDetails(seedEntries);
       const ordinaryPresence = ordinaryPresenceResolution(seedEntries);
-      const body = currentBody(input);
       const base = hasVisibleDomainProjection(consequence)
         ? await fallback.project(input)
         : projectCurrentSceneForVisibleOverlay({
             input,
             directSeedKeys: directSeedKeys(seedEntries),
-            body
+            body: currentBody(input)
           });
-      return overlayTurnStepResults(enrichLowerDvinaTraceVisibleNpcCues({
-        visibleContext: overlayFireVisible(overlayOrdinaryPresence(
+      return finishVisibleProjection(overlayFireVisible(overlayOrdinaryPresence(
           overlayOrdinaryScene(base, ordinaryDetails), ordinaryPresence), fireVisible),
-        committedState: input.retrieved_state, calendarProfile,
-        bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after
-      }), input);
+        input, calendarProfile);
     }
   });
 }
-
+function finishVisibleProjection(base, input, calendarProfile) {
+  const enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
+    committedState: input.retrieved_state, calendarProfile,
+    bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after });
+  const consequence = input.consequence;
+  const arrival = consequence?.phase3_kind === 'movement'
+    || (consequence?.phase6_kind === 'synchronized_carry'
+      && consequence.carry?.intent?.execution_after?.status === 'completed');
+  return overlayTurnStepResults(arrival ? { ...enriched,
+    visible_changes: unique([...enriched.visible_changes,
+      ...lowerDvinaTraceObservedSceneChanges(enriched), ...base.known_context])
+  } : enriched, input);
+}
 function overlayTurnStepResults(base, input) {
   const itemInspections = Object.values(input?.consequence?.visible_seed ?? {})
     .filter(seed => seed?.kind === 'existing_item_inspection')
@@ -80,17 +83,37 @@ function overlayTurnStepResults(base, input) {
       || typeof inspection.query !== 'string' || !inspection.query.trim())) {
     ownerFail('TRACE_TURN_STEP_OBSERVED_EVIDENCE_VISIBLE_SEED_INVALID');
   }
-  const utterances = (input?.mode_resolution?.decision_trace?.step_traces ?? [])
-    .filter(({ applied, approved_plan: plan }) => applied === true
-      && plan?.resolution === 'direct'
-      && plan.direct_result_kind === 'player_utterance')
-    .map(({ approved_plan: plan }) => plan.utterance.utterance_text);
-  if (!text(remaining) && utterances.length === 0 && inspection == null
-      && itemInspections.length === 0) return base;
+  const traces = (input?.mode_resolution?.decision_trace?.step_traces ?? []).filter(({ applied }) => applied === true);
+  const directPlans = traces.map(({ approved_plan: plan }) => plan).filter(plan => plan?.resolution === 'direct');
+  const seeds = input?.consequence?.visible_seed ?? {};
+  const slices = input?.time_update?.prepared_effect_ledger?.slices ?? [];
+  const availableKeys = directSeedKeys(Object.entries(seeds)), usedKeys = new Set(), components = new Set();
+  const orderedChanges = traces.flatMap(({ step_index: step, approved_plan: plan }) => {
+    const keys = slices.filter(slice => slice.step_index === step)
+      .flatMap(slice => Object.keys(slice.consequence?.visible_seed ?? {})).filter(key => availableKeys.includes(key));
+    if (keys.length === 0 && traces.length === 1) keys.push(...availableKeys);
+    if (seeds.ordinary_presence_seed?.resolution === 'materialized' && plan.operations?.some(op =>
+      op.op === 'request_discovery' && op.query === seeds.ordinary_presence_seed.query)) {
+      keys.push(...availableKeys.filter(key => seeds[key]?.discovery_kind === 'search'), 'ordinary_presence_seed');
+    }
+    const actionKey = `turn_step_action_production_${step}`;
+    if (Object.hasOwn(seeds, actionKey)) keys.push(actionKey);
+    if (Object.hasOwn(seeds, `turn_step_item_use_${step}`)) keys.push(`turn_step_item_use_${step}`);
+    const orderedKeys = unique(keys).filter(key => !usedKeys.has(key))
+      .sort((a, b) => Number(seeds[b]?.kind === 'semantic_activity') - Number(seeds[a]?.kind === 'semantic_activity'));
+    orderedKeys.forEach(key => usedKeys.add(key));
+    projectDirectSeedChanges({ input, directSeedKeys: orderedKeys }).forEach(change => components.add(change));
+    const changes = projectDirectSeedChanges({ input, directSeedKeys: orderedKeys, appliedPlan: plan });
+    if (plan.resolution === 'direct' && plan.goal_result === 'not_achieved') changes.push(
+      text(plan.interpretation?.player_goal) ? `Не удалось достичь цели «${plan.interpretation.player_goal}».` : 'Цель попытки не достигнута.');
+    changes.forEach(change => components.add(change));
+    return changes.length === 0 ? [] : [changes.join(' ')];
+  });
+  projectDirectSeedChanges({ input, directSeedKeys: [...usedKeys] }).forEach(change => components.add(change));
+  if (!text(remaining) && orderedChanges.length === 0 && inspection == null && itemInspections.length === 0) return base;
   return deepFreeze({ ...structuredClone(base),
-    visible_changes: unique([...base.visible_changes,
-      ...itemInspections.flatMap(result => result.changes),
-      ...utterances.map((utterance) => `Вы произнесли: «${utterance}»`)]),
+    visible_changes: [...unique([...base.visible_changes.filter(change => !components.has(change)),
+      ...itemInspections.flatMap(result => result.changes).filter(change => !components.has(change))]), ...orderedChanges],
     uncertainties: unique([...base.uncertainties,
       ...itemInspections.map(result => result.uncertainty),
       ...(inspection == null ? [] : [
@@ -99,11 +122,10 @@ function overlayTurnStepResults(base, input) {
         `Ещё не выполнено: «${remaining}». Результат этой попытки не установлен.`] : [])]),
     do_not_imply: unique([...base.do_not_imply,
       ...(text(remaining) ? ['uncompleted_remaining_intent'] : []),
-      ...(utterances.length > 0 ? [
+      ...(directPlans.some((plan) => plan.direct_result_kind === 'player_utterance') ? [
         'unconfirmed_speech_audience_or_response', 'player_speech_claims_as_truth'] : [])])
   });
 }
-
 export function projectLowerDvinaTraceFireVisible(entries, clarification) {
   const facts = entries.filter(([key]) =>
     key.startsWith(FIRE_SEED_PREFIX))
@@ -116,7 +138,6 @@ export function projectLowerDvinaTraceFireVisible(entries, clarification) {
     changes: new Map(facts.map(({key,change}) => [key,change]))
   };
 }
-
 async function projectWithoutFire({ input, consequence, seedEntries,
   fallback }) {
   const ordinaryDetails = ordinarySceneDetails(seedEntries);
@@ -163,9 +184,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
     visible_scene: 'Заявленное действие завершено.',
     visible_changes: projectDirectSeedChanges({ input,
       directSeedKeys: directSeeds.map(([key]) => key) }),
-    sensory_details: [],
-    visible_npc: [],
-    visible_objects: [],
+    sensory_details: [], visible_npc: [], visible_objects: [],
     known_context: [
       ...(Number.isFinite(body.health) ? [`health:${body.health}`] : []),
       ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
@@ -184,12 +203,10 @@ async function projectWithoutFire({ input, consequence, seedEntries,
     ]
   }), ordinaryPresence);
 }
-
 function currentBody(input) {
   return input.body_update?.state_after ?? input.retrieved_state?.body_state
     ?? {};
 }
-
 function ordinarySceneDetails(entries) {
   const seeds = entries.filter(([key]) => key === 'ordinary_scene_seed');
   if (seeds.length === 0) return [];
@@ -204,19 +221,19 @@ function ordinarySceneDetails(entries) {
   }
   return details;
 }
-
 function overlayOrdinaryScene(base, details) {
   if (details.length === 0) return base;
-  return deepFreeze({ ...structuredClone(base), sensory_details:
+  return deepFreeze({ ...structuredClone(base),
+    visible_changes: unique([...base.visible_changes, ...details]), sensory_details:
     unique([...base.sensory_details, ...details]) });
 }
-
 function ordinaryPresenceResolution(entries) {
   const seeds = entries.filter(([key]) => key === 'ordinary_presence_seed');
   if (seeds.length === 0) return null;
   if (seeds.length !== 1) ownerFail(
     'TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
   const value = seeds[0][1];
+  if (value?.resolution === 'materialized') { materializedOrdinaryPresenceChange(value); return value; }
   if (!plain(value) || value.kind !== 'ordinary_presence_seed'
       || Object.keys(value).length !== 3
       || typeof value.query !== 'string' || !value.query.trim()
@@ -225,17 +242,17 @@ function ordinaryPresenceResolution(entries) {
   }
   return value;
 }
-
 function overlayOrdinaryPresence(base, presence) {
   if (presence == null) return base;
   const { resolution, query } = presence;
-  const field = resolution === 'absent' ? 'visible_changes' : 'uncertainties';
+  const positive = resolution === 'materialized';
+  const field = positive || resolution === 'absent' ? 'visible_changes' : 'uncertainties';
+  const change = positive ? materializedOrdinaryPresenceChange(presence) : `${ORDINARY_PRESENCE_CHANGES[resolution]}: «${query}».`;
   return deepFreeze({ ...structuredClone(base), [field]: unique([
-    ...base[field], `${ORDINARY_PRESENCE_CHANGES[resolution]}: «${query}».`
+    ...(positive && !base[field].includes(change) ? [change, ...base[field]] : [...base[field], change])
   ]), do_not_imply: unique([...base.do_not_imply,
     'discovery_query_as_existence_ownership_or_executed_action']) });
 }
-
 function overlayFireVisible(base, fireVisible) {
   return deepFreeze({
     ...structuredClone(base),
@@ -247,34 +264,24 @@ function overlayFireVisible(base, fireVisible) {
     ])
   });
 }
-
 function directSeedKeys(entries) {
   return entries.filter(([key, value]) =>
-    key.startsWith('turn_step_')
+    (key.startsWith('turn_step_') || key === 'ordinary_presence_seed' && value?.resolution === 'materialized')
       && !key.startsWith(FIRE_SEED_PREFIX)
       && plain(value)).map(([key]) => key);
 }
-
 function hasVisibleDomainProjection(consequence) {
   return Array.isArray(consequence?.observations)
     || consequence?.combat_kind != null
     || Object.keys(consequence ?? {}).some((key) =>
       /^phase\d+_kind$/u.test(key) && consequence[key] != null);
 }
-
-function stepIndex(key) {
-  return Number(key.slice(FIRE_SEED_PREFIX.length));
-}
-
-function unique(values) {
-  return [...new Set(values)];
-}
-
+function stepIndex(key) { return Number(key.slice(FIRE_SEED_PREFIX.length)); }
+function unique(values) { return [...new Set(values)]; }
 function text(value) {
   return typeof value === 'string' && value.length > 0
     && value.trim() === value;
 }
-
 function projectSeed([key,value]) {
   const keys = ['schema','process_kind','action','outcome','status'];
   const scene = SCENES[`${value?.action}:${value?.outcome}:${value?.status}`];

@@ -63,7 +63,7 @@ test('ordinary material prerequisite has an explicit continuation mapping', asyn
     onPrompt: (value) => { prompt = value; }
   })(input);
   assert.match(prompt,
-    /"ordinary_material_prerequisite"[\s\S]*"query":"<name only the needed ordinary referent, material, or physically connected group>"[\s\S]*"continuation":\{"remaining_intent":"<complete unexecuted acquisition, relocation, transformation, handling, and use intent>"/u);
+    /Mapping: ordinary_material_prerequisite[\s\S]*"query":"<name only the needed ordinary referent, material, or physically connected group>"[\s\S]*"continuation":\{"remaining_intent":"<complete unexecuted acquisition, relocation, transformation, handling, and use intent>"/u);
   assert.match(prompt,
     /Without a matching ambient_ordinary_capability or semantically matching actionable item entity_ref[\s\S]*take\/use\/transform[\s\S]*sensory-only[\s\S]*not an actionable item ref[\s\S]*use ordinary_material_prerequisite[\s\S]*complete unexecuted physical intent[\s\S]*Discovery only reveals or materializes[\s\S]*action words copied into its query never execute/iu);
   assert.match(prompt,
@@ -90,7 +90,7 @@ test('action production prompt matches the active qualitative DTO', async () => 
   let prompt;
   await modelFor(input, null, { onPrompt: (value) => { prompt = value; } })(input);
   assert.match(prompt,
-    /"action_production_preserve_source"[\s\S]*"use_kind":"other"[\s\S]*"result_descriptor":\{"display_name":null,"physical_description":"<visible physical result on preserved item>","qualitative_facts":\["<visible qualitative physical fact>"\],"removed_physical_fact_refs":\[\],"inscription_text":null,"physical_form":"<one allowed physical form or null>","source_fact_delta":null\}/u);
+    /Mapping: action_production_preserve_source[\s\S]*"use_kind":"other"[\s\S]*"result_descriptor":\{"display_name":null,"physical_description":"<visible physical result on preserved item>","qualitative_facts":\["<visible qualitative physical fact>"\],"removed_physical_fact_refs":\[\],"inscription_text":null,"physical_form":"<one allowed physical form or null>","source_fact_delta":null\}/u);
   assert.match(prompt,
     /action_production contains exactly source_refs, tool_refs, requested_output_count, identity_mode, origin, result_class, material_extent, result_descriptor, and output_class/u);
   assert.doesNotMatch(prompt, /request_item_use kind other|output_facts|output_physical_form|fact_removals|independent_outputs":\[\]|preserve_source":true/u);
@@ -238,7 +238,7 @@ test('generic request skips instrumented offer', async () => {
     reasonCode: 'active_conversation', onPrompt: (value) => { prompt = value; }
   });
   assert.deepEqual((await model(input)).operations, [requestInteraction]);
-  const contrast = prompt.match(/Active conversation contrast: ([\s\S]*?) Use these mappings/u)[1];
+  const contrast = prompt.match(/Active conversation contrast: ([\s\S]*?)\s+Mapping:/u)[1];
   assert.match(contrast, /"operation_choice":"domain_operation_2_emit_interaction_request"/u);
   assert.doesNotMatch(contrast, /domain_operation_1_emit_interaction_offer/u);
 });

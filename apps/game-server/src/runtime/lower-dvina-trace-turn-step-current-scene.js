@@ -1,21 +1,17 @@
+import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
-import { projectLowerDvinaTracePlayerSafeState } from
-  './lower-dvina-trace-player-safe-state.js';
+import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
 import { projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
-import { deepFreeze, plain } from
-  './lower-dvina-trace-turn-step-runtime-common.js';
+import { deepFreeze, plain } from './lower-dvina-trace-turn-step-runtime-common.js';
 import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
 import { lowerDvinaTraceDirectResultChanges,
   lowerDvinaTraceCarriedItemObservations,
   lowerDvinaTraceVisibleSceneItems,
   uniqueLowerDvinaTraceVisibleObjects } from
   './lower-dvina-trace-visible-scene-items.js';
-import { enrichLowerDvinaTraceVisibleNpcCues } from
-  './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
-export { enrichLowerDvinaTraceVisibleNpcCues } from
-  './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
-
+import { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
+export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
   'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
 export function withLowerDvinaTraceCurrentScene({ committedState,
@@ -119,15 +115,7 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
     visible_changes: unique([
       ...current.visible_changes,
       ...projectDirectSeedChanges({ input, directSeedKeys }),
-      ...directResultChanges,
-      ...(outcomeConstraints.includes('unconfirmed_attempt_success')
-        ? input.mode_resolution.decision_trace.step_traces
-          .filter(({ approved_plan: plan }) => plan?.resolution === 'direct'
-            && plan.goal_result === 'not_achieved')
-          .map(({ approved_plan: plan }) =>
-            text(plan.interpretation?.player_goal)
-              ? `Не удалось достичь цели «${plan.interpretation.player_goal}».`
-              : 'Цель попытки не достигнута.') : [])
+      ...directResultChanges
     ]),
     known_context: unique([
       ...current.known_context,
@@ -151,17 +139,46 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
     ])
   });
 }
-
 function playerSafeSceneItems(state) {
   return lowerDvinaTraceCarriedItemObservations(state?.items,
     state?.current_visible_context?.visible_objects);
 }
-export function projectDirectSeedChanges({ input, directSeedKeys }) {
+export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = null }) {
   const seed = input?.consequence?.visible_seed ?? {};
-  return directSeedKeys.flatMap((key) => directSeedChange(seed[key]))
-    .filter(Boolean);
+  const values = directSeedKeys.map((key) => seed[key]);
+  const durations = values.filter((value) => value?.kind === 'semantic_activity'
+    && value.discovery_kind == null && value.discovery_result == null
+    && Number.isSafeInteger(Number(value.duration_minutes)) && Number(value.duration_minutes) > 0);
+  const duration = durations.reduce((total, entry) => total + Number(entry.duration_minutes), 0);
+  const speech = appliedPlan?.resolution === 'direct' && appliedPlan.direct_result_kind === 'player_utterance'
+    ? `Вы произнесли: «${appliedPlan.utterance.utterance_text}»` : null;
+  const attempts = values.filter(value => value?.kind === 'transient_item_use'
+    && Object.keys(value).length === 2 && text(value.description));
+  const bound = appliedPlan != null && duration > 0 && (speech != null || attempts.length === 1);
+  let emittedDuration = false;
+  const changes = values.flatMap((value) => {
+    if (bound && value === attempts[0]) return [];
+    if (!durations.includes(value)) return directSeedChange(value);
+    if (emittedDuration) return [];
+    emittedDuration = true;
+    if (bound) return speech != null ? `${speech}; этот шаг занял ${duration} ${minuteWord(duration, 'минуту')}.`
+      : `Вы в течение ${duration} ${minuteWord(duration, 'минуты', 'минут')} выполняли попытку: «${attempts[0].description}». Результат наблюдения не установлен.`;
+    return directSeedChange({ ...value, duration_minutes: duration });
+  }).filter(Boolean);
+  return speech != null && !bound ? [speech, ...changes] : changes;
+}
+export function materializedOrdinaryPresenceChange(value) {
+  if (!plain(value) || value.kind !== 'ordinary_presence_seed' || value.resolution !== 'materialized'
+      || Object.keys(value).length !== 4 || typeof value.query !== 'string' || !value.query.trim()
+      || typeof value.display_name !== 'string' || !value.display_name.trim()) {
+    ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
+  }
+  return `Обнаружено: «${value.display_name}».`;
 }
 function directSeedChange(value) {
+  if (value?.kind === 'transient_item_use' && Object.keys(value).length === 2 && text(value.description))
+    return `Вы выполнили попытку: «${value.description}». Результат наблюдения не установлен.`;
+  if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value);
   if (value?.kind === 'existing_item_inspection') {
     return existingItemInspectionVisibleResult(value).changes;
   }
@@ -169,8 +186,8 @@ function directSeedChange(value) {
     const duration = Number(value.duration_minutes);
     if (!Number.isSafeInteger(duration) || duration <= 0) return null;
     const elapsed = value.discovery_kind === 'search'
-      ? `Поиск занял ${duration} ${minuteWord(duration)}.`
-      : `Прошло ${duration} ${minuteWord(duration)}.`;
+      ? `Поиск занял ${duration} ${minuteWord(duration, 'минуту')}.`
+      : `${minuteWord(duration) === 'минута' ? 'Прошла' : 'Прошло'} ${duration} ${minuteWord(duration)}.`;
     const result = value.discovery_result;
     if (result == null) return elapsed;
     if (value.discovery_kind !== 'search' || !plain(result)
@@ -209,11 +226,11 @@ function directSeedChange(value) {
   }
   failCurrentScene();
 }
-function minuteWord(value) {
+function minuteWord(value, singular = 'минута', paucal = 'минуты') {
   const mod100 = value % 100;
   if (mod100 >= 11 && mod100 <= 14) return 'минут';
-  if (value % 10 === 1) return 'минута';
-  if (value % 10 >= 2 && value % 10 <= 4) return 'минуты';
+  if (value % 10 === 1) return singular;
+  if (value % 10 >= 2 && value % 10 <= 4) return paucal;
   return 'минут';
 }
 function sentence(value) {
@@ -250,7 +267,6 @@ function validCurrentScene(value) {
     && validateVisibleContext(value).ok
     && ARRAY_FIELDS.every((field) => Array.isArray(value[field]));
 }
-
 function visibleNpc(npc, position, visibleLabels) {
   const entityId = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
   const prior = visibleLabels?.get(entityId);
@@ -264,7 +280,6 @@ function visibleNpc(npc, position, visibleLabels) {
     recognition: prior?.recognition ?? 'recognized'
   };
 }
-
 function samePositionScope(npc, position) {
   const scopes = [['location_ref', 'location_ref'], ['anchor_id', 'g5_anchor_id'],
     ['g5_anchor_id', 'g5_anchor_id'], ['zone_ref', 'zone_ref']]
@@ -273,10 +288,7 @@ function samePositionScope(npc, position) {
   return scopes.length > 0 && scopes.every(([npcKey, positionKey]) =>
     npc[npcKey] === position?.[positionKey]);
 }
-
-function text(value) {
-  return typeof value === 'string' && value.length > 0;
-}
+function text(value) { return typeof value === 'string' && value.length > 0; }
 
 function failCurrentScene() {
   throw Object.assign(new Error(
@@ -284,6 +296,4 @@ function failCurrentScene() {
   { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID', status: 409 });
 }
 
-function unique(values) {
-  return [...new Set(values)];
-}
+function unique(values) { return [...new Set(values)]; }

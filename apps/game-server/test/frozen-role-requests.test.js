@@ -1,3 +1,4 @@
+import { reviewedNarration } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -49,20 +50,14 @@ test('frozen narration auditor prompts retain both validator-valid forms', async
   for (const fixture of corpus.fixtures.filter(({ role_id }) =>
     role_id === 'gameplay_narrator_auditor')) {
     const prompt = fixture.messages[0].content;
-    assert.equal(prompt.includes('"pass":true|false,"concerns":[],"evidence":[]'), false);
-    assert.equal(prompt.includes('{"pass":true,"concerns":[],"evidence":["<whole-scene literary quality and factual grounding>"]}'), true);
-    assert.match(prompt, /"kind":"<one allowed concern kind>"/u);
-    assert.match(prompt, /unsupported_attempt, unsupported_success, unsupported_object_use, unsupported_result, unsupported_sensory, unsupported_event, unsupported_world_state, unsupported_npc_state/u);
-    assert.match(prompt, /action_intent_context establishes only the submitted intention/u);
-    assert.match(prompt, /It never proves a performed or ongoing attempt, speech, object use, success, result, or world\/NPC state change/u);
-    assert.match(prompt, /faithful natural paraphrase of visible_context is supported/u);
-    assert.match(prompt, /do not prove that nobody or nothing is present/u);
-    assert.match(prompt, /does not support an unstated sound, smell, temperature, bodily sensation, history, or recent use/u);
-    assert.match(prompt, /Tools or objects named only there remain intent-only/u);
-    assert.match(prompt, /never add an unstated causal bridge or mechanism/u);
-    assert.match(prompt, /Plausibility is not evidence\./u);
-    assert.match(prompt, /If any segment has an unsupported claim or technical_presentation, pass must be false\./u);
-    assert.match(prompt, /technical_presentation/u);
+    assert.equal(prompt.includes('"artistic_verdict":null,"technical_verdict":null,"pass":false'), true);
+    assert.match(prompt, /never angle-bracket placeholders/u);
+    assert.match(prompt, /reviewed_segments must contain each canonical segment choice exactly once/u);
+    assert.match(prompt, /failure_checks requires exactly these five keys/u);
+    assert.match(prompt, /arrays of canonical segment choices only, never prose/u);
+    assert.match(prompt, /action_intent supplies intention only/u);
+    assert.match(prompt, /Empty optional arrays are omissions/u);
+    assert.doesNotMatch(prompt, /scene_checks/u);
   }
 });
 
@@ -142,7 +137,7 @@ async function productionMessages(fixture) {
 
 async function narrationMessages(fixture) {
   const target = fixture.role_id;
-  const payload = JSON.parse(fixture.messages.at(-1).content);
+  const payload = fixture.request;
   const request = target === 'gameplay_narrator_format_repair' ? payload.request : {
     version: 1, schema: 'narration_request', request_id: payload.output?.output_id ?? 'narration-eval-1',
     surface: 'turn', visible_context: payload.visible_context ?? payload.request?.visible_context,
@@ -167,12 +162,16 @@ async function narrationMessages(fixture) {
     auditCalls += 1;
     return { output: target === 'gameplay_narrator_auditor' ? fixture.expected_output
       : target === 'gameplay_narrator_semantic_repair' && auditCalls === 1
-        ? { pass: false, concerns: [{ segment_choice: `segment_${
+        ? { pass: false, artistic_verdict: 'pass', technical_verdict: 'pass',
+          ...reviewedNarration(JSON.parse(next.messages[1].content).segments),
+          coverage: {  }, concerns: [{ segment_choice: `s${
           JSON.parse(next.messages[1].content).segments.findIndex(({ segment_id }) =>
             segment_id === payload.concerns[0].segment_id) + 1}`,
           kind: payload.concerns[0].kind, reason: payload.concerns[0].reason }],
         evidence: ['Unsupported sound.'] }
-        : { pass: true, concerns: [], evidence: ['Grounded.'] } };
+        : { pass: true, artistic_verdict: 'pass', technical_verdict: 'pass',
+          ...reviewedNarration(JSON.parse(next.messages[1].content).segments),
+          coverage: {  }, concerns: [], evidence: ['Grounded.'] } };
   } } });
   await narration.run(request);
   if (!call) throw new Error(`narration role was not called: ${target}`);

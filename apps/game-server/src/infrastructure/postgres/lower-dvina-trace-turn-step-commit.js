@@ -45,7 +45,7 @@ import {
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer,
-  turnStepAmbientPortionProfileRef = null
+  turnStepAmbientPortionProfileRef = null, turnStepApprovedOwners = null
 }) {
   const envelope = requireEnvelope(writePlan);
   assertRootInput({ partyId, inputDigest, envelope });
@@ -178,7 +178,7 @@ export async function commitLowerDvinaTraceTurnStep({
   };
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
     partyId, writePlan, state, snapshot: base.snapshot, factual,
-    changeSetId, idemId, turnStepAmbientPortionProfileRef
+    changeSetId, idemId, turnStepAmbientPortionProfileRef, turnStepApprovedOwners
   });
   const pendingScreen = buildLowerDvinaTracePendingScreen({
     state: turnStep.snapshot,

@@ -323,6 +323,10 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     ...(sceneDetails.length === 0 ? {} : { ordinary_scene_seed: {
       kind: 'ordinary_scene_seed', sensory_details: sceneDetails
     } }),
+    ...(item == null || resolution !== 'materialize' ? {} : { ordinary_presence_seed: {
+      kind: 'ordinary_presence_seed', resolution: 'materialized', query: request.operation.query,
+      display_name: item.item_proposal.semantic_descriptor.name
+    } }),
     ...(negativePresenceResolution == null ? {} : { ordinary_presence_seed: {
       kind: 'ordinary_presence_seed', resolution: negativePresenceResolution,
       query: request.operation.query

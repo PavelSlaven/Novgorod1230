@@ -2,7 +2,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-  adaptApprovedOpeningNarration,
   createNarrationService,
   runNarrationFlow,
   validateNarrationFlowResult
@@ -50,7 +49,7 @@ function ports(overrides = {}) {
   return {
     writer: { async generate() { return output(); } },
     formatRepairer: { async repair() { return output(); } },
-    auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] }; } },
+    auditor: { async audit() { return { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['Grounded.'] }; } },
     semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [] }; } },
     ...overrides
   };
@@ -60,6 +59,25 @@ test('approves one generated prose output after deterministic visible-only valid
   const result = await runNarrationFlow(request(), ports());
   assert.equal(result.status, 'approved');
   assert.equal(result.approved_output.prose, 'У ворот неподвижно стоит телега.');
+  assert.equal(validateNarrationFlowResult(result).ok, true);
+});
+
+test('native flow rejects first_game before any model call', async () => {
+  let calls = 0;
+  await assert.rejects(() => runNarrationFlow(request({ surface: 'first_game' }), ports({
+    writer: { async generate() { calls += 1; return output(); } }
+  })), (error) => error.code === 'NARRATION_CONTRACT_INVALID'
+    && error.details.errors.some((message) => message.includes('surface must be turn')));
+  assert.equal(calls, 0);
+});
+
+test('approved result checks final coverage against the exact approved prose segments', async () => {
+  const result = structuredClone(await runNarrationFlow(request(), ports()));
+  result.final_audit.coverage.visible_changes = [{ source_index: 0, segment_ids: ['s1'] }];
+  assert.equal(validateNarrationFlowResult(result).ok, true);
+  result.final_audit.coverage.visible_changes[0].segment_ids = ['s2'];
+  assert.equal(validateNarrationFlowResult(result).ok, false);
+  result.approved_output.prose += ' Рядом начинается дорога.';
   assert.equal(validateNarrationFlowResult(result).ok, true);
 });
 
@@ -151,8 +169,8 @@ test('repairs the coherent prose and re-audits the complete result', async () =>
     auditor: { async audit(input) {
       audits.push(input);
       return audits.length === 1
-        ? { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Creaking is unsupported.' }], evidence: ['Unsupported sound.'] }
-        : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] };
+        ? { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false, concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Creaking is unsupported.' }], evidence: ['Unsupported sound.'] }
+        : { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['Grounded.'] };
     } },
     semanticRepairer: { async repair(input) {
       assert.equal(input.request_id, 'turn:party-1:1');
@@ -179,11 +197,11 @@ test('semantic repair rewrites one coherent paragraph instead of duplicating nea
     auditor: { async audit(input) {
       audits += 1;
       return audits === 1
-        ? { version: 1, schema: 'narration_audit', pass: false,
+        ? { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'fail', coverage: { visible_changes: [], uncertainties: [] }, pass: false,
             concerns: [{ segment_id: 's1', kind: 'technical_presentation',
               reason: 'Elapsed time is a standalone report.' }],
             evidence: ['Both changes are supported.'] }
-        : { version: 1, schema: 'narration_audit', pass: true,
+        : { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true,
             concerns: [], evidence: ['Grounded.'] };
     } },
     semanticRepairer: { async repair(input) {
@@ -207,10 +225,10 @@ test('semantic repair returns the complete prose with its spacing', async () => 
     auditor: { async audit() {
       audits += 1;
       return audits === 1
-        ? { version: 1, schema: 'narration_audit', pass: false,
+        ? { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false,
           concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Replace.' }],
           evidence: ['Replace.'] }
-        : { version: 1, schema: 'narration_audit', pass: true,
+        : { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true,
           concerns: [], evidence: ['Grounded.'] };
     } },
     semanticRepairer: { async repair() {
@@ -231,10 +249,10 @@ test('semantic repair can delete a wholly unsupported segment', async () => {
     auditor: { async audit() {
       audits += 1;
       return audits === 1
-        ? { version: 1, schema: 'narration_audit', pass: false,
+        ? { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false,
             concerns: [{ segment_id: 's1', kind: 'unsupported_object_use',
               reason: 'Pickup is not confirmed.' }], evidence: ['Time only.'] }
-        : { version: 1, schema: 'narration_audit', pass: true,
+        : { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true,
             concerns: [], evidence: ['Confirmed time.'] };
     } },
     semanticRepairer: { async repair() {
@@ -263,10 +281,10 @@ test('keeps intent-only context separate from confirmed outcome', async () => {
       seen.push(input.action_intent_context);
       assert.deepEqual(input.confirmed_outcome, actionIntent.outcome);
       return seen.length === 1
-        ? { version: 1, schema: 'narration_audit', pass: false,
+        ? { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false,
             concerns: [{ segment_id: 's1', kind: 'unsupported_fact',
               reason: 'Attempt needs intent-only grounding.' }], evidence: ['Attempt.'] }
-        : { version: 1, schema: 'narration_audit', pass: true,
+        : { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true,
             concerns: [], evidence: ['Attempt is grounded by player intent.'] };
     } },
     semanticRepairer: { async repair(input) {
@@ -301,11 +319,11 @@ test('passes confirmed outcome separately to audit and whole-prose repair', asyn
       });
       assert.deepEqual(input.confirmed_outcome, confirmedOutcome);
       return audits === 1
-        ? { version: 1, schema: 'narration_audit', pass: false,
+        ? { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'fail', coverage: { visible_changes: [], uncertainties: [] }, pass: false,
             concerns: [{ segment_id: 's1', kind: 'technical_presentation',
               reason: 'Rewrite as coherent prose.' }],
             evidence: ['Movement is confirmed.'] }
-        : { version: 1, schema: 'narration_audit', pass: true,
+        : { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true,
             concerns: [], evidence: ['Movement is confirmed.'] };
     } },
     semanticRepairer: { async repair(input) {
@@ -330,7 +348,7 @@ test('intent-only context does not ground an unsupported success claim', async (
     auditor: { async audit(input) {
       assert.equal(input.action_intent_context.evidence_scope,
         'intent_only_non_evidence_of_execution_or_success');
-      return { version: 1, schema: 'narration_audit', pass: false,
+      return { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false,
         concerns: [{ segment_id: 's1', kind: 'unsupported_fact',
           reason: 'Success is absent from visible context.' }],
         evidence: ['Intent is not evidence of success.'] };
@@ -354,7 +372,7 @@ test('blocks malformed auditor, invalid repair target, and failed final audit wi
   });
   await t.test('invalid repair target', async () => {
     const result = await runNarrationFlow(request(), ports({
-      auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'hidden_knowledge', reason: 'Hidden fact.' }], evidence: ['Hidden.'] }; } },
+      auditor: { async audit() { return { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false, concerns: [{ segment_id: 's1', kind: 'hidden_knowledge', reason: 'Hidden fact.' }], evidence: ['Hidden.'] }; } },
       semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's2', prose: 'Нет.' }] }; } }
     }));
     assert.equal(result.status, 'blocked');
@@ -362,7 +380,7 @@ test('blocks malformed auditor, invalid repair target, and failed final audit wi
   });
   await t.test('duplicate and missing replacements', async () => {
     const result = await runNarrationFlow(request(), ports({
-      auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Bad.' }], evidence: ['Bad.'] }; } },
+      auditor: { async audit() { return { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false, concerns: [{ segment_id: 's1', kind: 'unsupported_fact', reason: 'Bad.' }], evidence: ['Bad.'] }; } },
       semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's1', prose: 'У ворот стоит телега.' }, { segment_id: 's1', prose: 'Повтор.' }] }; } }
     }));
     assert.equal(result.status, 'blocked');
@@ -371,7 +389,7 @@ test('blocks malformed auditor, invalid repair target, and failed final audit wi
   await t.test('final audit failure', async () => {
     let repairs = 0, audits = 0;
     const result = await runNarrationFlow(request(), ports({
-      auditor: { async audit() { audits += 1; return audits === 1 ? { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'contradiction', reason: 'Bad.' }], evidence: ['Bad.'] } : { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind: 'contradiction', reason: 'Still bad.' }], evidence: ['Still bad.'] }; } },
+      auditor: { async audit() { audits += 1; return audits === 1 ? { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false, concerns: [{ segment_id: 's1', kind: 'contradiction', reason: 'Bad.' }], evidence: ['Bad.'] } : { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false, concerns: [{ segment_id: 's1', kind: 'contradiction', reason: 'Still bad.' }], evidence: ['Still bad.'] }; } },
       semanticRepairer: { async repair() { repairs += 1; return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's1', prose: 'У ворот стоит телега.' }] }; } }
     }));
     assert.equal(result.status, 'blocked');
@@ -391,7 +409,7 @@ test('semantic regression corpus passes player-safe context unchanged to auditor
       writer: { async generate() { return output(prose); } },
       auditor: { async audit(input) {
         assert.equal(input.visible_context.visible_scene, visible_scene);
-        return { version: 1, schema: 'narration_audit', pass: false, concerns: [{ segment_id: 's1', kind, reason: 'Unsupported.' }], evidence: ['Unsupported.'] };
+        return { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: false, concerns: [{ segment_id: 's1', kind, reason: 'Unsupported.' }], evidence: ['Unsupported.'] };
       } },
       semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [{ segment_id: 's1', prose: visible_scene }] }; } }
     }));
@@ -406,40 +424,6 @@ test('semantic regression corpus passes player-safe context unchanged to auditor
   });
 });
 
-
-test('adapts approved new-game Stage 22 and Stage 23 outputs', () => {
-  const result = adaptApprovedOpeningNarration({
-    stage22Result: {
-      version: 1,
-      schema: 'stage22_narrator_prose_result',
-      request_id: 'opening-1',
-      pass: true,
-      visible_context_package_digest: 'sha256:visible',
-      narrator_starting_prose: {
-        version: 1,
-        schema: 'narrator_starting_prose',
-        prose_status: 'drafted',
-        prose: 'Перед воротами начинается дорога.',
-        action_options: [],
-        used_visible_context_refs: [],
-        self_constraints_check: { no_new_world_facts: true }
-      },
-      generation_history: []
-    },
-    stage23Result: {
-      version: 1,
-      schema: 'stage23_narrator_prose_audit_result',
-      request_id: 'opening-1',
-      pass: true,
-      narrator_starting_prose_digest: 'sha256:prose',
-      narrator_prose_audit: { pass: true, evidence: ['Approved.'] },
-      audit_history: [],
-      commit_permission: { can_show_to_player: true, can_write_player_visible_message: true }
-    }
-  });
-  assert.equal(result.surface, 'first_game');
-  assert.equal(result.approved_output.prose, 'Перед воротами начинается дорога.');
-});
 
 test('service wrapper preserves explicit ports and defaults', async () => {
   const service = createNarrationService(ports(), { request: { style_policy: { register: 'literary' } } });

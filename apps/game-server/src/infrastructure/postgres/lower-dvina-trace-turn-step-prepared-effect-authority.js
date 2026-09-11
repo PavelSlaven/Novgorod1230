@@ -3,6 +3,8 @@ import {
   applyApprovedTraceRouteBodyEffect
 } from '../../runtime/lower-dvina-trace-route-body-effects.js';
 import { fail } from './lower-dvina-trace-turn-step-persistence-support.js';
+import { requireActivityOwnerBinding, validateBodyComponentOrder } from
+  './lower-dvina-trace-turn-step-commit-validation.js';
 
 export function validateAuthoritativePreparedRoute({
   route,
@@ -204,4 +206,44 @@ export function preparedEffectFail(reason, cause = null) {
     reason,
     ...(cause == null ? {} : { cause: cause?.code ?? cause?.message })
   });
+}
+
+export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
+  turnStepApprovedOwners }) {
+  const activities = batch?.operations?.filter(({ target }) => target === 'party_events') ?? [];
+  if (activities.length !== ledger.slices.length
+      || !samePreparedValue(ledger.slices[0].time_update.clock_before, state.clock)) {
+    preparedEffectFail('semantic slices must cover every activity from committed time');
+  }
+  let body = state.body_state;
+  for (const [index, slice] of ledger.slices.entries()) {
+    const fragment = activities[index];
+    const activity = fragment.value;
+    const trace = envelope.loop_trace?.step_traces?.find(
+      ({ step_index }) => step_index === slice.step_index);
+    const binding = requireActivityOwnerBinding(activity, { consequence: slice.consequence });
+    const approved = turnStepApprovedOwners?.semanticActivityOwner?.resolve({
+      activity: { owner: 'semantic', duration_class: activity.duration_class,
+        effort: activity.effort }, actor: { body: structuredClone(body) } });
+    if (trace?.applied !== true || activity.step_index !== slice.step_index
+        || activity.activity_id !== slice.operation_ref
+        || activity.profile_ref !== slice.owner_ref
+        || slice.owner_ref !== approved?.profile_ref
+        || activity.duration_minutes !== approved?.duration_minutes
+        || slice.consequence.duration_minutes !== approved?.duration_minutes
+        || !samePreparedValue(binding.profile_pin, approved?.profile_pin)
+        || binding.body_effect_profile_ref !== approved?.body_effect_profile_ref
+        || !samePreparedValue(trace.plan_request?.player_safe_state?.clock,
+          slice.time_update.clock_before)
+        || !samePreparedValue(slice.body_update.state_after, approved?.body_state_after)
+        || (slice.consequence.body_effect_ref ?? null) !== approved?.body_effect_ref
+        || (slice.body_update.applied === true) !== (approved?.body_effect_ref != null)
+        || (slice.body_update.applied === true && index !== ledger.slices.length - 1)) {
+      preparedEffectFail('semantic slice differs from its approved owner and current trace');
+    }
+    validateBodyComponentOrder({ ...batch, operations: [fragment] }, {
+      consequence: slice.consequence, body_update: slice.body_update
+    }, { ...state, body_state: body });
+    body = slice.body_update.state_after;
+  }
 }

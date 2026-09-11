@@ -1,55 +1,57 @@
 import { createNarrationService } from '@rus/narration';
 import { serverError } from '../errors.js';
 
-const OBSERVATION_SCOPE_BOUNDARY = 'A supplied scene is a partial observation, not an exhaustive inventory. Do not add exclusivity or persistence qualifiers unless explicitly supplied. Unsupported exclusivity or persistence MUST FAIL the audit as unsupported_world_state; semantic repair must remove the qualifier while preserving the supported observation.';
+const PROSE_RULES = 'Convey every required_current_beat change and uncertainty once, in causal order; overlapping meanings may share one statement. Failed/incomplete attempts are mandatory results, not optional context. A committed transient attempt in required changes means its physical handling/contact happened for the supplied applied duration; only its observation/discovery outcome or new fact remains unestablished. Render that performed motion concretely in the scene and leave only the result open, without reciting attempt/status metadata. Every unresolved-result proposition inside a required change must remain explicitly unknown in prose, even when required_current_beat.uncertainties is empty; do not omit it or convert it into failure or success. Do not turn an applied attempt into an unstarted action or require a continue/change choice when no unexecuted continuation is supplied. goal_result pending does not mean an applied operation was unexecuted. Preserve confirmed speech verbatim with its supplied speaker; render it naturally as speech in the scene, not a typed speech-event report. Describe discovery through the supported perception rather than repeating discovery-status wording. Style rules apply only to the narrative voice. Convey an explicitly unexecuted continuation as unstarted and its result unknown, leaving an open next choice to continue or change course; do not recite planning metadata or explain the continuation mechanism; an unresolved question states only what remains unknown, never proves an attempt. With a required beat, optional_support contains only visible_scene and supplied sensory_details. Select only details relevant to the current physical beat to compose the scene; they are optional support, not new changes or an obligation to repeat every fact. Dumping unrelated or all unchanged details fails static_context_dump. Do not add memories, inventory, NPC or body facts absent from required changes. With no required beat, descriptive support is the scene result: select material for a coherent perception, never recite a checklist. Infer no hearing, answer, lack of answer, silence, reaction, continued action or success from speech/intention alone. Source wording about an attempt or a step is evidence wording, not player-facing prose: render natural dialogue, concrete action and the open result without copying service wording. A speech-step duration measures that step, not continuous speaking; do not stretch the utterance over the whole interval. Each required change groups the result and elapsed/activity facts of one applied step; this grouping explicitly supports that step’s exact duration, not overlap with other steps. A grammatically integrated explicit duration is valid and must not fail merely for being explicit. Subject plus exact duration plus supported physical action is integrated duration, including in a short sparse sequence; do not flag elapsed_as_service_report solely for that construction or its brevity. With other current facts, exact elapsed time belongs in that same beat, never a standalone service line or a mechanically attached time report with an invented temporal/aspectual relation. When elapsed time is the only change, a short scene-bearing literary transition is valid, never a bare datum or an invented claim that the actor waits, stands, watches, remains, or that the scene persists unchanged. Write connected, restrained literary Russian through the character’s perception in second person (вы). Sparse grounded material calls for concise prose, not invented connective tissue. A connective alone does not make supported clauses a literary scene. A chain of clauses without scene/action composition, linked mainly by bare or metadata time announcements, is a report/checklist even when all facts are grounded; shortness or explicit duration alone is not this defect. Integrate duration into the supported physical beat and compose its causal transition to the next beat; changing a time connective or joining sentences alone does not repair composition. Do not invent ambience, reactions or concurrent action to make prose flow. Avoid field/ID/stat ledgers, system diagnostics, modern slang, pseudo-archaic decoration and theatrical padding. When perception itself succeeded and the scene is its result, convey the scene without repeating how or why the player looked.';
 
-const UNRESOLVED_QUESTION_BOUNDARY = 'A current unresolved question explicitly supplied in visible_context.uncertainties is material: convey its subject and uncertainty naturally once. A quoted query supplies only the question, never evidence that its objects, ownership, history, or physical actions exist or occurred. Preserve the supplied certainty of each factual proposition, including those embedded in relative clauses, participles, or noun phrases. A hedge on one proposition does not by itself qualify another. A quoted query alone never proves that a search or another action occurred; a separate confirmed visible_change may prove the attempt. When a visible_change and an uncertainty describe the same unresolved outcome, express their shared meaning once; one natural in-scene statement may satisfy both obligations. Express what remains unknown to the character, never a diagnostic assessment of what observations, evidence, or a result establishes. Omitting this material uncertainty MUST FAIL as missing_visible_change.';
+const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve each proposition’s certainty, including subordinate clauses; plausible detail is not evidence. Ground every adjective, sensation, history, temporal/aspectual relation and causal link independently; overlap, duration and persistence between facts require explicit supporting basis. Result and elapsed/activity facts grouped in the same required change explicitly bind that duration to that applied step; this does not authorize overlap, persistence or duration of another step. Exact elapsed time must modify that same applied action/result, never the duration or persistence of static sky, weather, sound or other optional sensory support. Sensory support anchors action or transition; it never fills elapsed time. Distinguish action duration from delay before action: after an interval followed by an ongoing/beginning action cannot represent an action performed for that interval. Do not move an applied duration into a preceding wait or postpone the performed action. A scene label supplies location, not ambience, silence or subjective tempo. A feature never licenses unstated sound, smell, bodily contact, temperature, discomfort, recent use, direction, destination, route or shelter. A body state supports only its stated condition, location, severity and symptoms, never an added diagnosis or possible symptom asserted as fact; express meaning without internal identifiers. Empty optional arrays are omissions, not absence, emptiness or silence. A partial observation proves neither exclusivity nor persistence. State only supplied uncertainty; a quoted query proves no objects, ownership, history or action. Entity labels identify references, not traits. Keep each NPC’s visible_status and observable_cues tied to that entity_ref; no swapped/grouped traits, invented actions, motives, moods or reactions. Select relevant supplied outward cues without inventorying them. An item placement change proves only placement, not actor movement, manipulation, transformation, object use or purpose. Actor movement requires confirmed_outcome.movement_committed=true. Missing/false outcome fields are silent constraints, never prose material. A required committed transient-attempt change is an independent source of performed physical handling/contact; it is not merely an action_intent or a quoted discovery query. Unestablished observation result does not negate performed motion. action_intent supplies intention only: tools and objects named there are not facts; neither progressive nor attempt wording makes a remainder performed. Constraints apply throughout; add no causal bridge, hidden fact, fallback or other role.';
 
-const ATTEMPT_OUTCOME_BOUNDARY = 'An explicit failed or incomplete attempt result in visible_context.visible_changes is material and MUST be conveyed naturally in prose. It is not a missing or false outcome field, an elapsed-only result, or an optional scene detail. This takes precedence over scene-only perception wording. Do not invent why it failed, what the player sensed, or which physical action occurred. Omitting this supplied result MUST FAIL the audit as missing_visible_change; paraphrasing it without game-state jargon is required, not technical_presentation.';
-
-const PLAYER_SAFE_PROSE_BOUNDARY = 'Narrate the player in second-person Russian (вы), never as first-person я. Empty visible_npc or visible_objects arrays are omissions: do not narrate them as absence, absence-from-view, silence, emptiness, or speculative alternatives. State uncertainty only when it is explicitly supplied in visible_context.uncertainties. Entity display_label values are references, not sufficient descriptions. visible_npc[].visible_status is a current player-safe observation tied only to that same entity_ref: when it identifies the speaker or acting NPC, never transfer that action or utterance to another visible NPC. When a visible NPC has observable_cues, naturally weave the most salient supplied appearance, clothing, equipment, posture, gaze, expression, outward condition, and current action into the scene; do not inventory fields or repeat enum tokens. Compare every rendered NPC trait to that same entity\'s observable_cues; never change its color, age, build, hair, face, clothing, equipment, posture, or condition. Missing cues are unknown and must be omitted, not narrated as absent. Never turn an internal mood or motive into fact; use only supplied outward cues and perceptual uncertainty. Audit and ground every adjective, adverb, sensory quality, temporal relation, history, and causal link independently; a visible feature does not authorize stereotypical color, motion, sound, mood, or condition. A clue or physical feature does not authorize an unstated direction, destination, route, nearby shelter, or other spatial relation. Player wording establishes only a submitted intention, not a performed or ongoing attempt. An action or speech requires separate confirmation in visible_context or context.outcome. Explicit remaining_intent is unperformed; neither progressive wording nor an attempt verb may portray that remainder as occurring. For a turn result, open on a supplied concrete perception or confirmed material change, never on a generic restatement such as «Вы оглядываетесь» or «Прошло время». Convey exact elapsed time through the scene. A brief standalone temporal transition is allowed when it contributes to the passage; a service-style time report is not. When elapsed time is the only supplied change, use only supplied current detail and do not claim any change of scene, body, position, or action. In that elapsed-only case, do not say that the player still stands, waits, watches, looks, or remains somewhere: no player action or position was confirmed. Never make elapsed time a bare system-style report. Convey an explicitly supplied failed or incomplete attempt outcome once; do not confuse it with repeating the player goal. Every distinct material perceived change in visible_context.visible_changes is mandatory and must be conveyed once; minor technical deltas need no separate sentence. Select only relevant supporting sensory_details, known_context, people, objects, and routes. When supplied entries overlap semantically, one natural statement may cover the shared meaning without repetition. Group related mandatory facts into coherent scene beats around the current result and its consequence. Choose the composition focus from the supplied situation; several material events may share it. Opening may begin with identity or history. Preserve the meaning of an unfinished intention without copying a raw action list. Do not impose a fixed sensory checklist. Style restrictions apply to the narrative voice, never to exact committed speech: preserve that speech verbatim with its supplied speaker. Connections may be spatial, observational, or temporal, but never add causation. Do not turn source entries into a field-by-field or clause-by-clause ledger.';
-const CONFIRMED_OUTCOME_PROSE_BOUNDARY = PLAYER_SAFE_PROSE_BOUNDARY.replace(
-  'visible_context or context.outcome',
-  'visible_context or confirmed_outcome');
-const ELAPSED_ONLY_PERSISTENCE_BOUNDARY = 'When exact elapsed time is the only visible change, any claim that the scene or its objects stayed unchanged, remained in place, or continued an earlier state is unsupported and MUST FAIL.';
-const NPC_OBSERVATION_BOUNDARY = 'A static identity or equipment cue never authorizes an NPC action. Do not invent touching, stroking, nodding, looking, glancing, reacting, speaking, or silence unless that exact current observable action is supplied for that entity; an auditor MUST FAIL it as unsupported_npc_state. When several NPCs share a display label, never group differing traits unless every stated trait applies to every grouped NPC; otherwise keep each supplied trait tied unambiguously to its own entity, and an ambiguous or swapped group trait MUST FAIL as unsupported_npc_state.';
-const PERCEPTION_RESULT_RULE = 'When perception itself is the action and the supplied scene is its successful result, with no explicit failed or incomplete outcome, write the scene only: do not repeat how or why the player looked, and do not add that nothing else was noticed unless an explicit uncertainty says so. Never turn a visible surface or material into bodily contact, temperature, discomfort, or another sensation unless that exact bodily effect is supplied.';
-const PERCEPTION_AUDIT_RULE = 'Before PASS, first assess output.prose as a whole: individually supported segments still fail technical_presentation when together they form a source-entry ledger instead of a coherent scene. Then check every factual claim in its segment: (1) every bodily contact, temperature, discomfort, or sensation requires an exact supplied bodily fact; a wet surface alone is insufficient; (2) every claim that nothing, nobody, or nothing new is perceived requires an explicit supplied uncertainty and never follows from an empty array; (3) repeating how or why the player looked is technical_presentation when the supplied scene itself is the result; (4) compare every rendered NPC trait to that same entity\'s observable_cues, and treat any conflicting color, age, build, hair, face, clothing, equipment, posture, or condition as unsupported_npc_state; (5) when visible_status ties speech or action to one entity_ref, attributing it to another NPC MUST FAIL as unsupported_npc_state. Any violation MUST FAIL.';
-
-function requireRoleRunner(roleRunner) {
-  if (typeof roleRunner?.run !== 'function') throw serverError(
-    'TRACE_PHASE_2_DEPENDENCY_MISSING',
-    'Configured LLM role runner is required.', { status: 503 });
-}
+const WRITER_SHAPE = 'Return only {"prose":"<complete Russian prose>","action_options":[],"used_references":[]}. The server assembles version, schema, output_id and neutral self_check={}; do not generate self-check flags.';
 
 export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
-  requireRoleRunner(roleRunner);
+  if (typeof roleRunner?.run !== 'function') throw serverError(
+    'TRACE_PHASE_2_DEPENDENCY_MISSING', 'Configured LLM role runner is required.', { status: 503 });
   return createNarrationService({
-    writer: { generate: (request) => runNarrationRole(roleRunner,
-      'gameplay_narrator',
-      `${PERCEPTION_RESULT_RULE} Return only {"prose":"<visible-only prose in Russian>","action_options":[],"used_references":[],"self_check":{}}. The server assembles version, schema, and output_id. Write connected, restrained literary Russian through the character's perception, not a report of game state. Turn the supplied facts into one concrete scene: convey each distinct mandatory meaning in visible_context.visible_changes and select relevant supporting context. Never expose field names, IDs, numeric body values, route-system terms, current-location language, system-style object-absence diagnostics, or other implementation vocabulary. Preserve the supplied meaning without retaining mechanical or diagnostic source wording, without adding detail, causation, or certainty. Make the confirmed result of the current action clear. context.outcome contains only confirmed positive scene facts: movement wording is allowed only when movement_committed is true. A visible change that an item moved confirms only that item's placement change; it never confirms actor movement, manipulation, transformation, object use, or the intended purpose. Missing or false outcome fields are silent constraints, never material for prose. When visible_context.visible_changes is nonempty, convey each distinct mandatory meaning, integrating them into the scene rather than listing them. Use only relevant player-safe known_context, visible people, objects, sensory details, and routes; do not dump machine-like health or timestamp entries. Preserve uncertainties and do_not_imply. Do not infer a causal bridge or exact success mechanism from result facts. Supplied current bodily condition states describe only their stated symptoms, status, location and severity; do not invent a diagnosis or additional symptoms. Translate their semantic meaning into natural Russian rather than exposing state identifiers. Every factual claim must remain inside visible_context; an actionable object may be named as existing only when it is already in the approved visible projection. Absence from visible_npc or visible_objects does not prove emptiness, silence, or absence from the wider world. A visible physical feature does not by itself authorize its sound, smell, temperature, bodily effect, history, or recent use. Use no modern slang, pseudo-medieval archaisms, theatrical padding, or encyclopedic explanation.`,
-      request) },
-    formatRepairer: { repair: (request) => runNarrationRole(roleRunner,
-      'gameplay_narrator_format_repair',
-      'Return only one repaired semantic JSON object: {"prose":"<visible-only prose in Russian>","action_options":[],"used_references":[],"self_check":{}}. The server assembles version, schema, and output_id. Repair JSON shape while keeping connected, restrained literary Russian rather than game-state terminology. request.context.outcome permits movement wording only when movement_committed is true; absent fields are silent constraints. Convey each distinct mandatory meaning in visible_context.visible_changes naturally, preserve relevant player-safe context and uncertainties, omit machine-like values and unrelated context, and ground every factual claim exclusively in request.visible_context.',
-      request) },
-    auditor: { audit: (request) => runNarrationRole(roleRunner,
-      'gameplay_narrator_auditor', narrationAuditInstruction(request), request) },
-    semanticRepairer: { repair: (request) => runNarrationRole(roleRunner,
-      'gameplay_narrator_semantic_repair',
-      'Return only {"replacements":[{"prose":"<complete repaired prose in Russian>"}]} with exactly one replacement. If a concern identifies a service-style time report, rebuild the passage naturally around the supplied scene and exact duration. A brief standalone temporal transition is allowed; sentence shape alone is not a defect. When elapsed time is the only visible change, never invent an action or continuity by saying that the player still stands, waits, watches, looks, or remains somewhere. Literary connections add no new causation. The server assembles version, schema, and immutable segment_id. Rewrite the entire supplied prose as one coherent complete prose passage using the concerns, player-safe visible_context, confirmed_outcome, and style policy; retain or add natural paragraph breaks when useful. Do not patch one sentence while leaving duplication beside it. confirmed_outcome contains the code-confirmed outcome: movement wording is allowed only when movement_committed is true; missing or false fields are silent constraints. Remove every unsupported claim named by the concerns. visible_context.visible_changes are confirmed player-safe facts and sufficient grounding; the complete replacement must naturally convey each distinct mandatory meaning in visible_context.visible_changes once. For missing_visible_change, weave the exact omitted change into the passage. For technical_presentation, rebuild the whole passage around the scene, result and consequence rather than substituting individual words; preserve only supported meaning and rewrite it as connected, restrained literary Russian without field language, IDs, numeric-stat dumps, system reports, modern slang, or pseudo-archaic decoration. A faithful natural paraphrase of visible_context is allowed, but it must not add detail, causation, exact object use, success, or repeated facts. Empty visible_npc or visible_objects arrays do not prove that nobody or nothing is present, nor do they support silence or emptiness. A visible physical feature does not support an unstated sound, smell, temperature, bodily sensation, history, or recent use. If no supported meaning remains, return an empty prose string; never fill it with an unrelated scene fact. Do not use player intent as evidence, hidden state, infer facts, add a fallback, or call any other role.',
-      request) }
+    writer: { generate: (request) => runNarrationRole(roleRunner, 'gameplay_narrator',
+      `${WRITER_SHAPE} ${PROSE_RULES} ${GROUNDING_RULES}`, request) },
+    formatRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_format_repair',
+      `${WRITER_SHAPE} Repair the invalid JSON shape against validation_errors, retaining supported meaning. ${PROSE_RULES} ${GROUNDING_RULES}`, request) },
+    auditor: { audit: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_auditor',
+      narrationAuditInstruction(request), request) },
+    semanticRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_semantic_repair',
+      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
   });
 }
 
+function narrationWire(request) {
+  const { request: original, ...outer } = request;
+  const { visible_context, style_policy = {}, context, action_intent_context,
+    ...rest } = original ? { ...original, ...outer } : outer;
+  const { visible_changes, uncertainties, do_not_imply, allowed_tensions, ...support } = visible_context;
+  const { outcome, ...otherContext } = context ?? {};
+  return {
+    ...rest,
+    required_current_beat: {
+      changes: visible_changes.map((text, index) => ({ ref: `visible_change_${index + 1}`, text })),
+      uncertainties: uncertainties.map((text, index) => ({
+        ref: `uncertainty_${index + 1}`, text, status: 'unperformed_result_unknown'
+      }))
+    },
+    optional_support: visible_changes.length || uncertainties.length
+      ? Object.fromEntries(['visible_scene', 'sensory_details'].filter(key => Object.hasOwn(support, key))
+        .map(key => [key, support[key]]))
+      : support,
+    constraints: { do_not_imply, allowed_tensions, style_policy },
+    ...(outcome === undefined ? {} : { confirmed_outcome: outcome }),
+    ...(action_intent_context === undefined ? {} : { action_intent: action_intent_context }),
+    ...(Object.keys(otherContext).length ? { context: otherContext } : {})
+  };
+}
+
 async function runNarrationRole(roleRunner, roleId, instruction, request) {
-  const proseBoundary = ['gameplay_narrator_auditor',
-    'gameplay_narrator_semantic_repair'].includes(roleId)
-    ? CONFIRMED_OUTCOME_PROSE_BOUNDARY : PLAYER_SAFE_PROSE_BOUNDARY;
   const response = await roleRunner.run({ scope: 'turn_runtime', role_id: roleId,
     request_identity: request.request_id ?? request.request?.request_id,
-    messages: [{ role: 'system', content: `${OBSERVATION_SCOPE_BOUNDARY} ${UNRESOLVED_QUESTION_BOUNDARY} ${ATTEMPT_OUTCOME_BOUNDARY} ${instruction} ${proseBoundary} ${ELAPSED_ONLY_PERSISTENCE_BOUNDARY} ${NPC_OBSERVATION_BOUNDARY}` },
-      { role: 'user', content: JSON.stringify(request) }],
+    messages: [{ role: 'system', content: instruction },
+      { role: 'user', content: JSON.stringify(narrationWire(request)) }],
     overrides: { temperature: 0 } });
   if (!response?.output || typeof response.output !== 'object') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING',
@@ -64,17 +66,22 @@ export function assembleNarrationRoleOutput(roleId, output, request) {
     output_id: request.request_id ?? request.request?.request_id,
     prose: output.prose, action_options: structuredClone(output.action_options),
     used_references: structuredClone(output.used_references),
-    self_check: structuredClone(output.self_check)
+    self_check: {}
   };
   if (roleId === 'gameplay_narrator_auditor') return {
-    version: 1, schema: 'narration_audit', pass: output.pass,
+    version: 1, schema: 'narration_audit',
+    pass: output.pass === false || narrationChecksAgree(output, request) ? output.pass : undefined,
+    artistic_verdict: output.artistic_verdict,
+    technical_verdict: output.technical_verdict,
+    coverage: narrationChecksAgree(output, request)
+      ? narrationCoverage(output.coverage, request) : undefined,
     concerns: Array.isArray(output.concerns)
       ? output.concerns.map((concern) => ({
-          segment_id: narrationSegmentId(request, concern.segment_choice),
-          kind: concern.kind, reason: concern.reason
+          segment_id: narrationSegmentId(request, concern?.segment_choice),
+          kind: concern?.kind, reason: concern?.reason
         })) : output.concerns,
     evidence: structuredClone(output.evidence)
-  };
+};
   if (roleId === 'gameplay_narrator_semantic_repair') return {
     version: 1, schema: 'narration_semantic_repair',
     replacements: Array.isArray(output.replacements)
@@ -86,14 +93,75 @@ export function assembleNarrationRoleOutput(roleId, output, request) {
   return output;
 }
 
+const FAILURE_KINDS = {
+  current_beat_buried: 'literary_quality',
+  elapsed_as_service_report: 'technical_presentation',
+  static_context_dump: 'literary_quality',
+  weak_literary_composition: 'literary_quality',
+  unsupported_response_or_continuation: 'unsupported_'
+};
+
 function narrationAuditInstruction(request) {
-  const choices = (request.segments ?? []).map((segment, index) => ({
-    segment_choice: `segment_${index + 1}`, prose: segment.prose
-  }));
-  return `${PERCEPTION_AUDIT_RULE} Return only the semantic audit: PASS {"pass":true,"concerns":[],"evidence":["<whole-scene literary quality and factual grounding>"]}; FAIL {"pass":false,"concerns":[{"segment_choice":"<supplied segment choice>","kind":"<one allowed concern kind>","reason":"<brief reason>"}],"evidence":["<brief visible-context evidence>"]}. Choose only from these request-local segment choices: ${JSON.stringify(choices)}. For unsupported claims choose the narrowest stable kind: unsupported_attempt, unsupported_success, unsupported_object_use, unsupported_result, unsupported_sensory, unsupported_event, unsupported_world_state, unsupported_npc_state, or unsupported_fact. Use technical_presentation when supported facts are rendered as a game-state report, field or route terminology, IDs, numeric-stat dumps, object-absence diagnostics, disconnected one-fact-per-sentence inventory, repeated player goal, modern slang, pseudo-medieval archaism, or theatrical filler instead of natural restrained Russian prose. A service-style exact elapsed-time report is supported content in the wrong form: classify it as technical_presentation, never unsupported_event. A brief standalone temporal transition is allowed when it contributes to the passage; sentence shape alone is not a defect. When elapsed time is the only supplied change, judge the complete scene without claiming a change of scene, body, position, or action. In that elapsed-only case, claims that the player still stands, waits, watches, looks, or remains somewhere MUST FAIL as unsupported_event. Do not flag a safe construction merely for stating the exact duration. When visible_context supplies concrete physical, sensory, or NPC cues, pass only prose that selects and weaves relevant cues into a coherent perceived scene while making the confirmed action result clear; never demand invented detail. The server assembles version, schema, and immutable segment_id values. Audit the full narration against the same player-safe visible_context, including visible_context.known_context, optional action_intent_context, optional confirmed_outcome, style_policy, and segments. Every visible_context.visible_changes entry is already a confirmed player-safe fact and sufficient evidence for its own meaning, including exact elapsed time; never reject it merely as abstract, non-sensory, or mechanical. Its evidence is limited to that exact kind of change: an item placement change never proves actor movement, manipulation, transformation, object use, or intended purpose. Actor movement wording MUST FAIL unless confirmed_outcome.movement_committed is true, even when the intent mentions travel or a visible_change says an item moved. A faithful natural paraphrase of visible_context is supported; do not require verbatim copying, but reject any added sensory detail, causation, certainty, or world fact. Empty visible_npc or visible_objects arrays do not prove that nobody or nothing is present, nor do they support silence or emptiness. A visible physical feature does not support an unstated sound, smell, temperature, bodily sensation, history, or recent use. confirmed_outcome is separate code-confirmed evidence and permits movement wording only when movement_committed is true. Missing or false outcome fields are silent constraints. action_intent_context establishes only the submitted intention. Tools or objects named only there remain intent-only. It never proves a performed or ongoing attempt, speech, object use, success, result, or world/NPC state change. Only separately confirmed visible_context or confirmed_outcome may ground an executed attempt or speech within its exact meaning; never add an unstated causal bridge or mechanism. Explicit remaining_intent is unperformed even when the prose uses progressive or attempt wording. Each distinct mandatory meaning in visible_context.visible_changes must be conveyed, but the narrator need not catalogue unrelated context. If any distinct mandatory meaning is absent from the full prose, FAIL with kind missing_visible_change, choose the first segment for repair, and name the exact omitted change in reason. Plausibility is not evidence. A source-entry ledger even when entries are joined by commas or semicolons, or epistemic commentary about what observations, evidence, or a result establishes, is technical_presentation. For whole-output technical_presentation choose segment_1; semantic repair rewrites the whole prose. PASS evidence must cover both coherent scene progression and factual grounding; when an outcome and uncertainty overlap, verify their shared meaning is conveyed once. If any segment has an unsupported claim or technical_presentation, pass must be false. Do not use hidden state, infer world facts, rewrite prose, add a fallback, or call another role.`;
+  const choices = request.segments.map(({ segment_id }) => segment_id);
+  const shape = {
+    reviewed_segments: choices,
+    failure_checks: Object.fromEntries(Object.keys(FAILURE_KINDS).map((key) => [key, []])),
+    coverage: Object.fromEntries(narrationSources(request).map(({ key }) => [key, []])),
+    artistic_verdict: null, technical_verdict: null, pass: false,
+    concerns: [], evidence: []
+  };
+  return `${PROSE_RULES} ${GROUNDING_RULES} evidence must be a concise substantive array of nonempty findings without repetition, never angle-bracket placeholders; retain every distinct concern. Review every supplied segment before deciding PASS; reviewed_segments must contain each canonical segment choice exactly once. First seek failures in the whole passage: current_beat_buried (required result displaced), elapsed_as_service_report (isolated service datum or mechanically attached time report, or a chain without scene/action composition linked mainly by bare/metadata time announcements, including duration transferred to static support or an action-duration recast as delay before an ongoing/beginning action; never fail subject plus exact duration plus supported physical action, or another grammatically integrated duration supported by the same required change, merely for explicitness or a short sparse sequence), static_context_dump (unselected context recap), weak_literary_composition (supported clauses fail as one scene, including a chronology without scene/action composition held together mainly by bare/metadata time announcements; short supported physical clauses with integrated duration do not fail for brevity; a pending remainder becomes metadata/explanation instead of a concrete open next choice; a connective alone is insufficient), unsupported_response_or_continuation (invented response, nonresponse or performed/continued action). failure_checks requires exactly these five keys, each an array of distinct offending segment choices; [] means none found. A literary failure requires artistic_verdict=fail and a literary_quality concern for every listed segment; elapsed failure requires technical_verdict=fail and technical_presentation concerns; unsupported response/continuation requires pass=false and an unsupported_* concern for each listed segment. Any failure forbids PASS. Do not invent a positive verdict to complete the shape. Other grounding violations also require FAIL with a precise concern. Concerns use {"segment_choice":"<supplied choice>","kind":"<allowed kind>","reason":"<specific finding>"}; use unsupported_attempt, unsupported_success, unsupported_object_use, unsupported_result, unsupported_sensory, unsupported_event, unsupported_world_state, unsupported_npc_state or unsupported_fact for ungrounded claims. A supported fact expressed as a system report is technical_presentation, not unsupported_event. PASS requires both verdicts pass, empty failure arrays, complete coverage, no concerns and substantive evidence of composition and grounding. Coverage keys are the refs in required_current_beat; return exactly these keys, with arrays of canonical segment choices only, never prose. No sources means {}. An omitted meaning keeps its key as [] and FAILs as missing_visible_change, with a concern on the first supplied segment_id naming the source. PASS values must be nonempty; no repeated choice within a key, but sources may share segments. Coverage requires every proposition within the source, including an unresolved-result clause embedded in a change; mentioning the physical motion alone is incomplete and requires missing_visible_change. Do not claim coverage merely because a source appears in the input. Return only this JSON shape (values are illustrative, not a verdict): ${JSON.stringify(shape)}. Replace null verdicts with pass/fail after review; this incomplete example must not be copied as an audit. Segment choices are exactly the supplied segment_id values; copy them unchanged, with no aliases or positional renaming: ${JSON.stringify(choices)}.`;
+}
+
+function narrationChecksAgree(output, request) {
+  const canonical = request.segments.map(({ segment_id }) => segment_id);
+  const validChoices = (values) => Array.isArray(values)
+    && new Set(values).size === values.length
+    && values.every((choice) => typeof choice === 'string' && canonical.includes(choice));
+  if (Object.keys(output).length !== 8
+      || !validChoices(output.reviewed_segments) || output.reviewed_segments.length !== canonical.length
+      || !output.failure_checks || typeof output.failure_checks !== 'object'
+      || Array.isArray(output.failure_checks)
+      || Object.keys(output.failure_checks).length !== Object.keys(FAILURE_KINDS).length
+      || !Array.isArray(output.concerns)) return false;
+  for (const [key, kind] of Object.entries(FAILURE_KINDS)) {
+    const failures = output.failure_checks[key];
+    if (!Object.hasOwn(output.failure_checks, key) || !validChoices(failures)) return false;
+    if (!failures.length) continue;
+    if (output.pass !== false
+        || (kind === 'literary_quality' && output.artistic_verdict !== 'fail')
+        || (kind === 'technical_presentation' && output.technical_verdict !== 'fail')
+        || failures.some((choice) => !output.concerns.some((concern) =>
+          concern?.segment_choice === choice && typeof concern.kind === 'string'
+          && (kind === 'unsupported_' ? concern.kind.startsWith(kind) : concern.kind === kind)))) return false;
+  }
+  return true;
 }
 
 function narrationSegmentId(request, choice) {
-  const match = /^segment_(\d+)$/u.exec(choice ?? '');
-  return match ? request.segments?.[Number(match[1]) - 1]?.segment_id : undefined;
+  return typeof choice === 'string' && request.segments?.some(({ segment_id }) => segment_id === choice)
+    ? choice : undefined;
+}
+
+function narrationSources(request) {
+  return [['visible_changes', 'visible_change'], ['uncertainties', 'uncertainty']]
+    .flatMap(([field, prefix]) => request.visible_context[field].map((text, source_index) => ({
+      field, source_index, key: `${prefix}_${source_index + 1}`, text
+    })));
+}
+
+function narrationCoverage(coverage, request) {
+  const sources = narrationSources(request);
+  if (!coverage || typeof coverage !== 'object' || Array.isArray(coverage)
+      || Object.keys(coverage).length !== sources.length) return undefined;
+  const result = { visible_changes: [], uncertainties: [] };
+  for (const { key, field, source_index } of sources) {
+    if (!Object.hasOwn(coverage, key)) return undefined;
+    const choices = coverage[key];
+    if (!Array.isArray(choices) || new Set(choices).size !== choices.length
+        || choices.some((choice) => !narrationSegmentId(request, choice))) return undefined;
+    result[field].push({ source_index,
+      segment_ids: choices.map((choice) => narrationSegmentId(request, choice)) });
+  }
+  return result;
 }

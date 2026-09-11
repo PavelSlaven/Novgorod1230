@@ -29,6 +29,50 @@ and adds no second transaction owner.
 
 ## Владеет
 
+- Planner examples остаются flat semantic objects; mapping labels находятся
+  вне JSON. Goal/result и exact continuation относятся ко всей заявке.
+  Stable system rules предшествуют request-specific choices/mappings и audit
+  shape/segment choices. Audit evidence краток, но сохраняет все разные findings.
+  Planner private wire опускает дублирующий WK context_text только при наличии
+  полного structured slice; facts/qualifiers/constraints/coverage/gaps/disputes,
+  canonical grounding и telemetry сохраняются.
+  Narration prompts проверяют также temporal/aspectual связи и конкретный
+  pending choice; whole-prose repair повторно применяет все grounding rules.
+
+- Narration adapter даёт auditor flat coverage с request-local ключами
+  visible_change_N/uncertainty_N. Private wire разделяет required_current_beat
+  (changes/uncertainties с ref/text), optional_support
+  и constraints (do_not_imply/allowed_tensions/style_policy), без копии visible_context.
+  При любом current change/uncertainty optional_support содержит только visible_scene и sensory_details:
+  остальные static arrays/metadata не поступают writer/auditor/repair. Sensory details
+  выбираются по текущему beat; полный пересказ окружения запрещён.
+  Newly relevant facts приходят через visible_changes: applied observation
+  продвигает воспринимаемые scene facts, arrival — destination facts/NPC/objects/route,
+  включая safe entity label/status и уже human N1 ordinary cues; portrait enums
+  не становятся prose и не требуют нового словаря,
+  ordinary scene seed — только факты текущего результата. Общая projection
+  выполняет arrival promotion после NPC enrichment, но берёт route knowledge
+  из исходного arrival result. Snapshot self-knowledge и carried objects
+  не продвигаются общим осмотром; ими владеет explicit item observation. Без current beat
+  descriptive support сохраняется для scene-only perception. Outcome/intent
+  передаются только своим ролям; used_references остаётся [].
+  Exact own-key set
+  и массивы уникальных известных segment choices проверяются до преобразования
+  в public source_index по исходному порядку и immutable segment IDs.
+  Private reviewed_segments требует полный canonical set; negative failure_checks
+  перечисляют сегменты с потерянным текущим результатом, служебным временем, recap,
+  слабой композицией или invented response/continuation. Каждый failure требует
+  соответствующего model concern/verdict; противоречивый PASS блокируется.
+  Initial malformed FAIL с непустым содержательным concern.reason допускает один
+  существующий цельный repair; его coverage/checks/aliases не получают authority.
+  Без такого concern initial malformed блокируется; final audit всегда strict. Positive checks не принимаются.
+  Private writer/format-repair возвращает только prose/action_options/used_references;
+  публичный self_check={} нейтрален и собирается кодом, не служит approval.
+  Полноту coverage и согласованность художественного/технического verdict
+  проверяет `@rus/narration` на initial/final audit. Narrator и цельный repair
+  строят текущий beat вокруг изменений и неопределённостей; статический
+  контекст поддерживает его, не вытесняя незавершённое действие или exact speech.
+
 - Phase 2 объединяет одновременные retries одной party/idempotency identity
   в одну runtime promise до чтения replay. Другой input digest получает conflict.
   Promise удаляется после завершения; durable replay и commit остаются у P16.
@@ -61,6 +105,22 @@ and adds no second transaction owner.
 - Владеет одним logical context для `submitTurn`, который объединяет диагностику и одноразовые repair-claims, но не вводит общий deadline хода. Каждый runtime LLM-вызов следует каноническому production-limits invariant из `@rus/llm-runtime`. Diagnostics показывает union wall time параллельных calls и их sum duration. Повторный repair одного вида для той же immutable request identity блокируется до provider call.
 - Lower Dvina turn-step model adapter до core validator выполняет только однозначную canonicalization закрытых provider-shape ошибок: choice wrappers, exact misplaced/duplicated continuation, отсутствующие diagnostic reason fields и single-target `request_discovery`. Остальные targets и исходный later-continuation передаются core как typed code-owned pending queue; prompt её не строит и не ремонтирует. LLM repair остаётся только для semantic mismatch; неисправимая структура даёт typed technical failure без commit/narration.
 - Focused speech auditor после faithful verdict может вернуть bounded metadata projection полного direct speech envelope по §8.2.1: только независимо проверенный input mode, exact unexecuted suffix, равный прежнему continuation или восстанавливающий его префикс, и pending goal; speaker/text неизменны, dependencies пусты, prepared/discovery carriers отсутствуют. Plan после допустимого trial валиден либо имеет только isolated verbatim exact-copy/goal-continuation ошибки. Existing preflight передаёт corrected plan в core для полной strict revalidation/freeze без нового planner или re-audit; остальные ошибки сохраняют one-repair/fail-closed path.
+- Existing grounding validator детерминированно отклоняет literal direct/not_achieved
+  только при operations=[], check/continuation/clarification/direct_result_kind=null
+  и player-safe discovery_available=true: `operation_semantic_grounding` по
+  `$.resolution` запускает тот же single repair без initial LLM audit. Ошибка
+  resolution включает зависимые operations/activity/goal/continuation: repair
+  заменяет весь rejected causal shape по существующему prerequisite mapping. Repair
+  сохраняет literal и полный physical intent через ordinary_material_prerequisite;
+  nominal query только о недостающем referent/material, без физического действия
+  и цели использования; complete intent остаётся exact continuation. Это закреплено
+  stable planner и final repair-specific tail для единственной ошибки
+  `$.resolution/operation_semantic_grounding`. Focused auditor получает operation,
+  полный continuation и remaining_intent, различает prerequisite и выполненный
+  discovery prefix; код не подменяет его mode и не добавляет retry. Повторный literal denial
+  terminal. Reality-limited, make-believe и disabled discovery не затронуты.
+  Domain-owner-unavailable repair использует lawful reality_limited без выдуманного
+  успеха или физической невозможности; слова игрока остаются evidence weight 0.
 - Для этого audit core может подготовить effort→none trial по §8.2.1; существующий auditor не меняет effort/owner/duration и не получает нового LLM role. Trial должен пройти core admission полного speech envelope без requested duration; ошибки за пределами copy/goal не разрешают metadata projection.
 - Та же bounded metadata projection разрешена после faithful re-audit structurally valid единственного repair: strict validation/freeze сохраняются, дополнительного planner/audit нет. Effort trial и structural recovery на repair не распространяются; оставшаяся ошибка terminal.
 - Ordinary presence и semantic activity накладывают подтверждённые изменения
@@ -74,7 +134,7 @@ and adds no second transaction owner.
   activity не получают такой вывод по соседнему query.
 - Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
 
-При завершённом direct `not_achieved` current-scene projection передаёт недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи.
+Каждый applied direct `not_achieved`, в том числе после achieved speech, передаёт через общий turn-step result overlay недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи. Duration нескольких direct semantic seeds суммируется до текстовой дедупликации. Applied speech и failed results выводятся в порядке step traces; unapplied plans не проецируются как результаты.
 
 Revision 33 production temporal registration читает canonical NPC schedules,
 применяет approved routine transitions в текущем рабочем состоянии и сохраняет
@@ -83,6 +143,16 @@ causal transitions и один CAS итогового состояния. Deferr
 допустим до первого входа; first-entry связывает точную позицию без сброса
 занятия или времени. Сон меняет доступность NPC для разговора. Этот cutover
 не расширяет историческую Phase-7 activation свободных решений NPC.
+
+Semantic continuation без изменения тела использует existing prepared-effect
+chain уже с первого timed шага. Runtime передаёт advanced committed projection
+следующему planner/ordinary owner; изменённые temporal NPC views перестраиваются
+из authoritative state. Generic commit replays approved semantic activity/body
+bindings каждой prepared slice, сверяет общий time/body и сохраняет существующую
+activity/body history в том же P16. Раннее temporal прерывание no-body semantic
+slice сохраняет original/planned duration отдельно от actual elapsed и оставшегося
+времени; aborted execution и paused attempt используют существующие activity rows.
+Domain-command ledger contracts сохраняются.
 
 ## Не владеет
 
@@ -179,11 +249,17 @@ discovery marker is boolean and exposes no unresolved result, permission or
 capacity. Stage B may choose an
 unlisted ordinary semantic type/name and independently classifies the full
 candidate, including its qualifiers and relations, for admission;
+the descriptor's `semantic_type` remains the specific model-classified material
+or object type. Its prompt uses an explicit non-null placeholder; null or omitted
+types retain the existing strict validation and single repair.
 the owner accepts it only when that class matches the code-owned candidate, then
 rechecks mechanics, property, permission and source. Before item admission, the
 same full candidate must be `standalone_item` rather than `non_item_detail`;
-the latter binds to persisted `no_change` and cannot reach item mechanics,
-ownership or placement. The `ambient_ordinary`
+ordinary non-item details bind to persisted `no_change` and cannot reach item mechanics, ownership or placement,
+but mandatory unavailable evidentiary, significant or hidden authority takes
+precedence over physical form and requires `authority_required` when every viable
+alternative needs it. Independent mundane alternatives remain separately eligible for admission.
+The `ambient_ordinary`
 enum alone never selects O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
 their legacy admission. Migration 025 conservation and bounded initialization/decrement
 are active for every admitted `finite_source`; each selected source reloads its
@@ -204,6 +280,16 @@ search. A presence preflight with no decision may retain a first scene seed,
 but creates no presence resolution and incurs no search activity.
 The admitted activity projects a performed search with its exact duration;
 its separate candidate query remains a question, never ownership or success.
+An admitted O1 item adds a strict `ordinary_presence_seed` with resolution
+`materialized`, exact query and admitted `display_name`. The current beat reports
+that discovery once. Applied step traces and prepared ledger slice seed keys group
+each step into one required change: exact speech then its elapsed time; search time
+then discovery; physical result after its activity. The ordinary material prerequisite
+mapping binds `inspect` for an exact full-intent continuation in ordinary scope;
+focused audit still checks its semantics and real focused searches retain activity/body boundaries. Query alone implies
+neither ownership nor execution. An already resolved A1 owner can continue a
+prepared semantic chain when no authored command was selected; its existing
+scope, preflight, revalidation, conservation and atomic P16 owners remain required.
 A new physical search can reuse an existing negative presence answer without a model call or materialization write, while applying a new activity/body cost. The applied domain search authorizes that activity. Inspection/recall remains free.
 The item or negative resolution and the search cost commit together; transport retry
 replays the committed result without another activity or model call.
@@ -376,6 +462,13 @@ query and code-owned admission/coverage/entity bounds; opaque IDs and policy ref
 are not natural-language retrieval vocabulary. Candidate focus recall uses the
 query and approved scene text. The full ordinary request still reaches its own
 semantic and code admission owners unchanged.
+O1 prompts contain common rules and only the current seed/presence mode rules.
+Only the semantic response shape is shown; authoritative plan fields stay server-assembled.
+A grounded positive presence requires an exact supporting in-slice claim ref;
+empty or unsupported refs still fail admission.
+The private O1 wire omits only duplicate `world_knowledge.context_text` when
+the full structured factual slice is present. Facts, qualifiers, constraints,
+coverage, disputes and gaps remain; claim binding and telemetry use the full request.
 The private WK planner wire sends each ranked focus ref once as a key in
 `available_knowledge_refs`, with its allowed claim domains as the value (including
 empty arrays). Native planner requests retain the complete ordered ref array for
@@ -438,3 +531,84 @@ water sound. These are approved current sensory premises, not deductions made
 by narration from the mere presence of water. Historical presentations remain
 pinned. Dynamic weather/light and complete acquired-fact presentation remain
 separate delivery gaps; this change does not activate weather simulation.
+
+`request_item_use` с `use_kind: other` и semantic `description`, без
+`action_production`, разрешает transient non-transforming физическую попытку.
+Existing item runtime owner перепроверяет current actor, item ref, доступ
+в текущем placement и player-safe target refs. Current-visible item доступен
+на месте при точном совпадении всех его scope refs с текущей position;
+`scene_position_id` сравнивается с player-safe `position_id`. Held actor item
+тоже доступен. Pickup не требуется; `move_entity` обслуживает только явно
+заявленное перемещение. Semantic activity owner сохраняет
+время/body. Результат фиксирует только попытку: без durable item/world facts,
+расхода, трансформации, скрытых сведений и подтверждённого результата наблюдения.
+Existing handler supports оставляет authored/legacy use и A1 их владельцам.
+Known material ref не отправляется повторно в ordinary discovery при repair.
+
+Focused ordinary location audit допускает strict `prerequisite_query` correction:
+LLM выделяет только отсутствующий ordinary referent; code сохраняет exact полный
+remaining intent, связывает inspect/current scope и повторяет owner admission без
+нового LLM вызова. Hidden/significant/authored evidence не является prerequisite.
+Empty target_refs одной unselected discovery связывается только с доступным
+current location при ordinary capability; explicit refs не заменяются.
+
+Unsupported direct_result_kind у literal direct/not_achieved no-op denial может
+быть обнулён только в audit-only trial, если весь plan после этого strict valid.
+Trial не принимается как результат. Existing focused classifier может выделить
+ordinary prerequisite тем же протоколом; code соберёт corrected plan и перепроверит
+owner/schema без full planner repair. Disabled/authority-limited случаи не получают
+ordinary bypass; прежний lawful repair/fail-closed сохраняется.
+
+Single transient use с отсутствующим item_ref допускает audit-only material trial
+только при unknown_ref (и optional source_placement_grounding того же ref), literal,
+пустом continuation и доступном ordinary current location. Known недоступный item
+не дублируется. Existing focused classifier выделяет nominal prerequisite; code
+сохраняет полный exact intent. Для strict-valid single literal accessible transient
+use без continuation/check/clarification code подставляет exact remaining_intent в
+description ДО первого semantic audit. Transformation/discovery/independent actions
+не становятся transient от копирования текста. Только pass возвращает corrected_plan
+для strict owner/schema revalidation; stable ref/placement и visible seed сохраняют
+точный intent, дополнительный auditor/full planner repair не нужен.
+
+Denial/missing-ref trials помечают focused input `correction_candidate:
+missing_ordinary_referent`: pseudo query передаёт полный physical intent, а не
+выбранный поиск. В этом режиме аудитор проверяет missing ordinary prerequisite;
+успех требует nominal prerequisite_query. Normal discovery input marker не имеет;
+negative different_action остаётся reject, отсутствие/authority guards сохраняются.
+
+Narration distinguishes committed transient handling from an unexecuted continuation:
+applied physical motion happened for the grouped duration; only observation/discovery
+result remains open. Pending goal does not undo an applied operation. Narrator renders
+the motion concretely, without status metadata or an invented future action choice.
+
+Narration auditor использует exact `request.segments[].segment_id` во всех
+reviewed_segments, failure_checks, coverage и concern.segment_choice. Positional
+aliases и нормализация не допускаются; final audit строго проверяется по IDs
+повторно сегментированной approved prose. Grounded цепочка без scene/action композиции,
+сцепленная главным образом bare/metadata отметками времени, проваливает существующие
+elapsed_as_service_report / weak_literary_composition checks. Длительность
+встраивается в подтверждённый физический эпизод и причинную сцену; нельзя
+добавлять ambience, реакции или одновременное действие ради связности.
+
+Subject + exact duration + supported physical action — встроенная длительность,
+в том числе в короткой sparse сцене; такая конструкция и краткость сами по себе
+не дают elapsed_as_service_report. Служебным остаётся bare/metadata time или
+перечень без сценической/физической композиции. При current beat private wire
+допускает visible_scene + sensory_details; narrator выбирает только относящиеся
+к этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.
+
+Temporal/aspect grounding сохраняет принадлежность elapsed своему applied step:
+sensory sky/weather/sound не получают эту длительность; задержка до начала действия
+не заменяет длительность выполненного действия. Sensory support связывает сцену,
+а не заполняет минуты. Coverage требует все propositions каждого required change,
+включая embedded неизвестный результат при пустом uncertainties; его нельзя
+опустить или заменить failure/success. Речь передаётся естественно с дословным
+содержанием и speaker, discovery — через подтверждённое восприятие без status report.
+
+Applied-step causal projection связывает semantic_activity duration в самом source:
+speech получает «этот шаг занял N …», не утверждая непрерывность речи; single
+transient_item_use получает «в течение N … выполняли попытку» с exact description
+и явно неизвестным observation result. Отдельный elapsed component этого step
+удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
+Narrator переводит evidence wording в естественную речь и конкретное движение,
+не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.

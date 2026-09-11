@@ -56,7 +56,7 @@ export async function commitLowerDvinaTracePhase2({
 }) {
   const routed = await routeLowerDvinaTraceTurnStepCommit({
     partyId, writePlan, inputDigest, contracts, loadState, committer,
-    turnStepAmbientPortionProfileRef
+    turnStepAmbientPortionProfileRef, turnStepApprovedOwners
   });
   if (routed.handled) return routed.result;
   const factual = routed.factual;

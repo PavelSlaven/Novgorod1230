@@ -11,7 +11,7 @@ import {
 
 const POSITION_KEYS = new Set([
   'g4_id', 'g5_node_id', 'g5_anchor_id', 'anchor_id', 'location_ref',
-  'zone_ref'
+  'zone_ref', 'position_id'
 ]);
 const CLOCK_KEYS = new Set([
   'whole_minutes', 'subminute_numerator', 'subminute_denominator',

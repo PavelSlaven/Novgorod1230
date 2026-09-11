@@ -1011,7 +1011,7 @@ function approvedNarration(requestId) {
     },
     final_audit: {
       version: 1,
-      schema: 'narration_audit',
+      schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] },
       pass: true,
       concerns: [],
       evidence: ['persisted visible context']

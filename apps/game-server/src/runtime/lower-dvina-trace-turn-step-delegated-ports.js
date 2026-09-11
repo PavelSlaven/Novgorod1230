@@ -235,11 +235,14 @@ export async function applySemanticActivity(execution, state,
         }
       }]
     };
+  const selected = execution.plan.resolution === 'generic_check'
+    ? execution.plan.check.outcomes[execution.check_result.outcome.band]
+    : execution.plan;
   let preparedEffectRequest = null;
-  if (chainContext?.prior_effect_count > 0) {
-    if (changesBody) {
-      fail('TRACE_TURN_STEP_PREPARED_BODY_COMPOSITE_REQUIRED');
-    }
+  if (chainContext != null && (chainContext.prior_effect_count > 0
+      || (duration > 0 && !changesBody && selected.continuation != null
+        && selected.additional_activity == null
+        && !(selected.operations ?? []).some(({ op }) => op === 'apply_body_event')))) {
     preparedEffectRequest = {
       effect_kind: 'semantic_activity',
       owner_ref: resolved.profile_ref,
@@ -253,7 +256,7 @@ export async function applySemanticActivity(execution, state,
     summary: `semantic_activity:${activity.duration_class}:${activity.effort}`,
     fragment,
     consequence,
-    boundary: duration > 0 || changesBody
+    boundary: changesBody || (duration > 0 && preparedEffectRequest == null)
   });
   const withBody = {
     ...output,

@@ -66,7 +66,7 @@ test('canonical local fixture routes a free general look into the shared planner
     });
     assert.deepEqual(plan.operations, [{ op: 'request_discovery',
       actor_ref: 'player-local', discovery_kind: 'look',
-      target_refs: ['position:local'], query: 'осмотреться' }]);
+      target_refs: ['position:local'], query: 'Осматриваюсь вокруг.' }]);
   });
 
 test('canonical fixture selects the supplied known-route operation', async () => {
@@ -316,3 +316,33 @@ test('canonical fixture distinguishes evidence and disposition activity targets'
       JSON.stringify(plan));
     assert.equal(plan.operation_family, 'request_activity');
   });
+
+
+test('canonical narration fixture satisfies the current raw adapter contract and covers every required source', async () => {
+  const { createLowerDvinaTraceNarrationService } = await import('../../apps/game-server/src/runtime/lower-dvina-trace-narration-llm.js');
+  const responder = createCanonicalPhase11LlmResponder();
+  const calls = [];
+  const visible = { version: 1, schema: 'visible_context_package', visible_scene: 'У причала.',
+    visible_changes: ['Вы вышли к причалу.', 'Край доски отломлен.'],
+    uncertainties: ['Результат осмотра воды ещё неизвестен.'],
+    sensory_details: [], visible_npc: [], visible_objects: [], known_context: [],
+    allowed_tensions: [], do_not_imply: [] };
+  const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+    calls.push(call.role_id);
+    const input = JSON.parse(call.messages[1].content);
+    const output = await responder({ model: `fixture-${call.role_id.replaceAll('_', '-')}`, input });
+    if (call.role_id === 'gameplay_narrator_auditor') {
+      assert.equal(Object.keys(output).length, 8);
+      assert.deepEqual(output.reviewed_segments, input.segments.map(({ segment_id }) => segment_id));
+      assert.deepEqual(Object.keys(output.coverage), ['visible_change_1', 'visible_change_2', 'uncertainty_1']);
+      for (const ids of Object.values(output.coverage)) assert.deepEqual(ids, output.reviewed_segments);
+      assert.equal('schema' in output, false);
+    }
+    return { output };
+  } } });
+  const result = await service.run({ version: 1, schema: 'narration_request', request_id: 'canonical-prose-wire',
+    surface: 'turn', visible_context: visible, context: {} });
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, [...visible.visible_changes, ...visible.uncertainties].join('\n\n'));
+  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
+});

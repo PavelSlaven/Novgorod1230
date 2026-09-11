@@ -239,6 +239,11 @@ function validateItemUse(value, path, errors, trace) {
   const keys = ['op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'];
   const hasActionProduction = Object.hasOwn(value, 'action_production');
   if (hasActionProduction) keys.push('action_production');
+  if (!hasActionProduction && Object.hasOwn(value, 'description')) {
+    keys.push('description');
+    constant(value.use_kind, 'other', `${path}.use_kind`, errors);
+    requiredText(value.description, `${path}.description`, errors);
+  }
   if (!strict(value, path, keys, errors)) return;
   constant(value.op, 'request_item_use', `${path}.op`, errors);
   knownRef(value.actor_ref, `${path}.actor_ref`, errors, trace);

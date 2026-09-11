@@ -133,23 +133,23 @@ test('turn integrates the canonical narration flow and versioned TurnScreen', as
           version: 1,
           schema: 'narration_output',
           output_id: request.request_id,
-          prose: 'На площади медленно тянется разговор.',
+          prose: 'Вы внимательнее осмотрели телегу.',
           action_options: [],
           used_references: [],
           self_check: { no_new_world_facts: true }
         };
       }
     },
-    auditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded in visible context.'] }; } },
+    auditor: { async audit() { return { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [{ source_index: 0, segment_ids: ['s1'] }], uncertainties: [] }, pass: true, concerns: [], evidence: ['Confirmed inspection is conveyed.'] }; } },
     semanticRepairer: { async repair() { return { version: 1, schema: 'narration_semantic_repair', replacements: [] }; } },
     formatRepairer: { async repair(request) { return request.invalid_output ?? request.prior_output; } },
     seniorWriter: { async repair(request) { return request.prior_output; } },
-    seniorAuditor: { async audit() { return { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Senior approval.'] }; } },
+    seniorAuditor: { async audit() { return { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['Senior approval.'] }; } },
     router: { async route() { return { version: 1, schema: 'narration_repair_route', route: 'block', reason: 'UNREACHABLE' }; } }
   });
   const result = await runTurnWorkflow(input(), services);
   assert.equal(result.screen.schema, 'turn_screen');
-  assert.equal(result.screen.main_prose, 'На площади медленно тянется разговор.');
+  assert.equal(result.screen.main_prose, 'Вы внимательнее осмотрели телегу.');
   assert.equal(result.screen.narration_approval.audit_evidence.length, 1);
 });
 

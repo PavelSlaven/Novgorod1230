@@ -91,6 +91,8 @@ export function resolveTurnStepSemanticActivityTime({
         activity_id: activity.activity_id
       });
     }
+    const actualDuration = prepared?.time_update.exact_elapsed ?? duration;
+    const interrupted = compareRationalMinutes(actualDuration.exact_minutes, duration.exact_minutes) < 0;
     const startedAt = structuredClone(prepared?.time_update.clock_before
       ?? cursor);
     const endedAt = structuredClone(prepared?.time_update.clock_after
@@ -98,19 +100,19 @@ export function resolveTurnStepSemanticActivityTime({
     if (compareGameTimestamp(startedAt, timeWindow.clock_before) < 0
         || compareGameTimestamp(endedAt, committedClockAfter) > 0
         || compareGameTimestamp(
-          addElapsedTime(startedAt, duration), endedAt) !== 0) {
+          addElapsedTime(startedAt, actualDuration), endedAt) !== 0) {
       invalid('prepared semantic activity window', {
         activity_id: activity.activity_id
       });
     }
     if (prepared != null) previousPreparedOrdinal = prepared.ordinal;
     cursor = structuredClone(endedAt);
-    totalMinutes += activity.duration_minutes;
+    totalMinutes += Number(actualDuration.exact_minutes.numerator);
     if (!Number.isSafeInteger(totalMinutes)) {
       invalid('activity duration total');
     }
     const execution = {
-      status: 'completed',
+      status: interrupted ? 'aborted' : 'completed',
       execution_scope: 'standalone',
       original_duration: duration,
       started_at: startedAt,
@@ -119,8 +121,8 @@ export function resolveTurnStepSemanticActivityTime({
     const attempt = {
       attempt_ordinal: 0,
       planned_time: duration,
-      actual_time: duration,
-      result_kind: 'completed',
+      actual_time: structuredClone(actualDuration),
+      result_kind: interrupted ? 'paused' : 'completed',
       started_at: structuredClone(startedAt),
       ended_at: structuredClone(endedAt)
     };

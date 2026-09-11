@@ -1,4 +1,6 @@
 import { resolvePhysicalItemCondition } from '@rus/items-property';
+const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках', other: 'при вас' });
+const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
 
 export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
   body = {}) {
@@ -11,7 +13,9 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
         approved_plan.direct_result_kind));
   return [
     ...(kinds.has('player_safe_observation')
-      ? ['Наблюдение завершено по уже доступным вам признакам.'] : []),
+      ? ['Наблюдение завершено по уже доступным вам признакам.',
+        ...lowerDvinaTraceObservedSceneChanges(
+          input?.retrieved_state?.current_visible_context)] : []),
     ...(kinds.has('player_safe_item_observation')
       ? carriedItemObservationChanges(sceneItems) : []),
     ...(kinds.has('player_safe_body_observation')
@@ -19,6 +23,29 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
     ...(kinds.has('no_state_gesture')
       ? ['Вы завершили простой жест.'] : [])
   ];
+}
+
+// Call only for a confirmed observation or a newly reached scene. Snapshot
+// knowledge (including inventory/body metadata) is not a new observation.
+export function lowerDvinaTraceObservedSceneChanges(scene) {
+  return [...new Set([
+    ...(scene?.sensory_details ?? []),
+    ...(scene?.visible_npc ?? []).flatMap((npc) => [
+      ...observedEntityChanges(npc),
+      ...[npc.observable_cues?.ordinary_remainder?.ordinary_descriptor,
+        npc.observable_cues?.ordinary_remainder?.ordinary_activity]
+        .filter(text).map((fact) => `${npc.display_label}: ${fact}`)
+    ]),
+    ...(scene?.visible_objects ?? []).filter((object) =>
+      !carriedVisibleStatus(object.visible_status)).flatMap(observedEntityChanges)
+  ])];
+}
+
+function observedEntityChanges(entity) {
+  if (!text(entity?.display_label)) return [];
+  const status = entity.visible_status;
+  return [`В поле зрения — ${entity.display_label}${text(status)
+    && status !== 'available' ? `: ${status}` : ''}.`];
 }
 
 function bodyObservationChanges(body) {
@@ -51,7 +78,7 @@ export function lowerDvinaTraceVisibleSceneItems(items, position, actorId) {
       display_label: visibleItemLabel(item), recognition: 'recognized',
       visible_status: held
         ? placement.physical_position === 'hands'
-          ? 'у вас в руках' : 'при вас'
+          ? CARRIED_VISIBLE_STATUSES.hands : CARRIED_VISIBLE_STATUSES.other
         : 'available' } }];
   });
 }
@@ -60,7 +87,7 @@ export function lowerDvinaTraceCarriedItemObservations(items, visibleObjects) {
   const visible = new Map((visibleObjects ?? []).filter(({ entity_ref: ref,
     visible_status: status }) => ref?.entity_kind === 'item'
       && text(ref.entity_id)
-      && ['при вас', 'у вас в руках'].includes(status))
+      && carriedVisibleStatus(status))
     .map((object) => [object.entity_ref.entity_id, object]));
   return (items ?? []).flatMap((item) => {
     const itemId = item?.item_id ?? item?.instance_id;

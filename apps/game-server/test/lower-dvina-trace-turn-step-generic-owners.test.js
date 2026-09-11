@@ -316,7 +316,8 @@ test('generic visible projector overlays F1 facts on domain projection',
       ...base,
       visible_scene: 'Микула пришёл в рыбацкий стан. Огонь разгорелся.',
       visible_changes: [
-        'route', 'turn_step_world_process_1:local_fire:started'
+        'route', 'turn_step_world_process_1:local_fire:started',
+        'cold', 'wet', 'В поле зрения — Еремей.', 'стан'
       ]
     });
   });

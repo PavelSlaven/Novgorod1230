@@ -25,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 50);
+  assert.equal(corpus.corpus_version, 59);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -40,17 +40,17 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
       git: { checkout_sha: 'fixture-sha', dirty: false },
       corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 19 }
     } });
-    assert.equal(report.fixture_count, 28);
-    assert.equal(report.aggregates.total.passed, 28,
+    assert.equal(report.fixture_count, 30);
+    assert.equal(report.aggregates.total.passed, 30,
       JSON.stringify(report.results.filter(({ pass }) => !pass)));
     assert.equal(report.aggregates.total.errors, 0);
-    assert.equal(report.aggregates.total.scored, 28);
+    assert.equal(report.aggregates.total.scored, 30);
     assert.equal(report.aggregates.total.unscored, 0);
-    assert.equal(report.aggregates.total.automated_passed, 28);
-    assert.equal(report.aggregates.total.quality_denominator, 28);
+    assert.equal(report.aggregates.total.automated_passed, 30);
+    assert.equal(report.aggregates.total.quality_denominator, 30);
     assert.equal(report.aggregates.total.repairs, 8);
-    assert.equal(report.aggregates.total.input_tokens, 56);
-    assert.equal(report.aggregates.total.output_tokens, 84);
+    assert.equal(report.aggregates.total.input_tokens, 60);
+    assert.equal(report.aggregates.total.output_tokens, 90);
     assert.ok(report.aggregates.total.p95_ms >= report.aggregates.total.p50_ms);
     assert.deepEqual(report.metadata.execution, { passes: 1, concurrency: 1 });
     assert.deepEqual(report.metadata.git, { checkout_sha: 'fixture-sha', dirty: false });
@@ -540,6 +540,36 @@ test('negative narration audit fixture rejects an unsupported visible claim', ()
     pass: false, 'concerns.0.segment_id': 's1',
     'concerns.0.kind': 'unsupported_sensory'
   });
+});
+
+test('captured and unseen static recap false PASS fail the existing eval rubric', async () => {
+  const fixtures = corpus.fixtures.filter(({ id }) => id.endsWith('-static-recap'));
+  assert.equal(fixtures.length, 2);
+  const replies = fixtures.map(({ expected_output }) => ({
+    ...structuredClone(expected_output), pass: true, artistic_verdict: 'pass', technical_verdict: 'pass',
+    failure_checks: Object.fromEntries(Object.keys(expected_output.failure_checks).map((key) => [key, []])),
+    concerns: [], evidence: ['The scene is grounded and the current beat is complete.']
+  }));
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: { content: JSON.stringify(replies.shift()) } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const report = await runFrozenRoleEval({ corpus: { ...corpus, fixtures }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${server.address().port}/v1`,
+      model: 'fixture-model'
+    } });
+    for (const result of report.results) {
+      assert.equal(result.pass, false);
+      assert.ok(result.errors.includes('unexpected_value:pass'));
+      assert.ok(result.errors.includes('unexpected_value:artistic_verdict'));
+      assert.equal(result.errors.some((error) => error.startsWith('validator:')), false);
+      assert.equal(result.llm_calls, 1);
+      assert.equal(result.repair_calls, 0);
+    }
+  } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
 test('narration semantic repair accepts grounded equivalent prose', async () => {

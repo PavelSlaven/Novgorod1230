@@ -266,8 +266,7 @@ test('direct player-safe observation reaches narration without new facts', () =>
       'Низкое сырое небо.', 'В поле зрения — раненый мужчина.']);
   assert.deepEqual(visible.sensory_details, ['Низкое сырое небо.']);
   assert.equal(visible.visible_objects[0].display_label, 'верхняя одежда');
-  assert.deepEqual(visible.uncertainties,
-    ['Наблюдение не подтверждает деталей сверх уже видимых признаков.']);
+  assert.deepEqual(visible.uncertainties, []);
   assert.deepEqual(lowerDvinaTraceDirectResultChanges({
     mode_resolution: { decision_trace: { step_traces: [{ applied: true,
       approved_plan: { resolution: 'direct', goal_result: 'achieved',

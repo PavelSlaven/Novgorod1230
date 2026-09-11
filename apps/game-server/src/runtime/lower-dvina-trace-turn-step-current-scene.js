@@ -122,13 +122,7 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
       ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
       ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
     ]),
-    uncertainties: unique([
-      ...current.uncertainties,
-      ...(!directResultChanges.includes(
-        'Наблюдение завершено по уже доступным вам признакам.') ? [] : [
-        'Наблюдение не подтверждает деталей сверх уже видимых признаков.'
-      ])
-    ]),
+    uncertainties: unique(current.uncertainties),
     do_not_imply: unique([
       ...current.do_not_imply,
       'hidden_fact',

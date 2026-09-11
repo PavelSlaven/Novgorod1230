@@ -94,6 +94,8 @@ test('turn step planner prompt maps grounded and visible-look contracts',
     assert.match(prompt, /Adjacent current-scene looking, listening, smelling/u);
     assert.match(prompt,
       /purpose, hope, manner, or expected-result clause belongs/u);
+    assert.match(prompt, /Speech is never perception/u);
+    assert.match(prompt, /cannot be covered by player_safe_observation/u);
   });
 
 test('turn step planner offers scene seed instead of direct look while unseeded',

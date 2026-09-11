@@ -61,6 +61,9 @@ test('campaign drives HTTP, separates explorer context, and retains actual priva
         llm: { gameplay_traces: [], calls: [] } },
       { event: 'turn.completed', input: { request_id: requestId },
       llm: { gameplay_traces: [{ event: 'turn_context', authoritative_context: { hidden: 'private' } },
+        { schema: 'world_knowledge_boundary_trace_v1', event: 'world_knowledge_not_required',
+          query: null, core_result: null, consumer: { input: {
+            world_knowledge: { sufficiency: 'NO_KNOWLEDGE_REQUIRED' } } } },
         { schema: 'world_knowledge_boundary_trace_v1', event: 'world_knowledge_resolved',
           core_result: { facts: [{ claim_ref: 'claim:actual' }], hard_constraints: [] } },
         { event: 'owner_commit_completed' }],
@@ -77,6 +80,8 @@ test('campaign drives HTTP, separates explorer context, and retains actual priva
   assert.equal(report.turns[0].commit_status, 'committed');
   assert.equal(report.turns[0].presentation_status, 'completed');
   assert.deepEqual(report.turns[0].retrieved_claim_refs, ['claim:actual']);
+  assert.equal(report.turns[0].events[1].llm.gameplay_traces[0].event,
+    'world_knowledge_not_required');
   assert.ok(inputs.some(({ url, request }) => url.endsWith('/turns') && request.method === 'POST'));
   const attempts = inputs.filter(({ url }) => url.endsWith('/turns'));
   assert.equal(attempts.length, 2);

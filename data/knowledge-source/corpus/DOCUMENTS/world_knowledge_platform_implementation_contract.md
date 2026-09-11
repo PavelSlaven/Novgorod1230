@@ -2147,6 +2147,13 @@ RETRIEVE
 
 Не вводить отдельную универсальную classifier LLM только ради этих трёх состояний. Использовать фактический semantic orchestration и real call sites.
 
+Для raw free-text boundary, где code-owned call site не может доказать `NONE`
+до понимания текста, уже существующий query planner может завершить собственную
+работу каноническим пустым six-field plan. Это означает
+`NO_KNOWLEDGE_REQUIRED`, а не отсутствие coverage: такой план допустим только
+когда semantic step полностью разрешается supplied current state без внешней
+factual premise. Второй classifier или planner не создаётся.
+
 ---
 
 # 51. Query planner responsibility
@@ -2164,6 +2171,14 @@ requested_predicates
 search_hints
 query_locale
 ```
+
+Для purpose `semantic_resolution` `domains: []` вместе с пустыми
+`focus_refs`, `requested_predicates` и
+`search_hints` является единственной planner-формой
+`NO_KNOWLEDGE_REQUIRED`. Любая factual need требует хотя бы одного allowed
+domain, даже если подходящий ref отсутствует или ожидается gap. Непустые refs,
+predicates либо hints при пустом `domains` invalid. Другие purposes сохраняют
+непустой domain и собственный grounding contract.
 
 Planner не может:
 
@@ -2469,6 +2484,10 @@ KNOWLEDGE_UNAVAILABLE
 ```
 
 Для `PARTIAL/UNRESOLVED/OUT_OF_SCOPE/UNAVAILABLE` model не получает право «дополнить факт по памяти».
+
+Для planner-resolved `NO_KNOWLEDGE_REQUIRED` retrieval/Core не вызываются;
+consumer получает явный sufficiency marker и не добавляет factual premises из
+model memory.
 
 Она может:
 

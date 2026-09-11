@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { createWorldKnowledgeCore, WorldKnowledgeError } from '@rus/world-knowledge';
 import { loadProductionWorldKnowledge } from
   '../src/internal/world-knowledge-production.js';
-import { createProductionWorldKnowledgeGrounder } from
+import { createProductionWorldKnowledgeGrounder, wkClosure } from
   '../src/runtime/world-knowledge-grounding.js';
 import { loadLowerDvinaTraceMaterializationBundle } from
   '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
@@ -146,6 +146,51 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.ok(context_text.includes(first.world_knowledge.facts[0].runtime_text));
   assert.deepEqual(first, beforeConsumer);
   t.diagnostic(`Production WK wire reduction: ${JSON.stringify(first).length - JSON.stringify(consumerWire).length} chars.`);
+});
+
+test('an explicit empty plan records NO_KNOWLEDGE_REQUIRED without retrieval', async () => {
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  let coreCalls = 0;
+  let encoderCalls = 0;
+  let vectorCalls = 0;
+  const diagnostics = [];
+  const traces = [];
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      core: { resolveWorldKnowledge() { coreCalls += 1; } },
+      encoder: { async encode() { encoderCalls += 1; return new Float32Array(1024); } },
+      vector_index: { search() { vectorCalls += 1; return new Map(); } } },
+    telemetry: { onDetail: entry => diagnostics.push(entry),
+      onGameplayTrace: entry => traces.push(entry) },
+    roleRunner: { async run(call) {
+      assert.match(call.messages[0].content, /canonical NO_KNOWLEDGE_REQUIRED plan/u);
+      return { output: { schema: 'world_knowledge_query_plan_v1',
+        query_locale: 'ru', domains: [], focus_refs: [],
+        requested_predicates: [], search_hints: [] } };
+    } }
+  });
+  const request = { request_id: 'turn:no-wk', remaining_intent: 'Громко зову Онисима.',
+    player_safe_state: {} };
+  const grounded = await grounder.ground(request, 'semantic_resolution');
+  assert.equal(coreCalls, 0);
+  assert.equal(encoderCalls, 0);
+  assert.equal(vectorCalls, 0);
+  assert.equal(grounded.world_knowledge.sufficiency,
+    'NO_KNOWLEDGE_REQUIRED');
+  assert.deepEqual(grounded.world_knowledge.facts, []);
+  assert.match(wkClosure(grounded).join(' '),
+    /Do not add a historical, scientific, social, craft/u);
+  assert.equal(diagnostics[0].planner_called, true);
+  assert.equal(diagnostics[0].vector_status, 'not_required');
+  assert.equal(diagnostics[0].retrieval_observability, null);
+  assert.deepEqual(diagnostics[0].domains, []);
+  assert.equal(traces[0].event, 'world_knowledge_not_required');
+  assert.equal(traces[0].query, null);
+  assert.equal(traces[0].core_result, null);
+  assert.deepEqual(traces[0].consumer.input.world_knowledge,
+    grounded.world_knowledge);
 });
 
 function assertRetrievalObservability(observability, grounded) {
@@ -432,7 +477,12 @@ test('NPC action grounding reads only the projected NPC role and historical cont
     vector_index: { search: () => new Map() } };
   const grounder = createProductionWorldKnowledgeGrounder({ worldKnowledge,
     placeRefs: ['region_novgorod_land'],
-    roleRunner: { async run() { return { output: {
+    roleRunner: { async run(call) {
+      assert.doesNotMatch(call.messages[0].content,
+        /canonical NO_KNOWLEDGE_REQUIRED plan/u);
+      assert.match(call.messages[0].content,
+        /requires at least one allowed domain/u);
+      return { output: {
       schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
       domains: ['environment'],
       focus_refs: ['wk:environment:regional-fish-exploitation'],

@@ -27,6 +27,7 @@
       "name": "@rus/game-server",
       "owns": [
         "Planner examples остаются flat semantic objects; mapping labels находятся",
+        "Production WK query planner может вернуть canonical empty six-field plan,",
         "Narration adapter даёт auditor request-local sources",
         "Phase 2 объединяет одновременные retries одной party/idempotency identity",
         "Публикует player-safe progress только для exact active request через",
@@ -547,6 +548,7 @@
       "name": "@rus/world-knowledge",
       "owns": [
         "query/bundle validation и slice construction",
+        "canonical empty six-field `semantic_resolution` query plan как",
         "bounded planner focus candidates из compiled lexical postings с теми же",
         "exact, structured и localized lexical retrieval",
         "caller-provided vector scores и pure flat-vector scan; Core остаётся",

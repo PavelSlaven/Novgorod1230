@@ -2,9 +2,9 @@
   "command": "npm run docs:generate",
   "files": [
     {
-      "bytes": 49086,
+      "bytes": 49260,
       "path": "generated/module-index.json",
-      "sha256": "70a327d6d4ae3a3093c6f00784270f45e27309217e51a5e966aabbe494863e04"
+      "sha256": "90e90d564a3dae2f8f6a53ab4aa7ac399e98a9ce936f82ba42cdaa2e80384209"
     },
     {
       "bytes": 39680,
@@ -17,13 +17,13 @@
       "sha256": "a6daedab254bca2f3ae7f2d522d9cd227c17283d7d38fa49e0fa4f07e9506597"
     },
     {
-      "bytes": 15101,
+      "bytes": 15118,
       "path": "MODULE_INDEX.md",
-      "sha256": "e5fe76a0e838d16e1fcd83903bfefda805052e602b590d4d0b37881a3ca6e59d"
+      "sha256": "3cf7ae02ffdef0d42990355602cb3e6b9e97de14288caf027f40221d920303ef"
     }
   ],
   "generator": "tools/docs-tools/src/cli.js",
-  "input_digest": "7672e19b49a1ea75c74e1c04de03792ef637cb825b2e15e85f7507a391083532",
+  "input_digest": "fda135929c66ceddc53570efcfcbb2369ba6b819d1266a90b5f7e4c8dc3afc36",
   "release": "0.23.0-migration.24",
   "schema_version": "rus.generated_manifest.v1"
 }

@@ -221,6 +221,8 @@ function groundingDiagnostic(call) {
 function auditBoundary(boundary) {
   if (boundary?.event === 'world_knowledge_resolved'
       && boundary.schema === 'world_knowledge_boundary_trace_v1') return boundary;
+  if (boundary?.event === 'world_knowledge_not_required'
+      && boundary.schema === 'world_knowledge_boundary_trace_v1') return boundary;
   if (boundary?.event === 'owner_commit_rejected') {
     return { event: boundary.event, code: boundary.code ?? null };
   }

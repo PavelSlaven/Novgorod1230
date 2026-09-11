@@ -13,6 +13,9 @@ FACT/INFERENCE/ANALOGY/EDITORIAL/UNCERTAIN соответственно.
 ## Владеет
 
 - query/bundle validation и slice construction;
+- canonical empty six-field `semantic_resolution` query plan как
+  `NO_KNOWLEDGE_REQUIRED`; при пустом
+  `domains` refs/predicates/hints тоже обязаны быть пустыми;
 - bounded planner focus candidates из compiled lexical postings с теми же
   tokenization/IDF и claim→concept MAX; русский last-letter stem расширяет
   только начала индексных токенов. Domain filter и stable tie сохраняются;

@@ -36,6 +36,10 @@ export async function resolveTurnStepWorldKnowledge({ mode, core, bundle, exactQ
     throw turnFailure('TURN_WORLD_KNOWLEDGE_CONTEXT_INVALID', 'Authoritative World Knowledge context is invalid.');
   }
   const planned = await requestWorldKnowledgeQueryPlan({ request: plannerRequest, bundle, plannerModel });
+  if (planned.plan.domains.length === 0) return deepFreeze({
+    slice: null, planner_called: true, repaired: planned.repaired,
+    sufficiency: 'NO_KNOWLEDGE_REQUIRED'
+  });
   const query = {
     schema: 'world_knowledge_query_v1',
     pack_ref: plannerRequest.pack_ref,

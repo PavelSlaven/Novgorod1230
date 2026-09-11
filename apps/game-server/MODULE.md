@@ -39,6 +39,12 @@ and adds no second transaction owner.
   Narration prompts проверяют также temporal/aspectual связи и конкретный
   pending choice; whole-prose repair повторно применяет все grounding rules.
 
+- Production WK query planner может вернуть canonical empty six-field plan,
+  когда raw semantic step не требует factual premise. Grounder фиксирует
+  `NO_KNOWLEDGE_REQUIRED` в private boundary trace, не вызывает
+  embedding/vector/Core и запрещает consumer дополнять факт из model memory.
+  Непустая factual need сохраняет прежний validated retrieval path.
+
 - Narration adapter даёт auditor request-local sources
   visible_change_N/uncertainty_N. Private wire разделяет required_current_beat
   (changes/uncertainties с ref/text), optional_support

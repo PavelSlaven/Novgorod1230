@@ -160,7 +160,7 @@ function acceptanceHttpRoot(root, llm) {
     mode: 'custom', compatibility: 'openai_compatible',
     base_url: llm.baseUrl, model: 'fixture-provider',
     api_key_present: true
-  }) });
+  }), getTurnProgress: () => null });
 }
 
 function startPostgres(name) {

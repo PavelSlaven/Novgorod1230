@@ -13,6 +13,12 @@ const SKILL_LABELS = Object.freeze({
   observation: 'Наблюдение', communication: 'Общение',
   custom_and_law: 'Обычай и право'
 });
+const CHECK_OUTCOME_LABELS = Object.freeze({
+  clean_success: 'чистый успех', success: 'успех',
+  success_with_cost: 'успех с ценой',
+  failure_with_consequence: 'неудача с последствием',
+  severe_failure: 'тяжёлая неудача'
+});
 
 export function projectPlayerSafeChecks(payload) {
   const projected = [];
@@ -42,6 +48,8 @@ export function projectPlayerSafeChecks(payload) {
     add(payload.last_turn?.check_result);
   }
   add(payload.last_turn?.consequence?.conversation?.check_result);
+  add(payload.last_turn?.consequence?.negotiation?.check_result);
+  add(payload.last_turn?.consequence?.treatment?.check_result);
 
   const combat = payload.last_turn?.consequence?.combat;
   for (const result of combat?.check_results ?? []) {
@@ -78,7 +86,8 @@ function playerSafeCheck({ result, ordinal, actorLabel, actionLabel, labels }) {
       severe_failure: result.outcome.severe_failure,
       roll_note: result.outcome.roll_note
     },
-    consequence_label: null
+    consequence_label: `Итог проверки: ${CHECK_OUTCOME_LABELS[
+      result.outcome.band]}.`
   };
 }
 

@@ -126,12 +126,51 @@ test('turn progress polling uses exact request, never overlaps, stops, and is no
   const stoppedAt = polls;
   await new Promise((resolve) => setTimeout(resolve, 5));
   assert.equal(polls, stoppedAt);
-  assert.deepEqual(updates[0], { phase: 'understanding_action' });
+  assert.deepEqual(updates.find(({ phase }) => phase === 'understanding_action'),
+    { phase: 'understanding_action', commit_state: 'unconfirmed',
+      elapsed_seconds: 0 });
 
   await submitRecoverableTurn({
     async submitTurn() { return { screen: { screen_status: 'ready' } }; },
     async getTurnProgress() { throw new Error('status unavailable'); }
   }, saved, 'party', { raw_text: 'Иду.' }, { onProgress() {}, pollIntervalMs: 1 });
+});
+
+test('turn progress keeps local elapsed monotonic when polling fails', async () => {
+  const saved = storage();
+  let finishTurn, now = 1_000, polls = 0;
+  const updates = [];
+  const pending = submitRecoverableTurn({
+    submitTurn: async () => new Promise((resolve) => { finishTurn = resolve; }),
+    async getTurnProgress() {
+      polls += 1;
+      if (polls === 1) return { phase: 'resolving_world',
+        commit_state: 'unconfirmed', elapsed_seconds: 40 };
+      throw new Error('status unavailable');
+    }
+  }, saved, 'party', { raw_text: 'Жду.' }, {
+    onProgress: (progress) => updates.push(progress), pollIntervalMs: 1,
+    now: () => now
+  });
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    now = 32_000;
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    assert.equal(updates.at(-1).elapsed_seconds, 40,
+      'server elapsed remains the floor');
+    now = 43_000;
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    assert.equal(updates.at(-1).elapsed_seconds, 42,
+      'local elapsed advances through polling errors');
+    assert.equal(updates.at(-1).phase, 'resolving_world');
+    now = 2_000;
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    assert.equal(updates.at(-1).elapsed_seconds, 42,
+      'elapsed never moves backwards with the local clock');
+  } finally {
+    finishTurn({ screen: { screen_status: 'ready' } });
+    await pending;
+  }
 });
 
 test('screen-only pending presentation recovery polls its committed request', async () => {
@@ -159,6 +198,7 @@ test('screen-only pending presentation recovery polls its committed request', as
   await new Promise((resolve) => setTimeout(resolve, 5));
   assert.equal(polls, stoppedAt);
   assert.deepEqual(updates[0], {
-    phase: 'recovering_saved_result', commit_state: 'committed'
+    phase: 'recovering_saved_result', commit_state: 'committed',
+    elapsed_seconds: 0
   });
 });

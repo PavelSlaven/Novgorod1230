@@ -7,6 +7,10 @@ import { phase2PublicResult, projectPlayerSafeChecks } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 import { phase2InitialCurrentVisibleContext } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+import { phase4PendingScreen } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-4-write-projection.js';
+import { phase5PendingScreen } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-5-writes.js';
 
 test('validated opening projection supplies the initial current scene', () => {
   const screen = {
@@ -241,11 +245,65 @@ test('screen check projection preserves generic order and excludes NPC combat', 
     [ordinal, action]), [[1, 'Тихо пробраться к двери'],
     [2, 'Открыть тяжёлую дверь'],
     [3, 'Пробраться к двери и открыть её.']]);
+  assert.deepEqual(checks.map(({ consequence_label }) => consequence_label), [
+    'Итог проверки: успех с ценой.',
+    'Итог проверки: успех.',
+    'Итог проверки: успех.'
+  ]);
   assert.equal(checks[0].modifiers[0].label,
     'Характеристика: Ловкость');
   assert.equal(checks[0].modifiers[1].label, 'Навык: Скрытность');
   assert.equal(JSON.stringify(checks).includes('npc-step'), false);
   assert.equal(JSON.stringify(checks).includes('seed_ref'), false);
+});
+
+test('screen check projection includes Phase 4 negotiation and Phase 5 treatment', () => {
+  const check = (checkId, band) => ({
+    check_id: checkId, roll: 16,
+    modifiers: { attribute: 2, skill: 1, state: 0, equipment: 0,
+      circumstances: 0 }, total: 19, difficulty: 15,
+    outcome: { band, margin: 4, success: true, cost_required: false,
+      severe_failure: false, roll_note: null },
+    audit: { seed_ref: 'private' }
+  });
+  const payload = (consequence) => ({
+    actor_id: 'player-1', player_profile: { identity: { name: 'Микула' } },
+    last_turn: { raw_text: 'Помочь спутнику.', consequence }
+  });
+  const negotiation = projectPlayerSafeChecks(payload({ negotiation: {
+    check_result: check('phase-4-check', 'success')
+  } }));
+  const treatment = projectPlayerSafeChecks(payload({ treatment: {
+    check_result: check('phase-5-check', 'clean_success')
+  } }));
+
+  assert.deepEqual(negotiation.map(({ action_label, consequence_label }) =>
+    [action_label, consequence_label]), [[
+    'Помочь спутнику.', 'Итог проверки: успех.'
+  ]]);
+  assert.deepEqual(treatment.map(({ action_label, consequence_label }) =>
+    [action_label, consequence_label]), [[
+    'Помочь спутнику.', 'Итог проверки: чистый успех.'
+  ]]);
+  const pendingArgs = (state, turnId) => ({
+    state: { ...state, opening_identity: { opening_screen_digest: 'opening' } },
+    factual: { mode_resolution: { turn_id: turnId } },
+    visibleEnvelope: { package_id: `visible:${turnId}`,
+      package_digest: 'package', visible_payload: {
+        perceived_scene: 'лагерь', perceived_changes: [], sensory_details: [],
+        visible_npcs: [], visible_objects: [], known_context: [],
+        uncertainties: []
+      } },
+    turnNumber: 1, nextVersion: 1
+  });
+  assert.deepEqual(phase4PendingScreen(pendingArgs(payload({ negotiation: {
+    check_result: check('phase-4-check', 'success')
+  } }), 'phase-4-turn')).checks, negotiation);
+  assert.deepEqual(phase5PendingScreen(pendingArgs(payload({ treatment: {
+    check_result: check('phase-5-check', 'clean_success')
+  } }), 'phase-5-turn')).checks, treatment);
+  assert.equal(JSON.stringify([negotiation, treatment]).includes('seed_ref'),
+    false);
 });
 
 function clock(wholeMinutes) {

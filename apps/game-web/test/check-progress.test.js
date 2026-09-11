@@ -31,7 +31,7 @@ test('turn screen validates and renders committed check arithmetic', () => {
       { kind: 'circumstances', label: 'Обстоятельства', value: 0 }
     ], total: 12, outcome: { band: 'success_with_cost', margin: -3,
       success: false, cost_required: true, severe_failure: false,
-      roll_note: null }, consequence_label: null
+      roll_note: null }, consequence_label: 'Итог проверки: успех с ценой.'
   };
   const screen = { ...firstScreen(), schema: 'lower_dvina_trace_turn_screen',
     turn_id: 'turn-1', turn_number: 1,
@@ -41,6 +41,7 @@ test('turn screen validates and renders committed check arithmetic', () => {
   assert.match(html, /d20: <strong>12<\/strong>/u);
   assert.match(html, /против сложности <strong>15<\/strong>/u);
   assert.match(html, /успех с ценой/u);
+  assert.match(html, /Итог проверки: успех с ценой\./u);
   assert.match(html, /Навык: Атлетика<\/dt><dd>\+1/u);
   assert.match(html, /&lt;Микула&gt;/u);
   assert.doesNotMatch(html, /<Микула>/u);

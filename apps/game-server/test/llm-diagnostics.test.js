@@ -104,9 +104,10 @@ test('live turn progress is exact-request scoped, monotonic, shared by retry, an
   assert.equal(diagnostics.progress({ party_id: 'party', request_id: 'request-1' }), null);
 });
 
-test('a valid sixty-second turn has no obsolete whole-turn deadline incident', () => {
-  const report = buildLlmTurnReport({ turn_duration_ms: 60_000 });
-  assert.equal(report.turn_deadline_ms, null);
+test('a valid sixty-second turn reports the safety deadline without an incident', () => {
+  const report = buildLlmTurnReport({ turn_duration_ms: 60_000,
+    turn_deadline_ms: 360_000 });
+  assert.equal(report.turn_deadline_ms, 360_000);
   assert.equal(report.llm_budget_ms, null);
   assert.equal(report.aggregate.deadline_exceeded, false);
   assert.deepEqual(report.aggregate.incidents, []);

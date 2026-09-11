@@ -163,6 +163,9 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   const surrendered = await restarted.submitTurn(party.party_id, surrenderInput);
   assert.equal(surrendered.option_id,
     'offer_conditional_protection_and_seek_surrender');
+  assert.equal(surrendered.screen.checks.length, 1);
+  assert.equal(surrendered.screen.checks[0].consequence_label,
+    'Итог проверки: успех.');
   assert.deepEqual(surrendered.conversation.semantic_exchange, {
     response_kind: 'surrender',
     npc_utterance: 'Сдаюсь. Нож отдам.',
@@ -178,10 +181,10 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   )).rows, [{ result_kind: 'success' }]);
   await assertSuccessRows(pool, party.party_id);
   const restartedAfterSurrender = buildRuntime({ pool, release, runtimeCatalogPin });
-  assert.deepEqual(
-    await restartedAfterSurrender.submitTurn(party.party_id, surrenderInput),
-    surrendered
-  );
+  const replayedSurrender = await restartedAfterSurrender.submitTurn(
+    party.party_id, surrenderInput);
+  assert.deepEqual(replayedSurrender, surrendered);
+  assert.deepEqual(replayedSurrender.screen.checks, surrendered.screen.checks);
   await assertSuccessRows(pool, party.party_id);
 
   await assertTamperRejected(pool, restartedAfterSurrender, party.party_id,

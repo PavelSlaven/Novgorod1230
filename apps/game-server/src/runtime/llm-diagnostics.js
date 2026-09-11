@@ -56,7 +56,9 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       };
       live.users += 1;
       const turn = { party_id: partyId, request_id: requestId, calls: [],
-        started_at: startedAt, incidents: [], details: [], gameplay_traces: [], live };
+        started_at: startedAt,
+        turn_deadline_ms: turnBudget.deadlineMs ?? null,
+        incidents: [], details: [], gameplay_traces: [], live };
       active.set(liveKey, live);
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });

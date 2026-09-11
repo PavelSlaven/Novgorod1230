@@ -45,12 +45,16 @@ test('Phase 5 PostgreSQL treatment persists stages, outcomes, replay, rollback a
     'Оказать Онисиму первую помощь.');
   const before = await snapshot(pool, party.party_id);
   const completed = await runtime.submitTurn(party.party_id, input);
+  assert.equal(completed.screen.checks.length, 1);
+  assert.equal(completed.screen.checks[0].consequence_label,
+    'Итог проверки: успех.');
   await assertCompleted(pool, party.party_id, 'stabilized_unable_to_walk');
   await assertAppliedTreatmentResources(pool, party.party_id);
   assert.equal((await snapshot(pool, party.party_id)).clock.whole_minutes, String(Number(before.clock.whole_minutes) + 25));
   const replayCounters = { ...counters };
   const replay = await buildRuntime({ pool, ...pins, counters, randomValue: 0.01 }).submitTurn(party.party_id, input);
   assert.deepEqual(replay, completed);
+  assert.deepEqual(replay.screen.checks, completed.screen.checks);
   assert.deepEqual(counters, replayCounters, 'same key must not draw RNG or obtain time');
   assert.equal(await attempts(pool, party.party_id), 1);
 

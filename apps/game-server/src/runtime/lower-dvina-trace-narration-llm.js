@@ -15,8 +15,10 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'Use optional support selectively to compose the beat; do not recap unchanged '
   + 'scene, inventory, body or NPC facts. Turn duration is code-owned UI metadata '
   + 'and is not supplied to prose; never invent elapsed minutes or report time spent. '
-  + 'Combine related scene facts into a spatially coherent image instead of one '
-  + 'sentence per input field. Sparse evidence '
+  + 'Compose supported details into a spatially coherent image around the performed '
+  + 'action or perceived result, using only supplied spatial relations. A source-order checklist remains weak '
+  + 'composition even when complete and grounded. Never invent a causal, temporal '
+  + 'or spatial bridge merely to connect facts. Sparse evidence '
   + 'calls for concise prose, not invented connective facts or a service report.';
 
 const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certainty; '
@@ -44,7 +46,7 @@ export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
     auditor: { audit: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_auditor',
       narrationAuditInstruction(request), request) },
     semanticRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_semantic_repair',
-      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
+      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For weak_literary_composition, rebuild around the performed action and supplied spatial relations instead of paraphrasing sources in input order. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
   });
 }
 

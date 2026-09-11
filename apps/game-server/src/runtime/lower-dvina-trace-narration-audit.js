@@ -43,8 +43,13 @@ current_beat_buried merely because another required source has an empty review.
 Optional support may compose the current beat but a recap of unchanged
 support is static_context_dump. Turn duration is code-owned UI metadata and is
 not supplied as prose evidence. Any invented elapsed time is unsupported_fact;
-service-like time reporting is also elapsed_as_service_report. Evaluate all five
-checks independently: one failure never excuses a missed second failure.
+service-like time reporting is also elapsed_as_service_report. A passage that
+mainly restates required sources one by one in source order, without composing
+the performed action or perceived result with supplied spatial relations, is
+weak_literary_composition even when coverage is complete and every proposition
+is supported. Do not demand an invented causal, temporal or spatial bridge to
+avoid that failure. Evaluate all five checks independently: one failure never
+excuses a missed second failure.
 
 Mandatory final cross-checks before JSON:
 1. Every sensory proposition without an exact supplied sensory fact is unsupported_sensory.
@@ -54,6 +59,9 @@ service-like reporting also receives elapsed_as_service_report.
 never use it to restate or penalize an omitted source whose review is [].
 4. If prose reverses ordered performed actions or subordinates the earlier action
 to the later one, record unsupported_event for the invented temporal relation.
+5. When several scene facts accompany a performed action or perceived result,
+reject a source-order checklist as weak_literary_composition. Complete factual
+coverage alone is not a literary PASS.
 
 Return only the exact JSON shape shown below. reviewed_segments must copy every
 segment choice exactly once and in order. source_reviews must contain exactly

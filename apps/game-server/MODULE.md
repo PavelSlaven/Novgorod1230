@@ -621,6 +621,9 @@ prose wire: её вычисляет temporal owner и показывает serve
 При current beat private wire
 допускает visible_scene + sensory_details; narrator выбирает только относящиеся
 к этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.
+Полный grounded пересказ required sources по одному в исходном порядке является
+weak_literary_composition, если действие или воспринятый результат не организует
+поддержанные пространственные детали в сцену; выдуманная связка недопустима.
 
 Temporal/aspect grounding не позволяет выводить длительность из действия или
 sensory sky/weather/sound. Sensory support связывает сцену. Source review требует все propositions каждого atomic

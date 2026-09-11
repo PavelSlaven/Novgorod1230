@@ -91,6 +91,61 @@ test('invented elapsed-time report is removed by whole-prose repair', async () =
     'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
 });
 
+for (const sample of [
+  {
+    name: 'arrival at a yard',
+    changes: ['Вы вошли во двор.', 'Слева от вас стоит амбар.', 'Впереди, у колодца, ждёт возчик.'],
+    checklist: 'Вы вошли во двор. Слева от вас стоит амбар. Впереди, у колодца, ждёт возчик.',
+    repaired: 'Вы входите во двор: слева от вас стоит амбар, а впереди, у колодца, ждёт возчик.'
+  },
+  {
+    name: 'search in a workshop',
+    changes: ['Вы осмотрели мастерскую.', 'На верстаке лежит резец.', 'Под окном темнеют стружки.'],
+    checklist: 'Вы осмотрели мастерскую. На верстаке лежит резец. Под окном темнеют стружки.',
+    repaired: 'Осматривая мастерскую, вы видите резец на верстаке и тёмные стружки под окном.'
+  },
+  {
+    name: 'speech beside a gate',
+    changes: ['Вы произнесли: «Стой!»', 'Прямо перед вами — ворота; за ними виден всадник.',
+      'Справа от вас тянется частокол.'],
+    checklist: 'Вы произнесли: «Стой!» Прямо перед вами — ворота; за ними виден всадник. Справа от вас тянется частокол.',
+    repaired: 'Вы произносите: «Стой!»; прямо перед вами, за воротами, виден всадник, а справа от вас тянется частокол.'
+  }
+]) test(`${sample.name}: source-order checklist fails literary audit and is repaired as an action-centered scene`, async () => {
+  const visible = { ...scene(), visible_scene: 'Невиденная тестовая сцена',
+    visible_changes: sample.changes };
+  const calls = [];
+  const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+    calls.push(call.role_id);
+    const wire = JSON.parse(call.messages[1].content);
+    if (call.role_id === 'gameplay_narrator') {
+      assert.match(call.messages[0].content, /around the performed action/u);
+      assert.match(call.messages[0].content, /source-order checklist/u);
+      return { output: { prose: sample.checklist } };
+    }
+    if (call.role_id === 'gameplay_narrator_semantic_repair') {
+      assert.match(call.messages[0].content, /weak_literary_composition/u);
+      assert.ok(wire.concerns.some(({ kind }) => kind === 'literary_quality'));
+      return { output: { replacements: [{ prose: sample.repaired }] } };
+    }
+    const initial = wire.phase === 'initial';
+    assert.match(call.messages[0].content, /source-order checklist/u);
+    return { output: reviewed(wire, {
+      literaryFailures: initial ? [{ check: 'weak_literary_composition',
+        segment_choice: 's1',
+        reason: 'Supported facts are restated in source order instead of composing the performed action and supplied spatial relations into a scene.' }] : [],
+      evidence: initial ? [] : ['The performed action organizes the supplied spatial facts.']
+    }) };
+  } } });
+
+  const result = await service.run({ version: 1, schema: 'narration_request',
+    request_id: sample.name, surface: 'turn', visible_context: visible, context: {} });
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, sample.repaired);
+  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
+    'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+});
+
 function scene() {
   return { version: 1, schema: 'visible_context_package', visible_scene: 'Берег',
     visible_changes: [], uncertainties: [], sensory_details: [], visible_npc: [],

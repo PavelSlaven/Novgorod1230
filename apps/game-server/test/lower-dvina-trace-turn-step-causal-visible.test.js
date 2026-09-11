@@ -234,3 +234,33 @@ for (const sample of [
   assert.deepEqual(visible.uncertainties, []);
   assert.equal(visible.visible_changes.some(change => /Прошл[ао]/u.test(change)), false);
 });
+
+test('applied observation duration stays with observation before later speech', async () => {
+  const observationSeeds = { turn_step_1: {
+    kind: 'semantic_activity', duration_minutes: 1 } };
+  const speechSeeds = { turn_step_2: {
+    kind: 'semantic_activity', duration_minutes: 1 } };
+  const visible = await createLowerDvinaTraceTurnStepVisibleProjector({ fallback: {
+    project: async () => assert.fail() } }).project({
+    retrieved_state: committedState(),
+    consequence: { status: 'resolved', visible_seed: {
+      ...observationSeeds, ...speechSeeds } },
+    time_update: { prepared_effect_ledger: { slices: [
+      { step_index: 1, consequence: { visible_seed: observationSeeds } },
+      { step_index: 2, consequence: { visible_seed: speechSeeds } }
+    ] } },
+    mode_resolution: { decision_trace: { remaining_intent: null,
+      step_traces: [
+        { step_index: 1, applied: true, approved_plan: { resolution: 'direct',
+          direct_result_kind: 'player_safe_observation' } },
+        { step_index: 2, applied: true, approved_plan: { resolution: 'direct',
+          direct_result_kind: 'player_utterance', utterance: {
+            utterance_text: 'Онисим!' } } }
+      ] } }
+  });
+  assert.deepEqual(visible.visible_changes.slice(-2), [
+    'За 1 минуту вы завершили наблюдение по уже доступным вам признакам.',
+    'За 1 минуту вы произнесли: «Онисим!».']);
+  assert.equal(visible.visible_changes.includes(
+    'Наблюдение завершено по уже доступным вам признакам.'), false);
+});

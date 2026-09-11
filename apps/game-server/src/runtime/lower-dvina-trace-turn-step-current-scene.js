@@ -145,9 +145,12 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
   const duration = durations.reduce((total, entry) => total + Number(entry.duration_minutes), 0);
   const speech = appliedPlan?.resolution === 'direct' && appliedPlan.direct_result_kind === 'player_utterance'
     ? `Вы произнесли: «${appliedPlan.utterance.utterance_text}»` : null;
+  const observation = appliedPlan?.resolution === 'direct'
+    && appliedPlan.direct_result_kind === 'player_safe_observation';
   const attempts = values.filter(value => value?.kind === 'transient_item_use'
     && Object.keys(value).length === 2 && text(value.description));
-  const bound = appliedPlan != null && duration > 0 && (speech != null || attempts.length === 1);
+  const bound = appliedPlan != null && duration > 0
+    && (speech != null || observation || attempts.length === 1);
   let emittedDuration = false;
   const changes = values.flatMap((value) => {
     if (bound && value === attempts[0]) return [];
@@ -156,6 +159,8 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
     emittedDuration = true;
     if (bound) return speech != null
       ? `За ${duration} ${minuteWord(duration, 'минуту')} вы произнесли: «${appliedPlan.utterance.utterance_text}».`
+      : observation
+        ? `За ${duration} ${minuteWord(duration, 'минуту')} вы завершили наблюдение по уже доступным вам признакам.`
       : [`Вы в течение ${duration} ${minuteWord(duration, 'минуты', 'минут')} выполняли попытку: «${attempts[0].description}».`,
         'В ходе этой попытки результат наблюдения не установлен.'];
     return directSeedChange({ ...value, duration_minutes: duration });

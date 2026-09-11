@@ -402,6 +402,8 @@ test('metadata projection admits only isolated errors and keeps invalid mechanic
           calls.push('audit');
           if (repeated) assert.match(call.messages[0].content,
             /speech_faithful=false, если явно длительная, повторяемая или ограниченная временем речь сведена к одной короткой реплике/u);
+          assert.match(call.messages[0].content,
+            /Цель, надежда, манера или ожидаемый результат/u);
           return { output: { speech_faithful: !kind.endsWith('quote') && !repeated,
             required_input_mode: kind === 'rewritten-quote' ? 'verbatim' : 'intent_paraphrase',
             unexecuted_intent: later } };

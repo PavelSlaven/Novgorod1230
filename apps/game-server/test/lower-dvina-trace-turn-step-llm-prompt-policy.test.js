@@ -91,6 +91,9 @@ test('turn step planner prompt maps grounded and visible-look contracts',
     });
     assert.match(prompt, /use only request or operation-contract enum values/u);
     assert.match(prompt, /do not substitute or invent refs/u);
+    assert.match(prompt, /Adjacent current-scene looking, listening, smelling/u);
+    assert.match(prompt,
+      /purpose, hope, manner, or expected-result clause belongs/u);
   });
 
 test('turn step planner offers scene seed instead of direct look while unseeded',

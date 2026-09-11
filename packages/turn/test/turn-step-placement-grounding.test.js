@@ -116,3 +116,16 @@ test('ownerless utterance preserves exact player words and speaker before later 
   assert.equal(validateTurnStepPlan(paraphrased, { request: { ...input,
     remaining_intent: 'Зову на помощь, затем проверяю навес.' } }).ok, true);
 });
+
+test('write-free observation may precede a later independent intent', () => {
+  const input = { ...request, root_player_action: 'осмотреться, затем крикнуть',
+    remaining_intent: 'осмотреться, затем крикнуть' };
+  const value = { ...plan('cloth', 'worn_by'), operations: [],
+    interpretation: { player_goal: input.root_player_action,
+      grounded_attempt: 'осмотреться', adaptation: 'literal' },
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    goal_result: 'pending', direct_result_kind: 'player_safe_observation',
+    continuation: { remaining_intent: 'затем крикнуть', depends_on_refs: [] }
+  };
+  assert.deepEqual(validateTurnStepPlan(value, { request: input }).errors, []);
+});

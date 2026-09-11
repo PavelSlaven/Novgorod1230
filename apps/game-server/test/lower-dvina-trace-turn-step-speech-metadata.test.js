@@ -260,14 +260,13 @@ test('faithful speech restores only a lost suffix prefix through preflight witho
   });
 });
 
-test('speech suffix projection rejects removal, replacement, carriers and unfaithful speech', async () => {
+test('speech suffix projection restores absence but rejects replacement, carriers and unfaithful speech', async () => {
   const later = 'Then I listen toward the river.';
   const input = request({ remaining_intent: `I call, "Hello!" ${later}` });
   const base = speechOutput(input, 'Hello!', 'I listen toward the river.');
   for (const [change, audit] of [
     [{ continuation: { remaining_intent: `and ${later}`, depends_on_refs: [] } }, {}],
     [{ continuation: { remaining_intent: 'I watch the river.', depends_on_refs: [] } }, {}],
-    [{ continuation: null }, {}],
     [{ continuation: { ...base.continuation, depends_on_refs: ['item:branch'] } }, {}],
     [{ continuation: { ...base.continuation, prepared_followup_ref: 'prepared:next' } }, {}],
     [{ continuation: { ...base.continuation, pending_discovery: {} } }, {}],
@@ -286,6 +285,34 @@ test('speech suffix projection rejects removal, replacement, carriers and unfait
     await assert.rejects(validate({ request: input, plan: { ...base, ...change },
       allow_speech_metadata_projection: true }), { code: 'TURN_STEP_PLAN_INVALID' });
   }
+  const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+    roleRunner: { async run() { return { output: { speech_faithful: true,
+      required_input_mode: 'verbatim', unexecuted_intent: later } }; } }
+  });
+  const restored = await validate({ request: input,
+    plan: { ...base, goal_result: 'achieved', continuation: null },
+    allow_speech_metadata_projection: true });
+  assert.deepEqual(restored.corrected_plan.continuation,
+    { remaining_intent: later, depends_on_refs: [] });
+  assert.equal(restored.corrected_plan.goal_result, 'pending');
+});
+
+test('speech audit sends a later utterance back to the earlier action', async () => {
+  const intent = 'Оглядываю берег, прислушиваюсь и громко зову Онисима, надеясь найти лодочника или услышать ответ.';
+  const input = request({ remaining_intent: intent });
+  const plan = speechOutput(input, 'Онисим!');
+  plan.utterance.input_mode = 'intent_paraphrase';
+  const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+    roleRunner: { async run() { return { output: { speech_faithful: true,
+      required_input_mode: 'intent_paraphrase',
+      unexecuted_intent: 'Оглядываю берег, прислушиваюсь, надеясь найти лодочника или услышать ответ.'
+    } }; } }
+  });
+  await assert.rejects(validate({ request: input, plan,
+    allow_speech_metadata_projection: true }), (error) =>
+    error.code === 'TURN_STEP_PLAN_INVALID'
+      && error.details.errors[0].path === '$.utterance'
+      && error.details.errors[0].message.includes('earliest action'));
 });
 
 test('structurally invalid initial speech cannot use suffix projection', async () => {

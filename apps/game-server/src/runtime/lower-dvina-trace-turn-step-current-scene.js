@@ -160,7 +160,8 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
     if (!durations.includes(value)) return directSeedChange(value);
     if (emittedDuration) return [];
     emittedDuration = true;
-    if (bound) return speech != null ? `${speech}; этот шаг занял ${duration} ${minuteWord(duration, 'минуту')}.`
+    if (bound) return speech != null
+      ? `За ${duration} ${minuteWord(duration, 'минуту')} вы произнесли: «${appliedPlan.utterance.utterance_text}».`
       : [`Вы в течение ${duration} ${minuteWord(duration, 'минуты', 'минут')} выполняли попытку: «${attempts[0].description}».`,
         'В ходе этой попытки результат наблюдения не установлен.'];
     return directSeedChange({ ...value, duration_minutes: duration });

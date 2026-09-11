@@ -74,6 +74,38 @@ test('focused speech audit rejects lost later actions and accepts exact suffix',
     }
   });
 
+test('focused speech audit restores a missing continuation without repair', async () => {
+  const intent = 'Громко зову Онисима, затем оглядываю берег и прислушиваюсь.';
+  const later = 'затем оглядываю берег и прислушиваюсь.';
+  const input = request({ remaining_intent: intent });
+  const primary = speechOutput(input, 'Онисим!');
+  primary.utterance.input_mode = 'intent_paraphrase';
+  const calls = [];
+  const roleRunner = { async run(call) {
+    if (call.role_id === 'turn_step_planner') {
+      calls.push('planner');
+      return { output: primary };
+    }
+    calls.push('auditor');
+    return { output: { speech_faithful: true,
+      required_input_mode: 'intent_paraphrase',
+      unexecuted_intent: later } };
+  } };
+  const result = await requestTurnStepPlanWithRepair({ request: input,
+    turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,
+      worldKnowledgeGrounder: { async ground(safeRequest) {
+        return safeRequest;
+      } } }),
+    semanticPlanValidator:
+      createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner })
+  });
+  assert.equal(result.repaired, false);
+  assert.equal(result.plan.goal_result, 'pending');
+  assert.deepEqual(result.plan.continuation,
+    { remaining_intent: later, depends_on_refs: [] });
+  assert.deepEqual(calls, ['planner', 'auditor']);
+});
+
 test('focused speech audit fails closed on malformed extraction', async () => {
   const input = request({ remaining_intent: 'I call, "Hello!"' });
   for (const output of [{ pass: true, concerns: [] },

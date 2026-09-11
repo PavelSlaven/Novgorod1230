@@ -43,6 +43,8 @@ for (const sample of [
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
       assert.match(prompt, /concerns are not an exhaustive whitelist/u);
       assert.match(prompt, /shorten rather than embellish/u);
+      assert.match(prompt, /replacement must differ from the rejected prose/u);
+      assert.match(prompt, /combine their total in that action sentence/u);
       assert.equal(input.segments[0].prose, sample.bad);
       assert.ok(input.concerns.some(({ kind }) => kind === 'unsupported_event'));
       return { output: { replacements: [{ prose: sample.repaired }] } };
@@ -98,7 +100,7 @@ test('committed transient motion is performed while only its observation result 
         step_traces: plans.map((approved_plan, index) => ({ step_index: index + 1, applied: true, approved_plan })) } } });
   assert.deepEqual(visible.uncertainties, []);
   assert.ok(visible.visible_changes[2].includes(`«${description}»`));
-  assert.equal(visible.visible_changes[0], 'Вы произнесли: «Онисим!»; этот шаг занял 1 минуту.');
+  assert.equal(visible.visible_changes[0], 'За 1 минуту вы произнесли: «Онисим!».');
   assert.equal(visible.visible_changes[2], `Вы в течение 5 минут выполняли попытку: «${description}».`);
   assert.equal(visible.visible_changes[3], 'В ходе этой попытки результат наблюдения не установлен.');
   assert.equal(visible.visible_changes.some(change => change.startsWith('Прошло ')), false);

@@ -19,9 +19,16 @@ export async function auditFocusedSpeech({ roleRunner, plan, request,
   );
   const classification = response.output;
   const remaining = classification.unexecuted_intent;
-  if (!classification.speech_faithful || remaining != null
-      && (!request.remaining_intent.endsWith(remaining)
-        || remaining === request.remaining_intent)) return false;
+  if (!classification.speech_faithful || remaining === request.remaining_intent) return false;
+  if (remaining != null && !request.remaining_intent.endsWith(remaining)) {
+    if (!removesOneSpan(request.remaining_intent, remaining)) return false;
+    throw serverError('TURN_STEP_PLAN_INVALID',
+      'Speech is not the earliest independent action.', { details: { errors: [{
+        path: '$.utterance', rule: 'operation_semantic_grounding',
+        code: 'operation_semantic_grounding',
+        message: 'The faithful utterance occurs after an unexecuted earlier action. Discard this speech step, plan the earliest action first, and preserve the utterance plus every later action in continuation.'
+      }] } });
+  }
   const continuation = plan.continuation;
   const matches = remaining == null ? continuation == null
     : continuation?.remaining_intent === remaining
@@ -39,16 +46,17 @@ export async function auditFocusedSpeech({ roleRunner, plan, request,
       && !Object.hasOwn(plan.activity, 'requested_duration_minutes')
       && plan.activity.effort === 'none' && Array.isArray(plan.operations)
       && plan.operations.length === 0 && plan.check === null && plan.clarification === null
-      && typeof continuation?.remaining_intent === 'string'
-      && continuation.remaining_intent.length > 0
-      && remaining.endsWith(continuation.remaining_intent)
-      && Array.isArray(continuation.depends_on_refs)
-      && continuation.depends_on_refs.length === 0
-      && continuation.prepared_followup_ref == null
-      && continuation.pending_discovery == null) {
+      && (continuation == null || typeof continuation.remaining_intent === 'string'
+        && continuation.remaining_intent.length > 0
+        && remaining.endsWith(continuation.remaining_intent)
+        && Array.isArray(continuation.depends_on_refs)
+        && continuation.depends_on_refs.length === 0
+        && continuation.prepared_followup_ref == null
+        && continuation.pending_discovery == null)) {
     return { corrected_plan: { ...plan, goal_result: 'pending',
       utterance: { ...plan.utterance, input_mode: mode }, continuation: {
-        ...continuation, remaining_intent: remaining
+        ...(continuation ?? {}), remaining_intent: remaining,
+        depends_on_refs: continuation?.depends_on_refs ?? []
     } } };
   }
   const expected = remaining == null ? null
@@ -59,6 +67,15 @@ export async function auditFocusedSpeech({ roleRunner, plan, request,
       code: 'operation_semantic_grounding',
       message: `Keep the faithful utterance and its write-free activity; speech executes no later action. Set utterance.input_mode to ${mode}, continuation exactly to ${JSON.stringify(expected)} and goal_result to ${goalResult}.`
     }] } });
+}
+
+function removesOneSpan(original, remainder) {
+  if (typeof remainder !== 'string' || remainder.length >= original.length) return false;
+  let prefix = 0;
+  while (prefix < remainder.length && original[prefix] === remainder[prefix]) {
+    prefix += 1;
+  }
+  return original.endsWith(remainder.slice(prefix));
 }
 
 function valid(value) {

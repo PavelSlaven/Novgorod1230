@@ -87,21 +87,23 @@ function validateDirectResultKind(plan, errors, request) {
     'player_safe_item_observation', 'player_safe_body_observation',
     'no_state_gesture', 'player_utterance'],
   '$.direct_result_kind', errors);
-  const requiresKind = plan.resolution === 'direct'
-    && (['achieved', 'partially_achieved'].includes(plan.goal_result)
-      || plan.direct_result_kind === 'player_utterance'
-        && plan.goal_result === 'pending' && plan.continuation != null)
+  const writeFreeDirect = plan.resolution === 'direct'
     && plan.activity?.owner === 'semantic'
     && plan.activity.duration_class === 'moment'
     && plan.activity.effort === 'none'
     && Array.isArray(plan.operations) && plan.operations.length === 0
     && plan.check === null && plan.clarification === null;
+  const allowsKind = writeFreeDirect
+    && (['achieved', 'partially_achieved'].includes(plan.goal_result)
+      || plan.goal_result === 'pending' && plan.continuation != null);
+  const requiresKind = writeFreeDirect
+    && ['achieved', 'partially_achieved'].includes(plan.goal_result);
   if (requiresKind && plan.direct_result_kind === null) {
     add(errors, '$.direct_result_kind', 'direct_result_kind',
       'is required for a successful write-free direct result');
-  } else if (!requiresKind && plan.direct_result_kind !== null) {
+  } else if (!allowsKind && plan.direct_result_kind !== null) {
     add(errors, '$.direct_result_kind', 'direct_result_kind',
-      'is allowed only for a successful write-free direct result');
+      'is allowed only for a successful or continued write-free direct result');
   }
   if (plan.direct_result_kind === 'player_safe_body_observation'
       && (request?.actor?.body == null

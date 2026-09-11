@@ -45,7 +45,7 @@ for (const [query, name, spoken, pending] of [
       step(1, { resolution: 'direct', direct_result_kind: 'player_utterance', utterance: { utterance_text: spoken } }),
       step(2, { resolution: 'domain_request', operations: [operation] }),
       { ...step(3, { resolution: 'domain_request', operations: [{ op: 'request_item_use' }] }), applied: !pending } ] } } });
-  const expected = [`Вы произнесли: «${spoken}»; этот шаг занял 1 минуту.`,
+  const expected = [`За 1 минуту вы произнесли: «${spoken}».`,
     'Поиск занял 15 минут.', `Обнаружено: «${name}».`, ...(pending ? [] : [physical])];
   assert.deepEqual(projected.visible_changes, expected);
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
@@ -227,7 +227,7 @@ for (const sample of [
       { step_index: 2, applied: true, approved_plan: { resolution: 'domain_request', goal_result: 'pending',
         operations: [{ op: 'request_item_use', use_kind: 'other', description: sample.action }] } } ] } } });
   assert.deepEqual(visible.visible_changes, [
-    `Вы произнесли: «${sample.speech}»; этот шаг занял ${sample.speechMinutes} ${sample.speechUnit}.`,
+    `За ${sample.speechMinutes} ${sample.speechUnit} вы произнесли: «${sample.speech}».`,
     `Вы в течение ${sample.minutes} ${sample.unit} выполняли попытку: «${sample.action}».`,
     'В ходе этой попытки результат наблюдения не установлен.'
   ]);

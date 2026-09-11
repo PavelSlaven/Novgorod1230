@@ -1,4 +1,3 @@
-import { runTurnWorkflow } from '@rus/turn';
 import { buildTracePhase2Registry, resolveTracePhase2InheritedContracts } from './lower-dvina-trace-phase-2-runtime-context.js';
 import { serverError } from '../errors.js';
 import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
@@ -19,8 +18,10 @@ import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js'
 import { buildTracePhase2TurnRequest, buildTraceTurnWorkflowInput, createTraceTurnRequestExecutor } from './lower-dvina-trace-phase-2-turn-request.js';
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
-import { isExpectedPostCommitPresentationFailure } from './lower-dvina-trace-post-commit-failure.js';
 import { recoverTracePendingPresentation } from './lower-dvina-trace-presentation-recovery.js';
+import { runAndPersistTracePhase2Turn } from './lower-dvina-trace-phase-2-workflow.js';
+import { isExpectedPostCommitPresentationFailure } from
+  './lower-dvina-trace-post-commit-failure.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   turnStepSemanticGroundingValidator = null, playerConversationModel = null,
@@ -280,41 +281,18 @@ export function createLowerDvinaTracePhase2Runtime({
           randomSource: turnRandomSource, temporalAdvanceOwner, decisionSecret,
           decisionNow: now, turnBudget, llmDiagnostics,
         });
-        try {
-          const result = await runTurnWorkflow(
-            buildTraceTurnWorkflowInput({
-              partyId, state, requestId, idempotencyKey, rawText, contracts,
-              phase3Contracts, phase4Contracts, phase5Contracts,
-              phase7Contracts, turn10Contracts, phase8, phase9Contracts
-            }),
-            services,
-            { now: issuedAt, requestId,
-              onEvent: (event) => recordWorkflowProgress(llmDiagnostics, event) },
-          );
-          return await runWithinTurnDeadline(turnBudget, () =>
-            repository.persistPhase2Screen({ partyId, inputDigest, result, turnBudget }));
-        } catch (error) {
-          if (isExpectedPostCommitPresentationFailure(error)
-              && services.committedPublicResult() != null) return services.committedPublicResult();
-          if (!services.commitAttempted()) error.turn_commit_status = 'not_started';
-          throw error;
-        }
+        return runAndPersistTracePhase2Turn({
+          workflowInput: buildTraceTurnWorkflowInput({
+            partyId, state, requestId, idempotencyKey, rawText, contracts,
+            phase3Contracts, phase4Contracts, phase5Contracts,
+            phase7Contracts, turn10Contracts, phase8, phase9Contracts
+          }),
+          services, issuedAt, requestId, llmDiagnostics, repository, partyId,
+          inputDigest, turnBudget,
+        });
       };
       return executeRequest({ partyId, idempotencyKey, inputDigest }, () =>
         executeTraceTurnWithDiagnostics(llmDiagnostics, { party_id: partyId, request_id: requestId }, executeAttempt));
     },
   });
-}
-
-function recordWorkflowProgress(diagnostics, event) {
-  if (event?.type === 'stage_started') {
-    const stageId = Number(event.stageId);
-    const phase = stageId <= 6 ? 'understanding_action'
-      : stageId <= 13 ? 'resolving_world'
-        : stageId === 14 ? 'saving_result' : 'preparing_screen';
-    diagnostics?.recordProgress?.(phase);
-  }
-  if (event?.type === 'stage_approved' && Number(event.stageId) === 14) {
-    diagnostics?.recordProgress?.('preparing_screen', { commit_state: 'committed' });
-  }
 }

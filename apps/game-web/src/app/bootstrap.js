@@ -9,6 +9,7 @@ import { storedLlmSettings } from './llm-settings-preferences.js';
 import { createLlmSettingsController } from './llm-settings.js';
 import { storedPendingTurn } from './pending-turn.js';
 import { recoverPendingPresentation, submitRecoverableTurn } from './turn-submission.js';
+import { trapOverlayFocus } from './overlay-focus.js';
 export { createTurnRequest, recoverPendingPresentation, submitTurnWithPresentationReplay } from
   './turn-submission.js';
 const PARTY_STORAGE_KEY = 'rus.party_id';
@@ -265,23 +266,6 @@ export function bootstrapGameWeb({
   return Object.freeze({ api, store, render });
 }
 
-function trapOverlayFocus(event, root) {
-  const panel = root.querySelector('[data-overlay-panel]');
-  if (!panel) return;
-  const focusable = [...panel.querySelectorAll(
-    'button:not([disabled]), [href], input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-  )];
-  if (!focusable.length) return;
-  const first = focusable[0];
-  const last = focusable.at(-1);
-  if (event.shiftKey && root.ownerDocument.activeElement === first) {
-    event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && root.ownerDocument.activeElement === last) {
-    event.preventDefault();
-    first.focus();
-  }
-}
 function storedTheme(storage) {
   const value = storage?.getItem?.(THEME_STORAGE_KEY);
   return value === 'light' || value === 'dark' ? value : null;

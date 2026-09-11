@@ -34,7 +34,8 @@ export function bootstrapGameWeb({
     const state = store.getState();
     root.ownerDocument.documentElement.dataset.theme = state.theme;
     root.innerHTML = renderAppState({ ...state,
-      pendingTurn: storedPendingTurn(partyStorage, state.partyId) });
+      pendingTurn: state.status === 'loading'
+        ? null : storedPendingTurn(partyStorage, state.partyId) });
     if (state.screen) void hydrateSceneCanvases(root, state.screen);
   };
   store.subscribe(render);

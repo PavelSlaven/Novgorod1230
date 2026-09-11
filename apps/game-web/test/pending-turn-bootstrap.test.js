@@ -56,6 +56,24 @@ test('bootstrap recovers the pending request while preserving a different new dr
   assert.equal(requests[2].raw_text, 'Иду дальше.');
 });
 
+test('ordinary in-flight turn shows progress without claiming recovery', async () => {
+  const saved = storage();
+  let finishTurn;
+  const ui = harness(saved, {
+    submitTurn: async () => new Promise((resolve) => { finishTurn = resolve; }),
+    async getTurnProgress() {
+      return { phase: 'understanding_action', commit_state: 'unconfirmed',
+        elapsed_seconds: 1 };
+    }
+  });
+  const pending = ui.submit('Оглядываюсь.');
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.match(ui.root.innerHTML, /Разбираем действие/u);
+  assert.doesNotMatch(ui.root.innerHTML, /Восстановить прежний ход/u);
+  finishTurn({ screen: screen() });
+  await pending;
+});
+
 test('Continue after reload resolves the exact saved request before loading any newer screen', async () => {
   const saved = storage(); let original;
   await harness(saved, { async submitTurn(_party, request) {

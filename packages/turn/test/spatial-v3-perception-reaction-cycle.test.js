@@ -9,6 +9,7 @@ import {
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
 import {
+  resolveSpatialV3PerceptionKnowledge,
   resolveSpatialV3PerceptionReactionBoundary,
   resolveSpatialV3PerceptionReactionCycle
 } from '../src/spatial-v3-perception-reaction-cycle.js';
@@ -202,6 +203,48 @@ function contextFactory({
     return seal(payload);
   };
 }
+
+test('perception-only owner persists knowledge without requiring a reaction policy', () => {
+  const result = resolveSpatialV3PerceptionKnowledge({
+    perception_request: perceptionRequest(),
+    knowledge_state_before: {
+      fact_refs: [],
+      hypothesis_refs: [],
+      state_version: 4
+    }
+  });
+
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(result.status, 'completed');
+  assert.equal(result.reaction_option_proposal, null);
+  assert.deepEqual(
+    validateSpatialV3Contract(
+      'knowledge_memory_merge_result',
+      result.knowledge_merge_result
+    ),
+    []
+  );
+  const mapped = buildSpatialV3PerceptionReactionWriteSet({
+    party_id: 'party-cycle',
+    change_set_id: 'change-perception-only',
+    idempotency_record_id: 'idem-perception-only',
+    perception_result: result.perception_result,
+    perception_replay_evidence: result.perception_replay_evidence,
+    knowledge_merge_result: result.knowledge_merge_result
+  });
+  assert.equal(mapped.ok, true, JSON.stringify(mapped));
+  assert.deepEqual(new Set(mapped.write_set.appends.map(
+    ({ target_table }) => target_table
+  )), new Set([
+    'party_perception_records',
+    'party_perception_replay_evidence',
+    'party_npc_knowledge_merge_results'
+  ]));
+  assert.equal(mapped.write_set.appends.some(
+    ({ target_table }) =>
+      target_table === 'party_npc_reaction_option_proposals'
+  ), false);
+});
 
 test('single approved option completes perception, knowledge merge and code-owned reaction without LLM', async () => {
   const request = perceptionRequest();

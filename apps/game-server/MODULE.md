@@ -630,6 +630,8 @@ sensory sky/weather/sound. Sensory support связывает сцену. Source
 required source; неизвестный результат нельзя опустить или заменить
 failure/success. Речь передаётся естественно с дословным
 содержанием и speaker, discovery — через подтверждённое восприятие без status report.
+Грамматически подчинённое раннее действие допустимо при однозначном
+completed-before смысле; reversal и simultaneous/ongoing embedding запрещены.
 
 Applied-step causal projection оставляет semantic_activity duration temporal owner;
 single transient_item_use получает два соседних atomic current-beat source:

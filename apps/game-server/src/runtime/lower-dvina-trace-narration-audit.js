@@ -23,11 +23,13 @@ clauses, sensations, action, result, time claims, causality and certainty. For e
 proposition require one exact supporting ref or field from the supplied
 player-safe input. Plausibility is never evidence. An object or place never
 supports an unstated sound, smell, touch, motion, reaction or persistence. Never
-accept reversed causal order: required changes are ordered, so a later performed
-action cannot precede or grammatically contain an earlier performed action.
-use a style policy to license a new fact: an unlisted sensory property is
+accept reversed causal order. Grammatical subordination of an earlier action is
+allowed only when aspect or an explicit marker makes it unambiguously completed before
+the later action. A later action cannot precede an earlier one; reject subordination
+that makes the earlier action simultaneous or ongoing within the later action.
+Never use a style policy to license a new fact: an unlisted sensory property is
 unsupported_sensory even when it would be typical for the supplied object.
-skip a proposition because another claim in its sentence is supported. A
+Never skip a proposition because another claim in its sentence is supported. A
 required source is covered only if every proposition inside it appears with the
 same certainty; an embedded unknown result must remain unknown.
 Silence about a result is not an explicit unknown result. A segment that only
@@ -57,8 +59,9 @@ Mandatory final cross-checks before JSON:
 service-like reporting also receives elapsed_as_service_report.
 3. current_beat_buried may describe only a source with a nonempty source review;
 never use it to restate or penalize an omitted source whose review is [].
-4. If prose reverses ordered performed actions or subordinates the earlier action
-to the later one, record unsupported_event for the invented temporal relation.
+4. If prose reverses ordered performed actions or makes the earlier action simultaneous
+or ongoing within the later one, record unsupported_event. Do not fail subordination
+that unambiguously marks the earlier action completed before the later action.
 5. When several scene facts accompany a performed action or perceived result,
 reject a source-order checklist as weak_literary_composition. Complete factual
 coverage alone is not a literary PASS.

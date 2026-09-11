@@ -7,8 +7,10 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'Put the current beat first. Convey every required_current_beat source once '
   + 'and preserve every proposition inside it: action, result, uncertainty, speaker '
   + 'and causal order. Only performed-action sources constrain action order. Keep those '
-  + 'actions as distinct completed beats in their supplied relative order; never turn '
-  + 'an earlier action into a simultaneous modifier of a later action. '
+  + 'actions in their supplied relative order. You may grammatically subordinate an earlier '
+  + 'action to a later one only when aspect or an explicit marker makes it unambiguously '
+  + 'completed before the later action. Reject reversal and simultaneous or ongoing embedding; '
+  + 'separate action sentences are not required. '
   + 'Every unresolved-result proposition inside a required change must remain explicitly unknown; performed handling '
   + 'stays performed even when its observation result is unknown. A pending goal '
   + 'does not undo a committed operation. Preserve confirmed speech verbatim. '
@@ -53,7 +55,7 @@ export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
     auditor: { audit: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_auditor',
       narrationAuditInstruction(request), request) },
     semanticRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_semantic_repair',
-      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For weak_literary_composition, first restore distinct performed-action beats in order, then regroup descriptive facts by supplied shared subjects and spatial anchors instead of input order. When they are supplied results of a perception beat, that beat must grammatically govern the cluster; a standalone perception-action sentence plus a descriptive inventory still fails. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
+      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For weak_literary_composition, preserve performed-action order; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. Then regroup descriptive facts by supplied shared subjects and spatial anchors instead of input order. When they are supplied results of a perception beat, that beat must grammatically govern the cluster; a standalone perception-action sentence plus a descriptive inventory still fails. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
   });
 }
 

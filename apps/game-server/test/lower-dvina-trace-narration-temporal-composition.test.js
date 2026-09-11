@@ -146,7 +146,7 @@ for (const sample of [
     'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
 });
 
-test('captured repair keeps ordered actions distinct and regroups scene facts by supplied anchors', async (t) => {
+test('captured repair preserves completed-before action order and regroups scene facts by supplied anchors', async (t) => {
   const samples = [
     {
       name: 'captured shore observation then call',
@@ -158,8 +158,11 @@ test('captured repair keeps ordered actions distinct and regroups scene facts by
         'Над открытым берегом тянется низкое сырое небо.',
         'Между мокрым песком и ивняком начинается приметная тропа; за кустами её продолжения не видно.',
         'У самого берега слышен плеск воды.'],
-      rejected: 'Вы внимательно изучили обстановку. Над открытым берегом тянется низкое сырое небо. Мокрый песок и ивняк тянутся вдоль берега реки; у самой воды лежат разбитые доски, обрывки снастей и вынесенные течением ветви, среди которых тянется полоса камыша и осоки. Между мокрым песком и ивняком начинается приметная тропа, но за кустами её продолжения не видно. У самого берега слышен плеск воды. Вы произнесли: «Онисим!»',
-      accepted: 'Вы внимательно изучили обстановку: над открытым берегом тянется низкое сырое небо; вдоль реки тянутся мокрый песок и ивняк, между которыми начинается приметная тропа, скрывающаяся за кустами; у самой воды лежат разбитые доски и обрывки снастей, у воды тянется полоса камыша и осоки, среди обломков лежат вынесенные течением ветви, а у самого берега слышен плеск. Затем вы произнесли: «Онисим!»',
+      rejected: [
+        { prose: 'Вы внимательно изучили обстановку. Над открытым берегом тянется низкое сырое небо. Мокрый песок и ивняк тянутся вдоль берега реки; у самой воды лежат разбитые доски, обрывки снастей и вынесенные течением ветви, среди которых тянется полоса камыша и осоки. Между мокрым песком и ивняком начинается приметная тропа, но за кустами её продолжения не видно. У самого берега слышен плеск воды. Вы произнесли: «Онисим!»' },
+        { prose: 'Вы произнесли: «Онисим!», внимательно изучая обстановку: над открытым берегом тянется низкое сырое небо; вдоль реки тянутся мокрый песок и ивняк, между которыми начинается приметная тропа, скрывающаяся за кустами; у самой воды лежат разбитые доски и обрывки снастей, у воды тянется полоса камыша и осоки, среди обломков лежат вынесенные течением ветви, а у самого берега слышен плеск.', overlap: true }
+      ],
+      accepted: 'Внимательно осмотрев обстановку — над открытым берегом тянется низкое сырое небо; вдоль реки тянутся мокрый песок и ивняк, между которыми начинается приметная тропа, скрывающаяся за кустами; у самой воды лежат разбитые доски и обрывки снастей, у воды тянется полоса камыша и осоки, среди обломков лежат вынесенные течением ветви, а у самого берега слышен плеск, — вы произнесли: «Онисим!»',
       perception: true
     },
     {
@@ -167,8 +170,11 @@ test('captured repair keeps ordered actions distinct and regroups scene facts by
       changes: ['Вы осмотрели мастерскую.', 'Вы произнесли: «Хозяин!»',
         'У окна стоит верстак; на нём лежит резец.', 'Под окном темнеют стружки.',
         'Справа от двери висит кожаный фартук.'],
-      rejected: 'Вы осмотрели мастерскую. У окна стоит верстак; на нём лежит резец. Под окном темнеют стружки. Справа от двери висит кожаный фартук. Вы произнесли: «Хозяин!»',
-      accepted: 'Вы осмотрели мастерскую: у окна стоит верстак с лежащим на нём резцом, а под окном темнеют стружки; справа от двери висит кожаный фартук. Закончив осмотр, вы произнесли: «Хозяин!»',
+      rejected: [
+        { prose: 'Вы осмотрели мастерскую. У окна стоит верстак; на нём лежит резец. Под окном темнеют стружки. Справа от двери висит кожаный фартук. Вы произнесли: «Хозяин!»' },
+        { prose: 'Вы произнесли: «Хозяин!», осматривая мастерскую: у окна стоит верстак с лежащим на нём резцом, под окном темнеют стружки, а справа от двери висит кожаный фартук.', overlap: true }
+      ],
+      accepted: 'Осмотрев мастерскую — у окна стоит верстак с лежащим на нём резцом, под окном темнеют стружки, а справа от двери висит кожаный фартук, — вы произнесли: «Хозяин!»',
       perception: true
     },
     {
@@ -176,13 +182,14 @@ test('captured repair keeps ordered actions distinct and regroups scene facts by
       changes: ['Вы вошли во двор.', 'Вы постучали в дверь.',
         'Слева от входа стоит амбар.', 'Впереди видна дверь дома.',
         'У колодца справа лежит пустое ведро.'],
-      rejected: 'Вы постучали в дверь, входя во двор. Слева от входа стоит амбар. Впереди видна дверь дома. У колодца справа лежит пустое ведро.',
-      accepted: 'Вы вошли во двор. Слева от входа стоит амбар; впереди видна дверь дома, а справа, у колодца, лежит пустое ведро. После этого вы постучали в дверь.',
-      overlap: true
+      rejected: [{ prose: 'Вы постучали в дверь, входя во двор. Слева от входа стоит амбар. Впереди видна дверь дома. У колодца справа лежит пустое ведро.', overlap: true }],
+      accepted: 'Войдя во двор, вы постучали в дверь. Слева от входа стоит амбар; впереди видна дверь дома, а справа, у колодца, лежит пустое ведро.'
     }
   ];
   for (const sample of samples) await t.test(sample.name, async () => {
-    for (const accepted of [false, true]) {
+    const repairs = [...sample.rejected.map((repair) => ({ ...repair, accepted: false })),
+      { prose: sample.accepted, accepted: true }];
+    for (const repair of repairs) {
       const calls = [];
       const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
         calls.push(call.role_id);
@@ -193,22 +200,24 @@ test('captured repair keeps ordered actions distinct and regroups scene facts by
           assert.match(call.messages[0].content, /one coherent focal sweep/u);
           assert.match(call.messages[0].content, /perception action.*grammatically govern/u);
           assert.match(call.messages[0].content, /Do not invent perception or causality for other action classes/u);
+          assert.match(call.messages[0].content, /grammatically subordinate.*completed before/u);
           return { output: { prose: sample.changes.join(' ') } };
         }
         if (call.role_id === 'gameplay_narrator_semantic_repair') {
-          assert.match(call.messages[0].content, /distinct performed-action beats in order/u);
+          assert.match(call.messages[0].content, /completed-before subordination/u);
           assert.match(call.messages[0].content, /visible_scene.*action target/u);
           assert.match(call.messages[0].content, /standalone perception-action sentence.*descriptive inventory/u);
-          return { output: { replacements: [{ prose: accepted
-            ? sample.accepted : sample.rejected }] } };
+          return { output: { replacements: [{ prose: repair.prose }] } };
         }
+        assert.match(call.messages[0].content, /Grammatical subordination[\s\S]*completed before/u);
+        assert.match(call.messages[0].content, /simultaneous or ongoing/u);
         const initial = wire.phase === 'initial';
         const audit = reviewed(wire, {
-          literaryFailures: initial || !accepted ? [{ check: 'weak_literary_composition',
+          literaryFailures: initial || !repair.accepted ? [{ check: 'weak_literary_composition',
             segment_choice: 's1', reason: 'Performed actions overlap or descriptive facts follow source order.' }] : [],
-          evidence: initial || !accepted ? [] : ['Ordered action beats frame facts grouped by supplied spatial anchors.']
+          evidence: initial || !repair.accepted ? [] : ['Completed-before action order and grounding are preserved.']
         });
-        if (!initial && !accepted && sample.overlap) {
+        if (!initial && repair.overlap) {
           audit.source_reviews[0].segment_choices = [];
           audit.unsupported = [{ segment_choice: 's1', kind: 'unsupported_event',
             reason: 'Earlier completed action became simultaneous with the later action.' }];
@@ -216,11 +225,12 @@ test('captured repair keeps ordered actions distinct and regroups scene facts by
         return { output: audit };
       } } });
       const result = await service.run({ version: 1, schema: 'narration_request',
-        request_id: `${sample.name}-${accepted}`, surface: 'turn', visible_context: {
+        request_id: `${sample.name}-${repair.accepted}-${repair.overlap === true}`,
+        surface: 'turn', visible_context: {
           ...scene(), visible_scene: sample.scene, visible_changes: sample.changes
         }, context: {} });
-      assert.equal(result.status, accepted ? 'approved' : 'blocked');
-      if (accepted) assert.equal(result.approved_output.prose, sample.accepted);
+      assert.equal(result.status, repair.accepted ? 'approved' : 'blocked');
+      if (repair.accepted) assert.equal(result.approved_output.prose, sample.accepted);
       assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
         'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
     }

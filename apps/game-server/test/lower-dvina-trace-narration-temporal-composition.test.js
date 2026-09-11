@@ -119,7 +119,7 @@ for (const sample of [
     calls.push(call.role_id);
     const wire = JSON.parse(call.messages[1].content);
     if (call.role_id === 'gameplay_narrator') {
-      assert.match(call.messages[0].content, /around the performed action/u);
+      assert.match(call.messages[0].content, /relevant action or result beat/u);
       assert.match(call.messages[0].content, /source-order checklist/u);
       return { output: { prose: sample.checklist } };
     }
@@ -144,6 +144,81 @@ for (const sample of [
   assert.equal(result.approved_output.prose, sample.repaired);
   assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
     'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+});
+
+test('captured repair keeps ordered actions distinct and regroups scene facts by supplied anchors', async (t) => {
+  const samples = [
+    {
+      name: 'captured shore observation then call',
+      scene: 'берег крушения',
+      changes: ['Вы внимательно изучили обстановку.', 'Вы произнесли: «Онисим!»',
+        'Мокрый песок и ивняк тянутся вдоль берега реки.',
+        'У самой воды лежат разбитые доски и обрывки снастей.',
+        'У воды тянется полоса камыша и осоки; среди обломков лежат вынесенные течением ветви.',
+        'Над открытым берегом тянется низкое сырое небо.',
+        'Между мокрым песком и ивняком начинается приметная тропа; за кустами её продолжения не видно.',
+        'У самого берега слышен плеск воды.'],
+      rejected: 'Вы произнесли: «Онисим!», вглядываясь в берег крушения. Мокрый песок и ивняк тянутся вдоль реки. У самой воды лежат разбитые доски и обрывки снастей. У воды тянется камыш. Над берегом небо. Между песком и ивняком начинается тропа. У берега слышен плеск.',
+      accepted: 'Вы внимательно изучили обстановку. Вдоль реки тянутся мокрый песок и ивняк; между ними начинается приметная тропа, продолжение которой скрывают кусты. У воды лежат разбитые доски и обрывки снастей, тянется полоса камыша и осоки, а среди обломков видны вынесенные течением ветви; у самого берега слышен плеск. Над открытым берегом тянется низкое сырое небо. Закончив осмотр, вы произнесли: «Онисим!»'
+    },
+    {
+      name: 'unseen workshop inspection then call', scene: 'мастерская',
+      changes: ['Вы осмотрели мастерскую.', 'Вы произнесли: «Хозяин!»',
+        'У окна стоит верстак; на нём лежит резец.', 'Под окном темнеют стружки.',
+        'Справа от двери висит кожаный фартук.'],
+      rejected: 'Вы произнесли: «Хозяин!», осматривая мастерскую. У окна стоит верстак. На нём лежит резец. Под окном темнеют стружки. Справа от двери висит фартук.',
+      accepted: 'Вы осмотрели мастерскую: у окна стоит верстак с лежащим на нём резцом, а под окном темнеют стружки; справа от двери висит кожаный фартук. Закончив осмотр, вы произнесли: «Хозяин!»'
+    },
+    {
+      name: 'unseen yard entry then knock', scene: 'двор',
+      changes: ['Вы вошли во двор.', 'Вы постучали в дверь.',
+        'Слева от входа стоит амбар.', 'Впереди видна дверь дома.',
+        'У колодца справа лежит пустое ведро.'],
+      rejected: 'Вы постучали в дверь, входя во двор. Слева от входа стоит амбар. Впереди видна дверь дома. У колодца справа лежит пустое ведро.',
+      accepted: 'Вы вошли во двор. Слева от входа стоит амбар; впереди видна дверь дома, а справа, у колодца, лежит пустое ведро. После этого вы постучали в дверь.'
+    }
+  ];
+  for (const sample of samples) await t.test(sample.name, async () => {
+    for (const accepted of [false, true]) {
+      const calls = [];
+      const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+        calls.push(call.role_id);
+        const wire = JSON.parse(call.messages[1].content);
+        if (call.role_id === 'gameplay_narrator') {
+          assert.match(call.messages[0].content, /Only performed-action sources constrain action order/u);
+          assert.match(call.messages[0].content, /shared supplied subjects or spatial anchors/u);
+          assert.match(call.messages[0].content, /one coherent focal sweep/u);
+          return { output: { prose: sample.changes.join(' ') } };
+        }
+        if (call.role_id === 'gameplay_narrator_semantic_repair') {
+          assert.match(call.messages[0].content, /distinct performed-action beats in order/u);
+          assert.match(call.messages[0].content, /visible_scene.*action target/u);
+          return { output: { replacements: [{ prose: accepted
+            ? sample.accepted : sample.rejected }] } };
+        }
+        const initial = wire.phase === 'initial';
+        const audit = reviewed(wire, {
+          literaryFailures: initial || !accepted ? [{ check: 'weak_literary_composition',
+            segment_choice: 's1', reason: 'Performed actions overlap or descriptive facts follow source order.' }] : [],
+          evidence: initial || !accepted ? [] : ['Ordered action beats frame facts grouped by supplied spatial anchors.']
+        });
+        if (!initial && !accepted) {
+          audit.source_reviews[0].segment_choices = [];
+          audit.unsupported = [{ segment_choice: 's1', kind: 'unsupported_event',
+            reason: 'Earlier completed action became simultaneous with the later action.' }];
+        }
+        return { output: audit };
+      } } });
+      const result = await service.run({ version: 1, schema: 'narration_request',
+        request_id: `${sample.name}-${accepted}`, surface: 'turn', visible_context: {
+          ...scene(), visible_scene: sample.scene, visible_changes: sample.changes
+        }, context: {} });
+      assert.equal(result.status, accepted ? 'approved' : 'blocked');
+      if (accepted) assert.equal(result.approved_output.prose, sample.accepted);
+      assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
+        'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+    }
+  });
 });
 
 function scene() {

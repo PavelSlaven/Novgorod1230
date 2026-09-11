@@ -117,6 +117,18 @@ test('ownerless utterance preserves exact player words and speaker before later 
     remaining_intent: 'Зову на помощь, затем проверяю навес.' } }).ok, true);
 });
 
+test('player utterance accepts formal acoustic delivery without enumerating speech', () => {
+  const value = { ...plan('cloth', 'worn_by'), operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance',
+    utterance: { speaker_ref: actor,
+      utterance_text: 'Эй!', input_mode: 'intent_paraphrase',
+      delivery: { loudness: 4, duration_class: 'instant' } } };
+  assert.equal(validateTurnStepPlan(value, { request }).ok, true);
+  value.utterance.delivery.loudness = 5;
+  assert.equal(validateTurnStepPlan(value, { request }).ok, false);
+});
+
 test('write-free observation may precede a later independent intent', () => {
   const input = { ...request, root_player_action: 'осмотреться, затем крикнуть',
     remaining_intent: 'осмотреться, затем крикнуть' };

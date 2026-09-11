@@ -125,7 +125,9 @@ function overlayTurnStepResults(base, input) {
         `Ещё не выполнено: «${remaining}». Результат этой попытки не установлен.`] : [])]),
     do_not_imply: unique([...base.do_not_imply,
       ...(text(remaining) ? ['uncompleted_remaining_intent'] : []),
-      ...(directPlans.some((plan) => plan.direct_result_kind === 'player_utterance') ? [
+      ...(directPlans.some((plan) => plan.direct_result_kind === 'player_utterance')
+        && !Object.values(seeds).some((value) =>
+          value?.kind === 'post_applied_perception_window') ? [
         'unconfirmed_speech_audience_or_response', 'player_speech_claims_as_truth'] : [])])
   });
 }

@@ -80,7 +80,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             'Return only one JSON object containing the semantic choice for one turn step.',
             'Do not add Markdown, prose outside JSON, or unknown fields.',
             'Do not return schema, request_id, committed_state_version, working_revision, or step_index; the server assembles these identity fields. Use the matching semantic activity; determine goal_result and continuation from the entire remaining intent, not example defaults. semantic activity may add requested_duration_minutes only for an exact duration explicitly stated by the player.',
-            'Return interpretation, resolution, activity, goal_result, direct_result_kind, utterance only for player_utterance, operation_family, operation_choice or operations, check, continuation, clarification, reason_code, reason. No analysis or alternatives; if mistaken, emit corrected final JSON.',
+            'Return interpretation, resolution, activity, goal_result, direct_result_kind, utterance only for player_utterance, operation_family, operation_choice or operations, check, continuation, clarification, reason_code, reason. For player_utterance include structured delivery: loudness 1 whisper, 2 normal, 3 raised, 4 shout; duration_class instant, brief, or sustained. No analysis or alternatives; if mistaken, emit corrected final JSON.',
             `A direct semantic example is:\n${semanticTurnStepExample()}`,
             'operation_choice is exactly one scalar supplied choice_id string or null, never an object, array, or wrapper. For a matching code-owned operation return that scalar choice_id and omit operations. The server restores the exact operation DTO. Otherwise set operation_choice to null and return only genuinely semantic operations.',
             'If an output format requires operations beside operation_choice, they must be empty or exactly copy that selected DTO; a different operation makes the choice invalid.',
@@ -150,9 +150,25 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             ?.filter(({ code }) => code === 'additional_property')
             .map(({ path }) => path) ?? []))
       : repairedOutput;
-    return assembleTurnStepPlan(semanticOutput, request, operationChoices);
+    return assembleTurnStepPlan(withConservativeSpeechDelivery(semanticOutput),
+      request, operationChoices);
   };
   return model;
+}
+
+function withConservativeSpeechDelivery(output) {
+  if (output?.direct_result_kind !== 'player_utterance'
+      || output.utterance == null
+      || typeof output.utterance !== 'object'
+      || Array.isArray(output.utterance)
+      || output.utterance.delivery !== undefined) return output;
+  return {
+    ...output,
+    utterance: {
+      ...output.utterance,
+      delivery: { loudness: 1, duration_class: 'instant' }
+    }
+  };
 }
 
 function plannerRequestWire(input) {

@@ -3,6 +3,7 @@ import {
   applied,
   collectCurrentRefs,
   deepFreeze,
+  deterministicRef,
   directFragment,
   fail,
   nextActivityIdentity,
@@ -260,12 +261,47 @@ export async function applySemanticActivity(execution, state,
   });
   const withBody = {
     ...output,
-    body_state_after: structuredClone(resolved.body_state_after)
+    body_state_after: structuredClone(resolved.body_state_after),
+    factual_events: semanticFactualEvents(execution, identity, state)
   };
   return preparedEffectRequest == null ? deepFreeze(withBody) : deepFreeze({
     ...withBody,
     prepared_effect_request: preparedEffectRequest
   });
+}
+
+function semanticFactualEvents(execution, identity, state) {
+  const utterance = execution.plan?.direct_result_kind === 'player_utterance'
+    ? execution.plan.utterance : null;
+  const delivery = utterance?.delivery;
+  const sourceScope = execution.working_projection?.spatial_semantic?.position_ref
+    ?? state.committedState?.position?.location_ref;
+  const occurredAt = execution.prepared_chain_context?.current_clock
+    ?? state.committedState?.clock_weather_light?.clock
+    ?? state.committedState?.clock;
+  if (!plain(delivery) || !text(sourceScope) || !plain(occurredAt)) return [];
+  return [{
+    version: 1,
+    schema: 'turn_step_factual_event_v1',
+    event_ref: {
+      entity_kind: 'sound_event',
+      entity_id: deterministicRef('sound-event', identity.activity_id)
+    },
+    occurred_at: structuredClone(occurredAt),
+    source_ref: {
+      entity_kind: 'player_character',
+      entity_id: utterance.speaker_ref
+    },
+    source_scope_ref: {
+      entity_kind: 'canonical_spatial_node',
+      entity_id: sourceScope
+    },
+    perceptible_signal: {
+      channel: 'acoustic',
+      emission_strength: delivery.loudness,
+      duration_class: delivery.duration_class
+    }
+  }];
 }
 
 function exactKeys(value, keys) {

@@ -14,6 +14,8 @@ import { createLowerDvinaTracePreparedDomainEffect } from
   './lower-dvina-trace-turn-step-prepared-effects.js';
 import { prepareOrdinaryDiscoveryResult } from
   './lower-dvina-trace-ordinary-discovery.js';
+import { createLowerDvinaTracePostAppliedActorStepOwner } from
+  './lower-dvina-trace-post-applied-actor-step.js';
 export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEventOwner = null,
   committedState = null,
@@ -85,6 +87,9 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
       })
     : null;
   return Object.freeze({
+    postAppliedActorStep: createLowerDvinaTracePostAppliedActorStepOwner({
+      committedState: safeCommittedState
+    }),
     executionRegistry: createTurnStepExecutionRegistry({
       direct,
       domain: { ...domain, request_item_use: createTransientItemUseHandler() },

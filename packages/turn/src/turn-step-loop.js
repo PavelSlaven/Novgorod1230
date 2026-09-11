@@ -7,6 +7,7 @@ import {
   requireTurnStepExecutionRegistry
 } from './turn-step-execution-registry.js';
 import { requestTurnStepPlanWithRepair } from './turn-step-plan-repair.js';
+import { advancePostAppliedActorStep } from './post-applied-actor-step.js';
 import {
   initialPreparedChainContext,
   nextPendingDiscovery,
@@ -176,6 +177,13 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       registry,
       ports
     });
+    const postApplied = await advancePostAppliedActorStep({
+      root_turn_id: identity.rootTurnId,
+      step_index: stepIndex,
+      actor: identity.actor,
+      working_projection: execution.workingProjection,
+      factual_events: execution.factualEvents
+    }, ports.postAppliedActorStep);
     if (execution.ordinary_materialization_atomic_write_plan != null
         && ordinaryPlans.length !== 0) {
       stopReason = 'player_response';
@@ -185,9 +193,13 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       }));
       break;
     }
-    workingProjection = execution.workingProjection;
+    workingProjection = postApplied.working_projection;
     writeFragments.push(...execution.writeFragments);
+    writeFragments.push(...(postApplied.write_fragments ?? []));
     consequenceFragments.push(...execution.consequenceFragments);
+    if (postApplied.consequence_fragment != null) {
+      consequenceFragments.push(postApplied.consequence_fragment);
+    }
     preparedEffects.push(...execution.preparedEffects);
     if (execution.ordinary_materialization_atomic_write_plan != null) {
       ordinaryPlans.push(execution.ordinary_materialization_atomic_write_plan);

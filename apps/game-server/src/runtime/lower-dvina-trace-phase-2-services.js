@@ -127,6 +127,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       playerSafeStateProjector: turnStepPlayerSafeStateProjector
     } : {}),
     turnStepExecutionRegistry: turnStepPorts.executionRegistry,
+    turnStepPostAppliedActorStep: turnStepPorts.postAppliedActorStep,
     ...(turnStepPorts.ordinaryDiscoveryResolver ? {
       turnStepOrdinaryDiscoveryResolver:
         turnStepPorts.ordinaryDiscoveryResolver

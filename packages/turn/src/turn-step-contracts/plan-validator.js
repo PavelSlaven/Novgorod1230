@@ -115,7 +115,8 @@ function validateDirectResultKind(plan, errors, request) {
   }
   if (plan.direct_result_kind === 'player_utterance') {
     if (strict(plan.utterance, '$.utterance',
-      ['speaker_ref', 'utterance_text', 'input_mode'], errors)) {
+      ['speaker_ref', 'utterance_text', 'input_mode'], errors,
+      { optional: ['delivery'] })) {
       requiredText(plan.utterance.speaker_ref, '$.utterance.speaker_ref', errors);
       if (request != null) constant(plan.utterance.speaker_ref,
         request.actor?.actor_id ?? request.actor?.actor_ref,
@@ -123,6 +124,20 @@ function validateDirectResultKind(plan, errors, request) {
       requiredText(plan.utterance.utterance_text, '$.utterance.utterance_text', errors);
       enumValue(plan.utterance.input_mode, ['verbatim', 'intent_paraphrase'],
         '$.utterance.input_mode', errors);
+      if (plan.utterance.delivery !== undefined
+          && strict(plan.utterance.delivery, '$.utterance.delivery',
+            ['loudness', 'duration_class'], errors)) {
+        integer(plan.utterance.delivery.loudness, 1,
+          '$.utterance.delivery.loudness', errors);
+        if (Number.isSafeInteger(plan.utterance.delivery.loudness)
+            && plan.utterance.delivery.loudness > 4) {
+          add(errors, '$.utterance.delivery.loudness', 'maximum',
+            'must be <= 4');
+        }
+        enumValue(plan.utterance.delivery.duration_class,
+          ['instant', 'brief', 'sustained'],
+          '$.utterance.delivery.duration_class', errors);
+      }
       if (request != null && plan.utterance.input_mode === 'verbatim'
           && (typeof plan.utterance.utterance_text !== 'string'
           || !request.remaining_intent.includes(plan.utterance.utterance_text))) {

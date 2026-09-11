@@ -188,6 +188,12 @@ function directSeedChange(value) {
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';
   }
+  if (value?.kind === 'post_applied_perception_window'
+      && value.status === 'completed'
+      && Array.isArray(value.observable_response_event_refs)
+      && value.observable_response_event_refs.length === 0) {
+    return 'Непосредственного наблюдаемого отклика на ваше действие не последовало.';
+  }
   if (value?.change === 'created' && text(value.name)) {
     return `Появился результат вашей работы: ${value.name}.`;
   }

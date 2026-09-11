@@ -297,6 +297,7 @@ export async function resolveBoundTurnStepCommand({
     preparedEffectBodyOwner: services.turnStepPreparedEffectBodyOwner,
     preparedEffectProjectionOwner:
       services.turnStepPreparedEffectProjectionOwner,
+    postAppliedActorStep: services.turnStepPostAppliedActorStep,
     preflightActionProduction: typeof services
       .turnStepActionProductionPreflight !== 'function' ? null : (execution) =>
       services.turnStepActionProductionPreflight(deepFreeze({

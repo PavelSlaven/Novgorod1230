@@ -34,6 +34,28 @@ test('turn step adapter rejects a hand-written admitted operation', async () => 
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
 });
 
+test('production planner supplies a conservative delivery floor when omitted',
+  async () => {
+    const input = request({ remaining_intent: 'Говорю: «Да.»',
+      root_player_action: 'Говорю: «Да.»' });
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: {
+        interpretation: { player_goal: input.remaining_intent,
+          grounded_attempt: 'говорю «Да»', adaptation: 'literal' },
+        resolution: 'direct', goal_result: 'achieved',
+        activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+        direct_result_kind: 'player_utterance', utterance: {
+          speaker_ref: input.actor.actor_id, utterance_text: 'Да.',
+          input_mode: 'verbatim' }, operations: [], check: null,
+        continuation: null, clarification: null, reason_code: 'speech_action',
+        reason: 'Произнесены точные слова.'
+      } }; }
+    } });
+    const plan = await model(input);
+    assert.deepEqual(plan.utterance.delivery,
+      { loudness: 1, duration_class: 'instant' });
+  });
+
 test('turn step adapter restores an exact copied operation choice', () => {
   const candidate = { op: 'request_discovery', actor_ref: 'actor_mikula',
     discovery_kind: 'inspect', target_refs: ['shore'], query: 'Осмотреть.' };

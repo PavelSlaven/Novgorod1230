@@ -7,7 +7,8 @@ export const TURN_STEP_COMPOUND_EXAMPLE = 'Flat compound example. Input: Про�
   activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
   direct_result_kind: 'player_utterance', utterance: {
     speaker_ref: '<copy current actor ref from request>',
-    utterance_text: 'Подождите.', input_mode: 'intent_paraphrase' },
+    utterance_text: 'Подождите.', input_mode: 'intent_paraphrase',
+    delivery: { loudness: 2, duration_class: 'instant' } },
   operation_family: null, operation_choice: null, operations: [], check: null,
   continuation: { remaining_intent: 'затем сажусь.', depends_on_refs: [] },
   clarification: null, reason_code: 'speech_before_independent_action',
@@ -23,7 +24,9 @@ export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
     utterance: {
       speaker_ref: '<copy current actor ref from request>',
       utterance_text: '<exact intended spoken words without enclosing action; faithful wording only when no quotation was supplied>',
-      input_mode: '<verbatim for supplied words; intent_paraphrase for unquoted speech intent>'
+      input_mode: '<verbatim for supplied words; intent_paraphrase for unquoted speech intent>',
+      delivery: { loudness: '<1 whisper, 2 normal, 3 raised, 4 shout>',
+        duration_class: '<instant, brief, or sustained>' }
     },
     operation_family: null, operation_choice: null,
     operations: [], check: null, clarification: null, continuation: null

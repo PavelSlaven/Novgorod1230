@@ -45,6 +45,7 @@ export async function executeTurnStepActorStep({
   const summaries = [];
   const writes = [];
   const consequences = [];
+  const factualEvents = [];
   const preparedEffects = [];
   const ordinaryPlans = [];
   const actionProducedPlans = [];
@@ -135,7 +136,7 @@ export async function executeTurnStepActorStep({
     ({ projection, boundary, progress, goalResult, continuation } =
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
-        summaries, writes, consequences, preparedEffects, ordinaryPlans,
+        summaries, writes, consequences, factualEvents, preparedEffects, ordinaryPlans,
         actionProducedPlans, localFirePlans, spatialSemanticPlans,
         backgroundNpcSemanticPlans
       }));
@@ -161,7 +162,7 @@ export async function executeTurnStepActorStep({
     ({ projection, boundary, progress, goalResult, continuation } =
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
-        summaries, writes, consequences, preparedEffects, ordinaryPlans,
+        summaries, writes, consequences, factualEvents, preparedEffects, ordinaryPlans,
         actionProducedPlans, localFirePlans, spatialSemanticPlans,
         backgroundNpcSemanticPlans
       }));
@@ -196,7 +197,7 @@ export async function executeTurnStepActorStep({
       ({ projection, boundary, progress, goalResult, continuation } =
         collectTurnStepExecutionResult({
           applied, projection, boundary, progress, goalResult, continuation,
-          summaries, writes, consequences, preparedEffects, ordinaryPlans,
+          summaries, writes, consequences, factualEvents, preparedEffects, ordinaryPlans,
           actionProducedPlans, localFirePlans, spatialSemanticPlans,
           backgroundNpcSemanticPlans
         }));
@@ -214,6 +215,7 @@ export async function executeTurnStepActorStep({
     checkRequest,
     writeFragments: writes,
     consequenceFragments: consequences,
+    factualEvents,
     preparedEffects,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plan: actionProducedPlans[0] ?? null,

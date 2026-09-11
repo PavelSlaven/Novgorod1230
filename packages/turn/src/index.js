@@ -153,6 +153,10 @@ export {
   runTurnStepLoop
 } from './turn-step-loop.js';
 export {
+  advancePostAppliedActorStep,
+  requireFactualEvents
+} from './post-applied-actor-step.js';
+export {
   resolveTurnStepExactTimeWindow,
   resolveTurnStepSemanticActivityTime
 } from

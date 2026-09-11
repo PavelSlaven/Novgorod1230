@@ -18,6 +18,7 @@ API key остаётся только в локальном файле и не �
 
 Выбранный provider проходит через единый `@rus/llm-runtime` во все production
 planner, NPC, narrator, auditor и repair calls. Каждый вызов получает
-`maxTokens = 20_000` и transport timeout 120 с. При local/custom режиме нет
+`maxTokens = 20_000` и transport timeout не более 120 с; поздний вызов
+ограничивается остатком шестиминутного safety deadline всего хода. При local/custom режиме нет
 fallback на DeepSeek или другую модель: connection/auth/model/timeout/response
 ошибка типизирована, незавершённый ход не фиксируется.

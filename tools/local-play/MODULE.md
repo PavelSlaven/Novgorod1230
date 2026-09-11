@@ -53,6 +53,10 @@ Explorer делает отдельный model call из driver process; пер�
 
 Premise audit и backlog принадлежат development authoring workflow, не
 серверу игры. Аудитор не меняет party state, corpus, semantic plan или outcome.
+После сохранения завершённой trace отдельный development-time NLI-аудитор может
+проверить relevance/entailment доставленных premises. Он работает вне gameplay
+runtime и critical path, не является role binding, не запускает repair или veto,
+не пишет party/WK state; его PASS не заменяет независимый premise audit.
 
 Финальная реальная кампания с фиксированным числом ходов:
 `npm run gameplay:acceptance:local -- <output-directory> <focus> [turn-count] [sequence]`.

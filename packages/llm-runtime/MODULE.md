@@ -13,11 +13,11 @@
 - scoped client adapter для composition root.
 - отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
-Production `turn_runtime` использует Flash-first роли без heavy reasoning. Общего gameplay turn deadline нет. Явно выбранный local/custom OpenAI-compatible provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider.
+Production `turn_runtime` использует Flash-first роли без heavy reasoning. Явно выбранный local/custom OpenAI-compatible provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider. Общим safety deadline владеет game-server; transport принимает уже уменьшенный timeout позднего вызова.
 
 ## Production limits
 
-Для каждого production LLM-вызова, включая primary, audit и repair, действуют `maxTokens = 20_000` и transport timeout 120 с. Требуемую длину ответа ограничивают prompt и schema, а не тесный token cap. Если модель системно не укладывается в эти пределы либо ограничение ломает JSON или смысл ответа, результат не обрезают и лимит не уменьшают: сокращают контекст, перерабатывают prompt или делят обработку на несколько вызовов.
+Для каждого production LLM-вызова, включая primary, audit и repair, действуют `maxTokens = 20_000` и верхняя граница transport timeout 120 с. Ближе к safety deadline game-server передаёт меньшее оставшееся время. Требуемую длину ответа ограничивают prompt и schema, а не тесный token cap. Если модель системно не укладывается в эти пределы либо ограничение ломает JSON или смысл ответа, результат не обрезают: сокращают контекст, перерабатывают prompt или делят обработку на несколько вызовов.
 
 `world_knowledge_query_planner` — малая JSON-role для выбора только domains/refs/predicates/search hints. Она не определяет факты или gameplay outcome; request/response валидирует `@rus/world-knowledge`.
 

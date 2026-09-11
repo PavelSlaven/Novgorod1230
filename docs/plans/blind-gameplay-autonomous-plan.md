@@ -444,6 +444,13 @@ TTFT и streaming — дополнительные метрики. Ранний 
 - [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B-it): MoE с примерно 3,8B активных параметров; это основание измерить скорость повторно, не обещание художественного качества.
 - [Официальная Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B): меньший общий кандидат; [GGUF Q4_K_M revision 1379f25c](https://huggingface.co/lmstudio-community/Qwen3.5-9B-GGUF/blob/1379f25c6b505a3fc737bd7818cb09389cf807c1/Qwen3.5-9B-Q4_K_M.gguf) около 5,63 GB. Вес файла не равен потреблению VRAM и не доказывает доступность на конкретной карте или качество русского текста.
 - [llama.cpp server](https://github.com/ggml-org/llama.cpp/blob/8172e6577ac2b35de1ec1e5d1c0aaad6c4a2129f/tools/server/README.md) и [ограничения grammars](https://github.com/ggml-org/llama.cpp/blob/8172e6577ac2b35de1ec1e5d1c0aaad6c4a2129f/grammars/README.md): проверять поддержку конкретного deployed build; grammar ограничивает output, но не заменяет понятное описание semantic задачи.
+Отдельный development-time WK NLI-аудитор не является такой runtime-ролью.
+Он может последовательно обработать только уже завершённую immutable trace на
+GPU0 либо CPU, не входит в gameplay critical path, не veto/repair-ит результат,
+не пишет state и не заменяет независимый premise audit. Его model revision,
+размещение, память и latency всё равно фиксируются в acceptance evidence.
+
+Любая загрузка/выгрузка между вызовами внутри хода учитывается в задержке. Проверять суммарные weights + KV + compute buffers + context/slots и реальный запас памяти. OOM, незаявленный CPU offload, систематический swap и contention расследовать по измерениям. Не обрезать контекст молча ради размещения.
 
 Правила экспериментов:
 

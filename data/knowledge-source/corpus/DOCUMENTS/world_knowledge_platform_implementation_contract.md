@@ -3714,6 +3714,15 @@ Auditor отдельно перечисляет required, used и implied factua
 их evidence и unsupported accepted premises; пустой backlog без такого
 per-trace assessment не является положительным аудитом.
 
+После ready/failed результата и сохранения immutable trace аудитор может
+последовательно использовать отдельную малую NLI-модель для проверки
+relevance/entailment/contradiction. Она получает только audit projection
+завершённого хода, не участвует в gameplay critical path, не veto/repair-ит
+ответ, не поставляет отсутствующие facts, не пишет party/WK state и не меняет
+accepted/commit/presentation status. Её PASS — лишь evidence component и не
+заменяет независимый premise audit или saturation verdict. Timeout/ошибка
+NLI сохраняется как audit concern, не меняя результат игры.
+
 ### Gap classes и правильный owner
 
 - `COVERED_BY_WORLD_KNOWLEDGE`: существующий approved factual support.
@@ -3754,10 +3763,14 @@ LLM fixture, canned response и network interception запрещены. Private
 и pinned Giga, запускает production server и owned processes, а runner
 гарантированно закрывает их. По умолчанию он также provisions local Gemma.
 Для явно назначенного владельцем acceptance endpoint/model допустим внешний
-OpenAI-compatible provider; runner не запускает второй inference process на
-текущем ПК. Development explorer и все production roles используют один явно
-зафиксированный endpoint/model без fallback. Каждая LLM call
-сохраняет единые `maxTokens = 20_000` и timeout 120 с.
+OpenAI-compatible provider; runner не запускает второй gameplay/generative
+inference process на текущем ПК. Development explorer и все production roles используют один явно
+зафиксированный endpoint/model без fallback. Отдельный post-turn NLI-аудитор
+может быть размещён на той же GPU0 или CPU только вне runtime и после trace;
+evidence фиксирует model/revision, backend, размещение, latency, peak memory и
+запас GPU0. Каждая gameplay LLM call сохраняет `maxTokens = 20_000` и верхнюю
+границу timeout 120 с; поздний вызов ограничивается остатком общего safety
+deadline владельца хода.
 
 Evidence фиксирует exact HEAD, default Gemma model и revision/checksum либо
 точный selected served model identity для внешнего endpoint, inference

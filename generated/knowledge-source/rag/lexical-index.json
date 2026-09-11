@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "105788df83d89513b73378b4fe4bf7f2b2ac2699acc97ccb12bfe4a6b2edcc95",
-  "chunk_count": 2802,
+  "corpus_hash": "ee481aff9500126063ac3e526d421117f53630038b92907fb341490c034134e0",
+  "chunk_count": 2804,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -25091,16 +25091,25 @@
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Trace requirements",
       "line_start": 3704,
-      "line_end": 3716,
+      "line_end": 3725,
       "text": "## world_knowledge_platform_implementation_contract.md — Trace requirements\n### Trace requirements\n\nТрасса связывает exact code/pack/profile/model revisions, campaign/turn IDs,\nсвободное намерение, public/actor-safe вход, WK need/query plan, фактический\nretrieval query и consumer slice с claim refs, structured semantic plan,\nrepair attempts, owner admission/rejection, commit либо отсутствие commit,\nplayer-safe presentation и continuation. Секреты и private model reasoning\nне сохраняются. Hidden diagnostic state не передаётся blind explorer.\nУспешный HTTP или правдоподобная narration не заменяют owner commit evidence.\nAuditor отдельно перечисляет required, used и implied factual premises,\nих evidence и unsupported accepted premises; пустой backlog без такого\nper-trace assessment не является положительным аудитом.",
       "char_count": 823
+    },
+    {
+      "id": "world_knowledge_platform_implementation_contract.md:Trace requirements:1",
+      "file": "world_knowledge_platform_implementation_contract.md",
+      "section": "Trace requirements",
+      "line_start": 3704,
+      "line_end": 3725,
+      "text": "## world_knowledge_platform_implementation_contract.md — Trace requirements\nplied factual premises,\nих evidence и unsupported accepted premises; пустой backlog без такого\nper-trace assessment не является положительным аудитом.\n\nПосле ready/failed результата и сохранения immutable trace аудитор может\nпоследовательно использовать отдельную малую NLI-модель для проверки\nrelevance/entailment/contradiction. Она получает только audit projection\nзавершённого хода, не участвует в gameplay critical path, не veto/repair-ит\nответ, не поставляет отсутствующие facts, не пишет party/WK state и не меняет\naccepted/commit/presentation status. Её PASS — лишь evidence component и не\nзаменяет независимый premise audit или saturation verdict. Timeout/ошибка\nNLI сохраняется как audit concern, не меняя результат игры.",
+      "char_count": 806
     },
     {
       "id": "world_knowledge_platform_implementation_contract.md:Gap classes и правильный owner:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Gap classes и правильный owner",
-      "line_start": 3717,
-      "line_end": 3730,
+      "line_start": 3726,
+      "line_end": 3739,
       "text": "## world_knowledge_platform_implementation_contract.md — Gap classes и правильный owner\n### Gap classes и правильный owner\n\n- `COVERED_BY_WORLD_KNOWLEDGE`: существующий approved factual support.\n- `COVERED_BY_CODE_MECHANICS`: известная exact mechanics/state ответственность.\n- `CORPUS_GAP`: отсутствует factual premise; research и отдельная verification.\n- `RETRIEVAL_GAP`: premise есть, но не доставлена; WK retrieval/query owner.\n- `SCHEMA_GAP`: нужная связь не выражается текущим factual contract; schema owner.\n- `HISTORICAL_APPLICABILITY_GAP`: не установлена дата/место/доступность знания.\n- `ACTOR_KNOWLEDGE_OR_PERCEPTION_GAP`: actor access/perception owner, не новые facts.\n- `MATERIALIZATION_OR_PRESENCE_GAP`: causal presence/materialization owner.\n- `CODE_MECHANICS_GAP`: отдельный gameplay owner, не authoring corpus.\n- `AMBIGUOUS_OR_DISPUTED_REAL_WORLD_KNOWLEDGE`: сохранить спор и limits.\n- `NO_FACTUAL_KNOWLEDGE_REQUIRED`: семантическая задача без factual research.",
       "char_count": 978
     },
@@ -25108,8 +25117,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:Lifecycle:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Lifecycle",
-      "line_start": 3731,
-      "line_end": 3744,
+      "line_start": 3740,
+      "line_end": 3753,
       "text": "## world_knowledge_platform_implementation_contract.md — Lifecycle\n### Lifecycle\n\nFinding содержит stable gap ID, trace/campaign refs, scenario summary,\nrequired premise, class/domain/proposed family/consumer, severity, причину\nнедостаточности WK, universal/historical scope, research и resolution status.\nResearch проходит `new → researching → candidate_ready → verified` либо\n`rejected/not_required`; только отдельный verifier разрешает promotion по §35.1.\nResolution проходит `open → resolved → replayed`; `bounded_limit` требует\nнезависимого обоснования, а не переименования нерешённого critical gap.\nGameplay bug получает отдельную задачу соответствующего owner.\nReplay ссылается на реальную новую трассу и независимый verdict: корректный\ncommit либо ожидаемый typed rejection с совпадающим error code и без commit.\nПростая смена status, HTTP 200 или unit fixture не заменяет replay.",
       "char_count": 888
     },
@@ -25117,26 +25126,35 @@
       "id": "world_knowledge_platform_implementation_contract.md:Реальный browser/selected-model acceptance:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Реальный browser/selected-model acceptance",
-      "line_start": 3745,
-      "line_end": 3768,
-      "text": "## world_knowledge_platform_implementation_contract.md — Реальный browser/selected-model acceptance\n### Реальный browser/selected-model acceptance\n\nФинальный PLAYER работает через настоящий Chromium/Playwright. Он получает\nтолько фактический player-facing DOM, формирует свободное намерение и вводит\nего через те же textarea/button, что человек. Прямой gameplay REST, scripted\nLLM fixture, canned response и network interception запрещены. Private traces\nчитает только auditor после хода; PLAYER их не получает.\n\n`play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL\nи pinned Giga, запускает production server и owned processes, а runner\nгарантированно закрывает их. По умолчанию он также provisions local Gemma.\nДля явно назначенного владельцем acceptance endpoint/model допустим внешний\nOpenAI-compatible provider; runner не запускает второй inference process на\nтекущем ПК. Development explorer и все production roles используют один явно\nзафиксированный endpoint/model без fallback. Каждая LLM call\nсохраняет единые `maxTokens = 20_000` и timeout 120 с.",
-      "char_count": 1081
+      "line_start": 3754,
+      "line_end": 3781,
+      "text": "## world_knowledge_platform_implementation_contract.md — Реальный browser/selected-model acceptance\n### Реальный browser/selected-model acceptance\n\nФинальный PLAYER работает через настоящий Chromium/Playwright. Он получает\nтолько фактический player-facing DOM, формирует свободное намерение и вводит\nего через те же textarea/button, что человек. Прямой gameplay REST, scripted\nLLM fixture, canned response и network interception запрещены. Private traces\nчитает только auditor после хода; PLAYER их не получает.",
+      "char_count": 511
     },
     {
       "id": "world_knowledge_platform_implementation_contract.md:Реальный browser/selected-model acceptance:1",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Реальный browser/selected-model acceptance",
-      "line_start": 3745,
-      "line_end": 3768,
-      "text": "## world_knowledge_platform_implementation_contract.md — Реальный browser/selected-model acceptance\nduction roles используют один явно\nзафиксированный endpoint/model без fallback. Каждая LLM call\nсохраняет единые `maxTokens = 20_000` и timeout 120 с.\n\nEvidence фиксирует exact HEAD, default Gemma model и revision/checksum либо\nточный selected served model identity для внешнего endpoint, inference\nversion/backend, Giga\nrevision, provider config identity, hardware/runtime metadata,\ncampaign/turn/trace IDs и private gap audit. Fixture-based unit/CI не заменяет\nэтот evidence.",
+      "line_start": 3754,
+      "line_end": 3781,
+      "text": "## world_knowledge_platform_implementation_contract.md — Реальный browser/selected-model acceptance\n REST, scripted\nLLM fixture, canned response и network interception запрещены. Private traces\nчитает только auditor после хода; PLAYER их не получает.\n\n`play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL\nи pinned Giga, запускает production server и owned processes, а runner\nгарантированно закрывает их. По умолчанию он также provisions local Gemma.\nДля явно назначенного владельцем acceptance endpoint/model допустим внешний\nOpenAI-compatible provider; runner не запускает второй gameplay/generative\ninference process на текущем ПК. Development explorer и все production roles используют один явно\nзафиксированный endpoint/model без fallback. Отдельный post-turn NLI-аудитор\nможет быть размещён на той же GPU0 или CPU только вне runtime и после trace;\nevidence фиксирует model/revision, backend, размещение, latency, peak memory и\nзапас GPU0. Каждая gameplay LLM call сохраняет `maxTokens = 20_000` и верхнюю\nграницу timeout 120 с; поздний вызов ограничивается остатком общего safety\ndeadline владельца хода.",
+      "char_count": 1135
+    },
+    {
+      "id": "world_knowledge_platform_implementation_contract.md:Реальный browser/selected-model acceptance:2",
+      "file": "world_knowledge_platform_implementation_contract.md",
+      "section": "Реальный browser/selected-model acceptance",
+      "line_start": 3754,
+      "line_end": 3781,
+      "text": "## world_knowledge_platform_implementation_contract.md — Реальный browser/selected-model acceptance\n LLM call сохраняет `maxTokens = 20_000` и верхнюю\nграницу timeout 120 с; поздний вызов ограничивается остатком общего safety\ndeadline владельца хода.\n\nEvidence фиксирует exact HEAD, default Gemma model и revision/checksum либо\nточный selected served model identity для внешнего endpoint, inference\nversion/backend, Giga\nrevision, provider config identity, hardware/runtime metadata,\ncampaign/turn/trace IDs и private gap audit. Fixture-based unit/CI не заменяет\nэтот evidence.",
       "char_count": 577
     },
     {
       "id": "world_knowledge_platform_implementation_contract.md:Saturation gate:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Saturation gate",
-      "line_start": 3769,
-      "line_end": 3784,
+      "line_start": 3782,
+      "line_end": 3797,
       "text": "## world_knowledge_platform_implementation_contract.md — Saturation gate\n### Saturation gate\n\nПосле последнего P0/P1 исправления нужны три последовательные независимые\nunseen кампании на одном неизменном acceptance candidate с различающимися\nситуациями/стилями explorers и непересекающимися trace IDs. Во всех кампанийных\ntraces обязателен независимый premise audit; новых и незакрытых P0/P1 — ноль,\nunsupported premises в accepted traces — ноль. P2 должен быть replayed либо\nиметь независимо принятый bounded limit. Regression replay не считается unseen.\nНовый critical finding сбрасывает последовательность. Это ограниченное\nэмпирическое насыщение проверенного пространства, не математическая полнота\nмира. Verdict допустим только после трёх реальных browser/selected-model кампаний\nна неизменном candidate и явного доказательства `unsupported accepted\npremises = 0`, `new P0/P1 = 0`.\n\n---",
       "char_count": 891
     },
@@ -25144,8 +25162,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:113. Full Definition of Done:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "113. Full Definition of Done",
-      "line_start": 3785,
-      "line_end": 3840,
+      "line_start": 3798,
+      "line_end": 3853,
       "text": "## world_knowledge_platform_implementation_contract.md — 113. Full Definition of Done\n# 113. Full Definition of Done\n\nНиже — совокупный target полной платформы. Статическая готовность и активный\ngameplay-testing остаются разными verdict по §0.1 и §112.12.\n\nПолная implementation-ready platform revision завершена, когда одновременно:",
       "char_count": 333
     },
@@ -25153,8 +25171,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:113. Full Definition of Done:1",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "113. Full Definition of Done",
-      "line_start": 3785,
-      "line_end": 3840,
+      "line_start": 3798,
+      "line_end": 3853,
       "text": "## world_knowledge_platform_implementation_contract.md — 113. Full Definition of Done\n и активный\ngameplay-testing остаются разными verdict по §0.1 и §112.12.\n\nПолная implementation-ready platform revision завершена, когда одновременно:\n\n1. contract зарегистрирован в статусе, совпадающем с exact versioned production cutover;\n2. current Stage 1 compiler/schema hardened;\n3. authoring поддерживает deterministic shards;\n4. все canonical record types strict validated;\n5. predicate signatures и typed objects validated;\n6. applicability/qualifiers/knowledge_access/profile fields strict validated;\n7. source/evidence lineage enforced;\n8. semi-raw archive inventoried/audited;\n9. useful archive facts migrated с provenance;\n10. unsupported archive material не promoted;\n11. coverage matrix существует по real question classes;\n12. immutable runtime bundle собирается deterministically;\n13. Knowledge Core pure/read-only существует;\n14. exact/structured/lexical retrieval работает;\n15. applicability/coverage/verdict/conflicts/ranking/packing deterministic;\n16. missing knowledge → unresolved;\n17. player free semantic boundary использует WK без второго planner/operation;\n18. covered factual need не отдан model memory;\n19. Grounding Auditor PASS;\n20. Giga exact revision/profile pinned при Stage 4;\n21. same Giga revision encodes corpus/query;\n22. flat hybrid retrieval benchmarked;\n23. vector score не является truth;\n24. location materialization получает factual envelope из WK;\n25. NPC generation получает factual envelope из WK;\n26. presence/materialization остаётся у existing owners;\n27. NPC/social/legal factual context grounded;\n28. actor knowledge boundary сохранена;\n29. runtime summarizer отсутствует;\n30. runtime knowledge web research = 0;\n31. ru/en share canonical facts;\n32. translation fallback не меняет structured truth;\n33. telemetry измеряет planner/retrieval/model/narrator separately;\n34. reference correctness eval проходит;\n35. active production WK need fail-closed возвращает\n    `WORLD_KNOWLEDGE_UNAVAILABLE` при любой Giga/vector operational failure;\n36. exact model snapshot заранее provisioned, runtime работает\n    `local_files_only`/offline и readiness smoke проходит на target hardware;\n37. retrieval Recall@K и noise измерены;\n38. unsupported-premise rate измерен;\n39. anti-script unseen probes проходят;\n40. committed gameplay state переживает reload/retry where applicable;\n41. fully-local profile существует и проходит offline gate;\n42. licenses/notices/source rights учтены для release;\n43. relevant `MODULE.md`/contract index/docs отражают фактический status и owner boundaries;\n44. required CI на exact merge HEAD зелёный.",
       "char_count": 2660
     },
@@ -25162,8 +25180,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:113. Full Definition of Done:2",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "113. Full Definition of Done",
-      "line_start": 3785,
-      "line_end": 3840,
+      "line_start": 3798,
+      "line_end": 3853,
       "text": "## world_knowledge_platform_implementation_contract.md — 113. Full Definition of Done\nдля release;\n43. relevant `MODULE.md`/contract index/docs отражают фактический status и owner boundaries;\n44. required CI на exact merge HEAD зелёный.\n\n---",
       "char_count": 241
     },
@@ -25171,8 +25189,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:114. Главные anti-regression и efficiency tests:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "114. Главные anti-regression и efficiency tests",
-      "line_start": 3841,
-      "line_end": 3842,
+      "line_start": 3854,
+      "line_end": 3855,
       "text": "## world_knowledge_platform_implementation_contract.md — 114. Главные anti-regression и efficiency tests\n# 114. Главные anti-regression и efficiency tests",
       "char_count": 154
     },
@@ -25180,8 +25198,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:Anti-regression:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Anti-regression",
-      "line_start": 3843,
-      "line_end": 3848,
+      "line_start": 3856,
+      "line_end": 3861,
       "text": "## world_knowledge_platform_implementation_contract.md — Anti-regression\n## Anti-regression\n\n> Если player или NPC делает разумную вещь, которой нет в Knowledge Pack, commands и recipes, остаётся ли общий semantic resolution path?\n\nЕсли нет только из-за отсутствия записи — World Knowledge превратилась в whitelist.",
       "char_count": 315
     },
@@ -25189,8 +25207,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:Grounding:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Grounding",
-      "line_start": 3849,
-      "line_end": 3854,
+      "line_start": 3862,
+      "line_end": 3867,
       "text": "## world_knowledge_platform_implementation_contract.md — Grounding\n## Grounding\n\n> Если для решения нужен factual premise из covered domain, можно ли проследить, что он пришёл из code-owned fact/mechanic или approved World Knowledge, а не из памяти main LLM?\n\nЕсли нет — integration не готова.",
       "char_count": 293
     },
@@ -25198,8 +25216,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:Coverage:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Coverage",
-      "line_start": 3855,
-      "line_end": 3858,
+      "line_start": 3868,
+      "line_end": 3871,
       "text": "## world_knowledge_platform_implementation_contract.md — Coverage\n## Coverage\n\n> Если representative gameplay question возвращает `unresolved`, profile честно отражает gap и создаётся authoring action, вместо silent model fallback?",
       "char_count": 231
     },
@@ -25207,8 +25225,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:Efficiency:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "Efficiency",
-      "line_start": 3859,
-      "line_end": 3873,
+      "line_start": 3872,
+      "line_end": 3886,
       "text": "## world_knowledge_platform_implementation_contract.md — Efficiency\n## Efficiency\n\nПлатформа достигает основной цели, когда со временем одновременно выполняются:\n\n```text\nменьше factual/historical/scientific ошибок\n+ меньше unsupported factual premises\n+ меньше main-model input tokens\n+ меньше model recall/reasoning\n+ меньше cloud cost\n+ целево меньше semantic latency\n```\n\n---",
       "char_count": 379
     },
@@ -25216,8 +25234,8 @@
       "id": "world_knowledge_platform_implementation_contract.md:115. Финальная architecture formula:0",
       "file": "world_knowledge_platform_implementation_contract.md",
       "section": "115. Финальная architecture formula",
-      "line_start": 3874,
-      "line_end": 3896,
+      "line_start": 3887,
+      "line_end": 3909,
       "text": "## world_knowledge_platform_implementation_contract.md — 115. Финальная architecture formula\n# 115. Финальная architecture formula\n\n```text\nSOURCE KNOWLEDGE\n→ strong authoring/extraction agents\n→ independent source/domain audits\n→ structured approved language-independent factual primitives/relations\n→ coverage profiles by real game needs\n→ localized retrieval surfaces\n→ immutable local Knowledge Pack\n→ exact + structured + lexical + required Giga retrieval in active production\n→ deterministic applicability/conflicts/ranking/packing\n→ compact relevant factual slice\n→ replaceable semantic LLM using slice as factual premise set\n→ existing exact domain mechanics/materialization owners\n→ committed world\n→ actor-safe projection\n→ independently replaceable narrator\n```\n\nProduction target:\n\n> Игра полностью работает offline на скачанных весах и локальной World Knowledge Platform. Исторические, бытовые, физические, химические, биологические, социальные и иные gameplay-relevant знания являются собственной проверяемой частью системы. LLM используется для понимания и композиционного semantic reasoning, но не как скрытая энциклопедия, которой разрешено придумывать отсутствующие factual premises.",
       "char_count": 1201
     }

@@ -26,8 +26,9 @@ Gameplay не зависит от engine API: launcher поднимает pinned
 HTTP turns для отдельно назначаемой gameplay-testing фазы (World Knowledge
 contract §§0.1, 112.12). Injected explorer получает только актуальный public screen и
 предыдущие намерения; не получает WK inventory, hidden state или ответы.
-Private party JSONL связывает input, WK planner request/plan/query, фактический
-consumer slice, structured model output и owner commit/rejection. Driver
+Private party JSONL связывает input, redacted `world_knowledge_boundary_trace_v1`
+(safe need, planner request/plan/query, exact Core slice и consumer WK input),
+structured model output и owner commit/rejection. Driver
 сохраняет каждый turn до следующего, включая неуспехи, без provider reasoning.
 `captured` означает только наличие трассы, не factual approval и не saturation.
 Для regression API драйвера принимает `resumePartyId` вместе с

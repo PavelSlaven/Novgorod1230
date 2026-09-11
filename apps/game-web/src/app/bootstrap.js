@@ -210,7 +210,9 @@ export function bootstrapGameWeb({
           onProgress: (progress) => store.setTurnProgress(progress)
         })
         : await api.getPartyScreen(partyId);
-      result = recoverPendingPresentation(api, partyId, result.screen) ?? result;
+      result = recoverPendingPresentation(api, partyId, result.screen, {
+        onProgress: (progress) => store.setTurnProgress(progress)
+      }) ?? result;
       result = await result;
       const pendingAck = storedPendingOpeningAck(partyStorage, partyId);
       if (pendingAck) {

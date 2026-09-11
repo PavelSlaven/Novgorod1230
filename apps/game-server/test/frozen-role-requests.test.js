@@ -39,9 +39,20 @@ const models = {
 test('frozen role fixtures ship exact production-built messages', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
   for (const fixture of corpus.fixtures.filter(({ role_id }) =>
-    role_id in models || role_id === 'ordinary_materialization' || role_id.startsWith('gameplay_narrator'))) {
+    role_id in models || role_id === 'ordinary_materialization'
+      || role_id.startsWith('gameplay_narrator'))) {
     assert.deepEqual(await productionMessages(fixture), fixture.messages,
       fixture.id);
+  }
+});
+
+test('frozen narration writer fixtures expose only model-owned prose', async () => {
+  const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
+  for (const fixture of corpus.fixtures.filter(({ role_id }) =>
+    role_id === 'gameplay_narrator' || role_id === 'gameplay_narrator_format_repair')) {
+    assert.deepEqual(Object.keys(fixture.expected_output), ['prose'], fixture.id);
+    assert.match(fixture.messages[0].content,
+      /^Return only \{"prose":"<complete Russian prose>"\}\./u, fixture.id);
   }
 });
 

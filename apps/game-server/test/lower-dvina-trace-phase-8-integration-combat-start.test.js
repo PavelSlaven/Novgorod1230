@@ -6,11 +6,13 @@ import { lowerDvinaTraceCombatTemporalEffectRegistrations } from '../src/runtime
 import { createTracePhase8Runtime } from '../src/runtime/lower-dvina-trace-phase-8-runtime.js';
 import { resolveTracePhase3Contracts } from '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
 import { createTraceCombatCommand } from '../src/runtime/lower-dvina-trace-combat-command.js';
+import { commitLowerDvinaTracePhase2 } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit.js';
 import { fixture } from './lower-dvina-trace-phase-2-fixture.js';
 import { createM2ConversationModels } from './lower-dvina-trace-m2-conversation-fixture.js';
 import { actorIds, bundle, combatPlan, phase8CampState, phase8Plan, phase8StartPlan, ROUTE_TEXT } from './lower-dvina-trace-phase-8-integration-helpers.js';
 
-test('Phase 8 reaches the storehouse, opens combat, and commits one exchange', async () => {
+test('Phase 8 reaches the storehouse, opens combat, and commits one exchange', async (t) => {
   const state = phase8CampState();
   const ids = actorIds(state);
   const conversation = createM2ConversationModels({ ratshaResponseKind: 'combat_handoff' });
@@ -32,8 +34,24 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange', a
   assert.equal(runtime.state.player_response_boundary.kind, 'combat');
   const healthBefore = runtime.state.body_state.health;
   const signalCountBefore = runtime.state.npc_decision_signals?.length ?? 0;
+  const stateBeforeCombat = structuredClone(runtime.state);
+  stateBeforeCombat.last_turn.turn_step_commit = priorCheckedTurn();
   const response = { request_id: 'phase8-combat-1', idempotency_key: 'phase8-combat-1', raw_text: 'Помочь Еремею обезоружить Жданко, не убивая его.' };
   await runtime.runtime.submitTurn({ partyId: runtime.partyId, input: response });
+  await t.test('combat pending screen excludes prior and NPC checks', async () => {
+    const committed = await commitLowerDvinaTracePhase2({
+      ...runtime.lastCommitInput(),
+      loadState: async () => structuredClone(stateBeforeCombat),
+      committer: { async commit() { return { ok: true, replay: false }; } }
+    });
+    const currentPlayerCheck = runtime.state.last_turn.consequence.combat.check_results
+      .find(({ check_id: checkId }) => runtime.state.last_turn.consequence.combat
+        .exchange.technical_steps.some(({ proposal_id: proposalId,
+          actor_ref: actor }) => checkId === `combat-check:${proposalId}`
+          && actor.entity_kind === 'player_character'));
+    assert.deepEqual(committed.committed_public_result.screen.checks.map(
+      ({ roll }) => roll), [currentPlayerCheck.roll]);
+  });
   assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
   assert.equal(runtime.state.combat_sessions.length, 0);
   assert.equal(runtime.state.last_turn.consequence.combat.session_after.status, 'ended');
@@ -65,6 +83,20 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange', a
   assert.equal(runtime.npcCombatCount(), 4);
   assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
 });
+
+function priorCheckedTurn() {
+  const result = { check_id: 'prior-check', roll: 7, difficulty: 10,
+    modifiers: { attribute: 0, skill: 0, state: 0, equipment: 0,
+      circumstances: 0 }, total: 7, outcome: {
+      band: 'failure_with_consequence', margin: -3, success: false,
+      cost_required: false, severe_failure: false, roll_note: null } };
+  return { checks: { results: [result] }, loop_trace: { step_traces: [{
+    applied: true, check_binding: { check_id: result.check_id }, approved_plan: {
+      interpretation: { grounded_attempt: 'Старое действие' },
+      check: { attribute_ref: 'strength', skill_ref: null }
+    }
+  }] } };
+}
 
 test('visible Phase 8 Zhdanko can receive a player-started combat handoff', async () => {
   const state = phase8CampState();

@@ -244,9 +244,7 @@ test('ordinary materialization prompt ends with only its semantic Stage B shape'
   assert.match(admitted, /semantic_materialization_kind/u);
   assert.match(admitted, /"semantic_type":"<specific ordinary semantic type>"/u);
   assert.match(admitted, /not null or a copied placeholder/u);
-
-
-
+  assert.doesNotMatch(admitted, /"semantic_descriptor"|"name"|"facts"/u);
   assert.match(admitted, /"mass_grams":"<integer>"/u);
   assert.match(admitted, /"external_hand_cost":"<integer>"/u);
   assert.match(admitted, /"packing_slot_cost":"<integer>"/u);
@@ -263,8 +261,7 @@ test('Stage B fails closed when its semantic admission differs from the candidat
     resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
     semantic_admission_class: 'weapon_or_armament',
     reason_code: 'found', entities: [{
-      semantic_descriptor: { semantic_type: 'free_descriptor',
-        name: 'свободное описание', facts: [] },
+      semantic_type: 'free_descriptor',
       presence_expectation: 'plausible', mechanics_proposal: {
         mass_grams: 100, external_hand_cost: 0, carry_form: 'compact',
         packing_slot_cost: 0, quantity: { value: 1, unit: 'item' },
@@ -298,8 +295,8 @@ test('Stage B binds environmental details to no_change before item mechanics', (
     const plan = bindOrdinaryMaterializationPlan(request, {
       resolution: 'materialize', semantic_materialization_kind: 'non_item_detail',
       semantic_admission_class: 'common_mundane', reason_code: 'observed',
-      entities: [{ semantic_descriptor: { semantic_type: 'ordinary_object_candidate',
-        name: query, facts: [] }, presence_expectation: 'plausible',
+      entities: [{ semantic_type: 'ordinary_object_candidate',
+        presence_expectation: 'plausible',
       mechanics_proposal: { mass_grams: 100, external_hand_cost: 0,
         carry_form: 'compact', packing_slot_cost: 0,
         quantity: { value: 1, unit: 'item' }, container: null } }]
@@ -321,7 +318,7 @@ test('Stage B requires a materialization kind and accepts a standalone common it
   const plan = bindOrdinaryMaterializationPlan(request, {
     resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
     semantic_admission_class: 'common_mundane', reason_code: 'found', entities: [{
-      semantic_descriptor: { semantic_type: 'cordage', name: 'обычная верёвка', facts: [] },
+      semantic_type: 'cordage',
       presence_expectation: 'routine', mechanics_proposal: { mass_grams: 350,
         external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null }
@@ -329,6 +326,8 @@ test('Stage B requires a materialization kind and accepts a standalone common it
   });
   assert.equal(plan.resolution, 'materialize');
   assert.equal(plan.entities.length, 1);
+  assert.deepEqual(plan.entities[0].semantic_descriptor,
+    { semantic_type: 'cordage', name: 'обычный предмет', facts: [] });
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
@@ -344,8 +343,7 @@ test('grounded Stage B materializes only with a claim ref from its current slice
     const semantic = { resolution: 'materialize',
       semantic_materialization_kind: 'standalone_item',
       semantic_admission_class: 'common_mundane', reason_code: 'found',
-      entities: [{ semantic_descriptor: { semantic_type: 'cordage',
-        name: 'обычная верёвка', facts: [] }, presence_expectation: 'routine',
+      entities: [{ semantic_type: 'cordage', presence_expectation: 'routine',
       mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
         carry_form: 'compact', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null } }] };
@@ -376,12 +374,34 @@ test('grounded Stage B materializes only with a claim ref from its current slice
     const admitted = await model(request, { repair: null,
       semantic_context: semanticContext });
     assert.equal(admitted.resolution, 'materialize');
-    assert.equal(admitted.entities[0].semantic_descriptor.name,
-      'обычная верёвка');
+    assert.deepEqual(admitted.entities[0].semantic_descriptor,
+      { semantic_type: 'cordage', name: 'обычный предмет', facts: [] });
     assert.deepEqual(validateOrdinaryMaterializationPlanV1(admitted, request), []);
   });
 
-
+test('Stage B cannot commit unsupported model wording from generic WK', () => {
+  const baseRequest = presenceRequest('найти сухую сердцевину в выброшенных ветках');
+  const request = { ...baseRequest,
+    world_knowledge: { facts: [{ claim_ref: 'claim:generic-woodwork' }],
+      hard_constraints: [] } };
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'materialize',
+    semantic_materialization_kind: 'standalone_item',
+    semantic_admission_class: 'common_mundane',
+    world_knowledge_claim_refs: ['claim:generic-woodwork'], reason_code: 'found',
+    entities: [{ semantic_type: 'wooden_branch',
+      name: 'сухая ветка с разбитой лодки',
+      facts: ['ветка высохла и выбросилась на берег'],
+      presence_expectation: 'plausible', mechanics_proposal: {
+        mass_grams: 500, external_hand_cost: 1, carry_form: 'long',
+        packing_slot_cost: 2, quantity: { value: 1, unit: 'item' },
+        container: null } }]
+  });
+  assert.deepEqual(plan.entities[0].semantic_descriptor,
+    { semantic_type: 'wooden_branch', name: 'обычный предмет', facts: [] });
+  assert.doesNotMatch(JSON.stringify(plan), /сухая|лодки|высохла/u);
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, baseRequest), []);
+});
 test('Stage B preserves explicit authority failure across candidate classification mismatch', () => {
   const request = presenceRequest('Неизвестный предмет среди обломков');
   const plan = bindOrdinaryMaterializationPlan(request, {

@@ -73,7 +73,7 @@ test('production O1 binds incomplete Flash output to its request envelope', asyn
   const roleRunner = { async run() { return { provider_record: modelIdentity(),
     output: { resolution: 'materialize', semantic_materialization_kind: 'standalone_item', semantic_admission_class: 'common_mundane',
       reason_code: 'found', entities: [{
-      semantic_descriptor: { semantic_type: 'cordage', name: 'верёвка', facts: [] },
+      semantic_type: 'cordage',
       presence_expectation: 'routine', supporting_basis_ref: 'stage-b',
       causal_basis: { basis_kind: 'ordinary_presence', basis_refs: ['stage-b'] },
       placement_proposal: { position_ref: 'bench' }, mechanics_proposal: {
@@ -85,7 +85,8 @@ test('production O1 binds incomplete Flash output to its request envelope', asyn
   assert.equal(output.schema, 'ordinary_materialization_plan_v1');
   assert.equal(output.entities[0].admission_class, 'common_mundane');
   assert.equal(output.entities[0].property_basis_ref, 'property');
-  assert.equal(output.entities[0].semantic_descriptor.name, 'верёвка');
+  assert.deepEqual(output.entities[0].semantic_descriptor,
+    { semantic_type: 'cordage', name: 'обычный предмет', facts: [] });
 });
 
 test('ordinary assembly does not invent an omitted semantic reason', () => {
@@ -107,9 +108,9 @@ for (const firstType of ['ordinary_wood', null, undefined]) test(`O1 binds speci
         background_groups: [{ descriptor: discoveryGroup().descriptor }],
         reason_code: 'seed' } : { resolution: 'materialize', reason_code: 'found',
         semantic_materialization_kind: 'standalone_item', semantic_admission_class: 'common_mundane',
-        entities: [{ semantic_descriptor: { ...(calls === 2 && firstType === undefined ? {}
+        entities: [{ ...(calls === 2 && firstType === undefined ? {}
           : { semantic_type: calls === 2 ? firstType : 'ordinary_wood' }),
-          name: 'обломок доски', facts: ['фрагмент недавнего груза с разбитой телеги'] },
+        name: 'обломок доски', facts: ['фрагмент недавнего груза с разбитой телеги'],
         presence_expectation: 'routine', mechanics_proposal: { mass_grams: 350,
           external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
           quantity: { value: 1, unit: 'item' }, container: null } }] } }; } }
@@ -122,7 +123,7 @@ for (const firstType of ['ordinary_wood', null, undefined]) test(`O1 binds speci
   assert.equal(calls, firstType === 'ordinary_wood' ? 2 : 3);
   assert.deepEqual(plan.item.item_proposal.semantic_descriptor, {
     semantic_type: 'ordinary_wood',
-    name: 'обломок доски', facts: []
+    name: 'обычный предмет', facts: []
   });
 });
 

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { submitRecoverableTurn } from '../src/app/turn-submission.js';
+import { recoverPendingPresentation, submitRecoverableTurn } from
+  '../src/app/turn-submission.js';
 import { storedPendingTurn } from '../src/app/pending-turn.js';
 import { renderActions } from '../src/features/actions/render.js';
 import { createApiClient } from '../src/api/client.js';
@@ -131,4 +132,33 @@ test('turn progress polling uses exact request, never overlaps, stops, and is no
     async submitTurn() { return { screen: { screen_status: 'ready' } }; },
     async getTurnProgress() { throw new Error('status unavailable'); }
   }, saved, 'party', { raw_text: 'Иду.' }, { onProgress() {}, pollIntervalMs: 1 });
+});
+
+test('screen-only pending presentation recovery polls its committed request', async () => {
+  let finishRecovery, polls = 0;
+  const api = {
+    recoverPendingPresentation: async (partyId, requestId) =>
+      new Promise((resolve) => {
+        assert.equal(partyId, 'party'); assert.equal(requestId, 'turn-7');
+        finishRecovery = resolve;
+      }),
+    async getTurnProgress(partyId, requestId) {
+      assert.equal(partyId, 'party'); assert.equal(requestId, 'turn-7');
+      polls += 1;
+      return { phase: 'recovering_saved_result', commit_state: 'committed' };
+    }
+  };
+  const updates = [];
+  const recovery = recoverPendingPresentation(api, 'party', {
+    screen_status: 'committed_presentation_pending', turn_id: 'turn-7'
+  }, { onProgress: (value) => updates.push(value), pollIntervalMs: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  finishRecovery({ screen: { screen_status: 'ready' } });
+  await recovery;
+  const stoppedAt = polls;
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  assert.equal(polls, stoppedAt);
+  assert.deepEqual(updates[0], {
+    phase: 'recovering_saved_result', commit_state: 'committed'
+  });
 });

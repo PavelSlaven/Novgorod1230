@@ -36,7 +36,9 @@ test('ordinary lookup preserves approved scene and complete need without opaque-
   assert.equal(need.candidate.coverage_kind, 'visible_surface');
   assert.deepEqual(need.allowed_admission_classes, ['common_mundane']);
   assert.deepEqual(request, before);
-  assert.deepEqual(first, traces[0].consumer_request);
+  const { context_text, ...structured } = first.world_knowledge;
+  assert.deepEqual(traces[0].core_result, structured);
+  assert.deepEqual(traces[0].consumer.input.world_knowledge, structured);
   assert.deepEqual(traces[0].query.budget,
     { max_facts: 12, max_candidates: 12, max_context_chars: 5000 });
 

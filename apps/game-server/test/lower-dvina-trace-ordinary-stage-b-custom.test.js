@@ -127,8 +127,8 @@ for (const semanticType of ['cordage', null, undefined]) test(`custom Stage B qu
           resolution: 'materialize',
           semantic_materialization_kind: 'standalone_item',
           semantic_admission_class: 'common_mundane', reason_code: 'ordinary_present',
-          entities: [{ semantic_descriptor: { ...(semanticType === undefined ? {} : { semantic_type: semanticType }),
-            name: 'обычная верёвка', facts: [] }, presence_expectation: 'routine',
+          entities: [{ ...(semanticType === undefined ? {} : {
+            semantic_type: semanticType }), presence_expectation: 'routine',
           mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
             carry_form: 'compact', packing_slot_cost: 1,
             quantity: { value: 1, unit: 'item' }, container: null } }]

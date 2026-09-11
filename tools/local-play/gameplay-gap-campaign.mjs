@@ -131,7 +131,7 @@ export async function runGameplayGapCampaign({ nextIntent, explorerRef,
       trace.retrieved_claim_refs = [...new Set(boundaries
         .filter(boundary => boundary.event === 'world_knowledge_resolved')
         .flatMap(boundary => {
-          const slice = boundary.consumer_request.world_knowledge;
+          const slice = boundary.core_result;
           if (!Array.isArray(slice?.facts) || !Array.isArray(slice?.hard_constraints)
               || [...slice.facts, ...slice.hard_constraints].some(fact => !text(fact?.claim_ref))) {
             throw new Error('Consumer WK slice was not preserved in private trace');
@@ -193,21 +193,42 @@ export async function readPartyTurnTrace({ directory, partyId, requestId, attemp
 
 export function auditEvent(event) {
   const llm = event.llm;
-  // Structured input/output suffices for premise auditing. No provider reasoning
-  // content, credentials, or transport snapshots are forwarded to auditors.
+  // Campaign artifacts retain only redacted WK boundaries and call metadata.
+  // Raw prompts, model output, private turn context and reasoning stay in party JSONL.
   return { event: event.event, output: event.output ?? null,
-    error: event.error == null ? null : { code: event.error.code, details: event.error.details },
-    llm: { gameplay_traces: llm.gameplay_traces, waterfall: llm.waterfall,
+    error: event.error == null ? null : { code: event.error.code ?? null },
+    llm: { gameplay_traces: (llm.gameplay_traces ?? []).map(auditBoundary)
+      .filter(Boolean), waterfall: llm.waterfall,
       aggregate: llm.aggregate, calls: (llm.calls ?? []).map(call => ({
         role_id: call.role_id ?? null, request_identity: call.request_identity ?? null,
         status: call.response?.status ?? null, error_code: call.response?.error?.code ?? null,
         provider: call.response?.provider ?? null,
         model: call.response?.model ?? null,
         config_hash: call.response?.config_hash ?? null,
-        messages: call.request?.messages ?? null,
-        output: call.response?.parsed_json ?? null,
-        grounding: call.schema === 'world_knowledge_grounding_diagnostic_v1' ? call : null
+        grounding: call.schema === 'world_knowledge_grounding_diagnostic_v1'
+          ? groundingDiagnostic(call) : null
       })) } };
+}
+function groundingDiagnostic(call) {
+  return { schema: call.schema, purpose: call.purpose,
+    request_identity: call.request_identity, planner_called: call.planner_called,
+    planner_repaired: call.planner_repaired, pack_revision: call.pack_revision,
+    query_locale: call.query_locale, domains: call.domains,
+    focus_refs: call.focus_refs, predicates: call.predicates,
+    coverage: call.coverage, claim_refs: call.claim_refs,
+    retrieval_observability: call.retrieval_observability };
+}
+function auditBoundary(boundary) {
+  if (boundary?.event === 'world_knowledge_resolved'
+      && boundary.schema === 'world_knowledge_boundary_trace_v1') return boundary;
+  if (boundary?.event === 'owner_commit_rejected') {
+    return { event: boundary.event, code: boundary.code ?? null };
+  }
+  if (boundary?.event === 'owner_commit_requested'
+      || boundary?.event === 'owner_commit_completed') {
+    return { event: boundary.event };
+  }
+  return null;
 }
 function pending(response) {
   const data = response?.payload?.data;

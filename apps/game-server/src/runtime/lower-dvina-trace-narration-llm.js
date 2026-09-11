@@ -28,7 +28,7 @@ const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certai
   + 'contact; its unestablished observation does not negate that motion. Add no '
   + 'hidden fact, diagnosis, unsupported sensory detail, reaction or causal bridge.';
 
-const WRITER_SHAPE = 'Return only {"prose":"<complete Russian prose>","action_options":[],"used_references":[]}. The server assembles version, schema, output_id and neutral self_check={}; do not generate self-check flags.';
+const WRITER_SHAPE = 'Return only {"prose":"<complete Russian prose>"}. The server assembles version, schema, output_id, action_options=[], used_references=[] and neutral self_check={}; do not generate those fields.';
 
 export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
   if (typeof roleRunner?.run !== 'function') throw serverError(
@@ -87,8 +87,7 @@ export function assembleNarrationRoleOutput(roleId, output, request) {
     .includes(roleId)) return {
     version: 1, schema: 'narration_output',
     output_id: request.request_id ?? request.request?.request_id,
-    prose: output.prose, action_options: structuredClone(output.action_options),
-    used_references: structuredClone(output.used_references),
+    prose: output.prose, action_options: [], used_references: [],
     self_check: {}
   };
   if (roleId === 'gameplay_narrator_auditor') {

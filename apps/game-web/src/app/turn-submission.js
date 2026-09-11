@@ -57,9 +57,19 @@ export async function submitTurnWithPresentationReplay(api, partyId, request) {
   return replay;
 }
 
-export function recoverPendingPresentation(api, partyId, screen) {
-  return screen?.screen_status === 'committed_presentation_pending'
-    ? api.recoverPendingPresentation(partyId, screen.turn_id) : null;
+export function recoverPendingPresentation(api, partyId, screen,
+  { onProgress = null, pollIntervalMs = 1_000 } = {}) {
+  if (screen?.screen_status !== 'committed_presentation_pending') return null;
+  return recoverWithProgress(api, partyId, screen.turn_id, onProgress,
+    pollIntervalMs);
+}
+
+async function recoverWithProgress(api, partyId, requestId, onProgress,
+  pollIntervalMs) {
+  const stopProgress = watchTurnProgress(api, partyId, requestId, onProgress,
+    pollIntervalMs);
+  try { return await api.recoverPendingPresentation(partyId, requestId); }
+  finally { stopProgress(); }
 }
 
 function uiError(code, message) {

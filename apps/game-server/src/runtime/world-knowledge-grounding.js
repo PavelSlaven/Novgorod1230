@@ -124,11 +124,9 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       const purposeCache = cache.get(request) ?? new Map();
       purposeCache.set(cacheKey, grounded);
       cache.set(request, purposeCache);
-      telemetry?.onGameplayTrace?.({ event: 'world_knowledge_resolved', purpose,
-        request_identity: request.request_id ?? null,
-        planner_request: plannerRequest, planner_plan: planned.plan,
-        query, retrieved_slice: slice, consumer_request: grounded,
-        retrieval_observability: retrievalObservability });
+      telemetry?.onGameplayTrace?.(worldKnowledgeTrace({ request, purpose,
+        semanticInput, plannerRequest, plannerPlan: planned.plan, query, slice,
+        retrievalObservability }));
       telemetry?.onDetail?.(Object.freeze({
         schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
         request_identity: request.request_id ?? null,
@@ -221,3 +219,55 @@ function modelSlice(slice) {
     disputes: slice.disputes, gaps: slice.gaps,
     context_text: slice.context_text });
 }
+
+// Development traces preserve the exact WK boundary, not the full actor-safe
+// request. The latter can still carry private state unrelated to retrieval.
+function worldKnowledgeTrace({ request, purpose, semanticInput, plannerRequest,
+  plannerPlan, query, slice, retrievalObservability }) {
+  const worldKnowledge = traceWorldKnowledgeSlice(slice);
+  return Object.freeze({ schema: 'world_knowledge_boundary_trace_v1',
+    event: 'world_knowledge_resolved', purpose,
+    request_identity: text(request.request_id),
+    safe_need: safeNeed(request, semanticInput),
+    planner_request: Object.freeze({ schema: plannerRequest.schema,
+      pack_ref: plannerRequest.pack_ref, purpose: plannerRequest.purpose,
+      input_locale: plannerRequest.input_locale,
+      allowed_domains: [...plannerRequest.allowed_domains],
+      available_knowledge_refs: [...plannerRequest.available_knowledge_refs],
+      planner_limits: { ...plannerRequest.planner_limits } }),
+    planner_plan: Object.freeze({ schema: plannerPlan.schema,
+      query_locale: plannerPlan.query_locale, domains: [...plannerPlan.domains],
+      focus_refs: [...plannerPlan.focus_refs],
+      requested_predicates: [...plannerPlan.requested_predicates],
+      search_hints: [...plannerPlan.search_hints] }),
+    query: Object.freeze({ schema: query.schema, pack_ref: query.pack_ref,
+      pack_revision: query.pack_revision, purpose: query.purpose,
+      query_locale: query.query_locale, domains: [...query.domains],
+      focus_refs: [...query.focus_refs],
+      requested_predicates: [...query.requested_predicates],
+      search_hints: [...query.search_hints], context: structuredClone(query.context),
+      budget: { ...query.budget } }),
+    core_result: worldKnowledge,
+    consumer: Object.freeze({ purpose, input: Object.freeze({
+      request_schema: text(request.schema), request_identity: text(request.request_id),
+      safe_need: safeNeed(request, semanticInput), world_knowledge: worldKnowledge }) }),
+    retrieval_observability: retrievalObservability });
+}
+
+function safeNeed(request, semanticInput) {
+  if (request.schema === 'ordinary_materialization_request_v1') {
+    return Object.freeze({ source: 'ordinary_materialization', value: semanticInput });
+  }
+  for (const key of ['remaining_intent', 'root_player_action', 'utterance_text',
+    'semantic_input', 'reason']) if (typeof request[key] === 'string'
+      && request[key].trim()) return Object.freeze({ source: key,
+      value: request[key].trim() });
+  return Object.freeze({ source: 'redacted', value: null });
+}
+
+function traceWorldKnowledgeSlice(slice) {
+  const { context_text, ...structured } = modelSlice(slice);
+  return Object.freeze(structured);
+}
+
+function text(value) { return typeof value === 'string' ? value : null; }

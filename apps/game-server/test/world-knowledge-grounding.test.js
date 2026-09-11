@@ -55,7 +55,7 @@ test('production grounding plans once and injects only an applicable bounded sli
       } };
     } } });
   const request = { request_id: 'turn:1', remaining_intent:
-    'Можно ли здесь добыть рыбу?', player_safe_state: {} };
+    'Можно ли здесь добыть рыбу?', player_safe_state: { hidden: 'never-trace-me' } };
   const first = await grounder.ground(request, 'semantic_resolution');
   const second = await grounder.ground(request, 'semantic_resolution');
 
@@ -112,11 +112,24 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.equal(gameplayTraces.length, 1);
   const trace = gameplayTraces[0];
   assert.equal(trace.event, 'world_knowledge_resolved');
-  assert.deepEqual(trace.planner_request, { ...plannerRequest,
-    available_knowledge_refs: Object.keys(owners) });
+  assert.equal(trace.schema, 'world_knowledge_boundary_trace_v1');
+  assert.deepEqual(trace.safe_need, { source: 'remaining_intent',
+    value: 'Можно ли здесь добыть рыбу?' });
+  assert.deepEqual(trace.planner_request, {
+    schema: plannerRequest.schema, pack_ref: plannerRequest.pack_ref,
+    purpose: plannerRequest.purpose, input_locale: plannerRequest.input_locale,
+    allowed_domains: plannerRequest.allowed_domains,
+    available_knowledge_refs: Object.keys(owners),
+    planner_limits: plannerRequest.planner_limits
+  });
+  assert.deepEqual(trace.planner_plan.search_hints, ['рыбные ресурсы']);
   assert.deepEqual(trace.query.search_hints, ['рыбные ресурсы']);
-  assert.deepEqual(trace.consumer_request, first);
-  assert.deepEqual(trace.retrieved_slice.facts, first.world_knowledge.facts);
+  const { context_text, ...structured } = first.world_knowledge;
+  assert.deepEqual(trace.core_result, structured);
+  assert.deepEqual(trace.consumer, { purpose: 'semantic_resolution', input: {
+    request_schema: null, request_identity: 'turn:1',
+    safe_need: trace.safe_need, world_knowledge: structured } });
+  assert.equal(JSON.stringify(trace).includes('never-trace-me'), false);
   assertRetrievalObservability(trace.retrieval_observability, first);
   assert.deepEqual(trace.retrieval_observability,
     diagnostics[0].retrieval_observability);
@@ -127,11 +140,9 @@ test('production grounding plans once and injects only an applicable bounded sli
     consumerWire = JSON.parse(call.messages[1].content);
     return { output: {} };
   } } })(first);
-  const { context_text, ...structured } = first.world_knowledge;
   assert.deepEqual(consumerWire, { ...first, world_knowledge: structured });
   assert.ok(context_text.includes(first.world_knowledge.facts[0].runtime_text));
   assert.deepEqual(first, beforeConsumer);
-  assert.deepEqual(trace.consumer_request, beforeConsumer);
   t.diagnostic(`Production WK wire reduction: ${JSON.stringify(first).length - JSON.stringify(consumerWire).length} chars.`);
 });
 

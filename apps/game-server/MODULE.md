@@ -65,8 +65,9 @@ and adds no second transaction owner.
   Пустой review частично либо полностью потерянного source становится
   missing_visible_change; malformed private output fail-closed и не получает
   синтезированного repair concern. Final audit всегда strict.
-  Private writer/format-repair возвращает только prose/action_options/used_references;
-  публичный self_check={} нейтрален и собирается кодом, не служит approval.
+  Private writer/format-repair возвращает только prose; Adapter всегда собирает
+  публичные action_options=[], used_references=[] и нейтральный self_check={},
+  которые не служат model approval.
   Полноту coverage и согласованность художественного/технического verdict
   проверяет `@rus/narration` на initial/final audit. Narrator и цельный repair
   строят текущий beat вокруг изменений и неопределённостей; статический
@@ -264,10 +265,12 @@ approved ambient capability bounds for schema-valid direct extraction, while
 concealed capabilities remain server-only. The
 discovery marker is boolean and exposes no unresolved result, permission or
 capacity. Stage B may choose an
-unlisted ordinary semantic type/name and independently classifies the full
+unlisted ordinary semantic type and independently classifies the full
 candidate, including its qualifiers and relations, for admission;
 the descriptor's `semantic_type` remains the specific model-classified material
-or object type. Its prompt uses an explicit non-null placeholder; null or omitted
+or object type. Player-facing name and facts are code-owned neutral values, so
+unsupported model wording cannot become a committed premise. Its prompt uses an
+explicit non-null type placeholder and accepts no name/facts; null or omitted
 types retain the existing strict validation and single repair.
 the owner accepts it only when that class matches the code-owned candidate, then
 rechecks mechanics, property, permission and source. Before item admission, the

@@ -415,7 +415,7 @@ function retrievedClaims(boundaries) {
   return [...new Set(boundaries
     .filter((item) => item.event === 'world_knowledge_resolved')
     .flatMap((item) => {
-      const wk = item.consumer_request?.world_knowledge;
+      const wk = item.core_result;
       return [...(wk?.hard_constraints ?? []), ...(wk?.facts ?? [])]
         .map((fact) => fact.claim_ref).filter(Boolean);
     }))];

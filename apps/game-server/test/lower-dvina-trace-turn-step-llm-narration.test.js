@@ -10,19 +10,51 @@ import { assembleNarrationRoleOutput,
   createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
-test('narration assembly keeps missing content invalid and owns neutral self-check metadata', () => {
-  const output = assembleNarrationRoleOutput('gameplay_narrator', {
-    prose: 'Двор тих.' }, { request_id: 'narration-1' });
-  assert.equal(output.action_options, undefined);
-  assert.equal(output.used_references, undefined);
-  assert.deepEqual(output.self_check, {});
-  assert.equal(validateNarrationOutput(output).ok, false);
+test('narration assembly requires model prose and owns all fixed output metadata', () => {
   const supplied = assembleNarrationRoleOutput('gameplay_narrator', {
-    prose: 'Двор тих.', action_options: [], used_references: [],
+    prose: 'Двор тих.', action_options: [{ label: 'Осмотреть двор' }],
+    used_references: ['scene:yard'],
     self_check: { every_fact_is_true: true, no_unsupported_silence: true }
   }, { request_id: 'narration-1' });
+  assert.deepEqual(supplied.action_options, []);
+  assert.deepEqual(supplied.used_references, []);
   assert.deepEqual(supplied.self_check, {});
   assert.equal(validateNarrationOutput(supplied).ok, true);
+  const missing = assembleNarrationRoleOutput('gameplay_narrator', {},
+    { request_id: 'narration-1' });
+  assert.deepEqual(validateNarrationOutput(missing).errors, ['prose is required']);
+});
+
+test('writer metadata drift does not invoke narration format repair', async () => {
+  const calls = [];
+  const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
+    async run(call) {
+      calls.push(call.role_id);
+      if (call.role_id === 'gameplay_narrator') return { output: {
+        prose: 'У ворот стоит телега.', action_options: [{ label: 'Осмотреть телегу' }],
+        used_references: ['scene:cart'], self_check: { approved: true }
+      } };
+      if (call.role_id === 'gameplay_narrator_format_repair') {
+        throw new Error('format repair must not run');
+      }
+      const input = JSON.parse(call.messages[1].content);
+      return { output: {
+        ...reviewedNarration(input.segments), evidence: ['Visible scene supports prose.']
+      } };
+    }
+  } });
+  const result = await narration.run({ version: 1, schema: 'narration_request',
+    request_id: 'fixed-writer-fields', surface: 'turn', visible_context: {
+      version: 1, schema: 'visible_context_package', visible_scene: 'У ворот стоит телега.',
+      visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
+      known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+    }, context: {} });
+  assert.equal(result.status, 'approved');
+  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
+  assert.deepEqual(result.approved_output.action_options, []);
+  assert.deepEqual(result.approved_output.used_references, []);
+  assert.deepEqual(result.approved_output.self_check, {});
+  assert.equal(result.diagnostics.repairs_used, 0);
 });
 
 test('body delta reaches narration as grounded meaning without technical prose or invented shivering', async () => {

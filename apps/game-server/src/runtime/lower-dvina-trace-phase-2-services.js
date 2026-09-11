@@ -173,8 +173,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       async commit(writePlan) {
         commitAttempted = true;
         turnBudget?.assertCanCommit();
-        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_requested',
-          write_plan: writePlan });
+        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_requested' });
         let committed;
         try { committed = await repository.commitPhase2Turn({
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
@@ -186,11 +185,10 @@ export function buildLowerDvinaTracePhase2Services(context) {
           turnStepAmbientPortionProfileRef
         }); } catch (error) {
           context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_rejected',
-            code: error?.code ?? null, details: error?.details ?? null });
+            code: error?.code ?? null });
           throw error;
         }
-        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_completed',
-          result: committed });
+        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_completed' });
         committedPublicResult = committed.committed_public_result ?? null;
         return committed;
       }

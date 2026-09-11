@@ -44,7 +44,7 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({ partyId,
     writePlan, state, snapshot: next, factual, changeSetId, idemId });
   next = turnStep.snapshot;
-  const pendingScreen = combatPendingScreen({ state, factual, visibleEnvelope,
+  const pendingScreen = combatPendingScreen({ state: next, factual, visibleEnvelope,
     turnNumber, nextVersion });
   const writes = mergeLowerDvinaTraceTurnStepWrites(combatWrites({ partyId,
     state, next, factual, turnNumber, changeSetId, idemId, visibleEnvelope,

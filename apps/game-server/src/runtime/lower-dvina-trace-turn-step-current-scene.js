@@ -196,8 +196,7 @@ function directSeedChange(value) {
         || Object.keys(result).length !== 2
         || !['no_change', 'authority_required'].includes(result.resolution)
         || !text(result.query) || !result.query.trim()) failCurrentScene();
-    return [elapsed,
-      `В этой попытке поиска по вопросу «${result.query}» подтверждённой находки нет.`];
+    return `За ${duration} ${minuteWord(duration, 'минуту')} поиска по вопросу «${result.query}» подтверждённой находки нет.`;
   }
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';

@@ -71,7 +71,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
       request, operationChoices);
     const visibleConversationExamples = visibleConversationChoiceExamples(
       request, operationChoices);
-    const response = await roleRunner.run({
+    const call = {
         scope: 'turn_runtime',
         role_id: repairing
           ? 'turn_step_planner_repair'
@@ -97,6 +97,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             'Do not infer a fantastical referent from player intent: it is absent unless player-safe state identifies it as a visible entity or capability.',
             'Classify interpretation.adaptation by the stated goal, not whether the actor can pantomime it. First: an absent fantastical required referent means make_believe. Otherwise: real or ordinary referents with a physically limited action mean reality_limited. Otherwise: literal. An ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery/domain flow.',
             'Process independent actions in their stated order. A supplied operation choice for a later action never outranks an earlier feasible action. Plan the earlier action through its existing semantic mapping and preserve every later action in continuation. When an operation choice covers the intent\'s current earliest action, select its choice_id; use action_production only when no supplied choice covers that earliest action.',
+            'move_entity moves one complete identity at its supplied quantity. It cannot satisfy another count or subset. If none matches an ordinary count, use ordinary_material_prerequisite and preserve intent.',
             'Adjacent current-scene looking, listening, smelling, or other player-safe perception clauses that require no code-owned operation and no check may form one direct player_safe_observation step. Speech is never perception: a call, shout, or spoken words cannot be covered by player_safe_observation and remain an independently consequential player_utterance continuation when they follow perception. Preserve later movement, manipulation, and other independently consequential actions too. A purpose, hope, manner, or expected-result clause belongs to the action it qualifies and is not a separate executable continuation.',
             'QUALITATIVE ASSESSMENT OVERRIDE: assessing, judging, comparing, or trying to understand whether already supplied sensory facts support a conclusion is one direct achieved player_safe_observation, not a discovery plus continuation. An introductory evidence phrase and its question form one assessment. A sensory detail remains supplied even without an entity ref; never substitute an unrelated carried item ref. When world_knowledge facts or hard_constraints support a useful conclusion, include assessment exactly as {"text":"<concise player-safe conclusion>","support_refs":["<exact supporting claim_ref>"]}. Answer the stated comparison or question rather than repeating a generic premise: apply the cited relationship only to named features already supplied by the current scene, while preserving any remaining uncertainty. A supported result may be that the visible evidence is insufficient because a supplied claim makes the answer depend on unmeasured conditions; do not invent a separate inspection unless the player actually asks to inspect a new condition or object. Qualify what remains unknown; world knowledge never proves current quantity, presence, condition, access, or an exact mechanical outcome. Never include assessment from model memory, reason, gaps, disputes, or unsupported refs.',
             'Select direct player_utterance only when speech is the current earliest independently executable action. A genuine look, listen, search, movement, manipulation, or other action stated before speech executes first, even in the same sentence; preserve the later utterance and every following action in continuation.',
@@ -129,6 +130,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
               : 'Plan only the next executable semantic step and preserve any remaining intent.',
             ...(repairing ? [
               'For domain_owner_unavailable, owner absence does not change a physically plausible goal into reality_limited: use literal adaptation for the direct no-operation attempt.',
+              'When operation_semantic_grounding rejects move_entity for an explicit quantity mismatch, discard that move. Use ordinary_material_prerequisite for the requested ordinary group and preserve the complete acquisition intent; never silently reduce, round, or ignore the count.',
               'When operation_semantic_grounding rejects $.utterance, re-evaluate request.remaining_intent itself. Retain player_utterance only for actual speech or a vocal signal. Otherwise discard the invalid utterance and use the matching non-speech semantic mapping, preserving explicit duration. Typed first-person action prose is not speech.'
             ] : []),
             ...turnStepRepairSpecificInstructions(repairContext, request)
@@ -139,9 +141,19 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
         }],
         overrides: {
           temperature: 0,
-          maxTokens: 20_000
+          maxTokens: 20_000,
+          reasoningEffort: repairing ? 'low' : 'off'
         }
-      });
+      };
+    let response;
+    try {
+      response = await roleRunner.run(call);
+    } catch (error) {
+      if (repairing || error?.code !== 'invalid_response') throw error;
+      response = await roleRunner.run({ ...call, overrides: {
+        ...call.overrides, reasoningEffort: 'low'
+      } });
+    }
     if (!response?.output || typeof response.output !== 'object'
         || Array.isArray(response.output)) {
       throw dependencyError('Turn step planner returned no JSON object.');

@@ -925,11 +925,17 @@ LLM может материализовать объект, который яв�
   "actor_ref": "actor_mikula",
   "discovery_kind": "look | inspect | search | listen | remember | dig",
   "target_refs": ["entity_or_location_ref"],
-  "query": "что персонаж пытается обнаружить"
+  "query": "что персонаж пытается обнаружить",
+  "quantity": { "value": 5, "unit": "item" }
 }
 ```
 
 LLM не придумывает значимый скрытый результат.
+
+`quantity` опционален и допустим только для явно заявленной конечной группы от
+1 до 16 предметов. Semantic boundary определяет число, materialization owner
+проверяет точное совпадение proposal и сохраняет одну identity с этим mechanics
+quantity. При отсутствии точного количества поле не передаётся.
 
 `target_refs` содержит ровно один ref. Если model output перечисляет несколько
 targets, deterministic canonicalizer оставляет первый для текущего исполняемого
@@ -943,7 +949,11 @@ Step loop исполняет очередь по одному target без но
 
 Для O1 этот же существующий request — единственный public путь к common ordinary detail; `request_ordinary_detail` не существует. После authored и committed discovery, exact persisted resolution и other code-first short circuits ordinary resolver вызывается только при meaningful engagement, когда concrete detail нужна factual projection. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A получает только committed objective context, не содержит candidate, raw player action, wishlist, desired use или narration suggestion и может подготовить лишь candidate-free seed/groups. Stage B имеет `evidence_weight: 0`; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`: это не noun/recipe allowlist и не permissions/classification/mechanics authority. Exact normalized retry использует persisted resolution без reroll; другой normalized query получает другую identity. Один discovery допускает максимум два semantic calls суммарно для Stage A, Stage B и structural repair; repair всегда расходует оставшийся call. Если Stage A repair исчерпал лимит, Stage B не вызывается и сохраняется seed-only. Positive `materialize` требует independent committed/prepared supporting basis, `common_mundane`/`common` admission, exact property basis, narrow existing placement и immutable mechanics snapshot в пределах bounded mechanics policy. Model-produced `absent`, `no_change` и `authority_required` — persisted first-class resolutions; preflight `no_change` из-за исчерпанного budget/cap остаётся transient и не создаёт granular record. Если в том же turn впервые выполнен Stage A, сохраняется seed-only P16 plan. Model call происходит вне physical transaction; revalidation и one atomic P16 commit сохраняют seed/basis, positive либо negative exact resolution. Planner и narrator видят только capability marker и approved visible concrete result.
 
-При наличии production World Knowledge Stage B может вернуть `materialize` только с непустым `world_knowledge_claim_refs`, состоящим из exact `claim_ref` текущего grounded slice; LLM выбирает семантически релевантные premises, а code binding проверяет membership. Пустой или чужой ref делает ответ структурно невалидным и после единственного repair завершает ход typed failure до commit/narration.
+Для `common_mundane` World Knowledge не является positive whitelist: causal
+scene basis и обычной физической/исторической правдоподобности достаточно при
+отсутствии применимого hard constraint. Non-common positive materialization
+по-прежнему требует exact supporting fact refs. Hard constraints идут отдельным
+veto-channel, не считаются positive support и проверяются fail-closed.
 
 O1 сам не активирует O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources. Значимые, hidden и informational facts, container contents и topology остаются code-owned. Независимо активированный O2b ниже не расширяет O1 discovery.
 
@@ -1342,11 +1352,14 @@ local/custom OpenAI-compatible provider один `runtimeProviderOverride`
 применяется ко всем ролям. Transport не делает fallback на DeepSeek или другую
 model/provider; connection, auth, model, timeout, malformed response и invalid
 JSON завершают ход typed technical failure до commit.
-Каждый такой локальный игровой запрос явно передаёт
-`chat_template_kwargs.enable_thinking=false`, независимо от имени выбранной
-модели. Semantic quality обеспечивают world knowledge, безопасный контекст,
-code-owned validators и предусмотренные контрактом repair-вызовы; transport не
-включает reasoning автоматически и не эскалирует к thinking-модели.
+По умолчанию локальный игровой запрос передаёт
+`chat_template_kwargs.enable_thinking=false`. Role caller может явно выбрать
+`off`, `minimal`, `low`, `medium`, `high` или `xhigh` в пределах возможностей
+provider: transport сам не угадывает сложность и не повышает уровень. Step
+planner начинает с `off`; завершение без финального ответа повторяется один раз
+на той же модели с `low`. Его single structural repair тоже использует `low`,
+потому что запускается только после невалидного исходного плана. Остальные роли
+остаются `off`, пока их owner явно не установит иную complexity policy.
 
 ## 17. Активированная реализация
 

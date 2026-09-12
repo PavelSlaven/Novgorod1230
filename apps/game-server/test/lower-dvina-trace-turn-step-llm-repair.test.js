@@ -84,7 +84,8 @@ test('repair role receives original output, request, and structural errors', asy
     original_output: { resolution: 'domain_request', operation_choice: 'missing' }
   });
   assert.equal(seen.role_id, 'turn_step_planner_repair');
-  assert.deepEqual(seen.overrides, { temperature: 0, maxTokens: 20_000 });
+  assert.deepEqual(seen.overrides, { temperature: 0, maxTokens: 20_000,
+    reasoningEffort: 'low' });
   const payload = JSON.parse(seen.messages[1].content);
   assert.deepEqual(Object.keys(payload).sort(), ['original_output', 'request', 'structural_errors']);
   assert.deepEqual(payload.original_output,

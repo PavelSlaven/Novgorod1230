@@ -179,6 +179,12 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
           && preservesIntent(plan.interpretation.grounded_attempt,
             plan.continuation, request.remaining_intent)
           ? plan.interpretation.grounded_attempt : null;
+        if (focused.output.mode === 'material_prerequisite'
+            && !material_prerequisite_candidate && !prerequisiteProjection
+            && plan.interpretation?.adaptation === 'literal'
+            && normalized(groundedPrefix) === normalized(genericDiscovery.query)
+            && plan.continuation?.depends_on_refs?.length === 0
+            && plan.continuation.prepared_followup_ref == null) return true;
         if (focused.output.mode === 'focused_discovery'
             && (groundedWhole || consumed === normalized(request.remaining_intent)
               && plan.interpretation?.grounded_attempt == null)
@@ -212,7 +218,10 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
             && normalized(query) !== normalized(request.remaining_intent)) {
           return { corrected_plan: { ...plan, resolution: 'domain_request', goal_result: 'pending',
             activity: { owner: 'domain', duration_class: null, effort: null },
-            operations: [{ ...genericDiscovery, discovery_kind: 'inspect', query }],
+            operations: [{ ...genericDiscovery, discovery_kind: 'inspect', query,
+              ...(Number.isSafeInteger(focused.output.prerequisite_quantity)
+                ? { quantity: { value: focused.output.prerequisite_quantity,
+                    unit: 'item' } } : {}) }],
             continuation: { remaining_intent: request.remaining_intent, depends_on_refs: [] } } };
         }
         if (!denialProjection && !material_prerequisite_candidate && !prerequisiteProjection && query == null && focusedDiscoveryGrounded({ classification: focused.output,
@@ -225,6 +234,9 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       }
       assertDiscoveryIntent(genericDiscovery, plan, request, audited);
     }
+    const moveOnly = audited.length === 1
+      && audited[0].operation?.op === 'move_entity'
+      && plan.operations?.length === 1 && plan.check == null;
     const response = await roleRunner.run({
       scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
       request_identity: request.request_id,
@@ -236,12 +248,33 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
             audited),
           operations: audited, continuation: plan.continuation }) }]
     });
-    if (!valid(response?.output)) throw serverError(
+    if (!valid(response?.output, { allowMovePrerequisite: moveOnly })) throw serverError(
       'TRACE_TURN_STEP_GROUNDING_AUDIT_INVALID',
       'Turn-step grounding auditor returned an invalid result.', { status: 503 }
     );
     if (response.output.pass) return descriptionProjection
       ? { corrected_plan: plan } : true;
+    const locationRef = request.player_safe_state?.position?.location_ref;
+    const actorRef = request.actor?.actor_id ?? request.actor?.actor_ref
+      ?? request.player_safe_state?.actor_id;
+    if (moveOnly && typeof response.output.prerequisite_query === 'string'
+        && Number.isSafeInteger(response.output.prerequisite_quantity)
+        && request.player_safe_state?.ordinary_resolution
+          ?.discovery_available === true
+        && typeof locationRef === 'string' && typeof actorRef === 'string') {
+      return { corrected_plan: { ...plan,
+        resolution: 'domain_request', goal_result: 'pending',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [{ op: 'request_discovery', actor_ref: actorRef,
+          discovery_kind: 'inspect', target_refs: [locationRef],
+          query: response.output.prerequisite_query.trim(), quantity: {
+            value: response.output.prerequisite_quantity, unit: 'item'
+          } }],
+        continuation: { remaining_intent: request.remaining_intent,
+          depends_on_refs: [] },
+        reason_code: 'ordinary_quantity_prerequisite',
+        reason: 'Resolve the requested ordinary quantity before relocation.' } };
+    }
     throw serverError('TURN_STEP_PLAN_INVALID',
       'Turn-step semantic grounding is invalid.', { details: { errors:
         response.output.concerns.map(({ kind }) =>

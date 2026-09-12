@@ -135,6 +135,7 @@ export async function executeTurnStepActorStep({
     }
     const applied = await invokeOwner(handler, {
       plan, request, operation, projection, checkResult,
+      operationIndex: operations.indexOf(operation),
       preparedChainContext: chainContext, preparedOrdinaryPlan,
       preparedActionProductionPlans, priorLocalFirePlans, ports
     });
@@ -166,6 +167,7 @@ export async function executeTurnStepActorStep({
         plan,
         request,
         operation: { op: 'apply_semantic_activity', activity },
+        operationIndex: null,
         projection,
         checkResult,
         preparedChainContext: chainContext,
@@ -203,6 +205,7 @@ export async function executeTurnStepActorStep({
     }
     const applied = await invokeOwner(handler, {
       plan, request, operation, projection, checkResult,
+      operationIndex: operations.indexOf(operation),
       preparedChainContext: chainContext, preparedOrdinaryPlan,
       preparedActionProductionPlans, priorLocalFirePlans, ports
     });
@@ -229,6 +232,7 @@ export async function executeTurnStepActorStep({
     }
     const applied = await invokeOwner(handler, {
       plan, request, operation, projection, checkResult,
+      operationIndex: operations.indexOf(operation),
       preparedChainContext: chainContext, preparedOrdinaryPlan,
       preparedActionProductionPlans, priorLocalFirePlans, ports
     });
@@ -317,6 +321,7 @@ async function invokeOwner(handler, {
   plan,
   request,
   operation,
+  operationIndex,
   projection,
   checkResult,
   preparedChainContext,
@@ -326,7 +331,7 @@ async function invokeOwner(handler, {
   ports
 }) {
   const applied = await handler(createTurnStepExecutionInput({
-    plan, request, operation, projection, checkResult,
+    plan, request, operation, operationIndex, projection, checkResult,
     preparedChainContext, preparedOrdinaryPlan,
     preparedActionProductionPlans, priorLocalFirePlans
   }));

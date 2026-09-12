@@ -218,6 +218,13 @@ function directSeedChange(value) {
       ? `Вы переместили ${value.display_label}.`
       : 'Вы переместили доступный предмет.';
   }
+  if (value?.change === 'move_blocked' && text(value.display_label)) {
+    return value.reason === 'hands_full'
+      ? `Вы не смогли взять ${value.display_label}: руки заняты.`
+      : value.reason === 'load_limit'
+        ? `Вы не смогли взять ${value.display_label}: ноша слишком тяжела.`
+        : failCurrentScene();
+  }
   if (value?.change === 'physical_change'
       && text(value.physical_description)) {
     return sentence(value.physical_description);

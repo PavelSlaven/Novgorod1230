@@ -13,7 +13,7 @@
 - scoped client adapter для composition root.
 - отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
-Production `turn_runtime` использует Flash-first роли без heavy reasoning. Явно выбранный local/custom OpenAI-compatible provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider. Общим safety deadline владеет game-server; transport принимает уже уменьшенный timeout позднего вызова.
+Production `turn_runtime` использует Flash-first роли без heavy reasoning. Планировщик шага начинает с reasoning `off`; если provider завершился без финального ответа, тот же вызов один раз повторяется с `low`. Single structural repair также использует `low`, потому что он запускается только после невалидного исходного плана; остальные роли работают с reasoning `off`. Явно выбранный local/custom OpenAI-compatible provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider. Общим safety deadline владеет game-server; transport принимает уже уменьшенный timeout позднего вызова.
 
 ## Production limits
 
@@ -32,9 +32,9 @@ Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narr
 
 ## Публичный API
 
-`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`): `openai_compatible` нормализуется к одному `chat/completions` URL. Пользовательский `play:local` передаёт managed Gemma как default override; low-level environment provider остаётся только явной deployment-конфигурацией. Runtime override не может менять production limits. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
+`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`): `openai_compatible` нормализуется к одному `chat/completions` URL. Role caller может передать `overrides.reasoningEffort` со значением `off`, `minimal`, `low`, `medium`, `high` или `xhigh`; transport применяет поддержанный провайдером уровень, а `off` явно восстанавливает `enable_thinking=false`. Выбор уровня по смысловой сложности принадлежит caller роли: transport не угадывает сложность и не повышает уровень автоматически. Пользовательский `play:local` передаёт managed Gemma как default override; low-level environment provider остаётся только явной deployment-конфигурацией. Runtime override не может менять production limits. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
 
-Каждый игровой вызов через выбранный local/custom OpenAI-compatible provider получает `chat_template_kwargs.enable_thinking=false`. Правило не зависит от имени модели: смысловые ошибки разрешают knowledge/context, code-owned validation и явно предусмотренный repair, без reasoning fallback.
+Игровой вызов через выбранный local/custom OpenAI-compatible provider по умолчанию получает `chat_template_kwargs.enable_thinking=false`. Планировщик начинает так же; только повтор после пустого ответа и structural repair передают `reasoning_effort=low` без конфликтующего `enable_thinking=false`. Это role policy и восстановление ответа той же модели, не смена model/provider.
 
 Portrait Lab использует одну role без repair/fallback chain; смысловой результат валидирует authoritative `portrait_spec_v1` owner вне transport слоя.
 

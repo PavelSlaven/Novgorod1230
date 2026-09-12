@@ -133,7 +133,8 @@ export function matchesAmbientCreateCapability(operation, request) {
       && ref.entity_id === sourceRef) === true;
 }
 function auditable(operation) {
-  return operation?.op === 'request_discovery'
+  return operation?.op === 'move_entity'
+    || operation?.op === 'request_discovery'
     || operation?.op === 'request_item_use'
       && (operation.action_production != null
         || typeof operation.description === 'string');
@@ -175,9 +176,16 @@ export function concern(kind, audited, resolved) {
     message: 'must remain grounded by the current intent and player-safe evidence',
     ...(rejected == null ? {} : { rejected_operation: structuredClone(rejected) }) };
 }
-export function valid(value) {
+export function valid(value, { allowMovePrerequisite = false } = {}) {
   return value != null && typeof value === 'object' && !Array.isArray(value)
-    && Object.keys(value).length === 2 && typeof value.pass === 'boolean'
+    && (Object.keys(value).length === 2
+      || allowMovePrerequisite && Object.keys(value).length === 4
+        && typeof value.prerequisite_query === 'string'
+        && value.prerequisite_query.trim().length > 0
+        && Number.isSafeInteger(value.prerequisite_quantity)
+        && value.prerequisite_quantity >= 1
+        && value.prerequisite_quantity <= 16 && value.pass === false)
+    && typeof value.pass === 'boolean'
     && Array.isArray(value.concerns)
     && (value.pass ? value.concerns.length === 0 : value.concerns.length > 0)
     && value.concerns.every((entry) => entry != null
@@ -190,7 +198,14 @@ export function validFocusedDiscovery(value) {
       || Object.keys(value).length === 3 && value.mode === 'material_prerequisite'
         && value.consumed_intent === null
         && typeof value.prerequisite_query === 'string'
-        && value.prerequisite_query.trim().length > 0)
+        && value.prerequisite_query.trim().length > 0
+      || Object.keys(value).length === 4 && value.mode === 'material_prerequisite'
+        && value.consumed_intent === null
+        && typeof value.prerequisite_query === 'string'
+        && value.prerequisite_query.trim().length > 0
+        && Number.isSafeInteger(value.prerequisite_quantity)
+        && value.prerequisite_quantity >= 1
+        && value.prerequisite_quantity <= 16)
     && FOCUSED_DISCOVERY_MODES.has(value.mode)
     && (value.consumed_intent === null
       || typeof value.consumed_intent === 'string'

@@ -189,7 +189,8 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
       }, telemetry);
     }
     const rawText = content;
-    const reasoningContent = responseData?.choices?.[0]?.message?.reasoning_content;
+    const reasoningContent = responseData?.choices?.[0]?.message?.reasoning_content
+      ?? responseData?.choices?.[0]?.message?.reasoning;
     if (config.parseJson) {
       const parsed = explainJsonObjectParse(rawText);
       if (!parsed.ok) {

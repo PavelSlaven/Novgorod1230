@@ -255,7 +255,9 @@ test('turn step model sends the validated request to the isolated planner role',
   const call = calls[0];
   assert.equal(call.scope, 'turn_runtime');
   assert.equal(call.role_id, 'turn_step_planner');
-  assert.deepEqual(call.overrides, { temperature: 0, maxTokens: 20000 });
+  assert.deepEqual(call.overrides, {
+    temperature: 0, maxTokens: 20000, reasoningEffort: 'off'
+  });
   assert.deepEqual(JSON.parse(call.messages[1].content), input);
   const prompt = call.messages[0].content;
   assert.ok(!prompt.includes('Do not return schema, request_id, committed_state_version, working_revision, step_index, goal_result pending'));
@@ -289,11 +291,27 @@ test('turn step model sends the validated request to the isolated planner role',
   assert.match(prompt, /QUALITATIVE ASSESSMENT OVERRIDE[\s\S]*sensory detail remains supplied even without an entity ref[\s\S]*exact supporting claim_ref[\s\S]*Answer the stated comparison or question/u);
 });
 
+test('planner enables low reasoning only when no-reasoning returns no answer', async () => {
+  const calls = [];
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      calls.push(call);
+      if (calls.length === 1) throw Object.assign(new Error('no answer'), {
+        code: 'invalid_response'
+      });
+      return { output: output() };
+    }
+  } });
+  await model(request());
+  assert.deepEqual(calls.map(({ overrides }) => overrides.reasoningEffort),
+    ['off', 'low']);
+});
+
 test('turn step planner and repair prompts route focused ordinary discovery by searched target', async () => {
-  const prompts = [];
+  const calls = [];
   const model = createLowerDvinaTraceTurnStepModel({
     roleRunner: { async run(call) {
-      prompts.push(call.messages[0].content);
+      calls.push(call);
       return { output: output() };
     } }
   });
@@ -308,6 +326,14 @@ test('turn step planner and repair prompts route focused ordinary discovery by s
   await model(input);
   await model(input, { schema: 'turn_step_repair_context_v1', attempt: 2,
     structural_errors: [] });
+  assert.deepEqual(calls.map(({ role_id, overrides }) => ({ role_id, overrides })), [{
+    role_id: 'turn_step_planner',
+    overrides: { temperature: 0, maxTokens: 20_000, reasoningEffort: 'off' }
+  }, {
+    role_id: 'turn_step_planner_repair',
+    overrides: { temperature: 0, maxTokens: 20_000, reasoningEffort: 'low' }
+  }]);
+  const prompts = calls.map(({ messages }) => messages[0].content);
   for (const prompt of prompts) {
     const mappings = promptMappings(prompt);
     assert.deepEqual(mappings.focused_ordinary_discovery, {

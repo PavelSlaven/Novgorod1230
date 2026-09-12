@@ -36,7 +36,7 @@ export function createOrdinaryMaterializationModel({ roleRunner,
   const requestCalls = new WeakMap();
   const model = async function resolveOrdinaryMaterialization(request,
     context = {}) {
-    const { repair, mechanicsPolicy, semanticContext } =
+    const { repair, mechanicsPolicy, semanticContext, requiredQuantity } =
       exactModelContext(context);
     admitCallSequence(requestCalls, request, repair);
     const expectedIdentity = approvedIdentity({ roleRunner, defaultApprovedIdentity,
@@ -45,7 +45,7 @@ export function createOrdinaryMaterializationModel({ roleRunner,
       : await worldKnowledgeGrounder.ground(request, 'materialization_support',
           { semantic_context: semanticContext });
     const response = await runRole({ roleRunner, request: modelRequest, repair,
-      mechanicsPolicy, semanticContext });
+      mechanicsPolicy, semanticContext, requiredQuantity });
     const output = ordinaryMaterializationResponseOf(response);
     bindIdentity(expectedIdentity, exactModelIdentity(output.provider_record));
     return bindOrdinaryMaterializationPlan(modelRequest, output.output);

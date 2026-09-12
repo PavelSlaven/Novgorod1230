@@ -118,6 +118,29 @@ test('Stage B repairs a schema-valid proposal outside code-owned mechanics bound
   assert.equal(output.decision.repaired, true);
 });
 
+test('Stage B repairs a finite group that ignores the typed requested quantity', async () => {
+  const mechanicsPolicy = { policy_ref: 'mechanics', max_mass_grams: 20_000,
+    allowed_external_hand_costs: [0, 1, 2],
+    allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
+    max_packing_slot_cost: 16, max_quantity: 16 };
+  const contexts = [];
+  const output = await resolveOrdinaryMaterializationPresence(input(async (_request,
+    context) => {
+      contexts.push(context);
+      const plan = materialize();
+      plan.entities[0].mechanics_proposal.carry_form = 'long';
+      plan.entities[0].mechanics_proposal.quantity.value = contexts.length === 1
+        ? 1 : 5;
+      return plan;
+    }, { mechanicsPolicy, requiredQuantity: { value: 5, unit: 'item' } }));
+  assert.deepEqual(contexts[0].required_quantity, { value: 5, unit: 'item' });
+  assert.equal(contexts[1].repair.validation_errors.at(-1).path,
+    'entities[0].mechanics_proposal.quantity');
+  assert.equal(output.pending_items_property_admission.proposed_item
+    .mechanics_proposal.quantity.value, 5);
+  assert.equal(output.decision.repaired, true);
+});
+
 test('a code-owned authority gate records the negative resolution without invoking Stage B', async () => {
   let calls = 0;
   const output = await resolveOrdinaryMaterializationPresence(input(async () => {

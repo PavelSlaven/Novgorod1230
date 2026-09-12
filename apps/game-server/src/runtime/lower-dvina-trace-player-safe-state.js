@@ -29,6 +29,9 @@ import { projectActiveConversationInterlocutor } from
 import { perceivedRoutesForState } from './lower-dvina-trace-scene-presentation.js';
 import { projectLowerDvinaTraceVisibleNpcDetails } from
   './lower-dvina-trace-player-safe-npc-details.js';
+import { inventoryItemIsCarried } from '@rus/items-property';
+import { getCommittedInventoryLoad } from
+  './lower-dvina-trace-committed-inventory.js';
 export { projectLowerDvinaTraceVisibleNpcDetails } from
   './lower-dvina-trace-player-safe-npc-details.js';
 
@@ -82,7 +85,8 @@ export function projectLowerDvinaTracePlayerSafeState({
       clockWeatherLight,
       committedState.clock
     ),
-    inventory: projectInventory(committedState.inventory ?? profile.inventory, {
+    inventory: projectInventory(committedInventory(
+      committedState, committedState.inventory ?? profile.inventory), {
       allowedItemIds: playerSafeItemIds(items)
     }),
     items,
@@ -129,6 +133,30 @@ export function projectLowerDvinaTracePlayerSafeState({
     player_safe_state: playerSafeState.position?.location_ref
       === base.position?.location_ref ? playerSafeState : withoutStaleInterlocutor
   });
+}
+
+function committedInventory(state, fallback) {
+  if (!plain(state.party_state)
+      || !plain(state.player_profile?.attributes?.strength)
+      || !plain(state.position)
+      || typeof state.position.g5_anchor_id !== 'string') return fallback;
+  const current = getCommittedInventoryLoad(state);
+  if (!current.mass.pass || !current.hands.pass || !current.load.pass) {
+    return fallback;
+  }
+  const prior = new Map((fallback?.items ?? []).map((item) => [
+    typeof item === 'string' ? item : item?.item_id ?? item?.instance_id,
+    item
+  ]));
+  return {
+    ...(plain(fallback) ? structuredClone(fallback) : {}),
+    items: current.inventory.items.filter(({ item_id: itemId }) =>
+      inventoryItemIsCarried(current.inventory, itemId)).map(({ item_id }) =>
+      structuredClone(prior.get(item_id) ?? item_id)),
+    total_weight: { grams: current.mass.total_mass_grams },
+    load_category: current.load.load_category,
+    occupied_hands: current.hands.hands_used
+  };
 }
 
 export function projectCampFireState(context, state, position) {

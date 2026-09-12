@@ -36,6 +36,41 @@ test('turn-step grounding audit is skipped outside discovery and production',
     assert.equal(calls, 0);
   });
 
+test('a whole-item move is audited against the requested quantity', async () => {
+  const operation = { op: 'move_entity', entity_ref: 'item:branches',
+    placement: { relation: 'held_by', target_ref: 'actor:1' } };
+  const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+    roleRunner: { async run(call) {
+      const payload = JSON.parse(call.messages[1].content);
+      assert.equal(payload.remaining_intent, 'собираю пять сухих веток');
+      assert.equal(payload.player_safe_state.items[0].quantity, 1);
+      assert.deepEqual(payload.operations[0].operation, operation);
+      assert.match(call.messages[0].content,
+        /move_entity relocates the complete existing identity[\s\S]*plural[\s\S]*exactly the requested[\s\S]*discovery\/materialization/u);
+      return { output: { pass: false,
+        concerns: [{ kind: 'operation_semantic_grounding' }],
+        prerequisite_query: 'сухие ветки', prerequisite_quantity: 5 } };
+    } }
+  });
+  const result = await validate({ request: { ...request,
+    remaining_intent: 'собираю пять сухих веток',
+    player_safe_state: { ...request.player_safe_state, items: [{
+      item_id: 'item:branches', name: 'ветви', quantity: 1,
+      placement: { anchor_id: 'shore' }
+    }], position: { location_ref: 'shore' }, ordinary_resolution: {
+      discovery_available: true
+    } }, actor: { actor_ref: 'actor:1' } },
+  plan: { continuation: null, operations: [operation] } });
+  assert.deepEqual(result.corrected_plan.operations, [{
+    op: 'request_discovery', actor_ref: 'actor:1', discovery_kind: 'inspect',
+    target_refs: ['shore'], query: 'сухие ветки',
+    quantity: { value: 5, unit: 'item' }
+  }]);
+  assert.deepEqual(result.corrected_plan.continuation, {
+    remaining_intent: 'собираю пять сухих веток', depends_on_refs: []
+  });
+});
+
 test('direct creation cannot duplicate an existing item as an ambient portion',
   async () => {
     let calls = 0;

@@ -211,6 +211,40 @@ test('generic provider omits empty authorization and DeepSeek-only payload field
   }
 });
 
+test('an OpenAI-compatible role can opt into low reasoning', async () => {
+  const originalFetch = globalThis.fetch;
+  let payload;
+  globalThis.fetch = async (_url, init) => {
+    payload = JSON.parse(init.body);
+    return { ok: true, json: async () => ({ choices: [{ message: {
+      content: '{}', reasoning: 'brief private reasoning'
+    } }] }) };
+  };
+  try {
+    const result = await executeRoleLlmCall({
+      scope: 'turn_runtime', roleId: TurnRuntimeRoles.TURN_STEP_PLANNER,
+      messages: [], runtimeProviderOverride: customProvider,
+      overrides: { reasoningEffort: 'low' }
+    });
+    assert.equal(result.status, 'ok');
+    assert.equal(payload.reasoning_effort, 'low');
+    assert.equal('chat_template_kwargs' in payload, false);
+    assert.equal(result.reasoning_content, 'brief private reasoning');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('an OpenAI-compatible role can explicitly turn reasoning off', () => {
+  const { config } = resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId: TurnRuntimeRoles.TURN_STEP_PLANNER,
+    runtimeProviderOverride: customProvider,
+    overrides: { reasoningEffort: 'off' }
+  });
+  assert.equal(config.reasoningEffort, null);
+  assert.deepEqual(config.thinking, { type: 'disabled' });
+});
+
 test('local OpenAI-compatible endpoint disables thinking for every gameplay role', async (t) => {
   const requests = [];
   const server = createServer(async (incoming, response) => {

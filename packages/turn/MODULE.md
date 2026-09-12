@@ -249,7 +249,11 @@ classification/coverage/policy fields. Normalized discovery query (NFKC,
 trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит
 code-owned candidate identity и передаётся model только как `candidate_hint`;
 это не noun/recipe allowlist и не authority. Exact retry сохраняет identity,
-другой normalized query получает другую identity. O1 plan отдельно хранит
+другой normalized query получает другую identity.
+Опциональный `request_discovery.quantity` переносит явно заявленную конечную
+группу 1–16 как typed mechanics requirement; Stage B proposal обязан совпасть
+с ним точно, иначе используется единственный repair до любого commit.
+O1 plan отдельно хранит
 выбранную semantic target в `semantic_target_ref`, тогда как `scope_ref`
 остаётся G6 simulation scope; P16 связывает owner output с exact
 `request_discovery` target до commit. Один discovery имеет общий лимит двух

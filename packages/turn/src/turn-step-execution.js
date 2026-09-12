@@ -129,6 +129,7 @@ export function createTurnStepExecutionInput({
   plan,
   request,
   operation,
+  operationIndex = null,
   projection,
   checkResult,
   preparedChainContext,
@@ -140,6 +141,7 @@ export function createTurnStepExecutionInput({
     plan: structuredClone(plan),
     request: structuredClone(request),
     operation: structuredClone(operation),
+    operation_index: operationIndex,
     working_projection: structuredClone(projection),
     check_result: checkResult == null ? null : structuredClone(checkResult),
     prepared_chain_context: preparedChainContext == null ? null

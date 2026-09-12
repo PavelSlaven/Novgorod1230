@@ -1,4 +1,7 @@
-const ALLOWED_OVERRIDE_KEYS = new Set(['maxTokens', 'temperature', 'topP', 'requestTimeoutMs']);
+const ALLOWED_OVERRIDE_KEYS = new Set([
+  'maxTokens', 'temperature', 'topP', 'requestTimeoutMs', 'reasoningEffort'
+]);
+const REASONING_EFFORTS = new Set(['minimal', 'low', 'medium', 'high', 'xhigh']);
 export const LLM_MAX_OUTPUT_TOKENS = 20_000;
 export const LLM_REQUEST_TIMEOUT_MS = 120_000;
 const JSON_FORMAT_INSTRUCTION = Object.freeze({
@@ -66,6 +69,20 @@ export function applyProviderOverrides(config, overrides) {
       if (parsed != null) config.topP = parsed;
       continue;
     }
+    if (key === 'reasoningEffort') {
+      const parsed = readText(value);
+      if (parsed === 'off') {
+        config.reasoningEffort = null;
+        config.thinking = { type: 'disabled' };
+        continue;
+      }
+      if (config.compatibility === 'openai_compatible'
+          && REASONING_EFFORTS.has(parsed)) {
+        config.reasoningEffort = parsed;
+        delete config.thinking;
+      }
+      continue;
+    }
     const parsed = readPositiveInt(value);
     if (parsed) config.requestTimeoutMs = parsed;
   }
@@ -88,6 +105,8 @@ export function buildProviderRequestPayload(config, messages) {
     ...(config.compatibility === 'openai_compatible'
       && config.thinking?.type === 'disabled'
       ? { chat_template_kwargs: { enable_thinking: false } } : {}),
+    ...(config.compatibility === 'openai_compatible' && config.reasoningEffort
+      ? { reasoning_effort: config.reasoningEffort } : {}),
     ...(config.compatibility === 'deepseek' && config.thinking ? { thinking: config.thinking } : {}),
     ...(config.compatibility === 'deepseek' && config.reasoningEffort ? { reasoning_effort: config.reasoningEffort } : {}),
     ...(config.temperature != null ? { temperature: config.temperature } : {}),

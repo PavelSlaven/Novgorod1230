@@ -83,6 +83,29 @@ test('semantic activity binds before its completion operation', () => {
   });
 });
 
+test('a code-owned blocked move does not require a physical fragment', () => {
+  const activity = { target: 'party_events', value: { step_index: 1,
+    duration_class: 'moment', effort: 'light' } };
+  const blocked = { change: 'move_blocked', reason: 'hands_full',
+    step_index: 1, operation_index: 0, entity_ref: 'item:rope',
+    display_label: 'rope' };
+  const input = { batch: { operations: [activity] }, state: {
+    actor_id: 'actor', items: [{ item_id: 'item:rope' }], containers: []
+  }, factual: { consequence: { visible_seed: { blocked } },
+    loop_trace: { step_traces: [{ applied: true, step_index: 1,
+      approved_plan: { resolution: 'direct', operations: [{ op: 'move_entity',
+        entity_ref: 'item:rope', placement: { relation: 'held_by',
+          target_ref: 'actor' } }], activity: { owner: 'semantic',
+        duration_class: 'moment', effort: 'light' } }
+    }] } } };
+
+  assert.doesNotThrow(() => validateTurnStepBatchPlanBindings(input));
+  blocked.operation_index = 1;
+  assert.throws(() => validateTurnStepBatchPlanBindings(input), {
+    code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH'
+  });
+});
+
 test('Phase 7 rejects every owner output family injected on selected wait', () => {
   for (const patch of [
     { ordinary_materialization_atomic_write_plan: {} },

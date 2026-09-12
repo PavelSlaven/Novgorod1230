@@ -133,14 +133,16 @@ test('ordinary materialization prompt exposes exact code-owned mechanics bounds'
     mechanicsPolicy: { policy_ref: 'mechanics', max_mass_grams: 20_000,
       allowed_external_hand_costs: [0, 1, 2],
       allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
-      max_packing_slot_cost: 16, max_quantity: 1 }
+      max_packing_slot_cost: 16, max_quantity: 16 },
+    requiredQuantity: { value: 5, unit: 'item' }
   })[0].content;
   assert.match(prompt, /mass_grams is an integer from 1 to 20000/u);
   assert.match(prompt, /external_hand_cost is exactly one of \[0,1,2\]/u);
   assert.match(prompt,
     /carry_form is exactly one of \["compact","regular","long","bulky"\]/u);
   assert.match(prompt, /packing_slot_cost is an integer from 0 to 16/u);
-  assert.match(prompt, /quantity\.value is an integer from 1 to 1/u);
+  assert.match(prompt, /quantity\.value is an integer from 1 to 16/u);
+  assert.match(prompt, /requested finite group quantity is exactly 5 item/u);
   assert.match(prompt, /Never invent another carry_form/u);
 });
 

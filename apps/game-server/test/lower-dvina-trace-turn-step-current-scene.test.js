@@ -259,6 +259,21 @@ test('in-place production forbids narration from inventing source relocation', (
     'uncommitted_action_production_source_relocation'), true);
 });
 
+test('a full pair of hands is narrated as a physical limit', () => {
+  const visible = projectCurrentSceneForVisibleOverlay({ input: {
+    consequence: { status: 'partial', visible_seed: { turn_step_1: {
+      change: 'move_blocked', reason: 'hands_full',
+      entity_ref: 'item:rope', display_label: 'кусок верёвки'
+    } } },
+    retrieved_state: committedState(),
+    mode_resolution: { decision_trace: { remaining_intent: null,
+      step_traces: [] } }
+  }, directSeedKeys: ['turn_step_1'], body: {} });
+
+  assert.deepEqual(visible.visible_changes,
+    ['Вы не смогли взять кусок верёвки: руки заняты.']);
+});
+
 test('direct player-safe observation reaches narration without new facts', () => {
   const state = committedState();
   state.current_visible_context.sensory_details = ['Низкое сырое небо.'];

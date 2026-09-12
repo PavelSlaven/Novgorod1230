@@ -110,6 +110,7 @@ test('common ordinary resolution admits one bounded stack identity', async () =>
         density_band_proposal: 'ordinary', background_groups: [group()],
         entities: [], presence_resolutions: [], reason_code: 'seed' };
       assert.equal(context.mechanics_policy.max_quantity, 16);
+      assert.deepEqual(context.required_quantity, { value: 5, unit: 'item' });
       const basis = modelRequest.policy_refs.allowed_supporting_bases
         .find(({ basis_state: state }) => state === 'prepared_seed').basis_ref;
       return { schema: 'ordinary_materialization_plan_v1',
@@ -128,7 +129,9 @@ test('common ordinary resolution admits one bounded stack identity', async () =>
             container: null } }], presence_resolutions: [], reason_code: 'found' };
     }
   });
-  const result = await resolver(request('собрать пять сухих веток'));
+  const turnRequest = request('сухие ветки');
+  turnRequest.operation.quantity = { value: 5, unit: 'item' };
+  const result = await resolver(turnRequest);
   assert.equal(result.ordinary_materialization_atomic_write_plan
     .item.mechanics_snapshot.mechanics.quantity.value, 5);
   assert.equal(result.ordinary_materialization_atomic_write_plan

@@ -282,6 +282,10 @@ test('repaired prerequisites reach O1 with catalog support, zero query evidence 
     assert.equal(plan.continuation.remaining_intent, entry.intent);
     const projected = projectPreparedOrdinaryItem(input.player_safe_state, atomic);
     assert.equal(projected.items[0].name, entry.query);
+    assert.equal(projected.items[0].quantity,
+      atomic.item.mechanics_snapshot.mechanics.quantity.value);
+    assert.equal(projected.items[0].quantity_unit_id,
+      atomic.item.mechanics_snapshot.mechanics.quantity.unit);
     assert.equal(atomic.item.item_id, projected.items[0].item_id);
     assert.equal(atomic.item.item_id, projected.current_visible_context.visible_objects[0].entity_ref.entity_id);
     assert.equal(projected.current_visible_context.visible_objects[0].display_label,

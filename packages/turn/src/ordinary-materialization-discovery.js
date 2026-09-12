@@ -131,6 +131,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       selected_supporting_basis_ref: selectedSupportingBasisRef });
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
       semanticContext: enabled.semantic_context ?? null,
+      requiredQuantity: request.operation.quantity ?? null,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
       workingProjection: projection,

@@ -164,15 +164,25 @@ export function applyRuntimeInventoryTransition({ inventory, actor_id: actorId,
   const nextGrams = grams - accountedBefore.mass + accountedAfter.mass;
   const nextHands = hands - accountedBefore.hands + accountedAfter.hands;
   if (!Number.isSafeInteger(nextGrams) || nextGrams < 0
-      || !Number.isSafeInteger(nextHands) || nextHands < 0 || nextHands > 2) {
+      || !Number.isSafeInteger(nextHands) || nextHands < 0) {
     return failedTransition('ITEM_RUNTIME_INVENTORY_CAPACITY_INVALID');
+  }
+  if (nextHands > 2) {
+    return failedTransition('ITEM_RUNTIME_INVENTORY_HANDS_EXCEEDED', {
+      hands_used: nextHands, hands_total: 2
+    });
   }
   const load = resolveInventoryLoad({
     total_mass_grams: nextGrams,
     strength
   });
-  if (!load.pass || load.load_category === 'overloaded') {
+  if (!load.pass) {
     return failedTransition('ITEM_RUNTIME_INVENTORY_LOAD_INVALID', {
+      total_mass_grams: nextGrams, strength
+    });
+  }
+  if (load.load_category === 'overloaded') {
+    return failedTransition('ITEM_RUNTIME_INVENTORY_LOAD_EXCEEDED', {
       total_mass_grams: nextGrams, strength
     });
   }

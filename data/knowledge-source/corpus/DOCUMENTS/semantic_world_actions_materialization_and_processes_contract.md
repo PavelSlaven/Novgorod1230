@@ -1,4 +1,4 @@
-# Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1
+# Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2
 
 **Предлагаемый файл в репозитории:**  
 `data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md`
@@ -6,7 +6,7 @@
 **Статус:** `proposed umbrella target`; не является active production contract. Каждая описанная ниже feature profile активируется отдельным versioned cutover только после своей реализации и профильных tests.  
 **Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`.  
 **Сверено с GitHub `main`:** 2026-08-16, HEAD `2a6ce7ab72a515ae1d240ca99eb4fc5dd4795b58`.  
-**Редакция ревизии:** `2.1.0-review`.  
+**Редакция ревизии:** `2.2.0-review`.  
 **Основной владелец LLM orchestration:** `@rus/turn`.  
 **Deterministic authored materialization, RNG и code-only helpers:** `@rus/materialization`.  
 **Предметы, количество, масса, контейнеры и property:** `@rus/items-property`.  
@@ -22,7 +22,9 @@
 
 - ordinary world resolution переиспользует существующие player domain requests `request_discovery` и `request_container_access`; новый player operation для ordinary content не вводится;
 - любой положительный targeted result требует independent eligible `supporting_basis_ref`: уже committed либо candidate-free prepared Stage A basis в той же working projection; player/NPC wording остаётся только trigger и имеет `evidence_weight = 0`;
-- LLM не назначает числовую world-capacity: она предлагает только закрытый `density_band`, а code-owned policy переводит его в persisted identity budget;
+- LLM не назначает числовую world-capacity: `density_band` остаётся описанием сцены, а `max_new_entities` ограничивает только один resolution/call; persisted identity quota на scope не ограничивает дальнейшую конкретизацию мира;
+- World Knowledge обязателен для authoritative/historical/significant классов и блокирует ordinary reconstruction при применимом hard contradiction, но отсутствие positive claim не является запретом для `common_mundane` при наличии causal basis;
+- одна ordinary identity может представлять небольшую однородную группу через bounded `quantity > 1`; exact quantity, total mass, packing и conservation проверяет code-owned mechanics policy;
 - concrete ordinary proposal получает broad closed `admission_class` и functional bucket: code применяет gates, а semantic correctness классификации проверяется adversarial model eval, без притворного NLP-парсинга free-text name;
 - initial primitive mechanics нового non-container item могут быть предложены LLM только один раз внутри request-bound policy; после validation/commit exact snapshot принадлежит `@rus/items-property`;
 - active authority class `hidden` сохраняется для hidden truth/candidate paths; простая физическая concealment обычного предмета моделируется отдельным disclosure state `concealed`;
@@ -59,7 +61,7 @@
 2. semantic facts и их связь с формальными mechanics;
 3. ordinary physical materialization;
 4. lazy scene content и targeted presence resolution;
-5. локальный density/identity budget без каталога диапазонов каждого предмета;
+5. локальный density band и per-resolution generation limit без каталога диапазонов каждого предмета;
 6. property, anti-free-loot и context-bound предметы;
 7. природные sources/features/resources;
 8. ресурсы, первоначальное количество, расход и practically abundant sources;
@@ -237,7 +239,7 @@ LLM свободна только внутри уже определённой �
    или извлечённая порция ресурса
 
 3. ORDINARY CONTENT COMMITMENT
-   persisted background group, density/identity budget, presence resolution,
+   persisted background group, density metadata, presence resolution,
    observation closure или unresolved-state aggregate,
    который ограничивает будущую конкретизацию, но сам не является item
 
@@ -252,7 +254,7 @@ LLM может предлагать фактическую конкретиза�
 
 LLM не создаёт уровень 5 во время игры.
 
-`unresolved` не является concealed fact о том, что конкретный предмет «на самом деле уже лежит там». Это simulation commitment: мир ещё не обязан иметь concrete identity, а будущая конкретизация ограничена committed context, identity budget, supporting basis refs, groups, prior observations и authority gates.
+`unresolved` не является concealed fact о том, что конкретный предмет «на самом деле уже лежит там». Это simulation commitment: мир ещё не обязан иметь concrete identity, а будущая конкретизация ограничена committed context, supporting basis refs, groups, prior observations и authority gates.
 
 Во время партии LLM не пишет JavaScript, не создаёт handler, не меняет формулу, не добавляет SQL, не регистрирует owner, не меняет command registry и не создаёт новый process kind.
 
@@ -408,7 +410,7 @@ period + region + G0–G5 + G6 topology + function + environment
                          ↓
 CODE-OWNED POLICY
 scope + authority class + availability gates + supporting basis refs
-+ persisted density/identity budget + prior resolutions/observations
++ persisted density metadata + prior resolutions/observations
                          ↓
 LLM
 minimal ordinary semantic proposal
@@ -440,7 +442,7 @@ LLM не создаёт authoritative envelope и не назначает final 
 - structural scope;
 - hard authority/property/source gates;
 - approved broad ordinary policies;
-- code-owned mapping density band → identity budget;
+- code-owned per-resolution generation limit;
 - persisted groups, resolutions и observation closures;
 - exact mechanics уже созданных instances;
 - профильные запреты и ownership.
@@ -451,19 +453,19 @@ LLM может один раз предложить только закрыты�
 sparse | ordinary | dense
 ```
 
-Она не назначает произвольное число slots. Versioned code-owned policy переводит band и authored hints в persisted local identity budget. Такой budget является технической границей плотности и стоимости, а не доказательством присутствия конкретного предмета.
+Она не назначает произвольное число slots. `density_band` описывает сцену, а versioned code-owned `max_new_entities` ограничивает только один semantic resolution. Он не является долговременной вместимостью location и не доказывает присутствие конкретного предмета.
 
 ## 6.3. Свободный budget не создаёт предмет
 
 ```text
-remaining identity budget
+per-resolution generation budget
 ≠ object exists
 ```
 
 Положительный targeted result требует одновременно:
 
 ```text
-budget/admission available
+resolution admission available
 AND candidate is ordinary under authority policy
 AND historically/materially admissible
 AND supporting_basis_ref is committed or candidate-free prepared before Stage B
@@ -848,11 +850,11 @@ Ordinary seed запускается только при meaningful engagement, 
 
 Deterministic spatial first-entry path остаётся отдельным. Его наличие не является основанием вызывать LLM, генерировать inventory или держать transaction во время semantic call.
 
-# 11. Density band и ordinary identity budget
+# 11. Density band и per-resolution generation limit
 
-## 11.1. Budget ограничивает concrete identities, а не материю
+## 11.1. Generation limit ограничивает один resolution, а не мир
 
-Persisted budget ограничивает число новых независимых mechanically relevant ordinary identities, которые scope может породить через lazy materialization.
+`technical_limits.max_new_entities` ограничивает число новых independent identities в одном semantic resolution/call. Следующий независимый action получает новый call budget при неизменных causal, authority, property, placement и no-reroll gates.
 
 Он не равен:
 
@@ -861,7 +863,7 @@ Persisted budget ограничивает число новых независи
 - объёму песка на берегу;
 - числу частиц сырья;
 - container capacity;
-- technical batch limit.
+- долговременной квоте location.
 
 Однородный слой может оставаться background group/source.
 
@@ -882,15 +884,17 @@ Code-owned versioned policy принимает:
 - scope type/function;
 - hard technical maximum;
 
-и вычисляет persisted `identity_budget`.
+и задаёт qualitative scene density. Число identities, уже materialized в scope, не выводится из band.
 
 LLM не видит формулу и не назначает число slots.
 
 Если authoring уже содержит exact design-critical limit, code использует его и не спрашивает LLM.
 
+Persisted `identity_budget`, `remaining_identity_budget` и `resolution_record_cap` в старом aggregate schema являются compatibility fields для чтения существующих сохранений. Они не участвуют в positive/negative admission и не уменьшаются как world quota.
+
 ## 11.3. Functional buckets
 
-Budget может учитываться по небольшому закрытому набору широких buckets:
+Admission может использовать небольшой закрытый набор широких buckets:
 
 ```text
 household
@@ -907,29 +911,20 @@ other_ordinary
 
 Buckets являются локальным admission vocabulary, а не универсальной ontology предметов.
 
-## 11.4. Budget не обязан исчерпываться
+## 11.4. Новый resolution не гарантирует positive
 
-Свободный budget:
-
-- не создаёт предмет;
-- не заставляет выбирать замену после `absent`;
-- не гарантирует, что любой common object будет present;
-- может остаться полностью неиспользованным.
-
-Negative result обычно не уменьшает unrelated identity budget.
+Новый call budget не создаёт предмет, не заставляет выбирать замену после `absent` и не гарантирует, что common object будет present. Результат по-прежнему определяется causal basis, plausibility, authority и committed state.
 
 ## 11.5. Batch limit отдельно
 
 ```text
 technical max_new_entities
-≠ persisted ordinary identity budget
+≠ world identity count
 ```
 
-Первое ограничивает один call/commit ради стоимости и безопасности.
+Limit ограничивает один call/commit ради стоимости и безопасности. Небольшая однородная группа может быть одной identity с bounded `quantity > 1`; это не массив LLM-generated entities.
 
-Второе ограничивает party-scoped concrete identities данного scope.
-
-## 11.6. Не вводится global quota engine
+## 11.6. Не вводится quota engine
 
 Не требуется мировой реестр `pot=2..6`, `rope=0..3`, `axe=0..1` для всех типов мест.
 
@@ -1074,14 +1069,14 @@ exceptional
 6. property proposal выводится из committed property basis;
 7. source/conservation rules соблюдены;
 8. exact candidate resolution и observation не противоречат;
-9. identity budget и batch limit доступны.
+9. per-resolution batch limit соблюдён.
 
 LLM reason text не может компенсировать провал любого gate. Code не NLP-парсит free-text name; semantic correctness declared class проверяется profile-specific model eval и known sensitive category bindings, где они существуют.
 
 ## 13.4. Negative и authority outcomes
 
 - `absent` — в данном resolution scope candidate зафиксирован отсутствующим;
-- `no_change` — данных/coverage недостаточно для factual presence result либо record cap не позволяет создавать новый granular resolution;
+- `no_change` — данных/coverage недостаточно для factual presence result;
 - `authority_required` — candidate относится к authoritative path;
 - `materialize` — positive proposal, ещё не effect до code admission/commit.
 
@@ -1410,16 +1405,9 @@ open shelf + exhaustive large-vessel coverage
 
 World-state change может создать новый version/context и новое causal basis.
 
-## 19.6. Bounded negative state
+## 19.6. Exact negative state
 
-Ledger не хранит бесконечный список каждого вопроса.
-
-Versioned policy задаёт `max_resolution_records` на scope. При приближении к limit code:
-
-- объединяет совместимые negatives в category/coverage closure; либо
-- возвращает `no_change` без нового granular record.
-
-LLM не решает compaction и не получает возможность перезаписать прежние results.
+Ledger сохраняет committed exact resolutions и category/coverage closures, необходимые для no-reroll. Legacy `max_resolution_records` не блокирует новый независимый resolution и не превращает техническое хранение в предел наполненности мира. LLM не решает compaction и не получает возможность перезаписать прежние results.
 
 # 20. Player-safe completeness
 
@@ -1465,7 +1453,7 @@ Marker сообщает capability, а не hidden capacity, permission или e
 
 Planner не получает:
 
-- identity budget;
+- legacy identity-budget compatibility fields;
 - background groups, если actor их не воспринимает;
 - context-bound permissions;
 - supporting basis allowlist;
@@ -1502,7 +1490,7 @@ LLM не может:
 - расширить permission;
 - перевести `common` в `context_bound`;
 - назначить owner без property basis;
-- назначить numeric identity budget;
+- назначить numeric world/call budget;
 - менять mechanics existing item либо предлагать mechanics вне supplied policy;
 - назначить arbitrary fire resource delta.
 
@@ -2093,7 +2081,7 @@ Physical transaction:
   "ordinary_state": {
     "seeded": true,
     "density_band": "ordinary",
-    "remaining_identity_budget": 3,
+    "remaining_identity_budget": 1,
     "background_groups": [],
     "presence_resolutions": [],
     "closed_observation_scopes": []
@@ -2217,7 +2205,7 @@ LLM не возвращает final entity ID, SQL row, state version или num
 - initial mechanics proposal имеет exact primitive shape, проходит supplied mechanics policy/technical bounds и не создаёт runtime container;
 - source/quantity conservation проверена, где существует finite source;
 - mechanics owner способен сохранить exact snapshot;
-- identity budget и batch limit доступны;
+- per-resolution batch limit соблюдён;
 - resolution/observation не противоречат.
 
 ## 31.4. Strict schema
@@ -2366,7 +2354,7 @@ Dedicated ordinary prompt обязан фиксировать:
 - do not invent history, hidden actors, ownership events or evidence;
 - respect period/region/material culture;
 - use minimum detail needed now;
-- do not fill identity budget for its own sake;
+- do not enumerate unimportant identities for their own sake;
 - prefer background group over enumerating unimportant entities;
 - never contradict persisted resolution/observation;
 - do not output arbitrary capacity, mechanics formulas or post-creation resource deltas; initial primitive item mechanics are allowed only in the bounded schema supplied for a new non-container item;
@@ -2950,7 +2938,7 @@ Player planner получает:
 Не получает:
 
 - hidden ordinary ledger;
-- identity budgets;
+- legacy identity-budget compatibility fields;
 - supporting basis allowlist;
 - context-bound permissions;
 - objective concealed contents;
@@ -3018,7 +3006,7 @@ In-process retry может reuse immutable plan. Bit-identical replay after cra
 
 ```text
 seeded
-density_band and identity budget
+density_band and legacy compatibility budget fields
 background groups
 exact candidate/coverage resolutions
 observation closures
@@ -3085,7 +3073,6 @@ Ordinary present:
 positive resolution
 + item
 + mechanics/property/placement
-+ identity budget delta
 = one commit
 ```
 
@@ -3290,7 +3277,7 @@ PASS.
 - Stage B `evidence_weight = 0`;
 - positive without `supporting_basis_ref` rejected;
 - unknown/non-allowed basis ref rejected;
-- free identity budget + wrong context → absent/no_change;
+- fresh call budget + wrong context → absent/no_change;
 - silver/sword/unique evidence without permission → rejected;
 - LLM reason text не заменяет basis refs.
 
@@ -3313,18 +3300,20 @@ PASS.
 
 ## 49.4. O1 persistence/no-reroll
 
-- seed/group/budget survive reload;
+- seed/group and compatibility fields survive reload;
 - positive/negative resolution survives restart;
 - exact candidate/coverage identity reuses result;
 - deterministic rephrase normalization reuses same key;
 - unrecognized paraphrase has no universal-equivalence guarantee;
-- failed transaction leaves ledger/item/budget unchanged;
+- failed transaction leaves ledger/item unchanged;
 - committed retry does not duplicate item;
 - crash-before-commit produces no visible factual success and no partial write.
 
 ## 49.5. O1 items-property cutover
 
 - new ordinary-world admission does not require exact pre-authored name/fact allowlist;
+- common mundane reconstruction does not require a positive WK claim when causal basis exists and no hard constraint contradicts it;
+- one bounded stack identity can carry `quantity > 1` with exact total mass and packing;
 - significant/hidden/informational candidate still rejected;
 - system/NPC provenance validates without fake root player step;
 - current direct-action snapshot remains valid during its own profile;
@@ -3355,7 +3344,7 @@ PASS.
 - visible-negative blocks same candidate/coverage reroll;
 - deeper legitimate coverage may resolve separately;
 - exhaustive closure blocks contradictory later item;
-- resolution record cap triggers code-owned closure/no_change;
+- exact category/coverage closure blocks a contradictory later result;
 - narration does not expose ledger/budget/permissions.
 
 ## 49.9. Spatial
@@ -3879,7 +3868,7 @@ request_container_access
 
 Добавить pure helpers:
 
-- density band → identity budget;
+- density metadata and per-resolution generation-limit validation;
 - supporting basis/ref validation;
 - group/entity closed class/bucket admission;
 - budget/resolution transition;
@@ -4149,7 +4138,7 @@ G0–G5 + G6 topology + period/region
 allowed committed/prepared basis ref
 + authority/availability/property/source
 + observation/resolution
-+ identity budget
++ per-resolution batch limit
                     |
           +---------+------------------+
           |         |                  |
@@ -4246,18 +4235,18 @@ Current helper вызывает materializer внутри transaction.
 
 Решение: ordinary model call вне transaction; затем version revalidation и short atomic commit.
 
-## A.4. LLM назначает arbitrary capacity number — отклонено
+## A.4. LLM назначает arbitrary world capacity number — отклонено
 
-Числовой budget является mechanics/policy, а не semantic prose.
+Числовой per-resolution limit является mechanics/policy, а не semantic prose.
 
-Решение: LLM возвращает `sparse|ordinary|dense`; code-owned versioned policy вычисляет identity budget.
+Решение: LLM возвращает `sparse|ordinary|dense`; code-owned policy независимо ограничивает число новых identities в одном resolution.
 
 ## A.5. Свободный budget разрешает названный предмет — отклонено
 
 Решение:
 
 ```text
-budget = necessary admission guard
+call budget = per-resolution generation guard
 supporting_basis_ref = necessary independent presence basis
 (committed or candidate-free prepared)
 actor wording = zero evidence

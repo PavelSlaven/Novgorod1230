@@ -79,6 +79,11 @@ code-owned изменения inventory geometry. Положительные `we
 `money_like_token` и `written_carrier` требуют хотя бы один уже admitted tool;
 `ordinary_mundane` и `no_useful_result` сохраняют zero-tool path.
 
+O1 common ordinary admission принимает небольшую однородную группу как одну
+persisted identity с bounded `quantity`; mechanics snapshot хранит exact total
+mass, packing и placement всей группы. Quantity не создаёт дополнительные
+LLM-generated identities и не обходит conservation.
+
 A1 v1 сознательно не моделирует небольшой subtractive mass loss/known waste для single-source `preserve_source`; outputs одного action однородны; tools остаются неизменяемыми pins без wear/consumption. Дополнительный finite material в `preserve_source` расходуется только целой unit (`whole`), а finite partial independent transformation закрыта. Неназванное игроком число outputs представляется `requested_output_count = null`; item owner выбирает один actual output, а явно названное число принимает только в пределах массы и `max_new_entities`.
 
 Active F1 переиспользует item owner: любой physically accessible whole

@@ -111,7 +111,7 @@ export function bindOrdinaryMaterializationPlan(request, output) {
       || !text(entity.semantic_type) || !text(entity.name)
       || !plain(entity.mechanics_proposal)
       || !supportedWorldKnowledgeRefs(output.world_knowledge_claim_refs,
-        request.world_knowledge)
+        request.world_knowledge, authority.candidate.admission_class)
       || !text(authority.selected_supporting_basis_ref)
       || !authority.allowed_supporting_bases.some(({ basis_ref }) =>
         basis_ref === authority.selected_supporting_basis_ref)
@@ -139,13 +139,16 @@ export function bindOrdinaryMaterializationPlan(request, output) {
   };
 }
 
-function supportedWorldKnowledgeRefs(refs, worldKnowledge) {
+function supportedWorldKnowledgeRefs(refs, worldKnowledge, admissionClass) {
   if (worldKnowledge == null) return true;
   const supplied = new Set([
     ...(worldKnowledge.facts ?? []),
     ...(worldKnowledge.hard_constraints ?? [])
   ].map(({ claim_ref: ref }) => ref).filter(text));
-  return Array.isArray(refs) && refs.length > 0
+  if (refs == null || Array.isArray(refs) && refs.length === 0) {
+    return admissionClass === 'common_mundane';
+  }
+  return Array.isArray(refs)
     && refs.every((ref) => text(ref) && supplied.has(ref));
 }
 

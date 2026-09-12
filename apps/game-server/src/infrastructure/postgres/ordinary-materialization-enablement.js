@@ -74,7 +74,8 @@ function normalizeEnablement(row, scopeRef) {
   const ordinary_state = {
     seeded: aggregate.seeded,
     density_band: aggregate.density_band,
-    remaining_identity_budget: aggregate.remaining_identity_budget,
+    remaining_identity_budget: aggregate.seeded
+      ? objective.technical_limits.max_new_entities : 0,
     background_groups: aggregate.background_groups.map(({ group_ref }) => group_ref),
     presence_resolutions: aggregate.presence_resolutions.map(({ resolution_ref }) => resolution_ref),
     closed_observation_scopes: aggregate.closed_observation_scopes.map(({ coverage_key }) => coverage_key)

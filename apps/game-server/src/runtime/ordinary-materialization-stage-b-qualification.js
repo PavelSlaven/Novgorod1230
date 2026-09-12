@@ -84,7 +84,7 @@ function qualificationMechanicsPolicy() {
   return { policy_ref: 'stage-b', max_mass_grams: 20_000,
     allowed_external_hand_costs: [0, 1, 2],
     allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
-    max_packing_slot_cost: 16, max_quantity: 1 };
+    max_packing_slot_cost: 16, max_quantity: 16 };
 }
 
 function qualificationError(failedCaseIds) {

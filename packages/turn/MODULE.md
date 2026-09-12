@@ -254,10 +254,12 @@ code-owned candidate identity и передаётся model только как 
 остаётся G6 simulation scope; P16 связывает owner output с exact
 `request_discovery` target до commit. Один discovery имеет общий лимит двух
 semantic calls; structural repair расходует оставшийся call, а
-Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Turn принимает positive только после independent
-WK-grounded Stage B `materialize` с хотя бы одним exact
-`world_knowledge_claim_refs` из текущего factual slice; code binding отвергает
-пустые и отсутствующие в slice refs до admission/commit. Затем выполняется
+Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Для
+`common_mundane` World Knowledge ограничивает reconstruction применимыми hard
+constraints, но не является positive inventory whitelist: causal scene basis и
+ordinary physical/historical plausibility достаточны без claim ref. Non-common
+materialization по-прежнему требует exact supporting claim ref из текущего
+slice; любой переданный неизвестный ref отклоняется. Затем выполняется
 supporting-basis/property/placement admission `@rus/items-property`, собирается
 один ordinary P16 plan после revalidation и передаёт его persistence owner;
 model call никогда не находится внутри physical transaction. Player-safe
@@ -275,6 +277,13 @@ receipt ранее выполненного adversarial Stage B classification e
 не запускает probes. Любой sensitive `materialize` блокирует активацию.
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
+
+`max_new_entities = 1` ограничивает один ordinary resolution, а не суммарное
+число identities в G6. Legacy aggregate budget/cap fields читаются для
+совместимости, но не блокируют последующие независимые resolutions. Common
+ordinary result может быть одной persisted stack identity с code-bounded
+`quantity <= 16`; exact total mass, packing и placement проходят существующий
+`@rus/items-property` admission.
 
 Повторный `inspect` или сравнение уже наблюдённых evidence refs имеет общий
 bounded owner. Он принимает только exact refs из code-projected

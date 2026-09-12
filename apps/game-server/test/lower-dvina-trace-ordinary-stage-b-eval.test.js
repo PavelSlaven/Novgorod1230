@@ -335,7 +335,7 @@ test('Stage B requires a materialization kind and accepts a standalone common it
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
-test('grounded Stage B materializes only with a claim ref from its current slice',
+test('grounded common Stage B treats WK as a veto rather than a positive whitelist',
   async () => {
     const request = presenceRequest('обычная верёвка');
     const claimRef = 'claim:test-cordage';
@@ -343,7 +343,9 @@ test('grounded Stage B materializes only with a claim ref from its current slice
       facts: [{ claim_ref: claimRef }], hard_constraints: []
     } };
     const prompt = buildOrdinaryMaterializationMessages(grounded)[0].content;
-    assert.match(prompt, /positive materialize requires at least one exact in-slice claim_ref[\s\S]*otherwise return no_change\. Return only this semantic shape:/u);
+    assert.match(prompt, /not an inventory of every ordinary thing/u);
+    assert.match(prompt, /Exact positive evidence for every mundane object is not required/u);
+    assert.doesNotMatch(prompt, /Do not add a historical, scientific, social, craft, material-property, or other factual premise from model memory/u);
     const semantic = { resolution: 'materialize',
       semantic_materialization_kind: 'standalone_item',
       semantic_admission_class: 'common_mundane', reason_code: 'found',
@@ -352,7 +354,14 @@ test('grounded Stage B materializes only with a claim ref from its current slice
       mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
         carry_form: 'compact', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null } }] };
-    for (const refs of [undefined, [], ['claim:not-in-current-slice']]) {
+    for (const refs of [undefined, []]) {
+      const admitted = bindOrdinaryMaterializationPlan(grounded,
+        { ...semantic, ...(refs == null ? {} : {
+          world_knowledge_claim_refs: refs }) });
+      assert.deepEqual(validateOrdinaryMaterializationPlanV1(admitted,
+        request), []);
+    }
+    for (const refs of [['claim:not-in-current-slice']]) {
       const rejected = bindOrdinaryMaterializationPlan(grounded,
         { ...semantic, ...(refs == null ? {} : {
           world_knowledge_claim_refs: refs }) });

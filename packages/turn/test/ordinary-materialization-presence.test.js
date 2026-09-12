@@ -80,11 +80,12 @@ test('Stage B rejects swapped identity and proposed position outside committed p
   })), { code: 'TURN_ORDINARY_PRESENCE_PLAN_REJECTED' });
 });
 
-test('Stage B rejects positive plans without compatible basis or budget and defers item admission', async () => {
+test('Stage B requires a compatible basis but not a persistent world budget', async () => {
   let calls = 0;
   assert.equal((await resolveOrdinaryMaterializationPresence(input(async () => { calls += 1; return materialize(); }, { basisCatalog: [] }))).status, 'authority_required');
-  assert.equal((await resolveOrdinaryMaterializationPresence(input(async () => { calls += 1; return materialize(); }, { workingProjection: projection(0) }))).status, 'no_change');
   assert.equal(calls, 0);
+  assert.equal((await resolveOrdinaryMaterializationPresence(input(async () => { calls += 1; return materialize(); }, { workingProjection: projection(0) }))).status, 'pending_items_property_admission');
+  assert.equal(calls, 1);
   const output = await resolveOrdinaryMaterializationPresence(input(async () => materialize()));
   assert.equal(output.status, 'pending_items_property_admission');
   assert.equal(output.working_projection.ordinary_materialization_aggregate.presence_resolutions.length, 0);

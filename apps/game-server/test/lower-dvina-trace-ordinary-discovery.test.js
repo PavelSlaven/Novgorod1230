@@ -302,87 +302,6 @@ test('a pre-commit resolver result is not visible or durable and can be modelled
   assert.equal(modelCalls, 4, 'uncommitted state is not reused after a restart');
 });
 
-test('Stage A sparse density is mapped by code to a zero persisted identity budget', async () => {
-  let modelCalls = 0;
-  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
-    partyId: 'party', inputDigest: 'input', loadEnablement: async () => enabled(),
-    verifyStageBCutover,
-    ordinaryMaterializationModel: async (modelRequest) => {
-      modelCalls += 1;
-      assert.equal(modelRequest.mode, 'seed_scope');
-      return { schema: 'ordinary_materialization_plan_v1',
-        request_id: modelRequest.request_id, resolution: 'seeded',
-        density_band_proposal: 'sparse', background_groups: [], entities: [],
-        presence_resolutions: [], reason_code: 'sparse' };
-    }
-  });
-  const result = await resolver(request('найти ложку'));
-  assert.equal(modelCalls, 1, 'zero budget prevents a Stage B model call');
-  assert.equal(result.ordinary_materialization_atomic_write_plan
-    .next_aggregate.density_band, 'sparse');
-  assert.equal(result.ordinary_materialization_atomic_write_plan
-    .next_aggregate.identity_budget, 0);
-  assert.equal(result.ordinary_materialization_atomic_write_plan
-    .next_aggregate.remaining_identity_budget, 0);
-  assert.deepEqual(result.ordinary_materialization_atomic_write_plan
-    .transitions.map(({ kind }) => kind), ['seed']);
-  assert.equal(result.ordinary_materialization_atomic_write_plan
-    .next_aggregate.presence_resolutions.length, 0,
-  'transient zero-budget no_change does not fabricate a granular record');
-});
-
-for (const exhausted of ['identity budget', 'resolution cap']) {
-test(`exhausted ${exhausted} returns a no-op before model or atomic plan`,
-  async () => {
-    const capped = exhausted === 'resolution cap';
-    let aggregate = createOrdinaryAggregate({ scope_ref: { entity_kind: 'g6', entity_id: 'shore' },
-      resolution_record_cap: 1 });
-    aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
-      kind: 'seed', request_identity: 'seed', expected_state_version: 0,
-      density_band: 'ordinary', identity_budget: capped ? 1 : 0, background_groups: []
-    } });
-    if (capped) aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
-      kind: 'resolve_presence', request_identity: 'presence-one',
-      expected_state_version: 1, resolution_ref: 'resolution-one',
-      candidate_key: 'candidate-one', coverage_key: 'coverage-one',
-      category_key: 'category-one', context_version: 'context-one',
-      resolution: 'absent'
-    } });
-    let modelCalls = 0;
-    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
-      partyId: 'party', inputDigest: 'cap', verifyStageBCutover,
-      loadEnablement: async () => {
-        const value = enabled();
-        value.ordinary_aggregate = structuredClone(aggregate);
-        value.objective_context.ordinary_state = {
-          seeded: true, density_band: 'ordinary', remaining_identity_budget: capped ? 1 : 0,
-          background_groups: [], presence_resolutions: capped ? ['resolution-one'] : [],
-          closed_observation_scopes: []
-        };
-        value.version_pins.ordinary_state_version = aggregate.state_version;
-        return value;
-      },
-      ordinaryMaterializationModel: async () => { modelCalls += 1; return {}; }
-    });
-    const input = request('найти другую вещь');
-    input.working_projection = { visible_context: { scene: 'shore' } };
-    const result = await resolver(input);
-    assert.equal(modelCalls, 0);
-    assert.deepEqual(result.working_projection, input.working_projection);
-    assert.deepEqual(result.write_fragments, []);
-    assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
-    assert.deepEqual(result.consequence_fragment, { visible_seed: {
-      ordinary_presence_seed: {
-        kind: 'ordinary_presence_seed', resolution: 'no_change',
-        query: input.operation.query
-      }
-    } });
-    assert.equal(result.player_response_boundary, true);
-    assert.equal(aggregate.presence_resolutions.length, capped ? 1 : 0);
-    assert.equal(aggregate.state_version, capped ? 2 : 1);
-  });
-}
-
 test('production-shaped bounded mechanics admits one positive ordinary item',
   async () => {
     let preparedBasisRef = null;
@@ -466,11 +385,18 @@ test('current visible location maps to its already pinned G6 discovery context',
     loadEnablement: async () => enabled(),
     ordinaryMaterializationModel: async (modelRequest) => {
       modelCalls += 1;
-      assert.equal(modelRequest.mode, 'seed_scope');
-      return { schema: 'ordinary_materialization_plan_v1',
+      if (modelRequest.mode === 'seed_scope') return {
+        schema: 'ordinary_materialization_plan_v1',
         request_id: modelRequest.request_id, resolution: 'seeded',
         density_band_proposal: 'sparse', background_groups: [], entities: [],
         presence_resolutions: [], reason_code: 'sparse' };
+      return { schema: 'ordinary_materialization_plan_v1',
+        request_id: modelRequest.request_id, resolution: 'absent',
+        density_band_proposal: null, background_groups: [], entities: [],
+        presence_resolutions: [{
+          candidate_key: modelRequest.candidate_query.candidate_key,
+          coverage_key: modelRequest.candidate_query.coverage_key,
+          resolution: 'absent' }], reason_code: 'absent' };
     }
   });
 
@@ -482,5 +408,5 @@ test('current visible location maps to its already pinned G6 discovery context',
     operation: { target_refs: ['trace_ld_v1_loc_fishing_camp'], query: 'найти ложку' }
   });
 
-  assert.equal(modelCalls, 1);
+  assert.equal(modelCalls, 2);
 });

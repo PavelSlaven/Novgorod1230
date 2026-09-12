@@ -50,9 +50,7 @@ function preflight(input, projection, bases, codeOwnedResolution) {
   if (known) return deepFreeze({ status: 'already_resolved', decision: null, pending_items_property_admission: null, known_resolution: known, working_projection: projection });
   if (!fresh(input, aggregate)) return outcome('no_change', projection, 'aggregate_not_current');
   if (request.ordinary_state.closed_observation_scopes.includes(identity.coverage_key)) return outcome('no_change', projection, 'observation_closed');
-  if (aggregate.presence_resolutions.length + aggregate.closed_observation_scopes.length >= aggregate.resolution_record_cap) return outcome('no_change', projection, 'budget_or_cap_exhausted');
   if (codeOwnedResolution !== null) return null;
-  if (aggregate.remaining_identity_budget < 1) return outcome('no_change', projection, 'budget_or_cap_exhausted');
   if (!propertyOK(input) || !input.property_placement_context.placement_catalog.some((v) => placementOK(v, request.scope_ref))) return outcome('no_change', projection, 'committed_property_or_placement_missing');
   if (!compatible(input, bases)) return outcome('authority_required', projection, 'supporting_basis_missing');
   return null;
@@ -177,7 +175,7 @@ function propertyContextDigest(value) {
 }
 function projectionOf(request, value) { let p; try { p = assertAndNormalizeTurnOrdinaryWorkingProjection(value); } catch { fail('TURN_ORDINARY_PRESENCE_WORKING_PROJECTION_INVALID'); } if (!scope(p.ordinary_materialization_aggregate.scope_ref, request.scope_ref)) fail('TURN_ORDINARY_PRESENCE_SCOPE_MISMATCH'); return p; }
 function propertyOK(input) { return scope(input.property_placement_context.scope_ref, input.request.scope_ref) && ['man_made','natural_resource_portion'].includes(input.property_placement_context.item_kind); }
-function fresh(input, aggregate) { const state=input.request.ordinary_state; return input.ordinary_state_version===aggregate.state_version && aggregate.seeded===state.seeded && aggregate.density_band===state.density_band && aggregate.remaining_identity_budget===state.remaining_identity_budget && sameRefs(aggregate.background_groups.map((g)=>g.group_ref),state.background_groups) && sameRefs(aggregate.presence_resolutions.map((r)=>r.resolution_ref),state.presence_resolutions) && sameRefs(aggregate.closed_observation_scopes.map((r)=>r.coverage_key),state.closed_observation_scopes); }
+function fresh(input, aggregate) { const state=input.request.ordinary_state; return input.ordinary_state_version===aggregate.state_version && aggregate.seeded===state.seeded && aggregate.density_band===state.density_band && sameRefs(aggregate.background_groups.map((g)=>g.group_ref),state.background_groups) && sameRefs(aggregate.presence_resolutions.map((r)=>r.resolution_ref),state.presence_resolutions) && sameRefs(aggregate.closed_observation_scopes.map((r)=>r.coverage_key),state.closed_observation_scopes); }
 function sameRefs(a,b) { return Array.isArray(b) && a.length===b.length && a.every((v,i)=>v===b[i]); }
 function placementOK(v, s) { return v && v.state === 'committed' && scope(v.scope_ref, s); }
 function compatible(input, bases) { return selectOrdinaryMaterializationSupportingBasis({ request: input.request, identity: input.identity, basisCatalog: bases }) !== null; }

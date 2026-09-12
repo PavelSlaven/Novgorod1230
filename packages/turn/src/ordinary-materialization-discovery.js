@@ -115,7 +115,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       ordinary_state_version:
         projection.ordinary_materialization_aggregate.state_version,
       ordinary_state: ordinaryState(
-        projection.ordinary_materialization_aggregate),
+        projection.ordinary_materialization_aggregate,
+        enabled.objective_context.technical_limits.max_new_entities),
       property_placement_context: enabled.property_placement_context };
     const candidateContext = candidateForDiscovery({
       candidateContext: execution.candidate_context,
@@ -429,9 +430,9 @@ function sourceRefs({ envelope, proposed, execution, property, permissionRefs })
     ...(property.evidence.unowned_cause_ref == null ? []
       : [property.evidence.unowned_cause_ref])].filter(Boolean))].sort();
 }
-function ordinaryState(a) { return { seeded: a.seeded,
+function ordinaryState(a, perResolutionLimit) { return { seeded: a.seeded,
   density_band: a.density_band,
-  remaining_identity_budget: a.remaining_identity_budget,
+  remaining_identity_budget: a.seeded ? perResolutionLimit : 0,
   background_groups: a.background_groups.map(({ group_ref }) => group_ref),
   presence_resolutions: a.presence_resolutions.map(({ resolution_ref }) =>
     resolution_ref),

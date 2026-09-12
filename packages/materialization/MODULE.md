@@ -13,7 +13,7 @@
 - проекцией G5 из approved profile/layout/slot rules и NPC/items из нормализованных eligible candidates;
 - code-only item placement primitive, который Stage 16 использует для
   equipment candidate → NPC/player instance resolution;
-- pure ordinary foundation helpers: density/budget policy, supporting-basis and
+- pure ordinary foundation helpers: density metadata, supporting-basis and
   prepared-group validation, stable refs and minimal aggregate transitions;
 - signed command tokens и проверкой bounded decisions.
 
@@ -100,8 +100,10 @@ draws идут после прежнего deterministic prefix, а пустой
 ограничивает prerequisite draws: например, authored `braided` требует
 совместимую длину волос, а facial hair — совместимые sex/age. Противоречивый
 authored набор отклоняется до первого RNG draw.
-Ordinary aggregate transition также детерминирован, CAS-bound и bounded
-`resolution_record_cap`; повторный candidate/coverage/context или identity
+Ordinary aggregate transition также детерминирован и CAS-bound; legacy
+`identity_budget`, `remaining_identity_budget` и `resolution_record_cap`
+сохраняются как compatibility fields, но не ограничивают суммарную
+конкретизацию scope. Повторный candidate/coverage/context или identity
 отклоняется вместо reroll. `concealed` либо container access не меняют authority
 и не являются фактом этого ledger.
 

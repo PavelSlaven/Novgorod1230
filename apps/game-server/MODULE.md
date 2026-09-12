@@ -246,11 +246,12 @@ to numeric budget by a versioned code-owned policy. A normalized discovery
 query equal to the normalized remaining intent, with one visible target owned
 by ordinary discovery and no continuation or check, is structurally grounded
 without an LLM audit; altered or compound discovery still crosses the semantic
-auditor. The normalized query and exact target derive the code-owned candidate
-identity; the query reaches
+auditor. The normalized query, exact target and canonical requested quantity
+(exact `{value,unit}` or `null`) derive the code-owned candidate identity; the query reaches
 the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
 classification/mechanics authority. Exact normalized retry reuses the
-persisted resolution, while a different query has a different identity.
+persisted resolution, while a different query or quantity has a different
+identity. Unspecified quantity and explicit quantity 1 are distinct.
 The O1 plan keeps that exact semantic target in `semantic_target_ref`, separate
 from the G6 simulation `scope_ref`; P16 binds owner output to the selected
 `request_discovery` target before commit.
@@ -328,7 +329,11 @@ focused audit still checks its semantics and real focused searches retain activi
 neither ownership nor execution. An already resolved A1 owner can continue a
 prepared semantic chain when no authored command was selected; its existing
 scope, preflight, revalidation, conservation and atomic P16 owners remain required.
-A new physical search can reuse an existing negative presence answer without a model call or materialization write, while applying a new activity/body cost. The applied domain search authorizes that activity. Inspection/recall remains free.
+A new physical search can reuse an existing positive or negative presence answer
+without a model call or materialization write, while applying a new activity/body
+cost. Positive replay resolves the exact committed visible item and never degrades
+to `no_change`. The applied domain search authorizes that activity.
+Inspection/recall remains free.
 The item or negative resolution and the search cost commit together; transport retry
 replays the committed result without another activity or model call.
 

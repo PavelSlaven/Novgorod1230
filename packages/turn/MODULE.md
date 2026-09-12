@@ -246,10 +246,12 @@ objective context, запрещает concrete entities и принимает о
 density band; numeric budget выводится versioned code policy. Stage B имеет
 `evidence_weight = 0`, а code-owned builder создаёт normalized
 classification/coverage/policy fields. Normalized discovery query (NFKC,
-trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит
-code-owned candidate identity и передаётся model только как `candidate_hint`;
-это не noun/recipe allowlist и не authority. Exact retry сохраняет identity,
-другой normalized query получает другую identity.
+trim, collapse whitespace, ru-RU lowercase), exact target и canonical
+`requested_quantity` (`{value,unit}` либо `null`) выводят code-owned candidate
+identity и передаются model только как `candidate_hint`; это не noun/recipe
+allowlist и не authority. Exact retry сохраняет identity, другой normalized
+query или quantity получает другую identity. Unspecified quantity намеренно
+отличается от explicit quantity 1.
 Опциональный `request_discovery.quantity` переносит явно заявленную конечную
 группу 1–16 как typed mechanics requirement; Stage B proposal обязан совпасть
 с ним точно, иначе используется единственный repair до любого commit.
@@ -444,7 +446,11 @@ continuation под видом ordinary material prerequisite.
 
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.
 
-Known ordinary negative lookup returns its existing resolution as a transient owner result. Reusing world knowledge does not cancel a newly executed physical search; exact transport replay remains outside execution.
+Known ordinary lookup returns its existing positive or negative resolution as a
+transient owner result. Positive replay reuses the exact committed visible item;
+it never becomes `no_change` or creates another item. Reusing world knowledge
+does not cancel a newly executed physical search; exact transport replay remains
+outside execution.
 
 Existing-item inspection is code-first before ordinary candidate/enablement selection: the adapter reads the exact target from the current actor-safe working projection. Already available identity, placement, physical condition and perceived facts are observations, not new ordinary entities or newly inferred attributes. A momentary reading of these supplied facts costs zero minutes; this does not authorize a physical search or establish unknown causes, ownership or history. The result snapshots its observations and preserves the exact question as unresolved beyond them. Typed queued targets continue in order; the last observation returns the original later intention at the player response boundary. Hidden or closed-container contents require their existing perception/access owner. Transport replay reuses the committed result.
 

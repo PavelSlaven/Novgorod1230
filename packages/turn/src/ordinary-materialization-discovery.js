@@ -1,4 +1,6 @@
-import { ordinaryNoop, knownNegativeResolution } from './ordinary-materialization-discovery-result.js';
+import { ordinaryNoop, knownResolutionResult } from './ordinary-materialization-discovery-result.js';
+import { candidateForDiscovery, knownMaterializedItemName } from
+  './ordinary-materialization-discovery-identity.js';
 import {
   applyOrdinaryAggregateTransition,
   canonicalDigest,
@@ -120,7 +122,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       property_placement_context: enabled.property_placement_context };
     const candidateContext = candidateForDiscovery({
       candidateContext: execution.candidate_context,
-      query: request.operation.query });
+      query: request.operation.query,
+      quantity: request.operation.quantity ?? null });
     if (candidateContext == null) return ordinaryNoop(request);
     const selectedSupportingBasisRef = selectOrdinaryMaterializationSupportingBasis({
       request: { scope_ref: presenceObjective.scope_ref,
@@ -141,7 +144,10 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         }), codeOwnedResolution: enabled.code_owned_resolution ?? null,
       mechanicsPolicy: execution.mechanics_policy });
     if (presence.status === 'already_resolved') {
-      return knownNegativeResolution(request, presence.known_resolution);
+      return knownResolutionResult(request, presence.known_resolution, {
+        displayName: knownMaterializedItemName({ request, partyId, scopeRef,
+          knownResolution: presence.known_resolution })
+      });
     }
     if (presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);
@@ -346,24 +352,6 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     ordinary_materialization_atomic_write_plan: plan });
 }
 
-function candidateForDiscovery({ candidateContext, query }) {
-  const { target_ref: targetRef, candidate_ref_namespace: namespace,
-    ...candidate } = candidateContext;
-  const normalized = normalizeDiscoveryQuery(query);
-  if (normalized == null || typeof targetRef !== 'string' || !targetRef
-      || typeof namespace !== 'string' || !namespace) return null;
-  return { ...candidate, normalized_candidate_ref:
-    `${namespace}:${canonicalDigest({
-      domain: 'rus.ordinary.discovery.query_candidate.v1',
-      target_ref: targetRef, normalized_query: normalized
-    }).slice(0, 32)}`, candidate_hint: normalized };
-}
-function normalizeDiscoveryQuery(value) {
-  if (typeof value !== 'string') return null;
-  const normalized = value.normalize('NFKC').trim().replace(/\s+/gu, ' ')
-    .toLocaleLowerCase('ru-RU');
-  return normalized.length === 0 ? null : normalized;
-}
 function presenceTransition({ envelope, presence, aggregate,
   identityKey = null }) {
   if (!['materialize', 'absent', 'no_change', 'authority_required']

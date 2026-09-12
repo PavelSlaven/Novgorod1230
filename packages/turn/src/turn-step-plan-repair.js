@@ -135,8 +135,9 @@ const SEMANTIC_REPAIR_CODES = new Set([
   'source_semantic_grounding'
 ]);
 
-function requiresSemanticRepair({ code } = {}) {
-  return SEMANTIC_REPAIR_CODES.has(code);
+function requiresSemanticRepair({ path, code } = {}) {
+  return SEMANTIC_REPAIR_CODES.has(code)
+    || code === 'additional_property' && path === '$.operation_choice';
 }
 
 function singleTransientOperation(plan) {

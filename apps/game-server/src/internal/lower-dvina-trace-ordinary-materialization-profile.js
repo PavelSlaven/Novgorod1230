@@ -7,7 +7,7 @@ import { validateLowerDvinaTraceOrdinaryStageBEval } from
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content';
 const PROFILE_FILE = 'ordinary-materialization-profile.json';
 export const LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST =
-  '6a7a597fcfbfbaf08b0d93833c285ded278da79f62f3517c35044de445c74654';
+  '11110af0e754ee87ce9b94a82191265952bbdf92c925496205d5da091274370e';
 
 export async function loadLowerDvinaTraceOrdinaryMaterializationProfile({
   rootDir = process.cwd()
@@ -27,7 +27,7 @@ function valid(profile, digest) {
   return digest === LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST
     && profile?.schema === 'rus.lower_dvina_trace_ordinary_materialization_profile.v2'
     && profile?.profile_id === 'lower_dvina_trace_o2a_first_entry_profile_v2'
-    && profile?.revision === 3 && profile?.status === 'approved'
+    && profile?.revision === 4 && profile?.status === 'approved'
     && profile?.scenario_id === 'lower_dvina_trace_v1'
     && profile?.scenario_definition_revision === 34
     && exactKeys(profile, ['schema','profile_id','revision','status','scenario_id',
@@ -70,7 +70,7 @@ function valid(profile, digest) {
     && profile.execution.candidate_context?.candidate_ref_namespace
       === 'trace_ld_v1_o1_query_candidate'
     && profile.execution.candidate_context?.normalizer_version
-      === 'trace_ld_v1_o1_candidate_normalizer_v1'
+      === 'trace_ld_v1_o1_candidate_normalizer_v2'
     && profile.execution.candidate_context?.semantic_type
       === 'ordinary_object_candidate'
     && profile.execution.candidate_context?.candidate_hint === null

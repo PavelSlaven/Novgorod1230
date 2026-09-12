@@ -1,7 +1,7 @@
 {
   "schema": "rus.lower_dvina_trace_ordinary_materialization_profile.v2",
   "profile_id": "lower_dvina_trace_o2a_first_entry_profile_v2",
-  "revision": 3,
+  "revision": 4,
   "status": "approved",
   "scenario_id": "lower_dvina_trace_v1",
   "scenario_definition_revision": 34,
@@ -44,7 +44,7 @@
     },
     "candidate_context": {
       "candidate_ref_namespace": "trace_ld_v1_o1_query_candidate",
-      "normalizer_version": "trace_ld_v1_o1_candidate_normalizer_v1",
+      "normalizer_version": "trace_ld_v1_o1_candidate_normalizer_v2",
       "semantic_type": "ordinary_object_candidate",
       "candidate_hint": null,
       "functional_bucket": "other_ordinary",

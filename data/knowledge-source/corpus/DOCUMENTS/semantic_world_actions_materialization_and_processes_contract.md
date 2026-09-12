@@ -3303,6 +3303,9 @@ PASS.
 - seed/group and compatibility fields survive reload;
 - positive/negative resolution survives restart;
 - exact candidate/coverage identity reuses result;
+- exact target + normalized query + requested quantity define candidate identity;
+- quantity 5 and quantity 3 cannot collide; unspecified and explicit 1 are distinct;
+- positive replay reuses the committed identity and never becomes `no_change`;
 - deterministic rephrase normalization reuses same key;
 - unrecognized paraphrase has no universal-equivalence guarantee;
 - failed transaction leaves ledger/item unchanged;

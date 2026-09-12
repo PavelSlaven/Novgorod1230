@@ -30,7 +30,7 @@ export function ordinaryDiscoveryActivity({ operation, request, ordinaryPlan, kn
   const fresh = resolved.includes(ordinaryPlan?.resolution)
     && ordinaryPlan.request_identity ===
       `${request?.root_turn_id}:ordinary:presence:step:${request?.step_index}`;
-  return fresh || ['absent', 'no_change', 'authority_required'].includes(knownResolution?.resolution)
+  return fresh || resolved.includes(knownResolution?.resolution)
     ? ordinarySearchActivity(operation) : null;
 }
 export function ordinarySearchActivity(operation) {

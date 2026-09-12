@@ -23,7 +23,7 @@
 - ordinary world resolution переиспользует существующие player domain requests `request_discovery` и `request_container_access`; новый player operation для ordinary content не вводится;
 - любой положительный targeted result требует independent eligible `supporting_basis_ref`: уже committed либо candidate-free prepared Stage A basis в той же working projection; player/NPC wording остаётся только trigger и имеет `evidence_weight = 0`;
 - LLM не назначает числовую world-capacity: `density_band` остаётся описанием сцены, а `max_new_entities` ограничивает только один resolution/call; persisted identity quota на scope не ограничивает дальнейшую конкретизацию мира;
-- World Knowledge обязателен для authoritative/historical/significant классов и блокирует ordinary reconstruction при применимом hard contradiction, но отсутствие positive claim не является запретом для `common_mundane` при наличии causal basis;
+- World Knowledge обязателен для authoritative/historical/significant классов; positive support берётся только из facts, а hard constraints проходят отдельный exact-ref verdict channel и не могут считаться support. `blocked` запрещает materialization, но отсутствие positive claim не запрещает `common_mundane` при наличии causal basis;
 - одна ordinary identity может представлять небольшую однородную группу через bounded `quantity > 1`; exact quantity, total mass, packing и conservation проверяет code-owned mechanics policy;
 - concrete ordinary proposal получает broad closed `admission_class` и functional bucket: code применяет gates, а semantic correctness классификации проверяется adversarial model eval, без притворного NLP-парсинга free-text name;
 - initial primitive mechanics нового non-container item могут быть предложены LLM только один раз внутри request-bound policy; после validation/commit exact snapshot принадлежит `@rus/items-property`;
@@ -3312,7 +3312,8 @@ PASS.
 ## 49.5. O1 items-property cutover
 
 - new ordinary-world admission does not require exact pre-authored name/fact allowlist;
-- common mundane reconstruction does not require a positive WK claim when causal basis exists and no hard constraint contradicts it;
+- common mundane reconstruction does not require a positive WK fact when causal basis exists; every supplied hard constraint is separately acknowledged by exact ref, and `blocked` deterministically yields `no_change`;
+- hard constraints never count as positive support; non-common positive materialization cites only supplied facts;
 - one bounded stack identity can carry `quantity > 1` with exact total mass and packing;
 - significant/hidden/informational candidate still rejected;
 - system/NPC provenance validates without fake root player step;

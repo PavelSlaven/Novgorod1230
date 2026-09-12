@@ -256,10 +256,17 @@ from the G6 simulation `scope_ref`; P16 binds owner output to the selected
 `request_discovery` target before commit.
 One discovery has a shared two-call semantic budget; structural repair consumes
 the remaining call, and a repaired Stage A can finish as a seed-only commit.
-The exact M7 profile and versioned adversarial Stage B approval receipt are
+The exact revision-34 Phase M22 profile and versioned adversarial Stage B approval receipt are
 mandatory cutover pins. The probes run before profile activation; gameplay
 only verifies the receipt against the profile digest and exact
 provider/model/config identity, without additional eval calls.
+Its pinned mechanics policy `trace_ld_v1_o1_mechanics_policy_v2` owns the
+bounded ordinary-stack limit `max_quantity = 16`; runtime does not widen that
+bound. For common mundane reconstruction, positive World Knowledge facts are
+optional, but every supplied hard constraint must cross a separate exact-ref
+`clear|blocked` verdict channel. Missing or malformed verdicts fail closed,
+`blocked` becomes `no_change`, and a hard constraint can never count as
+positive support.
 Its server-owned
 PostgreSQL committer locks the party, aggregate and trusted context pins, then
 atomically writes migrations 021–025 state: O1/O2a enablement/objective, aggregate,

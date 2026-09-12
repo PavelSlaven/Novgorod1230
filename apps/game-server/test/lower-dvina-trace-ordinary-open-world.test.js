@@ -151,11 +151,49 @@ test('non-common Stage B still requires an exact WK claim', () => {
         packing_slot_cost: 4, quantity: { value: 1, unit: 'item' },
         container: null } }] };
   assert.match(buildOrdinaryMaterializationMessages(request)[0].content,
-    /"world_knowledge_claim_refs":\["<exact supplied claim_ref>"\]/u);
+    /"world_knowledge_claim_refs":\["<exact supplied fact claim_ref>"\]/u);
   assert.equal(bindOrdinaryMaterializationPlan(request, output).schema, undefined);
   assert.equal(bindOrdinaryMaterializationPlan(request, { ...output,
     world_knowledge_claim_refs: ['claim:weapon-authority'] }).resolution,
   'materialize');
+});
+
+test('hard constraints are a separate fail-closed veto channel', () => {
+  const base = presenceRequest('найти деревянную ложку');
+  const constraintRefs = ['claim:no-wood', 'claim:no-loose-items'];
+  const request = { ...base, world_knowledge: { facts: [{
+    claim_ref: 'claim:household-context' }], hard_constraints:
+    constraintRefs.map((claim_ref) => ({ claim_ref })) } };
+  const output = { resolution: 'materialize',
+    semantic_materialization_kind: 'standalone_item',
+    semantic_admission_class: 'common_mundane', reason_code: 'found',
+    world_knowledge_claim_refs: [], entities: [{ semantic_type: 'wooden_spoon',
+      name: 'деревянная ложка', presence_expectation: 'plausible',
+      mechanics_proposal: { mass_grams: 40, external_hand_cost: 0,
+        carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null } }] };
+  for (const invalid of [
+    output,
+    { ...output, world_knowledge_constraint_verdict: 'clear',
+      world_knowledge_constraint_refs: [constraintRefs[0]] },
+    { ...output, world_knowledge_constraint_verdict: 'clear',
+      world_knowledge_constraint_refs: [...constraintRefs, 'claim:unknown'] },
+    { ...output, world_knowledge_constraint_verdict: 'ignored',
+      world_knowledge_constraint_refs: constraintRefs },
+    { ...output, world_knowledge_claim_refs: [constraintRefs[0]],
+      world_knowledge_constraint_verdict: 'clear',
+      world_knowledge_constraint_refs: constraintRefs }
+  ]) assert.equal(bindOrdinaryMaterializationPlan(request, invalid).schema,
+  undefined);
+  const blocked = bindOrdinaryMaterializationPlan(request, { ...output,
+    world_knowledge_constraint_verdict: 'blocked',
+    world_knowledge_constraint_refs: constraintRefs });
+  assert.equal(blocked.resolution, 'no_change');
+  assert.equal(blocked.reason_code, 'world_knowledge_hard_constraint');
+  const clear = bindOrdinaryMaterializationPlan(request, { ...output,
+    world_knowledge_constraint_verdict: 'clear',
+    world_knowledge_constraint_refs: [...constraintRefs].reverse() });
+  assert.equal(clear.resolution, 'materialize');
 });
 
 test('unseen common objects need neither a code vocabulary entry nor a WK claim', () => {

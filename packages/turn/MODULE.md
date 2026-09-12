@@ -257,9 +257,13 @@ semantic calls; structural repair расходует оставшийся call, 
 Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Для
 `common_mundane` World Knowledge ограничивает reconstruction применимыми hard
 constraints, но не является positive inventory whitelist: causal scene basis и
-ordinary physical/historical plausibility достаточны без claim ref. Non-common
-materialization по-прежнему требует exact supporting claim ref из текущего
-slice; любой переданный неизвестный ref отклоняется. Затем выполняется
+ordinary physical/historical plausibility достаточны без positive claim ref.
+При непустом hard-constraint slice model обязана вернуть отдельные exact
+constraint refs для всего slice и verdict `clear|blocked`; пропуск, подмена,
+дубликат или неизвестный ref fail-closed, а `blocked` code-owned binder всегда
+превращает в `no_change`. Hard constraint никогда не считается positive
+support. Non-common materialization требует exact supporting claim ref только
+из `facts`; любой неизвестный или constraint ref отклоняется. Затем выполняется
 supporting-basis/property/placement admission `@rus/items-property`, собирается
 один ordinary P16 plan после revalidation и передаёт его persistence owner;
 model call никогда не находится внутри physical transaction. Player-safe
@@ -283,7 +287,9 @@ context-bound weapons/value/currency или natural finite sources.
 совместимости, но не блокируют последующие независимые resolutions. Common
 ordinary result может быть одной persisted stack identity с code-bounded
 `quantity <= 16`; exact total mass, packing и placement проходят существующий
-`@rus/items-property` admission.
+`@rus/items-property` admission. Active revision-34 canonical profile задаёт
+`trace_ld_v1_o1_mechanics_policy_v2.max_quantity = 16`; runtime не расширяет
+этот pinned bound.
 
 Повторный `inspect` или сравнение уже наблюдённых evidence refs имеет общий
 bounded owner. Он принимает только exact refs из code-projected

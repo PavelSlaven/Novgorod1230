@@ -22,7 +22,7 @@ import { enabled as discoveryEnabled, group as discoveryGroup,
   request as discoveryRequest } from './lower-dvina-trace-o1-fixture.js';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
-  + 'lower-dvina-trace-v1/phase-m7-content/'
+  + 'lower-dvina-trace-v1/phase-m22-content/'
   + 'ordinary-materialization-profile.json', import.meta.url);
 const frozenRoleRequestsUrl = new URL('../../../data/model-evals/llm-runtime/'
   + 'frozen-role-requests-v1.json', import.meta.url);
@@ -335,7 +335,7 @@ test('Stage B requires a materialization kind and accepts a standalone common it
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
-test('grounded common Stage B treats WK as a veto rather than a positive whitelist',
+test('grounded common Stage B does not treat WK facts as a positive whitelist',
   async () => {
     const request = presenceRequest('обычная верёвка');
     const claimRef = 'claim:test-cordage';

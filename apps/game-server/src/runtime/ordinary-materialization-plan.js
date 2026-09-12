@@ -99,6 +99,14 @@ export function bindOrdinaryMaterializationPlan(request, output) {
       return negativePlan(request, 'no_change', 'semantic_non_item_detail');
     }
   }
+  if (output.resolution === 'materialize') {
+    const constraintVerdict = worldKnowledgeConstraintVerdict(output,
+      request.world_knowledge);
+    if (constraintVerdict == null) return output;
+    if (constraintVerdict === 'blocked') {
+      return negativePlan(request, 'no_change', 'world_knowledge_hard_constraint');
+    }
+  }
   if (['absent', 'no_change', 'authority_required'].includes(output.resolution)) {
     return negativePlan(request, output.resolution, output.reason_code);
   }
@@ -141,15 +149,31 @@ export function bindOrdinaryMaterializationPlan(request, output) {
 
 function supportedWorldKnowledgeRefs(refs, worldKnowledge, admissionClass) {
   if (worldKnowledge == null) return true;
-  const supplied = new Set([
-    ...(worldKnowledge.facts ?? []),
-    ...(worldKnowledge.hard_constraints ?? [])
-  ].map(({ claim_ref: ref }) => ref).filter(text));
+  const supplied = new Set((worldKnowledge.facts ?? [])
+    .map(({ claim_ref: ref }) => ref).filter(text));
   if (refs == null || Array.isArray(refs) && refs.length === 0) {
     return admissionClass === 'common_mundane';
   }
   return Array.isArray(refs)
+    && refs.length === new Set(refs).size
     && refs.every((ref) => text(ref) && supplied.has(ref));
+}
+
+function worldKnowledgeConstraintVerdict(output, worldKnowledge) {
+  if (worldKnowledge == null) return 'clear';
+  const constraints = worldKnowledge.hard_constraints ?? [];
+  if (!Array.isArray(constraints)) return null;
+  if (constraints.length === 0) return 'clear';
+  const supplied = constraints.map(({ claim_ref: ref } = {}) => ref);
+  const refs = output.world_knowledge_constraint_refs;
+  if (supplied.some((ref) => !text(ref))
+      || new Set(supplied).size !== supplied.length
+      || !Array.isArray(refs) || refs.length !== supplied.length
+      || new Set(refs).size !== refs.length
+      || refs.some((ref) => !text(ref) || !supplied.includes(ref))) return null;
+  return ['clear', 'blocked'].includes(
+    output.world_knowledge_constraint_verdict)
+    ? output.world_knowledge_constraint_verdict : null;
 }
 
 function noChangePlan(request, reasonCode) {

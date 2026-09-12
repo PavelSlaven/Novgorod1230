@@ -1,7 +1,7 @@
 {
   "schema": "rus.ordinary_materialization_stage_b_approval_receipt.v1",
   "version": 1,
-  "profile_digest": "56e310ce0b127e25c11ba942c0d2483c0119022431d9835746a47cca27fbcf42",
+  "profile_digest": "6a7a597fcfbfbaf08b0d93833c285ded278da79f62f3517c35044de445c74654",
   "eval_contract_digest": "5d17dd3f810d6af169a8af51929af7601206903036acbcd3e810f64a98333f48",
   "model_identity": {
     "provider": "deepseek",

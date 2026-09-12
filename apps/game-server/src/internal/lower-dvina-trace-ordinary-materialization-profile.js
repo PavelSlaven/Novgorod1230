@@ -4,25 +4,18 @@ import { resolve } from 'node:path';
 import { validateLowerDvinaTraceOrdinaryStageBEval } from
   './lower-dvina-trace-ordinary-stage-b-eval.js';
 
-const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content';
+const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content';
 const PROFILE_FILE = 'ordinary-materialization-profile.json';
 export const LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST =
-  '56e310ce0b127e25c11ba942c0d2483c0119022431d9835746a47cca27fbcf42';
-const MANIFEST_DIGEST =
-  '8c78bb702ae1a6a0dbee3402c768c6434e769c0be2e3e075d1845e107b377883';
+  '6a7a597fcfbfbaf08b0d93833c285ded278da79f62f3517c35044de445c74654';
 
 export async function loadLowerDvinaTraceOrdinaryMaterializationProfile({
   rootDir = process.cwd()
 } = {}) {
-  const [manifestRaw, profileRaw] = await Promise.all([
-    readFile(resolve(rootDir, ROOT, 'manifest.json')),
-    readFile(resolve(rootDir, ROOT, PROFILE_FILE))
-  ]);
-  const manifest = JSON.parse(manifestRaw);
+  const profileRaw = await readFile(resolve(rootDir, ROOT, PROFILE_FILE));
   const profile = JSON.parse(profileRaw);
   const digest = createHash('sha256').update(profileRaw).digest('hex');
-  const manifestDigest = createHash('sha256').update(manifestRaw).digest('hex');
-  if (!valid(manifest, profile, digest, manifestDigest)) {
+  if (!valid(profile, digest)) {
     throw Object.assign(new Error('TRACE_ORDINARY_MATERIALIZATION_PROFILE_INVALID'), {
       code: 'TRACE_ORDINARY_MATERIALIZATION_PROFILE_INVALID'
     });
@@ -30,20 +23,13 @@ export async function loadLowerDvinaTraceOrdinaryMaterializationProfile({
   return freeze(profile);
 }
 
-function valid(manifest, profile, digest, manifestDigest) {
-  const ref = manifest?.content_refs?.ordinary_materialization_profile;
+function valid(profile, digest) {
   return digest === LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST
-    && manifestDigest === MANIFEST_DIGEST
-    && manifest?.schema === 'rus.lower_dvina_trace_m7_content_manifest.v1'
-    && manifest?.scenario_definition_revision === 19
-    && ref?.path === PROFILE_FILE && ref?.digest === digest
-    && ref?.schema === profile?.schema && ref?.id === profile?.profile_id
-    && ref?.revision === profile?.revision
     && profile?.schema === 'rus.lower_dvina_trace_ordinary_materialization_profile.v2'
-    && profile?.profile_id === 'lower_dvina_trace_o2a_first_entry_profile_v1'
-    && profile?.revision === 2 && profile?.status === 'approved'
+    && profile?.profile_id === 'lower_dvina_trace_o2a_first_entry_profile_v2'
+    && profile?.revision === 3 && profile?.status === 'approved'
     && profile?.scenario_id === 'lower_dvina_trace_v1'
-    && profile?.scenario_definition_revision === 19
+    && profile?.scenario_definition_revision === 34
     && exactKeys(profile, ['schema','profile_id','revision','status','scenario_id',
       'scenario_definition_revision','catalog_version','property_version','placement_version',
       'technical_limits','context_refs','policy_refs','execution',
@@ -192,7 +178,7 @@ function validMechanicsPolicy(value, policyRef) {
     && JSON.stringify(value.allowed_carry_forms)
       === '["compact","regular","long","bulky"]'
     && value.max_packing_slot_cost === 16
-    && value.max_quantity === 1;
+    && value.max_quantity === 16;
 }
 function exactKeys(value, keys) {
   return value != null && typeof value === 'object' && !Array.isArray(value)

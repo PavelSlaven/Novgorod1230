@@ -22,8 +22,6 @@ import { snapshotOrdinaryMaterializationEnablement } from
 import { resolveExistingItemInspection } from
   './lower-dvina-trace-existing-item-inspection.js';
 
-const MAX_COMMON_STACK_QUANTITY = 16;
-
 /** Lower Dvina supplies profile/context adapters to the common @rus/turn owner. */
 export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
   partyId, loadEnablement, ordinaryMaterializationModel,
@@ -73,7 +71,7 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         locationRef: request?.committed_state?.position?.location_ref,
         scopeRef
       });
-      const execution = commonStackPolicy(selected?.execution);
+      const execution = selected?.execution;
       if (!validExecution(execution)) return null;
       const policyInput = {
         objective_context: structuredClone(selected.objective),
@@ -122,16 +120,6 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         }, code_owned_resolution: codeOwnedResolution };
     }
   });
-}
-function commonStackPolicy(execution) {
-  if (execution?.candidate_context?.admission_class !== 'common_mundane') {
-    return execution;
-  }
-  return { ...execution, mechanics_policy: {
-    ...execution.mechanics_policy,
-    max_quantity: Math.max(execution.mechanics_policy.max_quantity,
-      MAX_COMMON_STACK_QUANTITY)
-  } };
 }
 function selectDiscoveryContext({ execution, objective, targetRef, locationRef, scopeRef }) {
   if (!validExecution(execution) || typeof targetRef !== 'string') return null;

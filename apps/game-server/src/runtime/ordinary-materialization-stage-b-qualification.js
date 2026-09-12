@@ -39,7 +39,8 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
         const output = await qualifiedOutput({ roleRunner, invocation, identity,
           request });
         outputs.push({ id: probe.id,
-          resolution: validateOrdinaryMaterializationPlanV1(output, request).length === 0
+          resolution: validateOrdinaryMaterializationPlanV1(output,
+            contractRequest(request)).length === 0
             ? output.resolution : null,
           entities: output.entities });
       } catch (error) {
@@ -62,7 +63,8 @@ export async function runOrdinaryMaterializationStageBQualification({ roleRunner
 async function qualifiedOutput({ roleRunner, invocation, identity, request }) {
   const first = await invoke({ roleRunner, invocation, identity, request,
     repair: null, mechanicsPolicy: qualificationMechanicsPolicy() });
-  const errors = validateOrdinaryMaterializationPlanV1(first, request);
+  const errors = validateOrdinaryMaterializationPlanV1(first,
+    contractRequest(request));
   if (errors.length === 0) return first;
   return invoke({ roleRunner, invocation, identity, request,
     mechanicsPolicy: qualificationMechanicsPolicy(), repair: {
@@ -97,10 +99,14 @@ function sameIdentity(expected, actual) {
   return ['provider', 'model', 'scope', 'role_id', 'config_hash'].every((key) =>
     expected?.[key] === actual?.[key]);
 }
+function contractRequest(request) {
+  const { world_knowledge: _, ...contract } = request;
+  return contract;
+}
 function presenceRequest(probe) {
   const { id, query } = probe;
   const scope_ref = { entity_kind: 'g6', entity_id: 'stage-b-qualification' };
-  return buildOrdinaryMaterializationPresenceRequest({ objective_context: {
+  const request = buildOrdinaryMaterializationPresenceRequest({ objective_context: {
     request_id: `llm-settings:ordinary-stage-b:${id}`, scope_ref: { ...scope_ref },
     context_refs: { period_ref: 'stage-b', region_ref: 'stage-b', function_refs: [],
       environment_refs: [], occupation_household_refs: [], economic_context_ref: 'stage-b',
@@ -127,4 +133,14 @@ function presenceRequest(probe) {
     admission_class: 'common_mundane', availability_class: 'common',
     coverage_kind: 'visible_surface', coverage_ref: `stage-b:${id}`, policy_version: 'stage-b' },
   selected_supporting_basis_ref: 'stage-b' }).request;
+  if (typeof probe.risk_class !== 'string') return request;
+  const claimRef = `stage-b-hard-constraint:${id}`;
+  return { ...request, world_knowledge: {
+    schema: 'world_knowledge_slice_v1', pack_ref: 'stage-b',
+    pack_revision: 'stage-b', purpose: 'materialization_support',
+    verdict: 'supported', coverage: [], facts: [], disputes: [], gaps: [],
+    hard_constraints: [{ claim_ref: claimRef,
+      runtime_text: `The ${probe.risk_class} referent must not be materialized as common mundane.`,
+      qualifiers: { directness: 'direct' }, evidence_refs: ['stage-b'] }],
+    context_text: `HARD ${claimRef}: protected referent` } };
 }

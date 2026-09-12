@@ -14,7 +14,7 @@ import { absentPlan, presenceRequest } from
   './lower-dvina-trace-ordinary-stage-b-eval-fixture.js';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
-  + 'lower-dvina-trace-v1/phase-m7-content/'
+  + 'lower-dvina-trace-v1/phase-m22-content/'
   + 'ordinary-materialization-profile.json', import.meta.url);
 
 test('O1 wire omits duplicate WK prose only when the full structured slice is present', () => {
@@ -164,6 +164,10 @@ for (const semanticType of ['cordage', null, undefined]) test(`custom Stage B qu
     candidate_query.coverage_key)).size, contract.cases.length + 5);
   for (const call of calls) {
     const request = JSON.parse(call.messages[1].content);
+    const riskProbe = contract.cases.some(({ id }) =>
+      request.request_id.endsWith(`:${id}`));
+    assert.equal(request.world_knowledge?.hard_constraints?.length ?? 0,
+      riskProbe ? 1 : 0);
     assert.deepEqual(call.messages, buildOrdinaryMaterializationMessages(request,
       { mechanicsPolicy: { policy_ref: 'stage-b', max_mass_grams: 20_000,
         allowed_external_hand_costs: [0, 1, 2],
@@ -186,3 +190,41 @@ for (const semanticType of ['cordage', null, undefined]) test(`custom Stage B qu
     .entities[0].semantic_descriptor.semantic_type, semanticType);
   assert.equal(calls.some(({ repair }) => repair), false);
 });
+
+test('Stage B qualification rejects a model that explicitly clears every hard veto',
+  async () => {
+    const contract = await evalContract();
+    const candidate = { mode: 'custom', compatibility: 'openai_compatible',
+      baseUrl: 'http://127.0.0.1:11434/v1', model: 'ignores-veto', apiKey: null };
+    const identity = { provider: 'openai_compatible', model: 'ignores-veto',
+      scope: 'turn_runtime', role_id: 'ordinary_materialization',
+      config_hash: 'ignores-veto' };
+    const riskIds = new Set(contract.cases.map(({ id }) => id));
+    const roleRunner = { describe: () => identity, async run(call) {
+      const request = JSON.parse(call.messages[1].content);
+      const id = request.request_id.replace('llm-settings:ordinary-stage-b:', '');
+      const hardRefs = (request.world_knowledge?.hard_constraints ?? [])
+        .map(({ claim_ref }) => claim_ref);
+      if (riskIds.has(id) || id === 'common-mundane-positive') return {
+        provider_record: identity, output: { resolution: 'materialize',
+          semantic_materialization_kind: 'standalone_item',
+          semantic_admission_class: 'common_mundane', reason_code: 'ignored',
+          ...(hardRefs.length === 0 ? {} : {
+            world_knowledge_constraint_refs: hardRefs,
+            world_knowledge_constraint_verdict: 'clear' }), entities: [{
+            semantic_type: 'mundane_object', name: 'обычная вещь',
+            presence_expectation: 'plausible', mechanics_proposal: {
+              mass_grams: 100, external_hand_cost: 0, carry_form: 'compact',
+              packing_slot_cost: 1, quantity: { value: 1, unit: 'item' },
+              container: null } }] } };
+      return { provider_record: identity, output: {
+        ...absentPlan(request), resolution: 'no_change',
+        semantic_materialization_kind: 'non_item_detail',
+        semantic_admission_class: 'common_mundane' } };
+    } };
+    const result = await runOrdinaryMaterializationStageBQualification({
+      roleRunner, evalContract: contract, candidate });
+    assert.equal(result.report.pass, false);
+    assert.deepEqual(result.report.failed_case_ids,
+      [...riskIds].sort());
+  });

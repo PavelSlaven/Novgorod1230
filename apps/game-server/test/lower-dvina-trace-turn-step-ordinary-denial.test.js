@@ -210,7 +210,7 @@ test('domain owner repair uses already visible NPC activities directly', () => {
 
 test('repaired prerequisites reach O1 with catalog support, zero query evidence and materialized projections', async () => {
   const bundle = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json', import.meta.url), 'utf8'));
-  const profile = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/ordinary-materialization-profile.json', import.meta.url), 'utf8'));
+  const profile = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m22-content/ordinary-materialization-profile.json', import.meta.url), 'utf8'));
   const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
   const claims = ['claim:final-nature-channel-flow-can-transport-large-woody-debris',
     'claim:population-material-wood-loading'];

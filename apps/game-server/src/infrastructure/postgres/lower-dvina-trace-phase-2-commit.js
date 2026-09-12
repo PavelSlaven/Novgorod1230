@@ -107,7 +107,8 @@ export async function commitLowerDvinaTracePhase2({
   }
   if (factual?.consequence?.phase4_kind) {
     return commitLowerDvinaTracePhase4({
-      partyId, writePlan, inputDigest, phase4Contracts, loadState, committer
+      partyId, writePlan, inputDigest, phase4Contracts,
+      turnStepApprovedOwners, loadState, committer
     });
   }
   const visibleContext = writePlan.write_targets

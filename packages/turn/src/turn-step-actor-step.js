@@ -60,6 +60,7 @@ export async function executeTurnStepActorStep({
   let checkRequest = null;
   let operations = plan.operations;
   let chainContext = preparedChainContext;
+  let interrupted = false;
 
   if (plan.resolution === 'generic_check') {
     const preflightOperations = actionProductionPreflightOperations(plan);
@@ -115,13 +116,18 @@ export async function executeTurnStepActorStep({
 
   const domainOperations = operations.filter(({ op }) => DOMAIN_OPS.has(op));
   const directOperations = operations.filter(({ op }) => DIRECT_OPS.has(op));
+  const startOperations = directOperations.filter(
+    ({ op }) => op === 'apply_body_event');
+  const completionOperations = directOperations.filter(
+    ({ op }) => op !== 'apply_body_event');
   if (domainOperations.length > 1) {
     throw turnFailure('TURN_STEP_DOMAIN_OPERATION_COUNT_INVALID',
       'A planned step can invoke at most one domain owner.', {
         count: domainOperations.length
       });
   }
-  for (const operation of directOperations) {
+
+  for (const operation of startOperations) {
     const handler = registry.direct(operation);
     if (!handler) {
       throw turnFailure('TURN_STEP_DIRECT_HANDLER_MISSING',
@@ -142,31 +148,6 @@ export async function executeTurnStepActorStep({
       }));
   }
 
-  if (plan.resolution === 'domain_request'
-      || (plan.resolution === 'generic_check'
-        && domainOperations.length === 1)) {
-    const operation = domainOperations[0];
-    const handler = registry.domain(operation);
-    if (!handler) {
-      throw turnFailure('TURN_STEP_DOMAIN_HANDLER_MISSING',
-        `No code-owned domain handler for ${operation.op}.`, {
-          op: operation.op
-        });
-    }
-    const applied = await invokeOwner(handler, {
-      plan, request, operation, projection, checkResult,
-      preparedChainContext: chainContext, preparedOrdinaryPlan,
-      preparedActionProductionPlans, priorLocalFirePlans, ports
-    });
-    chainContext = advanceChainContext(chainContext, applied);
-    ({ projection, boundary, progress, goalResult, continuation } =
-      collectTurnStepExecutionResult({
-        applied, projection, boundary, progress, goalResult, continuation,
-        summaries, writes, consequences, factualEvents, preparedEffects, ordinaryPlans,
-        actionProducedPlans, localFirePlans, spatialSemanticPlans,
-        backgroundNpcSemanticPlans
-      }));
-  }
   if (plan.activity?.owner === 'semantic') {
     const activities = [plan.activity];
     if (plan.resolution === 'generic_check') {
@@ -194,16 +175,72 @@ export async function executeTurnStepActorStep({
         ports
       });
       chainContext = advanceChainContext(chainContext, applied);
+      interrupted ||= applied.interrupted === true;
       ({ projection, boundary, progress, goalResult, continuation } =
         collectTurnStepExecutionResult({
           applied, projection, boundary, progress, goalResult, continuation,
-          summaries, writes, consequences, factualEvents, preparedEffects, ordinaryPlans,
-          actionProducedPlans, localFirePlans, spatialSemanticPlans,
-          backgroundNpcSemanticPlans
+          summaries, writes, consequences, factualEvents, preparedEffects,
+          ordinaryPlans, actionProducedPlans, localFirePlans,
+          spatialSemanticPlans, backgroundNpcSemanticPlans
         }));
+      if (interrupted) {
+        goalResult = 'pending';
+        continuation = {
+          remaining_intent: request.remaining_intent,
+          depends_on_refs: []
+        };
+        boundary = true;
+        break;
+      }
     }
   }
 
+  for (const operation of interrupted ? [] : completionOperations) {
+    const handler = registry.direct(operation);
+    if (!handler) {
+      throw turnFailure('TURN_STEP_DIRECT_HANDLER_MISSING',
+        `No code-owned handler for ${operation.op}.`, { op: operation.op });
+    }
+    const applied = await invokeOwner(handler, {
+      plan, request, operation, projection, checkResult,
+      preparedChainContext: chainContext, preparedOrdinaryPlan,
+      preparedActionProductionPlans, priorLocalFirePlans, ports
+    });
+    chainContext = advanceChainContext(chainContext, applied);
+    ({ projection, boundary, progress, goalResult, continuation } =
+      collectTurnStepExecutionResult({
+        applied, projection, boundary, progress, goalResult, continuation,
+        summaries, writes, consequences, factualEvents, preparedEffects, ordinaryPlans,
+        actionProducedPlans, localFirePlans, spatialSemanticPlans,
+        backgroundNpcSemanticPlans
+      }));
+  }
+
+  if (!interrupted && (plan.resolution === 'domain_request'
+      || (plan.resolution === 'generic_check'
+        && domainOperations.length === 1))) {
+    const operation = domainOperations[0];
+    const handler = registry.domain(operation);
+    if (!handler) {
+      throw turnFailure('TURN_STEP_DOMAIN_HANDLER_MISSING',
+        `No code-owned domain handler for ${operation.op}.`, {
+          op: operation.op
+        });
+    }
+    const applied = await invokeOwner(handler, {
+      plan, request, operation, projection, checkResult,
+      preparedChainContext: chainContext, preparedOrdinaryPlan,
+      preparedActionProductionPlans, priorLocalFirePlans, ports
+    });
+    chainContext = advanceChainContext(chainContext, applied);
+    ({ projection, boundary, progress, goalResult, continuation } =
+      collectTurnStepExecutionResult({
+        applied, projection, boundary, progress, goalResult, continuation,
+        summaries, writes, consequences, factualEvents, preparedEffects, ordinaryPlans,
+        actionProducedPlans, localFirePlans, spatialSemanticPlans,
+        backgroundNpcSemanticPlans
+      }));
+  }
   return {
     workingProjection: projection,
     summary: summaries.filter(Boolean).join('; '),
@@ -223,7 +260,8 @@ export async function executeTurnStepActorStep({
     spatial_semantic_atomic_write_plan: spatialSemanticPlans[0] ?? null,
     background_npc_semantic_atomic_write_plan:
       backgroundNpcSemanticPlans[0] ?? null,
-    preparedChainContext: chainContext
+    preparedChainContext: chainContext,
+    interrupted
   };
 }
 

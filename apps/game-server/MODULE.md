@@ -168,6 +168,9 @@ causal transitions и один CAS итогового состояния. Deferr
 допустим до первого входа; first-entry связывает точную позицию без сброса
 занятия или времени. Сон меняет доступность NPC для разговора. Этот cutover
 не расширяет историческую Phase-7 activation свободных решений NPC.
+Routine movement проходит существующий route owner с проверкой committed source
+и exact endpoints; adapter переносит NPC только при completed handoff, а blocked
+handoff сохраняет исходную позицию и следующий причинный schedule state.
 
 Semantic continuation без изменения тела использует existing prepared-effect
 chain уже с первого timed шага. Runtime передаёт advanced committed projection
@@ -176,7 +179,8 @@ chain уже с первого timed шага. Runtime передаёт advanced
 bindings каждой prepared slice, сверяет общий time/body и сохраняет существующую
 activity/body history в том же P16. Раннее temporal прерывание no-body semantic
 slice сохраняет original/planned duration отдельно от actual elapsed и оставшегося
-времени; aborted execution и paused attempt используют существующие activity rows.
+времени; paused execution и paused attempt используют существующие activity rows,
+а terminal completion operations не входят в прерванный commit.
 Domain-command ledger contracts сохраняются.
 
 ## Не владеет

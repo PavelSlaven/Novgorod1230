@@ -26,6 +26,10 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
   исполняют approved finite routine profile через тот же schedule proposal owner.
   Calendar owner определяет начальную фазу; состояние хранит конкретное занятие NPC.
   Завершение фазы меняет activity/availability и назначает конечную следующую границу.
+  Routine phase может передать declarative `movement_handoff`; game-server
+  исполняет его только через существующий route owner и меняет committed position
+  лишь после terminal completion. Closed/invalid route оставляет NPC в исходной
+  позиции без teleport.
   Прерванная routine не возобновляется автоматически. `decision_required` —
   marker для semantic handoff. Current routine adapter активирует только approved
   deterministic phases; общий consumer новых решений вне Phase 7 ещё не подключён.

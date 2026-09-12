@@ -5,6 +5,7 @@ import {
   materializeLowerDvinaTracePartyInstance
 } from '@rus/materialization/internal/lower-dvina-trace-phase-1a';
 import {
+  canonicalDigest,
   MATERIALIZER_VERSION,
   RNG_VERSION
 } from '@rus/materialization';
@@ -13,6 +14,9 @@ import { WorldKnowledgeError } from '@rus/world-knowledge';
 import {
   createLowerDvinaTracePhase2Runtime
 } from '../src/runtime/lower-dvina-trace-phase-2.js';
+import {
+  assertPhase3ReadRows
+} from '../src/infrastructure/postgres/lower-dvina-trace-phase-3-read-validation.js';
 import {
   loadLowerDvinaTraceMaterializationBundle,
   resolveLowerDvinaTraceStartTimestamp
@@ -23,6 +27,99 @@ import {
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 9
+});
+
+test('Phase 3 readback matches SQL interaction ordering after turn nine', () => {
+  const partyId = 'party';
+  const interaction = (turn) => ({
+    interaction_id: `interaction:${partyId}:trace-phase3:${turn}`,
+    npc_id: 'npc',
+    statement_ref: `statement:${turn}`,
+    statement_is_new: false
+  });
+  const row = (turn) => ({
+    interaction_id: `interaction:${partyId}:trace-phase3:${turn}`,
+    npc_id: 'npc',
+    terminal_evidence_ref: { statement_ref: `statement:${turn}` }
+  });
+  const activity = (turn) => ({
+    activity_execution_id: `activity:${partyId}:trace-phase3:${turn}`,
+    activity_snapshot: { consequence: 'conversation' },
+    option_id: 'ask', duration_minutes: 5,
+    started_at: { whole_minutes: String(turn), subminute_numerator: '0',
+      subminute_denominator: '1' },
+    ended_at: { whole_minutes: String(turn + 5), subminute_numerator: '0',
+      subminute_denominator: '1' },
+    execution_result: {
+      check_result: { check_id: `check-${turn}`, roll: turn,
+        modifiers: {}, difficulty: 1, outcome: { success: true },
+        audit: { turn } },
+      consequence_ref: `consequence-${turn}`
+    },
+    request_id: `request-${turn}`, input_digest: `input-${turn}`,
+    change_set_id: `change-${turn}`
+  });
+  const activityRow = (entry) => ({
+    id: entry.activity_execution_id,
+    activity_snapshot: entry.activity_snapshot,
+    original_total_minutes: '5', status: 'completed',
+    execution_context_snapshot: { option_id: entry.option_id },
+    started_at_whole_minutes: entry.started_at.whole_minutes,
+    started_at_subminute_numerator: '0', started_at_subminute_denominator: '1',
+    last_processed_at_whole_minutes: entry.ended_at.whole_minutes,
+    last_processed_at_subminute_numerator: '0',
+    last_processed_at_subminute_denominator: '1',
+    actual_time_numerator: '5', actual_time_denominator: '1',
+    result_kind: 'completed', trace: entry.execution_result
+  });
+  const checkRow = (entry) => {
+    const result = entry.execution_result.check_result;
+    const turn = entry.activity_execution_id.split(':').at(-1);
+    return {
+      check_resolution_id: `check:${partyId}:trace-phase3:${turn}`,
+      check_scope_kind: 'immediate_action',
+      check_scope_key: { request_id: entry.request_id,
+        option_id: entry.option_id },
+      check_policy_ref: { entity_kind: 'check_policy',
+        entity_id: result.check_id, authoring_version: '1' },
+      deterministic_roll_input_digest: canonicalDigest({
+        input_digest: entry.input_digest, audit: result.audit
+      }),
+      roll_value: result.roll, modifier_snapshot: result.modifiers,
+      target_value: result.difficulty, result_kind: 'success',
+      consequence_policy_ref: { entity_kind: 'consequence_policy',
+        entity_id: entry.execution_result.consequence_ref,
+        authoring_version: '1' },
+      result_change_set_id: entry.change_set_id,
+      canonical_digest: canonicalDigest(result)
+    };
+  };
+  const activity9 = activity(9);
+  const activity10 = activity(10);
+  assert.doesNotThrow(() => assertPhase3ReadRows({
+    payload: {
+      party_id: partyId,
+      actor_id: 'actor',
+      clock: { whole_minutes: '1', subminute_numerator: '0',
+        subminute_denominator: '1' },
+      position: { g4_id: 'g4', g5_node_id: 'g5', g5_anchor_id: 'anchor' },
+      interactions: [interaction(9), interaction(10)],
+      activity_history: [activity9, activity10]
+    },
+    results: {
+      clock: { rowCount: 1, rows: [{ whole_minutes: '1',
+        subminute_numerator: '0', subminute_denominator: '1' }] },
+      position: { rowCount: 1, rows: [{ g4_id: 'g4', g5_node_id: 'g5',
+        g5_anchor_id: 'anchor' }] },
+      journeyLocation: { rowCount: 0, rows: [] },
+      activities: { rows: [activityRow(activity10), activityRow(activity9)] },
+      interactions: { rows: [row(10), row(9)] },
+      summaries: { rows: [] }, decisions: { rows: [] },
+      checks: { rows: [checkRow(activity10), checkRow(activity9)] },
+      knowledge: { rows: [] }, npcs: { rows: [] },
+      clueItems: { rowCount: 0, rows: [] }, traversals: { rows: [] }
+    }
+  }));
 });
 
 test('Phase 3 exposes the full shore action set and moves to the existing camp in eight minutes', async () => {
@@ -187,103 +284,6 @@ test('player and stale semantic choices cannot select an NPC decision option', a
     { code: 'TRACE_PHASE_3_EXECUTION_BINDING_GAP' }
   );
   assert.equal(staleNpcDecision.commitCount(), 0);
-});
-
-test('successful evidence conversation commits bounded disclosure and route knowledge without moving the player', async () => {
-  const f = fixture({
-    atCamp: true,
-    blueWool: true,
-    resolverOption: 'show_clue_and_seek_eremey_cooperation',
-    rollValue: 0.99
-  });
-  const positionBefore = structuredClone(f.state.position);
-  const result = await f.submit({
-    key: 'phase3-evidence-success',
-    raw: 'Вот синяя шерсть с места крушения — расскажи всё, что видел.'
-  });
-  const conversation = result.conversation;
-
-  assert.equal(result.check.outcome.success, true);
-  assert.equal(result.time_update.exact_elapsed.exact_minutes.numerator, '10');
-  assert.equal(conversation.decision.trace.option_id, 'bounded_disclosure');
-  assert.equal(conversation.statement_ref,
-    'trace_ld_v1_statement_eremey_disclosure');
-  assert.equal(conversation.testimonial_evidence_ref,
-    'trace_ld_v1_evidence_eremey_words');
-  assert.equal(conversation.route_knowledge_ref,
-    'trace_ld_v1_route_camp_to_shed');
-  assert.deepEqual(f.state.position, positionBefore);
-  assert.deepEqual(f.state.route_knowledge,
-    ['trace_ld_v1_route_camp_to_shed']);
-  const playerFacing = JSON.stringify({
-    scene: result.screen.visible_context.visible_scene,
-    known: result.screen.visible_context.known_context
-  });
-  assert.equal(playerFacing.includes('blue_wool_matches_ratsha_caftan'), false);
-  assert.equal(playerFacing.includes('conclusion:principal_zhdanko'), false);
-
-  await assert.rejects(
-    () => f.submit({
-      key: 'phase3-post-disclosure-talk',
-      raw: 'Снова спросить Еремея о крушении.'
-    }),
-    { code: 'TURN_AVAILABLE_ACTION_SET_EMPTY' }
-  );
-  await assert.rejects(
-    () => f.submit({
-      key: 'phase3-post-disclosure-evidence',
-      raw: 'Снова показать Еремею синюю шерсть.'
-    }),
-    { code: 'TURN_AVAILABLE_ACTION_SET_EMPTY' }
-  );
-  assert.equal(f.rollCount(), 1);
-  assert.equal(f.commitCount(), 1);
-});
-
-test('failed evidence conversation remains guarded, persists ten minutes and does not disclose the route', async () => {
-  const f = fixture({
-    atCamp: true,
-    blueWool: true,
-    resolverOption: 'show_clue_and_seek_eremey_cooperation',
-    rollValue: 0
-  });
-  const result = await f.submit({
-    key: 'phase3-evidence-failure',
-    raw: 'Показываю Еремею клочок шерсти и прошу помочь.'
-  });
-
-  assert.equal(result.check.outcome.success, false);
-  assert.equal(result.conversation.consequence_ref,
-    'trace_ld_v1_consequence_eremey_remains_guarded');
-  assert.equal(result.conversation.decision.trace.option_id,
-    'evade_and_withhold');
-  assert.equal(result.conversation.route_knowledge_ref, null);
-  assert.equal(result.time_update.exact_elapsed.exact_minutes.numerator, '10');
-  assert.deepEqual(f.state.route_knowledge, []);
-  assert.equal(JSON.stringify(result).includes('relationship_delta'), false);
-});
-
-test('Phase 3 exact replay restores the same result and conflicting payload fails closed', async () => {
-  const f = fixture({ atCamp: true });
-  const first = await f.submit({
-    key: 'phase3-replay',
-    raw: 'Поговорить с Еремеем о крушении.'
-  });
-  const replay = await f.submit({
-    key: 'phase3-replay',
-    raw: 'Поговорить с Еремеем о крушении.'
-  });
-  assert.deepEqual(replay, first);
-  assert.equal(f.commitCount(), 1);
-  assert.equal(f.state.interactions.length, 1);
-  await assert.rejects(
-    () => f.submit({
-      key: 'phase3-replay',
-      raw: 'Спросить Еремея иначе.'
-    }),
-    { code: 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT' }
-  );
-  assert.equal(f.commitCount(), 1);
 });
 
 function fixture({

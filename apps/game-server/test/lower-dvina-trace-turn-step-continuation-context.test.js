@@ -26,7 +26,9 @@ test('bound semantic command keeps its unexecuted remainder through committed na
   const result = await submit();
   assert.equal(f.lastWritePlan().command_trace.remaining_intent, remaining);
   const narrated = f.narratorInput().visible_context;
-  assert.ok(narrated.uncertainties.some(value => value.includes(remaining)));
+  assert.equal(narrated.uncertainties.some(value => value.includes(remaining)),
+    false);
+  assert.ok(narrated.do_not_imply.includes('uncompleted_remaining_intent'));
   assert.ok(narrated.visible_changes.length > 0);
   const count = f.turnStepCount();
   assert.deepEqual(await submit(), result);

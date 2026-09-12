@@ -7,6 +7,7 @@ import { projectCalendar } from '@rus/time-events-history/calendar';
 import { projectActor, projectBodyState, projectInteractions } from './lower-dvina-trace-player-safe-entities.js';
 import { projectKnowledge, projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
 import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
+import { distinctNpcLabels } from './lower-dvina-trace-visible-scene-items.js';
 
 const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
   'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
@@ -31,13 +32,13 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
   }).map((npc) => [npc.instance_id, npc]));
   const visibleBefore = new Set((committedState?.current_visible_context
     ?.visible_npc ?? []).map(({ entity_ref: ref }) => ref?.entity_id));
-  const visibleAfter = new Map(visibleContext.visible_npc.map((npc) => [
+  const visibleAfter = new Map(distinctNpcLabels(visibleContext.visible_npc).map((npc) => [
     npc?.entity_ref?.entity_id, npc?.display_label
   ]));
   const observedTransitions = transitions.filter(({ npc_id: id }) =>
     visibleBefore.has(id) && visibleAfter.has(id));
-  const latestActivity = new Map(transitions.map(({ npc_id: id, after }) => [
-    id, after?.npc_snapshot?.machine_state?.current_activity?.summary
+  const latestActivity = new Map((projectedState.npcs ?? []).map((npc) => [
+    npc.instance_id, npc.machine_state?.current_activity?.summary
   ]));
   const beforeContext = currentActorContext(committedState?.body_state, committedState?.clock, calendarProfile);
   const afterContext = currentActorContext(bodyAfter ?? committedState?.body_state,
@@ -57,7 +58,8 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
       ...observedTransitions.flatMap(({ npc_id: id, proposal }) => {
         const summary = proposal?.factual_transition?.summary;
         const label = visibleAfter.get(id);
-        return text(label) && text(summary) ? [`${label}: ${summary}`] : [];
+        return text(label) && text(summary)
+          ? [`${label} ${lowerInitial(summary)}`] : [];
       }),
       ...(conditionChanges.length === 0 ? [] : ['Состояние вашего тела изменилось.'])])],
     known_context: [...new Set([...visibleContext.known_context.filter(value =>
@@ -120,6 +122,10 @@ function validCurrentScene(value) {
 
 function text(value) {
   return typeof value === 'string' && value.length > 0;
+}
+
+function lowerInitial(value) {
+  return value[0].toLocaleLowerCase('ru-RU') + value.slice(1);
 }
 
 function failCurrentScene() {

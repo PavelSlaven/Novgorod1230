@@ -55,6 +55,20 @@ export function createCanonicalPhase11LlmResponder({
   });
   let turn10Actors = null;
   return async ({ model, input }) => {
+    if ((input.request ?? input)?.schema ===
+        'ordinary_materialization_request_v1') {
+      const request = input.request ?? input;
+      return {
+        schema: 'ordinary_materialization_plan_v1',
+        request_id: request.request_id,
+        resolution: 'no_change',
+        density_band_proposal: null,
+        background_groups: [],
+        entities: [],
+        presence_resolutions: [],
+        reason_code: 'fixture_no_change'
+      };
+    }
     if (model === 'fixture-intent-router') return resolveIntent(input);
     if (model === 'fixture-world-knowledge-query-planner') {
       const request = input.request ?? input;
@@ -76,6 +90,11 @@ export function createCanonicalPhase11LlmResponder({
           input.approved_envelope.required_semantic_requirements ?? []
       };
     }
+    if (model === 'fixture-world-process-step') return {
+      interpretation: { grounded_transition: 'no observable process change' },
+      outcome_choice: 'outcome_1',
+      affected_ref_choices: []
+    };
     if (['fixture-turn-step-planner', 'fixture-turn-step-planner-repair']
       .includes(model)) {
       const request = input.request ?? input;
@@ -153,7 +172,9 @@ export function createCanonicalPhase11LlmResponder({
     if (['fixture-npc-autonomous-decider',
       'fixture-npc-autonomous-decider-repair'].includes(model)) {
       const request = input.request ?? input;
-      turn10Actors = { ...turn10Actors, zhdanko: request.npc_ref };
+      if (turn10Actors != null) {
+        turn10Actors = { ...turn10Actors, zhdanko: request.npc_ref };
+      }
       const plan = phase7AutonomousPlan(request, phase7Choice);
       const bagRef = request.npc?.available_resources?.[0]?.resource_ref;
       const bagMove = request.decision_scope?.operation_contract?.move_entity
@@ -184,6 +205,18 @@ export function createCanonicalPhase11LlmResponder({
         companions: companionCombatChoice
       });
     }
+    if (model === 'fixture-npc-ordinary-semantic-remainder') return {
+      schema: 'npc_ordinary_semantic_remainder_proposal_v1',
+      request_id: input.request_id,
+      ordinary_descriptor: 'На человеке грубая домотканая рубаха.',
+      ordinary_activity: null
+    };
+    if (model === 'fixture-npc-ordinary-semantic-remainder-auditor') return {
+      schema: 'npc_ordinary_semantic_remainder_audit_v1',
+      request_id: input.request?.request_id,
+      approved: true,
+      concern_kinds: []
+    };
     if (['fixture-gameplay-narrator', 'fixture-gameplay-narrator-repair']
       .includes(model)) {
       return narrationOutput(input);
@@ -591,7 +624,9 @@ function npcConversationPlan(request, {
         content_summary: 'Ратша признаёт собственные действия и полученное '
           + 'от Жданко указание забрать сумку.',
         form: 'assertion', speaker_posture: 'believed_true',
-        source_knowledge_refs: [], mentioned_entity_refs: []
+        source_knowledge_refs: structuredClone(
+          request.allowed_references.knowledge_refs),
+        mentioned_entity_refs: []
       }], supportingOperations: [{ op: 'commit_surrender' }]
     });
   }

@@ -55,7 +55,8 @@ test('only code-projected observed evidence receives the bounded owner', () => {
     code: 'TURN_STEP_PLAN_INVALID'
   });
   assert.equal(resolveObservedEvidenceInspection({
-    working_projection: {}, operation: operation('fact:worn-rope-mark')
+    working_projection: {}, operation: operation('fact:worn-rope-mark'),
+    request
   }).consequence_fragment.visible_seed.observed_evidence_inspection_seed.resolution,
   'no_new_supported_conclusion');
 });
@@ -64,12 +65,17 @@ test('observed evidence preserves the actual question without turning it into ob
   for (const query of ['Какие следы перекрывают другие?', 'Есть ли связь между отметиной и износом каната?']) {
     const projection = { known: ['видимые следы'] };
     const result = resolveObservedEvidenceInspection({ working_projection: projection,
-      operation: { ...operation('fact:worn-rope-mark'), query } });
+      operation: { ...operation('fact:worn-rope-mark'), query }, request: {
+        player_safe_state: { observed_evidence_inspection: { candidates: [{
+          fact_ref: 'fact:worn-rope-mark', text: 'На канате заметен износ.'
+        }] } }
+      } });
     assert.deepEqual(result.working_projection, projection);
     assert.deepEqual(result.write_fragments, []);
     assert.deepEqual(result.consequence_fragment.visible_seed, {
       observed_evidence_inspection_seed: { kind: 'observed_evidence_inspection_seed',
-        resolution: 'no_new_supported_conclusion', query }
+        resolution: 'no_new_supported_conclusion', query,
+        scene_support: ['На канате заметен износ.'] }
     });
   }
 });

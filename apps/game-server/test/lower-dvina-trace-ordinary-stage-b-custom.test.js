@@ -44,7 +44,7 @@ test('custom O1 role uses its qualified exact identity without gameplay eval',
     let runner;
     const settings = createLlmSettingsOwner({ qualifyCustom: async (candidate) =>
       runner.describe({ scope: 'turn_runtime', role_id: 'ordinary_materialization',
-        overrides: { temperature: 0, maxTokens: 6000 }, provider_snapshot: candidate }) });
+        overrides: { temperature: 0, maxTokens: 20_000 }, provider_snapshot: candidate }) });
     runner = createLlmRoleRunnerAdapter({ settings, execute: async (input) => {
       const request = JSON.parse(input.messages[1].content);
       const identity = runner.describe({ scope: input.scope, role_id: input.roleId,
@@ -128,7 +128,8 @@ for (const semanticType of ['cordage', null, undefined]) test(`custom Stage B qu
           semantic_materialization_kind: 'standalone_item',
           semantic_admission_class: 'common_mundane', reason_code: 'ordinary_present',
           entities: [{ ...(semanticType === undefined ? {} : {
-            semantic_type: semanticType }), presence_expectation: 'routine',
+            semantic_type: semanticType }), name: 'верёвка',
+          presence_expectation: 'routine',
           mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
             carry_form: 'compact', packing_slot_cost: 1,
             quantity: { value: 1, unit: 'item' }, container: null } }]

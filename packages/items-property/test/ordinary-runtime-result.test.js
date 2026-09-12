@@ -123,6 +123,29 @@ test('runtime transition derives nested mass, hands and load from exact snapshot
   });
 });
 
+test('runtime transition rebuilds a persisted runtime overlay before dropping it', () => {
+  const result = applyRuntimeInventoryTransition({
+    inventory: {
+      items: [], total_weight: { grams: 400 }, occupied_hands: 0,
+      load_category: 'light'
+    },
+    actor_id: 'actor', strength: 1, item_ref: 'branches',
+    before_placement: {
+      holder_character_id: 'actor', physical_position: 'hands'
+    },
+    after_placement: { location_ref: 'here' },
+    runtime_items: [{
+      item_ref: 'branches',
+      placement: { holder_character_id: 'actor', physical_position: 'hands' },
+      mechanics: { mass_grams: 1200, external_hand_cost: 1 }
+    }]
+  });
+  assert.deepEqual(result.inventory, {
+    items: [], total_weight: { grams: 400 }, occupied_hands: 0,
+    load_category: 'light'
+  });
+});
+
 test('runtime transition fails closed when committed or derived mass is unsafe', () => {
   const base = {
     inventory: {

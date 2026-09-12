@@ -5,14 +5,77 @@ import {
   runTurnStepLoop
 } from '../src/turn-step-loop.js';
 import {
+  buildTurnStepPreparedBodyUpdate,
+  buildTurnStepPreparedEffectLedger,
   buildTurnStepPreparedTimeUpdate,
   requireTurnStepPreparedEffectLedger
 } from '../src/turn-step-prepared-effects.js';
+import { preparedDirectContinuation } from '../src/turn-step-loop-support.js';
 import {
-  at, available, body, clarificationPlan, directOperationPlan, directPlan,
+  at, available, body, clarificationPlan, directOperationPlan, directPlan, effect,
   followup, genericPlan, input, minutes, ports, preparedFollowupOperation,
   preparedRegistry, routePlan, secondDomainPlan, worldProcessPlan
 } from './turn-step-prepared-effects-fixture.js';
+
+test('two prepared body changes use the existing composite body owner', () => {
+  const firstAfter = { ...body(), energy: 99 };
+  const secondAfter = { ...body(), energy: 98 };
+  const component = (energy, stateAfter) => ({
+    schema: 'rus.body_state.fixed_approved_effect_proposal.v1',
+    profile_ref: 'activity:brief:light',
+    profile_pin: { artifact_id: 'body', revision: 1,
+      digest: '1'.repeat(64) },
+    selection_policy: 'fixed_approved_effect', rng_consumption: 'forbidden',
+    selected_context: { kind: 'semantic_activity', duration_class: 'brief',
+      effort: 'light' },
+    exact_deltas: { health: 0, satiety: 0, energy },
+    condition_transitions: [], state_after: stateAfter
+  });
+  const proposal = (stateAfter) => ({
+    schema: 'rus.body_state.composite_fixed_effect_proposal.v1',
+    profile_ref: 'turn_step_generic_body_effect',
+    profile_pin: { artifact_id: 'body', revision: 1,
+      digest: '2'.repeat(64) },
+    selection_policy: 'ordered_committed_step_components',
+    rng_consumption: 'forbidden',
+    component_proposals: [component(-1, stateAfter)],
+    exact_deltas: { health: 0, satiety: 0, energy: -1 }
+  });
+  const first = effect({ step: 1, kind: 'semantic_activity',
+    owner: 'activity:brief:light', operation: 'activity:1',
+    availability: null, duration: 5, before: 0, after: 5 });
+  first.body_update = { ...first.body_update, applied: true,
+    proposal: proposal(firstAfter), state_after: firstAfter };
+  const second = effect({ step: 2, kind: 'semantic_activity',
+    owner: 'activity:brief:light', operation: 'activity:2',
+    availability: null, duration: 5, before: 5, after: 10 });
+  second.body_state_before = firstAfter;
+  second.body_update = { ...second.body_update, applied: true,
+    proposal: proposal(secondAfter), state_after: secondAfter };
+  const update = buildTurnStepPreparedBodyUpdate(
+    buildTurnStepPreparedEffectLedger({ rootTurnId: 'turn:body-chain',
+      committedStateVersion: 7, effects: [
+        { effect: first, working_projection_before: { clock: at(0) },
+          working_projection_after: { clock: at(5) } },
+        { effect: second, working_projection_before: { clock: at(5) },
+          working_projection_after: { clock: at(10) } }
+      ] }));
+  assert.equal(update.applied, true);
+  assert.equal(update.proposal.component_proposals.length, 2);
+  assert.deepEqual(update.proposal.exact_deltas,
+    { health: 0, satiety: 0, energy: -2 });
+  assert.deepEqual(update.state_after, secondAfter);
+});
+
+test('a charged semantic prefix may continue through the same direct action chain', () => {
+  const plan = directOperationPlan({ request_id: 'request',
+    committed_state_version: 7, working_revision: 1, step_index: 2,
+    root_player_action: 'взять ветви и сложить их',
+    remaining_intent: 'сложить ветви' });
+  assert.equal(preparedDirectContinuation(plan, [{ effect: {
+    effect_kind: 'semantic_activity', body_update: { applied: true }
+  } }]), true);
+});
 
 test('common prepared orchestration chains arbitrary domain and semantic owners',
   async () => {
@@ -374,6 +437,34 @@ test('after a prepared route a generic check is a boundary',
         assert.equal(rolls, 0);
       });
     }
+  });
+
+test('prepared owner may admit one semantic check after its domain effect',
+  async () => {
+    let rolls = 0;
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry: preparedRegistry(),
+      preparedEffectContinuation: async ({ plan }) =>
+        plan.resolution === 'generic_check',
+      randomSource: { next() { rolls += 1; return 0.5; } },
+      resolveCheckContext: async () => ({
+        attribute_value: 10, skill_bonus: 0, state_modifier: 0,
+        equipment_modifier: 0, circumstance_modifier: 0,
+        policy_profile_ref: 'test_profile', policy_profile_pin: {
+          artifact_id: 'test_profile', revision: 1, digest: 'a'.repeat(64)
+        },
+        check_policy_ref: { entity_kind: 'check_policy',
+          entity_id: 'test_profile', authoring_version: '1' },
+        consequence_policy_ref: { entity_kind: 'consequence_policy',
+          entity_id: 'test_consequence', authoring_version: '1' }
+      }),
+      turnStepModel: (request) => request.step_index === 1
+        ? routePlan(request) : genericPlan(request)
+    }));
+    assert.equal(outcome.working_revision, 2);
+    assert.equal(outcome.step_traces[1].applied, true);
+    assert.equal(outcome.prepared_effect_ledger.slices.length, 2);
+    assert.equal(rolls, 1);
   });
 
 test('after a prepared route direct operations stop before every handler',

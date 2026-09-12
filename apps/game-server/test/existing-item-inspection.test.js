@@ -77,7 +77,9 @@ test('existing inspection reads current exact target without ordinary enablement
   const combined = await native.project({ ...renderInput, consequence: {
     ...renderInput.consequence, phase3_kind: 'movement' } });
   assert.equal(combined.visible_scene, 'У навеса.');
-  assert.deepEqual(combined.visible_changes, ['Вы подошли к навесу.', ...currentScene().sensory_details, ...seed.visible_changes]);
+  assert.deepEqual(combined.visible_changes,
+    ['Вы подошли к навесу.', ...seed.visible_changes]);
+  assert.deepEqual(combined.sensory_details, currentScene().sensory_details);
 });
 
 test('concealed or closed-container contents never enter the existing inspection path', async () => {

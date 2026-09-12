@@ -30,6 +30,9 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
   foreign-held, contained и attached item не получает доступ через этот путь
 - `physicalAccessTier`
 - `calculateCarriedWeight`
+- `inventoryItemIsCarried` — единое pure-правило прямого и вложенного carried
+  placement; runtime transition использует его и учитывает persisted inventory
+  baseline только для refs, уже входивших в этот baseline, без двойного веса
 - `resolveLoadCategory`
 - `buildRecognitionRequest`
 - `validatePropertyRelation`

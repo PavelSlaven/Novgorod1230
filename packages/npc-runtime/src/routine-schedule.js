@@ -16,6 +16,9 @@ export function validateNpcRoutineProfile(profile) {
         || !['available', 'unavailable', 'sleeping'].includes(phase.runtime_status)
         || !text(phase.activity_ref) || !text(phase.summary)
         || !['active', 'paused', 'completed'].includes(phase.activity_status)
+        || (phase.uses_current_activity !== undefined
+          && typeof phase.uses_current_activity !== 'boolean')
+        || !validMovementHandoff(phase.movement_handoff, phase.duration_minutes)
         || typeof phase.can_continue_automatically !== 'boolean'
         || typeof phase.decision_required !== 'boolean')
       || (profile.local_start_minute !== undefined && (
@@ -71,7 +74,7 @@ export function proposeNpcRoutineTransition({ runtime, npc_state, recheck_snapsh
   const sourceRef = versioned('source_record', profile.profile_id, profile.revision);
   const policyRef = versioned('condition_set', 'npc-approved-routine', 1);
   const work = nextPhase.activity_ref === profile.phases[0].activity_ref
-    ? runtime.work_activity : null;
+    || nextPhase.uses_current_activity === true ? runtime.work_activity : null;
   const nextActivity = versioned('activity_profile', work?.activity_ref ?? nextPhase.activity_ref, profile.revision);
   const dependencyPins = seal({ pins: [pin('profile', profileRef),
     pin('source_dependency', sourceRef), pin('condition_rule', policyRef),
@@ -96,11 +99,27 @@ export function proposeNpcRoutineTransition({ runtime, npc_state, recheck_snapsh
     status: nextPhase.activity_status,
     can_continue_automatically: nextPhase.can_continue_automatically };
   const beforeActivity = npcRoutineActivity(runtime);
+  const movementBefore = runtime.movement_execution ?? null;
+  const movementAfter = nextPhase.movement_handoff == null ? null : {
+    owner: '@rus/movement-routes', status: 'active',
+    route_ref: nextPhase.movement_handoff.route_ref,
+    source_endpoint_ref: nextPhase.movement_handoff.source_endpoint_ref,
+    destination_endpoint_ref: nextPhase.movement_handoff.destination_endpoint_ref,
+    destination_location_ref: nextPhase.movement_handoff.destination_location_ref,
+    started_at: structuredClone(scheduled_at),
+    ends_at: structuredClone(nextAt)
+  };
   return freeze({ ...proposed,
     runtime_after: { ...runtime, phase_index: nextIndex,
       phase_started_at: structuredClone(scheduled_at), next_transition_at: nextAt,
-      runtime_status: nextPhase.runtime_status },
+      runtime_status: nextPhase.runtime_status,
+      movement_execution: movementAfter },
     activity_after: activity,
+    movement_transition: movementBefore == null && movementAfter == null ? null
+      : movementAfter == null
+        ? { ...structuredClone(movementBefore), status: 'completed',
+          completed_at: structuredClone(scheduled_at) }
+        : { ...structuredClone(movementAfter), status: 'started' },
     factual_transition: { npc_ref: state.npc_ref,
       from_activity_ref: beforeActivity.activity_ref, to_activity_ref: activity.activity_ref,
       occurred_at: structuredClone(scheduled_at),
@@ -112,6 +131,7 @@ export function proposeNpcRoutineTransition({ runtime, npc_state, recheck_snapsh
 export function npcRoutineActivity(runtime) {
   const phase = runtime.profile.phases[runtime.phase_index];
   const work = phase.activity_ref === runtime.profile.phases[0].activity_ref
+    || phase.uses_current_activity === true
     ? runtime.work_activity : null;
   return freeze({ activity_ref: work?.activity_ref ?? phase.activity_ref,
     summary: work?.summary ?? phase.summary, status: phase.activity_status,
@@ -126,4 +146,13 @@ function versioned(entity_kind, entity_id, revision) { return {
   entity_ref: { entity_kind, entity_id }, authoring_version: String(revision) }; }
 function minutes(value) { return { exact_minutes: { numerator: String(value), denominator: '1' } }; }
 function text(value) { return typeof value === 'string' && value.trim() === value && value.length > 0; }
+function validMovementHandoff(value, duration) {
+  return value === undefined || value === null || (
+    value && typeof value === 'object' && !Array.isArray(value)
+    && text(value.route_ref) && text(value.source_endpoint_ref)
+    && text(value.destination_endpoint_ref) && text(value.destination_location_ref)
+    && Number.isSafeInteger(value.duration_minutes)
+    && value.duration_minutes === duration
+  );
+}
 function fail(code) { throw Object.assign(new Error(code), { code }); }

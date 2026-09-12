@@ -34,7 +34,10 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
         throw error;
       }
       const requestTimeoutMs = turnBudget?.clamp?.() ?? 120_000;
-      const effectiveOverrides = { ...(overrides ?? {}), maxTokens: 20_000,
+      const requestedMaxTokens = overrides?.maxTokens;
+      const maxTokens = Number.isSafeInteger(requestedMaxTokens)
+        && requestedMaxTokens > 0 ? Math.min(requestedMaxTokens, 20_000) : 20_000;
+      const effectiveOverrides = { ...(overrides ?? {}), maxTokens,
         requestTimeoutMs };
       let result;
       try {

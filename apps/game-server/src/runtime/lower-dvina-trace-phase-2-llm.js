@@ -18,6 +18,9 @@ import { activeConversationChoiceExample, preparedFollowupPrompt,
   semanticTurnStepExample, visibleConversationChoiceExamples } from
   './lower-dvina-trace-turn-step-planner-prompt.js';
 import { groundTurnRequest, wkClosure } from './world-knowledge-grounding.js';
+import { correctSupportedAssessment, correctTemporalQualifierContinuation,
+  correctVisibleNpcStatusObservation } from
+  './lower-dvina-trace-turn-step-plan-corrections.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from './lower-dvina-trace-autonomous-llm.js';
 export { createLowerDvinaTraceNpcCombatModel } from './lower-dvina-trace-combat-llm.js';
 export { assembleNarrationRoleOutput, createLowerDvinaTraceNarrationService } from './lower-dvina-trace-narration-llm.js';
@@ -162,62 +165,16 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
     }
     const assembled = assembleTurnStepPlan(semanticOutput, input,
       operationChoices);
-    return correctSupportedAssessment({ plan: assembled, input, roleRunner });
+    const temporalQualifier = await correctTemporalQualifierContinuation({
+      plan: assembled, input, roleRunner
+    });
+    const visibleNpcObservation = await correctVisibleNpcStatusObservation({
+      plan: temporalQualifier, input, roleRunner
+    });
+    return correctSupportedAssessment({ plan: visibleNpcObservation,
+      input, roleRunner });
   };
   return model;
-}
-
-async function correctSupportedAssessment({ plan, input, roleRunner }) {
-  const operation = plan?.resolution === 'domain_request'
-    && plan.operations?.length === 1
-    && plan.operations[0]?.op === 'request_discovery'
-    ? plan.operations[0] : null;
-  const claims = ['hard_constraints', 'facts'].flatMap((field) =>
-    input?.world_knowledge?.[field] ?? []).filter((claim) =>
-      typeof claim?.claim_ref === 'string'
-      && typeof claim.runtime_text === 'string' && claim.runtime_text.trim());
-  if (operation == null || claims.length === 0) return plan;
-  const response = await roleRunner.run({
-    scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
-    request_identity: input.request_id,
-    messages: [{ role: 'system', content: [
-      'Return only JSON with exactly mode and support_refs.',
-      'mode is assessment or discovery. support_refs is an array.',
-      'Choose assessment only when the whole remaining_intent is one qualitative judgment or comparison of facts already present in supplied_sensory_facts. It must request no new inspection, search, handling, movement, speech, or later independent action.',
-      'For assessment, copy one or more claim_ref values whose runtime_text establishes a useful relationship or an explicit limit on the conclusion. For discovery, return an empty array.',
-      'Prefer claims about the requested function, assembly, or material relation over generic care, inspection, storage, or unrelated historical use when both are available.',
-      'Never use model memory or treat the proposed discovery as proof that new detail is needed.'
-    ].join(' ') }, { role: 'user', content: JSON.stringify({
-      remaining_intent: input.remaining_intent,
-      supplied_sensory_facts:
-        input.player_safe_state?.current_visible_context?.sensory_details ?? [],
-      proposed_discovery: { discovery_kind: operation.discovery_kind,
-        query: operation.query },
-      world_knowledge: claims.map(({ claim_ref, runtime_text }) =>
-        ({ claim_ref, runtime_text }))
-    }) }],
-    overrides: { temperature: 0 }
-  });
-  const choice = response?.output;
-  const allowed = new Map(claims.map((claim) => [claim.claim_ref, claim]));
-  if (choice?.constructor !== Object
-      || Object.keys(choice).length !== 2
-      || choice.mode !== 'assessment'
-      || !Array.isArray(choice.support_refs) || choice.support_refs.length === 0
-      || new Set(choice.support_refs).size !== choice.support_refs.length
-      || choice.support_refs.some((ref) => !allowed.has(ref))) return plan;
-  const selected = choice.support_refs.map((ref) => allowed.get(ref));
-  return {
-    ...plan,
-    resolution: 'direct', goal_result: 'achieved',
-    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
-    operations: [], check: null, continuation: null, clarification: null,
-    direct_result_kind: 'player_safe_observation',
-    assessment: { text: selected.map(({ runtime_text: text }) => text).join(' '),
-      support_refs: [...choice.support_refs] },
-    reason_code: 'supported_assessment',
-    reason: 'Supplied sensory facts were assessed only through cited World Knowledge.'
-  };
 }
 
 function plannerRequestWire(input) {

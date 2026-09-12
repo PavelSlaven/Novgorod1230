@@ -1,6 +1,7 @@
 import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
 import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
-import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
+import { projectCampFireState, projectLowerDvinaTracePlayerSafeState } from
+  './lower-dvina-trace-player-safe-state.js';
 import { projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
 import { deepFreeze, plain } from './lower-dvina-trace-turn-step-runtime-common.js';
 import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
@@ -104,7 +105,10 @@ export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys,
   });
 }
 export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, body }) {
-  const current = input?.retrieved_state?.current_visible_context;
+  const current = projectCampFireState(
+    input?.retrieved_state?.current_visible_context,
+    input?.retrieved_state,
+    input?.retrieved_state?.position);
   if (!validCurrentScene(current)) failCurrentScene();
   const outcomeConstraints = directOutcomeConstraints(input);
   const directResultChanges = lowerDvinaTraceDirectResultChanges(input,
@@ -168,8 +172,7 @@ export function materializedOrdinaryPresenceChange(value) {
 }
 function directSeedChange(value) {
   if (value?.kind === 'transient_item_use' && Object.keys(value).length === 2 && text(value.description))
-    return [`Вы выполнили попытку: «${value.description}»${/[.!?…]$/u.test(value.description) ? '' : '.'}`,
-      'В ходе этой попытки результат наблюдения не установлен.'];
+    return [`Вы выполнили попытку: «${value.description}»${/[.!?…]$/u.test(value.description) ? '' : '.'}`];
   if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value);
   if (value?.kind === 'existing_item_inspection') {
     return existingItemInspectionVisibleResult(value).changes;

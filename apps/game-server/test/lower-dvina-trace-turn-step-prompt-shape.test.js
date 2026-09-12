@@ -24,6 +24,35 @@ test('planner mapping labels live outside flat JSON examples and retain availabi
   assert.ok(prompt.includes(TURN_STEP_COMPOUND_EXAMPLE));
 });
 
+test('planner wire keeps immutable history beside the executable suffix', async () => {
+  const input = request({
+    root_player_action: 'Складываю ветви и пытаюсь разжечь костёр.',
+    remaining_intent: 'и пытаюсь разжечь костёр.',
+    step_index: 2,
+    working_revision: 1,
+    completed_steps: [{ step_index: 1, summary: 'Сложил ветви.' }]
+  });
+  let payload;
+  const plan = await createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      payload = JSON.parse(call.messages[1].content);
+      return { output: {
+        ...output(),
+        interpretation: {
+          player_goal: input.root_player_action,
+          grounded_attempt: input.remaining_intent,
+          adaptation: 'literal'
+        }
+      } };
+    }
+  } })(input);
+
+  assert.equal(payload.root_player_action, input.root_player_action);
+  assert.deepEqual(payload.completed_steps, input.completed_steps);
+  assert.equal(payload.remaining_intent, input.remaining_intent);
+  assert.equal(plan.interpretation.player_goal, input.root_player_action);
+});
+
 test('flat compound speech example and unseen conceptual equivalent validate without planner repair', async () => {
   const example = JSON.parse(TURN_STEP_COMPOUND_EXAMPLE.split('Output:\n')[1]);
   for (const [intent, words, suffix] of [

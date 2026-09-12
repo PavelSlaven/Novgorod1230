@@ -17,6 +17,8 @@ import { installActivatedRuntimeCatalog } from
   '../../tools/local-play/production-setup.js';
 import { startLocalLlmProviderFixture } from
   './local-llm-provider-fixture.js';
+import { createProductionLlmRoleRunner } from
+  '../../apps/game-server/src/infrastructure/provider/deepseek.js';
 
 const POSTGRES_IMAGE = 'postgres:16-alpine';
 
@@ -64,12 +66,22 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
         activation.pinManifestDigest
     };
+    const qualifiedO1Identity = createProductionLlmRoleRunner({ env }).describe({
+      scope: 'turn_runtime',
+      role_id: 'ordinary_materialization',
+      overrides: { temperature: 0, maxTokens: 20_000 }
+    });
+    const llmSettings = Object.freeze({
+      providerSnapshot: () => Object.freeze({ mode: 'default' }),
+      ordinaryMaterializationIdentity: () => qualifiedO1Identity
+    });
     const identityFactory = createAcceptanceIdentityFactory();
     root = await createSpatialV3ProductionCompositionRoot({
       env,
       config: {
         runtimeCatalogPinManifestDigest: activation.pinManifestDigest,
-        idFactory: identityFactory.next
+        idFactory: identityFactory.next,
+        llmSettings
       },
       pools: {
         worldPool,
@@ -110,7 +122,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
           env,
           config: {
             runtimeCatalogPinManifestDigest: activation.pinManifestDigest,
-            idFactory: identityFactory.next
+            idFactory: identityFactory.next,
+            llmSettings
           },
           pools: {
             worldPool,

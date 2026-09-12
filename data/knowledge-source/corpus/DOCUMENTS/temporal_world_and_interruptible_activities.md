@@ -362,6 +362,13 @@ calendar daylight
 - может иметь exact fixed duration, progress target или condition-with-deadline;
 - допускает несколько slices и append-only attempts.
 
+Каждый time-bearing consequence разделяет start, interval и completion.
+Start-effects применяются один раз до первого положительного interval;
+continuous body/resource/progress owners получают только actual elapsed;
+completion effects исполняются только после полного interval и повторной
+проверки актуальных условий. При interruption execution остаётся `paused` с
+точным остатком и без terminal marker; готовый результат не создаётся.
+
 ### 7.3. `timed_traversal`
 
 - продвигает ровно один prepared physical segment;
@@ -935,6 +942,12 @@ state version
 
 Он не придумывает цель, маршрут или занятие.
 
+Если routine phase требует смены места, schedule owner выдаёт declarative
+movement handoff к уже существующему route owner. Consumer проверяет текущую
+позицию, exact route endpoints, доступ и состояние NPC; позиция меняется только
+после terminal completion. Заблокированный или частичный переход сохраняет
+фактическую исходную/промежуточную позицию и не телепортирует NPC.
+
 ### 15.3. Perception pipeline
 
 ```text
@@ -1297,6 +1310,12 @@ Gameplay ordering, timer due time, schedule boundary, historical phase, catch-up
 ## 20. Visible package и presentation lifecycle
 
 Visible package строится детерминированным code-owned projector из candidate post-change state и perception/knowledge results. LLM не выполняет security projection.
+
+`current outcome` содержит только факты и изменения текущего хода. Ранее
+подтверждённые сведения, нужные для понимания сцены, передаются отдельно как
+`scene support`/sensory context. Они не становятся повторно новым
+`perceived_change`, но обязаны оставаться доступными после reload, пока
+authoritative state или знание персонажа причинно не изменились.
 
 Пакет содержит только:
 

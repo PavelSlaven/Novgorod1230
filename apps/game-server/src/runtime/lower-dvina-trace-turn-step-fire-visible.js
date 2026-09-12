@@ -5,7 +5,7 @@ import {
   enrichLowerDvinaTraceVisibleNpcCues,
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
-  projectDirectSeedChanges, materializedOrdinaryPresenceChange
+  projectDirectSeedChanges
 } from './lower-dvina-trace-turn-step-current-scene.js';
 import { deepFreeze, plain } from
   './lower-dvina-trace-turn-step-runtime-common.js';
@@ -19,11 +19,9 @@ const SCENES = Object.freeze({
   'affect:continue:active': 'Огонь изменился, но продолжает гореть.',
   'affect:complete:completed': 'Огонь погас.'
 });
-const ORDINARY_PRESENCE_CHANGES = Object.freeze({
-  absent: 'По этому вопросу отсутствие установлено',
-  no_change: 'Результат по этому вопросу не установлен',
-  authority_required: 'Имеющихся данных недостаточно для ответа'
-});
+import { ordinaryPresenceResolution, ordinarySceneDetails,
+  overlayOrdinaryPresence, overlayOrdinaryScene } from
+  './lower-dvina-trace-turn-step-ordinary-visible.js';
 export function createLowerDvinaTraceTurnStepVisibleProjector({
   fallback, calendarProfile = null
 } = {}) {
@@ -81,8 +79,10 @@ function overlayTurnStepResults(base, input) {
   if (inspection != null && (!plain(inspection)
       || inspection.kind !== 'observed_evidence_inspection_seed'
       || inspection.resolution !== 'no_new_supported_conclusion'
-      || Object.keys(inspection).length !== 3
-      || typeof inspection.query !== 'string' || !inspection.query.trim())) {
+      || Object.keys(inspection).length !== 4
+      || typeof inspection.query !== 'string' || !inspection.query.trim()
+      || !Array.isArray(inspection.scene_support)
+      || inspection.scene_support.some((value) => !text(value)))) {
     ownerFail('TRACE_TURN_STEP_OBSERVED_EVIDENCE_VISIBLE_SEED_INVALID');
   }
   const traces = (input?.mode_resolution?.decision_trace?.step_traces ?? []).filter(({ applied }) => applied === true);
@@ -130,9 +130,9 @@ function overlayTurnStepResults(base, input) {
         'Возможный отклик слушателей ещё не разрешён и не является подтверждённым молчанием.'
       ] : []),
       ...(inspection == null ? [] : [
-        `Новый достоверный вывод не установлен. Вопрос остаётся открытым: «${inspection.query}».`]),
-      ...(text(remaining) ? [
-        `Ещё не выполнено: «${remaining}». Результат этой попытки не установлен.`] : [])]),
+        `Новый достоверный вывод не установлен. Вопрос остаётся открытым: «${inspection.query}».`])]),
+    sensory_details: unique([...base.sensory_details,
+      ...(inspection?.scene_support ?? [])]),
     do_not_imply: unique([...base.do_not_imply,
       ...(pendingNpcResponse ? ['unresolved_npc_response_as_absence'] : []),
       ...(text(remaining) ? ['uncompleted_remaining_intent'] : []),
@@ -222,52 +222,6 @@ async function projectWithoutFire({ input, consequence, seedEntries,
 function currentBody(input) {
   return input.body_update?.state_after ?? input.retrieved_state?.body_state
     ?? {};
-}
-function ordinarySceneDetails(entries) {
-  const seeds = entries.filter(([key]) => key === 'ordinary_scene_seed');
-  if (seeds.length === 0) return [];
-  if (seeds.length !== 1) ownerFail(
-    'TRACE_TURN_STEP_ORDINARY_SCENE_VISIBLE_SEED_INVALID');
-  const value = seeds[0][1];
-  const details = value?.sensory_details;
-  if (!plain(value) || value.kind !== 'ordinary_scene_seed'
-      || Object.keys(value).length !== 2 || !Array.isArray(details)
-      || details.length === 0 || details.some((detail) => !text(detail))) {
-    ownerFail('TRACE_TURN_STEP_ORDINARY_SCENE_VISIBLE_SEED_INVALID');
-  }
-  return details;
-}
-function overlayOrdinaryScene(base, details) {
-  if (details.length === 0) return base;
-  return deepFreeze({ ...structuredClone(base),
-    visible_changes: unique([...base.visible_changes, ...details]), sensory_details:
-    unique([...base.sensory_details, ...details]) });
-}
-function ordinaryPresenceResolution(entries) {
-  const seeds = entries.filter(([key]) => key === 'ordinary_presence_seed');
-  if (seeds.length === 0) return null;
-  if (seeds.length !== 1) ownerFail(
-    'TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
-  const value = seeds[0][1];
-  if (value?.resolution === 'materialized') { materializedOrdinaryPresenceChange(value); return value; }
-  if (!plain(value) || value.kind !== 'ordinary_presence_seed'
-      || Object.keys(value).length !== 3
-      || typeof value.query !== 'string' || !value.query.trim()
-      || !Object.hasOwn(ORDINARY_PRESENCE_CHANGES, value.resolution)) {
-    ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
-  }
-  return value;
-}
-function overlayOrdinaryPresence(base, presence) {
-  if (presence == null) return base;
-  const { resolution, query } = presence;
-  const positive = resolution === 'materialized';
-  const field = positive || resolution === 'absent' ? 'visible_changes' : 'uncertainties';
-  const change = positive ? materializedOrdinaryPresenceChange(presence) : `${ORDINARY_PRESENCE_CHANGES[resolution]}: «${query}».`;
-  return deepFreeze({ ...structuredClone(base), [field]: unique([
-    ...(positive && !base[field].includes(change) ? [change, ...base[field]] : [...base[field], change])
-  ]), do_not_imply: unique([...base.do_not_imply,
-    'discovery_query_as_existence_ownership_or_executed_action']) });
 }
 function overlayFireVisible(base, fireVisible) {
   return deepFreeze({

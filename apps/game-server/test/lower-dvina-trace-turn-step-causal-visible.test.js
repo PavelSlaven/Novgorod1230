@@ -52,15 +52,15 @@ for (const [query, name, spoken, pending] of [
     const wire = JSON.parse(call.messages[1].content);
     assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), expected);
     assert.deepEqual(wire.required_current_beat.changes.map(({ ref }) => ref), expected.map((_, index) => `visible_change_${index + 1}`));
-    assert.equal(wire.required_current_beat.uncertainties[0].ref, 'uncertainty_1');
+    assert.deepEqual(wire.required_current_beat.uncertainties, []);
     assert.match(call.messages[0].content, /Turn duration is code-owned UI metadata/u);
     assert.deepEqual(wire.optional_support, { visible_scene: projected.visible_scene, sensory_details: projected.sensory_details });
     if (call.role_id === 'gameplay_narrator') return { output: {
-      prose: `Вы произнесли: «${spoken}» Поиск принёс находку — ${name}. ${pending ? '' : physical + ' '}К осмотру опоры вы ещё не приступили; что он покажет, пока неизвестно. Можно продолжить задуманное или выбрать другое действие.`,
+      prose: `Вы произнесли: «${spoken}» Поиск принёс находку — ${name}. ${pending ? '' : physical + ' '}Можно продолжить задуманное или выбрать другое действие.`,
       action_options: [], used_references: [] } };
     assert.match(call.messages[0].content, /service-like time reporting/u);
     return { output: { ...reviewedNarration(wire.segments,
-      Object.fromEntries([...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties]
+      Object.fromEntries(wire.required_current_beat.changes
         .map(({ ref }) => [ref, wire.segments.map((_, index) => `s${index + 1}`)]))),
       evidence: ['Duration belongs to its applied step; no overlap or continuation is invented.'] } };
   } } });
@@ -194,8 +194,8 @@ for (const fire of [false, true]) {
     assert.ok(visible.visible_changes.includes('На доске видна зарубка.'));
     assert.ok(visible.visible_changes.includes(`Вы произнесли: «${spoken}»`));
     assert.deepEqual(visible.known_context, ['energy:83']);
-    assert.ok(visible.uncertainties.includes(
-      'Ещё не выполнено: «Проверить пространство под настилом.». Результат этой попытки не установлен.'));
+    assert.equal(visible.uncertainties.some((value) =>
+      value.includes('Проверить пространство под настилом.')), false);
     assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));
     assert.ok(visible.do_not_imply.includes('unconfirmed_speech_audience_or_response'));
     assert.equal(JSON.stringify(visible).includes('никто'), false);
@@ -237,7 +237,8 @@ for (const [scene, detail, query] of [
       assert.equal(visible.visible_changes.some(value => value.includes('15 минут')), false);
       assert.ok(visible[resolution === 'absent' ? 'visible_changes' : 'uncertainties']
         .some(value => value.includes(`«${query}»`)));
-      assert.ok(visible.uncertainties.includes(`Ещё не выполнено: «${remaining}». Результат этой попытки не установлен.`));
+      assert.equal(visible.uncertainties.some((value) =>
+        value.includes(remaining)), false);
       assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));
       assert.ok(!JSON.stringify(visible).includes('Удалось осуществить лишь часть'));
     }
@@ -273,8 +274,7 @@ for (const sample of [
         operations: [{ op: 'request_item_use', use_kind: 'other', description: sample.action }] } } ] } } });
   assert.deepEqual(visible.visible_changes, [
     `Вы произнесли: «${sample.speech}»`,
-    `Вы выполнили попытку: «${sample.action}»`,
-    'В ходе этой попытки результат наблюдения не установлен.'
+    `Вы выполнили попытку: «${sample.action}»`
   ]);
   assert.deepEqual(visible.uncertainties, []);
   assert.equal(visible.visible_changes.some(change => /Прошл[ао]/u.test(change)), false);

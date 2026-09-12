@@ -3,7 +3,6 @@ import {
   applied,
   collectCurrentRefs,
   deepFreeze,
-  deterministicRef,
   directFragment,
   fail,
   nextActivityIdentity,
@@ -14,6 +13,8 @@ import {
   text,
   visibleKey
 } from './lower-dvina-trace-turn-step-runtime-common.js';
+import { semanticFactualEvents } from
+  './lower-dvina-trace-turn-step-factual-events.js';
 const DURATION_CLASSES = new Set(['moment', 'brief', 'short', 'extended']);
 const EFFORTS = new Set([
   'none', 'light', 'moderate', 'heavy', 'extreme'
@@ -240,10 +241,9 @@ export async function applySemanticActivity(execution, state,
     ? execution.plan.check.outcomes[execution.check_result.outcome.band]
     : execution.plan;
   let preparedEffectRequest = null;
-  if (chainContext != null && (chainContext.prior_effect_count > 0
-      || (duration > 0 && !changesBody && selected.continuation != null
-        && selected.additional_activity == null
-        && !(selected.operations ?? []).some(({ op }) => op === 'apply_body_event')))) {
+  if (chainContext != null && duration > 0
+      && selected.additional_activity == null
+      && !(selected.operations ?? []).some(({ op }) => op === 'apply_body_event')) {
     preparedEffectRequest = {
       effect_kind: 'semantic_activity',
       owner_ref: resolved.profile_ref,
@@ -257,7 +257,7 @@ export async function applySemanticActivity(execution, state,
     summary: `semantic_activity:${activity.duration_class}:${activity.effort}`,
     fragment,
     consequence,
-    boundary: changesBody || (duration > 0 && preparedEffectRequest == null)
+    boundary: (changesBody || duration > 0) && preparedEffectRequest == null
   });
   const withBody = {
     ...output,
@@ -268,45 +268,6 @@ export async function applySemanticActivity(execution, state,
     ...withBody,
     prepared_effect_request: preparedEffectRequest
   });
-}
-
-function semanticFactualEvents(execution, identity, state, resolved) {
-  const utterance = execution.plan?.direct_result_kind === 'player_utterance'
-    ? execution.plan.utterance : null;
-  const delivery = utterance?.delivery;
-  const sourceScope = state.committedState?.position?.position_id
-    ?? state.committedState?.position?.g5_anchor_id
-    ?? execution.working_projection?.spatial_semantic?.position_ref
-    ?? state.committedState?.position?.location_ref;
-  const occurredAt = execution.prepared_chain_context?.current_clock
-    ?? state.committedState?.clock_weather_light?.clock
-    ?? state.committedState?.clock;
-  if (!plain(delivery) || !text(sourceScope) || !plain(occurredAt)) return [];
-  return [{
-    version: 1,
-    schema: 'turn_step_factual_event_v1',
-    event_ref: { entity_kind: 'sound_event',
-      entity_id: deterministicRef('sound-event', identity.activity_id) },
-    source_activity_ref: { entity_kind: 'semantic_activity',
-      entity_id: identity.activity_id },
-    occurred_at: structuredClone(occurredAt),
-    source_ref: { entity_kind: 'player_character',
-      entity_id: utterance.speaker_ref },
-    source_scope_ref: { entity_kind: 'canonical_spatial_node',
-      entity_id: sourceScope },
-    rule_ref: { entity_kind: 'activity_profile',
-      entity_id: resolved.profile_ref,
-      authoring_version: String(resolved.profile_pin.revision) },
-    policy_ref: { entity_kind: 'turn_step_owner_profile_set',
-      entity_id: resolved.profile_pin.artifact_id,
-      authoring_version: String(resolved.profile_pin.revision) },
-    profile_pin: structuredClone(resolved.profile_pin),
-    perceptible_signal: {
-      channel: 'acoustic',
-      emission_strength: delivery.loudness,
-      duration_class: delivery.duration_class
-    }
-  }];
 }
 
 function exactKeys(value, keys) {

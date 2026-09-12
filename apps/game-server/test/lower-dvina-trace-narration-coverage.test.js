@@ -95,6 +95,23 @@ test('code normalizes exact prose aliases and whole-passage audit targets', () =
     { visible_changes: 2, uncertainties: 0 }).ok, true);
 });
 
+test('code routes a misplaced continuation finding through semantic repair', () => {
+  const raw = passAudit();
+  raw.source_reviews[0].segment_choices = [];
+  raw.unsupported = [{ segment_choice: 's1',
+    kind: 'unsupported_response_or_continuation',
+    reason: 'The continuation was narrated as performed.' }];
+  raw.evidence = [];
+  const assembled = assembleNarrationRoleOutput('gameplay_narrator_auditor', raw,
+    { visible_context: visible, segments });
+  assert.equal(assembled.pass, false);
+  assert.deepEqual(assembled.concerns.map(({ kind }) => kind), [
+    'missing_visible_change', 'unsupported_event'
+  ]);
+  assert.equal(validateNarrationAudit(assembled, ['s1', 's2'],
+    { visible_changes: 2, uncertainties: 0 }).ok, true);
+});
+
 test('final audit bounds repeated composition repair without weakening factual failures', () => {
   const weakOnly = passAudit();
   weakOnly.literary_failures = [{ check: 'weak_literary_composition',

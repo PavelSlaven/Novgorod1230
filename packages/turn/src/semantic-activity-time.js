@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 import {
+  addRationalMinutes,
   addElapsedTime,
   compareGameTimestamp,
   compareRationalMinutes,
@@ -57,7 +58,7 @@ export function resolveTurnStepSemanticActivityTime({
   }
   let cursor = structuredClone(timeWindow.clock_before);
   const committedClockAfter = timeWindow.clock_after;
-  let totalMinutes = 0;
+  let totalElapsed = { numerator: '0', denominator: '1' };
   let previousPreparedOrdinal = 0;
   const resolutions = activities.map(({ fragment, fragmentOrder }) => {
     const activity = fragment.value;
@@ -107,12 +108,12 @@ export function resolveTurnStepSemanticActivityTime({
     }
     if (prepared != null) previousPreparedOrdinal = prepared.ordinal;
     cursor = structuredClone(endedAt);
-    totalMinutes += Number(actualDuration.exact_minutes.numerator);
-    if (!Number.isSafeInteger(totalMinutes)) {
-      invalid('activity duration total');
-    }
+    totalElapsed = addRationalMinutes(
+      totalElapsed,
+      actualDuration.exact_minutes
+    );
     const execution = {
-      status: interrupted ? 'aborted' : 'completed',
+      status: interrupted ? 'paused' : 'completed',
       execution_scope: 'standalone',
       original_duration: duration,
       started_at: startedAt,
@@ -142,7 +143,7 @@ export function resolveTurnStepSemanticActivityTime({
       attempt
     };
   });
-  const semanticElapsed = exactMinutes(totalMinutes);
+  const semanticElapsed = { exact_minutes: totalElapsed };
   if (compareRationalMinutes(
     semanticElapsed.exact_minutes,
     timeWindow.exact_elapsed.exact_minutes

@@ -254,22 +254,19 @@ function pool(rows) {
 }
 
 
-test('speech then terminal moderate semantic activity commits and recovers exact body history', async () => {
+test('two moderate semantic activities commit and recover exact body history', async () => {
   const { fixture, loadScenarioBundle } = await import('./lower-dvina-trace-phase-2-fixture.js');
   const { plan, genericCheck } = await import('./lower-dvina-trace-turn-step-runtime-ports-fixture.js');
   const bundle = await loadScenarioBundle(13);
   const f = fixture({ scenarioBundle: bundle, materializationBundle: bundle,
-    turnStepModel: (request) => ({ ...plan(request, request.step_index === 1 ? {
-      goal_result: 'pending', continuation: { remaining_intent: 'Проверяю опору весом тела.', depends_on_refs: [] }
+    turnStepModel: (request) => plan(request, request.step_index === 1 ? {
+      goal_result: 'pending', activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' },
+      continuation: { remaining_intent: 'Проверяю опору весом тела.', depends_on_refs: [] }
     } : { resolution: 'generic_check', goal_result: 'pending', check: { ...genericCheck(), skill_ref: null },
-      activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' } }),
-      ...(request.step_index === 1 ? { direct_result_kind: 'player_utterance', utterance: {
-        speaker_ref: request.actor.actor_id, input_mode: 'intent_paraphrase',
-        utterance_text: 'Осторожнее у края.',
-        delivery: { loudness: 2, duration_class: 'instant' } } } : {}) }) });
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' } }) });
   f.state.inventory = { items: [], load_category: 'light', occupied_hands: 0 };
-  const input = { request_id: 'speech-moderate', idempotency_key: 'speech-moderate',
-    raw_text: 'Предупреждаю спутников, затем проверяю опору весом тела.' };
+  const input = { request_id: 'two-moderate', idempotency_key: 'two-moderate',
+    raw_text: 'Оглядываюсь, затем проверяю опору весом тела.' };
   await f.runtime.submitTurn({ partyId: f.partyId, input });
   const payload = structuredClone(f.state);
   const normalized = { body_state_version: String(payload.party_state.body_state_version),

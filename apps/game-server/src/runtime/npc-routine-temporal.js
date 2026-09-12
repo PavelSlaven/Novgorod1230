@@ -1,5 +1,6 @@
 import { npcRoutineActivity, proposeNpcRoutineTransition } from '@rus/npc-runtime';
 import { computeSpatialV3CanonicalDigest as digest } from '@rus/contracts/spatial-v3/registry';
+import { routineRoute, validateRoutineMovement } from './npc-routine-movement.js';
 
 const RULE = versioned('action_contract', 'npc-approved-routine-transition');
 const POLICY = versioned('condition_set', 'npc-approved-routine');
@@ -30,14 +31,21 @@ export function npcRoutineTemporalRegistration() {
     const machine = npc.machine_state;
     const placement = { entity_kind: 'entity_placement', entity_id: `npc:${row.npc_id}` };
     const expectedActivity = npcRoutineActivity(runtime);
-    const interrupted = machine?.current_activity?.can_continue_automatically !== true
-      || machine.current_activity.activity_ref !== expectedActivity.activity_ref
-      || machine.current_activity.status !== expectedActivity.status
-      || row.current_activity_execution_id != null
-      || ['dead', 'unconscious', 'incapacitated'].includes(machine?.status)
-      || (Number.isFinite(npc.check_body_state?.health) && npc.check_body_state.health <= 0)
-      || (machine?.current_activity_ref != null && machine.current_activity_ref
-        !== machine.current_activity?.activity_ref);
+    const route = routineRoute(runtime, row.current_position_node_id,
+      row.route_endpoint_positions);
+    const bodyOk = !['dead', 'unconscious', 'incapacitated'].includes(machine?.status)
+      && !(Number.isFinite(npc.check_body_state?.health)
+        && npc.check_body_state.health <= 0);
+    const activityOk = machine?.current_activity?.can_continue_automatically === true
+      && machine.current_activity.activity_ref === expectedActivity.activity_ref
+      && machine.current_activity.status === expectedActivity.status
+      && row.current_activity_execution_id == null
+      && (machine?.current_activity_ref == null || machine.current_activity_ref
+        === machine.current_activity?.activity_ref);
+    const ordersOk = machine?.routine_orders_blocked !== true;
+    const dangerOk = machine?.routine_danger_blocked !== true;
+    const interrupted = !activityOk || !bodyOk || !ordersOk || !dangerOk
+      || route?.access_ok === false;
     let proposed = null;
     if (!interrupted) {
       proposed = proposeNpcRoutineTransition({ runtime, scheduled_at: candidate.scheduled_at,
@@ -48,13 +56,16 @@ export function npcRoutineTemporalRegistration() {
           body_state_ref: row.body_state_ref, knowledge_state_ref: row.knowledge_state_ref,
           relationship_state_ref: row.relationship_state_ref },
         recheck_snapshot: { observed_state_version: String(row.state_version), placement_ref: placement,
-          access_ok: true, orders_ok: true, danger_ok: true, body_ok: true, activity_ok: true } });
+          access_ok: route?.access_ok ?? true, orders_ok: ordersOk,
+          danger_ok: dangerOk, body_ok: bodyOk, activity_ok: activityOk } });
       if (!proposed.ok) fail(proposed.error.code);
     }
-    const runtimeAfter = interrupted ? { ...runtime, status: 'inactive',
-      next_transition_at: null, runtime_status: 'unavailable' } : proposed.runtime_after;
+    const interruption = interrupted
+      ? interruptedRoutineState(runtime, machine, candidate.scheduled_at)
+      : null;
+    const runtimeAfter = interruption?.runtime ?? proposed.runtime_after;
     const nextPhase = runtimeAfter.profile.phases[runtimeAfter.phase_index];
-    const machineAfter = interrupted ? { ...machine, schedule_state: 'interrupted' } : {
+    const machineAfter = interruption?.machine ?? {
       ...machine, schedule_state: nextPhase.state_id,
       current_activity: proposed.activity_after,
       current_activity_ref: proposed.activity_after.activity_ref,
@@ -63,7 +74,13 @@ export function npcRoutineTemporalRegistration() {
     const causal = { ...row.causal_state_ref, routine_state: runtimeAfter };
     delete causal.canonical_digest;
     causal.canonical_digest = digest(causal);
-    const after = { ...row, causal_state_ref: causal, status: runtimeAfter.status,
+    const movement = proposed == null ? null
+      : validateRoutineMovement(proposed.movement_transition, route);
+    const currentPositionNodeId = movement?.status === 'completed'
+      ? movement.destination_position_node_id : row.current_position_node_id;
+    const after = { ...row, state_version: Number(row.state_version) + 1,
+      current_position_node_id: currentPositionNodeId,
+      causal_state_ref: causal, status: runtimeAfter.status,
       next_transition_at_whole_minutes: runtimeAfter.next_transition_at?.whole_minutes ?? null,
       next_transition_at_subminute_numerator: runtimeAfter.next_transition_at?.subminute_numerator ?? null,
       next_transition_at_subminute_denominator: runtimeAfter.next_transition_at?.subminute_denominator ?? null,
@@ -77,6 +94,7 @@ export function npcRoutineTemporalRegistration() {
     const exact = candidate.scheduled_at;
     const record = { id: row.id, party_id: row.party_id, npc_id: row.npc_id,
       causal_state_ref: causal, status: runtimeAfter.status,
+      current_position_node_id: currentPositionNodeId,
       next_transition_at_whole_minutes: after.next_transition_at_whole_minutes,
       next_transition_at_subminute_numerator: after.next_transition_at_subminute_numerator,
       next_transition_at_subminute_denominator: after.next_transition_at_subminute_denominator,
@@ -100,7 +118,8 @@ export function npcRoutineTemporalRegistration() {
           occurred_at_subminute_numerator: exact.subminute_numerator,
           occurred_at_subminute_denominator: exact.subminute_denominator,
           trace: { transition: proposed?.factual_transition ?? null,
-            evidence: proposed?.transition_evidence ?? null } })] },
+            evidence: proposed?.transition_evidence ?? null,
+            movement } })] },
         expected_state_versions: [{ target_table: 'party_npc_spatial_schedules', id: row.id,
           state_version: Number(row.state_version) }],
         physical_keys: [`party_runtime.party_npc_spatial_schedules:${row.id}`,
@@ -155,6 +174,64 @@ export function applyNpcRoutineTemporalResults(state, results) {
   }
   return state;
 }
+
+export function interruptNpcRoutinesForAction(state, {
+  npcIds, occurredAt, positionNodeId, changeSetId
+}) {
+  const participants = new Set(npcIds);
+  for (const schedule of state.npc_schedule_runtime ?? []) {
+    if (!participants.has(schedule.npc_id)) continue;
+    const npc = state.npcs?.find(
+      ({ instance_id: instanceId }) => instanceId === schedule.npc_id
+    );
+    if (npc == null) fail('npc_schedule_gap');
+    const interruption = schedule.status === 'active'
+      ? interruptedRoutineState(
+          schedule.causal_state_ref.routine_state,
+          npc.machine_state,
+          occurredAt
+        )
+      : null;
+    const machine = interruption?.machine ?? npc.machine_state;
+    const causal = interruption == null
+      ? schedule.causal_state_ref
+      : { ...schedule.causal_state_ref, routine_state: interruption.runtime };
+    if (interruption != null) {
+      delete causal.canonical_digest;
+      causal.canonical_digest = digest(causal);
+      npc.machine_state = structuredClone(machine);
+    }
+    Object.assign(schedule, {
+      current_position_node_id: positionNodeId ?? null,
+      causal_state_ref: causal,
+      status: interruption?.runtime.status ?? schedule.status,
+      next_transition_at_whole_minutes:
+        interruption?.runtime.next_transition_at?.whole_minutes ?? null,
+      next_transition_at_subminute_numerator:
+        interruption?.runtime.next_transition_at?.subminute_numerator ?? null,
+      next_transition_at_subminute_denominator:
+        interruption?.runtime.next_transition_at?.subminute_denominator ?? null,
+      state_version: Number(schedule.state_version) + 1,
+      updated_change_set_id: changeSetId,
+      npc_snapshot: { ...schedule.npc_snapshot, ...structuredClone(npc),
+        machine_state: structuredClone(machine) }
+    });
+  }
+  state.temporal_boundary_candidates = (state.temporal_boundary_candidates ?? [])
+    .filter((candidate) => !(candidate.resolution_class === 'npc_schedule'
+      && participants.has(candidate.primary_subject_ref?.entity_id)));
+  if (state.temporal_source_proof) {
+    state.temporal_source_proof.candidates =
+      structuredClone(state.temporal_boundary_candidates);
+    state.temporal_source_proof.candidate_count =
+      state.temporal_boundary_candidates.length;
+    state.temporal_source_proof.active_schedule_count =
+      (state.npc_schedule_runtime ?? []).filter(
+        ({ status }) => status === 'active'
+      ).length;
+  }
+  return state;
+}
 export function npcRoutineRuntime(projection) {
   return worlds(projection).find((value) => Array.isArray(value?.npc_schedule_runtime))?.npc_schedule_runtime ?? [];
 }
@@ -179,6 +256,14 @@ function findSchedule(projection, id) { return npcRoutineRuntime(projection).fin
 function findNpc(projection, id) { return worlds(projection).flatMap((world) => world?.npcs ?? [])
   .find(({ instance_id }) => instance_id === id); }
 function worlds(value) { return [value, value?.phase6_state, value?.world_state, value?.conversation_state?.world_state]; }
+function interruptedRoutineState(runtime, machine, occurredAt) {
+  return {
+    runtime: { ...runtime, status: 'inactive', next_transition_at: null },
+    machine: { ...machine, schedule_state: 'interrupted',
+      current_activity: null, current_activity_ref: null,
+      activity_changed_at: occurredAt }
+  };
+}
 function versioned(entity_kind, entity_id) { return { entity_ref: { entity_kind, entity_id }, authoring_version: '1' }; }
 function write(target_table, id, record) { return { target_table, id, record }; }
 function fail(code) { throw Object.assign(new Error(code), { code }); }

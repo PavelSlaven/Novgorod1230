@@ -216,9 +216,11 @@ test('production prepared route advances prior fire and hides retired fuel',
     assert.deepEqual(visible.visible_changes,[
       'Вы добрались от места крушения до рыбацкого стана.',
       'turn_step_world_process_1:local_fire:started',
-      'Рабочий стан стоит у берега Нижней Двины.',
-      'В поле зрения — Еремей.',
       'Обратная тропа к месту крушения теперь известна.']);
+    assert.ok(visible.sensory_details.includes(
+      'Рабочий стан стоит у берега Нижней Двины.'));
+    assert.ok(visible.visible_npc.some(({ entity_ref: ref }) =>
+      ref?.entity_id === 'npc-camp'));
     assert.equal(new Set(visible.visible_changes).size, visible.visible_changes.length);
     assert.equal(visible.visible_changes.some((change)=>
       change.includes(':complete')),false);

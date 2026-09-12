@@ -1,9 +1,12 @@
 import { isDeepStrictEqual } from 'node:util';
-import { isDomainStepOperation, isOrdinaryDiscoveryInScope, TURN_STEP_PLAN_V1_SCHEMA } from '@rus/turn';
+import { isDomainStepOperation, TURN_STEP_PLAN_V1_SCHEMA } from '@rus/turn';
 import { allTurnStepPlanMappings, turnStepPlanMappings } from './lower-dvina-trace-turn-step-plan-mappings.js';
 import { normalizeTurnStepOperationChoice, selectedTurnStepOperation,
   turnStepOperationChoices } from
   './lower-dvina-trace-turn-step-operation-choices.js';
+import { bindActionProductionCarrierRefs, canonicalizeDiscoveryShape,
+  canonicalOrdinaryDiscovery } from
+  './lower-dvina-trace-turn-step-plan-discovery.js';
 
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
@@ -42,9 +45,10 @@ export function assembleTurnStepPlan(choice, request,
   if (semantic.interpretation?.constructor === Object
       && Object.hasOwn(semantic.interpretation, 'continuation'))
     interpretation.continuation = semantic.interpretation.continuation;
-  if (interpretation?.constructor === Object &&
-      !interpretation.player_goal?.trim?.())
+  if (interpretation?.constructor === Object
+      && !interpretation.player_goal?.trim?.()) {
     interpretation.player_goal = request.root_player_action;
+  }
   const preserved = projectFields(semantic, TURN_STEP_PLAN_V1_SCHEMA.properties);
   for (const key of Object.keys(allTurnStepPlanMappings()))
     if (Object.hasOwn(semantic, key)) preserved[key] = semantic[key];
@@ -104,6 +108,7 @@ function supportedAssessment(semantic, request) {
       || semantic.direct_result_kind !== 'player_safe_observation'
       || claims.length === 0) return null;
   if (value == null) {
+    if (semantic.goal_result !== 'not_achieved') return null;
     const selected = [];
     const domains = new Set();
     for (const claim of claims) {
@@ -132,7 +137,9 @@ function canonicalizeMovementChoice(semantic, operationChoices) {
   const operation = semantic?.operations?.length === 1
     ? semantic.operations[0] : null;
   if (operation?.op !== 'request_movement') return semantic;
-  const targetRef = operation.target_ref ?? operation.destination_ref;
+  const targetRef = operation.target_ref ?? operation.destination_ref
+    ?? (operation.placement?.relation === 'located_at'
+      ? operation.placement.target_ref : undefined);
   const matches = operationChoices.filter(({ operation: candidate }) =>
     candidate?.op === 'request_movement'
       && (operation.route_ref == null
@@ -147,10 +154,12 @@ function canonicalizeMovementChoice(semantic, operationChoices) {
 }
 
 function canonicalInteractionContinuation(operations, continuation, request) {
-  if (operations?.length !== 1 || operations[0]?.op !== 'emit_interaction'
-      || continuation?.depends_on_refs?.length !== 0
-      || continuation.prepared_followup_ref != null
-      || continuation.pending_discovery != null) return continuation;
+  if (operations?.length !== 1 || operations[0]?.op !== 'emit_interaction') {
+    return continuation;
+  }
+  if (continuation == null) return null;
+  if (typeof continuation.remaining_intent === 'string'
+      && !continuation.remaining_intent.trim()) return null;
   const quoted = [...String(request.remaining_intent ?? '').matchAll(
     /«[^»]+»|"[^"]+"|“[^”]+”|„[^“]+“/gu)];
   return quoted.length === 1
@@ -222,88 +231,6 @@ function restoreExactOperationChoice(semantic, operationChoices) {
     operation_family: matches[0].operation.op };
 }
 
-function canonicalizeDiscoveryShape(semantic, request) {
-  const continuation = withoutPendingDiscovery(semantic?.continuation);
-  const cleaned = continuation === semantic?.continuation ? semantic
-    : { ...semantic, continuation };
-  if (cleaned?.operation_choice != null || cleaned?.operations?.length !== 1
-      || cleaned.operations[0]?.op !== 'request_discovery') return cleaned;
-  let after = continuation;
-  let operation = cleaned.operations[0];
-  const locationRef = request.player_safe_state?.position?.location_ref;
-  const currentScope = { ...operation, target_refs: [locationRef] };
-  if (cleaned.check == null && operation.target_refs?.length === 0
-      && !request.available_domain_operations?.some(available => isDeepStrictEqual(available, operation))
-      && isOrdinaryDiscoveryInScope({ operation: currentScope,
-        playerSafeState: request.player_safe_state })) {
-    operation = currentScope;
-    cleaned.operations = [operation];
-  }
-  if (after != null
-      && Array.isArray(after.depends_on_refs)
-      && after.depends_on_refs.length === 0
-      && normalized(operation.query) === normalized(after.remaining_intent)
-      && normalized(operation.query) === normalized(request.remaining_intent)) {
-    after = null;
-  }
-  if (!Array.isArray(operation.target_refs)
-      || operation.target_refs.length < 2) {
-    return after === cleaned.continuation ? cleaned
-      : { ...cleaned, continuation: after };
-  }
-  return { ...cleaned,
-    operations: [{ ...operation, target_refs: [operation.target_refs[0]] }],
-    continuation: { remaining_intent: operation.query, depends_on_refs: [],
-      pending_discovery: {
-        remaining_target_refs: operation.target_refs.slice(1),
-        after
-      } } };
-}
-
-function withoutPendingDiscovery(continuation) {
-  if (continuation == null || typeof continuation !== 'object'
-      || Array.isArray(continuation)
-      || !Object.hasOwn(continuation, 'pending_discovery')) return continuation;
-  const cleaned = { ...continuation };
-  delete cleaned.pending_discovery;
-  return cleaned;
-}
-
-function canonicalOrdinaryDiscovery({ operations, semantic, request }) {
-  if (semantic.operation_choice != null
-      || semantic.check != null || operations?.length !== 1
-      || operations[0]?.op !== 'request_discovery'
-      || operations[0]?.target_refs?.length !== 1) return null;
-  if (semantic.interpretation?.adaptation === 'literal'
-      && semantic.continuation?.remaining_intent === request.remaining_intent
-      && semantic.continuation?.depends_on_refs?.length === 0
-      && semantic.continuation.pending_discovery == null
-      && semantic.continuation.prepared_followup_ref == null
-      && normalized(operations[0].query) !== normalized(request.remaining_intent)
-      && isOrdinaryDiscoveryInScope({ operation: { ...operations[0], discovery_kind: 'inspect' },
-        playerSafeState: request.player_safe_state })) {
-    return { operations: [{ ...operations[0], discovery_kind: 'inspect' }],
-      continuation: semantic.continuation };
-  }
-  if (!isOrdinaryDiscoveryInScope({ operation: operations[0],
-      playerSafeState: request.player_safe_state }) || semantic.continuation != null
-      || normalized(operations[0].query)
-        !== normalized(request.root_player_action)
-      || !strictPriorIntent(request.root_player_action,
-        request.remaining_intent)) return null;
-  return { operations: [{ ...operations[0], query: request.remaining_intent }],
-    continuation: null };
-}
-
-function strictPriorIntent(root, remaining) {
-  const whole = normalized(root);
-  const tail = normalized(remaining);
-  if (whole == null || tail == null || whole === tail || !whole.endsWith(tail)) {
-    return false;
-  }
-  return !/[\p{L}\p{N}]/u.test(whole.slice(0, -tail.length).at(-1));
-}
-
 function normalized(value) {
   return typeof value === 'string' ? value.normalize('NFKC').trim()
     .replace(/\s+/gu, ' ').toLocaleLowerCase('ru-RU') : null;
@@ -311,18 +238,4 @@ function normalized(value) {
 
 function nonempty(value) {
   return typeof value === 'string' && value.trim().length > 0;
-}
-
-function bindActionProductionCarrierRefs(operations) {
-  if (!Array.isArray(operations)) return operations;
-  return operations.map((operation) => {
-    const production = operation?.op === 'request_item_use'
-      ? operation.action_production : null;
-    if (!Array.isArray(production?.source_refs)
-        || production.source_refs.length === 0
-        || !Array.isArray(production.tool_refs)) return operation;
-    return { ...operation, item_ref: production.source_refs[0],
-      target_refs: [...production.source_refs.slice(1),
-        ...production.tool_refs] };
-  });
 }

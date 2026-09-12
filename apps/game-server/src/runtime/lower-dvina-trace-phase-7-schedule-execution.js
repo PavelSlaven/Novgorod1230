@@ -170,19 +170,7 @@ function authoritativeNpcLoadCategory(npc) {
 function finalActorStepConsequence(fragments) {
   const actorSteps = fragments.filter((fragment) =>
     fragment?.semantic_operation?.op != null);
-  if (actorSteps.length === 1) return actorSteps[0];
-  const [base, ...composed] = actorSteps;
-  const result = composed.at(-1);
-  const additional = result?.additional_semantic_operations;
-  return composed.every((entry, index) =>
-    canonicalDigest(base?.semantic_operation)
-      === canonicalDigest(entry?.semantic_operation)
-    && Array.isArray(entry?.additional_semantic_operations)
-    && entry.additional_semantic_operations.length === index + 1)
-    && Array.isArray(additional)
-    && additional.every(({ op }) => op === 'apply_semantic_activity')
-    ? result
-    : null;
+  return actorSteps.at(-1) ?? null;
 }
 
 function ratedMap(entries, refKey, numericKey) {

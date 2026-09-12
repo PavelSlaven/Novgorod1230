@@ -43,10 +43,10 @@ export function projectLowerDvinaTracePlayerSafeState({
   const clockWeatherLight = committedState.clock_weather_light ?? {};
   const position = projectPosition(committedState.position);
   const visibleContext = projectVisibleContext(committedState.visible_context);
-  const currentVisibleContext = projectVisibleContext(
+  const currentVisibleContext = projectCampFireState(projectVisibleContext(
     committedState.current_visible_context,
     { path: 'current_visible_context' }
-  );
+  ), committedState, position);
   const visibleContextPackage = projectVisibleContext(
     committedState.visible_context_package,
     { path: 'visible_context_package' }
@@ -129,6 +129,24 @@ export function projectLowerDvinaTracePlayerSafeState({
     player_safe_state: playerSafeState.position?.location_ref
       === base.position?.location_ref ? playerSafeState : withoutStaleInterlocutor
   });
+}
+
+export function projectCampFireState(context, state, position) {
+  if (context == null
+      || position?.location_ref !== 'trace_ld_v1_loc_fishing_camp') {
+    return context;
+  }
+  const snapshot = state.environment_snapshot;
+  const lit = snapshot?.source === 'party_environment_snapshot'
+    && snapshot.environment_profile_id === 'trace_ld_v1_env_camp_fire'
+    && snapshot.scope?.location_ref === position.location_ref
+    && snapshot.facts?.includes('lit_fire');
+  const observation = lit
+    ? 'На очаговой площадке горит огонь; рядом устроено место для просушки.'
+    : 'На очаговой площадке сейчас не видно ни пламени, ни тлеющих углей.';
+  return { ...context, sensory_details: [...new Set([
+    ...(context.sensory_details ?? []), observation
+  ])] };
 }
 function projectTemporaryDispositionOptions(value) {
   if (value?.schema !== 'temporary_disposition_option_set_v1') return undefined;

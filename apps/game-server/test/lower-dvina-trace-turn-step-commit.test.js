@@ -114,7 +114,8 @@ test('direct-only semantic turn commits one P16 root with snapshot and pending p
 test('Phase2 direct root forwards trusted ambient profile and leaves legacy strict', async () => {
   for (const profileRef of [null, 'other-profile', 'portion-profile']) {
     const f = fixture({ direct: true });
-    const payload = f.batch.value.operations[0].value.payload;
+    const payload = f.batch.value.operations.find(({ value }) =>
+      value.operation_kind === 'create_entity').value.payload;
     payload.origin.source_refs = ['actor-1', 'context-pin', 'portion-profile'];
     payload.runtime_instance_mechanics_snapshot = structuredClone(
       payload.runtime_instance_mechanics_snapshot);

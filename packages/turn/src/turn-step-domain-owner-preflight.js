@@ -56,9 +56,10 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
             bound_operation: structuredClone(owner.bound_operation)
           })
         });
-        if (owner.kind === 'missing' && !(candidate === plan && deferredPreparedDomainPlan({
-          plan: candidate, path, preparedChainContext
-        }))) errors.push({ path,
+        if (owner.kind === 'missing' && !(candidate === plan
+          && deferredPreparedDomainPlan({
+            plan: candidate, path, preparedChainContext
+          }))) errors.push({ path,
           rule: 'domain_owner_unavailable', code: 'domain_owner_unavailable',
           message: 'must resolve to one available domain owner' });
       }
@@ -115,7 +116,7 @@ function* plannedDomainOperations(plan, isDomainStepOperation) {
   }
 }
 
-function domainOwnerResolutionError(owner, turnCommandError) {
+export function domainOwnerResolutionError(owner, turnCommandError) {
   return turnCommandError(
     owner.kind === 'ambiguous'
       ? 'TURN_STEP_DOMAIN_BINDING_AMBIGUOUS'

@@ -106,7 +106,8 @@ function assertActivity(expected, row, order, payload) {
     && row.execution_scope === ownerExecution?.execution_scope
     && row.activity_series_id === `series:${expected.activity_id}`
     && row.updated_change_set_id === expected.change_set_id
-    && row.terminal_change_set_id === expected.change_set_id
+    && row.terminal_change_set_id === (ownerExecution?.status === 'paused'
+      ? null : expected.change_set_id)
     && row.execution_idempotency_record_id
       === expected.idempotency_record_id
     && same(row.activity_owner_ref, {

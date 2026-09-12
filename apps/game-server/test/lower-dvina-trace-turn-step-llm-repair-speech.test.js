@@ -107,6 +107,56 @@ test('focused speech audit restores a missing continuation without repair', asyn
   assert.deepEqual(calls, ['planner', 'auditor']);
 });
 
+test('verbatim speech keeps the exact quoted punctuation before a chained action',
+  async () => {
+    const intent = 'Отвечаю: «Я Микула, хочу помочь». Затем снимаю верёвку.';
+    const later = 'Затем снимаю верёвку.';
+    const input = request({ remaining_intent: intent });
+    const punctuated = speechOutput(input, 'Я Микула, хочу помочь.', later);
+    const calls = [];
+    const roleRunner = { async run(call) {
+      calls.push(call.role_id);
+      if (call.role_id === 'turn_step_grounding_auditor') return { output: {
+        speech_faithful: true, required_input_mode: 'verbatim',
+        unexecuted_intent: later
+      } };
+      return { output: punctuated };
+    } };
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,
+        worldKnowledgeGrounder: { async ground(safeRequest) {
+          return safeRequest;
+        } } }),
+      semanticPlanValidator:
+        createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner })
+    });
+    assert.equal(result.repaired, false);
+    assert.equal(result.plan.utterance.utterance_text, 'Я Микула, хочу помочь');
+    assert.deepEqual(calls, ['turn_step_planner',
+      'turn_step_grounding_auditor']);
+    assert.equal(validateTurnStepPlan(result.plan, { request: input }).ok, true);
+  });
+
+test('unquoted speech intent cannot be projected as verbatim', async () => {
+  const intent = 'Благодарю Еремея и иду к старой сушильне.';
+  const later = 'и иду к старой сушильне.';
+  const input = request({ remaining_intent: intent });
+  const plan = speechOutput(input, 'Спасибо, Еремей.', later);
+  const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+    roleRunner: { async run() {
+      return { output: { speech_faithful: true,
+        required_input_mode: 'verbatim', unexecuted_intent: later } };
+    } }
+  });
+
+  const result = await validate({ plan, request: input,
+    allow_speech_metadata_projection: true });
+
+  assert.equal(result.corrected_plan.utterance.input_mode, 'intent_paraphrase');
+  assert.deepEqual(result.corrected_plan.continuation,
+    { remaining_intent: later, depends_on_refs: [] });
+});
+
 test('focused speech audit fails closed on malformed extraction', async () => {
   const input = request({ remaining_intent: 'I call, "Hello!"' });
   for (const output of [{ pass: true, concerns: [] },

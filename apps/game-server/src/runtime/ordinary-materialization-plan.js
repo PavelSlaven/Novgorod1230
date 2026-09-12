@@ -105,7 +105,11 @@ export function bindOrdinaryMaterializationPlan(request, output) {
   if (output.resolution !== 'materialize' || !Array.isArray(output.entities)
       || output.entities.length !== 1 || !plain(output.entities[0])) return output;
   const entity = output.entities[0];
-  if (!text(entity.semantic_type) || !plain(entity.mechanics_proposal)
+  if (Object.keys(entity).length !== 4
+      || !['semantic_type', 'name', 'presence_expectation',
+        'mechanics_proposal'].every((key) => Object.hasOwn(entity, key))
+      || !text(entity.semantic_type) || !text(entity.name)
+      || !plain(entity.mechanics_proposal)
       || !supportedWorldKnowledgeRefs(output.world_knowledge_claim_refs,
         request.world_knowledge)
       || !text(authority.selected_supporting_basis_ref)
@@ -119,7 +123,7 @@ export function bindOrdinaryMaterializationPlan(request, output) {
     background_groups: [], presence_resolutions: [],
     entities: [{ semantic_descriptor: {
       semantic_type: entity.semantic_type,
-      name: 'обычный предмет', facts: [] },
+      name: entity.name, facts: [] },
       authority_class: 'ordinary',
       admission_class: authority.candidate.admission_class,
       availability_class: authority.candidate.availability_class,

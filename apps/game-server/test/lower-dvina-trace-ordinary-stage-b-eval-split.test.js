@@ -49,6 +49,8 @@ test('authority classification precedes non-item shape without relaxing the qual
       < prompt.indexOf('semantic_materialization_kind is your independent classification'));
     assert.match(prompt, /authority_required with its non-common semantic_admission_class and no entities, even when semantic_materialization_kind is non_item_detail/u);
     assert.match(prompt, /ordinary non_item_detail without a mandatory unavailable authority requirement, return no_change/u);
+    assert.match(prompt, /finite group of separable things[\s\S]*Plural wording or several separable pieces remains standalone_item/u);
+    assert.match(prompt, /separable thing remains standalone_item[\s\S]*Classify the requested referent itself, not its surroundings/u);
     assert.doesNotMatch(prompt, /For non_item_detail return no_change/u);
   }
   const contract = await evalContract();
@@ -74,9 +76,7 @@ test('production O1 binds incomplete Flash output to its request envelope', asyn
     output: { resolution: 'materialize', semantic_materialization_kind: 'standalone_item', semantic_admission_class: 'common_mundane',
       reason_code: 'found', entities: [{
       semantic_type: 'cordage',
-      presence_expectation: 'routine', supporting_basis_ref: 'stage-b',
-      causal_basis: { basis_kind: 'ordinary_presence', basis_refs: ['stage-b'] },
-      placement_proposal: { position_ref: 'bench' }, mechanics_proposal: {
+      name: 'верёвка', presence_expectation: 'routine', mechanics_proposal: {
         mass_grams: 350, external_hand_cost: 0, carry_form: 'compact',
         packing_slot_cost: 1, quantity: { value: 1, unit: 'item' }, container: null
       } }] } }; } };
@@ -86,7 +86,7 @@ test('production O1 binds incomplete Flash output to its request envelope', asyn
   assert.equal(output.entities[0].admission_class, 'common_mundane');
   assert.equal(output.entities[0].property_basis_ref, 'property');
   assert.deepEqual(output.entities[0].semantic_descriptor,
-    { semantic_type: 'cordage', name: 'обычный предмет', facts: [] });
+    { semantic_type: 'cordage', name: 'верёвка', facts: [] });
 });
 
 test('ordinary assembly does not invent an omitted semantic reason', () => {
@@ -110,7 +110,7 @@ for (const firstType of ['ordinary_wood', null, undefined]) test(`O1 binds speci
         semantic_materialization_kind: 'standalone_item', semantic_admission_class: 'common_mundane',
         entities: [{ ...(calls === 2 && firstType === undefined ? {}
           : { semantic_type: calls === 2 ? firstType : 'ordinary_wood' }),
-        name: 'обломок доски', facts: ['фрагмент недавнего груза с разбитой телеги'],
+        name: 'обломок доски',
         presence_expectation: 'routine', mechanics_proposal: { mass_grams: 350,
           external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
           quantity: { value: 1, unit: 'item' }, container: null } }] } }; } }
@@ -123,7 +123,7 @@ for (const firstType of ['ordinary_wood', null, undefined]) test(`O1 binds speci
   assert.equal(calls, firstType === 'ordinary_wood' ? 2 : 3);
   assert.deepEqual(plan.item.item_proposal.semantic_descriptor, {
     semantic_type: 'ordinary_wood',
-    name: 'обычный предмет', facts: []
+    name: 'обломок доски', facts: []
   });
 });
 

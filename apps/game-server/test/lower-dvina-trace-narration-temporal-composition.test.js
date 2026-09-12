@@ -45,8 +45,7 @@ test('code-owned durations never enter narrator sources', async () => {
 
   assert.deepEqual(visible.visible_changes, [
     'Вы произнесли: «Онисим!»',
-    'Вы выполнили попытку: «Осторожно прощупываю воду длинной ветвью.»',
-    'В ходе этой попытки результат наблюдения не установлен.'
+    'Вы выполнили попытку: «Осторожно прощупываю воду длинной ветвью.»'
   ]);
   assert.equal(JSON.stringify(visible).includes('минут'), false);
 });

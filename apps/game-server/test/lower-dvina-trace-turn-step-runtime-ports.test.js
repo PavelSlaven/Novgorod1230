@@ -145,7 +145,7 @@ test('the second internal step sees and mutates the first working projection',
     assert.equal(result.working_projection.knowledge.some(
       ({ fact_id: ref }) => ref === 'new_fact_2'), true);
     assert.deepEqual(result.write_fragments.map(({ target }) => target), [
-      'party_items', 'party_events', 'party_items', 'party_events'
+      'party_events', 'party_items', 'party_events', 'party_items'
     ]);
     assert.equal(JSON.stringify(requests[1]).includes(
       'must-not-reach-model'), false);

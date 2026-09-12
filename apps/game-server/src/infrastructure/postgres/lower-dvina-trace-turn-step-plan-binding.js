@@ -73,7 +73,9 @@ function expectedSlots(traces, ordinaryPlan, fragments) {
     const selected = plan?.resolution === 'generic_check'
       ? plan.check?.outcomes?.[trace.check_outcome] : null;
     const operations = selected?.operations ?? plan?.operations ?? [];
-    const direct = operations.filter(({ op }) => DIRECT.has(op));
+    const start = operations.filter(({ op }) => op === 'apply_body_event');
+    const completion = operations.filter(({ op }) => DIRECT.has(op)
+      && op !== 'apply_body_event');
     const domain = operations.filter(({ op }) => !DIRECT.has(op)
       && op === 'request_container_access');
     const discoveryActivity = plan?.resolution !== 'domain_request'
@@ -82,20 +84,23 @@ function expectedSlots(traces, ordinaryPlan, fragments) {
         ?? ((ordinaryPlan == null || ordinaryTrace != null && ordinaryTrace !== trace) && fragments.some(fragment => fragment.target === 'party_events'
           && fragment.value.step_index === trace.step_index)
           ? ordinarySearchActivity(operations[0]) : null);
-    const activities = plan?.activity?.owner !== 'semantic'
-      ? [discoveryActivity].filter(Boolean) : [
+    const activities = plan?.activity?.owner !== 'semantic' ? [] : [
       plan?.activity,
       ...(selected?.additional_activity == null
         ? [] : [selected.additional_activity])
     ].filter(Boolean);
     return [
-      ...direct.map((operation) => ({ type: 'operation',
+      ...start.map((operation) => ({ type: 'operation',
+        step: trace.step_index, operation })),
+      ...activities.map((activity) => ({ type: 'activity',
+        step: trace.step_index, activity })),
+      ...completion.map((operation) => ({ type: 'operation',
         step: trace.step_index, operation })),
       ...domain.map((operation) => ({ type: 'operation',
         step: trace.step_index, operation,
         checkOutcome: trace.check_outcome })),
-      ...activities.map((activity) => ({ type: 'activity',
-        step: trace.step_index, activity }))
+      ...[discoveryActivity].filter(Boolean).map((activity) => ({
+        type: 'activity', step: trace.step_index, activity }))
     ];
   });
 }

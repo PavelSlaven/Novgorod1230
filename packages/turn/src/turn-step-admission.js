@@ -1,11 +1,12 @@
 import { deepFreeze } from '@rus/kernel';
 import { createTurnStepExecutionRegistry, requireTurnStepExecutionRegistry, runTurnStepLoop } from './turn-step-loop.js';
-import { TURN_STEP_OPERATION_BATCH_TARGET } from './turn-step-operation-batch.js';
 import { assertValid, validateAvailabilityDecision, validateConsequencePackage } from './validators.js';
 import { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
-import { createTurnStepDomainOwnerPreflight as createPreflight } from './turn-step-domain-owner-preflight.js';
+import { createTurnStepDomainOwnerPreflight as createPreflight,
+  domainOwnerResolutionError } from './turn-step-domain-owner-preflight.js';
 import { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
 import { resolveObservedEvidenceInspection } from './turn-step-observed-evidence.js';
+import { executeApprovedChecksStage } from './stages/checks.js';
 import { isBackgroundNpcSemanticRemainderInScope,
   resolveBackgroundNpcSemanticRemainder } from
   './turn-step-background-npc-remainder.js';
@@ -13,6 +14,9 @@ import { isSpatialSemanticRemainderInScope, resolveSpatialSemanticRemainder } fr
 import { initialWorkingProjectionFrom, projectAvailableDomainOperations } from
   './turn-step-player-safe-projection.js';
 import { resolveWorldProcessRemainder } from './turn-step-world-process-remainder.js';
+import { activeConversationOperations, bindingOperations,
+  commandWithDraftWrites, currentStepText,
+  initialPreparedFollowupCandidates } from './turn-step-admission-support.js';
 export { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
 export { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
 const DOMAIN_STEP_OPERATIONS = new Set([
@@ -176,7 +180,9 @@ export async function resolveBoundTurnStepCommand({
             execution.prepared_action_production_atomic_write_plans)
         }));
       }
-      if (owner.kind !== 'binding') throw domainOwnerResolutionError(owner);
+      if (owner.kind !== 'binding') {
+        throw domainOwnerResolutionError(owner, turnCommandError);
+      }
       const selectedCommand = owner.command;
       const preparedOwner = services.turnStepPreparedDomainEffect;
       const supportsPreparedEffect = typeof preparedOwner?.supports === 'function'
@@ -189,11 +195,10 @@ export async function resolveBoundTurnStepCommand({
         })) === true;
       if (supportsPreparedEffect) {
         recordSelectedCommand(selectedCommands, selectedCommand);
-        const stepPlayerInput = execution.prepared_chain_context
-          .prior_effect_count === 0 ? playerInput : {
-            ...structuredClone(playerInput),
-            raw_text: execution.request.remaining_intent
-          };
+        const stepPlayerInput = {
+          ...structuredClone(playerInput),
+          raw_text: currentStepText(execution)
+        };
         const consequenceState = execution.prepared_chain_context
           .prior_effect_count === 0
           ? committedState
@@ -207,6 +212,7 @@ export async function resolveBoundTurnStepCommand({
         const availability = await selectedCommand.availability(deepFreeze({
               playerInput: structuredClone(stepPlayerInput),
               semanticPlan: structuredClone(execution.plan),
+              semanticOperation: structuredClone(operation),
               committed_state: structuredClone(consequenceState),
               retrievedState: structuredClone(consequenceState),
               modeResolution: null,
@@ -215,25 +221,23 @@ export async function resolveBoundTurnStepCommand({
         assertValid('turn_availability_decision',
           validateAvailabilityDecision(availability));
         if (availability.can_attempt !== true
-            || availability.status === 'blocked'
-            || availability.check_requests.length !== 0) {
+            || availability.status === 'blocked') {
           throw turnCommandError(
             'TURN_STEP_PREPARED_DOMAIN_AVAILABILITY_INVALID',
-            'Prepared domain execution requires one available zero-check owner result.'
+            'Prepared domain execution requires one available owner result.'
           );
         }
+        const checks = executeApprovedChecksStage({
+          availability, services, modeResolution: null
+        });
         const consequence = await selectedCommand.consequence(deepFreeze({
           playerInput: structuredClone(stepPlayerInput),
           semanticPlan: structuredClone(execution.plan),
+          semanticOperation: structuredClone(operation),
           rootTurnId: execution.request.root_turn_id,
           retrievedState: structuredClone(consequenceState),
           availability: structuredClone(availability),
-          checks: {
-            version: 1,
-            schema: 'turn_check_results',
-            requests: [],
-            results: []
-          }
+          checks
         }));
         assertValid('turn_consequence_package',
           validateConsequencePackage(consequence));
@@ -297,6 +301,9 @@ export async function resolveBoundTurnStepCommand({
     preparedEffectBodyOwner: services.turnStepPreparedEffectBodyOwner,
     preparedEffectProjectionOwner:
       services.turnStepPreparedEffectProjectionOwner,
+    preparedEffectContinuation: typeof services.turnStepPreparedDomainEffect
+      ?.assertContinuation !== 'function' ? null : (input) =>
+        services.turnStepPreparedDomainEffect.assertContinuation(input),
     postAppliedActorStep: services.turnStepPostAppliedActorStep,
     preflightActionProduction: typeof services
       .turnStepActionProductionPreflight !== 'function' ? null : (execution) =>
@@ -420,72 +427,7 @@ export async function resolveBoundTurnStepCommand({
     })
   };
 }
-function activeConversationOperations(operations, playerSafeState) {
-  const target = playerSafeState?.active_interlocutor?.entity_ref?.entity_id;
-  if (typeof target !== 'string') return [];
-  return operations.filter((operation) => operation?.op === 'emit_interaction'
-    && ['speech', 'request'].includes(operation.interaction_kind)
-    && operation.target_actor_refs?.length === 1
-    && operation.target_actor_refs[0] === target
-    && operation.instrument_refs?.length === 0);
-}
-function commandWithDraftWrites({ command, registry, loopResult }) {
-  const draftWrites = loopResult.write_fragments.length > 0
-    ? [TURN_STEP_OPERATION_BATCH_TARGET]
-    : [];
-  if (loopResult.clarification) {
-    draftWrites.push('party_player_visible_message');
-  }
-  const mode = command?.mode ?? {
-    selected_primary_mode: 'combined',
-    secondary_modes: [],
-    resolution_plan: {
-      subsystems: ['visible_context_projection'],
-      checks_to_run: [],
-      expected_writes: [],
-      state_blocks_to_load: registry.stateBlocks()
-    }
-  };
-  return {
-    ...(command ?? {
-      command_id: 'turn_step_execution_draft',
-      option_id: 'turn_step_execution_draft'
-    }),
-    mode: {
-      ...mode,
-      resolution_plan: {
-        ...mode.resolution_plan,
-        expected_writes: [...new Set([
-          ...(mode.resolution_plan?.expected_writes ?? []),
-          ...draftWrites
-        ])]
-      }
-    }
-  };
-}
 function recordSelectedCommand(commands, command) { commands.push(command); }
-function initialPreparedFollowupCandidates(semanticBindings, availableOptions) {
-  const candidates = [];
-  for (const { command, binding } of semanticBindings) {
-    const ref = command.prepared_followup_ref;
-    if (!availableOptions.has(command.option_id)
-        || binding.operation_dto == null
-        || typeof ref !== 'string' || ref.length === 0) continue;
-    const successors = semanticBindings.filter(({ command: candidate }) =>
-      candidate.command_id === ref);
-    const successorOperations = successors.flatMap(({ binding: successor }) => bindingOperations(successor));
-    if (successors.length !== 1 || successorOperations.length !== 1) continue;
-    candidates.push({ prepared_followup_ref: ref,
-      precursor_operation: structuredClone(binding.operation_dto),
-      operation: successorOperations[0] });
-  }
-  return candidates;
-}
-function bindingOperations(binding) {
-  const operations = binding.operation_dtos
-    ?? (binding.operation_dto == null ? [] : [binding.operation_dto]);
-  return operations.map((operation) => structuredClone(operation));
-}
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 export function createTurnStepDomainOwnerPreflight(input) {
   return createPreflight({ ...input, isDomainStepOperation,

@@ -280,6 +280,10 @@ function fixtureRuntime() {
 }
 
 function fixtureRoleModel(input) {
+  if (input?.proposal?.schema ===
+      'npc_ordinary_semantic_remainder_proposal_v1') {
+    return 'fixture-npc-ordinary-semantic-remainder-auditor';
+  }
   const value = input?.request ?? input;
   if (value?.schema === 'world_knowledge_query_planner_request_v1') {
     return 'fixture-world-knowledge-query-planner';
@@ -287,11 +291,30 @@ function fixtureRoleModel(input) {
   if (value?.schema === 'turn_step_request_v1') {
     return 'fixture-turn-step-planner';
   }
+  if (value?.schema === 'npc_ordinary_semantic_remainder_request_v1') {
+    return 'fixture-npc-ordinary-semantic-remainder';
+  }
+  if (value?.schema === 'world_process_step_request_v1') {
+    return 'fixture-world-process-step';
+  }
+  if (value?.schema === 'npc_action_decision_request_v1') {
+    return 'fixture-npc-autonomous-decider';
+  }
+  if (value?.schema === 'player_conversation_input_v1') {
+    return 'fixture-player-conversation-interpreter';
+  }
+  if (value?.schema === 'npc_conversation_response_request_v1') {
+    return 'fixture-npc-conversation-responder';
+  }
+  if (value?.schema === 'npc_combat_decision_request_v1') {
+    return 'fixture-npc-combat-decider';
+  }
   if (value?.schema === 'narration_request') return 'fixture-gameplay-narrator';
   if (value?.schema === 'narration_semantic_audit_request') {
     return 'fixture-gameplay-narrator-auditor';
   }
-  if (value?.remaining_intent && Array.isArray(value.operations)) {
+  if (value?.remaining_intent && (Array.isArray(value.operations)
+      || value.proposed_discovery != null)) {
     return 'fixture-turn-step-grounding-auditor';
   }
   throw new Error(`Unexpected fixture request schema: ${value?.schema ?? 'none'}`);
@@ -326,7 +349,8 @@ function searchFixtureResponse(input, resolution) {
   return { resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
     semantic_admission_class: 'common_mundane', reason_code: 'ordinary_wood',
     world_knowledge_claim_refs: [request.world_knowledge.facts[0].claim_ref],
-    entities: [{ semantic_type: 'wood_fragment', presence_expectation: 'routine',
+    entities: [{ semantic_type: 'wood_fragment', name: 'щепка',
+      presence_expectation: 'routine',
       mechanics_proposal: { mass_grams: 10,
         external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null } }] };

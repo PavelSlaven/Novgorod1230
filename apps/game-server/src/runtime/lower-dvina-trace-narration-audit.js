@@ -1,10 +1,7 @@
-const FAILURE_KINDS = {
-  current_beat_buried: 'literary_quality',
-  elapsed_as_service_report: 'technical_presentation',
-  static_context_dump: 'literary_quality',
-  weak_literary_composition: 'literary_quality',
-  unsupported_response_or_continuation: 'unsupported_'
-};
+import { FAILURE_KINDS, narrationCoverage, narrationSources,
+  normalizeNarrationAuditChoices as normalizeChoices,
+  validNarrationAuditModelOutput } from
+  './lower-dvina-trace-narration-audit-values.js';
 
 export function narrationAuditInstruction(request) {
   const choices = request.segments.map(({ segment_id }) => segment_id);
@@ -22,7 +19,15 @@ each supplied segment into every factual proposition, including subordinate
 clauses, sensations, action, result, time claims, causality and certainty. For every
 proposition require one exact supporting ref or field from the supplied
 player-safe input. Plausibility is never evidence. An object or place never
-supports an unstated sound, smell, touch, motion, reaction or persistence. Never
+supports an unstated sound, smell, touch, motion, reaction or persistence.
+Treat a required_current_beat uncertainty with status unperformed_result_unknown
+as evidence only that the second-person player's named continuation is not yet
+performed and has no result. Never attribute it to an NPC. An explicitly open
+future or possible next choice conveying both facts is
+supported and is not unsupported_attempt. Present, past, or ongoing execution is
+still unsupported_response_or_continuation or unsupported_attempt.
+replace a named or labelled NPC from a required source with second-person player
+action; report that as unsupported_npc_state and leave that source uncovered.
 accept reversed causal order. Grammatical subordination of an earlier action is
 allowed only when aspect or an explicit marker makes it unambiguously completed before
 the later action. A later action cannot precede an earlier one; reject subordination
@@ -35,11 +40,17 @@ same certainty; an embedded unknown result must remain unknown.
 Silence about a result is not an explicit unknown result. A segment that only
 describes the attempt, or merely avoids claiming an outcome, does not cover a
 source saying that the result is unknown or unestablished.
+Conversely, a performed attempt without a supplied result or uncertainty does
+not support saying that its result is unknown or unestablished; report that
+proposition as unsupported_result.
+Do not require prose to supply a result for an attempt. A proposition that only
+says the attempt occurred is complete and supported; never report
+unsupported_result merely because that prose omits an outcome.
 
 Review literary composition for exactly these checks:
 ${Object.keys(FAILURE_KINDS).join(', ')}. Use unsupported_response_or_continuation
-only for an invented response, nonresponse, performed continuation or continued
-action. current_beat_buried requires a required source to be present but displaced;
+only in literary_failures for an invented response, nonresponse, performed
+continuation or continued action. current_beat_buried requires a required source to be present but displaced;
 an omitted source belongs only in source_reviews as []. Never add
 current_beat_buried merely because another required source has an empty review.
 Optional support may compose the current beat but a recap of unchanged
@@ -70,6 +81,9 @@ that unambiguously marks the earlier action completed before the later action.
 reject only an uncomposed source-order checklist as weak_literary_composition. Source
 order alone is not a failure; complete factual coverage alone is not a literary
 PASS either.
+6. For a performed attempt with no supplied result or uncertainty, any claim
+that the result is unknown or unestablished is unsupported_result. The attempt
+alone without any outcome claim is supported and must not be flagged.
 
 Return only the exact JSON shape shown below. reviewed_segments must copy every
 segment choice exactly once and in order. source_reviews must contain exactly
@@ -86,12 +100,6 @@ nonempty list when there are no failures and may be empty otherwise. Shape:
 ${JSON.stringify(shape)}
 Segment choices: ${JSON.stringify(choices)}.`;
 }
-
-const UNSUPPORTED_KINDS = new Set([
-  'unsupported_attempt', 'unsupported_success', 'unsupported_object_use',
-  'unsupported_result', 'unsupported_sensory', 'unsupported_event',
-  'unsupported_world_state', 'unsupported_npc_state', 'unsupported_fact'
-]);
 
 export function assembleNarrationAuditOutput(output, request) {
   const normalized = normalizeChoices(output, request);
@@ -174,131 +182,4 @@ export function assembleNarrationAuditOutput(output, request) {
     concerns,
     evidence: structuredClone(modelOutput.evidence)
   };
-}
-
-function normalizeChoices(output, request) {
-  if (!output || typeof output !== 'object' || Array.isArray(output)) return output;
-  const normalizeFinding = (finding) => !finding || typeof finding !== 'object'
-    ? finding : { ...finding,
-      segment_choice: normalizeChoice(finding.segment_choice, request) };
-  return {
-    ...output,
-    source_reviews: Array.isArray(output.source_reviews)
-      ? output.source_reviews.map((review) => !review
-        || typeof review !== 'object' ? review : { ...review,
-          segment_choices: Array.isArray(review.segment_choices)
-            ? review.segment_choices.map((choice) =>
-              normalizeChoice(choice, request)) : review.segment_choices })
-      : output.source_reviews,
-    unsupported: Array.isArray(output.unsupported)
-      ? output.unsupported.map(normalizeFinding) : output.unsupported,
-    literary_failures: Array.isArray(output.literary_failures)
-      ? output.literary_failures.map(normalizeFinding)
-      : output.literary_failures
-  };
-}
-
-function normalizeChoice(value, request) {
-  if (typeof value !== 'string') return value;
-  const normalized = normalizeText(value);
-  const segments = request.segments ?? [];
-  const exact = segments.find(({ segment_id: id }) => id === value);
-  if (exact) return exact.segment_id;
-  const prose = segments.find((segment) =>
-    normalizeText(segment.prose) === normalized);
-  if (prose) return prose.segment_id;
-  const ids = segments.map(({ segment_id: id }) => id);
-  if (normalized === normalizeText(ids.join(', '))
-      || normalized === normalizeText(request.output?.prose)) {
-    return ids[0];
-  }
-  return value;
-}
-
-function normalizeText(value) {
-  return typeof value === 'string' ? value.trim().replace(/\s+/gu, ' ') : null;
-}
-
-function validNarrationAuditModelOutput(output, request) {
-  if (!output || typeof output !== 'object' || Array.isArray(output)
-      || !sameKeys(output, ['reviewed_segments', 'source_reviews', 'unsupported',
-        'literary_failures', 'evidence'])) return false;
-  const choices = request.segments.map(({ segment_id }) => segment_id);
-  if (!Array.isArray(output.reviewed_segments)
-      || output.reviewed_segments.length !== choices.length
-      || output.reviewed_segments.some((choice, index) =>
-        choice !== choices[index])) return false;
-  const sources = narrationSources(request);
-  if (!Array.isArray(output.source_reviews)
-      || output.source_reviews.length !== sources.length
-      || output.source_reviews.some((review, index) =>
-        !review || typeof review !== 'object' || Array.isArray(review)
-        || !sameKeys(review, ['ref', 'segment_choices'])
-        || review.ref !== sources[index].key
-        || !validChoices(review.segment_choices, choices))) {
-    return false;
-  }
-  if (!Array.isArray(output.unsupported)
-      || output.unsupported.some((finding) =>
-        !validFinding(finding, ['segment_choice', 'kind', 'reason'], choices)
-        || !UNSUPPORTED_KINDS.has(finding.kind))) return false;
-  if (!Array.isArray(output.literary_failures)
-      || output.literary_failures.some((finding) =>
-        !validFinding(finding, ['check', 'segment_choice', 'reason'], choices)
-        || !Object.hasOwn(FAILURE_KINDS, finding.check))) return false;
-  return Array.isArray(output.evidence)
-    && output.evidence.every((entry) =>
-      typeof entry === 'string' && entry.trim().length > 0)
-    && (output.unsupported.length > 0
-      || output.literary_failures.length > 0
-      || output.source_reviews.some(({ segment_choices: values }) =>
-        values.length === 0)
-      || output.evidence.length > 0);
-}
-
-function validFinding(value, keys, choices) {
-  return value && typeof value === 'object' && !Array.isArray(value)
-    && sameKeys(value, keys)
-    && choices.includes(value.segment_choice)
-    && typeof value.reason === 'string' && value.reason.trim().length > 0;
-}
-
-function validChoices(values, choices) {
-  return Array.isArray(values) && new Set(values).size === values.length
-    && values.every((choice) => choices.includes(choice));
-}
-
-function sameKeys(value, keys) {
-  const actual = Object.keys(value).sort();
-  const expected = [...keys].sort();
-  return actual.length === expected.length
-    && actual.every((key, index) => key === expected[index]);
-}
-
-function narrationSegmentId(request, choice) {
-  return typeof choice === 'string' && request.segments?.some(({ segment_id }) => segment_id === choice)
-    ? choice : undefined;
-}
-
-function narrationSources(request) {
-  return [['visible_changes', 'visible_change'], ['uncertainties', 'uncertainty']]
-    .flatMap(([field, prefix]) => request.visible_context[field].map((text, source_index) => ({
-      field, source_index, key: `${prefix}_${source_index + 1}`, text
-    })));
-}
-
-function narrationCoverage(coverage, request) {
-  const sources = narrationSources(request);
-  if (!coverage || typeof coverage !== 'object' || Array.isArray(coverage)
-      || Object.keys(coverage).length !== sources.length) return undefined;
-  const result = { visible_changes: [], uncertainties: [] };
-  for (const { key, field, source_index } of sources) {
-    if (!Object.hasOwn(coverage, key)) return undefined;
-    const choices = coverage[key];
-    if (!Array.isArray(choices) || new Set(choices).size !== choices.length
-        || choices.some((choice) => !narrationSegmentId(request, choice))) return undefined;
-    result[field].push({ source_index,
-      segment_ids: choices.map((choice) => narrationSegmentId(request, choice)) });
-  }
-  return result;
 }

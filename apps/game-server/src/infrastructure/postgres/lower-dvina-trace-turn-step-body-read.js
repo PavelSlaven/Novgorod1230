@@ -4,7 +4,7 @@ import {
   requireTurnStepPreparedEffectLedger
 } from '@rus/turn';
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
-import { buildTurnStepBodyEffectRef } from
+import { buildTurnStepBodyEffectRef, preparedBodyHistoryInput } from
   './lower-dvina-trace-turn-step-body-history.js';
 
 export async function assertTurnStepBodyHistoryRows(pool, payload, headRow) {
@@ -41,8 +41,7 @@ export async function assertTurnStepBodyHistoryRows(pool, payload, headRow) {
 function assertCurrentEffect(history, payload) {
   const envelope = payload.last_turn?.turn_step_commit;
   if (!envelope) return;
-  let batch = payload.last_turn?.turn_step_operation_batch;
-  let bodyFactual = envelope;
+  const batch = payload.last_turn?.turn_step_operation_batch;
   const current = history.filter(({ effect_ref: effect }) =>
     effect?.root_turn_id === envelope.root_turn_id);
   const preparedLedger = envelope.time_update?.prepared_effect_ledger;
@@ -51,6 +50,7 @@ function assertCurrentEffect(history, payload) {
     envelope.body_update?.prepared_effect_ledger_digest,
     envelope.consequence?.prepared_effect_ledger_digest
   ];
+  let preparedBodySlices = [];
   if (preparedLedger == null
       && preparedDigests.some((digest) => digest != null)) invalid();
   if (preparedLedger != null) {
@@ -74,15 +74,12 @@ function assertCurrentEffect(history, payload) {
       return;
     }
     const applied = ledger.slices.filter((slice) => slice.body_update.applied === true);
-    if (applied.length > 1 || (applied.length === 1 && applied[0] !== ledger.slices.at(-1))) invalid();
-    if (applied.length === 1) {
-      const slice = applied[0];
+    preparedBodySlices = applied;
+    for (const slice of applied) {
       const operations = batch?.operations?.filter(({ target, value }) =>
         target === 'party_events' && value?.activity_id === slice.operation_ref) ?? [];
       if (operations.length !== 1 || operations[0].value.step_index !== slice.step_index
           || operations[0].value.profile_ref !== slice.owner_ref) invalid();
-      bodyFactual = { ...envelope, consequence: slice.consequence, body_update: slice.body_update };
-      batch = { ...batch, operations };
     }
   }
   if (batch == null) {
@@ -99,10 +96,9 @@ function assertCurrentEffect(history, payload) {
   const subject = currentBodySubject(payload);
   let effectRef;
   try {
-    effectRef = buildTurnStepBodyEffectRef({
-      factual: bodyFactual,
-      batch
-    });
+    effectRef = buildTurnStepBodyEffectRef(preparedBodyHistoryInput({
+      factual: envelope, batch, bodySlices: preparedBodySlices
+    }));
   } catch {
     invalid();
   }

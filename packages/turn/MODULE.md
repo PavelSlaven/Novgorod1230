@@ -91,9 +91,12 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   authored command, с прежними preflight/revalidation/conservation checks.
   Body-changing результат завершает root. Temporal pause,
   stop-after-batch и player-safe interruption сохраняют остаток на границе.
-  Ранняя temporal boundary no-body semantic slice фиксирует только actual elapsed;
-  approved planned duration остаётся в activity, прерванная execution завершается
-  как aborted с paused attempt и неисполненным временем в existing normalized rows.
+  Ранняя temporal boundary semantic slice фиксирует только actual elapsed;
+  continuous body owner получает тот же фактический interval. Approved planned
+  duration остаётся в activity, прерванная execution сохраняется как paused с
+  paused attempt, точным остатком и без terminal marker в existing normalized
+  rows. Start body effects применяются до interval, а item/domain completion
+  operations — только после полного interval и повторной owner-проверки.
   До восьми semantic шагов входят в один atomic commit/replay. Existing
   domain-command prepared pair и ограничения нескольких body owners сохраняются.
 - Финальный `remaining_intent` loop передаётся без потерь в существующий

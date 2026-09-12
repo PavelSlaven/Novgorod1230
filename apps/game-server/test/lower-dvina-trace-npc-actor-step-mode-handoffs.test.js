@@ -246,6 +246,8 @@ test('Phase 7 persists NPC-first conversation contribution and its signal lineag
   const speaker = current.npcs.find(({ instance_id }) => instance_id === 'zhdanko-1');
   speaker.identity_state = { canonical_name: 'Жданко' };
   speaker.ref = { entity_kind: 'npc', entity_id: 'zhdanko-1' };
+  speaker.location_profile_ref = current.position.location_ref;
+  speaker.anchor_id = current.position.g5_anchor_id;
   speaker.knowledge_profile_snapshot = {};
   speaker.knowledge_records = [];
   speaker.semantic_state = {};
@@ -306,6 +308,8 @@ test('NPC-first conversation composes Phase 7 parent time once', async () => {
   const current = phase7CommittedState();
   const speaker = current.npcs.find(({ instance_id }) => instance_id === 'zhdanko-1');
   Object.assign(speaker, { ref: { entity_kind: 'npc', entity_id: 'zhdanko-1' },
+    location_profile_ref: current.position.location_ref,
+    anchor_id: current.position.g5_anchor_id,
     knowledge_profile_snapshot: {}, knowledge_records: [], semantic_state: {},
     perception_snapshot: { present_actors: [{ actor_ref: 'mikula',
       source_event_ref: { entity_kind: 'event', entity_id: 'seen:player' } }] },

@@ -1,19 +1,15 @@
 import { createTurnStepExecutionRegistry } from '@rus/turn';
-import { applyBodyEvent, applySemanticActivity,
-  resolveLowerDvinaTraceTurnStepCheckContext } from
-  './lower-dvina-trace-turn-step-delegated-ports.js';
+import { applyBodyEvent, applySemanticActivity, resolveLowerDvinaTraceTurnStepCheckContext } from './lower-dvina-trace-turn-step-delegated-ports.js';
 import { createItemOperationHandlers, createTransientItemUseHandler, initializeRuntimeState } from
   './lower-dvina-trace-turn-step-item-operations.js';
-import { applyInventoryTransition, matchesItem, requireProjectedItem } from
-  './lower-dvina-trace-turn-step-item-support.js';
+import { applyInventoryTransition, matchesItem, requireProjectedItem } from './lower-dvina-trace-turn-step-item-support.js';
 import { applyActionProducedRuntimeProjection } from
   './lower-dvina-trace-action-produced-runtime.js';
 import { createContainerAccessHandler, snapshotO2bCommittedContainerInput } from
   './lower-dvina-trace-turn-step-container-access.js';
 import { createLowerDvinaTracePreparedDomainEffect } from
   './lower-dvina-trace-turn-step-prepared-effects.js';
-import { prepareOrdinaryDiscoveryResult } from
-  './lower-dvina-trace-ordinary-discovery.js';
+import { prepareOrdinaryDiscoveryResult } from './lower-dvina-trace-ordinary-discovery.js';
 import { createLowerDvinaTracePostAppliedActorStepOwner } from
   './lower-dvina-trace-post-applied-actor-step.js';
 export function createLowerDvinaTraceTurnStepRuntimePorts({
@@ -200,10 +196,8 @@ function applyLocalFireRuntimeProjection({ projection, actor, plan, state, resol
   }
   return next;
 }
-function projectedPlacement(value) {
-  return Object.fromEntries(Object.entries(value).filter(
-    ([key, entry]) => key !== 'item_id' && entry != null));
-}
+function projectedPlacement(value) { return Object.fromEntries(Object.entries(value)
+  .filter(([key, entry]) => key !== 'item_id' && entry != null)); }
 function updateRuntimePlacement(state, itemId, placement) {
   for (const collection of [state.materializedItems, state.authoredItems]) {
     const item = collection.get(itemId);
@@ -262,8 +256,9 @@ async function prepareEffectBody(input, committedState, bodyEffect) {
       state_after: structuredClone(after)
     });
   }
-  if ((input.effect_kind === 'semantic_activity'
-        && input.consequence?.body_effect_ref == null)
+  if ((input.consequence?.body_effect_ref == null
+        && input.consequence?.parent_activity_completion?.status
+          !== 'completed')
       || input.consequence?.generic_known_route === true
       || Number(input.consequence?.duration_minutes) === 0) {
     return Object.freeze({

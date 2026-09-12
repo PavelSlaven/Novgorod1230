@@ -116,6 +116,8 @@ Release: `0.23.0-migration.24`
 | `time_light_consistency_audit` | `STAGE17_AUDIT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `time_light_consistency_input` | `STAGE17_INPUT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `turn_screen` | `TURN_SCREEN_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
+| `turn_step_prepared_effect_ledger_v1` | `LEDGER_SCHEMA` | `packages/turn/src/turn-step-prepared-effect-validation.js` |
+| `turn_step_prepared_effect_slice_v1` | `SLICE_SCHEMA` | `packages/turn/src/turn-step-prepared-effect-validation.js` |
 | `visible_context_audit` | `STAGE21_OUTPUT_SCHEMA` | `packages/contracts/src/visible-context-boundary.js` |
 | `visible_context_audit_approval` | `VISIBLE_CONTEXT_AUDIT_APPROVAL_SCHEMA` | `packages/contracts/src/schema-names.js` |
 | `visible_context_audit_code_precheck` | `STAGE21_PRECHECK_SCHEMA` | `packages/contracts/src/visible-context-boundary.js` |

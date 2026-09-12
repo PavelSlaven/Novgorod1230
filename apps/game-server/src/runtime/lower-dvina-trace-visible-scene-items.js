@@ -29,9 +29,10 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
 // Call only for a confirmed observation or a newly reached scene. Snapshot
 // knowledge (including inventory/body metadata) is not a new observation.
 export function lowerDvinaTraceObservedSceneChanges(scene) {
+  const visibleNpcs = distinctNpcLabels(scene?.visible_npc ?? []);
   return [...new Set([
     ...(scene?.sensory_details ?? []),
-    ...(scene?.visible_npc ?? []).flatMap((npc) => [
+    ...visibleNpcs.flatMap((npc) => [
       ...observedEntityChanges(npc),
       ...[npc.observable_cues?.ordinary_remainder?.ordinary_descriptor,
         npc.observable_cues?.ordinary_remainder?.ordinary_activity]
@@ -40,6 +41,21 @@ export function lowerDvinaTraceObservedSceneChanges(scene) {
     ...(scene?.visible_objects ?? []).filter((object) =>
       !carriedVisibleStatus(object.visible_status)).flatMap(observedEntityChanges)
   ])];
+}
+
+export function distinctNpcLabels(npcs) {
+  const totals = new Map();
+  for (const { display_label: label } of npcs) {
+    if (text(label)) totals.set(label, (totals.get(label) ?? 0) + 1);
+  }
+  const seen = new Map();
+  return npcs.map((npc) => {
+    const label = npc?.display_label;
+    if (!text(label) || totals.get(label) < 2) return npc;
+    const ordinal = (seen.get(label) ?? 0) + 1;
+    seen.set(label, ordinal);
+    return { ...npc, display_label: `${label} (${ordinal})` };
+  });
 }
 
 function observedEntityChanges(entity) {

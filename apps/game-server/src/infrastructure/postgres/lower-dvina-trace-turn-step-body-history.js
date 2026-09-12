@@ -35,6 +35,27 @@ export function prepareTurnStepBodyHistory({
   };
 }
 
+export function preparedBodyHistoryInput({ factual, batch, bodySlices = [] }) {
+  if (bodySlices.length === 0) return { factual, batch };
+  const activityIds = new Set(bodySlices.map(
+    ({ operation_ref: ref }) => ref));
+  return {
+    factual: bodySlices.length === 1 ? {
+      ...factual,
+      consequence: bodySlices[0].consequence,
+      body_update: bodySlices[0].body_update
+    } : {
+      ...factual,
+      consequence: { ...factual.consequence,
+        state_changes: bodySlices.flatMap(
+          ({ consequence }) => consequence.state_changes ?? []) }
+    },
+    batch: { ...batch, operations: batch.operations.filter(
+      ({ target, value }) => target === 'party_events'
+        && activityIds.has(value.activity_id)) }
+  };
+}
+
 export function buildTurnStepBodyEffectRef({ factual, batch }) {
   const proposal = factual.body_update.proposal;
   const consequenceRef = factual.consequence?.body_effect_ref ?? null;

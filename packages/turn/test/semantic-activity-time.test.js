@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { resolveTurnStepSemanticActivityTime } from '../src/index.js';
+import {
+  buildTurnStepPreparedEffectLedger,
+  buildTurnStepPreparedTimeUpdate,
+  resolveTurnStepSemanticActivityTime
+} from '../src/index.js';
 
 test('semantic activity time owner preserves global mixed-batch order', () => {
   const activity = semanticActivity();
@@ -72,6 +76,67 @@ test('semantic activity owner validates an exact rational time window', () => {
   assert.throws(() => resolveTurnStepSemanticActivityTime({
     ...input, exactElapsed: exact('4', '3')
   }), { code: 'TURN_STEP_TIME_WINDOW_INVALID' });
+});
+
+test('interrupted prepared activity preserves fractional actual elapsed', () => {
+  const activity = { ...semanticActivity(), duration_minutes: 1 };
+  const body = { health: 80, satiety: 60, energy: 40,
+    active_conditions: [] };
+  const timeUpdate = {
+    version: 2,
+    schema: 'turn_time_update',
+    owner: '@rus/time-events-history',
+    clock_before: timestamp('10'),
+    clock_after: {
+      whole_minutes: '10', subminute_numerator: '1',
+      subminute_denominator: '2'
+    },
+    exact_elapsed: exact('1', '2'),
+    temporal_results: [{ trace: { stopped_after_current_batch: true } }]
+  };
+  const ledger = buildTurnStepPreparedEffectLedger({
+    rootTurnId: 'turn:p:1',
+    committedStateVersion: 3,
+    effects: [{
+      effect: {
+        step_index: 1,
+        effect_kind: 'semantic_activity',
+        owner_ref: activity.profile_ref,
+        operation_ref: activity.activity_id,
+        availability: null,
+        consequence: { duration_minutes: 1, body_effect_ref: null },
+        time_update: timeUpdate,
+        body_update: {
+          version: 1,
+          schema: 'turn_body_update',
+          owner: '@rus/body-state',
+          applied: false,
+          proposal: null,
+          state_after: body
+        },
+        body_state_before: body
+      },
+      working_projection_before: { clock: timestamp('10') },
+      working_projection_after: { clock: timeUpdate.clock_after }
+    }]
+  });
+  assert.deepEqual(buildTurnStepPreparedTimeUpdate(ledger).exact_elapsed,
+    exact('1', '2'));
+
+  const result = resolveTurnStepSemanticActivityTime({
+    batch: batch([{ target: 'party_events', value: activity }]),
+    consequence: consequence(activity),
+    clockBefore: timestamp('10'),
+    clockAfter: timeUpdate.clock_after,
+    exactElapsed: exact('1', '2'),
+    preparedEffectLedger: ledger
+  });
+  assert.deepEqual(result.semantic_activity_elapsed, exact('1', '2'));
+  assert.equal(result.semantic_activity_resolutions[0].execution.status,
+    'paused');
+  assert.deepEqual(
+    result.semantic_activity_resolutions[0].attempt.actual_time,
+    exact('1', '2'));
 });
 
 function batch(operations) {

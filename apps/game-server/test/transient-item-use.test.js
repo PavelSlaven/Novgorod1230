@@ -31,8 +31,8 @@ for (const [name, intent, denial = false] of [
     roles.push(call.role_id);
     if (call.role_id === 'turn_step_grounding_auditor') {
       const wire = JSON.parse(call.messages[1].content);
-      assert.deepEqual(wire.operations.map(entry => entry.operation), [operation]);
-      assert.match(call.messages[0].content, /never a discovered fact[\s\S]*actor hands are not required/u);
+      assert.deepEqual(wire.operation, operation);
+      assert.match(call.messages[0].content, /handled material[\s\S]*An explicit attempt to cause a result does not assert that the result happened/u);
       return { output: { pass: true, concerns: [] } };
     }
     if (denial && call.role_id === 'turn_step_planner') return { output: plan(input, {
@@ -71,8 +71,7 @@ for (const [name, intent, denial = false] of [
     mode_resolution: { decision_trace: { step_traces: [{ applied: true,
       step_index: input.step_index, approved_plan: approved }] } } });
   assert.deepEqual(visible.visible_changes, [
-    `Вы выполнили попытку: «${intent}»`,
-    'В ходе этой попытки результат наблюдения не установлен.'
+    `Вы выполнили попытку: «${intent}»`
   ]);
 });
 
@@ -103,8 +102,8 @@ test('transient use cannot turn an attempted contact into a discovered fact or d
     const validator = createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner: {
       async run(call) {
         const wire = JSON.parse(call.messages[1].content);
-        assert.equal(wire.operations[0].operation.description, description);
-        assert.match(call.messages[0].content, /never a discovered fact[\s\S]*physical change/u);
+        assert.equal(wire.operation.description, description);
+        assert.match(call.messages[0].content, /discovered fact[\s\S]*durable physical change/u);
         return { output: { pass: false, concerns: [{ kind: 'operation_semantic_grounding' }] } };
       }
     } });
@@ -171,8 +170,8 @@ for (const [name, intent, wrongDescription] of [
       assert.deepEqual(payload.player_safe_state.items, []);
       return { output: { mode: 'material_prerequisite', consumed_intent: null, prerequisite_query: name } };
     }
-    assert.equal(payload.operations[0].operation.item_ref, itemId);
-    assert.equal(payload.operations[0].operation.description, intent);
+    assert.equal(payload.operation.item_ref, itemId);
+    assert.equal(payload.operation.description, intent);
     return { output: { pass: true, concerns: [] } };
   } };
   const runtime = createPorts();
@@ -207,8 +206,7 @@ for (const [name, intent, wrongDescription] of [
       mode_resolution: { decision_trace: { remaining_intent: null,
         step_traces: [{ step_index: input.step_index, applied: true, approved_plan: result.plan }] } } });
     assert.deepEqual(visible.visible_changes, [
-      `Вы выполнили попытку: «${intent}»`,
-      'В ходе этой попытки результат наблюдения не установлен.'
+      `Вы выполнили попытку: «${intent}»`
     ]);
   }
 });
@@ -270,8 +268,8 @@ test('exact-intent description trial still rejects transformation, discovery and
         return { output: plan(input, { operations: [operation],
           activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' } }) };
       }
-      descriptions.push(JSON.parse(call.messages[1].content).operations[0].operation.description);
-      assert.match(call.messages[0].content, /Copying exact intent into description is not proof/u);
+      descriptions.push(JSON.parse(call.messages[1].content).operation.description);
+      assert.match(call.messages[0].content, /Copying the intent is not proof/u);
       return { output: { pass: false, concerns: [{ kind: 'operation_semantic_grounding' }] } };
     } };
     await assert.rejects(requestTurnStepPlanWithRepair({ request: input,

@@ -1,3 +1,6 @@
+export const FOCUSED_DISCOVERY_DIRECT_FACTS_PROMPT =
+  'Если current_visible_context.sensory_details уже прямо отвечает на каждый запрошенный видимый признак, включая явное отсутствие, это direct observation, а не discovery: верни {"mode":"different_action","consumed_intent":null}. Формулировки «проверяю», «вижу ли», «есть ли» и «где» сами по себе не создают discovery.';
+
 export const TURN_STEP_GROUNDING_PROMPT = [
   'Return only {"pass":true,"concerns":[]} or',
   '{"pass":false,"concerns":[{"kind":"<allowed kind>"}]}.',
@@ -11,6 +14,10 @@ export const TURN_STEP_GROUNDING_PROMPT = [
   'For discovery, the operation must cover the earliest focused information',
   'need. A fixed authored query must not replace a different ordinary search,',
   'material prerequisite, handling, or transformation.',
+  'current_visible_context.sensory_details and every visible_npc visible_status',
+  'are already supplied current observations. If they directly answer every',
+  'visible fact requested, discovery is the wrong action and must fail',
+  'operation_semantic_grounding, including questions about current NPC activity.',
   'Every discovery operation only reveals or materializes. It never acquires, relocates, transforms, handles, or uses the discovered referent. Any such physical act not executed by another current operation must remain in continuation, regardless of whether its words appear as a textual prefix of the discovery query. A query prefix is not a physical effect. Reject a plan that drops that unexecuted act as operation_semantic_grounding.',
   'A typed continuation.pending_discovery is a code-owned single-target',
   'discovery queue. Its remaining_intent carries the exact current operation',
@@ -81,6 +88,32 @@ export const TURN_STEP_GROUNDING_PROMPT = [
   'material_transformation_grounding, source_placement_grounding,',
   'action_production_identity_grounding. Do not infer hidden state, rewrite the',
   'plan, audit factual scholarship, or call another role.'
+].join(' ');
+
+export const TRANSIENT_ITEM_USE_PROMPT = [
+  'Return only {"pass":true,"concerns":[]} or',
+  '{"pass":false,"concerns":[{"kind":"operation_semantic_grounding"}]}.',
+  'Audit one transient non-transforming physical attempt against remaining_intent and player-safe evidence.',
+  'item_ref may be the handled material, workpiece, target object, or implement; it need not be the means that causes the hoped-for result.',
+  'Pass when the description faithfully states only the attempted handling or use of that accessible item and covers the complete remaining_intent.',
+  'An explicit attempt to cause a result does not assert that the result happened: wording such as trying to ignite, open, bend, lift, or move something remains a transient attempt when no success, durable change, consumption, relocation, discovery, observation result, or ongoing process is claimed.',
+  'Also pass direct contact or handling whose occurrence itself is the complete action, such as touching or probing with the item.',
+  'Fail when the description asserts a successful result, discovered fact, observation result, durable physical change, consumption, relocation, or ongoing process; fail a wrong item, hidden or inaccessible item, omitted independent action, or unrelated target.',
+  'Copying the intent is not proof by itself. Refs are opaque. Do not infer success or hidden state, rewrite the plan, add keys, or explain.'
+].join(' ');
+
+export const FOCUSED_DISCOVERY_PREREQUISITE_REPAIR_PROMPT =
+  'Без correction_candidate: если mode="material_prerequisite", но исходный continuation не сохраняет полный remaining_intent, добавь ровно третий ключ prerequisite_query с чистым именным описанием нужного отсутствующего referent/material/group. Не включай действие или цель; код восстановит полный физический intent.';
+
+export const DIRECT_SEMANTIC_ACTIVITY_PROMPT = [
+  'Return only {"pass":true,"concerns":[]} or',
+  '{"pass":false,"concerns":[{"kind":"operation_semantic_grounding"}]}.',
+  'Audit whether the proposed direct semantic activity faithfully performs the earliest action in remaining_intent and leaves every independent later action in continuation.',
+  'Pass a non-vocal action only when its sole committed result is that the actor performs or sustains the stated activity, including a lawful reality-limited attempt without a claimed world-state result.',
+  'Fail taking, gathering, collecting, dropping, wearing, placing, attaching, transforming, consuming, discovering, or otherwise changing an item or world entity: these require their supplied owner. Discovery or materialization in completed history reveals an item but never means the actor already acquired or relocated it. When a matching stable item ref is supplied, acquisition or relocation must use that exact ref through move_entity.',
+  'Fail any speech, request, answer, call, shout or other vocal signal: it must use player_utterance or a supplied interaction owner and cannot be silently completed as semantic activity.',
+  'Fail when grounded_attempt skips an earlier action, absorbs an independent later action, or continuation omits or rewrites the uncovered remainder.',
+  'Do not infer success, hearing, response, hidden facts or unavailable mechanics. Do not add keys or explanations.'
 ].join(' ');
 
 export const FOCUSED_DISCOVERY_PROMPT = 'Верни только JSON с двумя ключами: mode и consumed_intent. consumed_intent — строка или null. Сначала проверь INPUT MODE: correction_candidate="proposed_material_prerequisite" означает, что код уже проверил single current-location discovery и exact полный unchanged continuation. Это предложение prerequisite, а НЕ выбранный игроком исполняемый поиск. Проверь, что query — только номинальное описание действительно нужного отсутствующего ordinary referent/material/group, без действий и цели, по remaining_intent и safe items. Если да и ограничения authority/доступности/возможности ниже соблюдены, верни {"mode":"material_prerequisite","consumed_intent":null}; код соберёт inspect и сохранит полный physical intent server-side. Иначе верни {"mode":"different_action","consumed_intent":null}. Нельзя возвращать focused_discovery или считать query исполненным фрагментом полного намерения в этом режиме. correction_candidate="missing_ordinary_referent" означает audit-only material repair candidate, а НЕ выбранный игроком discovery. operation.query здесь намеренно содержит весь physical remaining_intent; continuation:null ещё не является потерей intent, потому что код восстановит его полностью после correction. В ЭТОМ РЕЖИМЕ не оценивай, исполняет ли pseudo-discovery физическое действие. Проверь по remaining_intent и player_safe_state, требует ли заявленная физическая попытка отсутствующий ordinary referent/material/group. Если да и ограничения ниже соблюдены, ОБЯЗАТЕЛЬНО верни {"mode":"material_prerequisite","consumed_intent":null,"prerequisite_query":"<только номинальное описание недостающего referent>"}. Иначе верни {"mode":"different_action","consumed_intent":null}. Нельзя возвращать focused_discovery или material_prerequisite без prerequisite_query в correction mode. Структурный trial не доказывает отсутствия подходящего предмета или ordinary-допустимости: доступный подходящий item, hidden/authored/significant/evidentiary/невозможное требование всё равно исключают correction. ТОЛЬКО БЕЗ correction_candidate действует следующая обычная классификация. Определи, что request_discovery выполняет относительно remaining_intent. mode="focused_discovery": игрок сейчас осматривает, ищет или выбирает по указанным признакам, не приобретая, не перемещая, не изменяя и не используя найденное; consumed_intent — точный начальный фрагмент этого поиска или выбора. mode="material_prerequisite": discovery только обнаруживает или материализует искомое для явно заявленного физического приобретения, перемещения, изменения, обращения или использования; физическое действие остаётся неисполненным. Если continuation.remaining_intent точно равен полному remaining_intent, а query называет только нужный referent, material или physically connected group для этого действия, обязательно выбери mode="material_prerequisite" и consumed_intent=null. mode="focused_discovery" допустим только когда query является действительно исполняемым начальным поиском или осмотром: consumed_intent совпадает с query, а continuation не повторяет этот префикс или полный remaining_intent. mode="different_action": discovery не покрывает начальное намерение. Следуй effect_contract. Не объясняй ответ и не добавляй ключи. Для исправления неверного discovery, которое пытается исполнить физическое действие вместо получения отсутствующего обычного материала, допустим ровно один дополнительный ключ prerequisite_query при mode="material_prerequisite" и consumed_intent=null. prerequisite_query — только именное описание нужного referent, материала или физически связанной группы: без действия, приобретения, перемещения, обращения, использования, преобразования или цели. Не копируй физическую query или remaining_intent. Код сохранит полный remaining_intent и свяжет inspect с текущим scope. Выбирай эту correction только если player_safe_state не содержит уже доступного подходящего item ref и нужен именно ordinary материал. Желание actor не доказывает существование; O1 отдельно проверит присутствие. Физически или исторически невозможное действие не получает обычный материальный обход. Hidden contents, evidence/clues, significant/authored truth и authority-constrained objects не могут стать ordinary prerequisite: выбери different_action. Без correction_candidate обычный исполняемый поиск сохраняет focused_discovery; не исправляй его в prerequisite. Без correction_candidate, если предложенная query уже является верным номинальным prerequisite и полный intent сохранён, верни исходные два ключа без correction.';

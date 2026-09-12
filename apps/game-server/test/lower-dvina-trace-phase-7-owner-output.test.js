@@ -61,6 +61,28 @@ test('ambient portion binding accepts owner-normalized provenance and mechanics 
   });
 });
 
+test('semantic activity binds before its completion operation', () => {
+  const activity = { target: 'party_events', value: { step_index: 1,
+    duration_class: 'moment', effort: 'light' } };
+  const move = { target: 'party_items', value: { step_index: 1,
+    operation_kind: 'move_entity', payload: { entity_ref: 'item:branches',
+      placement: { relation: 'located_at', target_ref: 'shore' } } } };
+  const input = { batch: { operations: [activity, move] }, state: {
+    actor_id: 'actor', position: { location_ref: 'shore' },
+    items: [{ item_id: 'item:branches' }], containers: []
+  }, factual: { loop_trace: { step_traces: [{ applied: true, step_index: 1,
+    approved_plan: { resolution: 'direct', operations: [{ op: 'move_entity',
+      entity_ref: 'item:branches', placement: { relation: 'located_at',
+        target_ref: 'shore' } }], activity: { owner: 'semantic',
+      duration_class: 'moment', effort: 'light' } }
+  }] } } };
+  assert.doesNotThrow(() => validateTurnStepBatchPlanBindings(input));
+  assert.throws(() => validateTurnStepBatchPlanBindings({ ...input,
+    batch: { operations: [move, activity] } }), {
+    code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH'
+  });
+});
+
 test('Phase 7 rejects every owner output family injected on selected wait', () => {
   for (const patch of [
     { ordinary_materialization_atomic_write_plan: {} },

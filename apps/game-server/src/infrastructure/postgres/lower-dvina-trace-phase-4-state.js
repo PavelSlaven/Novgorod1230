@@ -23,6 +23,8 @@ import { projectRepeatedPendingNpcExecution } from
   './lower-dvina-trace-pending-npc-state.js';
 import { attachPendingConversationActivity } from
   './lower-dvina-trace-pending-activity-state.js';
+import { interruptNpcRoutinesForAction } from
+  '../../runtime/npc-routine-temporal.js';
 
 export function nextPhase4State({ state, factual, nextVersion, turnNumber,
   inputDigest, changeSetId, contracts, rootTurnId, workingRevision,
@@ -85,6 +87,12 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
     }
     next.npcs = next.npcs.map((npc) => c.movement.participants.includes(npc.instance_id)
       ? { ...npc, anchor_id: scene.anchor.instance_id } : npc);
+    interruptNpcRoutinesForAction(next, {
+      npcIds: c.movement.participants,
+      occurredAt: factual.time_update.clock_after,
+      positionNodeId: next.position.position_id,
+      changeSetId
+    });
     next.route_history = [...(next.route_history ?? []), {
       route_ref: c.movement.route_ref,
       activity_ref: c.movement.activity_ref,

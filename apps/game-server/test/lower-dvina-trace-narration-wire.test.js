@@ -80,6 +80,17 @@ test('private prose wire admits only scene and sensory support beside a current 
       }
       assert.equal(Object.hasOwn(wire, 'action_intent'), false);
       assert.deepEqual(call.overrides, { temperature: 0 });
+      if (call.role_id === 'gameplay_narrator') {
+        assert.match(call.messages[0].content,
+          /never recast it as present or past action/u);
+        assert.match(call.messages[0].content,
+          /bare statement of intention[\s\S]*action has not happened yet[\s\S]*result is still unknown/u);
+      }
+      if (call.role_id === 'gameplay_narrator_auditor') {
+        assert.match(call.messages[0].content,
+          /unperformed_result_unknown[\s\S]*Never attribute it to an NPC[\s\S]*not unsupported_attempt/u);
+        assert.doesNotMatch(call.messages[0].content, /Never\s+Treat a required_current_beat uncertainty/u);
+      }
       if (call.role_id === 'gameplay_narrator') return { output: {
         prose: sample.prose, action_options: [], used_references: [] } };
       const refs = [...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties];

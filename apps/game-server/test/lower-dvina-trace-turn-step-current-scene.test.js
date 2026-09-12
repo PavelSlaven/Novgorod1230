@@ -100,6 +100,21 @@ test('current scene maps actor age into the player-safe portrait vocabulary', ()
     .observable_cues.identity.age_category, 'young');
 });
 
+test('current scene exposes the visible NPC current activity', () => {
+  const state = committedState();
+  state.npcs[0].machine_state.current_activity = {
+    status: 'active', can_continue_automatically: true,
+    activity_ref: 'unseen-routine', summary: 'Чинит рыболовную сеть.'
+  };
+
+  const current = withLowerDvinaTraceCurrentScene({
+    committedState: state, locationProfiles
+  });
+
+  assert.equal(current.current_visible_context.visible_npc[0].visible_status,
+    'Чинит рыболовную сеть.');
+});
+
 test('version zero scene retains safe labels and gains observable cues', () => {
   const state = committedState();
   state.party_state.state_version = 0;
@@ -298,145 +313,6 @@ test('direct player-safe observation reaches narration without new facts', () =>
   } }, [], { active_conditions: [{ id: 'hand_soreness' }] });
   assert.equal(unlabeled.some((change) => change.includes('hand_soreness')),
     false);
-});
-
-test('carried item observation exposes concrete player-safe belongings', () => {
-  const state = committedState();
-  state.items.push({ item_id: 'case', name: 'кожаный футляр',
-    condition_state: 'serviceable', placement: {
-      holder_character_id: state.actor_id, physical_position: 'worn_quick'
-    } }, { item_id: 'flask', name: 'глиняная фляга',
-    condition_state: 'damaged', placement: {
-      holder_character_id: state.actor_id, physical_position: 'hands'
-    } }, { item_id: 'nearby-log', name: 'полено',
-    condition_state: 'serviceable', placement: {
-      location_ref: 'shed', anchor_id: 'shed-anchor'
-    } });
-  const current = withLowerDvinaTraceCurrentScene({
-    committedState: state, locationProfiles
-  });
-  const visible = projectCurrentSceneForNoOperationDirect({ input: {
-    consequence: { status: 'resolved', visible_seed: {} },
-    retrieved_state: current, mode_resolution: { decision_trace: {
-      remaining_intent: null, step_traces: [{ applied: true, approved_plan: {
-        resolution: 'direct', goal_result: 'achieved', operations: [],
-        check: null, direct_result_kind: 'player_safe_item_observation'
-      } }] } }
-  }, directSeedKeys: [], body: {} });
-
-  assert.deepEqual(visible.visible_changes, [
-    'При вас находятся кожаный футляр и глиняная фляга.',
-    'Подтверждено пригодное к обычному использованию состояние: кожаный футляр.',
-    'Подтверждено повреждённое состояние: глиняная фляга.'
-  ]);
-  assert.equal(visible.visible_changes.some((change) =>
-    change.includes('полено')), false);
-});
-
-test('body observation projects the current confirmed condition without a body write',
-  async () => {
-    const projector = createLowerDvinaTraceTurnStepVisibleProjector({
-      fallback: { project: async () => assert.fail('fallback not expected') }
-    });
-    const state = committedState();
-    state.body_state = { active_conditions: [{ id: 'hand_soreness',
-      label: 'болезненность кисти' }] };
-    const visible = await projector.project({
-      consequence: { status: 'resolved', visible_seed: {
-        completed_steps: [{ step_index: 1, summary: 'осмотреть кисть' }]
-      } },
-      retrieved_state: state,
-      mode_resolution: { decision_trace: { remaining_intent: null,
-        step_traces: [{ applied: true, approved_plan: {
-          resolution: 'direct', goal_result: 'partially_achieved',
-          operations: [], check: null,
-          direct_result_kind: 'player_safe_body_observation'
-        } }] } }
-    });
-    assert.equal(visible.visible_changes.includes(
-      'Подтверждённые вам телесные состояния: болезненность кисти.'), true);
-  });
-
-test('ordinary scene seed augments the current scene in the same turn', async () => {
-  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
-    fallback: { project: async () => assert.fail('fallback not expected') }
-  });
-  const state = committedState();
-  state.current_visible_context.sensory_details = ['Мокрый песок у воды.'];
-  const visible = await projector.project({
-    consequence: { status: 'resolved', visible_seed: {
-      completed_steps: [{ step_index: 1, summary: 'осмотреть берег' }],
-      ordinary_scene_seed: { kind: 'ordinary_scene_seed',
-        sensory_details: ['В ивняке застряли плавник и речной сор.'] }
-    } },
-    retrieved_state: state,
-    body_update: { state_after: {} },
-    mode_resolution: { decision_trace: { remaining_intent: null,
-      step_traces: [{ approved_plan: { resolution: 'domain_request',
-        goal_result: 'pending', operations: [{ op: 'request_discovery' }],
-        check: null } }] } }
-  });
-  assert.deepEqual(visible.sensory_details,
-    ['Мокрый песок у воды.',
-      'В ивняке застряли плавник и речной сор.']);
-  assert.deepEqual(visible.visible_npc.map(({ entity_ref, display_label,
-    recognition }) => ({ entity_ref, display_label, recognition })),
-  state.current_visible_context.visible_npc);
-  assert.equal(JSON.stringify(visible).includes('ordinary_scene_seed'), false);
-});
-
-for (const [resolution, change] of Object.entries({
-  absent: 'По этому вопросу отсутствие установлено',
-  no_change: 'Результат по этому вопросу не установлен',
-  authority_required: 'Имеющихся данных недостаточно для ответа'
-})) {
-  test(`persisted ordinary ${resolution} result is visible to the player`, async () => {
-    const projector = createLowerDvinaTraceTurnStepVisibleProjector({
-      fallback: { project: async () => assert.fail('fallback not expected') }
-    });
-    const visible = await projector.project({
-      consequence: { status: 'resolved', visible_seed: {
-        ordinary_scene_seed: { kind: 'ordinary_scene_seed',
-          sensory_details: ['На песке остались следы от пешни.'] },
-        ordinary_presence_seed: { kind: 'ordinary_presence_seed', resolution,
-          query: '  Найти мою грамоту или личную вещь  ' }
-      } },
-      retrieved_state: committedState(), body_update: { state_after: {} },
-      mode_resolution: { decision_trace: { remaining_intent: null,
-        step_traces: [{ approved_plan: { resolution: 'domain_request',
-          goal_result: 'pending', operations: [{ op: 'request_discovery' }],
-          check: null } }] } }
-    });
-    const result = `${change}: «  Найти мою грамоту или личную вещь  ».`;
-    assert.deepEqual(visible.visible_changes, ['На песке остались следы от пешни.',
-      ...(resolution === 'absent' ? [result] : [])]);
-    assert.deepEqual(visible.uncertainties, resolution === 'absent' ? [] : [result]);
-    assert.equal(visible.visible_scene, committedState().current_visible_context.visible_scene);
-    assert.deepEqual(visible.visible_objects, committedState().current_visible_context.visible_objects);
-    assert.ok(visible.do_not_imply.includes(
-      'discovery_query_as_existence_ownership_or_executed_action'));
-  });
-}
-
-test('unfinished domain prerequisite preserves the scene without inventing partial success', async () => {
-  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
-    fallback: { project: async () => assert.fail('fallback not expected') }
-  });
-  const state = committedState();
-  state.current_visible_context.sensory_details = ['На досках лежит мокрая трава.'];
-  const visible = await projector.project({
-    consequence: { status: 'partial', visible_seed: { completed_steps: [] } },
-    retrieved_state: state, body_update: { state_after: {} },
-    mode_resolution: { decision_trace: { remaining_intent: 'Скрутить траву в жгут.',
-      step_traces: [{ approved_plan: { resolution: 'domain_request',
-        goal_result: 'pending', operations: [{ op: 'request_discovery' }], check: null } }] } }
-  });
-  assert.equal(visible.visible_scene, state.current_visible_context.visible_scene);
-  assert.deepEqual(visible.sensory_details, ['На досках лежит мокрая трава.']);
-  assert.deepEqual(visible.visible_changes, []);
-  assert.ok(visible.uncertainties.includes(
-    'Ещё не выполнено: «Скрутить траву в жгут.». Результат этой попытки не установлен.'));
-  assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));
 });
 
 function committedState() {

@@ -78,7 +78,7 @@ function operationBatch() {
           holder_character_id: 'actor-1', physical_position: 'hands'
         } } }
   }));
-  operations.push({ target: 'party_events', value: { version: 1,
+  operations.unshift({ target: 'party_events', value: { version: 1,
     schema: 'rus.lower_dvina_trace_turn_step_semantic_activity.v1',
     activity_id: 'activity-1', root_turn_id: 'turn:p:1', step_index: 1,
     profile_ref: 'approved:brief-none', duration_class: 'brief',

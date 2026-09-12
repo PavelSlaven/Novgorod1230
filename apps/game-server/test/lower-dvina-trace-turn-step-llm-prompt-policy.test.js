@@ -136,7 +136,9 @@ test('turn step planner routes accessible items and visible environment through 
           physical_position: 'equipped' } }],
       current_visible_context: { sensory_details: [
         'Река течёт у самого берега.'
-      ], visible_objects: [{ entity_ref: { entity_kind: 'item',
+      ], visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc:fisher' },
+        display_label: 'рыбак', visible_status: 'чинит сети' }],
+      visible_objects: [{ entity_ref: { entity_kind: 'item',
         entity_id: 'item:held-cloth' }, display_label: 'мокрая шерсть',
       visible_status: 'у вас в руках' }] }
     } }));
@@ -148,6 +150,12 @@ test('turn step planner routes accessible items and visible environment through 
     assert.match(prompt, /Reviewing the identity, placement, or condition of supplied carried\/worn items[\s\S]*player_safe_item_observation[\s\S]*other facts already explicit in player-safe sensory context uses player_safe_observation/u);
     assert.match(prompt, /Inspecting the actor body when request\.actor\.body is supplied[\s\S]*player_safe_body_observation[\s\S]*new injury or diagnosis unconfirmed[\s\S]*Clothing mentioned only as covering the body does not make that action an item or ordinary discovery/u);
     assert.match(prompt, /player_safe_item_observation for reviewing the identity, placement, or condition[\s\S]*player_safe_body_observation for inspecting the actor body[\s\S]*Preserve uncertainty[\s\S]*never infer local state, cause, forecast, timing/u);
+    assert.match(prompt,
+      /current negative sensory fact is still a complete supplied observation[\s\S]*visible_npc statuses already answer every visible alternative[\s\S]*achieved direct player_safe_observation/u);
+    assert.match(prompt,
+      /visible_npc visible_status[\s\S]*code-owned current observations[\s\S]*what someone is doing/u);
+    assert.match(prompt,
+      /visible_npc statuses[\s\S]*achieved direct player_safe_observation[\s\S]*colon or question[\s\S]*not a later action/iu);
   });
 
 test('turn step planner keeps an ongoing wet-reed smoulder out of A1', async () => {

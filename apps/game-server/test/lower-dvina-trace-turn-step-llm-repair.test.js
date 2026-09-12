@@ -154,7 +154,32 @@ test('semantic repair prompt preserves both discovery continuation shapes',
     });
     assert.match(prompt,
       /Required ordinary discovery repair:[\s\S]*material prerequisite[\s\S]*continuation is exactly[\s\S]*standalone focused discovery losslessly[\s\S]*exact uncovered suffix/u);
+    assert.match(prompt,
+      /Never return a focused discovery query that starts after the beginning[\s\S]*include that introduction in the query[\s\S]*plan the earlier action first/u);
+});
+
+test('continuation repair treats only the current suffix as executable', async () => {
+  const current = 'затем развязываю узел';
+  let prompt;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      prompt = call.messages[0].content;
+      return { output: output() };
+    }
+  } });
+  await model(request({ step_index: 2, working_revision: 1,
+    root_player_action: 'прошу спутника помочь, затем развязываю узел',
+    remaining_intent: current,
+    completed_steps: [{ step_index: 1, summary: 'прошу спутника помочь' }] }), {
+    original_output: {}, structural_errors: [{
+      path: '$.continuation.remaining_intent', code: 'continuation_progress'
+    }]
   });
+  assert.match(prompt,
+    /Plan only request\.remaining_intent[\s\S]*never repeat, re-plan, or place a completed event/u);
+  assert.match(prompt,
+    /Current step repair:[\s\S]*затем развязываю узел[\s\S]*root_player_action and completed_steps are history[\s\S]*only the exact uncovered suffix/u);
+});
 
 test('operation grounding repair preserves physical acts after discovery',
   async () => {
@@ -170,6 +195,8 @@ test('operation grounding repair preserves physical acts after discovery',
     }] });
     assert.match(prompt,
       /Required operation grounding repair:[\s\S]*discovery only reveals or materializes[\s\S]*never acquires, relocates, transforms, handles, or uses[\s\S]*Words copied into a discovery query do not execute a physical act[\s\S]*every physical act[\s\S]*continuation[\s\S]*textual prefix/u);
+    assert.match(prompt,
+      /current_visible_context\.sensory_details or visible_npc visible_status values already directly answer every visible fact requested[\s\S]*explicit negative fact[\s\S]*achieved direct player_safe_observation/u);
   });
 
 test('repair drops a field rejected as an additional property', async () => {

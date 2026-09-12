@@ -110,3 +110,32 @@ export function projectPreparedDomainState(state, effect) {
   }
   return next;
 }
+
+export function buildLowerDvinaTracePreparedRouteWorkingProjection({
+  projection, movement, committedState, clockAfter
+}) {
+  const destination = movement.destination;
+  const scene = (committedState.prepared_scenes ?? []).find(
+    ({ location_profile_ref }) => location_profile_ref === destination.location_ref)
+    ?? (committedState.first_entry_preparation?.scene?.location_profile_ref
+      === destination.location_ref ? committedState.first_entry_preparation.scene : null);
+  if (!scene?.node?.instance_id) throw Object.assign(new Error(
+    'Prepared turn-step effect failed closed.'), {
+    code: 'TRACE_TURN_STEP_PREPARED_ROUTE_DESTINATION_INVALID', status: 409 });
+  const routeEntry = { route_ref: movement.route_ref,
+    from_ref: movement.source.location_ref, to_ref: destination.location_ref,
+    status: 'completed' };
+  const { active_interlocutor: _activeInterlocutor,
+    ...projectionWithoutInterlocutor } = structuredClone(projection);
+  const moved = { ...projectionWithoutInterlocutor,
+    position: { ...structuredClone(projection.position ?? {}),
+      location_ref: destination.location_ref,
+      g5_anchor_id: destination.g5_anchor_id,
+      g5_node_id: scene.node.instance_id,
+      ...(destination.zone_ref == null ? {} : { zone_ref: destination.zone_ref }) },
+    route_history: [...structuredClone(projection.route_history ?? []), routeEntry] };
+  if (clockAfter == null) return moved;
+  return { ...moved, clock: structuredClone(clockAfter),
+    clock_weather_light: { ...structuredClone(moved.clock_weather_light ?? {}),
+      clock: structuredClone(clockAfter) } };
+}

@@ -1087,7 +1087,9 @@ async function assertGeneralLookAfterInspection({
     opened.screen.visible_context.place);
   assert.notEqual(campLookContext.visible_scene,
     narrationRequests[2].visible_context.visible_scene);
-  assert.deepEqual(campLookContext.sensory_details, []);
+  assert.deepEqual(campLookContext.sensory_details, [
+    'На очаговой площадке сейчас не видно ни пламени, ни тлеющих углей.'
+  ]);
   assert.equal(randomDraws, beforeCampLook.randomDraws);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), beforeCampLook.checks);
@@ -1563,7 +1565,8 @@ async function assertPreparedSemanticBodyRecovery({ pool, release, runtimeCatalo
       if (request.step_index === 1) return { ...plan(request, { goal_result: 'pending',
         continuation: { remaining_intent: 'Проверяю устойчивость опоры.', depends_on_refs: [] } }),
         direct_result_kind: 'player_utterance', utterance: { speaker_ref: request.actor.actor_id,
-          input_mode: 'intent_paraphrase', utterance_text: 'Не подходите к краю.' } };
+          input_mode: 'intent_paraphrase', utterance_text: 'Не подходите к краю.',
+          delivery: { loudness: 2, duration_class: 'instant' } } };
       return plan(request, { resolution: 'generic_check', goal_result: 'pending',
         check: { ...genericCheck(), skill_ref: null },
         activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' } });

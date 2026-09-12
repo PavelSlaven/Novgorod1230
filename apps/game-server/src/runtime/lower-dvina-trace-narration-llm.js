@@ -14,7 +14,11 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'Every unresolved-result proposition inside a required change must remain explicitly unknown; performed handling '
   + 'stays performed even when its observation result is unknown. A pending goal '
   + 'does not undo a committed operation. Preserve confirmed speech verbatim. '
-  + 'Render an unexecuted continuation as an open next choice, never as performed. '
+  + 'Render an unexecuted continuation as the second-person player\'s open next choice, never as performed or as an NPC action. '
+  + 'State it explicitly as not yet performed and having no result. Use future or '
+  + 'possibility wording; never recast it as present or past action, an ongoing attempt, '
+  + 'or a completed request. A bare statement of intention does not cover either fact: '
+  + 'the prose must explicitly say both that the action has not happened yet and that its result is still unknown. '
   + 'Use optional support selectively to compose the beat; do not recap unchanged '
   + 'scene, inventory, body or NPC facts. Turn duration is code-owned UI metadata '
   + 'and is not supplied to prose; never invent elapsed minutes or report time spent. '
@@ -37,12 +41,13 @@ const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certai
   + 'plausibility is not evidence. Ground every sensation, action, temporal relation '
   + 'and causal link. Empty optional arrays are omissions, not absence or silence. '
   + 'A label supplies identity, not traits; a scene label supplies location, not '
-  + 'ambience. Keep each NPC cue with its entity. Item placement proves only '
+  + 'ambience. Second person denotes only the player; a named or labelled NPC in '
+  + 'a required change remains a third-person NPC. Keep each NPC cue with its entity. Item placement proves only '
   + 'placement; actor movement requires confirmed_outcome.movement_committed=true. '
   + 'Missing or false outcome fields are silent constraints. action_intent supplies '
   + 'intention only, never execution, hearing, response, success or world fact. '
-  + 'A committed transient attempt is independent evidence of performed physical '
-  + 'contact; its unestablished observation does not negate that motion. Add no '
+  + 'A committed transient attempt is evidence only of the performed handling; '
+  + 'do not add success, failure, a result, or uncertainty unless supplied. Add no '
   + 'hidden fact, diagnosis, unsupported sensory detail, reaction or causal bridge.';
 
 const WRITER_SHAPE = 'Return only {"prose":"<complete Russian prose>"}. The server assembles version, schema, output_id, action_options=[], used_references=[] and neutral self_check={}; do not generate those fields.';
@@ -58,7 +63,7 @@ export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
     auditor: { audit: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_auditor',
       narrationAuditInstruction(request), request) },
     semanticRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_semantic_repair',
-      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For weak_literary_composition, preserve performed-action order; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. Then regroup descriptive facts by supplied shared subjects and spatial anchors instead of input order. When they are supplied results of a perception beat, that beat must grammatically govern the cluster; a standalone perception-action sentence plus a descriptive inventory still fails. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
+      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For weak_literary_composition, preserve performed-action order; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. When a concern identifies ongoing wording for a completed action, make completion grammatically explicit; never replace it with another present or ongoing verb. Then regroup descriptive facts by supplied shared subjects and spatial anchors instead of input order. When they are supplied results of a perception beat, that beat must grammatically govern the cluster; a standalone perception-action sentence plus a descriptive inventory still fails. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
   });
 }
 

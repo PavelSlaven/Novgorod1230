@@ -74,7 +74,6 @@ export function createTracePhase2TemporalAdvance({ contracts,
         validation_report:{ok:true}},stop_after_source_batch:false});
     const partial = compareGameTimestamp(advanced.result.clock_after,window.clock_after)!==0;
     if (partial && !(effectKind === 'semantic_activity'
-        && consequence?.body_effect_ref == null
         && advanced.result.trace.stopped_after_current_batch === true))
       throw temporalError('TRACE_PHASE_2_TEMPORAL_BOUNDARY_REQUIRES_RESOLUTION');
     const plans=advanced.result.combined_change_set.proposals.flatMap(

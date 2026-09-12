@@ -61,3 +61,25 @@ test('factual activity refs and summary preserve the individual duty across a fu
   assert.equal(resumed.factual_transition.summary, work.summary);
   assert.equal(resumed.activity_after.summary, work.summary);
 });
+
+test('routine movement is a started interval before its completion', () => {
+  const movingProfile = structuredClone(profile);
+  movingProfile.phases[1] = { ...movingProfile.phases[1],
+    duration_minutes: 12, activity_ref: 'walk-home', runtime_status: 'unavailable',
+    movement_handoff: { route_ref: 'route-work-home',
+      source_endpoint_ref: 'work-endpoint',
+      destination_endpoint_ref: 'home-endpoint',
+      destination_location_ref: 'home', duration_minutes: 12 } };
+  const value = input();
+  value.runtime = createNpcRoutineState({ profile: movingProfile,
+    started_at: at(100), current_activity: { activity_ref: 'work' } });
+  const started = proposeNpcRoutineTransition({ ...value, runtime: value.runtime,
+    scheduled_at: at(160) });
+  assert.equal(started.movement_transition.status, 'started');
+  assert.equal(started.runtime_after.movement_execution.route_ref,
+    'route-work-home');
+  const arrived = proposeNpcRoutineTransition({ ...value,
+    runtime: started.runtime_after, scheduled_at: at(172) });
+  assert.equal(arrived.movement_transition.status, 'completed');
+  assert.equal(arrived.runtime_after.movement_execution, null);
+});

@@ -2,7 +2,8 @@ import { requireTurnStepOperationBatch, TURN_STEP_OPERATION_BATCH_TARGET } from 
 import {
   requireTurnStepSemanticActivityTimeline
 } from './lower-dvina-trace-turn-step-activity-writes.js';
-import { prepareTurnStepBodyHistory } from './lower-dvina-trace-turn-step-body-history.js';
+import { prepareTurnStepBodyHistory, preparedBodyHistoryInput } from
+  './lower-dvina-trace-turn-step-body-history.js';
 import {
   requireActivityOwnerBinding, requireFactualCommit,
   validateBodyComponentOrder,
@@ -34,7 +35,7 @@ import {
 export { mergeLowerDvinaTraceTurnStepWrites };
 export function prepareLowerDvinaTraceTurnStepPersistence({
   partyId, writePlan, state, snapshot, factual, changeSetId, idemId,
-  phase3Contracts = null, preparedFactual = factual,
+  phase3Contracts = null, phase4Contracts = null, preparedFactual = factual,
   turnStepApprovedOwners = null, turnStepAmbientPortionProfileRef = null
 }) {
   const committedSnapshot = attachTurnStepCommit({ snapshot,
@@ -46,7 +47,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       batch: null,
       envelope: writePlan?.turn_step_commit,
       factual,
-      state, phase3Contracts, turnStepApprovedOwners,
+      state, phase3Contracts, phase4Contracts, turnStepApprovedOwners,
       localFirePlans: writePlan
         ?.local_fire_atomic_write_plans ?? []
     });
@@ -72,7 +73,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     batch,
     envelope: commit,
     factual: preparedFactual,
-    state, phase3Contracts, turnStepApprovedOwners,
+    state, phase3Contracts, phase4Contracts, turnStepApprovedOwners,
     localFirePlans: writePlan?.local_fire_atomic_write_plans ?? []
   });
   const next = structuredClone(committedSnapshot);
@@ -161,15 +162,14 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     context, batch,
     writePlan, idemId });
   const bodySlice = preparedEffect.semanticBodySlice;
-  context.bodyHistory = preparedEffect.prepared && bodySlice == null ? null
+  const bodySlices = preparedEffect.semanticBodySlices
+    ?? (bodySlice == null ? [] : [bodySlice]);
+  const bodyHistoryInput = preparedBodyHistoryInput({
+    factual: commit, batch, bodySlices
+  });
+  context.bodyHistory = preparedEffect.prepared && bodySlices.length === 0 ? null
     : prepareTurnStepBodyHistory({
-        partyId, state, factual: bodySlice == null ? commit : {
-          ...commit, consequence: bodySlice.consequence,
-          body_update: bodySlice.body_update
-        }, batch: bodySlice == null ? batch : {
-          ...batch, operations: batch.operations.filter(({ target, value }) =>
-            target === 'party_events' && value.activity_id === bodySlice.operation_ref)
-        }, changeSetId, idemId
+        partyId, state, ...bodyHistoryInput, changeSetId, idemId
       });
   if (context.bodyHistory != null) {
     next.turn_step_body_history = [

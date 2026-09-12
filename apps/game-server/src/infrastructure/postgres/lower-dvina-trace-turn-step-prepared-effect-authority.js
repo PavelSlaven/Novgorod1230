@@ -237,8 +237,7 @@ export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
           slice.time_update.clock_before)
         || !samePreparedValue(slice.body_update.state_after, approved?.body_state_after)
         || (slice.consequence.body_effect_ref ?? null) !== approved?.body_effect_ref
-        || (slice.body_update.applied === true) !== (approved?.body_effect_ref != null)
-        || (slice.body_update.applied === true && index !== ledger.slices.length - 1)) {
+        || (slice.body_update.applied === true) !== (approved?.body_effect_ref != null)) {
       preparedEffectFail('semantic slice differs from its approved owner and current trace');
     }
     validateBodyComponentOrder({ ...batch, operations: [fragment] }, {

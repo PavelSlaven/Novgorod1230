@@ -125,6 +125,32 @@ test('applied player-safe observation exposes perceived facts and not static sel
   assert.deepEqual(unapplied.visible_changes, []);
 });
 
+test('observation preserves separately visible NPCs with the same label', async () => {
+  const scene = currentScene();
+  scene.sensory_details = [];
+  scene.visible_npc = ['first', 'second'].map((id) => ({
+    entity_ref: { entity_kind: 'npc', entity_id: id },
+    display_label: 'рыбак', recognition: 'unrecognized',
+    visible_status: 'чинит снасти'
+  }));
+  const input = { consequence: { visible_seed: {} },
+    retrieved_state: { current_visible_context: scene },
+    mode_resolution: { decision_trace: { step_traces: [{ applied: true,
+      approved_plan: { resolution: 'direct', goal_result: 'achieved',
+        operations: [], check: null,
+        direct_result_kind: 'player_safe_observation' } }] } } };
+
+  const visible = projectCurrentSceneForNoOperationDirect({
+    input, directSeedKeys: [], body: {}
+  });
+
+  assert.deepEqual(visible.visible_changes, [
+    'Вы внимательно изучили обстановку.',
+    'В поле зрения — рыбак (1): чинит снасти.',
+    'В поле зрения — рыбак (2): чинит снасти.'
+  ]);
+});
+
 test('ordinary seed keeps new observation and drops elapsed prose and old snapshot', async () => {
   const visible = await createLowerDvinaTraceTurnStepVisibleProjector({ fallback }).project({
     consequence: { status: 'resolved', visible_seed: {

@@ -1,10 +1,18 @@
 import { canonicalDigest } from '@rus/materialization';
 import {
+  countCrossedWholeMinuteBoundaries,
+  subtractRationalMinutes
+} from '@rus/time-events-history';
+import {
   resolveTurnStepExactTimeWindow,
   resolveTurnStepSemanticActivityTime
 } from '@rus/turn';
 import { serverError } from '../../errors.js';
 import { row } from './first-playable/plan-shared.js';
+import { activityContext, activityReconciliationFail as reconciliationFail,
+  activityWriteFail as fail, dbInteger, exactMinutes, positiveIntegralMinutes,
+  rationalAsNumber, semanticActivityResultCode } from
+  './lower-dvina-trace-turn-step-activity-write-values.js';
 export function requireTurnStepSemanticActivityTimeline({
   factual, batch, expectedClockBefore
 }) {
@@ -49,9 +57,9 @@ export function requireTurnStepSemanticActivityTimeline({
   if (canonicalDigest(actual) !== canonicalDigest(expected)) {
     reconciliationFail('committed activity timeline differs from its owner');
   }
-  const duration = Number(
-    expected.semantic_activity_elapsed.exact_minutes.numerator);
-  if (!Number.isSafeInteger(duration) || duration < 0) {
+  const duration = rationalAsNumber(
+    expected.semantic_activity_elapsed.exact_minutes);
+  if (duration == null) {
     reconciliationFail('owner activity duration is invalid');
   }
   return {
@@ -106,7 +114,7 @@ export function appendTurnStepSemanticActivityWrites({
       'party_timed_activity_attempts', `${activity.activity_id}:0`,
       attemptRecord({
         activity, factual, changeSetId, idemId, turnNumber,
-        resolution, duration, order
+        resolution, order
       })
     ));
   }
@@ -118,20 +126,26 @@ function executionRecord({
   const execution = resolution.execution;
   const startedAt = execution.started_at;
   const endedAt = execution.ended_at;
+  const actual = exactMinutes(resolution.attempt.actual_time);
+  const remaining = subtractRationalMinutes(
+    { numerator: String(duration), denominator: '1' },
+    actual
+  );
   return {
     id: activity.activity_id,
     series_ordinal: 0,
     activity_snapshot: activitySnapshot(activity, order),
     original_total_minutes: duration,
-    cumulative_elapsed_numerator: exactIntegralMinutes(resolution.attempt.actual_time),
-    cumulative_elapsed_denominator: 1,
-    remaining_time_numerator: duration - exactIntegralMinutes(resolution.attempt.actual_time),
-    remaining_time_denominator: 1,
+    cumulative_elapsed_numerator: dbInteger(actual.numerator),
+    cumulative_elapsed_denominator: dbInteger(actual.denominator),
+    remaining_time_numerator: dbInteger(remaining.numerator),
+    remaining_time_denominator: dbInteger(remaining.denominator),
     next_attempt_ordinal: resolution.attempt.attempt_ordinal + 1,
     status: execution.status,
     state_version: 2,
     updated_change_set_id: changeSetId,
-    terminal_change_set_id: changeSetId,
+    terminal_change_set_id: execution.status === 'paused'
+      ? null : changeSetId,
     execution_scope: execution.execution_scope,
     activity_series_id: `series:${activity.activity_id}`,
     activity_owner_ref: {
@@ -168,11 +182,11 @@ function executionRecord({
 }
 function attemptRecord({
   activity, factual, changeSetId, idemId, turnNumber,
-  resolution, duration, order
+  resolution, order
 }) {
   const attempt = resolution.attempt;
-  const planned = exactIntegralMinutes(attempt.planned_time);
-  const actual = exactIntegralMinutes(attempt.actual_time);
+  const planned = exactMinutes(attempt.planned_time);
+  const actual = exactMinutes(attempt.actual_time);
   if (planned == null || actual == null) {
     fail('semantic activity attempt time is not representable', {
       activity_id: activity.activity_id
@@ -180,22 +194,24 @@ function attemptRecord({
   }
   const startedAt = attempt.started_at;
   const endedAt = attempt.ended_at;
+  const remaining = subtractRationalMinutes(planned, actual);
   return {
     activity_execution_id: activity.activity_id,
     attempt_ordinal: attempt.attempt_ordinal,
-    remaining_before_numerator: duration,
-    remaining_before_denominator: 1,
-    planned_time_numerator: planned,
-    planned_time_denominator: 1,
-    actual_time_numerator: actual,
-    actual_time_denominator: 1,
-    remaining_after_numerator: duration - actual,
-    remaining_after_denominator: 1,
+    remaining_before_numerator: dbInteger(planned.numerator),
+    remaining_before_denominator: dbInteger(planned.denominator),
+    planned_time_numerator: dbInteger(planned.numerator),
+    planned_time_denominator: dbInteger(planned.denominator),
+    actual_time_numerator: dbInteger(actual.numerator),
+    actual_time_denominator: dbInteger(actual.denominator),
+    remaining_after_numerator: dbInteger(remaining.numerator),
+    remaining_after_denominator: dbInteger(remaining.denominator),
     cumulative_time_before_numerator: 0,
     cumulative_time_before_denominator: 1,
-    cumulative_time_after_numerator: actual,
-    cumulative_time_after_denominator: 1,
-    crossed_whole_minute_boundaries: actual,
+    cumulative_time_after_numerator: dbInteger(actual.numerator),
+    cumulative_time_after_denominator: dbInteger(actual.denominator),
+    crossed_whole_minute_boundaries: dbInteger(
+      countCrossedWholeMinuteBoundaries(startedAt, endedAt)),
     clock_commit_mode: 'direct_party_clock',
     execution_context_snapshot: activityContext(activity, order),
     result_kind: attempt.result_kind,
@@ -250,43 +266,4 @@ function activitySnapshot(activity, order) {
     effort: activity.effort,
     body_effect_profile_ref: activity.body_effect_profile_ref
   };
-}
-function positiveIntegralMinutes(value) {
-  const number = exactIntegralMinutes(value);
-  return number != null && number > 0 ? number : null;
-}
-function exactIntegralMinutes(value) {
-  const exact = value?.exact_minutes;
-  if (exact?.denominator !== '1'
-      || typeof exact.numerator !== 'string'
-      || !/^(?:0|[1-9]\d*)$/u.test(exact.numerator)) return null;
-  const number = Number(exact.numerator);
-  return Number.isSafeInteger(number) ? number : null;
-}
-function activityContext(activity, order) {
-  return {
-    root_turn_id: activity.root_turn_id,
-    step_index: activity.step_index,
-    fragment_order: order,
-    duration_class: activity.duration_class,
-    effort: activity.effort
-  };
-}
-function fail(reason, details = {}) {
-  throw serverError(
-    'TRACE_TURN_STEP_SEMANTIC_ACTIVITY_PERSISTENCE_GAP',
-    'Semantic activity cannot use the existing normalized activity owner.',
-    { status: 409, details: { reason, ...details } }
-  );
-}
-function reconciliationFail(reason, details = {}) {
-  throw serverError(
-    'TRACE_TURN_STEP_SEMANTIC_ACTIVITY_RECONCILIATION_FAILED',
-    'Semantic activity differs from the temporal owner output.',
-    { status: 409, details: { reason, ...details } }
-  );
-}
-function semanticActivityResultCode(resolution) {
-  return resolution.execution.status === 'completed'
-    ? 'turn_step_semantic_activity_completed' : 'turn_step_semantic_activity_interrupted';
 }

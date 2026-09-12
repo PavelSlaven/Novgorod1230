@@ -120,7 +120,7 @@ export function preparedDirectContinuation(plan, preparedEffects = []) {
   // A semantic-only prefix has no deferred domain-command commit. Revalidated
   // direct/check steps still use the existing runtime owners and body boundary.
   if (preparedEffects.length > 0 && preparedEffects.every(({ effect }) =>
-    effect.effect_kind === 'semantic_activity' && effect.body_update.applied !== true)) {
+    effect.effect_kind === 'semantic_activity')) {
     const outcomes = plan.resolution === 'generic_check'
       ? Object.values(plan.check.outcomes) : [{ operations: plan.operations }];
     return ['direct', 'generic_check'].includes(plan.resolution)

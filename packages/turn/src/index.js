@@ -24,7 +24,7 @@ import { resolveWorldProcessStep, validateWorldProcessStepPlan } from './world-p
 import { resolveSpatialSemanticDescriptor } from './spatial-semantic-remainder.js';
 import { resolveNpcOrdinarySemanticRemainder } from
   './npc-ordinary-semantic-remainder.js';
-export { isBackgroundNpcSemanticRemainderInScope,
+import { isBackgroundNpcSemanticRemainderInScope,
   resolveBackgroundNpcSemanticRemainder } from
   './turn-step-background-npc-remainder.js';
 import { isDomainStepOperation, isOrdinaryDiscoveryInScope } from
@@ -176,6 +176,8 @@ export {
   validateWorldProcessStepPlan,
   resolveSpatialSemanticDescriptor,
   resolveNpcOrdinarySemanticRemainder,
+  isBackgroundNpcSemanticRemainderInScope,
+  resolveBackgroundNpcSemanticRemainder,
   createOrdinaryMaterializationDiscoveryOwner
 };
 export {

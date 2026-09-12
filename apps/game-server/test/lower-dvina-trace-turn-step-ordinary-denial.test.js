@@ -87,6 +87,8 @@ export async function repairedOrdinaryPrerequisite(entry, { capturedWrongVerdict
       assert.deepEqual(payload.structural_errors.map(({ path, code }) => ({ path, code })),
         [{ path: '$.resolution', code: 'operation_semantic_grounding' }]);
       return { output: { ...output(), resolution: 'domain_request',
+        interpretation: { player_goal: entry.intent, grounded_attempt: entry.intent,
+          adaptation: 'literal' },
         activity: { owner: 'domain', duration_class: null, effort: null },
         operations: [{ ...operation, discovery_kind: 'search' }], continuation: {
           remaining_intent: entry.intent, depends_on_refs: [] }, reason_code: 'semantic_plan' } };
@@ -198,6 +200,14 @@ test('domain owner unavailable repairs to lawful reality-limited direct attempt'
   assert.deepEqual(roles, ['turn_step_planner', 'turn_step_planner_repair']);
 });
 
+test('domain owner repair uses already visible NPC activities directly', () => {
+  const lines = turnStepRepairSpecificInstructions({ structural_errors: [{
+    path: '$.operations.0', code: 'domain_owner_unavailable'
+  }] }, inputFor(ordinaryCases[0]));
+  assert.match(lines.join(' '),
+    /visible_npc visible_status values already answer[\s\S]*direct player_safe_observation[\s\S]*no assessment/u);
+});
+
 test('repaired prerequisites reach O1 with catalog support, zero query evidence and materialized projections', async () => {
   const bundle = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json', import.meta.url), 'utf8'));
   const profile = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/ordinary-materialization-profile.json', import.meta.url), 'utf8'));
@@ -229,7 +239,7 @@ test('repaired prerequisites reach O1 with catalog support, zero query evidence 
       return { provider_record: modelIdentity(), output: {
         resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
         semantic_admission_class: 'common_mundane', world_knowledge_claim_refs: [claim.claim_ref],
-        entities: [{ semantic_type: 'ordinary_material',
+        entities: [{ semantic_type: 'ordinary_material', name: entry.query,
           presence_expectation: 'plausible',
         mechanics_proposal: { mass_grams: 350, external_hand_cost: 1, carry_form: 'regular',
           packing_slot_cost: 1, quantity: { value: 1, unit: 'item' }, container: null } }],
@@ -264,18 +274,18 @@ test('repaired prerequisites reach O1 with catalog support, zero query evidence 
       query: entry.query, display_name: atomic.item.item_proposal.semantic_descriptor.name
     });
     assert.equal(atomic.item.item_proposal.semantic_descriptor.name,
-      'обычный предмет');
+      entry.query);
     assert.equal(atomic.item.item_proposal.semantic_descriptor.semantic_type,
       'ordinary_material');
     assert.deepEqual(atomic.item.runtime_placement, { scene_position_id: `${entry.location}-position` });
     assert.equal(result.player_response_boundary, false);
     assert.equal(plan.continuation.remaining_intent, entry.intent);
     const projected = projectPreparedOrdinaryItem(input.player_safe_state, atomic);
-    assert.equal(projected.items[0].name, 'обычный предмет');
+    assert.equal(projected.items[0].name, entry.query);
     assert.equal(atomic.item.item_id, projected.items[0].item_id);
     assert.equal(atomic.item.item_id, projected.current_visible_context.visible_objects[0].entity_ref.entity_id);
     assert.equal(projected.current_visible_context.visible_objects[0].display_label,
-      'обычный предмет');
+      entry.query);
     assert.deepEqual(roles, ['world_knowledge_query_planner', 'ordinary_materialization',
       'world_knowledge_query_planner', 'ordinary_materialization']);
   }

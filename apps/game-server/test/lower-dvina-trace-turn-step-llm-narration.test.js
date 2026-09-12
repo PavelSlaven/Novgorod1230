@@ -217,8 +217,13 @@ test('narration treats exact known context as visible evidence and still blocks 
       }, context: {}
     });
     assert.equal(result.status, expectedStatus);
-    assert.match(calls.find(({ role_id: role }) => role === 'gameplay_narrator_auditor')
-      .messages[0].content, /strict evidence auditor/u);
+    const auditInstruction = calls.find(
+      ({ role_id: role }) => role === 'gameplay_narrator_auditor').messages[0].content;
+    assert.match(auditInstruction, /strict evidence auditor/u);
+    assert.match(auditInstruction,
+      /performed attempt with no supplied result or uncertainty[\s\S]*unsupported_result/u);
+    assert.match(auditInstruction,
+      /attempt\s+alone without any outcome claim is supported and must not be flagged/u);
   });
 });
 

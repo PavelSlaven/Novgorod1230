@@ -72,7 +72,10 @@ export function applyProviderOverrides(config, overrides) {
 }
 
 export function normalizeExecutionLimits(config) {
-  config.maxTokens = LLM_MAX_OUTPUT_TOKENS;
+  const requestedMaxTokens = readPositiveInt(config.maxTokens);
+  config.maxTokens = requestedMaxTokens === null
+    ? LLM_MAX_OUTPUT_TOKENS
+    : Math.min(requestedMaxTokens, LLM_MAX_OUTPUT_TOKENS);
   config.requestTimeoutMs = LLM_REQUEST_TIMEOUT_MS;
 }
 

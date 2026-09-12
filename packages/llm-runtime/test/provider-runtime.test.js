@@ -86,8 +86,13 @@ test('execution limits override environment, provider, and per-call values', () 
     runtimeProviderOverride: { ...customProvider, requestTimeoutMs: 1 },
     overrides: { maxTokens: 1, requestTimeoutMs: 1 }
   });
-  assert.equal(hostile.config.maxTokens, 20_000);
+  assert.equal(hostile.config.maxTokens, 1);
   assert.equal(hostile.config.requestTimeoutMs, 120_000);
+  assert.equal(resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId,
+    env: { DEEPSEEK_API_KEY: 'test-key' },
+    overrides: { maxTokens: 50_000 }
+  }).config.maxTokens, 20_000);
 });
 
 test('portrait scope retains 120 s transport fallback', () => {

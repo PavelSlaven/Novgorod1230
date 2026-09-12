@@ -5,6 +5,8 @@ import { computeSpatialV3CanonicalDigest } from
 import { createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
 import { canonicalDigest } from '@rus/materialization';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
+import { appendTurnStepSemanticActivityWrites } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-step-activity-writes.js';
 import { createSpatialV3CombinedAtomicCommitter } from
   '../src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { prepareLowerDvinaTraceTurnStepPersistence } from
@@ -96,6 +98,57 @@ test('M1 owner timeline keeps global positions in an interleaved batch', () => {
     factual: tamperedTime }), {
     code: 'TRACE_TURN_STEP_SEMANTIC_ACTIVITY_RECONCILIATION_FAILED'
   });
+});
+
+test('M1 owner timeline persists an interrupted fractional attempt exactly', () => {
+  const fragment = semanticActivity({ duration: 1, durationClass: 'moment' });
+  const halfMinute = { exact_minutes: {
+    numerator: '1', denominator: '2'
+  } };
+  const halfPastTen = {
+    whole_minutes: '10', subminute_numerator: '1',
+    subminute_denominator: '2'
+  };
+  const activity = {
+    ...fragment.value,
+    profile_pin: profilePin(),
+    body_effect_profile_ref: 'body:moment:light',
+    owner_resolution: {
+      ...activityResolution(fragment.value, 0, '10', '11'),
+      execution: {
+        ...activityResolution(fragment.value, 0, '10', '11').execution,
+        status: 'paused', ended_at: halfPastTen
+      },
+      attempt: {
+        ...activityResolution(fragment.value, 0, '10', '11').attempt,
+        actual_time: halfMinute, result_kind: 'paused', ended_at: halfPastTen
+      }
+    }
+  };
+  const writes = { inserts: [], appends: [] };
+  const state = baseState();
+  appendTurnStepSemanticActivityWrites({
+    writes, activities: [activity], partyId: 'p', state, snapshot: state,
+    factual: { player_input: { request_id: 'request-1' } },
+    changeSetId: 'change-1', idemId: 'idem-1'
+  });
+  const execution = writes.inserts[0].record;
+  const attempt = writes.appends[0].record;
+  assert.deepEqual([
+    execution.cumulative_elapsed_numerator,
+    execution.cumulative_elapsed_denominator,
+    execution.remaining_time_numerator,
+    execution.remaining_time_denominator
+  ], [1, 2, 1, 2]);
+  assert.equal(execution.status, 'paused');
+  assert.equal(execution.terminal_change_set_id, null);
+  assert.deepEqual([
+    attempt.actual_time_numerator,
+    attempt.actual_time_denominator,
+    attempt.remaining_after_numerator,
+    attempt.remaining_after_denominator,
+    attempt.crossed_whole_minute_boundaries
+  ], [1, 2, 1, 2, 0]);
 });
 
 test('M1 time commit is anchored to state and exact elapsed', () => {

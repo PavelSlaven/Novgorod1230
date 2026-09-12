@@ -20,7 +20,8 @@ import { resolveFirstEntry } from './lower-dvina-trace-phase-3-first-entry.js';
 import { bindOrdinaryPlanToCombinedInput } from
   './lower-dvina-trace-ordinary-p16.js';
 
-export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDigest, phase4Contracts, loadState, committer }) {
+export async function commitLowerDvinaTracePhase4({ partyId, writePlan,
+  inputDigest, phase4Contracts, turnStepApprovedOwners, loadState, committer }) {
   const factual = writePlan.write_targets.find((entry) => entry.target === 'party_state')?.value;
   if (!factual?.consequence?.phase4_kind) throw fail('TRACE_PHASE_4_WRITE_PLAN_INVALID');
   const state = await loadState(partyId, { presentationIdempotencyKey: factual.player_input.idempotency_key });
@@ -57,7 +58,8 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
   next.last_turn.visible_package = { package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest, change_set_id: changeSetId };
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({ partyId,
-    writePlan, state, snapshot: next, factual, changeSetId, idemId });
+    writePlan, state, snapshot: next, factual, changeSetId, idemId,
+    phase4Contracts, turnStepApprovedOwners });
   next = turnStep.snapshot;
   const pendingScreen = phase4PendingScreen({ state: next, factual, visibleEnvelope,
     turnNumber, nextVersion });
@@ -99,6 +101,13 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
       'party_obligations', state.promise_instances[0].obligation_id,
       Number(state.promise_instances[0].state_version)
     )] : []),
+    ...writes.updates.filter(({ target_table: table }) =>
+      table === 'party_npc_spatial_schedules').map(({ id }) => expected(
+      'party_npc_spatial_schedules', id,
+      Number(state.npc_schedule_runtime.find(
+        ({ id: scheduleId }) => scheduleId === id
+      )?.state_version)
+    )),
     ...(firstEntry?.expected_state_versions ?? [])
   ];
   const turnStepIdempotency = bindLowerDvinaTraceTurnStepIdempotency({
@@ -207,7 +216,12 @@ export function phase4SemanticCommitContext({
     return { rootTurnId, workingRevision: 0, semanticExchange };
   }
   const rootTurnId = envelope?.root_turn_id;
-  const workingRevision = envelope?.loop_trace?.working_revision;
+  const conversationTrace = envelope?.loop_trace?.step_traces?.find(
+    ({ applied, approved_plan: plan }) => applied === true
+      && plan?.operations?.some(({ op }) => op === 'emit_interaction'));
+  const workingRevision = conversationTrace == null
+    ? envelope?.loop_trace?.working_revision
+    : conversationTrace.working_revision + 1;
   if (writePlan.command_trace?.decision_protocol !== 'turn_step_plan_v1'
       || envelope?.schema !== 'turn_step_commit_envelope_v1'
       || typeof rootTurnId !== 'string'

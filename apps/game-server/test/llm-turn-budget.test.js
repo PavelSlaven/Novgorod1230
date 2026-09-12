@@ -142,7 +142,7 @@ test('gameplay narrator and repair retain custom provider and shared limits', as
     ['local-narrator', 'local-narrator']);
 });
 
-test('every active role and an unseen role receive shared execution limits', async () => {
+test('every role receives the shared timeout and may request a lower token cap', async () => {
   const calls = [];
   const runner = createLlmRoleRunnerAdapter({
     execute: async (input) => {
@@ -156,7 +156,7 @@ test('every active role and an unseen role receive shared execution limits', asy
       overrides: { maxTokens: 1, requestTimeoutMs: 1 } });
   }
   for (const call of calls) assert.deepEqual(call.overrides,
-    { maxTokens: 20_000, requestTimeoutMs: 120_000 });
+    { maxTokens: 1, requestTimeoutMs: 120_000 });
 });
 
 test('runtime provider override reaches every registered gameplay and portrait role', async () => {

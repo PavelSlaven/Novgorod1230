@@ -73,7 +73,7 @@ export function fixture({ direct = false, speech = false,
 function operationBatch() {
   return { target: 'party_turn_step_operations', value: { version: 1,
     schema: 'party_turn_step_operation_batch_v1', root_turn_id: 'turn:p:1',
-    committed_state_version: 3, operations: [{ target: 'party_items', value: {
+    committed_state_version: 3, operations: [semanticActivity(), { target: 'party_items', value: {
       version: 1, schema: 'rus.lower_dvina_trace_turn_step_direct_operation.v1',
       operation_id: 'op-sand', root_turn_id: 'turn:p:1', step_index: 1,
       operation_kind: 'create_entity', payload: { temp_ref: 'sand-temp',
@@ -82,7 +82,7 @@ function operationBatch() {
         origin: { kind: 'ambient_ordinary', source_refs: ['shore'] }, facts: [],
         runtime_instance_mechanics_snapshot: mechanics(),
         placement: { holder_character_id: 'actor-1', physical_position: 'hands' }
-      } } }, semanticActivity()] } };
+      } } }] } };
 }
 
 function speechBatch() {
@@ -151,13 +151,12 @@ export function semanticActivity() {
 function authoredMoveBatch(item) {
   return { target: 'party_turn_step_operations', value: { version: 1,
     schema: 'party_turn_step_operation_batch_v1', root_turn_id: 'turn:p:1',
-    committed_state_version: 3, operations: [{ target: 'party_items', value: {
+    committed_state_version: 3, operations: [semanticActivity(), { target: 'party_items', value: {
       version: 1, schema: 'rus.lower_dvina_trace_turn_step_direct_operation.v1',
       operation_id: 'op-authored-move', root_turn_id: 'turn:p:1', step_index: 1,
       operation_kind: 'move_entity', payload: { entity_ref: 'authored-item',
         placement: { holder_character_id: 'actor-1', physical_position: 'hands' },
-        authored_source: authoredItemPlacementSourceProof(item) } } },
-    semanticActivity()] } };
+        authored_source: authoredItemPlacementSourceProof(item) } } }] } };
 }
 
 function mechanics() {

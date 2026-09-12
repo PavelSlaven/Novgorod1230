@@ -36,6 +36,33 @@ test('condition order is not a bodily event and unchanged symptoms stay supporti
   assert.deepEqual(next.visible_changes, []);
 });
 
+test('simultaneous routine changes preserve equally labelled NPCs', () => {
+  const visibleNpc = ['npc:1', 'npc:2'].map((entity_id) => ({
+    entity_ref: { entity_kind: 'npc', entity_id }, display_label: 'рыбак'
+  }));
+  const current = { ...scene(), visible_npc: visibleNpc };
+  const committedState = { current_visible_context: current,
+    npcs: visibleNpc.map(({ entity_ref }) => ({ instance_id: entity_ref.entity_id,
+      machine_state: { current_activity: { summary: 'Чинит сети.' } } })) };
+  const temporalResults = [{ combined_change_set: { proposals: visibleNpc.map(
+    ({ entity_ref }) => ({ npc_routine_transition: {
+      npc_id: entity_ref.entity_id, proposal: { factual_transition: {
+        summary: 'Прерывает работу для короткого отдыха.'
+      } }, after: { npc_id: entity_ref.entity_id,
+        causal_state_ref: { routine_state: { status: 'inactive' } },
+        npc_snapshot: { machine_state: { current_activity: {
+          summary: 'Прерывает работу для короткого отдыха.'
+        } } } }
+    } })) } }];
+  const projected = enrichLowerDvinaTraceVisibleNpcCues({
+    visibleContext: current, committedState, temporalResults
+  });
+  assert.deepEqual(projected.visible_changes, [
+    'рыбак (1) прерывает работу для короткого отдыха.',
+    'рыбак (2) прерывает работу для короткого отдыха.'
+  ]);
+});
+
 test('a remembered player utterance is not recast as received testimony', () => {
   const known = projectKnownContext({ actor_id: 'player' }, [], [
     { speaker_actor_id: 'player', content: 'Я не знаю дороги.' },

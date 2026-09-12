@@ -138,6 +138,12 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     const preparedContinuationAllowed = preparedPlan != null
       || preparedEffects.length === 0
       || preparedDirectContinuation(plan, preparedEffects)
+      || (typeof ports.preparedEffectContinuation === 'function'
+        && await ports.preparedEffectContinuation(deepFreeze({
+          plan: structuredClone(plan),
+          request: structuredClone(request),
+          prepared_chain_context: structuredClone(preparedChainContext)
+        })) === true)
       || (plan.resolution === 'domain_request'
         && typeof ports.admitPreparedDomainPlan === 'function'
         && await ports.admitPreparedDomainPlan(deepFreeze({

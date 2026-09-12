@@ -54,7 +54,21 @@ export async function loadLowerDvinaTraceRevision33Bundle({ rootDir,
       || schedules.scenario_definition_revision !== 33
       || schedules.entries.length !== historicalBundle.initial_npc_schedule_profile.entries.length
       || !Array.isArray(schedules.routine_profiles)) return fail('TRACE_REVISION_33_CONTENT_INVALID');
-  for (const profile of schedules.routine_profiles) validateNpcRoutineProfile(profile);
+  for (const profile of schedules.routine_profiles) {
+    validateNpcRoutineProfile(profile);
+    for (const phase of profile.phases) {
+      const handoff = phase.movement_handoff;
+      if (handoff == null) continue;
+      const route = bundle.movement_bindings.route_bindings.find(
+        ({ route_id: id }) => id === handoff.route_ref);
+      if (route == null || route.source_endpoint !== handoff.source_endpoint_ref
+          || route.destination_endpoint !== handoff.destination_endpoint_ref
+          || route.terminal_position_outcome !== handoff.destination_location_ref
+          || route.duration_minutes !== handoff.duration_minutes) {
+        return fail('TRACE_REVISION_33_CONTENT_INVALID');
+      }
+    }
+  }
   for (const entry of schedules.entries) {
     if (schedules.routine_profiles.filter(({ profile_id }) =>
       profile_id === entry.routine_profile_ref).length !== 1) return fail('TRACE_REVISION_33_CONTENT_INVALID');

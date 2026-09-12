@@ -414,7 +414,7 @@ test('visible NPC routine transition reaches scene changes and current status', 
     }] } }]
   });
   assert.equal(result.visible_changes.includes(
-    'Еремей: Прерывает работу для короткого отдыха.'), true);
+    'Еремей прерывает работу для короткого отдыха.'), true);
   assert.equal(result.visible_npc[0].visible_status,
     'Прерывает работу для короткого отдыха.');
 });

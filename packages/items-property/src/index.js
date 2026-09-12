@@ -27,7 +27,7 @@ import { admitLocalFireIgnitionBasis, admitLocalFireInput,
   planLocalFireFuelPlacementTransition,
   planLocalFireWholeItemRetirement } from
   './local-fire-input.js';
-export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
+export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer, inventoryItemIsCarried } from './inventory.js';
 export {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
   planApprovedActorItemTransition

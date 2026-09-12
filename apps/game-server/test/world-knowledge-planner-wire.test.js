@@ -34,8 +34,8 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
     assert.equal(calls.length, 2, 'existing single repair still runs');
     const canonical = traces[0].planner_request;
     assert.equal(validateWorldKnowledgeQueryPlannerRequest(canonical, bundle).ok, true);
-    assert.deepEqual(canonical.available_knowledge_refs, [refs[256], ...refs.slice(0, 255)]);
-    assert.equal(canonical.available_knowledge_refs.length, 256);
+    assert.deepEqual(canonical.available_knowledge_refs, [refs[256], ...refs.slice(0, 95)]);
+    assert.equal(canonical.available_knowledge_refs.length, 96);
     assert.equal(canonical.semantic_input, input.remaining_intent);
     assert.equal(canonical.purpose, 'semantic_resolution');
     assert.deepEqual(canonical.planner_limits, { max_domains: 3,

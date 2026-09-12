@@ -26,6 +26,47 @@ test('optional null utterance is absent while actual speech still requires its t
   assert.equal(validateTurnStepPlan(invalid, { request: input }).ok, false);
 });
 
+test('planner assembly admits only a World Knowledge-supported assessment', () => {
+  const input = request();
+  const grounded = { ...input, world_knowledge: {
+    hard_constraints: [], facts: [{ claim_ref: 'wk:cordage' }]
+  } };
+  const semantic = { ...output(), resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_safe_observation', assessment: {
+      text: 'Снасти можно использовать как связки.',
+      support_refs: ['wk:cordage']
+    } };
+  const plan = assembleTurnStepPlan(semantic, grounded);
+  assert.deepEqual(plan.assessment, semantic.assessment);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+  const unsupported = assembleTurnStepPlan({ ...semantic, assessment: {
+    ...semantic.assessment, support_refs: ['wk:invented']
+  } }, grounded);
+  assert.equal(Object.hasOwn(unsupported, 'assessment'), false);
+
+  const fallback = assembleTurnStepPlan({ ...semantic,
+    goal_result: 'not_achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
+    assessment: undefined
+  }, { ...input, world_knowledge: { hard_constraints: [], facts: [
+    { claim_ref: 'wk:cordage', domain: 'physics_material_science',
+      runtime_text: 'Состояние снастей определяет их пригодность.' },
+    { claim_ref: 'wk:cordage-2', domain: 'physics_material_science',
+      runtime_text: 'Повтор того же домена не нужен.' },
+    { claim_ref: 'wk:wood', domain: 'craft_technology',
+      runtime_text: 'Влажность влияет на работу с древесиной.' }
+  ] } });
+  assert.deepEqual(fallback.assessment, {
+    text: 'Состояние снастей определяет их пригодность. Влажность влияет на работу с древесиной.',
+    support_refs: ['wk:cordage', 'wk:wood']
+  });
+  assert.equal(fallback.goal_result, 'achieved');
+  assert.deepEqual(fallback.activity,
+    { owner: 'semantic', duration_class: 'moment', effort: 'none' });
+  assert.equal(validateTurnStepPlan(fallback, { request: input }).ok, true);
+});
+
 test('planner assembly preserves resolved ownerless speech for quoted and unquoted input', () => {
   for (const [intent, text, mode] of [
     ['Кричу: «Отзовитесь!»', 'Отзовитесь!', 'verbatim'],
@@ -42,6 +83,46 @@ test('planner assembly preserves resolved ownerless speech for quoted and unquot
     assert.deepEqual(plan.utterance, utterance);
     assert.deepEqual(validateTurnStepPlan(plan, { request: input }).errors, []);
   }
+});
+
+test('factual assessment disambiguator corrects a false discovery owner', async () => {
+  const calls = [];
+  const input = request({
+    root_player_action: 'По видимым материалам оцениваю их пригодность.',
+    remaining_intent: 'По видимым материалам оцениваю их пригодность.',
+    player_safe_state: { position: { location_ref: 'shore' },
+      current_visible_context: { sensory_details: ['У воды лежат мокрые доски.'] },
+      ordinary_resolution: { discovery_available: true } }
+  });
+  const model = createLowerDvinaTraceTurnStepModel({
+    worldKnowledgeGrounder: { async ground(value) { return { ...value,
+      world_knowledge: { hard_constraints: [], facts: [{
+        claim_ref: 'claim:wet-wood', domain: 'physics_material_science',
+        runtime_text: 'Влажность влияет на работу древесины.'
+      }] } }; } },
+    roleRunner: { async run(call) {
+      calls.push(call);
+      if (call.role_id === 'turn_step_grounding_auditor') return { output: {
+        mode: 'assessment', support_refs: ['claim:wet-wood']
+      } };
+      return { output: { ...output(), resolution: 'domain_request',
+        operations: [{ op: 'request_discovery', actor_ref: 'actor_mikula',
+          discovery_kind: 'inspect', target_refs: ['shore'],
+          query: input.remaining_intent }], continuation: {
+          remaining_intent: input.remaining_intent, depends_on_refs: []
+        } } };
+    } }
+  });
+  const plan = await model(input);
+  assert.equal(plan.resolution, 'direct');
+  assert.equal(plan.direct_result_kind, 'player_safe_observation');
+  assert.deepEqual(plan.assessment, {
+    text: 'Влажность влияет на работу древесины.',
+    support_refs: ['claim:wet-wood']
+  });
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+  assert.deepEqual(calls.map(({ role_id }) => role_id),
+    ['turn_step_planner', 'turn_step_grounding_auditor']);
 });
 
 test('turn step model sends the validated request to the isolated planner role', async () => {
@@ -95,6 +176,7 @@ test('turn step model sends the validated request to the isolated planner role',
     'move the actor for make_believe',
     'Classify interpretation.adaptation by the stated goal'
   ]) assert.equal(prompt.includes(phrase), true, phrase);
+  assert.match(prompt, /QUALITATIVE ASSESSMENT OVERRIDE[\s\S]*sensory detail remains supplied even without an entity ref[\s\S]*exact supporting claim_ref/u);
 });
 
 test('turn step planner and repair prompts route focused ordinary discovery by searched target', async () => {

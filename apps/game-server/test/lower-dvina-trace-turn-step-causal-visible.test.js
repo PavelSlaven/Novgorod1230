@@ -77,6 +77,24 @@ test('search duration stays out of narrator input', async () => {
   }
 });
 
+test('supported qualitative assessment reaches the visible current beat', async () => {
+  const assessment = 'Снасти можно использовать как связки для простого заслона.';
+  const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => assert.fail() }
+  }).project({
+    retrieved_state: committedState(), consequence: { status: 'resolved',
+      visible_seed: { completed_steps: [] } },
+    mode_resolution: { decision_trace: { remaining_intent: null,
+      step_traces: [{ step_index: 1, applied: true, approved_plan: {
+        resolution: 'direct', goal_result: 'achieved',
+        direct_result_kind: 'player_safe_observation', assessment: {
+          text: assessment, support_refs: ['wk:cordage']
+        }
+      } }] } }
+  });
+  assert.deepEqual(visible.visible_changes, [assessment]);
+});
+
 test('perceived speech remains pending instead of inventing final silence', async () => {
   const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
     fallback: { project: async () => assert.fail() }

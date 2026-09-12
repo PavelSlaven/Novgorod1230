@@ -16,6 +16,18 @@ export const TURN_STEP_COMPOUND_EXAMPLE = 'Flat compound example. Input: Про�
 });
 
 export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
+  qualitative_assessment: {
+    interpretation: { adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_safe_observation',
+    assessment: {
+      text: '<concise player-safe conclusion supported by supplied facts>',
+      support_refs: ['<copy one or more exact world_knowledge claim_ref values>']
+    },
+    operation_family: null, operation_choice: null, operations: [], check: null,
+    continuation: null, clarification: null
+  },
   ordinary_semantic_activity: {
     interpretation: { adaptation: 'literal' },
     resolution: 'direct', goal_result: 'achieved',

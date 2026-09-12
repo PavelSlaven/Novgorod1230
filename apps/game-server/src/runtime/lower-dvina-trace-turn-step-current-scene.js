@@ -151,7 +151,9 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
     return directSeedChange(value);
   }).filter(Boolean);
   if (speech != null) return [speech, ...changes];
-  if (observation) return ['Вы внимательно изучили обстановку.', ...changes];
+  if (observation) return [text(appliedPlan.assessment?.text)
+    ? appliedPlan.assessment.text : 'Вы внимательно изучили обстановку.',
+  ...changes];
   if (appliedPlan != null && attempts.length === 1) return [
     ...directSeedChange(attempts[0]), ...changes
   ];

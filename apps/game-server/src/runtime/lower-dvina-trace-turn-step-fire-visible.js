@@ -108,8 +108,11 @@ function overlayTurnStepResults(base, input) {
     orderedKeys.forEach(key => usedKeys.add(key));
     projectDirectSeedChanges({ input, directSeedKeys: orderedKeys }).forEach(change => components.add(change));
     const changes = projectDirectSeedChanges({ input, directSeedKeys: orderedKeys, appliedPlan: plan });
-    if (plan.direct_result_kind === 'player_safe_observation')
+    if (plan.direct_result_kind === 'player_safe_observation') {
       components.add('Вы внимательно изучили обстановку.');
+      components.add(text(plan.assessment?.text)
+        ? plan.assessment.text : 'Вы внимательно изучили обстановку.');
+    }
     if (plan.resolution === 'direct' && plan.goal_result === 'not_achieved') changes.push(
       text(plan.interpretation?.player_goal) ? `Не удалось достичь цели «${plan.interpretation.player_goal}».` : 'Цель попытки не достигнута.');
     changes.forEach(change => components.add(change));

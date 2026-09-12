@@ -34,6 +34,7 @@ const planDefinitions = {
   pending_discovery: strictObject(['remaining_target_refs', 'after'], { remaining_target_refs: { type: 'array', minItems: 1, uniqueItems: true, items: refSchema }, after: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/continuation_after' }] } }),
   continuation: { type: 'object', additionalProperties: false, required: ['remaining_intent', 'depends_on_refs'], properties: { remaining_intent: textSchema, depends_on_refs: { type: 'array', uniqueItems: true, items: refSchema }, prepared_followup_ref: nullableRefSchema, pending_discovery: { $ref: '#/$defs/pending_discovery' } } },
   clarification: strictObject(['question', 'target_refs'], { question: textSchema, target_refs: { type: 'array', uniqueItems: true, items: refSchema } }),
+  assessment: strictObject(['text', 'support_refs'], { text: textSchema, support_refs: { type: 'array', minItems: 1, uniqueItems: true, items: refSchema } }),
   fact: strictObject(['temp_ref', 'text'], { temp_ref: refSchema, text: textSchema }),
   quantity: strictObject(['value', 'unit'], { value: { type: 'number', exclusiveMinimum: 0 }, unit: textSchema }),
   mechanics: strictObject(['mass_grams', 'external_hand_cost', 'carry_form', 'packing_slot_cost', 'quantity', 'container'], { mass_grams: { type: 'integer', minimum: 0 }, external_hand_cost: { enum: [0, 1, 2] }, carry_form: { enum: ['compact', 'regular', 'long', 'bulky'] }, packing_slot_cost: { type: 'integer', minimum: 0 }, quantity: { anyOf: [{ type: 'null' }, { $ref: '#/$defs/quantity' }] }, container: { type: 'null' } }),
@@ -92,6 +93,7 @@ export const TURN_STEP_PLAN_V1_SCHEMA = deepFreeze({
     direct_result_kind: { anyOf: [{ type: 'null' }, {
       enum: ['player_safe_observation', 'player_safe_item_observation',
         'player_safe_body_observation', 'no_state_gesture', 'player_utterance'] }] },
+    assessment: { $ref: '#/$defs/assessment' },
     utterance: strictObject([
       'speaker_ref', 'utterance_text', 'input_mode', 'delivery'
     ], {

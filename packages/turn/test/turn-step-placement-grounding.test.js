@@ -91,6 +91,16 @@ test('direct result kind is structural and write-free', () => {
       effort: 'none' } },
     { ...observation, operations: plan('cloth', 'worn_by').operations }
   ]) assert.equal(validateTurnStepPlan(invalid, { request }).ok, false);
+
+  const assessed = { ...observation, assessment: {
+    text: 'Верёвка годится для связывания.', support_refs: ['wk:cordage']
+  } };
+  assert.equal(validateTurnStepPlan(assessed, { request }).ok, true);
+  for (const invalid of [
+    { ...assessed, assessment: { ...assessed.assessment, support_refs: [] } },
+    { ...assessed, direct_result_kind: 'player_safe_item_observation' },
+    { ...assessed, resolution: 'domain_request' }
+  ]) assert.equal(validateTurnStepPlan(invalid, { request }).ok, false);
 });
 
 test('ownerless utterance preserves exact player words and speaker before later intent', () => {

@@ -49,6 +49,14 @@ export function assembleTurnStepPlan(choice, request,
   for (const key of Object.keys(allTurnStepPlanMappings()))
     if (Object.hasOwn(semantic, key)) preserved[key] = semantic[key];
   delete preserved.utterance;
+  delete preserved.assessment;
+  const assessment = supportedAssessment(semantic, request);
+  const assessedObservation = assessment != null
+    && semantic.direct_result_kind === 'player_safe_observation'
+    && semantic.resolution === 'direct';
+  const completeAssessment = assessedObservation
+    && (continuation == null
+      || continuation.remaining_intent === request.remaining_intent);
   return {
     ...preserved,
     schema: 'turn_step_plan_v1',
@@ -58,19 +66,23 @@ export function assembleTurnStepPlan(choice, request,
     step_index: request.step_index,
     interpretation,
     resolution,
-    goal_result: domainRequest || resolution === 'generic_check'
+    goal_result: completeAssessment ? 'achieved'
+      : domainRequest || resolution === 'generic_check'
       || resolution === 'clarification_required'
       || semantic.continuation != null
       ? 'pending'
       : semantic.goal_result,
-    activity: domainRequest && !actionProduction
+    activity: assessedObservation
+      ? { owner: 'semantic', duration_class: 'moment', effort: 'none' }
+      : domainRequest && !actionProduction
       ? { owner: 'domain', duration_class: null, effort: null }
       : semantic.activity,
     operations,
     check: semantic.check ?? null,
-    continuation,
+    continuation: completeAssessment ? null : continuation,
     clarification: semantic.clarification ?? null,
     direct_result_kind: domainRequest ? null : semantic.direct_result_kind ?? null,
+    ...(domainRequest || assessment == null ? {} : { assessment }),
     ...(domainRequest || semantic.utterance == null ? {} : {
       utterance: structuredClone(semantic.utterance)
     }),
@@ -80,6 +92,40 @@ export function assembleTurnStepPlan(choice, request,
       operation_choice: semantic.operation_choice
     } : {})
   };
+}
+
+function supportedAssessment(semantic, request) {
+  const value = semantic?.assessment;
+  const claims = ['hard_constraints', 'facts'].flatMap((field) =>
+    request?.world_knowledge?.[field] ?? []);
+  const allowed = new Set(claims.map(({ claim_ref: ref }) => ref)
+    .filter(Boolean));
+  if (semantic?.resolution !== 'direct'
+      || semantic.direct_result_kind !== 'player_safe_observation'
+      || claims.length === 0) return null;
+  if (value == null) {
+    const selected = [];
+    const domains = new Set();
+    for (const claim of claims) {
+      if (domains.has(claim.domain) || typeof claim.runtime_text !== 'string'
+          || !claim.runtime_text.trim() || !allowed.has(claim.claim_ref)) continue;
+      selected.push(claim);
+      domains.add(claim.domain);
+      if (selected.length === 3) break;
+    }
+    return selected.length === 0 ? null : {
+      text: selected.map(({ runtime_text: text }) => text).join(' '),
+      support_refs: selected.map(({ claim_ref: ref }) => ref)
+    };
+  }
+  if (value.constructor !== Object
+      || Object.keys(value).length !== 2
+      || typeof value.text !== 'string' || !value.text.trim()
+      || !Array.isArray(value.support_refs) || value.support_refs.length === 0
+      || new Set(value.support_refs).size !== value.support_refs.length
+      || value.support_refs.some((ref) => typeof ref !== 'string'
+        || !allowed.has(ref))) return null;
+  return structuredClone(value);
 }
 
 function canonicalizeMovementChoice(semantic, operationChoices) {

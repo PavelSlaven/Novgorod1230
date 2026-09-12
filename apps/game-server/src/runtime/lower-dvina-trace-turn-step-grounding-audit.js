@@ -102,7 +102,9 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
             && consumed === normalized(request.remaining_intent)
             && plan.continuation != null
             && plan.continuation.depends_on_refs?.length === 0
-            && plan.continuation.prepared_followup_ref == null) {
+            && plan.continuation.prepared_followup_ref == null
+            && preservesIntent(genericDiscovery.query, plan.continuation,
+              request.remaining_intent)) {
           return { corrected_plan: { ...plan, operations: [{
             ...genericDiscovery, query: focused.output.consumed_intent
           }], continuation: null } };

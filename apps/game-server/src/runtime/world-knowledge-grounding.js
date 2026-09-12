@@ -53,7 +53,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         allowed_domains: domains,
         available_knowledge_refs: candidateWorldKnowledgeFocusRefs(bundle,
           `${focusInputOf(request, authoritative)} ${Object.values(actorFacets).join(' ')}`,
-          queryLocale, domains),
+          queryLocale, domains, 96),
         planner_limits: { max_domains: 3, max_search_hints: 8,
           max_focus_refs: 8 }
       };
@@ -231,6 +231,7 @@ async function runPlanner(roleRunner, request, repair, bundle) {
       'Write every search_hint in query_locale: lexical lookup uses that language index. Choose a supported query_locale matching the actual hint language; it need not equal input_locale. Never label English hints as ru or Russian hints as en. Preserve the factual information need when translating. Select domains for the factual relationships being asked about, not every noun mentioned. Distinguish general scientific properties from historical availability or craft practice, and occupation/knowledge context from law or social institutions.',
       'For a question asking whether stated evidence establishes, identifies, implies, or is sufficient for a conclusion, select knowledge about that evidential relationship or limit, not attributes of the proposed conclusion.',
       'Choose the smallest sufficient set of the most specific approved focus_refs. Exact focus facts outrank fuzzy matches: do not add broad material, object or activity refs as background padding. Include a broad ref only when it directly supplies a separately needed factual relationship. An empty focus_refs array is valid when no supplied ref matches the need.',
+      'When the question depends on several named materials or components, select the smallest specific focus for each separately needed material relationship when those refs are available; one broad focus must not erase another stated component.',
       'When an answer would apply a general property to a named material, or infer or limit an activity from an observed tool, include the approved classification or use-context relationship needed for that application and select its owning domain as well. Do not assume that connecting premise from model memory.',
       'Search hints must express the requested properties, relations and conditions. For conjunctive requirements, cover every mandatory relationship. When explicit alternatives permit one result, retrieve at least one complete admissible alternative with its shared mandatory qualifiers and applicable limits; do not require every alternative to succeed. Select the owning domains for those hints: a hint outside the selected domains does not establish coverage. Scene-setting nouns do not automatically create separate information needs. Preserve the stated evidence, conclusion, and conditions; do not invent alternative histories, causes, entities, or explanations.',
       'Express each search hint as a short direct proposition or question about the needed causal relationship, using plain words and basic word forms. Avoid abstract topic labels or nominal phrases that conceal the subject, action, and effect. A search proposition is a retrieval query, never an asserted factual answer.',

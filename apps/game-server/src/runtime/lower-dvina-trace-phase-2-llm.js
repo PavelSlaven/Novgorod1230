@@ -80,7 +80,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             'Return only one JSON object containing the semantic choice for one turn step.',
             'Do not add Markdown, prose outside JSON, or unknown fields.',
             'Do not return schema, request_id, committed_state_version, working_revision, or step_index; the server assembles these identity fields. Use the matching semantic activity; determine goal_result and continuation from the entire remaining intent, not example defaults. semantic activity may add requested_duration_minutes only for an exact duration explicitly stated by the player.',
-            'Return interpretation, resolution, activity, goal_result, direct_result_kind, utterance only for player_utterance, operation_family, operation_choice or operations, check, continuation, clarification, reason_code, reason. For player_utterance include structured delivery: loudness 1 whisper, 2 normal, 3 raised, 4 shout; duration_class instant, brief, or sustained. No analysis or alternatives; if mistaken, emit corrected final JSON.',
+            'Return interpretation, resolution, activity, goal_result, direct_result_kind, assessment only for a supported player_safe_observation, utterance only for player_utterance, operation_family, operation_choice or operations, check, continuation, clarification, reason_code, reason. assessment has exactly text and support_refs; copy every support ref from world_knowledge facts or hard_constraints. For player_utterance include structured delivery: loudness 1 whisper, 2 normal, 3 raised, 4 shout; duration_class instant, brief, or sustained. No analysis or alternatives; if mistaken, emit corrected final JSON.',
             `A direct semantic example is:\n${semanticTurnStepExample()}`,
             'operation_choice is exactly one scalar supplied choice_id string or null, never an object, array, or wrapper. For a matching code-owned operation return that scalar choice_id and omit operations. The server restores the exact operation DTO. Otherwise set operation_choice to null and return only genuinely semantic operations.',
             'If an output format requires operations beside operation_choice, they must be empty or exactly copy that selected DTO; a different operation makes the choice invalid.',
@@ -95,6 +95,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             'Classify interpretation.adaptation by the stated goal, not whether the actor can pantomime it. First: an absent fantastical required referent means make_believe. Otherwise: real or ordinary referents with a physically limited action mean reality_limited. Otherwise: literal. An ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery/domain flow.',
             'Process independent actions in their stated order. A supplied operation choice for a later action never outranks an earlier feasible action. Plan the earlier action through its existing semantic mapping and preserve every later action in continuation. When an operation choice covers the intent\'s current earliest action, select its choice_id; use action_production only when no supplied choice covers that earliest action.',
             'Adjacent current-scene looking, listening, smelling, or other player-safe perception clauses that require no code-owned operation and no check may form one direct player_safe_observation step. Speech is never perception: a call, shout, or spoken words cannot be covered by player_safe_observation and remain an independently consequential player_utterance continuation when they follow perception. Preserve later movement, manipulation, and other independently consequential actions too. A purpose, hope, manner, or expected-result clause belongs to the action it qualifies and is not a separate executable continuation.',
+            'QUALITATIVE ASSESSMENT OVERRIDE: assessing, judging, comparing, or trying to understand whether already supplied sensory facts support a conclusion is one direct achieved player_safe_observation, not a discovery plus continuation. An introductory evidence phrase and its question form one assessment. A sensory detail remains supplied even without an entity ref; never substitute an unrelated carried item ref. When world_knowledge facts or hard_constraints support a useful conclusion, include assessment exactly as {"text":"<concise player-safe conclusion>","support_refs":["<exact supporting claim_ref>"]}. A supported result may be that the visible evidence is insufficient because a supplied claim makes the answer depend on unmeasured conditions; do not invent a separate inspection unless the player actually asks to inspect a new condition or object. Qualify what remains unknown; world knowledge never proves current quantity, presence, condition, access, or an exact mechanical outcome. Never include assessment from model memory, reason, gaps, disputes, or unsupported refs.',
             'Select direct player_utterance only when speech is the current earliest independently executable action. A genuine look, listen, search, movement, manipulation, or other action stated before speech executes first, even in the same sentence; preserve the later utterance and every following action in continuation.',
             'Plan exactly one executable step. Sentence boundary is a continuation boundary. Plan only the first independently executable sentence. If request.remaining_intent has later non-empty sentences, always preserve all of them in continuation, use goal_result pending, and never let one selected operation consume them. Only clauses inside the same sentence may form one composite operation, and only when that operation explicitly represents their single event. One selected domain operation covers only its own grounded event; it may cover multiple verbs only when the selected operation explicitly represents every clause. Matching one clause, shared actor, place, time, or generic owner does not extend coverage. Preserve every independent uncovered clause in continuation, and use continuation null only when none remains. Every domain_request uses goal_result pending, including a complete composite with continuation null: pending means code-owned execution, not unhandled intent. If continuation is present, goal_result must be pending and continuation.remaining_intent must preserve every independent uncovered clause. Final continuation override for direct reality_limited or make_believe: a same-sentence clause whose stated action, purpose, manner, result, or qualifier depends on the same impossible or physically limited premise is covered by the same grounding, not continuation. Preserve only clauses independently executable without that premise and every later sentence; if none remain, set continuation to null.',
             'An observation possible only from an impossible height is dependent on that same impossible premise, so it is covered by the reality-limited step and is not a continuation.',
@@ -155,9 +156,64 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
         && repairedOutput.direct_result_kind !== 'player_utterance') {
       delete semanticOutput.utterance;
     }
-    return assembleTurnStepPlan(semanticOutput, request, operationChoices);
+    const assembled = assembleTurnStepPlan(semanticOutput, input,
+      operationChoices);
+    return correctSupportedAssessment({ plan: assembled, input, roleRunner });
   };
   return model;
+}
+
+async function correctSupportedAssessment({ plan, input, roleRunner }) {
+  const operation = plan?.resolution === 'domain_request'
+    && plan.operations?.length === 1
+    && plan.operations[0]?.op === 'request_discovery'
+    ? plan.operations[0] : null;
+  const claims = ['hard_constraints', 'facts'].flatMap((field) =>
+    input?.world_knowledge?.[field] ?? []).filter((claim) =>
+      typeof claim?.claim_ref === 'string'
+      && typeof claim.runtime_text === 'string' && claim.runtime_text.trim());
+  if (operation == null || claims.length === 0) return plan;
+  const response = await roleRunner.run({
+    scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
+    request_identity: input.request_id,
+    messages: [{ role: 'system', content: [
+      'Return only JSON with exactly mode and support_refs.',
+      'mode is assessment or discovery. support_refs is an array.',
+      'Choose assessment only when the whole remaining_intent is one qualitative judgment or comparison of facts already present in supplied_sensory_facts. It must request no new inspection, search, handling, movement, speech, or later independent action.',
+      'For assessment, copy one or more claim_ref values whose runtime_text establishes a useful relationship or an explicit limit on the conclusion. For discovery, return an empty array.',
+      'Prefer claims about the requested function, assembly, or material relation over generic care, inspection, storage, or unrelated historical use when both are available.',
+      'Never use model memory or treat the proposed discovery as proof that new detail is needed.'
+    ].join(' ') }, { role: 'user', content: JSON.stringify({
+      remaining_intent: input.remaining_intent,
+      supplied_sensory_facts:
+        input.player_safe_state?.current_visible_context?.sensory_details ?? [],
+      proposed_discovery: { discovery_kind: operation.discovery_kind,
+        query: operation.query },
+      world_knowledge: claims.map(({ claim_ref, runtime_text }) =>
+        ({ claim_ref, runtime_text }))
+    }) }],
+    overrides: { temperature: 0 }
+  });
+  const choice = response?.output;
+  const allowed = new Map(claims.map((claim) => [claim.claim_ref, claim]));
+  if (choice?.constructor !== Object
+      || Object.keys(choice).length !== 2
+      || choice.mode !== 'assessment'
+      || !Array.isArray(choice.support_refs) || choice.support_refs.length === 0
+      || new Set(choice.support_refs).size !== choice.support_refs.length
+      || choice.support_refs.some((ref) => !allowed.has(ref))) return plan;
+  const selected = choice.support_refs.map((ref) => allowed.get(ref));
+  return {
+    ...plan,
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: 'player_safe_observation',
+    assessment: { text: selected.map(({ runtime_text: text }) => text).join(' '),
+      support_refs: [...choice.support_refs] },
+    reason_code: 'supported_assessment',
+    reason: 'Supplied sensory facts were assessed only through cited World Knowledge.'
+  };
 }
 
 function plannerRequestWire(input) {

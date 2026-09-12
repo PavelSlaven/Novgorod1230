@@ -33,7 +33,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
     'step_index', 'interpretation', 'resolution', 'goal_result', 'activity',
     'operations', 'check', 'continuation', 'clarification',
     'direct_result_kind', 'reason_code', 'reason'
-  ], errors, { optional: ['utterance'] })) return result(errors);
+  ], errors, { optional: ['utterance', 'assessment'] })) return result(errors);
   constant(value.schema, 'turn_step_plan_v1', '$.schema', errors);
   requiredText(value.request_id, '$.request_id', errors);
   integer(value.committed_state_version, 0,
@@ -71,6 +71,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
   validateCheck(value.check, '$.check', errors, trace, request);
   validateResolution(value, operationKinds, errors);
   validateDirectResultKind(value, errors, request);
+  validateAssessment(value, errors);
   if (value.continuation != null && value.goal_result !== 'pending') {
     add(errors, '$.goal_result', 'continuation',
       'must be pending when continuation is present');
@@ -80,6 +81,20 @@ export function validateTurnStepPlan(value, { request } = {}) {
     validateContinuationProgress(value, request, operationKinds, errors);
   }
   return result(errors);
+}
+
+function validateAssessment(plan, errors) {
+  if (plan.assessment === undefined) return;
+  if (strict(plan.assessment, '$.assessment', ['text', 'support_refs'], errors)) {
+    requiredText(plan.assessment.text, '$.assessment.text', errors);
+    refs(plan.assessment.support_refs, '$.assessment.support_refs', errors,
+      null, { min: 1 });
+  }
+  if (plan.resolution !== 'direct'
+      || plan.direct_result_kind !== 'player_safe_observation') {
+    add(errors, '$.assessment', 'direct_result_kind',
+      'is allowed only for a direct player-safe observation');
+  }
 }
 
 function validateDirectResultKind(plan, errors, request) {

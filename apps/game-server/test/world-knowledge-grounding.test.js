@@ -92,7 +92,11 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.doesNotMatch(calls[0].messages[0].content, /including each independent part of a multi-part question/u);
   assert.doesNotMatch(calls[0].messages[0].content, /Focus claim domains:/u);
   const owners = plannerRequest.available_knowledge_refs;
-  assert.deepEqual(owners['wk:environment:regional-fish-exploitation'], ['environment']);
+  assert.deepEqual(owners['wk:environment:regional-fish-exploitation'], {
+    domains: ['environment'],
+    label: 'Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода',
+    description: 'Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода; это не устанавливает вид, запас, доступ, сезон или улов в сцене.'
+  });
   assert.ok(Object.keys(owners).length <= 256);
   assert.ok(Object.keys(owners).every((ref) =>
     !calls[0].messages[0].content.includes(ref)));
@@ -349,7 +353,9 @@ test('a material focus can retrieve its chemical facts without expanding selecte
     roleRunner: { async run(call) {
       assert.deepEqual(JSON.parse(call.messages[1].content).available_knowledge_refs[
         'wk:material_culture:vegetable-tanned-leather'],
-      ['chemistry_process', 'physics_material_science']);
+      { domains: ['chemistry_process', 'physics_material_science'],
+        label: 'Vegetable-tanned leather',
+        description: "Leather with vegetable tannage; a particular object's processing needs separate grounding." });
       return { output: { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
         domains: ['chemistry_process'], focus_refs: ['wk:material_culture:vegetable-tanned-leather'],
         requested_predicates: [], search_hints: ['tanning prepared hide collagen tannins'] } };

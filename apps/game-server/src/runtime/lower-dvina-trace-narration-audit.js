@@ -46,12 +46,16 @@ Optional support may compose the current beat but a recap of unchanged
 support is static_context_dump. Turn duration is code-owned UI metadata and is
 not supplied as prose evidence. Any invented elapsed time is unsupported_fact;
 service-like time reporting is also elapsed_as_service_report. A passage that
-mainly restates required sources one by one in source order, without composing
+mainly restates required sources one by one, without composing
 the performed action or perceived result with supplied spatial relations, is
 weak_literary_composition even when coverage is complete and every proposition
-is supported. Do not demand an invented causal, temporal or spatial bridge to
-avoid that failure. Evaluate all five checks independently: one failure never
-excuses a missed second failure.
+is supported. Matching source order or using one multi-clause sentence is not
+by itself evidence of weak composition. A grounded current qualitative assessment
+or conclusion counts as a perceived result; when related scene facts frame or
+lead to it within one coherent focal sentence, do not report a checklist merely
+because the clauses follow source order. Do not demand an invented causal,
+temporal or spatial bridge to avoid that failure. Evaluate all five checks
+independently: one failure never excuses a missed second failure.
 
 Mandatory final cross-checks before JSON:
 1. Every sensory proposition without an exact supplied sensory fact is unsupported_sensory.
@@ -63,8 +67,9 @@ never use it to restate or penalize an omitted source whose review is [].
 or ongoing within the later one, record unsupported_event. Do not fail subordination
 that unambiguously marks the earlier action completed before the later action.
 5. When several scene facts accompany a performed action or perceived result,
-reject a source-order checklist as weak_literary_composition. Complete factual
-coverage alone is not a literary PASS.
+reject only an uncomposed source-order checklist as weak_literary_composition. Source
+order alone is not a failure; complete factual coverage alone is not a literary
+PASS either.
 
 Return only the exact JSON shape shown below. reviewed_segments must copy every
 segment choice exactly once and in order. source_reviews must contain exactly

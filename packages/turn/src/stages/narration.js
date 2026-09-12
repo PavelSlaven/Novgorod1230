@@ -36,6 +36,13 @@ export function spatialResult({ consequence, checks, modeResolution,
   const after = movementDestination(consequence);
   const movement = typeof before === 'string' && typeof after === 'string'
     && before !== after ? { movement_committed: true } : {};
+  const assessment = modeResolution?.decision_trace?.step_traces?.some(
+    ({ applied, approved_plan: plan }) => applied === true
+      && plan?.resolution === 'direct'
+      && plan.direct_result_kind === 'player_safe_observation'
+      && typeof plan.assessment?.text === 'string'
+      && plan.assessment.text.trim().length > 0)
+    ? { qualitative_assessment: true } : {};
   const outcomes = (checks?.results ?? []).map((result, index) => {
     const trace = modeResolution?.decision_trace?.step_traces?.find(
       (candidate) => candidate?.check_binding?.check_id === result.check_id);
@@ -51,8 +58,8 @@ export function spatialResult({ consequence, checks, modeResolution,
       roll_note: result.outcome.roll_note
     };
   });
-  return outcomes.length === 0 ? movement
-    : { ...movement, check_outcomes: outcomes };
+  return outcomes.length === 0 ? { ...movement, ...assessment }
+    : { ...movement, ...assessment, check_outcomes: outcomes };
 }
 
 function movementSource(consequence) {

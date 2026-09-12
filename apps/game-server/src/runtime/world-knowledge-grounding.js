@@ -205,14 +205,23 @@ export function wkClosure(request) {
 export { wkClosure as worldKnowledgeFactualClosure };
 async function runPlanner(roleRunner, request, repair, bundle) {
   const claimDomains = new Map(bundle.claims.map(claim => [claim.claim_ref, claim.domain]));
-  const focusClaimDomains = Object.fromEntries(request.available_knowledge_refs
-    .map(ref => [ref, [...new Set(
-      (bundle.exact_indexes.concept_to_claim_refs[ref] ?? [])
-        .map(ref => claimDomains.get(ref))
-        .filter(domain => request.allowed_domains.includes(domain))
-    )].sort()]));
-  // Only the private model wire combines refs with their domain metadata.
-  const wireRequest = { ...request, available_knowledge_refs: focusClaimDomains };
+  const concepts = new Map(bundle.concepts.map(concept =>
+    [concept.concept_ref, concept]));
+  const focusMetadata = Object.fromEntries(request.available_knowledge_refs
+    .map(ref => {
+      const localization = concepts.get(ref)?.localizations?.[request.input_locale];
+      return [ref, {
+        domains: [...new Set(
+          (bundle.exact_indexes.concept_to_claim_refs[ref] ?? [])
+            .map(ref => claimDomains.get(ref))
+            .filter(domain => request.allowed_domains.includes(domain))
+        )].sort(),
+        label: localization?.labels?.[0] ?? '',
+        description: localization?.short_definition ?? ''
+      }];
+    }));
+  // Only the private model wire combines refs with their selection metadata.
+  const wireRequest = { ...request, available_knowledge_refs: focusMetadata };
   const response = await roleRunner.run({
     scope: 'turn_runtime',
     role_id: 'world_knowledge_query_planner',
@@ -235,7 +244,7 @@ async function runPlanner(roleRunner, request, repair, bundle) {
       'When an answer would apply a general property to a named material, or infer or limit an activity from an observed tool, include the approved classification or use-context relationship needed for that application and select its owning domain as well. Do not assume that connecting premise from model memory.',
       'Search hints must express the requested properties, relations and conditions. For conjunctive requirements, cover every mandatory relationship. When explicit alternatives permit one result, retrieve at least one complete admissible alternative with its shared mandatory qualifiers and applicable limits; do not require every alternative to succeed. Select the owning domains for those hints: a hint outside the selected domains does not establish coverage. Scene-setting nouns do not automatically create separate information needs. Preserve the stated evidence, conclusion, and conditions; do not invent alternative histories, causes, entities, or explanations.',
       'Express each search hint as a short direct proposition or question about the needed causal relationship, using plain words and basic word forms. Avoid abstract topic labels or nominal phrases that conceal the subject, action, and effect. A search proposition is a retrieval query, never an asserted factual answer.',
-      'Select focus_refs only from the keys of request.available_knowledge_refs, listed in relevance order. Its values are actual allowed claim domains from the compiled index, not factual answers; an empty array means no listed allowed claim domain. A focus concept namespace is not necessarily the domain of its factual relationships. Select the domains owning the requested relationships, including relevant entries; do not select every listed domain automatically or exceed planner limits.',
+      'Select focus_refs only from the keys of request.available_knowledge_refs, listed in relevance order. Each value contains selection metadata: domains are actual allowed claim domains, while label and description identify the concept but are not factual answers. An empty domains array means no listed allowed claim domain. A focus concept namespace is not necessarily the domain of its factual relationships. Reject a focus whose label or description names a different causal relationship even when it shares scene nouns with the request. Select the domains owning the requested relationships, including relevant entries; do not select every listed domain automatically or exceed planner limits.',
       'Return requested_predicates as an empty array. This semantic lookup preserves mixed typed and generic factual premises; restrictive predicate filters belong to exact code-owned queries.',
       'Do not return facts, outcomes, actions, party mutations, context overrides, or new refs.',
       repair == null ? 'Plan the smallest useful factual lookup.'

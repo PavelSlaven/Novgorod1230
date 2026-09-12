@@ -5,14 +5,15 @@ const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES)
 export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
   body = {}) {
   const plans = input?.mode_resolution?.decision_trace?.step_traces ?? [];
-  const kinds = new Set(plans.filter(({ approved_plan: plan, applied }) =>
+  const directPlans = plans.filter(({ approved_plan: plan, applied }) =>
     applied === true && plan?.resolution === 'direct'
       && plan.goal_result !== 'not_achieved'
       && Array.isArray(plan.operations) && plan.operations.length === 0
-      && plan.check === null).map(({ approved_plan }) =>
-        approved_plan.direct_result_kind));
+      && plan.check === null).map(({ approved_plan }) => approved_plan);
+  const kinds = new Set(directPlans.map(({ direct_result_kind: kind }) => kind));
   return [
-    ...(kinds.has('player_safe_observation')
+    ...(directPlans.some((plan) => plan.direct_result_kind === 'player_safe_observation'
+        && plan.assessment == null)
       ? ['Вы внимательно изучили обстановку.',
         ...lowerDvinaTraceObservedSceneChanges(
           input?.retrieved_state?.current_visible_context)] : []),

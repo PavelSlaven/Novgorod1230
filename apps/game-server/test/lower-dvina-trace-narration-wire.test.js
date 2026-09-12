@@ -41,7 +41,12 @@ test('private prose wire admits only scene and sensory support beside a current 
         display_label: 'Еремей', recognition: 'known', visible_status: 'Виден у навеса.' }],
       outcome: { movement_committed: true } },
     { name: 'scene-only perception retains descriptive support', changes: [], uncertainties: [],
-      sensory: ['Рядом стоят мокрые сваи.'], prose: 'Рядом стоят мокрые сваи.' }
+      sensory: ['Рядом стоят мокрые сваи.'], prose: 'Рядом стоят мокрые сваи.' },
+    { name: 'qualitative assessment excludes unchanged scene support',
+      changes: ['Сухое укрытие сейчас важнее дальнейшего осмотра.'], uncertainties: [],
+      sensory: ['Рядом стоят мокрые сваи.'],
+      prose: 'Сейчас важнее искать сухое укрытие, чем продолжать осмотр.',
+      outcome: { qualitative_assessment: true } }
   ];
   for (const sample of cases) await t.test(sample.name, async () => {
     const visible = { version: 1, schema: 'visible_context_package',
@@ -60,7 +65,9 @@ test('private prose wire admits only scene and sensory support beside a current 
       const wire = JSON.parse(call.messages[1].content);
       assert.equal(Object.hasOwn(wire, 'visible_context'), false);
       assert.deepEqual(wire.optional_support, visible_changes.length || uncertainties.length
-        ? { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details } : support);
+        ? sample.outcome?.qualitative_assessment === true ? {}
+          : { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details }
+        : support);
       assert.deepEqual(wire.constraints, { allowed_tensions, do_not_imply, style_policy: style });
       assert.deepEqual(wire.required_current_beat.changes,
         visible_changes.map((text, index) => ({ ref: `visible_change_${index + 1}`, text })));
@@ -115,6 +122,13 @@ for (const sample of [
       assert.match(call.messages[0].content, call.role_id === 'gameplay_narrator_auditor'
         ? /recap of unchanged\s+support is static_context_dump/u
         : /do not recap unchanged scene/u);
+      if (call.role_id === 'gameplay_narrator') {
+        assert.match(call.messages[0].content, /Source order alone is not a failure/u);
+      }
+      if (call.role_id === 'gameplay_narrator_auditor') {
+        assert.match(call.messages[0].content,
+          /qualitative assessment[\s\S]*counts as a perceived result/u);
+      }
       if (call.role_id === 'gameplay_narrator') return { output: {
         prose: dump ? `${sample.prose} ${visible.sensory_details.join(' ')}` : sample.prose,
         action_options: [], used_references: [] } };

@@ -25,7 +25,10 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'make that perception action grammatically govern the descriptive cluster. A standalone '
   + 'perception-action sentence followed by a descriptive inventory is not action-centered. '
   + 'Do not invent perception or causality for other action classes. '
-  + 'A source-order checklist remains weak composition even when complete and grounded. '
+  + 'Source order alone is not a failure. A source-order checklist remains weak only when it '
+  + 'serializes facts without a shared focal beat; a grounded current qualitative assessment may be '
+  + 'that focal result when related scene facts frame or lead to it. When assessment is the current '
+  + 'beat, integrate only scene facts that directly support it; do not append a scene inventory. '
   + 'visible_scene may locate the passage but never supplies an observed object or action target. '
   + 'Never invent a causal, temporal or spatial bridge merely to connect facts. Sparse evidence '
   + 'calls for concise prose, not invented connective facts or a service report.';
@@ -62,9 +65,12 @@ export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
 function narrationWire(request) {
   const { request: original, ...outer } = request;
   const { visible_context, style_policy = {}, context, action_intent_context,
+    confirmed_outcome: confirmedOutcome,
     ...rest } = original ? { ...original, ...outer } : outer;
   const { visible_changes, uncertainties, do_not_imply, allowed_tensions, ...support } = visible_context;
-  const { outcome, ...otherContext } = context ?? {};
+  const { outcome: contextOutcome, ...otherContext } = context ?? {};
+  const outcome = contextOutcome ?? confirmedOutcome;
+  const assessmentOnly = outcome?.qualitative_assessment === true;
   return {
     ...rest,
     required_current_beat: {
@@ -74,7 +80,8 @@ function narrationWire(request) {
       }))
     },
     optional_support: visible_changes.length || uncertainties.length
-      ? Object.fromEntries(['visible_scene', 'sensory_details'].filter(key => Object.hasOwn(support, key))
+      ? Object.fromEntries((assessmentOnly ? [] : ['visible_scene', 'sensory_details'])
+        .filter(key => Object.hasOwn(support, key))
         .map(key => [key, support[key]]))
       : support,
     constraints: { do_not_imply, allowed_tensions, style_policy },

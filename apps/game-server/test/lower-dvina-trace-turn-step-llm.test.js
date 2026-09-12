@@ -176,7 +176,7 @@ test('turn step model sends the validated request to the isolated planner role',
     'move the actor for make_believe',
     'Classify interpretation.adaptation by the stated goal'
   ]) assert.equal(prompt.includes(phrase), true, phrase);
-  assert.match(prompt, /QUALITATIVE ASSESSMENT OVERRIDE[\s\S]*sensory detail remains supplied even without an entity ref[\s\S]*exact supporting claim_ref/u);
+  assert.match(prompt, /QUALITATIVE ASSESSMENT OVERRIDE[\s\S]*sensory detail remains supplied even without an entity ref[\s\S]*exact supporting claim_ref[\s\S]*Answer the stated comparison or question/u);
 });
 
 test('turn step planner and repair prompts route focused ordinary discovery by searched target', async () => {

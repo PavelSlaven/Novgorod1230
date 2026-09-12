@@ -79,10 +79,13 @@ test('search duration stays out of narrator input', async () => {
 
 test('supported qualitative assessment reaches the visible current beat', async () => {
   const assessment = 'Снасти можно использовать как связки для простого заслона.';
+  const state = committedState();
+  state.current_visible_context.visible_changes = ['Предыдущий ход уже завершён.'];
+  state.current_visible_context.sensory_details = ['Над берегом серое небо.'];
   const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
     fallback: { project: async () => assert.fail() }
   }).project({
-    retrieved_state: committedState(), consequence: { status: 'resolved',
+    retrieved_state: state, consequence: { status: 'resolved',
       visible_seed: { completed_steps: [] } },
     mode_resolution: { decision_trace: { remaining_intent: null,
       step_traces: [{ step_index: 1, applied: true, approved_plan: {

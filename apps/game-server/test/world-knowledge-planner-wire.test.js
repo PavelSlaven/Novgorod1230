@@ -46,7 +46,9 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
       assert.deepEqual(Object.keys(wire.available_knowledge_refs), canonical.available_knowledge_refs);
       assert.deepEqual({ ...wire, available_knowledge_refs: Object.keys(wire.available_knowledge_refs) }, canonical);
       for (const ref of canonical.available_knowledge_refs) {
-        assert.deepEqual(wire.available_knowledge_refs[ref], expectedDomains(ref));
+        assert.deepEqual(wire.available_knowledge_refs[ref], {
+          domains: expectedDomains(ref), label: '', description: ''
+        });
         assert.equal(call.messages.map(message => message.content).join('\n')
           .split(JSON.stringify(ref)).length - 1, 1, ref);
       }
@@ -78,7 +80,7 @@ function fixture(prefix) {
     coverage_profiles: ['material', 'environment'].map(domain => ({ domain,
       status: 'production', purposes: ['semantic_resolution'] })),
     concepts: [...refs].reverse().map(concept_ref => ({ concept_ref,
-      domain: 'material', review_status: 'approved' })),
+      domain: 'material', review_status: 'approved', localizations: {} })),
     claims: [...claims, cross], exact_indexes: { concept_to_claim_refs: mappings },
     lexical_indexes: { en: { common: claims.map(claim => claim.claim_ref), rare: [claims[256].claim_ref] } },
     predicate_registry: { material: {}, environment: {} }

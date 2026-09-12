@@ -112,7 +112,6 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
-      ...current.visible_changes,
       ...projectDirectSeedChanges({ input, directSeedKeys }),
       ...directResultChanges
     ]),

@@ -27,6 +27,15 @@ test('narrator receives the committed check degree without RNG internals', () =>
     /"roll"|difficulty|audit|seed/u);
 });
 
+test('narrator distinguishes a grounded qualitative assessment from scene observation', () => {
+  assert.deepEqual(spatialResult({ modeResolution: { decision_trace: { step_traces: [{
+    applied: true, approved_plan: { resolution: 'direct',
+      direct_result_kind: 'player_safe_observation', assessment: {
+        text: 'Укрытие сейчас важнее.', support_refs: ['claim:cold']
+      } }
+  }] } } }), { qualitative_assessment: true });
+});
+
 test('spatial result recognizes committed active movement shapes', () => {
   for (const consequence of [
     { movement: { destination: { location_ref: 'shed' } } },

@@ -203,6 +203,21 @@ test('mismatched semantic operation family cannot restore unrelated choice', asy
   assert.equal(plan.operations, undefined);
 });
 
+test('choice id repeated as operation family keeps the exact supplied choice', async () => {
+  const operation = { op: 'emit_interaction', actor_ref: 'actor:player',
+    interaction_kind: 'request', target_actor_refs: ['npc:interlocutor'],
+    instrument_refs: [], content: 'Ask the visible interlocutor.' };
+  const input = request({ actor: { actor_ref: 'actor:player' },
+    available_domain_operations: [operation] });
+  const choiceId = 'domain_operation_1_emit_interaction_request';
+
+  const plan = await modelFor(input, choiceId, {
+    operationFamily: choiceId
+  })(input);
+
+  assert.deepEqual(plan.operations, [operation]);
+});
+
 test('active conversation selects exact supplied interaction', async (t) => {
   for (const remaining_intent of ['Answer active speaker.',
     'Ask what water is safe to drink.', 'Thank active speaker.']) await t.test(remaining_intent, async () => {

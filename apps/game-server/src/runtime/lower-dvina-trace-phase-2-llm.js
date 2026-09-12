@@ -152,6 +152,10 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
             ?.filter(({ code }) => code === 'additional_property')
             .map(({ path }) => path) ?? []))
       : repairedOutput;
+    if (repairing) for (const { path } of repairContext.structural_errors ?? []) {
+      const key = /^\$\.([^.[\]]+)/u.exec(path)?.[1];
+      if (key != null && !Object.hasOwn(repairedOutput, key)) delete semanticOutput[key];
+    }
     if (repairing && Object.hasOwn(repairedOutput, 'direct_result_kind')
         && repairedOutput.direct_result_kind !== 'player_utterance') {
       delete semanticOutput.utterance;

@@ -186,6 +186,39 @@ test('repair drops a field rejected as an additional property', async () => {
   assert.equal('adaptation_type' in plan.interpretation, false);
 });
 
+test('repair omission clears rejected top-level speech fields', async () => {
+  const input = request();
+  const original = { ...output(), resolution: 'direct', goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [], direct_result_kind: 'player_utterance',
+    utterance: { speaker_ref: 'actor_mikula', utterance_text: 'Доброе утро.',
+      input_mode: 'verbatim', delivery: { loudness: 2,
+        duration_class: 'instant' } },
+    continuation: { remaining_intent: input.remaining_intent,
+      depends_on_refs: [] } };
+  const repaired = { ...original,
+    interpretation: { ...original.interpretation,
+      grounded_attempt: 'Подхожу к собеседнику' },
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
+    continuation: { remaining_intent: 'и говорю: «Доброе утро.»',
+      depends_on_refs: [] } };
+  delete repaired.direct_result_kind;
+  delete repaired.utterance;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run() { return { output: repaired }; }
+  } });
+
+  const plan = await model(input, { original_output: original,
+    structural_errors: [
+      { path: '$.direct_result_kind', code: 'direct_result_kind' },
+      { path: '$.utterance', code: 'operation_semantic_grounding' }
+    ] });
+
+  assert.equal(plan.direct_result_kind, null);
+  assert.equal(Object.hasOwn(plan, 'utterance'), false);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+});
+
 test('unrelated repair cannot invent a code-owned operation selector',
   async () => {
     const operation = { op: 'request_discovery', actor_ref: 'actor_mikula',

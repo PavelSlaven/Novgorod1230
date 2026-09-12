@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { assembleTurnStepPlan } from
+  '../src/runtime/lower-dvina-trace-turn-step-plan-assembly.js';
 import { request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
 function modelFor(input, operationChoice, extra = {}) {
@@ -25,6 +27,35 @@ const interlocutor = { entity_ref: { entity_kind: 'npc',
 const speech = { op: 'emit_interaction', actor_ref: 'actor:player',
   target_actor_refs: ['npc:interlocutor'], interaction_kind: 'speech',
   content: 'Talk to the active interlocutor.', instrument_refs: [] };
+
+test('ordinary sustained action uses semantic activity instead of speech', async () => {
+  const action = 'Жду под навесом два часа.';
+  const input = request({ root_player_action: action, remaining_intent: action,
+    actor: { actor_ref: 'actor:player' } });
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      assert.match(call.messages[0].content,
+        /ordinary_semantic_activity[\s\S]*first-person action sentence is not spoken words/iu);
+      return { output: {
+        interpretation: { player_goal: action, grounded_attempt: action,
+          adaptation: 'literal' },
+        resolution: 'direct', goal_result: 'achieved',
+        activity: { owner: 'semantic', duration_class: 'extended',
+          effort: 'none', requested_duration_minutes: 120 },
+        direct_result_kind: null, operation_choice: null,
+        operations: [], check: null, continuation: null,
+        clarification: null, reason_code: 'ordinary_semantic_activity',
+        reason: 'Waiting is the complete activity.'
+      } };
+    }
+  } });
+
+  const plan = await model(input);
+  assert.deepEqual(plan.activity, { owner: 'semantic',
+    duration_class: 'extended', effort: 'none',
+    requested_duration_minutes: 120 });
+  assert.equal(plan.direct_result_kind, null);
+});
 
 test('focused discovery outranks general look and preserves continuation', async () => {
   const discovery = { op: 'request_discovery', actor_ref: 'actor:player',
@@ -194,6 +225,50 @@ test('active conversation selects exact supplied interaction', async (t) => {
   });
 });
 
+test('selected domain interaction discards contradictory direct speech metadata', () => {
+  const action = 'Говорю собеседнику: «Что случилось?»';
+  const input = request({ root_player_action: action, remaining_intent: action,
+    actor: { actor_ref: 'actor:player' },
+    player_safe_state: { active_interlocutor: interlocutor },
+    available_domain_operations: [speech] });
+  const plan = assembleTurnStepPlan({
+    interpretation: { player_goal: action, grounded_attempt: action,
+      adaptation: 'literal' },
+    resolution: 'domain_request',
+    operation_choice: 'domain_operation_1_emit_interaction_speech',
+    check: null, continuation: null, clarification: null,
+    direct_result_kind: 'player_utterance',
+    utterance: { speaker_ref: 'actor:player',
+      utterance_text: 'Что случилось?', input_mode: 'verbatim',
+      delivery: { loudness: 2, duration_class: 'instant' } },
+    reason_code: 'active_conversation', reason: 'Use the interaction owner.'
+  }, input);
+  assert.equal(plan.direct_result_kind, null);
+  assert.equal(Object.hasOwn(plan, 'utterance'), false);
+  assert.deepEqual(plan.operations, [speech]);
+});
+
+test('selected interaction consumes its sole quoted utterance instead of repeating it', () => {
+  const action = 'Спрашиваю ближайшего рыбака: «Куда вы собираетесь сегодня?»';
+  const input = request({ root_player_action: action, remaining_intent: action,
+    actor: { actor_ref: 'actor:player' },
+    player_safe_state: { active_interlocutor: interlocutor },
+    available_domain_operations: [speech] });
+  const plan = assembleTurnStepPlan({
+    interpretation: { player_goal: action, grounded_attempt: action,
+      adaptation: 'literal' },
+    resolution: 'domain_request',
+    operation_choice: 'domain_operation_1_emit_interaction_speech',
+    check: null, continuation: { remaining_intent:
+      ': «Куда вы собираетесь сегодня?»', depends_on_refs: [] },
+    clarification: null, reason_code: 'active_conversation',
+    reason: 'Use the interaction owner.'
+  }, input);
+
+  assert.equal(plan.continuation, null);
+  assert.deepEqual(plan.operations, [speech]);
+});
+
 test('active conversation precedes later discovery', async () => {
   const discovery = { op: 'request_discovery', actor_ref: 'actor:player', discovery_kind: 'inspect',
     target_ref: 'location:visible', query: 'Find a new physical detail.' };
@@ -239,6 +314,7 @@ test('generic request skips instrumented offer', async () => {
   });
   assert.deepEqual((await model(input)).operations, [requestInteraction]);
   const contrast = prompt.match(/Active conversation contrast: ([\s\S]*?)\s+Mapping:/u)[1];
+  assert.match(contrast, /desired answer or reaction is its owner result, never continuation[\s\S]*goal_result achieved and continuation null/u);
   assert.match(contrast, /"operation_choice":"domain_operation_2_emit_interaction_request"/u);
   assert.doesNotMatch(contrast, /domain_operation_1_emit_interaction_offer/u);
 });

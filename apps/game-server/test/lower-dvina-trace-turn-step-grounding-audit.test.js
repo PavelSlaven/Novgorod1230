@@ -71,6 +71,8 @@ test('generic discovery keeps deterministic intent identity after focused classi
           /осматривает, ищет или выбирает по указанным признакам[\s\S]*не приобретая, не перемещая, не изменяя и не используя/u);
         return { output: payload.operation == null
           ? { pass: true, concerns: [] }
+          : payload.operation.query === 'искать на берегу следы лодки'
+            ? { mode: 'different_action', consumed_intent: null }
           : { mode: 'focused_discovery',
             consumed_intent: payload.remaining_intent } };
       } }
@@ -92,12 +94,24 @@ test('generic discovery keeps deterministic intent identity after focused classi
       owner_kind: 'ordinary_discovery' }];
     assert.equal(await validate({ request: genericRequest,
       plan: genericPlan, resolved_domain_operations: ordinaryOwner }), true);
-    assert.equal(calls, 1);
+    const abbreviated = await validate({ request: genericRequest, plan: {
+      ...genericPlan, operations: [{ ...genericPlan.operations[0],
+        query: 'полосу берега' }]
+    }, resolved_domain_operations: ordinaryOwner });
+    assert.equal(abbreviated.corrected_plan.operations[0].query,
+      remainingIntent);
+    const paraphrased = await validate({ request: genericRequest, plan: {
+      ...genericPlan, operations: [{ ...genericPlan.operations[0],
+        query: 'осмотреть прибрежный участок ради сухой верёвки' }]
+    }, resolved_domain_operations: ordinaryOwner });
+    assert.equal(paraphrased.corrected_plan.operations[0].query,
+      remainingIntent);
+    assert.equal(calls, 3);
     assert.equal(await validate({ request: genericRequest,
       plan: genericPlan, resolved_domain_operations: [{
         path: '$.operations.0', owner_kind: 'external'
       }] }), true);
-    assert.equal(calls, 2);
+    assert.equal(calls, 4);
     await assert.rejects(validate({ request: genericRequest, plan: {
       ...genericPlan, operations: [{ ...genericPlan.operations[0],
         query: 'искать на берегу следы лодки' }]
@@ -108,7 +122,33 @@ test('generic discovery keeps deterministic intent identity after focused classi
       assert.equal(error.details.errors[0].path, '$.operations.0.query');
       return true;
     });
-    assert.equal(calls, 3);
+    assert.equal(calls, 5);
+  });
+
+test('focused discovery removes a duplicated suffix after consuming the complete intent',
+  async () => {
+    const remainingIntent = 'Осматриваю людей и стан.';
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run() {
+        return { output: { mode: 'focused_discovery',
+          consumed_intent: remainingIntent } };
+      } }
+    });
+    const result = await validate({ request: { request_id: 'turn-step:whole-look',
+      remaining_intent: remainingIntent, actor: { actor_ref: 'actor:1' },
+      player_safe_state: { actor_id: 'actor:1',
+        position: { location_ref: 'location:fishing-camp' },
+        ordinary_resolution: { discovery_available: true,
+          container_resolution_available: false, scene_seed_available: true }
+      } }, plan: { check: null, operations: [{ op: 'request_discovery',
+        actor_ref: 'actor:1', discovery_kind: 'look',
+        target_refs: ['location:fishing-camp'],
+        query: 'общий вид ближайшего окружения' }],
+      continuation: { remaining_intent: 'и стан.', depends_on_refs: [] } },
+    resolved_domain_operations: [{ path: '$.operations.0',
+      owner_kind: 'ordinary_discovery' }] });
+    assert.equal(result.corrected_plan.operations[0].query, remainingIntent);
+    assert.equal(result.corrected_plan.continuation, null);
   });
 
 test('material prerequisite preserves the full intent and audits its query',

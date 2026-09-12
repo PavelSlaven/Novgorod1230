@@ -44,7 +44,7 @@ const V31 = Object.freeze({
 export async function loadLowerDvinaTracePhase2Bundle({
   rootDir = process.cwd(), scenarioDefinitionRevision = null
 } = {}) {
-  const selected = [31, 32, 33].includes(scenarioDefinitionRevision) ? V31 : scenarioDefinitionRevision === 30 ? V30 : scenarioDefinitionRevision === 29 ? V29
+  const selected = [31, 32, 33, 34].includes(scenarioDefinitionRevision) ? V31 : scenarioDefinitionRevision === 30 ? V30 : scenarioDefinitionRevision === 29 ? V29
     : [27, 28].includes(scenarioDefinitionRevision) ? V27 : {
     manifest: MANIFEST_PATH, binding: BINDING_PATH,
     manifestDigest: APPROVED_MANIFEST_DIGEST,

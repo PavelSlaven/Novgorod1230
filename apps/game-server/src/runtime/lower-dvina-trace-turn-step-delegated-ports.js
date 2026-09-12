@@ -274,7 +274,9 @@ function semanticFactualEvents(execution, identity, state, resolved) {
   const utterance = execution.plan?.direct_result_kind === 'player_utterance'
     ? execution.plan.utterance : null;
   const delivery = utterance?.delivery;
-  const sourceScope = execution.working_projection?.spatial_semantic?.position_ref
+  const sourceScope = state.committedState?.position?.position_id
+    ?? state.committedState?.position?.g5_anchor_id
+    ?? execution.working_projection?.spatial_semantic?.position_ref
     ?? state.committedState?.position?.location_ref;
   const occurredAt = execution.prepared_chain_context?.current_clock
     ?? state.committedState?.clock_weather_light?.clock

@@ -61,10 +61,12 @@ export function buildSpatialV3PerceptionReactionWriteSet(input = {}) {
     perception_result,
     perception_replay_evidence,
     knowledge_merge_result,
+    knowledge_state_before_exists = true,
     reaction_option_proposal = null,
     reaction_proposal = null
   } = input;
-  if (![party_id, change_set_id, idempotency_record_id].every(stable)) {
+  if (![party_id, change_set_id, idempotency_record_id].every(stable)
+      || typeof knowledge_state_before_exists !== 'boolean') {
     return fail('generated_schema_mismatch', party_id, 'party, change set and idempotency identities are required');
   }
   for (const [contractName, value] of [
@@ -103,6 +105,13 @@ export function buildSpatialV3PerceptionReactionWriteSet(input = {}) {
     || perception_replay_evidence.perception_digest !== perception_result.canonical_digest
     || knowledge_merge_result.source_ref?.entity_id !== perception_result.perception_id) {
     return fail('perception_policy_gap', party_id, 'perception replay and knowledge merge must share one complete causal result');
+  }
+  if (!knowledge_state_before_exists
+      && (knowledge_merge_result.state_version_before !== 1
+        || knowledge_merge_result.state_before_fact_refs.length !== 0
+        || knowledge_merge_result.state_before_hypothesis_refs.length !== 0)) {
+    return fail('state_version_conflict', party_id,
+      'Initial NPC knowledge state must start empty at version one');
   }
   if (reaction_proposal !== null
     && (!same(
@@ -280,8 +289,20 @@ export function buildSpatialV3PerceptionReactionWriteSet(input = {}) {
       }));
     }
   }
-  if (knowledge_merge_result.state_changed) {
-    const id = `${party_id}:${npcRef.entity_id}`;
+  const knowledgeStateId = `${party_id}:${npcRef.entity_id}`;
+  if (!knowledge_state_before_exists) {
+    add('inserts', write('party_npc_knowledge_merge_states', knowledgeStateId, {
+      party_id,
+      npc_id: npcRef.entity_id,
+      state_version: knowledge_merge_result.state_version_after,
+      last_proposal_id: knowledge_merge_result.state_changed
+        ? knowledge_merge_result.proposal_id : null,
+      last_result_digest: knowledge_merge_result.state_changed
+        ? knowledge_merge_result.result_digest : null,
+      updated_change_set_id: change_set_id
+    }));
+  } else if (knowledge_merge_result.state_changed) {
+    const id = knowledgeStateId;
     add('updates', write('party_npc_knowledge_merge_states', id, {
       party_id,
       npc_id: npcRef.entity_id,

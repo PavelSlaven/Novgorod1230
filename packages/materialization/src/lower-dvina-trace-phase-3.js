@@ -158,7 +158,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     use_state: rope.use_state
   };
   if (input.scenario_definition_revision >= 12
-      && input.scenario_definition_revision <= 33) {
+      && input.scenario_definition_revision <= 34) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',
@@ -371,7 +371,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   const weaponItem = weapon == null ? null : materializeStorehouseWeapon({
     input, bundle, runId, weapon, npc });
   const packet = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-    30, 31, 32, 33].includes(input.scenario_definition_revision)
+    30, 31, 32, 33, 34].includes(input.scenario_definition_revision)
     ? materializeHiddenPacket({ input, bundle, runId, container, npc,
       roadBagResource })
     : null;

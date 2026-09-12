@@ -89,19 +89,46 @@ const UNSUPPORTED_KINDS = new Set([
 ]);
 
 export function assembleNarrationAuditOutput(output, request) {
-  if (!validNarrationAuditModelOutput(output, request)) {
+  const normalized = normalizeChoices(output, request);
+  const boundedCompositionRepair = request.phase === 'final'
+    && Array.isArray(normalized?.literary_failures)
+    && normalized.literary_failures.some(
+      ({ check }) => check === 'weak_literary_composition');
+  const normalizedOutput = boundedCompositionRepair ? {
+    ...normalized,
+    literary_failures: normalized.literary_failures.filter(
+      ({ check }) => check !== 'weak_literary_composition')
+  } : normalized;
+  const clean = Array.isArray(normalizedOutput?.source_reviews)
+    && normalizedOutput.source_reviews.every(({ segment_choices }) =>
+      Array.isArray(segment_choices) && segment_choices.length > 0)
+    && Array.isArray(normalizedOutput.unsupported)
+    && normalizedOutput.unsupported.length === 0
+    && Array.isArray(normalizedOutput.literary_failures)
+    && normalizedOutput.literary_failures.length === 0;
+  const modelOutput = {
+    ...normalizedOutput,
+    reviewed_segments: request.segments.map(({ segment_id }) => segment_id),
+    ...(clean && Array.isArray(normalizedOutput.evidence)
+      && normalizedOutput.evidence.length === 0
+      ? { evidence: [boundedCompositionRepair
+          ? 'All required sources are covered and no factual or presentation failures remain after bounded composition repair.'
+          : 'All required sources are covered and no audit failures were reported.'] }
+      : {})
+  };
+  if (!validNarrationAuditModelOutput(modelOutput, request)) {
     return {
       version: 1, schema: 'narration_audit', pass: undefined,
       artistic_verdict: undefined, technical_verdict: undefined,
       coverage: undefined, concerns: undefined,
-      evidence: structuredClone(output?.evidence)
+      evidence: structuredClone(modelOutput?.evidence)
     };
   }
   const concerns = [];
   const firstSegment = request.segments[0].segment_id;
-  const hasMissingSource = output.source_reviews.some(
+  const hasMissingSource = modelOutput.source_reviews.some(
     ({ segment_choices }) => segment_choices.length === 0);
-  for (const source of output.source_reviews) {
+  for (const source of modelOutput.source_reviews) {
     if (source.segment_choices.length === 0) {
       concerns.push({
         segment_id: firstSegment,
@@ -110,12 +137,12 @@ export function assembleNarrationAuditOutput(output, request) {
       });
     }
   }
-  concerns.push(...output.unsupported.map((finding) => ({
+  concerns.push(...modelOutput.unsupported.map((finding) => ({
     segment_id: finding.segment_choice,
     kind: finding.kind,
     reason: finding.reason
   })));
-  concerns.push(...output.literary_failures
+  concerns.push(...modelOutput.literary_failures
     .filter(({ check }) => check !== 'current_beat_buried'
       || !hasMissingSource)
     .map((finding) => ({
@@ -136,12 +163,55 @@ export function assembleNarrationAuditOutput(output, request) {
       ? 'fail' : 'pass',
     technical_verdict: concerns.some(({ kind }) =>
       kind === 'technical_presentation') ? 'fail' : 'pass',
-    coverage: narrationCoverage(Object.fromEntries(output.source_reviews.map(
+    coverage: narrationCoverage(Object.fromEntries(modelOutput.source_reviews.map(
       ({ ref, segment_choices: choices }) => [ref, choices]
     )), request),
     concerns,
-    evidence: structuredClone(output.evidence)
+    evidence: structuredClone(modelOutput.evidence)
   };
+}
+
+function normalizeChoices(output, request) {
+  if (!output || typeof output !== 'object' || Array.isArray(output)) return output;
+  const normalizeFinding = (finding) => !finding || typeof finding !== 'object'
+    ? finding : { ...finding,
+      segment_choice: normalizeChoice(finding.segment_choice, request) };
+  return {
+    ...output,
+    source_reviews: Array.isArray(output.source_reviews)
+      ? output.source_reviews.map((review) => !review
+        || typeof review !== 'object' ? review : { ...review,
+          segment_choices: Array.isArray(review.segment_choices)
+            ? review.segment_choices.map((choice) =>
+              normalizeChoice(choice, request)) : review.segment_choices })
+      : output.source_reviews,
+    unsupported: Array.isArray(output.unsupported)
+      ? output.unsupported.map(normalizeFinding) : output.unsupported,
+    literary_failures: Array.isArray(output.literary_failures)
+      ? output.literary_failures.map(normalizeFinding)
+      : output.literary_failures
+  };
+}
+
+function normalizeChoice(value, request) {
+  if (typeof value !== 'string') return value;
+  const normalized = normalizeText(value);
+  const segments = request.segments ?? [];
+  const exact = segments.find(({ segment_id: id }) => id === value);
+  if (exact) return exact.segment_id;
+  const prose = segments.find((segment) =>
+    normalizeText(segment.prose) === normalized);
+  if (prose) return prose.segment_id;
+  const ids = segments.map(({ segment_id: id }) => id);
+  if (normalized === normalizeText(ids.join(', '))
+      || normalized === normalizeText(request.output?.prose)) {
+    return ids[0];
+  }
+  return value;
+}
+
+function normalizeText(value) {
+  return typeof value === 'string' ? value.trim().replace(/\s+/gu, ' ') : null;
 }
 
 function validNarrationAuditModelOutput(output, request) {

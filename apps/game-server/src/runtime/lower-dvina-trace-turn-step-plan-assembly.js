@@ -9,8 +9,9 @@ export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
   const normalized = canonicalizePlannerEnvelope(
     normalizeTurnStepOperationChoice(structuredClone(unwrapMapping(choice, request))), request);
-  const semantic = restoreExactOperationChoice(
-    canonicalizeDiscoveryShape(normalized, request), operationChoices);
+  const semantic = restoreExactOperationChoice(canonicalizeMovementChoice(
+    canonicalizeDiscoveryShape(normalized, request), operationChoices),
+  operationChoices);
   const selected = selectedTurnStepOperation(semantic, operationChoices);
   const mismatchedSelectedOperations = selected != null
     && Array.isArray(semantic.operations)
@@ -27,6 +28,9 @@ export function assembleTurnStepPlan(choice, request,
     selectedOperations, semantic, request });
   const operations = bindActionProductionCarrierRefs(
     ordinaryDiscovery?.operations ?? selectedOperations);
+  const continuation = canonicalInteractionContinuation(operations,
+    ordinaryDiscovery == null ? semantic.continuation ?? null
+      : ordinaryDiscovery.continuation, request);
   const resolution = operations?.some(({ op }) => isDomainStepOperation(op))
     ? 'domain_request' : semantic.resolution;
   const domainRequest = resolution === 'domain_request';
@@ -64,11 +68,10 @@ export function assembleTurnStepPlan(choice, request,
       : semantic.activity,
     operations,
     check: semantic.check ?? null,
-    continuation: ordinaryDiscovery == null
-      ? semantic.continuation ?? null : ordinaryDiscovery.continuation,
+    continuation,
     clarification: semantic.clarification ?? null,
-    direct_result_kind: semantic.direct_result_kind ?? null,
-    ...(semantic.utterance == null ? {} : {
+    direct_result_kind: domainRequest ? null : semantic.direct_result_kind ?? null,
+    ...(domainRequest || semantic.utterance == null ? {} : {
       utterance: structuredClone(semantic.utterance)
     }),
     reason_code: semantic.reason_code,
@@ -77,6 +80,37 @@ export function assembleTurnStepPlan(choice, request,
       operation_choice: semantic.operation_choice
     } : {})
   };
+}
+
+function canonicalizeMovementChoice(semantic, operationChoices) {
+  const operation = semantic?.operations?.length === 1
+    ? semantic.operations[0] : null;
+  if (operation?.op !== 'request_movement') return semantic;
+  const targetRef = operation.target_ref ?? operation.destination_ref;
+  const matches = operationChoices.filter(({ operation: candidate }) =>
+    candidate?.op === 'request_movement'
+      && (operation.route_ref == null
+        || candidate.route_ref === operation.route_ref)
+      && (targetRef == null || candidate.target_ref === targetRef));
+  if (matches.length !== 1
+      || operation.route_ref == null && targetRef == null) return semantic;
+  return { ...semantic,
+    operation_choice: matches[0].choice_id,
+    operation_family: 'request_movement',
+    operations: [structuredClone(matches[0].operation)] };
+}
+
+function canonicalInteractionContinuation(operations, continuation, request) {
+  if (operations?.length !== 1 || operations[0]?.op !== 'emit_interaction'
+      || continuation?.depends_on_refs?.length !== 0
+      || continuation.prepared_followup_ref != null
+      || continuation.pending_discovery != null) return continuation;
+  const quoted = [...String(request.remaining_intent ?? '').matchAll(
+    /«[^»]+»|"[^"]+"|“[^”]+”|„[^“]+“/gu)];
+  return quoted.length === 1
+      && normalized(quoted[0][0]) === normalized(String(
+        continuation.remaining_intent ?? '').replace(/^[\s:;,—-]+/u, ''))
+    ? null : continuation;
 }
 
 function projectFields(value, properties) {

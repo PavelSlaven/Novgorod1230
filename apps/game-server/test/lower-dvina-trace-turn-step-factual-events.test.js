@@ -16,7 +16,8 @@ const versionedRef = (entity_kind, entity_id) => ({ entity_kind, entity_id,
 test('direct utterance emits exact delivery without speech text', async () => {
   const state = initializeRuntimeState({ party_id: 'party', actor_id: 'actor',
     party_state: { turn_number: 0 }, clock: at,
-    position: { location_ref: 'shore' }, items: [] });
+    position: { location_ref: 'shore', position_id: 'position:shore' },
+    items: [] });
   const result = await applySemanticActivity({
     request: { root_turn_id: 'turn', step_index: 1,
       actor: { actor_id: 'actor', body: {} } },
@@ -27,7 +28,7 @@ test('direct utterance emits exact delivery without speech text', async () => {
     operation: { activity: { owner: 'semantic', duration_class: 'moment',
       effort: 'none' } },
     working_projection: { actor_id: 'actor', spatial_semantic: {
-      position_ref: 'shore' } }, check_result: null,
+      position_ref: 'candidate:not-current' } }, check_result: null,
     prepared_chain_context: null
   }, state, { resolve: async () => ({
     profile_ref: 'semantic:moment:none',
@@ -47,6 +48,8 @@ test('direct utterance emits exact delivery without speech text', async () => {
     authoring_version: '1' });
   assert.deepEqual(result.factual_events[0].profile_pin, {
     artifact_id: 'semantic', revision: 1, digest: 'a'.repeat(64) });
+  assert.equal(result.factual_events[0].source_scope_ref.entity_id,
+    'position:shore');
   assert.equal(JSON.stringify(result.factual_events).includes('Эй'), false);
 });
 

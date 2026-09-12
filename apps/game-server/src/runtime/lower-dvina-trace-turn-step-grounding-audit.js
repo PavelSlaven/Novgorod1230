@@ -96,6 +96,26 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
         const query = focused.output.prerequisite_query ?? (prerequisiteProjection
           && focused.output.mode === 'material_prerequisite' && focused.output.consumed_intent === null
           ? genericDiscovery.query : null);
+        const consumed = normalized(focused.output.consumed_intent);
+        const requested = normalized(genericDiscovery.query);
+        if (focused.output.mode === 'focused_discovery'
+            && consumed === normalized(request.remaining_intent)
+            && plan.continuation != null
+            && plan.continuation.depends_on_refs?.length === 0
+            && plan.continuation.prepared_followup_ref == null) {
+          return { corrected_plan: { ...plan, operations: [{
+            ...genericDiscovery, query: focused.output.consumed_intent
+          }], continuation: null } };
+        }
+        if (focused.output.mode === 'focused_discovery'
+            && consumed != null && requested != null
+            && consumed !== requested
+            && preservesIntent(focused.output.consumed_intent,
+              plan.continuation, request.remaining_intent)) {
+          return { corrected_plan: { ...plan, operations: [{
+            ...genericDiscovery, query: focused.output.consumed_intent
+          }] } };
+        }
         if (query != null && plan.interpretation?.adaptation === 'literal'
             && plan.clarification == null && plan.direct_result_kind == null
             && (plan.continuation == null || plan.continuation.depends_on_refs?.length === 0

@@ -408,6 +408,28 @@ test('active interlocutor gets a non-persisted portrait from sanitized committed
   assert.equal(Object.hasOwn(state.npcs[0], 'portrait_spec_v1'), false);
 });
 
+test('pending turn screen excludes the read-only interlocutor portrait', () => {
+  const state = payload();
+  state.npcs[0].identity_state = portraitIdentity();
+  state.items = [portraitGarment({
+    itemId: 'eremey-shirt', slot: 'base_garment', color: 'undyed_linen'
+  })];
+  const visiblePayload = {
+    perceived_scene: visibleContext().visible_scene,
+    perceived_changes: [], sensory_details: [],
+    visible_npcs: visibleContext().visible_npc,
+    visible_objects: [], known_context: [], uncertainties: []
+  };
+  const pending = buildLowerDvinaTracePendingScreen({ state,
+    turnId: 'turn-3', nextVersion: 4, turnNumber: 3,
+    visibleEnvelope: { package_id: 'visible-2',
+      package_digest: 'sha256:visible-2', visible_payload: visiblePayload } });
+  assert.equal(JSON.stringify(pending).includes('portrait_spec_v1'), false);
+  assert.ok(projectLowerDvinaTraceScreenPanels({ payload: state,
+    screen: { panels: {}, visible_context: visibleContext() } })
+    .panels.people.data.active_interlocutor.portrait_spec_v1);
+});
+
 for (const [slot, portraitAssetId] of [
   ['player_clerk', 'lower-dvina-mikula'],
   ['onisim_boatman', 'lower-dvina-onisim'],

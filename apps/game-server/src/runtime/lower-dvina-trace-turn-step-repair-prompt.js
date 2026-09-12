@@ -14,8 +14,14 @@ export function turnStepRepairSpecificInstructions(repairContext, request) {
     'Required speech repair: retain the current actor speech step and correct only its utterance and uncovered continuation. Explicit player words require verbatim and exact intended quotation; do not copy another voice. Unquoted speech intent uses intent_paraphrase with faithful words and no added claim, promise or commitment. Never replace rejected speech with discovery, a gesture, or silent omission.'
   );
   if (codes.has('direct_result_kind')) instructions.push(
-    'Required repair: classify the successful write-free direct result with direct_result_kind player_safe_body_observation for the supplied actor body, player_safe_item_observation for supplied carried/worn items, player_safe_observation for other supplied player-safe facts, player_utterance for explicit ownerless speech with utterance:{speaker_ref,utterance_text,input_mode}; verbatim copies supplied words, intent_paraphrase resolves an unquoted speech intention; otherwise no_state_gesture for a simple gesture only. Never classify speech as a gesture. Do not leave direct_result_kind null.'
+    'Required repair: only a successful write-free direct result with semantic moment/none activity uses a non-null direct_result_kind: player_safe_body_observation for the supplied actor body, player_safe_item_observation for supplied carried/worn items, player_safe_observation for other supplied player-safe facts, player_utterance for explicit ownerless speech with utterance:{speaker_ref,utterance_text,input_mode}, or no_state_gesture for a simple gesture. Verbatim copies supplied words; intent_paraphrase resolves an unquoted speech intention. Never classify speech as a gesture. A sustained semantic activity instead requires direct_result_kind null.'
   );
+  if (repairContext?.structural_errors?.some(({ path, code }) =>
+    path === '$.utterance' && code === 'operation_semantic_grounding')) {
+    instructions.push(
+      'The proposed utterance failed semantic grounding. Determine from request.remaining_intent whether the player actually intends speech or a vocal signal. If not, discard utterance and use the matching non-speech semantic mapping, preserving any explicit duration. If yes, repair player_utterance faithfully. Typed first-person action prose is not speech.'
+    );
+  }
   if (codes.has('operation_semantic_grounding')) instructions.push(
     'Required operation grounding repair: discovery only reveals or materializes; it never acquires, relocates, transforms, handles, or uses the discovered referent. Words copied into a discovery query do not execute a physical act. Preserve every physical act not executed by another current operation in continuation, even when those words form a textual prefix of the query.'
   );

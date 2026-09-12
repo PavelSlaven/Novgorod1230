@@ -194,6 +194,15 @@ function directSeedChange(value) {
       && value.observable_response_event_refs.length === 0) {
     return 'Непосредственного наблюдаемого отклика на ваше действие не последовало.';
   }
+  if (value?.kind === 'post_applied_perception_window'
+      && value.status === 'pending_npc_decision'
+      && Array.isArray(value.observable_response_event_refs)
+      && value.observable_response_event_refs.length === 0
+      && Array.isArray(value.pending_npc_decision_refs)
+      && value.pending_npc_decision_refs.length > 0
+      && value.pending_npc_decision_refs.every(text)) {
+    return null;
+  }
   if (value?.change === 'created' && text(value.name)) {
     return `Появился результат вашей работы: ${value.name}.`;
   }

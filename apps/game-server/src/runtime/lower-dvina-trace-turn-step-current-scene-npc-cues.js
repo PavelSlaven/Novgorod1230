@@ -6,25 +6,39 @@ import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { projectCalendar } from '@rus/time-events-history/calendar';
 import { projectActor, projectBodyState, projectInteractions } from './lower-dvina-trace-player-safe-entities.js';
 import { projectKnowledge, projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
+import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
 
 const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
   'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
 const BODY_CHANGE_CONTEXT = 'Изменение состояния тела: ';
 
 export function enrichLowerDvinaTraceVisibleNpcCues({
-  visibleContext,
-  committedState, bodyAfter = null, clockAfter = null, calendarProfile = null
+  visibleContext, committedState, bodyAfter = null, clockAfter = null,
+  calendarProfile = null, temporalResults = []
 }) {
   if (!validCurrentScene(visibleContext)) failCurrentScene();
+  const projectedState = applyNpcRoutineTemporalResults(
+    structuredClone(committedState ?? {}), temporalResults);
+  const transitions = npcRoutineTransitions(temporalResults);
   const projectedNpcs = visibleContext.visible_npc.flatMap((npc) =>
     npc?.entity_ref?.entity_kind === 'npc' && text(npc.entity_ref.entity_id)
       ? [{ instance_id: npc.entity_ref.entity_id }] : []);
   const details = new Map(projectLowerDvinaTraceVisibleNpcDetails({
     visibleContext,
     projectedNpcs,
-    committedNpcs: committedState?.npcs,
-    committedItems: committedState?.items
+    committedNpcs: projectedState.npcs,
+    committedItems: projectedState.items
   }).map((npc) => [npc.instance_id, npc]));
+  const visibleBefore = new Set((committedState?.current_visible_context
+    ?.visible_npc ?? []).map(({ entity_ref: ref }) => ref?.entity_id));
+  const visibleAfter = new Map(visibleContext.visible_npc.map((npc) => [
+    npc?.entity_ref?.entity_id, npc?.display_label
+  ]));
+  const observedTransitions = transitions.filter(({ npc_id: id }) =>
+    visibleBefore.has(id) && visibleAfter.has(id));
+  const latestActivity = new Map(transitions.map(({ npc_id: id, after }) => [
+    id, after?.npc_snapshot?.machine_state?.current_activity?.summary
+  ]));
   const beforeContext = currentActorContext(committedState?.body_state, committedState?.clock, calendarProfile);
   const afterContext = currentActorContext(bodyAfter ?? committedState?.body_state,
     clockAfter ?? committedState?.clock, calendarProfile);
@@ -40,6 +54,11 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
   return deepFreeze({
     ...structuredClone(visibleContext),
     visible_changes: [...new Set([...visibleContext.visible_changes,
+      ...observedTransitions.flatMap(({ npc_id: id, proposal }) => {
+        const summary = proposal?.factual_transition?.summary;
+        const label = visibleAfter.get(id);
+        return text(label) && text(summary) ? [`${label}: ${summary}`] : [];
+      }),
       ...(conditionChanges.length === 0 ? [] : ['Состояние вашего тела изменилось.'])])],
     known_context: [...new Set([...visibleContext.known_context.filter(value =>
       !beforeContext.includes(value) && !value.startsWith(BODY_CHANGE_CONTEXT)),
@@ -56,8 +75,10 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
           || detail.ordinary_remainder != null
           || Object.keys(detail.identity_state).some((key) =>
             key !== 'display_name'));
-      return !informative ? structuredClone(npc) : {
+      const status = latestActivity.get(npc?.entity_ref?.entity_id);
+      return !informative && !text(status) ? structuredClone(npc) : {
         ...structuredClone(npc),
+        ...(text(status) ? { visible_status: status } : {}),
         observable_cues: {
           identity: structuredClone(detail.identity_state),
           equipment: structuredClone(detail.visible_equipment),
@@ -69,6 +90,13 @@ export function enrichLowerDvinaTraceVisibleNpcCues({
       };
     })
   });
+}
+
+function npcRoutineTransitions(results) {
+  return (results ?? []).flatMap((result) =>
+    result?.combined_change_set?.proposals ?? [])
+    .map(({ npc_routine_transition: transition }) => transition)
+    .filter(Boolean);
 }
 
 function currentActorContext(body, clock, calendarProfile) {

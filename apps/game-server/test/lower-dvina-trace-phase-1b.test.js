@@ -163,7 +163,8 @@ test('historical Phase 1A commits recover through their pinned publications', as
       const requestId = `historical-phase-1a-v${revision + 1}-orphan`;
       const partyId = `party:${hash(requestId).slice(0, 24)}`;
       const pub = await loadLowerDvinaTracePhase1BPublication({
-        phase1AManifestDigest: historical.phase_1a_manifest_digest
+        phase1AManifestDigest: historical.phase_1a_manifest_digest,
+        scenarioDefinitionRevision: historical.scenario_definition_revision
       });
       const binding = pub.binding;
       const world = binding.world_compatibility;

@@ -1,6 +1,6 @@
 import { serverError } from '../errors.js';
 
-const PROMPT = 'Верни только JSON с тремя ключами: speech_faithful (boolean), required_input_mode (verbatim или intent_paraphrase) и unexecuted_intent (строка или null). Проверяется только произнесение слов actor. speech_faithful=false, если явно длительная, повторяемая или ограниченная временем речь сведена к одной короткой реплике. Определи required_input_mode по исходному remaining_intent независимо от предложенного utterance.input_mode: verbatim только для явно заданных слов текущего actor; intent_paraphrase для свободного речевого намерения без заданной цитаты, даже если обращение короткое или его имя встречается в исходном тексте. speech_faithful=true только если первое действие — речь и utterance точно передаёт её смысл при required_input_mode. Неверный предложенный input_mode сам по себе не делает верные слова неверными: код отдельно сравнит режимы. Для verbatim слова должны быть словами текущего actor, а не чужой цитатой или условной репликой. Нельзя менять явную цитату через intent_paraphrase; свободное речевое намерение допускает верную формулировку без новых обещаний, угроз или утверждений. unexecuted_intent — весь дословный остаток remaining_intent ПОСЛЕ речевого действия, который произнесение слов ещё не выполняет. Скопируй остаток до самого конца исходной строки, сохранив начальные союзы и пунктуацию; не выписывай саму цитату или обрамляющее речевое действие. Слушание, осмотр, ожидание, движение, жесты и манипуляции вне реплики остаются неисполненными, даже в том же предложении. Цель, надежда, манера или ожидаемый результат, грамматически относящиеся к этой речи, не являются отдельным действием и не входят в unexecuted_intent. Если после речи нет отдельного действия, unexecuted_intent=null. Глаголы внутри произносимой цитаты сами по себе не являются действиями actor. Не добавляй объяснений или ключей.';
+const PROMPT = 'Верни только JSON с тремя ключами: speech_faithful (boolean), required_input_mode (verbatim или intent_paraphrase) и unexecuted_intent (строка или null). Проверяется только произнесение слов actor. Сначала установи, намерен ли actor вообще издать речь, зов, крик или иной голосовой сигнал. Фраза от первого лица о действии, ожидании, движении, наблюдении, жесте или манипуляции не становится произнесённой репликой лишь потому, что игрок написал её текстом; для неё speech_faithful=false. speech_faithful=false, если явно длительная, повторяемая или ограниченная временем речь сведена к одной короткой реплике. Определи required_input_mode по исходному remaining_intent независимо от предложенного utterance.input_mode: verbatim только для явно заданных слов текущего actor; intent_paraphrase для свободного речевого намерения без заданной цитаты, даже если обращение короткое или его имя встречается в исходном тексте. speech_faithful=true только если первое действие — речь и utterance точно передаёт её смысл при required_input_mode. Неверный предложенный input_mode сам по себе не делает верные слова неверными: код отдельно сравнит режимы. Для verbatim слова должны быть словами текущего actor, а не чужой цитатой или условной репликой. Нельзя менять явную цитату через intent_paraphrase; свободное речевое намерение допускает верную формулировку без новых обещаний, угроз или утверждений. unexecuted_intent — весь дословный остаток remaining_intent ПОСЛЕ речевого действия, который произнесение слов ещё не выполняет. Скопируй остаток до самого конца исходной строки, сохранив начальные союзы и пунктуацию; не выписывай саму цитату или обрамляющее речевое действие. Слушание, осмотр, ожидание, движение, жесты и манипуляции вне реплики остаются неисполненными, даже в том же предложении. Цель, надежда, манера или ожидаемый результат, грамматически относящиеся к этой речи, не являются отдельным действием и не входят в unexecuted_intent. Если после речи нет отдельного действия, unexecuted_intent=null. Глаголы внутри произносимой цитаты сами по себе не являются действиями actor. Не добавляй объяснений или ключей.';
 
 export async function auditFocusedSpeech({ roleRunner, plan, request,
   allow_speech_metadata_projection = false }) {
@@ -18,7 +18,7 @@ export async function auditFocusedSpeech({ roleRunner, plan, request,
     'Turn-step grounding auditor returned an invalid result.', { status: 503 }
   );
   const classification = response.output;
-  const remaining = classification.unexecuted_intent;
+  const remaining = canonicalSpeechRemainder(classification, plan, request);
   if (!classification.speech_faithful || remaining === request.remaining_intent) return false;
   if (remaining != null && !request.remaining_intent.endsWith(remaining)) {
     if (!removesOneSpan(request.remaining_intent, remaining)) return false;
@@ -67,6 +67,24 @@ export async function auditFocusedSpeech({ roleRunner, plan, request,
       code: 'operation_semantic_grounding',
       message: `Keep the faithful utterance and its write-free activity; speech executes no later action. Set utterance.input_mode to ${mode}, continuation exactly to ${JSON.stringify(expected)} and goal_result to ${goalResult}.`
     }] } });
+}
+
+function canonicalSpeechRemainder(classification, plan, request) {
+  const remaining = classification.unexecuted_intent;
+  if (!classification.speech_faithful
+      || classification.required_input_mode !== 'verbatim'
+      || plan.utterance?.input_mode !== 'verbatim'
+      || typeof remaining !== 'string') return remaining;
+  const source = request.remaining_intent.trim();
+  const matches = [...source.matchAll(/[«“„"]([^»”"]+)[»”"]/gu)];
+  if (matches.length !== 1
+      || matches[0][1].trim() !== plan.utterance.utterance_text.trim()) {
+    return remaining;
+  }
+  const prefix = source.slice(0, matches[0].index).trim();
+  const suffix = source.slice(matches[0].index + matches[0][0].length).trim();
+  return suffix === '' && prefix.endsWith(':') && remaining.trim() === prefix
+    ? null : remaining;
 }
 
 function removesOneSpan(original, remainder) {

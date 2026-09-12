@@ -29,6 +29,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   semanticActivityOwner = null,
   temporalAdvance = null,
   bodyEffect = null, idempotencyKey = null,
+  postActionPerceptionProfile = null,
   workingProjectionAuthority
 } = {}) {
   if (typeof workingProjectionAuthority?.admit !== 'function') {
@@ -71,7 +72,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         handler(execution), workingProjectionAuthority)
     ]));
   const phase9ContainerOwner = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
-    28, 29, 30, 31, 32, 33].includes(safeCommittedState
+    28, 29, 30, 31, 32, 33, 34].includes(safeCommittedState
     ?.materialization_trace?.seed_context?.scenario_definition_revision)
     && (safeCommittedState.phase9 != null
       || safeCommittedState.last_turn?.consequence?.combat?.session_after
@@ -88,7 +89,8 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
     : null;
   return Object.freeze({
     postAppliedActorStep: createLowerDvinaTracePostAppliedActorStepOwner(
-      { committedState: safeCommittedState, idempotencyKey }),
+      { committedState: safeCommittedState, idempotencyKey,
+        perceptionProfile: postActionPerceptionProfile }),
     executionRegistry: createTurnStepExecutionRegistry({
       direct,
       domain: { ...domain, request_item_use: createTransientItemUseHandler() },

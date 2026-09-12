@@ -16,7 +16,7 @@ export function buildLowerDvinaTracePendingScreen({
   presentation = null
 }) {
   const combatState = publicCombatStateFromConsequence(turnConsequence);
-  const screen = projectLowerDvinaTraceScreenPanels({ payload: state, presentation, screen: {
+  const screen = structuredClone(projectLowerDvinaTraceScreenPanels({ payload: state, presentation, screen: {
     version: 1,
     schema: 'lower_dvina_trace_turn_screen',
     scenario_id: 'lower_dvina_trace_v1',
@@ -36,7 +36,8 @@ export function buildLowerDvinaTracePendingScreen({
     checks: projectPlayerSafeChecks(state),
     ...(combatState == null ? {} : { combat_state: combatState }),
     main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.'
-  } });
+  } }));
+  delete screen.panels?.people?.data?.active_interlocutor?.portrait_spec_v1;
   screen.screen_digest = phase2ScreenDigest(screen);
   return screen;
 }

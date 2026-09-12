@@ -16,6 +16,17 @@ export const TURN_STEP_COMPOUND_EXAMPLE = 'Flat compound example. Input: Про�
 });
 
 export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
+  ordinary_semantic_activity: {
+    interpretation: { adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic',
+      duration_class: '<moment, brief, short, or extended>',
+      effort: '<none, light, moderate, or heavy>',
+      requested_duration_minutes: '<positive whole minutes only when explicitly stated>' },
+    direct_result_kind: null, operation_family: null,
+    operation_choice: null, operations: [], check: null,
+    continuation: null, clarification: null
+  },
   player_utterance: {
     interpretation: { adaptation: 'literal' },
     resolution: 'direct', goal_result: 'achieved',

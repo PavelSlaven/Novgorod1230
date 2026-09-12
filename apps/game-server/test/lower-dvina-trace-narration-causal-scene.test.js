@@ -66,11 +66,17 @@ for (const generic of [false, true]) {
         npc_ref: 'fisher', ordinary_descriptor: 'На рукавах налипли стружки.',
         ordinary_activity: 'Перебирает обрезки досок.', causal_basis_refs: ['scene', 'npc']
       } } }] } });
-    await assertCurrentWire(visible, [...scenePresentation.locations[0].player_visible_physical_facts,
-      'В поле зрения — Еремей.', 'Обратный путь идёт вдоль берега.',
-      'Еремей: На рукавах налипли стружки.', 'Еремей: Перебирает обрезки досок.']);
-    assert.equal(visible.visible_changes.filter((fact) =>
-      fact === 'Еремей: На рукавах налипли стружки.').length, 1);
+    assert.deepEqual(visible.visible_changes, [generic
+      ? `Перед вами — ${destination.display_name}.`
+      : 'Вы вышли к пристани за излучиной.',
+    'Обратный путь идёт вдоль берега.']);
+    for (const fact of [...scenePresentation.locations[0].player_visible_physical_facts,
+      'В поле зрения — Еремей.',
+      'Еремей: На рукавах налипли стружки.',
+      'Еремей: Перебирает обрезки досок.']) {
+      assert.ok(visible.sensory_details.includes(fact), fact);
+    }
+    await assertCurrentWire(visible, visible.visible_changes);
   });
 }
 
@@ -79,8 +85,13 @@ test('real historical phase3 arrival keeps destination, NPC and discovered retur
     fallback: createTracePhase3VisibleProjector({
     phase2Projector: fallback, contracts
   }) }).project({ consequence: { phase3_kind: 'movement' } });
-  await assertCurrentWire(visible, ['Рабочий стан стоит у берега Нижней Двины.',
-    'В поле зрения — Еремей.', 'Обратная тропа к месту крушения теперь известна.']);
+  assert.deepEqual(visible.visible_changes,
+    ['Вы добрались от места крушения до рыбацкого стана.',
+      'Обратная тропа к месту крушения теперь известна.']);
+  assert.ok(visible.sensory_details.includes(
+    'Рабочий стан стоит у берега Нижней Двины.'));
+  assert.ok(visible.sensory_details.includes('В поле зрения — Еремей.'));
+  await assertCurrentWire(visible, visible.visible_changes);
 });
 
 test('real terminal carrying arrival exposes destination facts without source snapshot', async () => {
@@ -90,7 +101,13 @@ test('real terminal carrying arrival exposes destination facts without source sn
       execution_after: { status: 'completed' }, terminal_group_position: destination,
       terminal_group_ids: ['fisher'] } } },
     retrieved_state: { current_visible_context: currentScene() } });
-  await assertCurrentWire(visible, scenePresentation.locations[0].player_visible_physical_facts,
+  assert.deepEqual(visible.visible_changes,
+    ['Вы дошли до рыбацкого стана вместе с носильщиками и Онисимом.',
+      destination.display_name]);
+  for (const fact of scenePresentation.locations[0].player_visible_physical_facts) {
+    assert.ok(visible.sensory_details.includes(fact), fact);
+  }
+  await assertCurrentWire(visible, visible.visible_changes,
     ['При вас есть хозяйственный нож.']);
 });
 

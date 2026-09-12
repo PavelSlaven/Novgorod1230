@@ -24,6 +24,13 @@ const OPENING_PINS = Object.freeze({
   presentation: TRACE_SCENE_PRESENTATION_V3_DIGEST,
   priorBinding: HISTORICAL_PINS.binding
 });
+const POST_ACTION_PINS = Object.freeze({
+  ...OPENING_PINS,
+  manifest: '4839c288013913d6a7c7aa91c58cb2c2431c6f8b2b255f3f36f8bc657131dc1b',
+  binding: 'ecca45b05b55e8e893b5f8ee0a42b2d62cb75b78a7516b8512bca7df7945ac2a',
+  definition: 'c04d7032bfbea2fb7e1458fb59014e8168a258a3a2890475628a983702568b0f',
+  priorBinding: OPENING_PINS.binding
+});
 
 export function loadLowerDvinaTraceRevision32Publication(options = {}) {
   return loadPublication({ ...options, publicationRevision: 27 });
@@ -31,13 +38,20 @@ export function loadLowerDvinaTraceRevision32Publication(options = {}) {
 export function loadLowerDvinaTraceRevision33Publication(options = {}) {
   return loadPublication({ ...options, publicationRevision: 28 });
 }
+export function loadLowerDvinaTraceRevision34Publication(options = {}) {
+  return loadPublication({ ...options, publicationRevision: 29 });
+}
 async function loadPublication({
   rootDir = process.cwd(), phase1AManifestDigest = null,
   publicationRevision = 27 } = {}) {
-  if (![27, 28].includes(publicationRevision)) fail();
-  const scenarioRevision = publicationRevision === 28 ? 33 : 32;
-  const phase1aDigest = publicationRevision === 28 ? TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST : TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST;
-  const pins = publicationRevision === 28 ? OPENING_PINS : HISTORICAL_PINS;
+  if (![27, 28, 29].includes(publicationRevision)) fail();
+  const scenarioRevision = publicationRevision === 29 ? 34
+    : publicationRevision === 28 ? 33 : 32;
+  const phase1aDigest = publicationRevision >= 28
+    ? TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST
+    : TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST;
+  const pins = publicationRevision === 29 ? POST_ACTION_PINS
+    : publicationRevision === 28 ? OPENING_PINS : HISTORICAL_PINS;
   if (phase1AManifestDigest != null
       && phase1AManifestDigest !== phase1aDigest) {
     fail();
@@ -45,9 +59,10 @@ async function loadPublication({
   const paths = {
     manifest: `${ROOT}/phase-1b-v${publicationRevision}/manifest.json`,
     binding: `${ROOT}/phase-1b-v${publicationRevision}/publication-binding.json`,
-    phase1a: `${ROOT}/phase-1a-v${publicationRevision === 28 ? 24 : 23}/manifest.json`,
-    definition: `${ROOT}/phase-m${publicationRevision === 28 ? 21 : 20}-content/definition.json`,
-    presentation: publicationRevision === 28 ? `${ROOT}/phase-1b-v28/scene-presentation-v3.json`
+    phase1a: `${ROOT}/phase-1a-v${publicationRevision >= 28 ? 24 : 23}/manifest.json`,
+    definition: `${ROOT}/phase-m${publicationRevision === 29 ? 22
+      : publicationRevision === 28 ? 21 : 20}-content/definition.json`,
+    presentation: publicationRevision >= 28 ? `${ROOT}/phase-1b-v28/scene-presentation-v3.json`
       : `${ROOT}/phase-1b-v26/scene-presentation-v2.json`,
     prior: `${ROOT}/phase-1b-v${publicationRevision - 1}/publication-binding.json`,
     compatibility: `${ROOT}/phase-1b-v22/publication-binding.json`

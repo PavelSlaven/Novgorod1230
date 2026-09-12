@@ -183,6 +183,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       root_turn_id: identity.rootTurnId,
       step_index: stepIndex,
       actor: identity.actor,
+      actor_step_plan: plan,
       working_projection: execution.workingProjection,
       factual_events: execution.factualEvents
     }, ports.postAppliedActorStep);

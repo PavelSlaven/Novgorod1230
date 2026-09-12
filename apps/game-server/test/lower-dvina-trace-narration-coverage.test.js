@@ -39,7 +39,6 @@ test('private audit output is strict and canonical verdicts are code-owned', asy
   const mutations = {
     extra_key: (a) => { a.pass = true; },
     missing_key: (a) => { delete a.unsupported; },
-    wrong_review_order: (a) => { a.reviewed_segments.reverse(); },
     missing_source: (a) => { a.source_reviews.pop(); },
     wrong_source_order: (a) => { a.source_reviews.reverse(); },
     wrong_source_ref: (a) => { a.source_reviews[0].ref = 'visible_change_01'; },
@@ -52,14 +51,68 @@ test('private audit output is strict and canonical verdicts are code-owned', asy
       check: 'other', reason: 'Bad prose.' }]; },
     empty_reason: (a) => { a.unsupported = [{ segment_choice: 's1',
       kind: 'unsupported_fact', reason: ' ' }]; },
-    scalar_evidence: (a) => { a.evidence = 'Grounded.'; },
-    empty_evidence_on_pass: (a) => { a.evidence = []; }
+    scalar_evidence: (a) => { a.evidence = 'Grounded.'; }
   };
   for (const [name, mutate] of Object.entries(mutations)) await t.test(name, () => {
     const audit = passAudit();
     mutate(audit);
     assert.equal(validate(audit).ok, false);
   });
+});
+
+test('code owns redundant reviewed segment ids and clean-audit evidence', () => {
+  const raw = passAudit();
+  raw.reviewed_segments = ['Model copied prose instead of the supplied segment id.'];
+  raw.evidence = [];
+  const assembled = assembleNarrationRoleOutput('gameplay_narrator_auditor', raw,
+    { visible_context: visible, segments });
+  assert.equal(assembled.pass, true);
+  assert.deepEqual(assembled.evidence,
+    ['All required sources are covered and no audit failures were reported.']);
+  assert.equal(validateNarrationAudit(assembled, ['s1', 's2'],
+    { visible_changes: 2, uncertainties: 0 }).ok, true);
+});
+
+test('code normalizes exact prose aliases and whole-passage audit targets', () => {
+  const proseSegments = [
+    { segment_id: 's1', prose: 'Первое предложение.' },
+    { segment_id: 's2', prose: 'Второе предложение.' }
+  ];
+  const raw = passAudit();
+  raw.source_reviews[0].segment_choices = ['Первое предложение.'];
+  raw.source_reviews[1].segment_choices = ['Второе предложение.'];
+  raw.literary_failures = [{ check: 'weak_literary_composition',
+    segment_choice: 's1, s2', reason: 'The whole passage is list-like.' }];
+  raw.evidence = [];
+  const assembled = assembleNarrationRoleOutput('gameplay_narrator_auditor', raw,
+    { visible_context: visible, segments: proseSegments,
+      output: { prose: 'Первое предложение. Второе предложение.' } });
+  assert.equal(assembled.pass, false);
+  assert.deepEqual(assembled.coverage.visible_changes.map(
+    ({ segment_ids: ids }) => ids), [['s1'], ['s2']]);
+  assert.equal(assembled.concerns[0].segment_id, 's1');
+  assert.equal(validateNarrationAudit(assembled, ['s1', 's2'],
+    { visible_changes: 2, uncertainties: 0 }).ok, true);
+});
+
+test('final audit bounds repeated composition repair without weakening factual failures', () => {
+  const weakOnly = passAudit();
+  weakOnly.literary_failures = [{ check: 'weak_literary_composition',
+    segment_choice: 's1', reason: 'The repaired passage is still list-like.' }];
+  weakOnly.evidence = [];
+  const request = { phase: 'final', visible_context: visible, segments };
+  const accepted = assembleNarrationRoleOutput('gameplay_narrator_auditor', weakOnly, request);
+  assert.equal(accepted.pass, true);
+  assert.deepEqual(accepted.concerns, []);
+  assert.equal(validateNarrationAudit(accepted, ['s1', 's2'],
+    { visible_changes: 2, uncertainties: 0 }).ok, true);
+
+  const unsupported = structuredClone(weakOnly);
+  unsupported.unsupported = [{ segment_choice: 's1', kind: 'unsupported_fact',
+    reason: 'The repaired passage still invents a fact.' }];
+  const rejected = assembleNarrationRoleOutput('gameplay_narrator_auditor', unsupported, request);
+  assert.equal(rejected.pass, false);
+  assert.deepEqual(rejected.concerns.map(({ kind }) => kind), ['unsupported_fact']);
 });
 
 test('omitted atomic unresolved result becomes deterministic missing-visible-change failure', () => {
@@ -136,7 +189,7 @@ test('malformed final audit blocks after the single allowed repair', async () =>
       replacements: [{ prose: 'Одну минуту вы прощупываете воду ветвью; результат пока неизвестен.' }] } };
     const raw = reviewedNarration(wire.segments, { visible_change_1: [], visible_change_2: [] });
     raw.evidence = [];
-    if (wire.phase === 'final') raw.reviewed_segments = ['s99'];
+    if (wire.phase === 'final') raw.source_reviews[0].segment_choices = ['s99'];
     return { output: raw };
   } } });
   const result = await service.run({ version: 1, schema: 'narration_request',

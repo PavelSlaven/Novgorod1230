@@ -72,6 +72,28 @@ test('turn step adapter restores an exact copied operation choice', () => {
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
 
+test('turn step adapter restores the unique admitted route from legacy movement fields', () => {
+  const movement = { op: 'request_movement', actor_ref: 'actor_mikula',
+    movement_kind: 'route', target_ref: 'location:wreck',
+    route_ref: 'route:camp-to-wreck', description: 'Вернуться по тропе.' };
+  const speech = { op: 'emit_interaction', actor_ref: 'actor_mikula',
+    target_actor_refs: ['npc:fisher'], interaction_kind: 'speech',
+    content: 'Поговорить с рыбаком.', instrument_refs: [] };
+  const input = request({ available_domain_operations: [speech, movement] });
+  const plan = assembleTurnStepPlan({
+    interpretation: { player_goal: 'Вернуться к месту крушения.',
+      grounded_attempt: 'Идти по тропе.', adaptation: 'literal' },
+    resolution: 'domain_request',
+    operation_choice: 'domain_operation_1_emit_interaction_speech',
+    operations: [{ op: 'request_movement', actor_ref: 'actor_mikula',
+      destination_ref: 'location:wreck', route_ref: 'route:camp-to-wreck' }],
+    check: null, continuation: null, clarification: null,
+    reason_code: 'movement', reason: 'Идти по известному маршруту.'
+  }, input);
+  assert.deepEqual(plan.operations, [movement]);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+});
+
 test('turn step adapter does not guess between duplicate admitted raw operations', () => {
   const operation = { op: 'request_item_use', actor_ref: 'actor_mikula',
     item_ref: 'container:road-bag', use_kind: 'operate', target_refs: [] };

@@ -77,6 +77,32 @@ test('search duration stays out of narrator input', async () => {
   }
 });
 
+test('perceived speech remains pending instead of inventing final silence', async () => {
+  const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => assert.fail() }
+  }).project({
+    retrieved_state: committedState(), consequence: { status: 'resolved',
+      visible_seed: { completed_steps: [],
+        turn_step_post_applied_perception_window: {
+        kind: 'post_applied_perception_window', status: 'pending_npc_decision',
+        observable_response_event_refs: [],
+        pending_npc_decision_refs: ['npc-1']
+      } } },
+    mode_resolution: { decision_trace: { remaining_intent: null,
+      step_traces: [{ applied: true, approved_plan: { resolution: 'direct',
+        direct_result_kind: 'player_utterance', utterance: {
+          utterance_text: 'Люди, вы меня слышите?' } } }] } }
+  });
+
+  assert.deepEqual(visible.visible_changes,
+    ['Вы произнесли: «Люди, вы меня слышите?»']);
+  assert.deepEqual(visible.uncertainties, [
+    'Возможный отклик слушателей ещё не разрешён и не является подтверждённым молчанием.'
+  ]);
+  assert.ok(visible.do_not_imply.includes(
+    'unresolved_npc_response_as_absence'));
+});
+
 for (const domainFallback of [false, true]) test(`materialized O1 precedes physical continuation (fallback=${domainFallback})`, async () => {
   const state = committedState();
   state.current_visible_context.sensory_details = ['У воды лежат доски.'];

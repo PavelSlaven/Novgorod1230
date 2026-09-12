@@ -114,6 +114,8 @@ export function createSpatialV3PerceptionBoundaryParticipant({
             perception_replay_evidence:
               outcome.perception_replay_evidence,
             knowledge_merge_result: outcome.knowledge_merge_result,
+            knowledge_state_before_exists:
+              work.write_context.knowledge_state_before_exists !== false,
             reaction_option_proposal:
               outcome.reaction_option_proposal,
             reaction_proposal: outcome.reaction_proposal

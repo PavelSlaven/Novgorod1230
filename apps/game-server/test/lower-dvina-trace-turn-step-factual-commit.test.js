@@ -136,8 +136,12 @@ function bindSpeechEvidence(f, event) {
 
 function bindCommonEvidence(f, event) {
   const trace = f.envelope.loop_trace.step_traces[0];
+  trace.plan_request.player_safe_state.position = {
+    position_id: event.source_scope_ref.entity_id,
+    g5_anchor_id: `anchor:${event.source_scope_ref.entity_id}`
+  };
   trace.plan_request.player_safe_state.spatial_semantic = {
-    position_ref: event.source_scope_ref.entity_id
+    position_ref: `position:${event.source_scope_ref.entity_id}`
   };
   f.envelope.mode_resolution.decision_trace.step_traces =
     structuredClone(f.envelope.loop_trace.step_traces);

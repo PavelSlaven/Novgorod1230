@@ -35,6 +35,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     requireAmbientOrdinaryAdmission,
     turnStepAmbientPortionProfileRef,
     turnStepOrdinaryResultPolicy,
+    postActionPerceptionProfile,
     turnStepApprovedOwners,
     turnStepPackingCalculator,
     turnBudget,
@@ -86,6 +87,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     }),
     semanticActivityOwner: turnStepSemanticActivityOwner,
     idempotencyKey,
+    postActionPerceptionProfile,
     temporalAdvance,
     workingProjectionAuthority
   });

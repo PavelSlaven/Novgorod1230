@@ -60,14 +60,16 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
 function finishVisibleProjection(base, input, calendarProfile) {
   const enriched = enrichLowerDvinaTraceVisibleNpcCues({ visibleContext: base,
     committedState: input.retrieved_state, calendarProfile,
-    bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after });
+    bodyAfter: input.body_update?.state_after, clockAfter: input.time_update?.clock_after,
+    temporalResults: input.time_update?.temporal_results });
   const consequence = input.consequence;
   const arrival = consequence?.phase3_kind === 'movement'
     || (consequence?.phase6_kind === 'synchronized_carry'
       && consequence.carry?.intent?.execution_after?.status === 'completed');
   return overlayTurnStepResults(arrival ? { ...enriched,
     visible_changes: unique([...enriched.visible_changes,
-      ...lowerDvinaTraceObservedSceneChanges(enriched), ...base.known_context])
+      ...base.known_context]),
+    sensory_details: lowerDvinaTraceObservedSceneChanges(enriched)
   } : enriched, input);
 }
 function overlayTurnStepResults(base, input) {
@@ -86,6 +88,8 @@ function overlayTurnStepResults(base, input) {
   const traces = (input?.mode_resolution?.decision_trace?.step_traces ?? []).filter(({ applied }) => applied === true);
   const directPlans = traces.map(({ approved_plan: plan }) => plan).filter(plan => plan?.resolution === 'direct');
   const seeds = input?.consequence?.visible_seed ?? {};
+  const pendingNpcResponse = seeds.turn_step_post_applied_perception_window
+    ?.status === 'pending_npc_decision';
   const slices = input?.time_update?.prepared_effect_ledger?.slices ?? [];
   const availableKeys = directSeedKeys(Object.entries(seeds)), usedKeys = new Set(), components = new Set();
   const orderedChanges = traces.flatMap(({ step_index: step, approved_plan: plan }) => {
@@ -119,11 +123,15 @@ function overlayTurnStepResults(base, input) {
       ...itemInspections.flatMap(result => result.changes).filter(change => !components.has(change))]),
     uncertainties: unique([...base.uncertainties,
       ...itemInspections.map(result => result.uncertainty),
+      ...(pendingNpcResponse ? [
+        'Возможный отклик слушателей ещё не разрешён и не является подтверждённым молчанием.'
+      ] : []),
       ...(inspection == null ? [] : [
         `Новый достоверный вывод не установлен. Вопрос остаётся открытым: «${inspection.query}».`]),
       ...(text(remaining) ? [
         `Ещё не выполнено: «${remaining}». Результат этой попытки не установлен.`] : [])]),
     do_not_imply: unique([...base.do_not_imply,
+      ...(pendingNpcResponse ? ['unresolved_npc_response_as_absence'] : []),
       ...(text(remaining) ? ['uncompleted_remaining_intent'] : []),
       ...(directPlans.some((plan) => plan.direct_result_kind === 'player_utterance')
         && !Object.values(seeds).some((value) =>

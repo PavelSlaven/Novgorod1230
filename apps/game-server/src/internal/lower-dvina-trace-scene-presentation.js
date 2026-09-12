@@ -14,8 +14,8 @@ export const TRACE_SCENE_PRESENTATION_V3_DIGEST = '91f52897e3d3f1c0a64b362ee8b91
 export async function loadLowerDvinaTraceScenePresentation({
   rootDir = process.cwd(), scenarioDefinitionRevision
 } = {}) {
-  if (![28, 29, 30, 31, 32, 33].includes(scenarioDefinitionRevision)) return null;
-  const version = scenarioDefinitionRevision === 33 ? 3 : scenarioDefinitionRevision >= 31 ? 2 : 1;
+  if (![28, 29, 30, 31, 32, 33, 34].includes(scenarioDefinitionRevision)) return null;
+  const version = scenarioDefinitionRevision >= 33 ? 3 : scenarioDefinitionRevision >= 31 ? 2 : 1;
   const raw = await readFile(resolve(rootDir, [V1_PATH, V2_PATH, V3_PATH][version - 1]));
   const digest = createHash('sha256').update(raw).digest('hex');
   const value = JSON.parse(raw);

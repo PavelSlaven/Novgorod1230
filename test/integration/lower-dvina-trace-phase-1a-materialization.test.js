@@ -27,7 +27,7 @@ import {
 } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { lowerDvinaTraceWorldSnapshot as worldSnapshot } from
   '../fixtures/lower-dvina-trace-world-snapshot.js';
-import { loadLowerDvinaTraceRevision33Publication } from
+import { loadLowerDvinaTraceRevision34Publication } from
   '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle();
@@ -61,12 +61,12 @@ const revision32DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
   revision32Bundle
 );
 
-test('revision 33 materializes finite routines without activating deferred G6 scenes', async () => {
-  const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 33 });
-  const publication = await loadLowerDvinaTraceRevision33Publication();
+test('revision 34 materializes post-action perception with finite routines', async () => {
+  const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 34 });
+  const publication = await loadLowerDvinaTraceRevision34Publication();
   assert.equal(current.manifest_digest, publication.binding.phase_1a_manifest_ref.digest);
   const result = materializeLowerDvinaTracePartyInstance(request({
-    scenario_definition_revision: 33,
+    scenario_definition_revision: 34,
     scenario_manifest_digest: publication.binding.phase_1a_manifest_ref.digest,
     world_revision_id: current.location_topology_set.spatial_source_ref.world_revision_id,
     world_catalog_digest: current.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
@@ -93,7 +93,7 @@ test('revision 33 materializes finite routines without activating deferred G6 sc
 });
 
 test('approved daily routine initializes from actual local day and night and preserves work', async () => {
-  const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 33 });
+  const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 34 });
   const profile = current.initial_npc_schedule_profile.routine_profiles[0];
   const work = { activity_ref: 'unseen_basket_repair', summary: 'Чинит корзину.' };
   const timestamp = (whole) => ({ whole_minutes: String(whole), subminute_numerator: '0', subminute_denominator: '1' });
@@ -720,7 +720,7 @@ test('tampered digest, missing mandatory record and damaged profile fail closed 
 });
 
 test('current scene presentation uses its declared pin without changing historical replay', async () => {
-  const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 33 });
+  const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 34 });
   const historical = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 32 });
   assert.equal(current.scene_presentation.revision, 3);
   assert.equal(current.artifact_pins.scene_presentation.digest,

@@ -28,11 +28,11 @@ export function assertLowerDvinaTracePhase1AValidation({
 
 function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scenarioId) {
   const bindings = bundle.materialization_bindings;
-  if (definitionRevision === revisions.m21) {
+  if ([revisions.m21, revisions.m22].includes(definitionRevision)) {
     if (bindings?.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v24'
         || bindings.scenario_definition_revision !== 33
         || bundle.artifact_pins?.materialization_bindings?.digest !== '485a7f2fc1048ae37c88ed40ca8bfc4c8058aa97fdba2a46900536d03143f2fb')
-      fail('TRACE_PHASE_1A_BINDING_INVALID', 'Revision 33 requires Phase 1A v24.');
+      fail('TRACE_PHASE_1A_BINDING_INVALID', 'Revision 33+ requires Phase 1A v24.');
     return;
   }
   if ([revisions.m16, revisions.m17, revisions.m18, revisions.m19,
@@ -157,11 +157,11 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
-  if (definitionRevision === revisions.m21) {
+  if ([revisions.m21, revisions.m22].includes(definitionRevision)) {
     if (bundle.phase_1a_manifest?.package_id !== 'lower_dvina_trace_phase_1a_v24'
         || bundle.phase_1a_manifest.scenario_definition_revision !== 33
         || bundle.artifact_pins?.phase_1a_manifest?.digest !== 'c1c6feaa072bc334a12703df17fe97df057c741cebc0ce0cf078527df87ee66b')
-      fail('TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID', 'Revision 33 requires Phase 1A v24.');
+      fail('TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID', 'Revision 33+ requires Phase 1A v24.');
     return;
   }
   if ([revisions.m16, revisions.m17, revisions.m18, revisions.m19,

@@ -11,8 +11,51 @@ import { TURN_STEP_PLAN_MAPPINGS } from
   '../src/runtime/lower-dvina-trace-phase-2-turn-step-prompts.js';
 import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
   '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
+import { turnStepRepairSpecificInstructions } from
+  '../src/runtime/lower-dvina-trace-turn-step-repair-prompt.js';
 import { output, request } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 const D = { loudness: 2, duration_class: 'instant' };
+
+test('misclassified sustained action repairs to non-speech activity', async () => {
+  const action = 'Жду под навесом два часа.';
+  const input = request({ root_player_action: action, remaining_intent: action });
+  const calls = [];
+  const roleRunner = { async run(call) {
+    calls.push(call.role_id);
+    if (call.role_id === 'turn_step_planner') return { output:
+      speechOutput(input, action) };
+    if (call.role_id === 'turn_step_grounding_auditor') return { output: {
+      speech_faithful: false, required_input_mode: 'intent_paraphrase',
+      unexecuted_intent: null
+    } };
+    assert.equal(call.role_id, 'turn_step_planner_repair');
+    const payload = JSON.parse(call.messages[1].content);
+    const instructions = turnStepRepairSpecificInstructions(payload, input).join(' ');
+    assert.match(instructions,
+      /proposed utterance failed semantic grounding[\s\S]*Typed first-person action prose is not speech/u);
+    return { output: {
+      interpretation: { player_goal: action, grounded_attempt: action,
+        adaptation: 'literal' },
+      resolution: 'direct', goal_result: 'achieved',
+      activity: { owner: 'semantic', duration_class: 'extended', effort: 'none',
+        requested_duration_minutes: 120 },
+      operation_family: null, operation_choice: null, operations: [],
+      check: null, continuation: null, clarification: null,
+      direct_result_kind: null, reason_code: 'ordinary_semantic_activity',
+      reason: 'Waiting is the complete activity.'
+    } };
+  } };
+  const turnStepModel = createLowerDvinaTraceTurnStepModel({ roleRunner });
+  const result = await requestTurnStepPlanWithRepair({ request: input,
+    turnStepModel, semanticPlanValidator:
+      createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner }) });
+  assert.equal(result.repaired, true);
+  assert.deepEqual(result.plan.activity, { owner: 'semantic',
+    duration_class: 'extended', effort: 'none', requested_duration_minutes: 120 });
+  assert.equal(result.plan.direct_result_kind, null);
+  assert.deepEqual(calls, ['turn_step_planner', 'turn_step_grounding_auditor',
+    'turn_step_planner_repair']);
+});
 
 function speechOutput(input, words, later = null) {
   return { ...output(), ...JSON.parse(TURN_STEP_PLAN_MAPPINGS).player_utterance,
@@ -24,6 +67,27 @@ function speechOutput(input, words, later = null) {
     continuation: later == null ? null
       : { remaining_intent: later, depends_on_refs: [] } };
 }
+
+test('quoted speech framing is not a second unexecuted action', async () => {
+  const intent = 'Ещё раз громко кричу: «Люди, вы меня слышите?»';
+  const words = 'Люди, вы меня слышите?';
+  const input = request({ root_player_action: intent, remaining_intent: intent });
+  const roleRunner = { async run(call) {
+    if (call.role_id === 'turn_step_planner') return { output:
+      speechOutput(input, words) };
+    assert.equal(call.role_id, 'turn_step_grounding_auditor');
+    return { output: { speech_faithful: true,
+      required_input_mode: 'verbatim',
+      unexecuted_intent: 'Ещё раз громко кричу:' } };
+  } };
+  const result = await requestTurnStepPlanWithRepair({ request: input,
+    turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
+    semanticPlanValidator:
+      createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner }) });
+  assert.equal(result.repaired, false);
+  assert.equal(result.plan.goal_result, 'achieved');
+  assert.equal(result.plan.continuation, null);
+});
 
 test('provider metadata does not trigger repair before the exact speech and suffix audit', async (t) => {
   for (const unseen of [false, true]) await t.test(unseen ? 'unseen metadata' : 'captured adaptation_type', async () => {
@@ -404,6 +468,8 @@ test('metadata projection admits only isolated errors and keeps invalid mechanic
             /speech_faithful=false, если явно длительная, повторяемая или ограниченная временем речь сведена к одной короткой реплике/u);
           assert.match(call.messages[0].content,
             /Цель, надежда, манера или ожидаемый результат/u);
+          assert.match(call.messages[0].content,
+            /Фраза от первого лица о действии[\s\S]*не становится произнесённой репликой/u);
           return { output: { speech_faithful: !kind.endsWith('quote') && !repeated,
             required_input_mode: kind === 'rewritten-quote' ? 'verbatim' : 'intent_paraphrase',
             unexecuted_intent: later } };

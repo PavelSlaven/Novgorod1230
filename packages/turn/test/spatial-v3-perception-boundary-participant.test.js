@@ -79,15 +79,18 @@ function work(candidateValue, extras = {}) {
   };
 }
 
-function participant(outcome) {
+function participant(outcome, inspectWriteInput = () => {}) {
   return createSpatialV3PerceptionBoundaryParticipant({
     resolvePerceptionKnowledge: () => outcome,
-    buildInitialWriteSet: () => ({
-      ok: true,
-      write_set: { appends: [], inserts: [], updates: [] },
-      expected_state_versions: [],
-      physical_keys: []
-    })
+    buildInitialWriteSet: (input) => {
+      inspectWriteInput(input);
+      return {
+        ok: true,
+        write_set: { appends: [], inserts: [], updates: [] },
+        expected_state_versions: [],
+        physical_keys: []
+      };
+    }
   });
 }
 
@@ -149,4 +152,24 @@ test('invalid perceived signal descriptor hard-blocks the boundary', () => {
     disposition: 'hard_block',
     code: 'npc_decision_policy_gap'
   });
+});
+
+test('missing knowledge state is passed only to the existing write owner', () => {
+  const boundary = candidate();
+  const item = work(boundary, {
+    write_context: {
+      party_id: 'party-1',
+      change_set_id: 'change-1',
+      idempotency_record_id: 'idem-1',
+      knowledge_state_before_exists: false
+    }
+  });
+  let exists = true;
+  const result = participant(
+    resolve({ result: 'not_perceived' }),
+    (input) => { exists = input.knowledge_state_before_exists; }
+  ).resolve(boundary, context(item));
+
+  assert.equal(result.disposition, 'execute');
+  assert.equal(exists, false);
 });

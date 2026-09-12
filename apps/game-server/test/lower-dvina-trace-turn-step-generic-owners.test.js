@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { enrichLowerDvinaTraceVisibleNpcCues } from
+  '../src/runtime/lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 import {
   GENERIC_BODY_EFFECT_REF,
   createLowerDvinaTraceCompositeBodyEffect,
@@ -315,9 +317,9 @@ test('generic visible projector overlays F1 facts on domain projection',
       ...base,
       visible_scene: 'Микула пришёл в рыбацкий стан. Огонь разгорелся.',
       visible_changes: [
-        'route', 'turn_step_world_process_1:local_fire:started',
-        'cold', 'wet', 'В поле зрения — Еремей.', 'стан'
-      ]
+        'route', 'turn_step_world_process_1:local_fire:started', 'стан'
+      ],
+      sensory_details: ['cold', 'wet', 'В поле зрения — Еремей.']
     });
   });
 
@@ -388,6 +390,34 @@ test('generic visible projector overlays F1 facts through Phase 8 and 9',
     assert.deepEqual(fallback.visible_changes,
       ['Группа дошла от рыбацкого стана до двора клети.']);
   });
+
+test('visible NPC routine transition reaches scene changes and current status', () => {
+  const context = currentVisibleContext();
+  const transition = {
+    npc_id: 'npc-1',
+    proposal: { factual_transition: {
+      summary: 'Прерывает работу для короткого отдыха.'
+    } },
+    after: {
+      causal_state_ref: { routine_state: { status: 'inactive' } },
+      npc_snapshot: { machine_state: { current_activity: {
+        summary: 'Прерывает работу для короткого отдыха.'
+      } } }
+    }
+  };
+  const result = enrichLowerDvinaTraceVisibleNpcCues({
+    visibleContext: context,
+    committedState: { current_visible_context: context,
+      npcs: [{ instance_id: 'npc-1', machine_state: {} }], items: [] },
+    temporalResults: [{ combined_change_set: { proposals: [{
+      npc_routine_transition: transition
+    }] } }]
+  });
+  assert.equal(result.visible_changes.includes(
+    'Еремей: Прерывает работу для короткого отдыха.'), true);
+  assert.equal(result.visible_npc[0].visible_status,
+    'Прерывает работу для короткого отдыха.');
+});
 
 test('generic visible projector rejects malformed player F1 facts',
   async () => {

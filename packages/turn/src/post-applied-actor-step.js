@@ -5,6 +5,7 @@ export async function advancePostAppliedActorStep({
   root_turn_id,
   step_index,
   actor,
+  actor_step_plan = null,
   working_projection,
   factual_events = []
 } = {}, owner = null) {
@@ -27,6 +28,7 @@ export async function advancePostAppliedActorStep({
     root_turn_id,
     step_index,
     actor: structuredClone(actor),
+    actor_step_plan: structuredClone(actor_step_plan),
     working_projection: structuredClone(working_projection),
     factual_events: events
   }));

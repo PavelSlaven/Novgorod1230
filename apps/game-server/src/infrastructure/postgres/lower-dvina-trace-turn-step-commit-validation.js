@@ -121,7 +121,9 @@ function factualActivityEvidence(envelope, batch, event) {
   const actor = trace?.plan_request?.actor?.actor_id
     ?? trace?.plan_request?.actor?.actor_ref;
   const position = trace?.plan_request?.player_safe_state
-    ?.spatial_semantic?.position_ref
+    ?.position?.position_id
+    ?? trace?.plan_request?.player_safe_state?.position?.g5_anchor_id
+    ?? trace?.plan_request?.player_safe_state?.spatial_semantic?.position_ref
     ?? trace?.plan_request?.player_safe_state?.position?.location_ref;
   const common = activities.length === 1 && traces.length === 1
     && resolutions.length === 1 && text(actor) && text(position)

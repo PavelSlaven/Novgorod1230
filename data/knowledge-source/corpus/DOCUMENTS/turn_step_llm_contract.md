@@ -133,9 +133,12 @@ approved narration даёт `TurnScreen v1`, который всегда сод�
 Отдельный terminal path допустим только когда завершённый строгий narration flow
 вернул typed `final_audit_failed` после своего bounded repair/final audit. Server
 валидирует тот же committed package и job, затем один раз CAS-доставляет
-`FactualTurnDeliveryScreen v1`. `delivery_mode` взаимоисключающий: `narrated`
-сохраняет approved narration и output digest; `factual` сохраняет delivered job
-с `narration_output: null` и `output_digest: null`.
+`FactualTurnDeliveryScreen v1` как availability-only degraded presentation.
+Он сохраняет весь применимый committed player-safe UI нормального экрана
+(`checks`, panels, actions/affordances и другие public fields) и заменяет
+только отсутствующую approved prose. `delivery_mode` взаимоисключающий:
+`narrated` сохраняет approved narration и output digest; `factual` сохраняет
+delivered job с `narration_output: null` и `output_digest: null`.
 
 Provider/deadline/store/lease/CAS failures, malformed или mismatched package,
 projection failure и любой pre-commit/semantic/domain failure не являются
@@ -143,6 +146,10 @@ factual-terminal причиной: job остаётся pending/retryable. Factu
 не запускает новый P16, planner, checks, RNG, time, mechanics или hidden-state
 read. Она terminal: replay возвращает тот же validated factual screen, narration
 позднее не retry-ится и не заменяет его prose после продолжения игрока.
+Это recovery committed хода, а не качественный narration outcome: только
+approved `TurnScreen v1` может пройти narration quality, blind/demo или TURN
+FORENSIC acceptance. Любое factual delivery в таких прогонах — blocking
+narration finding; менять prose contract ради снятия этого finding запрещено.
 
 ## 4. Что ожидается от LLM
 

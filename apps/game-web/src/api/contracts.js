@@ -76,18 +76,29 @@ function validateFactualTurnDeliveryScreen(screen) {
   const allowed = new Set([
     'version', 'schema', 'screen_status', 'party_id', 'turn_id', 'turn_number',
     'package_id', 'committed_state_version', 'visible_context', 'visible_changes',
-    'uncertainties', 'panels', 'input_panel'
+    'uncertainties', 'presentation_quality', 'scenario_id', 'screen_kind',
+    'action_panel', 'actions', 'checks', 'panels', 'input_panel', 'delivery_state',
+    'opening_screen_digest', 'current_projection_anchor', 'presentation_context',
+    'scene_asset_id', 'combat_state'
   ]);
   if (Object.keys(screen).some((key) => !allowed.has(key))
     || !text(screen.turn_id) || !Number.isInteger(screen.turn_number)
     || screen.turn_number < 1 || !text(screen.package_id)
     || !text(screen.committed_state_version) || !plain(screen.visible_context)
     || !textArray(screen.visible_changes) || !textArray(screen.uncertainties)
+    || screen.presentation_quality !== 'degraded'
+    || screen.scenario_id !== 'lower_dvina_trace_v1' || screen.screen_kind !== 'trace_turn'
+    || !plain(screen.presentation_context)
+    || !plain(screen.action_panel) || !Array.isArray(screen.action_panel.suggested_actions)
+    || !Array.isArray(screen.actions)
+    || screen.delivery_state?.ready !== true || !text(screen.delivery_state.generated_at)
+    || !text(screen.opening_screen_digest) || !plain(screen.current_projection_anchor)
     || !plain(screen.panels) || screen.input_panel?.free_text_enabled !== true
     || screen.input_panel?.input_contract !== 'intent_not_fact') {
     throw webError('FACTUAL_TURN_DELIVERY_INVALID',
       'Factual turn delivery must use exact committed player-safe fields.');
   }
+  validateChecks(screen.checks ?? []);
   validateSceneAffordances(screen);
 }
 

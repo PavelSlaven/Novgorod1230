@@ -97,7 +97,15 @@ function replayFixture({ screenTurn = 7 } = {}) {
     partyId, turnId: 'turn:1', turnNumber: screenTurn,
     packageId: 'package:1', committedStateVersion: 39, visibleContext,
     visibleChanges: visibleContext.visible_changes,
-    uncertainties: visibleContext.uncertainties, panels: {}
+    uncertainties: visibleContext.uncertainties,
+    actionPanel: { suggested_actions: [] }, actions: [], checks: [], panels: {},
+    inputPanel: { free_text_enabled: true, input_contract: 'intent_not_fact' },
+    scenarioId: 'lower_dvina_trace_v1', screenKind: 'trace_turn',
+    deliveryState: { ready: true, generated_at: '2026-01-01T00:00:00.000Z' },
+    openingScreenDigest: 'opening', currentProjectionAnchor: {
+      committed_state_version: '39', package_id: 'package:1',
+      package_digest: packageDigest, narration_output_digest: null },
+    presentationContext: { location_label: 'Берег.' }
   });
   const record = {
     id: 'idem:1', request_id: 'request:1', status: 'committed',

@@ -19,11 +19,11 @@ Browser-клиент, который получает только versioned pub
   exact длительность последнего committed хода вычисляет server из committed
   state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen/FactualTurnDeliveryScreen;
-- проверкой и structured rendering `FactualTurnDeliveryScreen v1`: после valid
-  terminal factual screen он заменяет retained pending/opening screen и сохраняет
-  existing `intent_not_fact` input boundary. UI отображает supplied fields без
-  `main_prose`/`prose`, narrator output, digest, audit/provider/retry diagnostics
-  или новой causal фразы;
+- проверкой и rendering `FactualTurnDeliveryScreen v1`: degraded recovery
+  переиспользует обычные context, navigation, scene, task, checks, actions и
+  overlays, заменяя только prose slot factual block; сохраняет `intent_not_fact`
+  input, не показывает `main_prose`/`prose`, narrator output, digest,
+  audit/provider/retry diagnostics или новую causal фразу;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome
   виден сразу, полная формула и signed modifiers доступны через `<details>`;

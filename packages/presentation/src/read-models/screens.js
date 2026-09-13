@@ -90,7 +90,19 @@ export function createFactualTurnDeliveryScreenReadModel({
   visibleContext,
   visibleChanges,
   uncertainties,
-  panels = {}
+  actionPanel,
+  actions,
+  checks,
+  panels,
+  inputPanel,
+  scenarioId,
+  screenKind,
+  deliveryState,
+  openingScreenDigest,
+  currentProjectionAnchor,
+  presentationContext,
+  sceneAssetId = null,
+  combatState = null
 } = {}) {
   if (!text(partyId) || !text(turnId) || !text(packageId)) {
     throw presentationError('FACTUAL_TURN_DELIVERY_ID_REQUIRED', 'partyId, turnId and packageId are required.');
@@ -101,7 +113,16 @@ export function createFactualTurnDeliveryScreenReadModel({
   if (!text(committedStateVersion)) {
     throw presentationError('FACTUAL_TURN_DELIVERY_STATE_VERSION_REQUIRED', 'committedStateVersion is required.');
   }
-  if (!plain(visibleContext) || !textArray(visibleChanges) || !textArray(uncertainties) || !plain(panels)) {
+  if (!plain(visibleContext) || !textArray(visibleChanges)
+      || !textArray(uncertainties) || !validActionPanel(actionPanel)
+      || !Array.isArray(actions) || !validChecks(checks) || !plain(panels)
+      || !validInputPanel(inputPanel) || scenarioId !== 'lower_dvina_trace_v1'
+      || screenKind !== 'trace_turn' || !validDeliveryState(deliveryState)
+      || !text(openingScreenDigest)
+      || !validProjectionAnchor(currentProjectionAnchor)
+      || !validPresentationContext(presentationContext)
+      || (sceneAssetId !== null && !text(sceneAssetId))
+      || !validCombatState(combatState)) {
     throw presentationError('FACTUAL_TURN_DELIVERY_PAYLOAD_INVALID', 'Committed public payload is invalid.');
   }
   const output = {
@@ -113,11 +134,23 @@ export function createFactualTurnDeliveryScreenReadModel({
     turn_number: Number(turnNumber),
     package_id: text(packageId),
     committed_state_version: text(committedStateVersion),
+    presentation_quality: 'degraded',
+    scenario_id: scenarioId,
+    screen_kind: screenKind,
     visible_context: structuredClone(visibleContext),
     visible_changes: structuredClone(visibleChanges),
     uncertainties: structuredClone(uncertainties),
+    action_panel: structuredClone(actionPanel),
+    actions: structuredClone(actions),
+    checks: structuredClone(checks),
     panels: structuredClone(panels),
-    input_panel: { free_text_enabled: true, input_contract: 'intent_not_fact' }
+    input_panel: structuredClone(inputPanel),
+    delivery_state: structuredClone(deliveryState),
+    opening_screen_digest: text(openingScreenDigest),
+    current_projection_anchor: structuredClone(currentProjectionAnchor),
+    presentation_context: structuredClone(presentationContext),
+    ...(sceneAssetId === null ? {} : { scene_asset_id: text(sceneAssetId) }),
+    ...(combatState === null ? {} : { combat_state: structuredClone(combatState) })
   };
   const validation = validateFactualTurnDeliveryScreen(output);
   if (!validation.ok) throw presentationError('FACTUAL_TURN_DELIVERY_SCREEN_INVALID', validation.errors.join('; '));
@@ -158,7 +191,10 @@ export function validateFactualTurnDeliveryScreen(value) {
   const allowed = new Set([
     'version', 'schema', 'screen_status', 'party_id', 'turn_id', 'turn_number',
     'package_id', 'committed_state_version', 'visible_context', 'visible_changes',
-    'uncertainties', 'panels', 'input_panel'
+    'uncertainties', 'presentation_quality', 'scenario_id', 'screen_kind',
+    'action_panel', 'actions', 'checks', 'panels', 'input_panel',
+    'delivery_state', 'opening_screen_digest', 'current_projection_anchor',
+    'presentation_context', 'scene_asset_id', 'combat_state'
   ]);
   for (const key of Object.keys(value)) if (!allowed.has(key)) errors.push(`forbidden key: ${key}`);
   if (value.version !== 1 || value.schema !== FACTUAL_TURN_DELIVERY_SCREEN_SCHEMA) errors.push(`expected ${FACTUAL_TURN_DELIVERY_SCREEN_SCHEMA} version 1`);
@@ -166,10 +202,23 @@ export function validateFactualTurnDeliveryScreen(value) {
   if (!text(value.party_id) || !text(value.turn_id) || !text(value.package_id)) errors.push('party_id, turn_id and package_id are required');
   if (!Number.isInteger(value.turn_number) || value.turn_number < 1) errors.push('turn_number must be a positive integer');
   if (!text(value.committed_state_version)) errors.push('committed_state_version is required');
+  if (value.presentation_quality !== 'degraded') errors.push('presentation_quality must be degraded');
+  if (value.scenario_id !== 'lower_dvina_trace_v1' || value.screen_kind !== 'trace_turn') errors.push('Lower Dvina factual screen identity is required');
   if (!plain(value.visible_context)) errors.push('visible_context is required');
   if (!textArray(value.visible_changes)) errors.push('visible_changes must be an exact structured string array');
   if (!textArray(value.uncertainties)) errors.push('uncertainties must be an exact structured string array');
-  if (value.input_panel?.free_text_enabled !== true || value.input_panel?.input_contract !== 'intent_not_fact') errors.push('input contract must be intent_not_fact');
+  if (!validActionPanel(value.action_panel) || !Array.isArray(value.actions)
+      || !sameJson(value.action_panel.suggested_actions, value.actions)) {
+    errors.push('actions must match the player-safe action panel');
+  }
+  if (!validChecks(value.checks)) errors.push('checks must be an ordered player-safe array');
+  if (!validInputPanel(value.input_panel)) errors.push('input contract must be intent_not_fact');
+  if (!validDeliveryState(value.delivery_state)) errors.push('delivery_state must be ready');
+  if (!text(value.opening_screen_digest)) errors.push('opening_screen_digest is required');
+  if (!validProjectionAnchor(value.current_projection_anchor)) errors.push('current_projection_anchor is invalid');
+  if (!validPresentationContext(value.presentation_context)) errors.push('presentation_context is invalid');
+  if (Object.hasOwn(value, 'scene_asset_id') && !text(value.scene_asset_id)) errors.push('scene_asset_id is invalid');
+  if (!validCombatState(value.combat_state ?? null)) errors.push('combat_state is invalid');
   errors.push(...sceneAffordanceContextErrors(value.visible_context));
   errors.push(...sceneAffordancePanelErrors(value.panels));
   if (detectHiddenLeaks(value).length) errors.push('screen contains hidden data');
@@ -226,6 +275,52 @@ function validChecks(checks) {
     && (check.outcome.roll_note === null
       || ['natural_1', 'natural_20'].includes(check.outcome.roll_note))
     && (check.consequence_label === null || text(check.consequence_label)));
+}
+function validActionPanel(value) {
+  return plain(value) && Object.keys(value).length === 1
+    && Array.isArray(value.suggested_actions);
+}
+function validInputPanel(value) {
+  return plain(value) && Object.keys(value).length === 2
+    && value.free_text_enabled === true
+    && value.input_contract === 'intent_not_fact';
+}
+function validDeliveryState(value) {
+  return plain(value) && Object.keys(value).length === 2
+    && value.ready === true && text(value.generated_at);
+}
+function validProjectionAnchor(value) {
+  const keys = ['committed_state_version', 'package_id', 'package_digest',
+    'narration_output_digest'];
+  return plain(value) && Object.keys(value).length === keys.length
+    && keys.every((key) => Object.hasOwn(value, key))
+    && text(value.committed_state_version) && text(value.package_id)
+    && text(value.package_digest) && value.narration_output_digest === null;
+}
+function validPresentationContext(value) {
+  const keys = ['location_label', 'date_label', 'time_label',
+    'turn_elapsed_label'];
+  return plain(value) && Object.keys(value).every((key) => keys.includes(key))
+    && Object.values(value).every(text);
+}
+function validCombatState(value) {
+  return value === null || (plain(value)
+    && Object.keys(value).length === 2
+    && ['paused_for_player', 'ended'].includes(value.status)
+    && typeof value.player_response_required === 'boolean');
+}
+function sameJson(left, right) {
+  if (left === right) return true;
+  if (Array.isArray(left) || Array.isArray(right)) {
+    return Array.isArray(left) && Array.isArray(right)
+      && left.length === right.length
+      && left.every((value, index) => sameJson(value, right[index]));
+  }
+  if (!plain(left) || !plain(right)) return false;
+  const keys = Object.keys(left);
+  return keys.length === Object.keys(right).length
+    && keys.every((key) => Object.hasOwn(right, key)
+      && sameJson(left[key], right[key]));
 }
 function result(errors) { return { ok: errors.length === 0, errors }; }
 function fail(message) { return { ok: false, errors: [message] }; }

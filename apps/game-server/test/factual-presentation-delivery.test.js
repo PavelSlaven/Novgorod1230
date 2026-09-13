@@ -16,18 +16,45 @@ const payload = { schema: 'temporal_visible_package.v1',
   perceived_scene: 'Берег.', perceived_changes: ['Вода ушла.'],
   sensory_details: [], visible_npcs: [], visible_objects: [], known_context: [],
   uncertainties: ['Даль скрыта туманом.'], hypotheses: [],
-  player_safe_interruption: null, allowed_action_affordances: [] };
+  player_safe_interruption: null, allowed_action_affordances: [{
+    action_id: 'inspect_shore', label: 'Осмотреть берег',
+    command_kind: 'immediate_action' }] };
 const envelope = { party_id: 'party', package_id: 'package', turn_id: 'turn',
   committed_state_version: 39,
   package_digest: computeSpatialV3CanonicalDigest(payload), visible_payload: payload,
-  snapshot_payload: { party_state: { turn_number: 7 } },
-  state_digest: canonicalDigest({ party_state: { turn_number: 7 } }) };
+  snapshot_payload: { party_id: 'party', actor_id: 'actor',
+    party_state: { turn_number: 7, state_version: 39 },
+    opening_identity: { opening_screen_digest: 'opening' },
+    last_turn: { received_at: '2026-01-01T00:00:00.000Z', consequence: {},
+      visible_package: { package_id: 'package',
+        package_digest: computeSpatialV3CanonicalDigest(payload) } } },
+  state_digest: canonicalDigest({ party_id: 'party', actor_id: 'actor',
+    party_state: { turn_number: 7, state_version: 39 },
+    opening_identity: { opening_screen_digest: 'opening' },
+    last_turn: { received_at: '2026-01-01T00:00:00.000Z', consequence: {},
+      visible_package: { package_id: 'package',
+        package_digest: computeSpatialV3CanonicalDigest(payload) } } }) };
 const visible = { version: 1, schema: 'visible_context_package',
   visible_scene: payload.perceived_scene, visible_changes: payload.perceived_changes,
   sensory_details: [], visible_npc: [], visible_objects: [], known_context: [],
   uncertainties: payload.uncertainties, allowed_tensions: [], do_not_imply: [] };
 const request = { version: 1, schema: 'narration_request', party_id: 'party',
   request_id: 'turn', delivery_turn_number: 7, surface: 'turn', visible_context: visible };
+
+function factualScreen(overrides = {}) {
+  return createFactualTurnDeliveryScreenReadModel({ partyId: 'party', turnId: 'turn',
+    turnNumber: 7, packageId: 'package', committedStateVersion: 39,
+    visibleContext: visible, visibleChanges: payload.perceived_changes,
+    uncertainties: payload.uncertainties, actionPanel: { suggested_actions: [] },
+    actions: [], checks: [], panels: {},
+    inputPanel: { free_text_enabled: true, input_contract: 'intent_not_fact' },
+    scenarioId: 'lower_dvina_trace_v1', screenKind: 'trace_turn',
+    deliveryState: { ready: true, generated_at: '2026-01-01T00:00:00.000Z' },
+    openingScreenDigest: 'opening', currentProjectionAnchor: {
+      committed_state_version: '39', package_id: 'package',
+      package_digest: envelope.package_digest, narration_output_digest: null },
+    presentationContext: { location_label: 'Берег.' }, ...overrides });
+}
 
 function narrator({ flow, store, calls = { run: 0 } }) {
   const client = { async query() { return { rows: [envelope] }; }, release() {} };
@@ -63,6 +90,13 @@ test('final audited policy rejection terminally delivers one factual screen', as
   const result = await service.run(request);
   assert.equal(result.factual_delivery.schema, 'factual_turn_delivery_screen');
   assert.deepEqual(result.factual_delivery.visible_changes, payload.perceived_changes);
+  assert.deepEqual(result.factual_delivery.actions,
+    payload.allowed_action_affordances);
+  assert.deepEqual(result.factual_delivery.action_panel.suggested_actions,
+    payload.allowed_action_affordances);
+  assert.equal(result.factual_delivery.presentation_quality, 'degraded');
+  assert.equal(result.factual_delivery.main_prose, undefined);
+  assert.equal(result.factual_delivery.panels.route?.data.current_place, 'Берег.');
   assert.equal(finalized.length, 1);
   assert.equal(finalized[0].factual_screen.input_panel.input_contract, 'intent_not_fact');
 });
@@ -79,10 +113,7 @@ test('stale delivery turn cannot finalize a factual screen', async () => {
 });
 
 test('factual terminal replay does not call the narrator and rejects leaks', async () => {
-  const factual = createFactualTurnDeliveryScreenReadModel({ partyId: 'party', turnId: 'turn',
-    turnNumber: 7, packageId: 'package', committedStateVersion: 39,
-    visibleContext: visible, visibleChanges: payload.perceived_changes,
-    uncertainties: payload.uncertainties, panels: {} });
+  const factual = factualScreen();
   const calls = { run: 0 };
   const { service } = narrator({ calls, flow: rejected, store: {
     async claimPresentationAttempt() { return { ok: true, disposition: 'factual_delivered', factual_screen: factual }; }
@@ -97,10 +128,7 @@ test('factual terminal replay does not call the narrator and rejects leaks', asy
 });
 
 test('factual admission binds its package identity and full visible projection', () => {
-  const factual = createFactualTurnDeliveryScreenReadModel({ partyId: 'party', turnId: 'turn',
-    turnNumber: 7, packageId: 'package', committedStateVersion: 39,
-    visibleContext: visible, visibleChanges: payload.perceived_changes,
-    uncertainties: payload.uncertainties, panels: {} });
+  const factual = factualScreen();
   assert.equal(validFactualTurnDelivery(factual, envelope), true);
   for (const changed of [
     { ...factual, party_id: 'other-party' },
@@ -122,11 +150,7 @@ test('factual builder refuses an envelope with a bad package digest', () => {
 });
 
 test('factual session read binds party, visible turn and current state', () => {
-  const screen = createFactualTurnDeliveryScreenReadModel({ partyId: 'party',
-    turnId: 'turn', turnNumber: 7, packageId: 'package',
-    committedStateVersion: 39, visibleContext: visible,
-    visibleChanges: payload.perceived_changes,
-    uncertainties: payload.uncertainties, panels: {} });
+  const screen = factualScreen();
   const session = { party_snapshot_schema: 'snapshot', turn_number: 7,
     current_party_state_version: 39, last_turn_id: 'turn',
     current_projection_turn_id: 'turn',
@@ -157,10 +181,7 @@ test('factual session read binds party, visible turn and current state', () => {
 
 test('store rejects a changed factual screen before its terminal update', async () => {
   const calls = [];
-  const factual = createFactualTurnDeliveryScreenReadModel({ partyId: 'party', turnId: 'turn',
-    turnNumber: 7, packageId: 'package', committedStateVersion: 39,
-    visibleContext: visible, visibleChanges: payload.perceived_changes,
-    uncertainties: payload.uncertainties, panels: {} });
+  const factual = factualScreen();
   const client = { async query(sql) {
     calls.push(String(sql));
     if (String(sql).includes('party_visible_packages')) return { rowCount: 1, rows: [envelope] };
@@ -185,10 +206,7 @@ test('store rejects a changed factual screen before its terminal update', async 
 });
 
 test('factual-delivered retry rejects a changed snapshot turn', async () => {
-  const factual = createFactualTurnDeliveryScreenReadModel({ partyId: 'party', turnId: 'turn',
-    turnNumber: 8, packageId: 'package', committedStateVersion: 39,
-    visibleContext: visible, visibleChanges: payload.perceived_changes,
-    uncertainties: payload.uncertainties, panels: {} });
+  const factual = factualScreen({ turnNumber: 8 });
   const client = { async query(sql) {
     if (String(sql).includes('party_visible_packages')) return { rowCount: 1, rows: [envelope] };
     if (String(sql).includes('party_state_snapshots')) return { rowCount: 1, rows: [{

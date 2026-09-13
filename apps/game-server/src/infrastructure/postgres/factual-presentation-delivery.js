@@ -2,10 +2,17 @@ import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { createFactualTurnDeliveryScreenReadModel,
   validateFactualTurnDeliveryScreen } from '@rus/presentation';
-import { phase2VisibleContextFromPayload } from
+import { buildPhase2PreProseCarrier, phase2VisibleContextFromPayload } from
   './lower-dvina-trace-phase-2-projection.js';
 
-export function buildFactualTurnDelivery({ envelope, visibleContext, requestVisibleContext, turnNumber }) {
+export function buildFactualTurnDelivery({
+  envelope,
+  payload = envelope?.snapshot_payload,
+  presentation = null,
+  visibleContext,
+  requestVisibleContext,
+  turnNumber
+}) {
   if (canonicalDigest(visibleContext) !== canonicalDigest(requestVisibleContext)) {
     throw presentationError();
   }
@@ -13,11 +20,29 @@ export function buildFactualTurnDelivery({ envelope, visibleContext, requestVisi
   if (envelopeTurnNumber == null || turnNumber !== envelopeTurnNumber) {
     throw presentationError();
   }
+  if (payload == null || canonicalDigest(payload) !== envelope.state_digest) {
+    throw presentationError();
+  }
+  const carrier = buildPhase2PreProseCarrier({ payload, turnId: envelope.turn_id,
+    visibleContext, visiblePayload: envelope.visible_payload, presentation });
   const screen = createFactualTurnDeliveryScreenReadModel({
     partyId: envelope.party_id, turnId: envelope.turn_id, turnNumber: envelopeTurnNumber,
     packageId: envelope.package_id, committedStateVersion: envelope.committed_state_version,
     visibleContext, visibleChanges: visibleContext.visible_changes,
-    uncertainties: visibleContext.uncertainties, panels: {}
+    uncertainties: visibleContext.uncertainties,
+    actions: carrier.actions,
+    checks: carrier.checks,
+    panels: carrier.panels,
+    actionPanel: carrier.action_panel,
+    inputPanel: carrier.input_panel,
+    scenarioId: carrier.scenario_id,
+    screenKind: carrier.screen_kind,
+    deliveryState: carrier.delivery_state,
+    openingScreenDigest: carrier.opening_screen_digest,
+    combatState: carrier.combat_state,
+    currentProjectionAnchor: carrier.current_projection_anchor,
+    presentationContext: carrier.presentation_context,
+    sceneAssetId: carrier.scene_asset_id
   });
   if (!validFactualTurnDelivery(screen, envelope)) throw presentationError();
   return screen;
@@ -34,11 +59,24 @@ export function validFactualTurnDelivery(screen, envelope) {
     && screen.package_id === envelope.package_id
     && screen.committed_state_version === String(envelope.committed_state_version)
     && screen.turn_number === turnNumber
+    && screen.presentation_quality === 'degraded'
+    && factualCarrierIsBound(screen, envelope)
     && canonicalDigest(screen.visible_context) === canonicalDigest(visibleContext)
     && canonicalDigest(screen.visible_changes)
       === canonicalDigest(visibleContext.visible_changes)
     && canonicalDigest(screen.uncertainties)
       === canonicalDigest(visibleContext.uncertainties);
+}
+
+function factualCarrierIsBound(screen, envelope) {
+  const anchor = screen.current_projection_anchor;
+  return anchor?.committed_state_version === String(envelope.committed_state_version)
+    && anchor.package_id === envelope.package_id
+    && anchor.package_digest === envelope.package_digest
+    && anchor.narration_output_digest === null
+    && screen.action_panel?.suggested_actions != null
+    && canonicalDigest(screen.action_panel.suggested_actions)
+      === canonicalDigest(screen.actions);
 }
 
 export function factualEnvelopeTurnNumber(envelope) {

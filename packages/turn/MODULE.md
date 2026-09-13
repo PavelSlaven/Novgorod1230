@@ -5,6 +5,10 @@
 Narration boundary принимает только approved `surface: turn` через публичный
 `@rus/narration.validateNarrationFlowResult`, включая coverage segment IDs
 утверждённой прозы; локальный validator не дублирует ослабленную схему.
+`FactualTurnDeliveryScreen` после terminal `final_audit_failed` принадлежит
+presentation delivery, а не narration quality: он availability-only degraded
+recovery, никогда не образует prose PASS и в blind/demo/TURN FORENSIC служит
+blocking narration finding.
 
 Оркестратор игрового хода, active player semantic step boundary, revision-14 conversation exchange и Temporal World v4 execution composition. Он сохраняет exact command fast path, связывает explicit ports, исполняет валидированные semantic plans через code-owned handlers, собирает proposals и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.
 

@@ -121,6 +121,12 @@ and adds no second transaction owner.
   audit/seed/policy refs и не публикует NPC checks без perception binding.
   Pending semantic/combat screen, ready screen и historical replay используют
   ту же persisted арифметику; presentation recovery не reroll-ит её.
+- Terminal factual delivery после `final_audit_failed` — только availability
+  recovery уже committed хода. Она сохраняет весь применимый player-safe public
+  screen (включая checks, panels и actions/affordances) и заменяет только
+  отсутствующую approved prose. Такой экран никогда не является narration-
+  quality PASS: blind-play, demo и TURN FORENSIC фиксируют его как blocking
+  narration finding.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side
   provider-selected LLM-вызовом, который преобразует свободный текст только в
   валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые

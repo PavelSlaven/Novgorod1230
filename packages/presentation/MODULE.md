@@ -6,7 +6,7 @@
 
 ## Владеет
 
-- `FirstGameScreen`, approved-prose-only `TurnScreen` и отдельный `FactualTurnDeliveryScreen` version 1
+- `FirstGameScreen`, approved-prose-only `TurnScreen` и отдельный degraded `FactualTurnDeliveryScreen` version 1
 - Character, Inventory, People, Route, Map, Journal и Diagnostic panels;
 - optional exact `portrait_spec_v1` внутри player-safe active interlocutor;
 - additive presentation data in versioned read models: presentation carries it
@@ -49,10 +49,14 @@ write beliefs, or alter the P08 fail-closed port boundary.
 - публичный экран не содержит hidden/audit/source payloads;
 - TurnScreen строится только из approved narration flow;
 - `FactualTurnDeliveryScreen v1` строится только из уже validated committed
-  public package после terminal narration-policy rejection. Его exact fields:
+  public projection после terminal narration-policy rejection. Это degraded
+  availability recovery, а не approved narration и не quality PASS. Его exact fields:
   `version`, `schema`, `screen_status`, `party_id`, `turn_id`, `turn_number`,
-  `package_id`, `committed_state_version`, `visible_context`,
-  `visible_changes`, `uncertainties`, `panels`, `input_panel`.
+  `package_id`, `committed_state_version`, `presentation_quality`, `scenario_id`,
+  `screen_kind`, `visible_context`, `visible_changes`, `uncertainties`,
+  `action_panel`, `actions`, `checks`, `panels`, `input_panel`,
+  `delivery_state`, `opening_screen_digest`, `current_projection_anchor`,
+  `presentation_context`, optional `scene_asset_id` and `combat_state`.
   Он не принимает `main_prose`, `prose`, narration output, digest, audit,
   provider/retry diagnostics, raw package или private data;
 - `TurnScreen.checks` не содержит `check_id`, RNG audit/seed, policy refs или

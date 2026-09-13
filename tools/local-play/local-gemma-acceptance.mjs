@@ -18,7 +18,7 @@ import { createPartyLog } from
 import { LOCAL_LLM_PRESET } from
   '../../apps/game-server/src/runtime/llm-settings.js';
 import { validateFactualTurnDeliveryScreen } from '@rus/presentation';
-import { auditEvent, createGameplayGapExplorer, gitSnapshot } from
+import { auditEvent, createGameplayGapExplorer, gitSnapshot, recordNarrationQuality } from
   './gameplay-gap-campaign.mjs';
 import { startLocalPlay } from './local-play.js';
 import { ensureLocalPostgres } from './local-postgres.js';
@@ -58,6 +58,7 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       ...(report.failure ? [report.failure] : [])];
     delete report.failure;
     report.status = 'running';
+    reconcileNarrationQuality(report);
   } else {
     report = { schema: 'world_knowledge_gameplay_campaign_v1',
       campaign_id: campaignId,
@@ -65,7 +66,8 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       scenario_id: 'lower_dvina_trace_v1', mode: 'acceptance_candidate',
       independent_unseen: true, sequence, focus,
       after_p0_p1_fix_ref: afterP0P1FixRef ?? before.head,
-      git: before, status: 'running', turns: [], trace_refs: [],
+      git: before, status: 'running', turns: [], trace_refs: [], findings: [],
+      narration_quality_pass: true,
       started_at: new Date().toISOString() };
   }
   const save = () => writeFile(reportPath,
@@ -331,6 +333,7 @@ async function capturePendingTurn({ report, page, identity, logDirectory,
   trace.commit_status = trace.accepted ? 'committed' : 'not_committed';
   trace.presentation_status = event.event === 'turn.completed'
     ? 'completed' : 'failed';
+  recordNarrationQuality({ report, trace, partyId, event });
   const screenshot = await captureRenderedScreenshot(page, logDirectory,
     partyId, event.input?.request_id).catch(() => null);
   await appendRenderedUiEvidence({ directory: logDirectory, partyId, event,
@@ -461,6 +464,16 @@ function assertResumableReport(report, { before, focus, sequence }) {
       || report.git?.head !== before.head || report.focus !== focus
       || report.sequence !== sequence || report.terminal) {
     throw new Error('Acceptance report is not a resumable continuation.');
+  }
+}
+
+function reconcileNarrationQuality(report) {
+  report.findings ??= [];
+  report.narration_quality_pass = true;
+  for (const trace of report.turns ?? []) {
+    const event = trace.events?.findLast(({ event }) => event === 'turn.completed');
+    if (event) recordNarrationQuality({ report, trace,
+      partyId: report.party_id, event });
   }
 }
 

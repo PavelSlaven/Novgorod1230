@@ -7,6 +7,39 @@ import test from 'node:test';
 import { acceptanceProviderFromEnv, phase10TerminalObservation,
   appendRenderedUiEvidence, pendingBrowserRequest, pendingBrowserStorage, resumePendingTurn, runLocalGemmaBrowserAcceptance } from
   '../local-gemma-acceptance.mjs';
+import { recordNarrationQuality } from '../gameplay-gap-campaign.mjs';
+
+test('degraded factual delivery remains terminal evidence but blocks narration quality once', () => {
+  const event = { event: 'turn.completed', output: { screen: {
+    schema: 'factual_turn_delivery_screen', presentation_quality: 'degraded',
+    party_id: 'party:terminal', turn_id: 'turn:terminal', package_id: 'visible:terminal'
+  } } };
+  const report = { findings: [], narration_quality_pass: true };
+  const trace = { trace_ref: 'trace:terminal' };
+  recordNarrationQuality({ report, trace, partyId: 'party:terminal', event });
+  const replay = { trace_ref: 'trace:terminal-replay' };
+  recordNarrationQuality({ report, trace: replay, partyId: 'party:terminal', event });
+  assert.equal(trace.narration_quality_pass, false);
+  assert.equal(replay.narration_quality_pass, false);
+  assert.equal(report.narration_quality_pass, false);
+  assert.equal(report.findings.length, 1);
+  assert.deepEqual(trace.narration_finding_ids,
+    ['narration-degraded:party:terminal:turn:terminal:visible:terminal']);
+  assert.equal(report.findings[0].severity, 'blocking');
+  assert.equal(report.findings[0].evidence_ref, 'trace:terminal#/events/0/output/screen');
+});
+
+test('approved narrated delivery remains a narration quality pass', () => {
+  const report = { findings: [], narration_quality_pass: true };
+  const trace = { trace_ref: 'trace:narrated' };
+  assert.equal(recordNarrationQuality({ report, trace, partyId: 'party:narrated',
+    event: { event: 'turn.completed', output: { screen: {
+      schema: 'lower_dvina_trace_turn_screen', main_prose: 'Одобренная сцена.'
+    } } } }), null);
+  assert.equal(trace.narration_quality_pass, true);
+  assert.equal(report.narration_quality_pass, true);
+  assert.deepEqual(report.findings, []);
+});
 
 test('rendered UI evidence binds each turn to its causal preceding screen read', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'novgorod-ui-evidence-'));
@@ -156,9 +189,18 @@ test('completion observer accepts only anchored factual delivery with its render
   const screen = { version: 1, schema: 'factual_turn_delivery_screen',
     screen_status: 'ready', party_id: 'party:terminal', turn_id: 'turn:terminal',
     turn_number: 1, package_id: 'visible:terminal',
-    committed_state_version: '3', visible_context: { visible_scene: 'Берег.' },
-    visible_changes: ['Верёвка снята.'], uncertainties: [], panels: {},
-    input_panel: { free_text_enabled: true, input_contract: 'intent_not_fact' } };
+    committed_state_version: '3', presentation_quality: 'degraded',
+    scenario_id: 'lower_dvina_trace_v1', screen_kind: 'trace_turn',
+    visible_context: { visible_scene: 'Берег.' },
+    visible_changes: ['Верёвка снята.'], uncertainties: [],
+    action_panel: { suggested_actions: [] }, actions: [], checks: [], panels: {},
+    input_panel: { free_text_enabled: true, input_contract: 'intent_not_fact' },
+    delivery_state: { ready: true, generated_at: '1230-01-01T00:00:00.000Z' },
+    opening_screen_digest: 'opening:terminal',
+    current_projection_anchor: { committed_state_version: '3',
+      package_id: 'visible:terminal', package_digest: 'package:terminal',
+      narration_output_digest: null },
+    presentation_context: { location_label: 'Берег' } };
   const input = { partyId: 'party:terminal', state: { completion: {
     status: 'committed', change_set_id: 'change:terminal' }, last_turn: {
     visible_package: { change_set_id: 'change:terminal',

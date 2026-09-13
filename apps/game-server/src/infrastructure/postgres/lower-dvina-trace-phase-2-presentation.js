@@ -11,6 +11,8 @@ import {
 import { queryWithTurnDeadline } from './query-with-turn-deadline.js';
 import { phase2VisibleContextFromPayload } from
   './lower-dvina-trace-phase-2-projection.js';
+import { loadLowerDvinaTraceScreenPresentation } from
+  '../../internal/lower-dvina-trace-screen-presentation.js';
 
 export function createLowerDvinaTracePhase2DurableNarrator({
   partyPool,
@@ -94,6 +96,9 @@ export function createLowerDvinaTracePhase2DurableNarrator({
         if (validateTerminalNarrationPolicyRejection(flow, narrationRequest).ok) {
           if (deliveryTurnNumber !== envelope.turn_number) throw presentationError();
           const factualScreen = buildFactualTurnDelivery({ envelope,
+            payload: envelope.snapshot_payload,
+            presentation: await loadLowerDvinaTraceScreenPresentation(
+              envelope.snapshot_payload),
             visibleContext: phase2VisibleContextFromPayload(envelope.visible_payload),
             requestVisibleContext: request.visible_context, turnNumber: deliveryTurnNumber });
           const finalized = await store.finalizeFactualPresentationAttempt({

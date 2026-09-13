@@ -68,6 +68,38 @@ test('source grounding rejection before commit permits fresh intent, commit unce
   });
 });
 
+test('explicit repository rollback reports an authoritative no-commit result', async () => {
+  const f = fixture();
+  f.repository.commitPhase2Turn = async () => ({
+    ok: false,
+    error: { code: 'state_version_conflict', diagnostics: {
+      turn_commit_status: 'not_started'
+    } }
+  });
+  await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId,
+    input: input() }), (error) => {
+    assert.equal(error.turn_commit_status, 'not_started');
+    assert.equal(errorEnvelope(error).body.error.turn_commit_status,
+      'not_started');
+    return true;
+  });
+});
+
+test('live unexpired lease remains commit-ambiguous', async () => {
+  const f = fixture();
+  f.repository.commitPhase2Turn = async () => ({
+    ok: false,
+    in_progress: true,
+    error: { code: 'state_version_conflict' }
+  });
+  await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId,
+    input: input() }), (error) => {
+    assert.equal(error.turn_commit_status, undefined);
+    assert.equal(errorEnvelope(error).body.error.turn_commit_status, undefined);
+    return true;
+  });
+});
+
 test('post-commit presentation and replay failures never report no commit', async () => {
   const f = fixture({ afterNarration() { throw new Error('presentation lost'); } });
   await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId, input: input() }),

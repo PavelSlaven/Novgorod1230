@@ -72,6 +72,34 @@ test('HTTP no-commit result permits a changed intent after a planner rejection',
   assert.notEqual(requests[0].idempotency_key, requests[1].idempotency_key);
 });
 
+test('post-commit narration failure retains the exact recovery identity', async () => {
+  const saved = storage();
+  await assert.rejects(submitRecoverableTurn({ async submitTurn() {
+    throw Object.assign(new Error('narration failed after commit'), {
+      code: 'PRESENTATION_PENDING', httpStatus: 503
+    });
+  } }, saved, 'party', { raw_text: 'Зову.' }));
+  assert.equal(storedPendingTurn(saved, 'party')?.request.raw_text, 'Зову.');
+});
+
+test('live commit lease retains the exact pending request', async () => {
+  const saved = storage(); const requests = [];
+  const api = { async submitTurn(_partyId, request) {
+    requests.push(request);
+    throw Object.assign(new Error('turn is still in progress'), {
+      code: 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT', httpStatus: 409
+    });
+  } };
+  await assert.rejects(submitRecoverableTurn(api, saved, 'party', {
+    raw_text: 'Зову.'
+  }));
+  await assert.rejects(submitRecoverableTurn(api, saved, 'party', {
+    raw_text: 'Новый ввод.'
+  }));
+  assert.deepEqual(requests[1], requests[0]);
+  assert.deepEqual(storedPendingTurn(saved, 'party')?.request, requests[0]);
+});
+
 test('pending presentation recovery retains identity until ready without another gameplay submission', async () => {
   const saved = storage(); let posts = 0;
   const api = { async submitTurn() { posts += 1; return {

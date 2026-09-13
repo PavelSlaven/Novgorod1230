@@ -287,6 +287,20 @@ test('deadline transaction returns after an atomic commit without rollback', asy
   assert.equal(queries.includes('ROLLBACK'), false);
 });
 
+test('deadline transaction marks an explicit rejection only after rollback', async () => {
+  const queries = [];
+  const turnBudget = { assertWithinDeadline() {},
+    remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
+  const client = { async query(query) { queries.push(query); return {}; },
+    release() {} };
+  const pool = { connect(callback) { callback(null, client); } };
+  const result = await withTurnDeadlineTransaction(pool, turnBudget,
+    async () => ({ ok: false }), { commit: ({ ok }) => ok });
+  assert.equal(result.transaction_rollback_confirmed, true);
+  assert.equal(queries.includes('ROLLBACK'), true);
+  assert.equal(queries.includes('COMMIT'), false);
+});
+
 test('Phase 2 replay read uses a deadline-bound read-only pool', async () => {
   const queries = [];
   const turnBudget = { assertWithinDeadline() {},

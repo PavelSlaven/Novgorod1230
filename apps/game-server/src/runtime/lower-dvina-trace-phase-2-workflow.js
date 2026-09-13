@@ -15,7 +15,9 @@ export async function runAndPersistTracePhase2Turn({ workflowInput, services,
   } catch (error) {
     if (isExpectedPostCommitPresentationFailure(error)
         && services.committedPublicResult() != null) return services.committedPublicResult();
-    if (!services.commitAttempted()) error.turn_commit_status = 'not_started';
+    if (services.turnCommitStatus() === 'not_started') {
+      error.turn_commit_status = 'not_started';
+    }
     throw error;
   }
 }

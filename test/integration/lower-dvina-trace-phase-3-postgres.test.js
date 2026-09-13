@@ -209,6 +209,14 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     'party_runtime.party_conversation_contributions', partyA.party_id), 4);
   assert.equal(await count(pool,
     'party_runtime.party_npc_decision_traces', partyA.party_id), 2);
+  const sequentialTalkPerceptions = (await pool.query(
+    `SELECT perception_id,idempotency_record_id
+       FROM party_runtime.party_perception_records
+      WHERE party_id=$1`, [partyA.party_id])).rows;
+  assert.ok(sequentialTalkPerceptions.length > 0);
+  assert.equal(new Set(sequentialTalkPerceptions.map(
+    ({ idempotency_record_id: id }) => id)).size,
+  sequentialTalkPerceptions.length);
 
   const pathB = buildRuntime({
     pool, release, runtimeCatalogPin,

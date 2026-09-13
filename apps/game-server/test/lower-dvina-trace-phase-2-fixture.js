@@ -553,13 +553,9 @@ function fixture({
     },
     ...(playerSafeStateProjector ? { playerSafeStateProjector } : {}),
     ...(temporalAdvanceOwner ? { temporalAdvanceOwner } : {}),
-    ...(createTurnStepOrdinaryDiscoveryResolver ? {
-      createTurnStepOrdinaryDiscoveryResolver
-    } : {}),
-    ...(ordinaryDiscoveryEnablementMarker ? {
-      ordinaryDiscoveryEnablementMarker
-    } : {}),
-    ...(ordinaryDiscoveryScopeBinding ? { ordinaryDiscoveryScopeBinding } : {}),
+    createTurnStepOrdinaryDiscoveryResolver,
+    ordinaryDiscoveryEnablementMarker,
+    ordinaryDiscoveryScopeBinding,
     actionProductionProfile,
     createTurnStepActionProductionOwner,
     localFireProfile,

@@ -19,8 +19,7 @@ import {
 import {
   applyOrdinaryMaterializationAtomicWritePlanInTransaction
 } from './ordinary-materialization-phase-6-commit.js';
-import { applyActionProducedAtomicWritePlanInTransaction } from
-  './action-produced-persistence.js';
+import { applyActionProducedAtomicWritePlanInTransaction } from './action-produced-persistence.js';
 import { applyLocalFireP16Extension, assertLocalFireFuelMutationBound } from
   './local-fire-p16-extension.js';
 import { applySpatialSemanticAtomicWritePlanInTransaction } from
@@ -30,7 +29,6 @@ export { validateSpatialV3CombinedWritePlan };
 function serializePlanValue(value) {
   return Array.isArray(value) ? JSON.stringify(value) : value;
 }
-
 async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = null, committedAtTurn = 0) {
   const spec = TABLES[write.target_table]; const record = write.target_table === 'party_v3_change_sets' ? { ...Object.fromEntries(Object.entries(write.record).filter(([key]) => !['idempotency_record_id', 'created_at_turn', 'committed_at_turn'].includes(key))), expected_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), expected_state_version_set: sealedPlan.expected_state_versions, committed_state_version_set_digest: sealedPlan.expected_state_versions_digest.replace('sha256:', ''), write_plan_digest: sealedPlan.write_set_digest.replace('sha256:', ''), created_at_turn: committedAtTurn, committed_at_turn: committedAtTurn } : write.record; const columns = Object.keys(record); const table = `party_runtime.${quote(write.target_table)}`;
   if (mode === 'update') {
@@ -90,13 +88,12 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
   const values = columns.map((column) => serializePlanValue(record[column]));
   await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
 }
-
 export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, ordinaryFirstEntryProvisioner = null, now = () => new Date() } = {}) {
   return Object.freeze({ async commit({ plan, created_at_turn = 0, recheck: commitRecheck = recheck, turnBudget = null } = {}) {
-    if (!validateSpatialV3CombinedWritePlan(plan)) return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan?.party_id, { reason: 'untrusted or non-whitelisted combined write plan' }) });
-    if (!Number.isSafeInteger(created_at_turn) || created_at_turn < 0) return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan.party_id, { reason: 'commit turn must be one non-negative safe integer' }) });
-    if (typeof withTransaction !== 'function' || typeof commitRecheck !== 'function') return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan.party_id, { reason: 'transaction owner and full recheck port required' }) });
-    try { return await withTransaction(async (tx) => {
+    if (!validateSpatialV3CombinedWritePlan(plan)) return rejectedBeforeCommit('generated_schema_mismatch', plan?.party_id, { reason: 'untrusted or non-whitelisted combined write plan' });
+    if (!Number.isSafeInteger(created_at_turn) || created_at_turn < 0) return rejectedBeforeCommit('generated_schema_mismatch', plan.party_id, { reason: 'commit turn must be one non-negative safe integer' });
+    if (typeof withTransaction !== 'function' || typeof commitRecheck !== 'function') return rejectedBeforeCommit('generated_schema_mismatch', plan.party_id, { reason: 'transaction owner and full recheck port required' });
+    try { const result = await withTransaction(async (tx) => {
       const locks = lockOrder(plan);
       await lockSpatialV3WritePlan(tx, locks);
       const existingChangeSet = await tx.query('SELECT party_id,operation_kind,expected_state_version_set_digest,write_plan_digest FROM party_runtime.party_v3_change_sets WHERE id=$1 FOR UPDATE', [plan.change_set_id]);
@@ -270,18 +267,22 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
       }
       const settled = await tx.query(`UPDATE party_runtime.party_command_idempotency SET status='committed',result_change_set_id=$1,lease_token=NULL,lease_expires_at=NULL,finalized_at_turn=$2,state_version=state_version+1 WHERE party_id=$3 AND operation_kind=$4 AND idempotency_key=$5 AND status='leased'`, [plan.change_set_id, created_at_turn, plan.party_id, plan.operation_kind, plan.idempotency_key]); if (settled.rowCount !== 1) throw Object.assign(new Error('idempotency settle failed'), { spatialCode: 'idempotency_conflict' });
       return Object.freeze({ ok: true, replay: false, change_set_id: plan.change_set_id, lock_keys: Object.freeze(locks) });
-    }, turnBudget); } catch (cause) {
-      if (cause?.code === 'LLM_TURN_BUDGET_EXHAUSTED') throw cause; return Object.freeze({ ok: false, error: error(cause.spatialCode ?? 'generated_schema_mismatch', plan.party_id, { reason: cause.message }) });
+    }, turnBudget); if (result?.ok !== false) return result; const { transaction_rollback_confirmed: rollbackConfirmed, ...publicResult } = result; return rollbackConfirmed === true && result.in_progress !== true ? markNotStarted(publicResult) : Object.freeze(publicResult);
+    } catch (cause) {
+      if (cause?.code === 'LLM_TURN_BUDGET_EXHAUSTED') throw cause;
+      const diagnostics = { reason: cause.message, ...(cause?.transaction_rollback_confirmed === true ? { turn_commit_status: 'not_started' } : {}) };
+      return Object.freeze({ ok: false, error: error(cause.spatialCode ?? 'generated_schema_mismatch', plan.party_id, diagnostics) });
     }
   } });
 }
+function rejectedBeforeCommit(code, partyId, diagnostics) { return Object.freeze({ ok: false, error: error(code, partyId, { ...diagnostics, turn_commit_status: 'not_started' }) }); }
+function markNotStarted(result) { return Object.freeze({ ...result, error: Object.freeze({ ...result.error, diagnostics: Object.freeze({ ...result.error?.diagnostics, turn_commit_status: 'not_started' }) }) }); }
 function ordinaryOwnedVersionDelta(plan, write) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;
   return write.target_table === 'party_containers'
     && ordinary?.schema === 'ordinary_container_contents_atomic_write_plan_v2'
     && write.id === ordinary.scope_ref.entity_id ? 1 : 0;
 }
-
 /** P16 owns the PostgreSQL transaction boundary for every target-v3 writer. */
 export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, ordinaryFirstEntryProvisioner, now } = {}) {
   if (!pool?.connect) throw new TypeError('P16 PostgreSQL committer requires a pg pool');
@@ -295,5 +296,4 @@ export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, 
         })
   });
 }
-
-async function withPostgresTransaction(pool, work) { const client = await pool.connect(); try { await client.query('BEGIN'); const result = await work(client); if (!result?.ok) { await client.query('ROLLBACK'); return result; } await client.query('COMMIT'); return result; } catch (cause) { await client.query('ROLLBACK').catch(() => {}); throw cause; } finally { client.release(); } }
+async function withPostgresTransaction(pool, work) { const client = await pool.connect(); let commitStarted = false; try { await client.query('BEGIN'); const result = await work(client); if (!result?.ok) { await client.query('ROLLBACK'); return Object.freeze({ ...result, transaction_rollback_confirmed: true }); } commitStarted = true; await client.query('COMMIT'); return result; } catch (cause) { const rollbackConfirmed = await client.query('ROLLBACK').then(() => true, () => false); if (!commitStarted && rollbackConfirmed) cause.transaction_rollback_confirmed = true; throw cause; } finally { client.release(); } }

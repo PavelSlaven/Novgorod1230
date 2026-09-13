@@ -45,7 +45,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
   } = context;
-  let committedPublicResult = null, commitAttempted = false;
+  let committedPublicResult = null, turnCommitStatus = 'not_started';
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
@@ -175,8 +175,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     visibleProjector: createVisibleProjector(),
     partyStore: {
       async commit(writePlan) {
-        commitAttempted = true;
         turnBudget?.assertCanCommit();
+        turnCommitStatus = 'ambiguous';
         context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_requested' });
         let committed;
         try { committed = await repository.commitPhase2Turn({
@@ -188,10 +188,15 @@ export function buildLowerDvinaTracePhase2Services(context) {
           }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {
+          if (authoritativeNotStarted(error)) {
+            turnCommitStatus = 'not_started';
+          }
           context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_rejected',
             code: error?.code ?? null });
           throw error;
         }
+        if (authoritativeNotStarted(committed)) turnCommitStatus = 'not_started';
+        else if (committed?.ok === true) turnCommitStatus = 'committed';
         context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_completed' });
         committedPublicResult = committed.committed_public_result ?? null;
         return committed;
@@ -230,7 +235,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
       }
     },
     committedPublicResult: () => committedPublicResult,
-    commitAttempted: () => commitAttempted
+    turnCommitStatus: () => turnCommitStatus
   };
 }
 function addMinutes(value, minutes) { return new Date(Date.parse(value) + minutes * 60000).toISOString(); }
+function authoritativeNotStarted(error) {
+  return [error, error?.error, error?.details, error?.details?.commit_error]
+    .some((value) => value?.turn_commit_status === 'not_started'
+      || value?.diagnostics?.turn_commit_status === 'not_started');
+}

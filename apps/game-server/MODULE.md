@@ -83,9 +83,10 @@ and adds no second transaction owner.
   в одну runtime promise до чтения replay. Другой input digest получает conflict.
   Promise удаляется после завершения; durable replay и commit остаются у P16.
   Это координация одного server process, не межпроцессная блокировка.
-  Только workflow failure до входа commit owner выдаёт публичный
-  `error.turn_commit_status: not_started`; replay и неопределённый commit
-  не получают этот признак.
+  Workflow failure до входа commit owner и явный repository/P16 отказ после
+  подтверждённого rollback выдают публичный
+  `error.turn_commit_status: not_started`; replay, потеря транспорта во время
+  `COMMIT` и другой неопределённый commit не получают этот признак.
 - Публикует player-safe progress только для exact active request через
   `GET /api/v1/parties/:partyId/turns/:requestId/progress`. Ответ — nullable
   `turn_progress_v1` со status `running`, request ID, monotonic sequence,

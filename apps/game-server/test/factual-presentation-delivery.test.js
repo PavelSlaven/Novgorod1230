@@ -8,10 +8,14 @@ import { createTemporalPresentationPostgresStore } from
   '../src/infrastructure/postgres/temporal-presentation-store.js';
 import { createLowerDvinaTracePhase2DurableNarrator } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
+import { validFactualPostTurnSession } from
+  '../src/runtime/lower-dvina-trace-factual-session.js';
 
-const payload = { perceived_scene: 'Берег.', perceived_changes: ['Вода ушла.'],
+const payload = { schema: 'temporal_visible_package.v1',
+  perceived_scene: 'Берег.', perceived_changes: ['Вода ушла.'],
   sensory_details: [], visible_npcs: [], visible_objects: [], known_context: [],
-  uncertainties: ['Даль скрыта туманом.'] };
+  uncertainties: ['Даль скрыта туманом.'], hypotheses: [],
+  player_safe_interruption: null, allowed_action_affordances: [] };
 const envelope = { party_id: 'party', package_id: 'package', turn_id: 'turn',
   committed_state_version: 39,
   package_digest: computeSpatialV3CanonicalDigest(payload), visible_payload: payload };
@@ -100,6 +104,35 @@ test('factual builder refuses an envelope with a bad package digest', () => {
     ...envelope, package_digest: 'bad-package-digest'
   }, visibleContext: visible, requestVisibleContext: visible, turnNumber: 7 }),
   { code: 'TRACE_PHASE_2_PRESENTATION_INVALID' });
+});
+
+test('factual session read binds party, visible turn and current state', () => {
+  const screen = createFactualTurnDeliveryScreenReadModel({ partyId: 'party',
+    turnId: 'turn', turnNumber: 7, packageId: 'package',
+    committedStateVersion: 39, visibleContext: visible,
+    visibleChanges: payload.perceived_changes,
+    uncertainties: payload.uncertainties, panels: {} });
+  const session = { party_snapshot_schema: 'snapshot', turn_number: 7,
+    current_party_state_version: 39, last_turn_id: 'turn',
+    current_projection_turn_id: 'turn',
+    current_projection_package_id: 'package',
+    current_projection_package_digest: envelope.package_digest,
+    current_projection_state_version: '39', current_projection_payload: payload,
+    current_narration_status: 'delivered',
+    current_narration_delivery_mode: 'factual', current_narration_output: null,
+    current_narration_output_digest: null,
+    current_narration_factual_screen: screen };
+  const valid = (candidate, overrides = {}) => validFactualPostTurnSession({
+    partyId: 'party', screen: candidate,
+    session: { ...session, ...overrides }, allowedSnapshotSchemas: ['snapshot']
+  });
+  assert.equal(valid(screen), true);
+  const foreign = { ...screen, party_id: 'party:other' };
+  assert.equal(valid(foreign, { current_narration_factual_screen: foreign }), false);
+  const wrongTurn = { ...screen, turn_id: 'turn:other' };
+  assert.equal(valid(wrongTurn, { last_turn_id: 'turn:other',
+    current_narration_factual_screen: wrongTurn }), false);
+  assert.equal(valid(screen, { current_party_state_version: 40 }), false);
 });
 
 test('store rejects a changed factual screen before its terminal update', async () => {

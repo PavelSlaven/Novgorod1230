@@ -1468,6 +1468,13 @@ async function assertFactualPresentationSurvivesRestart({
     raw_text: 'Дойти до рыбацкого стана.'
   });
   assert.equal(next.screen.schema, 'factual_turn_delivery_screen');
+  await pool.query(`UPDATE party_runtime.party_server_sessions
+    SET screen=jsonb_set(screen,'{party_id}',to_jsonb('party:other'::text))
+    WHERE party_id=$1`, [opened.party_id]);
+  await assert.rejects(
+    () => buildRuntime(options).getPartyScreen(opened.party_id),
+    { code: 'TRACE_PHASE_1B_SESSION_READ_INVALID' }
+  );
 }
 
 function rejectedNarration(request) {

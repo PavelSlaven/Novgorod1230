@@ -7,18 +7,21 @@ export function validFactualPostTurnSession({ partyId, session, screen,
   allowedSnapshotSchemas }) {
   const payload = session.current_projection_payload;
   const turnNumber = Number(session.turn_number);
-  const stateVersion = Number(session.state_version);
+  const stateVersion = Number(session.current_party_state_version);
   const payloadErrors = visiblePayloadErrors({ partyId,
     turnId: screen.turn_id, turnNumber, packageId: screen.package_id,
     packageDigest: session.current_projection_package_digest,
     committedStateVersion: screen.committed_state_version, payload });
   const expectedContext = payload && visibleContextFromPayload(payload);
   return validateFactualTurnDeliveryScreen(screen).ok
+    && screen.party_id === partyId
     && allowedSnapshotSchemas.includes(session.party_snapshot_schema)
     && Number.isSafeInteger(turnNumber) && turnNumber >= 1
     && Number.isSafeInteger(stateVersion) && stateVersion >= 1
     && session.last_turn_id === screen.turn_id
+    && session.current_projection_turn_id === screen.turn_id
     && screen.turn_number === turnNumber
+    && screen.committed_state_version === String(stateVersion)
     && screen.committed_state_version
       === String(session.current_projection_state_version)
     && screen.package_id === session.current_projection_package_id

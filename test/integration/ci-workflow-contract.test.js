@@ -17,8 +17,6 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'https://registry.npmjs.org/',
     'name: Install dependencies',
     'npm ci',
-    'name: Install pinned Graphify',
-    'graphifyy==0.9.17',
     'name: Provision pinned World Knowledge encoder',
     'python -m pip install -r tools/world-catalog-workflow/requirements-embeddings.txt',
     'from huggingface_hub import snapshot_download',
@@ -56,10 +54,6 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v15/',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v14/',
     'git status --porcelain --untracked-files=all -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md',
-    'name: Build and verify Repository Graph for current HEAD',
-    'npm run repo-intel:build',
-    'npm run repo-intel:status',
-    'npm run test:repository-intelligence',
     'name: Run full npm test merge gate',
     'npm test',
     'name: Run evidence-only checks',
@@ -73,6 +67,8 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     assert.ok(index > previousIndex, `workflow fragment is out of order: ${fragment}`);
     previousIndex = index;
   }
+
+  assert.doesNotMatch(workflow, /Graphify|graphify|repo-intel|repository-intelligence/u);
 });
 
 test('world_base PostgreSQL gate tracks the 201-table schema and grants every table read-only', async () => {

@@ -158,7 +158,8 @@ export async function runGameplayGapCampaign({ nextIntent, explorerRef,
     if (report.git_after.head !== before.head || (acceptance && report.git_after.dirty !== false)) {
       throw new Error('Candidate changed during campaign');
     }
-    report.status = 'captured'; // Not saturation or factual approval.
+    report.status = acceptance === true && report.narration_quality_pass === false
+      ? 'quality_failed' : 'captured'; // Not saturation or factual approval.
     return report;
   } catch (error) {
     report.status = 'failed';

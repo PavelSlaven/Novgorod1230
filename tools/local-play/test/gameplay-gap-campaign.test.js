@@ -1,10 +1,32 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createGameplayGapExplorer, runGameplayGapCampaign } from '../gameplay-gap-campaign.mjs';
 import { playerDom } from '../local-gemma-acceptance.mjs';
+
+async function qualityCampaign({ acceptance, degraded }) {
+  const directory = await mkdtemp(join(tmpdir(), 'gameplay-gap-quality-'));
+  const screen = degraded ? { schema: 'factual_turn_delivery_screen',
+    presentation_quality: 'degraded', party_id: 'party:quality',
+    turn_id: 'turn:quality', package_id: 'package:quality' }
+    : { schema: 'lower_dvina_trace_turn_screen', main_prose: 'Одобренная сцена.' };
+  const report = await runGameplayGapCampaign({ outputDirectory: directory,
+    explorerRef: 'quality-explorer', acceptance, turns: 1,
+    snapshot: () => ({ head: 'a'.repeat(40), dirty: false }),
+    start: async () => ({ url: 'http://localhost', child: { kill() {} } }),
+    nextIntent: async () => ({ raw_text: 'Осматриваюсь.', probe_family: 'quality' }),
+    fetchImpl: async (url) => ({ status: url.endsWith('/new-games') ? 201 : 200,
+      json: async () => ({ ok: true, data: url.endsWith('/new-games')
+        ? { party_id: 'party:quality' } : url.endsWith('/screen')
+          ? { visible: 'берег' } : { screen } }) }),
+    readTrace: async ({ requestId }) => [{ event: 'turn.completed',
+      input: { request_id: requestId }, output: { screen },
+      llm: { gameplay_traces: [], waterfall: [], aggregate: {}, calls: [] } }]
+  });
+  return { directory, report };
+}
 
 test('browser PLAYER receives only rendered DOM text', async () => {
   const selectors = [];
@@ -25,6 +47,28 @@ test('development explorer makes a separate generative call from current safe co
       return { output: { raw_text: 'Осматриваю мокрую ткань.', probe_family: 'wet fibres' } };
     } } });
   assert.equal((await next({ campaign_id: 'fresh', turn_index: 0, screen: { visible: 'rain' } })).probe_family, 'wet fibres');
+});
+
+test('degraded acceptance campaign is quality_failed', async () => {
+  const { directory, report } = await qualityCampaign({ acceptance: true, degraded: true });
+  try {
+    assert.equal(report.status, 'quality_failed');
+    assert.equal(report.narration_quality_pass, false);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('degraded development campaign remains captured', async () => {
+  const { directory, report } = await qualityCampaign({ acceptance: false, degraded: true });
+  try { assert.equal(report.status, 'captured'); }
+  finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('narrated acceptance campaign remains captured', async () => {
+  const { directory, report } = await qualityCampaign({ acceptance: true, degraded: false });
+  try {
+    assert.equal(report.status, 'captured');
+    assert.equal(report.narration_quality_pass, true);
+  } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
 test('campaign drives HTTP, separates explorer context, and retains actual private boundaries', async () => {

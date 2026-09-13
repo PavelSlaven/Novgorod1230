@@ -41,7 +41,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
       const ordinaryDetails = ordinarySceneDetails(seedEntries);
-      const ordinaryPresence = ordinaryPresenceResolution(seedEntries);
+      const ordinaryPresence = uncoveredOrdinaryPresence(seedEntries,
+        ordinaryPresenceResolution(seedEntries));
       const base = hasVisibleDomainProjection(consequence)
         ? await fallback.project(input)
         : projectCurrentSceneForVisibleOverlay({
@@ -159,7 +160,8 @@ export function projectLowerDvinaTraceFireVisible(entries, clarification) {
 async function projectWithoutFire({ input, consequence, seedEntries,
   fallback }) {
   const ordinaryDetails = ordinarySceneDetails(seedEntries);
-  const ordinaryPresence = ordinaryPresenceResolution(seedEntries);
+  const ordinaryPresence = uncoveredOrdinaryPresence(seedEntries,
+    ordinaryPresenceResolution(seedEntries));
   let base;
   if (ordinaryDetails.length > 0 || ordinaryPresence != null
       || seedEntries.some(([key, value]) => key.startsWith('turn_step_')
@@ -241,6 +243,22 @@ function directSeedKeys(entries) {
     (key.startsWith('turn_step_') || key === 'ordinary_presence_seed' && value?.resolution === 'materialized')
       && !key.startsWith(FIRE_SEED_PREFIX)
       && plain(value)).map(([key]) => key);
+}
+function uncoveredOrdinaryPresence(entries, presence) {
+  if (!['no_change', 'authority_required'].includes(presence?.resolution)) {
+    return presence;
+  }
+  const covered = entries.some(([key, value]) => key.startsWith('turn_step_')
+    && !key.startsWith(FIRE_SEED_PREFIX)
+    && value?.kind === 'semantic_activity'
+    && ['search', 'inspect'].includes(value.discovery_kind)
+    && Number.isSafeInteger(Number(value.duration_minutes))
+    && Number(value.duration_minutes) > 0
+    && plain(value.discovery_result)
+    && Object.keys(value.discovery_result).length === 2
+    && value.discovery_result.resolution === presence.resolution
+    && value.discovery_result.query === presence.query);
+  return covered ? null : presence;
 }
 function hasVisibleDomainProjection(consequence) {
   return Array.isArray(consequence?.observations)

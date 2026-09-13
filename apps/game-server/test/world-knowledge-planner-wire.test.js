@@ -23,7 +23,7 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
         calls.push(call);
         return { output: calls.length === 1 ? {} : {
           schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
-          domains: ['material'], focus_refs: [refs[256]],
+          domains: ['material'], focus_refs: [refs[256], refs[31]],
           requested_predicates: [], search_hints: ['common rare'] } };
       } }
     });
@@ -34,8 +34,8 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
     assert.equal(calls.length, 2, 'existing single repair still runs');
     const canonical = traces[0].planner_request;
     assert.equal(validateWorldKnowledgeQueryPlannerRequest(canonical, bundle).ok, true);
-    assert.deepEqual(canonical.available_knowledge_refs, [refs[256], ...refs.slice(0, 95)]);
-    assert.equal(canonical.available_knowledge_refs.length, 96);
+    assert.deepEqual(canonical.available_knowledge_refs, [refs[256], ...refs.slice(0, 39)]);
+    assert.equal(canonical.available_knowledge_refs.length, 40);
     assert.equal(canonical.semantic_input, input.remaining_intent);
     assert.equal(canonical.purpose, 'semantic_resolution');
     assert.deepEqual(canonical.planner_limits, { max_domains: 3,
@@ -57,7 +57,7 @@ for (const prefix of ['sample', 'unseen-other-vocabulary']) {
     }
     assert.match(JSON.parse(calls[1].messages[1].content).repair_instruction,
       /keys of request\.available_knowledge_refs/u);
-    assert.deepEqual(queries[0].focus_refs, [refs[256]]);
+    assert.deepEqual(queries[0].focus_refs, [refs[256], refs[31]]);
     assert.deepEqual(queries[0].domains, ['material']);
     assert.deepEqual(queries[0].budget, { max_facts: 12, max_candidates: 12, max_context_chars: 5000 });
     assert.equal(queries.length, 1);

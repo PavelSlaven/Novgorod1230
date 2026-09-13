@@ -519,7 +519,8 @@ coverage, disputes and gaps remain; claim binding and telemetry use the full req
 The private WK planner wire sends each ranked focus ref once as a key in
 `available_knowledge_refs`, with its allowed claim domains as the value (including
 empty arrays). Native planner requests retain the complete ordered ref array for
-validation and diagnostics; candidate and retrieval budgets are unchanged.
+validation and diagnostics; ranked candidate input is capped at 40, while final
+planner-focus and retrieval budgets are unchanged.
 Retrieved claims are bounded context only: domain owners
 still control current state, mechanics, persistence, access, and outcomes.
 The Giga/vector path is mandatory whenever v15 needs a WK slice. Missing local

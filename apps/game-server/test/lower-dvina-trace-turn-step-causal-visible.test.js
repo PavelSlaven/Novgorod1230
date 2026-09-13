@@ -77,6 +77,48 @@ test('search duration stays out of narrator input', async () => {
   }
 });
 
+for (const discoveryKind of ['search', 'inspect']) test(
+  `executed ${discoveryKind} result is one completed visible change`, async () => {
+    const query = 'Следы у кромки воды.';
+    const action = discoveryKind === 'search' ? 'Поиск' : 'Осмотр';
+    const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project: async () => assert.fail() }
+    }).project({ retrieved_state: committedState(), consequence: {
+      visible_seed: { turn_step_discovery: { kind: 'semantic_activity',
+        discovery_kind: discoveryKind, duration_minutes: 15,
+        discovery_result: { resolution: 'no_change', query } },
+      ordinary_presence_seed: { kind: 'ordinary_presence_seed',
+        resolution: 'no_change', query } }
+    } });
+    assert.deepEqual(visible.visible_changes, [
+      `${action} по вопросу «${query}» не дал подтверждённой находки.`]);
+    assert.deepEqual(visible.uncertainties, []);
+  });
+
+test('unexecuted or mismatched discovery keeps ordinary uncertainty', async () => {
+  const query = 'Следы под настилом.';
+  const projector = createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => assert.fail() }
+  });
+  const prerequisite = await projector.project({ retrieved_state: committedState(),
+    consequence: { visible_seed: { ordinary_presence_seed: {
+      kind: 'ordinary_presence_seed', resolution: 'no_change', query } } },
+    mode_resolution: { decision_trace: { remaining_intent: 'Поднять настил.',
+      step_traces: [] } } });
+  assert.ok(prerequisite.uncertainties.some(value => value.includes(query)));
+  assert.ok(prerequisite.do_not_imply.includes('uncompleted_remaining_intent'));
+
+  const otherQuery = 'Следы у воды.';
+  const mismatched = await projector.project({ retrieved_state: committedState(),
+    consequence: { visible_seed: { turn_step_discovery: {
+      kind: 'semantic_activity', discovery_kind: 'inspect', duration_minutes: 15,
+      discovery_result: { resolution: 'no_change', query: otherQuery } },
+    ordinary_presence_seed: { kind: 'ordinary_presence_seed',
+      resolution: 'no_change', query } } } });
+  assert.ok(mismatched.visible_changes.some(value => value.includes(otherQuery)));
+  assert.ok(mismatched.uncertainties.some(value => value.includes(query)));
+});
+
 test('supported qualitative assessment reaches the visible current beat', async () => {
   const assessment = 'Снасти можно использовать как связки для простого заслона.';
   const state = committedState();

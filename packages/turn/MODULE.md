@@ -233,14 +233,14 @@ P16 change set и лишь затем запускает обычную narratio
 Revision 19 / `spatial-v3-production-v9` наследует этот orchestration без
 нового semantic mode; actor appearance materialization остаётся code-owned, а
 портрет строится только как read-time player-safe projection.
-Current `spatial-v3-production-v15` inherits the approved Phase-7 autonomous NPC
+Current `spatial-v3-production-v16` inherits the approved Phase-7 autonomous NPC
 actor-step profile. Общий current NPC actor-step path принимает только зарегистрированные
 и state-applicable owner capabilities с текущими NPC-safe refs; exact
 `operation_contract` и handler остаются общими owner contracts, без scenario
 action/ref/owner whitelist, special Жданко action logic или fallback. Жданко —
 первый activation participant/probe.
-The v15 cutover additionally inherits revision 32 / M20 / Phase 1A v23 /
-Phase 1B v27 and the profile-specific background-fisher N1 remainder, then
+The v16 cutover additionally inherits revision 35 / M23 / Phase 1A v25 /
+Phase 1B v30 and the profile-specific background-fisher N1 remainder, then
 grounds open semantic calls with the production World Knowledge slice. The
 planner emits predicates and facets, while code supplies authoritative time,
 place, actor context and factual closure; the resulting claims never become

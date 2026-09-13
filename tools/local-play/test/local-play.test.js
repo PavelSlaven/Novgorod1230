@@ -18,6 +18,8 @@ test('buildServerEnv fixes production and managed-runtime settings', () => {
   partyUrl: 'party', pinManifestDigest: digest, port: 3001,
   managedRuntime: managed, git });
   assert.equal(env.RUS_CUTOVER_STAGE, '13');
+  assert.equal(env.RUS_SPATIAL_V3_BINDINGS_MODULE,
+    'builtin:spatial-v3-production-v16');
   assert.equal(env.RUS_RUNTIME_BINDINGS_MODULE, undefined);
   assert.equal(env.RUS_WORLD_KNOWLEDGE_PYTHON, 'managed-python');
   assert.equal(env.RUS_WORLD_KNOWLEDGE_MODEL_PATH, 'managed-giga-model');
@@ -140,7 +142,7 @@ test('readiness reports server exit', async () => {
 function response(data) { return { ok: true, status: 200,
   json: async () => ({ ok: true, data }) }; }
 function health() { return { status: 'ok',
-  release_id: 'spatial-v3-production-v15', activation: 'sole_owner',
+  release_id: 'spatial-v3-production-v16', activation: 'sole_owner',
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only', runtime_fallback: 'forbidden',
   production_activation: true, runtime_selectable_in_canonical_production: true }; }

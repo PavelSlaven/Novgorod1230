@@ -485,7 +485,7 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
-The current versioned production activation cutover is `spatial-v3-production-v15`.
+The current versioned production activation cutover is `spatial-v3-production-v16`.
 The server and config expose only
 `builtin:production-spatial-v3`; v2 has no runtime selector or public
 composition export. Startup requires the complete Spatial-v3 bindings module
@@ -536,12 +536,15 @@ empty arrays). Native planner requests retain the complete ordered ref array for
 validation and diagnostics; candidate and retrieval budgets are unchanged.
 Retrieved claims are bounded context only: domain owners
 still control current state, mechanics, persistence, access, and outcomes.
-The Giga/vector path is mandatory whenever v15 needs a WK slice. Missing local
+The Giga/vector path is mandatory whenever v16 needs a WK slice. Missing local
 weights, startup/encode timeout, malformed vector or scan failure returns typed
 `WORLD_KNOWLEDGE_UNAVAILABLE` before the semantic consumer and P16 commit; no
 lexical gameplay fallback, mutation or failure ledger is created. HTTP hides
 the internal cause in its normal temporary-unavailable envelope, and a retry
 after encoder recovery follows the existing idempotency owner.
+Release v16 is the direct non-selectable child of v15. It pins Lower Dvina
+Trace revision 35 / M23 / Phase 1A v25 / Phase 1B v30; blue-wool evidence
+uses its corrected one-hand authored inventory profile.
 Один WK need объединяет approved search hints в один query text и выполняет
 ровно один Giga encode и один vector lookup перед одним Core resolution.
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,

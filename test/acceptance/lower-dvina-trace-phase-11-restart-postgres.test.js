@@ -13,7 +13,7 @@ test('revision 34 survives production restart and exact replay through Phase 10'
     });
     context.after(() => environment.close());
     assert.equal(environment.root.health().release_id,
-      'spatial-v3-production-v15');
+      'spatial-v3-production-v16');
     const started = await post(environment, '/api/v1/new-games', {
       scenario_id: 'lower_dvina_trace_v1',
       request_id: 'phase11-new-game'

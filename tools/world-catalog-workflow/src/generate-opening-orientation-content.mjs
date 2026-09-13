@@ -108,8 +108,8 @@ for (const file of [
   'apps/game-server/src/internal/lower-dvina-trace-revision-33-bundle.js',
   'apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js',
   'apps/game-server/src/internal/lower-dvina-trace-phase-1b-identities.js',
-  'apps/game-server/src/composition/production-spatial-v3-release.js',
-  'apps/game-server/src/runtime/releases/spatial-v3-production-v15-bindings.js',
+  'apps/game-server/src/composition/production-spatial-v3-release-v16.js',
+  'apps/game-server/src/runtime/releases/spatial-v3-production-v16-bindings.js',
   'test/spatial-v3/pr8-production-v3-composition.test.js'
 ]) {
   let source = await readFile(file, 'utf8');

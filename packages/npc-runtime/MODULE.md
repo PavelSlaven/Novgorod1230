@@ -98,15 +98,15 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 Revision 16 / `spatial-v3-production-v6` объединила revision-14 conversation,
 Phase-7 autonomous и combat contracts в одном orchestration/write path.
-Current `spatial-v3-production-v15` inherits the approved Phase-7 autonomous NPC
+Current `spatial-v3-production-v16` inherits the approved Phase-7 autonomous NPC
 actor-step profile. Общий current actor-step path: в `operation_contract` входят
 только зарегистрированные и state-applicable owner capabilities с текущими
 NPC-safe refs и exact executable structural combinations, не narrative
 whitelist либо Cartesian kinds×targets; нет scenario action/ref/owner whitelist,
 special Жданко action logic или fallback. Жданко остаётся первым activation
 participant/probe.
-The v15 cutover inherits the profile-specific background-fisher N1 remainder
-and adds revision 33 / M21 / Phase 1A v24 / Phase 1B v28 deterministic routines.
+The v16 cutover inherits the profile-specific background-fisher N1 remainder
+and pins revision 35 / M23 / Phase 1A v25 / Phase 1B v30 deterministic routines.
 The inherited NPC actor-step activation remains limited to approved Phase 7. Before
 open conversation or autonomous-decision calls, the game-server supplies a
 bounded production World Knowledge slice; subjective perception, memory,

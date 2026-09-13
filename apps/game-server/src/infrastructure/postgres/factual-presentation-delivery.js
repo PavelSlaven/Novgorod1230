@@ -1,7 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { createFactualTurnDeliveryScreenReadModel,
-  validateFactualTurnDeliveryScreen } from '@rus/presentation';
+  validateLowerDvinaFactualTurnDeliveryScreen } from '@rus/presentation';
 import { buildPhase2PreProseCarrier, phase2VisibleContextFromPayload } from
   './lower-dvina-trace-phase-2-projection.js';
 
@@ -25,6 +25,8 @@ export function buildFactualTurnDelivery({
   }
   const carrier = buildPhase2PreProseCarrier({ payload, turnId: envelope.turn_id,
     visibleContext, visiblePayload: envelope.visible_payload, presentation });
+  const currentProjectionAnchor = { ...carrier.current_projection_anchor,
+    committed_state_version: String(carrier.current_projection_anchor.committed_state_version) };
   const screen = createFactualTurnDeliveryScreenReadModel({
     partyId: envelope.party_id, turnId: envelope.turn_id, turnNumber: envelopeTurnNumber,
     packageId: envelope.package_id, committedStateVersion: envelope.committed_state_version,
@@ -40,7 +42,7 @@ export function buildFactualTurnDelivery({
     deliveryState: carrier.delivery_state,
     openingScreenDigest: carrier.opening_screen_digest,
     combatState: carrier.combat_state,
-    currentProjectionAnchor: carrier.current_projection_anchor,
+    currentProjectionAnchor,
     presentationContext: carrier.presentation_context,
     sceneAssetId: carrier.scene_asset_id
   });
@@ -53,7 +55,7 @@ export function validFactualTurnDelivery(screen, envelope) {
   const turnNumber = factualEnvelopeTurnNumber(envelope);
   return visibleContext != null
     && turnNumber != null
-    && validateFactualTurnDeliveryScreen(screen).ok
+    && validateLowerDvinaFactualTurnDeliveryScreen(screen).ok
     && screen.party_id === envelope.party_id
     && screen.turn_id === envelope.turn_id
     && screen.package_id === envelope.package_id

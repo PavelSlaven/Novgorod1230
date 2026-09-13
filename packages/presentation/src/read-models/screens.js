@@ -91,18 +91,18 @@ export function createFactualTurnDeliveryScreenReadModel({
   visibleChanges,
   uncertainties,
   actionPanel,
-  actions,
-  checks,
-  panels,
-  inputPanel,
+  actions = [],
+  checks = [],
+  panels = {},
+  inputPanel = { free_text_enabled: true, input_contract: 'intent_not_fact' },
   scenarioId,
   screenKind,
-  deliveryState,
+  deliveryState = { ready: true },
   openingScreenDigest,
   currentProjectionAnchor,
   presentationContext,
-  sceneAssetId = null,
-  combatState = null
+  sceneAssetId,
+  combatState
 } = {}) {
   if (!text(partyId) || !text(turnId) || !text(packageId)) {
     throw presentationError('FACTUAL_TURN_DELIVERY_ID_REQUIRED', 'partyId, turnId and packageId are required.');
@@ -113,16 +113,19 @@ export function createFactualTurnDeliveryScreenReadModel({
   if (!text(committedStateVersion)) {
     throw presentationError('FACTUAL_TURN_DELIVERY_STATE_VERSION_REQUIRED', 'committedStateVersion is required.');
   }
+  const safeActionPanel = actionPanel ?? { suggested_actions: actions };
+  const fullCarrier = hasFullFactualCarrier({ actionPanel: safeActionPanel, actions, checks,
+    scenarioId, screenKind, deliveryState, openingScreenDigest,
+    currentProjectionAnchor, presentationContext, sceneAssetId, combatState });
   if (!plain(visibleContext) || !textArray(visibleChanges)
-      || !textArray(uncertainties) || !validActionPanel(actionPanel)
-      || !Array.isArray(actions) || !validChecks(checks) || !plain(panels)
-      || !validInputPanel(inputPanel) || scenarioId !== 'lower_dvina_trace_v1'
-      || screenKind !== 'trace_turn' || !validDeliveryState(deliveryState)
-      || !text(openingScreenDigest)
-      || !validProjectionAnchor(currentProjectionAnchor)
-      || !validPresentationContext(presentationContext)
-      || (sceneAssetId !== null && !text(sceneAssetId))
-      || !validCombatState(combatState)) {
+      || !textArray(uncertainties) || !validActionPanel(safeActionPanel)
+      || !sameJson(safeActionPanel.suggested_actions, actions)
+      || !validChecks(checks) || !plain(panels)
+      || !validInputPanel(inputPanel)
+      || !validReadyDeliveryState(deliveryState)
+      || (fullCarrier && !validFullFactualCarrier({ actionPanel, actions, checks,
+        scenarioId, screenKind, deliveryState, openingScreenDigest,
+        currentProjectionAnchor, presentationContext, sceneAssetId, combatState }))) {
     throw presentationError('FACTUAL_TURN_DELIVERY_PAYLOAD_INVALID', 'Committed public payload is invalid.');
   }
   const output = {
@@ -140,17 +143,21 @@ export function createFactualTurnDeliveryScreenReadModel({
     visible_context: structuredClone(visibleContext),
     visible_changes: structuredClone(visibleChanges),
     uncertainties: structuredClone(uncertainties),
-    action_panel: structuredClone(actionPanel),
+    action_panel: structuredClone(safeActionPanel),
     actions: structuredClone(actions),
     checks: structuredClone(checks),
     panels: structuredClone(panels),
     input_panel: structuredClone(inputPanel),
     delivery_state: structuredClone(deliveryState),
-    opening_screen_digest: text(openingScreenDigest),
-    current_projection_anchor: structuredClone(currentProjectionAnchor),
-    presentation_context: structuredClone(presentationContext),
-    ...(sceneAssetId === null ? {} : { scene_asset_id: text(sceneAssetId) }),
-    ...(combatState === null ? {} : { combat_state: structuredClone(combatState) })
+    ...(fullCarrier ? {
+      scenario_id: scenarioId,
+      screen_kind: screenKind,
+      opening_screen_digest: text(openingScreenDigest),
+      current_projection_anchor: structuredClone(currentProjectionAnchor),
+      presentation_context: structuredClone(presentationContext),
+      ...(sceneAssetId == null ? {} : { scene_asset_id: text(sceneAssetId) }),
+      ...(combatState == null ? {} : { combat_state: structuredClone(combatState) })
+    } : {})
   };
   const validation = validateFactualTurnDeliveryScreen(output);
   if (!validation.ok) throw presentationError('FACTUAL_TURN_DELIVERY_SCREEN_INVALID', validation.errors.join('; '));
@@ -203,7 +210,6 @@ export function validateFactualTurnDeliveryScreen(value) {
   if (!Number.isInteger(value.turn_number) || value.turn_number < 1) errors.push('turn_number must be a positive integer');
   if (!text(value.committed_state_version)) errors.push('committed_state_version is required');
   if (value.presentation_quality !== 'degraded') errors.push('presentation_quality must be degraded');
-  if (value.scenario_id !== 'lower_dvina_trace_v1' || value.screen_kind !== 'trace_turn') errors.push('Lower Dvina factual screen identity is required');
   if (!plain(value.visible_context)) errors.push('visible_context is required');
   if (!textArray(value.visible_changes)) errors.push('visible_changes must be an exact structured string array');
   if (!textArray(value.uncertainties)) errors.push('uncertainties must be an exact structured string array');
@@ -213,16 +219,22 @@ export function validateFactualTurnDeliveryScreen(value) {
   }
   if (!validChecks(value.checks)) errors.push('checks must be an ordered player-safe array');
   if (!validInputPanel(value.input_panel)) errors.push('input contract must be intent_not_fact');
-  if (!validDeliveryState(value.delivery_state)) errors.push('delivery_state must be ready');
-  if (!text(value.opening_screen_digest)) errors.push('opening_screen_digest is required');
-  if (!validProjectionAnchor(value.current_projection_anchor)) errors.push('current_projection_anchor is invalid');
-  if (!validPresentationContext(value.presentation_context)) errors.push('presentation_context is invalid');
-  if (Object.hasOwn(value, 'scene_asset_id') && !text(value.scene_asset_id)) errors.push('scene_asset_id is invalid');
-  if (!validCombatState(value.combat_state ?? null)) errors.push('combat_state is invalid');
+  if (!validReadyDeliveryState(value.delivery_state)) errors.push('delivery_state must be ready');
+  const carrier = factualCarrierFromScreen(value);
+  if (hasFullFactualCarrier(carrier) && !validFullFactualCarrier(carrier)) {
+    errors.push('full factual carrier is incomplete or invalid');
+  }
   errors.push(...sceneAffordanceContextErrors(value.visible_context));
   errors.push(...sceneAffordancePanelErrors(value.panels));
   if (detectHiddenLeaks(value).length) errors.push('screen contains hidden data');
   return result(errors);
+}
+
+export function validateLowerDvinaFactualTurnDeliveryScreen(value) {
+  const base = validateFactualTurnDeliveryScreen(value);
+  if (!base.ok) return base;
+  return validFullFactualCarrier(factualCarrierFromScreen(value))
+    ? base : fail('Lower Dvina factual delivery requires a complete carrier');
 }
 
 export function createPublicViewModel({ visibleContext, prose, actions = [] }) {
@@ -280,6 +292,32 @@ function validActionPanel(value) {
   return plain(value) && Object.keys(value).length === 1
     && Array.isArray(value.suggested_actions);
 }
+function hasFullFactualCarrier(value) {
+  return ['scenarioId', 'screenKind', 'openingScreenDigest', 'currentProjectionAnchor',
+    'presentationContext', 'sceneAssetId', 'combatState'].some((key) =>
+    value[key] !== undefined);
+}
+function factualCarrierFromScreen(value) {
+  return { actionPanel: value.action_panel, actions: value.actions,
+    checks: value.checks, scenarioId: value.scenario_id,
+    screenKind: value.screen_kind, deliveryState: value.delivery_state,
+    openingScreenDigest: value.opening_screen_digest,
+    currentProjectionAnchor: value.current_projection_anchor,
+    presentationContext: value.presentation_context,
+    sceneAssetId: value.scene_asset_id, combatState: value.combat_state };
+}
+function validFullFactualCarrier({
+  scenarioId, screenKind, deliveryState,
+  openingScreenDigest, currentProjectionAnchor, presentationContext,
+  sceneAssetId, combatState
+}) {
+  return scenarioId === 'lower_dvina_trace_v1' && screenKind === 'trace_turn'
+    && validDeliveryState(deliveryState) && text(openingScreenDigest)
+    && validProjectionAnchor(currentProjectionAnchor)
+    && validPresentationContext(presentationContext)
+    && (sceneAssetId == null || text(sceneAssetId))
+    && validCombatState(combatState ?? null);
+}
 function validInputPanel(value) {
   return plain(value) && Object.keys(value).length === 2
     && value.free_text_enabled === true
@@ -288,6 +326,11 @@ function validInputPanel(value) {
 function validDeliveryState(value) {
   return plain(value) && Object.keys(value).length === 2
     && value.ready === true && text(value.generated_at);
+}
+function validReadyDeliveryState(value) {
+  return plain(value) && value.ready === true
+    && Object.keys(value).every((key) => ['ready', 'generated_at'].includes(key))
+    && (!Object.hasOwn(value, 'generated_at') || text(value.generated_at));
 }
 function validProjectionAnchor(value) {
   const keys = ['committed_state_version', 'package_id', 'package_digest',

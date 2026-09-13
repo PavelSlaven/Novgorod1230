@@ -244,7 +244,7 @@ export function buildPhase2PreProseCarrier({
       opening_screen_digest: payload.opening_identity.opening_screen_digest,
       ...(combatState == null ? {} : { combat_state: combatState }),
       current_projection_anchor: {
-        committed_state_version: String(payload.party_state.state_version),
+        committed_state_version: payload.party_state.state_version,
         package_id: payload.last_turn.visible_package.package_id,
         package_digest: payload.last_turn.visible_package.package_digest,
         narration_output_digest: narrationOutputDigest

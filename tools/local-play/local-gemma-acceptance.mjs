@@ -224,8 +224,8 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
     if (report.git_after.head !== before.head || report.git_after.dirty) {
       throw new Error('Candidate changed during browser acceptance.');
     }
-    report.status = signal?.aborted && !report.terminal
-      ? 'interrupted' : 'captured';
+    report.status = report.narration_quality_pass === false ? 'quality_failed'
+      : signal?.aborted && !report.terminal ? 'interrupted' : 'captured';
     return report;
   } catch (error) {
     report.status = 'failed'; report.failure = {
@@ -460,7 +460,7 @@ function assertResumableReport(report, { before, focus, sequence }) {
   if (report?.schema !== 'world_knowledge_gameplay_campaign_v1'
       || report.mode !== 'acceptance_candidate'
       || report.independent_unseen !== true || !report.party_id
-      || !['running', 'interrupted', 'failed', 'captured'].includes(report.status)
+      || !['running', 'interrupted', 'failed', 'captured', 'quality_failed'].includes(report.status)
       || report.git?.head !== before.head || report.focus !== focus
       || report.sequence !== sequence || report.terminal) {
     throw new Error('Acceptance report is not a resumable continuation.');
@@ -475,6 +475,10 @@ function reconcileNarrationQuality(report) {
     if (event) recordNarrationQuality({ report, trace,
       partyId: report.party_id, event });
   }
+}
+
+export function acceptanceExitCode(report) {
+  return report?.status === 'quality_failed' ? 1 : 0;
 }
 
 function startIsolatedLocalPlay({ acceptanceDataRoot, ...options }) {
@@ -616,4 +620,5 @@ if (process.argv[1]
     provider: await acceptanceProviderFromEnv() });
   console.log(JSON.stringify({ campaign_id: report.campaign_id,
     status: report.status, turns: report.turns.length }));
+  process.exitCode = acceptanceExitCode(report);
 }

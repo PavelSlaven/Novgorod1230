@@ -37,6 +37,12 @@ test('current factual replay binds screen to exact package snapshot turn', async
     partyPool: poolForCurrent({ ...fixture, row }), partyId, idempotencyKey,
     async loadState() { return structuredClone(fixture.payload); }
   }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+  await assert.rejects(loadCurrentOrHistoricalPhase2Replay({
+    partyPool: poolForCurrent({ ...fixture, row: { ...fixture.row,
+      screen: fixture.genericScreen, factual_screen: fixture.genericScreen } }),
+    partyId, idempotencyKey,
+    async loadState() { return structuredClone(fixture.payload); }
+  }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
 });
 
 test('current narrated replay does not require a factual delivery job', async () => {
@@ -62,6 +68,11 @@ test('historical factual replay binds screen to exact package snapshot turn', as
   await assert.rejects(loadHistoricalPhase2Replay({
     partyPool: poolForHistorical(replayFixture({ screenTurn: 8 })), partyId,
     idempotencyKey
+  }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+  await assert.rejects(loadHistoricalPhase2Replay({
+    partyPool: poolForHistorical({ ...fixture, row: { ...fixture.row,
+      screen: fixture.genericScreen, factual_screen: fixture.genericScreen } }),
+    partyId, idempotencyKey
   }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
 });
 
@@ -107,6 +118,12 @@ function replayFixture({ screenTurn = 7 } = {}) {
       package_digest: packageDigest, narration_output_digest: null },
     presentationContext: { location_label: 'Берег.' }
   });
+  const genericScreen = createFactualTurnDeliveryScreenReadModel({
+    partyId, turnId: 'turn:1', turnNumber: screenTurn,
+    packageId: 'package:1', committedStateVersion: 39, visibleContext,
+    visibleChanges: visibleContext.visible_changes,
+    uncertainties: visibleContext.uncertainties, panels: {}
+  });
   const record = {
     id: 'idem:1', request_id: 'request:1', status: 'committed',
     result_change_set_id: 'change:1',
@@ -124,7 +141,7 @@ function replayFixture({ screenTurn = 7 } = {}) {
     delivery_mode: 'factual', narration_output: null, output_digest: null,
     factual_screen: screen, package_snapshot_digest: canonicalDigest(snapshotPayload)
   };
-  return { payload, record, row, screen };
+  return { payload, record, row, screen, genericScreen };
 }
 
 function poolForCurrent({ record, row }) {

@@ -52,11 +52,13 @@ write beliefs, or alter the P08 fail-closed port boundary.
   public projection после terminal narration-policy rejection. Это degraded
   availability recovery, а не approved narration и не quality PASS. Его exact fields:
   `version`, `schema`, `screen_status`, `party_id`, `turn_id`, `turn_number`,
-  `package_id`, `committed_state_version`, `presentation_quality`, `scenario_id`,
-  `screen_kind`, `visible_context`, `visible_changes`, `uncertainties`,
-  `action_panel`, `actions`, `checks`, `panels`, `input_panel`,
-  `delivery_state`, `opening_screen_digest`, `current_projection_anchor`,
-  `presentation_context`, optional `scene_asset_id` and `combat_state`.
+  `package_id`, `committed_state_version`, `presentation_quality`,
+  `visible_context`, `visible_changes`, `uncertainties`, `panels`, `input_panel`.
+  Полный scenario carrier (`scenario_id`, `screen_kind`, `action_panel`,
+  `actions`, `checks`, `delivery_state`, `opening_screen_digest`,
+  `current_projection_anchor`, `presentation_context`, optional
+  `scene_asset_id` and `combat_state`) допускается только целиком и строго
+  validated; common terminal consumer от него не зависит.
   Он не принимает `main_prose`, `prose`, narration output, digest, audit,
   provider/retry diagnostics, raw package или private data;
 - `TurnScreen.checks` не содержит `check_id`, RNG audit/seed, policy refs или

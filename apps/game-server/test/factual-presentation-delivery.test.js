@@ -56,6 +56,13 @@ function factualScreen(overrides = {}) {
     presentationContext: { location_label: 'Берег.' }, ...overrides });
 }
 
+function genericFactualScreen() {
+  return createFactualTurnDeliveryScreenReadModel({ partyId: 'party', turnId: 'turn',
+    turnNumber: 7, packageId: 'package', committedStateVersion: 39,
+    visibleContext: visible, visibleChanges: payload.perceived_changes,
+    uncertainties: payload.uncertainties, panels: {} });
+}
+
 function narrator({ flow, store, calls = { run: 0 } }) {
   const client = { async query() { return { rows: [envelope] }; }, release() {} };
   return { calls, service: createLowerDvinaTracePhase2DurableNarrator({
@@ -130,6 +137,7 @@ test('factual terminal replay does not call the narrator and rejects leaks', asy
 test('factual admission binds its package identity and full visible projection', () => {
   const factual = factualScreen();
   assert.equal(validFactualTurnDelivery(factual, envelope), true);
+  assert.equal(validFactualTurnDelivery(genericFactualScreen(), envelope), false);
   for (const changed of [
     { ...factual, party_id: 'other-party' },
     { ...factual, turn_id: 'other-turn' },
@@ -168,6 +176,7 @@ test('factual session read binds party, visible turn and current state', () => {
     session: { ...session, ...overrides }, allowedSnapshotSchemas: ['snapshot']
   });
   assert.equal(valid(screen), true);
+  assert.equal(valid(genericFactualScreen()), false);
   const foreign = { ...screen, party_id: 'party:other' };
   assert.equal(valid(foreign, { current_narration_factual_screen: foreign }), false);
   const wrongTurn = { ...screen, turn_id: 'turn:other' };

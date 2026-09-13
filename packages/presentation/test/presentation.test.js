@@ -10,6 +10,7 @@ import {
   createFactualTurnDeliveryScreenReadModel,
   createTurnScreenReadModel,
   validateFactualTurnDeliveryScreen,
+  validateLowerDvinaFactualTurnDeliveryScreen,
   validateTurnScreen
 } from '../src/index.js';
 
@@ -74,6 +75,16 @@ function factualScreenInput(overrides = {}) {
   };
 }
 
+function genericFactualScreenInput(overrides = {}) {
+  return {
+    partyId: 'party-1', turnId: 'turn-1', turnNumber: 1,
+    packageId: 'package-1', committedStateVersion: '39',
+    visibleContext: visibleContext(), visibleChanges: ['Ты снял верёвку с телеги.'],
+    uncertainties: [], panels: {},
+    ...overrides
+  };
+}
+
 test('creates versioned TurnScreen from approved narration only', () => {
   const screen = createTurnScreenReadModel({
     partyId: 'party-1',
@@ -99,6 +110,25 @@ test('creates factual delivery screen from exact committed public fields without
   assert.deepEqual(screen.actions, [{ label: 'Осмотреться', command: 'осматриваюсь' }]);
   assert.equal(screen.input_panel.input_contract, 'intent_not_fact');
   assert.equal(validateFactualTurnDeliveryScreen(screen).ok, true);
+  assert.equal(validateLowerDvinaFactualTurnDeliveryScreen(screen).ok, true);
+});
+
+test('creates generic degraded factual delivery without a scenario carrier', () => {
+  const screen = createFactualTurnDeliveryScreenReadModel(
+    genericFactualScreenInput()
+  );
+  assert.equal(screen.presentation_quality, 'degraded');
+  assert.deepEqual(screen.action_panel, { suggested_actions: [] });
+  assert.deepEqual(screen.actions, []);
+  assert.deepEqual(screen.checks, []);
+  assert.deepEqual(screen.delivery_state, { ready: true });
+  assert.equal(screen.main_prose, undefined);
+  assert.equal(validateFactualTurnDeliveryScreen(screen).ok, true);
+  assert.equal(validateLowerDvinaFactualTurnDeliveryScreen(screen).ok, false);
+  assert.equal(validateFactualTurnDeliveryScreen({ ...screen,
+    actions: [{ label: 'Осмотреться' }] }).ok, false);
+  assert.equal(validateFactualTurnDeliveryScreen({ ...screen,
+    scenario_id: 'lower_dvina_trace_v1' }).ok, false);
 });
 
 test('factual delivery screen rejects prose, private data and malformed current beat', () => {

@@ -1,7 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest,
   validateSpatialV3Contract } from '@rus/contracts/spatial-v3/registry';
-import { validateFactualTurnDeliveryScreen } from '@rus/presentation';
+import { validateLowerDvinaFactualTurnDeliveryScreen } from '@rus/presentation';
 
 export function validFactualPostTurnSession({ partyId, session, screen,
   allowedSnapshotSchemas }) {
@@ -15,7 +15,7 @@ export function validFactualPostTurnSession({ partyId, session, screen,
     packageDigest: session.current_projection_package_digest,
     committedStateVersion: screen.committed_state_version, payload });
   const expectedContext = payload && visibleContextFromPayload(payload);
-  return validateFactualTurnDeliveryScreen(screen).ok
+  return validateLowerDvinaFactualTurnDeliveryScreen(screen).ok
     && screen.party_id === partyId
     && allowedSnapshotSchemas.includes(session.party_snapshot_schema)
     && Number.isSafeInteger(turnNumber) && turnNumber >= 1

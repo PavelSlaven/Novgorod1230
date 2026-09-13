@@ -1454,8 +1454,20 @@ async function assertFactualPresentationSurvivesRestart({
     raw_text: 'Осмотреть место крушения подробно.'
   });
   assert.equal(first.screen.schema, 'factual_turn_delivery_screen');
-  assert.equal(Object.hasOwn(first.screen, 'scenario_id'), false);
-  assert.equal(Object.hasOwn(first.screen, 'current_projection_anchor'), false);
+  assert.equal(first.screen.presentation_quality, 'degraded');
+  assert.equal(first.screen.scenario_id, 'lower_dvina_trace_v1');
+  assert.equal(first.screen.screen_kind, 'trace_turn');
+  assert.deepEqual(first.screen.action_panel.suggested_actions, first.screen.actions);
+  assert.ok(Array.isArray(first.screen.checks));
+  assert.equal(typeof first.screen.panels, 'object');
+  assert.deepEqual(first.screen.input_panel,
+    { free_text_enabled: true, input_contract: 'intent_not_fact' });
+  assert.deepEqual(first.screen.current_projection_anchor, {
+    committed_state_version: first.screen.committed_state_version,
+    package_id: first.screen.package_id,
+    package_digest: first.screen.current_projection_anchor.package_digest,
+    narration_output_digest: null
+  });
 
   const restarted = buildRuntime(options);
   assert.deepEqual(

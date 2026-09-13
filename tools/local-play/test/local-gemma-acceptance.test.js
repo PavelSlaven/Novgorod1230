@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import test from 'node:test';
 
 import { acceptanceProviderFromEnv, phase10TerminalObservation,
-  appendRenderedUiEvidence, pendingBrowserRequest, pendingBrowserStorage, resumePendingTurn, runLocalGemmaBrowserAcceptance } from
+  acceptanceExitCode, appendRenderedUiEvidence, pendingBrowserRequest, pendingBrowserStorage, resumePendingTurn, runLocalGemmaBrowserAcceptance } from
   '../local-gemma-acceptance.mjs';
 import { recordNarrationQuality } from '../gameplay-gap-campaign.mjs';
 
@@ -39,6 +39,65 @@ test('approved narrated delivery remains a narration quality pass', () => {
   assert.equal(trace.narration_quality_pass, true);
   assert.equal(report.narration_quality_pass, true);
   assert.deepEqual(report.findings, []);
+});
+
+test('browser acceptance records degraded delivery as a non-pass terminal report', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'novgorod-degraded-acceptance-'));
+  const partyId = 'party:degraded'; let observations = 0;
+  const logPath = join(directory, 'party-logs', 'party_degraded.jsonl');
+  const append = async (event) => {
+    await mkdir(join(directory, 'party-logs'), { recursive: true });
+    await writeFile(logPath, `${JSON.stringify(event)}\n`, { flag: 'a' });
+  };
+  const provider = { mode: 'custom', compatibility: 'openai_compatible',
+    baseUrl: 'http://127.0.0.1:8000/v1', model: 'selected-model', apiKey: null,
+    evidence: { backend: 'test', backendVersion: '1', runtime: 'test', hardware: 'test' } };
+  const page = { setDefaultTimeout() {}, async goto() {}, async reload() {},
+    async waitForSelector() {}, async waitForFunction() {}, async fill() {},
+    async evaluate() { return partyId; }, async click(selector) {
+      if (selector.includes('data-continue-party')) return append({ event: 'screen.read',
+        output: { screen: { screen_status: 'before' } } });
+      if (!selector.includes('button[type="submit"]')) return;
+      const input = { request_id: 'request:degraded', idempotency_key: 'idem:degraded',
+        raw_text: 'Осматриваюсь.' };
+      await append({ event: 'turn.requested', input });
+      await append({ event: 'turn.completed', input, output: { screen: {
+        schema: 'factual_turn_delivery_screen', presentation_quality: 'degraded',
+        party_id: partyId, turn_id: 'turn:degraded', package_id: 'package:degraded'
+      } }, llm: { gameplay_traces: [], waterfall: [], aggregate: {}, calls: [] } });
+    }, locator(selector) {
+      if (selector === '[data-game-root]') return { innerText: async () => 'Текущий момент' };
+      if (selector === '.error') return { count: async () => 0 };
+      return { async check() {}, async click() {}, count: async () => 0 };
+    } };
+  const common = { outputDirectory: directory, focus: 'degraded delivery', turns: 1,
+    provider, chromiumPath: 'chromium', headless: true,
+    snapshot: () => ({ head: 'a'.repeat(40), dirty: false }),
+    start: async () => ({ url: 'http://127.0.0.1:3000',
+      managedRuntime: { llm: null, giga: { identity: { model: 'giga' } } },
+      postgres: { version: '16.14.0', partyUrl: 'unused' }, async close() {} }),
+    launch: async () => ({ async newPage() { return page; }, async close() {} }),
+    createExplorer: () => async () => ({ raw_text: 'Осматриваюсь.',
+      explorer_provider: { provider: 'openai_compatible', model: provider.model } }),
+    createCompletionObserver: async () => ({ async observe() {
+      observations += 1; return { terminal: observations > 1 }; }, async close() {} }) };
+  try {
+    const report = await runLocalGemmaBrowserAcceptance(common);
+    assert.equal(report.terminal.terminal, true);
+    assert.equal(report.status, 'quality_failed');
+    assert.equal(report.narration_quality_pass, false);
+    assert.equal(report.findings.length, 1);
+    assert.equal(acceptanceExitCode(report), 1);
+    assert.equal(acceptanceExitCode({ status: 'captured' }), 0);
+    await assert.rejects(runLocalGemmaBrowserAcceptance({ ...common, resume: true }),
+      /not a resumable continuation/u);
+    const interrupted = JSON.parse(await readFile(join(directory, 'campaign.json'), 'utf8'));
+    interrupted.status = 'interrupted'; delete interrupted.terminal;
+    await writeFile(join(directory, 'campaign.json'), `${JSON.stringify(interrupted)}\n`);
+    const resumed = await runLocalGemmaBrowserAcceptance({ ...common, resume: true });
+    assert.equal(resumed.status, 'quality_failed');
+    assert.equal(resumed.resume_count, 1);
+  } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
 test('rendered UI evidence binds each turn to its causal preceding screen read', async () => {
@@ -269,6 +328,8 @@ test('browser runner reloads to a browser screen read before each new turn', asy
         explorer_provider: { provider: 'openai_compatible', model: provider.model } }),
       createCompletionObserver: async () => ({
         async observe() { return { terminal: false }; }, async close() {} }) });
+    assert.equal(report.status, 'captured');
+    assert.equal(report.narration_quality_pass, true);
     assert.equal(report.turns.length, 2);
     const events = (await readFile(logPath, 'utf8')).trim().split('\n').map(JSON.parse);
     const rendered = events.filter(({ event }) => event === 'ui.rendered');

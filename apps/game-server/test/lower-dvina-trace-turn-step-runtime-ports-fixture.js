@@ -1,3 +1,6 @@
+import { createHash } from 'node:crypto';
+import { createLowerDvinaTraceTurnStepGenericOwners } from
+  '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
 import { readFile } from 'node:fs/promises';
 import { createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
@@ -5,9 +8,13 @@ import { createLowerDvinaTraceTurnStepRuntimePorts } from
 import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
   '../src/runtime/lower-dvina-trace-player-safe-working.js';
 
-const ownerProfiles = JSON.parse(await readFile(new URL(
+const profileBytes = await readFile(new URL(
   '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/turn-step-owner-profiles.json',
-  import.meta.url)));
+  import.meta.url));
+const ownerProfiles = JSON.parse(profileBytes);
+export const semanticOwners = createLowerDvinaTraceTurnStepGenericOwners({ profiles: ownerProfiles,
+  artifactPin: { artifact_id: ownerProfiles.profile_set_id, revision: ownerProfiles.revision,
+    digest: createHash('sha256').update(profileBytes).digest('hex') } });
 
 export function execution(operation, workingProjection = projection(), step = 1) {
   return { plan: {}, request: { root_turn_id: 'turn:party:1',
@@ -158,4 +165,13 @@ export function projectedCheckOwner() {
 export function testPolicyProfilePin() {
   return { artifact_id: 'test_turn_step_owner_profiles', revision: 1,
     digest: 'a'.repeat(64) };
+}
+
+export function speech(request, suffix) {
+  return { ...plan(request, { goal_result: 'pending',
+    continuation: { remaining_intent: suffix, depends_on_refs: [] } }),
+    direct_result_kind: 'player_utterance',
+    utterance: { speaker_ref: 'mikula', input_mode: 'intent_paraphrase',
+      utterance_text: 'Не подходите близко.',
+      delivery: { loudness: 2, duration_class: 'instant' } } };
 }

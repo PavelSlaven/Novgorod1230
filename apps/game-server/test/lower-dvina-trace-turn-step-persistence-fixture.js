@@ -348,6 +348,7 @@ export function canonicalEnvelope(legacy) {
       completed_steps: [],
       step_traces: [],
       check_results: [],
+      factual_events: [],
       clarification: null
     }
   };

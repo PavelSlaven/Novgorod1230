@@ -91,6 +91,8 @@ function initialProjection({ executionId, sourceCandidates, contracts, state }) 
       }
     },
     npc_activity_factual_transitions: [],
+    phase6_state: structuredClone(state),
+    npc_schedule_runtime: structuredClone(state.npc_schedule_runtime ?? []),
     local_fire_runtime: structuredClone(state.local_fire_runtime ?? [])
   };
 }

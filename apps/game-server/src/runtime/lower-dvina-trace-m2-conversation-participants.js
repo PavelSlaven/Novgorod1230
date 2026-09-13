@@ -46,6 +46,7 @@ export function npcConversationDecisionCapability(context) {
   const machine = actor?.machine_state ?? {};
   if (!actor
       || ['unconscious', 'incapacitated', 'dead'].includes(machine.status)
+      || ['sleeping', 'unavailable'].includes(machine.runtime_status)
       || machine.speech_capability === 'none') {
     return false;
   }

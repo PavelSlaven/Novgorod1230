@@ -17,7 +17,7 @@ export function createM2ConversationExchangeSetup(context, initialNpcDecision,
   const initialWorkingState = {
     state_version: context.stateVersion,
     clock: structuredClone(context.state.clock),
-    world_state: structuredClone(context.state),
+    world_state: conversationWorkingWorld(context.state),
     elapsed_minutes: 0,
     temporal_boundary_refs: [],
     temporal_advance_results: [],
@@ -64,4 +64,13 @@ export function createM2ConversationExchangeSetup(context, initialNpcDecision,
       planned_duration_minutes: plannedDurationMinutes }) =>
       advanceConversationContributionTime(context, working, plannedDurationMinutes)
   };
+}
+
+function conversationWorkingWorld(state) {
+  const world = structuredClone(state);
+  delete world.last_turn;
+  for (const key of Object.keys(world)) {
+    if (key.endsWith('_history')) delete world[key];
+  }
+  return world;
 }

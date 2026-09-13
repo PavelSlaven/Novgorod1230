@@ -4,6 +4,7 @@ import {
 } from '@rus/npc-runtime';
 import {
   allowedNpcContributionReferences,
+  currentSceneObservationProjection,
   ownKnowledgeProjection,
   ownMemoryProjection,
   ownNpcProjection,
@@ -21,7 +22,8 @@ import { fullyPerceivedCurrentOffer } from
   './lower-dvina-trace-m2-conversation-offer-privacy.js';
 import { npcConversationDecisionCapability } from
   './lower-dvina-trace-m2-conversation-participants.js';
-
+import { projectCampFireState } from
+  './lower-dvina-trace-player-safe-state.js';
 export function buildNpcBoundary(context, working) {
   const resolvedRecords = allSignalRecords(context, working).filter(
     ({ same_time_batch_key: batchKey }) => batchKey === context.batchKey
@@ -41,7 +43,6 @@ export function buildNpcBoundary(context, working) {
   });
   return evaluation.boundary;
 }
-
 export function buildNpcDecision(context, working, boundary,
   latestContribution = null) {
   const signalIds = new Set(boundary.signal_refs.map(
@@ -65,6 +66,12 @@ export function buildNpcDecision(context, working, boundary,
     context, perceivedMessage
   );
   const socialCheckProfile = context.npcSocialCheckProfile ?? null;
+  const currentScene = projectCampFireState({
+    sensory_details: context.state.current_visible_context?.sensory_details ?? []
+  }, context.state, context.state.position);
+  const currentObservations = currentSceneObservationProjection(
+    context.state, currentScene.sensory_details
+  );
   const request = buildNpcConversationResponseRequest({
     schema: 'npc_conversation_response_request_v1',
     request_id: `npc-conversation-request:${boundary.boundary_id}:${
@@ -98,7 +105,8 @@ export function buildNpcDecision(context, working, boundary,
     memory: ownMemoryProjection(
       context.targetActor,
       context.state,
-      context.targetRef
+      context.targetRef,
+      currentObservations
     ),
     social_context: {
       delivery_cues: structuredClone(perceivedMessage?.delivery_cues ?? []),
@@ -124,7 +132,10 @@ export function buildNpcDecision(context, working, boundary,
       : [],
     allowed_references: allowedNpcContributionReferences(context, {
       entityRefs: presentedEvidenceRecognized
-        ? [ref('evidence', context.contracts.ids.evidence)] : []
+        ? [ref('evidence', context.contracts.ids.evidence)] : [],
+      knowledgeRefs: currentObservations.map(
+        ({ observation_ref: observationRef }) => observationRef
+      )
     }),
     decision_scope: {
       conversation_mode: true,

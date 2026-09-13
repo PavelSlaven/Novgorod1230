@@ -5,10 +5,11 @@ import { fileURLToPath } from 'node:url';
 import { createWorldKnowledgeCore, WorldKnowledgeError } from '@rus/world-knowledge';
 import { loadProductionWorldKnowledge } from
   '../src/internal/world-knowledge-production.js';
-import { createProductionWorldKnowledgeGrounder } from
+import { createProductionWorldKnowledgeGrounder, wkClosure } from
   '../src/runtime/world-knowledge-grounding.js';
 import { loadLowerDvinaTraceMaterializationBundle } from
   '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
+import { createLowerDvinaTraceTurnStepModel } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
 test('production loader requires the exact encoder readiness at startup', async () => {
   let readyCalls = 0;
@@ -27,7 +28,7 @@ test('production loader requires the exact encoder readiness at startup', async 
   assert.equal(loaded.vector_index.dimension, 1024);
 });
 
-test('production grounding plans once and injects only an applicable bounded slice', async () => {
+test('production grounding plans once and injects only an applicable bounded slice', async (t) => {
   const calls = [];
   const diagnostics = [];
   const gameplayTraces = [];
@@ -54,7 +55,7 @@ test('production grounding plans once and injects only an applicable bounded sli
       } };
     } } });
   const request = { request_id: 'turn:1', remaining_intent:
-    'Можно ли здесь добыть рыбу?', player_safe_state: {} };
+    'Можно ли здесь добыть рыбу?', player_safe_state: { hidden: 'never-trace-me' } };
   const first = await grounder.ground(request, 'semantic_resolution');
   const second = await grounder.ground(request, 'semantic_resolution');
 
@@ -78,13 +79,27 @@ test('production grounding plans once and injects only an applicable bounded sli
     /Return requested_predicates as an empty array/u);
   assert.match(calls[0].messages[0].content,
     /include the approved classification or use-context relationship needed for that application/u);
-  const ownerMetadata = calls[0].messages[0].content.match(/Focus claim domains: (.*?)\. A focus concept namespace/u);
-  assert.ok(ownerMetadata, 'planner must see actual claim owners, not only cross-domain exceptions');
-  const owners = JSON.parse(ownerMetadata[1]);
-  assert.deepEqual(owners['wk:environment:regional-fish-exploitation'], ['environment']);
+  assert.match(calls[0].messages[0].content,
+    /For conjunctive requirements, cover every mandatory relationship/u);
+  assert.match(calls[0].messages[0].content,
+    /Never retrieve to predict whether an action will succeed, be heard/u);
+  assert.match(calls[0].messages[0].content,
+    /purpose, hope, or expected result does not itself create a factual need/u);
+  assert.match(calls[0].messages[0].content,
+    /explicit alternatives permit one result, retrieve at least one complete admissible alternative/u);
+  assert.match(calls[0].messages[0].content,
+    /shared mandatory qualifiers and applicable limits/u);
+  assert.doesNotMatch(calls[0].messages[0].content, /including each independent part of a multi-part question/u);
+  assert.doesNotMatch(calls[0].messages[0].content, /Focus claim domains:/u);
+  const owners = plannerRequest.available_knowledge_refs;
+  assert.deepEqual(owners['wk:environment:regional-fish-exploitation'], {
+    domains: ['environment'],
+    label: 'Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода',
+    description: 'Использование рыбных ресурсов исторически засвидетельствовано на региональном масштабе средневекового Новгорода; это не устанавливает вид, запас, доступ, сезон или улов в сцене.'
+  });
   assert.ok(Object.keys(owners).length <= 256);
   assert.ok(Object.keys(owners).every((ref) =>
-    plannerRequest.available_knowledge_refs.includes(ref)));
+    !calls[0].messages[0].content.includes(ref)));
   assert.equal(first, second);
   assert.equal(Object.hasOwn(request, 'world_knowledge'), false);
   assert.equal(first.world_knowledge.pack_revision, 'revision:production-v1');
@@ -105,14 +120,85 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.equal(gameplayTraces.length, 1);
   const trace = gameplayTraces[0];
   assert.equal(trace.event, 'world_knowledge_resolved');
-  assert.deepEqual(trace.planner_request, plannerRequest);
+  assert.equal(trace.schema, 'world_knowledge_boundary_trace_v1');
+  assert.deepEqual(trace.safe_need, { source: 'remaining_intent',
+    value: 'Можно ли здесь добыть рыбу?' });
+  assert.deepEqual(trace.planner_request, {
+    schema: plannerRequest.schema, pack_ref: plannerRequest.pack_ref,
+    purpose: plannerRequest.purpose, input_locale: plannerRequest.input_locale,
+    semantic_input: plannerRequest.semantic_input,
+    situation_summary: plannerRequest.situation_summary,
+    allowed_domains: plannerRequest.allowed_domains,
+    available_knowledge_refs: Object.keys(owners),
+    planner_limits: plannerRequest.planner_limits
+  });
+  assert.deepEqual(trace.planner_plan.search_hints, ['рыбные ресурсы']);
   assert.deepEqual(trace.query.search_hints, ['рыбные ресурсы']);
-  assert.deepEqual(trace.consumer_request, first);
-  assert.deepEqual(trace.retrieved_slice.facts, first.world_knowledge.facts);
+  const { context_text, ...structured } = first.world_knowledge;
+  assert.deepEqual(trace.core_result, structured);
+  assert.deepEqual(trace.consumer, { purpose: 'semantic_resolution', input: {
+    request_schema: null, request_identity: 'turn:1',
+    safe_need: trace.safe_need, world_knowledge: structured } });
+  assert.equal(JSON.stringify(trace).includes('never-trace-me'), false);
   assertRetrievalObservability(trace.retrieval_observability, first);
   assert.deepEqual(trace.retrieval_observability,
     diagnostics[0].retrieval_observability);
   assert.equal(Object.hasOwn(first, 'gameplay_traces'), false);
+  const beforeConsumer = structuredClone(first);
+  let consumerWire;
+  await createLowerDvinaTraceTurnStepModel({ roleRunner: { async run(call) {
+    consumerWire = JSON.parse(call.messages[1].content);
+    return { output: {} };
+  } } })(first);
+  assert.deepEqual(consumerWire, { ...first, world_knowledge: structured });
+  assert.ok(context_text.includes(first.world_knowledge.facts[0].runtime_text));
+  assert.deepEqual(first, beforeConsumer);
+  t.diagnostic(`Production WK wire reduction: ${JSON.stringify(first).length - JSON.stringify(consumerWire).length} chars.`);
+});
+
+test('an explicit empty plan records NO_KNOWLEDGE_REQUIRED without retrieval', async () => {
+  const loaded = await loadProductionWorldKnowledge({
+    rootDir: fileURLToPath(new URL('../../..', import.meta.url))
+  });
+  let coreCalls = 0;
+  let encoderCalls = 0;
+  let vectorCalls = 0;
+  const diagnostics = [];
+  const traces = [];
+  const grounder = createProductionWorldKnowledgeGrounder({
+    worldKnowledge: { ...loaded,
+      core: { resolveWorldKnowledge() { coreCalls += 1; } },
+      encoder: { async encode() { encoderCalls += 1; return new Float32Array(1024); } },
+      vector_index: { search() { vectorCalls += 1; return new Map(); } } },
+    telemetry: { onDetail: entry => diagnostics.push(entry),
+      onGameplayTrace: entry => traces.push(entry) },
+    roleRunner: { async run(call) {
+      assert.match(call.messages[0].content, /canonical NO_KNOWLEDGE_REQUIRED plan/u);
+      return { output: { schema: 'world_knowledge_query_plan_v1',
+        query_locale: 'ru', domains: [], focus_refs: [],
+        requested_predicates: [], search_hints: [] } };
+    } }
+  });
+  const request = { request_id: 'turn:no-wk', remaining_intent: 'Громко зову Онисима.',
+    player_safe_state: {} };
+  const grounded = await grounder.ground(request, 'semantic_resolution');
+  assert.equal(coreCalls, 0);
+  assert.equal(encoderCalls, 0);
+  assert.equal(vectorCalls, 0);
+  assert.equal(grounded.world_knowledge.sufficiency,
+    'NO_KNOWLEDGE_REQUIRED');
+  assert.deepEqual(grounded.world_knowledge.facts, []);
+  assert.match(wkClosure(grounded).join(' '),
+    /Do not add a historical, scientific, social, craft/u);
+  assert.equal(diagnostics[0].planner_called, true);
+  assert.equal(diagnostics[0].vector_status, 'not_required');
+  assert.equal(diagnostics[0].retrieval_observability, null);
+  assert.deepEqual(diagnostics[0].domains, []);
+  assert.equal(traces[0].event, 'world_knowledge_not_required');
+  assert.equal(traces[0].query, null);
+  assert.equal(traces[0].core_result, null);
+  assert.deepEqual(traces[0].consumer.input.world_knowledge,
+    grounded.world_knowledge);
 });
 
 function assertRetrievalObservability(observability, grounded) {
@@ -142,269 +228,64 @@ function assertRetrievalObservability(observability, grounded) {
   }
 }
 
-test('production normalization removes unavailable domains and refs without changing authority', async () => {
+test('all hints use one combined query embedding and one vector lookup', async () => {
   const bundle = JSON.parse(await readFile(new URL(
     '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
     import.meta.url), 'utf8'));
-  const inputs = [];
-  const grounder = createProductionWorldKnowledgeGrounder({
-    worldKnowledge: { bundle, core: createWorldKnowledgeCore(bundle),
-      encoder: { encode: async () => new Float32Array(1024) },
-      vector_index: { search: () => new Map() } },
-    roleRunner: { async run(call) {
-      const input = JSON.parse(call.messages[1].content);
-      inputs.push(input.request ?? input);
-      return { output: { schema: 'world_knowledge_query_plan_v1',
-        query_locale: 'ru', domains: ['environment', 'biology'],
-        focus_refs: ['wk:unavailable-ref'],
-        requested_predicates: [], search_hints: [] } };
-    } }
-  });
-  await grounder.ground({ semantic_input: 'Контекст места', player_safe_state: {} },
-    'semantic_resolution');
-  assert.equal(inputs.length, 1);
-});
-
-test('an unused focus does not block a supplied physical premise or force its historical domain', async () => {
-  const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
-    import.meta.url), 'utf8'));
-  let calls = 0;
-  const plan = { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
-    domains: ['craft_technology', 'physics_material_science'],
-    focus_refs: ['wk:physics_material_science:fibre-twisting',
-      'wk:physics_material_science:plant-cellulosic-fibres'],
-    requested_predicates: [], search_hints: ['twisting textile fibres to form yarn'] };
-  const grounder = createProductionWorldKnowledgeGrounder({
-    worldKnowledge: { bundle, core: createWorldKnowledgeCore(bundle),
-      encoder: { encode: async () => new Float32Array(1024) },
-      vector_index: { search: () => new Map() } },
-    placeRefs: ['region_novgorod_land'],
-    roleRunner: { async run() { calls += 1; return { output: plan }; } }
-  });
-  const grounded = await grounder.ground({ input_locale: 'en',
-    semantic_input: 'What transformation can twisting textile fibres produce?',
-    player_safe_state: {} }, 'semantic_resolution');
-  assert.equal(calls, 1);
-  assert.ok(grounded.world_knowledge.facts.some(fact => fact.claim_ref === 'claim:textile-fibres-twist-yarn'));
-  assert.ok(grounded.world_knowledge.facts.every(fact => fact.domain !== 'material_culture'));
-});
-
-test('a material focus can retrieve its chemical facts without expanding selected domains', async () => {
-  const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
-    import.meta.url), 'utf8'));
-  const diagnostics = [];
-  const grounder = createProductionWorldKnowledgeGrounder({
-    worldKnowledge: { bundle, core: createWorldKnowledgeCore(bundle),
-      encoder: { encode: async () => new Float32Array(1024) },
-      vector_index: { search: () => new Map() } },
-    placeRefs: ['region_novgorod_land'], telemetry: { onDetail: row => diagnostics.push(row) },
-    roleRunner: { async run(call) {
-      assert.ok(call.messages[0].content.includes(
-        '"wk:material_culture:vegetable-tanned-leather":["chemistry_process","physics_material_science"]'));
-      return { output: { schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
-        domains: ['chemistry_process'], focus_refs: ['wk:material_culture:vegetable-tanned-leather'],
-        requested_predicates: [], search_hints: ['tanning prepared hide collagen tannins'] } };
-    } }
-  });
-  const result = await grounder.ground({ input_locale: 'en',
-    semantic_input: 'What inputs and change distinguish tanning from drying?',
-    player_safe_state: {} }, 'semantic_resolution');
-  assert.deepEqual(diagnostics[0].domains, ['chemistry_process']);
-  assert.deepEqual(new Set(result.world_knowledge.facts.map(fact => fact.claim_ref)), new Set([
-    'claim:vegetable-tanning-prepared-hide', 'claim:vegetable-tanning-collagen-stabilization'
-  ]));
-});
-
-test('grounding fails closed when query encoding fails, then retries without lexical fallback', async () => {
-  const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
-  const [loaded, scenario] = await Promise.all([
-    loadProductionWorldKnowledge({ rootDir }),
-    loadLowerDvinaTraceMaterializationBundle({ rootDir,
-      scenarioDefinitionRevision: 32 })
-  ]);
-  let query;
-  let coreCalls = 0;
-  let encoderCalls = 0;
-  const worldKnowledge = { ...loaded,
-    calendar_profile: scenario.calendar_profile,
-    core: { resolveWorldKnowledge(value, options) {
-      coreCalls += 1;
-      query = value;
-      return loaded.core.resolveWorldKnowledge(value, options);
-    } },
-    encoder: { encode: async () => {
-      encoderCalls += 1;
-      if (encoderCalls === 1) {
-        const error = new Error('worker unavailable');
-        error.code = 'WK_VECTOR_WORKER_EXIT';
-        throw error;
-      }
-      return new Float32Array(1024);
-    } } };
-  const grounder = createProductionWorldKnowledgeGrounder({ worldKnowledge,
-    placeRefs: ['region_novgorod_land'],
-    roleRunner: { async run() {
-      return { output: {
-        schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
-        domains: ['environment'],
-        focus_refs: ['wk:environment:regional-fish-exploitation'],
-        requested_predicates: ['supported_fact'],
-        search_hints: ['добыча рыбы']
-      }, provider_record: { duration_ms: 5,
-        usage: { input_tokens: 20, output_tokens: 10 } } };
-    } } });
-  const request = { request_id: 'turn:context',
-    remaining_intent: 'Можно ли здесь добыть рыбу?',
-    actor: { social_status: 'hidden-hostile-field' },
-    player_safe_state: {
-      occupation_ref: 'occupation:fisher',
-      clock: { whole_minutes: String(365 * 1440),
-        subminute_numerator: '0', subminute_denominator: '1' },
-      position: { location_ref: 'location:current-bank',
-        g5_node_id: 'g5:current-bank' }
-    } };
-  await assert.rejects(
-    grounder.ground(request, 'semantic_resolution'),
-    (error) => error instanceof WorldKnowledgeError
-      && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE'
-      && error.details.cause_code === 'WK_VECTOR_WORKER_EXIT'
-  );
-  assert.equal(coreCalls, 0);
-
-  const grounded = await grounder.ground(request, 'semantic_resolution');
-
-  assert.equal(query.context.time.year, 1231);
-  assert.deepEqual(query.context.place_refs, [
-    'g5:current-bank', 'location:current-bank', 'region_novgorod_land'
-  ]);
-  assert.deepEqual(query.context.actor_facets,
-    { occupation_ref: 'occupation:fisher' });
-  assert.equal(grounded.world_knowledge.facts[0].claim_ref,
-    'claim:regional-fish-exploitation');
-  assert.equal(coreCalls, 1);
-  assert.equal(encoderCalls, 2);
-});
-
-test('grounding fails closed when flat vector scan fails without calling Core', async () => {
-  const rootDir = fileURLToPath(new URL('../../..', import.meta.url));
-  const loaded = await loadProductionWorldKnowledge({ rootDir });
-  let coreCalls = 0;
-  const grounder = createProductionWorldKnowledgeGrounder({
-    worldKnowledge: { ...loaded,
-      core: { resolveWorldKnowledge() { coreCalls += 1; throw new Error('must not run'); } },
-      encoder: { encode: async () => new Float32Array(1024) },
-      vector_index: { search() { throw Object.assign(new Error('bad vector scan'),
-        { code: 'WK_VECTOR_SCAN_FAILED' }); } } },
-    roleRunner: { async run() { return { output: {
-      schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
-      domains: ['environment'],
-      focus_refs: ['wk:environment:regional-fish-exploitation'],
-      requested_predicates: [], search_hints: ['добыча рыбы']
-    } }; } }
-  });
-
-  await assert.rejects(
-    grounder.ground({ semantic_input: 'Можно ли добыть рыбу?', player_safe_state: {} },
-      'semantic_resolution'),
-    (error) => error instanceof WorldKnowledgeError
-      && error.code === 'WORLD_KNOWLEDGE_UNAVAILABLE'
-      && error.details.cause_code === 'WK_VECTOR_SCAN_FAILED'
-  );
-  assert.equal(coreCalls, 0);
-});
-
-test('NPC action grounding reads only the projected NPC role and historical context', async () => {
-  const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
-    import.meta.url), 'utf8'));
+  const template = bundle.claims.find(claim => claim.domain === 'physics_material_science');
+  bundle.claims = ['first', 'second', 'third', 'fourth', 'fifth'].map((id) => ({
+    ...structuredClone(template), claim_ref: `claim:test-${id}`,
+    applicability: { context_scope: 'universal' },
+    localizations: Object.fromEntries(bundle.manifest.supported_locales.map(locale =>
+      [locale, { runtime_text: `Independent test premise ${id}.` }]))
+  }));
+  const refs = bundle.claims.map(claim => claim.claim_ref);
+  bundle.exact_indexes.concept_to_claim_refs = {};
+  bundle.exact_indexes.domain_to_claim_refs = { physics_material_science: refs };
+  bundle.exact_indexes.predicate_to_claim_refs = { [template.predicate]: refs };
+  bundle.lexical_indexes = Object.fromEntries(bundle.manifest.supported_locales.map(locale => [locale, {}]));
+  for (const key of ['time_to_claim_refs', 'place_to_claim_refs',
+    'actor_facet_to_claim_refs', 'conflict_group_to_claim_refs']) bundle.structured_indexes[key] = {};
   const core = createWorldKnowledgeCore(bundle);
-  let query;
-  const worldKnowledge = { bundle,
-    core: { resolveWorldKnowledge(value, options) {
-      query = value;
-      return core.resolveWorldKnowledge(value, options);
-    } },
-    encoder: { encode: async () => new Float32Array(1024) },
-    vector_index: { search: () => new Map() } };
-  const grounder = createProductionWorldKnowledgeGrounder({ worldKnowledge,
-    placeRefs: ['region_novgorod_land'],
-    roleRunner: { async run() { return { output: {
-      schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
-      domains: ['environment'],
-      focus_refs: ['wk:environment:regional-fish-exploitation'],
-      requested_predicates: [], search_hints: ['рыба']
-    } }; } } });
-  await grounder.ground({
-    schema: 'npc_action_decision_request_v1', request_id: 'npc:decision',
-    npc_ref: 'npc:1', remaining_intent: 'продолжить работу',
-    historical_context: { year: 1230, region: 'region_novgorod_land' },
-    npc: { social_role: { role_ref: 'nov_role_fisher' } },
-    actor: { role_ref: 'malicious-role' },
-    npc_safe_state: { role_ref: 'malicious-safe-role' }
-  }, 'npc_decision');
-  assert.equal(query.context.time.year, 1230);
-  assert.deepEqual(query.context.actor_facets, { role_ref: 'nov_role_fisher' });
-  assert.deepEqual(query.context.place_refs, ['region_novgorod_land']);
-});
-
-test('player semantic grounding can request occupation context without assigning NPC skills', async () => {
-  const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
-    import.meta.url), 'utf8'));
-  const core = createWorldKnowledgeCore(bundle);
+  const encoded = [];
+  const searches = [];
+  const traces = [];
+  let coreCalls = 0;
+  let finalScores;
+  let finalQuery;
+  const hints = ['How does one physical relationship operate?',
+    'What establishes a different independent relationship?'];
   const grounder = createProductionWorldKnowledgeGrounder({
-    worldKnowledge: { bundle, core,
-      encoder: { encode: async () => new Float32Array(1024) },
-      vector_index: { search: () => new Map() } },
-    placeRefs: ['region_novgorod_land'],
-    roleRunner: { async run(call) {
-      const request = JSON.parse(call.messages[1].content);
-      assert.ok(request.allowed_domains.includes('npc_daily_life'));
-      assert.ok(request.available_knowledge_refs.includes(
-        'wk:npc_daily_life:resource-occupation-needs-setting'));
-      return { output: {
-        schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
-        domains: ['npc_daily_life'],
-        focus_refs: ['wk:npc_daily_life:resource-occupation-needs-setting'],
-        requested_predicates: [], search_hints: ['occupation skills setting']
-      } };
-    } }
-  });
-  const result = await grounder.ground({ request_id: 'turn:occupation',
-    input_locale: 'en', semantic_input:
-      'Does a person collecting pelts necessarily know net fishing?',
-    player_safe_state: {} }, 'semantic_resolution');
-  assert.ok(result.world_knowledge.facts.some(({ claim_ref }) =>
-    claim_ref === 'claim:resource-occupation-needs-setting'));
-  assert.deepEqual(result.world_knowledge.coverage,
-    [{ domain: 'npc_daily_life', status: 'covered' }]);
-  assert.deepEqual(result.player_safe_state, {});
-});
-
-test('semantic planner predicates cannot discard mixed typed and generic focus premises', async () => {
-  const bundle = JSON.parse(await readFile(new URL(
-    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/runtime-bundle.json',
-    import.meta.url), 'utf8'));
-  const diagnostics = [];
-  const grounder = createProductionWorldKnowledgeGrounder({
-    worldKnowledge: { bundle, core: createWorldKnowledgeCore(bundle),
-      encoder: { encode: async () => new Float32Array(1024) },
-      vector_index: { search: () => new Map() } },
-    placeRefs: ['region_novgorod_land'],
-    telemetry: { onDetail: entry => diagnostics.push(entry) },
+    worldKnowledge: { bundle,
+      core: { resolveWorldKnowledge(query, options) {
+        coreCalls += 1;
+        finalQuery = query;
+        finalScores = options.vectorScores;
+        return core.resolveWorldKnowledge(query, options);
+      } },
+      encoder: { async encode(text) { encoded.push(text); return [1]; } },
+      vector_index: { search(vector, options) {
+        searches.push(options);
+        const ranked = [[refs[0], 0.8], [refs[1], 0.9],
+          [refs[2], 0.6], [refs[3], 0.5], [refs[4], 0.4]];
+        return new Map(ranked.slice(0, options.limit));
+      } } },
+    telemetry: { onGameplayTrace: trace => traces.push(trace) },
     roleRunner: { async run() { return { output: {
       schema: 'world_knowledge_query_plan_v1', query_locale: 'en',
-      domains: ['craft_technology', 'material_culture'],
-      focus_refs: ['wk:craft_technology:hemp-stem-processing', 'wk:material_culture:hemp-fibre'],
-      requested_predicates: ['produces_form'], search_hints: ['plant fibre processing']
+      domains: ['physics_material_science'], focus_refs: [],
+      requested_predicates: [], search_hints: hints
     } }; } }
   });
-  const result = await grounder.ground({ semantic_input: 'What can stem processing produce?',
+  const grounded = await grounder.ground({ semantic_input: hints.join(' '),
     input_locale: 'en', player_safe_state: {} }, 'semantic_resolution');
-  const refs = result.world_knowledge.facts.map(fact => fact.claim_ref);
-  assert.ok(refs.includes('claim:agriculture-fauna-hemp-stem-fibre'));
-  assert.ok(refs.includes('claim:population-processes-hemp-cordage'));
-  assert.deepEqual(diagnostics[0].predicates, []);
+  assert.deepEqual(encoded, [hints.join('\n')]);
+  assert.deepEqual(searches, [{ locale: 'en',
+    domains: ['physics_material_science'], limit: finalQuery.budget.max_candidates }]);
+  assert.equal(coreCalls, 1);
+  assert.equal(finalQuery.budget.max_candidates, 12);
+  assert.equal(finalScores.get(refs[0]), 0.8);
+  assert.equal(finalScores.get(refs[4]), 0.4);
+  assert.deepEqual(new Set(grounded.world_knowledge.facts.map(fact => fact.claim_ref)), new Set(refs));
+  assert.equal(traces[0].retrieval_observability.vector_hit_count, 5);
 });

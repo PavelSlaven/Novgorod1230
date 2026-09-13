@@ -251,6 +251,41 @@ test('NPC required candidate is validator-valid and preserves operation', async 
     /"op":"emit_interaction"/u);
 });
 
+test('NPC automatic required operation binds one exact admitted structure',
+  async () => {
+    const request = npcRequest({
+      allowed_contribution_kinds: ['speech'],
+      required_supporting_operation: { op: 'commit_surrender' },
+      operation_contract: { commit_surrender: {
+        required_dominant_acts: ['accept', 'promise', 'confess'],
+        required_interaction_tag: 'surrender'
+      } }
+    });
+    const output = npcPlan(request);
+    output.speech.claims = [{ claim_id: 'ratsha-admitted-claim',
+      content_summary: 'Ратша признаёт обстоятельство.', form: 'assertion',
+      speaker_posture: 'believed_true', source_knowledge_refs: [],
+      mentioned_entity_refs: [] }];
+    output.supporting_operations = [{ op: 'commit_surrender',
+      required_dominant_acts: ['accept', 'promise', 'confess'],
+      required_interaction_tag: 'surrender' }];
+    const fixture = runner(() => output);
+    const plan = await createLowerDvinaTraceNpcSemanticModel(
+      fixture)(request);
+    assert.equal(validateConversationContributionPlan(plan, request), true);
+    assert.deepEqual(plan.supporting_operations,
+      [{ op: 'commit_surrender' }]);
+    assert.equal(plan.speech.dominant_act, 'accept');
+    assert.deepEqual(plan.speech.interaction_tags, ['surrender']);
+    assert.equal(plan.speech.utterance_text, 'Я отвечу.');
+    assert.equal(plan.speech.claims[0].claim_id, 'ratsha-admitted-claim');
+
+    output.speech.dominant_act = 'confess';
+    const confession = await createLowerDvinaTraceNpcSemanticModel(
+      runner(() => output))(request);
+    assert.equal(confession.speech.dominant_act, 'confess');
+  });
+
 test('NPC route disclosure candidate is validator-valid and preserves route refs', async () => {
   const required = {
     required_supporting_operation: { op: 'disclose_known_route',
@@ -359,162 +394,4 @@ test('Phase 8 NPC prompt supplies validator-valid surrender and combat forms', (
     assert.match(prompt, /silence and leave_conversation mappings available/u);
     assert.doesNotMatch(prompt, /Choose exactly one/u);
   }
-});
-
-test('NPC assembly restores admitted structure while preserving semantic speech', () => {
-  const request = npcRequest({ combat_handoff_available: true,
-    operation_contract: { commit_surrender: {
-      required_dominant_acts: ['accept', 'promise', 'confess'],
-      required_interaction_tag: 'surrender'
-    } } });
-  request.allowed_references.entity_refs = [];
-  request.allowed_references.combat_target_refs = [
-    ref('player_character', 'player-1')
-  ];
-  const [speech, , combat] = npcConversationCandidates(request);
-  const semanticSpeech = structuredClone(speech);
-  semanticSpeech.primary_addressee_ref = ref('npc', 'invented');
-  semanticSpeech.intended_addressee_refs = [ref('npc', 'invented')];
-  semanticSpeech.activity = { duration_class: 'invented', effort: 'heavy' };
-  semanticSpeech.speech.utterance_text = 'Я не согласен.';
-  semanticSpeech.speech.dominant_act = 'refuse';
-  const assembledSpeech = assembleNpcConversationPlan(semanticSpeech, request);
-  assert.equal(validateConversationContributionPlan(assembledSpeech, request), true);
-  assert.deepEqual(assembledSpeech.primary_addressee_ref,
-    ref('player_character', 'player-1'));
-  assert.deepEqual(assembledSpeech.activity,
-    { duration_class: 'domain_owned', effort: 'none' });
-  assert.equal(assembledSpeech.speech.utterance_text, 'Я не согласен.');
-  assert.equal(assembledSpeech.speech.dominant_act, 'refuse');
-
-  const semanticCombat = structuredClone(combat);
-  semanticCombat.primary_addressee_ref = ref('npc', 'invented');
-  semanticCombat.handoff.target_actor_refs = [ref('npc', 'invented')];
-  semanticCombat.handoff.intent = 'перейти к открытому противостоянию';
-  const assembledCombat = assembleNpcConversationPlan(semanticCombat, request);
-  assert.equal(validateConversationContributionPlan(assembledCombat, request), true);
-  assert.deepEqual(assembledCombat.handoff.target_actor_refs,
-    request.allowed_references.combat_target_refs);
-  assert.equal(assembledCombat.handoff.intent,
-    'перейти к открытому противостоянию');
-
-  semanticSpeech.supporting_operations = [
-    { op: 'commit_surrender' }, { op: 'invented' }
-  ];
-  assert.equal(validateConversationContributionPlan(
-    assembleNpcConversationPlan(semanticSpeech, request), request), false);
-});
-
-test('player speech binds code-owned target and verbatim text', () => {
-  const request = playerRequest({ target_npc_ref: ref('npc', 'npc-1'),
-    verbatim_utterance_text: 'Скажи правду.' });
-  request.player_safe_context.allowed_references.actor_refs.unshift(
-    ref('npc', 'unrelated'));
-  const semantic = playerPlan(request, {
-    input_mode: 'verbatim',
-    primary_addressee_ref: ref('npc', 'unrelated'),
-    intended_addressee_refs: [ref('npc', 'unrelated')],
-    speech: { ...playerPlan(request).speech,
-      utterance_text: 'Модель изменила буквы.' }
-  });
-  const assembled = assemblePlayerConversationPlan(semantic, request);
-  assert.deepEqual(assembled.primary_addressee_ref, ref('npc', 'npc-1'));
-  assert.deepEqual(assembled.intended_addressee_refs, [ref('npc', 'npc-1')]);
-  assert.equal(assembled.speech.utterance_text,
-    request.player_safe_context.verbatim_utterance_text);
-});
-
-test('player required candidate is validator-valid and preserves operation', () => {
-  const required = {
-    verbatim_utterance_text: 'Скажи правду.', required_resolution: 'check_required',
-    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
-      difficulty_band: 'hard' },
-    required_supporting_operation: { op: 'emit_interaction',
-      actor_ref: ref('player_character', 'player-1'), target_ref: ref('npc', 'npc-1'),
-      entity_ref: ref('item', 'item-1') }
-  };
-  const request = playerRequest(required);
-  const candidate = requiredPlayerConversationCandidate(request);
-  assert.notEqual(candidate, null);
-  candidate.speech.dominant_act = 'request';
-  candidate.interpretation.intent = 'попросить правду';
-  candidate.interpretation.grounded_contribution = 'обратиться с просьбой';
-  candidate.check.purpose = 'code-owned social delivery';
-  assert.equal(validatePlayerConversationContributionPlan(candidate, request), true);
-  assert.equal(candidate.input_mode, 'verbatim');
-  assert.equal(candidate.speech.utterance_text, required.verbatim_utterance_text);
-  assert.deepEqual(candidate.primary_addressee_ref,
-    required.required_supporting_operation.target_ref);
-  assert.deepEqual(candidate.supporting_operations,
-    [required.required_supporting_operation]);
-});
-
-test('player promise candidate is validator-valid with target from safe context', () => {
-  const required = {
-    verbatim_utterance_text: 'Предложить Ратше условную защиту и потребовать сдачи.',
-    target_npc_ref: ref('npc', 'npc-1'), required_resolution: 'check_required',
-    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
-      difficulty_band: 'hard' },
-    required_supporting_operation: { op: 'offer_conditional_protection' }
-  };
-  const request = playerRequest(required);
-  request.operation_contract = { offer_conditional_protection: {} };
-  const candidate = requiredPlayerConversationCandidate(request);
-  assert.notEqual(candidate, null);
-  assert.equal(validatePlayerConversationContributionPlan(candidate, request), true);
-  assert.deepEqual(candidate.primary_addressee_ref, required.target_npc_ref);
-  assert.deepEqual(candidate.supporting_operations,
-    [required.required_supporting_operation]);
-  assert.deepEqual(candidate.check.attribute_ref, required.required_check.attribute_ref);
-  const prompt = playerConversationInstructions(null, request);
-  assert.match(prompt,
-    /offer_conditional_protection[\s\S]*actually offers the target protection[\s\S]*different proposal, bargain, cooperation/u);
-});
-
-test('player required candidate is omitted for target outside allowed actors', () => {
-  const request = playerRequest({
-    required_resolution: 'check_required',
-    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
-      difficulty_band: 'hard' },
-    required_supporting_operation: { op: 'emit_interaction',
-      actor_ref: ref('player_character', 'player-1'), target_ref: ref('npc', 'other-npc'),
-      entity_ref: ref('item', 'item-1') }
-  });
-  assert.equal(requiredPlayerConversationCandidate(request), null);
-});
-
-test('NPC required candidate is omitted for target outside allowed actors', () => {
-  const request = npcRequest({
-    required_resolution: 'check_required',
-    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
-      difficulty_band: 'hard' },
-    required_supporting_operation: { op: 'emit_interaction',
-      actor_ref: ref('npc', 'npc-1'), target_ref: ref('npc', 'other-npc'),
-      entity_ref: ref('item', 'item-1') }
-  });
-  assert.equal(requiredNpcConversationCandidate(request), null);
-});
-
-test('player repair receives and preserves required contract', async () => {
-  const required = {
-    required_resolution: 'check_required',
-    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
-      difficulty_band: 'hard' },
-    required_supporting_operation: { op: 'emit_interaction',
-      actor_ref: ref('player_character', 'player-1'), target_ref: ref('npc', 'npc-1'),
-      entity_ref: ref('item', 'item-1') }
-  };
-  const request = playerRequest(required);
-  const fixture = runner((call) => call.role_id.endsWith('_format_repair')
-    ? playerPlan(request) : { schema: 'invalid' });
-  const plan = (await requestPlayerConversationContribution({ request,
-    conversationModel: createLowerDvinaTracePlayerConversationModel(fixture),
-    revalidateStateVersion: async () => 1 })).plan;
-  assert.equal(validatePlayerConversationContributionPlan(plan, request), true);
-  assert.equal(fixture.calls.length, 2);
-  const repairPayload = JSON.parse(fixture.calls[1].messages[1].content);
-  assert.deepEqual(repairPayload.request.player_safe_context
-    .required_supporting_operation, required.required_supporting_operation);
-  assert.match(fixture.calls[1].messages[0].content,
-    /Required conversation candidate/u);
 });

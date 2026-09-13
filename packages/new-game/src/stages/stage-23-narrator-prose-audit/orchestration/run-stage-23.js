@@ -144,7 +144,8 @@ function buildAuditOutputContract() {
     allowed_concern_codes: safeClone(STAGE23_CONCERN_CODES),
     allowed_severities: safeClone(STAGE23_SEVERITIES),
     router_selects_repair_route: true,
-    require_nonempty_evidence: true
+    require_nonempty_evidence: true,
+    literary_composition_rule: 'Assess the opening as connected literary prose: relate supplied identity and past to present orientation and stake where the visible context supplies them. Reject a dossier, factual report, checklist or decorative padding even when every fact is grounded. Do not invent biography, motives, sensations or events to meet this criterion. A concise grounded scene is sufficient when identity or past is absent. Set literary_composition_check.pass=false with NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION and concrete textual evidence on failure; factual checks passing alone cannot approve prose.'
   };
 }
 

@@ -47,6 +47,10 @@ export function turnStepDraftBackgroundNpcSemanticAtomicWritePlan(draft) {
   return draft?.loop_result?.background_npc_semantic_atomic_write_plan ?? null;
 }
 
+export function turnStepDraftPostAppliedTemporalResults(draft) {
+  return draft?.loop_result?.post_applied_temporal_results ?? [];
+}
+
 export function turnStepDraftPreparedDomainSlice(draft) {
   return turnStepDraftPreparedDomainSlices(draft)[0] ?? null;
 }

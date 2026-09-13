@@ -22,6 +22,18 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 
 - `NPC_RUNTIME_OWNER`, `NPC_RUNTIME_RESOURCE_LIMITS`, `NPC_RUNTIME_TYPED_ERRORS`
 - `proposeNpcScheduleTransition(input)` — возвращает frozen schedule proposal, evidence и exact temporal boundary.
+- `createNpcRoutineState`, `npcRoutineActivity`, `proposeNpcRoutineTransition` —
+  исполняют approved finite routine profile через тот же schedule proposal owner.
+  Calendar owner определяет начальную фазу; состояние хранит конкретное занятие NPC.
+  Завершение фазы меняет activity/availability и назначает конечную следующую границу.
+  Routine phase может передать declarative `movement_handoff`; game-server
+  исполняет его только через существующий route owner и меняет committed position
+  лишь после terminal completion. Closed/invalid route оставляет NPC в исходной
+  позиции без teleport.
+  Прерванная routine не возобновляется автоматически. `decision_required` —
+  marker для semantic handoff. Current routine adapter активирует только approved
+  deterministic phases; общий consumer новых решений вне Phase 7 ещё не подключён.
+  Calendar dependency: `@rus/time-events-history/calendar`, без I/O.
 - `createNpcScheduleDecisionTerminalEffect(...)` /
   `resolveNpcScheduleDecisionTerminal(...)` — строят общий `npc_schedule`
   candidate и преобразуют применимый terminal schedule state в factual
@@ -93,8 +105,9 @@ NPC-safe refs и exact executable structural combinations, не narrative
 whitelist либо Cartesian kinds×targets; нет scenario action/ref/owner whitelist,
 special Жданко action logic или fallback. Жданко остаётся первым activation
 participant/probe.
-The v15 cutover additionally inherits revision 32 / M20 / Phase 1A v23 /
-Phase 1B v27 and the profile-specific background-fisher N1 remainder. Before
+The v15 cutover inherits the profile-specific background-fisher N1 remainder
+and adds revision 33 / M21 / Phase 1A v24 / Phase 1B v28 deterministic routines.
+The inherited NPC actor-step activation remains limited to approved Phase 7. Before
 open conversation or autonomous-decision calls, the game-server supplies a
 bounded production World Knowledge slice; subjective perception, memory,
 access and committed NPC state remain owned by their existing code paths.

@@ -1,3 +1,4 @@
+import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js';
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../../errors.js';
 import {
@@ -55,7 +56,7 @@ export async function commitLowerDvinaTracePhase2({
 }) {
   const routed = await routeLowerDvinaTraceTurnStepCommit({
     partyId, writePlan, inputDigest, contracts, loadState, committer,
-    turnStepAmbientPortionProfileRef
+    turnStepAmbientPortionProfileRef, turnStepApprovedOwners
   });
   if (routed.handled) return routed.result;
   const factual = routed.factual;
@@ -106,7 +107,8 @@ export async function commitLowerDvinaTracePhase2({
   }
   if (factual?.consequence?.phase4_kind) {
     return commitLowerDvinaTracePhase4({
-      partyId, writePlan, inputDigest, phase4Contracts, loadState, committer
+      partyId, writePlan, inputDigest, phase4Contracts,
+      turnStepApprovedOwners, loadState, committer
     });
   }
   const visibleContext = writePlan.write_targets
@@ -156,7 +158,8 @@ export async function commitLowerDvinaTracePhase2({
   });
   const snapshot = turnStep.snapshot;
   const pendingScreen = buildLowerDvinaTracePendingScreen({
-    state, turnId: factual.mode_resolution.turn_id,
+    state: snapshot, presentation: await loadLowerDvinaTraceScreenPresentation(snapshot),
+    turnId: factual.mode_resolution.turn_id,
     nextVersion, turnNumber, visibleEnvelope
   });
   const writes = mergeLowerDvinaTraceTurnStepWrites(buildPhase2Writes({

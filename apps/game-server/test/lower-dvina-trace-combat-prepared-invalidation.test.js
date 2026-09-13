@@ -4,6 +4,7 @@ import {
   buildTurnStepPreparedBodyUpdate,
   buildTurnStepPreparedEffectLedger,
   buildTurnStepPreparedTimeUpdate,
+  bindTurnStepPreparedConsequence,
   prepareCombatExchange
 } from '@rus/turn';
 import { validatePreparedEffectCommit } from
@@ -190,7 +191,7 @@ test('positive route invalidation admits blocked and stranded owner proof',
 function preparedTraversalInvalidation() {
   const base = preparedCombat({ exchange: null, duration: 0,
     status: 'paused_for_player', playerBoundary: true });
-  const combat = base.envelope.consequence.combat;
+  const combat = structuredClone(base.envelope.consequence.combat);
   const blocked = combat.outcome_events[0];
   const traversal = { terminal: false, stranded: true, clock_update: null,
     ids: { interval_id: 'interval:stranded:1' }, interval_result: {
@@ -276,6 +277,7 @@ function preparedConsequence(consequence, playerBoundary) {
   });
   const timeUpdate = buildTurnStepPreparedTimeUpdate(ledger);
   const bodyUpdate = buildTurnStepPreparedBodyUpdate(ledger);
+  consequence = bindTurnStepPreparedConsequence(consequence, ledger);
   const envelope = { root_turn_id: 'turn:party-1:1', base_state_version: 7,
     consequence, time_update: timeUpdate, body_update: bodyUpdate,
     loop_trace: { step_traces: [{ applied: true,
@@ -317,7 +319,7 @@ function terminalProjection(envelope) {
   const projection = combatVisibleEnvelope({ partyId: 'party-1', factual,
     visibleContext, nextVersion: 8, turnNumber: 1,
     changeSetId: 'change-1', idemId: 'idem-1' });
-  const state = { party_id: 'party-1', opening_identity: {
+  const state = { party_id: 'party-1', actor_id: 'player-1', opening_identity: {
     opening_screen_digest: 'opening-1' } };
   return { envelope: projection, screen: combatPendingScreen({ state, factual,
     visibleEnvelope: projection, turnNumber: 1, nextVersion: 8 }),

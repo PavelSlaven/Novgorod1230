@@ -60,7 +60,9 @@ export const TURN_STEP_REQUEST_V1_SCHEMA = deepFreeze({
     ...jsonDataDefinitions,
     completed_step: strictObject(['step_index', 'summary'], {
       step_index: { type: 'integer', minimum: 1, maximum: 7 },
-      summary: textSchema
+      summary: textSchema,
+      check_outcome: { enum: ['clean_success', 'success',
+        'success_with_cost', 'failure_with_consequence', 'severe_failure'] }
     }),
     prepared_followup_candidate: strictObject([
       'prepared_followup_ref', 'precursor_operation', 'operation'

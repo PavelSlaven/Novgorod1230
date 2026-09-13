@@ -139,7 +139,7 @@ test('semantic repair cannot reselect the rejected exact operation', async () =>
     /comparison counterpart or requested detail is missing[\s\S]*focused_ordinary_discovery[\s\S]*missing referent[\s\S]*complete comparison in continuation/u);
 });
 
-test('mismatched echoed operation fails without semantic repair',
+test('mismatched echoed operation retries once with semantic repair',
   async () => {
     const selected = { op: 'request_discovery', actor_ref: 'actor_mikula',
       discovery_kind: 'inspect', target_refs: ['location:wreck'],
@@ -164,10 +164,13 @@ test('mismatched echoed operation fails without semantic repair',
       }
     } });
 
-    await assert.rejects(requestTurnStepPlanWithRepair({ request: input,
-      turnStepModel: model }), (error) => error.code === 'TURN_STEP_PLAN_INVALID'
-        && error.details.repair_attempted === false);
-    assert.equal(calls.length, 1);
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel: model });
+    assert.equal(result.repaired, true);
+    assert.deepEqual(result.plan.operations, [ordinary]);
+    assert.equal(calls.length, 2);
+    assert.deepEqual(calls.map(({ overrides }) => overrides.reasoningEffort),
+      ['off', 'low']);
   });
 
 test('planner errors other than primary JSON parsing do not repair', async () => {

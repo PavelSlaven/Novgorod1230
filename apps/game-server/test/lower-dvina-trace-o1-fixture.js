@@ -47,7 +47,7 @@ function enabled() { const ordinary_aggregate = createOrdinaryAggregate({ scope_
     mechanics_policy: { policy_ref: 'mechanics', max_mass_grams: 20000,
       allowed_external_hand_costs: [0, 1, 2],
       allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
-      max_packing_slot_cost: 16, max_quantity: 1 },
+      max_packing_slot_cost: 16, max_quantity: 16 },
     stage_b_classification_eval: structuredClone(stageBEval),
     causal_ref: 'cause', source_refs: [] } }; }
 

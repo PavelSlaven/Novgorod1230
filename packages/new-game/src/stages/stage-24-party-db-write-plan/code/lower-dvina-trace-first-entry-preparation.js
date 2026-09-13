@@ -299,6 +299,14 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     created_change_set_id: changeSetId,
     updated_change_set_id: changeSetId
   }], ['party_scene_baselines'], sourceTrace);
+  addBatch(batches, 'g6_acoustic_profiles', [{
+    party_id: partyId,
+    g6_instance_id: ids.sourceG6,
+    ambient_noise: 0,
+    acoustic_uniformity: baseStatic.source.g6.acoustic_uniformity,
+    state_version: 1,
+    updated_change_set_id: changeSetId
+  }], ['party_g6_instances'], sourceTrace);
   addBatch(batches, 'scene_position_nodes', [{
     id: ids.sourcePosition,
     party_id: partyId,

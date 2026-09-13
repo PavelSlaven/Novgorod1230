@@ -35,6 +35,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     requireAmbientOrdinaryAdmission,
     turnStepAmbientPortionProfileRef,
     turnStepOrdinaryResultPolicy,
+    postActionPerceptionProfile,
     turnStepApprovedOwners,
     turnStepPackingCalculator,
     turnBudget,
@@ -44,7 +45,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
   } = context;
-  let committedPublicResult = null;
+  let committedPublicResult = null, turnCommitStatus = 'not_started';
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
@@ -85,6 +86,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       packingCalculator: turnStepPackingCalculator
     }),
     semanticActivityOwner: turnStepSemanticActivityOwner,
+    idempotencyKey,
+    postActionPerceptionProfile,
     temporalAdvance,
     workingProjectionAuthority
   });
@@ -127,6 +130,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       playerSafeStateProjector: turnStepPlayerSafeStateProjector
     } : {}),
     turnStepExecutionRegistry: turnStepPorts.executionRegistry,
+    turnStepPostAppliedActorStep: turnStepPorts.postAppliedActorStep,
     ...(turnStepPorts.ordinaryDiscoveryResolver ? {
       turnStepOrdinaryDiscoveryResolver:
         turnStepPorts.ordinaryDiscoveryResolver
@@ -172,22 +176,28 @@ export function buildLowerDvinaTracePhase2Services(context) {
     partyStore: {
       async commit(writePlan) {
         turnBudget?.assertCanCommit();
-        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_requested',
-          write_plan: writePlan });
+        turnCommitStatus = 'ambiguous';
+        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_requested' });
         let committed;
         try { committed = await repository.commitPhase2Turn({
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
           turn10Contracts, phase8Contracts, phase9Contracts,
-          phase10Contracts, turnStepApprovedOwners, turnBudget,
+          phase10Contracts, turnStepApprovedOwners: {
+            ...turnStepApprovedOwners, scenePresentation
+          }, turnBudget,
           turnStepAmbientPortionProfileRef
         }); } catch (error) {
+          if (authoritativeNotStarted(error)) {
+            turnCommitStatus = 'not_started';
+          }
           context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_rejected',
-            code: error?.code ?? null, details: error?.details ?? null });
+            code: error?.code ?? null });
           throw error;
         }
-        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_completed',
-          result: committed });
+        if (authoritativeNotStarted(committed)) turnCommitStatus = 'not_started';
+        else if (committed?.ok === true) turnCommitStatus = 'committed';
+        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_completed' });
         committedPublicResult = committed.committed_public_result ?? null;
         return committed;
       }
@@ -212,6 +222,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
         turnBudget?.assertWithinDeadline();
         const screen = {
           ...defaultScreen,
+          checks: structuredClone(
+            committedPublicResult?.screen?.checks ?? []
+          ),
           delivery_state: { ...defaultScreen.delivery_state, generated_at: issuedAt },
           scenario_id: 'lower_dvina_trace_v1',
           screen_kind: 'trace_turn',
@@ -221,7 +234,13 @@ export function buildLowerDvinaTracePhase2Services(context) {
         return screen;
       }
     },
-    committedPublicResult: () => committedPublicResult
+    committedPublicResult: () => committedPublicResult,
+    turnCommitStatus: () => turnCommitStatus
   };
 }
 function addMinutes(value, minutes) { return new Date(Date.parse(value) + minutes * 60000).toISOString(); }
+function authoritativeNotStarted(error) {
+  return [error, error?.error, error?.details, error?.details?.commit_error]
+    .some((value) => value?.turn_commit_status === 'not_started'
+      || value?.diagnostics?.turn_commit_status === 'not_started');
+}

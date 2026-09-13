@@ -24,6 +24,7 @@ export function validatePreparedRouteTraceLineage({
   envelope,
   state,
   routeOnly,
+  scenePresentation = null,
   intermediateTraces = []
 }) {
   const routeRequest = routeTrace.plan_request;
@@ -37,6 +38,7 @@ export function validatePreparedRouteTraceLineage({
   try {
     projected = projectLowerDvinaTracePlayerSafeState({
       committed_state: state,
+      scene_presentation: scenePresentation,
       actor_id: state.actor_id
     });
     const { active_interlocutor: _activeInterlocutor,
@@ -61,6 +63,7 @@ export function validatePreparedRouteTraceLineage({
       createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
     playerSafeAfter = projectLowerDvinaTracePlayerSafeState({
       committed_state: stateAfterRoute,
+      scene_presentation: scenePresentation,
       working_projection: authority.admit(routeWorkingAfter),
       working_projection_authority: authority,
       actor_id: state.actor_id

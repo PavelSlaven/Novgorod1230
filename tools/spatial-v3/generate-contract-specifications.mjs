@@ -86,7 +86,7 @@ const npcAutonomousSpecifications = parseSpecifications(machineAppendix(npcAuton
 const npcConversationSpecifications = parseSpecifications(machineAppendix(npcConversation, npcConversationSource));
 if (baselineSpecifications.length !== 160 || baselineSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Appendix B contract specification parse failed');
 if (acceptedTemporalSpecifications.length !== 35 || acceptedTemporalSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Accepted Temporal Appendix A.1-A.6 parse failed');
-if (temporalSpecifications.length !== 62 || temporalSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Current Temporal Appendix A contract specification parse failed');
+if (temporalSpecifications.length !== 64 || temporalSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('Current Temporal Appendix A contract specification parse failed');
 if (npcCombatSpecifications.length !== 2 || npcCombatSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('NPC combat machine contract appendix parse failed');
 if (npcAutonomousSpecifications.length !== 3 || npcAutonomousSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('NPC autonomous machine contract appendix parse failed');
 if (npcConversationSpecifications.length !== 7 || npcConversationSpecifications.some((specification) => !specification.contract_name || !specification.storage)) throw new Error('NPC conversation machine contract appendix parse failed');
@@ -115,7 +115,7 @@ await writeArtifact(temporalBaselineOutput, {
 await writeArtifact(output, {
   source: standardSource,
   amendment_source: temporalSource,
-  amendment_scope: 'Appendix A.1-A.7',
+  amendment_scope: 'Appendix A.1-A.8',
   additional_amendment_sources: [
     { source: npcCombatSource, scope: 'Appendix A' },
     { source: npcAutonomousSource, scope: 'Appendix A' },

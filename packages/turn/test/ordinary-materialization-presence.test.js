@@ -80,11 +80,12 @@ test('Stage B rejects swapped identity and proposed position outside committed p
   })), { code: 'TURN_ORDINARY_PRESENCE_PLAN_REJECTED' });
 });
 
-test('Stage B rejects positive plans without compatible basis or budget and defers item admission', async () => {
+test('Stage B requires a compatible basis but not a persistent world budget', async () => {
   let calls = 0;
   assert.equal((await resolveOrdinaryMaterializationPresence(input(async () => { calls += 1; return materialize(); }, { basisCatalog: [] }))).status, 'authority_required');
-  assert.equal((await resolveOrdinaryMaterializationPresence(input(async () => { calls += 1; return materialize(); }, { workingProjection: projection(0) }))).status, 'no_change');
   assert.equal(calls, 0);
+  assert.equal((await resolveOrdinaryMaterializationPresence(input(async () => { calls += 1; return materialize(); }, { workingProjection: projection(0) }))).status, 'pending_items_property_admission');
+  assert.equal(calls, 1);
   const output = await resolveOrdinaryMaterializationPresence(input(async () => materialize()));
   assert.equal(output.status, 'pending_items_property_admission');
   assert.equal(output.working_projection.ordinary_materialization_aggregate.presence_resolutions.length, 0);
@@ -114,6 +115,29 @@ test('Stage B repairs a schema-valid proposal outside code-owned mechanics bound
     'entities[0].mechanics_proposal.carry_form');
   assert.deepEqual(contexts[1].mechanics_policy, mechanicsPolicy);
   assert.equal(output.status, 'pending_items_property_admission');
+  assert.equal(output.decision.repaired, true);
+});
+
+test('Stage B repairs a finite group that ignores the typed requested quantity', async () => {
+  const mechanicsPolicy = { policy_ref: 'mechanics', max_mass_grams: 20_000,
+    allowed_external_hand_costs: [0, 1, 2],
+    allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
+    max_packing_slot_cost: 16, max_quantity: 16 };
+  const contexts = [];
+  const output = await resolveOrdinaryMaterializationPresence(input(async (_request,
+    context) => {
+      contexts.push(context);
+      const plan = materialize();
+      plan.entities[0].mechanics_proposal.carry_form = 'long';
+      plan.entities[0].mechanics_proposal.quantity.value = contexts.length === 1
+        ? 1 : 5;
+      return plan;
+    }, { mechanicsPolicy, requiredQuantity: { value: 5, unit: 'item' } }));
+  assert.deepEqual(contexts[0].required_quantity, { value: 5, unit: 'item' });
+  assert.equal(contexts[1].repair.validation_errors.at(-1).path,
+    'entities[0].mechanics_proposal.quantity');
+  assert.equal(output.pending_items_property_admission.proposed_item
+    .mechanics_proposal.quantity.value, 5);
   assert.equal(output.decision.repaired, true);
 });
 
@@ -299,4 +323,27 @@ test('O2a rejects model attempts to smuggle hidden, historical, or significant t
             basis_refs: ['basis-arms'] } })], presence_resolutions: [] }) }),
     { code: 'TURN_ORDINARY_PRESENCE_PLAN_REJECTED' }, fact);
   }
+});
+
+
+test('restricted model entity records missing authority without inventing absence on retry', async () => {
+  const raw = materialize();
+  raw.entities[0].admission_class = 'document_like';
+  const admittedEnvelope = envelope();
+  admittedEnvelope.request.policy_refs.allowed_admission_classes.push('document_like');
+  const output = await resolveOrdinaryMaterializationPresence(input(async () => raw,
+    { envelope: admittedEnvelope }));
+  assert.equal(output.status, 'authority_required');
+  assert.equal(output.pending_items_property_admission, null);
+  const aggregate = output.working_projection.ordinary_materialization_aggregate;
+  assert.equal(aggregate.presence_resolutions.length, 1);
+  assert.equal(aggregate.presence_resolutions[0].resolution, 'authority_required');
+  assert.deepEqual(aggregate.closed_observation_scopes, []);
+  let calls = 0;
+  const replay = await resolveOrdinaryMaterializationPresence(input(async () => {
+    calls += 1; return materialize();
+  }, { envelope: admittedEnvelope, workingProjection: output.working_projection }));
+  assert.equal(replay.status, 'already_resolved');
+  assert.equal(replay.known_resolution.resolution, 'authority_required');
+  assert.equal(calls, 0);
 });

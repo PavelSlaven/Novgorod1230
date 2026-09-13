@@ -1,30 +1,31 @@
-import { validateVisibleContext } from '@rus/visibility-knowledge-memory';
-import { projectLowerDvinaTracePlayerSafeState } from
+import { ownerFail } from './lower-dvina-trace-turn-step-owner-profiles.js';
+import { existingItemInspectionVisibleResult } from './lower-dvina-trace-existing-item-inspection.js';
+import { projectCampFireState, projectLowerDvinaTracePlayerSafeState } from
   './lower-dvina-trace-player-safe-state.js';
-import { deepFreeze, plain } from
-  './lower-dvina-trace-turn-step-runtime-common.js';
+import { projectKnownContext } from './lower-dvina-trace-player-safe-world.js';
+import { deepFreeze, plain } from './lower-dvina-trace-turn-step-runtime-common.js';
 import { scenePresentationForLocation } from './lower-dvina-trace-scene-presentation.js';
 import { lowerDvinaTraceDirectResultChanges,
   lowerDvinaTraceCarriedItemObservations,
   lowerDvinaTraceVisibleSceneItems,
   uniqueLowerDvinaTraceVisibleObjects } from
   './lower-dvina-trace-visible-scene-items.js';
-import { enrichLowerDvinaTraceVisibleNpcCues } from
-  './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
-export { enrichLowerDvinaTraceVisibleNpcCues } from
-  './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
-
-const ARRAY_FIELDS = ['visible_changes', 'sensory_details', 'visible_npc',
-  'visible_objects', 'known_context', 'uncertainties', 'allowed_tensions', 'do_not_imply'];
+import { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
+import { failCurrentScene, validCurrentScene, visibleNpc } from
+  './lower-dvina-trace-turn-step-current-scene-validation.js';
+export { enrichLowerDvinaTraceVisibleNpcCues } from './lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 export function withLowerDvinaTraceCurrentScene({ committedState,
   locationProfiles, scenePresentation = null }) {
   const initial = committedState?.current_visible_context;
   const projectionSource = structuredClone(committedState);
   delete projectionSource.current_visible_context;
-  const playerSafe = projectLowerDvinaTracePlayerSafeState({
+  const { actor, player_safe_state: playerSafe } = projectLowerDvinaTracePlayerSafeState({
     committed_state: projectionSource,
+    scene_presentation: scenePresentation,
     actor_id: projectionSource.actor_id
-  }).player_safe_state;
+  });
+  const selfKnowledge = [...projectKnownContext(actor, playerSafe.knowledge, playerSafe.interactions),
+    ...(playerSafe.available_routes ?? []).map(route => route.label).filter(Boolean)];
   const sceneItems = lowerDvinaTraceVisibleSceneItems(playerSafe.items,
     playerSafe.position,
     playerSafe.actor_id);
@@ -32,6 +33,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
       && validCurrentScene(initial)) {
     const current = {
       ...initial,
+      known_context: unique([...initial.known_context, ...selfKnowledge]),
       sensory_details: unique([...initial.sensory_details,
         ...sceneItems.flatMap(({ physicalFacts }) => physicalFacts)]),
       visible_objects: uniqueLowerDvinaTraceVisibleObjects([
@@ -66,7 +68,7 @@ export function withLowerDvinaTraceCurrentScene({ committedState,
     sensory_details: sensoryDetails,
     visible_npc: sceneNpcs,
     visible_objects: sceneItems.map(({ visibleObject }) => visibleObject),
-    known_context: [profile.display_name],
+    known_context: [profile.display_name, ...selfKnowledge],
     uncertainties: [],
     allowed_tensions: [],
     do_not_imply: ['hidden_fact', 'undiscovered_clue']
@@ -103,7 +105,10 @@ export function projectCurrentSceneForNoOperationDirect({ input, directSeedKeys,
   });
 }
 export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, body }) {
-  const current = input?.retrieved_state?.current_visible_context;
+  const current = projectCampFireState(
+    input?.retrieved_state?.current_visible_context,
+    input?.retrieved_state,
+    input?.retrieved_state?.position);
   if (!validCurrentScene(current)) failCurrentScene();
   const outcomeConstraints = directOutcomeConstraints(input);
   const directResultChanges = lowerDvinaTraceDirectResultChanges(input,
@@ -111,17 +116,8 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([
-      ...current.visible_changes,
       ...projectDirectSeedChanges({ input, directSeedKeys }),
-      ...directResultChanges,
-      ...(outcomeConstraints.includes('unconfirmed_attempt_success')
-        ? input.mode_resolution.decision_trace.step_traces
-          .filter(({ approved_plan: plan }) => plan?.resolution === 'direct'
-            && plan.goal_result === 'not_achieved')
-          .map(({ approved_plan: plan }) =>
-            text(plan.interpretation?.player_goal)
-              ? `Не удалось достичь цели «${plan.interpretation.player_goal}».`
-              : 'Цель попытки не достигнута.') : [])
+      ...directResultChanges
     ]),
     known_context: unique([
       ...current.known_context,
@@ -129,13 +125,7 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
       ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
       ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
     ]),
-    uncertainties: unique([
-      ...current.uncertainties,
-      ...(!directResultChanges.includes(
-        'Наблюдение завершено по уже доступным вам признакам.') ? [] : [
-        'Наблюдение не подтверждает деталей сверх уже видимых признаков.'
-      ])
-    ]),
+    uncertainties: unique(current.uncertainties),
     do_not_imply: unique([
       ...current.do_not_imply,
       'hidden_fact',
@@ -145,24 +135,79 @@ export function projectCurrentSceneForVisibleOverlay({ input, directSeedKeys, bo
     ])
   });
 }
-
 function playerSafeSceneItems(state) {
   return lowerDvinaTraceCarriedItemObservations(state?.items,
     state?.current_visible_context?.visible_objects);
 }
-export function projectDirectSeedChanges({ input, directSeedKeys }) {
+export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = null }) {
   const seed = input?.consequence?.visible_seed ?? {};
-  return directSeedKeys.map((key) => directSeedChange(seed[key]))
-    .filter(Boolean);
+  const values = directSeedKeys.map((key) => seed[key]);
+  const speech = appliedPlan?.resolution === 'direct' && appliedPlan.direct_result_kind === 'player_utterance'
+    ? spokenChange(appliedPlan.utterance.utterance_text) : null;
+  const observation = appliedPlan?.resolution === 'direct'
+    && appliedPlan.direct_result_kind === 'player_safe_observation';
+  const attempts = values.filter(value => value?.kind === 'transient_item_use'
+    && Object.keys(value).length === 2 && text(value.description));
+  const changes = values.flatMap((value) => {
+    if (appliedPlan != null && (value?.kind === 'semantic_activity'
+        || (attempts.length === 1 && value === attempts[0]))) return [];
+    return directSeedChange(value);
+  }).filter(Boolean);
+  if (speech != null) return [speech, ...changes];
+  if (observation) return [text(appliedPlan.assessment?.text)
+    ? appliedPlan.assessment.text : 'Вы внимательно изучили обстановку.',
+  ...changes];
+  if (appliedPlan != null && attempts.length === 1) return [
+    ...directSeedChange(attempts[0]), ...changes
+  ];
+  return changes;
+}
+export function materializedOrdinaryPresenceChange(value) {
+  if (!plain(value) || value.kind !== 'ordinary_presence_seed' || value.resolution !== 'materialized'
+      || Object.keys(value).length !== 4 || typeof value.query !== 'string' || !value.query.trim()
+      || typeof value.display_name !== 'string' || !value.display_name.trim()) {
+    ownerFail('TRACE_TURN_STEP_ORDINARY_PRESENCE_VISIBLE_SEED_INVALID');
+  }
+  return `Обнаружено: «${value.display_name}».`;
 }
 function directSeedChange(value) {
+  if (value?.kind === 'transient_item_use' && Object.keys(value).length === 2 && text(value.description))
+    return [`Вы выполнили попытку: «${value.description}»${/[.!?…]$/u.test(value.description) ? '' : '.'}`];
+  if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value);
+  if (value?.kind === 'existing_item_inspection') {
+    return existingItemInspectionVisibleResult(value).changes;
+  }
   if (value?.kind === 'semantic_activity') {
     const duration = Number(value.duration_minutes);
-    return Number.isSafeInteger(duration) && duration > 0
-      ? `Прошло ${duration} ${minuteWord(duration)}.` : null;
+    if (!Number.isSafeInteger(duration) || duration <= 0) return null;
+    const result = value.discovery_result;
+    if (result == null) return value.discovery_kind === 'search'
+      ? 'Вы завершили поиск.'
+      : value.discovery_kind === 'inspect' ? 'Вы завершили осмотр.' : null;
+    if (!['search', 'inspect'].includes(value.discovery_kind) || !plain(result)
+        || Object.keys(result).length !== 2
+        || !['no_change', 'authority_required'].includes(result.resolution)
+        || !text(result.query) || !result.query.trim()) failCurrentScene();
+    const action = value.discovery_kind === 'search' ? 'Поиск' : 'Осмотр';
+    return `${action} по вопросу «${result.query}» не дал подтверждённой находки.`;
   }
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';
+  }
+  if (value?.kind === 'post_applied_perception_window'
+      && value.status === 'completed'
+      && Array.isArray(value.observable_response_event_refs)
+      && value.observable_response_event_refs.length === 0) {
+    return 'Непосредственного наблюдаемого отклика на ваше действие не последовало.';
+  }
+  if (value?.kind === 'post_applied_perception_window'
+      && value.status === 'pending_npc_decision'
+      && Array.isArray(value.observable_response_event_refs)
+      && value.observable_response_event_refs.length === 0
+      && Array.isArray(value.pending_npc_decision_refs)
+      && value.pending_npc_decision_refs.length > 0
+      && value.pending_npc_decision_refs.every(text)) {
+    return null;
   }
   if (value?.change === 'created' && text(value.name)) {
     return `Появился результат вашей работы: ${value.name}.`;
@@ -174,6 +219,13 @@ function directSeedChange(value) {
     return text(value.display_label)
       ? `Вы переместили ${value.display_label}.`
       : 'Вы переместили доступный предмет.';
+  }
+  if (value?.change === 'move_blocked' && text(value.display_label)) {
+    return value.reason === 'hands_full'
+      ? `Вы не смогли взять ${value.display_label}: руки заняты.`
+      : value.reason === 'load_limit'
+        ? `Вы не смогли взять ${value.display_label}: ноша слишком тяжела.`
+        : failCurrentScene();
   }
   if (value?.change === 'physical_change'
       && text(value.physical_description)) {
@@ -190,15 +242,11 @@ function directSeedChange(value) {
   }
   failCurrentScene();
 }
-function minuteWord(value) {
-  const mod100 = value % 100;
-  if (mod100 >= 11 && mod100 <= 14) return 'минут';
-  if (value % 10 === 1) return 'минута';
-  if (value % 10 >= 2 && value % 10 <= 4) return 'минуты';
-  return 'минут';
-}
 function sentence(value) {
   return /[.!?…]$/u.test(value) ? value : `${value}.`;
+}
+function spokenChange(value) {
+  return `Вы произнесли: «${value}»${/[.!?…]$/u.test(value) ? '' : '.'}`;
 }
 function directOutcomeConstraints(input) {
   const trace = input?.mode_resolution?.decision_trace;
@@ -226,45 +274,5 @@ function directOutcomeConstraints(input) {
   }
   return constraints;
 }
-function validCurrentScene(value) {
-  return plain(value)
-    && validateVisibleContext(value).ok
-    && ARRAY_FIELDS.every((field) => Array.isArray(value[field]));
-}
-
-function visibleNpc(npc, position, visibleLabels) {
-  const entityId = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
-  const prior = visibleLabels?.get(entityId);
-  const displayLabel = prior?.display_label;
-  if (!samePositionScope(npc, position) || !text(entityId) || !text(displayLabel)) {
-    return null;
-  }
-  return {
-    entity_ref: { entity_kind: 'npc', entity_id: entityId },
-    display_label: displayLabel,
-    recognition: prior?.recognition ?? 'recognized'
-  };
-}
-
-function samePositionScope(npc, position) {
-  const scopes = [['location_ref', 'location_ref'], ['anchor_id', 'g5_anchor_id'],
-    ['g5_anchor_id', 'g5_anchor_id'], ['zone_ref', 'zone_ref']]
-    .filter(([npcKey, positionKey]) => text(npc?.[npcKey])
-      && text(position?.[positionKey]));
-  return scopes.length > 0 && scopes.every(([npcKey, positionKey]) =>
-    npc[npcKey] === position?.[positionKey]);
-}
-
-function text(value) {
-  return typeof value === 'string' && value.length > 0;
-}
-
-function failCurrentScene() {
-  throw Object.assign(new Error(
-    'The committed current scene cannot be projected safely.'),
-  { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID', status: 409 });
-}
-
-function unique(values) {
-  return [...new Set(values)];
-}
+function text(value) { return typeof value === 'string' && value.length > 0; }
+function unique(values) { return [...new Set(values)]; }

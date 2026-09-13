@@ -97,6 +97,21 @@ const merged = mergeFormalKnowledgeMemory({
   state_version_before: 4
 });
 
+function firstKnowledgeMerge() {
+  const firstExpectedStateVersions = seal({
+    entries: [{ entity_ref: npcRef, state_version: 1 }]
+  });
+  return mergeFormalKnowledgeMemory({
+    proposal: seal({
+      ...deltaPayload,
+      expected_state_versions: firstExpectedStateVersions
+    }),
+    state_before_fact_refs: [],
+    state_before_hypothesis_refs: [],
+    state_version_before: 1
+  });
+}
+
 async function reactionBundle() {
   const records = JSON.parse(await readFile(
     'data/world-catalogs/novgorod/temporal-v4/datasets/npc_temporal_profiles_policies.json',
@@ -300,6 +315,34 @@ test('formal perception, reaction and knowledge results map to one closed target
   assert.equal(plan.ok, true, JSON.stringify(plan));
 });
 
+test('first perception creates the initial NPC knowledge state in the same write set', () => {
+  const firstMerge = firstKnowledgeMerge();
+  assert.equal(firstMerge.ok, true, JSON.stringify(firstMerge));
+  const mapped = buildSpatialV3PerceptionReactionWriteSet({
+    party_id: 'party-1',
+    change_set_id: 'change-1',
+    idempotency_record_id: 'turn-idempotency-1',
+    perception_result: perception,
+    perception_replay_evidence: replay,
+    knowledge_merge_result: firstMerge.result,
+    knowledge_state_before_exists: false
+  });
+
+  assert.equal(mapped.ok, true, JSON.stringify(mapped));
+  const stateWrite = mapped.write_set.inserts.find(
+    ({ target_table }) => target_table === 'party_npc_knowledge_merge_states'
+  );
+  assert.deepEqual(stateWrite.record, {
+    party_id: 'party-1',
+    npc_id: 'npc-1',
+    state_version: 2,
+    last_proposal_id: 'knowledge-delta-1',
+    last_result_digest: firstMerge.result.result_digest,
+    updated_change_set_id: 'change-1'
+  });
+  assert.deepEqual(mapped.expected_state_versions, []);
+});
+
 test('mapper rejects a replay or reaction detached from the causal perception', () => {
   const detached = buildSpatialV3PerceptionReactionWriteSet({
     party_id: 'party-1',
@@ -359,7 +402,7 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
     database: 'pr8',
     max: 4
   });
-  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 16);
+  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 31);
   await pool.query(`
     INSERT INTO party_runtime.parties
       (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
@@ -373,21 +416,21 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
     INSERT INTO party_runtime.party_v3_change_sets
       (id,party_id,operation_kind,expected_state_version_set_digest,expected_state_version_set,committed_state_version_set_digest,write_plan_digest,created_at_turn,committed_at_turn)
     VALUES ('seed-change','party-1','activation','seed','[]','seed','seed',0,0);
-    INSERT INTO party_runtime.party_npc_knowledge_merge_states
-      (party_id,npc_id,state_version,updated_change_set_id)
-    VALUES ('party-1','npc-1',4,'seed-change');
     INSERT INTO party_runtime.party_temporal_events
       (event_id,party_id,event_kind,status,scheduled_at_whole_minutes,scheduled_at_subminute_numerator,scheduled_at_subminute_denominator,rule_ref,policy_ref,preconditions_digest,idempotency_key,change_set_id,state_version)
     VALUES ('event-1','party-1','sensory_signal','pending',100,0,1,'{}','{}','event-preconditions','event-1','seed-change',1)
   `);
   const reaction = await reactionBundle();
+  const firstMerge = firstKnowledgeMerge();
+  assert.equal(firstMerge.ok, true, JSON.stringify(firstMerge));
   const mapped = buildSpatialV3PerceptionReactionWriteSet({
     party_id: 'party-1',
     change_set_id: 'change-1',
     idempotency_record_id: 'turn-idempotency-1',
     perception_result: perception,
     perception_replay_evidence: replay,
-    knowledge_merge_result: merged.result,
+    knowledge_merge_result: firstMerge.result,
+    knowledge_state_before_exists: false,
     reaction_option_proposal: reaction.reaction_option_proposal,
     reaction_proposal: reaction.reaction_proposal
   });
@@ -483,7 +526,7 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
     idempotency: 0,
     perceptions: 0,
     event_status: 'pending',
-    knowledge_version: 4
+    knowledge_version: null
   });
 
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({
@@ -524,7 +567,7 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
     reactions: 1,
     merges: 1,
     knowledge: 1,
-    knowledge_version: 5,
+    knowledge_version: 2,
     visible_packages: 1,
     narration_jobs: 1
   });
@@ -537,6 +580,6 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
     fact_id: 'signal-observed',
     knowledge_ref_kind: 'knowledge_fact',
     knowledge_classification: 'fact',
-    merge_state_version: '5'
+    merge_state_version: '2'
   }]);
 });

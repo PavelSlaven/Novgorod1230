@@ -1,10 +1,35 @@
 const ACTOR_FACING_PURPOSES = new Set(['npc_decision', 'conversation', 'narration']);
 
 export function lexicalCandidates(bundle, query) {
+  return lexicalScores(bundle, query.search_hints.join(' '), query.query_locale, false);
+}
+
+export function candidateWorldKnowledgeFocusRefs(bundle, input, locale, domains, limit = 256) {
+  const scores = lexicalScores(bundle, String(input), locale, true);
+  const domainSet = new Set(domains);
+  const claims = new Map(bundle.claims.map(claim => [claim.claim_ref, claim]));
+  return bundle.concepts.flatMap(concept => {
+    const refs = bundle.exact_indexes.concept_to_claim_refs[concept.concept_ref] ?? [];
+    if (!domainSet.has(concept.domain)
+        && !refs.some(ref => domainSet.has(claims.get(ref)?.domain))) return [];
+    const score = Math.max(0, ...refs.map(ref => scores.get(ref) ?? 0));
+    return score > 0 ? [{ ref: concept.concept_ref, score }] : [];
+  }).sort((a, b) => b.score - a.score || a.ref.localeCompare(b.ref))
+    .slice(0, limit).map(({ ref }) => ref);
+}
+
+function lexicalScores(bundle, input, locale, expandRussianStems) {
+  const index = bundle.lexical_indexes[locale] ?? {};
+  const indexKeys = expandRussianStems ? Object.keys(index) : [];
   const scores = new Map();
-  for (const token of new Set(tokenize(query.search_hints.join(' ')))) {
+  for (const token of new Set(tokenize(input))) {
+    const keys = new Set([token]);
+    if (expandRussianStems && /\p{Script=Cyrillic}/u.test(token) && token.length >= 4) {
+      const stem = token.slice(0, -1);
+      for (const key of indexKeys) if (key.startsWith(stem)) keys.add(key);
+    }
     const targets = new Set();
-    for (const ref of bundle.lexical_indexes[query.query_locale]?.[token] ?? []) {
+    for (const key of keys) for (const ref of index[key] ?? []) {
       for (const target of ref.startsWith('claim:') ? [ref]
         : bundle.exact_indexes.concept_to_claim_refs[ref] ?? []) targets.add(target);
     }

@@ -1,3 +1,5 @@
+import { loadLowerDvinaTraceScreenPresentation } from '../internal/lower-dvina-trace-screen-presentation.js';
+import { projectLowerDvinaTraceScreenPanels } from '../infrastructure/postgres/lower-dvina-trace-screen-panels.js';
 import { canonicalDigest } from '@rus/materialization';
 import { validateFirstGameScreen } from '@rus/presentation';
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
@@ -108,10 +110,18 @@ export async function startLowerDvinaTrace({
       { status: 409 }
     );
   }
-  const screen = traceOpeningProjector({
-    visible,
-    approvedProjection: publication.public_projection
+  const initialScreen = traceOpeningProjector({
+    visible, approvedProjection: publication.public_projection
   });
+  const payload = { ...internal, party_id: partyId,
+    actor_id: internal.player.instance_id,
+    player_profile: internal.player.dossier, body_state: internal.body,
+    clock: internal.timestamp, party_state: { state_version: 0 },
+    position: internal.position,
+    container_placements: (internal.containers ?? []).map(container => ({
+      ...container, container_id: container.container_id })) };
+  const screen = projectLowerDvinaTraceScreenPanels({ payload, screen: initialScreen,
+    presentation: await loadLowerDvinaTraceScreenPresentation(payload) });
   const screenValidation = validateFirstGameScreen(screen);
   if (!screenValidation.ok || detectHiddenLeaks(screen).length > 0) {
     throw serverError(

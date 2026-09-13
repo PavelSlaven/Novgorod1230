@@ -133,6 +133,19 @@ test('continuation cannot repeat intent after a non-discovery domain step', () =
   assert.equal(validateTurnStepPlan(repeated, { request: source }).ok, true);
 });
 
+test('ordinary discovery carries only a bounded exact item quantity', () => {
+  const source = request();
+  const discovery = plan({ operations: [{ op: 'request_discovery',
+    actor_ref: 'actor_mikula', discovery_kind: 'inspect',
+    target_refs: ['sand_bank'], query: 'сухие ветки',
+    quantity: { value: 5, unit: 'item' } }],
+  continuation: { remaining_intent: source.remaining_intent,
+    depends_on_refs: [] } });
+  assert.equal(validateTurnStepPlan(discovery, { request: source }).ok, true);
+  discovery.operations[0].quantity.value = 17;
+  assert.equal(validateTurnStepPlan(discovery, { request: source }).ok, false);
+});
+
 test('pending discovery is a strict single-target code carrier', () => {
   const source = request();
   const discovery = plan({ operations: [{ op: 'request_discovery',

@@ -73,6 +73,7 @@ function createRecordedRoot(records) {
       model: 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced',
       api_key_present: false,
       local_runtime: { ready: true, reasons: [] } }),
+    getTurnProgress: () => null,
     listScenarios: async () => ({
       version: 1,
       schema: 'public_scenario_catalog',

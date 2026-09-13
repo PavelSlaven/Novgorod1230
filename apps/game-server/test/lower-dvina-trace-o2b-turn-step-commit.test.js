@@ -93,31 +93,30 @@ test('concealed O2b resolution precedes one container move version chain',
 function operationBatch(itemId) {
   return {target:'party_turn_step_operations',value:{version:1,
     schema:'party_turn_step_operation_batch_v1',root_turn_id:'turn:p:1',
-    committed_state_version:3,operations:[{target:'party_items',value:{
-      version:1,schema:'rus.lower_dvina_trace_turn_step_direct_operation.v1',
-      operation_id:'op-o2b-move',root_turn_id:'turn:p:1',step_index:1,
-      operation_kind:'move_entity',payload:{entity_ref:itemId,placement:{
-        holder_character_id:'actor-1',physical_position:'hands'}}}},
-    {target:'party_events',value:{version:1,
+    committed_state_version:3,operations:[{target:'party_events',value:{version:1,
       schema:'rus.lower_dvina_trace_turn_step_semantic_activity.v1',
       activity_id:'activity-1',root_turn_id:'turn:p:1',step_index:1,
       profile_ref:'approved:brief-none',duration_class:'brief',
-      duration_minutes:1,effort:'none'}}]}};
+      duration_minutes:1,effort:'none'}},{target:'party_items',value:{
+      version:1,schema:'rus.lower_dvina_trace_turn_step_direct_operation.v1',
+      operation_id:'op-o2b-move',root_turn_id:'turn:p:1',step_index:1,
+      operation_kind:'move_entity',payload:{entity_ref:itemId,placement:{
+        holder_character_id:'actor-1',physical_position:'hands'}}}}]}};
 }
 
 function containerOperationBatch(source) {
   return {target:'party_turn_step_operations',value:{version:1,
     schema:'party_turn_step_operation_batch_v1',root_turn_id:'turn:p:1',
-    committed_state_version:3,operations:[{target:'party_containers',value:{
+    committed_state_version:3,operations:[{target:'party_events',value:{version:1,
+      schema:'rus.lower_dvina_trace_turn_step_semantic_activity.v1',
+      activity_id:'activity-1',root_turn_id:'turn:p:1',step_index:1,
+      profile_ref:'approved:brief-none',duration_class:'brief',
+      duration_minutes:1,effort:'none'}},{target:'party_containers',value:{
       version:1,schema:'rus.lower_dvina_trace_turn_step_direct_operation.v1',
       operation_id:'op-o2b-container-move',root_turn_id:'turn:p:1',step_index:1,
       operation_kind:'move_entity',payload:{entity_ref:'chest',placement:{
         holder_character_id:'actor-1',physical_position:'hands'},
-      authored_source:source}}},{target:'party_events',value:{version:1,
-      schema:'rus.lower_dvina_trace_turn_step_semantic_activity.v1',
-      activity_id:'activity-1',root_turn_id:'turn:p:1',step_index:1,
-      profile_ref:'approved:brief-none',duration_class:'brief',
-      duration_minutes:1,effort:'none'}}]}};
+      authored_source:source}}}]}};
 }
 
 function state() {

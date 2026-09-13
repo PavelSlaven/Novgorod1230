@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { mergePhase2Items } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit-items.js';
+import { appendPhase2Clue } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-clue-writes.js';
 import { loadLowerDvinaTracePhase2Bundle } from
   '../src/internal/lower-dvina-trace-phase-2-bundle.js';
 import { resolveTracePhase2Contracts } from
@@ -9,6 +11,21 @@ import { resolveTracePhase2Contracts } from
 import { materializeBlueWoolPickup } from
   '../src/runtime/lower-dvina-trace-phase-2-pickup.js';
 import { bundle9, fixture } from './lower-dvina-trace-phase-2-fixture.js';
+
+test('legacy clue snapshot keeps SQL placement separate from semantic location', () => {
+  const clue = { instance_id: 'clue-1', template_id: 'clue-template',
+    placement: { anchor_id: 'anchor-1', location_ref: 'location-1' } };
+  const [item] = mergePhase2Items([], clue);
+  const inserts = [];
+  appendPhase2Clue({ inserts, clue, partyId: 'party-1',
+    state: { items: [], materialization_trace: { run_id: 'run-1' } } });
+  const placement = inserts.find(({ target_table }) =>
+    target_table === 'party_item_placements').record;
+  assert.deepEqual(item.placement, Object.fromEntries(Object.entries(placement)
+    .filter(([key, value]) => !['party_id', 'item_id'].includes(key) && value != null)));
+  assert.deepEqual(item.state.placement_contract, clue.placement);
+  assert.deepEqual(clue.placement, { anchor_id: 'anchor-1', location_ref: 'location-1' });
+});
 
 test('revision 32 pickup persists completed authored item mechanics', async () => {
   const revision32 = structuredClone(bundle9);

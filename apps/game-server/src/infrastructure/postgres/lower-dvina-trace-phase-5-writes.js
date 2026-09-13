@@ -2,7 +2,8 @@ import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
-import { phase2ScreenDigest, phase2VisibleContextFromPayload } from
+import { phase2ScreenDigest, phase2VisibleContextFromPayload,
+  projectPlayerSafeChecks } from
   './lower-dvina-trace-phase-2-projection.js';
 import { appendPhase5FinalTreatment } from
   './lower-dvina-trace-phase-5-final-writes.js';
@@ -87,6 +88,7 @@ export function phase5PendingScreen({ state, factual, visibleEnvelope,
     },
     visible_context:
       phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    checks: projectPlayerSafeChecks(state),
     main_prose:
       'Факты хода сохранены; повествование ожидает повторной доставки.'
   };

@@ -1,5 +1,9 @@
 # @rus/game-web
 
+[Ситуационные требования к прозе](../../data/knowledge-source/corpus/DOCUMENTS/situational_prose_requirements.md)
+задают требования к видимой структуре текста. UI сохраняет переданные слова,
+атрибуцию речи и абзацы; не дописывает события или литературные связи.
+
 ## Назначение
 
 Browser-клиент, который получает только versioned public read models от `@rus/game-server` и отображает их без вычисления игровых последствий.
@@ -9,9 +13,33 @@ Browser-клиент, который получает только versioned pub
 - HTTP API client `/api/v1`;
 - валидацией публичных API envelopes и screen contracts;
 - UI-only store;
+- постоянным указанием управляемого персонажа в header из уже публичных
+  `panels.character.data.name/role`; другие люди не становятся этим персонажем;
+- отображением готового `presentation_context` в header; календарь, место и
+  exact длительность последнего committed хода вычисляет server из committed
+  state, `visible_context` остаётся без изменений;
 - маршрутизацией FirstGameScreen/TurnScreen;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
+- чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome
+  виден сразу, полная формула и signed modifiers доступны через `<details>`;
+- Character отображает уже безопасные предысторию, память и известные сведения;
+  воспоминание о человеке не добавляет его в список присутствующих людей;
 - browser bootstrap и обработкой пользовательских намерений.
+- сохранением `{party_id, request}` незавершённого хода в `rus.pending_turn`
+  до POST: retry и Continue после reload повторяют точный request/idempotency key.
+  Успех либо доказанный отказ до commit снимает pending; неизвестный исход
+  сохраняет его. При восстановлении старого хода новый draft остаётся в поле,
+  а кнопка явно сообщает о восстановлении. Это identity запроса, не копия мира.
+- Пока exact pending request отправляется либо восстанавливает committed
+  presentation, browser без overlap опрашивает
+  `GET /api/v1/parties/:partyId/turns/:requestId/progress`. Nullable
+  `turn_progress_v1` принимает только закрытые phases `accepted`,
+  `understanding_action`, `resolving_world`, `saving_result`, `preparing_screen`,
+  `recovering_saved_result`, commit_state `unconfirmed|committed`, factual
+  `elapsed_seconds` и `remaining_seconds: null`. UI показывает phase, elapsed и
+  факт commit без ETA/percent либо private role/provider/trace. Polling optional:
+  ошибка или null не прерывает authoritative turn/recovery, после их завершения
+  polling останавливается; reload продолжает тот же сохранённый request ID.
 - компактным LLM settings overlay для default, локального Gemma preset и
   произвольного OpenAI-compatible endpoint: browser вызывает только game-server
   `/api/v1/llm-settings`; API key передаётся в Apply/Test и не сохраняется в
@@ -74,6 +102,8 @@ fallback для historical parties.
 - только app router заменяет корневой DOM;
 - feature renderers являются чистыми функциями;
 - пользовательский текст отправляется как intent, а не как факт мира.
+- browser не вычисляет total/outcome, не бросает кубик и не сохраняет отдельную
+  dice history: retry/reload получают ту же server-owned screen projection.
 - landscape использует только canonical `env.*` transition profile и
   `spatial.g3.*` category из закрытых allowlist; отсутствующее/неизвестное
   значение остаётся neutral, а label, prose и node ID не анализируются;

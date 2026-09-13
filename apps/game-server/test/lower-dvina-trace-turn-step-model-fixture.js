@@ -28,7 +28,7 @@ function ordinarySceneSeed(request) {
     op: 'request_discovery', actor_ref: requiredActorRef(request),
     discovery_kind: 'look',
     target_refs: [request.player_safe_state.position.location_ref],
-    query: 'общий вид ближайшего окружения'
+    query: request.remaining_intent
   });
 }
 
@@ -40,7 +40,7 @@ function spatialLook(request) {
   }
   return domainPlan(request, {
     op: 'request_discovery', actor_ref: requiredActorRef(request),
-    discovery_kind: 'look', target_refs: [marker.position_ref], query: 'осмотреться'
+    discovery_kind: 'look', target_refs: [marker.position_ref], query: request.remaining_intent
   });
 }
 

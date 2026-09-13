@@ -443,7 +443,7 @@ function approvedNarration(requestId) {
       output_id: `narration:${requestId}`, prose: 'Факты сохранены.',
       action_options: [], used_references: [],
       self_check: { no_new_world_facts: true } },
-    final_audit: { version: 1, schema: 'narration_audit', pass: true,
+    final_audit: { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true,
       concerns: [], evidence: ['visible_context'] }, repair_request: null,
     generation_history: [], audit_history: [], repair_history: [],
     diagnostics: {} };

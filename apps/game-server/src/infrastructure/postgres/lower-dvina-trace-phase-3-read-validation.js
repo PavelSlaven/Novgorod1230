@@ -47,7 +47,8 @@ export function assertPhase3ReadRows({ payload, semanticRevision, results }) {
     contribution_ref: entry.contribution_ref ?? null,
     supporting_operation_event_ref:
       entry.supporting_operation_event_ref ?? null
-  }));
+  })).sort((left, right) =>
+    left.interaction_id.localeCompare(right.interaction_id));
   const expectedSummaries = expectedInteractions.flatMap((entry) =>
     entry.statement_is_new !== true ? [] : [{
       summary_id: `summary:${entry.interaction_id}:npc_memory`,
@@ -122,7 +123,8 @@ export function assertPhase3ReadRows({ payload, semanticRevision, results }) {
         result_change_set_id: entry.change_set_id,
         canonical_digest: canonicalDigest(result)
       };
-    });
+    }).sort((left, right) =>
+      left.check_resolution_id.localeCompare(right.check_resolution_id));
   const actualChecks = checks.rows.map((row) => ({
     check_resolution_id: row.check_resolution_id,
     check_scope_kind: row.check_scope_kind,

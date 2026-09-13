@@ -35,6 +35,7 @@ export function buildTurnStepCommitEnvelope(input) {
       completed_steps: structuredClone(loop.completed_steps),
       step_traces: stepTraces,
       check_results: structuredClone(input.checks.results),
+      factual_events: structuredClone(loop.factual_events ?? []),
       clarification: structuredClone(loop.clarification)
     }
   };

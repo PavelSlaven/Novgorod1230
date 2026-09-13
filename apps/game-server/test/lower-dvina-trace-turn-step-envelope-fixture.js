@@ -94,9 +94,12 @@ export function commitEnvelope({ clarification, check }) {
       next_step_index: clarification ? 1 : 2,
       remaining_intent: null,
       completed_steps: clarification ? [] : [{ step_index: 1,
-        summary: 'беру песок' }],
+        summary: 'беру песок', ...(result.length === 0 ? {} : {
+          check_outcome: result[0].outcome.band
+        }) }],
       step_traces: decisionTrace.step_traces,
       check_results: result,
+      factual_events: [],
       clarification: question
     }
   };

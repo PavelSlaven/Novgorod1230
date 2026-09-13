@@ -60,7 +60,7 @@ test('copied authored discovery is semantically rejected before its one repair',
     assert.equal(calls, 2);
   });
 
-test('lossy discovery wording gets one semantic repair without prompt rules',
+test('lossy discovery wording gets one lossless split repair',
   async () => {
     const intent =
       'Осмотреть пояс и сумку на разрывы, затем проверить сухость грунта.';
@@ -82,8 +82,8 @@ test('lossy discovery wording gets one semantic repair without prompt rules',
             depends_on_refs: [] }
         } };
         assert.equal(call.role_id, 'turn_step_planner_repair');
-        assert.doesNotMatch(call.messages[0].content,
-          /Required ordinary discovery repair:/u);
+        assert.match(call.messages[0].content,
+          /Required ordinary discovery repair:[\s\S]*standalone focused discovery losslessly[\s\S]*exact earliest discovery prefix[\s\S]*exact uncovered suffix/u);
         return { output: {
           ...output(), resolution: 'domain_request', operations: [{
             op: 'request_discovery', actor_ref: 'actor_mikula',
@@ -111,6 +111,72 @@ test('lossy discovery wording gets one semantic repair without prompt rules',
     assert.equal(result.plan.operations[0].query,
       'Осмотреть пояс и сумку на разрывы');
     assert.equal(calls, 2);
+  });
+
+test('material prerequisite repair restores full intent and is revalidated',
+  async () => {
+    const cases = [
+      {
+        intent: 'Беру целый обрывок снасти и несколько сухих щепок из расколотой доски, затем отхожу за ивняк, где меньше ветра.',
+        query: 'целый обрывок снасти и несколько сухих щепок из расколотой доски',
+        lossy: 'затем отхожу за ивняк, где меньше ветра.'
+      },
+      {
+        intent: 'Подбираю пучок сухого камыша и свиваю из него растопку.',
+        query: 'пучок сухого камыша',
+        lossy: 'свиваю из него растопку.'
+      }
+    ];
+    for (const [index, entry] of cases.entries()) {
+      const input = request({ request_id: `material-prerequisite:${index}`,
+        root_player_action: entry.intent, remaining_intent: entry.intent,
+        player_safe_state: {
+          position: { location_ref: 'location:riverbank' },
+          ordinary_resolution: { discovery_available: true,
+            container_resolution_available: false,
+            scene_seed_available: false }
+        } });
+      const operation = { op: 'request_discovery',
+        actor_ref: 'actor_mikula', discovery_kind: 'inspect',
+        target_refs: ['location:riverbank'], query: entry.query };
+      const roles = [];
+      const roleRunner = { async run(call) {
+        roles.push(call.role_id);
+        if (call.role_id === 'turn_step_planner') return { output: {
+          ...output(), resolution: 'domain_request', operations: [operation],
+          continuation: { remaining_intent: entry.lossy,
+            depends_on_refs: [] }, reason_code: 'semantic_plan'
+        } };
+        if (call.role_id === 'turn_step_planner_repair') {
+          const payload = JSON.parse(call.messages[1].content);
+          assert.deepEqual(payload.structural_errors.map(({ path }) => path), [
+            '$.operations.0.query', '$.continuation.remaining_intent'
+          ]);
+          assert.match(call.messages[0].content,
+            /If discovery is a material prerequisite[\s\S]*query names only that needed referent, material, or physically connected group[\s\S]*continuation is exactly[\s\S]*Do not invent refs, outcomes, or execute the later action/u);
+          return { output: { ...output(), resolution: 'domain_request',
+            operations: [operation], continuation: {
+              remaining_intent: entry.intent, depends_on_refs: []
+            }, reason_code: 'semantic_plan' } };
+        }
+        const payload = JSON.parse(call.messages[1].content);
+        assert.equal(payload.operation.query, entry.query);
+        assert.equal(payload.remaining_intent, entry.intent);
+        return { output: { mode: 'material_prerequisite',
+          consumed_intent: null } };
+      } };
+      const grounding =
+        createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner });
+      const result = await requestTurnStepPlanWithRepair({ request: input,
+        turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner }),
+        semanticPlanValidator: (context) => grounding({ ...context,
+          resolved_domain_operations: [{ path: '$.operations.0',
+            owner_kind: 'ordinary_discovery' }] }) });
+      assert.equal(result.repaired, true);
+      assert.equal(result.plan.continuation.remaining_intent, entry.intent);
+      assert.deepEqual(roles, ['turn_step_planner', 'turn_step_grounding_auditor',
+        'turn_step_planner_repair', 'turn_step_grounding_auditor']);
+    }
   });
 
 test('body inspection cannot remain an ordinary discovery of covering clothing',

@@ -144,6 +144,8 @@ Format repairer исправляет только JSON-формат audit output
 
 Audit обязан содержать все нормативные check-блоки, непустой массив строк `evidence`, валидные concern objects и согласованные permissions.
 
+Обязательный `literary_composition_check` оценивает связанную литературную композицию: supplied identity и прошлое ведут к текущей ориентации и ставке, когда approved visible context их содержит. Досье, отчёт, перечень фактов и декоративное заполнение не проходят даже при полной factual grounding. При отсутствии биографии достаточно краткой связной сцены; нельзя выдумывать прошлое, мотивы, ощущения или события ради этого check. Неудачная композиция даёт `pass=false`, concern `NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION` severity `repairable` и конкретное текстовое evidence; Router возвращает narrator_prose_semantic_repair. Factual-only approval недостаточен.
+
 При `pass=true`:
 
 ```text id="stage23-success-invariants-v3"
@@ -601,6 +603,7 @@ pass=false
     "rumor_uncertainty_check": {},
     "action_options_check": {},
     "technical_text_check": {},
+    "literary_composition_check": {},
     "must_include_check": {},
     "must_not_include_check": {},
     "commit_readiness": {}
@@ -1385,6 +1388,7 @@ Repairer указывается здесь, потому что аудит до�
 22. prose contains no raw JSON/schema/audit/repair/debug text.
 23. all visible_scene_dossier.must_include are represented.
 24. no visible_scene_dossier.must_not_include is represented.
+25. literary_composition_check: связная литературная сцена связывает supplied identity/прошлое с нынешней ориентацией и ставкой, где они даны в visible context. Досье, отчёт, перечень и декоративное заполнение — fail с NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION и конкретным evidence, даже если все факты верны. Не требуй отсутствующей биографии и не разрешай выдумывать факты ради композиции.
 
 # Критическое правило
 
@@ -1967,6 +1971,11 @@ narrator_prose_audit.pass=true
       "evidence": [
         "prose contains no JSON, schema, audit, repair, debug or raw ids"
       ]
+    },
+
+    "literary_composition_check": {
+      "pass": true,
+      "evidence": ["supplied identity and past lead into the present scene and stake without dossier, report or padding"]
     },
 
     "must_include_check": {

@@ -87,3 +87,22 @@ function collectStateValues(value, output, seen) {
 function plain(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value);
 }
+
+export function runtimeItemIsAccessibleInPlace(item, { actor_id, position, visible_objects = [] } = {}) {
+  if (runtimeItemRecordIsConcealed(item)) return false;
+  const placement = item.placement ?? {};
+  if (placement.container_id != null || placement.attached_item_id != null
+      || placement.holder_npc_id != null) return false;
+  if (placement.holder_character_id != null) return placement.holder_character_id === actor_id
+    && ['location_ref', 'scene_position_id', 'g5_anchor_id', 'anchor_id'].every(key => placement[key] == null);
+  const visible = visible_objects.find(object => object?.entity_ref?.entity_kind === 'item'
+    && object.entity_ref.entity_id === (item.item_id ?? item.instance_id));
+  if (!visible || runtimeItemRecordIsConcealed({ ...visible,
+    visibility_state: visible.visible_status })) return false;
+  const scopes = [['location_ref', 'location_ref'], ['scene_position_id', 'position_id'],
+    ['g5_anchor_id', 'g5_anchor_id'], ['anchor_id', 'anchor_id']]
+    .filter(([key]) => placement[key] != null);
+  return scopes.length > 0 && scopes.every(([key, current]) =>
+    typeof placement[key] === 'string' && placement[key].length > 0
+      && placement[key] === position?.[current]);
+}

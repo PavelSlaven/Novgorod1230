@@ -9,6 +9,33 @@ test('non-movement action does not become narrator scene material', () => {
   });
 });
 
+test('narrator receives the committed check degree without RNG internals', () => {
+  const outcome = spatialResult({ checks: { results: [{
+    check_id: 'check-1', outcome: { band: 'success_with_cost', margin: -2,
+      success: false, cost_required: true, severe_failure: false,
+      roll_note: null }
+  }] }, modeResolution: { decision_trace: { step_traces: [{
+    check_binding: { check_id: 'check-1' }, approved_plan: {
+      interpretation: { grounded_attempt: 'перепрыгнуть канаву' }
+    }
+  }] } } });
+  assert.deepEqual(outcome, { check_outcomes: [{ ordinal: 1,
+    action: 'перепрыгнуть канаву', band: 'success_with_cost', margin: -2,
+    success: false, cost_required: true, severe_failure: false,
+    roll_note: null }] });
+  assert.doesNotMatch(JSON.stringify(outcome),
+    /"roll"|difficulty|audit|seed/u);
+});
+
+test('narrator distinguishes a grounded qualitative assessment from scene observation', () => {
+  assert.deepEqual(spatialResult({ modeResolution: { decision_trace: { step_traces: [{
+    applied: true, approved_plan: { resolution: 'direct',
+      direct_result_kind: 'player_safe_observation', assessment: {
+        text: 'Укрытие сейчас важнее.', support_refs: ['claim:cold']
+      } }
+  }] } } }), { qualitative_assessment: true });
+});
+
 test('spatial result recognizes committed active movement shapes', () => {
   for (const consequence of [
     { movement: { destination: { location_ref: 'shed' } } },

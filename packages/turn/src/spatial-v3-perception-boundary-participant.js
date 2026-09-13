@@ -3,7 +3,9 @@ import {
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
 import { compareGameTimestamp } from '@rus/time-events-history';
+import { buildNpcDecisionSignal } from '@rus/npc-runtime';
 import {
+  resolveSpatialV3PerceptionKnowledge,
   resolveSpatialV3PerceptionReactionBoundary
 } from './spatial-v3-perception-reaction-cycle.js';
 import {
@@ -34,11 +36,17 @@ const hardBlock = (code = 'perception_policy_gap') =>
  */
 export function createSpatialV3PerceptionBoundaryParticipant({
   resolveBoundary = resolveSpatialV3PerceptionReactionBoundary,
+  resolvePerceptionKnowledge = resolveSpatialV3PerceptionKnowledge,
   buildInitialWriteSet = buildSpatialV3PerceptionReactionWriteSet,
   buildCompletionWriteSet =
     buildSpatialV3ReactionDecisionCompletionWriteSet
 } = {}) {
-  if (![resolveBoundary, buildInitialWriteSet, buildCompletionWriteSet]
+  if (![
+    resolveBoundary,
+    resolvePerceptionKnowledge,
+    buildInitialWriteSet,
+    buildCompletionWriteSet
+  ]
     .every((value) => typeof value === 'function')) {
     throw new TypeError('Perception boundary participant requires pure owner adapters.');
   }
@@ -78,7 +86,9 @@ export function createSpatialV3PerceptionBoundaryParticipant({
         ) !== 0) {
         return hardBlock();
       }
-      const outcome = resolveBoundary(freeze(clone(work.cycle_input)));
+      const outcome = work.kind === 'perception_only'
+        ? resolvePerceptionKnowledge(freeze(clone(work.cycle_input)))
+        : resolveBoundary(freeze(clone(work.cycle_input)));
       if (outcome instanceof Promise || !outcome?.ok) {
         return hardBlock(outcome?.error?.code ?? 'perception_policy_gap');
       }
@@ -104,6 +114,8 @@ export function createSpatialV3PerceptionBoundaryParticipant({
             perception_replay_evidence:
               outcome.perception_replay_evidence,
             knowledge_merge_result: outcome.knowledge_merge_result,
+            knowledge_state_before_exists:
+              work.write_context.knowledge_state_before_exists !== false,
             reaction_option_proposal:
               outcome.reaction_option_proposal,
             reaction_proposal: outcome.reaction_proposal
@@ -113,8 +125,9 @@ export function createSpatialV3PerceptionBoundaryParticipant({
       }
       const proposalPayload = {
         proposal_id: `${candidate.boundary_id}:perception-reaction`,
-        write_target:
-          `perception-reaction:${outcome.reaction_option_proposal.request_id}`,
+        write_target: outcome.reaction_option_proposal === null
+          ? `perception-knowledge:${outcome.perception_result.perception_id}`
+          : `perception-reaction:${outcome.reaction_option_proposal.request_id}`,
         boundary_id: candidate.boundary_id,
         status: outcome.status,
         decision_mode: outcome.decision_mode,
@@ -126,6 +139,13 @@ export function createSpatialV3PerceptionBoundaryParticipant({
       const remaining = workItems.filter(
         (item) => item.boundary_id !== candidate.boundary_id
       );
+      const perceived = outcome.perception_result.result !== 'not_perceived';
+      const signal = work.kind === 'perception_only' && perceived
+        ? decisionSignalDescriptor(work, outcome, candidate)
+        : null;
+      if (work.kind === 'perception_only' && perceived && signal === null) {
+        return hardBlock('npc_decision_policy_gap');
+      }
       return freeze({
         disposition: 'execute',
         proposals: [{
@@ -137,6 +157,12 @@ export function createSpatialV3PerceptionBoundaryParticipant({
         state_projection: {
           ...clone(context.projection),
           perception_boundary_work_items: remaining,
+          ...(signal === null ? {} : {
+            npc_decision_signal_descriptors: [
+              ...(context.projection.npc_decision_signal_descriptors ?? []),
+              signal
+            ]
+          }),
           ...(outcome.status === 'awaiting_bounded_decision'
             ? {
                 pending_npc_decision_request:
@@ -147,4 +173,36 @@ export function createSpatialV3PerceptionBoundaryParticipant({
       });
     }
   });
+}
+
+function decisionSignalDescriptor(work, outcome, candidate) {
+  const descriptor = work.decision_signal_descriptor;
+  if (!record(descriptor)
+      || typeof descriptor.perceived_change_summary !== 'string'
+      || descriptor.perceived_change_summary.trim()
+        !== descriptor.perceived_change_summary
+      || descriptor.perceived_change_summary.length === 0) {
+    return null;
+  }
+  const signal = {
+    occurred_at: clone(candidate.scheduled_at),
+    category: descriptor.category,
+    significance: descriptor.significance,
+    source_event_ref: clone(candidate.source_ref),
+    subject_ref: clone(candidate.primary_subject_ref),
+    scope_refs: clone(descriptor.scope_refs ?? []),
+    perception_required: true,
+    source_perception_ref: {
+      entity_kind: 'perception_result',
+      entity_id: outcome.perception_result.perception_id
+    },
+    causal_parent_refs: clone(candidate.causal_parent_refs ?? []),
+    perceived_change_summary: descriptor.perceived_change_summary
+  };
+  try {
+    buildNpcDecisionSignal(signal);
+    return signal;
+  } catch {
+    return null;
+  }
 }

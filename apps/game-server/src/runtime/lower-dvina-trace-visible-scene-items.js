@@ -1,17 +1,22 @@
 import { resolvePhysicalItemCondition } from '@rus/items-property';
+const CARRIED_VISIBLE_STATUSES = Object.freeze({ hands: 'у вас в руках', other: 'при вас' });
+const carriedVisibleStatus = (status) => Object.values(CARRIED_VISIBLE_STATUSES).includes(status);
 
 export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
   body = {}) {
   const plans = input?.mode_resolution?.decision_trace?.step_traces ?? [];
-  const kinds = new Set(plans.filter(({ approved_plan: plan, applied }) =>
+  const directPlans = plans.filter(({ approved_plan: plan, applied }) =>
     applied === true && plan?.resolution === 'direct'
       && plan.goal_result !== 'not_achieved'
       && Array.isArray(plan.operations) && plan.operations.length === 0
-      && plan.check === null).map(({ approved_plan }) =>
-        approved_plan.direct_result_kind));
+      && plan.check === null).map(({ approved_plan }) => approved_plan);
+  const kinds = new Set(directPlans.map(({ direct_result_kind: kind }) => kind));
   return [
-    ...(kinds.has('player_safe_observation')
-      ? ['Наблюдение завершено по уже доступным вам признакам.'] : []),
+    ...(directPlans.some((plan) => plan.direct_result_kind === 'player_safe_observation'
+        && plan.assessment == null)
+      ? ['Вы внимательно изучили обстановку.',
+        ...lowerDvinaTraceObservedSceneChanges(
+          input?.retrieved_state?.current_visible_context)] : []),
     ...(kinds.has('player_safe_item_observation')
       ? carriedItemObservationChanges(sceneItems) : []),
     ...(kinds.has('player_safe_body_observation')
@@ -19,6 +24,45 @@ export function lowerDvinaTraceDirectResultChanges(input, sceneItems = [],
     ...(kinds.has('no_state_gesture')
       ? ['Вы завершили простой жест.'] : [])
   ];
+}
+
+// Call only for a confirmed observation or a newly reached scene. Snapshot
+// knowledge (including inventory/body metadata) is not a new observation.
+export function lowerDvinaTraceObservedSceneChanges(scene) {
+  const visibleNpcs = distinctNpcLabels(scene?.visible_npc ?? []);
+  return [...new Set([
+    ...(scene?.sensory_details ?? []),
+    ...visibleNpcs.flatMap((npc) => [
+      ...observedEntityChanges(npc),
+      ...[npc.observable_cues?.ordinary_remainder?.ordinary_descriptor,
+        npc.observable_cues?.ordinary_remainder?.ordinary_activity]
+        .filter(text).map((fact) => `${npc.display_label}: ${fact}`)
+    ]),
+    ...(scene?.visible_objects ?? []).filter((object) =>
+      !carriedVisibleStatus(object.visible_status)).flatMap(observedEntityChanges)
+  ])];
+}
+
+export function distinctNpcLabels(npcs) {
+  const totals = new Map();
+  for (const { display_label: label } of npcs) {
+    if (text(label)) totals.set(label, (totals.get(label) ?? 0) + 1);
+  }
+  const seen = new Map();
+  return npcs.map((npc) => {
+    const label = npc?.display_label;
+    if (!text(label) || totals.get(label) < 2) return npc;
+    const ordinal = (seen.get(label) ?? 0) + 1;
+    seen.set(label, ordinal);
+    return { ...npc, display_label: `${label} (${ordinal})` };
+  });
+}
+
+function observedEntityChanges(entity) {
+  if (!text(entity?.display_label)) return [];
+  const status = entity.visible_status;
+  return [`В поле зрения — ${entity.display_label}${text(status)
+    && status !== 'available' ? `: ${status}` : ''}.`];
 }
 
 function bodyObservationChanges(body) {
@@ -51,7 +95,7 @@ export function lowerDvinaTraceVisibleSceneItems(items, position, actorId) {
       display_label: visibleItemLabel(item), recognition: 'recognized',
       visible_status: held
         ? placement.physical_position === 'hands'
-          ? 'у вас в руках' : 'при вас'
+          ? CARRIED_VISIBLE_STATUSES.hands : CARRIED_VISIBLE_STATUSES.other
         : 'available' } }];
   });
 }
@@ -60,7 +104,7 @@ export function lowerDvinaTraceCarriedItemObservations(items, visibleObjects) {
   const visible = new Map((visibleObjects ?? []).filter(({ entity_ref: ref,
     visible_status: status }) => ref?.entity_kind === 'item'
       && text(ref.entity_id)
-      && ['при вас', 'у вас в руках'].includes(status))
+      && carriedVisibleStatus(status))
     .map((object) => [object.entity_ref.entity_id, object]));
   return (items ?? []).flatMap((item) => {
     const itemId = item?.item_id ?? item?.instance_id;
@@ -95,6 +139,24 @@ function carriedItemObservationChanges(sceneItems) {
   return changes;
 }
 
+export function existingItemObservationChanges(item, actorId) {
+  const label = visibleItemLabel(item);
+  const placement = item.placement ?? {};
+  const carried = placement.holder_character_id === actorId;
+  const position = carried ? {
+    hands: 'у вас в руках', equipped: 'надето на вас',
+    worn: 'надето на вас', worn_quick: 'закреплено на вас',
+    external: 'снаружи вашей ноши', external_load: 'снаружи вашей ноши'
+  }[placement.physical_position] ?? 'при вас' : null;
+  const condition = resolvePhysicalItemCondition(item);
+  const state = { serviceable: 'пригодно к обычному использованию',
+    damaged: 'повреждено' }[condition];
+  return [`Вам доступен для наблюдения предмет: ${label}.`,
+    ...(position == null ? [] : [`Расположение предмета «${label}»: ${position}.`]),
+    ...(state == null ? [] : [`Состояние предмета «${label}»: ${state}.`]),
+    ...(item.physical_facts ?? []).map(fact => `У предмета «${label}»: ${fact}`)];
+}
+
 function russianList(values) {
   return values.length < 2 ? values[0]
     : `${values.slice(0, -1).join(', ')} и ${values.at(-1)}`;
@@ -111,7 +173,7 @@ export function uniqueLowerDvinaTraceVisibleObjects(values) {
   });
 }
 
-function visibleItemLabel(item) {
+export function visibleItemLabel(item) {
   if (text(item?.name)) return item.name;
   const slot = item?.visual_profile_snapshot?.equipment_slot
     ?? item?.placement?.equipment_slot_category_id;

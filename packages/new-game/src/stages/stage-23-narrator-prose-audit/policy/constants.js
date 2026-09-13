@@ -18,6 +18,7 @@ export const STAGE23_REQUIRED_CHECKS = Object.freeze([
   'rumor_uncertainty_check',
   'action_options_check',
   'technical_text_check',
+  'literary_composition_check',
   'must_include_check',
   'must_not_include_check',
   'commit_readiness'
@@ -51,6 +52,7 @@ export const STAGE23_CONCERN_CODES = Object.freeze([
   'NARRATOR_PROSE_UNCERTAINTY_UPGRADED',
   'NARRATOR_PROSE_ACTION_USES_HIDDEN_TRUTH',
   'NARRATOR_PROSE_TECHNICAL_TEXT',
+  'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION',
   'NARRATOR_PROSE_MUST_INCLUDE_MISSING',
   'NARRATOR_PROSE_MUST_NOT_INCLUDE_VIOLATION',
   'NARRATOR_PROSE_AUDIT_FORMAT_INVALID',

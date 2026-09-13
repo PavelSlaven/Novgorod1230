@@ -1,7 +1,7 @@
 export function retrievalObservabilityOf({ bundle, embeddingProfile,
   vectorScores, slice, embeddingMs, vectorMs, coreResolutionMs,
   totalRetrievalMs }) {
-  const vectorHitRefs = Object.freeze([...vectorScores.keys()].slice(0, 3));
+  const vectorHitRefs = Object.freeze([...vectorScores.keys()]);
   return Object.freeze({
     pack_ref: bundle.manifest.pack_ref,
     pack_revision: bundle.manifest.revision_id,

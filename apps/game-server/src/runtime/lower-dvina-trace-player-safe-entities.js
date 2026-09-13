@@ -8,6 +8,7 @@ import {
   text,
   textArray
 } from './lower-dvina-trace-player-safe-json.js';
+import { projectKnowledge } from './lower-dvina-trace-player-safe-world.js';
 
 const BODY_KEYS = new Set([
   'health', 'satiety', 'energy', 'body_parts', 'active_conditions'
@@ -42,6 +43,10 @@ const BODY_PART_KEYS = new Set([
 export function projectActor({ profile, body, actorId }) {
   return compact({
     actor_id: actorId,
+    name: text(profile?.identity?.name),
+    role: text(profile?.social_status?.display_name),
+    biography: text(profile?.origin?.biography),
+    memory: projectKnowledge(profile?.memory?.records),
     attributes: projectCapabilityMap(profile?.attributes, ATTRIBUTE_IDS,
       ['value', 'bonus']),
     skills: projectCapabilityMap(profile?.skills, SKILL_IDS,
@@ -90,10 +95,10 @@ export function projectInteractions(records, { strict = false } = {}) {
     return compact({
       interaction_id: text(record.interaction_id ?? record.id),
       interaction_kind: text(record.interaction_kind ?? record.kind),
-      speaker_actor_id: text(record.speaker_actor_id),
+      speaker_actor_id: text(record.speaker_actor_id ?? record.npc_id),
       target_actor_ids: textArray(record.target_actor_ids),
       statement_ref: text(record.statement_ref),
-      content: text(record.content),
+      content: text(record.content ?? record.journal_text),
       occurred_at: scalarRecord(record.occurred_at, {
         strict, path: 'occurred_at', allowedKeys: OCCURRED_AT_KEYS
       })

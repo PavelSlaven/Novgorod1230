@@ -31,7 +31,13 @@ const WORKING_KEYS = new Set([
   'npcs', 'interactions', 'routes', 'available_routes', 'route_history',
   'route_knowledge', 'knowledge', 'visible_context',
   'visible_context_package', 'current_visible_context', 'combat_sessions',
-  'case_evidence_ref', 'temporary_disposition_options'
+  'case_evidence_ref', 'temporary_disposition_options',
+  'perception_boundary_work_items', 'npc_decision_signal_descriptors',
+  'pending_npc_decision_request'
+]);
+const INTERNAL_WORKING_KEYS = new Set([
+  'perception_boundary_work_items', 'npc_decision_signal_descriptors',
+  'pending_npc_decision_request'
 ]);
 const INVALID = 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID';
 const COMMITTED_REF_FIELDS = new Set([
@@ -92,7 +98,7 @@ export function applyLowerDvinaTraceWorkingProjection({
   const output = { ...base, position, actor_id: actorId };
   for (const key of Object.keys(workingProjection)) {
     if (key === 'actor_id' || key === 'position'
-        || key === 'destination_refs') continue;
+        || key === 'destination_refs' || INTERNAL_WORKING_KEYS.has(key)) continue;
     const projected = projectWorkingField(key, workingProjection[key], {
       actorId,
       position,

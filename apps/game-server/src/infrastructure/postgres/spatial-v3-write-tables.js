@@ -61,7 +61,7 @@ export const TABLES = Object.freeze({
   party_temporal_events: { modes: ['insert', 'update'], key: ['event_id'], version: true },
   party_remote_aggregate_states: { modes: ['insert', 'update'], key: ['aggregate_id'], version: true },
   party_propagation_processes: { modes: ['insert', 'update'], key: ['process_id'], version: true },
-  party_npc_knowledge_merge_states: { modes: ['update'], key: ['party_id', 'npc_id'], version: true },
+  party_npc_knowledge_merge_states: { modes: ['insert', 'update'], key: ['party_id', 'npc_id'], version: true },
   party_npc_knowledge: { modes: ['insert'], key: ['party_id', 'npc_id', 'fact_id'] },
   party_npcs: { modes: ['insert', 'update'], key: ['party_id', 'npc_id'], version: false },
   party_npc_traits: { modes: ['insert'], key: ['party_id', 'npc_id', 'trait_domain', 'category_id'] },
@@ -89,6 +89,9 @@ export const TABLES = Object.freeze({
   party_g5_sites: { modes: ['insert'], key: ['id'] },
   party_scene_baselines: { modes: ['insert'], key: ['id'] },
   party_g6_instances: { modes: ['insert'], key: ['id'] },
+  g6_acoustic_profiles: {
+    modes: ['insert'], key: ['party_id', 'g6_instance_id']
+  },
   scene_position_nodes: { modes: ['insert'], key: ['id'] },
   portal_entities: { modes: ['insert'], key: ['id'] },
   scene_movement_edges: { modes: ['insert'], key: ['id'] },

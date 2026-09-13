@@ -55,7 +55,8 @@ function routeCommand({ contracts, inputDigest }) {
       ]
     },
     { kind: 'arrival_subject_state' },
-    { kind: 'no_temporal_boundary_candidates' },
+    { kind: 'no_temporal_boundary_candidates',
+      duration_minutes: contracts.route.duration_minutes },
     { kind: 'no_player_response_boundary' }
   ];
   return createTracePhase4Command({

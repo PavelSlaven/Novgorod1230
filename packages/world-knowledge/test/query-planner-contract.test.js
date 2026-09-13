@@ -55,3 +55,28 @@ test('planner normalizer projects an unseen mixed selection onto caller authorit
   assert.deepEqual(normalized.requested_predicates, ['attested_use']);
   assert.equal(validateWorldKnowledgeQueryPlan(normalized, input, bundle).ok, true);
 });
+
+test('an exact empty plan alone represents no factual knowledge need', () => {
+  const input = request();
+  const none = {
+    schema: 'world_knowledge_query_plan_v1', query_locale: 'ru',
+    domains: [], focus_refs: [], requested_predicates: [], search_hints: []
+  };
+  assert.equal(validateWorldKnowledgeQueryPlan(none, input, bundle).ok, true);
+  assert.match(validateWorldKnowledgeQueryPlan(none,
+    { ...input, purpose: 'npc_decision' }, bundle).errors.join('\n'),
+  /only for semantic_resolution/u);
+  for (const [field, value] of [
+    ['focus_refs', ['wk:economy:debt_record']],
+    ['requested_predicates', ['attested_use']],
+    ['search_hints', ['спор о долге']]
+  ]) assert.match(validateWorldKnowledgeQueryPlan({ ...none, [field]: value },
+    input, bundle).errors.join('\n'), /without domains/u);
+  const mixed = { ...none, focus_refs: ['invented'] };
+  assert.deepEqual(normalizeWorldKnowledgeQueryPlan(mixed, input, bundle), mixed);
+
+  const normalized = normalizeWorldKnowledgeQueryPlan({ ...none,
+    domains: ['invented'] }, input, bundle);
+  assert.deepEqual(normalized.domains, ['invented']);
+  assert.equal(validateWorldKnowledgeQueryPlan(normalized, input, bundle).ok, false);
+});

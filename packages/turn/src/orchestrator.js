@@ -20,12 +20,18 @@ export async function runTurnWorkflow(input = {}, services = {}, options = {}) {
   });
   const stages = createTurnStageDefinitions({ context, services, rawInput: input, now });
   const events = [];
+  const recordEvent = (event) => {
+    const snapshot = structuredClone(event);
+    events.push(snapshot);
+    try { options.onEvent?.(structuredClone(snapshot)); }
+    catch { /* progress observation must not change the turn */ }
+  };
   const graphResult = await runStageGraph({
     stages,
     input: deepFreeze({ version: 1, schema: 'turn_workflow_state' }),
     services,
     transient: true,
-    onEvent: (event) => events.push(structuredClone(event))
+    onEvent: recordEvent
   });
 
   if (graphResult.status !== 'approved') {

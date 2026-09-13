@@ -58,6 +58,8 @@ export function matchApiRoute(method, pathname) {
   if (method === 'POST' && pathname === '/api/v1/new-games') return { id: 'new_game', status: 201 };
   const screen = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/screen$/u);
   if (method === 'GET' && screen) return { id: 'party_screen', partyId: decodeURIComponent(screen[1]), status: 200 };
+  const progress = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/turns\/([^/]+)\/progress$/u);
+  if (method === 'GET' && progress) return { id: 'turn_progress', partyId: decodeURIComponent(progress[1]), requestId: decodeURIComponent(progress[2]), status: 200 };
   const ack = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/opening-ack$/u);
   if (method === 'POST' && ack) return { id: 'opening_ack', partyId: decodeURIComponent(ack[1]), status: 200 };
   const turn = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/turns$/u);
@@ -80,6 +82,9 @@ async function executeRoute(route, context) {
     return report;
   }
   if (route.id === 'party_screen') return context.root.getPartyScreen(route.partyId);
+  if (route.id === 'turn_progress') return context.root.getTurnProgress({
+    party_id: route.partyId, request_id: route.requestId
+  });
   const body = await readJsonBody(context.request, { maxBytes: context.maxBodyBytes });
   if (route.id === 'llm_settings_apply') return context.root.applyLlmSettings(validateLlmSettingsRequest(body));
   if (route.id === 'llm_settings_probe') return context.root.probeLlmSettings(validateLlmSettingsProbeRequest(body));

@@ -19,13 +19,21 @@ export function isObservedEvidenceInspectionInScope({ operation,
 }
 
 export function resolveObservedEvidenceInspection(execution) {
+  const targets = new Set(execution.operation.target_refs);
+  const sceneSupport = (execution.request?.player_safe_state
+    ?.observed_evidence_inspection?.candidates ?? [])
+    .filter(({ fact_ref: ref }) => targets.has(ref))
+    .map(({ text }) => text);
   return deepFreeze({
     working_projection: structuredClone(execution.working_projection),
     write_fragments: [],
     summary: 'Наблюдение не содержит данных для нового достоверного вывода.',
     player_response_boundary: true,
-    consequence_fragment: { visible_seed: { ordinary_presence_seed: {
-      kind: 'ordinary_presence_seed', resolution: 'authority_required'
+    consequence_fragment: { visible_seed: { observed_evidence_inspection_seed: {
+      kind: 'observed_evidence_inspection_seed',
+      resolution: 'no_new_supported_conclusion',
+      query: execution.operation.query,
+      scene_support: sceneSupport
     } } }
   });
 }

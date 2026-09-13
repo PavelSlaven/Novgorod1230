@@ -22,7 +22,7 @@ import { enabled as discoveryEnabled, group as discoveryGroup,
   request as discoveryRequest } from './lower-dvina-trace-o1-fixture.js';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
-  + 'lower-dvina-trace-v1/phase-m7-content/'
+  + 'lower-dvina-trace-v1/phase-m22-content/'
   + 'ordinary-materialization-profile.json', import.meta.url);
 const frozenRoleRequestsUrl = new URL('../../../data/model-evals/llm-runtime/'
   + 'frozen-role-requests-v1.json', import.meta.url);
@@ -90,7 +90,7 @@ test('Stage B eval requires one bound common-positive result', async () => {
 test('ordinary materialization prompt keeps a supported free candidate materializable', () => {
   const request = presenceRequest('ложка');
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
-  assert.match(prompt, /seed_scope permits only seeded or no_change/u);
+  assert.doesNotMatch(prompt, /seed_scope|density_band_proposal|background_groups/u);
   assert.match(prompt, /resolve_presence permits materialize, absent, no_change, or authority_required/u);
   assert.match(prompt, /Decide only whether and how the supplied ordinary candidate is semantically realized/u);
   assert.match(prompt, /Lack of a pre-supplied descriptor alone is not a reason for absent/u);
@@ -100,7 +100,7 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   assert.match(prompt, /never turn a person, event, place, or question into an item name or item fact/u);
   assert.match(prompt, /semantic_materialization_kind/u);
   assert.match(prompt, /sought referent in complete candidate_hint/u);
-  assert.match(prompt, /environmental trace, surface condition, spatial state/u);
+  assert.match(prompt, /environmental accumulation or condition/u);
   assert.match(prompt, /server assembles/u);
   assert.match(prompt, /availability_class is common or context_bound/u);
   assert.match(prompt, /authority_envelope/u);
@@ -108,19 +108,41 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   assert.doesNotMatch(prompt, /Schema-valid fallback skeleton/u);
 });
 
+test('Stage B keeps alternatives and shared qualifiers in one unchanged semantic query', () => {
+  const queries = [
+    'Найти бумаги или личные вещи, которые могли быть со мной в сундуке.',
+    'Найти королевскую печать или обрезок ткани.',
+    'Найти вещь из моего запертого мешка: кольцо либо пуговицу.',
+    'Найти монету и доказательство её принадлежности мне.'
+  ];
+  for (const query of queries) {
+    const request = presenceRequest(query);
+    const messages = buildOrdinaryMaterializationMessages(request);
+    assert.deepEqual(JSON.parse(messages[1].content), request);
+    assert.equal(request.candidate_query.candidate_hint, query);
+    assert.match(messages[0].content, /Explicit alternatives are existential/);
+    assert.match(messages[0].content, /every qualifier shared across alternatives/);
+    assert.match(messages[0].content, /Never drop a conjunct, shared ownership/);
+    assert.match(messages[0].content, /An absent verdict must be supported for the whole query/);
+    assert.match(messages[0].content, /when coverage is insufficient, return no_change/);
+  }
+});
+
 test('ordinary materialization prompt exposes exact code-owned mechanics bounds', () => {
   const prompt = buildOrdinaryMaterializationMessages(presenceRequest('обломок доски'), {
     mechanicsPolicy: { policy_ref: 'mechanics', max_mass_grams: 20_000,
       allowed_external_hand_costs: [0, 1, 2],
       allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
-      max_packing_slot_cost: 16, max_quantity: 1 }
+      max_packing_slot_cost: 16, max_quantity: 16 },
+    requiredQuantity: { value: 5, unit: 'item' }
   })[0].content;
   assert.match(prompt, /mass_grams is an integer from 1 to 20000/u);
   assert.match(prompt, /external_hand_cost is exactly one of \[0,1,2\]/u);
   assert.match(prompt,
     /carry_form is exactly one of \["compact","regular","long","bulky"\]/u);
   assert.match(prompt, /packing_slot_cost is an integer from 0 to 16/u);
-  assert.match(prompt, /quantity\.value is an integer from 1 to 1/u);
+  assert.match(prompt, /quantity\.value is an integer from 1 to 16/u);
+  assert.match(prompt, /requested finite group quantity is exactly 5 item/u);
   assert.match(prompt, /Never invent another carry_form/u);
 });
 
@@ -176,7 +198,8 @@ test('ordinary materialization prompt maps Stage A to its candidate-free fallbac
   assert.match(prompt, /"descriptor":null/u);
   assert.match(prompt, /Never copy angle-bracket placeholders/u);
   assert.match(prompt, /natural Russian suitable for later player-facing prose/u);
-  assert.match(prompt, /"basis_refs":\["basis"\]/u);
+  assert.doesNotMatch(prompt, /resolve_presence|candidate_hint|mechanics_proposal|"basis_refs"/u);
+  assert.doesNotMatch(prompt, /request-derived authoritative envelope/u);
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
 });
 
@@ -205,7 +228,7 @@ test('ordinary seed prompt receives a player-safe scene basis without reading re
   assert.match(prompt, /do not restate, paraphrase, combine, or summarize/u);
 });
 
-test('ordinary materialization prompt carries complete code-owned Stage B shapes', () => {
+test('ordinary materialization prompt ends with only its semantic Stage B shape', () => {
   const source = presenceRequest('любой предмет');
   const preparedBasis = 'ordinary_group_prepared';
   const request = { ...source, policy_refs: { ...source.policy_refs,
@@ -218,18 +241,21 @@ test('ordinary materialization prompt carries complete code-owned Stage B shapes
     selected_supporting_basis_ref: preparedBasis } };
   const admitted = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(admitted, /"resolution":"materialize"/u);
-  assert.match(admitted, /"admission_class":"common_mundane"/u);
+
   assert.match(admitted, /semantic_admission_class/u);
   assert.match(admitted, /semantic_materialization_kind/u);
-  assert.match(admitted, /"property_basis_ref":"property"/u);
-  assert.match(admitted, /"position_ref":"bench"/u);
-  assert.match(admitted, /"supporting_basis_ref":"ordinary_group_prepared"/u);
-  assert.match(admitted, /"mass_grams":"<semantic_integer_mass_grams>"/u);
-  assert.match(admitted, /"external_hand_cost":"<semantic_integer_external_hand_cost>"/u);
-  assert.match(admitted, /"packing_slot_cost":"<semantic_integer_packing_slot_cost>"/u);
+  assert.match(admitted, /"semantic_type":"<specific ordinary semantic type>"/u);
+  assert.match(admitted, /"name":"<concise natural Russian player-facing name>"/u);
+  assert.match(admitted, /not null or a copied placeholder/u);
+  assert.doesNotMatch(admitted, /"semantic_descriptor"|"facts"/u);
+  assert.match(admitted, /"mass_grams":"<integer>"/u);
+  assert.match(admitted, /"external_hand_cost":"<integer>"/u);
+  assert.match(admitted, /"packing_slot_cost":"<integer>"/u);
   assert.match(admitted,
     /never copy the player's intended use, action, goal, or hoped-for result/u);
-  assert.doesNotMatch(admitted, /"mass_grams":1/u);
+  assert.doesNotMatch(admitted, /"mass_grams":1|"property_basis_ref"|"position_ref"|"supporting_basis_ref"|request-derived authoritative envelope/u);
+  const shape = JSON.parse(admitted.split("Return only this semantic shape: ").at(-1));
+  assert.deepEqual(Object.keys(shape).sort(), ["entities", "reason_code", "resolution", "semantic_admission_class", "semantic_materialization_kind"]);
 });
 
 test('Stage B fails closed when its semantic admission differs from the candidate', () => {
@@ -238,8 +264,8 @@ test('Stage B fails closed when its semantic admission differs from the candidat
     resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
     semantic_admission_class: 'weapon_or_armament',
     reason_code: 'found', entities: [{
-      semantic_descriptor: { semantic_type: 'free_descriptor',
-        name: 'свободное описание', facts: [] },
+      semantic_type: 'free_descriptor',
+      name: 'подходящий предмет',
       presence_expectation: 'plausible', mechanics_proposal: {
         mass_grams: 100, external_hand_cost: 0, carry_form: 'compact',
         packing_slot_cost: 0, quantity: { value: 1, unit: 'item' },
@@ -247,20 +273,20 @@ test('Stage B fails closed when its semantic admission differs from the candidat
       }
     }]
   });
-  assert.equal(plan.resolution, 'absent');
+  assert.equal(plan.resolution, 'authority_required');
   assert.deepEqual(plan.entities, []);
   assert.equal(plan.reason_code, 'semantic_admission_mismatch');
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
-test('Stage B checks semantic admission before a missing materialization kind', () => {
+test('Stage B keeps unresolved non-item output without admitting its restricted class', () => {
   const request = presenceRequest('подходящий предмет');
   const plan = bindOrdinaryMaterializationPlan(request, {
     resolution: 'no_change', semantic_admission_class: 'other_restricted',
     reason_code: 'not_an_item'
   });
-  assert.equal(plan.resolution, 'absent');
-  assert.equal(plan.reason_code, 'semantic_admission_mismatch');
+  assert.equal(plan.resolution, 'no_change');
+  assert.equal(plan.reason_code, 'not_an_item');
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
@@ -273,8 +299,9 @@ test('Stage B binds environmental details to no_change before item mechanics', (
     const plan = bindOrdinaryMaterializationPlan(request, {
       resolution: 'materialize', semantic_materialization_kind: 'non_item_detail',
       semantic_admission_class: 'common_mundane', reason_code: 'observed',
-      entities: [{ semantic_descriptor: { semantic_type: 'ordinary_object_candidate',
-        name: query, facts: [] }, presence_expectation: 'plausible',
+      entities: [{ semantic_type: 'ordinary_object_candidate',
+        name: query,
+        presence_expectation: 'plausible',
       mechanics_proposal: { mass_grams: 100, external_hand_cost: 0,
         carry_form: 'compact', packing_slot_cost: 0,
         quantity: { value: 1, unit: 'item' }, container: null } }]
@@ -296,7 +323,8 @@ test('Stage B requires a materialization kind and accepts a standalone common it
   const plan = bindOrdinaryMaterializationPlan(request, {
     resolution: 'materialize', semantic_materialization_kind: 'standalone_item',
     semantic_admission_class: 'common_mundane', reason_code: 'found', entities: [{
-      semantic_descriptor: { semantic_type: 'cordage', name: 'обычная верёвка', facts: [] },
+      semantic_type: 'cordage',
+      name: 'обычная верёвка',
       presence_expectation: 'routine', mechanics_proposal: { mass_grams: 350,
         external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null }
@@ -304,25 +332,38 @@ test('Stage B requires a materialization kind and accepts a standalone common it
   });
   assert.equal(plan.resolution, 'materialize');
   assert.equal(plan.entities.length, 1);
+  assert.deepEqual(plan.entities[0].semantic_descriptor,
+    { semantic_type: 'cordage', name: 'обычная верёвка', facts: [] });
   assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
 });
 
-test('grounded Stage B materializes only with a claim ref from its current slice',
+test('grounded common Stage B does not treat WK facts as a positive whitelist',
   async () => {
     const request = presenceRequest('обычная верёвка');
     const claimRef = 'claim:test-cordage';
     const grounded = { ...request, world_knowledge: {
       facts: [{ claim_ref: claimRef }], hard_constraints: []
     } };
+    const prompt = buildOrdinaryMaterializationMessages(grounded)[0].content;
+    assert.match(prompt, /not an inventory of every ordinary thing/u);
+    assert.match(prompt, /Exact positive evidence for every mundane object is not required/u);
+    assert.doesNotMatch(prompt, /Do not add a historical, scientific, social, craft, material-property, or other factual premise from model memory/u);
     const semantic = { resolution: 'materialize',
       semantic_materialization_kind: 'standalone_item',
       semantic_admission_class: 'common_mundane', reason_code: 'found',
-      entities: [{ semantic_descriptor: { semantic_type: 'cordage',
-        name: 'обычная верёвка', facts: [] }, presence_expectation: 'routine',
+      entities: [{ semantic_type: 'cordage', name: 'обычная верёвка',
+      presence_expectation: 'routine',
       mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
         carry_form: 'compact', packing_slot_cost: 1,
         quantity: { value: 1, unit: 'item' }, container: null } }] };
-    for (const refs of [undefined, ['claim:not-in-current-slice']]) {
+    for (const refs of [undefined, []]) {
+      const admitted = bindOrdinaryMaterializationPlan(grounded,
+        { ...semantic, ...(refs == null ? {} : {
+          world_knowledge_claim_refs: refs }) });
+      assert.deepEqual(validateOrdinaryMaterializationPlanV1(admitted,
+        request), []);
+    }
+    for (const refs of [['claim:not-in-current-slice']]) {
       const rejected = bindOrdinaryMaterializationPlan(grounded,
         { ...semantic, ...(refs == null ? {} : {
           world_knowledge_claim_refs: refs }) });
@@ -330,10 +371,13 @@ test('grounded Stage B materializes only with a claim ref from its current slice
         request), []);
     }
     const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+    const semanticContext = { visible_scene: 'Мокрый берег',
+      sensory_details: ['На песке мокрые обломки.'], visible_objects: [] };
     const model = createOrdinaryMaterializationModel({
       stageBApprovalReceipt: approval,
-      worldKnowledgeGrounder: { async ground(input, purpose) {
+      worldKnowledgeGrounder: { async ground(input, purpose, authoritative) {
         assert.equal(purpose, 'materialization_support');
+        assert.deepEqual(authoritative, { semantic_context: semanticContext });
         return { ...input, world_knowledge: grounded.world_knowledge };
       } },
       roleRunner: { async run(input) {
@@ -343,9 +387,58 @@ test('grounded Stage B materializes only with a claim ref from its current slice
           world_knowledge_claim_refs: [claimRef] } };
       } }
     });
-    const admitted = await model(request, { repair: null });
+    const admitted = await model(request, { repair: null,
+      semantic_context: semanticContext });
     assert.equal(admitted.resolution, 'materialize');
-    assert.equal(admitted.entities[0].semantic_descriptor.name,
-      'обычная верёвка');
+    assert.deepEqual(admitted.entities[0].semantic_descriptor,
+      { semantic_type: 'cordage', name: 'обычная верёвка', facts: [] });
     assert.deepEqual(validateOrdinaryMaterializationPlanV1(admitted, request), []);
   });
+
+test('Stage B rejects unsupported descriptive fields instead of committing them', () => {
+  const baseRequest = presenceRequest('найти сухую сердцевину в выброшенных ветках');
+  const request = { ...baseRequest,
+    world_knowledge: { facts: [{ claim_ref: 'claim:generic-woodwork' }],
+      hard_constraints: [] } };
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'materialize',
+    semantic_materialization_kind: 'standalone_item',
+    semantic_admission_class: 'common_mundane',
+    world_knowledge_claim_refs: ['claim:generic-woodwork'], reason_code: 'found',
+    entities: [{ semantic_type: 'wooden_branch',
+      name: 'сухая ветка с разбитой лодки',
+      facts: ['ветка высохла и выбросилась на берег'],
+      presence_expectation: 'plausible', mechanics_proposal: {
+        mass_grams: 500, external_hand_cost: 1, carry_form: 'long',
+        packing_slot_cost: 2, quantity: { value: 1, unit: 'item' },
+        container: null } }]
+  });
+  assert.notDeepEqual(validateOrdinaryMaterializationPlanV1(plan, baseRequest), []);
+});
+test('Stage B preserves explicit authority failure across candidate classification mismatch', () => {
+  const request = presenceRequest('Неизвестный предмет среди обломков');
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'authority_required', semantic_admission_class: 'document_like',
+    semantic_materialization_kind: 'standalone_item', entities: [],
+    reason_code: 'missing_document_authority'
+  });
+  assert.equal(plan.resolution, 'authority_required');
+  assert.equal(plan.reason_code, 'missing_document_authority');
+  assert.equal(plan.presence_resolutions[0].resolution, 'authority_required');
+  assert.deepEqual(plan.entities, []);
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
+});
+
+
+test('Stage B keeps an explicit unresolved answer before candidate classification', () => {
+  const request = presenceRequest('Бумаги либо иной предмет неизвестного происхождения');
+  const plan = bindOrdinaryMaterializationPlan(request, {
+    resolution: 'no_change', semantic_admission_class: 'document_like',
+    semantic_materialization_kind: 'standalone_item', entities: [],
+    reason_code: 'insufficient_support'
+  });
+  assert.equal(plan.resolution, 'no_change');
+  assert.equal(plan.reason_code, 'insufficient_support');
+  assert.equal(plan.presence_resolutions[0].resolution, 'no_change');
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1(plan, request), []);
+});

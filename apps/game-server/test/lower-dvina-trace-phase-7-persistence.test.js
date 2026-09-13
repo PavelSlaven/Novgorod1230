@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from '@rus/turn/temporal-advance';
+import { npcRoutineTemporalRegistration } from '../src/runtime/npc-routine-temporal.js';
+import { lowerDvinaTracePhase7TemporalEffectRegistrations } from '../src/runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import { buildLowerDvinaTracePhase7Commit } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-commit.js';
 import { assertPhase7NormalizedRows } from
@@ -13,10 +16,53 @@ import { phase7Command as commandFor,
   phase7CommittedState as committedState,
   phase7PlayerInput as playerInput } from
   './lower-dvina-trace-phase-7-runtime-fixture.js';
-import { factualTurn, phase7ReadPool, rows, visibleContext } from
+import { addPhase7RoutineBoundary, factualTurn, phase7ReadPool, rows, visibleContext } from
   './lower-dvina-trace-phase-7-persistence-fixture.js';
 
 const digest = 'a'.repeat(64);
+
+test('Phase 7 commits prior routine changes before its NPC result and keeps later boundaries pending', async () => {
+  for (const boundaryMinute of [120, 131]) {
+    const state = committedState();
+    const npc = addPhase7RoutineBoundary(state, boundaryMinute);
+    const contracts = approvedContracts(state);
+    const command = commandFor({ state, contracts,
+      model: async (request) => autonomousPlan(request, 'move_bag'),
+      temporalAdvanceOwner: createTemporalAdvanceOwner({
+        source_registrations: [npcRoutineTemporalRegistration()],
+        effect_registrations: [...npcTemporalEffectRegistrations(),
+          ...lowerDvinaTracePhase7TemporalEffectRegistrations()]
+      }) });
+    const consequence = await command.consequence({ retrievedState: state,
+      playerInput: playerInput(state, 'routine') });
+    const timeUpdate = { clock_before: state.clock,
+      clock_after: consequence.phase7.schedule_execution.clock_after,
+      exact_elapsed: { exact_minutes: { numerator: '30', denominator: '1' } } };
+    const bodyUpdate = createTracePhase7BodyEffect({ contracts, fallback: null })
+      .apply({ committed_state: state, consequence, time_update: timeUpdate });
+    const factual = factualTurn(state, consequence, timeUpdate, bodyUpdate);
+    const commit = (candidate) => buildLowerDvinaTracePhase7Commit({
+      partyId: state.party_id, factual: candidate, state, inputDigest: digest,
+      visibleContext: visibleContext(), phase7Contracts: contracts });
+    const { plan } = await commit(factual);
+    const snapshot = rows(plan, 'party_state_snapshots')[0].record.state_payload;
+    const persisted = rows(plan, 'party_npcs').find(({ id }) => id === npc.instance_id);
+    const after = snapshot.npcs.find(({ instance_id: id }) => id === npc.instance_id);
+    assert.deepEqual(persisted.record.machine_state, after.machine_state);
+    assert.equal(after.machine_state.last_schedule_execution.status, 'executed');
+    assert.equal(rows(plan, 'party_npc_runtime_transitions').length, boundaryMinute === 120 ? 1 : 0);
+    assert.equal(snapshot.npc_schedule_runtime[0].causal_state_ref.routine_state.phase_index,
+      boundaryMinute === 120 ? 1 : 0);
+    if (boundaryMinute === 120) {
+      assert.equal(after.machine_state.schedule_state, 'rest');
+      const forged = structuredClone(factual);
+      const transition = forged.consequence.phase7.temporal.result.combined_change_set.proposals
+        .find((proposal) => proposal.npc_routine_transition)?.npc_routine_transition;
+      transition.occurred_at = { whole_minutes: '131', subminute_numerator: '0', subminute_denominator: '1' };
+      await assert.rejects(commit(forged), { code: 'TRACE_PHASE_7_TEMPORAL_WRITE_CONFLICT' });
+    } else assert.equal(snapshot.temporal_boundary_candidates[0].scheduled_at.whole_minutes, '131');
+  }
+});
 
 test('Phase 7 P16 persists decision, body and approved schedule atomically',
   async () => {

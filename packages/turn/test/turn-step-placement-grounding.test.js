@@ -91,4 +91,65 @@ test('direct result kind is structural and write-free', () => {
       effort: 'none' } },
     { ...observation, operations: plan('cloth', 'worn_by').operations }
   ]) assert.equal(validateTurnStepPlan(invalid, { request }).ok, false);
+
+  const assessed = { ...observation, assessment: {
+    text: 'Верёвка годится для связывания.', support_refs: ['wk:cordage']
+  } };
+  assert.equal(validateTurnStepPlan(assessed, { request }).ok, true);
+  for (const invalid of [
+    { ...assessed, assessment: { ...assessed.assessment, support_refs: [] } },
+    { ...assessed, direct_result_kind: 'player_safe_item_observation' },
+    { ...assessed, resolution: 'domain_request' }
+  ]) assert.equal(validateTurnStepPlan(invalid, { request }).ok, false);
+});
+
+test('ownerless utterance preserves exact player words and speaker before later intent', () => {
+  const spoken = 'Эй, нужна помощь?';
+  const input = { ...request, remaining_intent:
+    `Кричу: «${spoken}» Затем проверяю навес.` };
+  const value = { ...plan('cloth', 'worn_by'), operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    goal_result: 'pending', direct_result_kind: 'player_utterance',
+    utterance: { speaker_ref: actor, utterance_text: spoken, input_mode: 'verbatim',
+      delivery: { loudness: 4, duration_class: 'instant' } },
+    continuation: { remaining_intent: 'Затем проверяю навес.', depends_on_refs: [] }
+  };
+  assert.deepEqual(validateTurnStepPlan(value, { request: input }).errors, []);
+  for (const invalid of [
+    { ...value, utterance: undefined },
+    { ...value, utterance: { ...value.utterance, speaker_ref: 'npc' } },
+    { ...value, utterance: { ...value.utterance, utterance_text: 'Мне ответили.' } },
+    { ...value, direct_result_kind: 'no_state_gesture' },
+    { ...value, goal_result: 'not_achieved', continuation: null }
+  ]) assert.equal(validateTurnStepPlan(invalid, { request: input }).ok, false);
+  const paraphrased = { ...value, utterance: { speaker_ref: actor,
+    utterance_text: 'Помогите!', input_mode: 'intent_paraphrase',
+    delivery: { loudness: 3, duration_class: 'instant' } } };
+  assert.equal(validateTurnStepPlan(paraphrased, { request: { ...input,
+    remaining_intent: 'Зову на помощь, затем проверяю навес.' } }).ok, true);
+});
+
+test('player utterance accepts formal acoustic delivery without enumerating speech', () => {
+  const value = { ...plan('cloth', 'worn_by'), operations: [],
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance',
+    utterance: { speaker_ref: actor,
+      utterance_text: 'Эй!', input_mode: 'intent_paraphrase',
+      delivery: { loudness: 4, duration_class: 'instant' } } };
+  assert.equal(validateTurnStepPlan(value, { request }).ok, true);
+  value.utterance.delivery.loudness = 5;
+  assert.equal(validateTurnStepPlan(value, { request }).ok, false);
+});
+
+test('write-free observation may precede a later independent intent', () => {
+  const input = { ...request, root_player_action: 'осмотреться, затем крикнуть',
+    remaining_intent: 'осмотреться, затем крикнуть' };
+  const value = { ...plan('cloth', 'worn_by'), operations: [],
+    interpretation: { player_goal: input.root_player_action,
+      grounded_attempt: 'осмотреться', adaptation: 'literal' },
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    goal_result: 'pending', direct_result_kind: 'player_safe_observation',
+    continuation: { remaining_intent: 'затем крикнуть', depends_on_refs: [] }
+  };
+  assert.deepEqual(validateTurnStepPlan(value, { request: input }).errors, []);
 });

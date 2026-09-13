@@ -66,7 +66,7 @@ test('prepared groups only originate in candidate-free seed and validate causal,
   assert.equal(validateOrdinaryBackgroundGroup({ request, group: restricted, basis_catalog: bases, allowed_disclosure_policy_refs: ['disclosure-a'] }).policy.permission_refs[0], 'permission-a');
 });
 
-test('aggregate has logical CAS, idempotent last request replay, and bounded records', () => {
+test('aggregate has logical CAS, idempotent replay, and no world identity ceiling', () => {
   const initial = createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 2 });
   assert.deepEqual([initial.state_version, initial.last_committed_request_identity], [0, null]);
   assert.deepEqual(Object.keys(initial), ['schema', 'scope_ref', 'state_version', 'last_committed_request_identity', 'last_committed_transition_kind', 'seeded', 'density_band', 'identity_budget', 'remaining_identity_budget', 'background_groups', 'presence_resolutions', 'closed_observation_scopes', 'resolution_record_cap']);
@@ -77,11 +77,13 @@ test('aggregate has logical CAS, idempotent last request replay, and bounded rec
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: transition('seed', 'request-seed', { density_band: 'ordinary', identity_budget: 99 }) }), (error) => error.code === 'ORDINARY_COMMITTED_REQUEST_IDENTITY_COLLISION');
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: transition('resolve_presence', 'request-stale', { resolution_ref: 'r0', candidate_key: 'c0', coverage_key: 'v0', category_key: 'k0', context_version: 'ctx-a', resolution: 'absent', expected_state_version: 0 }) }), (error) => error.code === 'ORDINARY_AGGREGATE_STATE_STALE');
   const positive = transition('resolve_presence', 'request-present', { expected_state_version: 1, resolution_ref: 'r1', candidate_key: 'c1', coverage_key: 'v1', category_key: 'k1', context_version: 'ctx-a', resolution: 'materialize', identity_key: 'i1' });
-  const admitted = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: positive }); assert.equal(admitted.remaining_identity_budget, 1); assert.equal(admitted.state_version, 2);
+  const admitted = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: positive }); assert.equal(admitted.remaining_identity_budget, 2); assert.equal(admitted.state_version, 2);
   assert.strictEqual(applyOrdinaryAggregateTransition({ aggregate: admitted, transition: positive }), admitted);
   const closed = applyOrdinaryAggregateTransition({ aggregate: admitted, transition: transition('close_coverage', 'request-close', { expected_state_version: 2, coverage_key: 'v2', category_key: 'k2', context_version: 'ctx-a', resolution: 'absent' }) });
   assert.equal(closed.presence_resolutions.length + closed.closed_observation_scopes.length, 2);
-  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: closed, transition: transition('close_coverage', 'request-cap', { expected_state_version: 3, coverage_key: 'v3', category_key: 'k3', context_version: 'ctx-a', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_RESOLUTION_RECORD_CAP_EXCEEDED');
+  const beyondLegacyCap = applyOrdinaryAggregateTransition({ aggregate: closed, transition: transition('resolve_presence', 'request-beyond-cap', { expected_state_version: 3, resolution_ref: 'r3', candidate_key: 'c3', coverage_key: 'v3', category_key: 'k3', context_version: 'ctx-a', resolution: 'materialize', identity_key: 'i3' }) });
+  assert.equal(beyondLegacyCap.presence_resolutions.length, 2);
+  assert.equal(beyondLegacyCap.remaining_identity_budget, 2);
 });
 
 test('same candidate/coverage cannot reroll in one context but can resolve under changed context', () => {
@@ -89,7 +91,7 @@ test('same candidate/coverage cannot reroll in one context but can resolve under
   const absent = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: transition('resolve_presence', 'absent-a', { expected_state_version: 1, resolution_ref: 'r-a', candidate_key: 'candidate-a', coverage_key: 'coverage-a', category_key: 'category-a', context_version: 'context-a', resolution: 'absent' }) });
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: absent, transition: transition('resolve_presence', 'reroll-a', { expected_state_version: 2, resolution_ref: 'r-b', candidate_key: 'candidate-a', coverage_key: 'coverage-a', category_key: 'category-a', context_version: 'context-a', resolution: 'materialize', identity_key: 'identity-a' }) }), (error) => error.code === 'ORDINARY_RESOLUTION_REPLAY');
   const changed = applyOrdinaryAggregateTransition({ aggregate: absent, transition: transition('resolve_presence', 'present-b', { expected_state_version: 2, resolution_ref: 'r-c', candidate_key: 'candidate-a', coverage_key: 'coverage-a', category_key: 'category-a', context_version: 'context-b', resolution: 'materialize', identity_key: 'identity-a' }) });
-  assert.equal(changed.remaining_identity_budget, 0);
+  assert.equal(changed.remaining_identity_budget, 1);
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: changed, transition: transition('close_coverage', 'close-conflict', { expected_state_version: 3, coverage_key: 'coverage-a', category_key: 'category-a', context_version: 'context-b', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_COVERAGE_CLOSURE_CONTRADICTION');
 });
 
@@ -126,7 +128,8 @@ test('NUL-bearing candidate tuples do not collide in aggregate validation or poi
   const first = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: transition('resolve_presence', 'nul-a', { expected_state_version: 1, resolution_ref: 'nul-resolution-a', candidate_key: 'part-a\u0000part-b', coverage_key: 'part-c', category_key: 'category-nul', context_version: 'context-nul', resolution: 'absent' }) });
   const second = applyOrdinaryAggregateTransition({ aggregate: first, transition: transition('resolve_presence', 'nul-b', { expected_state_version: 2, resolution_ref: 'nul-resolution-b', candidate_key: 'part-a', coverage_key: 'part-b\u0000part-c', category_key: 'category-nul', context_version: 'context-nul', resolution: 'absent' }) });
   assert.equal(second.presence_resolutions.length, 2);
-  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: second, transition: transition('resolve_presence', 'nul-cap', { expected_state_version: 3, resolution_ref: 'nul-resolution-c', candidate_key: 'different', coverage_key: 'different', category_key: 'category-nul', context_version: 'context-nul', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_RESOLUTION_RECORD_CAP_EXCEEDED');
+  const third = applyOrdinaryAggregateTransition({ aggregate: second, transition: transition('resolve_presence', 'nul-cap', { expected_state_version: 3, resolution_ref: 'nul-resolution-c', candidate_key: 'different', coverage_key: 'different', category_key: 'category-nul', context_version: 'context-nul', resolution: 'absent' }) });
+  assert.equal(third.presence_resolutions.length, 3);
 });
 
 test('aggregate reload rejects unknown records, duplicate identities, and corrupted unseeded state', () => {

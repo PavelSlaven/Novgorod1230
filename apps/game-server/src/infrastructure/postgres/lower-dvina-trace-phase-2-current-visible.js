@@ -42,8 +42,7 @@ export function phase2InitialCurrentVisibleContext({
       : [],
     visible_npc: [],
     visible_objects: [],
-    known_context: [presented?.display_name ?? visibleContext?.place,
-      visibleContext?.calendar]
+    known_context: [presented?.display_name ?? visibleContext?.place]
       .filter((value) => typeof value === 'string' && value.length > 0),
     uncertainties: [],
     allowed_tensions: [],

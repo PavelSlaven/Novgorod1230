@@ -1,3 +1,4 @@
+import { createNpcRoutineState, npcRoutineActivity } from '@rus/npc-runtime';
 import { deepFreeze } from '@rus/kernel';
 import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
 import {
@@ -189,10 +190,10 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
   const revision = input.scenario_definition_revision;
-  const phase3Prepared=[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32].includes(revision)?materializeLowerDvinaTracePreparedCamp({input,bundle,runId,participantSelections,locationSelections}):null;
-  const phase4Prepared=[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32].includes(revision)?materializeLowerDvinaTracePreparedDryingShed({input,bundle,runId,participantSelections,locationSelections}):null;
+  const phase3Prepared=[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34].includes(revision)?materializeLowerDvinaTracePreparedCamp({input,bundle,runId,participantSelections,locationSelections}):null;
+  const phase4Prepared=[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34].includes(revision)?materializeLowerDvinaTracePreparedDryingShed({input,bundle,runId,participantSelections,locationSelections}):null;
   const revision26S1Preparation=revision>=26?materializeLowerDvinaTraceFirstEntryPreparationMembers({input,bundle,camp:phase3Prepared,shed:phase4Prepared,locationSelections}):null;
-  const phase7Prepared=[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32].includes(revision)?materializeLowerDvinaTracePreparedStorehouse({input,bundle,runId,participantSelections,locationSelections}):null;
+  const phase7Prepared=[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34].includes(revision)?materializeLowerDvinaTracePreparedStorehouse({input,bundle,runId,participantSelections,locationSelections}):null;
   const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');
   const knifeInventoryProfile = requiredPinnedById(
     bundle.item_inventory_profiles,
@@ -262,7 +263,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const materializedNpcs = phase3Prepared ? [...phase3Prepared.npcs,
     ...(phase4Prepared ? phase4Prepared.npcs : []),
     ...(phase7Prepared ? [phase7Prepared.npc] : [])] : [];
-    const revision19Actors=[19,20,21,22,23,24,25,26,27,28,29,30,31,32].includes(revision)?materializeRevision19ActorAppearances({bundle,playerId,name,random,choices,npcs:materializedNpcs}):null;
+    const revision19Actors=[19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34].includes(revision)?materializeRevision19ActorAppearances({bundle,playerId,name,random,choices,npcs:materializedNpcs}):null;
   const revision19EquipmentHandoff = revision19Actors
     ? {
       party_id: input.party_id,
@@ -418,10 +419,34 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       : {}),
     ...(phase4Promise ? { promise_instances: [phase4Promise] } : {})
   };
-  if (revision === 32) {
+  if (revision >= 33) {
+    for (const npc of immediate.npcs) {
+      if (npc.routine_profile == null) continue;
+      npc.routine_state = createNpcRoutineState({ profile: npc.routine_profile,
+        calendar_profile: bundle.calendar_profile,
+        started_at: timestamp, current_activity: npc.machine_state.current_activity,
+        interrupted: npc.machine_state.current_activity.can_continue_automatically !== true });
+      if (npc.routine_state.status === 'active') {
+        npc.machine_state.current_activity = npcRoutineActivity(npc.routine_state);
+        npc.machine_state.current_activity_ref = npc.machine_state.current_activity.activity_ref;
+        npc.machine_state.runtime_status = npc.routine_state.runtime_status;
+        npc.machine_state.schedule_state = npc.routine_state.profile.phases[npc.routine_state.phase_index].state_id;
+      }
+      delete npc.routine_profile;
+      delete npc.schedule_records;
+    }
+  }
+  if (revision >= 32) {
     for (const item of immediate.items) {
       item.state.inventory_profile_snapshot = completeAuthoredItemMechanics(
         bundle, item.state.inventory_profile_snapshot);
+    }
+  }
+  for (const item of immediate.items) {
+    const template = bundle.item_container_set.item_templates.find(
+      ({ item_template_id: id }) => id === item.template_id);
+    if (template?.display_name && item.state.display_name == null) {
+      item.state.display_name = template.display_name;
     }
   }
   const validationReport = {

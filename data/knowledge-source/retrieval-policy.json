@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "38905248b284bf974fb40533dd7336b2ca88cb19a0eaa5dd33fc7d951d3c3291",
+  "baseline_manifest_sha256": "f325058cd1988ed4a2ca6f7e3e1403f51133492009cd9567ccd9fbb841ffb11a",
   "default_statuses": ["active"],
   "documents": [
     {
@@ -881,6 +881,44 @@
         "npc-autonomous-decision-contract",
         "temporal-world-and-interruptible-activities"
       ],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "situational-prose-requirements",
+      "document_type": "canonical_normative",
+      "priority_tier": "profile_normative",
+      "subsystems": [
+        "narration",
+        "presentation",
+        "materialization",
+        "perception"
+      ],
+      "related_document_ids": [
+        "contract-index",
+        "turn-step-llm-contract",
+        "code-driven-world-materialization-architecture"
+      ],
+      "related_module_paths": [
+        "packages/narration",
+        "packages/materialization",
+        "apps/game-server",
+        "apps/game-web"
+      ],
+      "related_contracts": [
+        "situational prose quality",
+        "scene sufficiency",
+        "player-safe narration"
+      ],
+      "search_terms": [
+        "художественная проза",
+        "полнота сцены",
+        "opening",
+        "ориентация",
+        "погода",
+        "звуки",
+        "видимые маршруты"
+      ],
+      "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "baseline_gap"
     },
     {

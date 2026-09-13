@@ -1,11 +1,13 @@
+import { ordinaryDiscoveryActivity, ordinarySearchActivity } from
+  '../../runtime/lower-dvina-trace-turn-step-generic-owners.js';
 import { canonicalDigest } from '@rus/materialization';
 import {
   planRuntimeContainerAccess,
   runtimeItemContentsAreOpen,
   runtimeItemRecordIsConcealed
 } from '@rus/items-property';
-import { fail, text } from
-  './lower-dvina-trace-turn-step-persistence-support.js';
+import { bindingMismatch as mismatch, blockedMoves, consumeBlockedSlots } from
+  './lower-dvina-trace-turn-step-blocked-move-binding.js';
 export { requireTurnStepOwnerCarrierBinding } from
   './lower-dvina-trace-turn-step-owner-carrier-binding.js';
 
@@ -16,8 +18,10 @@ const DIRECT = new Set([
 
 /** Every physical fragment must be authorized by the exact applied step. */
 export function validateTurnStepBatchPlanBindings({ batch, factual, state,
-  ambientPortionProfileRef = null }) {
-  const slots = expectedSlots(factual?.loop_trace?.step_traces ?? []);
+  ambientPortionProfileRef = null, ordinaryPlan = null }) {
+  const blocked = blockedMoves(factual?.consequence?.visible_seed);
+  const slots = expectedSlots(factual?.loop_trace?.step_traces ?? [], ordinaryPlan,
+    batch.operations, blocked);
   const aliases = new Map();
   const materializedItems = [
     ...structuredClone(state.items ?? []),
@@ -36,6 +40,7 @@ export function validateTurnStepBatchPlanBindings({ batch, factual, state,
   ];
   let cursor = 0;
   for (const fragment of batch.operations) {
+    cursor = consumeBlockedSlots(slots, cursor, blocked, aliases);
     const candidate = fragment.target === 'party_events'
       ? { type: 'activity', step: fragment.value.step_index }
       : { type: 'operation', step: fragment.value.step_index,
@@ -52,6 +57,7 @@ export function validateTurnStepBatchPlanBindings({ batch, factual, state,
     bindAliases(slot, fragment.value, aliases);
     applyBindingState(slot, fragment.value, materializedItems);
   }
+  cursor = consumeBlockedSlots(slots, cursor, blocked, aliases);
   if (cursor !== slots.length) {
     const slot = slots[cursor];
     mismatch({
@@ -62,29 +68,48 @@ export function validateTurnStepBatchPlanBindings({ batch, factual, state,
   }
 }
 
-function expectedSlots(traces) {
+function expectedSlots(traces, ordinaryPlan, fragments, blocked) {
+  const ordinaryTrace = traces.find(trace => trace.applied === true
+    && ordinaryPlan?.request_identity === `${trace.plan_request?.root_turn_id}:ordinary:presence:step:${trace.step_index}`);
   return traces.flatMap((trace) => {
     if (trace?.applied !== true) return [];
     const plan = trace.approved_plan;
     const selected = plan?.resolution === 'generic_check'
       ? plan.check?.outcomes?.[trace.check_outcome] : null;
     const operations = selected?.operations ?? plan?.operations ?? [];
-    const direct = operations.filter(({ op }) => DIRECT.has(op));
+    const start = operations.filter(({ op }) => op === 'apply_body_event');
+    const completion = operations.map((operation, operationIndex) => ({
+      operation, operationIndex
+    })).filter(({ operation: { op } }) => DIRECT.has(op)
+      && op !== 'apply_body_event');
     const domain = operations.filter(({ op }) => !DIRECT.has(op)
       && op === 'request_container_access');
+    const discoveryActivity = plan?.resolution !== 'domain_request'
+      || operations.length !== 1 ? null : ordinaryDiscoveryActivity({
+        operation: operations[0], request: trace.plan_request, plan,
+        ordinaryPlan })
+        ?? ((ordinaryPlan == null || ordinaryTrace != null && ordinaryTrace !== trace) && fragments.some(fragment => fragment.target === 'party_events'
+          && fragment.value.step_index === trace.step_index)
+          ? ordinarySearchActivity(operations[0], plan) : null);
     const activities = plan?.activity?.owner !== 'semantic' ? [] : [
       plan?.activity,
       ...(selected?.additional_activity == null
         ? [] : [selected.additional_activity])
     ].filter(Boolean);
     return [
-      ...direct.map((operation) => ({ type: 'operation',
+      ...start.map((operation) => ({ type: 'operation',
         step: trace.step_index, operation })),
+      ...activities.map((activity) => ({ type: 'activity',
+        step: trace.step_index, activity })),
+      ...completion.map(({ operation, operationIndex }) => ({
+        type: 'operation', step: trace.step_index, operation, operationIndex,
+        blocked: blocked.has(`${trace.step_index}:${operationIndex}`)
+      })),
       ...domain.map((operation) => ({ type: 'operation',
         step: trace.step_index, operation,
         checkOutcome: trace.check_outcome })),
-      ...activities.map((activity) => ({ type: 'activity',
-        step: trace.step_index, activity }))
+      ...[discoveryActivity].filter(Boolean).map((activity) => ({
+        type: 'activity', step: trace.step_index, activity }))
     ];
   });
 }
@@ -265,13 +290,4 @@ function resolve(ref, aliases) {
 
 function same(left, right) {
   return canonicalDigest(left) === canonicalDigest(right);
-}
-
-function mismatch(value, reason) {
-  fail('TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH', { reason, operation_id: text(value?.operation_id)
-      ? value.operation_id : null,
-    activity_id: text(value?.activity_id) ? value.activity_id : null,
-    step_index: value?.step_index ?? null,
-    operation_kind: value?.operation_kind ?? 'semantic_activity'
-  });
 }

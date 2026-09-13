@@ -1,5 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
-import { compareGameTimestamp } from '@rus/time-events-history';
+import { addElapsedTime, compareGameTimestamp } from '@rus/time-events-history';
 
 export function tracePhase4PreconditionSatisfied(precondition, state, contracts) {
   if (precondition.kind === 'committed_location') {
@@ -97,6 +97,10 @@ export function tracePhase4PreconditionSatisfied(precondition, state, contracts)
     return state.player_response_boundary == null;
   }
   if (precondition.kind === 'no_temporal_boundary_candidates') {
+    if (precondition.duration_minutes != null) return tracePhase4BoundaryFreeUntil(
+      state.temporal_boundary_candidates, addElapsedTime(state.clock, {
+        exact_minutes: { numerator: String(precondition.duration_minutes), denominator: '1' }
+      }));
     return Array.isArray(state.temporal_boundary_candidates)
       && state.temporal_boundary_candidates.length === 0;
   }
@@ -108,4 +112,9 @@ export function tracePhase4PreconditionSatisfied(precondition, state, contracts)
       );
   }
   return false;
+}
+
+export function tracePhase4BoundaryFreeUntil(candidates, clockAfter) {
+  return Array.isArray(candidates) && candidates.every(({ scheduled_at: at }) =>
+    at != null && compareGameTimestamp(at, clockAfter) > 0);
 }

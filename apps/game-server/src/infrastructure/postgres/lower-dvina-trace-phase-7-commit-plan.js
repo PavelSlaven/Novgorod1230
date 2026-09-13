@@ -19,6 +19,8 @@ import { actionProducedPhysicalKeys } from
   './action-produced-atomic-write-plan.js';
 import { spatialSemanticPhysicalKeys } from
   './spatial-semantic-atomic-write-plan.js';
+import { phase7AttemptTemporalResults, phase7StateBeforeSchedule } from
+  '../../runtime/lower-dvina-trace-phase-7-state-projection.js';
 
 export async function buildPhase7P16Plan({ partyId, writePlan, inputDigest,
   phase7Contracts, state, factual, turnNumber, changeSetId, idemId,
@@ -30,6 +32,14 @@ export async function buildPhase7P16Plan({ partyId, writePlan, inputDigest,
           && candidate.operation_kind === 'trace_phase_7_fire_rest'
       })
   });
+  const phase7 = factual.consequence.phase7;
+  const npcId = phase7.autonomous.request.npc_ref;
+  const temporalResults = phase7AttemptTemporalResults(phase7);
+  const routineWritesNpc = temporalResults
+    .some((result) => result.combined_change_set?.proposals?.some(
+      ({ npc_routine_transition: transition }) => transition?.npc_id === npcId));
+  const scheduleWrite = routineWritesNpc ? writes.updates.find((write) =>
+    write.target_table === 'party_npcs' && write.id === npcId) : null;
   const baseInput = {
     plan_id: `p16:${partyId}:trace-phase7:${turnNumber}`,
     party_id: partyId,
@@ -67,7 +77,9 @@ export async function buildPhase7P16Plan({ partyId, writePlan, inputDigest,
     },
     change_set: { id: changeSetId },
     visible_package_envelope: visibleEnvelope,
-    approved_write_sets: [writes],
+    approved_write_sets: [scheduleWrite == null ? writes : {
+      ...writes, updates: writes.updates.filter((write) => write !== scheduleWrite)
+    }],
     lock_context: {
       owner_keys: [
         `actor:${state.actor_id}`,
@@ -103,28 +115,36 @@ export async function buildPhase7P16Plan({ partyId, writePlan, inputDigest,
     local_fire_atomic_write_plans: localFirePlans,
     spatial_semantic_atomic_write_plan: spatialSemanticPlan
   };
-  const firstIntegrated = factual.consequence.phase7.resumed === true
-    ? { ok: true, input: baseInput }
-    : integrateSpatialV3TemporalWriteFragments({
-      base_write_plan_input: baseInput,
-      temporal_result: factual.consequence.phase7.temporal.result
+  let scheduledInput = baseInput;
+  for (const result of temporalResults) {
+    const integrated = integrateSpatialV3TemporalWriteFragments({
+      base_write_plan_input: scheduledInput, temporal_result: result
     });
-  if (!firstIntegrated.ok) {
-    fail('TRACE_PHASE_7_TEMPORAL_WRITE_CONFLICT', firstIntegrated.error);
+    if (!integrated.ok) fail('TRACE_PHASE_7_TEMPORAL_WRITE_CONFLICT', integrated.error);
+    scheduledInput = integrated.input;
   }
-  const integrated = integrateSpatialV3TemporalWriteFragments({
-    base_write_plan_input: firstIntegrated.input,
-    temporal_result: factual.consequence.phase7.schedule_temporal.result
-  });
-  if (!integrated.ok) {
-    fail('TRACE_PHASE_7_TEMPORAL_WRITE_CONFLICT', integrated.error);
+  if (scheduleWrite != null) {
+    const before = phase7StateBeforeSchedule(state, phase7).npcs
+      .find(({ instance_id: id }) => id === npcId);
+    const scheduled = integrateSpatialV3TemporalWriteFragments({
+      base_write_plan_input: scheduledInput, temporal_result: {
+        combined_change_set: { proposals: [{
+          write_set: { appends: [], inserts: [], deletes: [], updates: [{
+            ...scheduleWrite, previous_record: { machine_state: before.machine_state }
+          }] }, expected_state_versions: [],
+          physical_keys: [`party_runtime.party_npcs:${npcId}`]
+        }] }
+      }
+    });
+    if (!scheduled.ok) fail('TRACE_PHASE_7_TEMPORAL_WRITE_CONFLICT', scheduled.error);
+    scheduledInput = scheduled.input;
   }
   const finalInput = factual.consequence.turn10_kind === 'companion_request'
     ? integrateConversationTemporalWrites({
-        input: integrated.input,
+        input: scheduledInput,
         semanticExchange: factual.consequence.conversation.semantic_exchange
       })
-    : integrated.input;
+    : scheduledInput;
   const built = await builder.build(finalInput);
   if (!built.ok) fail('TRACE_PHASE_7_WRITE_PLAN_REJECTED', built.error);
   return built;

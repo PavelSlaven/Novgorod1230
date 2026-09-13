@@ -9,8 +9,8 @@ export function resolveFirstEntry({
   memberOrdinal = 0
 }) {
   const additionalMember = memberOrdinal > 0;
-  if (!(additionalMember ? [26, 27, 28, 29, 30, 31, 32].includes(scenarioRevision)
-    : [24, 25, 26, 27, 28, 29, 30, 31, 32].includes(scenarioRevision)) || !routeMovement(factual)) {
+  if (!(additionalMember ? [26, 27, 28, 29, 30, 31, 32, 33, 34].includes(scenarioRevision)
+    : [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34].includes(scenarioRevision)) || !routeMovement(factual)) {
     return null;
   }
   const prepared = state.first_entry_preparation;
@@ -110,16 +110,48 @@ export function resolveFirstEntry({
   if (!lifecycle.ok) {
     fail('TRACE_PHASE_3_FIRST_ENTRY_LIFECYCLE_REJECTED', lifecycle.error);
   }
-  return lifecycle.extension;
+  const extension = structuredClone(lifecycle.extension);
+  const schedules = (state.npc_schedule_runtime ?? []).filter((row) =>
+    row.current_position_node_id == null
+    && row.causal_state_ref.deferred_placement?.snapshot_id === spatial.preparation_snapshot_id
+    && row.causal_state_ref.deferred_placement?.member_ordinal === spatial.preparation_member_ordinal);
+  if (schedules.length) {
+    extension.approved_write_sets.push({ inserts: [], appends: [], deletes: [],
+      updates: schedules.map((row) => ({ target_table: 'party_npc_spatial_schedules', id: row.id,
+        record: { id: row.id, party_id: partyId, npc_id: row.npc_id,
+          current_position_node_id: target.position_id, causal_state_ref: row.causal_state_ref,
+          state_version: Number(row.state_version) + 1, updated_change_set_id: changeSetId } })) });
+    for (const row of schedules) {
+      extension.expected_state_versions.push({ target_table: 'party_npc_spatial_schedules',
+        id: row.id, state_version: Number(row.state_version) });
+      extension.lock_context.physical_keys.push(`party_runtime.party_npc_spatial_schedules:${row.id}`);
+    }
+  }
+  return extension;
 }
 
-function firstEntryPhysicalWrites({ partyId, target, changeSetId }) {
+export function firstEntryPhysicalWrites({ partyId, target, changeSetId }) {
   const baseStatic = target.base_static_template;
   if (!baseStatic?.scene_template_ref || !baseStatic?.g6 || !baseStatic?.position
       || !target.canonical_g5_ref || !target.materialization_trace_id) {
     fail('TRACE_PHASE_3_FIRST_ENTRY_PREPARATION_MISSING');
   }
   const templateRef = baseStatic.scene_template_ref;
+  const s1Writes = target.s1_physical_writes.map((row) =>
+    write(row.target_table, row.id, null, {
+      ...row.record, party_id: partyId, created_change_set_id: changeSetId,
+      updated_change_set_id: changeSetId
+    }));
+  const primaryG6 = write('party_g6_instances', target.g6_instance_id, null, {
+    id: target.g6_instance_id, party_id: partyId,
+    scene_baseline_id: target.scene_baseline_id,
+    ...baseStatic.g6,
+    host_kind: 'g5_site', host_id: target.g5_site_id,
+    status: 'active', state_version: 1, created_change_set_id: changeSetId,
+    updated_change_set_id: changeSetId
+  });
+  const g6Writes = [primaryG6, ...s1Writes.filter((row) =>
+    row.target_table === 'party_g6_instances')];
   return [
     write('party_g5_sites', target.g5_site_id, null, {
       id: target.g5_site_id, party_id: partyId, origin: 'canonical',
@@ -139,14 +171,7 @@ function firstEntryPhysicalWrites({ partyId, target, changeSetId }) {
       catalog_digest: target.catalog_digest, status: 'active', state_version: 1,
       created_change_set_id: changeSetId, updated_change_set_id: changeSetId
     }),
-    write('party_g6_instances', target.g6_instance_id, null, {
-      id: target.g6_instance_id, party_id: partyId,
-      scene_baseline_id: target.scene_baseline_id,
-      ...baseStatic.g6,
-      host_kind: 'g5_site', host_id: target.g5_site_id,
-      status: 'active', state_version: 1, created_change_set_id: changeSetId,
-      updated_change_set_id: changeSetId
-    }),
+    primaryG6,
     write('scene_position_nodes', target.position_id, null, {
       id: target.position_id, party_id: partyId,
       g6_instance_id: target.g6_instance_id, ...baseStatic.position,
@@ -154,8 +179,11 @@ function firstEntryPhysicalWrites({ partyId, target, changeSetId }) {
       state_version: 1, created_change_set_id: changeSetId,
       updated_change_set_id: changeSetId
     }),
-    ...target.s1_physical_writes.map((row) => write(row.target_table, row.id, null, {
-      ...row.record, party_id: partyId, created_change_set_id: changeSetId,
+    ...s1Writes,
+    ...g6Writes.map((row) => write('g6_acoustic_profiles', row.id, null, {
+      party_id: partyId, g6_instance_id: row.id, ambient_noise: 0,
+      acoustic_uniformity: row.record.acoustic_uniformity,
+      state_version: row.record.state_version,
       updated_change_set_id: changeSetId
     }))
   ];

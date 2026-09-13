@@ -25,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 43);
+  assert.equal(corpus.corpus_version, 65);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -40,17 +40,17 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
       git: { checkout_sha: 'fixture-sha', dirty: false },
       corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 19 }
     } });
-    assert.equal(report.fixture_count, 28);
-    assert.equal(report.aggregates.total.passed, 28,
+    assert.equal(report.fixture_count, 30);
+    assert.equal(report.aggregates.total.passed, 30,
       JSON.stringify(report.results.filter(({ pass }) => !pass)));
     assert.equal(report.aggregates.total.errors, 0);
-    assert.equal(report.aggregates.total.scored, 28);
+    assert.equal(report.aggregates.total.scored, 30);
     assert.equal(report.aggregates.total.unscored, 0);
-    assert.equal(report.aggregates.total.automated_passed, 28);
-    assert.equal(report.aggregates.total.quality_denominator, 28);
+    assert.equal(report.aggregates.total.automated_passed, 30);
+    assert.equal(report.aggregates.total.quality_denominator, 30);
     assert.equal(report.aggregates.total.repairs, 8);
-    assert.equal(report.aggregates.total.input_tokens, 56);
-    assert.equal(report.aggregates.total.output_tokens, 84);
+    assert.equal(report.aggregates.total.input_tokens, 60);
+    assert.equal(report.aggregates.total.output_tokens, 90);
     assert.ok(report.aggregates.total.p95_ms >= report.aggregates.total.p50_ms);
     assert.deepEqual(report.metadata.execution, { passes: 1, concurrency: 1 });
     assert.deepEqual(report.metadata.git, { checkout_sha: 'fixture-sha', dirty: false });
@@ -244,17 +244,17 @@ test('provider-ok invalid plan counts as validator failure and error in role/mod
     assert.equal(summary.error_rate, .75);
     assert.equal(summary.schema_failures, 1);
     assert.equal(summary.schema_failure_rate, .25);
-    assert.equal(summary.validator_failures, 1);
-    assert.equal(summary.validator_failure_rate, .25);
+    assert.equal(summary.validator_failures, 2);
+    assert.equal(summary.validator_failure_rate, .5);
     assert.equal(summary.rubric_failures, 1);
     assert.equal(summary.rubric_failure_rate, .25);
     assert.equal(report.aggregates.by_model['fixture-model'].errors, 3);
-    assert.equal(report.aggregates.by_role_model.turn_step_planner['fixture-model'].validator_failures, 1);
+    assert.equal(report.aggregates.by_role_model.turn_step_planner['fixture-model'].validator_failures, 2);
     assert.equal(report.aggregates.by_repair.repair.errors, 1);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
-test('planner fixture uses one production repair only after production validation rejects primary', async () => {
+test('planner fixture rejects an unknown continuation ref without semantic repair', async () => {
   const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   const invalidPrimary = structuredClone(fixture.expected_output);
   invalidPrimary.continuation = {
@@ -280,22 +280,18 @@ test('planner fixture uses one production repair only after production validatio
       baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
     } });
     const result = report.results[0];
-    assert.equal(calls, 2);
-    assert.equal(result.pass, true);
+    assert.equal(calls, 1);
+    assert.equal(result.pass, false);
     assert.equal(result.workflow.primary.valid, false);
-    assert.equal(result.workflow.repair_needed, true);
-    assert.equal(result.workflow.repair.role_id, 'turn_step_planner_repair');
-    assert.equal(result.workflow.repair.valid, true);
-    assert.deepEqual(result.workflow.final, {
-      source: 'repair', status: 'ok', valid: true,
-      rubric_pass: true,
-      quality_status: 'automated_passed', pass: true
-    });
-    assert.equal(report.aggregates.total.calls, 2);
+    assert.equal(result.workflow.repair_needed, false);
+    assert.equal(result.workflow.repair, null);
+    assert.equal(result.workflow.error_code, 'TURN_STEP_PLAN_INVALID');
+    assert.equal(result.workflow.repair_suppressed, 'deterministic_structure_invalid');
+    assert.equal(report.aggregates.total.calls, 1);
     assert.equal(report.aggregates.total.fixtures, 1);
-    assert.equal(report.aggregates.total.repairs, 1);
-    assert.equal(report.aggregates.total.input_tokens, 4);
-    assert.equal(report.aggregates.total.output_tokens, 6);
+    assert.equal(report.aggregates.total.repairs, 0);
+    assert.equal(report.aggregates.total.input_tokens, 2);
+    assert.equal(report.aggregates.total.output_tokens, 3);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
@@ -338,7 +334,7 @@ test('semantic-invalid structurally-valid repair fails the planner workflow verd
   const fixture = corpus.fixtures.find(({ id }) =>
     id === 'planner-general-look-spatial-grounding');
   const invalid = structuredClone(fixture.expected_output);
-  invalid.operations[0].target_refs.push('actor_mikula');
+  invalid.operations[0].target_refs = ['actor_mikula'];
   let calls = 0;
   const server = createServer(async (request, response) => {
     for await (const _ of request) {}
@@ -481,7 +477,7 @@ test('saved 26/27 planner failure is classified as branch A without a new API ca
     'A_production_validation_rejected');
 });
 
-test('planner invalid repair fails after exactly two calls', async () => {
+test('planner structurally invalid output fails after exactly one call', async () => {
   const fixture = corpus.fixtures.find(({ id }) => id === 'planner-reality-limited');
   let calls = 0;
   const server = createServer(async (request, response) => {
@@ -498,12 +494,13 @@ test('planner invalid repair fails after exactly two calls', async () => {
       compatibility: 'openai_compatible',
       baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model'
     } });
-    assert.equal(calls, 2);
+    assert.equal(calls, 1);
     assert.equal(report.results[0].pass, false);
-    assert.equal(report.results[0].workflow.repair_needed, true);
-    assert.equal(report.results[0].workflow.repair.valid, false);
+    assert.equal(report.results[0].workflow.repair_needed, false);
+    assert.equal(report.results[0].workflow.repair, null);
+    assert.equal(report.results[0].workflow.repair_suppressed, 'deterministic_structure_invalid');
     assert.equal(report.results[0].workflow.error_code, 'TURN_STEP_PLAN_INVALID');
-    assert.equal(report.aggregates.total.repairs, 1);
+    assert.equal(report.aggregates.total.repairs, 0);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
@@ -543,6 +540,53 @@ test('negative narration audit fixture rejects an unsupported visible claim', ()
     pass: false, 'concerns.0.segment_id': 's1',
     'concerns.0.kind': 'unsupported_sensory'
   });
+});
+
+test('raw narration false PASS replies fail static-recap and missing-result rubrics', async () => {
+  const staticRecap = corpus.fixtures.find(({ id }) =>
+    id === 'gameplay-narrator-auditor-captured-static-recap');
+  const missingResult = corpus.fixtures.find(({ id }) =>
+    id === 'gameplay-narrator-auditor-missing-unresolved-result');
+  assert.deepEqual(missingResult.expected_output.source_reviews, [
+    { ref: 'visible_change_1', segment_choices: ['s1'] },
+    { ref: 'visible_change_2', segment_choices: [] }
+  ]);
+  assert.equal(missingResult.expected.required_values['concerns.0.kind'],
+    'missing_visible_change');
+  const fixtures = [staticRecap, missingResult];
+  const staticFalsePass = structuredClone(staticRecap.expected_output);
+  staticFalsePass.unsupported = [];
+  staticFalsePass.literary_failures = [];
+  staticFalsePass.evidence = ['The scene is grounded and the current beat is complete.'];
+  const missingResultFalsePass = structuredClone(missingResult.expected_output);
+  missingResultFalsePass.source_reviews[1].segment_choices = ['s1'];
+  missingResultFalsePass.evidence = ['Both required sources are fully conveyed.'];
+  const replies = [staticFalsePass, missingResultFalsePass];
+  const server = createServer(async (request, response) => {
+    for await (const _ of request) {}
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ choices: [{ message: { content: JSON.stringify(replies.shift()) } }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  try {
+    const report = await runFrozenRoleEval({ corpus: { ...corpus, fixtures }, runtimeProviderOverride: {
+      compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${server.address().port}/v1`,
+      model: 'fixture-model'
+    } });
+    const [staticResult, missingResultReport] = report.results;
+    assert.ok(staticResult.errors.includes('unexpected_value:pass'));
+    assert.ok(staticResult.errors.includes('unexpected_value:artistic_verdict'));
+    assert.ok(staticResult.errors.includes('unexpected_value:technical_verdict'));
+    assert.ok(missingResultReport.errors.includes('unexpected_value:pass'));
+    assert.ok(missingResultReport.errors.includes('unexpected_value:concerns.length'));
+    assert.ok(missingResultReport.errors.includes('unexpected_value:concerns.0.kind'));
+    for (const result of report.results) {
+      assert.equal(result.pass, false);
+      assert.equal(result.errors.some((error) => error.startsWith('validator:')), false);
+      assert.equal(result.llm_calls, 1);
+      assert.equal(result.repair_calls, 0);
+    }
+  } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 
 test('narration semantic repair accepts grounded equivalent prose', async () => {
@@ -629,7 +673,7 @@ test('planner, ordinary and NPC conversation semantic mismatches fail after owne
   const plannerOutput = structuredClone(planner.expected_output);
   plannerOutput.activity.effort = 'heavy';
   const ordinaryOutput = structuredClone(ordinary.expected_output);
-  ordinaryOutput.entities[0].semantic_descriptor.semantic_type = 'other_ordinary';
+  ordinaryOutput.semantic_admission_class = 'specialized_or_valuable';
   const conversationOutput = structuredClone(conversation.expected_output);
   conversationOutput.speech.dominant_act = 'question';
   const outputs = [plannerOutput, ordinaryOutput, conversationOutput];

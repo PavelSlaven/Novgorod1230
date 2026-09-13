@@ -100,6 +100,29 @@ test('shared activity writer preserves Phase 4 and Phase 8 snapshot identities',
     });
   });
 
+test('shared activity writer ends its interval before a later chained action',
+  () => {
+    const inserts = [];
+    const appends = [];
+    appendPhase4ActivityExecution({
+      inserts, appends, partyId: PARTY_ID,
+      state: { actor_id: 'player', position: {} },
+      factual: { consequence: { phase4_kind: 'negotiation' },
+        time_update: { clock_before: AT },
+        mode_resolution: { option_id: 'option' },
+        player_input: { request_id: 'request' } },
+      next: { clock: { ...AT, whole_minutes: '126' } },
+      root: { activity_ref: 'activity-profile', duration_minutes: 5 },
+      id: 'activity-execution', seriesOrdinal: 0,
+      activitySeriesId: 'activity-series', attemptOrdinal: 0,
+      turnNumber: 1, changeSetId: CHANGE_SET_ID, idemId: 'idempotency'
+    });
+    assert.equal(only(inserts, 'party_timed_activity_executions')
+      .record.last_processed_at_whole_minutes, '125');
+    assert.equal(only(appends, 'party_timed_activity_attempts')
+      .record.ended_at_whole_minutes, '125');
+  });
+
 test('Phase 8 NPC update retains participant slot in semantic state', () => {
   const state = { party_id: PARTY_ID, actor_id: 'player', position: {},
     party_state: { state_version: 1 }, npcs: [{ instance_id: 'zhdanko',

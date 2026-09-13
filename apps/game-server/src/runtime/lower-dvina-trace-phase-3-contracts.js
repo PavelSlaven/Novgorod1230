@@ -1,5 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
+import { perceivedRoutesForState } from './lower-dvina-trace-scene-presentation.js';
 
 export const TRACE_PHASE_3_IDS = Object.freeze({
   moveOption: 'follow_path_to_fishing_camp',
@@ -18,7 +19,7 @@ export const TRACE_PHASE_3_IDS = Object.freeze({
 
 export function resolveTracePhase3Contracts({ state, bundle }) {
   const ids = TRACE_PHASE_3_IDS;
-  if (![9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
+  if (![9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]
     .includes(bundle.definition_revision)) {
     gap('TRACE_PHASE_3_REVISION_MISMATCH');
   }
@@ -121,7 +122,7 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     'transition_template_id',
     'trace_ld_v1_transition_blue_wool_pickup'
   );
-  const conversationBindings = [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
+  const conversationBindings = [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34]
     .includes(bundle.definition_revision)
     ? bundle.conversation_semantic_bindings
     : null;
@@ -206,6 +207,8 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
   }
   return Object.freeze({
     ids, movement, talk, evidenceTalk, check, route, routeBodyEffect,
+    routePresentation: perceivedRoutesForState({ scenePresentation: bundle.scene_presentation, state })
+      .find(value => value.route_ref === route.route_id),
     sourceEndpoint, destinationEndpoint, access, capacity,
     npcPolicy, executions, statementEffects, eremeyKnowledge,
     firstMapping, disclosureMapping, blueWoolPickup,

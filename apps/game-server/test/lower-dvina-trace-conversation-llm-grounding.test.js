@@ -5,7 +5,7 @@ import { assembleNpcConversationPlan, createLowerDvinaTraceNpcSemanticModel } fr
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { npcConversationCandidates } from
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
-import { ownNpcProjection } from
+import { currentSceneObservationProjection, ownNpcProjection } from
   '../src/runtime/lower-dvina-trace-m2-conversation-projections.js';
 import { createProductionWorldKnowledgeGrounder } from
   '../src/runtime/world-knowledge-grounding.js';
@@ -44,6 +44,24 @@ function runner(reply) {
   return { calls, roleRunner: { async run(call) { calls.push(structuredClone(call)); return { output: await reply(call) }; } } };
 }
 
+test('current scene details become cited present NPC observations', () => {
+  const observedAt = { whole_minutes: '1', subminute_numerator: '0',
+    subminute_denominator: '1' };
+  const observations = currentSceneObservationProjection({
+    party_state: { state_version: 7 }, clock: observedAt,
+    current_visible_context: { sensory_details: [
+      'На очаговой площадке нет огня.',
+      'На очаговой площадке нет огня.'
+    ] }
+  });
+
+  assert.deepEqual(observations, [{
+    observation_ref: ref('perception_result', 'current-scene:7:1'),
+    source_type: 'direct_perception', observed_at: observedAt,
+    fact_text: 'На очаговой площадке нет огня.'
+  }]);
+});
+
 test('speech audit rejects invented past work from a current schedule',
   async () => {
     const input = request();
@@ -71,7 +89,15 @@ test('speech audit rejects invented past work from a current schedule',
       /current_activity describes only requested_at/u);
     assert.match(fixture.calls[0].messages[0].content,
       /Past first-person activity or observation needs an exact memory record/u);
-    assert.equal(fixture.calls[0].overrides.maxTokens, 20_000);
+    assert.match(fixture.calls[0].messages[0].content,
+      /empty or missing memory never proves a negative past observation/u);
+    assert.match(fixture.calls[0].messages[0].content,
+      /plausible for the place or social situation/u);
+    assert.match(fixture.calls[0].messages[0].content,
+      /memory\.current_observations grounds only its exact present fact_text/u);
+    assert.match(fixture.calls[0].messages[0].content,
+      /Mandatory failure: when memory\.records has no exact supporting record/u);
+    assert.equal(fixture.calls[0].overrides.maxTokens, 256);
   });
 
 test('speech audit applies to another NPC, place, and earlier time', async () => {
@@ -94,25 +120,64 @@ test('speech audit applies to another NPC, place, and earlier time', async () =>
     ['unsupported_past_observation']);
 });
 
-test('semantic grounding failure requests one complete response rewrite',
+test('source-free NPC claims fail before the semantic auditor call', async () => {
+  const input = request();
+  const unsupported = plan(input);
+  unsupported.speech.claims = [{ claim_id: 'unsupported',
+    content_summary: 'Неподтверждённый факт.', form: 'assertion',
+    speaker_posture: 'believed_true', source_knowledge_refs: [],
+    mentioned_entity_refs: [] }];
+  const fixture = runner(() => assert.fail('semantic auditor must not run'));
+
+  const result = await createLowerDvinaTraceNpcSemanticModel(
+    fixture).validateFreshPlan(unsupported, input);
+
+  assert.deepEqual(result.errors[0].concern_kinds,
+    ['claim_without_source_knowledge']);
+  assert.equal(fixture.calls.length, 0);
+});
+
+test('semantic grounding failure keeps cited present facts and falls back safely',
   async () => {
     const input = request();
-    const fixture = runner(() => plan(input));
-    await createLowerDvinaTraceNpcSemanticModel(fixture)(input, { repair: {
-      original_output: plan(input),
+    const observation = {
+      observation_ref: ref('perception_result', 'current-scene:1:1'),
+      source_type: 'direct_perception', observed_at: input.requested_at,
+      fact_text: 'На очаге не видно пламени.'
+    };
+    input.memory = { records: [], received_messages: [],
+      current_observations: [observation] };
+    input.allowed_references.knowledge_refs.push(observation.observation_ref);
+    const original = plan(input);
+    original.speech.claims = [{ claim_id: 'fire',
+      content_summary: observation.fact_text, form: 'assertion',
+      speaker_posture: 'believed_true',
+      source_knowledge_refs: [observation.observation_ref],
+      mentioned_entity_refs: [] }, { claim_id: 'unsupported',
+      content_summary: 'Вчера лодки не было.', form: 'assertion',
+      speaker_posture: 'believed_true', source_knowledge_refs: [],
+      mentioned_entity_refs: [] }];
+    const fixture = runner(() => assert.fail('repair must use safe fallback'));
+    const result = await createLowerDvinaTraceNpcSemanticModel(
+      fixture)(input, { repair: {
+      original_output: original,
       validation_errors: [{
         code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
         category: 'semantic_grounding', retryable: true
       }]
     } });
 
-    assert.equal(fixture.calls[0].role_id,
-      'npc_conversation_responder_format_repair');
-    assert.match(fixture.calls[0].messages[0].content,
-      /Rewrite the complete response once/u);
-    assert.equal(Object.hasOwn(
-      JSON.parse(fixture.calls[0].messages[1].content), 'original_output'),
-    false);
+    assert.equal(fixture.calls.length, 0);
+    assert.equal(validateConversationContributionPlan(result, input), true);
+    assert.equal(result.speech.utterance_text,
+      'На очаге не видно пламени. Остального я подтвердить не могу.');
+    assert.deepEqual(result.speech.claims, [{
+      claim_id: 'fallback-current-observation-1',
+      content_summary: observation.fact_text, form: 'assertion',
+      speaker_posture: 'believed_true',
+      source_knowledge_refs: [observation.observation_ref],
+      mentioned_entity_refs: []
+    }]);
   });
 
 test('route contract candidate reaches initial and repair prompts', async () => {
@@ -181,7 +246,11 @@ test('conversation production model receives planner-selected role, material, an
   assert.match(instructions, /say that it is not established or unknown/u);
   assert.match(instructions, /Do not expand insufficient evidence into an inventory of hypothetical missing components/u);
   assert.match(instructions, /do not recite or apply a conditional historical rule whose stated trigger is not established/u);
-  assert.match(instructions, /preserve the limit without inferring a procedure or prohibition/u);
+    assert.match(instructions, /preserve the limit without inferring a procedure or prohibition/u);
+    assert.match(instructions,
+      /Missing or empty memory is not evidence/u);
+    assert.match(instructions,
+      /Never infer a current object, condition, resource, amenity/u);
 });
 
 function conversationCalendarProfile() {
@@ -211,6 +280,7 @@ function conversationWorldKnowledge(onQuery) {
   concepts, claims: concepts.map(({ domain }, index) => ({ claim_ref: `claim:${index}`, domain })),
   exact_indexes: { concept_to_claim_refs: Object.fromEntries(concepts.map(({ concept_ref }, index) =>
     [concept_ref, [`claim:${index}`]])) },
+  lexical_indexes: { ru: {} },
   predicate_registry: Object.fromEntries(concepts.map(({ domain }) =>
     [domain, predicate])), coverage_profiles: concepts.map(({ domain }) => ({
     domain, status: 'production', runtime_requirement: 'required_when_selected',

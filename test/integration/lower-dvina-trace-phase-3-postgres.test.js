@@ -209,6 +209,14 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     'party_runtime.party_conversation_contributions', partyA.party_id), 4);
   assert.equal(await count(pool,
     'party_runtime.party_npc_decision_traces', partyA.party_id), 2);
+  const sequentialTalkPerceptions = (await pool.query(
+    `SELECT perception_id,idempotency_record_id
+       FROM party_runtime.party_perception_records
+      WHERE party_id=$1`, [partyA.party_id])).rows;
+  assert.ok(sequentialTalkPerceptions.length > 0);
+  assert.equal(new Set(sequentialTalkPerceptions.map(
+    ({ idempotency_record_id: id }) => id)).size,
+  sequentialTalkPerceptions.length);
 
   const pathB = buildRuntime({
     pool, release, runtimeCatalogPin,
@@ -232,6 +240,8 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
   };
   const disclosed = await pathB.submitTurn(partyB.party_id, disclosureInput);
   assert.equal(disclosed.check.outcome.success, true);
+  assert.equal(disclosed.screen.checks.length, 1);
+  assert.equal(disclosed.screen.checks[0].roll, disclosed.check.roll);
   assert.deepEqual(disclosed.conversation.semantic_exchange, {
     response_kind: 'route_disclosure',
     npc_utterance: 'От лагеря иди к старой сушильне по тропе.',
@@ -1011,7 +1021,7 @@ function approvedNarration(requestId) {
     },
     final_audit: {
       version: 1,
-      schema: 'narration_audit',
+      schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] },
       pass: true,
       concerns: [],
       evidence: ['persisted visible context']

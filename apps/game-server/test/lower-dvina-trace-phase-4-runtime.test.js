@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createTracePhase4Commands } from '../src/runtime/lower-dvina-trace-phase-4-command.js';
+import { createTracePhase4Commands, tracePhase4PreconditionSatisfied } from '../src/runtime/lower-dvina-trace-phase-4-command.js';
 import {
   createTracePhase4VisibleProjector,
   createTracePhase4TemporalAdvance,
@@ -196,7 +196,7 @@ test('Phase 4 temporal owner commits route once and preserves separate negotiati
   assert.equal(movement.clock_after.whole_minutes, '22');
   assert.equal(movement.boundary_trace.owner, 'movement_route_owner');
   assert.equal(movement.boundary_trace.policy,
-    'commit_only_with_empty_boundary_candidate_set');
+    'commit_only_before_next_boundary');
   await assert.rejects(() => advance({
     consequence: route,
     clock_before: routeState().clock,
@@ -241,6 +241,32 @@ test('Phase 4 temporal owner commits route once and preserves separate negotiati
       temporal_boundary_candidates: [{ boundary_id: 'body-threshold' }]
     }
   }), { code: 'TRACE_PHASE_4_TEMPORAL_BOUNDARY_PENDING' });
+});
+
+test('Phase 4 route admits future boundaries only beyond the complete traversal', async () => {
+  const state = routeState();
+  const [command] = createTracePhase4Commands({ contracts, inputDigest: 'e'.repeat(64) });
+  const precondition = command.preconditions.find(({ kind }) =>
+    kind === 'no_temporal_boundary_candidates');
+  const consequence = routeToShedEffect({ contracts, state,
+    inputDigest: 'e'.repeat(64), playerInput: { idempotency_key: 'future-boundary' } });
+  const advance = createTracePhase4TemporalAdvance({ phase3Advance: null });
+  for (const wholeMinutes of ['10', '21', '22', '23']) {
+    const candidates = [{ boundary_id: 'npc-routine', scheduled_at: {
+      whole_minutes: wholeMinutes, subminute_numerator: '0', subminute_denominator: '1'
+    } }];
+    const allowed = wholeMinutes === '23';
+    assert.equal(tracePhase4PreconditionSatisfied(precondition,
+      { ...state, temporal_boundary_candidates: candidates }, contracts), allowed);
+    const run = () => advance({ consequence, clock_before: state.clock,
+      relevant_state: { temporal_boundary_candidates: candidates } });
+    if (allowed) {
+      const result = await run();
+      assert.equal(result.clock_after.whole_minutes, '22');
+      assert.equal(result.boundary_trace.evaluated_candidate_count, 1);
+      assert.deepEqual(result.boundary_trace.processed_boundary_ids, []);
+    } else await assert.rejects(run, { code: 'TRACE_PHASE_4_TEMPORAL_BOUNDARY_PENDING' });
+  }
 });
 
 test('command availability exposes exact influence/communication DC 13 modifiers', async () => {

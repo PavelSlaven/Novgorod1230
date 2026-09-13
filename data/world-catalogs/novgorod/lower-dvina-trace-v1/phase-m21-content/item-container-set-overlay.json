@@ -1,0 +1,151 @@
+{
+  "schema": "rus.trace_item_container_set_overlay.v1",
+  "set_id": "trace_ld_v1_item_container_set",
+  "revision": 6,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "supersedes_ref": {
+    "id": "trace_ld_v1_item_container_set",
+    "revision": 5,
+    "schema": "rus.trace_item_container_set_overlay.v1",
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/item-container-set-overlay.json",
+    "digest": "edd3a46d9172041c5fefb5658e00b1aaa5b61c6ac5c086e4cd2de96434cb340e"
+  },
+  "canonical_item_catalog_source_ref": {
+    "schema": "rus.trace_item_catalog_source_ref.v1",
+    "version": 1,
+    "candidate_manifest": {
+      "path": "data/knowledge-source/imports/item-container-120-v5/candidate/manifest.json",
+      "schema_version": "rus.pr17.item_container_candidate.v1",
+      "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24",
+      "sha256": "e887bd52d63b83bb1a68318e0e30409ea7275e9e73637e51012eb7bf22807a98"
+    },
+    "approval_attestation": {
+      "path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json",
+      "schema_version": "rus.pr17.item_container_approval_attestation.v1",
+      "decision": "approve_all_120",
+      "sha256": "816509df226b1bab8a91a9b3d2b3afee251f925cb169a90633d5676daeb62859"
+    },
+    "promoted_world_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+    "datasets": {
+      "item_templates": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_templates.json",
+        "schema_version": "rus.item_templates.v1",
+        "sha256": "766b2e2a874a79723daaf3f9bca4580033fc5da030a2e5be5cbfba4d84f9faab"
+      },
+      "item_inventory_profiles": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_inventory_profiles.json",
+        "schema_version": "rus.item_template_inventory_profiles.v1",
+        "sha256": "e71a346428948b84bf5b953c5c11069bdfbf8ea67ad29f8c383c9ea39a11fc95"
+      },
+      "item_quantity_profiles": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/item_template_quantity_profiles.json",
+        "schema_version": "rus.item_template_quantity_profiles.v1",
+        "sha256": "caf63d4c245dffdd3e9344a8631e1304e719a8dec1cd099356ca8710e4ee5f22"
+      },
+      "container_templates": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/container_templates.json",
+        "schema_version": "rus.container_templates.v1",
+        "sha256": "1ec241d6fc0c7520402aa2d477636d3092cb7f7fe43638dafffbaf82a90f60a1"
+      },
+      "container_inventory_profiles": {
+        "path": "data/knowledge-source/imports/item-container-120-v5/candidate/tables/container_template_inventory_profiles.json",
+        "schema_version": "rus.container_template_inventory_profiles.v1",
+        "sha256": "f5e73d08edf8f2ff5dc1839b895d245182b4339ad5785d2ad50d26a66cd63805"
+      }
+    }
+  },
+  "item_template_overrides": [
+    {
+      "item_template_id": "trace_ld_v1_item_wet_cloak",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_cloak_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_cloak_v1"
+      },
+      "display_name": "плащ или накидка"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_writing_tablet",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_birch_bark_sheet_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_birch_bark_sheet_v1"
+      },
+      "display_name": "лист бересты для записи"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_mikula_knife",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_utility_knife_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_utility_knife_v1"
+      },
+      "display_name": "хозяйственный нож"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_ratsha_knife",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_utility_knife_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_utility_knife_v1"
+      },
+      "display_name": "хозяйственный нож"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_zhdanko_axe",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_working_axe_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_working_axe_v1"
+      },
+      "display_name": "рабочий топор"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_ratsha_caftan",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_wool_outer_garment_v1",
+        "inventory_profile_id": "trace_ld_v1_inventory_profile_ratsha_caftan"
+      },
+      "display_name": "верхняя шерстяная одежда"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_fishing_net",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_fishing_net_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_fishing_net_v1"
+      },
+      "display_name": "рыболовная сеть"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_ratsha_binding_rope",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_rope_v1",
+        "inventory_profile_id": "trace_ld_v1_inventory_profile_ratsha_binding_rope"
+      },
+      "display_name": "верёвка"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_zhdanko_rope",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_rope_v1",
+        "inventory_profile_id": "inventory_item_tpl_nov_rope_v1"
+      },
+      "display_name": "верёвка"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_base_shirt",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_linen_shirt_v1",
+        "inventory_profile_id": "trace_ld_v1_inventory_profile_base_shirt"
+      },
+      "display_name": "нижняя рубаха"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_working_outer_garment",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_wool_outer_garment_v1",
+        "inventory_profile_id": "trace_ld_v1_inventory_profile_working_outer_garment"
+      },
+      "display_name": "верхняя шерстяная одежда"
+    }
+  ],
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

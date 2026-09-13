@@ -1,0 +1,67 @@
+{
+  "schema": "rus.lower_dvina_trace_post_action_perception_profile.v1",
+  "profile_id": "lower_dvina_trace_post_action_perception_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 34,
+  "owner": "@rus/turn",
+  "fallback_policy": "forbidden",
+  "channels": ["acoustic"],
+  "listener_scope_relation": "same_scene_position",
+  "required_schedule_status": "active",
+  "runtime_attention": {
+    "awake_statuses": ["available"],
+    "sleeping_statuses": ["sleeping"],
+    "unavailable_statuses": ["unavailable"]
+  },
+  "attention": {
+    "awake_channels": ["acoustic", "visual"],
+    "sleeping_channels": [],
+    "observer_azimuth_mdeg": 0,
+    "observer_vertical_direction": "level",
+    "visual_capability_level": 3,
+    "acoustic_capability_level": 3
+  },
+  "environment": {
+    "light_state_id": "bright",
+    "weather_visibility_result": "clear",
+    "weather_acoustic_loss": "0",
+    "transient_visibility_result": "clear",
+    "transient_acoustic_loss": "0"
+  },
+  "recognition_outcome": "unidentified",
+  "perception_policy": {
+    "recognition_policy_ref": {
+      "entity_ref": {
+        "entity_kind": "condition_set",
+        "entity_id": "lower_dvina_trace_post_action_recognition_v1"
+      },
+      "authoring_version": "1"
+    },
+    "visibility_policy_ref": {
+      "entity_ref": {
+        "entity_kind": "visibility_modifier",
+        "entity_id": "lower_dvina_trace_post_action_visibility_v1"
+      },
+      "authoring_version": "1"
+    },
+    "acoustic_policy_ref": {
+      "entity_ref": {
+        "entity_kind": "condition_set",
+        "entity_id": "lower_dvina_trace_post_action_acoustic_v1"
+      },
+      "authoring_version": "1"
+    },
+    "provenance_ref": {
+      "entity_ref": {
+        "entity_kind": "source_record",
+        "entity_id": "lower_dvina_trace_post_action_perception_v1"
+      },
+      "authoring_version": "1"
+    },
+    "status": "approved",
+    "darkness_visual_result_cap": "perceived_partial",
+    "sleeping_attention_channels": []
+  }
+}

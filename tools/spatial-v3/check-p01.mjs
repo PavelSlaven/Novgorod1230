@@ -38,11 +38,12 @@ if (!count(acceptedTemporalContracts) || acceptedTemporalContracts.length !== 35
 const temporalContractCounts = temporalContracts.reduce((result, name) => result.set(name, (result.get(name) ?? 0) + 1), new Map());
 const temporalOverrides = [...temporalContractCounts].filter(([, occurrences]) => occurrences > 1);
 if (
-  temporalContracts.length !== 62
+  temporalContracts.length !== 64
   || new Set(temporalContracts).size !== 61
-  || temporalOverrides.length !== 1
-  || temporalOverrides[0][0] !== 'npc_decision_option'
-  || temporalOverrides[0][1] !== 2
+  || temporalOverrides.length !== 3
+  || temporalOverrides.some(([name, occurrences]) => occurrences !== 2
+    || !['npc_decision_option', 'temporal_boundary_provider_input',
+      'temporal_advance_request'].includes(name))
   || !count(temporalErrors)
   || temporalErrors.length !== 24
 ) throw new Error('Current Temporal/PR8 amendment audit failed');

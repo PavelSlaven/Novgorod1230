@@ -14,6 +14,20 @@ export function scenePresentationForLocation({ scenePresentation, locationRef })
   };
 }
 
+export function perceivedRoutesForState({ scenePresentation, state }) {
+  const known = new Set([...(state?.route_knowledge ?? []).map(value =>
+    typeof value === 'string' ? value : value.route_ref ?? value.route_id),
+  ...(state?.route_history ?? []).map(value => value.route_ref)]);
+  return (scenePresentation?.route_presentations ?? []).flatMap(record => {
+    if (record.from_ref !== state?.position?.location_ref) return [];
+    const learned = known.has(record.route_ref);
+    if (!learned && record.initial_perception_requirement !== 'source_location_perception') return [];
+    return [{ route_ref: record.route_ref, from_ref: record.from_ref,
+      ...(learned ? { to_ref: record.to_ref } : {}),
+      label: learned ? record.label : record.perceived_label, known: learned }];
+  });
+}
+
 export function ordinaryBackgroundSeedForLocation({
   scenePresentation,
   locationRef

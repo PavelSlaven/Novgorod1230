@@ -131,7 +131,7 @@ export function approvedNarration(requestId) {
     },
     final_audit: {
       version: 1,
-      schema: 'narration_audit',
+      schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] },
       pass: true,
       concerns: [],
       evidence: ['Текст основан только на persisted visible context.'],
@@ -141,5 +141,29 @@ export function approvedNarration(requestId) {
     audit_history: [],
     repair_history: [],
     diagnostics: {},
+  };
+}
+
+export function fixtureContainerState(containers, partyId) {
+  return {
+    containers: (containers ?? []).map((container) => ({
+      container_id: container.instance_id,
+      template_id: container.template_id,
+      anchor_id: container.anchor_id ?? null,
+      holder_npc_id: container.holder_npc_id ?? null,
+      closure_state: container.closure_state,
+      state: structuredClone(container.state),
+      state_version: 1,
+    })),
+    container_placements: (containers ?? []).map((container) => ({
+      party_id: partyId,
+      container_id: container.instance_id,
+      anchor_id: container.anchor_id ?? null,
+      parent_container_id: container.parent_container_id ?? null,
+      holder_npc_id: container.holder_npc_id ?? null,
+      holder_character_id: container.holder_character_id ?? null,
+      physical_position: container.physical_position ?? null,
+      equipment_slot_category_id: container.equipment_slot_category_id ?? null,
+    })),
   };
 }

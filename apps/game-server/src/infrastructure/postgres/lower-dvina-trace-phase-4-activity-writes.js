@@ -1,4 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
+import { addElapsedTime } from '@rus/time-events-history';
 import { row } from './first-playable/plan-shared.js';
 
 export function appendPhase4ActivityExecution({
@@ -37,7 +38,9 @@ export function appendPhase4ActivityExecution({
     subminute_numerator: factual.time_update.clock_before.subminute_numerator,
     subminute_denominator: factual.time_update.clock_before.subminute_denominator
   };
-  const ended = structuredClone(next.clock);
+  const ended = addElapsedTime(started, { exact_minutes: {
+    numerator: String(attemptActual), denominator: '1'
+  } });
   if (seriesOrdinal === 1
       && canonicalDigest(ended) !== canonicalDigest(next.clock)) {
     throw new Error('TRACE_PHASE_4_ACTIVITY_INTERVAL_INVALID');

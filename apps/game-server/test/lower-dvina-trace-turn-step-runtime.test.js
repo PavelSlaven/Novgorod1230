@@ -9,6 +9,10 @@ import { commitLowerDvinaTracePhase2 } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit.js';
 import { createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
+  '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
+import { enabled, group, verifyStageBCutover } from
+  './lower-dvina-trace-o1-fixture.js';
 
 const [bundle12, bundle13, bundle15, bundle25] = await Promise.all([
   loadScenarioBundle(12),
@@ -137,6 +141,88 @@ test('revision 13 semantic replay does not rerun any factual owner',
       itemCreation: 1,
       commit: 1
     });
+  });
+
+test('standalone ordinary inspect replay does not repeat activity or model',
+  async () => {
+    let materializationCalls = 0;
+    const scopeBinding = {
+      position_ref: 'trace_ld_v1_loc_wreck_shore',
+      g6_ref: 'shore'
+    };
+    const f = fixture({
+      scenarioBundle: bundle25,
+      materializationBundle: bundle25,
+      worldBaseReferenceSnapshot: currentWorldBaseReferenceSnapshot(),
+      turnStepModel: ordinaryDiscoveryPlan,
+      ordinaryDiscoveryEnablementMarker: async () => true,
+      ordinaryDiscoveryScopeBinding: scopeBinding,
+      createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+        createLowerDvinaTraceOrdinaryDiscoveryResolver({
+          partyId,
+          inputDigest,
+          scopeBinding,
+          verifyStageBCutover,
+          loadEnablement: async () => {
+            const value = enabled();
+            value.version_pins.party_state_version = 1;
+            return value;
+          },
+          ordinaryMaterializationModel: async (request) => {
+            materializationCalls += 1;
+            return request.mode === 'seed_scope' ? {
+              schema: 'ordinary_materialization_plan_v1',
+              request_id: request.request_id,
+              resolution: 'seeded',
+              density_band_proposal: 'ordinary',
+              background_groups: [group()],
+              entities: [],
+              presence_resolutions: [],
+              reason_code: 'seed'
+            } : {
+              schema: 'ordinary_materialization_plan_v1',
+              request_id: request.request_id,
+              resolution: 'no_change',
+              density_band_proposal: null,
+              background_groups: [],
+              entities: [],
+              presence_resolutions: [{
+                candidate_key: request.candidate_query.candidate_key,
+                coverage_key: request.candidate_query.coverage_key,
+                resolution: 'no_change'
+              }],
+              reason_code: 'no_change'
+            };
+          }
+        })
+    });
+    f.state.position.position_id = 'shore-position';
+    const input = turn('turn-step-standalone-inspect-replay',
+      'Внимательно изучаю всё место крушения.');
+    const first = await submit(f, input);
+    const factual = f.lastWritePlan().turn_step_commit;
+    assert.equal(factual.consequence.duration_minutes, 15);
+    assert.deepEqual(factual.time_update.exact_elapsed.exact_minutes,
+      { numerator: '15', denominator: '1' });
+    assert.equal(factual.body_update.proposal.exact_deltas.energy, -1);
+    assert.ok(factual.consequence.visible_seed
+      && Object.values(factual.consequence.visible_seed).some((seed) =>
+        seed?.kind === 'semantic_activity'
+          && seed.discovery_kind === 'inspect'));
+    assert.ok(factual.visible_context.visible_changes.some((change) =>
+      change.startsWith('Осмотр по вопросу «')));
+    assert.equal(materializationCalls, 2);
+    assert.equal(f.turnStepCount(), 1);
+    assert.equal(f.commitCount(), 1);
+    const clockAfter = structuredClone(f.state.clock_weather_light.clock);
+    const energyAfter = f.state.body_state.energy;
+
+    assert.deepEqual(await submit(f, input), first);
+    assert.equal(materializationCalls, 2);
+    assert.equal(f.turnStepCount(), 1);
+    assert.equal(f.commitCount(), 1);
+    assert.deepEqual(f.state.clock_weather_light.clock, clockAfter);
+    assert.equal(f.state.body_state.energy, energyAfter);
   });
 
 test('revision 13 exact command does not require or invoke a turn step model',
@@ -378,6 +464,16 @@ function domainPlan(request, operation) {
     reason_code: 'delegate_existing_lower_dvina_owner',
     reason: 'Действие передаётся существующему владельцу механики.'
   };
+}
+
+function ordinaryDiscoveryPlan(request) {
+  return domainPlan(request, {
+    op: 'request_discovery',
+    actor_ref: request.actor.actor_id,
+    discovery_kind: 'inspect',
+    target_refs: [request.player_safe_state.position.location_ref],
+    query: request.remaining_intent
+  });
 }
 
 function stateWithCommittedBlueWool(source) {

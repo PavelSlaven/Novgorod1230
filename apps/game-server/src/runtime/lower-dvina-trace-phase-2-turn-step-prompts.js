@@ -1,6 +1,59 @@
 export const TURN_STEP_PLAN_EXAMPLE = JSON.stringify({ schema: 'turn_step_plan_v1', request_id: '<request_id>', committed_state_version: 0, working_revision: 0, step_index: 1, interpretation: { player_goal: '<player_goal>', grounded_attempt: '<grounded_attempt>', adaptation: 'literal' }, resolution: 'direct', goal_result: 'not_achieved', activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' }, operations: [], check: null, continuation: null, clarification: null, direct_result_kind: null, reason_code: '<reason_code>', reason: '<reason>' });
 
+export const TURN_STEP_COMPOUND_EXAMPLE = 'Flat compound example. Input: Прошу подождать, затем сажусь. Output:\n' + JSON.stringify({
+  interpretation: { player_goal: 'Прошу подождать, затем сажусь.',
+    grounded_attempt: 'Прошу подождать.', adaptation: 'literal' },
+  resolution: 'direct', goal_result: 'pending',
+  activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+  direct_result_kind: 'player_utterance', utterance: {
+    speaker_ref: '<copy current actor ref from request>',
+    utterance_text: 'Подождите.', input_mode: 'intent_paraphrase',
+    delivery: { loudness: 2, duration_class: 'instant' } },
+  operation_family: null, operation_choice: null, operations: [], check: null,
+  continuation: { remaining_intent: 'затем сажусь.', depends_on_refs: [] },
+  clarification: null, reason_code: 'speech_before_independent_action',
+  reason: 'Only the request to wait is spoken; the independent next action remains unperformed.'
+});
+
 export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
+  qualitative_assessment: {
+    interpretation: { adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_safe_observation',
+    assessment: {
+      text: '<concise player-safe conclusion supported by supplied facts>',
+      support_refs: ['<copy one or more exact world_knowledge claim_ref values>']
+    },
+    operation_family: null, operation_choice: null, operations: [], check: null,
+    continuation: null, clarification: null
+  },
+  ordinary_semantic_activity: {
+    interpretation: { adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic',
+      duration_class: '<moment, brief, short, or extended>',
+      effort: '<none, light, moderate, or heavy>',
+      requested_duration_minutes: '<positive whole minutes only when explicitly stated>' },
+    direct_result_kind: null, operation_family: null,
+    operation_choice: null, operations: [], check: null,
+    continuation: null, clarification: null
+  },
+  player_utterance: {
+    interpretation: { adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_utterance',
+    utterance: {
+      speaker_ref: '<copy current actor ref from request>',
+      utterance_text: '<exact intended spoken words without enclosing action; faithful wording only when no quotation was supplied>',
+      input_mode: '<verbatim for supplied words; intent_paraphrase for unquoted speech intent>',
+      delivery: { loudness: '<1 whisper, 2 normal, 3 raised, 4 shout>',
+        duration_class: '<instant, brief, or sustained>' }
+    },
+    operation_family: null, operation_choice: null,
+    operations: [], check: null, clarification: null, continuation: null
+  },
   reality_limited_physical_attempt: {
     interpretation: { adaptation: 'reality_limited' },
     resolution: 'direct', goal_result: 'not_achieved',
@@ -14,8 +67,9 @@ export const TURN_STEP_PLAN_MAPPINGS = JSON.stringify({
     operations: [], check: null
   },
   focused_ordinary_discovery: { interpretation: { adaptation: 'literal' }, resolution: 'domain_request', goal_result: 'pending', activity: { owner: 'domain', duration_class: null, effort: null }, operations: [{ op: 'request_discovery', actor_ref: '<copy current actor ref from request>', discovery_kind: '<copy inspect or search from intent>', target_refs: ['<copy every matching current visible searched location or entity ref in intent order>'], query: '<copy exact earliest discovery segment from request.remaining_intent>' }], check: null },
-  ordinary_material_prerequisite: { interpretation: { adaptation: 'literal' }, resolution: 'domain_request', goal_result: 'pending', activity: { owner: 'domain', duration_class: null, effort: null }, operations: [{ op: 'request_discovery', actor_ref: '<copy current actor ref from request>', discovery_kind: 'inspect', target_refs: ['<copy one current visible scope ref>'], query: '<name only the needed visible material or physically connected group>' }], check: null, continuation: { remaining_intent: '<complete intended handling or transformation>', depends_on_refs: [] } },
+  ordinary_material_prerequisite: { interpretation: { adaptation: 'literal' }, resolution: 'domain_request', goal_result: 'pending', activity: { owner: 'domain', duration_class: null, effort: null }, operations: [{ op: 'request_discovery', actor_ref: '<copy current actor ref from request>', discovery_kind: 'inspect', target_refs: ['<copy one current visible scope ref>'], query: '<name only the needed ordinary referent, material, or physically connected group>' }], check: null, continuation: { remaining_intent: '<complete unexecuted acquisition, relocation, transformation, handling, and use intent>', depends_on_refs: [] } },
   ambient_ordinary_portion_take: { interpretation: { adaptation: 'literal' }, resolution: 'direct', goal_result: 'achieved', activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' }, operations: [{ op: 'create_entity', temp_ref: '<new temporary ref>', semantic_type: 'material_portion', name: '<copy visible capability label>', origin: { kind: 'ambient_ordinary', source_refs: ['<copy exact visible ambient capability ref>'] }, facts: [], mechanics: { mass_grams: '<integer within capability ambient_portion_bounds.min_mass_grams..max_mass_grams>', external_hand_cost: 1, carry_form: 'compact', packing_slot_cost: '<nonnegative integer>', quantity: { value: '<number within capability ambient_portion_bounds.min_quantity..max_quantity>', unit: '<copy capability ambient_portion_bounds.quantity_unit>' }, container: null }, placement: { relation: 'held_by', target_ref: '<copy current actor ref from request>' } }], check: null },
+  transient_item_use: { interpretation: { adaptation: 'literal' }, resolution: 'domain_request', goal_result: 'pending', activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' }, operations: [{ op: 'request_item_use', actor_ref: '<copy current actor ref>', item_ref: '<copy matching actionable item ref>', use_kind: 'other', target_refs: ['<copy only current player-safe targets, or empty>'], description: '<attempted non-transforming handling or contact only; no discovered result>' }], check: null, continuation: null },
   direct_item_relocation: { interpretation: { adaptation: 'literal' }, resolution: 'direct', goal_result: 'pending', activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' }, operations: [{ op: 'move_entity', entity_ref: '<copy the grounded source item ref>', placement: { relation: '<held_by, worn_by, inside, located_at, or attached_to>', target_ref: '<copy the player-safe actor, container, position, or attachment target ref>' } }], check: null, continuation: { remaining_intent: '<only the still-unexecuted handling or transformation>', depends_on_refs: ['<copy the moved source item ref when later work needs it>'] } },
   action_production_preserve_source: {
     interpretation: { adaptation: 'literal' },

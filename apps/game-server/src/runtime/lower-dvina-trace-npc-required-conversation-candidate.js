@@ -1,14 +1,33 @@
 export function requiredNpcConversationCandidate(request) {
   const scope = request?.decision_scope;
-  const check = scope?.required_check;
   const operation = scope?.required_supporting_operation;
-  const addressee = operation?.target_ref;
+  const addressee = operation?.target_ref
+    ?? request?.allowed_references?.actor_refs?.find(
+      ({ entity_kind: kind }) => kind === 'player_character');
+  const contract = scope?.operation_contract?.[operation?.op];
   if (routeDisclosureCandidateIsValid(request, operation)) {
     return routeDisclosureCandidate(request, operation);
   }
-  if (scope?.required_resolution !== 'check_required'
-      || !check || !['attribute_ref', 'skill_ref', 'difficulty_band'].every(
-        (key) => typeof check[key] === 'string' && check[key].trim())
+  const requiredCheck = scope?.required_resolution === 'check_required'
+    ? scope.required_check
+    : contract?.required_resolution === 'check_required'
+      ? contract.required_check : null;
+  if (requiredCheck !== null) {
+    return requiredCheckOperationCandidate(
+      request, operation, addressee, requiredCheck, contract
+    );
+  }
+  const automatic = automaticRequiredOperationCandidate(request, operation);
+  if (automatic !== null) return automatic;
+  return null;
+}
+
+function requiredCheckOperationCandidate(
+  request, operation, addressee, check, contract = null
+) {
+  const scope = request?.decision_scope;
+  if (!check || !['attribute_ref', 'skill_ref', 'difficulty_band'].every(
+    (key) => typeof check[key] === 'string' && check[key].trim())
       || !operation || Array.isArray(operation)
       || typeof operation.op !== 'string' || !operation.op.trim()
       || !scope?.allowed_duration_classes?.length
@@ -25,7 +44,10 @@ export function requiredNpcConversationCandidate(request) {
     intended_addressee_refs: [structuredClone(addressee)],
     affected_actor_refs: [],
     speech: { utterance_text: '<semantic NPC speech>',
-      dominant_act: '<one allowed dominant_act>', interaction_tags: [],
+      dominant_act: contract?.required_dominant_acts?.[0]
+        ?? '<one allowed dominant_act>',
+      interaction_tags: typeof contract?.required_interaction_tag === 'string'
+        ? [contract.required_interaction_tag] : [],
       topic_refs: [], claims: [],
       response_expectation: { kind: 'none', target_refs: [] } },
     interpretation: { intent: '<semantic intent>',
@@ -42,6 +64,48 @@ export function requiredNpcConversationCandidate(request) {
       failure_with_consequence: { delivery_quality: 'unconvincing', observable_effects: [] },
       severe_failure: { delivery_quality: 'transparently_manipulative', observable_effects: [] }
     } }, handoff: null, reason: '<semantic NPC reason>'
+  };
+}
+
+function automaticRequiredOperationCandidate(request, operation) {
+  const scope = request?.decision_scope;
+  const contract = scope?.operation_contract?.[operation?.op];
+  const player = request?.allowed_references?.actor_refs?.find(
+    ({ entity_kind: kind }) => kind === 'player_character');
+  const dominantAct = contract?.required_dominant_acts?.[0];
+  const tag = contract?.required_interaction_tag;
+  if ((scope?.required_resolution !== undefined
+        && scope.required_resolution !== 'automatic')
+      || scope?.required_check !== undefined
+      || contract?.required_resolution === 'check_required'
+      || contract?.required_check !== undefined
+      || operation == null || Array.isArray(operation)
+      || typeof operation.op !== 'string' || !operation.op.trim()
+      || contract == null || typeof contract !== 'object'
+      || typeof dominantAct !== 'string' || !dominantAct.trim()
+      || typeof tag !== 'string' || !tag.trim()
+      || player == null
+      || !scope?.allowed_duration_classes?.includes('domain_owned')
+      || (scope.allowed_contribution_kinds != null
+        && !scope.allowed_contribution_kinds.includes('speech'))) return null;
+  return {
+    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id, state_version: request.state_version,
+    speaker_ref: request.npc_ref, contribution_kind: 'speech',
+    primary_addressee_ref: structuredClone(player),
+    intended_addressee_refs: [structuredClone(player)],
+    affected_actor_refs: [],
+    speech: { utterance_text: '<semantic NPC speech>',
+      dominant_act: dominantAct, interaction_tags: [tag], topic_refs: [],
+      claims: [], response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: '<semantic intent>',
+      grounded_contribution: '<semantic grounded contribution>',
+      adaptation: 'literal' },
+    resolution: scope.required_resolution ?? 'automatic',
+    activity: { duration_class: 'domain_owned', effort: 'none' },
+    supporting_operations: [structuredClone(operation)],
+    check: null, handoff: null, reason: '<semantic NPC reason>'
   };
 }
 

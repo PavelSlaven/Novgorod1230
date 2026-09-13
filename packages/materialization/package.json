@@ -12,6 +12,7 @@
   "dependencies": {
     "@rus/actors": "0.13.0",
     "@rus/contracts": "0.9.0",
-    "@rus/kernel": "0.9.0"
+    "@rus/kernel": "0.9.0",
+    "@rus/npc-runtime": "0.1.0"
   }
 }

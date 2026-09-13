@@ -182,8 +182,10 @@ function projectItem(item, strict) {
       ?? item.state?.ordinary_metadata?.physical_inscriptions?.map?.((fact) =>
         ({ fact_ref: fact?.fact_id, text: fact?.text })), { strict,
       path: 'items[].physical_inscriptions[]', code: invalidCode() }),
-    quantity: finite(item.quantity),
-    quantity_unit_id: text(item.quantity_unit_id),
+    quantity: finite(item.runtime_instance_mechanics_snapshot
+      ?.mechanics?.quantity?.value ?? item.quantity),
+    quantity_unit_id: text(item.runtime_instance_mechanics_snapshot
+      ?.mechanics?.quantity?.unit ?? item.quantity_unit_id),
     condition_state: text(item.condition_state), legal_status: text(item.legal_status),
     claim_state: text(item.claim_state),
     placement: projectPlacement(item.placement, strict),

@@ -475,6 +475,38 @@ test('fresh NPC speech grounding receives at most one whole repair', async () =>
     'semantic_grounding');
 });
 
+test('one structural repair may be followed by one semantic grounding repair',
+  async () => {
+    const decisionRequest = request();
+    const modelCalls = [];
+    let auditCalls = 0;
+    const result = await requestNpcSemanticDecision({
+      boundary: boundary(), request: decisionRequest,
+      semanticModel: async (_request, context) => {
+        modelCalls.push(context);
+        if (modelCalls.length === 1) return {};
+        const next = plan(decisionRequest);
+        next.speech.utterance_text = modelCalls.length === 2
+          ? 'Вчера я это видел.' : 'Этого я не могу подтвердить.';
+        return next;
+      },
+      validateFreshPlan: () => {
+        auditCalls += 1;
+        return auditCalls === 1 ? { pass: false, errors: [{
+          code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+          category: 'semantic_grounding', retryable: true
+        }] } : true;
+      },
+      revalidateStateVersion: async () => 2
+    });
+
+    assert.equal(result.plan.speech.utterance_text,
+      'Этого я не могу подтвердить.');
+    assert.equal(modelCalls.length, 3);
+    assert.equal(modelCalls[2].repair.validation_errors[0].category,
+      'semantic_grounding');
+  });
+
 test('failed uncommitted NPC decision releases its in-flight claim for retry', async () => {
   const decisionRequest = request();
   let modelCalls = 0;

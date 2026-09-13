@@ -85,6 +85,20 @@ test('RETRIEVE merges only authoritative context after planning', async () => {
   assert.equal(result.slice.verdict, 'supported');
 });
 
+test('an empty retrieval plan self-terminates as NO_KNOWLEDGE_REQUIRED', async () => {
+  let coreCalls = 0;
+  const result = await resolveTurnStepWorldKnowledge({
+    mode: 'RETRIEVE', core: { resolveWorldKnowledge() { coreCalls += 1; } },
+    bundle, plannerRequest, authoritative,
+    plannerModel: async () => ({ schema: 'world_knowledge_query_plan_v1',
+      query_locale: 'ru', domains: [], focus_refs: [],
+      requested_predicates: [], search_hints: [] })
+  });
+  assert.deepEqual(result, { slice: null, planner_called: true,
+    repaired: false, sufficiency: 'NO_KNOWLEDGE_REQUIRED' });
+  assert.equal(coreCalls, 0);
+});
+
 test('RETRIEVE rejects missing authoritative context before planning', async () => {
   let plannerCalls = 0;
   await assert.rejects(

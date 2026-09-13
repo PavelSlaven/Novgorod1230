@@ -29,6 +29,7 @@ import {
   turnStepDraftBackgroundNpcSemanticAtomicWritePlan,
   turnStepDraftOrdinaryAtomicWritePlan,
   turnStepDraftOperationBatch,
+  turnStepDraftPostAppliedTemporalResults,
   turnStepDraftPreparedEffectLedger
 } from './turn-step-workflow-draft.js';
 
@@ -104,6 +105,8 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       turnStepOperationBatch: turnStepDraftOperationBatch(
         getTurnStepWorkflowDraft(state.modeResolution)),
       preparedEffectLedger: turnStepDraftPreparedEffectLedger(
+        getTurnStepWorkflowDraft(state.modeResolution)),
+      postAppliedTemporalResults: turnStepDraftPostAppliedTemporalResults(
         getTurnStepWorkflowDraft(state.modeResolution))
     }), context)),
     stage(10, 'body_update', async (state) => next(state, 'bodyUpdate', await buildBodyUpdateStage({
@@ -193,6 +196,7 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       modeResolution: state.modeResolution,
       visibleContext: state.persistedVisibleContext,
       consequence: state.consequence,
+      checks: state.checks,
       retrievedState: state.revalidatedState,
       narrator: services.narrator
     }), context)),

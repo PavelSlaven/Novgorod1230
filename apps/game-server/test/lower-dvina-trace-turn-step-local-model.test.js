@@ -5,6 +5,29 @@ import { assembleTurnStepPlan, createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { output, request } from
   './lower-dvina-trace-turn-step-llm-test-helpers.js';
+import { allTurnStepPlanMappings, turnStepPlanMappings } from
+  '../src/runtime/lower-dvina-trace-turn-step-plan-mappings.js';
+
+test('every known semantic carrier fails closed even when its mapping is unavailable', () => {
+  const input = request();
+  input.player_safe_state.ordinary_resolution = {
+    discovery_available: false, scene_seed_available: false };
+  input.player_safe_state.observed_evidence_inspection = {
+    semantic_grounding_available: false };
+  const available = JSON.parse(turnStepPlanMappings(input));
+  for (const name of ['ordinary_scene_seed', 'focused_ordinary_discovery',
+    'ordinary_material_prerequisite', 'observed_evidence_inspection']) {
+    assert.equal(Object.hasOwn(available, name), false);
+  }
+  for (const name of Object.keys(allTurnStepPlanMappings())) {
+    const nested = { ...output() };
+    const plan = assembleTurnStepPlan({ ...output(), [name]: nested }, input);
+    assert.deepEqual(plan[name], nested);
+    const validation = validateTurnStepPlan(plan, { request: input });
+    assert.equal(validation.ok, false, name);
+    assert.ok(validation.errors.some(({ code }) => code === 'additional_property'), name);
+  }
+});
 
 test('turn step repair preserves valid nested fields omitted by the model', async () => {
   const input = request();
@@ -99,6 +122,31 @@ test('assembler preserves typed direct result kind', () => {
     continuation: null, direct_result_kind: 'player_safe_observation' }, input);
   assert.equal(plan.direct_result_kind, 'player_safe_observation');
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+});
+
+test('assembler drops unknown provider metadata outside the exact schema', () => {
+  const input = request();
+  for (const field of ['unexpected_action', 'unseen_observation_mapping']) {
+    const extra = { resolution: 'direct', grounded_attempt: 'открыть люк' };
+    const plan = assembleTurnStepPlan({ ...output(), [field]: extra }, input);
+    assert.equal(Object.hasOwn(plan, field), false);
+    assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+  }
+});
+
+test('assembler unwraps only a single object under a mapping available in this request', () => {
+  const input = request();
+  const semantic = { ...output(), goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    direct_result_kind: 'player_safe_observation' };
+  const wrapped = { visible_general_look: semantic };
+  assert.deepEqual(assembleTurnStepPlan(wrapped, input), assembleTurnStepPlan(semantic, input));
+  assert.equal(validateTurnStepPlan(assembleTurnStepPlan(wrapped, input), { request: input }).ok, true);
+  for (const choice of [{ visible_general_look: null }, { visible_general_look: [] },
+    { visible_general_look: semantic, reason: 'ambiguous' }, { unknown_mapping: semantic },
+    { ordinary_scene_seed: semantic }]) {
+    assert.equal(validateTurnStepPlan(assembleTurnStepPlan(choice, input), { request: input }).ok, false);
+  }
 });
 
 test('source grounding repair gets a focused semantic instruction', async () => {

@@ -1,4 +1,5 @@
 import { sha256 } from '@rus/kernel';
+import { initialNpcRoutineRecords } from './npc-routine-schedules.js';
 
 export function buildLowerDvinaTracePersistedProjection({
   result,
@@ -14,6 +15,10 @@ export function buildLowerDvinaTracePersistedProjection({
   return {
     schema: 'rus.lower_dvina_trace_persisted_projection.v2',
     materialization_run: structuredClone(runRecord),
+    ...(preparedNpcs.some((npc) => npc.routine_state != null) ? {
+      npc_spatial_schedules: initialNpcRoutineRecords({ result, changeSetId,
+        partyId: result.party_id, npcs: preparedNpcs }).sort((a, b) => a.id.localeCompare(b.id))
+    } : {}),
     materialization_choices: choiceRecords.map((choice) => ({
       ...structuredClone(choice),
       rng_draw: String(choice.rng_draw)

@@ -14,6 +14,7 @@ import {
   validIdentity
 } from './spatial-v3-write-plan-policy.js';
 import {
+  completeG6AcousticProfiles,
   completeS1Topology,
   validFirstEntryPhysicalRecheck
 } from './spatial-v3-write-plan-s1-validation.js';
@@ -185,6 +186,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     const g5Sites = sets.inserts.filter((write) => write.target_table === 'party_g5_sites');
     const baselines = sets.inserts.filter((write) => write.target_table === 'party_scene_baselines');
     const g6Instances = sets.inserts.filter((write) => write.target_table === 'party_g6_instances');
+    const acousticProfiles = sets.inserts.filter((write) => write.target_table === 'g6_acoustic_profiles');
     const positions = sets.inserts.filter((write) => write.target_table === 'scene_position_nodes');
     const claimUpdates = sets.updates.filter((write) => write.target_table === 'preparation_claims');
     if (locationUpdates.length !== 1
@@ -199,7 +201,8 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
       return r('target_preparation_failed', { reason: 'first_entry_claim_binding_invalid' });
     }
     if (physicalRecheck.baseline_disposition === 'reuse') {
-      if (g5Sites.length || baselines.length || g6Instances.length || positions.length) {
+      if (g5Sites.length || baselines.length || g6Instances.length
+          || acousticProfiles.length || positions.length) {
         return r('target_preparation_failed', { reason: 'first_entry_reuse_contains_inserts' });
       }
     } else {
@@ -216,6 +219,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
       if (baselines.length !== 1
         || g5Sites.length > 1
         || (!legacy && !s1)
+        || !completeG6AcousticProfiles(sets.inserts, g6Instances)
         || baseline.id !== physicalRecheck.scene_baseline_id
         || baseline.record.host_kind !== 'g5_site'
         || baseline.record.host_id !== physicalRecheck.g5_site_id

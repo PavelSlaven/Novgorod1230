@@ -61,9 +61,12 @@ test('campaign drives HTTP, separates explorer context, and retains actual priva
         llm: { gameplay_traces: [], calls: [] } },
       { event: 'turn.completed', input: { request_id: requestId },
       llm: { gameplay_traces: [{ event: 'turn_context', authoritative_context: { hidden: 'private' } },
-        { event: 'world_knowledge_resolved', consumer_request: { world_knowledge: {
-          facts: [{ claim_ref: 'claim:actual' }], hard_constraints: [] } } },
-        { event: 'owner_commit_completed', result: { committed: true } }],
+        { schema: 'world_knowledge_boundary_trace_v1', event: 'world_knowledge_not_required',
+          query: null, core_result: null, consumer: { input: {
+            world_knowledge: { sufficiency: 'NO_KNOWLEDGE_REQUIRED' } } } },
+        { schema: 'world_knowledge_boundary_trace_v1', event: 'world_knowledge_resolved',
+          core_result: { facts: [{ claim_ref: 'claim:actual' }], hard_constraints: [] } },
+        { event: 'owner_commit_completed' }],
       calls: [{ role_id: 'turn_step_planner', request: { messages: [] },
         response: { provider: 'openai_compatible', model: 'local-model',
           parsed_json: { result: 'inspect' }, reasoning_content: 'must-not-forward' } }] } }];
@@ -77,13 +80,17 @@ test('campaign drives HTTP, separates explorer context, and retains actual priva
   assert.equal(report.turns[0].commit_status, 'committed');
   assert.equal(report.turns[0].presentation_status, 'completed');
   assert.deepEqual(report.turns[0].retrieved_claim_refs, ['claim:actual']);
+  assert.equal(report.turns[0].events[1].llm.gameplay_traces[0].event,
+    'world_knowledge_not_required');
   assert.ok(inputs.some(({ url, request }) => url.endsWith('/turns') && request.method === 'POST'));
   const attempts = inputs.filter(({ url }) => url.endsWith('/turns'));
   assert.equal(attempts.length, 2);
   assert.equal(attempts[0].request.body, attempts[1].request.body);
   const saved = await readFile(join(directory, 'campaign.json'), 'utf8');
   assert.equal(saved.includes('must-not-forward'), false);
-  assert.equal(saved.includes('private'), true);
+  assert.equal(saved.includes('private'), false);
+  assert.equal(saved.includes('messages'), false);
+  assert.equal(saved.includes('"result":"inspect"'), false);
   assert.equal(report.turns[0].events[1].llm.calls[0].model, 'local-model');
 });
 
@@ -139,5 +146,5 @@ test('typed owner rejection is retained as code evidence without an accepted com
   assert.equal(report.turns[0].accepted, false);
   assert.deepEqual(report.turns[0].code_mechanics_refs,
     [`${report.turns[0].trace_ref}#/events/0/error`]);
-  assert.equal(report.turns[0].events[0].error.details.reason, 'budget_or_cap_exhausted');
+  assert.equal(Object.hasOwn(report.turns[0].events[0].error, 'details'), false);
 });

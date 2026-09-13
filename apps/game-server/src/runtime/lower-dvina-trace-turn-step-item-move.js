@@ -127,16 +127,43 @@ export async function moveEntity(execution, state, options) {
   next.items = next.items.map((item) => matchesItem(item, operation.entity_ref)
     ? { ...item, placement }
     : item);
-  next = applyInventoryTransition({
-    projection: next,
-    actor: execution.request.actor,
-    beforePlacement: current.placement,
-    afterPlacement: placement,
-    beforeMechanics: owned.mechanics,
-    afterMechanics: owned.mechanics,
-    itemRef: operation.entity_ref,
-    state
-  });
+  try {
+    next = applyInventoryTransition({
+      projection: next,
+      actor: execution.request.actor,
+      beforePlacement: current.placement,
+      afterPlacement: placement,
+      beforeMechanics: owned.mechanics,
+      afterMechanics: owned.mechanics,
+      itemRef: operation.entity_ref,
+      state
+    });
+  } catch (cause) {
+    const reason = {
+      ITEM_RUNTIME_INVENTORY_HANDS_EXCEEDED: 'hands_full',
+      ITEM_RUNTIME_INVENTORY_LOAD_EXCEEDED: 'load_limit'
+    }[cause?.code];
+    if (!reason) throw cause;
+    const identity = nextOperationIdentity(execution, state);
+    return Object.freeze({
+      ...applied({
+        projection,
+        summary: `move_blocked:${operation.entity_ref}`,
+        fragment: null,
+        consequence: visibleConsequence(identity, {
+          change: 'move_blocked', reason,
+          step_index: identity.step_index,
+          operation_index: execution.operation_index,
+          entity_ref: owned.instance_id,
+          display_label: current.name ?? current.display_label ?? null
+        }),
+        boundary: true
+      }),
+      goal_result: 'not_achieved',
+      continuation: null,
+      progress: false
+    });
+  }
   if (owned.authored) {
     const nextAuthored = transitionedItem ?? {
       ...authored, placement: structuredClone(placement)

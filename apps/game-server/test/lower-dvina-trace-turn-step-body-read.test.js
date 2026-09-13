@@ -96,6 +96,12 @@ test('M1 body restart accepts prepared effects owned by the domain writer',
       pool([]), payload, bodyRow()
     ));
 
+    const foreignHistory = prepareTurnStepBodyHistory({ partyId: 'p', state: state(), factual: bodyCommit(),
+      batch: { root_turn_id: 'turn:p:1' }, changeSetId: 'change-1', idemId: 'idem-1' }).snapshot;
+    await assert.rejects(() => assertTurnStepBodyHistoryRows(pool([foreignHistory]),
+      { ...payload, turn_step_body_history: [foreignHistory] }, bodyRow()),
+    { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+
     const tampered = structuredClone(payload);
     tampered.last_turn.turn_step_commit.body_update
       .prepared_effect_ledger_digest = 'b'.repeat(64);
@@ -246,3 +252,41 @@ function pin() {
 function pool(rows) {
   return { async query() { return { rows, rowCount: rows.length }; } };
 }
+
+
+test('two moderate semantic activities commit and recover exact body history', async () => {
+  const { fixture, loadScenarioBundle } = await import('./lower-dvina-trace-phase-2-fixture.js');
+  const { plan, genericCheck } = await import('./lower-dvina-trace-turn-step-runtime-ports-fixture.js');
+  const bundle = await loadScenarioBundle(13);
+  const f = fixture({ scenarioBundle: bundle, materializationBundle: bundle,
+    turnStepModel: (request) => plan(request, request.step_index === 1 ? {
+      goal_result: 'pending', activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' },
+      continuation: { remaining_intent: 'Проверяю опору весом тела.', depends_on_refs: [] }
+    } : { resolution: 'generic_check', goal_result: 'pending', check: { ...genericCheck(), skill_ref: null },
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' } }) });
+  f.state.inventory = { items: [], load_category: 'light', occupied_hands: 0 };
+  const input = { request_id: 'two-moderate', idempotency_key: 'two-moderate',
+    raw_text: 'Оглядываюсь, затем проверяю опору весом тела.' };
+  await f.runtime.submitTurn({ partyId: f.partyId, input });
+  const payload = structuredClone(f.state);
+  const normalized = { body_state_version: String(payload.party_state.body_state_version),
+    body_health: String(payload.body_state.health), body_energy: String(payload.body_state.energy),
+    body_satiety: String(payload.body_state.satiety),
+    body_updated_change_set_id: payload.last_turn.visible_package.change_set_id };
+  const history = payload.turn_step_body_history;
+  assert.equal(history.length, 1);
+  assert.equal(payload.last_turn.turn_step_commit.time_update.prepared_effect_ledger.slices.length, 2);
+  await assert.doesNotReject(() => assertTurnStepBodyHistoryRows(pool(history), payload, normalized));
+  await assert.doesNotReject(() => f.runtime.submitTurn({ partyId: f.partyId, input }));
+  assert.equal(f.commitCount(), 1);
+  for (const tamper of [
+    (value) => { value.turn_step_body_history[0].effect_ref.component_effects[0].component_ref = 'wrong-activity'; },
+    (value) => { value.last_turn.turn_step_commit.body_update.proposal.exact_deltas.energy -= 1; },
+    (value) => { value.last_turn.turn_step_operation_batch.operations = []; },
+    (value) => { value.turn_step_body_history = []; }
+  ]) {
+    const forged = structuredClone(payload); tamper(forged);
+    await assert.rejects(() => assertTurnStepBodyHistoryRows(pool(forged.turn_step_body_history), forged, normalized),
+      { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+  }
+});

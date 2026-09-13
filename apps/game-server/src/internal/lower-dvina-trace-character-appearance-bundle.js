@@ -109,6 +109,16 @@ export function mergeItemContainerSet(historical, overlay, fail) {
     merged.item_inventory_profiles.push(structuredClone(profile));
     profiles.set(profile.inventory_profile_id, profile);
   }
+  for (const patch of overlay.item_inventory_profile_overrides ?? []) {
+    const current = profiles.get(patch.inventory_profile_id);
+    if (!current) return fail('TRACE_M7_ITEM_PROFILE_MISSING');
+    const allowed = new Set(['inventory_profile_id', 'mass_grams', 'carry_form',
+      'external_hand_cost', 'packing_slot_cost']);
+    if (Object.keys(patch).some((key) => !allowed.has(key))) {
+      return fail('TRACE_M7_ITEM_PROFILE_OVERRIDE_INVALID');
+    }
+    Object.assign(current, structuredClone(patch));
+  }
   merged.item_visual_profiles = structuredClone(
     overlay.item_visual_profiles ?? merged.item_visual_profiles ?? []
   );

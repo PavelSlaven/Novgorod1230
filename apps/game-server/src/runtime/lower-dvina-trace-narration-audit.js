@@ -71,7 +71,11 @@ service-like time reporting is also elapsed_as_service_report. A passage that
 mainly restates required sources one by one, without composing
 the performed action or perceived result with supplied spatial relations, is
 weak_literary_composition even when coverage is complete and every proposition
-is supported. Matching source order or using one multi-clause sentence is not
+is supported. A focal verb or colon before independent observations is also
+weak_literary_composition unless the focal action grammatically governs at least
+one compact factual cluster joined by a supplied shared object, spatial anchor,
+or before/after relation; other required facts must remain concise consequence
+or uncertainty beats. Matching source order or using one multi-clause sentence is not
 by itself evidence of weak composition. A grounded current qualitative assessment
 or conclusion counts as a perceived result; when related scene facts frame or
 lead to it within one coherent focal sentence, do not report a checklist merely
@@ -89,9 +93,11 @@ never use it to restate or penalize an omitted source whose review is [].
 or ongoing within the later one, record unsupported_event. Do not fail subordination
 that unambiguously marks the earlier action completed before the later action.
 5. When several scene facts accompany a performed action or perceived result,
-reject only an uncomposed source-order checklist as weak_literary_composition. Source
-order alone is not a failure; complete factual coverage alone is not a literary
-PASS either.
+reject an uncomposed source-order checklist and a focal verb or colon followed by
+an independent catalogue as weak_literary_composition. A focal beat passes only
+when it grammatically governs at least one compact cluster linked by a supplied
+object, place, or before/after relation. Source order alone is not a failure;
+complete factual coverage alone is not a literary PASS either.
 6. For a performed attempt with no supplied result or uncertainty, any claim
 that the result is unknown or unestablished is unsupported_result. The attempt
 alone without any outcome claim is supported and must not be flagged.

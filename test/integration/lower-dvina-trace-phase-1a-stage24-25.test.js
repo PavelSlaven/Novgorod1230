@@ -43,6 +43,44 @@ const bundle = await loadLowerDvinaTraceMaterializationBundle({
 });
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
 
+test('revision 35 new party pins the one-hand blue-wool profile', async () => {
+  const revision35 = await loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision: 35
+  });
+  const materialization = createMaterialization({ revision: 35,
+    bundle: revision35,
+    domainCatalogPin: lowerDvinaTracePhase1ADomainPin(revision35) });
+  const profile = revision35.item_container_set.item_inventory_profiles.find(
+    ({ item_template_ref: id }) => id === 'trace_ld_v1_item_blue_wool_fragment'
+  );
+  assert.equal(profile.external_hand_cost, 1);
+  assert.equal(materialization.party_id, 'trace-stage24-party');
+  const fixture = await stage24Fixture({ revision: 35, bundle: revision35,
+    domainCatalogPin: lowerDvinaTracePhase1ADomainPin(revision35) });
+  const stage24 = await runStage24PartyDbWritePlan({ input: fixture.input,
+    builder: buildLowerDvinaTracePhase1AWritePlan,
+    auditor: (request) => auditPartyDbWritePlanByCode({ ...request,
+      stage24_input: fixture.input }) });
+  const snapshot = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_state_snapshots'
+  ).records[0].state_payload;
+  const firstEntry = resolveFirstEntry({ partyId: fixture.materialization.party_id,
+    state: { ...snapshot, first_entry_preparation: {
+      ...snapshot.first_entry_preparation, spatial_v3: snapshot.first_entry_spatial_v3 } },
+    changeSetId: 'change:revision35:camp', scenarioRevision: 35,
+    phase3Contracts: { route: { route_id: 'trace_ld_v1_route_wreck_to_camp' },
+      sourceEndpoint: { endpoint_id: 'trace_ld_v1_ep_wreck_path_to_camp' },
+      destinationEndpoint: { endpoint_id: 'trace_ld_v1_ep_camp_path_to_wreck' } },
+    factual: { mode_resolution: { command_id:
+      'lower_dvina_trace.follow_path_to_fishing_camp' }, consequence: {
+      phase3_kind: 'movement', movement: { route_ref: 'trace_ld_v1_route_wreck_to_camp',
+        destination: { location_ref: snapshot.first_entry_preparation.binding.destination
+          .location_profile_ref } } } } });
+  assert.equal(snapshot.first_entry_spatial_v3.target.canonical_g5_ref.entity_id,
+    'trace_ld_v1_g5_fishing_camp');
+  assert.equal(firstEntry.approved_write_sets[0].inserts.length, 12);
+});
+
 test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal manifest', async () => {
   const { materialization, manifest, context, schema, stage24 } = await canonicalStage24();
   const tables = stage24.party_db_write_plan.write_batches.map((batch) => batch.target_table);

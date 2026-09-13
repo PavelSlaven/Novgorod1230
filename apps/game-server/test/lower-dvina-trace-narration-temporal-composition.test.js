@@ -263,9 +263,11 @@ test('dense required current beat is repaired into focal clusters while a flat s
   ];
   const uncertainty = 'Наблюдения не устанавливают, кто оставил ключ.';
   const flat = `${changes.join(' ')} ${uncertainty}`;
-  const focused = 'Осматривая кладовую, вы различаете у дальней стены ящики: на верхнем лежит ключ, а под ним видна трещина. У двери висит фонарь; на полу тянется полоса песка, возле порога лежит обрывок верёвки, на полке стоит чаша с водой. Одежда осталась сырой. Наблюдения не устанавливают, кто оставил ключ.';
+  const focused = 'Осматривая кладовую, вы различаете у дальней стены ящики: на верхнем лежит ключ, а под ним видна трещина. У двери висит фонарь. На полу возле порога тянется полоса песка и лежит обрывок верёвки. На полке стоит глиняная чаша с водой. Одежда осталась сырой. Наблюдения не устанавливают, кто оставил ключ.';
+  const focalCatalogue = 'Осматривая кладовую, вы различаете: у дальней стены стоят ящики, на верхнем лежит ключ, под ним видна трещина; у двери висит фонарь; на полу тянется полоса песка; возле порога лежит обрывок верёвки; на полке стоит глиняная чаша, в чаше заметна вода. Одежда осталась сырой. Наблюдения не устанавливают, кто оставил ключ.';
   const repairs = [
     { name: 'focal repair passes', prose: focused, accepted: true },
+    { name: 'focal verb plus independent catalogue stays terminal', prose: focalCatalogue, accepted: false },
     { name: 'byte-identical repair stays terminal', prose: flat, accepted: false },
     { name: 'clause permutation stays terminal',
       prose: `${uncertainty} ${[...changes].reverse().join(' ')}`, accepted: false }
@@ -286,6 +288,7 @@ test('dense required current beat is repaired into focal clusters while a flat s
         assert.equal(wire.segments[0].prose, flat);
         assert.match(call.messages[0].content, /For a dense required_current_beat/u);
         assert.match(call.messages[0].content, /Never invent a causal bridge, force a layout/u);
+        assert.match(call.messages[0].content, /A focal verb or colon alone does not repair an independent catalogue/u);
         const instruction = call.messages[0].content;
         assert.ok(instruction.lastIndexOf('FINAL REPAIR CHECK') >
           instruction.lastIndexOf('A committed transient attempt'));
@@ -295,7 +298,9 @@ test('dense required current beat is repaired into focal clusters while a flat s
       const initial = wire.phase === 'initial';
       const audit = reviewed(wire, {
         literaryFailures: initial || !repair.accepted ? [{ check: 'weak_literary_composition',
-          segment_choice: 's1', reason: 'Dense required facts remain a source-order checklist.' }] : [],
+          segment_choice: 's1', reason: repair.name.includes('independent catalogue')
+            ? 'Focal wording introduces independent observations without an anchored factual cluster.'
+            : 'Dense required facts remain a source-order checklist.' }] : [],
         evidence: initial || !repair.accepted ? [] : ['Supplied anchors organize the dense current beat.']
       });
       return { output: audit };

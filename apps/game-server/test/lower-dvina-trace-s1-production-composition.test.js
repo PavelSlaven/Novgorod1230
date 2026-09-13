@@ -44,19 +44,24 @@ test('S1 exact profile rejects mismatched structural requirements', async () => 
 
 test('S1 exact profile accepts current inherited bundle only with exact S1 pins',
   async () => {
-    const [loaded, revision24, revision25, revision31, revision32, revision33] = await Promise.all([
+    const [loaded, revision24, revision25, revision31, revision32, revision33, revision35] = await Promise.all([
       loadLowerDvinaTraceSpatialSemanticProfile(),
       loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 24 }),
       loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 25 }),
       loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 31 }),
       loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 32 }),
-      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 33 })
+      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 33 }),
+      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 35 })
     ]);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision24, loaded), true);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision25, loaded), true);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision31, loaded), true);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision32, loaded), true);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision33, loaded), true);
+    assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision35, loaded), true);
+    assert.equal(revision35.materialization_bindings.binding_set_id,
+      'lower_dvina_trace_phase_1a_materialization_bindings_v25');
+    assert.equal(revision35.materialization_bindings.scenario_definition_revision, 35);
     for (const [key, pinKey] of [
       ['action_production_materialization', 'action_production_profile'],
       ['local_fire_materialization', 'local_fire_profile'],

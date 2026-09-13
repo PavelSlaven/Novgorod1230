@@ -84,13 +84,32 @@ export function currentWorldBaseReferenceSnapshot() {
     access_class_id: 'trace_ld_v1_access_wreck_shore' }];
   shore.movement_edges = [];
   shore.visibility_links = [];
+  const dryingShed = structuredClone(camp);
+  dryingShed.header = { id: 'trace_ld_v1_tpl_old_drying_shed', version: 1 };
+  dryingShed.g6_slots = [g6('shed_approach', 'spatial.g6.semi_enclosed',
+    'shed_approach', 'partial'), g6('s1_enclosed_space', 'spatial.g6.enclosed',
+    'ordinary_local', 'full')];
+  dryingShed.position_slots = [{ position_slot_key: 'shed_approach',
+    g6_scene_slot_key: 'shed_approach', position_type_id: 'scene_position.approach',
+    capacity: 7, access_class_id: 'trace_ld_v1_access_old_drying_shed' },
+  { position_slot_key: 's1_enclosed_space.interior',
+    g6_scene_slot_key: 's1_enclosed_space', position_type_id: 'scene_position.central',
+    capacity: 5, access_class_id: 'trace_ld_v1_access_old_drying_shed' }];
+  dryingShed.movement_edges = [edge('s1_enclosed_space.out', 'shed_approach',
+    's1_enclosed_space.interior', 's1_enclosed_space.back'),
+  edge('s1_enclosed_space.back', 's1_enclosed_space.interior', 'shed_approach',
+    's1_enclosed_space.out')];
+  dryingShed.visibility_links = [link('s1_enclosed_space.visible_out',
+    'shed_approach', 's1_enclosed_space.interior', 's1_enclosed_space.visible_back'),
+  link('s1_enclosed_space.visible_back', 's1_enclosed_space.interior',
+    'shed_approach', 's1_enclosed_space.visible_out')];
   return { version: 1, schema: 'world_base_reference_snapshot',
     readonly_checksum: 'turn-step-current-production', allowed_region_ids: [],
     allowed_graph_node_ids: [], allowed_graph_edge_ids: [],
     allowed_place_template_ids: [], allowed_npc_candidate_ids: [],
     allowed_item_profile_ids: [], allowed_container_profile_ids: [],
     allowed_property_rule_ids: [], allowed_source_ids: [],
-    scene_template_closures: [shore, camp],
+    scene_template_closures: [shore, camp, dryingShed],
     canonical_g5_scene_bindings: lowerDvinaTraceCanonicalG5SceneBindings };
 }
 

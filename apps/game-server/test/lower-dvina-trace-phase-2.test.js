@@ -288,6 +288,7 @@ test('revision 9 pickup preserves inventory owner', async () => {
   });
 });
 
+
 test('revision 9 failed inspection commits time and body but no blue-wool item', async () => {
   const f = fixture({ scenarioBundle: bundle9, rollValue: 0 });
   const result = await f.runtime.submitTurn({

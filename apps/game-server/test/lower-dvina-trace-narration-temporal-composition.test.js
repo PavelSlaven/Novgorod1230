@@ -248,6 +248,81 @@ test('captured repair preserves completed-before action order and regroups scene
   });
 });
 
+test('dense required current beat is repaired into focal clusters while a flat sibling remains blocked', async (t) => {
+  const changes = [
+    'Вы осмотрели кладовую.',
+    'У дальней стены стоят ящики.',
+    'На верхнем ящике лежит ключ.',
+    'Под ним видна трещина.',
+    'У двери висит фонарь.',
+    'На полу тянется полоса песка.',
+    'Возле порога лежит обрывок верёвки.',
+    'На полке стоит глиняная чаша.',
+    'В чаше заметна вода.',
+    'Одежда осталась сырой.'
+  ];
+  const uncertainty = 'Наблюдения не устанавливают, кто оставил ключ.';
+  const flat = `${changes.join(' ')} ${uncertainty}`;
+  const focused = 'Осматривая кладовую, вы различаете у дальней стены ящики: на верхнем лежит ключ, а под ним видна трещина. У двери висит фонарь; на полу тянется полоса песка, возле порога лежит обрывок верёвки, на полке стоит чаша с водой. Одежда осталась сырой. Наблюдения не устанавливают, кто оставил ключ.';
+  for (const accepted of [true, false]) await t.test(accepted ? 'focal repair passes' : 'flat repair stays terminal', async () => {
+    const calls = [];
+    const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+      calls.push(call.role_id);
+      const wire = JSON.parse(call.messages[1].content);
+      if (call.role_id === 'gameplay_narrator') {
+        assert.match(call.messages[0].content, /When required_current_beat is dense/u);
+        assert.match(call.messages[0].content, /shared object, spatial anchor, or\s+before\/after relation/u);
+        return { output: { prose: flat } };
+      }
+      if (call.role_id === 'gameplay_narrator_semantic_repair') {
+        assert.equal(wire.required_current_beat.changes.length, changes.length);
+        assert.equal(wire.required_current_beat.uncertainties.length, 1);
+        assert.equal(wire.segments[0].prose, flat);
+        assert.match(call.messages[0].content, /For a dense required_current_beat/u);
+        assert.match(call.messages[0].content, /Never invent a causal bridge, force a layout/u);
+        return { output: { replacements: [{ prose: accepted ? focused : flat }] } };
+      }
+      const initial = wire.phase === 'initial';
+      const audit = reviewed(wire, {
+        literaryFailures: initial || !accepted ? [{ check: 'weak_literary_composition',
+          segment_choice: 's1', reason: 'Dense required facts remain a source-order checklist.' }] : [],
+        evidence: initial || !accepted ? [] : ['Supplied anchors organize the dense current beat.']
+      });
+      return { output: audit };
+    } } });
+    const result = await service.run({ version: 1, schema: 'narration_request',
+      request_id: `dense-current-${accepted}`, surface: 'turn', visible_context: {
+        ...scene(), visible_changes: changes, uncertainties: [uncertainty]
+      }, context: {} });
+    assert.equal(result.status, accepted ? 'approved' : 'blocked');
+    if (accepted) {
+      assert.equal(result.approved_output.prose, focused);
+      assert.equal(result.final_audit.coverage.visible_changes.length, changes.length);
+      assert.equal(result.final_audit.coverage.uncertainties.length, 1);
+    } else assert.equal(result.diagnostics.phase, 'final_audit_failed');
+    assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
+      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+  });
+});
+
+test('sparse current beat remains concise without an invented bridge or layout', async () => {
+  const prose = 'На пороге лежит ключ.';
+  const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+    const wire = JSON.parse(call.messages[1].content);
+    if (call.role_id === 'gameplay_narrator') {
+      assert.match(call.messages[0].content, /Do not force a layout/u);
+      return { output: { prose } };
+    }
+    return { output: reviewed(wire, { evidence: ['The sparse grounded result is concise.'] }) };
+  } } });
+  const result = await service.run({ version: 1, schema: 'narration_request',
+    request_id: 'sparse-current', surface: 'turn', visible_context: {
+      ...scene(), visible_changes: ['На пороге лежит ключ.']
+    }, context: {} });
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, prose);
+});
+
 function scene() {
   return { version: 1, schema: 'visible_context_package', visible_scene: 'Берег',
     visible_changes: [], uncertainties: [], sensory_details: [], visible_npc: [],

@@ -417,11 +417,13 @@ test('unknown intent creates no roll, elapsed, clue or factual commit', async ()
   assert.equal(f.commitCount(), 0);
   assert.equal(f.state.party_state.state_version, 1);
   assert.equal(f.state.items.length, 1);
-  const failed = diagnostics.takeLogReport({ party_id: f.partyId }).gameplay_traces
-    .find(({ event }) => event === 'workflow_failed');
-  assert.equal(failed?.result, null);
-  assert.equal(failed?.checkpoint, null);
-  assert.equal(failed?.error_events, null);
+  const traces = diagnostics.takeLogReport({ party_id: f.partyId }).gameplay_traces;
+  assert.equal(traces[0].event, 'turn_context');
+  const failed = traces.find(({ event }) => event === 'workflow_failed');
+  assert.equal(failed.error.code, 'TURN_SEMANTIC_INTENT_UNKNOWN');
+  assert.equal(failed.checkpoint.stages.available_actions.schema,
+    'turn_available_action_set');
+  assert.equal(failed.events.at(-1).stageId, 4);
 });
 
 test('an earlier temporal boundary blocks the inspection before roll or mutation', async () => {

@@ -24,6 +24,32 @@ test('current factual replay binds screen to exact package snapshot turn', async
     partyPool: poolForCurrent(replayFixture({ screenTurn: 8 })), partyId,
     idempotencyKey, async loadState() { return structuredClone(fixture.payload); }
   }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+
+  for (const row of [
+    { ...fixture.row, narration_status: 'pending' },
+    { ...fixture.row, delivery_mode: 'narrated' },
+    { ...fixture.row, narration_output: { prose: 'Лишний текст.' } },
+    { ...fixture.row, output_digest: 'unexpected-digest' },
+    { ...fixture.row, factual_screen: { ...fixture.screen, turn_number: 8 } },
+    { ...fixture.row, narration_status: null, delivery_mode: null,
+      narration_output: null, output_digest: null, factual_screen: null }
+  ]) await assert.rejects(loadCurrentOrHistoricalPhase2Replay({
+    partyPool: poolForCurrent({ ...fixture, row }), partyId, idempotencyKey,
+    async loadState() { return structuredClone(fixture.payload); }
+  }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+});
+
+test('current narrated replay does not require a factual delivery job', async () => {
+  const fixture = replayFixture();
+  const row = { ...fixture.row,
+    screen: { schema: 'lower_dvina_trace_turn_screen', screen_status: 'ready' },
+    delivery_mode: 'narrated', factual_screen: null,
+    narration_output: { prose: 'Берег.' }, output_digest: 'narration:digest' };
+  const replay = await loadCurrentOrHistoricalPhase2Replay({
+    partyPool: poolForCurrent({ ...fixture, row }), partyId, idempotencyKey,
+    async loadState() { return structuredClone(fixture.payload); }
+  });
+  assert.deepEqual(replay.screen, row.screen);
 });
 
 test('historical factual replay binds screen to exact package snapshot turn', async () => {

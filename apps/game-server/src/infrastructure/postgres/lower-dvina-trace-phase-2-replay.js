@@ -17,7 +17,6 @@ import {
 import {
   validLowerDvinaTraceTurnStepReplayEvidence
 } from './lower-dvina-trace-turn-step-idempotency.js';
-
 export async function loadPhase2IdempotencyRecord({
   partyPool,
   partyId,
@@ -66,7 +65,9 @@ export async function loadCurrentOrHistoricalPhase2Replay({
             visible.visible_payload,snapshot.state_payload AS snapshot_payload,
             snapshot.state_digest,
             visible.dependency_pins,
-            source.dependency_pins AS source_dependency_pins
+            source.dependency_pins AS source_dependency_pins,
+            narration.status AS narration_status,narration.delivery_mode,
+            narration.narration_output,narration.output_digest,narration.factual_screen
        FROM party_runtime.party_server_sessions session
        JOIN party_runtime.party_visible_packages visible
          ON visible.party_id=session.party_id
@@ -77,6 +78,8 @@ export async function loadCurrentOrHistoricalPhase2Replay({
        JOIN party_runtime.party_visible_packages source
          ON source.party_id=session.party_id
         AND source.change_set_id=$3
+       LEFT JOIN party_runtime.party_narration_jobs narration
+         ON narration.party_id=visible.party_id AND narration.package_id=visible.package_id
       WHERE session.party_id=$1`,
     [partyId, state.last_turn.visible_package.change_set_id,
       idempotency.result_change_set_id]
@@ -88,7 +91,10 @@ export async function loadCurrentOrHistoricalPhase2Replay({
     throw phase2IntegrityError();
   }
   if (row.screen?.schema === 'factual_turn_delivery_screen'
-      && !validFactualTurnDelivery(row.screen, row)) {
+      && (row.narration_status !== 'delivered' || row.delivery_mode !== 'factual'
+        || row.narration_output != null || row.output_digest != null
+        || canonicalDigest(row.factual_screen) !== canonicalDigest(row.screen)
+        || !validFactualTurnDelivery(row.screen, row))) {
     throw phase2IntegrityError();
   }
   assertPhase2ReplayRecord({

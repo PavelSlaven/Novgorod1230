@@ -51,6 +51,11 @@
       "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
     },
     {
+      "constant": "FACTUAL_TURN_DELIVERY_SCREEN_SCHEMA",
+      "schema": "factual_turn_delivery_screen",
+      "source": "packages/presentation/src/read-models/contracts.js"
+    },
+    {
       "constant": "FIRST_GAME_SCREEN_SCHEMA",
       "schema": "first_game_screen",
       "source": "packages/presentation/src/read-models/contracts.js"
@@ -1066,6 +1071,12 @@
       "bytes": 2325,
       "path": "schemas/party-db/031_party_runtime_deferred_npc_schedules.sql",
       "sha256": "f25ae94fb5cc7b18e15f71d6a07012119ad46cc32b4eeb0576705ddf2031dd87",
+      "type": "sql"
+    },
+    {
+      "bytes": 3168,
+      "path": "schemas/party-db/032_party_runtime_factual_presentation_delivery.sql",
+      "sha256": "d9faba7e509512fa4b65f2c8a391fbdcf61e817e14fa38fcff3145c3a5e4ab71",
       "type": "sql"
     },
     {

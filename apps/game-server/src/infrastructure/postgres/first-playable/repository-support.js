@@ -16,8 +16,10 @@ export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
               AS current_projection_state_version,
             visible.visible_payload AS current_projection_payload,
             narration.status AS current_narration_status,
+            narration.delivery_mode AS current_narration_delivery_mode,
             narration.output_digest AS current_narration_output_digest,
-            narration.narration_output AS current_narration_output
+            narration.narration_output AS current_narration_output,
+            narration.factual_screen AS current_narration_factual_screen
        FROM party_runtime.party_server_sessions s
        JOIN party_runtime.parties p
          ON p.party_id=s.party_id
@@ -26,8 +28,15 @@ export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
         AND snapshot.state_version=p.state_version
        LEFT JOIN party_runtime.party_visible_packages visible
          ON visible.party_id=s.party_id
-        AND visible.package_id=
-          s.screen->'current_projection_anchor'->>'package_id'
+        AND visible.package_id=COALESCE(
+          s.screen->'current_projection_anchor'->>'package_id',
+          s.screen->>'package_id'
+        )
+        AND (
+          s.screen->>'schema' <> 'factual_turn_delivery_screen'
+          OR visible.committed_state_version::text
+            = s.screen->>'committed_state_version'
+        )
        LEFT JOIN party_runtime.party_narration_jobs narration
          ON narration.party_id=s.party_id
         AND narration.package_id=visible.package_id
@@ -68,10 +77,14 @@ export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
       result.rows[0].current_projection_payload ?? null,
     current_narration_status:
       result.rows[0].current_narration_status ?? null,
+    current_narration_delivery_mode:
+      result.rows[0].current_narration_delivery_mode ?? null,
     current_narration_output_digest:
       result.rows[0].current_narration_output_digest ?? null,
     current_narration_output:
-      result.rows[0].current_narration_output ?? null
+      result.rows[0].current_narration_output ?? null,
+    current_narration_factual_screen:
+      result.rows[0].current_narration_factual_screen ?? null
   };
 }
 

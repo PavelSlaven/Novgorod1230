@@ -28,6 +28,17 @@ Narrator преобразует только переданный authoritative/
 
 Если нужного для хорошей сцены факта нет во входе, дефект принадлежит materialization, domain owner, perception/knowledge или player-safe projection. Writer обязан сохранить границу, а acceptance обязан зафиксировать upstream gap. Более длинная фраза не считается исправлением.
 
+### 2.1. Terminal factual delivery не является прозой
+
+После factual commit отдельный `FactualTurnDeliveryScreen v1` возможен только
+для typed terminal `final_audit_failed` завершённого bounded narration flow.
+Это structured player-safe delivery exact committed `visible_changes` и
+`uncertainties`, а не prose, narration/audit fallback или ослабление strict
+приёмки. Он не содержит narrator output, rejected prose, digest, audit/provider/
+retry diagnostics либо новую causal фразу; UI не склеивает его поля в prose.
+Все provider, infrastructure, malformed-payload и admission failures остаются
+pending/retryable и не получают factual terminal screen.
+
 ## 3. Достаточный вход сцены
 
 Player-safe projector передаёт только применимые к текущей сцене сведения. Полный потенциальный набор:

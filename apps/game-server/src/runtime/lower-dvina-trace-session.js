@@ -1,7 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
 import {
-  computeSpatialV3CanonicalDigest,
-  validateSpatialV3Contract
+  computeSpatialV3CanonicalDigest
 } from '@rus/contracts/spatial-v3/registry';
 import { serverError } from '../errors.js';
 import {
@@ -12,6 +11,8 @@ import {
 import {
   assertLowerDvinaTracePublicScreen
 } from './lower-dvina-trace-opening.js';
+import { validFactualPostTurnSession, visibleContextFromPayload,
+  visiblePayloadErrors } from './lower-dvina-trace-factual-session.js';
 import { hash, json } from './first-playable/shared.js';
 
 export const TRACE_SCENARIO_ID = 'lower_dvina_trace_v1';
@@ -101,7 +102,8 @@ export function validateLowerDvinaTraceSessionRead({
     || delivery.awaiting_client_ack !== true
     || delivery.screen_digest !== identity.opening_screen_digest
     || screen?.party_id !== partyId
-    || screen.scenario_id !== TRACE_SCENARIO_ID) {
+    || (screen?.schema !== 'factual_turn_delivery_screen'
+      && screen?.scenario_id !== TRACE_SCENARIO_ID)) {
     throw serverError(
       'TRACE_PHASE_1B_SESSION_READ_INVALID',
       'Persisted trace opening session failed exact identity or digest validation.',
@@ -150,50 +152,25 @@ function validateOpeningSession({ session, screen, identity }) {
 }
 
 function validatePostTurnSession({ partyId, session, screen, identity }) {
+  if (screen?.schema === 'factual_turn_delivery_screen') {
+    if (!validFactualPostTurnSession({ partyId, session, screen,
+      allowedSnapshotSchemas: [TRACE_PHASE_2_SNAPSHOT_SCHEMA,
+        TRACE_TURN_SNAPSHOT_SCHEMA] })) {
+      invalidSession(
+        'Persisted trace factual turn screen failed committed projection validation.'
+      );
+    }
+    return;
+  }
   const anchor = screen.current_projection_anchor;
   const payload = session.current_projection_payload;
   const narration = session.current_narration_output;
   const turnNumber = Number(session.turn_number);
   const stateVersion = Number(session.state_version);
-  const payloadErrors = validateSpatialV3Contract(
-    'visible_package_persistence_envelope',
-    {
-      package_id: anchor?.package_id,
-      party_id: partyId,
-      turn_id: screen.turn_id,
-      committed_state_version:
-        String(anchor?.committed_state_version ?? ''),
-      change_set_id:
-        `change:${partyId}:trace-phase2:${turnNumber}`,
-      package_digest: anchor?.package_digest,
-      visible_payload: payload,
-      presentation_status: 'pending',
-      projection_policy_ref: {
-        entity_ref: {
-          entity_kind: 'visibility_modifier',
-          entity_id: 'lower_dvina_trace_phase_2_visible_v1'
-        },
-        authoring_version: '1'
-      },
-      dependency_pins: {
-        pins: [{
-          dependency_role: 'source_authoring',
-          entity_ref: {
-            entity_kind: 'activity_profile',
-            entity_id:
-              'trace_ld_v1_activity_detailed_wreck_inspection'
-          },
-          version_pin: {
-            pin_kind: 'authoring_version',
-            authoring_version: '1',
-            state_version: null
-          }
-        }],
-        canonical_digest: 'placeholder'
-      },
-      idempotency_record_id: 'placeholder'
-    }
-  );
+  const payloadErrors = visiblePayloadErrors({ partyId,
+    turnId: screen.turn_id, turnNumber, packageId: anchor?.package_id,
+    packageDigest: anchor?.package_digest,
+    committedStateVersion: anchor?.committed_state_version, payload });
   const expectedContext = payload && visibleContextFromPayload(payload);
   const narrationDigest = narration?.canonical_digest ?? null;
   const narrationText = narration?.text ?? null;
@@ -240,22 +217,6 @@ function validatePostTurnSession({ partyId, session, screen, identity }) {
       'Persisted trace turn screen failed committed projection validation.'
     );
   }
-}
-
-function visibleContextFromPayload(payload) {
-  return {
-    version: 1,
-    schema: 'visible_context_package',
-    visible_scene: payload.perceived_scene,
-    visible_changes: payload.perceived_changes,
-    sensory_details: payload.sensory_details,
-    visible_npc: payload.visible_npcs,
-    visible_objects: payload.visible_objects,
-    known_context: payload.known_context,
-    uncertainties: payload.uncertainties,
-    allowed_tensions: [],
-    do_not_imply: []
-  };
 }
 
 function currentScreenDigest(screen) {

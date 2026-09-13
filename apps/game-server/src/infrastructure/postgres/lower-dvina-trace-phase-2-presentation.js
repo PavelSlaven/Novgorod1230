@@ -1,4 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
+import { validateTerminalNarrationPolicyRejection } from '@rus/narration';
+import { buildFactualTurnDelivery, validFactualTurnDelivery } from
+  './factual-presentation-delivery.js';
 import {
   computeSpatialV3CanonicalDigest
 } from '@rus/contracts/spatial-v3/registry';
@@ -27,8 +30,11 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       const turnBudget = request.turnBudget ?? null;
       const narrationRequest = { ...request };
       delete narrationRequest.turnBudget;
+      const deliveryTurnNumber = narrationRequest.delivery_turn_number;
+      delete narrationRequest.delivery_turn_number;
       const envelope = await loadEnvelope(
         partyPool,
+        request.party_id,
         request.request_id,
         request.visible_context,
         turnBudget
@@ -42,6 +48,12 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       };
       const claimed = await store.claimPresentationAttempt({ ...identity, turnBudget });
       if (!claimed?.ok) throw presentationError();
+      if (claimed.disposition === 'factual_delivered') {
+        if (!validFactualTurnDelivery(claimed.factual_screen, envelope)) {
+          throw presentationError();
+        }
+        return Object.freeze({ factual_delivery: structuredClone(claimed.factual_screen) });
+      }
       if (claimed.disposition === 'delivered'
           || claimed.disposition === 'output_ready') {
         const flow = claimed.narration_result?.flow_result;
@@ -79,6 +91,22 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       }
       if (flow?.status !== 'approved' || flow.pass !== true
           || !flow.approved_output?.prose) {
+        if (validateTerminalNarrationPolicyRejection(flow, narrationRequest).ok) {
+          const factualScreen = buildFactualTurnDelivery({ envelope,
+            visibleContext: phase2VisibleContextFromPayload(envelope.visible_payload),
+            requestVisibleContext: request.visible_context, turnNumber: deliveryTurnNumber });
+          const finalized = await store.finalizeFactualPresentationAttempt({
+            ...identity,
+            turnBudget,
+            attempt_id: claimed.attempt_id,
+            claim_token: claimed.claim_token,
+            factual_screen: factualScreen
+          });
+          if (!finalized?.ok || finalized.presentation_status !== 'factual_delivered') {
+            throw presentationError();
+          }
+          return Object.freeze({ factual_delivery: factualScreen });
+        }
         await store.finalizePresentationAttempt({
           ...identity,
           turnBudget,
@@ -132,14 +160,15 @@ function narrationFailureDetails(flow) {
   };
 }
 
-async function loadEnvelope(pool, turnId, visibleContext, turnBudget = null) {
+async function loadEnvelope(pool, partyId, turnId, visibleContext, turnBudget = null) {
+  if (typeof partyId !== 'string' || !partyId.trim()) throw presentationError();
   const result = await queryWithTurnDeadline(pool, { text: `SELECT package_id,party_id,turn_id,committed_state_version,
             change_set_id,package_digest,visible_payload,
             presentation_status,projection_policy_ref,dependency_pins,
             idempotency_record_id
        FROM party_runtime.party_visible_packages
-      WHERE turn_id=$1`,
-    values: [turnId] }, turnBudget);
+      WHERE party_id=$1 AND turn_id=$2`,
+    values: [partyId, turnId] }, turnBudget);
   const expectedContextDigest = canonicalDigest(visibleContext);
   const matches = result.rows.filter((candidate) =>
     candidate.package_digest

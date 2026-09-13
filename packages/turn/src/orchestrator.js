@@ -62,6 +62,9 @@ export async function runTurnWorkflow(input = {}, services = {}, options = {}) {
     mode: state.modeResolution.selected_primary_mode,
     screen: state.screen,
     commit: state.commit,
+    ...(state.narration?.factual_delivery ? {
+      factual_delivery: state.narration.factual_delivery
+    } : {}),
     summary: {
       duration_minutes: state.consequence.duration_minutes ?? 0,
       check_count: state.checks.results.length,

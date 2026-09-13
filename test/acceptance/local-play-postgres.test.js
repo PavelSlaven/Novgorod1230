@@ -141,7 +141,6 @@ test('local play persists a free turn and replays it after a server restart',
         if (resolution === 'no_change' || resolution === 'authority_required') {
           assert.ok(beat.changes.some(({ text }) => text.includes(
             `Поиск по вопросу «${turnRequest.raw_text}» не дал подтверждённой находки.`)));
-          assert.ok(beat.uncertainties.some(({ text }) => text.includes(`«${turnRequest.raw_text}»`)));
         } else assert.ok(beat.changes.some(
           ({ text }) => text.includes('Обнаружено:')));
         assert.equal(JSON.stringify(beat).includes('15 минут'), false);

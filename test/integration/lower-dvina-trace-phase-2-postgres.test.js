@@ -548,6 +548,12 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(retrySemanticCalls, 1);
   assert.equal(retryRolls, 1);
 
+  await assertFactualPresentationSurvivesRestart({
+    pool,
+    release,
+    runtimeCatalogPin
+  });
+
   await assertGeneralLookUsesOpeningScene({
     pool,
     release,
@@ -1423,6 +1429,75 @@ function approvedNarration(request) {
     repair_history: [],
     diagnostics: {}
   };
+}
+
+async function assertFactualPresentationSurvivesRestart({
+  pool,
+  release,
+  runtimeCatalogPin
+}) {
+  const options = { pool, release, runtimeCatalogPin,
+    narrationService: { async run(request) {
+      return rejectedNarration(request);
+    } } };
+  const runtime = buildRuntime(options);
+  const opened = await runtime.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'phase-2-factual-restart-party'
+  });
+  await runtime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'phase-2-factual-restart-ack'
+  });
+  const first = await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-factual-restart-turn',
+    idempotency_key: 'phase-2-factual-restart-turn',
+    raw_text: 'Осмотреть место крушения подробно.'
+  });
+  assert.equal(first.screen.schema, 'factual_turn_delivery_screen');
+  assert.equal(Object.hasOwn(first.screen, 'scenario_id'), false);
+  assert.equal(Object.hasOwn(first.screen, 'current_projection_anchor'), false);
+
+  const restarted = buildRuntime(options);
+  assert.deepEqual(
+    (await restarted.getPartyScreen(opened.party_id)).screen,
+    first.screen
+  );
+  const next = await restarted.submitTurn(opened.party_id, {
+    request_id: 'phase-2-factual-next-turn',
+    idempotency_key: 'phase-2-factual-next-turn',
+    raw_text: 'Дойти до рыбацкого стана.'
+  });
+  assert.equal(next.screen.schema, 'factual_turn_delivery_screen');
+}
+
+function rejectedNarration(request) {
+  const output = { version: 1, schema: 'narration_output',
+    output_id: request.request_id, prose: 'Берег.', action_options: [],
+    used_references: [], self_check: {} };
+  const concern = { segment_id: 's1', kind: 'unsupported_fact',
+    reason: 'Нет опоры.' };
+  const audit = { version: 1, schema: 'narration_audit', pass: false,
+    artistic_verdict: 'pass', technical_verdict: 'pass', concerns: [concern],
+    evidence: [], coverage: {
+      visible_changes: request.visible_context.visible_changes.map(
+        (_, source_index) => ({ source_index, segment_ids: ['s1'] })
+      ),
+      uncertainties: request.visible_context.uncertainties.map(
+        (_, source_index) => ({ source_index, segment_ids: ['s1'] })
+      )
+    } };
+  const repair = { version: 1, schema: 'narration_semantic_repair',
+    replacements: [{ segment_id: 's1', prose: output.prose }] };
+  return { version: 1, schema: 'narration_flow_result',
+    request_id: request.request_id, surface: request.surface,
+    status: 'blocked', pass: false, approved_output: null, final_audit: null,
+    generation_history: [{ role: 'writer', value: output },
+      { role: 'semantic_repairer', value: repair }],
+    repair_history: [{ role: 'semantic_repair', value: repair }],
+    audit_history: [{ role: 'auditor', value: audit },
+      { role: 'auditor', value: audit }],
+    diagnostics: { phase: 'final_audit_failed', errors: [concern],
+      repairs_used: 1 } };
 }
 
 async function assertResealedSnapshotTamper(pool, runtime, partyId, mutate) {

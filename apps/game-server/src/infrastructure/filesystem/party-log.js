@@ -164,15 +164,17 @@ function stringify(value) {
     return entry;
   });
 }
-function redact(value, ancestors = []) {
+function redact(value, ancestors = [], branchKeys = []) {
   if (value && typeof value === 'object' && ancestors.includes(value)) return '[Circular]';
   if (!value || typeof value !== 'object') return value;
-  if (value instanceof Error) return redact(errorRecord(value), ancestors);
+  if (value instanceof Error) return redact(errorRecord(value), ancestors, branchKeys);
   const next = [...ancestors, value];
-  if (Array.isArray(value)) return value.map((entry) => redact(entry, next));
+  if (Array.isArray(value)) return value.map((entry) => redact(entry, next, branchKeys));
   return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key,
-    /(?:api.?key|authorization|password|credential|endpoint)|^(?:base_?url|provider_?url|provider_?base_?url)$/iu.test(key)
-      ? '[REDACTED]' : redact(entry, next)]));
+    /(?:api.?key|authorization|password|credential)|^(?:base_?url|provider_?url|provider_?base_?url|provider_?endpoint|api_?endpoint)$/iu.test(key)
+      || (key.toLowerCase() === 'endpoint'
+        && branchKeys.some((ancestor) => /^(?:llm|provider|transport|network)$/iu.test(ancestor)))
+      ? '[REDACTED]' : redact(entry, next, [...branchKeys, key])]));
 }
 function correlation(partyId, input = {}) {
   return { party_id: partyId, request_id: input.request_id ?? input.requestId ?? null,

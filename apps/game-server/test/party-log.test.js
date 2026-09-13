@@ -264,7 +264,12 @@ test('party log redacts recursive credentials but preserves gameplay text', asyn
       error: { cause: { authorization: `Bearer ${secret}` } },
       ui: { password: secret, nested: { credentials: secret,
         baseUrl: 'https://provider.private.test/v1',
-        provider_url: 'https://provider.private.test/other' } },
+        provider_url: 'https://provider.private.test/other',
+        provider_endpoint: 'https://provider.private.test/provider',
+        api_endpoint: 'https://provider.private.test/api' } },
+      transport: { endpoint: 'https://provider.private.test/transport' },
+      scene: { endpoint: 'берег', source_endpoint: 'лодка',
+        destination_endpoint: 'причал' },
       source_url: 'https://github.com/PavelSlaven/Novgorod1230/pull/96',
       pull_request_url: 'https://github.com/PavelSlaven/Novgorod1230/pull/96'
     }
@@ -272,6 +277,9 @@ test('party log redacts recursive credentials but preserves gameplay text', asyn
   const saved = await readFile(log.pathFor('party-redacted'), 'utf8');
   assert.equal(saved.includes(secret), false);
   assert.equal(saved.includes('provider.private.test'), false);
+  assert.equal(saved.includes('"endpoint":"берег"'), true);
+  assert.equal(saved.includes('"source_endpoint":"лодка"'), true);
+  assert.equal(saved.includes('"destination_endpoint":"причал"'), true);
   assert.equal(saved.includes('Осмотреть лодку у берега.'), true);
   assert.equal(saved.includes('github.com/PavelSlaven/Novgorod1230/pull/96'), true);
 });

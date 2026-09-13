@@ -221,7 +221,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
       ...narrator,
       run(request) {
         return runWithinTurnDeadline(turnBudget, () => narrator.run({
-          ...request, turnBudget
+          ...request, party_id: partyId,
+          delivery_turn_number: committedPublicResult?.turn_number,
+          turnBudget
         }));
       }
     },

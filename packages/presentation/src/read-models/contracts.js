@@ -2,6 +2,7 @@ import { deepFreeze } from '@rus/kernel';
 
 export const FIRST_GAME_SCREEN_SCHEMA = 'first_game_screen';
 export const TURN_SCREEN_SCHEMA = 'turn_screen';
+export const FACTUAL_TURN_DELIVERY_SCREEN_SCHEMA = 'factual_turn_delivery_screen';
 export const PANEL_SCHEMA = 'presentation_panel';
 export const INVENTORY_PANEL_SCHEMA = 'inventory_panel';
 export const PRESENTATION_VERSION = 1;

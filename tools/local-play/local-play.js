@@ -1,4 +1,5 @@
-import { spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
+import { promisify } from 'node:util';
 import { createServer } from 'node:net';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,6 +23,7 @@ import { installActivatedRuntimeCatalog } from './production-setup.js';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const RELEASE_ID = 'spatial-v3-production-v15';
 const SCENARIO_ID = 'lower_dvina_trace_v1';
+const execFileAsync = promisify(execFile);
 
 export function validateLocalPlay({ env = process.env, nodeVersion = process.versions.node } = {}) {
   const major = Number(String(nodeVersion).split('.')[0]);
@@ -36,10 +38,14 @@ export function validateLocalPlay({ env = process.env, nodeVersion = process.ver
 }
 
 export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
-  pinManifestDigest, port, managedRuntime }) {
+  pinManifestDigest, port, managedRuntime, git }) {
   const childEnv = { ...env };
   delete childEnv.RUS_RUNTIME_BINDINGS_MODULE;
   delete childEnv.RUS_RUN_PARTY_MIGRATIONS;
+  delete childEnv.RUS_GIT_HEAD;
+  delete childEnv.RUS_GIT_BRANCH;
+  delete childEnv.RUS_GIT_PR;
+  delete childEnv.RUS_BUILD_ID;
   return {
     ...childEnv,
     RUS_RUNTIME_ROUTE: 'modular',
@@ -52,6 +58,8 @@ export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
     RUS_DATABASE_SSL: 'false',
     RUS_SERVER_HOST: '127.0.0.1',
     RUS_SERVER_PORT: String(port),
+    RUS_GIT_HEAD: git.head,
+    ...(git.branch == null ? {} : { RUS_GIT_BRANCH: git.branch }),
     RUS_TURN_DECISION_SECRET: 'novgorod1230-local-play-decision-secret-v1',
     RUS_WORLD_KNOWLEDGE_PYTHON: managedRuntime.giga.python,
     ...(managedRuntime.giga.modelPath
@@ -102,9 +110,22 @@ export async function startLocalPlay({
   fetchImpl = fetch,
   sleep = delay,
   isPortAvailable = portAvailable,
+  readGit = localGitProvenance,
   log = console.log
 } = {}) {
   const { port } = validateLocalPlay({ env, nodeVersion });
+  let git;
+  try { git = await readGit(); }
+  catch (error) {
+    if (error?.code === 'LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE') throw error;
+    throw localPlayError('LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE',
+      'Local Git provenance is unavailable.');
+  }
+  if (!/^[a-f0-9]{40}$/iu.test(String(git?.head ?? ''))
+      || (git?.branch != null && !String(git.branch).trim())) {
+    throw localPlayError('LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE',
+      'Local Git provenance is unavailable.');
+  }
   if (!(await isPortAvailable(port))) {
     throw localPlayError('LOCAL_PLAY_PORT_UNAVAILABLE', `Port ${port} is already in use.`);
   }
@@ -136,7 +157,7 @@ export async function startLocalPlay({
   }
   const child = spawnServer({ env: buildServerEnv({ env,
     worldUrl: postgres.worldUrl, partyUrl: postgres.partyUrl,
-    pinManifestDigest, port, managedRuntime }) });
+    pinManifestDigest, port, managedRuntime, git }) });
   const baseUrl = `http://127.0.0.1:${port}`;
   try {
     await assertReadiness({ baseUrl, fetchImpl, sleep, child });
@@ -163,6 +184,27 @@ export async function startLocalPlay({
       if (child.exitCode == null) child.kill('SIGKILL');
       await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     } });
+}
+
+async function localGitProvenance() {
+  try {
+    const { stdout } = await execFileAsync('git', ['rev-parse', '--verify', 'HEAD^{commit}'],
+      { cwd: ROOT, windowsHide: true });
+    const head = stdout.trim();
+    if (!/^[a-f0-9]{40}$/iu.test(head)) throw new Error('invalid HEAD');
+    try {
+      const branch = (await execFileAsync('git', ['symbolic-ref', '--quiet', '--short', 'HEAD'],
+        { cwd: ROOT, windowsHide: true })).stdout.trim();
+      if (!branch) throw new Error('invalid branch');
+      return { head, branch };
+    } catch (error) {
+      if (error?.code === 1) return { head, branch: null };
+      throw error;
+    }
+  } catch {
+    throw localPlayError('LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE',
+      'Local Git provenance is unavailable.');
+  }
 }
 
 function assertHealth(health) {

@@ -10,12 +10,15 @@ export function modelSlice(slice) {
 // Development traces preserve the exact WK boundary, not the full actor-safe
 // request. The latter can still carry private state unrelated to retrieval.
 export function worldKnowledgeTrace({ request, purpose, semanticInput,
-  plannerRequest, plannerPlan, query, slice, retrievalObservability }) {
+  plannerRequest, plannerPlan, plannerCalls, questionClasses, query, slice,
+  retrievalObservability }) {
   const worldKnowledge = traceWorldKnowledgeSlice(slice);
   return Object.freeze({ schema: 'world_knowledge_boundary_trace_v1',
     event: 'world_knowledge_resolved', purpose,
     request_identity: text(request.request_id),
     safe_need: safeNeed(request, semanticInput),
+    question_classes: Object.freeze([...questionClasses]),
+    planner_identity: plannerIdentity(plannerCalls),
     planner_request: Object.freeze({ schema: plannerRequest.schema,
       pack_ref: plannerRequest.pack_ref, purpose: plannerRequest.purpose,
       input_locale: plannerRequest.input_locale,
@@ -42,11 +45,13 @@ export function worldKnowledgeTrace({ request, purpose, semanticInput,
     retrieval_observability: retrievalObservability });
 }
 export function worldKnowledgeNoNeedTrace({ request, purpose, semanticInput,
-  plannerRequest, plannerPlan, worldKnowledge }) {
+  plannerRequest, plannerPlan, plannerCalls, questionClasses, worldKnowledge }) {
   const safe = safeNeed(request, semanticInput);
   return Object.freeze({ schema: 'world_knowledge_boundary_trace_v1',
     event: 'world_knowledge_not_required', purpose,
     request_identity: text(request.request_id), safe_need: safe,
+    question_classes: Object.freeze([...questionClasses]),
+    planner_identity: plannerIdentity(plannerCalls),
     planner_request: Object.freeze({ schema: plannerRequest.schema,
       pack_ref: plannerRequest.pack_ref, purpose: plannerRequest.purpose,
       input_locale: plannerRequest.input_locale,
@@ -92,5 +97,11 @@ function safeNeed(request, semanticInput) {
 function traceWorldKnowledgeSlice(slice) {
   const { context_text, ...structured } = modelSlice(slice);
   return Object.freeze(structured);
+}
+function plannerIdentity(calls = []) {
+  const call = calls.at(-1);
+  return Object.freeze({ scope: text(call?.scope) ?? 'turn_runtime',
+    role_id: text(call?.role_id) ?? 'world_knowledge_query_planner',
+    provider: text(call?.provider), model: text(call?.model) });
 }
 function text(value) { return typeof value === 'string' ? value : null; }

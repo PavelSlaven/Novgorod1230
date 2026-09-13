@@ -72,12 +72,13 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         } });
       const plannerMs = Math.max(0, performance.now() - plannerStarted);
       if (planned.plan.domains.length === 0) {
+        const questionClasses = questionClassesOf(bundle, purpose, []);
         const worldKnowledge = noKnowledgeRequirement(bundle, purpose);
         const grounded = Object.freeze({ ...request, world_knowledge: worldKnowledge });
         cacheGrounded(cache, request, cacheKey, grounded);
         telemetry?.onGameplayTrace?.(worldKnowledgeNoNeedTrace({ request,
           purpose, semanticInput, plannerRequest, plannerPlan: planned.plan,
-          worldKnowledge }));
+          plannerCalls, questionClasses, worldKnowledge }));
         telemetry?.onDetail?.(Object.freeze({
           schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
           request_identity: request.request_id ?? null,
@@ -118,6 +119,8 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         budget: { max_facts: 12, max_candidates: 12,
           max_context_chars: 5000 }
       };
+      const questionClasses = questionClassesOf(bundle, purpose,
+        planned.plan.domains);
       const retrievalStarted = performance.now();
       let embeddingMs = 0;
       let vectorMs = 0;
@@ -155,7 +158,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
       cacheGrounded(cache, request, cacheKey, grounded);
       telemetry?.onGameplayTrace?.(worldKnowledgeTrace({ request, purpose,
         semanticInput, plannerRequest, plannerPlan: planned.plan, query, slice,
-        retrievalObservability }));
+        plannerCalls, questionClasses, retrievalObservability }));
       telemetry?.onDetail?.(Object.freeze({
         schema: 'world_knowledge_grounding_diagnostic_v1', purpose,
         request_identity: request.request_id ?? null,
@@ -206,6 +209,13 @@ export function wkClosure(request) {
   ];
 }
 export { wkClosure as worldKnowledgeFactualClosure };
+function questionClassesOf(bundle, purpose, domains) {
+  const selected = new Set(domains);
+  return Object.freeze([...new Set(bundle.coverage_profiles
+    .filter((profile) => selected.has(profile.domain)
+      && profile.purposes.includes(purpose))
+    .flatMap((profile) => profile.question_classes))].sort());
+}
 async function runPlanner(roleRunner, request, repair, bundle) {
   const claimDomains = new Map(bundle.claims.map(claim => [claim.claim_ref, claim.domain]));
   const concepts = new Map(bundle.concepts.map(concept =>

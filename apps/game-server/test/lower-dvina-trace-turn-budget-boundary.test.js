@@ -25,7 +25,7 @@ import { fixture } from './lower-dvina-trace-phase-2-fixture.js';
 
 const unusedNarrationService = { async run() { throw new Error('unexpected narration'); } };
 
-test('temporal presentation package read uses the gameplay deadline', async () => {
+test('presentation package read uses turn deadline', async () => {
   const queries = [];
   const turnBudget = { assertWithinDeadline() {},
     remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
@@ -48,17 +48,21 @@ test('temporal presentation package read uses the gameplay deadline', async () =
   assert.equal(queries.at(-1), 'RESET statement_timeout');
 });
 
-test('durable narrator forwards gameplay deadline to presentation store', async () => {
+test('narrator forwards deadline to presentation store', async () => {
   const visiblePayload = { perceived_scene: 'Берег.', perceived_changes: [],
     sensory_details: [], visible_npcs: [], visible_objects: [], known_context: [],
     uncertainties: [] };
   const turnBudget = { assertWithinDeadline() {},
     remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
+  let envelopeQuery = null;
   const client = {
     async query(query) {
-      if (typeof query === 'object') return { rows: [{ package_id: 'package',
+      if (typeof query === 'object') {
+        envelopeQuery = query;
+        return { rows: [{ package_id: 'package',
         party_id: 'party', package_digest: computeSpatialV3CanonicalDigest(visiblePayload),
         visible_payload: visiblePayload }] };
+      }
       return {};
     },
     release() {}
@@ -73,16 +77,17 @@ test('durable narrator forwards gameplay deadline to presentation store', async 
       return { ok: true, disposition: 'in_progress', attempt_id: 'attempt' };
     } }
   });
-  await assert.rejects(narrator.run({ request_id: 'turn', turnBudget,
+  await assert.rejects(narrator.run({ party_id: 'party', request_id: 'turn', turnBudget,
     visible_context: { version: 1, schema: 'visible_context_package',
       visible_scene: 'Берег.', visible_changes: [], sensory_details: [],
       visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
       allowed_tensions: [], do_not_imply: [] } }),
   { code: 'TRACE_PHASE_2_NARRATION_IN_PROGRESS' });
   assert.equal(claimInput.turnBudget, turnBudget);
+  assert.deepEqual(envelopeQuery.values, ['party', 'turn']);
 });
 
-test('durable narrator reuses persisted delivered narration without LLM', async () => {
+test('narrator reuses delivered narration without LLM', async () => {
   const visible_payload = { perceived_scene: 'Берег.', perceived_changes: [],
     sensory_details: [], visible_npcs: [], visible_objects: [],
     known_context: [], uncertainties: [] };
@@ -106,7 +111,7 @@ test('durable narrator reuses persisted delivered narration without LLM', async 
         output_digest: narration_output.canonical_digest };
     } }
   });
-  const result = await narrator.run({ request_id: 'turn', visible_context: {
+  const result = await narrator.run({ party_id: 'party', request_id: 'turn', visible_context: {
     version: 1, schema: 'visible_context_package', visible_scene: 'Берег.',
     visible_changes: [], sensory_details: [], visible_npc: [],
     visible_objects: [], known_context: [], uncertainties: [],
@@ -116,7 +121,7 @@ test('durable narrator reuses persisted delivered narration without LLM', async 
   assert.equal(result.presentation.output_digest, narration_output.canonical_digest);
 });
 
-test('durable narrator does not hide failed-retryable persistence failure',
+test('narrator exposes retryable persistence failure',
   async () => {
     const visible_payload = { perceived_scene: 'Берег.', perceived_changes: [],
       sensory_details: [], visible_npcs: [], visible_objects: [],
@@ -136,7 +141,7 @@ test('durable narrator does not hide failed-retryable persistence failure',
         async finalizePresentationAttempt() { throw persistenceFailure; }
       }
     });
-    await assert.rejects(narrator.run({ request_id: 'turn',
+    await assert.rejects(narrator.run({ party_id: 'party', request_id: 'turn',
       visible_context: { version: 1, schema: 'visible_context_package',
         visible_scene: 'Берег.', visible_changes: [], sensory_details: [],
         visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
@@ -144,7 +149,7 @@ test('durable narrator does not hide failed-retryable persistence failure',
     (error) => error === persistenceFailure);
   });
 
-test('Postgres read queries receive the current gameplay deadline as statement timeout', async () => {
+test('Postgres reads receive deadline as statement timeout', async () => {
   let remainingMs = 1_234.8;
   const queries = [];
   const turnBudget = {
@@ -192,7 +197,7 @@ test('initial public session read uses its gameplay deadline', async () => {
   assert.equal(queries[2], 'RESET statement_timeout');
 });
 
-test('Postgres acquisition after the gameplay deadline releases without querying', async () => {
+test('late Postgres acquisition releases without query', async () => {
   let released = 0;
   let queries = 0;
   const turnBudget = {
@@ -210,7 +215,7 @@ test('Postgres acquisition after the gameplay deadline releases without querying
   assert.equal(released, 1);
 });
 
-test('failed deadline transaction cleanup destroys the client without masking work failure', async () => {
+test('failed deadline cleanup destroys client', async () => {
   for (const failingStatement of ['ROLLBACK', 'RESET statement_timeout']) {
     const released = [];
     const workFailure = new Error('injected work failure');

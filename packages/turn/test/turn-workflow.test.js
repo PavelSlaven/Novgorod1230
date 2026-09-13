@@ -17,6 +17,7 @@ import {
 import { createTurnWorkflowContext, setTrustedTurnWorkflowStage } from '../src/context.js';
 import { createTurnStageDefinitions } from '../src/workflow-stages.js';
 import { deepFreeze } from '@rus/kernel';
+import { createFactualTurnDeliveryScreenReadModel } from '@rus/presentation';
 import {
   createServices,
   input,
@@ -389,6 +390,22 @@ test('failed narration audit cannot roll back committed factual state', async ()
   assert.equal(failures[0].checkpoint.stages.persisted_visible_projection.schema,
     'visible_context_package');
   assert.equal(failures[0].events.at(-1).stageId, 16);
+  assert.equal(commits.length, 1);
+});
+
+test('terminal factual delivery completes the committed turn without prose', async () => {
+  const factual = createFactualTurnDeliveryScreenReadModel({
+    partyId: 'party:1', turnId: 'turn:1', turnNumber: 1,
+    packageId: 'package:1', committedStateVersion: 1,
+    visibleContext: validVisibleContext(), visibleChanges: [],
+    uncertainties: [], panels: {}
+  });
+  const { services, commits } = createServices([], {
+    narrator: { async run() { return { factual_delivery: factual }; } }
+  });
+  const result = await runTurnWorkflow(input(), services);
+  assert.deepEqual(result.screen, factual);
+  assert.deepEqual(result.factual_delivery, factual);
   assert.equal(commits.length, 1);
 });
 

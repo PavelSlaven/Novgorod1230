@@ -6,6 +6,7 @@ import {
 import {
   phase2IntegrityError
 } from './lower-dvina-trace-phase-2-read.js';
+import { validFactualTurnDelivery } from './factual-presentation-delivery.js';
 import {
   phase2PublicResult,
   rebuildPhase2HistoricalScreen
@@ -113,13 +114,14 @@ export async function loadHistoricalPhase2Replay({
   if (record == null) return null;
   const persisted = await partyPool.query(
     `SELECT snapshot.state_payload,snapshot.state_digest,
-            visible.package_id,visible.turn_id,
+            visible.party_id,visible.package_id,visible.turn_id,
+            visible.committed_state_version,
             visible.package_digest,visible.visible_payload,
             visible.dependency_pins,
             source.dependency_pins AS source_dependency_pins,
-            narration.status AS narration_status,
-            narration.narration_output,
-            narration.output_digest
+             narration.status AS narration_status,narration.delivery_mode,
+             narration.narration_output,
+             narration.output_digest,narration.factual_screen
        FROM party_runtime.party_state_snapshots snapshot
        JOIN party_runtime.party_visible_packages visible
          ON visible.party_id=snapshot.party_id
@@ -151,10 +153,8 @@ export async function loadHistoricalPhase2Replay({
         !== payload.last_turn.visible_package.package_digest
       || row.package_digest
         !== computeSpatialV3CanonicalDigest(row.visible_payload)
-      || row.narration_status !== 'delivered'
-      || row.output_digest
-        !== row.narration_output?.canonical_digest
-      || !validNarrationOutput(row.narration_output)) {
+       || row.narration_status !== 'delivered'
+       || !validHistoricalDelivery(row, payload)) {
     throw phase2IntegrityError();
   }
   assertPhase2ReplayRecord({
@@ -171,13 +171,15 @@ export async function loadHistoricalPhase2Replay({
       idempotencyRecordId: record.id
     });
   }
-  const screen = rebuildPhase2HistoricalScreen({
-    payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),
-    turnId: row.turn_id,
-    visiblePayload: row.visible_payload,
-    narrationOutput: row.narration_output,
-    narrationOutputDigest: row.output_digest
-  });
+  const screen = row.delivery_mode === 'factual'
+    ? structuredClone(row.factual_screen)
+    : rebuildPhase2HistoricalScreen({
+        payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),
+        turnId: row.turn_id,
+        visiblePayload: row.visible_payload,
+        narrationOutput: row.narration_output,
+        narrationOutputDigest: row.output_digest
+      });
   return {
     input_digest: payload.last_turn.input_digest,
     state: payload,
@@ -257,4 +259,16 @@ function validNarrationOutput(narration) {
     && narration.flow_result?.pass === true
     && narration.text
       === narration.flow_result?.approved_output?.prose;
+}
+
+function validHistoricalDelivery(row, payload) {
+  if (row.delivery_mode === 'factual') {
+    const factual = row.factual_screen;
+    return row.narration_output == null
+      && row.output_digest == null
+      && validFactualTurnDelivery(factual, row);
+  }
+  return row.delivery_mode === 'narrated'
+    && row.output_digest === row.narration_output?.canonical_digest
+    && validNarrationOutput(row.narration_output);
 }

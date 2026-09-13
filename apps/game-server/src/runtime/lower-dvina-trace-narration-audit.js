@@ -18,17 +18,22 @@ export function narrationAuditInstruction(request) {
 each supplied segment into every factual proposition, including subordinate
 clauses, sensations, action, result, time claims, causality and certainty. For every
 proposition require one exact supporting ref or field from the supplied
-player-safe input. Plausibility is never evidence. An object or place never
-supports an unstated sound, smell, touch, motion, reaction or persistence.
+player-safe input. A supplied player-safe source supports exactly its atomic factual
+propositions, including stated relation, motion, cause, qualifier and certainty.
+Faithful prose may use ordinary grammatical inflection or natural paraphrase only
+when it adds no atomic proposition. Labels, IDs, categories, names and plausible
+implications add no sensory trait, causality, time, result, execution or certainty.
+Plausibility is never evidence. An object or place never supports an unstated sound,
+smell, touch, motion, reaction or persistence.
 Treat a required_current_beat uncertainty with status unperformed_result_unknown
 as evidence only that the second-person player's named continuation is not yet
 performed and has no result. Never attribute it to an NPC. An explicitly open
 future or possible next choice conveying both facts is
 supported and is not unsupported_attempt. Present, past, or ongoing execution is
 still unsupported_response_or_continuation or unsupported_attempt.
-replace a named or labelled NPC from a required source with second-person player
+Never replace a named or labelled NPC from a required source with second-person player
 action; report that as unsupported_npc_state and leave that source uncovered.
-accept reversed causal order. Grammatical subordination of an earlier action is
+Never accept reversed causal order. Grammatical subordination of an earlier action is
 allowed only when aspect or an explicit marker makes it unambiguously completed before
 the later action. A later action cannot precede an earlier one; reject subordination
 that makes the earlier action simultaneous or ongoing within the later action.

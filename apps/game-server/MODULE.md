@@ -162,6 +162,14 @@ and adds no second transaction owner.
   inspect с полным неизменённым later intent остаются free; другая activity не
   получает этот вывод по соседнему query.
 - Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
+- После P16 server ведёт existing presentation job для exact committed package.
+  Approved narration сохраняет existing narrated `TurnScreen`. Только typed
+  `final_audit_failed` после bounded repair/final audit может через один
+  job/attempt CAS сохранить `delivery_mode: factual` и
+  `FactualTurnDeliveryScreen`; `narration_output` и `output_digest` тогда null.
+  Provider/deadline/store/lease/CAS/package/projection failures остаются pending
+  recovery, не factual delivery. Factual replay возвращает тот же validated
+  screen без narrator или gameplay execution; terminal mode не upgrade-ится в prose.
 
 Каждый applied direct `not_achieved`, в том числе после achieved speech, передаёт через общий turn-step result overlay недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи. Duration нескольких direct semantic seeds суммируется до текстовой дедупликации. Applied speech и failed results выводятся в порядке step traces; unapplied plans не проецируются как результаты.
 

@@ -17,6 +17,7 @@ Release: `0.23.0-migration.24`
 | `character_knowledge_write_projection` | `STAGE18_WRITE_PLAN_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `commit_gate_input` | `STAGE25_INPUT_SCHEMA` | `packages/new-game/src/stages/stage-25-party-commit/policy/constants.js` |
 | `commit_gate_result` | `STAGE25_GATE_SCHEMA` | `packages/new-game/src/stages/stage-25-party-commit/policy/constants.js` |
+| `factual_turn_delivery_screen` | `FACTUAL_TURN_DELIVERY_SCREEN_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
 | `first_game_screen` | `FIRST_GAME_SCREEN_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
 | `first_game_screen` | `STAGE26_SCREEN_SCHEMA` | `packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js` |
 | `first_game_screen_input` | `STAGE26_INPUT_SCHEMA` | `packages/new-game/src/stages/stage-26-first-game-screen/policy/constants.js` |
@@ -210,6 +211,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/029_party_runtime_spatial_semantic_remainder.sql` | sql | 2673 | `ef20ef6ce21f85e717c327bceb70751e1210bed0ae92b8dcbe97a4eb8dfeddab` |
 | `schemas/party-db/030_party_runtime_snapshot_validator_alias.sql` | sql | 4489 | `037bf322358021dbdf73650259fc64eec346ba00474e072d3098393e2baee9cc` |
 | `schemas/party-db/031_party_runtime_deferred_npc_schedules.sql` | sql | 2325 | `f25ae94fb5cc7b18e15f71d6a07012119ad46cc32b4eeb0576705ddf2031dd87` |
+| `schemas/party-db/032_party_runtime_factual_presentation_delivery.sql` | sql | 3168 | `d9faba7e509512fa4b65f2c8a391fbdcf61e817e14fa38fcff3145c3a5e4ab71` |
 | `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |

@@ -23,7 +23,7 @@ import {
   fixture
 } from './lower-dvina-trace-phase-2-fixture.js';
 
-test('Phase 2 execution package is immutable, exact and excludes Phase 3', async () => {
+test('Phase 2 package excludes Phase 3', async () => {
   const phase2 = await loadLowerDvinaTracePhase2Bundle();
   assert.equal(phase2.manifest.scenario_definition_revision, 7);
   assert.equal(phase2.manifest.phase_3_content, 'forbidden');
@@ -50,7 +50,7 @@ test('Phase 2 execution package is immutable, exact and excludes Phase 3', async
   );
 });
 
-test('revision 31 Phase 2 package pins revision 31 publication chain', async () => {
+test('revision 31 package pins publication chain', async () => {
   const phase2 = await loadLowerDvinaTracePhase2Bundle({
     scenarioDefinitionRevision: 31
   });
@@ -60,7 +60,7 @@ test('revision 31 Phase 2 package pins revision 31 publication chain', async () 
   assert.equal(phase2.binding.scenario_definition_revision, 31);
 });
 
-test('ranges-only body effect fails closed before resolver, roll or commit', async () => {
+test('ranges-only body effect fails before resolver or commit', async () => {
   const invalidBundle = structuredClone(bundle);
   const effect = invalidBundle.body_environment_profiles.effect_profiles.find(
     ({ effect_profile_id: id }) =>
@@ -98,7 +98,7 @@ test('ranges-only body effect fails closed before resolver, roll or commit', asy
   assert.equal(f.commitCount(), 0);
 });
 
-test('committed RNG version mismatch fails before resolver, roll or commit', async () => {
+test('RNG version mismatch fails before resolver or commit', async () => {
   const f = fixture();
   f.state.materialization_trace.rng_version = 'invented_rng_v9';
   await assert.rejects(
@@ -118,7 +118,7 @@ test('committed RNG version mismatch fails before resolver, roll or commit', asy
   assert.equal(f.commitCount(), 0);
 });
 
-test('exact fast path commits one canonical inspection, check, elapsed, body effect and clue', async () => {
+test('exact path commits inspection, check, time, body effect and clue', async () => {
   const diagnostics = createLlmDiagnostics({ developerMode: true });
   const f = fixture({ llmDiagnostics: diagnostics });
   const result = await f.runtime.submitTurn({
@@ -179,6 +179,7 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
   });
   assert.equal(result.body_update.proposal.rng_consumption, 'forbidden');
   assert.equal(result.clue.template_id, 'trace_ld_v1_item_blue_wool_fragment');
+  assert.equal(f.narratorInput().delivery_turn_number, 1);
   const visible = f.narratorInput().visible_context;
   assert.deepEqual(visible.visible_changes, [
     'На берегу лежат обломки разбитой лодки.',
@@ -215,7 +216,7 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
   ]);
 });
 
-test('revision 9 success atomically picks up blue wool with exact owner-preserving inventory state', async () => {
+test('revision 9 pickup preserves inventory owner', async () => {
   const f = fixture({ scenarioBundle: bundle9, rollValue: 0.99 });
   const result = await f.runtime.submitTurn({
     partyId: f.partyId,

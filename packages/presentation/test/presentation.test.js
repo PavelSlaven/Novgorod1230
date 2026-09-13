@@ -7,7 +7,9 @@ import {
   createFirstGameScreenReadModel,
   createJournalPanel,
   createPeoplePanel,
+  createFactualTurnDeliveryScreenReadModel,
   createTurnScreenReadModel,
+  validateFactualTurnDeliveryScreen,
   validateTurnScreen
 } from '../src/index.js';
 
@@ -66,6 +68,36 @@ test('creates versioned TurnScreen from approved narration only', () => {
   assert.equal(screen.main_prose, 'На площади глухо переговариваются люди.');
   assert.equal(screen.input_panel.input_contract, 'intent_not_fact');
   assert.equal(validateTurnScreen(screen).ok, true);
+});
+
+test('creates factual delivery screen from exact committed public fields without prose', () => {
+  const screen = createFactualTurnDeliveryScreenReadModel({
+    partyId: 'party-1', turnId: 'turn-1', turnNumber: 1,
+    packageId: 'package-1', committedStateVersion: '39',
+    visibleContext: visibleContext(),
+    visibleChanges: ['Ты снял верёвку с телеги.'],
+    uncertainties: ['Прочность оси пока не установлена.'],
+    panels: { journal: { visible: true, data: { current_task: 'Осмотреть телегу' } } }
+  });
+  assert.equal(screen.schema, 'factual_turn_delivery_screen');
+  assert.equal(screen.main_prose, undefined);
+  assert.equal(screen.input_panel.input_contract, 'intent_not_fact');
+  assert.equal(validateFactualTurnDeliveryScreen(screen).ok, true);
+});
+
+test('factual delivery screen rejects prose, private data and malformed current beat', () => {
+  const screen = createFactualTurnDeliveryScreenReadModel({
+    partyId: 'party-1', turnId: 'turn-1', turnNumber: 1,
+    packageId: 'package-1', committedStateVersion: '39',
+    visibleContext: visibleContext(), visibleChanges: ['Ты связал импровизированные сани.'],
+    uncertainties: [], panels: {}
+  });
+  for (const invalid of [
+    { ...screen, main_prose: 'Запрещённая проза.' },
+    { ...screen, package_digest: 'sha256:private' },
+    { ...screen, visible_context: { ...screen.visible_context, hidden_state: { secret: true } } },
+    { ...screen, visible_changes: [{ text: 'Не точная запись.' }] }
+  ]) assert.equal(validateFactualTurnDeliveryScreen(invalid).ok, false);
 });
 
 test('turn screen carries ordered player-safe checks', () => {

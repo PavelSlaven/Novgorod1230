@@ -8,26 +8,49 @@ import { acceptanceProviderFromEnv, phase10TerminalObservation,
   appendRenderedUiEvidence, pendingBrowserRequest, pendingBrowserStorage, resumePendingTurn, runLocalGemmaBrowserAcceptance } from
   '../local-gemma-acceptance.mjs';
 
-test('rendered UI evidence appends after a correlated terminal event', async () => {
+test('rendered UI evidence binds each turn to its causal preceding screen read', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'novgorod-ui-evidence-'));
-  const input = { request_id: 'request:ui', idempotency_key: 'idem:ui',
+  const input = { request_id: 'request:ui:1', idempotency_key: 'idem:ui:1',
     raw_text: 'Осмотреть берег.' };
+  const next = { request_id: 'request:ui:2', idempotency_key: 'idem:ui:2',
+    raw_text: 'Осмотреть следы.' };
+  const first = { event: 'turn.completed', input,
+    output: { screen: { screen_status: 'ready:first' } } };
+  const second = { event: 'turn.completed', input: next,
+    output: { screen: { screen_status: 'ready:second' } } };
+  const events = [{ event: 'screen.read', output: { screen: { screen_status: 'before:first' } } },
+    { event: 'turn.requested', input }, first,
+    { event: 'screen.read', output: { screen: { screen_status: 'before:second' } } },
+    { event: 'turn.requested', input: next }, second];
   try {
     await appendRenderedUiEvidence({ directory, partyId: 'party:ui',
-      event: { event: 'turn.completed', input,
-        output: { screen: { screen_status: 'ready' } } },
-      request: { ...input }, before: 'До', after: 'После',
-      publicDtoBefore: { screen_status: 'before' } });
-    const [saved] = (await readFile(join(directory, 'party_ui.jsonl'), 'utf8'))
+      event: first, events, terminalIndex: 2, before: 'До', after: 'После' });
+    await appendRenderedUiEvidence({ directory, partyId: 'party:ui',
+      event: second, events, terminalIndex: 5, before: 'После', after: 'Дальше' });
+    const saved = (await readFile(join(directory, 'party_ui.jsonl'), 'utf8'))
       .trim().split('\n').map(JSON.parse);
-    assert.equal(saved.event, 'ui.rendered');
-    assert.deepEqual(saved.input, input);
-    assert.deepEqual(saved.public_dto_after, { screen_status: 'ready' });
-    assert.deepEqual(saved.public_dto_before, { screen_status: 'before' });
-    assert.equal(saved.player_dom_after, 'После');
+    assert.equal(saved[0].event, 'ui.rendered');
+    assert.deepEqual(saved[0].input, input);
+    assert.deepEqual(saved[0].public_dto_after, { screen_status: 'ready:first' });
+    assert.deepEqual(saved[0].public_dto_before, { screen_status: 'before:first' });
+    assert.equal(saved[0].player_dom_after, 'После');
+    assert.deepEqual(saved[1].public_dto_before, { screen_status: 'before:second' });
     await assert.rejects(appendRenderedUiEvidence({ directory, partyId: 'party:ui',
-      event: { event: 'turn.failed', input }, request: { ...input,
-        request_id: 'request:other' } }), /does not match/u);
+      event: { event: 'turn.failed', input }, events, terminalIndex: 2 }),
+    /terminal causal event/u);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('rendered UI evidence rejects a turn without a preceding causal screen read', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'novgorod-ui-evidence-'));
+  const input = { request_id: 'request:missing', idempotency_key: 'idem:missing',
+    raw_text: 'Осмотреть берег.' };
+  const event = { event: 'turn.completed', input,
+    output: { screen: { screen_status: 'ready' } } };
+  try {
+    await assert.rejects(appendRenderedUiEvidence({ directory, partyId: 'party:ui',
+      event, events: [{ event: 'turn.requested', input }, event], terminalIndex: 1 }),
+    /no preceding causal screen read/u);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
@@ -42,6 +65,12 @@ test('runner recovers exact browser identity from persisted request or requested
   assert.equal(pendingBrowserRequest(pending,
     [...events, { event: 'turn.completed', input }]), null);
   assert.equal(pendingBrowserRequest({ ...pending, after_count: 0 }, []), null);
+  assert.deepEqual(pendingBrowserRequest({ ...pending, browser_request: input }, [
+    { event: 'turn.completed', input: { request_id: 'request:other', idempotency_key: 'idem:other' } }
+  ]), input);
+  assert.throws(() => pendingBrowserRequest(pending, [...events,
+    { event: 'turn.requested', input: { ...input, idempotency_key: 'idem:second' } }
+  ]), /ambiguous/u);
   const restored = pendingBrowserStorage('http://localhost:3000/play', {
     party_id: 'party', pending_turn: pending }, events);
   assert.deepEqual(restored.cookies, []);
@@ -59,7 +88,7 @@ test('runner resumes a pre-click proposal once and consumes existing terminal ev
     async click() {
       clicks += 1;
       await writeFile(join(directory, 'party.jsonl'),
-        `${JSON.stringify({ event: 'turn.completed', input: { raw_text: typed.at(-1) } })}\n`);
+        `${JSON.stringify({ event: 'turn.requested', input: { request_id: 'request:resume', idempotency_key: 'idem:resume', raw_text: typed.at(-1) } })}\n${JSON.stringify({ event: 'turn.completed', input: { request_id: 'request:resume', idempotency_key: 'idem:resume', raw_text: typed.at(-1) } })}\n`);
     }, async waitForSelector() {} };
   try {
     const input = { report, page, logDirectory: directory, partyId: 'party' };
@@ -123,6 +152,31 @@ test('completion observer requires committed Phase 10 narration on actual DOM', 
       change_set_id: 'change:later' } } } }).terminal, false);
 });
 
+test('completion observer accepts only anchored factual delivery with its rendered schema', () => {
+  const screen = { version: 1, schema: 'factual_turn_delivery_screen',
+    screen_status: 'ready', party_id: 'party:terminal', turn_id: 'turn:terminal',
+    turn_number: 1, package_id: 'visible:terminal',
+    committed_state_version: '3', visible_context: { visible_scene: 'Берег.' },
+    visible_changes: ['Верёвка снята.'], uncertainties: [], panels: {},
+    input_panel: { free_text_enabled: true, input_contract: 'intent_not_fact' } };
+  const input = { partyId: 'party:terminal', state: { completion: {
+    status: 'committed', change_set_id: 'change:terminal' }, last_turn: {
+    visible_package: { change_set_id: 'change:terminal',
+      package_id: 'visible:terminal' } } }, session: { screen },
+  playerDom: 'Текущий момент\nБерег.\nВерёвка снята.',
+  renderedScreenSchema: 'factual_turn_delivery_screen' };
+  assert.equal(phase10TerminalObservation(input).terminal, true);
+  assert.equal(phase10TerminalObservation({ ...input,
+    playerDom: 'Старый экран' }).terminal, false);
+  assert.equal(phase10TerminalObservation({ ...input,
+    renderedScreenSchema: 'turn_screen' }).terminal, false);
+  assert.equal(phase10TerminalObservation({ ...input, partyId: 'party:other' }).terminal, false);
+  assert.equal(phase10TerminalObservation({ ...input, session: { screen: {
+    ...screen, package_id: 'visible:other' } } }).terminal, false);
+  assert.equal(phase10TerminalObservation({ ...input, session: { screen: {
+    ...screen, main_prose: 'Запрещено.' } } }).terminal, false);
+});
+
 test('browser runner persists failed turn evidence before reporting failure', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'novgorod-browser-failure-'));
   const partyId = 'party:test';
@@ -142,7 +196,7 @@ test('browser runner persists failed turn evidence before reporting failure', as
       const logs = join(directory, 'party-logs');
       await mkdir(logs, { recursive: true });
       await writeFile(join(logs, 'party_test.jsonl'),
-        `${JSON.stringify(event)}\n`);
+        `${JSON.stringify({ event: 'screen.read', output: { screen: { screen_status: 'before' } } })}\n${JSON.stringify({ event: 'turn.requested', input: event.input })}\n${JSON.stringify(event)}\n${JSON.stringify({ event: 'screen.read', output: { screen: { screen_status: 'later' } } })}\n`);
     },
     locator(selector) {
       if (selector === '[data-game-root]') return {
@@ -184,6 +238,10 @@ test('browser runner persists failed turn evidence before reporting failure', as
     assert.equal(report.turns[0].player_dom_after, 'Экран ошибки');
     assert.equal(report.turns[0].events[0].error.code,
       'TURN_STEP_PLAN_INVALID');
+    const events = (await readFile(join(directory, 'party-logs', 'party_test.jsonl'), 'utf8'))
+      .trim().split('\n').map(JSON.parse);
+    assert.deepEqual(events.find(({ event: name }) => name === 'ui.rendered')
+      .public_dto_before, { screen_status: 'before' });
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 

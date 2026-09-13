@@ -10,18 +10,32 @@ const managed = { hardware: { supported: true, reasons: [], facts: {} },
   giga: { python: 'managed-python', hfHome: 'managed-hf',
     modelPath: 'managed-giga-model' },
   llm: { identity: { model: 'gemma' } }, close: async () => {} };
+const git = { head: 'b'.repeat(40), branch: 'codex/test' };
 
 test('buildServerEnv fixes production and managed-runtime settings', () => {
   const env = buildServerEnv({ env: { RUS_RUNTIME_BINDINGS_MODULE: 'old',
     RUS_RUN_PARTY_MIGRATIONS: '1', KEEP: 'yes' }, worldUrl: 'world',
   partyUrl: 'party', pinManifestDigest: digest, port: 3001,
-  managedRuntime: managed });
+  managedRuntime: managed, git });
   assert.equal(env.RUS_CUTOVER_STAGE, '13');
   assert.equal(env.RUS_RUNTIME_BINDINGS_MODULE, undefined);
   assert.equal(env.RUS_WORLD_KNOWLEDGE_PYTHON, 'managed-python');
   assert.equal(env.RUS_WORLD_KNOWLEDGE_MODEL_PATH, 'managed-giga-model');
   assert.equal(env.HF_HUB_OFFLINE, '1');
   assert.equal(JSON.parse(env.RUS_LOCAL_LLM_RUNTIME_STATUS).ready, true);
+  assert.equal(env.RUS_GIT_HEAD, git.head);
+  assert.equal(env.RUS_GIT_BRANCH, git.branch);
+});
+
+test('launcher replaces ambient Git provenance and keeps detached branch empty', () => {
+  const env = buildServerEnv({ env: { RUS_GIT_HEAD: 'ambient', RUS_GIT_BRANCH: 'ambient',
+    RUS_GIT_PR: '99', RUS_BUILD_ID: 'build' }, worldUrl: 'world', partyUrl: 'party',
+  pinManifestDigest: digest, port: 3001, managedRuntime: managed,
+  git: { head: 'c'.repeat(40), branch: null } });
+  assert.equal(env.RUS_GIT_HEAD, 'c'.repeat(40));
+  assert.equal(env.RUS_GIT_BRANCH, undefined);
+  assert.equal(env.RUS_GIT_PR, undefined);
+  assert.equal(env.RUS_BUILD_ID, undefined);
 });
 
 test('readiness rejects wrong release and unavailable scenario', async () => {
@@ -45,6 +59,17 @@ test('validation and occupied port fail before provisioning', async () => {
   assert.equal(provisioned, false);
 });
 
+test('Git provenance failure stops launcher before provisioning and spawn', async () => {
+  let provisioned = false; let spawned = false;
+  await assert.rejects(startLocalPlay({ env: {}, readGit: async () => ({ head: 'bad' }),
+    isPortAvailable: async () => true,
+    provisionRuntime: async () => { provisioned = true; },
+    spawnServer: () => { spawned = true; } }),
+  { code: 'LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE' });
+  assert.equal(provisioned, false);
+  assert.equal(spawned, false);
+});
+
 test('local play provisions, applies managed Gemma, and owns shutdown', async () => {
   const child = new EventEmitter(); child.exitCode = null;
   child.kill = () => { child.exitCode = 0; queueMicrotask(() => child.emit('exit', 0)); };
@@ -54,6 +79,7 @@ test('local play provisions, applies managed Gemma, and owns shutdown', async ()
   const postgres = { worldUrl: 'world', partyUrl: 'party', state: 'existing',
     close: async () => closed.push('postgres') };
   const result = await startLocalPlay({ env: {},
+    readGit: async () => git,
     loadLlmSettings: async () => null,
     provisionRuntime: async ({ startLlm }) => {
       assert.equal(startLlm, true); return runtime;
@@ -76,6 +102,7 @@ test('local play provisions, applies managed Gemma, and owns shutdown', async ()
 test('launcher always makes managed Gemma available on supported hardware', async () => {
   const stop = Object.assign(new Error('stop'), { code: 'STOP' });
   await assert.rejects(startLocalPlay({ env: {},
+    readGit: async () => git,
     loadLlmSettings: async () => null,
     isPortAvailable: async () => true,
     provisionRuntime: async ({ startLlm }) => {
@@ -86,6 +113,7 @@ test('launcher always makes managed Gemma available on supported hardware', asyn
 test('an explicit external acceptance provider skips the owned Gemma process', async () => {
   const stop = Object.assign(new Error('stop'), { code: 'STOP' });
   await assert.rejects(startLocalPlay({ env: {}, startManagedLlm: false,
+    readGit: async () => git,
     loadLlmSettings: async () => null,
     isPortAvailable: async () => true,
     provisionRuntime: async ({ startLlm }) => {
@@ -96,6 +124,7 @@ test('an explicit external acceptance provider skips the owned Gemma process', a
 test('saved custom provider skips managed Gemma before provisioning', async () => {
   const stop = Object.assign(new Error('stop'), { code: 'STOP' });
   await assert.rejects(startLocalPlay({ env: {},
+    readGit: async () => git,
     isPortAvailable: async () => true,
     loadLlmSettings: async () => ({ settings: { mode: 'custom' } }),
     provisionRuntime: async ({ startLlm }) => {

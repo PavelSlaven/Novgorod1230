@@ -194,6 +194,10 @@ test('captured repair preserves completed-before action order and regroups scene
         calls.push(call.role_id);
         const wire = JSON.parse(call.messages[1].content);
         if (call.role_id === 'gameplay_narrator') {
+          assert.match(call.messages[0].content,
+            /A supplied player-safe source supports exactly its atomic factual\s+propositions/u);
+          assert.match(call.messages[0].content,
+            /Labels, IDs, categories, names and plausible implications add no sensory trait, causality, time, result, execution or certainty/u);
           assert.match(call.messages[0].content, /Only performed-action sources constrain action order/u);
           assert.match(call.messages[0].content, /shared supplied subjects or spatial anchors/u);
           assert.match(call.messages[0].content, /one coherent focal sweep/u);
@@ -203,11 +207,18 @@ test('captured repair preserves completed-before action order and regroups scene
           return { output: { prose: sample.changes.join(' ') } };
         }
         if (call.role_id === 'gameplay_narrator_semantic_repair') {
+          assert.match(call.messages[0].content,
+            /A supplied player-safe source supports exactly its atomic factual\s+propositions/u);
           assert.match(call.messages[0].content, /completed-before subordination/u);
           assert.match(call.messages[0].content, /visible_scene.*action target/u);
           assert.match(call.messages[0].content, /standalone perception-action sentence.*descriptive inventory/u);
           return { output: { replacements: [{ prose: repair.prose }] } };
         }
+        assert.match(call.messages[0].content,
+          /A supplied player-safe source supports exactly its atomic factual\s+propositions/u);
+        assert.match(call.messages[0].content,
+          /Labels, IDs, categories, names and plausible\s+implications add no sensory trait, causality, time, result, execution or certainty/u);
+        assert.match(call.messages[0].content, /Never accept reversed causal order/u);
         assert.match(call.messages[0].content, /Grammatical subordination[\s\S]*completed before/u);
         assert.match(call.messages[0].content, /simultaneous or ongoing/u);
         const initial = wire.phase === 'initial';

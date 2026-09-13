@@ -6,7 +6,6 @@ import { resolveTracePhase2Contracts } from './lower-dvina-trace-phase-2-contrac
 import { createTracePhase8Runtime } from './lower-dvina-trace-phase-8-runtime.js';
 import { createTracePhase9Runtime } from './lower-dvina-trace-phase-9-runtime.js';
 import { resolveTracePhase10Contracts } from './lower-dvina-trace-phase-10-completion.js';
-import { committedPendingReplayResult, completePendingTracePhase10Replay } from './lower-dvina-trace-phase-10-replay.js';
 import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js';
 import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js';
 import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
@@ -18,9 +17,7 @@ import { buildTracePhase2TurnRequest, buildTraceTurnWorkflowInput, createTraceTu
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { recoverTracePendingPresentation } from './lower-dvina-trace-presentation-recovery.js';
-import { runAndPersistTracePhase2Turn } from './lower-dvina-trace-phase-2-workflow.js';
-import { isExpectedPostCommitPresentationFailure } from
-  './lower-dvina-trace-post-commit-failure.js';
+import { completeTracePhase2Replay, recordTracePhase2TurnContext, runAndPersistTracePhase2Turn } from './lower-dvina-trace-phase-2-workflow.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   turnStepSemanticGroundingValidator = null, playerConversationModel = null,
@@ -74,39 +71,13 @@ export function createLowerDvinaTracePhase2Runtime({
       const executeAttempt = async () => {
         const turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null;
         let replay = await repository.loadPhase2Replay({ partyId, idempotencyKey, turnBudget });
-        if (replay) {
-          llmDiagnostics?.recordGameplayTrace?.({ event: 'turn_replay', idempotency_key: idempotencyKey });
-          if (replay.input_digest !== inputDigest) {
-            throw serverError('TRACE_PHASE_2_IDEMPOTENCY_CONFLICT', 'The idempotency identity is already bound to another input.', { status: 409 });
-          }
-          llmDiagnostics?.recordProgress?.('recovering_saved_result', {
-            commit_state: 'committed'
-          });
-          try {
-            replay = await completePendingTracePhase10Replay({
-              partyId,
-              idempotencyKey,
-              replay,
-              repository,
-              bundleLoader,
-              turnBudget,
-            });
-            return repository.replayPhase2Turn
-              ? await repository.replayPhase2Turn({ partyId, replay, narrator, turnBudget })
-              : replay.public_result;
-          } catch (error) { if (!isExpectedPostCommitPresentationFailure(error)) throw error;
-            const pending = committedPendingReplayResult({
-              partyId, idempotencyKey, inputDigest, replay
-            });
-            if (pending != null) return pending;
-            throw error;
-          }
-        }
+        if (replay) return completeTracePhase2Replay({ partyId, requestId, idempotencyKey,
+          rawText, inputDigest, replay, repository, bundleLoader, narrator, turnBudget,
+          llmDiagnostics });
         const state = await repository.loadPhase2State(partyId, {
           presentationIdempotencyKey: idempotencyKey,
           turnBudget,
         });
-        llmDiagnostics?.recordGameplayTrace?.({ event: 'turn_context', intent: rawText, authoritative_context: state });
         const scenarioDefinitionRevision = committedTraceScenarioDefinitionRevision(state);
         const phase2Bundle = await runWithinTurnDeadline(turnBudget, () =>
           phase2BundleLoader({ scenarioDefinitionRevision })
@@ -123,6 +94,9 @@ export function createLowerDvinaTracePhase2Runtime({
           bundle,
           phase2Bundle,
         });
+        recordTracePhase2TurnContext(llmDiagnostics, { partyId, requestId, idempotencyKey, rawText,
+          inputDigest, state, bundle, phase2Bundle, contracts,
+          playerSafeStateProjector });
         const activeSpatialSemanticProfile = isExactLowerDvinaTraceSpatialSemanticProfile(bundle, spatialSemanticProfile) ? spatialSemanticProfile : null;
         const { phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts } = resolveTracePhase2InheritedContracts({ state, bundle });
         const createBoundaryNpcOwnerCapabilities =

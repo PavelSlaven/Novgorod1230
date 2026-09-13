@@ -25,7 +25,10 @@ test('gameplay capture is opt-in, snapshots private data, and cannot alter turn 
   const log = diagnostics.takeLogReport({ party_id: 'dev' });
   assert.equal(log.gameplay_traces[0].context.value, 1);
   assert.equal(log.gameplay_traces[0].context.hidden, 'private-context');
-  assert.deepEqual(log.gameplay_traces[2], { event: 'capture_failed', source_event: 'bad-capture' });
+  assert.deepEqual(log.gameplay_traces.map(({ sequence }) => sequence), [1, 2, 3]);
+  assert.deepEqual(log.gameplay_traces[2], {
+    event: 'capture_failed', source_event: 'bad-capture', sequence: 3
+  });
 });
 
 test('buildLlmTurnReport makes deterministic waterfall and aggregates', () => {

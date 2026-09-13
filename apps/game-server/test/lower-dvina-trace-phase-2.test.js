@@ -132,11 +132,18 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
   });
   assert.equal(result.option_id, 'inspect_wreck_in_detail');
   const trace = diagnostics.takeLogReport({ party_id: f.partyId }).gameplay_traces;
-  assert.deepEqual(trace.map(({ event }) => event),
-    ['turn_context', 'owner_commit_requested', 'owner_commit_completed']);
+  assert.equal(trace[0].event, 'turn_context');
   assert.equal(trace[0].authoritative_context.party_state.state_version, 1);
-  assert.deepEqual(trace[1], { event: 'owner_commit_requested' });
-  assert.deepEqual(trace[2], { event: 'owner_commit_completed' });
+  assert.deepEqual(trace[0].player_safe_state.party_state, undefined);
+  assert.equal(trace[0].request_id, 'phase2-exact');
+  assert.equal(trace[0].idempotency_key, 'phase2-exact');
+  const completed = trace.find(({ event }) => event === 'workflow_completed');
+  assert.ok(completed?.result?.checkpoint);
+  assert.ok(completed.checkpoint?.stages?.persistence_plan);
+  assert.equal(trace.at(-1), completed);
+  assert.ok(trace.find(({ event }) => event === 'owner_commit_requested')?.write_plan);
+  assert.ok(trace.find(({ event }) => event === 'owner_commit_completed')
+    ?.outcome);
   assert.equal(JSON.stringify(diagnostics.report({ party_id: f.partyId })).includes('authoritative_context'), false);
   assert.equal(f.bundleRequests[0].scenarioDefinitionRevision, 7);
   assert.equal(result.check.difficulty, 12);
@@ -393,7 +400,8 @@ test('free paraphrase resolves through a player-safe closed set to the same exac
 });
 
 test('unknown intent creates no roll, elapsed, clue or factual commit', async () => {
-  const f = fixture({ semantic: 'unknown' });
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const f = fixture({ semantic: 'unknown', llmDiagnostics: diagnostics });
   await assert.rejects(
     () => f.runtime.submitTurn({
       partyId: f.partyId,
@@ -409,6 +417,11 @@ test('unknown intent creates no roll, elapsed, clue or factual commit', async ()
   assert.equal(f.commitCount(), 0);
   assert.equal(f.state.party_state.state_version, 1);
   assert.equal(f.state.items.length, 1);
+  const failed = diagnostics.takeLogReport({ party_id: f.partyId }).gameplay_traces
+    .find(({ event }) => event === 'workflow_failed');
+  assert.equal(failed?.result, null);
+  assert.equal(failed?.checkpoint, null);
+  assert.equal(failed?.error_events, null);
 });
 
 test('an earlier temporal boundary blocks the inspection before roll or mutation', async () => {
@@ -521,7 +534,8 @@ test('ambiguous intent creates no roll, elapsed, clue or factual commit', async 
 });
 
 test('exact replay does not rerun resolver, roll, time, body or clue materialization', async () => {
-  const f = fixture();
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const f = fixture({ llmDiagnostics: diagnostics });
   const input = {
     request_id: 'phase2-replay',
     idempotency_key: 'phase2-replay',
@@ -533,6 +547,11 @@ test('exact replay does not rerun resolver, roll, time, body or clue materializa
   assert.deepEqual(replayed, first);
   assert.equal(f.rollCount(), 1);
   assert.equal(f.commitCount(), 1);
+  const firstTrace = diagnostics.takeLogReport({ party_id: f.partyId });
+  const replayTrace = diagnostics.takeLogReport({ party_id: f.partyId });
+  const events = [...firstTrace.gameplay_traces, ...replayTrace.gameplay_traces];
+  assert.equal(events.filter(({ event }) => event === 'owner_commit_completed').length, 1);
+  assert.equal(events.filter(({ event }) => event === 'turn_replay').length, 1);
   assert.equal(
     f.state.items.filter(
       (item) => item.template_id === 'trace_ld_v1_item_blue_wool_fragment'

@@ -24,8 +24,9 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   const recordGameplayTrace = developerMode !== true ? undefined : (record) => {
     const turn = storage.getStore();
     if (!turn) return;
-    try { turn.gameplay_traces.push(structuredClone(record)); }
-    catch { turn.gameplay_traces.push({ event: 'capture_failed', source_event: record?.event ?? null }); }
+    const sequence = ++turn.gameplay_trace_sequence;
+    try { turn.gameplay_traces.push({ ...structuredClone(record), sequence }); }
+    catch { turn.gameplay_traces.push({ event: 'capture_failed', source_event: record?.event ?? null, sequence }); }
   };
   return Object.freeze({
     turnBudget,
@@ -58,7 +59,7 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       const turn = { party_id: partyId, request_id: requestId, calls: [],
         started_at: startedAt,
         turn_deadline_ms: turnBudget.deadlineMs ?? null,
-        incidents: [], details: [], gameplay_traces: [], live };
+        incidents: [], details: [], gameplay_traces: [], gameplay_trace_sequence: 0, live };
       active.set(liveKey, live);
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });

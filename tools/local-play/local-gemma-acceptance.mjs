@@ -13,6 +13,8 @@ import { createLowerDvinaTracePhase2PostgresRepository } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { createPostgresSessionStore } from
   '../../apps/game-server/src/infrastructure/postgres/session-store.js';
+import { createPartyLog } from
+  '../../apps/game-server/src/infrastructure/filesystem/party-log.js';
 import { LOCAL_LLM_PRESET } from
   '../../apps/game-server/src/runtime/llm-settings.js';
 import { auditEvent, createGameplayGapExplorer, gitSnapshot } from
@@ -293,9 +295,56 @@ async function capturePendingTurn({ report, page, identity, logDirectory,
   trace.commit_status = trace.accepted ? 'committed' : 'not_committed';
   trace.presentation_status = event.event === 'turn.completed'
     ? 'completed' : 'failed';
+  const screenshot = await captureRenderedScreenshot(page, logDirectory,
+    partyId, event.input?.request_id).catch(() => null);
+  await appendRenderedUiEvidence({ directory: logDirectory, partyId, event,
+    request: pending.browser_request, before: pending.player_dom_before,
+    after: trace.player_dom_after, screenshot,
+    publicDtoBefore: await lastPublicScreen(logDirectory, partyId) });
   report.turns.push(trace); report.trace_refs.push(trace.trace_ref);
   delete report.pending_turn;
   return { event, trace };
+}
+
+export async function appendRenderedUiEvidence({ directory, partyId, event,
+  request = null, before = null, after = null, screenshot = null,
+  publicDtoBefore = null,
+  partyLog = createPartyLog({ directory }) } = {}) {
+  const terminal = event?.input ?? null;
+  const actual = request ?? terminal;
+  if (request && terminal
+      && (request.request_id !== terminal.request_id
+        || request.idempotency_key !== terminal.idempotency_key)) {
+    throw new Error('Browser request does not match terminal turn event.');
+  }
+  if (!actual?.request_id || !actual?.idempotency_key) {
+    throw new Error('Rendered UI evidence requires browser request identity.');
+  }
+  await partyLog.append(partyId, { event: 'ui.rendered', input: actual,
+    terminal_event: event.event,
+    public_dto_before: publicDtoBefore ?? event.pre_screen
+      ?? event.public_screen_before ?? null,
+    public_dto_after: event.output?.screen ?? event.public_screen ?? event.output ?? null,
+    player_dom_before: before, player_dom_after: after,
+    screenshot: screenshot ?? null });
+}
+
+async function lastPublicScreen(directory, partyId) {
+  return (await turnLogEvents(directory, partyId)).findLast((event) =>
+    event.event === 'screen.read')?.output?.screen ?? null;
+}
+
+async function captureRenderedScreenshot(page, directory, partyId, requestId) {
+  if (typeof page?.screenshot !== 'function') return null;
+  const path = join(directory, 'ui-screenshots',
+    `${safeFilePart(partyId)}-${safeFilePart(requestId ?? 'unknown')}.png`);
+  await mkdir(join(directory, 'ui-screenshots'), { recursive: true });
+  await page.screenshot({ path });
+  return path;
+}
+
+function safeFilePart(value) {
+  return String(value).replace(/[^A-Za-z0-9._-]+/gu, '_');
 }
 
 async function defaultCompletionObserver(local) {

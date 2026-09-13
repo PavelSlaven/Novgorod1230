@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { canonicalDigest } from '@rus/materialization';
+import { TurnWorkflowError } from '@rus/turn';
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
 import { phase2PublicResult, projectPlayerSafeChecks } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
@@ -11,6 +12,28 @@ import { phase4PendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-4-write-projection.js';
 import { phase5PendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-5-writes.js';
+import { createGameHttpServer, listen } from '../src/index.js';
+
+test('HTTP error never exposes an internal partial workflow checkpoint', async (t) => {
+  const root = { submitTurn: async () => {
+    const error = new TurnWorkflowError('TURN_WORKFLOW_STOPPED', 'private workflow', {
+      checkpoint: { stages: { load_context: { hidden_state: 'must-not-reach-player' } } }
+    });
+    error.status = 500;
+    throw error;
+  } };
+  const server = createGameHttpServer({ root, developerMode: true });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  const response = await fetch(`http://127.0.0.1:${address.port}/api/v1/parties/party-1/turns`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ raw_text: 'Осмотреться' })
+  });
+  const body = await response.json();
+  assert.equal(response.status, 500);
+  assert.equal(JSON.stringify(body).includes('must-not-reach-player'), false);
+  assert.equal(JSON.stringify(body).includes('checkpoint'), false);
+});
 
 test('validated opening projection supplies the initial current scene', () => {
   const screen = {

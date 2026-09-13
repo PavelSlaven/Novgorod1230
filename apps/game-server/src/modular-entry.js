@@ -51,9 +51,13 @@ const root = createPartyLoggingRoot({
     directory: config.logDirectory || resolve(here, '../../../logs')
   }),
   llmDiagnostics,
+  developerMode: config.developerMode,
   metadata: Object.freeze({
+    developer_mode: config.developerMode,
     server: productionRoot.health(),
-    process: { node: process.version, platform: process.platform, pid: process.pid }
+    process: { node: process.version, platform: process.platform, pid: process.pid },
+    git: { head: process.env.RUS_GIT_HEAD ?? null, branch: process.env.RUS_GIT_BRANCH ?? null,
+      pr: process.env.RUS_GIT_PR ?? null, build: process.env.RUS_BUILD_ID ?? null }
   })
 });
 const webRoot = resolve(here, '../../game-web');

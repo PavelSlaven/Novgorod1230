@@ -5,8 +5,31 @@ import { join } from 'node:path';
 import test from 'node:test';
 
 import { acceptanceProviderFromEnv, phase10TerminalObservation,
-  pendingBrowserRequest, pendingBrowserStorage, resumePendingTurn, runLocalGemmaBrowserAcceptance } from
+  appendRenderedUiEvidence, pendingBrowserRequest, pendingBrowserStorage, resumePendingTurn, runLocalGemmaBrowserAcceptance } from
   '../local-gemma-acceptance.mjs';
+
+test('rendered UI evidence appends after a correlated terminal event', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'novgorod-ui-evidence-'));
+  const input = { request_id: 'request:ui', idempotency_key: 'idem:ui',
+    raw_text: 'Осмотреть берег.' };
+  try {
+    await appendRenderedUiEvidence({ directory, partyId: 'party:ui',
+      event: { event: 'turn.completed', input,
+        output: { screen: { screen_status: 'ready' } } },
+      request: { ...input }, before: 'До', after: 'После',
+      publicDtoBefore: { screen_status: 'before' } });
+    const [saved] = (await readFile(join(directory, 'party_ui.jsonl'), 'utf8'))
+      .trim().split('\n').map(JSON.parse);
+    assert.equal(saved.event, 'ui.rendered');
+    assert.deepEqual(saved.input, input);
+    assert.deepEqual(saved.public_dto_after, { screen_status: 'ready' });
+    assert.deepEqual(saved.public_dto_before, { screen_status: 'before' });
+    assert.equal(saved.player_dom_after, 'После');
+    await assert.rejects(appendRenderedUiEvidence({ directory, partyId: 'party:ui',
+      event: { event: 'turn.failed', input }, request: { ...input,
+        request_id: 'request:other' } }), /does not match/u);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
 
 test('runner recovers exact browser identity from persisted request or requested event', () => {
   const input = { request_id: 'request:existing', idempotency_key: 'idem:existing',

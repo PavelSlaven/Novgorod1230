@@ -415,7 +415,17 @@ test('repair_required stops before time, narration and persistence', async () =>
           suggested_actions: []
         }; }
   } });
-  await assert.rejects(() => runTurnWorkflow(input(), services), (error) => error.code === 'TURN_REPAIR_REQUIRED');
+  await assert.rejects(() => runTurnWorkflow(input(), services), (error) => {
+    assert.equal(error.code, 'TURN_REPAIR_REQUIRED');
+    assert.equal(error.details.checkpoint.stages.normalize_intent.contract,
+      'intent_not_fact');
+    assert.equal(error.details.events.at(-1).type, 'stage_stopped');
+    assert.deepEqual(error.details.events.map(({ stageId }) => stageId),
+      [...error.details.events.map(({ stageId }) => stageId)].sort((a, b) => a - b));
+    assert.equal(error.details.events.filter(({ type }) => type === 'stage_approved').length,
+      7);
+    return true;
+  });
   assert.equal(commits.length, 0);
   assert.equal(log.includes('narration'), false);
   assert.equal(log.includes('persistence_plan'), false);

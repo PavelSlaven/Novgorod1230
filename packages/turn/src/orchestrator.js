@@ -38,7 +38,8 @@ export async function runTurnWorkflow(input = {}, services = {}, options = {}) {
     throw turnFailure(
       graphResult.status === 'repair_required' ? 'TURN_REPAIR_REQUIRED' : 'TURN_WORKFLOW_STOPPED',
       `Turn workflow stopped at ${graphResult.stage_id} with status ${graphResult.status}.`,
-      { stage_id: graphResult.stage_id, status: graphResult.status, result: graphResult.result, events }
+      { stage_id: graphResult.stage_id, status: graphResult.status, result: graphResult.result,
+        events, checkpoint: context.snapshot() }
     );
   }
 

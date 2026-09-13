@@ -1,3 +1,4 @@
+import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js';
 import { canonicalDigest } from '@rus/materialization';
 import { requireTurnStepCommitEnvelope } from '@rus/turn';
 import { serverError } from '../../errors.js';
@@ -44,7 +45,7 @@ import {
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer,
-  turnStepAmbientPortionProfileRef = null
+  turnStepAmbientPortionProfileRef = null, turnStepApprovedOwners = null
 }) {
   const envelope = requireEnvelope(writePlan);
   assertRootInput({ partyId, inputDigest, envelope });
@@ -177,10 +178,11 @@ export async function commitLowerDvinaTraceTurnStep({
   };
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
     partyId, writePlan, state, snapshot: base.snapshot, factual,
-    changeSetId, idemId, turnStepAmbientPortionProfileRef
+    changeSetId, idemId, turnStepAmbientPortionProfileRef, turnStepApprovedOwners
   });
   const pendingScreen = buildLowerDvinaTracePendingScreen({
-    state,
+    state: turnStep.snapshot,
+    presentation: await loadLowerDvinaTraceScreenPresentation(turnStep.snapshot),
     turnId: envelope.root_turn_id,
     nextVersion,
     turnNumber,

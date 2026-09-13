@@ -17,6 +17,7 @@ import {
 } from './lower-dvina-trace-phase-7-temporal-request.js';
 import { replaceLocalFireTemporalCandidates } from
   './lower-dvina-trace-local-fire-temporal.js';
+import { replaceNpcRoutineCandidates } from './npc-routine-temporal.js';
 
 export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   actorStep, temporalAdvanceOwner, commandIdempotencyKey, rootTurnId,
@@ -37,9 +38,9 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   const committedCandidates = (state.temporal_boundary_candidates ?? []).filter(
     ({ boundary_id: id }) => !processed.has(id)
   );
-  const sourceCandidates=replaceLocalFireTemporalCandidates(
+  const sourceCandidates=replaceNpcRoutineCandidates(replaceLocalFireTemporalCandidates(
     committedCandidates,actorStep.working_projection,
-    actorStep.local_fire_atomic_write_plans??[]);
+    actorStep.local_fire_atomic_write_plans??[]), projectionBefore);
   const request = buildTracePhase7TemporalRequest({
     state,
     executionId: temporal.execution_id,
@@ -49,7 +50,8 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     clockBefore: temporal.result.clock_after,
     sourceCandidates,
     projection: structuredClone(projectionBefore),
-    clockBefore: priorResult?.clock_after ?? temporal.result.clock_after,
+    ...(priorResult == null ? {} : { clockBefore: priorResult.clock_after }),
+    changeSetId: resumed ? undefined : temporal.result.combined_change_set?.change_set_id,
     segment: 'schedule'
   });
   const activeBefore = tracePhase7ActorStep(
@@ -119,9 +121,10 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   const finished = active?.status === 'completed';
   const stillRunning = active?.status === 'started';
   if (advanced.result.temporal_status !== 'completed'
-      || (restCompleted ? elapsed !== 5 : elapsed !== 0)
+      || segmentElapsed !== exactIntegerElapsed(request.clock_before,
+        request.inclusive_limit_timestamp)
       || advanced.state_projection.cumulative_elapsed_minutes
-        !== (restCompleted ? 30 : 25)
+        !== projectionBefore.cumulative_elapsed_minutes + segmentElapsed
       || active?.npc_ref !== actorStep.result.npc_ref
       || (!finished && !stillRunning)
       || (finished && !completionWithinRest)

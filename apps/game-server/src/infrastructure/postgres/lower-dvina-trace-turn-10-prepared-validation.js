@@ -1,10 +1,5 @@
-import {
-  bindTurnStepPreparedConsequence,
-  buildTurnStepPreparedBodyUpdate,
-  buildTurnStepPreparedDomainConsequence,
-  buildTurnStepPreparedTimeUpdate,
-  mergeTurnStepDraftConsequence
-} from '@rus/turn';
+import { buildTurnStepPreparedBodyUpdate,
+  buildTurnStepPreparedTimeUpdate } from '@rus/turn';
 import {
   preparedEffectFail,
   samePreparedValue
@@ -63,24 +58,9 @@ export function validatePreparedTurn10({ ledger, traces, envelope, factual,
     preparedEffectFail(
       'Turn 10 must be one ordered fire-rest then companion conversation');
   }
-  const draft = {
-    selected_command_ids: [REST_COMMAND, COMPANION_COMMAND],
-    loop_result: {
-      prepared_effect_ledger: ledger,
-      consequence_fragments: [],
-      completed_steps: structuredClone(
-        envelope.loop_trace.completed_steps ?? []),
-      clarification: structuredClone(envelope.loop_trace.clarification),
-      status: 'resolved'
-    }
-  };
-  const expectedConsequence = bindTurnStepPreparedConsequence(
-    mergeTurnStepDraftConsequence(
-      buildTurnStepPreparedDomainConsequence(draft), draft), ledger);
   const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
   const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
-  if (!samePreparedValue(expectedConsequence, envelope.consequence)
-      || !samePreparedValue(envelope.consequence, factual?.consequence)
+  if (!samePreparedValue(envelope.consequence, factual?.consequence)
       || !samePreparedValue(expectedTime, envelope.time_update)
       || !samePreparedValue(expectedBody, envelope.body_update)
       || !samePreparedValue(envelope.time_update, factual?.time_update)

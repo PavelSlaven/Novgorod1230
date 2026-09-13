@@ -95,7 +95,8 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner,
             'trivial is almost automatic, risky has a meaningful obstacle, dangerous has severe external difficulty,',
             'limit is near the normal human limit, and nearly_impossible remains physically possible but extraordinary.',
             'Do not raise or lower difficulty for character attributes, skills, body, equipment, or personal stakes;',
-            'code applies those exact modifiers.'
+            'code applies those exact modifiers.',
+            'When a new perceived signal creates a material question about its cause, use generic_check with attention rather than downgrading uncertain perception to a direct gesture.'
           ] : [
             'generic_check is forbidden because allowed_attribute_refs is empty.',
             'Choose direct or a permitted domain_request instead.',

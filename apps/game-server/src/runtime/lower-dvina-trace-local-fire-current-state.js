@@ -28,7 +28,7 @@ export function projectTracePhase7CurrentBoundaryState({
   state, workingProjection, priorLocalFirePlans = []
 }) {
   const current = projectLowerDvinaTraceF1CurrentState({
-    committedState: state,
+    committedState: workingProjection?.phase6_state ?? workingProjection?.conversation_state?.world_state ?? state,
     localFireRuntime: workingProjection?.local_fire_runtime,
     priorLocalFirePlans
   });

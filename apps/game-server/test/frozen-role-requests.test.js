@@ -1,3 +1,4 @@
+import { reviewedNarration } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
@@ -38,30 +39,36 @@ const models = {
 test('frozen role fixtures ship exact production-built messages', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
   for (const fixture of corpus.fixtures.filter(({ role_id }) =>
-    role_id in models || role_id === 'ordinary_materialization' || role_id.startsWith('gameplay_narrator'))) {
+    role_id in models || role_id === 'ordinary_materialization'
+      || role_id.startsWith('gameplay_narrator'))) {
     assert.deepEqual(await productionMessages(fixture), fixture.messages,
       fixture.id);
   }
 });
 
-test('frozen narration auditor prompts retain both validator-valid forms', async () => {
+test('frozen narration writer fixtures expose only model-owned prose', async () => {
+  const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
+  for (const fixture of corpus.fixtures.filter(({ role_id }) =>
+    role_id === 'gameplay_narrator' || role_id === 'gameplay_narrator_format_repair')) {
+    assert.deepEqual(Object.keys(fixture.expected_output), ['prose'], fixture.id);
+    assert.match(fixture.messages[0].content,
+      /^Return only \{"prose":"<complete Russian prose>"\}\./u, fixture.id);
+  }
+});
+
+test('frozen narration auditor prompts require the raw source-review shape', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
   for (const fixture of corpus.fixtures.filter(({ role_id }) =>
     role_id === 'gameplay_narrator_auditor')) {
     const prompt = fixture.messages[0].content;
-    assert.equal(prompt.includes('"pass":true|false,"concerns":[],"evidence":[]'), false);
-    assert.equal(prompt.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
-    assert.match(prompt, /"kind":"<one allowed concern kind>"/u);
-    assert.match(prompt, /unsupported_attempt, unsupported_success, unsupported_object_use, unsupported_result, unsupported_sensory, unsupported_event, unsupported_world_state, unsupported_npc_state/u);
-    assert.match(prompt, /action_intent_context may ground only/u);
-    assert.match(prompt, /it never proves success, object use, a result, or a world\/NPC state change/u);
-    assert.match(prompt, /faithful natural paraphrase of visible_context is supported/u);
-    assert.match(prompt, /do not prove that nobody or nothing is present/u);
-    assert.match(prompt, /does not support an unstated sound, smell, temperature, bodily sensation, history, or recent use/u);
-    assert.match(prompt, /tools or objects named there remain intent-only/u);
-    assert.match(prompt, /never an unstated causal bridge or exact mechanism/u);
-    assert.match(prompt, /Plausibility is not evidence\. If any segment has an unsupported claim or technical_presentation, pass must be false\./u);
-    assert.match(prompt, /technical_presentation/u);
+    assert.match(prompt, /source_reviews must contain exactly/u);
+    assert.match(prompt, /Use \[\] for an omitted or partially\s+conveyed source/u);
+    assert.match(prompt, /an embedded unknown result must remain unknown/u);
+    assert.match(prompt, /unsupported contains only/u);
+    assert.match(prompt, /literary_failures contains only/u);
+    assert.doesNotMatch(prompt, /failure_checks/u);
+    assert.doesNotMatch(prompt, /artistic_verdict|technical_verdict|concerns/u);
+    assert.doesNotMatch(prompt, /"pass":/u);
   }
 });
 
@@ -141,7 +148,7 @@ async function productionMessages(fixture) {
 
 async function narrationMessages(fixture) {
   const target = fixture.role_id;
-  const payload = JSON.parse(fixture.messages.at(-1).content);
+  const payload = fixture.request;
   const request = target === 'gameplay_narrator_format_repair' ? payload.request : {
     version: 1, schema: 'narration_request', request_id: payload.output?.output_id ?? 'narration-eval-1',
     surface: 'turn', visible_context: payload.visible_context ?? payload.request?.visible_context,
@@ -164,14 +171,22 @@ async function narrationMessages(fixture) {
     if (next.role_id === 'gameplay_narrator_format_repair') return { output: fixture.expected_output };
     if (next.role_id === 'gameplay_narrator_semantic_repair') return { output: fixture.expected_output };
     auditCalls += 1;
-    return { output: target === 'gameplay_narrator_auditor' ? fixture.expected_output
-      : target === 'gameplay_narrator_semantic_repair' && auditCalls === 1
-        ? { pass: false, concerns: [{ segment_choice: `segment_${
-          JSON.parse(next.messages[1].content).segments.findIndex(({ segment_id }) =>
-            segment_id === payload.concerns[0].segment_id) + 1}`,
-          kind: payload.concerns[0].kind, reason: payload.concerns[0].reason }],
-        evidence: ['Unsupported sound.'] }
-        : { pass: true, concerns: [], evidence: ['Grounded.'] } };
+    if (target === 'gameplay_narrator_auditor') {
+      return { output: fixture.expected_output };
+    }
+    const wire = JSON.parse(next.messages[1].content);
+    const first = wire.segments[0]?.segment_id;
+    const coverage = Object.fromEntries([
+      ...wire.required_current_beat.changes, ...wire.required_current_beat.uncertainties
+    ].map(({ ref }) => [ref, first == null ? [] : [first]]));
+    const audit = reviewedNarration(wire.segments, coverage);
+    if (target === 'gameplay_narrator_semantic_repair' && auditCalls === 1) {
+      audit.unsupported = [{ segment_choice: `s${wire.segments.findIndex(({ segment_id }) =>
+        segment_id === payload.concerns[0].segment_id) + 1}`,
+      kind: payload.concerns[0].kind, reason: payload.concerns[0].reason }];
+      audit.evidence = [];
+    }
+    return { output: audit };
   } } });
   await narration.run(request);
   if (!call) throw new Error(`narration role was not called: ${target}`);

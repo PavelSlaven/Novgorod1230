@@ -4,6 +4,8 @@ import { publicCheckProjection, publicTimeProjection,
 import { createTurnScreenReadModel } from '@rus/presentation';
 import { projectLowerDvinaTraceScreenPanels } from
   './lower-dvina-trace-screen-panels.js';
+import { projectPlayerSafeChecks } from './lower-dvina-trace-check-projection.js';
+export { projectPlayerSafeChecks } from './lower-dvina-trace-check-projection.js';
 
 const SPEECH_RESPONSE_KINDS = new Set([
   'route_disclosure',
@@ -173,7 +175,7 @@ function publicConversationProjection({ conversation, payload }) {
   return {
     ...projectedConversation,
     semantic_exchange: {
-      response_kind: responseKind,
+      response_kind: responseKind === 'lie' ? 'speech' : responseKind,
       npc_utterance: npcUtterance,
       disclosed_route_ref: responseKind === 'route_disclosure'
         ? disclosedRouteRef
@@ -187,7 +189,8 @@ export function rebuildPhase2HistoricalScreen({
   turnId,
   visiblePayload,
   narrationOutput,
-  narrationOutputDigest
+  narrationOutputDigest,
+  presentation = null
 }) {
   const visibleContext = phase2VisibleContextFromPayload(visiblePayload);
   const narration = {
@@ -202,7 +205,8 @@ export function rebuildPhase2HistoricalScreen({
     turnId,
     visibleContext,
     narration,
-    narrationOutputDigest
+    narrationOutputDigest,
+    presentation
   });
 }
 
@@ -211,12 +215,13 @@ export function buildPhase2ReadyScreen({
   turnId,
   visibleContext,
   narration,
-  narrationOutputDigest
+  narrationOutputDigest,
+  presentation = null
 }) {
   const combatState = publicCombatStateFromConsequence(
     payload.last_turn?.consequence);
   const screen = projectLowerDvinaTraceScreenPanels({
-    payload,
+    payload, presentation,
     screen: {
       ...createTurnScreenReadModel({
         partyId: payload.party_id,
@@ -225,6 +230,7 @@ export function buildPhase2ReadyScreen({
         visibleContext,
         narration,
         actions: [],
+        checks: projectPlayerSafeChecks(payload),
         panels: {}
       }),
       scenario_id: 'lower_dvina_trace_v1',

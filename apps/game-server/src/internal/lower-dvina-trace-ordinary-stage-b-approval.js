@@ -9,11 +9,11 @@ import { lowerDvinaTraceOrdinaryStageBQualificationCases,
   './lower-dvina-trace-ordinary-stage-b-eval.js';
 
 const PROFILE_PATH = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/'
-  + 'phase-m7-content/ordinary-materialization-profile.json';
+  + 'phase-m22-content/ordinary-materialization-profile.json';
 const RECEIPT_PATH = 'data/model-evals/lower-dvina-trace/'
   + 'ordinary-stage-b-approval-v1.json';
 const RECEIPT_DIGEST =
-  '3deeafa2257b3fadb8d80f30ea0d03203e22fe6686abb9449fa6210d9cb8de1f';
+  '9ba5db818df04a0cb1d166fbda89c0e239511ac242922265b8e66d98e0eca145';
 
 export async function loadLowerDvinaTraceOrdinaryStageBApproval({
   rootDir = process.cwd()

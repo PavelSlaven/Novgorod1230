@@ -362,6 +362,13 @@ calendar daylight
 - может иметь exact fixed duration, progress target или condition-with-deadline;
 - допускает несколько slices и append-only attempts.
 
+Каждый time-bearing consequence разделяет start, interval и completion.
+Start-effects применяются один раз до первого положительного interval;
+continuous body/resource/progress owners получают только actual elapsed;
+completion effects исполняются только после полного interval и повторной
+проверки актуальных условий. При interruption execution остаётся `paused` с
+точным остатком и без terminal marker; готовый результат не создаётся.
+
 ### 7.3. `timed_traversal`
 
 - продвигает ровно один prepared physical segment;
@@ -935,6 +942,12 @@ state version
 
 Он не придумывает цель, маршрут или занятие.
 
+Если routine phase требует смены места, schedule owner выдаёт declarative
+movement handoff к уже существующему route owner. Consumer проверяет текущую
+позицию, exact route endpoints, доступ и состояние NPC; позиция меняется только
+после terminal completion. Заблокированный или частичный переход сохраняет
+фактическую исходную/промежуточную позицию и не телепортирует NPC.
+
 ### 15.3. Perception pipeline
 
 ```text
@@ -1297,6 +1310,12 @@ Gameplay ordering, timer due time, schedule boundary, historical phase, catch-up
 ## 20. Visible package и presentation lifecycle
 
 Visible package строится детерминированным code-owned projector из candidate post-change state и perception/knowledge results. LLM не выполняет security projection.
+
+`current outcome` содержит только факты и изменения текущего хода. Ранее
+подтверждённые сведения, нужные для понимания сцены, передаются отдельно как
+`scene support`/sensory context. Они не становятся повторно новым
+`perceived_change`, но обязаны оставаться доступными после reload, пока
+authoritative state или знание персонажа причинно не изменились.
 
 Пакет содержит только:
 
@@ -2923,6 +2942,55 @@ invariants:
 ```
 
 ---
+
+## A.8. Committed NewGame temporal baseline
+
+Первая authoritative партия имеет state_version=0. Temporal request и provider
+принимают этот существующий committed baseline без подмены версии. Остальные
+поля и historical A.1–A.6 остаются неизменными.
+
+```yaml
+contract_name: temporal_boundary_provider_input
+storage: immutable_request
+identity:
+fields:
+  from_timestamp: required game_timestamp
+  limit_timestamp: required game_timestamp
+  party_state_version: required non_negative_decimal_string
+  relevant_state_projection: required json_object
+  calendar_profile_ref: required calendar_profile_ref
+  catalog_pins: required dependency_pin_set
+  provider_version: required authoring_version
+relations:
+  active_execution_refs: relation_set[entity_ref]
+invariants:
+  - Input is frozen and explicit; a provider performs no IO, mutation, event execution or semantic fallback.
+```
+
+```yaml
+contract_name: temporal_advance_request
+storage: immutable_request
+identity:
+fields:
+  party_id: required stable_id
+  turn_id: required stable_id
+  base_state_version: required non_negative_decimal_string
+  clock_before: required game_timestamp
+  clock_commit_mode: required enum[direct_party_clock, shared_root_transport_clock]
+  clock_owner_ref: required entity_ref
+  requested_execution_ref: required entity_ref
+  inclusive_limit_timestamp: required game_timestamp
+  active_scope: required controlled_remote_scope_mode
+  relevant_state_projection: required json_object
+  catalog_pins: required dependency_pin_set
+  temporal_resolution_policy_ref: required temporal_resolution_policy_ref
+  idempotency_context: required json_object
+relations:
+  provider_versions: relation_set[versioned_ref]
+invariants:
+  - Limit is not earlier than clock_before and request names exactly one authoritative clock owner.
+  - Provider inputs and state projection are complete; hidden reads and implicit providers are forbidden.
+```
 
 # Приложение B. Temporal typed-error amendment
 

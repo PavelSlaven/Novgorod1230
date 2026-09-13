@@ -195,7 +195,7 @@ function validateBodyEvent(value, path, errors, trace) {
 function validateDiscovery(value, path, errors, trace) {
   if (!strict(value, path,
     ['op', 'actor_ref', 'discovery_kind', 'target_refs', 'query'],
-    errors)) return;
+    errors, { optional: ['quantity'] })) return;
   constant(value.op, 'request_discovery', `${path}.op`, errors);
   knownRef(value.actor_ref, `${path}.actor_ref`, errors, trace);
   enumValue(value.discovery_kind,
@@ -205,6 +205,17 @@ function validateDiscovery(value, path, errors, trace) {
     min: 1, max: 1
   });
   requiredText(value.query, `${path}.query`, errors);
+  if (Object.hasOwn(value, 'quantity')) {
+    if (!strict(value.quantity, `${path}.quantity`, ['value', 'unit'], errors)) {
+      return;
+    }
+    integer(value.quantity.value, 1, `${path}.quantity.value`, errors);
+    if (Number.isSafeInteger(value.quantity.value)
+        && value.quantity.value > 16) {
+      add(errors, `${path}.quantity.value`, 'maximum', 'must be at most 16');
+    }
+    constant(value.quantity.unit, 'item', `${path}.quantity.unit`, errors);
+  }
 }
 
 function validateContainerAccess(value, path, errors, trace) {
@@ -239,6 +250,11 @@ function validateItemUse(value, path, errors, trace) {
   const keys = ['op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'];
   const hasActionProduction = Object.hasOwn(value, 'action_production');
   if (hasActionProduction) keys.push('action_production');
+  if (!hasActionProduction && Object.hasOwn(value, 'description')) {
+    keys.push('description');
+    constant(value.use_kind, 'other', `${path}.use_kind`, errors);
+    requiredText(value.description, `${path}.description`, errors);
+  }
   if (!strict(value, path, keys, errors)) return;
   constant(value.op, 'request_item_use', `${path}.op`, errors);
   knownRef(value.actor_ref, `${path}.actor_ref`, errors, trace);

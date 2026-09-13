@@ -174,8 +174,8 @@ function inspectionBodyChanges({ timeUpdate, bodyUpdate }) {
     profile === 'trace_ld_v1_condition_cold_shivering');
   if (!wet || !shivering) return [];
   return [shivering.outcome === 'worsens'
-    ? 'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь усилилась.'
-    : 'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь не отступила.'];
+    ? 'Одежда осталась мокрой, а дрожь усилилась.'
+    : 'Одежда осталась мокрой, а дрожь не отступила.'];
 }
 
 function historicalFactPresentation(factId) {

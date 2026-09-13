@@ -135,8 +135,8 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
   assert.deepEqual(trace.map(({ event }) => event),
     ['turn_context', 'owner_commit_requested', 'owner_commit_completed']);
   assert.equal(trace[0].authoritative_context.party_state.state_version, 1);
-  assert.ok(trace[1].write_plan);
-  assert.ok(trace[2].result);
+  assert.deepEqual(trace[1], { event: 'owner_commit_requested' });
+  assert.deepEqual(trace[2], { event: 'owner_commit_completed' });
   assert.equal(JSON.stringify(diagnostics.report({ party_id: f.partyId })).includes('authoritative_context'), false);
   assert.equal(f.bundleRequests[0].scenarioDefinitionRevision, 7);
   assert.equal(result.check.difficulty, 12);
@@ -183,7 +183,8 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
     'Среди обломков есть следы ещё одной небольшой лодки.',
     'На ветке у места крушения найден клочок синей шерсти.',
     'Клочок синей шерсти теперь у вас в руках.',
-    'За пятнадцать минут осмотра одежда осталась мокрой, а дрожь усилилась.'
+    'Одежда осталась мокрой, а дрожь усилилась.',
+    'Состояние вашего тела изменилось.'
   ]);
   assert.equal(visible.sensory_details.includes(
     'В мокром песке видны босые следы.'), true);

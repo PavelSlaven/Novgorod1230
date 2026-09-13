@@ -7,11 +7,9 @@ import { removeMatchingPendingOpeningAck, removeStoredPendingOpeningAck,
   './pending-opening-ack.js';
 import { storedLlmSettings } from './llm-settings-preferences.js';
 import { createLlmSettingsController } from './llm-settings.js';
-import {
-  createTurnRequest,
-  recoverPendingPresentation,
-  submitTurnWithPresentationReplay
-} from './turn-submission.js';
+import { storedPendingTurn } from './pending-turn.js';
+import { recoverPendingPresentation, submitRecoverableTurn } from './turn-submission.js';
+import { trapOverlayFocus } from './overlay-focus.js';
 export { createTurnRequest, recoverPendingPresentation, submitTurnWithPresentationReplay } from
   './turn-submission.js';
 const PARTY_STORAGE_KEY = 'rus.party_id';
@@ -35,7 +33,9 @@ export function bootstrapGameWeb({
   const render = () => {
     const state = store.getState();
     root.ownerDocument.documentElement.dataset.theme = state.theme;
-    root.innerHTML = renderAppState(state);
+    root.innerHTML = renderAppState({ ...state,
+      pendingTurn: state.status === 'loading'
+        ? null : storedPendingTurn(partyStorage, state.partyId) });
     if (state.screen) void hydrateSceneCanvases(root, state.screen);
   };
   store.subscribe(render);
@@ -71,7 +71,7 @@ export function bootstrapGameWeb({
       const raw = String(new root.ownerDocument.defaultView.FormData(form)
         .get('raw_text') ?? '');
       store.setDraft('turn', raw);
-      if (!raw.trim()) {
+      if (!raw.trim() && !storedPendingTurn(partyStorage, store.getState().partyId)) {
         store.setError(uiError('TURN_INPUT_REQUIRED', 'Сформулируй действие.'));
         return;
       }
@@ -206,8 +206,15 @@ export function bootstrapGameWeb({
   async function continueParty() {
     const partyId = store.getState().rememberedPartyId; if (!partyId) return;
     try {
-      store.setLoading(); let result = await api.getPartyScreen(partyId);
-      result = recoverPendingPresentation(api, partyId, result.screen) ?? result;
+      const hasPendingTurn = storedPendingTurn(partyStorage, partyId) != null;
+      store.setLoading(hasPendingTurn ? initialTurnProgress() : null); let result = hasPendingTurn
+        ? await submitRecoverableTurn(api, partyStorage, partyId, {}, {
+          onProgress: (progress) => store.setTurnProgress(progress)
+        })
+        : await api.getPartyScreen(partyId);
+      result = recoverPendingPresentation(api, partyId, result.screen, {
+        onProgress: (progress) => store.setTurnProgress(progress)
+      }) ?? result;
       result = await result;
       const pendingAck = storedPendingOpeningAck(partyStorage, partyId);
       if (pendingAck) {
@@ -231,10 +238,12 @@ export function bootstrapGameWeb({
   }
   async function submitTurn(input) {
     try {
-      store.setLoading();
-      const result = await submitTurnWithPresentationReplay(
-        api, store.getState().partyId, createTurnRequest(input));
-      store.clearDraft('turn');
+      const partyId = store.getState().partyId, pending = storedPendingTurn(partyStorage, partyId);
+      store.setLoading(initialTurnProgress());
+      const result = await submitRecoverableTurn(api, partyStorage, partyId, input, {
+        onProgress: (progress) => store.setTurnProgress(progress)
+      });
+      if (!pending || pending.request.raw_text === input.raw_text) store.clearDraft('turn');
       store.setScreen(result.screen, { openingStatus: 'acknowledged' });
     } catch (error) {
       store.setError(error);
@@ -258,23 +267,6 @@ export function bootstrapGameWeb({
   return Object.freeze({ api, store, render });
 }
 
-function trapOverlayFocus(event, root) {
-  const panel = root.querySelector('[data-overlay-panel]');
-  if (!panel) return;
-  const focusable = [...panel.querySelectorAll(
-    'button:not([disabled]), [href], input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-  )];
-  if (!focusable.length) return;
-  const first = focusable[0];
-  const last = focusable.at(-1);
-  if (event.shiftKey && root.ownerDocument.activeElement === first) {
-    event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && root.ownerDocument.activeElement === last) {
-    event.preventDefault();
-    first.focus();
-  }
-}
 function storedTheme(storage) {
   const value = storage?.getItem?.(THEME_STORAGE_KEY);
   return value === 'light' || value === 'dark' ? value : null;
@@ -296,4 +288,7 @@ function availableLocalStorage() {
 }
 function uiError(code, message) {
   return Object.assign(new Error(message), { code });
+}
+function initialTurnProgress() {
+  return { phase: 'accepted', commit_state: 'unconfirmed', elapsed_seconds: 0 };
 }

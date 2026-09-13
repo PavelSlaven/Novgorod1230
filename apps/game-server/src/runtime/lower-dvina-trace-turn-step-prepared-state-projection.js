@@ -1,10 +1,31 @@
+import { projectNpcs } from './lower-dvina-trace-player-safe-entities.js';
+import { projectVisibleContext } from './lower-dvina-trace-player-safe-visible-context.js';
 import { applyTracePhase7ScheduleState } from
   './lower-dvina-trace-phase-7-state-projection.js';
+import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
 import { tracePhase7ActorStep } from
   './lower-dvina-trace-phase-7-schedule-execution.js';
 
 export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
+  applyNpcRoutineTemporalResults(next, effect.time_update.temporal_results);
+  if ((effect.time_update.temporal_results ?? []).some((result) =>
+    result.combined_change_set?.proposals?.some((proposal) => proposal.npc_routine_transition))) {
+    const npcs = projectNpcs(next.npcs, { position: next.position }) ?? [];
+    delete next.visible_npcs;
+    delete next.scene_npcs;
+    for (const key of ['current_visible_context', 'visible_context', 'visible_context_package']) {
+      const context = projectVisibleContext(next[key]);
+      if (context == null) continue;
+      next[key] = { ...context, visible_npc: (context.visible_npc ?? []).flatMap((entry) => {
+        const npc = npcs.find((record) => [record.instance_id, record.npc_id, record.actor_id]
+          .includes(entry?.entity_ref?.entity_id));
+        if (npc == null) return [];
+        const { visible_status: _status, observable_cues: _cues, ...identity } = entry;
+        return [{ ...identity, ...(npc.status == null ? {} : { visible_status: npc.status }) }];
+      }) };
+    }
+  }
   next.clock = structuredClone(effect.time_update.clock_after);
   next.clock_weather_light = {
     ...structuredClone(next.clock_weather_light ?? {}),
@@ -88,4 +109,33 @@ export function projectPreparedDomainState(state, effect) {
       effect.consequence.combat_initialization.session.combat_id };
   }
   return next;
+}
+
+export function buildLowerDvinaTracePreparedRouteWorkingProjection({
+  projection, movement, committedState, clockAfter
+}) {
+  const destination = movement.destination;
+  const scene = (committedState.prepared_scenes ?? []).find(
+    ({ location_profile_ref }) => location_profile_ref === destination.location_ref)
+    ?? (committedState.first_entry_preparation?.scene?.location_profile_ref
+      === destination.location_ref ? committedState.first_entry_preparation.scene : null);
+  if (!scene?.node?.instance_id) throw Object.assign(new Error(
+    'Prepared turn-step effect failed closed.'), {
+    code: 'TRACE_TURN_STEP_PREPARED_ROUTE_DESTINATION_INVALID', status: 409 });
+  const routeEntry = { route_ref: movement.route_ref,
+    from_ref: movement.source.location_ref, to_ref: destination.location_ref,
+    status: 'completed' };
+  const { active_interlocutor: _activeInterlocutor,
+    ...projectionWithoutInterlocutor } = structuredClone(projection);
+  const moved = { ...projectionWithoutInterlocutor,
+    position: { ...structuredClone(projection.position ?? {}),
+      location_ref: destination.location_ref,
+      g5_anchor_id: destination.g5_anchor_id,
+      g5_node_id: scene.node.instance_id,
+      ...(destination.zone_ref == null ? {} : { zone_ref: destination.zone_ref }) },
+    route_history: [...structuredClone(projection.route_history ?? []), routeEntry] };
+  if (clockAfter == null) return moved;
+  return { ...moved, clock: structuredClone(clockAfter),
+    clock_weather_light: { ...structuredClone(moved.clock_weather_light ?? {}),
+      clock: structuredClone(clockAfter) } };
 }

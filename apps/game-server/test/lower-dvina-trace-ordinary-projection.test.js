@@ -32,7 +32,7 @@ test('projects a committed ordinary item without its materialization internals',
         policy_ref: 'policy', source_refs: ['basis-private'] },
       mechanics: { mass_grams: 80, external_hand_cost: 0,
         carry_form: 'compact', packing_slot_cost: 1,
-        quantity: { value: 1, unit: 'item' }, container: null }
+        quantity: { value: 5, unit: 'item' }, container: null }
     } } };
   committedState.visible_context = applyOrdinaryMaterializationProjection({
     next: committedState, visibleContext: committedState.visible_context, ordinaryPlan
@@ -42,7 +42,8 @@ test('projects a committed ordinary item without its materialization internals',
     committed_state: committedState, actor_id: 'mikula' });
   assert.deepEqual(result.player_safe_state.items, [{
     item_id: 'ordinary-spoon', name: 'wooden spoon',
-    quantity: 1, condition_state: 'ordinary_runtime_instance',
+    quantity: 5, quantity_unit_id: 'item',
+    condition_state: 'ordinary_runtime_instance',
     legal_status: 'ordinary_world_property_bound',
     placement: { scene_position_id: 'shed-position' },
     state: { semantic_category: 'household_tool' }

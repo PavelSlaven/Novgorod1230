@@ -33,8 +33,12 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
         Object.assign(error, safeBudgetIdentity(description, role_id));
         throw error;
       }
-      const effectiveOverrides = { ...(overrides ?? {}), maxTokens: 20_000,
-        requestTimeoutMs: 120_000 };
+      const requestTimeoutMs = turnBudget?.clamp?.() ?? 120_000;
+      const requestedMaxTokens = overrides?.maxTokens;
+      const maxTokens = Number.isSafeInteger(requestedMaxTokens)
+        && requestedMaxTokens > 0 ? Math.min(requestedMaxTokens, 20_000) : 20_000;
+      const effectiveOverrides = { ...(overrides ?? {}), maxTokens,
+        requestTimeoutMs };
       let result;
       try {
         result = await execute({
@@ -64,7 +68,6 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
           status: result.status,
           parsed_json: result.parsed_json ?? null,
           raw_text: result.raw_text ?? null,
-          reasoning_content: result.reasoning_content ?? null,
           error: result.error ?? null,
           provider: result.provider ?? null,
           model: result.model ?? null,
@@ -73,6 +76,7 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
           usage: result.usage ?? null
         }
       });
+      turnBudget?.assertWithinDeadline?.();
       if (result.status !== 'ok') {
         const error = new Error(result.error?.message ?? `LLM role ${role_id ?? '<unnamed>'} failed.`);
         error.code = result.error?.code ?? 'LLM_ROLE_FAILED';

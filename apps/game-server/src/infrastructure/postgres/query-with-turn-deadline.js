@@ -57,6 +57,7 @@ export async function withTurnDeadlineTransaction(pool, turnBudget, work,
   turnBudget.assertWithinDeadline();
   const { client, release } = await acquireWithinTurnDeadline(pool, turnBudget);
   let transactionOpen = false, sessionTimeoutSet = false, committed = false;
+  let commitStarted = false;
   let primaryError = null, cleanupError = null;
   const rollback = async () => {
     if (!transactionOpen) return null;
@@ -64,9 +65,7 @@ export async function withTurnDeadlineTransaction(pool, turnBudget, work,
     try {
       await client.query('ROLLBACK');
       return null;
-    } catch (error) {
-      return error;
-    }
+    } catch (error) { return error; }
   };
   try {
     turnBudget.assertWithinDeadline();
@@ -82,17 +81,23 @@ export async function withTurnDeadlineTransaction(pool, turnBudget, work,
         cleanupError = rollbackError;
         throw rollbackError;
       }
-      return result;
+      return Object.freeze({ ...result, transaction_rollback_confirmed: true });
     }
     await setLocalTimeouts(client, turnBudget);
     turnBudget.assertWithinDeadline();
+    commitStarted = true;
     await client.query('COMMIT');
     transactionOpen = false;
     committed = true;
     return result;
   } catch (error) {
     primaryError = normalizeTurnDeadlineError(error, turnBudget);
-    cleanupError ??= await rollback();
+    const rollbackWasRequired = transactionOpen;
+    const rollbackError = await rollback();
+    cleanupError ??= rollbackError;
+    if (!commitStarted && rollbackWasRequired && rollbackError == null) {
+      primaryError.transaction_rollback_confirmed = true;
+    }
     throw primaryError;
   } finally {
     if (sessionTimeoutSet) {

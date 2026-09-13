@@ -13,11 +13,11 @@
 - scoped client adapter для composition root.
 - отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
-Production `turn_runtime` использует Flash-first роли без heavy reasoning. Общего gameplay turn deadline нет. Явно выбранный local/custom OpenAI-compatible provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider.
+Production `turn_runtime` использует Flash-first роли без heavy reasoning. Планировщик шага начинает с reasoning `off`; если provider завершился без финального ответа, тот же вызов один раз повторяется с `low`. Single structural repair также использует `low`, потому что он запускается только после невалидного исходного плана; остальные роли работают с reasoning `off`. Явно выбранный local/custom OpenAI-compatible provider остаётся single-model configuration и через один `runtimeProviderOverride` применяется ко всем gameplay, audit, repair и portrait roles: transport не подбирает fallback model или provider. Общим safety deadline владеет game-server; transport принимает уже уменьшенный timeout позднего вызова.
 
 ## Production limits
 
-Для каждого production LLM-вызова, включая primary, audit и repair, действуют `maxTokens = 20_000` и transport timeout 120 с. Требуемую длину ответа ограничивают prompt и schema, а не тесный token cap. Если модель системно не укладывается в эти пределы либо ограничение ломает JSON или смысл ответа, результат не обрезают и лимит не уменьшают: сокращают контекст, перерабатывают prompt или делят обработку на несколько вызовов.
+Для каждого production LLM-вызова, включая primary, audit и repair, действуют `maxTokens = 20_000` и верхняя граница transport timeout 120 с. Ближе к safety deadline game-server передаёт меньшее оставшееся время. Требуемую длину ответа ограничивают prompt и schema, а не тесный token cap. Если модель системно не укладывается в эти пределы либо ограничение ломает JSON или смысл ответа, результат не обрезают: сокращают контекст, перерабатывают prompt или делят обработку на несколько вызовов.
 
 `world_knowledge_query_planner` — малая JSON-role для выбора только domains/refs/predicates/search hints. Она не определяет факты или gameplay outcome; request/response валидирует `@rus/world-knowledge`.
 
@@ -32,9 +32,9 @@ Gameplay narration uses `turn_runtime` roles `gameplay_narrator`, `gameplay_narr
 
 ## Публичный API
 
-`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`): `openai_compatible` нормализуется к одному `chat/completions` URL. Пользовательский `play:local` передаёт managed Gemma как default override; low-level environment provider остаётся только явной deployment-конфигурацией. Runtime override не может менять production limits. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
+`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и role registries `turn_runtime`/`portrait_lab`. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`): `openai_compatible` нормализуется к одному `chat/completions` URL. Role caller может передать `overrides.reasoningEffort` со значением `off`, `minimal`, `low`, `medium`, `high` или `xhigh`; transport применяет поддержанный провайдером уровень, а `off` явно восстанавливает `enable_thinking=false`. Выбор уровня по смысловой сложности принадлежит caller роли: transport не угадывает сложность и не повышает уровень автоматически. Пользовательский `play:local` передаёт managed Gemma как default override; low-level environment provider остаётся только явной deployment-конфигурацией. Runtime override не может менять production limits. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
 
-Поддерживаемый Gemma preset и его served alias получают OpenAI-compatible `chat_template_kwargs.enable_thinking=false`: полезный JSON/prose ответ не вытесняется скрытым reasoning. Произвольным custom-моделям нестандартное поле не добавляется.
+Игровой вызов через выбранный local/custom OpenAI-compatible provider по умолчанию получает `chat_template_kwargs.enable_thinking=false`. Планировщик начинает так же; только повтор после пустого ответа и structural repair передают `reasoning_effort=low` без конфликтующего `enable_thinking=false`. Это role policy и восстановление ответа той же модели, не смена model/provider.
 
 Portrait Lab использует одну role без repair/fallback chain; смысловой результат валидирует authoritative `portrait_spec_v1` owner вне transport слоя.
 

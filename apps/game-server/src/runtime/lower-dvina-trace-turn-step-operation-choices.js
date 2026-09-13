@@ -40,7 +40,8 @@ export function selectedTurnStepOperation(choice, operationChoices) {
   const selected = operationChoices.find(({ choice_id }) =>
     choice_id === choice.operation_choice);
   return selected != null && (choice.operation_family == null
-      || choice.operation_family === selected.operation.op)
+      || choice.operation_family === selected.operation.op
+      || choice.operation_family === selected.choice_id)
     ? selected : undefined;
 }
 

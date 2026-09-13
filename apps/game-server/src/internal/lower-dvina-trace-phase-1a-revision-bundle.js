@@ -1,3 +1,5 @@
+import { loadLowerDvinaTraceRevision33Bundle } from './lower-dvina-trace-revision-33-bundle.js';
+import { loadLowerDvinaTraceRevision34Bundle } from './lower-dvina-trace-revision-34-bundle.js';
 import {
   loadLowerDvinaTraceRevision8Bundle,
   loadLowerDvinaTraceRevision9Bundle
@@ -205,6 +207,15 @@ export async function loadLowerDvinaTraceRevisionBundle({
   if (scenarioDefinitionRevision === 32) return loadLowerDvinaTraceRevision32Bundle({
     rootDir, historicalBundle: await loadLowerDvinaTraceRevisionBundle({
       scenarioDefinitionRevision: 31, rootDir, loadRevision7Bundle, fail,
+      freezeDeep, validateDefinitionPins }), fail, freezeDeep,
+    validateDefinitionPins });
+  if (scenarioDefinitionRevision === 33) return loadLowerDvinaTraceRevision33Bundle({
+    rootDir, historicalBundle: await loadLowerDvinaTraceRevisionBundle({
+      scenarioDefinitionRevision: 32, rootDir, loadRevision7Bundle, fail, freezeDeep,
+      validateDefinitionPins }), fail, freezeDeep, validateDefinitionPins });
+  if (scenarioDefinitionRevision === 34) return loadLowerDvinaTraceRevision34Bundle({
+    rootDir, historicalBundle: await loadLowerDvinaTraceRevisionBundle({
+      scenarioDefinitionRevision: 33, rootDir, loadRevision7Bundle, fail,
       freezeDeep, validateDefinitionPins }), fail, freezeDeep,
     validateDefinitionPins });
   fail(

@@ -1,15 +1,20 @@
 import { isDeepStrictEqual } from 'node:util';
-import { isDomainStepOperation, isOrdinaryDiscoveryInScope } from '@rus/turn';
+import { isDomainStepOperation, TURN_STEP_PLAN_V1_SCHEMA } from '@rus/turn';
+import { allTurnStepPlanMappings, turnStepPlanMappings } from './lower-dvina-trace-turn-step-plan-mappings.js';
 import { normalizeTurnStepOperationChoice, selectedTurnStepOperation,
   turnStepOperationChoices } from
   './lower-dvina-trace-turn-step-operation-choices.js';
+import { bindActionProductionCarrierRefs, canonicalizeDiscoveryShape,
+  canonicalOrdinaryDiscovery } from
+  './lower-dvina-trace-turn-step-plan-discovery.js';
 
 export function assembleTurnStepPlan(choice, request,
   operationChoices = turnStepOperationChoices(request)) {
   const normalized = canonicalizePlannerEnvelope(
-    normalizeTurnStepOperationChoice(structuredClone(choice)), request);
-  const semantic = restoreExactOperationChoice(
-    canonicalizeDiscoveryShape(normalized, request), operationChoices);
+    normalizeTurnStepOperationChoice(structuredClone(unwrapMapping(choice, request))), request);
+  const semantic = restoreExactOperationChoice(canonicalizeMovementChoice(
+    canonicalizeDiscoveryShape(normalized, request), operationChoices),
+  operationChoices);
   const selected = selectedTurnStepOperation(semantic, operationChoices);
   const mismatchedSelectedOperations = selected != null
     && Array.isArray(semantic.operations)
@@ -26,17 +31,38 @@ export function assembleTurnStepPlan(choice, request,
     selectedOperations, semantic, request });
   const operations = bindActionProductionCarrierRefs(
     ordinaryDiscovery?.operations ?? selectedOperations);
+  const continuation = canonicalInteractionContinuation(operations,
+    ordinaryDiscovery == null ? semantic.continuation ?? null
+      : ordinaryDiscovery.continuation, request);
   const resolution = operations?.some(({ op }) => isDomainStepOperation(op))
     ? 'domain_request' : semantic.resolution;
   const domainRequest = resolution === 'domain_request';
   const actionProduction = Array.isArray(operations) && operations.some((operation) =>
     operation?.op === 'request_item_use'
-      && operation.action_production != null);
-  const interpretation = semantic.interpretation;
-  if (interpretation?.constructor === Object &&
-      !interpretation.player_goal?.trim?.())
+      && (operation.action_production != null || typeof operation.description === 'string'));
+  const interpretation = projectFields(semantic.interpretation,
+    TURN_STEP_PLAN_V1_SCHEMA.$defs.interpretation.properties);
+  if (semantic.interpretation?.constructor === Object
+      && Object.hasOwn(semantic.interpretation, 'continuation'))
+    interpretation.continuation = semantic.interpretation.continuation;
+  if (interpretation?.constructor === Object
+      && !interpretation.player_goal?.trim?.()) {
     interpretation.player_goal = request.root_player_action;
+  }
+  const preserved = projectFields(semantic, TURN_STEP_PLAN_V1_SCHEMA.properties);
+  for (const key of Object.keys(allTurnStepPlanMappings()))
+    if (Object.hasOwn(semantic, key)) preserved[key] = semantic[key];
+  delete preserved.utterance;
+  delete preserved.assessment;
+  const assessment = supportedAssessment(semantic, request);
+  const assessedObservation = assessment != null
+    && semantic.direct_result_kind === 'player_safe_observation'
+    && semantic.resolution === 'direct';
+  const completeAssessment = assessedObservation
+    && (continuation == null
+      || continuation.remaining_intent === request.remaining_intent);
   return {
+    ...preserved,
     schema: 'turn_step_plan_v1',
     request_id: request.request_id,
     committed_state_version: request.committed_state_version,
@@ -44,26 +70,116 @@ export function assembleTurnStepPlan(choice, request,
     step_index: request.step_index,
     interpretation,
     resolution,
-    goal_result: domainRequest || resolution === 'generic_check'
+    goal_result: completeAssessment ? 'achieved'
+      : domainRequest || resolution === 'generic_check'
       || resolution === 'clarification_required'
       || semantic.continuation != null
       ? 'pending'
       : semantic.goal_result,
-    activity: domainRequest && !actionProduction
+    activity: assessedObservation
+      ? { owner: 'semantic', duration_class: 'moment', effort: 'none' }
+      : domainRequest && !actionProduction
       ? { owner: 'domain', duration_class: null, effort: null }
       : semantic.activity,
     operations,
     check: semantic.check ?? null,
-    continuation: ordinaryDiscovery == null
-      ? semantic.continuation ?? null : ordinaryDiscovery.continuation,
+    continuation: completeAssessment ? null : continuation,
     clarification: semantic.clarification ?? null,
-    direct_result_kind: semantic.direct_result_kind ?? null,
+    direct_result_kind: domainRequest ? null : semantic.direct_result_kind ?? null,
+    ...(domainRequest || assessment == null ? {} : { assessment }),
+    ...(domainRequest || semantic.utterance == null ? {} : {
+      utterance: structuredClone(semantic.utterance)
+    }),
     reason_code: semantic.reason_code,
     reason: semantic.reason,
     ...(mismatchedSelectedOperations ? {
       operation_choice: semantic.operation_choice
     } : {})
   };
+}
+
+function supportedAssessment(semantic, request) {
+  const value = semantic?.assessment;
+  const claims = ['hard_constraints', 'facts'].flatMap((field) =>
+    request?.world_knowledge?.[field] ?? []);
+  const allowed = new Set(claims.map(({ claim_ref: ref }) => ref)
+    .filter(Boolean));
+  if (semantic?.resolution !== 'direct'
+      || semantic.direct_result_kind !== 'player_safe_observation'
+      || claims.length === 0) return null;
+  if (value == null) {
+    if (semantic.goal_result !== 'not_achieved') return null;
+    const selected = [];
+    const domains = new Set();
+    for (const claim of claims) {
+      if (domains.has(claim.domain) || typeof claim.runtime_text !== 'string'
+          || !claim.runtime_text.trim() || !allowed.has(claim.claim_ref)) continue;
+      selected.push(claim);
+      domains.add(claim.domain);
+      if (selected.length === 3) break;
+    }
+    return selected.length === 0 ? null : {
+      text: selected.map(({ runtime_text: text }) => text).join(' '),
+      support_refs: selected.map(({ claim_ref: ref }) => ref)
+    };
+  }
+  if (value.constructor !== Object
+      || Object.keys(value).length !== 2
+      || typeof value.text !== 'string' || !value.text.trim()
+      || !Array.isArray(value.support_refs) || value.support_refs.length === 0
+      || new Set(value.support_refs).size !== value.support_refs.length
+      || value.support_refs.some((ref) => typeof ref !== 'string'
+        || !allowed.has(ref))) return null;
+  return structuredClone(value);
+}
+
+function canonicalizeMovementChoice(semantic, operationChoices) {
+  const operation = semantic?.operations?.length === 1
+    ? semantic.operations[0] : null;
+  if (operation?.op !== 'request_movement') return semantic;
+  const targetRef = operation.target_ref ?? operation.destination_ref
+    ?? (operation.placement?.relation === 'located_at'
+      ? operation.placement.target_ref : undefined);
+  const matches = operationChoices.filter(({ operation: candidate }) =>
+    candidate?.op === 'request_movement'
+      && (operation.route_ref == null
+        || candidate.route_ref === operation.route_ref)
+      && (targetRef == null || candidate.target_ref === targetRef));
+  if (matches.length !== 1
+      || operation.route_ref == null && targetRef == null) return semantic;
+  return { ...semantic,
+    operation_choice: matches[0].choice_id,
+    operation_family: 'request_movement',
+    operations: [structuredClone(matches[0].operation)] };
+}
+
+function canonicalInteractionContinuation(operations, continuation, request) {
+  if (operations?.length !== 1 || operations[0]?.op !== 'emit_interaction') {
+    return continuation;
+  }
+  if (continuation == null) return null;
+  if (typeof continuation.remaining_intent === 'string'
+      && !continuation.remaining_intent.trim()) return null;
+  const quoted = [...String(request.remaining_intent ?? '').matchAll(
+    /«[^»]+»|"[^"]+"|“[^”]+”|„[^“]+“/gu)];
+  return quoted.length === 1
+      && normalized(quoted[0][0]) === normalized(String(
+        continuation.remaining_intent ?? '').replace(/^[\s:;,—-]+/u, ''))
+    ? null : continuation;
+}
+
+function projectFields(value, properties) {
+  return value?.constructor === Object
+    ? Object.fromEntries(Object.entries(value).filter(([key]) => Object.hasOwn(properties, key)))
+    : value;
+}
+
+function unwrapMapping(choice, request) {
+  if (choice?.constructor !== Object) return choice;
+  const keys = Object.keys(choice);
+  return keys.length === 1 && choice[keys[0]]?.constructor === Object
+    && Object.hasOwn(JSON.parse(turnStepPlanMappings(request)), keys[0])
+    ? choice[keys[0]] : choice;
 }
 
 function canonicalizePlannerEnvelope(semantic, request) {
@@ -115,68 +231,6 @@ function restoreExactOperationChoice(semantic, operationChoices) {
     operation_family: matches[0].operation.op };
 }
 
-function canonicalizeDiscoveryShape(semantic, request) {
-  const continuation = withoutPendingDiscovery(semantic?.continuation);
-  const cleaned = continuation === semantic?.continuation ? semantic
-    : { ...semantic, continuation };
-  if (cleaned?.operation_choice != null || cleaned?.operations?.length !== 1
-      || cleaned.operations[0]?.op !== 'request_discovery') return cleaned;
-  let after = continuation;
-  const operation = cleaned.operations[0];
-  if (after != null
-      && Array.isArray(after.depends_on_refs)
-      && after.depends_on_refs.length === 0
-      && normalized(operation.query) === normalized(after.remaining_intent)
-      && normalized(operation.query) === normalized(request.remaining_intent)) {
-    after = null;
-  }
-  if (!Array.isArray(operation.target_refs)
-      || operation.target_refs.length < 2) {
-    return after === cleaned.continuation ? cleaned
-      : { ...cleaned, continuation: after };
-  }
-  return { ...cleaned,
-    operations: [{ ...operation, target_refs: [operation.target_refs[0]] }],
-    continuation: { remaining_intent: operation.query, depends_on_refs: [],
-      pending_discovery: {
-        remaining_target_refs: operation.target_refs.slice(1),
-        after
-      } } };
-}
-
-function withoutPendingDiscovery(continuation) {
-  if (continuation == null || typeof continuation !== 'object'
-      || Array.isArray(continuation)
-      || !Object.hasOwn(continuation, 'pending_discovery')) return continuation;
-  const cleaned = { ...continuation };
-  delete cleaned.pending_discovery;
-  return cleaned;
-}
-
-function canonicalOrdinaryDiscovery({ operations, semantic, request }) {
-  if (semantic.operation_choice != null
-      || semantic.check != null || operations?.length !== 1
-      || operations[0]?.target_refs?.length !== 1
-      || !isOrdinaryDiscoveryInScope({ operation: operations[0],
-        playerSafeState: request.player_safe_state })) return null;
-  if (semantic.continuation != null
-      || normalized(operations[0].query)
-        !== normalized(request.root_player_action)
-      || !strictPriorIntent(request.root_player_action,
-        request.remaining_intent)) return null;
-  return { operations: [{ ...operations[0], query: request.remaining_intent }],
-    continuation: null };
-}
-
-function strictPriorIntent(root, remaining) {
-  const whole = normalized(root);
-  const tail = normalized(remaining);
-  if (whole == null || tail == null || whole === tail || !whole.endsWith(tail)) {
-    return false;
-  }
-  return !/[\p{L}\p{N}]/u.test(whole.slice(0, -tail.length).at(-1));
-}
-
 function normalized(value) {
   return typeof value === 'string' ? value.normalize('NFKC').trim()
     .replace(/\s+/gu, ' ').toLocaleLowerCase('ru-RU') : null;
@@ -184,18 +238,4 @@ function normalized(value) {
 
 function nonempty(value) {
   return typeof value === 'string' && value.trim().length > 0;
-}
-
-function bindActionProductionCarrierRefs(operations) {
-  if (!Array.isArray(operations)) return operations;
-  return operations.map((operation) => {
-    const production = operation?.op === 'request_item_use'
-      ? operation.action_production : null;
-    if (!Array.isArray(production?.source_refs)
-        || production.source_refs.length === 0
-        || !Array.isArray(production.tool_refs)) return operation;
-    return { ...operation, item_ref: production.source_refs[0],
-      target_refs: [...production.source_refs.slice(1),
-        ...production.tool_refs] };
-  });
 }

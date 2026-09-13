@@ -102,11 +102,11 @@ export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
         throw error;
       }
     },
-    async recoverPendingPresentation(partyId) {
+    async recoverPendingPresentation(partyId, input = {}) {
       const startedAt = clock();
-      record(partyId, { event: 'presentation.recovery_requested' });
+      record(partyId, { event: 'presentation.recovery_requested', input });
       try {
-        const output = await root.recoverPendingPresentation(partyId);
+        const output = await root.recoverPendingPresentation(partyId, input);
         record(partyId, { event: 'presentation.recovery_completed',
           duration_ms: duration(startedAt, clock()), output, llm: llmReport(partyId) });
         return output;

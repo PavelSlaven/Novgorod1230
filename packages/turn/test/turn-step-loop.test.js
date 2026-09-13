@@ -332,7 +332,8 @@ test('generic check uses the shared RNG owner and branch continuation', async ()
   });
   const outcome = await runTurnStepLoop(input(), runtimePorts);
   assert.equal(rolls, 1);
-  assert.equal(outcome.check_results[0].outcome.band, 'clean_success');
+    assert.equal(outcome.check_results[0].outcome.band, 'clean_success');
+    assert.equal(outcome.completed_steps[0].check_outcome, 'clean_success');
   assert.equal(outcome.check_requests[0].policy_profile_ref,
     'test_generic_check_profile');
   assert.deepEqual(outcome.check_requests[0].policy_profile_pin,

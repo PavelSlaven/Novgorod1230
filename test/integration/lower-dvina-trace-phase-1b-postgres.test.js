@@ -111,6 +111,9 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.ok(schemaSnapshot.tables.some(
     ({ name }) => name === 'party_containers'
   ));
+  assert.ok(schemaSnapshot.tables.some(
+    ({ name }) => name === 'g6_acoustic_profiles'
+  ));
   assert.ok(schemaSnapshot.foreign_keys.length > 0);
   assert.ok(schemaSnapshot.unique_constraints.length > 0);
   assert.ok(schemaSnapshot.check_constraints.length > 0);

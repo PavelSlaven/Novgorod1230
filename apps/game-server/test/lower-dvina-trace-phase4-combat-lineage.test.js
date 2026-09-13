@@ -32,6 +32,23 @@ test('Phase 4 shed handoff drops stale camp S1 position marker', () => {
   state.route_knowledge = ['trace_ld_v1_route_camp_to_shed'];
   const contracts = resolveTracePhase4Contracts({ state,
     bundle: revision14Bundle });
+  const travellingNpcs = [contracts.actors.eremey_fisher.instance_id,
+    contracts.actors.participating_fisher.instance_id];
+  state.npc_schedule_runtime = travellingNpcs.map((npcId, index) => {
+    const npc = state.npcs.find(({ instance_id: id }) => id === npcId);
+    npc.machine_state = { ...npc.machine_state, schedule_state: 'working',
+      current_activity: { activity_ref: `routine:${npcId}`,
+        summary: 'На рыбацкой стоянке чинит сети.', status: 'active',
+        can_continue_automatically: true },
+      current_activity_ref: `routine:${npcId}`, runtime_status: 'ready' };
+    return { id: `schedule:${npcId}`, party_id: state.party_id, npc_id: npcId,
+      current_position_node_id: `position:camp:${index}`,
+      causal_state_ref: { routine_state: { status: 'active',
+        runtime_status: 'ready', next_transition_at: {
+          whole_minutes: '999', subminute_numerator: '0',
+          subminute_denominator: '1' } } },
+      status: 'active', state_version: '2', npc_snapshot: structuredClone(npc) };
+  });
   const factual = {
     player_input: { request_id: 'request:phase4-shed',
       idempotency_key: 'idempotency:phase4-shed', raw_text: 'Идти к сушильне.' },
@@ -58,6 +75,17 @@ test('Phase 4 shed handoff drops stale camp S1 position marker', () => {
     ended_at: factual.time_update.clock_after,
     change_set_id: 'change:phase4-shed'
   });
+  for (const npcId of travellingNpcs) {
+    const npc = next.npcs.find(({ instance_id: id }) => id === npcId);
+    const schedule = next.npc_schedule_runtime.find(
+      ({ npc_id: id }) => id === npcId
+    );
+    assert.equal(npc.machine_state.current_activity, null);
+    assert.equal(npc.machine_state.schedule_state, 'interrupted');
+    assert.equal(schedule.status, 'inactive');
+    assert.equal(schedule.current_position_node_id, null);
+    assert.equal(schedule.state_version, 3);
+  }
   const writes = phase4Writes({ partyId: state.party_id, state, next, factual,
     visibleEnvelope: null, pendingScreen: null,
     nextVersion: next.party_state.state_version,
@@ -66,6 +94,10 @@ test('Phase 4 shed handoff drops stale camp S1 position marker', () => {
   assert.equal(writes.updates.find(({ target_table: table }) =>
     table === 'party_positions').record.g5_anchor_id,
   next.position.g5_anchor_id);
+  assert.equal(writes.updates.filter(({ target_table: table }) =>
+    table === 'party_npc_spatial_schedules').length, 2);
+  assert.equal(writes.appends.filter(({ target_table: table }) =>
+    table === 'party_npc_runtime_transitions').length, 2);
   assert.equal(Object.hasOwn(projectLowerDvinaTraceS1Capability({
     playerSafeState: { known_context: [] }, committedState: next,
     resolverAvailable: true

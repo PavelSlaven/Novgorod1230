@@ -116,7 +116,20 @@ export function traceFor({ plan, request, repaired, applied, checkResult = null,
   };
 }
 
-export function preparedDirectContinuation(plan) {
+export function preparedDirectContinuation(plan, preparedEffects = []) {
+  // A semantic-only prefix has no deferred domain-command commit. Revalidated
+  // direct/check steps still use the existing runtime owners and body boundary.
+  if (preparedEffects.length > 0 && preparedEffects.every(({ effect }) =>
+    effect.effect_kind === 'semantic_activity')) {
+    const outcomes = plan.resolution === 'generic_check'
+      ? Object.values(plan.check.outcomes) : [{ operations: plan.operations }];
+    return ['direct', 'generic_check'].includes(plan.resolution)
+      && plan.activity?.owner === 'semantic'
+      && outcomes.every((outcome) => (outcome.operations ?? []).every(({ op }) =>
+        ['create_entity', 'move_entity', 'change_entity_facts',
+          'set_entity_mechanics', 'retire_entity'].includes(op))
+        && outcome.additional_activity == null);
+  }
   return plan.resolution === 'direct' && plan.operations.length === 0
     && plan.activity?.owner === 'semantic' && plan.activity.duration_class === 'moment'
     && plan.activity.effort === 'none';

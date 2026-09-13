@@ -42,7 +42,8 @@ const publicRoot = Object.freeze({
   getLlmSettings: () => llmSettings.read(),
   applyLlmSettings: (input) => llmSettings.apply(input),
   probeLlmSettings: (candidate) => llmSettings.probe(candidate),
-  getLlmTurnReport: (input) => llmDiagnostics.report(input)
+  getLlmTurnReport: (input) => llmDiagnostics.report(input),
+  getTurnProgress: (input) => llmDiagnostics.progress(input)
 });
 const root = createPartyLoggingRoot({
   root: publicRoot,

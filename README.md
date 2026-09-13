@@ -12,6 +12,10 @@
 
 ## Документация Lower Dvina Trace
 
+- [Продолжение blind gameplay в новом чате или ветке](docs/plans/blind-gameplay-handoff.md) —
+  состояние PR, воспроизводимые источники и первый шаг для CHIEF.
+- [Автономный план проверки и исправлений](docs/plans/blind-gameplay-autonomous-plan.md) —
+  proposed execution plan; не объявляет завершённой игровую приёмку.
 - [Текущее состояние сценария](docs/plans/lower-dvina-trace-reference.md) —
   production revision, игровая рамка, владельцы, replay и acceptance.
 - [Карта реализации](docs/plans/lower-dvina-trace-implementation-plan.md) —

@@ -6,6 +6,7 @@ export function renderCharacterPanel(screen) {
   return renderRows([
     ['Имя', data.name], ['Роль', data.role], ['Здоровье', data.health],
     ['Бодрость', data.energy], ['Сытость', data.satiety],
-    ['Состояние', data.status]
+    ['Состояние', data.status], ['Предыстория', data.biography],
+    ['Память', data.memories], ['Известное вам', data.knowledge]
   ]) || renderEmpty();
 }

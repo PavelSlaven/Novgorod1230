@@ -56,15 +56,21 @@ export function startNpcActorStep({ execution, started_at: startedAt,
     && step?.npc_ref === npcRef
     && step?.decision_trace_ref?.entity_id === decisionTraceRef.entity_id);
   const prior = priorIndex < 0 ? null : actorSteps[priorIndex];
-  const composing = operation.op === 'apply_semantic_activity'
-    && prior?.status === 'started'
-    && prior.decision_trace_ref?.entity_id === decisionTraceRef.entity_id;
+  const currentIsActivity = operation.op === 'apply_semantic_activity';
+  const priorIsActivity = prior?.semantic_operation?.op
+    === 'apply_semantic_activity';
+  const composing = prior?.status === 'started'
+    && prior.decision_trace_ref?.entity_id === decisionTraceRef.entity_id
+    && (currentIsActivity || priorIsActivity);
   const priorDuration = composing ? exactActorStepMinutes(prior) : 0;
-  const semanticOperation = composing
+  const semanticOperation = composing && currentIsActivity
     ? prior.semantic_operation : operation;
-  const additionalSemanticOperations = composing
-    ? [...(prior.additional_semantic_operations ?? []), operation]
-    : [];
+  const additionalSemanticOperations = !composing ? []
+    : currentIsActivity
+      ? [...(prior.additional_semantic_operations ?? []), operation]
+      : [prior.semantic_operation,
+          ...(prior.additional_semantic_operations ?? [])];
+  const baseIsPrior = composing && currentIsActivity;
   const active = {
     npc_ref: npcRef,
     status: 'started',
@@ -75,7 +81,7 @@ export function startNpcActorStep({ execution, started_at: startedAt,
       additional_semantic_operations: structuredClone(
         additionalSemanticOperations)
     } : {}),
-    activity_profile_ref: composing
+    activity_profile_ref: baseIsPrior
       ? prior.activity_profile_ref ?? null : activityProfileRef,
     planned_exact_elapsed: {
       exact_minutes: {
@@ -104,9 +110,11 @@ export function startNpcActorStep({ execution, started_at: startedAt,
       ...(additionalSemanticOperations.length > 0 ? {
         additional_semantic_operations: additionalSemanticOperations
       } : {}),
-      execution_binding_ref: composing ? null : executionBindingRef,
-      schedule_option_id: composing ? null : scheduleOptionId,
-      activity_profile_ref: composing
+      execution_binding_ref: baseIsPrior
+        ? prior.execution_binding_ref ?? null : executionBindingRef,
+      schedule_option_id: baseIsPrior
+        ? prior.schedule_option_id ?? null : scheduleOptionId,
+      activity_profile_ref: baseIsPrior
         ? prior.activity_profile_ref ?? null : activityProfileRef,
       exact_elapsed: active.planned_exact_elapsed,
       clock_before: startedAt,

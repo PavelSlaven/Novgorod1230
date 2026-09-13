@@ -46,7 +46,7 @@ test('open then take moves one existing authored sword in the same root turn',
     ]);
   });
 
-test('authored move uses committed mechanics and rejects overload', async () => {
+test('authored move uses committed mechanics and reports overload', async () => {
   const heavyMechanics = { ...swordMechanics(), mass_grams: 100_000 };
   const ports = runtimePorts([sword({
     placement: { location_ref: 'shore' }
@@ -59,9 +59,12 @@ test('authored move uses committed mechanics and rejects overload', async () => 
     op: 'move_entity', entity_ref: 'sword',
     placement: { relation: 'held_by', target_ref: 'actor' }
   };
-  await assert.rejects(() => ports.executionRegistry.direct(operation)(
-    execution(operation, projection)
-  ), { code: 'ITEM_RUNTIME_INVENTORY_LOAD_INVALID' });
+  const result = await ports.executionRegistry.direct(operation)(
+    execution(operation, projection));
+  assert.equal(result.goal_result, 'not_achieved');
+  assert.deepEqual(result.write_fragments, []);
+  assert.equal(Object.values(result.consequence_fragment.visible_seed)[0]
+    .reason, 'load_limit');
 });
 
 test('absent sword terminates after access without creating one', async () => {

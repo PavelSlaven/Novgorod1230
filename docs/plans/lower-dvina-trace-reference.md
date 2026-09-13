@@ -132,6 +132,16 @@ player-safe causal refs.
 
 ## Acceptance
 
+Для слепого PLAYER на Windows ввод через browser UI должен сохранять точный
+текст намерения. Не передавать кириллицу через PowerShell interpolation и не
+заменять содержимое textarea через `Ctrl+A` / `press_key`. Передавать значение
+как Unicode escapes или base64 UTF-8, устанавливать его native setter-ом
+`Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set`,
+затем отправлять `input` event с `bubbles: true`. Перед отправкой хода сверять
+фактический `textarea.value` с намерением; диагностический вывод сериализовать
+через `json.dumps(..., ensure_ascii=True)`, чтобы кодировка консоли не искажала
+проверку. PLAYER получает только публичное UI-наблюдение.
+
 Full-stack доказательство находится в:
 
 - [`test/e2e/lower-dvina-trace-browser-acceptance.test.js`](../../test/e2e/lower-dvina-trace-browser-acceptance.test.js);

@@ -1,23 +1,109 @@
+import { reviewedNarration } from './narration-audit-fixture.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { validateNarrationOutput } from '@rus/narration';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
+import { enrichLowerDvinaTraceVisibleNpcCues } from
+  '../src/runtime/lower-dvina-trace-turn-step-current-scene-npc-cues.js';
 import { assembleNarrationRoleOutput,
   createLowerDvinaTraceNarrationService } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
-test('narration assembly does not default omitted semantic fields', () => {
-  const output = assembleNarrationRoleOutput('gameplay_narrator', {
-    prose: 'Двор тих.' }, { request_id: 'narration-1' });
-  assert.equal(output.action_options, undefined);
-  assert.equal(output.used_references, undefined);
-  assert.equal(output.self_check, undefined);
-  assert.equal(validateNarrationOutput(output).ok, false);
+test('narration assembly requires model prose and owns all fixed output metadata', () => {
+  const supplied = assembleNarrationRoleOutput('gameplay_narrator', {
+    prose: 'Двор тих.', action_options: [{ label: 'Осмотреть двор' }],
+    used_references: ['scene:yard'],
+    self_check: { every_fact_is_true: true, no_unsupported_silence: true }
+  }, { request_id: 'narration-1' });
+  assert.deepEqual(supplied.action_options, []);
+  assert.deepEqual(supplied.used_references, []);
+  assert.deepEqual(supplied.self_check, {});
+  assert.equal(validateNarrationOutput(supplied).ok, true);
+  const missing = assembleNarrationRoleOutput('gameplay_narrator', {},
+    { request_id: 'narration-1' });
+  assert.deepEqual(validateNarrationOutput(missing).errors, ['prose is required']);
+});
+
+test('writer metadata drift does not invoke narration format repair', async () => {
+  const calls = [];
+  const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
+    async run(call) {
+      calls.push(call.role_id);
+      if (call.role_id === 'gameplay_narrator') return { output: {
+        prose: 'У ворот стоит телега.', action_options: [{ label: 'Осмотреть телегу' }],
+        used_references: ['scene:cart'], self_check: { approved: true }
+      } };
+      if (call.role_id === 'gameplay_narrator_format_repair') {
+        throw new Error('format repair must not run');
+      }
+      const input = JSON.parse(call.messages[1].content);
+      return { output: {
+        ...reviewedNarration(input.segments), evidence: ['Visible scene supports prose.']
+      } };
+    }
+  } });
+  const result = await narration.run({ version: 1, schema: 'narration_request',
+    request_id: 'fixed-writer-fields', surface: 'turn', visible_context: {
+      version: 1, schema: 'visible_context_package', visible_scene: 'У ворот стоит телега.',
+      visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
+      known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+    }, context: {} });
+  assert.equal(result.status, 'approved');
+  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
+  assert.deepEqual(result.approved_output.action_options, []);
+  assert.deepEqual(result.approved_output.used_references, []);
+  assert.deepEqual(result.approved_output.self_check, {});
+  assert.equal(result.diagnostics.repairs_used, 0);
+});
+
+test('body delta reaches narration as grounded meaning without technical prose or invented shivering', async () => {
+  const possibleCold = { id: 'cold_with_possible_shivering', status: 'active' };
+  const visible = enrichLowerDvinaTraceVisibleNpcCues({
+    visibleContext: { version: 1, schema: 'visible_context_package', visible_scene: 'У костра.',
+      visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
+      known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: [] },
+    committedState: { body_state: { active_conditions: [{ id: 'wet' }, possibleCold] } },
+    bodyAfter: { active_conditions: [{ id: 'damp' }, possibleCold] }
+  });
+  const prose = 'Одежда стала менее мокрой, но остаётся сырой.';
+  let auditCount = 0;
+  const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
+    async run(call) {
+      const input = JSON.parse(call.messages[1].content);
+      assert.deepEqual(input.required_current_beat.changes.map(({ text }) => text), visible.visible_changes);
+      assert.equal(Object.hasOwn(input, 'visible_context'), false);
+      if (call.role_id === 'gameplay_narrator') {
+        assert.match(call.messages[0].content, /Add no hidden fact, diagnosis/u);
+        return { output: { prose: 'Вас трясёт. {"before":"wet","after":"damp"}',
+          action_options: [], used_references: [], self_check: {} } };
+      }
+      if (call.role_id === 'gameplay_narrator_auditor') {
+        auditCount += 1;
+        const segments = JSON.parse(call.messages[1].content).segments;
+        return { output: auditCount === 1 ? {
+          ...reviewedNarration(segments, { visible_change_1: [] }),
+          unsupported: [{ segment_choice: 's1', kind: 'unsupported_fact',
+            reason: 'Possible shivering is not confirmed.' }],
+          literary_failures: [{ check: 'elapsed_as_service_report', segment_choice: 's1',
+            reason: 'Body JSON is not literary prose.' }], evidence: [] }
+          : { ...reviewedNarration(segments, { visible_change_1: ['s1'] }),
+            evidence: ['Only the supported clothing change is stated.'] } };
+      }
+      return { output: { replacements: [{ prose }] } };
+    }
+  } });
+  const result = await narration.run({ version: 1, schema: 'narration_request',
+    request_id: 'body-delta', surface: 'turn', visible_context: visible, context: {} });
+  assert.equal(result.status, 'approved');
+  assert.equal(auditCount, 2);
+  assert.equal(result.approved_output.prose, prose);
+  assert.doesNotMatch(result.approved_output.prose, /[{}]|before|after|wet|damp|cold_with|дрож|тряс/u);
 });
 
 test('narration wires writer, audit, and coherent semantic repair roles', async () => {
   const calls = [];
+  const question = 'Имеющихся данных недостаточно для ответа: «Найти мою грамоту».';
   const repairedOutput = { version: 1, schema: 'narration_output', output_id: 'narration-1', prose: 'The clearing is quiet.', action_options: [], used_references: [], self_check: {} };
   const turnBudget = createLlmTurnBudget();
   const narration = createLowerDvinaTraceNarrationService({
@@ -31,10 +117,15 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
               used_references: [], self_check: {} }
           : call.roleId === 'gameplay_narrator_auditor'
             ? calls.filter(({ roleId }) => roleId === 'gameplay_narrator_auditor').length === 1
-              ? { pass: false, concerns: [{ segment_choice: 'segment_1', kind: 'unsupported_fact', reason: 'Не подтверждено.' }], evidence: ['Нет в visible_context.'] }
-              : { pass: true, concerns: [], evidence: ['Подтверждено.'] }
+              ? { ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+                { visible_change_1: [], visible_change_2: [], uncertainty_1: [] }),
+                unsupported: [{ segment_choice: 's1', kind: 'unsupported_fact',
+                  reason: 'Не подтверждено.' }], evidence: [] }
+              : { ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+                { visible_change_1: ['s1'], visible_change_2: ['s1'], uncertainty_1: ['s1'] }),
+                evidence: ['Подтверждено.'] }
             : call.roleId === 'gameplay_narrator_semantic_repair'
-              ? { replacements: [{ prose: 'The clearing is quiet.' }] }
+              ? { replacements: [{ prose: 'A snapped branch lies beside fresh footprints in the mud; where your charter is remains unknown.' }] }
               : null;
       return { status: 'ok', parsed_json: output, provider: 'deepseek',
         model: 'deepseek-v4-flash', scope: call.scope, role_id: call.roleId,
@@ -48,174 +139,48 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
       visible_changes: ['A snapped branch lies nearby.', 'Fresh footprints cross the mud.'],
       sensory_details: [], visible_npc: [], visible_objects: [],
       known_context: ['A marked path leads toward the settlement.', 'health:5'],
-      uncertainties: [], allowed_tensions: [], do_not_imply: []
+      uncertainties: [question], allowed_tensions: [], do_not_imply: []
     }, context: {
       attempt: { text: 'Постучать в закрытую дверь.' },
       outcome: {}
     }
   }));
   assert.equal(result.status, 'approved');
-  const shape = '{"prose":"<visible-only prose in Russian>","action_options":[],"used_references":[],"self_check":{}}';
-  const repairShape = shape;
-  assert.equal(calls[0].messages[0].content.includes(shape), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'server assembles version, schema, and output_id'), true);
-  assert.equal(calls[0].messages[0].content.includes('context.attempt'), false);
-  assert.equal(calls[0].messages[0].content.includes(
-    'Missing or false outcome fields are silent constraints'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    "item moved confirms only that item's placement change"), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'Do not infer a causal bridge or exact success mechanism'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'Faithfully paraphrase mechanical source wording'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'visible_context.visible_changes is nonempty, convey every material new change'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'relevant player-safe known_context'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'not a report of game state'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'When perception itself is the action'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'do not add that nothing else was noticed'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'unless that exact bodily effect is supplied'), true);
-  assert.equal(calls[0].messages[0].content.includes(
-    'Проходит минута, а у самой воды лежат <supplied current detail>'), true);
+  assert.deepEqual(calls.map(({ roleId }) => roleId), [
+    'gameplay_narrator', 'gameplay_narrator_format_repair', 'gameplay_narrator_auditor',
+    'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor'
+  ]);
   for (const call of calls) {
-    assert.match(call.messages[0].content,
-      /Unsupported exclusivity or persistence MUST FAIL the audit as unsupported_world_state/);
-    assert.match(call.messages[0].content,
-      /explicit failed or incomplete attempt result in visible_context\.visible_changes is material/);
-    assert.equal(call.messages[0].content.includes(
-      'Narrate the player in second-person Russian'), true);
-    assert.equal(call.messages[0].content.includes(
-      'Empty visible_npc or visible_objects arrays are omissions'), true);
-    assert.equal(call.messages[0].content.includes(
-      'State uncertainty only when it is explicitly supplied'), true);
-    assert.equal(call.messages[0].content.includes(
-      'ground every adjective, adverb, sensory quality, temporal relation'), true);
-    assert.equal(call.messages[0].content.includes(
-      'Compare every rendered NPC trait to that same entity\'s observable_cues'), true);
-    assert.equal(call.messages[0].content.includes(
-      'static identity or equipment cue never authorizes an NPC action'), true);
-    assert.equal(call.messages[0].content.includes(
-      'never group differing traits unless every stated trait applies'), true);
-    assert.equal(call.messages[0].content.includes(
-      'does not authorize an unstated direction, destination, route'), true);
-    const outcomeField = ['gameplay_narrator_auditor',
-      'gameplay_narrator_semantic_repair'].includes(call.roleId)
-      ? 'confirmed_outcome' : 'context.outcome';
-    assert.equal(call.messages[0].content.includes(
-      `grounds only an attempt unless visible_context or ${outcomeField} confirms`), true);
-    assert.equal(call.messages[0].content.includes(
-      'do not turn source arrays into a one-fact-per-sentence catalogue'), true);
+    const payload = JSON.parse(call.messages[1].content);
+    assert.equal(Object.hasOwn(payload, 'visible_context'), false);
+    assert.deepEqual(payload.required_current_beat.uncertainties,
+      [{ ref: 'uncertainty_1', text: question, status: 'unperformed_result_unknown' }]);
+    assert.deepEqual(payload.optional_support, { visible_scene: 'The clearing is quiet.', sensory_details: [] });
+    assert.deepEqual(payload.confirmed_outcome, {});
+    if (call.roleId === 'gameplay_narrator_auditor') {
+      assert.match(call.messages[0].content, /strict evidence auditor/u);
+      assert.match(call.messages[0].content, /embedded unknown result must remain unknown/u);
+    } else {
+      assert.match(call.messages[0].content, /Preserve confirmed speech verbatim/u);
+      assert.match(call.messages[0].content, /preserve certainty/u);
+      assert.match(call.messages[0].content, /actor movement requires confirmed_outcome\.movement_committed=true/iu);
+      assert.match(call.messages[0].content, /Add no hidden fact, diagnosis/u);
+    }
   }
-  assert.equal(calls[0].scope, 'turn_runtime');
-  assert.equal(calls[0].roleId, 'gameplay_narrator');
-  assert.equal(calls[1].roleId, 'gameplay_narrator_format_repair');
-  assert.equal(calls[1].messages[0].content.includes(repairShape), true);
-  assert.equal(calls[1].messages[0].content.includes('request.visible_context'), true);
-  assert.equal(calls[1].messages[0].content.includes(
-    'Convey every material visible_change naturally'), true);
-  assert.equal(calls[2].roleId, 'gameplay_narrator_auditor');
-  assert.equal(calls[2].messages[0].content.includes('full narration'), true);
-  assert.equal(calls[2].messages[0].content.includes('hidden state'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'action_intent_context may ground only'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'it never proves success, object use, a result, or a world/NPC state change'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'faithful natural paraphrase of visible_context is supported'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'do not prove that nobody or nothing is present'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'does not support an unstated sound, smell, temperature, bodily sensation, history, or recent use'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'remain intent-only'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'a wet surface alone is insufficient'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'requires an explicit supplied uncertainty'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'repeating how or why the player looked is technical_presentation'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'FAIL with kind missing_visible_change'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'already a confirmed player-safe fact and sufficient evidence'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'Actor movement wording MUST FAIL'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'unless confirmed_outcome.movement_committed is true'), true);
-  assert.equal(calls[2].messages[0].content.includes('{"pass":true,"concerns":[],"evidence":["visible facts only"]}'), true);
-  assert.match(calls[2].messages[0].content,
-    /"kind":"<one allowed concern kind>"/u);
-  assert.match(calls[2].messages[0].content, /unsupported_success/u);
-  assert.match(calls[2].messages[0].content, /technical_presentation/u);
-  assert.equal(calls[2].messages[0].content.includes(
-    'Exact elapsed time is not standalone when it is woven into'), true);
-  assert.equal(calls.some((call) => call.messages[0].content.includes(
-    'same sentence as a supplied current scene detail')), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'without claiming a change of scene, body, position, or action'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'still stands, waits, watches, looks, or remains somewhere MUST FAIL'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'scene or its objects stayed unchanged'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'copy one complete supplied current scene detail without semantic shortening'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    'MUST NOT classify that construction as standalone elapsed time'), true);
-  assert.equal(calls[2].messages[0].content.includes(
-    '"segment_choice":"segment_1"'), true);
-  assert.deepEqual(JSON.parse(calls[2].messages[1].content), {
-    version: 1, schema: 'narration_semantic_audit_request', phase: 'initial',
-    output: repairedOutput, visible_context: {
-      version: 1, schema: 'visible_context_package', visible_scene: 'The clearing is quiet.',
-      visible_changes: ['A snapped branch lies nearby.', 'Fresh footprints cross the mud.'],
-      sensory_details: [], visible_npc: [], visible_objects: [],
-      known_context: ['A marked path leads toward the settlement.', 'health:5'],
-      uncertainties: [], allowed_tensions: [], do_not_imply: []
-    }, action_intent_context: {
-      evidence_scope: 'intent_only_non_evidence_of_success',
-      attempt: { text: 'Постучать в закрытую дверь.' }
-    }, confirmed_outcome: {}, style_policy: {},
-    segments: [{ segment_id: 's1', prose: 'The clearing is quiet.' }]
+  const audit = JSON.parse(calls[2].messages[1].content);
+  assert.deepEqual(audit.action_intent, {
+    evidence_scope: 'intent_only_non_evidence_of_execution_or_success',
+    attempt: { text: 'Постучать в закрытую дверь.' }
   });
-  assert.equal(calls[3].roleId, 'gameplay_narrator_semantic_repair');
-  assert.equal(calls[3].messages[0].content.includes(
-    'entire supplied prose as one coherent paragraph'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'Never emit a sentence whose only content is elapsed time'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'when elapsed time is the only visible change'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'A safe grammatical pattern is «Проходит минута'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'still stands, waits, watches, looks, or remains somewhere'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'server assembles version, schema, and immutable segment_id'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'Remove every unsupported claim'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'do not prove that nobody or nothing is present'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'faithful natural paraphrase of visible_context is allowed'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'For missing_visible_change'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'complete replacement must naturally convey every material visible_change once'), true);
-  assert.equal(calls[3].messages[0].content.includes(
-    'confirmed_outcome contains the code-confirmed outcome'), true);
-  assert.deepEqual(JSON.parse(calls[3].messages[1].content).segments, [{ segment_id: 's1', prose: 'The clearing is quiet.', nearby_context: [] }]);
-  assert.equal(Object.hasOwn(JSON.parse(calls[3].messages[1].content),
-    'action_intent_context'), false);
-  assert.deepEqual(JSON.parse(calls[3].messages[1].content).confirmed_outcome,
-    {});
-  assert.equal(calls[4].roleId, 'gameplay_narrator_auditor');
+  assert.deepEqual(audit.output, repairedOutput);
+  assert.deepEqual(audit.segments, [{ segment_id: 's1', prose: repairedOutput.prose }]);
+  for (const index of [0, 1, 3]) {
+    assert.equal(Object.hasOwn(JSON.parse(calls[index].messages[1].content), 'action_intent'), false);
+  }
+  const repair = JSON.parse(calls[3].messages[1].content);
+  assert.deepEqual(repair.segments, [{ segment_id: 's1', prose: repairedOutput.prose, nearby_context: [] }]);
+  assert.match(calls[3].messages[0].content, /Rebuild the whole passage/);
   assert.equal(validateNarrationOutput(repairedOutput).ok, true);
-  assert.equal(calls.length, 5);
 });
 
 test('narration treats exact known context as visible evidence and still blocks inventions', async (t) => {
@@ -234,10 +199,11 @@ test('narration treats exact known context as visible evidence and still blocks 
           const supported = JSON.parse(call.messages[1].content).output.prose
             .includes(known);
           return { output: supported
-            ? { pass: true, concerns: [], evidence: ['known context'] }
-            : { pass: false, concerns: [{ segment_choice: 'segment_1',
-              kind: 'unsupported_world_state', reason: 'not visible' }],
-            evidence: ['not visible'] } };
+            ? { ...reviewedNarration(JSON.parse(call.messages[1].content).segments),
+              evidence: ['known context'] }
+            : { ...reviewedNarration(JSON.parse(call.messages[1].content).segments),
+              unsupported: [{ segment_choice: 's1', kind: 'unsupported_world_state',
+                reason: 'not visible' }], evidence: [] } };
         }
         return { output: { replacements: [{ prose }] } };
       }
@@ -251,8 +217,13 @@ test('narration treats exact known context as visible evidence and still blocks 
       }, context: {}
     });
     assert.equal(result.status, expectedStatus);
-    assert.equal(calls.find(({ role_id: role }) => role === 'gameplay_narrator_auditor')
-      .messages[0].content.includes('visible_context.known_context'), true);
+    const auditInstruction = calls.find(
+      ({ role_id: role }) => role === 'gameplay_narrator_auditor').messages[0].content;
+    assert.match(auditInstruction, /strict evidence auditor/u);
+    assert.match(auditInstruction,
+      /performed attempt with no supplied result or uncertainty[\s\S]*unsupported_result/u);
+    assert.match(auditInstruction,
+      /attempt\s+alone without any outcome claim is supported and must not be flagged/u);
   });
 });
 
@@ -269,12 +240,13 @@ test('narration removes technical prose derived from a negative movement invaria
           auditCount += 1;
           const input = JSON.parse(call.messages[1].content);
           assert.equal(input.confirmed_outcome.position_changed, false);
-          return { output: auditCount === 1 ? { pass: false, concerns: [{
-            segment_choice: 'segment_1', kind: 'technical_presentation',
-            reason: 'Negative movement invariant is not prose material.'
-          }], evidence: ['False outcome is a silent constraint.'] } : {
-            pass: true, concerns: [], evidence: ['Visible change only.']
-          } };
+          return { output: auditCount === 1 ? {
+            ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+              { visible_change_1: [] }),
+            literary_failures: [{ check: 'elapsed_as_service_report', segment_choice: 's1',
+              reason: 'Negative movement invariant is not prose material.' }], evidence: [] }
+            : { ...reviewedNarration(JSON.parse(call.messages[1].content).segments,
+              { visible_change_1: ['s1'] }), evidence: ['Visible change only.'] } };
         }
         return { output: { replacements: [{
           prose: 'У огня одежда немного подсохла.'

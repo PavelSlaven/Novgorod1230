@@ -147,25 +147,45 @@ export function applyRuntimeInventoryTransition({ inventory, actor_id: actorId,
     return failedTransition(before.code ?? after.code
       ?? 'ITEM_RUNTIME_INVENTORY_CONTEXT_DATA_GAP');
   }
-  const nextGrams = grams - before.mass + after.mass;
-  const nextHands = hands - before.hands + after.hands;
+  const inventoryRefs = new Set(Array.isArray(inventory.items)
+    ? inventory.items : []);
+  const accountedBefore = totals(beforeRecords, actorId, inventoryRefs);
+  for (const ref of before.carried) {
+    if (!after.carried.has(ref)) inventoryRefs.delete(ref);
+  }
+  for (const ref of after.carried) {
+    if (!before.carried.has(ref)) inventoryRefs.add(ref);
+  }
+  const accountedAfter = totals(afterRecords, actorId, inventoryRefs);
+  if (!accountedBefore.pass || !accountedAfter.pass) {
+    return failedTransition(accountedBefore.code ?? accountedAfter.code
+      ?? 'ITEM_RUNTIME_INVENTORY_CONTEXT_DATA_GAP');
+  }
+  const nextGrams = grams - accountedBefore.mass + accountedAfter.mass;
+  const nextHands = hands - accountedBefore.hands + accountedAfter.hands;
   if (!Number.isSafeInteger(nextGrams) || nextGrams < 0
-      || !Number.isSafeInteger(nextHands) || nextHands < 0 || nextHands > 2) {
+      || !Number.isSafeInteger(nextHands) || nextHands < 0) {
     return failedTransition('ITEM_RUNTIME_INVENTORY_CAPACITY_INVALID');
+  }
+  if (nextHands > 2) {
+    return failedTransition('ITEM_RUNTIME_INVENTORY_HANDS_EXCEEDED', {
+      hands_used: nextHands, hands_total: 2
+    });
   }
   const load = resolveInventoryLoad({
     total_mass_grams: nextGrams,
     strength
   });
-  if (!load.pass || load.load_category === 'overloaded') {
+  if (!load.pass) {
     return failedTransition('ITEM_RUNTIME_INVENTORY_LOAD_INVALID', {
       total_mass_grams: nextGrams, strength
     });
   }
-  const inventoryRefs = new Set(Array.isArray(inventory.items)
-    ? inventory.items : []);
-  if (after.carried.has(itemRefValue)) inventoryRefs.add(itemRefValue);
-  else inventoryRefs.delete(itemRefValue);
+  if (load.load_category === 'overloaded') {
+    return failedTransition('ITEM_RUNTIME_INVENTORY_LOAD_EXCEEDED', {
+      total_mass_grams: nextGrams, strength
+    });
+  }
   return deepFreeze({
     pass: true,
     inventory: {
@@ -192,7 +212,7 @@ export function projectRuntimeInventoryInstance(item = {}) {
   return deepFreeze(output);
 }
 
-function totals(records, actorId) {
+function totals(records, actorId, includedRefs = null) {
   const byId = new Map(records.map((record) => [record.item_ref, record]));
   const carried = new Set();
   let mass = 0;
@@ -203,6 +223,7 @@ function totals(records, actorId) {
       return { pass: false, code: 'ITEM_RUNTIME_PLACEMENT_CYCLE' };
     }
     if (!status) continue;
+    if (includedRefs != null && !includedRefs.has(record.item_ref)) continue;
     if (record.mechanics == null) continue;
     const itemMass = record.mechanics.mass_grams;
     if (!Number.isSafeInteger(itemMass) || itemMass < 0) {

@@ -64,14 +64,31 @@ export function ownKnowledgeProjection(actor) {
   return structuredClone(actor.knowledge_profile_snapshot);
 }
 
-export function ownMemoryProjection(actor, state, targetRef) {
+export function currentSceneObservationProjection(state,
+  details = state.current_visible_context?.sensory_details) {
+  if (!Array.isArray(details)) return [];
+  const unique = [...new Set(details.filter(
+    (text) => typeof text === 'string' && text.trim().length > 0
+  ))];
+  return unique.map((text, index) => ({
+    observation_ref: ref('perception_result',
+      `current-scene:${state.party_state.state_version}:${index + 1}`),
+    source_type: 'direct_perception',
+    observed_at: structuredClone(state.clock),
+    fact_text: text
+  }));
+}
+
+export function ownMemoryProjection(actor, state, targetRef,
+  currentObservations = currentSceneObservationProjection(state)) {
   return {
     records: structuredClone(actor.knowledge_records ?? []),
     received_messages: structuredClone(
       (state.received_messages ?? []).filter(
         ({ listener_ref: listenerRef }) => sameRef(listenerRef, targetRef)
       )
-    )
+    ),
+    current_observations: structuredClone(currentObservations)
   };
 }
 

@@ -109,6 +109,32 @@ test('legacy temporal fragments do not require or add local-fire owner locks', (
   assert.equal(Object.hasOwn(result.input.lock_context, 'owner_keys'), false);
 });
 
+test('ordered transitions compose one committed version only with the actual previous state', () => {
+  const transition = (before, after) => ({ proposal_id: after,
+    write_set: { inserts: [], appends: [], deletes: [], updates: [{
+      target_table: 'party_npc_spatial_schedules', id: 'schedule-1',
+      previous_record: { causal_state_ref: { activity: before } },
+      record: { id: 'schedule-1', party_id: 'party-1', state_version: 2,
+        causal_state_ref: { activity: after } } }] },
+    expected_state_versions: [{ target_table: 'party_npc_spatial_schedules',
+      id: 'schedule-1', state_version: 1 }],
+    physical_keys: ['party_runtime.party_npc_spatial_schedules:schedule-1'] });
+  const first = transition('work', 'break');
+  const second = transition('break', 'work');
+  const compose = next => integrateSpatialV3TemporalWriteFragments({
+    base_write_plan_input: base,
+    temporal_result: { combined_change_set: { proposals: [first, next] } } });
+  const applied = compose(second);
+  assert.equal(applied.ok, true);
+  const writes = applied.input.approved_write_sets.flatMap(set => set.updates);
+  assert.equal(writes.length, 1);
+  assert.deepEqual(writes[0].record, second.write_set.updates[0].record);
+  assert.equal(Object.hasOwn(writes[0], 'previous_record'), false);
+  assert.deepEqual(applied.input.expected_state_versions, first.expected_state_versions);
+  assert.equal(compose(transition('stale', 'work')).ok, false);
+  assert.equal(first.write_set.updates[0].record.causal_state_ref.activity, 'break');
+});
+
 test('temporal fragment integration fails closed on duplicate writes or conflicting versions', () => {
   const duplicate = integrateSpatialV3TemporalWriteFragments({
     base_write_plan_input: base,

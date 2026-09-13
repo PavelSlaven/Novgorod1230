@@ -34,6 +34,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     const committedState = structuredClone(input.committed_state);
     let projected = await playerSafeStateProjector({
       ...input,
+      scene_presentation: scenePresentation,
       committed_state: committedState,
       working_projection_authority: workingProjectionAuthority
     });
@@ -194,10 +195,13 @@ export function projectPreparedOrdinaryItem(state, plan) {
   const descriptor = item?.item_proposal?.semantic_descriptor;
   if (!text(item?.item_id) || !text(descriptor?.name)
       || !text(descriptor?.semantic_type)) return state;
+  const quantity = item.mechanics_snapshot?.mechanics?.quantity;
   const projectedItem = {
     item_id: item.item_id,
     name: descriptor.name,
     semantic_type: descriptor.semantic_type,
+    ...(Number.isFinite(quantity?.value) && text(quantity?.unit)
+      ? { quantity: quantity.value, quantity_unit_id: quantity.unit } : {}),
     ...(Array.isArray(descriptor.facts) && descriptor.facts.length
       ? { physical_facts: descriptor.facts.map((fact) => fact?.text ?? fact)
         .filter(text) } : {}),

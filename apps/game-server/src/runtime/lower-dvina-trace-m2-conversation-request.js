@@ -59,7 +59,9 @@ export function buildPlayerRequest(context) {
         required_supporting_operation: structuredClone(
           context.requiredSupportingOperation)
       } : {}),
-      ...(context.phase === 'phase_4' ? {
+      ...(context.phase === 'phase_4'
+        && Object.hasOwn(context.playerOperationContract,
+          'offer_conditional_protection') ? {
         offer_policy_ref: context.contracts.promisePolicy.policy_id
       } : {})
     },

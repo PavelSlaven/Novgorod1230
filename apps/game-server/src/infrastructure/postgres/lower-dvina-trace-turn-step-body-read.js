@@ -4,7 +4,7 @@ import {
   requireTurnStepPreparedEffectLedger
 } from '@rus/turn';
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
-import { buildTurnStepBodyEffectRef } from
+import { buildTurnStepBodyEffectRef, preparedBodyHistoryInput } from
   './lower-dvina-trace-turn-step-body-history.js';
 
 export async function assertTurnStepBodyHistoryRows(pool, payload, headRow) {
@@ -50,6 +50,7 @@ function assertCurrentEffect(history, payload) {
     envelope.body_update?.prepared_effect_ledger_digest,
     envelope.consequence?.prepared_effect_ledger_digest
   ];
+  let preparedBodySlices = [];
   if (preparedLedger == null
       && preparedDigests.some((digest) => digest != null)) invalid();
   if (preparedLedger != null) {
@@ -67,9 +68,19 @@ function assertCurrentEffect(history, payload) {
         || envelope.body_update?.prepared_effect_ledger_digest !== digest
         || envelope.consequence?.prepared_effect_ledger_digest !== digest
         || !same(envelope.body_update,
-          buildTurnStepPreparedBodyUpdate(ledger))
-        || current.length !== 0) invalid();
-    return;
+          buildTurnStepPreparedBodyUpdate(ledger))) invalid();
+    if (ledger.slices.some((slice) => slice.effect_kind !== 'semantic_activity')) {
+      if (current.length !== 0) invalid();
+      return;
+    }
+    const applied = ledger.slices.filter((slice) => slice.body_update.applied === true);
+    preparedBodySlices = applied;
+    for (const slice of applied) {
+      const operations = batch?.operations?.filter(({ target, value }) =>
+        target === 'party_events' && value?.activity_id === slice.operation_ref) ?? [];
+      if (operations.length !== 1 || operations[0].value.step_index !== slice.step_index
+          || operations[0].value.profile_ref !== slice.owner_ref) invalid();
+    }
   }
   if (batch == null) {
     if (current.length !== 0) invalid();
@@ -85,10 +96,9 @@ function assertCurrentEffect(history, payload) {
   const subject = currentBodySubject(payload);
   let effectRef;
   try {
-    effectRef = buildTurnStepBodyEffectRef({
-      factual: envelope,
-      batch
-    });
+    effectRef = buildTurnStepBodyEffectRef(preparedBodyHistoryInput({
+      factual: envelope, batch, bodySlices: preparedBodySlices
+    }));
   } catch {
     invalid();
   }

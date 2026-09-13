@@ -115,7 +115,15 @@ export function npcConversationInstructions(repair, request = null) {
     ?.commit_route_participation?.allowed_bindings;
   const routeContext = request?.decision_scope?.operation_contract
     ?.disclose_known_route?.player_safe_context;
+  const semanticRepair = repair?.validation_errors?.some(
+    ({ category }) => category === 'semantic_grounding'
+  ) === true;
   return [
+    ...(semanticRepair ? [
+      'MANDATORY SEMANTIC REPAIR: rewrite the complete response. Remove or recast every unsupported factual assertion named by validation_errors; do not preserve unsupported meaning. If memory.records has no exact record for a requested earlier observation, explicitly say the NPC cannot confirm whether it happened. Never repeat a prior unsupported positive or negative answer from public history. A current_observation permits only its exact fact_text with its exact source ref, with no nearby possible state or required next action.'
+    ] : repair ? [
+      'MANDATORY FORMAT REPAIR: repair only structure, refs, and enum values; preserve the response meaning.'
+    ] : []),
     'Return only one plain JSON object with the semantic conversation contribution.',
     'Do not return request, boundary, conversation, exchange, state, speaker identity, or schema; the server assembles them.',
     `Use this complete semantic JSON shape; angle-bracket values must be replaced and never emitted literally:\n${semanticNpcShape()}`,
@@ -143,6 +151,10 @@ export function npcConversationInstructions(repair, request = null) {
     'identity, condition, or possessions somebody else\'s.',
     'When knowledge.memory.records is empty, the NPC has no admitted incident fact',
     'of its own; admission rules and received allegations cannot supply one.',
+    'memory.current_observations contains only exact present facts directly',
+    'perceptible to this co-located NPC. Such a fact may be asserted only with',
+    'its exact observation_ref in speech.claims.source_knowledge_refs. It never',
+    'proves an earlier observation, memory, cause, continuation, or hidden fact.',
     'npc.machine_state.current_activity is only the exact activity at requested_at.',
     'It never proves where the NPC was, what the NPC did, or what the NPC saw at',
     'an earlier time. Past first-person activity or observation requires an exact',
@@ -217,6 +229,11 @@ export function npcConversationInstructions(repair, request = null) {
     'Do not resolve RNG, exact time, consequences, database writes,',
     'or narration. Social delivery never dictates the NPC response.',
     'The NPC reason is internal and must not appear in speech or narration.',
+    'Never infer a current object, condition, resource, amenity, availability,',
+    'or permission from a plausible place or social situation; exact supplied',
+    'subjective evidence is required. Missing or empty memory is not evidence',
+    'that the NPC did not previously see or experience something. Say that the',
+    'NPC cannot confirm it instead of inventing a negative observation.',
     ...(requiredCandidate === null ? [] : [
       'Required conversation candidate: the server binds every non-placeholder value; replace only semantic placeholders.',
       JSON.stringify(stripNpcEnvelope(requiredCandidate))
@@ -232,12 +249,9 @@ export function npcConversationInstructions(repair, request = null) {
     ...(typeof routeContext?.destination_label === 'string' ? [
       `Final route constraint: the only permitted route content is that a way leads to ${JSON.stringify(routeContext.destination_label)}. Do not add warmth, shelter, supplies, people, sightings, directions, distance, or conditions at the destination.`
     ] : []),
-    repair?.validation_errors?.some(
-      ({ category }) => category === 'semantic_grounding')
-      ? 'Rewrite the complete response once. Remove or recast every unsupported factual assertion named by validation_errors; do not preserve unsupported meaning. Use only exact request evidence, attach matching claim source refs for every retained factual assertion, and otherwise answer with uncertainty or refusal. Keep the same decision boundary and do not add an operation.'
-      : repair
-      ? 'Repair only structure, refs, and enum values; preserve the response meaning.'
-      : 'Ordinary valid speech is allowed without a scenario outcome operation.'
+    semanticRepair
+      ? 'Use only exact request evidence, attach matching claim source refs for every retained factual assertion, and otherwise answer with uncertainty or refusal. Keep the same decision boundary and do not add an operation.'
+      : repair ? '' : 'Ordinary valid speech is allowed without a scenario outcome operation.'
   ].join(' ');
 }
 

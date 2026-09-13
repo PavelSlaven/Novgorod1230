@@ -46,9 +46,12 @@ export function appendPhase4Movement({
       party_id: partyId,
       npc_id: npc.instance_id,
       profile_level: npc.profile_level,
-      anchor_id: npc.anchor_id
+      anchor_id: npc.anchor_id,
+      machine_state: npc.machine_state
     }));
   }
+  appendParticipantScheduleWrites({ updates, appends, partyId, state, next,
+    movement, turnNumber, changeSetId });
   inserts.push(row('party_character_knowledge',
     `${state.actor_id}:onisim_found_alive`, {
       party_id: partyId,
@@ -140,6 +143,57 @@ export function appendPhase4Movement({
   });
   if (contracts.resourceArrivalBinding != null) {
     appendPhase5ArrivalResources({ inserts, state, next, partyId });
+  }
+}
+
+function appendParticipantScheduleWrites({ updates, appends, partyId, state,
+  next, movement, turnNumber, changeSetId }) {
+  const participants = new Set(movement.participants);
+  for (const schedule of (next.npc_schedule_runtime ?? []).filter(
+    ({ npc_id: npcId }) => participants.has(npcId)
+  )) {
+    const before = state.npc_schedule_runtime?.find(
+      ({ id }) => id === schedule.id
+    );
+    if (before == null
+        || schedule.state_version !== Number(before.state_version) + 1) {
+      throw new Error('TRACE_PHASE_4_NPC_SCHEDULE_TRANSITION_INVALID');
+    }
+    updates.push(row('party_npc_spatial_schedules', schedule.id, {
+      id: schedule.id,
+      party_id: partyId,
+      npc_id: schedule.npc_id,
+      current_position_node_id: schedule.current_position_node_id,
+      causal_state_ref: schedule.causal_state_ref,
+      status: schedule.status,
+      next_transition_at_whole_minutes:
+        schedule.next_transition_at_whole_minutes,
+      next_transition_at_subminute_numerator:
+        schedule.next_transition_at_subminute_numerator,
+      next_transition_at_subminute_denominator:
+        schedule.next_transition_at_subminute_denominator,
+      state_version: schedule.state_version,
+      updated_change_set_id: changeSetId
+    }));
+    if (before.status !== 'active' || schedule.status !== 'inactive') continue;
+    const transitionId =
+      `npc-transition:${partyId}:trace-phase4:${turnNumber}:route:${schedule.npc_id}`;
+    appends.push(row('party_npc_runtime_transitions', transitionId, {
+      transition_id: transitionId,
+      party_id: partyId,
+      npc_id: schedule.npc_id,
+      transition_kind: 'routine_interrupted',
+      event_id: null,
+      change_set_id: changeSetId,
+      idempotency_record_id: transitionId,
+      occurred_at_whole_minutes: next.clock.whole_minutes,
+      occurred_at_subminute_numerator: next.clock.subminute_numerator,
+      occurred_at_subminute_denominator: next.clock.subminute_denominator,
+      trace: { cause: 'route_participation', route_ref: movement.route_ref,
+        prior_activity_ref:
+          before.npc_snapshot?.machine_state?.current_activity?.activity_ref
+            ?? null }
+    }));
   }
 }
 

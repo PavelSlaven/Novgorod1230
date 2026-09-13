@@ -1,3 +1,4 @@
+import { npcRoutineCandidate } from '../../runtime/npc-routine-temporal.js';
 import { serverError } from '../../errors.js';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
@@ -13,7 +14,7 @@ export async function loadTracePhase2TemporalSourceProof(
   partyPool,
   partyId
 ) {
-  const [events, schedules, localProcesses] = await Promise.all([
+  const [events, schedules, localProcesses, routeEndpoints] = await Promise.all([
     partyPool.query(
       `SELECT e.event_id,e.event_kind,
               e.state_version,
@@ -43,13 +44,16 @@ export async function loadTracePhase2TemporalSourceProof(
       [partyId]
     ),
     partyPool.query(
-      `SELECT id,npc_id,schedule_profile_ref,causal_state_ref,
+      `SELECT s.*,s.id,s.npc_id,s.schedule_profile_ref,s.causal_state_ref,
+              jsonb_build_object('instance_id',n.npc_id,'anchor_id',n.anchor_id,
+                'machine_state',n.machine_state) AS npc_snapshot,
               next_transition_at_whole_minutes::text,
               next_transition_at_subminute_numerator::text,
               next_transition_at_subminute_denominator::text
-         FROM party_runtime.party_npc_spatial_schedules
-        WHERE party_id=$1 AND status='active'
-        ORDER BY npc_id`,
+         FROM party_runtime.party_npc_spatial_schedules s
+         JOIN party_runtime.party_npcs n ON n.party_id=s.party_id AND n.npc_id=s.npc_id
+        WHERE s.party_id=$1
+        ORDER BY s.npc_id`,
       [partyId]
     ),
     partyPool.query(
@@ -57,8 +61,24 @@ export async function loadTracePhase2TemporalSourceProof(
               p.process_state,p.next_boundary_at,p.state_version
          FROM party_runtime.party_local_world_processes p
         WHERE p.party_id=$1 AND p.status='active'
-        ORDER BY p.process_ref`, [partyId])
+        ORDER BY p.process_ref`, [partyId]),
+    partyPool.query(
+      `SELECT b.source_endpoint_binding_ref->>'entity_id' AS endpoint_id,
+              b.position_id,p.access_class_id,p.capacity,p.status
+         FROM party_runtime.party_world_route_endpoint_position_bindings b
+         JOIN party_runtime.scene_position_nodes p
+           ON p.party_id=b.party_id AND p.id=b.position_id
+        WHERE b.party_id=$1 AND b.status='active'
+        ORDER BY endpoint_id`, [partyId])
   ]);
+  const routeEndpointPositions = Object.fromEntries(routeEndpoints.rows.map((row) => [
+    row.endpoint_id, { position_id: row.position_id,
+      access_class_id: row.access_class_id, capacity: Number(row.capacity),
+      status: row.status }
+  ]));
+  const scheduleRows = schedules.rows.map((row) => ({
+    ...row, route_endpoint_positions: structuredClone(routeEndpointPositions)
+  }));
   const eventCandidates = events.rows.map((row) => {
     const resolutionClass = row.rule_ref?.resolution_class;
     if (!nonEmpty(resolutionClass) || row.subjects.length === 0) {
@@ -80,7 +100,8 @@ export async function loadTracePhase2TemporalSourceProof(
       causalParentRefs: row.dependencies
     });
   });
-  const scheduleCandidates = schedules.rows.map((row) => candidate({
+  const scheduleCandidates = scheduleRows.filter((row) => row.status === 'active').map((row) =>
+    row.causal_state_ref?.routine_state ? npcRoutineCandidate(row) : candidate({
     boundaryId: `npc-schedule:${row.id}`,
     boundaryKind: 'npc_schedule',
     timestamp: timestampFrom(row, 'next_transition_at'),
@@ -143,6 +164,8 @@ export async function loadTracePhase2TemporalSourceProof(
     candidate_count: candidates.length,
     event_versions: eventVersions,
     local_fire_runtime: localFireRuntime,
+    npc_schedule_runtime: scheduleRows.filter((row) => row.causal_state_ref?.routine_state),
+    route_endpoint_positions: routeEndpointPositions,
     candidates
   });
 }

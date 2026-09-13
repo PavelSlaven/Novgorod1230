@@ -119,7 +119,7 @@ export function integrateSpatialV3TemporalWriteFragments({
       if (!Array.isArray(writeSet?.[mode])) {
         return failure(input.party_id, `base ${mode} must be an array`);
       }
-      for (const row of writeSet[mode]) seenRows.set(key(row), mode);
+      for (const row of writeSet[mode]) seenRows.set(key(row), { mode, row });
     }
   }
   const versions = new Map(
@@ -162,14 +162,26 @@ export function integrateSpatialV3TemporalWriteFragments({
       }
       for (const row of fragmentWrites) {
         const rowKey = key(row);
-        if (!row?.target_table || !row?.id || seenRows.has(rowKey)) {
+        const prior = seenRows.get(rowKey);
+        if (prior && mode === 'updates' && prior.mode === mode
+            && record(row.previous_record)
+            && Object.keys(row.previous_record).length > 0
+            && Object.entries(row.previous_record).every(([field, value]) =>
+              computeSpatialV3CanonicalDigest(prior.row.record[field])
+                === computeSpatialV3CanonicalDigest(value))) {
+          Object.assign(prior.row.record, clone(row.record));
+          continue;
+        }
+        if (!row?.target_table || !row?.id || prior) {
           return failure(
             input.party_id,
             `duplicate or incomplete temporal write identity: ${rowKey}`
           );
         }
-        seenRows.set(rowKey, mode);
-        copied[mode].push(clone(row));
+        const copy = clone(row);
+        delete copy.previous_record;
+        seenRows.set(rowKey, { mode, row: copy });
+        copied[mode].push(copy);
       }
     }
     for (const entry of fragment.expected_state_versions) {

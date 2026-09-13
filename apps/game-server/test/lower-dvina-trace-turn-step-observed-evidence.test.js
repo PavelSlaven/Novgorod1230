@@ -1,3 +1,4 @@
+import { promptMappings } from './lower-dvina-trace-turn-step-llm-test-helpers.js';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createLowerDvinaTraceTurnStepModel } from
@@ -20,9 +21,7 @@ test('turn step planner routes observed-evidence comparison before ordinary disc
           { fact_ref: 'fact:wool', text: 'На ветке висит клочок шерсти.' }
         ] }
     } }));
-    const mappings = JSON.parse(prompt.match(
-      /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
-    )[1]);
+    const mappings = promptMappings(prompt);
     assert.deepEqual(mappings.observed_evidence_inspection.operations[0], {
       op: 'request_discovery',
       actor_ref: '<copy current actor ref from request>',

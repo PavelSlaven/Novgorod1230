@@ -116,6 +116,8 @@ Release: `0.23.0-migration.24`
 | `time_light_consistency_audit` | `STAGE17_AUDIT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `time_light_consistency_input` | `STAGE17_INPUT_SCHEMA` | `packages/contracts/src/time-knowledge-hidden-boundary.js` |
 | `turn_screen` | `TURN_SCREEN_SCHEMA` | `packages/presentation/src/read-models/contracts.js` |
+| `turn_step_prepared_effect_ledger_v1` | `LEDGER_SCHEMA` | `packages/turn/src/turn-step-prepared-effect-validation.js` |
+| `turn_step_prepared_effect_slice_v1` | `SLICE_SCHEMA` | `packages/turn/src/turn-step-prepared-effect-validation.js` |
 | `visible_context_audit` | `STAGE21_OUTPUT_SCHEMA` | `packages/contracts/src/visible-context-boundary.js` |
 | `visible_context_audit_approval` | `VISIBLE_CONTEXT_AUDIT_APPROVAL_SCHEMA` | `packages/contracts/src/schema-names.js` |
 | `visible_context_audit_code_precheck` | `STAGE21_PRECHECK_SCHEMA` | `packages/contracts/src/visible-context-boundary.js` |
@@ -207,6 +209,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/028_party_runtime_local_exact_fire.sql` | sql | 3312 | `bea7d3cb2e1cbadb9f901e9cf71011498d44845d3b3fda3342fa361d764375b3` |
 | `schemas/party-db/029_party_runtime_spatial_semantic_remainder.sql` | sql | 2673 | `ef20ef6ce21f85e717c327bceb70751e1210bed0ae92b8dcbe97a4eb8dfeddab` |
 | `schemas/party-db/030_party_runtime_snapshot_validator_alias.sql` | sql | 4489 | `037bf322358021dbdf73650259fc64eec346ba00474e072d3098393e2baee9cc` |
+| `schemas/party-db/031_party_runtime_deferred_npc_schedules.sql` | sql | 2325 | `f25ae94fb5cc7b18e15f71d6a07012119ad46cc32b4eeb0576705ddf2031dd87` |
 | `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |

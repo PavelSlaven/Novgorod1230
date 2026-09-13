@@ -272,13 +272,19 @@ LLM возвращает не весь заявленный сценарий, а
     },
     {
       "step_index": 2,
-      "summary": "персонаж открыл сундук; содержимое стало доступно"
+      "summary": "персонаж открыл сундук; содержимое стало доступно",
+      "check_outcome": "success"
     }
   ],
   "actor": {},
   "player_safe_state": {}
 }
 ```
+
+`check_outcome` присутствует только у шага с уже выполненной code-owned
+проверкой и равен её сохранённому outcome band. Поле помогает следующему
+семантическому шагу сохранить степень результата, но не передаёт roll, DC,
+числовые modifiers, audit или RNG state. Шаг без проверки не содержит поле.
 
 ### 7.1. Обязательные свойства входа
 
@@ -351,6 +357,21 @@ LLM возвращает не весь заявленный сценарий, а
 
 `additionalProperties` для всех объектов контракта должно быть `false` в машинной JSON Schema.
 
+Provider adapter до strict validation проецирует semantic envelope и interpretation
+на точные поля этой схемы: неизвестная model metadata не становится частью plan.
+Значения известных полей и вложенная механика не очищаются этим правилом.
+Неоднозначный known mapping envelope (включая unavailable/disabled mappings
+из полного существующего registry), конфликтующий semantic continuation и
+operation_choice mismatch сохраняют fail-closed; речь или действие нельзя молча
+отбросить как metadata. После проекции действует существующая нормализация goal_result
+и тот же focused speech audit, без дополнительного planner/normalizer.
+
+Planner prompt показывает mapping labels вне JSON, каждый пример — flat semantic
+object. Поля выбранного mapping идут на top level; имя mapping не является
+output key. Goal_result и continuation определяются всей заявкой, а не defaults
+примера: после первой свободной реплики независимое действие остаётся pending
+с точным unexecuted suffix, без выполнения через текст реплики.
+
 ### 8.1. Значения `resolution`
 
 - `direct` — непосредственный результат шага известен без броска и без профильного владельца;
@@ -373,7 +394,7 @@ LLM возвращает не весь заявленный сценарий, а
 
 Обязательное nullable структурное поле `direct_result_kind` принимает
 `player_safe_observation`, `player_safe_item_observation`,
-`player_safe_body_observation`, `no_state_gesture` или `null`. Первые четыре значения
+`player_safe_body_observation`, `no_state_gesture`, `player_utterance` или `null`. Первые четыре значения
 разрешены только для прямого успешного или частично успешного write-free шага с
 `activity = semantic/moment/none`, пустыми `operations`, `check = null` и
 `clarification = null`; для такого шага `null` запрещён. Во всех остальных
@@ -392,6 +413,71 @@ placement и подтверждённое condition как обязательн�
 подтверждает только выполнение простого жеста без нового состояния. Новая
 физическая деталь требует соответствующий domain/discovery path. Код проверяет
 эти условия; `reason` и `reason_code` остаются только диагностикой.
+
+`player_utterance` фиксирует короткую речь без подходящего supplied interaction
+owner через тот же direct `semantic/moment/none` шаг с пустыми operations.
+Обязателен объект `utterance` с ровно `speaker_ref`, `utterance_text`,
+`input_mode`, `delivery`: speaker равен текущему actor, `verbatim` дословно переносит
+заданные слова без обрамляющего действия, `intent_paraphrase` семантически
+конкретизирует свободное речевое намерение без заданной цитаты. Последний режим
+не разрешает переписывать явно заданные слова или добавлять незаявленные
+утверждения. `delivery` содержит ровно qualitative `loudness` (`1..4`: шёпот,
+обычный голос, повышенный голос, крик) и `duration_class` (`instant`, `brief`,
+`sustained`). Это LLM-owned семантика способа произнесения, а не audience:
+отсутствующее или malformed delivery отклоняется fail-closed и не заменяется
+тихим default. После применения и P16 commit exact resolved text/speaker
+сохраняются в существующем `approved_plan` semantic trace, а player-safe
+projection явно показывает произнесённые слова. В остальных plans `utterance`
+отсутствует. При отдельном последующем действии допустимы `pending` и
+continuation только с неисполненным остатком; одна речь завершается `achieved`.
+Перед применением тот же semantic grounding auditor сверяет оба input modes
+с намерением текущего actor; чужая цитата, перефразирование заданных слов и
+добавленные обещания/claims отклоняются с одной существующей repair-попыткой.
+
+В existing pre-repair speech seam допускается trial, меняющий только effort на
+`none`: исходный plan уже direct `player_utterance`, owner `semantic`, duration
+`moment`, без `requested_duration_minutes`, operations пуст, check/clarification
+null, speaker текущий, utterance непустой, dependencies и prepared/discovery
+carriers отсутствуют, effort принадлежит существующему enum. Полная validation
+trial против того же request должна устранить ошибку envelope/direct_result_kind;
+оставшиеся ошибки допускаются только для verbatim exact-copy и связи goal/continuation.
+Trial не применяется без последующего faithful focused audit и финальной strict validation.
+
+После faithful focused audit код может спроецировать проверенные speech metadata
+полного direct `semantic/moment/none` speech envelope первоначальной попытки:
+operations пуст, check/clarification null. Проверяемый plan должен быть валиден либо
+иметь только изолированные ошибки verbatim exact-copy или связи goal/continuation.
+Auditor независимо определяет `required_input_mode` из исходного намерения;
+ошибка substring-проверки сама по себе не разрешает `intent_paraphrase`.
+Его `unexecuted_intent` должен быть строгим дословным suffix исходного immutable
+`remaining_intent`, совпадать с прежним непустым continuation либо оканчиваться
+им, восстанавливая только потерянный префикс. `depends_on_refs` пуст,
+prepared/discovery carriers отсутствуют. Меняются только input mode на проверенный
+auditor mode, continuation на этот suffix и goal на `pending`; speaker, utterance
+text и остальные поля после trial неизменны. Corrected plan возвращается через existing
+semantic validator/preflight и проходит полную strict `validateTurnStepPlan` и
+freeze без дополнительного planner или audit. Та же bounded metadata projection
+допускается после единственного repair и его faithful re-audit. Если strict
+validator до re-audit отверг сохранённый raw repair только по
+`$.utterance.utterance_text/direct_result_kind` и/или `$.goal_result/continuation`,
+полный direct `semantic/moment/none` envelope с текущим speaker, неизменными
+непустыми словами, operations=[], check/clarification=null и точным непустым
+suffix без dependencies/prepared/discovery carriers допускается к тому же
+единственному re-audit. Только его faithful verdict разрешает описанную metadata
+projection; затем обязательны полная strict validation и freeze.
+`repaired:true` сохраняется; effort trial на repair не переносится. Любые другие
+structural ошибки не допускаются. Оставшаяся ошибка terminal; третьего planner/audit нет.
+Неверная/чужая цитата, новые claims,
+`speech_faithful=false`, malformed audit, неизвестные поля и любые другие ошибки
+сохраняют existing one-repair/fail-closed path. Удалять или заменять suffix этой
+проекцией нельзя.
+
+Это факт произнесения, а не истинности речевых claims. Он не устанавливает
+слышимость, аудиторию, knowledge, ответ или отсутствие ответа. Адресованная речь
+с доступным owner сохраняет conversation path. Broadcast perception вне
+conversation этим узким contract extension не активирована: actor без адресата
+не считается автоматически неуслышанным. Existing audience owner по-прежнему
+требует фактические per-listener perception results.
 
 ### 8.3. `activity`
 
@@ -436,6 +522,74 @@ LLM не возвращает точные изменения `health`, `energy`
 2. увеличивает `working_revision` и `step_index`;
 3. добавляет code-owned summary выполненного шага;
 4. передаёт `remaining_intent` в следующий LLM-вызов.
+
+Неизменённый полный intent допустим для discovery как prerequisite получения
+недостающего ordinary-материала. После разрешения owner authored investigation
+не может использовать это исключение: preflight отклоняет такой plan до RNG
+и commit. Соответствие информации определяется запрошенным вопросом и
+`semantic_scope/result_scope` операции, а не общими объектом или сценой.
+При player-safe `ordinary_resolution.discovery_available=true` existing grounding
+validator детерминированно отклоняет только `literal/direct/not_achieved` с
+`operations=[]` и `check/continuation/clarification/direct_result_kind=null`.
+Initial generic LLM audit отсутствует. `operation_semantic_grounding` по
+`$.resolution` запускает единственный repair: `ordinary_material_prerequisite`
+с query как именным описанием нужного referent/material/physically connected group,
+без приобретения, перемещения, обращения, использования,
+трансформации, цели использования или action clause. Query не копирует полный
+physical intent; literal сохраняется, continuation.remaining_intent точно равен
+request.remaining_intent, depends_on_refs=[]. Эту границу задают stable planner
+instruction и завершающая repair-specific инструкция только для единственной
+ошибки `$.resolution/operation_semantic_grounding`. Focused audit получает
+полный `plan.continuation` рядом с operation и remaining_intent: при exact полном
+intent в continuation и nominal query нужного материала выбирает
+`material_prerequisite/consumed_intent:null`. `focused_discovery` означает
+исполняемый discovery prefix, совпадающий с consumed_intent и не повторённый
+в continuation. Classifier verdict не нормализуется кодом; неверная связь
+остаётся отказом. Repair ошибки resolution заменяет также зависимые operations, activity, goal_result
+и continuation по существующему prerequisite mapping: запрет переписывать
+независимые поля не требует сохранять rejected causal shape. Отсутствие handler
+для последующего физического действия не отменяет ordinary prerequisite.
+Discovery проходит обычный focused audit; повторный literal
+отказ terminal. Predicate не зависит от reason_code, имён вещей или слов запроса.
+Closed material-prerequisite mapping в assembly привязывает model-emitted discovery kind к `inspect`
+только при ordinary scope, literal, exact полном intent в continuation и отдельном
+query. Это не semantic acceptance: focused auditor по-прежнему проверяет query.
+Настоящий focused search и standalone focused inspect с `continuation:null`
+сохраняют duration/body и player-response boundary. Inspect как material
+prerequisite с полным неизменённым intent в continuation остаётся preflight и
+не исполняет более позднее действие.
+Отсутствие actionable ref не доказывает отсутствия ordinary материала;
+committed sensory facts могут обосновать prerequisite, слова игрока имеют
+`evidence_weight: 0`. `reality_limited`, `make_believe` и disabled discovery
+не затронуты. Repair `domain_owner_unavailable` удаляет недоступную операцию
+и возвращает lawful `reality_limited`, сохраняя независимый later intent;
+отсутствие owner не доказывает физической невозможности и не разрешает успех.
+После admitted O1 `materialize` текущий beat включает обнаружение по admitted
+`display_name` до физического продолжения. Applied traces сохраняют порядок
+точной реплики, времени focused discovery, находки и физического A1 результата. Prepared ledger
+`slice.step_index` и keys `slice.consequence.visible_seed` привязывают activity/time
+к результату того же applied step; один step получает один grouped visible change.
+Реплика стоит перед своим временем, discovery перед находкой, activity перед физическим
+результатом. Отдельные component changes удаляются из base, propositions сохраняются; оставшаяся
+неопределённость следует после подтверждённых изменений. O1 `semantic_type`
+сохраняет конкретный semantic type, выбранный моделью для материала или объекта;
+generic authority candidate его не заменяет. Semantic response shape требует
+specific non-null type; null/omission остаются ошибкой с единственным repair.
+В O1 обязательная unavailable authority определяется до item/non-item: evidentiary,
+significant и hidden requirement не исчезает оттого, что носитель является
+physical trace. Если оно требуется всем viable alternatives, выбирается
+`authority_required`; обычные non-item details без такого требования сохраняют
+`no_change`, независимая mundane alternative остаётся допустимой.
+Exact query остаётся вопросом, не
+доказательством собственности или исполнения. Prepared semantic chain допускает
+уже разрешённого A1 owner при отсутствии selected authored command; проверки
+source scope, preflight, revalidation, conservation и atomic commit сохраняются.
+Private O1 wire опускает только дублирующий `world_knowledge.context_text`, если
+передан полный structured slice; claim binding и telemetry используют полный request.
+При законной player-response boundary скрытого продолжения нет; общий visible
+projector сохраняет уже полученные domain facts и отдельно показывает exact
+неисполненный остаток как попытку с неустановленным результатом, без выдуманных
+причин остановки или отрицательных наблюдений.
 
 ### 9.2. Продолжение после проверки
 
@@ -774,11 +928,24 @@ LLM может материализовать объект, который яв�
   "actor_ref": "actor_mikula",
   "discovery_kind": "look | inspect | search | listen | remember | dig",
   "target_refs": ["entity_or_location_ref"],
-  "query": "что персонаж пытается обнаружить"
+  "query": "что персонаж пытается обнаружить",
+  "quantity": { "value": 5, "unit": "item" }
 }
 ```
 
 LLM не придумывает значимый скрытый результат.
+
+`quantity` опционален и допустим только для явно заявленной конечной группы от
+1 до 16 предметов. Semantic boundary определяет число, materialization owner
+проверяет точное совпадение proposal и сохраняет одну identity с этим mechanics
+quantity. При отсутствии точного количества поле не передаётся.
+
+Canonical O1 candidate identity v2 включает exact target, normalized query и
+`requested_quantity: {value,unit} | null`. Поэтому одинаковые target/query/quantity
+дают тот же replay key, другое exact quantity — другой key, а unspecified quantity
+намеренно не равно explicit quantity 1. Positive replay переиспользует exact
+committed visible item без model call, reroll, нового item или превращения в
+`no_change`.
 
 `target_refs` содержит ровно один ref. Если model output перечисляет несколько
 targets, deterministic canonicalizer оставляет первый для текущего исполняемого
@@ -790,9 +957,13 @@ Step loop исполняет очередь по одному target без но
 необработанный остаток остаётся в approved continuation и не проталкивается
 через второй ordinary atomic plan.
 
-Для O1 этот же существующий request — единственный public путь к common ordinary detail; `request_ordinary_detail` не существует. После authored и committed discovery, exact persisted resolution и other code-first short circuits ordinary resolver вызывается только при meaningful engagement, когда concrete detail нужна factual projection. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A получает только committed objective context, не содержит candidate, raw player action, wishlist, desired use или narration suggestion и может подготовить лишь candidate-free seed/groups. Stage B имеет `evidence_weight: 0`; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`: это не noun/recipe allowlist и не permissions/classification/mechanics authority. Exact normalized retry использует persisted resolution без reroll; другой normalized query получает другую identity. Один discovery допускает максимум два semantic calls суммарно для Stage A, Stage B и structural repair; repair всегда расходует оставшийся call. Если Stage A repair исчерпал лимит, Stage B не вызывается и сохраняется seed-only. Positive `materialize` требует independent committed/prepared supporting basis, `common_mundane`/`common` admission, exact property basis, narrow existing placement и immutable mechanics snapshot в пределах bounded mechanics policy. Model-produced `absent`, `no_change` и `authority_required` — persisted first-class resolutions; preflight `no_change` из-за исчерпанного budget/cap остаётся transient и не создаёт granular record. Если в том же turn впервые выполнен Stage A, сохраняется seed-only P16 plan. Model call происходит вне physical transaction; revalidation и one atomic P16 commit сохраняют seed/basis, positive либо negative exact resolution. Planner и narrator видят только capability marker и approved visible concrete result.
+Для O1 этот же существующий request — единственный public путь к common ordinary detail; `request_ordinary_detail` не существует. После authored и committed discovery, exact persisted resolution и other code-first short circuits ordinary resolver вызывается только при meaningful engagement, когда concrete detail нужна factual projection. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A получает только committed objective context, не содержит candidate, raw player action, wishlist, desired use или narration suggestion и может подготовить лишь candidate-free seed/groups. Stage B имеет `evidence_weight: 0`; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target и canonical requested quantity выводит code-owned candidate identity и передаётся model только как `candidate_hint`: это не noun/recipe allowlist и не permissions/classification/mechanics authority. Exact normalized retry с тем же quantity использует persisted resolution без reroll; другой normalized query или quantity получает другую identity. Один discovery допускает максимум два semantic calls суммарно для Stage A, Stage B и structural repair; repair всегда расходует оставшийся call. Если Stage A repair исчерпал лимит, Stage B не вызывается и сохраняется seed-only. Positive `materialize` требует independent committed/prepared supporting basis, `common_mundane`/`common` admission, exact property basis, narrow existing placement и immutable mechanics snapshot в пределах bounded mechanics policy. Positive replay возвращает exact committed visible item без нового model call/write и не превращается в negative result. Model-produced `absent`, `no_change` и `authority_required` — persisted first-class resolutions; preflight `no_change` из-за исчерпанного budget/cap остаётся transient и не создаёт granular record. Если в том же turn впервые выполнен Stage A, сохраняется seed-only P16 plan. Model call происходит вне physical transaction; revalidation и one atomic P16 commit сохраняют seed/basis, positive либо negative exact resolution. Planner и narrator видят только capability marker и approved visible concrete result.
 
-При наличии production World Knowledge Stage B может вернуть `materialize` только с непустым `world_knowledge_claim_refs`, состоящим из exact `claim_ref` текущего grounded slice; LLM выбирает семантически релевантные premises, а code binding проверяет membership. Пустой или чужой ref делает ответ структурно невалидным и после единственного repair завершает ход typed failure до commit/narration.
+Для `common_mundane` World Knowledge не является positive whitelist: causal
+scene basis и обычной физической/исторической правдоподобности достаточно при
+отсутствии применимого hard constraint. Non-common positive materialization
+по-прежнему требует exact supporting fact refs. Hard constraints идут отдельным
+veto-channel, не считаются positive support и проверяются fail-closed.
 
 O1 сам не активирует O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources. Значимые, hidden и informational facts, container contents и topology остаются code-owned. Независимо активированный O2b ниже не расширяет O1 discovery.
 
@@ -1191,6 +1362,14 @@ local/custom OpenAI-compatible provider один `runtimeProviderOverride`
 применяется ко всем ролям. Transport не делает fallback на DeepSeek или другую
 model/provider; connection, auth, model, timeout, malformed response и invalid
 JSON завершают ход typed technical failure до commit.
+По умолчанию локальный игровой запрос передаёт
+`chat_template_kwargs.enable_thinking=false`. Role caller может явно выбрать
+`off`, `minimal`, `low`, `medium`, `high` или `xhigh` в пределах возможностей
+provider: transport сам не угадывает сложность и не повышает уровень. Step
+planner начинает с `off`; завершение без финального ответа повторяется один раз
+на той же модели с `low`. Его single structural repair тоже использует `low`,
+потому что запускается только после невалидного исходного плана. Остальные роли
+остаются `off`, пока их owner явно не установит иную complexity policy.
 
 ## 17. Активированная реализация
 
@@ -1604,3 +1783,101 @@ TURN_STEP_REQUEST:
 10. Narration вызывается только после factual commit.
 11. Все документы раздела 18 обновлены согласованно.
 12. Профильные тесты раздела 19 проходят.
+
+### Transient non-transforming item use
+
+Existing `request_item_use` допускает `use_kind: other` с непустым `description`
+без `action_production`. Description обозначает только исполняемую физическую
+попытку с существующим item, а не результат наблюдения или изменение мира.
+Используется semantic activity; exact время/body принадлежат прежним owners.
+Item доступен при current actor control либо current-visible placement с точным
+совпадением всех scope refs с текущей position: `scene_position_id` сравнивается
+с `position_id`, без вывода смысла из opaque ref. Player-safe position сохраняет
+этот authoritative id. In-place use сохраняет placement и не требует pickup;
+`move_entity` допустим только для явно заявленного перемещения. Hidden, blocked,
+foreign-held, contained, attached и off-scope item недоступны через этот путь.
+Runtime и grounding используют общий items-property access predicate и проверяют actor, текущие
+placement/item identity и только player-safe target refs; commit/revalidation
+и replay используют обычный turn flow. Цель domain owner относится к выполнению
+попытки, не к доказанности скрытого результата. Visible beat сообщает попытку и
+неустановленный результат наблюдения. Нельзя создавать durable physical facts,
+расход, процесс, добычу, новое знание или вывод о hidden contents через description.
+Эти изменения требуют соответствующего owner; A1 остаётся durable transformation.
+При literal denial repair сначала семантически сопоставляет имеющиеся item refs:
+known matching accessible item использует этот owner без выдуманного pickup,
+а отсутствующий ordinary материал — прежний material prerequisite. Повторный
+literal denial остаётся fail-closed; новые LLM roles и retries не добавляются.
+
+### Focused ordinary prerequisite correction
+
+Existing focused discovery auditor возвращает прежние `mode`/`consumed_intent`
+либо strict variant с дополнительным непустым `prerequisite_query`, только при
+`mode: material_prerequisite` и `consumed_intent: null`. Query семантически называет
+только отсутствующий ordinary referent/material/group без physical action/purpose.
+Аудитор получает exact current remaining intent, operation, continuation и безопасные
+items/scene. Уже доступный matching item, hidden contents, clue/evidence,
+authored/significant и authority-constrained truth не допускают эту correction.
+Код не извлекает существительные и не выбирает material: он связывает inspect,
+текущий scope, domain activity, pending goal и exact полный remaining intent в
+continuation с пустыми depends_on_refs. Corrected plan повторно проходит strict
+plan и owner admission без второго semantic audit или полного planner repair.
+Невалидная classification, copied full query и missing/authored owner fail closed.
+Единственная unselected discovery с пустыми target_refs получает exact current
+location ref только при доступном ordinary scope; explicit target не заменяется.
+Обычные focused search и standalone inspect сохраняют query, consumption и
+domain-owned время; `look` и material-prerequisite inspect остаются free.
+
+Для near-valid literal direct/not_achieved denial без операций, check, clarification
+и continuation допускается audit-only trial unsupported string direct_result_kind
+→ null: enum error должен относиться только к этому полю, а trial целиком проходит
+strict plan validation. Known direct kind, другой adaptation или дополнительные
+structural errors не получают trial. Existing grounding owner при ordinary scope
+передаёт тот же focused classifier exact полный intent; classifier возвращает тот
+же nominal prerequisite_query, а код связывает current actor/location, inspect,
+direct_result_kind:null и exact полный continuation. Возврат true не принимает trial;
+принимается только validated corrected_plan после повторного owner admission.
+Hidden/authored/невозможное намерение не получает ordinary обход; disabled scope
+не вызывает focused discovery, прежний lawful repair/fail-closed сохраняется.
+
+Single literal transient request_item_use с unknown item_ref допускает audit-only
+material trial при непустом exact source error set: unknown_ref в item_ref и/или
+source_placement_grounding того же ref, без других ошибок. Точный stable item_id/instance_id
+должен отсутствовать в supplied safe items; template/catalog ref не является stable
+identity и не перепривязывается к известному item; known hidden/foreign/off-scope item не дублируется. Trial
+использует ordinary current location, inspect и полный current intent только как
+вход существующего focused classifier. Возврат true не принимает trial: nominal
+prerequisite_query необходим для corrected_plan с exact полным continuation.
+Для strict-valid single literal transient use без continuation/check/clarification
+и других operations код до ПЕРВОГО semantic audit заменяет description на exact
+request.remaining_intent. Current item/access предварительно перепроверяются;
+обычный semantic audit обязан отвергнуть transformation, discovery, результат
+наблюдения или independent later actions. Только pass возвращает corrected_plan
+для strict schema/owner revalidation; stable ref, placement и operation kind
+не меняются. Visible seed сохраняет exact description. Дополнительный audit или
+full planner repair для искажения ролей в description не требуется.
+
+Denial и missing-item audit-only trials передают в тот же focused role явный input
+`correction_candidate: missing_ordinary_referent`. Его pseudo operation.query —
+полный physical remaining_intent, continuation:null — ещё не committed omission.
+Аудитор в этом режиме проверяет необходимость отсутствующего ordinary referent,
+а не способность discovery исполнить физическую query. При допустимом prerequisite
+обязательны mode material_prerequisite, consumed_intent null и nominal prerequisite_query;
+иначе different_action. Known available, hidden/authored/significant/evidentiary и
+невозможные основания исключены. Код не меняет negative verdict на positive.
+Без marker сохраняется обычная focused-discovery классификация и прежние эффекты.
+
+Strict literal single ordinary current-location discovery с nominal query и exact
+полным unchanged continuation получает input mode `proposed_material_prerequisite`
+существующего focused auditor. Код проверяет форму, LLM подтверждает номинальный
+недостающий referent и ordinary/authority границу. Только material_prerequisite с
+consumed_intent:null собирается server-side как corrected_plan (inspect + полный
+continuation) и повторно проходит owner/schema admission. focused_discovery при
+таком input остаётся rejected; обычные standalone/prefix discovery не меняются.
+
+Applied-step causal projection связывает semantic_activity duration в самом source:
+speech получает «этот шаг занял N …», не утверждая непрерывность речи; single
+transient_item_use получает «в течение N … выполняли попытку» с exact description
+и явно неизвестным observation result. Отдельный elapsed component этого step
+удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
+Narrator переводит evidence wording в естественную речь и конкретное движение,
+не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.

@@ -25,7 +25,8 @@ export function phase3ActivityReadProof(payload, rows) {
       started_at: entry.started_at,
       ended_at: entry.ended_at,
       execution_result: entry.execution_result
-    }));
+    })).sort((left, right) =>
+      left.activity_execution_id.localeCompare(right.activity_execution_id));
   const expectedById = new Map(phase3History.map(
     (entry) => [entry.activity_execution_id, entry]
   ));

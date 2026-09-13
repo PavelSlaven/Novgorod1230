@@ -1,61 +1,15 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { createLlmTurnBudget } from './llm-turn-budget.js';
-
-const SAFE_WRITE_PLAN_FAILURES = new Set([
-  'write_plan_invariant:visible_package_persistence_gap:presentation_write_owner_invalid',
-  'write_plan_invariant:generated_schema_mismatch:write_record_shape_or_mode_invalid',
-  'write_plan_invariant:state_version_conflict:write_identity_conflict',
-  'write_plan_invariant:generated_schema_mismatch:child_parent_missing',
-  'write_plan_invariant:lock_order_violation:physical_lock_key_missing',
-  'write_plan_invariant:generated_schema_mismatch:change_set_binding_invalid',
-  'write_plan_invariant:target_preparation_failed:first_entry_location_binding_invalid',
-  'write_plan_invariant:target_preparation_failed:first_entry_claim_binding_invalid',
-  'write_plan_invariant:target_preparation_failed:first_entry_reuse_contains_inserts',
-  'write_plan_invariant:target_preparation_failed:first_entry_created_chain_binding_invalid',
-  'write_plan_invariant:state_version_conflict:expected_state_version_set_invalid',
-  'write_plan_invariant:generated_schema_mismatch:blocked_audit_write_set_invalid'
+import { safeTurnFailure, safeWritePlanFailure } from './llm-diagnostics-failures.js';
+export { safeTurnFailure, safeWritePlanFailure } from './llm-diagnostics-failures.js';
+const SAFE_TURN_PROGRESS_PHASES = new Set([
+  'accepted', 'understanding_action', 'resolving_world', 'saving_result',
+  'preparing_screen', 'recovering_saved_result'
 ]);
-const SAFE_NARRATION_PHASES = new Set([
-  'output_validation', 'audit_validation', 'semantic_repair_validation',
-  'reassembled_output_validation', 'final_audit_validation',
-  'final_audit_failed'
-]);
-const SAFE_NARRATION_CONCERN_KINDS = new Set([
-  'unsupported_fact', 'unsupported_attempt', 'unsupported_success',
-  'unsupported_object_use', 'unsupported_result', 'unsupported_sensory',
-  'unsupported_event', 'unsupported_world_state', 'unsupported_npc_state',
-  'contradiction', 'hidden_knowledge'
-]);
-const SAFE_NPC_VALIDATION_CODES = new Set([
-  'npc_step_request_invalid', 'npc_step_envelope_invalid',
-  'npc_step_interpretation_invalid', 'npc_step_resolution_invalid',
-  'npc_step_goal_result_invalid', 'npc_step_activity_invalid',
-  'npc_step_operations_invalid', 'npc_step_check_invalid',
-  'npc_step_reason_invalid',
-  'npc_combat_envelope_invalid', 'npc_combat_decision_invalid',
-  'npc_combat_operation_shape_invalid', 'npc_combat_intent_choice_invalid',
-  'npc_combat_ref_choice_invalid', 'npc_combat_force_choice_invalid',
-  'npc_combat_risk_choice_invalid', 'npc_combat_statement_invalid',
-  'npc_combat_reason_invalid', 'invalid_enum'
-]);
-const SAFE_TURN_STEP_VALIDATION_CODES = new Set([
-  'additional_property', 'candidate', 'const', 'continuation',
-  'domain_owner_unavailable', 'echo_mismatch', 'enum', 'invalid_request',
-  'json_data', 'lineage', 'maximum', 'min_items', 'operation_shape',
-  'ordering', 'prepared_followup_binding', 'range', 'required', 'resolution',
-  'sequence', 'type', 'unique', 'unknown_ref'
-]);
-const SAFE_TURN_STEP_VALIDATION_SCOPES = new Set([
-  'operation', 'interpretation', 'activity', 'check', 'continuation',
-  'clarification', 'plan'
-]);
-const SAFE_NPC_VALIDATION_SCOPES = new Set(['plan', 'interpretation',
-  'resolution', 'goal_result', 'activity', 'operations', 'check', 'reason',
-  'speech_dominant_act']);
 
 export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   turnBudget = createLlmTurnBudget(), developerMode = false, now = () => Date.now() } = {}) {
-  const storage = new AsyncLocalStorage(), reports = new Map(), logReports = new Map();
+  const storage = new AsyncLocalStorage(), reports = new Map(), logReports = new Map(), active = new Map();
   const onCall = (record) => {
     telemetry?.onCall?.(record);
     if (record?.call_type === 'probe') return;
@@ -76,13 +30,36 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
   return Object.freeze({
     turnBudget,
     recordGameplayTrace, telemetry: Object.freeze({ onCall, onDetail, onGameplayTrace: recordGameplayTrace }),
+    recordProgress(phase, { commit_state = null } = {}) {
+      if (!SAFE_TURN_PROGRESS_PHASES.has(phase)) return;
+      const turn = storage.getStore();
+      if (!turn) return;
+      const commitState = commit_state === 'committed'
+        ? 'committed' : turn.live.commit_state;
+      if (turn.live.phase === phase && turn.live.commit_state === commitState) return;
+      turn.live.phase = phase;
+      turn.live.commit_state = commitState;
+      turn.live.sequence += 1;
+      turn.live.phase_started_at = now();
+    },
     recordFailure(value) {
       const turn = storage.getStore(); if (turn) turn.failure = safeTurnFailure(value);
     },
     async runTurn({ party_id, request_id }, execute) {
-      const startedAt = now(), turn = { party_id: text(party_id), request_id: text(request_id), calls: [],
-        started_at: startedAt, incidents: [], details: [], gameplay_traces: [] };
-      if (!turn.party_id || !turn.request_id) throw new TypeError('party_id and request_id are required.');
+      const startedAt = now(), partyId = text(party_id), requestId = text(request_id);
+      if (!partyId || !requestId) throw new TypeError('party_id and request_id are required.');
+      const liveKey = `${partyId}\0${requestId}`;
+      const live = active.get(liveKey) ?? {
+        party_id: partyId, request_id: requestId, started_at: startedAt,
+        phase: 'accepted', phase_started_at: startedAt, sequence: 0,
+        commit_state: 'unconfirmed', users: 0
+      };
+      live.users += 1;
+      const turn = { party_id: partyId, request_id: requestId, calls: [],
+        started_at: startedAt,
+        turn_deadline_ms: turnBudget.deadlineMs ?? null,
+        incidents: [], details: [], gameplay_traces: [], live };
+      active.set(liveKey, live);
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });
       } catch (error) {
@@ -96,7 +73,15 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
         const queue = logReports.get(turn.party_id) ?? []; queue.push(Object.freeze({ ...report, calls: Object.freeze([...turn.details]),
           ...(developerMode === true ? { gameplay_traces: Object.freeze(turn.gameplay_traces) } : {}) })); logReports.set(turn.party_id, queue);
         while (reports.size > maxReports) { const oldest = reports.keys().next().value; reports.delete(oldest); logReports.delete(oldest); }
+        live.users -= 1;
+        if (live.users === 0 && active.get(liveKey) === live) active.delete(liveKey);
       }
+    },
+    progress({ party_id, request_id } = {}) {
+      const partyId = text(party_id), requestId = text(request_id);
+      if (!partyId || !requestId) return null;
+      const turn = active.get(`${partyId}\0${requestId}`);
+      return turn ? buildTurnProgress(turn, now()) : null;
     },
     report({ party_id, request_id } = {}) {
       const report = reports.get(text(party_id)) ?? null;
@@ -104,6 +89,23 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       return requestId === '' || report?.request_id === requestId ? report : null;
     },
     takeLogReport(input = {}) { return takeReport(logReports, input); }
+  });
+}
+
+export function buildTurnProgress(turn, currentTime = Date.now()) {
+  const elapsed = Math.max(0, currentTime - Number(turn?.started_at ?? currentTime));
+  return Object.freeze({
+    version: 1,
+    schema: 'turn_progress_v1',
+    status: 'running',
+    request_id: text(turn?.request_id),
+    phase: SAFE_TURN_PROGRESS_PHASES.has(turn?.phase) ? turn.phase : 'accepted',
+    sequence: nonNegativeInteger(turn?.sequence),
+    started_at: number(turn?.started_at),
+    phase_started_at: number(turn?.phase_started_at),
+    commit_state: turn?.commit_state === 'committed' ? 'committed' : 'unconfirmed',
+    elapsed_seconds: Math.floor(elapsed / 1000),
+    remaining_seconds: null
   });
 }
 
@@ -201,89 +203,6 @@ function incident(record = {}) {
     repair_kind: text(record.repair_kind) || null
   };
 }
-export function safeWritePlanFailure(value = {}) {
-  const details = value?.details ?? value;
-  const diagnostics = details?.diagnostics ?? value;
-  const code = text(value?.code);
-  const detailCode = text(value?.detail_code ?? details?.code);
-  const stage = text(value?.stage ?? diagnostics?.stage);
-  const reason = text(value?.reason ?? diagnostics?.reason)
-    .replace(/\s+/gu, ' ').slice(0, 500);
-  if (!/^TRACE_[A-Z0-9_]+_WRITE_PLAN_REJECTED$/u.test(code)
-      || !SAFE_WRITE_PLAN_FAILURES.has(`${stage}:${detailCode}:${reason}`)) return null;
-  return Object.freeze({ code, detail_code: detailCode, stage, reason });
-}
-export function safeTurnFailure(value = {}) {
-  return safeWritePlanFailure(value) ?? safeNarrationFailure(value)
-    ?? safeNpcFailure(value) ?? safeTurnStepFailure(value);
-}
-function safeTurnStepFailure(value = {}) {
-  if (text(value?.code) !== 'TURN_STEP_PLAN_INVALID') return null;
-  const source = Array.isArray(value?.validation_codes)
-    ? value.validation_codes : value?.details?.errors?.map(({ code }) => code);
-  const codes = Array.isArray(source)
-    ? [...new Set(source.map(text)
-      .filter((code) => SAFE_TURN_STEP_VALIDATION_CODES.has(code)))] : [];
-  const errors = Array.isArray(value?.details?.errors) ? value.details.errors : [];
-  const sourceScopes = Array.isArray(value?.validation_scopes)
-    ? value.validation_scopes
-    : [...new Set(errors.map(({ path }) => turnStepValidationScope(path)).filter(Boolean))];
-  const scopes = [...new Set(sourceScopes.map(text)
-    .filter((scope) => SAFE_TURN_STEP_VALIDATION_SCOPES.has(scope)))];
-  return codes.length === 0 ? null : Object.freeze({
-    code: 'TURN_STEP_PLAN_INVALID', validation_codes: Object.freeze(codes),
-    ...(scopes.length === 0 ? {} : { validation_scopes: Object.freeze(scopes) })
-  });
-}
-function turnStepValidationScope(path) {
-  const value = text(path);
-  if (/^\$\.operations(?:\[\d+\])?(?:\.|$)/u.test(value)) return 'operation';
-  for (const scope of ['interpretation', 'activity', 'check', 'continuation',
-    'clarification']) if (value === `$.${scope}` || value.startsWith(`$.${scope}.`)) return scope;
-  return /^\$\.[a-z_]+$/u.test(value) ? 'plan' : null;
-}
-function safeNpcFailure(value = {}) {
-  if (text(value?.code) !== 'TURN_NPC_PLAN_INVALID') return null;
-  const source = Array.isArray(value?.validation_codes)
-    ? value.validation_codes
-    : value?.details?.validation_errors?.map(({ code }) => code);
-  const codes = Array.isArray(source)
-    ? [...new Set(source.map(text)
-      .filter((code) => SAFE_NPC_VALIDATION_CODES.has(code)))] : [];
-  const errors = Array.isArray(value?.details?.validation_errors)
-    ? value.details.validation_errors : [];
-  const sourceScopes = Array.isArray(value?.validation_scopes)
-    ? value.validation_scopes
-    : [...new Set(errors.map(({ path }) => npcValidationScope(path)).filter(Boolean))];
-  const scopes = [...new Set(sourceScopes.map(text)
-    .filter((scope) => SAFE_NPC_VALIDATION_SCOPES.has(scope)))];
-  return codes.length === 0 ? null : Object.freeze({
-    code: 'TURN_NPC_PLAN_INVALID', validation_codes: Object.freeze(codes),
-    ...(scopes.length === 0 ? {} : { validation_scopes: Object.freeze(scopes) })
-  });
-}
-function npcValidationScope(path) {
-  const value = text(path);
-  if (value === '$.speech.dominant_act') return 'speech_dominant_act';
-  if (value === '$') return 'plan';
-  return /^\$\.(interpretation|resolution|goal_result|activity|operations|check|reason)(?:\.|$)/u
-    .exec(value)?.[1] ?? null;
-}
-function safeNarrationFailure(value = {}) {
-  if (text(value?.code) !== 'TRACE_PHASE_2_NARRATION_REJECTED') return null;
-  const details = value?.details ?? value;
-  const phase = text(details.phase);
-  if (!SAFE_NARRATION_PHASES.has(phase)) return null;
-  const concernCount = Number(details.concern_count);
-  const concernKinds = Array.isArray(details.concern_kinds)
-    ? [...new Set(details.concern_kinds.map(text)
-      .filter((kind) => SAFE_NARRATION_CONCERN_KINDS.has(kind)))] : [];
-  return Object.freeze({
-    code: 'TRACE_PHASE_2_NARRATION_REJECTED', phase, concern_kinds: Object.freeze(concernKinds),
-    concern_count: Number.isInteger(concernCount) && concernCount >= 0
-      ? concernCount : 0
-  });
-}
 function unionDuration(intervals) { let total = 0; let end = -Infinity; for (const [start, finish] of intervals.sort((a, b) => a[0] - b[0])) { if (finish <= end) continue; total += finish - Math.max(start, end); end = finish; } return total; }
 function usage(value = {}) {
   const total = nonNegative(value?.total_tokens ?? value?.totalTokens);
@@ -295,5 +214,6 @@ function percentile(values, fraction) { if (!values.length) return 0; return val
 function rate(value, total) { return total === 0 ? 0 : value / total; }
 function nonNegative(value) { return Number.isFinite(Number(value)) && Number(value) >= 0 ? Number(value) : null; }
 function number(value) { return nonNegative(value) ?? 0; }
+function nonNegativeInteger(value) { return Number.isInteger(value) && value >= 0 ? value : 0; }
 function text(value) { return String(value ?? '').trim(); }
 function takeReport(store, { party_id, request_id } = {}) { const partyId = text(party_id); const queue = store.get(partyId) ?? []; const requestId = text(request_id); const index = requestId ? queue.findIndex((report) => report.request_id === requestId) : 0; if (index < 0 || !queue[index]) return null; const [report] = queue.splice(index, 1); if (!queue.length) store.delete(partyId); return report; }

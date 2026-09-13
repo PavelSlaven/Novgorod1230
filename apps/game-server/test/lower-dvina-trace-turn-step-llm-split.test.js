@@ -34,6 +34,28 @@ test('turn step adapter rejects a hand-written admitted operation', async () => 
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
 });
 
+test('production planner does not invent speech delivery when omitted',
+  async () => {
+    const input = request({ remaining_intent: 'Говорю: «Да.»',
+      root_player_action: 'Говорю: «Да.»' });
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: {
+        interpretation: { player_goal: input.remaining_intent,
+          grounded_attempt: 'говорю «Да»', adaptation: 'literal' },
+        resolution: 'direct', goal_result: 'achieved',
+        activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+        direct_result_kind: 'player_utterance', utterance: {
+          speaker_ref: input.actor.actor_id, utterance_text: 'Да.',
+          input_mode: 'verbatim' }, operations: [], check: null,
+        continuation: null, clarification: null, reason_code: 'speech_action',
+        reason: 'Произнесены точные слова.'
+      } }; }
+    } });
+    const plan = await model(input);
+    assert.equal(plan.utterance.delivery, undefined);
+    assert.equal(validateTurnStepPlan(plan, { request: input }).ok, false);
+  });
+
 test('turn step adapter restores an exact copied operation choice', () => {
   const candidate = { op: 'request_discovery', actor_ref: 'actor_mikula',
     discovery_kind: 'inspect', target_refs: ['shore'], query: 'Осмотреть.' };
@@ -47,6 +69,28 @@ test('turn step adapter restores an exact copied operation choice', () => {
     reason: 'Нужен ordinary material.'
   }, input);
   assert.deepEqual(plan.operations, [candidate]);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
+});
+
+test('turn step adapter restores the unique admitted route from legacy movement fields', () => {
+  const movement = { op: 'request_movement', actor_ref: 'actor_mikula',
+    movement_kind: 'route', target_ref: 'location:wreck',
+    route_ref: 'route:camp-to-wreck', description: 'Вернуться по тропе.' };
+  const speech = { op: 'emit_interaction', actor_ref: 'actor_mikula',
+    target_actor_refs: ['npc:fisher'], interaction_kind: 'speech',
+    content: 'Поговорить с рыбаком.', instrument_refs: [] };
+  const input = request({ available_domain_operations: [speech, movement] });
+  const plan = assembleTurnStepPlan({
+    interpretation: { player_goal: 'Вернуться к месту крушения.',
+      grounded_attempt: 'Идти по тропе.', adaptation: 'literal' },
+    resolution: 'domain_request',
+    operation_choice: 'domain_operation_1_emit_interaction_speech',
+    operations: [{ op: 'request_movement', actor_ref: 'actor_mikula',
+      destination_ref: 'location:wreck', route_ref: 'route:camp-to-wreck' }],
+    check: null, continuation: null, clarification: null,
+    reason_code: 'movement', reason: 'Идти по известному маршруту.'
+  }, input);
+  assert.deepEqual(plan.operations, [movement]);
   assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
 

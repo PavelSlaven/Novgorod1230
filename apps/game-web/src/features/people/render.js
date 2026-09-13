@@ -7,7 +7,7 @@ export function renderPeoplePanel(screen) {
   return renderItems(people, {
     empty: 'Рядом никого не видно.',
     item: (person) => listItem(
-      labelOf(person),
+      labelOf(person, ['display_label', 'label', 'name', 'title']),
       labelOf(person, ['role', 'activity', 'status', 'state', 'mood'])
     )
   });

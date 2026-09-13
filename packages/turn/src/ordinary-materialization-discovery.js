@@ -1,3 +1,6 @@
+import { ordinaryNoop, knownResolutionResult } from './ordinary-materialization-discovery-result.js';
+import { candidateForDiscovery, knownMaterializedItemName } from
+  './ordinary-materialization-discovery-identity.js';
 import {
   applyOrdinaryAggregateTransition,
   canonicalDigest,
@@ -19,7 +22,7 @@ import { turnFailure } from './errors.js';
 export function createOrdinaryMaterializationDiscoveryOwner({
   loadDiscoveryContext, ordinaryMaterializationModel, verifyStageBCutover,
   inputDigest, buildSeedRequest, buildPresenceRequest, sealAtomicWritePlan,
-  resolveFiniteResourceEffects = () => null
+  resolveFiniteResourceEffects = () => null, resolveExistingInspection = () => null
 } = {}) {
   const ports = { loadDiscoveryContext, ordinaryMaterializationModel,
     verifyStageBCutover, buildSeedRequest, buildPresenceRequest,
@@ -27,13 +30,16 @@ export function createOrdinaryMaterializationDiscoveryOwner({
   if (Object.values(ports).some((port) => typeof port !== 'function')) {
     throw new TypeError('ordinary discovery owner requires all ports');
   }
-  if (typeof resolveFiniteResourceEffects !== 'function') {
+  if (typeof resolveFiniteResourceEffects !== 'function'
+      || typeof resolveExistingInspection !== 'function') {
     throw new TypeError('ordinary finite-resource effect owner must be a function');
   }
   return async function resolve(request) {
     if (request.operation?.target_refs?.length !== 1) {
       return ordinaryNoop(request);
     }
+    const inspection = await resolveExistingInspection(request);
+    if (inspection != null) return inspection;
     const enabled = await loadDiscoveryContext(request);
     if (enabled == null) return ordinaryNoop(request);
     const modelBudget = semanticModelCallBudget(ordinaryMaterializationModel);
@@ -111,11 +117,13 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       ordinary_state_version:
         projection.ordinary_materialization_aggregate.state_version,
       ordinary_state: ordinaryState(
-        projection.ordinary_materialization_aggregate),
+        projection.ordinary_materialization_aggregate,
+        enabled.objective_context.technical_limits.max_new_entities),
       property_placement_context: enabled.property_placement_context };
     const candidateContext = candidateForDiscovery({
       candidateContext: execution.candidate_context,
-      query: request.operation.query });
+      query: request.operation.query,
+      quantity: request.operation.quantity ?? null });
     if (candidateContext == null) return ordinaryNoop(request);
     const selectedSupportingBasisRef = selectOrdinaryMaterializationSupportingBasis({
       request: { scope_ref: presenceObjective.scope_ref,
@@ -126,6 +134,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       selected_supporting_basis_ref: selectedSupportingBasisRef });
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
       semanticContext: enabled.semantic_context ?? null,
+      requiredQuantity: request.operation.quantity ?? null,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,
       workingProjection: projection,
@@ -135,9 +144,12 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         }), codeOwnedResolution: enabled.code_owned_resolution ?? null,
       mechanicsPolicy: execution.mechanics_policy });
     if (presence.status === 'already_resolved') {
-      return knownNegativeResolution(request, presence.known_resolution?.resolution);
+      return knownResolutionResult(request, presence.known_resolution, {
+        displayName: knownMaterializedItemName({ request, partyId, scopeRef,
+          knownResolution: presence.known_resolution })
+      });
     }
-    if (presence.status === 'no_change' && presence.decision === null) {
+    if (presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);
       return resolvedPlan({ request, enabled, partyId, scopeRef,
         inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
@@ -319,8 +331,13 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     ...(sceneDetails.length === 0 ? {} : { ordinary_scene_seed: {
       kind: 'ordinary_scene_seed', sensory_details: sceneDetails
     } }),
+    ...(item == null || resolution !== 'materialize' ? {} : { ordinary_presence_seed: {
+      kind: 'ordinary_presence_seed', resolution: 'materialized', query: request.operation.query,
+      display_name: item.item_proposal.semantic_descriptor.name
+    } }),
     ...(negativePresenceResolution == null ? {} : { ordinary_presence_seed: {
-      kind: 'ordinary_presence_seed', resolution: negativePresenceResolution
+      kind: 'ordinary_presence_seed', resolution: negativePresenceResolution,
+      query: request.operation.query
     } })
   };
   return Object.freeze({ working_projection: request.working_projection,
@@ -335,24 +352,6 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     ordinary_materialization_atomic_write_plan: plan });
 }
 
-function candidateForDiscovery({ candidateContext, query }) {
-  const { target_ref: targetRef, candidate_ref_namespace: namespace,
-    ...candidate } = candidateContext;
-  const normalized = normalizeDiscoveryQuery(query);
-  if (normalized == null || typeof targetRef !== 'string' || !targetRef
-      || typeof namespace !== 'string' || !namespace) return null;
-  return { ...candidate, normalized_candidate_ref:
-    `${namespace}:${canonicalDigest({
-      domain: 'rus.ordinary.discovery.query_candidate.v1',
-      target_ref: targetRef, normalized_query: normalized
-    }).slice(0, 32)}`, candidate_hint: normalized };
-}
-function normalizeDiscoveryQuery(value) {
-  if (typeof value !== 'string') return null;
-  const normalized = value.normalize('NFKC').trim().replace(/\s+/gu, ' ')
-    .toLocaleLowerCase('ru-RU');
-  return normalized.length === 0 ? null : normalized;
-}
 function presenceTransition({ envelope, presence, aggregate,
   identityKey = null }) {
   if (!['materialize', 'absent', 'no_change', 'authority_required']
@@ -420,30 +419,9 @@ function sourceRefs({ envelope, proposed, execution, property, permissionRefs })
     ...(property.evidence.unowned_cause_ref == null ? []
       : [property.evidence.unowned_cause_ref])].filter(Boolean))].sort();
 }
-function ordinaryNoop(request) { return Object.freeze({
-  working_projection: structuredClone(request?.working_projection ?? {}),
-  write_fragments: [], summary: 'ordinary discovery unavailable',
-  duration_minutes: 0,
-  consequence_fragment: { visible_seed: { ordinary_presence_seed: {
-    kind: 'ordinary_presence_seed', resolution: 'no_change'
-  } } },
-  player_response_boundary: true }); }
-function knownNegativeResolution(request, resolution) {
-  if (!['absent', 'no_change', 'authority_required'].includes(resolution)) {
-    return ordinaryNoop(request);
-  }
-  return Object.freeze({
-    working_projection: structuredClone(request?.working_projection ?? {}),
-    write_fragments: [], summary: 'ordinary discovery resolved',
-    duration_minutes: 0, player_response_boundary: true,
-    consequence_fragment: { visible_seed: { ordinary_presence_seed: {
-      kind: 'ordinary_presence_seed', resolution
-    } } }
-  });
-}
-function ordinaryState(a) { return { seeded: a.seeded,
+function ordinaryState(a, perResolutionLimit) { return { seeded: a.seeded,
   density_band: a.density_band,
-  remaining_identity_budget: a.remaining_identity_budget,
+  remaining_identity_budget: a.seeded ? perResolutionLimit : 0,
   background_groups: a.background_groups.map(({ group_ref }) => group_ref),
   presence_resolutions: a.presence_resolutions.map(({ resolution_ref }) =>
     resolution_ref),

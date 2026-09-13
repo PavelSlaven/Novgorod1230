@@ -8,7 +8,8 @@ import {
 } from './lower-dvina-trace-phase-4-property-writes.js';
 import {
   phase2ScreenDigest,
-  phase2VisibleContextFromPayload
+  phase2VisibleContextFromPayload,
+  projectPlayerSafeChecks
 } from './lower-dvina-trace-phase-2-projection.js';
 import {
   appendHostileSemantics,
@@ -243,6 +244,7 @@ export function phase4PendingScreen({ state, factual, visibleEnvelope, turnNumbe
       package_id: visibleEnvelope.package_id, package_digest: visibleEnvelope.package_digest,
       narration_output_digest: null },
     visible_context: phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
+    checks: projectPlayerSafeChecks(state),
     main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.' };
   screen.screen_digest = phase2ScreenDigest(screen);
   return screen;

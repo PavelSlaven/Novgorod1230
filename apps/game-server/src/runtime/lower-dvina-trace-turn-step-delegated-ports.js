@@ -13,6 +13,8 @@ import {
   text,
   visibleKey
 } from './lower-dvina-trace-turn-step-runtime-common.js';
+import { semanticFactualEvents } from
+  './lower-dvina-trace-turn-step-factual-events.js';
 const DURATION_CLASSES = new Set(['moment', 'brief', 'short', 'extended']);
 const EFFORTS = new Set([
   'none', 'light', 'moderate', 'heavy', 'extreme'
@@ -235,11 +237,13 @@ export async function applySemanticActivity(execution, state,
         }
       }]
     };
+  const selected = execution.plan.resolution === 'generic_check'
+    ? execution.plan.check.outcomes[execution.check_result.outcome.band]
+    : execution.plan;
   let preparedEffectRequest = null;
-  if (chainContext?.prior_effect_count > 0) {
-    if (changesBody) {
-      fail('TRACE_TURN_STEP_PREPARED_BODY_COMPOSITE_REQUIRED');
-    }
+  if (chainContext != null && duration > 0
+      && selected.additional_activity == null
+      && !(selected.operations ?? []).some(({ op }) => op === 'apply_body_event')) {
     preparedEffectRequest = {
       effect_kind: 'semantic_activity',
       owner_ref: resolved.profile_ref,
@@ -253,11 +257,12 @@ export async function applySemanticActivity(execution, state,
     summary: `semantic_activity:${activity.duration_class}:${activity.effort}`,
     fragment,
     consequence,
-    boundary: duration > 0 || changesBody
+    boundary: (changesBody || duration > 0) && preparedEffectRequest == null
   });
   const withBody = {
     ...output,
-    body_state_after: structuredClone(resolved.body_state_after)
+    body_state_after: structuredClone(resolved.body_state_after),
+    factual_events: semanticFactualEvents(execution, identity, state, resolved)
   };
   return preparedEffectRequest == null ? deepFreeze(withBody) : deepFreeze({
     ...withBody,

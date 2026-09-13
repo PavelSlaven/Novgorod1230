@@ -72,7 +72,7 @@ export const TABLE_MODES = Object.freeze({
   party_temporal_events: ['inserts', 'updates'],
   party_remote_aggregate_states: ['inserts', 'updates'],
   party_propagation_processes: ['inserts', 'updates'],
-  party_npc_knowledge_merge_states: ['updates'],
+  party_npc_knowledge_merge_states: ['inserts', 'updates'],
   party_npc_knowledge: ['inserts'],
   party_npcs: ['inserts', 'updates'],
   party_npc_traits: ['inserts'],
@@ -90,6 +90,7 @@ export const TABLE_MODES = Object.freeze({
   party_g5_sites: ['inserts'],
   party_scene_baselines: ['inserts'],
   party_g6_instances: ['inserts'],
+  g6_acoustic_profiles: ['inserts'],
   scene_position_nodes: ['inserts'],
   portal_entities: ['inserts'],
   scene_movement_edges: ['inserts'],
@@ -123,6 +124,8 @@ export const CHILD_TABLES = new Set([
 ]);
 export const validIdentity = (write) => write?.target_table === 'entity_placements'
   ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
+  : write?.target_table === 'g6_acoustic_profiles'
+    ? write.record?.g6_instance_id === write.id
   : write?.target_table === 'party_combat_sessions'
     ? write.record?.combat_id === write.id
   : write?.target_table === 'party_entity_controls' ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
@@ -208,6 +211,8 @@ export function childParentIdentities(write) {
         : [];
     case 'party_g6_instances':
       return [`party_runtime.party_scene_baselines:${write.record?.scene_baseline_id}`];
+    case 'g6_acoustic_profiles':
+      return [`party_runtime.party_g6_instances:${write.record?.g6_instance_id}`];
     case 'scene_position_nodes':
       return [`party_runtime.party_g6_instances:${write.record?.g6_instance_id}`];
     case 'portal_entities':

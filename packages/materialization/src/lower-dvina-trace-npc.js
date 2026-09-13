@@ -13,6 +13,9 @@ export function materializeLowerDvinaTraceNpcSchedule({
   }
   const entry = entries[0];
   return {
+    ...(definitionRevision < 33 ? {} : {
+      routineProfile: structuredClone(scheduleProfile.routine_profiles.find(
+        ({ profile_id: id }) => id === entry.routine_profile_ref)) }),
     machineState: {
       schedule_state: entry.schedule_state,
       current_activity: structuredClone(entry.current_activity)

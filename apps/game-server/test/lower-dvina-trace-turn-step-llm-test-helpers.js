@@ -1,3 +1,8 @@
+export function promptMappings(prompt) {
+  return Object.fromEntries([...prompt.matchAll(/^Mapping: ([^\n]+)\n([^\n]+)/gmu)]
+    .map(([, name, json]) => [name, JSON.parse(json)]));
+}
+
 export function request(overrides = {}) {
   return {
     schema: 'turn_step_request_v1',

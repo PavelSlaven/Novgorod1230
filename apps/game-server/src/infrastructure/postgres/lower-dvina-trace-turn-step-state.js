@@ -1,4 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
+import { applyNpcRoutineTemporalResults } from '../../runtime/npc-routine-temporal.js';
 import {
   computeSpatialV3CanonicalDigest
 } from '@rus/contracts/spatial-v3/registry';
@@ -54,6 +55,7 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
   visibleEnvelope
 }) {
   const next = structuredClone(state);
+  applyNpcRoutineTemporalResults(next, envelope.time_update.temporal_results);
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;
   delete next.relevant_hidden_state;

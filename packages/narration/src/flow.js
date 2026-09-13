@@ -2,6 +2,7 @@ import { deepFreeze } from '@rus/kernel';
 import { detectHiddenLeaks, validateVisibleContext } from '@rus/visibility-knowledge-memory';
 import { NARRATION_FLOW_RESULT_SCHEMA } from './contracts.js';
 import { validateNarrationPorts } from './ports.js';
+import { segmentProse } from './segments.js';
 import { assertNarrationValid, validateNarrationAudit, validateNarrationFlowResult, validateNarrationOutput, validateNarrationRequest, validateNarrationSemanticRepair } from './validators.js';
 
 export async function runNarrationFlow(request, ports, options = {}) {
@@ -28,15 +29,19 @@ export async function runNarrationFlow(request, ports, options = {}) {
   const segments = segmentProse(draft.prose);
   const audit = await audited(ports.auditor, request, draft, segments, 'initial');
   auditHistory.push(record('auditor', audit));
-  const auditErrors = validateNarrationAudit(audit, segmentIds(segments)).errors;
-  if (auditErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'audit_validation', auditErrors);
+  const auditErrors = validateNarrationAudit(audit, segmentIds(segments), narrationSourceCounts(request)).errors;
+  const actionableConcerns = audit?.pass === false && Array.isArray(audit.concerns)
+    ? audit.concerns.filter((concern) => typeof concern?.reason === 'string'
+      && concern.reason.trim().length > 0) : [];
+  if (auditErrors.length && !actionableConcerns.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'audit_validation', auditErrors);
   if (audit.pass) return approved(request, draft, audit, generationHistory, repairHistory, auditHistory);
 
   const repairSegment = {
     segment_id: 's1', prose: draft.prose, nearby_context: []
   };
-  const repairConcerns = audit.concerns.map((concern) => ({
-    ...clone(concern), segment_id: repairSegment.segment_id
+  const repairConcerns = (auditErrors.length ? actionableConcerns : audit.concerns).map((concern) => ({
+    ...(auditErrors.length ? { reason: concern.reason } : clone(concern)),
+    segment_id: repairSegment.segment_id
   }));
   const confirmedOutcome = confirmedOutcomeContext(request);
   const repair = await ports.semanticRepairer.repair({
@@ -61,7 +66,7 @@ export async function runNarrationFlow(request, ports, options = {}) {
   const finalSegments = segmentProse(repaired.prose);
   const finalAudit = await audited(ports.auditor, request, repaired, finalSegments, 'final');
   auditHistory.push(record('auditor', finalAudit));
-  const finalErrors = validateNarrationAudit(finalAudit, segmentIds(finalSegments)).errors;
+  const finalErrors = validateNarrationAudit(finalAudit, segmentIds(finalSegments), narrationSourceCounts(request)).errors;
   if (finalErrors.length) return blocked(request, generationHistory, repairHistory, auditHistory, 'final_audit_validation', finalErrors);
   if (!finalAudit.pass) return blocked(request, generationHistory, repairHistory, auditHistory, 'final_audit_failed', finalAudit.concerns);
   return approved(request, repaired, finalAudit, generationHistory, repairHistory, auditHistory);
@@ -72,9 +77,8 @@ export function createNarrationService(ports, defaults = {}) {
   return Object.freeze({ run(request, options = {}) { return runNarrationFlow({ ...clone(defaults.request ?? {}), ...clone(request) }, ports, { ...defaults.options, ...options }); } });
 }
 
-export function segmentProse(prose) {
-  const chunks = String(prose).match(/[^.!?…]+(?:[.!?…]+|$)(?:\s*)/g) ?? [String(prose)];
-  return chunks.filter(Boolean).map((text, index) => ({ segment_id: `s${index + 1}`, prose: text }));
+function narrationSourceCounts(request) {
+  return Object.fromEntries(['visible_changes', 'uncertainties'].map((field) => [field, request.visible_context[field].length]));
 }
 
 function audited(auditor, request, draft, segments, phase) {
@@ -86,7 +90,7 @@ function actionIntentContext(request) {
   const source = request.context ?? {};
   if (source.attempt == null) return null;
   return {
-    evidence_scope: 'intent_only_non_evidence_of_success',
+    evidence_scope: 'intent_only_non_evidence_of_execution_or_success',
     attempt: clone(source.attempt)
   };
 }

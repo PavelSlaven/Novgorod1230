@@ -32,12 +32,23 @@ test('DeepSeek JSON mode adds its required format-only instruction', () => {
   assert.deepEqual(messages, [{ role: 'user', content: 'Choose one option.' }]);
 });
 
-test('OpenAI-compatible JSON mode adds the same protocol instruction', () => {
-  const messages = [{ role: 'system', content: 'Return one semantic choice.' }];
-  assert.deepEqual(providerPayload('openai_compatible', messages).messages, [
-    { role: 'system', content: 'Return a valid json object.' },
-    ...messages
-  ]);
+test('JSON mode adds its instruction to the existing first system message without changing the input', () => {
+  for (const compatibility of ['deepseek', 'openai_compatible']) {
+    const messages = Object.freeze([
+      Object.freeze({ role: 'system', content: 'Return one semantic choice.' }),
+      Object.freeze({ role: 'user', content: 'Choose one option.' })
+    ]);
+    const payload = providerPayload(compatibility, messages);
+    assert.deepEqual(payload.messages, [
+      { role: 'system', content: 'Return a valid json object.\n\nReturn one semantic choice.' },
+      messages[1]
+    ]);
+    assert.equal(messages[0].content, 'Return one semantic choice.');
+    assert.equal(payload.messages[1], messages[1]);
+    assert.deepEqual(providerPayload(compatibility, [messages[1]]).messages, [
+      { role: 'system', content: 'Return a valid json object.' }, messages[1]
+    ]);
+  }
 });
 
 test('JSON mode does not duplicate an existing JSON instruction', () => {
@@ -75,8 +86,13 @@ test('execution limits override environment, provider, and per-call values', () 
     runtimeProviderOverride: { ...customProvider, requestTimeoutMs: 1 },
     overrides: { maxTokens: 1, requestTimeoutMs: 1 }
   });
-  assert.equal(hostile.config.maxTokens, 20_000);
+  assert.equal(hostile.config.maxTokens, 1);
   assert.equal(hostile.config.requestTimeoutMs, 120_000);
+  assert.equal(resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId,
+    env: { DEEPSEEK_API_KEY: 'test-key' },
+    overrides: { maxTokens: 50_000 }
+  }).config.maxTokens, 20_000);
 });
 
 test('portrait scope retains 120 s transport fallback', () => {
@@ -188,56 +204,145 @@ test('generic provider omits empty authorization and DeepSeek-only payload field
     assert.equal('Authorization' in request.headers, false);
     assert.equal('thinking' in request.payload, false);
     assert.equal('reasoning_effort' in request.payload, false);
-    assert.equal('chat_template_kwargs' in request.payload, false);
+    assert.deepEqual(request.payload.chat_template_kwargs,
+      { enable_thinking: false });
   } finally {
     globalThis.fetch = originalFetch;
   }
 });
 
-test('local OpenAI-compatible endpoint serves selected Gemma model', async (t) => {
-  let request;
+test('an OpenAI-compatible role can opt into low reasoning', async () => {
+  const originalFetch = globalThis.fetch;
+  let payload;
+  globalThis.fetch = async (_url, init) => {
+    payload = JSON.parse(init.body);
+    return { ok: true, json: async () => ({ choices: [{ message: {
+      content: '{}', reasoning: 'brief private reasoning'
+    } }] }) };
+  };
+  try {
+    const result = await executeRoleLlmCall({
+      scope: 'turn_runtime', roleId: TurnRuntimeRoles.TURN_STEP_PLANNER,
+      messages: [], runtimeProviderOverride: customProvider,
+      overrides: { reasoningEffort: 'low' }
+    });
+    assert.equal(result.status, 'ok');
+    assert.equal(payload.reasoning_effort, 'low');
+    assert.equal('chat_template_kwargs' in payload, false);
+    assert.equal(result.reasoning_content, 'brief private reasoning');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('an OpenAI-compatible role can explicitly turn reasoning off', () => {
+  const { config } = resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId: TurnRuntimeRoles.TURN_STEP_PLANNER,
+    runtimeProviderOverride: customProvider,
+    overrides: { reasoningEffort: 'off' }
+  });
+  assert.equal(config.reasoningEffort, null);
+  assert.deepEqual(config.thinking, { type: 'disabled' });
+});
+
+test('local OpenAI-compatible endpoint disables thinking for every gameplay role', async (t) => {
+  const requests = [];
   const server = createServer(async (incoming, response) => {
     let body = '';
     for await (const chunk of incoming) body += chunk;
-    request = { url: incoming.url, authorization: incoming.headers.authorization,
-      body: JSON.parse(body) };
+    requests.push({ url: incoming.url, authorization: incoming.headers.authorization,
+      body: JSON.parse(body) });
     response.writeHead(200, { 'content-type': 'application/json' });
     response.end(JSON.stringify({ choices: [{ message: { content: '{}' } }] }));
   });
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   t.after(() => server.close());
   const { port } = server.address();
-  const model = 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced';
-  const result = await executeRoleLlmCall({
-    scope: 'turn_runtime', roleId, messages: [],
-    runtimeProviderOverride: { compatibility: 'openai_compatible',
-      baseUrl: `http://127.0.0.1:${port}/v1`, model }
-  });
-  assert.equal(result.status, 'ok');
-  assert.equal(request.url, '/v1/chat/completions');
-  assert.equal(request.authorization, undefined);
-  assert.equal(request.body.model, model);
-  assert.equal(request.body.max_tokens, 20_000);
-  assert.deepEqual(request.body.chat_template_kwargs,
-    { enable_thinking: false });
+  const model = 'arbitrary-local-model';
+  const roles = [...new Set(Object.values(TurnRuntimeRoles))];
+  const messages = Object.freeze([
+    Object.freeze({ role: 'system', content: 'Return JSON.' }),
+    Object.freeze({ role: 'user', content: 'Preserve this request.' })
+  ]);
+  const hostileEnv = new Proxy({}, { get(_target, key) {
+    if (String(key).endsWith('_THINKING')) return 'enabled';
+    if (String(key).endsWith('_REASONING_EFFORT')) return 'high';
+    return undefined;
+  } });
+  for (const role of roles) {
+    const baseline = resolveLlmExecutionConfig({
+      scope: 'turn_runtime', roleId: role,
+      runtimeProviderOverride: customProvider
+    }).config;
+    const resolved = resolveLlmExecutionConfig({
+      scope: 'turn_runtime', roleId: role, env: hostileEnv,
+      runtimeProviderOverride: customProvider
+    }).config;
+    assert.deepEqual(resolved.thinking, { type: 'disabled' }, role);
+    assert.equal(resolved.reasoningEffort, null, role);
+    assert.equal(resolved.maxTokens, 20_000, role);
+    assert.equal(resolved.requestTimeoutMs, 120_000, role);
+    assert.deepEqual(resolved.contextBudget, baseline.contextBudget, role);
+    assert.deepEqual(resolved.responseFormat, baseline.responseFormat, role);
+    const result = await executeRoleLlmCall({
+      scope: 'turn_runtime', roleId: role, messages, env: hostileEnv,
+      runtimeProviderOverride: { compatibility: 'openai_compatible',
+        baseUrl: `http://127.0.0.1:${port}/v1`, model }
+    });
+    assert.equal(result.status, 'ok', role);
+  }
+  assert.equal(requests.length, roles.length);
+  for (const request of requests) {
+    assert.equal(request.url, '/v1/chat/completions');
+    assert.equal(request.authorization, undefined);
+    assert.equal(request.body.model, model);
+    assert.equal(request.body.max_tokens, 20_000);
+    assert.deepEqual(request.body.messages, messages);
+    assert.deepEqual(request.body.response_format, { type: 'json_object' });
+    assert.deepEqual(request.body.chat_template_kwargs,
+      { enable_thinking: false });
+    assert.equal('thinking' in request.body, false);
+    assert.equal('reasoning_effort' in request.body, false);
+  }
 });
 
-test('supported served Gemma alias disables template reasoning', () => {
-  const payload = buildProviderRequestPayload({ compatibility: 'openai_compatible',
-    model: 'gemma-4-26b-a4b-it', maxTokens: 20_000 }, []);
-  assert.deepEqual(payload.chat_template_kwargs, { enable_thinking: false });
-});
-
-test('malformed successful response fails closed', async () => {
+test('invalid provider JSON fails closed without retry or fallback', async () => {
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () => ({ ok: true, json: async () => ({}) });
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls += 1;
+    return { ok: true, json: async () => ({
+      choices: [{ message: { content: '{' } }]
+    }) };
+  };
+  try {
+    const result = await executeRoleLlmCall({
+      scope: 'turn_runtime', roleId, messages: [],
+      runtimeProviderOverride: customProvider
+    });
+    assert.equal(result.status, 'parse_error');
+    assert.equal(result.error.code, 'json_parse_failed');
+    assert.equal(calls, 1);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('HTTP 400 fails closed without retry or provider fallback', async () => {
+  const originalFetch = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls += 1;
+    return { ok: false, status: 400, text: async () => 'bad request' };
+  };
   try {
     const result = await executeRoleLlmCall({
       scope: 'turn_runtime', roleId, messages: [],
       runtimeProviderOverride: customProvider
     });
     assert.equal(result.status, 'transport_error');
-    assert.equal(result.error.code, 'invalid_response');
+    assert.equal(result.error.code, 'http_400');
+    assert.equal(calls, 1);
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -328,10 +433,15 @@ test('DeepSeek retains extensions and timeout precedence is per-call, provider, 
   };
   try {
     const result = await executeRoleLlmCall({
-      scope: 'turn_runtime', roleId, messages: [], env: { DEEPSEEK_API_KEY: 'test-key' }
+      scope: 'turn_runtime', roleId, messages: [], env: {
+        DEEPSEEK_API_KEY: 'test-key',
+        TURN_WORLD_PROCESS_STEP_THINKING: 'enabled',
+        TURN_WORLD_PROCESS_STEP_REASONING_EFFORT: 'high'
+      }
     });
     assert.equal(result.status, 'ok');
     assert.deepEqual(payload.thinking, { type: 'disabled' });
+    assert.equal('reasoning_effort' in payload, false);
   } finally {
     globalThis.fetch = originalFetch;
   }

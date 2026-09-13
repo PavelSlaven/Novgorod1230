@@ -27,7 +27,7 @@ export function validateWorldKnowledgeQueryPlan(value, request, bundle) {
   if (!requestValidation.ok) return result(['planner request is invalid', ...requestValidation.errors]);
   exact(value, ['schema', 'query_locale', 'domains', 'focus_refs', 'requested_predicates', 'search_hints'], 'plan', errors);
   if (!bundle.manifest.supported_locales.includes(value.query_locale)) errors.push('plan query_locale is unsupported');
-  const domains = strings(value.domains, 'plan.domains', errors);
+  const domains = strings(value.domains, 'plan.domains', errors, true);
   if (domains.length > request.planner_limits.max_domains) errors.push('plan domains exceed max_domains');
   if (domains.some((domain) => !request.allowed_domains.includes(domain))) errors.push('plan domains are not allowed');
   const refs = strings(value.focus_refs, 'plan.focus_refs', errors, true);
@@ -39,13 +39,27 @@ export function validateWorldKnowledgeQueryPlan(value, request, bundle) {
   if (predicates.some((predicate) => !registered.has(predicate))) errors.push('plan requested_predicates are not registered for selected domains');
   const hints = strings(value.search_hints, 'plan.search_hints', errors, true);
   if (hints.length > request.planner_limits.max_search_hints) errors.push('plan search_hints exceed max_search_hints');
+  if (domains.length === 0 && [refs, predicates, hints]
+    .some((selection) => selection.length > 0)) {
+    errors.push('plan without domains must not request refs, predicates, or search hints');
+  }
+  if (domains.length === 0 && request.purpose !== 'semantic_resolution') {
+    errors.push('empty plan is allowed only for semantic_resolution');
+  }
   return result(errors);
 }
 
 export function normalizeWorldKnowledgeQueryPlan(value, request, bundle) {
   if (!object(value) || value.schema !== PLAN_SCHEMA) return value;
-  const domains = selection(value.domains, request.allowed_domains,
+  // An empty plan is a semantic verdict, so do not normalize non-empty
+  // companion fields into a false NO_KNOWLEDGE_REQUIRED acceptance.
+  if (Array.isArray(value.domains) && value.domains.length === 0) return value;
+  const selectedDomains = selection(value.domains, request.allowed_domains,
     request.planner_limits.max_domains);
+  // Preserve an all-invalid non-empty selection so validation requests repair;
+  // only an explicitly empty plan means NO_KNOWLEDGE_REQUIRED.
+  const domains = Array.isArray(value.domains) && value.domains.length > 0
+      && selectedDomains.length === 0 ? value.domains : selectedDomains;
   const predicates = new Set(domains.flatMap((domain) =>
     Object.keys(bundle.predicate_registry[domain] ?? {})));
   return { ...value, domains,

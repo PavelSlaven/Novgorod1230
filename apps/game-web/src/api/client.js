@@ -1,4 +1,4 @@
-import { validateApiEnvelope } from './contracts.js';
+import { validateApiEnvelope, validateTurnProgress } from './contracts.js';
 import { webError } from '../shared/errors.js';
 
 export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } = {}) {
@@ -15,6 +15,9 @@ export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } =
         payload?.error?.message ?? `HTTP ${response.status}`
       );
       error.httpStatus = response.status;
+      if (payload?.error?.turn_commit_status === 'not_started') {
+        error.turn_commit_status = 'not_started';
+      }
       throw error;
     }
     return validateApiEnvelope(payload).data;
@@ -29,7 +32,9 @@ export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } =
     normalizePortraitSpec: (input) => request('/api/v1/portrait-spec', post(input)),
     startNewGame: (input) => request('/api/v1/new-games', post(input)),
     getPartyScreen: (partyId) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/screen`),
-    recoverPendingPresentation: (partyId) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/presentation-recovery`, post({})),
+    getTurnProgress: async (partyId, requestId) => validateTurnProgress(
+      await request(`/api/v1/parties/${encodeURIComponent(partyId)}/turns/${encodeURIComponent(requestId)}/progress`)),
+    recoverPendingPresentation: (partyId, requestId = null) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/presentation-recovery`, post(requestId ? { request_id: requestId } : {})),
     acknowledgeOpening: (partyId, input) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/opening-ack`, post(input)),
     submitTurn: (partyId, input) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/turns`, post(input))
   });

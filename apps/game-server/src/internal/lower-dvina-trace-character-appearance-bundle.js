@@ -87,34 +87,34 @@ export async function loadLowerDvinaTraceRevision19Bundle({
   return freezeDeep(bundle);
 }
 
-function mergeItemContainerSet(historical, overlay, fail) {
+export function mergeItemContainerSet(historical, overlay, fail) {
   const merged = structuredClone(historical);
   const byId = new Map(merged.item_templates.map((template) => [template.item_template_id, template]));
-  for (const template of overlay.item_template_additions) {
+  for (const template of overlay.item_template_additions ?? []) {
     if (byId.has(template.item_template_id)) return fail('TRACE_M7_ITEM_TEMPLATE_DUPLICATE');
     const next = structuredClone(template);
     merged.item_templates.push(next);
     byId.set(next.item_template_id, next);
   }
-  for (const patch of overlay.item_template_overrides) {
+  for (const patch of overlay.item_template_overrides ?? []) {
     const current = byId.get(patch.item_template_id);
     if (!current) return fail('TRACE_M7_ITEM_TEMPLATE_MISSING');
     Object.assign(current, structuredClone(patch));
   }
   const profiles = new Map((merged.item_inventory_profiles ?? [])
     .map((profile) => [profile.inventory_profile_id, profile]));
-  for (const profile of overlay.item_inventory_profiles) {
+  for (const profile of overlay.item_inventory_profiles ?? []) {
     if (profiles.has(profile.inventory_profile_id)) return fail('TRACE_M7_ITEM_PROFILE_DUPLICATE');
     merged.item_inventory_profiles ??= [];
     merged.item_inventory_profiles.push(structuredClone(profile));
     profiles.set(profile.inventory_profile_id, profile);
   }
   merged.item_visual_profiles = structuredClone(
-    overlay.item_visual_profiles ?? []
+    overlay.item_visual_profiles ?? merged.item_visual_profiles ?? []
   );
-  merged.revision = 5;
+  merged.revision = overlay.revision;
   merged.initial_equipment_candidates = structuredClone(
-    overlay.initial_equipment_candidates
+    overlay.initial_equipment_candidates ?? merged.initial_equipment_candidates
   );
   return merged;
 }

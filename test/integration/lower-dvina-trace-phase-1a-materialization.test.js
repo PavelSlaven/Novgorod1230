@@ -1,5 +1,7 @@
+import { materializeInitialActorEquipment } from '@rus/new-game';
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createNpcRoutineState, npcRoutineActivity } from '@rus/npc-runtime';
 import {
   MATERIALIZER_VERSION,
   canonicalDigest,
@@ -23,8 +25,10 @@ import {
 import {
   lowerDvinaTracePhase1ADomainPin
 } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
-import { lowerDvinaTraceCanonicalG5SceneBindings } from
-  '../fixtures/lower-dvina-trace-v5-world-fixture.js';
+import { lowerDvinaTraceWorldSnapshot as worldSnapshot } from
+  '../fixtures/lower-dvina-trace-world-snapshot.js';
+import { loadLowerDvinaTraceRevision34Publication } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle();
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
@@ -56,6 +60,54 @@ const revision32Bundle = await loadLowerDvinaTraceMaterializationBundle({
 const revision32DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
   revision32Bundle
 );
+
+test('revision 34 materializes post-action perception with finite routines', async () => {
+  const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 34 });
+  const publication = await loadLowerDvinaTraceRevision34Publication();
+  assert.equal(current.manifest_digest, publication.binding.phase_1a_manifest_ref.digest);
+  const result = materializeLowerDvinaTracePartyInstance(request({
+    scenario_definition_revision: 34,
+    scenario_manifest_digest: publication.binding.phase_1a_manifest_ref.digest,
+    world_revision_id: current.location_topology_set.spatial_source_ref.world_revision_id,
+    world_catalog_digest: current.location_topology_set.spatial_source_ref.world_revision_catalog_digest,
+    domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(current), scenario_bundle: current
+  }));
+  const equipped = materializeInitialActorEquipment(result);
+  const own = equipped.immediate.items.filter(item => item.holder_character_id === equipped.immediate.player.instance_id);
+  assert.deepEqual(own.map(item => item.state.display_name).sort(),
+    ['хозяйственный нож', 'нижняя рубаха', 'верхняя шерстяная одежда'].sort());
+  assert.equal(current.item_container_set.item_templates.find(item => item.item_template_id === 'trace_ld_v1_item_base_shirt')
+    .base_catalog_ref.template_id, 'item_tpl_nov_linen_shirt_v1');
+  assert.equal(revision32Bundle.item_container_set.item_templates.find(item => item.item_template_id === 'trace_ld_v1_item_base_shirt')
+    .base_catalog_ref.template_id, 'item_tpl_nov_linen_base_garment_v1');
+  assert.ok(revision32Bundle.item_container_set.item_templates.every(item => item.display_name == null));
+  assert.equal(result.immediate.npcs.length, 6);
+  const running = result.immediate.npcs.filter((npc) => npc.routine_state?.status === 'active');
+  assert.equal(running.length, 5);
+  assert.ok(running.every((npc) => BigInt(npc.routine_state.next_transition_at.whole_minutes)
+    > BigInt(result.immediate.timestamp.whole_minutes)));
+  const injured = result.immediate.npcs.find((npc) => npc.machine_state.schedule_state === 'interrupted');
+  assert.equal(injured.routine_state.status, 'inactive');
+  assert.equal(injured.routine_state.next_transition_at, null);
+  assert.ok(running.some((npc) => npc.anchor_id === null));
+});
+
+test('approved daily routine initializes from actual local day and night and preserves work', async () => {
+  const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 34 });
+  const profile = current.initial_npc_schedule_profile.routine_profiles[0];
+  const work = { activity_ref: 'unseen_basket_repair', summary: 'Чинит корзину.' };
+  const timestamp = (whole) => ({ whole_minutes: String(whole), subminute_numerator: '0', subminute_denominator: '1' });
+  for (const [start, phase, next] of [[333060, 0, 333180], [333210, 2, 333900],
+    [333900, 3, 334500], [333960, 3, 334500], [333000, 3, 333060]]) {
+    const runtime = createNpcRoutineState({ profile, started_at: timestamp(start),
+      current_activity: work, calendar_profile: current.calendar_profile });
+    assert.equal(runtime.phase_index, phase);
+    assert.deepEqual(runtime.next_transition_at, timestamp(next));
+    const activity = npcRoutineActivity(runtime);
+    if (phase !== 3) assert.equal(activity.summary, work.summary);
+    else assert.equal(runtime.runtime_status, 'sleeping');
+  }
+});
 
 test('revision 32 materializes the sealed packet inside the road bag', () => {
   const result = materializeLowerDvinaTracePartyInstance(request({
@@ -285,39 +337,6 @@ test('revision 25 loads NPC actor-step profile and materializes inherited state'
       && relation === 'work_supervisor_of'));
 });
 
-function worldSnapshot() {
-  const header = { id: 'trace_ld_v1_tpl_fishing_camp', version: 1 };
-  const g6 = (scene_slot_key, physical_class_id, primary_scene_role_id, overhead_cover_id) => ({ scene_slot_key, physical_class_id, primary_scene_role_id, vertical_context_id: 'surface', overhead_cover_id, intra_g6_visibility_mode: 'default_clear', default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform' });
-  const edge = (edge_slot_key, from_position_slot_key, to_position_slot_key, reverse_edge_slot_key) => ({ edge_slot_key, from_position_slot_key, to_position_slot_key, reverse_edge_slot_key, passage_type_id: 'passage.local', transition_environment_profile_id: 'env.local_variable', transition_environment_profile_version: 3, movement_orientation_profile_id: 'orientation.topological_local', movement_orientation_profile_version: 2, cost_kind: 'action', action_units: 1, baseline_movement_method_id: null, movement_method_cost_profile_id: null, movement_method_cost_profile_version: null, base_minutes: null, dynamic_recheck_policy_id: null, dynamic_recheck_policy_version: null, capacity: 1, portal_template_id: null, portal_template_version: null, availability_condition_set_id: null, availability_condition_set_version: null });
-  const link = (link_slot_key, from_position_slot_key, to_position_slot_key, reverse_link_slot_key) => ({ link_slot_key, from_position_slot_key, to_position_slot_key, reverse_link_slot_key, quality: 'clear', distance_band: 'near', portal_template_id: null, portal_template_version: null, condition_profile_id: null, condition_profile_version: null });
-  const fishingCamp = { header, g6_slots: [g6('working_camp', 'spatial.g6.open', 'working_camp', 'none'), g6('s1_open_one_space', 'spatial.g6.semi_enclosed', 'ordinary_local', 'partial')], position_slots: [{ position_slot_key: 'working_camp', g6_scene_slot_key: 'working_camp', position_type_id: 'scene_position.fixed_working_reach', capacity: 7, access_class_id: 'trace_ld_v1_access_fishing_camp' }, { position_slot_key: 's1_open_one_space.interior', g6_scene_slot_key: 's1_open_one_space', position_type_id: 'scene_position.central', capacity: 1, access_class_id: 'default' }], movement_edges: [edge('s1_open_one_space.out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.back'), edge('s1_open_one_space.back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.out')], visibility_links: [link('s1_open_one_space.visible_out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.visible_back'), link('s1_open_one_space.visible_back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.visible_out')] };
-  const wreckShore = structuredClone(fishingCamp);
-  wreckShore.header = { id: 'trace_ld_v1_tpl_wreck_shore', version: 1 };
-  wreckShore.g6_slots = [g6('open_shore', 'spatial.g6.open', 'open_shore', 'none')];
-  wreckShore.position_slots = [{ position_slot_key: 'open_shore', g6_scene_slot_key: 'open_shore', position_type_id: 'scene_position.water_reach', capacity: 7, access_class_id: 'trace_ld_v1_access_wreck_shore' }];
-  wreckShore.movement_edges = [];
-  wreckShore.visibility_links = [];
-  const dryingShed = structuredClone(fishingCamp);
-  dryingShed.header = { id: 'trace_ld_v1_tpl_old_drying_shed', version: 1 };
-  dryingShed.g6_slots = [g6('shed_approach', 'spatial.g6.semi_enclosed', 'shed_approach', 'partial'),
-    g6('s1_enclosed_space', 'spatial.g6.enclosed', 'ordinary_local', 'full')];
-  dryingShed.position_slots = [{ position_slot_key: 'shed_approach',
-    g6_scene_slot_key: 'shed_approach', position_type_id: 'scene_position.approach',
-    capacity: 7, access_class_id: 'trace_ld_v1_access_old_drying_shed' },
-  { position_slot_key: 's1_enclosed_space.interior',
-    g6_scene_slot_key: 's1_enclosed_space', position_type_id: 'scene_position.central',
-    capacity: 5, access_class_id: 'trace_ld_v1_access_old_drying_shed' }];
-  dryingShed.movement_edges = [edge('s1_enclosed_space.out', 'shed_approach',
-    's1_enclosed_space.interior', 's1_enclosed_space.back'), edge(
-    's1_enclosed_space.back', 's1_enclosed_space.interior', 'shed_approach',
-    's1_enclosed_space.out')];
-  dryingShed.visibility_links = [link('s1_enclosed_space.visible_out',
-    'shed_approach', 's1_enclosed_space.interior', 's1_enclosed_space.visible_back'),
-  link('s1_enclosed_space.visible_back', 's1_enclosed_space.interior',
-    'shed_approach', 's1_enclosed_space.visible_out')];
-  return { scene_template_closures: [fishingCamp, wreckShore, dryingShed],
-    canonical_g5_scene_bindings: lowerDvinaTraceCanonicalG5SceneBindings };
-}
 
 test('S1 catalog closure fails before physical rows on missing, ambiguous, or drifted slots', () => {
   const slot = activeBundle.materialization_bindings.first_entry_preparation.destination.g6.s1_topology_slot;
@@ -698,4 +717,13 @@ test('tampered digest, missing mandatory record and damaged profile fail closed 
       { code: /TRACE_(?:START_SPATIAL|PLAYER_DOSSIER)_BINDING_INCOMPLETE/u }
     );
   }
+});
+
+test('current scene presentation uses its declared pin without changing historical replay', async () => {
+  const current = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 34 });
+  const historical = await loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 32 });
+  assert.equal(current.scene_presentation.revision, 3);
+  assert.equal(current.artifact_pins.scene_presentation.digest,
+    current.definition.immutable_content_refs.scene_presentation.digest);
+  assert.equal(historical.scene_presentation.revision, 1);
 });

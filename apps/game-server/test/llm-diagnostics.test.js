@@ -66,9 +66,48 @@ test('diagnostics accepts telemetry shape, shares turn start, and unions paralle
   assert.equal(JSON.stringify(report).includes('secret prompt'), false);
 });
 
-test('a valid sixty-second turn has no obsolete whole-turn deadline incident', () => {
-  const report = buildLlmTurnReport({ turn_duration_ms: 60_000 });
-  assert.equal(report.turn_deadline_ms, null);
+test('live turn progress is exact-request scoped, monotonic, shared by retry, and player-safe', async () => {
+  let now = 1_000, releaseFirst, releaseRetry;
+  const diagnostics = createLlmDiagnostics({ now: () => now });
+  const first = diagnostics.runTurn({ party_id: 'party', request_id: 'request-1' }, async () => {
+    diagnostics.recordProgress('understanding_action');
+    await new Promise((resolve) => { releaseFirst = resolve; });
+  });
+  await Promise.resolve();
+  now = 3_500;
+  assert.deepEqual(diagnostics.progress({ party_id: 'party', request_id: 'request-1' }), {
+    version: 1, schema: 'turn_progress_v1', status: 'running',
+    request_id: 'request-1', phase: 'understanding_action', sequence: 1,
+    started_at: 1_000, phase_started_at: 1_000, commit_state: 'unconfirmed',
+    elapsed_seconds: 2, remaining_seconds: null
+  });
+  assert.equal(diagnostics.progress({ party_id: 'party', request_id: 'other' }), null);
+
+  const retry = diagnostics.runTurn({ party_id: 'party', request_id: 'request-1' }, async () => {
+    diagnostics.recordProgress('saving_result');
+    diagnostics.recordProgress('preparing_screen', { commit_state: 'committed' });
+    await new Promise((resolve) => { releaseRetry = resolve; });
+  });
+  await Promise.resolve();
+  const shared = diagnostics.progress({ party_id: 'party', request_id: 'request-1' });
+  assert.equal(shared.phase, 'preparing_screen');
+  assert.equal(shared.sequence, 3);
+  assert.equal(shared.commit_state, 'committed');
+  for (const privateWord of ['role', 'model', 'provider', 'npc']) {
+    assert.equal(JSON.stringify(shared).includes(privateWord), false);
+  }
+  releaseFirst();
+  await first;
+  assert.notEqual(diagnostics.progress({ party_id: 'party', request_id: 'request-1' }), null);
+  releaseRetry();
+  await retry;
+  assert.equal(diagnostics.progress({ party_id: 'party', request_id: 'request-1' }), null);
+});
+
+test('a valid sixty-second turn reports the safety deadline without an incident', () => {
+  const report = buildLlmTurnReport({ turn_duration_ms: 60_000,
+    turn_deadline_ms: 360_000 });
+  assert.equal(report.turn_deadline_ms, 360_000);
   assert.equal(report.llm_budget_ms, null);
   assert.equal(report.aggregate.deadline_exceeded, false);
   assert.deepEqual(report.aggregate.incidents, []);
@@ -325,7 +364,7 @@ test('private party log report retains full LLM request and response', async () 
     .includes('Осмотреться'), false);
 });
 
-test('private party log retains provider reasoning content', async () => {
+test('private party log omits provider reasoning and retains useful diagnostics', async () => {
   const originalFetch = globalThis.fetch;
   let providerRequest;
   globalThis.fetch = async (_url, init) => {
@@ -334,7 +373,8 @@ test('private party log retains provider reasoning content', async () => {
       ok: true,
       json: async () => ({ choices: [{ message: {
         content: '{"action":"look"}', reasoning_content: 'hidden reasoning'
-      } }] })
+      } }], usage: { prompt_tokens: 4, completion_tokens: 5,
+        total_tokens: 9 } })
     };
   };
   try {
@@ -352,7 +392,12 @@ test('private party log retains provider reasoning content', async () => {
     }));
     const report = diagnostics.takeLogReport({ party_id: 'party-reasoning' });
     assert.deepEqual(report.calls[0].request.messages, providerRequest.messages);
-    assert.equal(report.calls[0].response.reasoning_content, 'hidden reasoning');
+    assert.deepEqual(report.calls[0].response.parsed_json, { action: 'look' });
+    assert.equal(report.calls[0].response.raw_text, '{"action":"look"}');
+    assert.equal(report.calls[0].response.usage.total_tokens, 9);
+    assert.equal(Object.hasOwn(report.calls[0].response,
+      'reasoning_content'), false);
+    assert.equal(JSON.stringify(report).includes('hidden reasoning'), false);
   } finally {
     globalThis.fetch = originalFetch;
   }

@@ -58,3 +58,66 @@ test('Phase 4 generic offer does not become a protection promise', async () => {
   assert.deepEqual(Object.keys(playerRequest.operation_contract),
     ['offer_conditional_protection']);
 });
+
+test('prepared Phase 4 conversation keeps its exact present target', async () => {
+  const { state, contracts } = phase4ArrivalState();
+  const baseModel = createM2ConversationModels().playerConversationModel;
+  let playerRequest;
+  const command = semanticNegotiationCommand({
+    contracts, inputDigest: digest('prepared-target'),
+    playerConversationModel: async (request) => {
+      playerRequest = structuredClone(request);
+      const plan = structuredClone(await baseModel(request));
+      plan.resolution = 'automatic';
+      plan.check = null;
+      plan.supporting_operations = [];
+      return plan;
+    },
+    npcSemanticModel: async () => null,
+    revalidateStateVersion: async () => state.party_state.state_version
+  });
+  const onisim = contracts.actors.onisim_boatman;
+  await command.availability({
+    retrievedState: state,
+    playerInput: { raw_text: 'Не бойся, я здесь.' },
+    modeResolution: null,
+    semanticOperation: { op: 'emit_interaction',
+      target_actor_refs: [onisim.instance_id] }
+  });
+  assert.equal(playerRequest.player_safe_context.target_npc_ref.entity_id,
+    onisim.instance_id);
+  assert.equal(playerRequest.player_safe_context.offer_policy_ref, undefined);
+
+  const absent = structuredClone(contracts);
+  absent.actors.onisim_boatman.anchor_id = contracts.anchors.camp;
+  const absentCommand = semanticNegotiationCommand({
+    contracts: absent, inputDigest: digest('absent-target'),
+    playerConversationModel: async () => assert.fail('remote model call'),
+    npcSemanticModel: async () => null,
+    revalidateStateVersion: async () => state.party_state.state_version
+  });
+  const unavailable = await absentCommand.availability({
+    retrievedState: state,
+    playerInput: { raw_text: 'Ответь мне.' },
+    modeResolution: null,
+    semanticOperation: { op: 'emit_interaction',
+      target_actor_refs: [onisim.instance_id] }
+  });
+  assert.equal(unavailable.status, 'blocked');
+  assert.equal(unavailable.can_attempt, false);
+});
+
+test('the common conversation owner rejects a remotely moved Ratsha',
+  async () => {
+    const { state, contracts } = phase4ArrivalState();
+    const ratsha = state.npcs.find(({ instance_id: id }) =>
+      id === contracts.actors.ratsha_storehouse_helper.instance_id);
+    ratsha.anchor_id = contracts.anchors.camp;
+    ratsha.location_profile_ref = contracts.ids.camp;
+    await assert.rejects(runPhase4({ state, contracts,
+      rawText: 'Ратша, ответь мне.', inputDigest: digest('e'),
+      responseKind: 'speech', checkResult: null, offerStage: null,
+      checkRequest: null }), {
+      code: 'TRACE_M2_CONVERSATION_TARGET_NOT_PRESENT'
+    });
+  });

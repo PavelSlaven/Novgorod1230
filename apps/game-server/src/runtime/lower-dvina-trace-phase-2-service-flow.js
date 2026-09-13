@@ -81,6 +81,7 @@ export function createLowerDvinaTracePhase2ServiceFlow({
     },
     createVisibleProjector() {
       return createLowerDvinaTraceTurnStepVisibleProjector({
+        calendarProfile: contracts.calendarProfile,
         fallback: createTracePhase9VisibleProjector({
           contracts: phase9Contracts, fallback: createTracePhase8VisibleProjector({
             contracts: phase8Contracts, fallback: createTracePhase7VisibleProjector({ fallback: createTracePhase6VisibleProjector({ scenePresentation, fallback: createTracePhase5VisibleProjector({

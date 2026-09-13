@@ -1,13 +1,12 @@
-const ALLOWED_OVERRIDE_KEYS = new Set(['maxTokens', 'temperature', 'topP', 'requestTimeoutMs']);
+const ALLOWED_OVERRIDE_KEYS = new Set([
+  'maxTokens', 'temperature', 'topP', 'requestTimeoutMs', 'reasoningEffort'
+]);
+const REASONING_EFFORTS = new Set(['minimal', 'low', 'medium', 'high', 'xhigh']);
 export const LLM_MAX_OUTPUT_TOKENS = 20_000;
 export const LLM_REQUEST_TIMEOUT_MS = 120_000;
 const JSON_FORMAT_INSTRUCTION = Object.freeze({
   role: 'system', content: 'Return a valid json object.'
 });
-const NO_THINKING_OPENAI_MODELS = new Set([
-  'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced',
-  'gemma-4-26b-a4b-it'
-]);
 
 export function resolveRuntimeProviderOverride(override) {
   if (override == null) return { ok: true, config: null };
@@ -70,13 +69,30 @@ export function applyProviderOverrides(config, overrides) {
       if (parsed != null) config.topP = parsed;
       continue;
     }
+    if (key === 'reasoningEffort') {
+      const parsed = readText(value);
+      if (parsed === 'off') {
+        config.reasoningEffort = null;
+        config.thinking = { type: 'disabled' };
+        continue;
+      }
+      if (config.compatibility === 'openai_compatible'
+          && REASONING_EFFORTS.has(parsed)) {
+        config.reasoningEffort = parsed;
+        delete config.thinking;
+      }
+      continue;
+    }
     const parsed = readPositiveInt(value);
     if (parsed) config.requestTimeoutMs = parsed;
   }
 }
 
 export function normalizeExecutionLimits(config) {
-  config.maxTokens = LLM_MAX_OUTPUT_TOKENS;
+  const requestedMaxTokens = readPositiveInt(config.maxTokens);
+  config.maxTokens = requestedMaxTokens === null
+    ? LLM_MAX_OUTPUT_TOKENS
+    : Math.min(requestedMaxTokens, LLM_MAX_OUTPUT_TOKENS);
   config.requestTimeoutMs = LLM_REQUEST_TIMEOUT_MS;
 }
 
@@ -87,8 +103,10 @@ export function buildProviderRequestPayload(config, messages) {
     max_tokens: config.maxTokens,
     ...(config.responseFormat ? { response_format: config.responseFormat } : {}),
     ...(config.compatibility === 'openai_compatible'
-      && NO_THINKING_OPENAI_MODELS.has(config.model)
+      && config.thinking?.type === 'disabled'
       ? { chat_template_kwargs: { enable_thinking: false } } : {}),
+    ...(config.compatibility === 'openai_compatible' && config.reasoningEffort
+      ? { reasoning_effort: config.reasoningEffort } : {}),
     ...(config.compatibility === 'deepseek' && config.thinking ? { thinking: config.thinking } : {}),
     ...(config.compatibility === 'deepseek' && config.reasoningEffort ? { reasoning_effort: config.reasoningEffort } : {}),
     ...(config.temperature != null ? { temperature: config.temperature } : {}),
@@ -100,6 +118,10 @@ function providerMessages(config, messages) {
   if (config.responseFormat?.type !== 'json_object'
       || messages.some(({ content }) => typeof content === 'string'
         && /json/iu.test(content))) return messages;
+  if (messages[0]?.role === 'system' && typeof messages[0].content === 'string') {
+    return [{ ...messages[0], content: `${JSON_FORMAT_INSTRUCTION.content}\n\n${messages[0].content}` },
+      ...messages.slice(1)];
+  }
   return [JSON_FORMAT_INSTRUCTION, ...messages];
 }
 

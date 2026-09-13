@@ -1,5 +1,5 @@
 import { deepFreeze } from '@rus/kernel';
-import { NARRATION_AUDIT_SCHEMA, NARRATION_FLOW_RESULT_SCHEMA, NARRATION_OUTPUT_SCHEMA } from './contracts.js';
+import { NARRATION_FLOW_RESULT_SCHEMA, NARRATION_OUTPUT_SCHEMA } from './contracts.js';
 import { assertNarrationValid, validateNarrationFlowResult } from './validators.js';
 
 export function adaptApprovedOpeningNarration({ stage22Result, stage23Result } = {}) {
@@ -14,9 +14,11 @@ export function adaptApprovedOpeningNarration({ stage22Result, stage23Result } =
   }
   const prose = stage22Result.narrator_starting_prose;
   const audit = stage23Result.narrator_prose_audit;
+  if (prose?.request_id !== stage22Result.request_id) throw adapterError('OPENING_NARRATION_REQUEST_MISMATCH', 'Stage 22 prose request_id differs.');
   if (!plain(prose) || !text(prose.prose)) throw adapterError('OPENING_NARRATION_OUTPUT_INVALID', 'Stage 22 prose is invalid.');
   if (!plain(audit) || audit.pass !== true) throw adapterError('OPENING_NARRATION_AUDIT_INVALID', 'Stage 23 audit is invalid.');
-  for (const key of ['can_show_to_player', 'can_write_player_visible_message']) {
+  if (stage23Result.repair_route !== null) throw adapterError('OPENING_NARRATION_AUDIT_INVALID', 'Approved Stage 23 result must have no repair route.');
+  for (const key of ['can_show_to_player', 'can_write_player_visible_message', 'can_mark_opening_scene_presented']) {
     if (stage23Result.commit_permission?.[key] !== true) throw adapterError('OPENING_NARRATION_PERMISSION_DENIED', `${key} permission is required.`);
   }
 
@@ -36,13 +38,7 @@ export function adaptApprovedOpeningNarration({ stage22Result, stage23Result } =
       used_references: clone(prose.used_visible_context_refs ?? []),
       self_check: clone(prose.self_constraints_check ?? {})
     },
-    final_audit: {
-      version: 1,
-      schema: NARRATION_AUDIT_SCHEMA,
-      pass: true,
-      concerns: [],
-      evidence: clone(audit.evidence ?? ['Approved by Stage 23.'])
-    },
+    final_audit: clone(audit),
     repair_request: null,
     generation_history: clone(stage22Result.generation_history ?? []),
     audit_history: clone(stage23Result.audit_history ?? []),

@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildTurnStepPreparedEffectLedger } from '@rus/turn';
+import { loadLowerDvinaTraceScenePresentation } from
+  '../src/internal/lower-dvina-trace-scene-presentation.js';
 import {
   assertPublicCommitEnvelope,
   bindStepTraceCopies,
@@ -22,6 +24,15 @@ import {
 
 const RECONCILIATION_FAILED =
   'TRACE_TURN_STEP_PREPARED_EFFECT_RECONCILIATION_FAILED';
+
+test('prepared route lineage reprojects the approved perceived routes', async () => {
+  const scenePresentation = await loadLowerDvinaTraceScenePresentation({
+    scenarioDefinitionRevision: 33
+  });
+  const scenario = await routeDirectScenario({ scenePresentation });
+  assert.ok(routeBeforeProjection(scenario).available_routes.length > 0);
+  await assert.doesNotReject(() => commit(scenario.writePlan, scenario));
+});
 
 test('prepared route admits only a matching first-entry destination scene',
   async () => {

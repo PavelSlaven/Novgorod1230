@@ -1,5 +1,25 @@
 import { canonicalDigest } from '@rus/materialization';
 import { requiredTraceTurnText } from './lower-dvina-trace-phase-2-runtime-input.js';
+import { serverError } from '../errors.js';
+
+// Runtime-local joining covers overlapping browser retries; P16 owns durable replay.
+export function createTraceTurnRequestExecutor() {
+  const inFlight = new Map();
+  return async ({ partyId, idempotencyKey, inputDigest }, execute) => {
+    const key = JSON.stringify([partyId, idempotencyKey]);
+    const existing = inFlight.get(key);
+    if (existing) {
+      if (existing.inputDigest !== inputDigest) throw serverError(
+        'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT',
+        'The idempotency identity is already bound to another input.', { status: 409 });
+      return existing.promise;
+    }
+    const entry = { inputDigest, promise: Promise.resolve().then(execute) };
+    inFlight.set(key, entry);
+    try { return await entry.promise; }
+    finally { inFlight.delete(key); }
+  };
+}
 
 export function buildTracePhase2TurnRequest({ partyId, input }) {
   const requestId = requiredTraceTurnText(input.request_id,

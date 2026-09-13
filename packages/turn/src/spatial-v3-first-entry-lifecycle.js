@@ -4,6 +4,7 @@ import {
 } from '@rus/contracts/spatial-v3/registry';
 
 import { FIRST_ENTRY_BINDING_FIELDS } from './spatial-v3-write-plan-policy.js';
+import { completeG6AcousticProfiles } from './spatial-v3-write-plan-s1-validation.js';
 
 const text = (value) => typeof value === 'string' && value.trim() === value
   && value.length > 0;
@@ -118,13 +119,19 @@ function physicalWrites(value, member) {
     return value.length === 0 ? [] : null;
   }
   const writes = value.map(copy);
-  const hasSlot = writes.filter((entry) => entry.target_table === 'party_g6_instances').length === 2;
-  if ((!hasSlot && (writes.length < 3 || writes.length > 4))
-      || (hasSlot && writes.length !== 10) || writes.some((entry) => !write(entry))
+  const g6Rows = writes.filter((entry) =>
+    entry.target_table === 'party_g6_instances');
+  const profileCount = writes.filter((entry) =>
+    entry.target_table === 'g6_acoustic_profiles').length;
+  const topologyCount = writes.length - profileCount;
+  const hasSlot = g6Rows.length === 2;
+  if ((!hasSlot && (topologyCount < 3 || topologyCount > 4))
+      || (hasSlot && topologyCount !== 10) || writes.some((entry) => !write(entry))
       || writes.some((entry) => !['party_scene_baselines', 'party_g5_sites', 'party_g6_instances',
-        'scene_position_nodes', 'scene_movement_edges', 'visibility_links'].includes(
+        'g6_acoustic_profiles', 'scene_position_nodes', 'scene_movement_edges', 'visibility_links'].includes(
         entry.target_table))
       || !writes.some((entry) => entry.target_table === 'party_scene_baselines')
+      || !completeG6AcousticProfiles(writes, g6Rows)
       || (hasSlot && !completeS1Topology(writes, member))) {
     return null;
   }

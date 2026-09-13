@@ -2,6 +2,7 @@ import {
   calculateContainerUsage,
   calculateHandsState,
   calculateInventoryMass,
+  inventoryItemIsCarried,
   projectRuntimeInventoryInstance,
   resolveInventoryMechanicsProfile,
   resolveInventoryLoad,
@@ -186,6 +187,13 @@ export function getCommittedActorInventoryLoad(state, actorId) {
   }
   return Object.freeze({ total_mass_grams: mass.total_mass_grams,
     hands_used: hands.hands_used, load_category: loadCategory });
+}
+
+export function getCommittedActorInventoryItemRefs(state, actorId) {
+  const inventory = buildCommittedInventoryInput(state, { actorId,
+    actorStrength: null, normalizeNpcHolder: true });
+  return inventory.items.filter(({ item_id: itemId }) =>
+    inventoryItemIsCarried(inventory, itemId)).map(({ item_id }) => item_id);
 }
 
 function withRuntimeItemOverlay(state, runtimeItems, retiredItemRefs) {

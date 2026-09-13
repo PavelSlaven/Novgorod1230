@@ -171,7 +171,7 @@ function redact(value, ancestors = []) {
   const next = [...ancestors, value];
   if (Array.isArray(value)) return value.map((entry) => redact(entry, next));
   return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key,
-    /(?:api.?key|authorization|password|credential|endpoint)/iu.test(key)
+    /(?:api.?key|authorization|password|credential|endpoint)|^(?:base_?url|provider_?url|provider_?base_?url)$/iu.test(key)
       ? '[REDACTED]' : redact(entry, next)]));
 }
 function correlation(partyId, input = {}) {

@@ -262,10 +262,16 @@ test('party log redacts recursive credentials but preserves gameplay text', asyn
     diagnostics: {
       api_key: secret,
       error: { cause: { authorization: `Bearer ${secret}` } },
-      ui: { password: secret, nested: { credentials: secret } }
+      ui: { password: secret, nested: { credentials: secret,
+        baseUrl: 'https://provider.private.test/v1',
+        provider_url: 'https://provider.private.test/other' } },
+      source_url: 'https://github.com/PavelSlaven/Novgorod1230/pull/96',
+      pull_request_url: 'https://github.com/PavelSlaven/Novgorod1230/pull/96'
     }
   });
   const saved = await readFile(log.pathFor('party-redacted'), 'utf8');
   assert.equal(saved.includes(secret), false);
+  assert.equal(saved.includes('provider.private.test'), false);
   assert.equal(saved.includes('Осмотреть лодку у берега.'), true);
+  assert.equal(saved.includes('github.com/PavelSlaven/Novgorod1230/pull/96'), true);
 });

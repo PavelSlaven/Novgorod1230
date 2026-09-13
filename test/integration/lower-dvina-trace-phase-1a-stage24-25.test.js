@@ -61,6 +61,13 @@ test('revision 35 new party pins the one-hand blue-wool profile', async () => {
     builder: buildLowerDvinaTracePhase1AWritePlan,
     auditor: (request) => auditPartyDbWritePlanByCode({ ...request,
       stage24_input: fixture.input }) });
+  const recordsFor = (table) => stage24.party_db_write_plan.write_batches
+    .find(({ target_table }) => target_table === table).records;
+  const npcIds = new Set(recordsFor('party_npcs').map(({ npc_id }) => npc_id));
+  const heldNpcIds = recordsFor('party_item_placements')
+    .map(({ holder_npc_id }) => holder_npc_id).filter(Boolean);
+  assert.ok(heldNpcIds.length > 0);
+  assert.ok(heldNpcIds.every((npcId) => npcIds.has(npcId)));
   const snapshot = stage24.party_db_write_plan.write_batches.find(
     ({ target_table: table }) => table === 'party_state_snapshots'
   ).records[0].state_payload;

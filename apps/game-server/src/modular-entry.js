@@ -6,7 +6,7 @@ import { createGameHttpServer, listen } from './http/server.js';
 import { loadConfiguredComposition } from './runtime/load-composition.js';
 import { createProductionLlmRoleRunner } from './infrastructure/provider/deepseek.js';
 import { createPortraitSpecNormalizer } from './portrait-lab/normalizer.js';
-import { createLlmSettingsOwner } from './runtime/llm-settings.js';
+import { createLlmSettingsOwner, createProductionLlmQualifier } from './runtime/llm-settings.js';
 import { createLlmDiagnostics } from './runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from './runtime/llm-turn-budget.js';
 import { createOrdinaryMaterializationStageBQualifier } from './runtime/ordinary-materialization-stage-b-qualification.js';
@@ -27,9 +27,11 @@ const llmSettings = createLlmSettingsOwner({
   persistSettings: (record) => llmSettingsStore.save(record),
   runtimeStatus: parseLocalRuntimeStatus(process.env.RUS_LOCAL_LLM_RUNTIME_STATUS),
   probeCustom: (candidate) => qualificationRunner.probe(candidate),
-  qualifyCustom: createOrdinaryMaterializationStageBQualifier({
-    roleRunner: qualificationRunner,
-    evalContract: ordinaryProfile.stage_b_classification_eval
+  qualifyCustom: createProductionLlmQualifier({ roleRunner: qualificationRunner,
+    qualifyOrdinary: createOrdinaryMaterializationStageBQualifier({
+      roleRunner: qualificationRunner,
+      evalContract: ordinaryProfile.stage_b_classification_eval
+    })
   })
 });
 const llmTurnBudget = createLlmTurnBudget();

@@ -1,4 +1,5 @@
 import { serverError } from '../errors.js';
+import { readFile } from 'node:fs/promises';
 
 export const LOCAL_LLM_PRESET = Object.freeze({
   base_url: 'http://127.0.0.1:8000/v1',
@@ -67,6 +68,44 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
   }
 }
 
+export function createProductionLlmQualifier({ qualifyOrdinary, roleRunner } = {}) {
+  if (typeof qualifyOrdinary !== 'function') throw new TypeError('qualifyOrdinary is required.');
+  return async (candidate) => {
+    const identity = await qualifyOrdinary(candidate);
+    await runNarrationAuditorQualification({ roleRunner, candidate });
+    return Object.freeze({ ...identity, qualification_version: 67 });
+  };
+}
+
+export async function runNarrationAuditorQualification({ roleRunner, candidate } = {}) {
+  if (typeof roleRunner?.run !== 'function' || typeof roleRunner?.describe !== 'function') {
+    throw new TypeError('Narration qualification requires LLM role transport.');
+  }
+  const fixtures = (await frozenNarrationFixtures()).filter(({ id }) => [
+    'gameplay-narrator-auditor-cycle17-shore-catalogue',
+    'gameplay-narrator-auditor-unseen-inspection-catalogue'
+  ].includes(id));
+  if (fixtures.length !== 2) throw narrationQualificationError();
+  const invocation = { scope: 'turn_runtime', role_id: 'gameplay_narrator_auditor',
+    overrides: { temperature: 0, maxTokens: 20_000, requestTimeoutMs: 120_000 },
+    provider_snapshot: candidate };
+  const identity = roleRunner.describe(invocation);
+  try {
+    for (const fixture of fixtures) {
+      const response = await roleRunner.run({ ...invocation, messages: fixture.messages });
+      if (!sameIdentity(identity, response?.provider_record)
+          || !response?.output?.literary_failures?.some(
+            ({ check }) => check === 'weak_literary_composition')) throw narrationQualificationError();
+    }
+    return identity;
+  } catch (error) {
+    if (error?.code === 'LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED') throw error;
+    if (/^(?:timeout|transport_error|invalid_response|json_parse_failed|http_\d{3})$/u
+      .test(String(error?.code ?? ''))) throw error;
+    throw narrationQualificationError();
+  }
+}
+
 async function qualify(candidate, qualifyCustom) {
   if (typeof qualifyCustom !== 'function') {
     throw serverError('LLM_SETTINGS_QUALIFICATION_UNAVAILABLE',
@@ -129,22 +168,26 @@ function publicSnapshot(snapshot, runtimeStatus) {
 
 function storedRecord(snapshot, identity) {
   return Object.freeze({
-    version: 1,
+    version: 2,
     settings: { mode: snapshot.mode, compatibility: snapshot.compatibility,
       base_url: snapshot.baseUrl, model: snapshot.model, api_key: snapshot.apiKey },
-    ordinary_materialization_identity: identity
+    ordinary_materialization_identity: identity,
+    qualification_version: identity?.qualification_version ?? null
   });
 }
 
 function normalizeStoredRecord(record) {
-  if (!plain(record) || record.version !== 1 || !plain(record.settings)) {
+  if (!plain(record) || record.version !== 2 || !plain(record.settings)) {
     throw serverError('LLM_SETTINGS_FILE_INVALID',
       'Saved LLM settings are invalid.', { status: 500, public_exposure: 'internal' });
   }
   const active = normalizeSettings(record.settings, null);
   const legacyDefault = record.settings.mode === 'default';
-  const identity = legacyDefault ? null
-    : normalizeIdentity(record.ordinary_materialization_identity);
+  const identity = legacyDefault ? null : normalizeIdentity(record.ordinary_materialization_identity);
+  if (!legacyDefault && record.qualification_version !== 67) {
+    throw serverError('LLM_SETTINGS_FILE_INVALID',
+      'Saved LLM settings require renewed qualification.', { status: 500, public_exposure: 'internal' });
+  }
   return { active, identity };
 }
 
@@ -157,6 +200,22 @@ function normalizeIdentity(value) {
       'Saved LLM settings are invalid.', { status: 500, public_exposure: 'internal' });
   }
   return Object.freeze(Object.fromEntries(keys.map((key) => [key, value[key]])));
+}
+function sameIdentity(expected, actual) {
+  return ['provider', 'model', 'scope', 'role_id', 'config_hash'].every((key) =>
+    expected?.[key] === actual?.[key]);
+}
+function narrationQualificationError() {
+  return serverError('LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED',
+    'Custom LLM settings failed narration-auditor qualification.', { status: 422 });
+}
+let narrationFixtures;
+async function frozenNarrationFixtures() {
+  if (narrationFixtures == null) {
+    const source = new URL('../../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url);
+    narrationFixtures = JSON.parse(await readFile(source, 'utf8')).fixtures;
+  }
+  return narrationFixtures;
 }
 function normalizeUrl(value) {
   const raw = requiredText(value, 'LLM_SETTINGS_BASE_URL_REQUIRED', 'base_url is required.');

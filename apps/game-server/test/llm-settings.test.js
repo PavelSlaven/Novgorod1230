@@ -13,6 +13,8 @@ import {
   LOCAL_LLM_PRESET,
   listen
 } from '../src/index.js';
+import { runNarrationAuditorQualification } from
+  '../src/runtime/llm-settings.js';
 
 const custom = Object.freeze({
   mode: 'custom',
@@ -215,7 +217,7 @@ test('local preset and private server config survive restart', async (t) => {
     filePath: join(directory, 'llm-settings.json')
   });
   const qualifyCustom = async (candidate) => ({ ...identity(),
-    model: candidate.model });
+    model: candidate.model, qualification_version: 67 });
   const first = createLlmSettingsOwner({ qualifyCustom,
     persistSettings: (record) => store.save(record) });
   const applied = await first.apply({ mode: 'local', api_key: 'local-secret' });
@@ -244,6 +246,30 @@ test('readiness probe reports provider category without applying candidate', asy
     category: 'timeout', duration_ms: 12
   });
   assert.deepEqual(owner.read(), before);
+});
+
+test('narration qualification rejects false PASS and stale settings, then admits a qualified provider', async () => {
+  const qualifyingRunner = (empty) => ({
+    describe: ({ role_id }) => ({ provider: 'openai_compatible', model: 'local-model',
+      scope: 'turn_runtime', role_id, config_hash: `qualified:${role_id}` }),
+    async run({ role_id }) {
+      return { output: { literary_failures: empty ? [] : [{
+        check: 'weak_literary_composition', segment_choice: 's1', reason: 'catalogue'
+      }] }, provider_record: this.describe({ role_id }) };
+    }
+  });
+  await assert.rejects(runNarrationAuditorQualification({ roleRunner: qualifyingRunner(true),
+    candidate: { mode: 'custom' } }), { code: 'LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED' });
+  const runner = qualifyingRunner(false);
+  const owner = createLlmSettingsOwner({ qualifyCustom: async (candidate) => {
+    await runNarrationAuditorQualification({ roleRunner: runner, candidate });
+    return { ...identity(), qualification_version: 67 };
+  } });
+  await owner.apply(custom);
+  assert.equal(owner.read().model, 'local-model');
+  await assert.rejects(async () => createLlmSettingsOwner({ initialRecord: {
+    version: 1, settings: custom, ordinary_materialization_identity: identity()
+  } }), { code: 'LLM_SETTINGS_FILE_INVALID' });
 });
 
 function identity() { return { provider: 'openai_compatible', model: 'local-model',

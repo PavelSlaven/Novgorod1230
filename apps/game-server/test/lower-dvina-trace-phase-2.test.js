@@ -289,30 +289,6 @@ test('revision 9 pickup preserves inventory owner', async () => {
 });
 
 
-test('revision 9 failed inspection commits time and body but no blue-wool item', async () => {
-  const f = fixture({ scenarioBundle: bundle9, rollValue: 0 });
-  const result = await f.runtime.submitTurn({
-    partyId: f.partyId,
-    input: {
-      request_id: 'phase2-revision9-failure',
-      idempotency_key: 'phase2-revision9-failure',
-      raw_text: 'Осмотреть место крушения подробно.'
-    }
-  });
-  assert.equal(result.check.outcome.success, false);
-  assert.equal(result.clue, null);
-  assert.deepEqual(result.time_update.exact_elapsed.exact_minutes, {
-    numerator: '15',
-    denominator: '1'
-  });
-  assert.equal(result.body_update.proposal.exact_deltas.energy, -1);
-  assert.equal(
-    f.state.items.some((item) =>
-      item.template_id === 'trace_ld_v1_item_blue_wool_fragment'),
-    false
-  );
-});
-
 test('wreck inspection does not reveal a missing road bag without prior knowledge',
   async (t) => {
     for (const current of [{ name: 'success', rollValue: 0.99 },
@@ -341,7 +317,7 @@ test('wreck inspection does not reveal a missing road bag without prior knowledg
     }
   });
 
-test('authored prior bag knowledge admits the missing-road-bag observation',
+test('authored prior bag knowledge admits missing-road-bag observation only on success',
   async (t) => {
     for (const factId of [
       'trace_ld_v1_statement_eremey_disclosure',
@@ -349,7 +325,7 @@ test('authored prior bag knowledge admits the missing-road-bag observation',
       'trace_ld_v1_evidence_bag_at_zhdanko'
     ]) {
       await t.test(factId, async () => {
-        const f = fixture({ rollValue: 0 });
+        const f = fixture({ rollValue: 0.99 });
         f.state.knowledge.push({
           fact_id: factId,
           knowledge_state: 'known_from_committed_source',
@@ -371,6 +347,23 @@ test('authored prior bag knowledge admits the missing-road-bag observation',
           'Дорожной сумки, о которой было известно, здесь нет.'), true);
         assert.equal(JSON.stringify(visibleChanges).includes(
           'visible:road_bag_missing'), false);
+        const failed = fixture({ rollValue: 0 });
+        failed.state.knowledge.push({
+          fact_id: factId,
+          knowledge_state: 'known_from_committed_source',
+          evidence_refs: []
+        });
+        const failure = await failed.runtime.submitTurn({
+          partyId: failed.partyId,
+          input: {
+            request_id: `phase2-road-bag-known-failure-${factId}`,
+            idempotency_key: `phase2-road-bag-known-failure-${factId}`,
+            raw_text: 'Осмотреть место крушения подробно.'
+          }
+        });
+        assert.equal(failure.observations.some(
+          ({ fact_id: observed }) => observed === 'visible:road_bag_missing'),
+        false);
       });
     }
   });

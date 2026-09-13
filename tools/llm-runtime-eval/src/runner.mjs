@@ -71,7 +71,8 @@ async function runFixture(fixture, execution) {
     const call = await executeRoleLlmCall({ scope: fixture.scope,
       roleId: fixture.role_id, messages: fixture.messages, ...execution });
     return scoreFixture(fixture, {
-      ...call, parsed_json: assembleFixtureOutput(fixture, call.parsed_json)
+      ...call, raw_parsed_json: call.parsed_json,
+      parsed_json: assembleFixtureOutput(fixture, call.parsed_json)
     });
   }
   return runTurnStepPlannerWorkflow(fixture, execution);
@@ -342,9 +343,10 @@ function scoreFixture(fixture, call, workflowCalls = [call]) {
   } else {
     errors.push(...validateRoleOutput(fixture, output));
     errors.push(...validateExpected(fixture.expected ?? {}, output));
+    errors.push(...validateExpected(fixture.raw_expected ?? {}, call.raw_parsed_json));
   }
   const manual = fixture.expected?.manual_rubric === true;
-  const scored = !manual && isScored(fixture.expected);
+  const scored = !manual && (isScored(fixture.expected) || isScored(fixture.raw_expected));
   const quality_status = manual ? 'manual' : scored
     ? (errors.length === 0 ? 'automated_passed' : 'automated_failed') : 'unscored';
   const usage = sumUsage(workflowCalls);

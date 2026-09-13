@@ -1,6 +1,6 @@
 {
   "schema": "rus.llm_runtime_frozen_role_requests.v1",
-  "corpus_version": 66,
+  "corpus_version": 67,
   "provenance": "Exact production messages and request DTOs frozen from active role builders and public owner validator fixtures. Excludes fragments without a public validator/callable boundary available to this runner.",
   "fixtures": [
     {
@@ -2802,6 +2802,329 @@
         ]
       },
       "description": "Published performed-attempt prose omits the separate unresolved-result source."
+    },
+    {
+      "id": "gameplay-narrator-auditor-cycle17-shore-catalogue",
+      "scope": "turn_runtime",
+      "role_id": "gameplay_narrator_auditor",
+      "validator": "narration_audit",
+      "coverage": [
+        "narration",
+        "semantic_audit",
+        "qualification",
+        "weak_literary_composition",
+        "player_safe"
+      ],
+      "provenance": {
+        "source": "apps/game-server/src/runtime/lower-dvina-trace-narration-audit.js; data/model-evals/llm-runtime/frozen-role-requests-v1.json",
+        "kind": "frozen player-safe narration-audit qualification carrier"
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a strict evidence auditor of Russian game prose. Silently split\neach supplied segment into every factual proposition, including subordinate\nclauses, sensations, action, result, time claims, causality and certainty. For every\nproposition require one exact supporting ref or field from the supplied\nplayer-safe input. A supplied player-safe source supports exactly its atomic factual\npropositions, including stated relation, motion, cause, qualifier and certainty.\nFaithful prose may use ordinary grammatical inflection or natural paraphrase only\nwhen it adds no atomic proposition. Labels, IDs, categories, names and plausible\nimplications add no sensory trait, causality, time, result, execution or certainty.\nPlausibility is never evidence. An object or place never supports an unstated sound,\nsmell, touch, motion, reaction or persistence.\nTreat a required_current_beat uncertainty with status unperformed_result_unknown\nas evidence only that the second-person player's named continuation is not yet\nperformed and has no result. Never attribute it to an NPC. An explicitly open\nfuture or possible next choice conveying both facts is\nsupported and is not unsupported_attempt. Present, past, or ongoing execution is\nstill unsupported_response_or_continuation or unsupported_attempt.\nNever replace a named or labelled NPC from a required source with second-person player\naction; report that as unsupported_npc_state and leave that source uncovered.\nNever accept reversed causal order. Grammatical subordination of an earlier action is\nallowed only when aspect or an explicit marker makes it unambiguously completed before\nthe later action. A later action cannot precede an earlier one; reject subordination\nthat makes the earlier action simultaneous or ongoing within the later action.\nNever use a style policy to license a new fact: an unlisted sensory property is\nunsupported_sensory even when it would be typical for the supplied object.\nNever skip a proposition because another claim in its sentence is supported. A\nrequired source is covered only if every proposition inside it appears with the\nsame certainty; an embedded unknown result must remain unknown.\nSilence about a result is not an explicit unknown result. A segment that only\ndescribes the attempt, or merely avoids claiming an outcome, does not cover a\nsource saying that the result is unknown or unestablished.\nConversely, a performed attempt without a supplied result or uncertainty does\nnot support saying that its result is unknown or unestablished; report that\nproposition as unsupported_result.\nDo not require prose to supply a result for an attempt. A proposition that only\nsays the attempt occurred is complete and supported; never report\nunsupported_result merely because that prose omits an outcome.\n\nReview literary composition for exactly these checks:\ncurrent_beat_buried, elapsed_as_service_report, static_context_dump, weak_literary_composition, unsupported_response_or_continuation. Use unsupported_response_or_continuation\nonly in literary_failures for an invented response, nonresponse, performed\ncontinuation or continued action. current_beat_buried requires a required source to be present but displaced;\nan omitted source belongs only in source_reviews as []. Never add\ncurrent_beat_buried merely because another required source has an empty review.\nOptional support is a candidate set, never a coverage target. After a current\nbeat, a recital of unchanged, independent optional scene facts as panorama or\ncontext is static_context_dump even when fluent, reordered, spatially grouped,\nor placed after the beat. Each retained support detail must locate, contrast,\nconstrain, or constitute the action or result being narrated. A perception beat\nmay govern supplied details that are themselves its perceived result; this does\nnot license unrelated snapshot recap. A recap of unchanged support is static_context_dump.\nTurn duration is code-owned UI metadata and is\nnot supplied as prose evidence. Any invented elapsed time is unsupported_fact;\nservice-like time reporting is also elapsed_as_service_report. A passage that\nmainly restates required sources one by one, without composing\nthe performed action or perceived result with supplied spatial relations, is\nweak_literary_composition even when coverage is complete and every proposition\nis supported. A focal verb or colon before independent observations is also\nweak_literary_composition when a current inspection or perception action supplies\nthose observations unless the focal action grammatically governs at least one compact\nfactual cluster joined by a supplied shared object, spatial anchor, or before/after\nrelation, whether the beat is dense or not; other required facts must remain concise\nconsequence or uncertainty beats. Matching source order or using one multi-clause sentence is not\nby itself evidence of weak composition. A grounded current qualitative assessment\nor conclusion counts as a perceived result; when related scene facts frame or\nlead to it within one coherent focal sentence, do not report a checklist merely\nbecause the clauses follow source order. Do not demand an invented causal,\ntemporal or spatial bridge to avoid that failure. Evaluate all five checks\nindependently: one failure never excuses a missed second failure.\n\nMandatory final cross-checks before JSON:\n1. Every sensory proposition without an exact supplied sensory fact is unsupported_sensory.\n2. Any elapsed-time claim without an exact required source is unsupported_fact;\nservice-like reporting also receives elapsed_as_service_report.\n3. current_beat_buried may describe only a source with a nonempty source review;\nnever use it to restate or penalize an omitted source whose review is [].\n4. If prose reverses ordered performed actions or makes the earlier action simultaneous\nor ongoing within the later one, record unsupported_event. Do not fail subordination\nthat unambiguously marks the earlier action completed before the later action.\n5. When an inspection or perception action has supplied observations, including a\nnon-dense beat, reject an uncomposed source-order checklist and a focal verb or colon\nfollowed by an independent catalogue as weak_literary_composition. A focal beat passes\nonly when it grammatically governs at least one compact cluster linked by a supplied\nobject, place, or before/after relation. Source order alone is not a failure;\ncomplete factual coverage alone is not a literary PASS either.\n6. For a performed attempt with no supplied result or uncertainty, any claim\nthat the result is unknown or unestablished is unsupported_result. The attempt\nalone without any outcome claim is supported and must not be flagged.\n\nReturn only the exact JSON shape shown below. reviewed_segments must copy every\nsegment choice exactly once and in order. source_reviews must contain exactly\nthe shown required_current_beat refs and order; each segment_choices value lists\nsegments that fully convey that source. Use [] for an omitted or partially\nconveyed source. If no required source exists, source_reviews must be [].\nunsupported contains only {\"segment_choice\",\"kind\",\"reason\"}; kind is one of\nunsupported_attempt, unsupported_success, unsupported_object_use,\nunsupported_result, unsupported_sensory, unsupported_event,\nunsupported_world_state, unsupported_npc_state, unsupported_fact.\nliterary_failures contains only {\"check\",\"segment_choice\",\"reason\"}.\nOutput only failures, not supported proposition reviews. evidence is a concise\nnonempty list when there are no failures and may be empty otherwise. Shape:\n{\"reviewed_segments\":[\"s1\",\"s2\",\"s3\",\"s4\",\"s5\",\"s6\"],\"source_reviews\":[{\"ref\":\"visible_change_1\",\"segment_choices\":[]},{\"ref\":\"visible_change_2\",\"segment_choices\":[]},{\"ref\":\"visible_change_3\",\"segment_choices\":[]},{\"ref\":\"visible_change_4\",\"segment_choices\":[]},{\"ref\":\"visible_change_5\",\"segment_choices\":[]},{\"ref\":\"uncertainty_1\",\"segment_choices\":[]}],\"unsupported\":[],\"literary_failures\":[],\"evidence\":[]}\nSegment choices: [\"s1\",\"s2\",\"s3\",\"s4\",\"s5\",\"s6\"]."
+        },
+        {
+          "role": "user",
+          "content": "{\"version\":1,\"schema\":\"narration_semantic_audit_request\",\"phase\":\"initial\",\"output\":{\"version\":1,\"schema\":\"narration_output\",\"output_id\":\"gameplay-narrator-auditor-cycle17-shore-catalogue\",\"prose\":\"Вы подробно осмотрели место крушения. На берегу лежат обломки разбитой лодки. В мокром песке видны босые следы. Рядом заметен отдельный след сапога. Одежда осталась мокрой, а дрожь усилилась. Наблюдения сами по себе не устанавливают виновника или мотив.\",\"action_options\":[],\"used_references\":[],\"self_check\":{}},\"segments\":[{\"segment_id\":\"s1\",\"prose\":\"Вы подробно осмотрели место крушения. \"},{\"segment_id\":\"s2\",\"prose\":\"На берегу лежат обломки разбитой лодки. \"},{\"segment_id\":\"s3\",\"prose\":\"В мокром песке видны босые следы. \"},{\"segment_id\":\"s4\",\"prose\":\"Рядом заметен отдельный след сапога. \"},{\"segment_id\":\"s5\",\"prose\":\"Одежда осталась мокрой, а дрожь усилилась. \"},{\"segment_id\":\"s6\",\"prose\":\"Наблюдения сами по себе не устанавливают виновника или мотив.\"}],\"required_current_beat\":{\"changes\":[{\"ref\":\"visible_change_1\",\"text\":\"Вы подробно осмотрели место крушения.\"},{\"ref\":\"visible_change_2\",\"text\":\"На берегу лежат обломки разбитой лодки.\"},{\"ref\":\"visible_change_3\",\"text\":\"В мокром песке видны босые следы.\"},{\"ref\":\"visible_change_4\",\"text\":\"Рядом заметен отдельный след сапога.\"},{\"ref\":\"visible_change_5\",\"text\":\"Одежда осталась мокрой, а дрожь усилилась.\"}],\"uncertainties\":[{\"ref\":\"uncertainty_1\",\"text\":\"Наблюдения сами по себе не устанавливают виновника или мотив.\",\"status\":\"unperformed_result_unknown\"}]},\"optional_support\":{\"visible_scene\":\"место крушения на берегу\",\"sensory_details\":[\"На берегу лежат обломки разбитой лодки.\",\"В мокром песке видны босые следы.\",\"Рядом заметен отдельный след сапога.\"]},\"constraints\":{\"do_not_imply\":[],\"allowed_tensions\":[],\"style_policy\":{}}}"
+        }
+      ],
+      "raw_expected": {
+        "required_values": {
+          "literary_failures.0.check": "weak_literary_composition"
+        }
+      },
+      "expected": {
+        "required_values": {
+          "pass": false,
+          "artistic_verdict": "fail"
+        }
+      },
+      "expected_output": {
+        "reviewed_segments": [
+          "s1",
+          "s2",
+          "s3",
+          "s4",
+          "s5",
+          "s6"
+        ],
+        "source_reviews": [
+          {
+            "ref": "visible_change_1",
+            "segment_choices": [
+              "s1"
+            ]
+          },
+          {
+            "ref": "visible_change_2",
+            "segment_choices": [
+              "s2"
+            ]
+          },
+          {
+            "ref": "visible_change_3",
+            "segment_choices": [
+              "s3"
+            ]
+          },
+          {
+            "ref": "visible_change_4",
+            "segment_choices": [
+              "s4"
+            ]
+          },
+          {
+            "ref": "visible_change_5",
+            "segment_choices": [
+              "s5"
+            ]
+          },
+          {
+            "ref": "uncertainty_1",
+            "segment_choices": [
+              "s6"
+            ]
+          }
+        ],
+        "unsupported": [],
+        "literary_failures": [
+          {
+            "check": "weak_literary_composition",
+            "segment_choice": "s1",
+            "reason": "The action is followed by an independent factual catalogue."
+          }
+        ],
+        "evidence": []
+      },
+      "request": {
+        "version": 1,
+        "schema": "narration_semantic_audit_request",
+        "phase": "initial",
+        "output": {
+          "version": 1,
+          "schema": "narration_output",
+          "output_id": "gameplay-narrator-auditor-cycle17-shore-catalogue",
+          "prose": "Вы подробно осмотрели место крушения. На берегу лежат обломки разбитой лодки. В мокром песке видны босые следы. Рядом заметен отдельный след сапога. Одежда осталась мокрой, а дрожь усилилась. Наблюдения сами по себе не устанавливают виновника или мотив.",
+          "action_options": [],
+          "used_references": [],
+          "self_check": {}
+        },
+        "visible_context": {
+          "version": 1,
+          "schema": "visible_context_package",
+          "visible_scene": "место крушения на берегу",
+          "visible_changes": [
+            "Вы подробно осмотрели место крушения.",
+            "На берегу лежат обломки разбитой лодки.",
+            "В мокром песке видны босые следы.",
+            "Рядом заметен отдельный след сапога.",
+            "Одежда осталась мокрой, а дрожь усилилась."
+          ],
+          "sensory_details": [
+            "На берегу лежат обломки разбитой лодки.",
+            "В мокром песке видны босые следы.",
+            "Рядом заметен отдельный след сапога."
+          ],
+          "visible_npc": [],
+          "visible_objects": [],
+          "known_context": [],
+          "uncertainties": [
+            "Наблюдения сами по себе не устанавливают виновника или мотив."
+          ],
+          "allowed_tensions": [],
+          "do_not_imply": []
+        },
+        "style_policy": {},
+        "segments": [
+          {
+            "segment_id": "s1",
+            "prose": "Вы подробно осмотрели место крушения. "
+          },
+          {
+            "segment_id": "s2",
+            "prose": "На берегу лежат обломки разбитой лодки. "
+          },
+          {
+            "segment_id": "s3",
+            "prose": "В мокром песке видны босые следы. "
+          },
+          {
+            "segment_id": "s4",
+            "prose": "Рядом заметен отдельный след сапога. "
+          },
+          {
+            "segment_id": "s5",
+            "prose": "Одежда осталась мокрой, а дрожь усилилась. "
+          },
+          {
+            "segment_id": "s6",
+            "prose": "Наблюдения сами по себе не устанавливают виновника или мотив."
+          }
+        ]
+      }
+    },
+    {
+      "id": "gameplay-narrator-auditor-unseen-inspection-catalogue",
+      "scope": "turn_runtime",
+      "role_id": "gameplay_narrator_auditor",
+      "validator": "narration_audit",
+      "coverage": [
+        "narration",
+        "semantic_audit",
+        "qualification",
+        "weak_literary_composition",
+        "player_safe"
+      ],
+      "provenance": {
+        "source": "apps/game-server/src/runtime/lower-dvina-trace-narration-audit.js; data/model-evals/llm-runtime/frozen-role-requests-v1.json",
+        "kind": "frozen player-safe narration-audit qualification carrier"
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a strict evidence auditor of Russian game prose. Silently split\neach supplied segment into every factual proposition, including subordinate\nclauses, sensations, action, result, time claims, causality and certainty. For every\nproposition require one exact supporting ref or field from the supplied\nplayer-safe input. A supplied player-safe source supports exactly its atomic factual\npropositions, including stated relation, motion, cause, qualifier and certainty.\nFaithful prose may use ordinary grammatical inflection or natural paraphrase only\nwhen it adds no atomic proposition. Labels, IDs, categories, names and plausible\nimplications add no sensory trait, causality, time, result, execution or certainty.\nPlausibility is never evidence. An object or place never supports an unstated sound,\nsmell, touch, motion, reaction or persistence.\nTreat a required_current_beat uncertainty with status unperformed_result_unknown\nas evidence only that the second-person player's named continuation is not yet\nperformed and has no result. Never attribute it to an NPC. An explicitly open\nfuture or possible next choice conveying both facts is\nsupported and is not unsupported_attempt. Present, past, or ongoing execution is\nstill unsupported_response_or_continuation or unsupported_attempt.\nNever replace a named or labelled NPC from a required source with second-person player\naction; report that as unsupported_npc_state and leave that source uncovered.\nNever accept reversed causal order. Grammatical subordination of an earlier action is\nallowed only when aspect or an explicit marker makes it unambiguously completed before\nthe later action. A later action cannot precede an earlier one; reject subordination\nthat makes the earlier action simultaneous or ongoing within the later action.\nNever use a style policy to license a new fact: an unlisted sensory property is\nunsupported_sensory even when it would be typical for the supplied object.\nNever skip a proposition because another claim in its sentence is supported. A\nrequired source is covered only if every proposition inside it appears with the\nsame certainty; an embedded unknown result must remain unknown.\nSilence about a result is not an explicit unknown result. A segment that only\ndescribes the attempt, or merely avoids claiming an outcome, does not cover a\nsource saying that the result is unknown or unestablished.\nConversely, a performed attempt without a supplied result or uncertainty does\nnot support saying that its result is unknown or unestablished; report that\nproposition as unsupported_result.\nDo not require prose to supply a result for an attempt. A proposition that only\nsays the attempt occurred is complete and supported; never report\nunsupported_result merely because that prose omits an outcome.\n\nReview literary composition for exactly these checks:\ncurrent_beat_buried, elapsed_as_service_report, static_context_dump, weak_literary_composition, unsupported_response_or_continuation. Use unsupported_response_or_continuation\nonly in literary_failures for an invented response, nonresponse, performed\ncontinuation or continued action. current_beat_buried requires a required source to be present but displaced;\nan omitted source belongs only in source_reviews as []. Never add\ncurrent_beat_buried merely because another required source has an empty review.\nOptional support is a candidate set, never a coverage target. After a current\nbeat, a recital of unchanged, independent optional scene facts as panorama or\ncontext is static_context_dump even when fluent, reordered, spatially grouped,\nor placed after the beat. Each retained support detail must locate, contrast,\nconstrain, or constitute the action or result being narrated. A perception beat\nmay govern supplied details that are themselves its perceived result; this does\nnot license unrelated snapshot recap. A recap of unchanged support is static_context_dump.\nTurn duration is code-owned UI metadata and is\nnot supplied as prose evidence. Any invented elapsed time is unsupported_fact;\nservice-like time reporting is also elapsed_as_service_report. A passage that\nmainly restates required sources one by one, without composing\nthe performed action or perceived result with supplied spatial relations, is\nweak_literary_composition even when coverage is complete and every proposition\nis supported. A focal verb or colon before independent observations is also\nweak_literary_composition when a current inspection or perception action supplies\nthose observations unless the focal action grammatically governs at least one compact\nfactual cluster joined by a supplied shared object, spatial anchor, or before/after\nrelation, whether the beat is dense or not; other required facts must remain concise\nconsequence or uncertainty beats. Matching source order or using one multi-clause sentence is not\nby itself evidence of weak composition. A grounded current qualitative assessment\nor conclusion counts as a perceived result; when related scene facts frame or\nlead to it within one coherent focal sentence, do not report a checklist merely\nbecause the clauses follow source order. Do not demand an invented causal,\ntemporal or spatial bridge to avoid that failure. Evaluate all five checks\nindependently: one failure never excuses a missed second failure.\n\nMandatory final cross-checks before JSON:\n1. Every sensory proposition without an exact supplied sensory fact is unsupported_sensory.\n2. Any elapsed-time claim without an exact required source is unsupported_fact;\nservice-like reporting also receives elapsed_as_service_report.\n3. current_beat_buried may describe only a source with a nonempty source review;\nnever use it to restate or penalize an omitted source whose review is [].\n4. If prose reverses ordered performed actions or makes the earlier action simultaneous\nor ongoing within the later one, record unsupported_event. Do not fail subordination\nthat unambiguously marks the earlier action completed before the later action.\n5. When an inspection or perception action has supplied observations, including a\nnon-dense beat, reject an uncomposed source-order checklist and a focal verb or colon\nfollowed by an independent catalogue as weak_literary_composition. A focal beat passes\nonly when it grammatically governs at least one compact cluster linked by a supplied\nobject, place, or before/after relation. Source order alone is not a failure;\ncomplete factual coverage alone is not a literary PASS either.\n6. For a performed attempt with no supplied result or uncertainty, any claim\nthat the result is unknown or unestablished is unsupported_result. The attempt\nalone without any outcome claim is supported and must not be flagged.\n\nReturn only the exact JSON shape shown below. reviewed_segments must copy every\nsegment choice exactly once and in order. source_reviews must contain exactly\nthe shown required_current_beat refs and order; each segment_choices value lists\nsegments that fully convey that source. Use [] for an omitted or partially\nconveyed source. If no required source exists, source_reviews must be [].\nunsupported contains only {\"segment_choice\",\"kind\",\"reason\"}; kind is one of\nunsupported_attempt, unsupported_success, unsupported_object_use,\nunsupported_result, unsupported_sensory, unsupported_event,\nunsupported_world_state, unsupported_npc_state, unsupported_fact.\nliterary_failures contains only {\"check\",\"segment_choice\",\"reason\"}.\nOutput only failures, not supported proposition reviews. evidence is a concise\nnonempty list when there are no failures and may be empty otherwise. Shape:\n{\"reviewed_segments\":[\"s1\",\"s2\",\"s3\",\"s4\",\"s5\",\"s6\"],\"source_reviews\":[{\"ref\":\"visible_change_1\",\"segment_choices\":[]},{\"ref\":\"visible_change_2\",\"segment_choices\":[]},{\"ref\":\"visible_change_3\",\"segment_choices\":[]},{\"ref\":\"visible_change_4\",\"segment_choices\":[]},{\"ref\":\"visible_change_5\",\"segment_choices\":[]},{\"ref\":\"uncertainty_1\",\"segment_choices\":[]}],\"unsupported\":[],\"literary_failures\":[],\"evidence\":[]}\nSegment choices: [\"s1\",\"s2\",\"s3\",\"s4\",\"s5\",\"s6\"]."
+        },
+        {
+          "role": "user",
+          "content": "{\"version\":1,\"schema\":\"narration_semantic_audit_request\",\"phase\":\"initial\",\"output\":{\"version\":1,\"schema\":\"narration_output\",\"output_id\":\"gameplay-narrator-auditor-unseen-inspection-catalogue\",\"prose\":\"Вы осмотрели старый навес. На стойке виден ржавый крюк. Под навесом лежит мокрая верёвка. У задней стенки заметна узкая щель. От досок тянет холодом. Пока нельзя установить, кто оставил следы.\",\"action_options\":[],\"used_references\":[],\"self_check\":{}},\"segments\":[{\"segment_id\":\"s1\",\"prose\":\"Вы осмотрели старый навес. \"},{\"segment_id\":\"s2\",\"prose\":\"На стойке виден ржавый крюк. \"},{\"segment_id\":\"s3\",\"prose\":\"Под навесом лежит мокрая верёвка. \"},{\"segment_id\":\"s4\",\"prose\":\"У задней стенки заметна узкая щель. \"},{\"segment_id\":\"s5\",\"prose\":\"От досок тянет холодом. \"},{\"segment_id\":\"s6\",\"prose\":\"Пока нельзя установить, кто оставил следы.\"}],\"required_current_beat\":{\"changes\":[{\"ref\":\"visible_change_1\",\"text\":\"Вы осмотрели старый навес.\"},{\"ref\":\"visible_change_2\",\"text\":\"На стойке виден ржавый крюк.\"},{\"ref\":\"visible_change_3\",\"text\":\"Под навесом лежит мокрая верёвка.\"},{\"ref\":\"visible_change_4\",\"text\":\"У задней стенки заметна узкая щель.\"},{\"ref\":\"visible_change_5\",\"text\":\"От досок тянет холодом.\"}],\"uncertainties\":[{\"ref\":\"uncertainty_1\",\"text\":\"Пока нельзя установить, кто оставил следы.\",\"status\":\"unperformed_result_unknown\"}]},\"optional_support\":{\"visible_scene\":\"старый навес у берега\",\"sensory_details\":[\"На стойке виден ржавый крюк.\",\"Под навесом лежит мокрая верёвка.\",\"У задней стенки заметна узкая щель.\",\"От досок тянет холодом.\"]},\"constraints\":{\"do_not_imply\":[],\"allowed_tensions\":[],\"style_policy\":{}}}"
+        }
+      ],
+      "raw_expected": {
+        "required_values": {
+          "literary_failures.0.check": "weak_literary_composition"
+        }
+      },
+      "expected": {
+        "required_values": {
+          "pass": false,
+          "artistic_verdict": "fail"
+        }
+      },
+      "expected_output": {
+        "reviewed_segments": [
+          "s1",
+          "s2",
+          "s3",
+          "s4",
+          "s5",
+          "s6"
+        ],
+        "source_reviews": [
+          {
+            "ref": "visible_change_1",
+            "segment_choices": [
+              "s1"
+            ]
+          },
+          {
+            "ref": "visible_change_2",
+            "segment_choices": [
+              "s2"
+            ]
+          },
+          {
+            "ref": "visible_change_3",
+            "segment_choices": [
+              "s3"
+            ]
+          },
+          {
+            "ref": "visible_change_4",
+            "segment_choices": [
+              "s4"
+            ]
+          },
+          {
+            "ref": "visible_change_5",
+            "segment_choices": [
+              "s5"
+            ]
+          },
+          {
+            "ref": "uncertainty_1",
+            "segment_choices": [
+              "s6"
+            ]
+          }
+        ],
+        "unsupported": [],
+        "literary_failures": [
+          {
+            "check": "weak_literary_composition",
+            "segment_choice": "s1",
+            "reason": "The action is followed by an independent factual catalogue."
+          }
+        ],
+        "evidence": []
+      },
+      "request": {
+        "version": 1,
+        "schema": "narration_semantic_audit_request",
+        "phase": "initial",
+        "output": {
+          "version": 1,
+          "schema": "narration_output",
+          "output_id": "gameplay-narrator-auditor-unseen-inspection-catalogue",
+          "prose": "Вы осмотрели старый навес. На стойке виден ржавый крюк. Под навесом лежит мокрая верёвка. У задней стенки заметна узкая щель. От досок тянет холодом. Пока нельзя установить, кто оставил следы.",
+          "action_options": [],
+          "used_references": [],
+          "self_check": {}
+        },
+        "visible_context": {
+          "version": 1,
+          "schema": "visible_context_package",
+          "visible_scene": "старый навес у берега",
+          "visible_changes": [
+            "Вы осмотрели старый навес.",
+            "На стойке виден ржавый крюк.",
+            "Под навесом лежит мокрая верёвка.",
+            "У задней стенки заметна узкая щель.",
+            "От досок тянет холодом."
+          ],
+          "sensory_details": [
+            "На стойке виден ржавый крюк.",
+            "Под навесом лежит мокрая верёвка.",
+            "У задней стенки заметна узкая щель.",
+            "От досок тянет холодом."
+          ],
+          "visible_npc": [],
+          "visible_objects": [],
+          "known_context": [],
+          "uncertainties": [
+            "Пока нельзя установить, кто оставил следы."
+          ],
+          "allowed_tensions": [],
+          "do_not_imply": []
+        },
+        "style_policy": {},
+        "segments": [
+          {
+            "segment_id": "s1",
+            "prose": "Вы осмотрели старый навес. "
+          },
+          {
+            "segment_id": "s2",
+            "prose": "На стойке виден ржавый крюк. "
+          },
+          {
+            "segment_id": "s3",
+            "prose": "Под навесом лежит мокрая верёвка. "
+          },
+          {
+            "segment_id": "s4",
+            "prose": "У задней стенки заметна узкая щель. "
+          },
+          {
+            "segment_id": "s5",
+            "prose": "От досок тянет холодом. "
+          },
+          {
+            "segment_id": "s6",
+            "prose": "Пока нельзя установить, кто оставил следы."
+          }
+        ]
+      }
     }
   ]
 }

@@ -177,6 +177,68 @@ test('completion observer accepts only anchored factual delivery with its render
     ...screen, main_prose: 'Запрещено.' } } }).terminal, false);
 });
 
+test('browser runner reloads to a browser screen read before each new turn', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'novgorod-browser-read-'));
+  const partyId = 'party:read'; let screen = 0; let submitted = 0;
+  const order = [];
+  const logPath = join(directory, 'party-logs', 'party_read.jsonl');
+  const append = async (record) => {
+    await mkdir(join(directory, 'party-logs'), { recursive: true });
+    await writeFile(logPath, `${JSON.stringify(record)}\n`, { flag: 'a' });
+  };
+  const provider = { mode: 'custom', compatibility: 'openai_compatible',
+    baseUrl: 'http://127.0.0.1:8000/v1', model: 'selected-model', apiKey: null,
+    evidence: { backend: 'test', backendVersion: '1', runtime: 'test',
+      hardware: 'test' } };
+  const page = { setDefaultTimeout() {}, async goto() {}, async reload() {
+    order.push('reload');
+  }, async waitForSelector() {}, async waitForFunction() {}, async fill() {},
+  async evaluate() { return partyId; }, async click(selector) {
+    if (selector.includes('data-continue-party')) {
+      screen += 1; order.push(`screen:${screen}`);
+      await append({ event: 'screen.read', output: { screen: {
+        screen_status: `before:${screen}` } } });
+      return;
+    }
+    if (!selector.includes('button[type="submit"]')) return;
+    submitted += 1; order.push(`request:${submitted}`);
+    const input = { request_id: `request:${submitted}`,
+      idempotency_key: `idem:${submitted}`, raw_text: `Ход ${submitted}` };
+    await append({ event: 'turn.requested', input });
+    await append({ event: 'turn.completed', input, output: { screen: {
+      screen_status: `after:${submitted}` } }, llm: {
+      gameplay_traces: [], waterfall: [], aggregate: {}, calls: [] } });
+  }, locator(selector) {
+    if (selector === '[data-game-root]') return { innerText: async () => {
+      order.push(`dom:${screen}`); return `Экран ${screen}`;
+    } };
+    if (selector === '.error') return { count: async () => 0 };
+    return { async check() {}, async click() {}, count: async () => 0 };
+  } };
+  try {
+    const report = await runLocalGemmaBrowserAcceptance({ outputDirectory: directory,
+      focus: 'causal screen reads', turns: 2, provider, chromiumPath: 'chromium',
+      headless: true, snapshot: () => ({ head: 'a'.repeat(40), dirty: false }),
+      start: async () => ({ url: 'http://127.0.0.1:3000',
+        managedRuntime: { llm: null, giga: { identity: { model: 'giga' } } },
+        postgres: { version: '16.14.0', partyUrl: 'unused' }, async close() {} }),
+      launch: async () => ({ async newPage() { return page; }, async close() {} }),
+      createExplorer: () => async ({ turn_index }) => ({ raw_text: `Ход ${turn_index + 1}`,
+        explorer_provider: { provider: 'openai_compatible', model: provider.model } }),
+      createCompletionObserver: async () => ({
+        async observe() { return { terminal: false }; }, async close() {} }) });
+    assert.equal(report.turns.length, 2);
+    const events = (await readFile(logPath, 'utf8')).trim().split('\n').map(JSON.parse);
+    const rendered = events.filter(({ event }) => event === 'ui.rendered');
+    assert.deepEqual(rendered.map(({ public_dto_before }) => public_dto_before), [
+      { screen_status: 'before:1' }, { screen_status: 'before:2' }]);
+    for (const number of [1, 2]) assert.ok(order.indexOf(`screen:${number}`)
+      < order.indexOf(`request:${number}`));
+    assert.ok(order.indexOf('screen:1') < order.indexOf('dom:1'));
+    assert.ok(order.indexOf('screen:2') < order.lastIndexOf('dom:2'));
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
 test('browser runner persists failed turn evidence before reporting failure', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'novgorod-browser-failure-'));
   const partyId = 'party:test';
@@ -188,15 +250,21 @@ test('browser runner persists failed turn evidence before reporting failure', as
     llm: { gameplay_traces: [], waterfall: [], aggregate: {}, calls: [] } };
   const page = {
     setDefaultTimeout() {}, async goto() {}, async waitForSelector() {},
-    async waitForFunction() {}, async fill() {},
+    async waitForFunction() {}, async fill() {}, async reload() {},
     async evaluate() { return partyId; },
     async click(selector) {
-      if (!selector.includes('button[type="submit"]')) return;
-      submitted = true;
       const logs = join(directory, 'party-logs');
       await mkdir(logs, { recursive: true });
-      await writeFile(join(logs, 'party_test.jsonl'),
-        `${JSON.stringify({ event: 'screen.read', output: { screen: { screen_status: 'before' } } })}\n${JSON.stringify({ event: 'turn.requested', input: event.input })}\n${JSON.stringify(event)}\n${JSON.stringify({ event: 'screen.read', output: { screen: { screen_status: 'later' } } })}\n`);
+      const path = join(logs, 'party_test.jsonl');
+      if (selector.includes('data-continue-party')) {
+        await writeFile(path, `${JSON.stringify({ event: 'screen.read',
+          output: { screen: { screen_status: 'before' } } })}\n`);
+        return;
+      }
+      if (!selector.includes('button[type="submit"]')) return;
+      submitted = true;
+      await writeFile(path, `${JSON.stringify({ event: 'turn.requested', input: event.input })}\n${JSON.stringify(event)}\n${JSON.stringify({ event: 'screen.read', output: { screen: { screen_status: 'later' } } })}\n`,
+      { flag: 'a' });
     },
     locator(selector) {
       if (selector === '[data-game-root]') return {
@@ -278,9 +346,17 @@ test('browser runner resumes the same party and rejects changed identity',
     const start = async () => ({ url: 'http://127.0.0.1:3000',
       managedRuntime: { llm: null, giga: { identity: { model: 'giga' } } },
       postgres: { version: '16.14.0', partyUrl: 'unused' }, async close() {} });
+    let activeDirectory = null;
     const page = { setDefaultTimeout() {}, async goto() {},
       async waitForSelector() {}, async waitForFunction() {}, async fill() {},
-      async click() {}, async addInitScript(_fn, partyId) {
+      async click(selector) {
+        if (!selector.includes('data-continue-party')) return;
+        const logs = join(activeDirectory, 'party-logs');
+        await mkdir(logs, { recursive: true });
+        await writeFile(join(logs, 'party_existing.jsonl'), `${JSON.stringify({
+          event: 'screen.read', output: { screen: { screen_status: 'resumed' } }
+        })}\n`, { flag: 'a' });
+      }, async addInitScript(_fn, partyId) {
         assert.equal(partyId, 'party:existing');
       }, locator(selector) {
         if (selector === '[data-game-root]') return {
@@ -301,6 +377,7 @@ test('browser runner resumes the same party and rejects changed identity',
           package_id: 'visible:terminal' }; }, async close() {} }) };
     try {
       const success = join(root, 'success');
+      activeDirectory = success;
       await seed(success);
       const report = await runLocalGemmaBrowserAcceptance({ ...common,
         outputDirectory: success,
@@ -333,3 +410,140 @@ test('browser runner resumes the same party and rejects changed identity',
       }), /original provider and runtime identity/u);
     } finally { await rm(root, { recursive: true, force: true }); }
   });
+
+test('resumed pre-click proposal waits for Continue screen read before submit', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'novgorod-resume-preclick-'));
+  const partyId = 'party:resume'; const head = 'a'.repeat(40); const order = [];
+  const provider = { mode: 'custom', compatibility: 'openai_compatible',
+    baseUrl: 'http://127.0.0.1:8000/v1', model: 'selected-model', apiKey: null,
+    evidence: { backend: 'test', backendVersion: '1', runtime: 'test', hardware: 'test' } };
+  const identity = { mode: 'custom', provider: 'openai_compatible',
+    base_url: provider.baseUrl, model: provider.model, backend: 'test',
+    backend_version: '1', runtime_metadata: 'test', hardware_metadata: 'test' };
+  const execution = { interface: 'chromium_playwright_dom_only',
+    gameplay_transport: 'browser_ui_only', browser: { executable: 'chromium', headless: true },
+    llm_provider: identity, giga: { model: 'giga' }, postgres: { version: '16.14.0' } };
+  const path = join(directory, 'party-logs', 'party_resume.jsonl');
+  const append = async (event) => {
+    await mkdir(join(directory, 'party-logs'), { recursive: true });
+    await writeFile(path, `${JSON.stringify(event)}\n`, { flag: 'a' });
+  };
+  const input = { request_id: 'request:resume', idempotency_key: 'idem:resume',
+    raw_text: 'Осматриваю берег.' };
+  const page = { setDefaultTimeout() {}, async goto() {}, async waitForSelector() {},
+    async waitForFunction() {}, async fill() {}, async evaluate() { return null; },
+    async click(selector) {
+      if (selector.includes('data-continue-party')) {
+        order.push('read'); await append({ event: 'screen.read', output: {
+          screen: { screen_status: 'before:resume' } } }); return;
+      }
+      if (!selector.includes('button[type="submit"]')) return;
+      order.push('submit'); await append({ event: 'turn.requested', input });
+      await append({ event: 'turn.completed', input, output: { screen: {
+        screen_status: 'after:resume' } }, llm: { gameplay_traces: [], waterfall: [],
+        aggregate: {}, calls: [] } });
+    }, locator(selector) {
+      if (selector === '[data-game-root]') return { innerText: async () => 'Экран resume' };
+      if (selector === '.error') return { count: async () => 0 };
+      return { async check() {}, async click() {}, count: async () => 0 };
+    } };
+  try {
+    await writeFile(join(directory, 'campaign.json'), `${JSON.stringify({
+      schema: 'world_knowledge_gameplay_campaign_v1', campaign_id: 'campaign:resume',
+      explorer_ref: 'explorer:resume', party_id: partyId, mode: 'acceptance_candidate',
+      independent_unseen: true, sequence: 1, focus: 'resume read', git: { head, dirty: false },
+      status: 'interrupted', execution, turns: [], trace_refs: [], pending_turn: {
+        trace_ref: 'trace:resume', campaign_id: 'campaign:resume', explorer_ref: 'explorer:resume',
+        producer_ref: `production-runtime:${head}`, proposal: { raw_text: input.raw_text }, after_count: 0 }
+    }, null, 2)}\n`);
+    const report = await runLocalGemmaBrowserAcceptance({ outputDirectory: directory,
+      focus: 'resume read', turns: 1, sequence: 1, resume: true, provider,
+      chromiumPath: 'chromium', headless: true, snapshot: () => ({ head, dirty: false }),
+      start: async () => ({ url: 'http://127.0.0.1:3000', managedRuntime: {
+        llm: null, giga: { identity: { model: 'giga' } } }, postgres: { version: '16.14.0',
+        partyUrl: 'unused' }, async close() {} }),
+      launch: async () => ({ async newPage() { return page; }, async close() {} }),
+      createExplorer: () => async () => { throw new Error('proposal already saved'); },
+      createCompletionObserver: async () => ({ async observe() { return { terminal: false }; },
+        async close() {} }) });
+    assert.deepEqual(order, ['read', 'submit']);
+    const events = (await readFile(path, 'utf8')).trim().split('\n').map(JSON.parse);
+    assert.deepEqual(events.find(({ event }) => event === 'ui.rendered').public_dto_before,
+      { screen_status: 'before:resume' });
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('resumed browser request keeps its original read and rejects a late substitute', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'novgorod-resume-request-'));
+  const head = 'a'.repeat(40); const partyId = 'party:request';
+  const input = { request_id: 'request:existing', idempotency_key: 'idem:existing',
+    raw_text: 'Осматриваю берег.' };
+  const provider = { mode: 'custom', compatibility: 'openai_compatible',
+    baseUrl: 'http://127.0.0.1:8000/v1', model: 'selected-model', apiKey: null,
+    evidence: { backend: 'test', backendVersion: '1', runtime: 'test', hardware: 'test' } };
+  const identity = { mode: 'custom', provider: 'openai_compatible',
+    base_url: provider.baseUrl, model: provider.model, backend: 'test',
+    backend_version: '1', runtime_metadata: 'test', hardware_metadata: 'test' };
+  const execution = { interface: 'chromium_playwright_dom_only',
+    gameplay_transport: 'browser_ui_only', browser: { executable: 'chromium', headless: true },
+    llm_provider: identity, giga: { model: 'giga' }, postgres: { version: '16.14.0' } };
+  const seed = async (directory, withOriginalRead) => {
+    const logs = join(directory, 'party-logs'); await mkdir(logs, { recursive: true });
+    const completed = { event: 'turn.completed', input, output: { screen: {
+      screen_status: 'after:existing' } }, llm: { gameplay_traces: [], waterfall: [],
+      aggregate: {}, calls: [] } };
+    await writeFile(join(logs, 'party_request.jsonl'), [
+      ...(withOriginalRead ? [{ event: 'screen.read', output: { screen: {
+        screen_status: 'before:original' } } }] : []),
+      { event: 'turn.requested', input }, completed
+    ].map(JSON.stringify).join('\n').concat('\n'));
+    await writeFile(join(directory, 'campaign.json'), `${JSON.stringify({
+      schema: 'world_knowledge_gameplay_campaign_v1', campaign_id: 'campaign:request',
+      explorer_ref: 'explorer:request', party_id: partyId, mode: 'acceptance_candidate',
+      independent_unseen: true, sequence: 1, focus: 'request resume', git: { head, dirty: false },
+      status: 'interrupted', execution, turns: [], trace_refs: [], pending_turn: {
+        trace_ref: 'trace:request', campaign_id: 'campaign:request', explorer_ref: 'explorer:request',
+        producer_ref: `production-runtime:${head}`, proposal: { raw_text: input.raw_text },
+        after_count: 0, browser_request: input }
+    }, null, 2)}\n`);
+  };
+  const run = async (directory) => {
+    let submits = 0;
+    const page = { setDefaultTimeout() {}, async goto() {}, async waitForSelector() {},
+      async waitForFunction() {}, async fill() {}, async evaluate() { return null; },
+      async click(selector) {
+        if (selector.includes('button[type="submit"]')) { submits += 1; return; }
+        if (selector.includes('data-continue-party')) await writeFile(
+          join(directory, 'party-logs', 'party_request.jsonl'), `${JSON.stringify({
+            event: 'screen.read', output: { screen: { screen_status: 'late' } }
+          })}\n`, { flag: 'a' });
+      }, locator(selector) {
+        if (selector === '[data-game-root]') return { innerText: async () => 'Экран request' };
+        if (selector === '.error') return { count: async () => 0 };
+        return { async check() {}, async click() {}, count: async () => 0 };
+      } };
+    const result = await runLocalGemmaBrowserAcceptance({ outputDirectory: directory,
+      focus: 'request resume', turns: 1, sequence: 1, resume: true, provider,
+      chromiumPath: 'chromium', headless: true, snapshot: () => ({ head, dirty: false }),
+      start: async () => ({ url: 'http://127.0.0.1:3000', managedRuntime: {
+        llm: null, giga: { identity: { model: 'giga' } } }, postgres: { version: '16.14.0',
+        partyUrl: 'unused' }, async close() {} }),
+      launch: async () => ({ async newPage() { return page; }, async close() {} }),
+      createExplorer: () => async () => { throw new Error('request already exists'); },
+      createCompletionObserver: async () => ({ async observe() { return { terminal: false }; },
+        async close() {} }) });
+    return { result, submits };
+  };
+  try {
+    const original = join(root, 'original'); await seed(original, true);
+    const { submits } = await run(original);
+    assert.equal(submits, 0);
+    const originalEvents = (await readFile(join(original, 'party-logs', 'party_request.jsonl'),
+      'utf8')).trim().split('\n').map(JSON.parse);
+    assert.deepEqual(originalEvents.find(({ event }) => event === 'ui.rendered')
+      .public_dto_before, { screen_status: 'before:original' });
+
+    const missing = join(root, 'missing'); await seed(missing, false);
+    await assert.rejects(run(missing), /no preceding causal screen read/u);
+  } finally { await rm(root, { recursive: true, force: true }); }
+});

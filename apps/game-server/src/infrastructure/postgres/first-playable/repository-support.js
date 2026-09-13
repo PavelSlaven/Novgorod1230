@@ -11,6 +11,8 @@ export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
             p.command_catalog_digest AS party_scenario_manifest_digest,
             p.state_version AS current_party_state_version,
             snapshot.state_payload->>'schema' AS party_snapshot_schema,
+            snapshot.state_payload AS current_party_snapshot_payload,
+            snapshot.state_digest AS current_party_snapshot_digest,
             visible.package_id AS current_projection_package_id,
             visible.turn_id AS current_projection_turn_id,
             visible.package_digest AS current_projection_package_digest,
@@ -71,6 +73,10 @@ export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
     current_party_state_version:
       Number(result.rows[0].current_party_state_version),
     party_snapshot_schema: result.rows[0].party_snapshot_schema,
+    current_party_snapshot_payload:
+      result.rows[0].current_party_snapshot_payload,
+    current_party_snapshot_digest:
+      result.rows[0].current_party_snapshot_digest,
     current_projection_package_id:
       result.rows[0].current_projection_package_id ?? null,
     current_projection_turn_id:

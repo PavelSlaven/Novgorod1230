@@ -92,6 +92,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       if (flow?.status !== 'approved' || flow.pass !== true
           || !flow.approved_output?.prose) {
         if (validateTerminalNarrationPolicyRejection(flow, narrationRequest).ok) {
+          if (deliveryTurnNumber !== envelope.turn_number) throw presentationError();
           const factualScreen = buildFactualTurnDelivery({ envelope,
             visibleContext: phase2VisibleContextFromPayload(envelope.visible_payload),
             requestVisibleContext: request.visible_context, turnNumber: deliveryTurnNumber });
@@ -162,23 +163,31 @@ function narrationFailureDetails(flow) {
 
 async function loadEnvelope(pool, partyId, turnId, visibleContext, turnBudget = null) {
   if (typeof partyId !== 'string' || !partyId.trim()) throw presentationError();
-  const result = await queryWithTurnDeadline(pool, { text: `SELECT package_id,party_id,turn_id,committed_state_version,
-            change_set_id,package_digest,visible_payload,
-            presentation_status,projection_policy_ref,dependency_pins,
-            idempotency_record_id
-       FROM party_runtime.party_visible_packages
-      WHERE party_id=$1 AND turn_id=$2`,
+  const result = await queryWithTurnDeadline(pool, { text: `SELECT visible.package_id,visible.party_id,visible.turn_id,visible.committed_state_version,
+            visible.change_set_id,visible.package_digest,visible.visible_payload,
+            visible.presentation_status,visible.projection_policy_ref,visible.dependency_pins,
+            visible.idempotency_record_id,snapshot.state_payload AS snapshot_payload,
+            snapshot.state_digest
+       FROM party_runtime.party_visible_packages visible
+       JOIN party_runtime.party_state_snapshots snapshot
+         ON snapshot.party_id=visible.party_id
+        AND snapshot.state_version=visible.committed_state_version
+      WHERE visible.party_id=$1 AND visible.turn_id=$2`,
     values: [partyId, turnId] }, turnBudget);
   const expectedContextDigest = canonicalDigest(visibleContext);
   const matches = result.rows.filter((candidate) =>
     candidate.package_digest
       === computeSpatialV3CanonicalDigest(candidate.visible_payload)
+    && candidate.snapshot_payload != null
+    && candidate.state_digest === canonicalDigest(candidate.snapshot_payload)
+    && Number.isSafeInteger(candidate.snapshot_payload?.party_state?.turn_number)
+    && candidate.snapshot_payload.party_state.turn_number >= 1
     && canonicalDigest(phase2VisibleContextFromPayload(candidate.visible_payload))
       === expectedContextDigest);
   if (matches.length !== 1) {
     throw presentationError();
   }
-  return matches[0];
+  return { ...matches[0], turn_number: matches[0].snapshot_payload.party_state.turn_number };
 }
 
 export function sealApprovedNarration({ envelope, flow }) {

@@ -204,21 +204,30 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   async function persistPhase2Screen({ partyId, inputDigest, result, turnBudget = null }) {
     const anchor = result.commit;
     const factualDelivery = result.factual_delivery;
-    const payload = (await queryWithTurnDeadline(partyPool, {
-      text: `SELECT state_payload
+    const snapshot = (await queryWithTurnDeadline(partyPool, {
+      text: `SELECT state_payload,state_digest
          FROM party_runtime.party_state_snapshots
        WHERE party_id=$1 AND state_version=$2`,
       values: [partyId, anchor.state_version]
-    }, turnBudget)).rows[0]?.state_payload;
-    if (payload?.last_turn?.input_digest !== inputDigest) {
+    }, turnBudget)).rows[0];
+    const payload = snapshot?.state_payload;
+    if (payload?.last_turn?.input_digest !== inputDigest
+        || (factualDelivery != null
+          && snapshot?.state_digest !== canonicalDigest(payload))) {
       throw phase2IntegrityError();
     }
     if (factualDelivery != null) {
       const factualEnvelope = (await queryWithTurnDeadline(partyPool, {
-        text: `SELECT package_id,party_id,turn_id,committed_state_version,
-                      package_digest,visible_payload
-                 FROM party_runtime.party_visible_packages
-                WHERE party_id=$1 AND package_id=$2 AND package_digest=$3`,
+        text: `SELECT visible.package_id,visible.party_id,visible.turn_id,
+                      visible.committed_state_version,visible.package_digest,
+                      visible.visible_payload,snapshot.state_payload AS snapshot_payload,
+                      snapshot.state_digest
+                 FROM party_runtime.party_visible_packages visible
+                 JOIN party_runtime.party_state_snapshots snapshot
+                   ON snapshot.party_id=visible.party_id
+                  AND snapshot.state_version=visible.committed_state_version
+                WHERE visible.party_id=$1 AND visible.package_id=$2
+                  AND visible.package_digest=$3`,
         values: [partyId, anchor.package_id, anchor.package_digest]
       }, turnBudget)).rows[0];
       if (!factualEnvelope

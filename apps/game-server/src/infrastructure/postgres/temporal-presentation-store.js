@@ -53,6 +53,15 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
     return result.rows[0];
   }
 
+  async function factualEnvelope(tx, pkg) {
+    const snapshot = await tx.query(`SELECT state_payload AS snapshot_payload,state_digest
+      FROM party_runtime.party_state_snapshots
+      WHERE party_id=$1 AND state_version=$2`,
+    [pkg.party_id, pkg.committed_state_version]);
+    if (snapshot.rowCount !== 1) throw new Error('committed factual snapshot not found');
+    return { ...pkg, ...snapshot.rows[0] };
+  }
+
   return Object.freeze({
     async loadCommittedVisiblePackage(input = {}) {
       required(input, 'party_id', 'package_id', 'package_digest');
@@ -76,7 +85,8 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
           if (!Number.isInteger(job.next_attempt_ordinal) || job.next_attempt_ordinal <= 0) throw new Error('presentation attempt cursor is invalid');
           const persistedAttemptId = attemptId(job.job_id, job.next_attempt_ordinal - 1);
           const factual = job.delivery_mode === 'factual';
-          if (factual && !validFactualTurnDelivery(job.factual_screen, pkg)) {
+          if (factual && !validFactualTurnDelivery(job.factual_screen,
+            await factualEnvelope(tx, pkg))) {
             throw new Error('persisted factual presentation is invalid');
           }
           return Object.freeze({ ok: true, disposition: factual ? 'factual_delivered' : job.status, attempt_id: persistedAttemptId, narration_result: factual ? null : clone(job.narration_output), factual_screen: factual ? clone(job.factual_screen) : null, output_digest: factual ? null : job.output_digest, presentation_outcome: job.status === 'delivered' ? { presentation_status: factual ? 'factual_delivered' : 'delivered', attempt_id: persistedAttemptId, output_digest: factual ? null : job.output_digest } : null });
@@ -154,7 +164,8 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
       return transaction(async (tx) => {
         const pkg = await lock(tx, input.party_id, input.package_id, input.package_digest);
         const job = await jobForUpdate(tx, input.party_id, input.package_id, input.presentation_idempotency_key);
-        if (!validFactualTurnDelivery(input.factual_screen, pkg)) {
+        if (!validFactualTurnDelivery(input.factual_screen,
+          await factualEnvelope(tx, pkg))) {
           throw new TypeError('factual screen identity is invalid');
         }
         const updated = await tx.query(`UPDATE party_runtime.party_narration_jobs SET status='delivered',delivery_mode='factual',active_attempt_id=NULL,claim_token=NULL,lease_expires_at=NULL,factual_screen=$1,state_version=state_version+1

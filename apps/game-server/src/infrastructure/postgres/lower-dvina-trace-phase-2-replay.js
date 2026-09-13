@@ -61,13 +61,19 @@ export async function loadCurrentOrHistoricalPhase2Replay({
   }
   const result = await partyPool.query(
     `SELECT session.screen,session.turn_number,
-            visible.package_id,visible.package_digest,
+            visible.party_id,visible.package_id,visible.turn_id,
+            visible.committed_state_version,visible.package_digest,
+            visible.visible_payload,snapshot.state_payload AS snapshot_payload,
+            snapshot.state_digest,
             visible.dependency_pins,
             source.dependency_pins AS source_dependency_pins
        FROM party_runtime.party_server_sessions session
        JOIN party_runtime.party_visible_packages visible
          ON visible.party_id=session.party_id
         AND visible.change_set_id=$2
+       JOIN party_runtime.party_state_snapshots snapshot
+         ON snapshot.party_id=visible.party_id
+        AND snapshot.state_version=visible.committed_state_version
        JOIN party_runtime.party_visible_packages source
          ON source.party_id=session.party_id
         AND source.change_set_id=$3
@@ -79,6 +85,10 @@ export async function loadCurrentOrHistoricalPhase2Replay({
   if (result.rowCount !== 1
       || row.package_id !== state.last_turn.visible_package.package_id
       || row.package_digest !== state.last_turn.visible_package.package_digest) {
+    throw phase2IntegrityError();
+  }
+  if (row.screen?.schema === 'factual_turn_delivery_screen'
+      && !validFactualTurnDelivery(row.screen, row)) {
     throw phase2IntegrityError();
   }
   assertPhase2ReplayRecord({
@@ -117,6 +127,8 @@ export async function loadHistoricalPhase2Replay({
             visible.party_id,visible.package_id,visible.turn_id,
             visible.committed_state_version,
             visible.package_digest,visible.visible_payload,
+            package_snapshot.state_payload AS snapshot_payload,
+            package_snapshot.state_digest AS package_snapshot_digest,
             visible.dependency_pins,
             source.dependency_pins AS source_dependency_pins,
              narration.status AS narration_status,narration.delivery_mode,
@@ -130,6 +142,9 @@ export async function loadHistoricalPhase2Replay({
        JOIN party_runtime.party_visible_packages source
          ON source.party_id=snapshot.party_id
         AND source.change_set_id=$2
+       JOIN party_runtime.party_state_snapshots package_snapshot
+         ON package_snapshot.party_id=visible.party_id
+        AND package_snapshot.state_version=visible.committed_state_version
        JOIN party_runtime.party_narration_jobs narration
          ON narration.party_id=visible.party_id
         AND narration.package_id=visible.package_id
@@ -266,7 +281,11 @@ function validHistoricalDelivery(row, payload) {
     const factual = row.factual_screen;
     return row.narration_output == null
       && row.output_digest == null
-      && validFactualTurnDelivery(factual, row);
+      && validFactualTurnDelivery(factual, {
+        ...row,
+        snapshot_payload: row.snapshot_payload,
+        state_digest: row.package_snapshot_digest
+      });
   }
   return row.delivery_mode === 'narrated'
     && row.output_digest === row.narration_output?.canonical_digest

@@ -9,8 +9,12 @@ export function buildFactualTurnDelivery({ envelope, visibleContext, requestVisi
   if (canonicalDigest(visibleContext) !== canonicalDigest(requestVisibleContext)) {
     throw presentationError();
   }
+  const envelopeTurnNumber = factualEnvelopeTurnNumber(envelope);
+  if (envelopeTurnNumber == null || turnNumber !== envelopeTurnNumber) {
+    throw presentationError();
+  }
   const screen = createFactualTurnDeliveryScreenReadModel({
-    partyId: envelope.party_id, turnId: envelope.turn_id, turnNumber,
+    partyId: envelope.party_id, turnId: envelope.turn_id, turnNumber: envelopeTurnNumber,
     packageId: envelope.package_id, committedStateVersion: envelope.committed_state_version,
     visibleContext, visibleChanges: visibleContext.visible_changes,
     uncertainties: visibleContext.uncertainties, panels: {}
@@ -21,17 +25,28 @@ export function buildFactualTurnDelivery({ envelope, visibleContext, requestVisi
 
 export function validFactualTurnDelivery(screen, envelope) {
   const visibleContext = factualVisibleContext(envelope);
+  const turnNumber = factualEnvelopeTurnNumber(envelope);
   return visibleContext != null
+    && turnNumber != null
     && validateFactualTurnDeliveryScreen(screen).ok
     && screen.party_id === envelope.party_id
     && screen.turn_id === envelope.turn_id
     && screen.package_id === envelope.package_id
     && screen.committed_state_version === String(envelope.committed_state_version)
+    && screen.turn_number === turnNumber
     && canonicalDigest(screen.visible_context) === canonicalDigest(visibleContext)
     && canonicalDigest(screen.visible_changes)
       === canonicalDigest(visibleContext.visible_changes)
     && canonicalDigest(screen.uncertainties)
       === canonicalDigest(visibleContext.uncertainties);
+}
+
+export function factualEnvelopeTurnNumber(envelope) {
+  const payload = envelope?.snapshot_payload;
+  const turnNumber = payload?.party_state?.turn_number;
+  return payload != null && envelope?.state_digest === canonicalDigest(payload)
+    && Number.isSafeInteger(turnNumber) && turnNumber >= 1
+    ? turnNumber : null;
 }
 
 function factualVisibleContext(envelope) {

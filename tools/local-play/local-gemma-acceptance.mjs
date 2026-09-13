@@ -117,9 +117,20 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
     page.setDefaultTimeout(120_000);
     await page.goto(local.url);
     await selectProvider(page, selectedProvider);
+    let renderedScreenReady = false;
     if (resume) {
+      const events = await turnLogEvents(logDirectory, report.party_id);
+      const pending = report.pending_turn
+        ? pendingRequestState(report.pending_turn, events) : null;
+      const afterEventCount = events.length;
       await page.waitForSelector('[data-continue-party]:not([disabled])');
       await page.click('[data-continue-party]');
+      await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+      if (!pending?.request && !pending?.terminal) {
+        await waitForNewScreenRead({ directory: logDirectory,
+          partyId: report.party_id, afterEventCount });
+        renderedScreenReady = true;
+      }
     } else {
       await page.waitForSelector('[data-start-new-game]:not([disabled])');
       await page.click('[data-start-new-game]');
@@ -131,6 +142,10 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       globalThis.localStorage.getItem('rus.party_id'));
     if (!partyId) throw new Error('Browser UI did not persist party identity.');
     report.party_id = partyId;
+    if (!resume) {
+      await refreshRenderedScreen({ page, directory: logDirectory, partyId });
+      renderedScreenReady = true;
+    }
     const entryDom = await playerDom(page);
     if (resume) report.continuations = [...(report.continuations ?? []), {
       resumed_at: new Date().toISOString(), player_dom: entryDom }];
@@ -151,11 +166,16 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       await save();
       if (recovered.event.event === 'turn.failed') throw new Error(
         `Browser turn failed: ${recovered.event.error?.code ?? 'unknown error'}`);
+      renderedScreenReady = false;
     }
     for (let index = report.turns.length;
       !terminal.terminal && (turns === null || index < turns);
       index += 1) {
       if (signal?.aborted) break;
+      if (!renderedScreenReady) {
+        await refreshRenderedScreen({ page, directory: logDirectory, partyId });
+        renderedScreenReady = true;
+      }
       const domBefore = await playerDom(page);
       const panelsBefore = await observePlayerPanels(page);
       const proposal = await nextIntent({ campaign_id: report.campaign_id,
@@ -196,6 +216,7 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       await save();
       if (uiError || event.event === 'turn.failed') throw new Error(
         `Browser turn failed: ${uiError ?? event.error?.code ?? 'unknown error'}`);
+      renderedScreenReady = false;
     }
     report.git_after = snapshot();
     if (report.git_after.head !== before.head || report.git_after.dirty) {
@@ -484,6 +505,24 @@ async function selectProvider(page, provider) {
 
 async function completedTurnCount(directory, partyId) {
   return (await turnEvents(directory, partyId)).length;
+}
+async function refreshRenderedScreen({ page, directory, partyId }) {
+  const afterEventCount = (await turnLogEvents(directory, partyId)).length;
+  await page.reload();
+  await page.waitForSelector('[data-continue-party]:not([disabled])');
+  await page.click('[data-continue-party]');
+  await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+  await waitForNewScreenRead({ directory, partyId, afterEventCount });
+}
+async function waitForNewScreenRead({ directory, partyId, afterEventCount }) {
+  for (let index = 0; index < 1_200; index += 1) {
+    const events = await turnLogEvents(directory, partyId);
+    const read = events.slice(afterEventCount).find(({ event, output }) =>
+      event === 'screen.read' && output?.screen);
+    if (read) return read;
+    await delay(100);
+  }
+  throw new Error('Browser screen read was not flushed.');
 }
 async function readNextTurnEvent({ directory, partyId, afterCount }) {
   for (let index = 0; index < 1_200; index += 1) {

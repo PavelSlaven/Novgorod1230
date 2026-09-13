@@ -14,6 +14,8 @@ import {
 import { validFactualPostTurnSession, visibleContextFromPayload,
   visiblePayloadErrors } from './lower-dvina-trace-factual-session.js';
 import { hash, json } from './first-playable/shared.js';
+import { loadLowerDvinaTraceScreenPresentation } from '../internal/lower-dvina-trace-screen-presentation.js';
+import { rebuildExpectedFactualTurnDelivery } from '../infrastructure/postgres/factual-presentation-delivery.js';
 
 export const TRACE_SCENARIO_ID = 'lower_dvina_trace_v1';
 export const TRACE_INITIAL_SNAPSHOT_SCHEMA =
@@ -31,7 +33,7 @@ export function isLowerDvinaTraceSession(session) {
     || session?.stage26_result?.scenario_id === TRACE_SCENARIO_ID;
 }
 
-export function validateLowerDvinaTraceSessionRead({
+export async function validateLowerDvinaTraceSessionRead({
   partyId,
   session
 } = {}) {
@@ -123,7 +125,7 @@ export function validateLowerDvinaTraceSessionRead({
   if (Number(session.turn_number) === 0) {
     validateOpeningSession({ session, screen, identity });
   } else {
-    validatePostTurnSession({ partyId, session, screen, identity });
+    await validatePostTurnSession({ partyId, session, screen, identity });
   }
   return session;
 }
@@ -151,9 +153,17 @@ function validateOpeningSession({ session, screen, identity }) {
   }
 }
 
-function validatePostTurnSession({ partyId, session, screen, identity }) {
-  if (screen?.schema === 'factual_turn_delivery_screen') {
-    if (!validFactualPostTurnSession({ partyId, session, screen,
+async function validatePostTurnSession({ partyId, session, screen, identity }) {
+  const factualDelivery = session.current_narration_delivery_mode === 'factual';
+  const factualSchema = screen?.schema === 'factual_turn_delivery_screen';
+  if (factualDelivery !== factualSchema) {
+    invalidSession(
+      'Persisted trace delivery mode and screen schema are inconsistent.'
+    );
+  }
+  if (factualDelivery) {
+    const expectedScreen = await rebuildFactualSessionScreen({ partyId, session, screen });
+    if (!validFactualPostTurnSession({ partyId, session, screen, expectedScreen,
       allowedSnapshotSchemas: [TRACE_PHASE_2_SNAPSHOT_SCHEMA,
         TRACE_TURN_SNAPSHOT_SCHEMA] })) {
       invalidSession(
@@ -217,6 +227,17 @@ function validatePostTurnSession({ partyId, session, screen, identity }) {
       'Persisted trace turn screen failed committed projection validation.'
     );
   }
+}
+
+async function rebuildFactualSessionScreen({ partyId, session, screen }) {
+  const payload = session.current_party_snapshot_payload;
+  return rebuildExpectedFactualTurnDelivery({ envelope: {
+    party_id: partyId, package_id: session.current_projection_package_id,
+    turn_id: screen.turn_id, committed_state_version: session.current_projection_state_version,
+    package_digest: session.current_projection_package_digest,
+    visible_payload: session.current_projection_payload, snapshot_payload: payload,
+    state_digest: session.current_party_snapshot_digest
+  }, presentation: await loadLowerDvinaTraceScreenPresentation(payload) });
 }
 
 function currentScreenDigest(screen) {

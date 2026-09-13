@@ -1,6 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { validateTerminalNarrationPolicyRejection } from '@rus/narration';
-import { buildFactualTurnDelivery, validFactualTurnDelivery } from
+import { buildFactualTurnDelivery, validFactualTurnDelivery,
+  rebuildExpectedFactualTurnDelivery, factualTurnDeliveryMatchesExpected } from
   './factual-presentation-delivery.js';
 import {
   computeSpatialV3CanonicalDigest
@@ -51,7 +52,10 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       const claimed = await store.claimPresentationAttempt({ ...identity, turnBudget });
       if (!claimed?.ok) throw presentationError();
       if (claimed.disposition === 'factual_delivered') {
-        if (!validFactualTurnDelivery(claimed.factual_screen, envelope)) {
+        if (!validFactualTurnDelivery(claimed.factual_screen, envelope)
+            || !factualTurnDeliveryMatchesExpected(claimed.factual_screen,
+              rebuildExpectedFactualTurnDelivery({ envelope,
+                presentation: await loadLowerDvinaTraceScreenPresentation(envelope.snapshot_payload) }))) {
           throw presentationError();
         }
         return Object.freeze({ factual_delivery: structuredClone(claimed.factual_screen) });

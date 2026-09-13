@@ -1,5 +1,8 @@
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
-import { validFactualTurnDelivery } from './factual-presentation-delivery.js';
+import { validFactualTurnDelivery, rebuildExpectedFactualTurnDelivery,
+  factualTurnDeliveryMatchesExpected } from './factual-presentation-delivery.js';
+import { loadLowerDvinaTraceScreenPresentation } from
+  '../../internal/lower-dvina-trace-screen-presentation.js';
 import { queryWithTurnDeadline, withTurnDeadlineTransaction } from
   './query-with-turn-deadline.js';
 
@@ -62,6 +65,13 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
     return { ...pkg, ...snapshot.rows[0] };
   }
 
+  async function expectedFactualScreen(tx, pkg) {
+    const envelope = await factualEnvelope(tx, pkg);
+    return { envelope, screen: rebuildExpectedFactualTurnDelivery({ envelope,
+      presentation: await loadLowerDvinaTraceScreenPresentation(
+        envelope.snapshot_payload) }) };
+  }
+
   return Object.freeze({
     async loadCommittedVisiblePackage(input = {}) {
       required(input, 'party_id', 'package_id', 'package_digest');
@@ -85,8 +95,11 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
           if (!Number.isInteger(job.next_attempt_ordinal) || job.next_attempt_ordinal <= 0) throw new Error('presentation attempt cursor is invalid');
           const persistedAttemptId = attemptId(job.job_id, job.next_attempt_ordinal - 1);
           const factual = job.delivery_mode === 'factual';
-          if (factual && !validFactualTurnDelivery(job.factual_screen,
-            await factualEnvelope(tx, pkg))) {
+          const expected = factual ? await expectedFactualScreen(tx, pkg) : null;
+          if (factual && (!validFactualTurnDelivery(job.factual_screen,
+            expected.envelope)
+            || !factualTurnDeliveryMatchesExpected(job.factual_screen,
+              expected.screen))) {
             throw new Error('persisted factual presentation is invalid');
           }
           return Object.freeze({ ok: true, disposition: factual ? 'factual_delivered' : job.status, attempt_id: persistedAttemptId, narration_result: factual ? null : clone(job.narration_output), factual_screen: factual ? clone(job.factual_screen) : null, output_digest: factual ? null : job.output_digest, presentation_outcome: job.status === 'delivered' ? { presentation_status: factual ? 'factual_delivered' : 'delivered', attempt_id: persistedAttemptId, output_digest: factual ? null : job.output_digest } : null });
@@ -164,8 +177,10 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
       return transaction(async (tx) => {
         const pkg = await lock(tx, input.party_id, input.package_id, input.package_digest);
         const job = await jobForUpdate(tx, input.party_id, input.package_id, input.presentation_idempotency_key);
-        if (!validFactualTurnDelivery(input.factual_screen,
-          await factualEnvelope(tx, pkg))) {
+        const expected = await expectedFactualScreen(tx, pkg);
+        if (!validFactualTurnDelivery(input.factual_screen, expected.envelope)
+            || !factualTurnDeliveryMatchesExpected(input.factual_screen,
+              expected.screen)) {
           throw new TypeError('factual screen identity is invalid');
         }
         const updated = await tx.query(`UPDATE party_runtime.party_narration_jobs SET status='delivered',delivery_mode='factual',active_attempt_id=NULL,claim_token=NULL,lease_expires_at=NULL,factual_screen=$1,state_version=state_version+1

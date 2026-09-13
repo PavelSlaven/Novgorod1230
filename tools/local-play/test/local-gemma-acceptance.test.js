@@ -16,9 +16,9 @@ test('degraded factual delivery remains terminal evidence but blocks narration q
   } } };
   const report = { findings: [], narration_quality_pass: true };
   const trace = { trace_ref: 'trace:terminal' };
-  recordNarrationQuality({ report, trace, partyId: 'party:terminal', event });
+  recordNarrationQuality({ report, trace, partyId: 'party:terminal', event, eventIndex: 0 });
   const replay = { trace_ref: 'trace:terminal-replay' };
-  recordNarrationQuality({ report, trace: replay, partyId: 'party:terminal', event });
+  recordNarrationQuality({ report, trace: replay, partyId: 'party:terminal', event, eventIndex: 0 });
   assert.equal(trace.narration_quality_pass, false);
   assert.equal(replay.narration_quality_pass, false);
   assert.equal(report.narration_quality_pass, false);
@@ -35,7 +35,7 @@ test('approved narrated delivery remains a narration quality pass', () => {
   assert.equal(recordNarrationQuality({ report, trace, partyId: 'party:narrated',
     event: { event: 'turn.completed', output: { screen: {
       schema: 'lower_dvina_trace_turn_screen', main_prose: 'Одобренная сцена.'
-    } } } }), null);
+    } } }, eventIndex: 0 }), null);
   assert.equal(trace.narration_quality_pass, true);
   assert.equal(report.narration_quality_pass, true);
   assert.deepEqual(report.findings, []);

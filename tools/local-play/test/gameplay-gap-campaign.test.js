@@ -103,7 +103,10 @@ test('campaign drives HTTP, separates explorer context, and retains actual priva
       assert.equal(attempts, 2);
       return [{ event: 'turn.failed', error: { code: 'TEMPORARY_PROVIDER_FAILURE' },
         llm: { gameplay_traces: [], calls: [] } },
-      { event: 'turn.completed', input: { request_id: requestId },
+      { event: 'turn.completed', input: { request_id: requestId }, output: { screen: {
+        schema: 'factual_turn_delivery_screen', presentation_quality: 'degraded',
+        party_id: 'party:test', turn_id: 'turn:retry', package_id: 'package:retry'
+      } },
       llm: { gameplay_traces: [{ event: 'turn_context', authoritative_context: { hidden: 'private' } },
         { schema: 'world_knowledge_boundary_trace_v1', event: 'world_knowledge_not_required',
           query: null, core_result: null, consumer: { input: {
@@ -123,6 +126,8 @@ test('campaign drives HTTP, separates explorer context, and retains actual priva
   assert.equal(report.turns[0].accepted, true);
   assert.equal(report.turns[0].commit_status, 'committed');
   assert.equal(report.turns[0].presentation_status, 'completed');
+  assert.equal(report.findings[0].evidence_ref,
+    `${report.turns[0].trace_ref}#/events/1/output/screen`);
   assert.deepEqual(report.turns[0].retrieved_claim_refs, ['claim:actual']);
   assert.equal(report.turns[0].events[1].llm.gameplay_traces[0].event,
     'world_knowledge_not_required');

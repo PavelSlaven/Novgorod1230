@@ -1481,6 +1481,15 @@ async function assertFactualPresentationSurvivesRestart({
   });
   assert.equal(next.screen.schema, 'factual_turn_delivery_screen');
   await pool.query(`UPDATE party_runtime.party_server_sessions
+    SET screen=jsonb_set(screen,'{schema}',to_jsonb('lower_dvina_trace_turn_screen'::text))
+    WHERE party_id=$1`, [opened.party_id]);
+  await assert.rejects(
+    () => buildRuntime(options).getPartyScreen(opened.party_id),
+    { code: 'TRACE_PHASE_1B_SESSION_READ_INVALID' }
+  );
+  await pool.query(`UPDATE party_runtime.party_server_sessions
+    SET screen=$2 WHERE party_id=$1`, [opened.party_id, JSON.stringify(next.screen)]);
+  await pool.query(`UPDATE party_runtime.party_server_sessions
     SET screen=jsonb_set(screen,'{party_id}',to_jsonb('party:other'::text))
     WHERE party_id=$1`, [opened.party_id]);
   await assert.rejects(

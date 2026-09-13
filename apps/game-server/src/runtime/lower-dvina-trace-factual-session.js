@@ -4,7 +4,8 @@ import { computeSpatialV3CanonicalDigest,
 import { validateLowerDvinaFactualTurnDeliveryScreen } from '@rus/presentation';
 
 export function validFactualPostTurnSession({ partyId, session, screen,
-  allowedSnapshotSchemas }) {
+  allowedSnapshotSchemas, expectedScreen }) {
+  if (expectedScreen == null) return false;
   const payload = session.current_projection_payload;
   const turnNumber = Number(session.turn_number);
   const stateVersion = Number(session.current_party_state_version);
@@ -46,7 +47,8 @@ export function validFactualPostTurnSession({ partyId, session, screen,
     && session.current_narration_output == null
     && session.current_narration_output_digest == null
     && canonicalDigest(session.current_narration_factual_screen)
-      === canonicalDigest(screen);
+      === canonicalDigest(screen)
+    && canonicalDigest(screen) === canonicalDigest(expectedScreen);
 }
 
 export function visiblePayloadErrors({

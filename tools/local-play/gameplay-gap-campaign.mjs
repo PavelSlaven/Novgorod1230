@@ -145,8 +145,10 @@ export async function runGameplayGapCampaign({ nextIntent, explorerRef,
           boundary.event === 'owner_commit_completed'
             ? [`${trace.trace_ref}#/events/${eventIndex}/llm/gameplay_traces/${boundaryIndex}/result`] : [])]);
       trace.replay_of_gap_ids = [...(replayGapIdsByTurn[index] ?? [])];
+      const terminalEventIndex = events.findLastIndex(({ event }) => event === 'turn.completed');
       recordNarrationQuality({ report, trace, partyId,
-        event: events.findLast(({ event }) => event === 'turn.completed') ?? events.at(-1) });
+        event: terminalEventIndex >= 0 ? events[terminalEventIndex] : events.at(-1),
+        eventIndex: terminalEventIndex >= 0 ? terminalEventIndex : events.length - 1 });
       await save();
       if (events.some(event => event.llm?.gameplay_traces?.some(item => item.event === 'capture_failed'))) {
         throw new Error('Incomplete private gameplay trace');
@@ -233,7 +235,7 @@ export function narrationQualityFinding({ partyId, event } = {}) {
   });
 }
 
-export function recordNarrationQuality({ report, trace, partyId, event } = {}) {
+export function recordNarrationQuality({ report, trace, partyId, event, eventIndex = 0 } = {}) {
   if (!report || !trace || !text(partyId)) throw new TypeError(
     'report, trace and party_id are required for narration quality evidence.');
   if (event?.event !== 'turn.completed') {
@@ -246,7 +248,7 @@ export function recordNarrationQuality({ report, trace, partyId, event } = {}) {
   const findings = report.findings ?? (report.findings = []);
   if (!findings.some(({ finding_id }) => finding_id === finding.finding_id)) {
     findings.push({ ...finding,
-      evidence_ref: `${trace.trace_ref}#/events/0/output/screen` });
+      evidence_ref: `${trace.trace_ref}#/events/${eventIndex}/output/screen` });
   }
   trace.narration_finding_ids = [finding.finding_id];
   report.narration_quality_pass = false;

@@ -4,7 +4,7 @@ import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.
 import { assertPhase2NormalizedRows, phase2IntegrityError, validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
 import { loadInitialTracePhase2State } from './lower-dvina-trace-phase-2-initial-state.js';
 import { phase2PublicResult, phase2ScreenDigest, publicCombatStateFromConsequence } from './lower-dvina-trace-phase-2-projection.js';
-import { validFactualTurnDelivery } from './factual-presentation-delivery.js';
+import { validFactualTurnDelivery, rebuildExpectedFactualTurnDelivery, factualTurnDeliveryMatchesExpected } from './factual-presentation-delivery.js';
 import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-panels.js';
 import { phase2InitialCurrentVisibleContext, withPhase2CurrentVisibleContext,
   withoutPhase2CurrentVisibleContext } from './lower-dvina-trace-phase-2-current-visible.js';
@@ -233,7 +233,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       if (!factualEnvelope
           || factualEnvelope.turn_id !== result.turn_id
           || String(factualEnvelope.committed_state_version) !== String(anchor.state_version)
-          || !validFactualTurnDelivery(factualDelivery, factualEnvelope)) {
+          || !validFactualTurnDelivery(factualDelivery, factualEnvelope)
+          || !factualTurnDeliveryMatchesExpected(factualDelivery,
+            rebuildExpectedFactualTurnDelivery({ envelope: factualEnvelope,
+              presentation: await loadLowerDvinaTraceScreenPresentation(factualEnvelope.snapshot_payload) }))) {
         throw phase2IntegrityError();
       }
       const updated = await queryWithTurnDeadline(partyPool, {

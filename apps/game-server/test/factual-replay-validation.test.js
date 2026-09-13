@@ -8,6 +8,7 @@ import {
   loadCurrentOrHistoricalPhase2Replay,
   loadHistoricalPhase2Replay
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-replay.js';
+import { buildFactualTurnDelivery } from '../src/infrastructure/postgres/factual-presentation-delivery.js';
 
 const partyId = 'party';
 const idempotencyKey = 'turn:idem';
@@ -41,6 +42,31 @@ test('current factual replay binds screen to exact package snapshot turn', async
     partyPool: poolForCurrent({ ...fixture, row: { ...fixture.row,
       screen: fixture.genericScreen, factual_screen: fixture.genericScreen } }),
     partyId, idempotencyKey,
+    async loadState() { return structuredClone(fixture.payload); }
+  }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+  const normalSchema = { schema: 'lower_dvina_trace_turn_screen',
+    screen_status: 'ready' };
+  await assert.rejects(loadCurrentOrHistoricalPhase2Replay({
+    partyPool: poolForCurrent({ ...fixture, row: { ...fixture.row,
+      screen: normalSchema, factual_screen: normalSchema } }),
+    partyId, idempotencyKey,
+    async loadState() { return structuredClone(fixture.payload); }
+  }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+  for (const screen of [
+    { ...fixture.screen, actions: [], action_panel: { suggested_actions: [] } },
+    { ...fixture.screen, checks: [] },
+    { ...fixture.screen, panels: {} },
+    { ...fixture.screen, input_panel: {
+      ...fixture.screen.input_panel, free_text_enabled: false } },
+    { ...fixture.screen, presentation_context: {} },
+    { ...fixture.screen, combat_state: {
+      status: 'ended', player_response_required: false } },
+    { ...fixture.screen, actions: [{ action_id: 'other', label: 'Другое',
+      command_kind: 'immediate_action' }], action_panel: { suggested_actions: [{
+      action_id: 'other', label: 'Другое', command_kind: 'immediate_action' }] } }
+  ]) await assert.rejects(loadCurrentOrHistoricalPhase2Replay({
+    partyPool: poolForCurrent({ ...fixture, row: { ...fixture.row,
+      screen, factual_screen: screen } }), partyId, idempotencyKey,
     async loadState() { return structuredClone(fixture.payload); }
   }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
 });
@@ -82,7 +108,8 @@ function replayFixture({ screenTurn = 7 } = {}) {
     perceived_changes: ['Вода ушла.'], sensory_details: [], visible_npcs: [],
     visible_objects: [], known_context: [], uncertainties: ['Туман.'],
     hypotheses: [], player_safe_interruption: null,
-    allowed_action_affordances: []
+    allowed_action_affordances: [{ action_id: 'inspect_shore',
+      label: 'Осмотреть берег', command_kind: 'immediate_action' }]
   };
   const visibleContext = {
     version: 1, schema: 'visible_context_package', visible_scene: 'Берег.',
@@ -92,18 +119,25 @@ function replayFixture({ screenTurn = 7 } = {}) {
   };
   const packageDigest = computeSpatialV3CanonicalDigest(visiblePayload);
   const payload = {
-    schema: 'rus.lower_dvina_trace_phase_2_snapshot.v1', party_id: partyId,
+    schema: 'rus.lower_dvina_trace_phase_2_snapshot.v1', party_id: partyId, actor_id: 'actor',
     party_state: { state_version: 39, turn_number: 7 },
+    opening_identity: { opening_screen_digest: 'opening' },
     last_turn: {
       idempotency_key: idempotencyKey, request_id: 'request:1',
-      input_digest: 'input:digest', option_id: 'inspect',
-      action_set_digest: 'actions:digest', consequence: {},
+      input_digest: 'input:digest', option_id: 'inspect', received_at: '2026-01-01T00:00:00.000Z',
+      action_set_digest: 'actions:digest', check_result: {
+        check_id: 'check:1', roll: 12, difficulty: 10,
+        modifiers: { attribute: 1, skill: 2, state: 0, equipment: 0, circumstances: 0 },
+        total: 15, outcome: { band: 'success', margin: 5, success: true,
+          cost_required: false, severe_failure: false, roll_note: null }
+      }, consequence: { combat: { session_after: { status: 'paused_for_player',
+        player_response_required: true } } },
       visible_package: {
         change_set_id: 'change:1', package_id: 'package:1', package_digest: packageDigest
       }
     }
   };
-  const snapshotPayload = { party_state: { turn_number: 7 } };
+  const snapshotPayload = payload;
   const screen = createFactualTurnDeliveryScreenReadModel({
     partyId, turnId: 'turn:1', turnNumber: screenTurn,
     packageId: 'package:1', committedStateVersion: 39, visibleContext,
@@ -141,7 +175,10 @@ function replayFixture({ screenTurn = 7 } = {}) {
     delivery_mode: 'factual', narration_output: null, output_digest: null,
     factual_screen: screen, package_snapshot_digest: canonicalDigest(snapshotPayload)
   };
-  return { payload, record, row, screen, genericScreen };
+  const canonical = buildFactualTurnDelivery({ envelope: { ...row, snapshot_payload: payload, state_digest: canonicalDigest(payload) }, visibleContext, requestVisibleContext: visibleContext, turnNumber: 7 });
+  row.screen = screenTurn === 7 ? canonical : { ...canonical, turn_number: screenTurn };
+  row.factual_screen = row.screen;
+  return { payload, record, row, screen: row.screen, genericScreen };
 }
 
 function poolForCurrent({ record, row }) {

@@ -264,7 +264,13 @@ test('dense required current beat is repaired into focal clusters while a flat s
   const uncertainty = 'Наблюдения не устанавливают, кто оставил ключ.';
   const flat = `${changes.join(' ')} ${uncertainty}`;
   const focused = 'Осматривая кладовую, вы различаете у дальней стены ящики: на верхнем лежит ключ, а под ним видна трещина. У двери висит фонарь; на полу тянется полоса песка, возле порога лежит обрывок верёвки, на полке стоит чаша с водой. Одежда осталась сырой. Наблюдения не устанавливают, кто оставил ключ.';
-  for (const accepted of [true, false]) await t.test(accepted ? 'focal repair passes' : 'flat repair stays terminal', async () => {
+  const repairs = [
+    { name: 'focal repair passes', prose: focused, accepted: true },
+    { name: 'byte-identical repair stays terminal', prose: flat, accepted: false },
+    { name: 'clause permutation stays terminal',
+      prose: `${uncertainty} ${[...changes].reverse().join(' ')}`, accepted: false }
+  ];
+  for (const repair of repairs) await t.test(repair.name, async () => {
     const calls = [];
     const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
       calls.push(call.role_id);
@@ -280,22 +286,26 @@ test('dense required current beat is repaired into focal clusters while a flat s
         assert.equal(wire.segments[0].prose, flat);
         assert.match(call.messages[0].content, /For a dense required_current_beat/u);
         assert.match(call.messages[0].content, /Never invent a causal bridge, force a layout/u);
-        return { output: { replacements: [{ prose: accepted ? focused : flat }] } };
+        const instruction = call.messages[0].content;
+        assert.ok(instruction.lastIndexOf('FINAL REPAIR CHECK') >
+          instruction.lastIndexOf('A committed transient attempt'));
+        assert.match(instruction, /never a copy or a synonym, punctuation, clause-order, or standalone-sentence permutation/u);
+        return { output: { replacements: [{ prose: repair.prose }] } };
       }
       const initial = wire.phase === 'initial';
       const audit = reviewed(wire, {
-        literaryFailures: initial || !accepted ? [{ check: 'weak_literary_composition',
+        literaryFailures: initial || !repair.accepted ? [{ check: 'weak_literary_composition',
           segment_choice: 's1', reason: 'Dense required facts remain a source-order checklist.' }] : [],
-        evidence: initial || !accepted ? [] : ['Supplied anchors organize the dense current beat.']
+        evidence: initial || !repair.accepted ? [] : ['Supplied anchors organize the dense current beat.']
       });
       return { output: audit };
     } } });
     const result = await service.run({ version: 1, schema: 'narration_request',
-      request_id: `dense-current-${accepted}`, surface: 'turn', visible_context: {
+      request_id: `dense-current-${repair.accepted}-${repair.name}`, surface: 'turn', visible_context: {
         ...scene(), visible_changes: changes, uncertainties: [uncertainty]
       }, context: {} });
-    assert.equal(result.status, accepted ? 'approved' : 'blocked');
-    if (accepted) {
+    assert.equal(result.status, repair.accepted ? 'approved' : 'blocked');
+    if (repair.accepted) {
       assert.equal(result.approved_output.prose, focused);
       assert.equal(result.final_audit.coverage.visible_changes.length, changes.length);
       assert.equal(result.final_audit.coverage.uncertainties.length, 1);

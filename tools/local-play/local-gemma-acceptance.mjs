@@ -333,7 +333,7 @@ async function capturePendingTurn({ report, page, identity, logDirectory,
   trace.commit_status = trace.accepted ? 'committed' : 'not_committed';
   trace.presentation_status = event.event === 'turn.completed'
     ? 'completed' : 'failed';
-  recordNarrationQuality({ report, trace, partyId, event });
+  recordNarrationQuality({ report, trace, partyId, event, eventIndex: 0 });
   const screenshot = await captureRenderedScreenshot(page, logDirectory,
     partyId, event.input?.request_id).catch(() => null);
   await appendRenderedUiEvidence({ directory: logDirectory, partyId, event,
@@ -471,9 +471,9 @@ function reconcileNarrationQuality(report) {
   report.findings ??= [];
   report.narration_quality_pass = true;
   for (const trace of report.turns ?? []) {
-    const event = trace.events?.findLast(({ event }) => event === 'turn.completed');
-    if (event) recordNarrationQuality({ report, trace,
-      partyId: report.party_id, event });
+    const eventIndex = trace.events?.findLastIndex(({ event }) => event === 'turn.completed') ?? -1;
+    if (eventIndex >= 0) recordNarrationQuality({ report, trace,
+      partyId: report.party_id, event: trace.events[eventIndex], eventIndex });
   }
 }
 

@@ -1,22 +1,15 @@
 import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js';
 import { canonicalDigest } from '@rus/materialization';
-import {
-  computeSpatialV3CanonicalDigest
-} from '@rus/contracts/spatial-v3/registry';
-import {
-  phase2IntegrityError
-} from './lower-dvina-trace-phase-2-read.js';
-import { validFactualTurnDelivery } from './factual-presentation-delivery.js';
+import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
+import { validFactualTurnDelivery, rebuildExpectedFactualTurnDelivery,
+  factualTurnDeliveryMatchesExpected } from './factual-presentation-delivery.js';
 import {
   phase2PublicResult,
   rebuildPhase2HistoricalScreen
 } from './lower-dvina-trace-phase-2-projection.js';
-import {
-  buildLowerDvinaTraceTurnStepCheckWrites
-} from './lower-dvina-trace-turn-step-checks.js';
-import {
-  validLowerDvinaTraceTurnStepReplayEvidence
-} from './lower-dvina-trace-turn-step-idempotency.js';
+import { buildLowerDvinaTraceTurnStepCheckWrites } from './lower-dvina-trace-turn-step-checks.js';
+import { validLowerDvinaTraceTurnStepReplayEvidence } from './lower-dvina-trace-turn-step-idempotency.js';
 export async function loadPhase2IdempotencyRecord({
   partyPool,
   partyId,
@@ -38,7 +31,6 @@ export async function loadPhase2IdempotencyRecord({
   }
   return record;
 }
-
 export async function loadCurrentOrHistoricalPhase2Replay({
   partyPool,
   partyId,
@@ -90,11 +82,18 @@ export async function loadCurrentOrHistoricalPhase2Replay({
       || row.package_digest !== state.last_turn.visible_package.package_digest) {
     throw phase2IntegrityError();
   }
-  if (row.screen?.schema === 'factual_turn_delivery_screen'
-      && (row.narration_status !== 'delivered' || row.delivery_mode !== 'factual'
-        || row.narration_output != null || row.output_digest != null
-        || canonicalDigest(row.factual_screen) !== canonicalDigest(row.screen)
-        || !validFactualTurnDelivery(row.screen, row))) {
+  const factualDelivery = row.delivery_mode === 'factual';
+  const factualSchema = row.screen?.schema === 'factual_turn_delivery_screen';
+  const invalidFactualDelivery = factualDelivery && (
+    row.narration_status !== 'delivered'
+    || row.narration_output != null || row.output_digest != null
+    || canonicalDigest(row.factual_screen) !== canonicalDigest(row.screen)
+    || !validFactualTurnDelivery(row.screen, row)
+    || !factualTurnDeliveryMatchesExpected(row.screen,
+      rebuildExpectedFactualTurnDelivery({ envelope: row,
+        presentation: await loadLowerDvinaTraceScreenPresentation(row.snapshot_payload) }))
+  );
+  if (factualDelivery !== factualSchema || invalidFactualDelivery) {
     throw phase2IntegrityError();
   }
   assertPhase2ReplayRecord({
@@ -116,7 +115,6 @@ export async function loadCurrentOrHistoricalPhase2Replay({
     public_result: phase2PublicResult({ payload: state, screen: row.screen })
   };
 }
-
 export async function loadHistoricalPhase2Replay({
   partyPool,
   partyId,
@@ -175,7 +173,7 @@ export async function loadHistoricalPhase2Replay({
       || row.package_digest
         !== computeSpatialV3CanonicalDigest(row.visible_payload)
        || row.narration_status !== 'delivered'
-       || !validHistoricalDelivery(row, payload)) {
+       || !(await validHistoricalDelivery(row, payload))) {
     throw phase2IntegrityError();
   }
   assertPhase2ReplayRecord({
@@ -208,7 +206,6 @@ export async function loadHistoricalPhase2Replay({
     public_result: phase2PublicResult({ payload, screen })
   };
 }
-
 export function assertPhase2ReplayRecord({
   record,
   payload,
@@ -237,7 +234,6 @@ export function assertPhase2ReplayRecord({
     throw phase2IntegrityError();
   }
 }
-
 export async function assertCommittedTurnStepChecks({
   partyPool, payload, changeSetId, idempotencyRecordId
 }) {
@@ -271,7 +267,6 @@ export async function assertCommittedTurnStepChecks({
     throw phase2IntegrityError();
   }
 }
-
 function validNarrationOutput(narration) {
   if (!narration || narration.kind !== 'approved_narration') return false;
   const { canonical_digest: digest, ...payload } = narration;
@@ -281,17 +276,20 @@ function validNarrationOutput(narration) {
     && narration.text
       === narration.flow_result?.approved_output?.prose;
 }
-
-function validHistoricalDelivery(row, payload) {
+async function validHistoricalDelivery(row, payload) {
   if (row.delivery_mode === 'factual') {
     const factual = row.factual_screen;
     return row.narration_output == null
       && row.output_digest == null
       && validFactualTurnDelivery(factual, {
-        ...row,
-        snapshot_payload: row.snapshot_payload,
+        ...row, snapshot_payload: row.snapshot_payload,
         state_digest: row.package_snapshot_digest
-      });
+      })
+      && factualTurnDeliveryMatchesExpected(factual, rebuildExpectedFactualTurnDelivery({
+        envelope: { ...row, snapshot_payload: row.snapshot_payload,
+          state_digest: row.package_snapshot_digest },
+        presentation: await loadLowerDvinaTraceScreenPresentation(row.snapshot_payload)
+      }));
   }
   return row.delivery_mode === 'narrated'
     && row.output_digest === row.narration_output?.canonical_digest

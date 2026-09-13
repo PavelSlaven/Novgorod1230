@@ -151,6 +151,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor'
   ]);
   for (const call of calls) {
+    assert.equal(call.overrides.temperature,
+      call.roleId === 'gameplay_narrator_semantic_repair' ? 0.2 : 0);
     const payload = JSON.parse(call.messages[1].content);
     assert.equal(Object.hasOwn(payload, 'visible_context'), false);
     assert.deepEqual(payload.required_current_beat.uncertainties,

@@ -11,16 +11,17 @@ export async function runAndPersistTracePhase2Turn({ workflowInput, services,
     const result = await runTurnWorkflow(workflowInput, services, {
       now: issuedAt, requestId,
       onEvent: (event) => recordWorkflowProgress(llmDiagnostics, event),
+      ...(typeof llmDiagnostics?.recordGameplayTrace === 'function' ? {
+        onFailure: ({ error, events, checkpoint }) => trace(llmDiagnostics, {
+          event: 'workflow_failed', error: failureRecord(error), events, checkpoint
+        })
+      } : {}),
     });
     trace(llmDiagnostics, { event: 'workflow_completed', result,
       checkpoint: result.checkpoint ?? null });
     return await runWithinTurnDeadline(turnBudget, () =>
       repository.persistPhase2Screen({ partyId, inputDigest, result, turnBudget }));
   } catch (error) {
-    trace(llmDiagnostics, { event: 'workflow_failed',
-      result: error?.details?.result ?? null,
-      error_events: error?.details?.events ?? null,
-      checkpoint: error?.details?.checkpoint ?? null });
     if (isExpectedPostCommitPresentationFailure(error)
         && services.committedPublicResult() != null) return services.committedPublicResult();
     if (services.turnCommitStatus() === 'not_started') {
@@ -92,4 +93,9 @@ function recordWorkflowProgress(diagnostics, event) {
 function trace(diagnostics, record) {
   try { diagnostics?.recordGameplayTrace?.(record); }
   catch { /* Diagnostic capture must not affect gameplay. */ }
+}
+function failureRecord(error) {
+  return { name: String(error?.name ?? 'Error'), message: String(error?.message ?? error),
+    code: error?.code ?? null, status: error?.status ?? null,
+    details: error?.details ?? null };
 }

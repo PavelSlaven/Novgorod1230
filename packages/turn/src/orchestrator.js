@@ -26,21 +26,29 @@ export async function runTurnWorkflow(input = {}, services = {}, options = {}) {
     try { options.onEvent?.(structuredClone(snapshot)); }
     catch { /* progress observation must not change the turn */ }
   };
-  const graphResult = await runStageGraph({
-    stages,
-    input: deepFreeze({ version: 1, schema: 'turn_workflow_state' }),
-    services,
-    transient: true,
-    onEvent: recordEvent
-  });
+  let graphResult;
+  try {
+    graphResult = await runStageGraph({
+      stages,
+      input: deepFreeze({ version: 1, schema: 'turn_workflow_state' }),
+      services,
+      transient: true,
+      onEvent: recordEvent
+    });
+  } catch (error) {
+    observeFailure(options.onFailure, error, events, context);
+    throw error;
+  }
 
   if (graphResult.status !== 'approved') {
-    throw turnFailure(
+    const error = turnFailure(
       graphResult.status === 'repair_required' ? 'TURN_REPAIR_REQUIRED' : 'TURN_WORKFLOW_STOPPED',
       `Turn workflow stopped at ${graphResult.stage_id} with status ${graphResult.status}.`,
       { stage_id: graphResult.stage_id, status: graphResult.status, result: graphResult.result,
-        events, checkpoint: context.snapshot() }
+        events }
     );
+    observeFailure(options.onFailure, error, events, context);
+    throw error;
   }
 
   const state = graphResult.artifact;
@@ -64,4 +72,11 @@ export async function runTurnWorkflow(input = {}, services = {}, options = {}) {
   };
   assertValid('turn_result', validateTurnResult(result));
   return deepFreeze(result);
+}
+
+function observeFailure(observer, error, events, context) {
+  if (typeof observer !== 'function') return;
+  try { Promise.resolve(observer({ error, events: structuredClone(events),
+    checkpoint: context.snapshot() })).catch(() => undefined); }
+  catch { /* Private failure observation must not change the turn. */ }
 }

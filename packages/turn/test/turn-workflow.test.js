@@ -381,8 +381,31 @@ test('failed narration audit cannot roll back committed factual state', async ()
       }
     }
   });
-  await assert.rejects(() => runTurnWorkflow(input(), services),
-    { code: 'TURN_NARRATION_REJECTED' });
+  const failures = [];
+  await assert.rejects(() => runTurnWorkflow(input(), services, {
+    onFailure(record) { failures.push(record); throw new Error('observer failure'); }
+  }), { code: 'TURN_NARRATION_REJECTED' });
+  assert.equal(failures.length, 1);
+  assert.equal(failures[0].checkpoint.stages.persisted_visible_projection.schema,
+    'visible_context_package');
+  assert.equal(failures[0].events.at(-1).stageId, 16);
+  assert.equal(commits.length, 1);
+});
+
+test('thrown stage failure reaches observer without changing original error', async () => {
+  const { services, commits } = createServices();
+  const original = Object.assign(new Error('narrator transport lost'), {
+    code: 'NARRATOR_TEST_FAILURE', details: { sentinel: true }
+  });
+  services.narrator = { async run() { throw original; } };
+  const failures = [];
+  await assert.rejects(() => runTurnWorkflow(input(), services, {
+    onFailure(record) { failures.push(record); throw new Error('observer failure'); }
+  }), (error) => error === original);
+  assert.equal(failures.length, 1);
+  assert.equal(failures[0].error, original);
+  assert.equal(failures[0].error.details.sentinel, true);
+  assert.equal(failures[0].events.at(-1).stageId, 16);
   assert.equal(commits.length, 1);
 });
 
@@ -415,17 +438,18 @@ test('repair_required stops before time, narration and persistence', async () =>
           suggested_actions: []
         }; }
   } });
-  await assert.rejects(() => runTurnWorkflow(input(), services), (error) => {
+  const failures = [];
+  await assert.rejects(() => runTurnWorkflow(input(), services, {
+    onFailure(record) { failures.push(record); }
+  }), (error) => {
     assert.equal(error.code, 'TURN_REPAIR_REQUIRED');
-    assert.equal(error.details.checkpoint.stages.normalize_intent.contract,
-      'intent_not_fact');
-    assert.equal(error.details.events.at(-1).type, 'stage_stopped');
-    assert.deepEqual(error.details.events.map(({ stageId }) => stageId),
-      [...error.details.events.map(({ stageId }) => stageId)].sort((a, b) => a - b));
-    assert.equal(error.details.events.filter(({ type }) => type === 'stage_approved').length,
-      7);
+    assert.equal(Object.hasOwn(error.details, 'checkpoint'), false);
     return true;
   });
+  assert.equal(failures.length, 1);
+  assert.equal(failures[0].checkpoint.stages.normalize_intent.contract,
+    'intent_not_fact');
+  assert.equal(failures[0].events.at(-1).type, 'stage_stopped');
   assert.equal(commits.length, 0);
   assert.equal(log.includes('narration'), false);
   assert.equal(log.includes('persistence_plan'), false);

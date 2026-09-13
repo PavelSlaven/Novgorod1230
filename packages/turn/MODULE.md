@@ -15,6 +15,11 @@ Narration boundary принимает только approved `surface: turn` че
   clone каждого события через optional `options.onEvent`. Observer не добавляет
   stage, phase или authority: его return не используется, callback не ожидается,
   а synchronous exception игнорируется и не меняет workflow, result либо commit.
+  Optional private `options.onFailure` вызывается при thrown или stopped failure
+  один раз с `{ error, events, checkpoint }`: `error` — исходная ошибка, `events`
+  и `checkpoint` — snapshots. Observer best-effort, не ожидается; synchronous
+  exception и rejected Promise игнорируются, поэтому не меняют failure, result
+  либо commit.
   Public progress phases и request-scoped read model принадлежат server Adapter.
 
 ## Не владеет

@@ -56,7 +56,7 @@ export function createProductionWorldKnowledgeGrounder({ worldKnowledge,
         allowed_domains: domains,
         available_knowledge_refs: candidateWorldKnowledgeFocusRefs(bundle,
           `${focusInputOf(request, authoritative)} ${Object.values(actorFacets).join(' ')}`,
-          queryLocale, domains, 40),
+          queryLocale, domains, 96),
         planner_limits: { max_domains: 3, max_search_hints: 8,
           max_focus_refs: 8 }
       };

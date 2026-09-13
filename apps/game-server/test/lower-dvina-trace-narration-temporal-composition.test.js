@@ -239,7 +239,7 @@ test('captured repair preserves completed-before action order and regroups scene
         surface: 'turn', visible_context: {
           ...scene(), visible_scene: sample.scene, visible_changes: sample.changes
         }, context: {} });
-      const shouldApprove = repair.accepted || repair.overlap !== true;
+      const shouldApprove = repair.accepted;
       assert.equal(result.status, shouldApprove ? 'approved' : 'blocked');
       if (shouldApprove) assert.equal(result.approved_output.prose, repair.prose);
       assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',

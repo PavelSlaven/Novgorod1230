@@ -58,8 +58,14 @@ only in literary_failures for an invented response, nonresponse, performed
 continuation or continued action. current_beat_buried requires a required source to be present but displaced;
 an omitted source belongs only in source_reviews as []. Never add
 current_beat_buried merely because another required source has an empty review.
-Optional support may compose the current beat but a recap of unchanged
-support is static_context_dump. Turn duration is code-owned UI metadata and is
+Optional support is a candidate set, never a coverage target. After a current
+beat, a recital of unchanged, independent optional scene facts as panorama or
+context is static_context_dump even when fluent, reordered, spatially grouped,
+or placed after the beat. Each retained support detail must locate, contrast,
+constrain, or constitute the action or result being narrated. A perception beat
+may govern supplied details that are themselves its perceived result; this does
+not license unrelated snapshot recap. A recap of unchanged support is static_context_dump.
+Turn duration is code-owned UI metadata and is
 not supplied as prose evidence. Any invented elapsed time is unsupported_fact;
 service-like time reporting is also elapsed_as_service_report. A passage that
 mainly restates required sources one by one, without composing
@@ -108,30 +114,19 @@ Segment choices: ${JSON.stringify(choices)}.`;
 
 export function assembleNarrationAuditOutput(output, request) {
   const normalized = normalizeChoices(output, request);
-  const boundedCompositionRepair = request.phase === 'final'
-    && Array.isArray(normalized?.literary_failures)
-    && normalized.literary_failures.some(
-      ({ check }) => check === 'weak_literary_composition');
-  const normalizedOutput = boundedCompositionRepair ? {
-    ...normalized,
-    literary_failures: normalized.literary_failures.filter(
-      ({ check }) => check !== 'weak_literary_composition')
-  } : normalized;
-  const clean = Array.isArray(normalizedOutput?.source_reviews)
-    && normalizedOutput.source_reviews.every(({ segment_choices }) =>
+  const clean = Array.isArray(normalized?.source_reviews)
+    && normalized.source_reviews.every(({ segment_choices }) =>
       Array.isArray(segment_choices) && segment_choices.length > 0)
-    && Array.isArray(normalizedOutput.unsupported)
-    && normalizedOutput.unsupported.length === 0
-    && Array.isArray(normalizedOutput.literary_failures)
-    && normalizedOutput.literary_failures.length === 0;
+    && Array.isArray(normalized.unsupported)
+    && normalized.unsupported.length === 0
+    && Array.isArray(normalized.literary_failures)
+    && normalized.literary_failures.length === 0;
   const modelOutput = {
-    ...normalizedOutput,
+    ...normalized,
     reviewed_segments: request.segments.map(({ segment_id }) => segment_id),
-    ...(clean && Array.isArray(normalizedOutput.evidence)
-      && normalizedOutput.evidence.length === 0
-      ? { evidence: [boundedCompositionRepair
-          ? 'All required sources are covered and no factual or presentation failures remain after bounded composition repair.'
-          : 'All required sources are covered and no audit failures were reported.'] }
+    ...(clean && Array.isArray(normalized.evidence)
+      && normalized.evidence.length === 0
+      ? { evidence: ['All required sources are covered and no audit failures were reported.'] }
       : {})
   };
   if (!validNarrationAuditModelOutput(modelOutput, request)) {

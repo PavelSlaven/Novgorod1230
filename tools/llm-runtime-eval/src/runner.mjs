@@ -384,7 +384,8 @@ function sumUsage(calls) {
 }
 
 function validateRoleOutput(fixture, output) {
-  const payload = messagePayload(fixture.messages);
+  const payload = fixture.role_id.startsWith('gameplay_narrator')
+    ? fixture.request : messagePayload(fixture.messages);
   const request = fixture.repair === true && payload?.request ? payload.request : payload;
   switch (fixture.validator) {
     case 'turn_step_plan': return validateTurnStepPlan(output, { request }).ok ? [] : ['validator:turn_step_plan'];
@@ -404,7 +405,10 @@ function validateRoleOutput(fixture, output) {
       return errors.length ? ['validator:narration_output'] : [];
     }
     case 'narration_audit':
-      return validateNarrationAudit(output, request?.segments?.map(({ segment_id }) => segment_id)).ok
+      return validateNarrationAudit(output, request?.segments?.map(({ segment_id }) => segment_id), {
+        visible_changes: request.visible_context.visible_changes.length,
+        uncertainties: request.visible_context.uncertainties.length
+      }).ok
         ? [] : ['validator:narration_audit'];
     case 'narration_semantic_repair':
       return validateNarrationSemanticRepair(output,
@@ -473,7 +477,7 @@ function assembleFixtureOutput(fixture, output) {
     return bindOrdinaryMaterializationPlan(request, output);
   }
   if (fixture.role_id.startsWith('gameplay_narrator')) {
-    return assembleNarrationRoleOutput(fixture.role_id, output, payload);
+    return assembleNarrationRoleOutput(fixture.role_id, output, fixture.request);
   }
   return output;
 }

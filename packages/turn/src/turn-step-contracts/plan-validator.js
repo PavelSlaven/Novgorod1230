@@ -33,7 +33,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
     'step_index', 'interpretation', 'resolution', 'goal_result', 'activity',
     'operations', 'check', 'continuation', 'clarification',
     'direct_result_kind', 'reason_code', 'reason'
-  ], errors)) return result(errors);
+  ], errors, { optional: ['utterance', 'assessment'] })) return result(errors);
   constant(value.schema, 'turn_step_plan_v1', '$.schema', errors);
   requiredText(value.request_id, '$.request_id', errors);
   integer(value.committed_state_version, 0,
@@ -71,6 +71,7 @@ export function validateTurnStepPlan(value, { request } = {}) {
   validateCheck(value.check, '$.check', errors, trace, request);
   validateResolution(value, operationKinds, errors);
   validateDirectResultKind(value, errors, request);
+  validateAssessment(value, errors);
   if (value.continuation != null && value.goal_result !== 'pending') {
     add(errors, '$.goal_result', 'continuation',
       'must be pending when continuation is present');
@@ -82,24 +83,42 @@ export function validateTurnStepPlan(value, { request } = {}) {
   return result(errors);
 }
 
+function validateAssessment(plan, errors) {
+  if (plan.assessment === undefined) return;
+  if (strict(plan.assessment, '$.assessment', ['text', 'support_refs'], errors)) {
+    requiredText(plan.assessment.text, '$.assessment.text', errors);
+    refs(plan.assessment.support_refs, '$.assessment.support_refs', errors,
+      null, { min: 1 });
+  }
+  if (plan.resolution !== 'direct'
+      || plan.direct_result_kind !== 'player_safe_observation') {
+    add(errors, '$.assessment', 'direct_result_kind',
+      'is allowed only for a direct player-safe observation');
+  }
+}
+
 function validateDirectResultKind(plan, errors, request) {
   enumValue(plan.direct_result_kind, [null, 'player_safe_observation',
     'player_safe_item_observation', 'player_safe_body_observation',
-    'no_state_gesture'],
+    'no_state_gesture', 'player_utterance'],
   '$.direct_result_kind', errors);
-  const requiresKind = plan.resolution === 'direct'
-    && ['achieved', 'partially_achieved'].includes(plan.goal_result)
+  const writeFreeDirect = plan.resolution === 'direct'
     && plan.activity?.owner === 'semantic'
     && plan.activity.duration_class === 'moment'
     && plan.activity.effort === 'none'
     && Array.isArray(plan.operations) && plan.operations.length === 0
     && plan.check === null && plan.clarification === null;
+  const allowsKind = writeFreeDirect
+    && (['achieved', 'partially_achieved'].includes(plan.goal_result)
+      || plan.goal_result === 'pending' && plan.continuation != null);
+  const requiresKind = writeFreeDirect
+    && ['achieved', 'partially_achieved'].includes(plan.goal_result);
   if (requiresKind && plan.direct_result_kind === null) {
     add(errors, '$.direct_result_kind', 'direct_result_kind',
       'is required for a successful write-free direct result');
-  } else if (!requiresKind && plan.direct_result_kind !== null) {
+  } else if (!allowsKind && plan.direct_result_kind !== null) {
     add(errors, '$.direct_result_kind', 'direct_result_kind',
-      'is allowed only for a successful write-free direct result');
+      'is allowed only for a successful or continued write-free direct result');
   }
   if (plan.direct_result_kind === 'player_safe_body_observation'
       && (request?.actor?.body == null
@@ -109,11 +128,48 @@ function validateDirectResultKind(plan, errors, request) {
     add(errors, '$.direct_result_kind', 'direct_result_kind',
       'requires a supplied player-safe actor body condition projection');
   }
+  if (plan.direct_result_kind === 'player_utterance') {
+    if (strict(plan.utterance, '$.utterance', [
+      'speaker_ref', 'utterance_text', 'input_mode', 'delivery'
+    ], errors)) {
+      requiredText(plan.utterance.speaker_ref, '$.utterance.speaker_ref', errors);
+      if (request != null) constant(plan.utterance.speaker_ref,
+        request.actor?.actor_id ?? request.actor?.actor_ref,
+        '$.utterance.speaker_ref', errors);
+      requiredText(plan.utterance.utterance_text, '$.utterance.utterance_text', errors);
+      enumValue(plan.utterance.input_mode, ['verbatim', 'intent_paraphrase'],
+        '$.utterance.input_mode', errors);
+      if (strict(plan.utterance.delivery, '$.utterance.delivery',
+        ['loudness', 'duration_class'], errors)) {
+        integer(plan.utterance.delivery.loudness, 1,
+          '$.utterance.delivery.loudness', errors);
+        if (Number.isSafeInteger(plan.utterance.delivery.loudness)
+            && plan.utterance.delivery.loudness > 4) {
+          add(errors, '$.utterance.delivery.loudness', 'maximum',
+            'must be <= 4');
+        }
+        enumValue(plan.utterance.delivery.duration_class,
+          ['instant', 'brief', 'sustained'],
+          '$.utterance.delivery.duration_class', errors);
+      }
+      if (request != null && plan.utterance.input_mode === 'verbatim'
+          && (typeof plan.utterance.utterance_text !== 'string'
+          || !request.remaining_intent.includes(plan.utterance.utterance_text))) {
+        add(errors, '$.utterance.utterance_text', 'direct_result_kind',
+          'must copy the explicitly spoken words from remaining_intent');
+      }
+    }
+  } else if (plan.utterance !== undefined) {
+    add(errors, '$.utterance', 'direct_result_kind',
+      'is allowed only for player_utterance');
+  }
 }
 
 function validateContinuationProgress(plan, request, operationKinds, errors) {
   if (plan.continuation?.remaining_intent !== request.remaining_intent) return;
   const domainKinds = operationKinds.filter((kind) => DOMAIN_OPS.has(kind));
+  // Discovery may acquire a missing material without consuming its later use.
+  // Owner preflight rejects an authored investigation using that exception.
   if (domainKinds.length > 0 && domainKinds.every(
     (kind) => kind === 'request_discovery')) return;
   add(errors, '$.continuation.remaining_intent', 'continuation_progress',
@@ -351,7 +407,9 @@ function validateResolution(plan, kinds, errors) {
     const actionProduction = plan.operations?.find((operation) =>
       operation?.op === 'request_item_use'
         && operation.action_production != null);
-    const expectedOwner = actionProduction ? 'semantic' : 'domain';
+    const transientUse = plan.operations?.some(operation => operation?.op === 'request_item_use'
+      && operation.use_kind === 'other' && typeof operation.description === 'string');
+    const expectedOwner = actionProduction || transientUse ? 'semantic' : 'domain';
     if (plan.activity?.owner !== expectedOwner) {
       add(errors, '$.activity.owner', 'resolution',
         actionProduction

@@ -9,7 +9,7 @@ const loadedProfile = { schema: 'rus.lower_dvina_trace_n1_loaded_profile.v1',
   profile: { status: 'approved', profile_id: 'n1', revision: 1,
     eligible_participant_profiles: [{ profile_id: 'fisher', revision: 2 }] } };
 
-test('N1 grounds one existing visible background NPC and replays without model', async () => {
+test('N1 inspects an ordinary unknown fisherman and replays without model', async () => {
   let calls = 0;
   let grounded;
   const factory = createLowerDvinaTraceN1ProductionResolverFactory({
@@ -84,7 +84,8 @@ function requestInput() {
   return {
     schema: 'turn_step_background_npc_remainder_request_v1',
     operation: { op: 'request_discovery', discovery_kind: 'inspect',
-      actor_ref: 'actor:1', target_refs: ['npc:1'], query: 'присмотреться' },
+      actor_ref: 'actor:1', target_refs: ['npc:1'],
+      query: 'осматриваю обычного незнакомого рыбака' },
     actor: { actor_id: 'actor:1' },
     request: { request_id: 'req:1', root_turn_id: 'turn:1', step_index: 1,
       committed_state_version: 4,

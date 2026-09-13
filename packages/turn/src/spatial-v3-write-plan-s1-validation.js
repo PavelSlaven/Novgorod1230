@@ -58,6 +58,20 @@ export function completeS1Topology(inserts, check, baseline, g6, position) {
     && reciprocal(links, 'reverse_link_id', position?.id, slotPosition?.id);
 }
 
+export function completeG6AcousticProfiles(inserts, g6Rows) {
+  const profiles = inserts.filter((write) =>
+    write.target_table === 'g6_acoustic_profiles');
+  return profiles.length === g6Rows.length && g6Rows.every((g6) => {
+    const profile = profiles.find((write) => write.id === g6.id);
+    return profile?.record?.party_id === g6.record?.party_id
+      && profile.record.g6_instance_id === g6.id
+      && profile.record.ambient_noise === 0
+      && profile.record.acoustic_uniformity === g6.record?.acoustic_uniformity
+      && profile.record.state_version === g6.record?.state_version
+      && profile.record.updated_change_set_id === g6.record?.updated_change_set_id;
+  });
+}
+
 function reciprocal(rows, reverseKey, basePositionId, slotPositionId) {
   return rows.length === 2 && rows.every((row) => rows.some((other) =>
     other.id === row.record?.[reverseKey]

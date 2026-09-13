@@ -1,4 +1,5 @@
 import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
+import { applyNpcRoutineTemporalResults } from '../../runtime/npc-routine-temporal.js';
 import { assertSharedSemanticSnapshotSafe, projectSemanticConversationSnapshot, projectSharedSemanticConsequence } from './lower-dvina-trace-conversation-state.js';
 import { phase3RouteTimeUpdate, routeMovement } from './lower-dvina-trace-phase-3-activity-state.js';
 import { appendPhase3ActivityHistory } from './lower-dvina-trace-phase-3-activity-history.js';
@@ -14,6 +15,7 @@ export function nextState({
   rootTurnId, workingRevision
 }) {
   let next = structuredClone(state);
+  applyNpcRoutineTemporalResults(next, factual.time_update?.temporal_results);
   const routeTime = phase3RouteTimeUpdate(factual);
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;
@@ -59,7 +61,7 @@ export function nextState({
     if (firstEntryPending) {
       const existing = new Set((next.npcs ?? []).map(({ instance_id: id }) => id));
       next.npcs = [...(next.npcs ?? []),
-        ...(state.first_entry_preparation.npcs ?? []).filter(
+        ...(next.first_entry_preparation.npcs ?? []).filter(
           ({ instance_id: id }) => !existing.has(id))];
       const firstEntryNpcs = new Set(
         (state.first_entry_preparation.npcs ?? [])
@@ -69,6 +71,14 @@ export function nextState({
             factual.consequence.movement.destination.g5_anchor_id }
         : npc);
       next.first_entry_preparation.spatial_v3.target.status = 'prepared';
+      for (const schedule of next.npc_schedule_runtime ?? []) {
+        const deferred = schedule.causal_state_ref.deferred_placement;
+        if (schedule.current_position_node_id == null
+            && deferred?.snapshot_id === firstEntry.preparation_snapshot_id
+            && deferred?.member_ordinal === firstEntry.preparation_member_ordinal) {
+          schedule.current_position_node_id = firstEntry.target.position_id;
+        }
+      }
     }
     const destinationPositionId = factual.consequence.movement.destination.scene_position_id
       ?? (firstEntry?.target?.status === 'prepared'

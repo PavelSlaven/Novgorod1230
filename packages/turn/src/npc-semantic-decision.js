@@ -15,7 +15,6 @@ import {
   validateNpcStepPlan
 } from '@rus/npc-runtime';
 import { turnFailure } from './errors.js';
-
 const inFlightDecisions = new Map();
 const MAX_STALE_REBUILDS = 8;
 function fail(code, message, details = {}) {
@@ -59,7 +58,6 @@ function requireBoundaryRequestIdentity(boundary, request, mode) {
     && boundary.categories.length === reasons.categories.length
     && boundary.categories.every((category, index) => category === reasons.categories[index])
     && sameReferenceList(boundary.signal_refs, reasons.signal_refs);
-
   if (!matching) {
     fail(
       'TURN_NPC_IDENTITY_MISMATCH',
@@ -126,7 +124,6 @@ function domainRejectedProposal(boundary, request, orderedSignals, plan,
     decision_context: decisionContext(boundary, request, orderedSignals)
   });
 }
-
 function staleDiscardedProposal(boundary, request, orderedSignals) {
   return immutable({
     status: 'stale_discarded',
@@ -136,7 +133,6 @@ function staleDiscardedProposal(boundary, request, orderedSignals) {
     decision_context: decisionContext(boundary, request, orderedSignals)
   });
 }
-
 async function requestFreshDecision({ boundary, request, orderedSignals,
   semanticModel, revalidateStateVersion, rebuildDecisionContext, mode,
   validatePlan, validateFreshPlan }) {
@@ -149,7 +145,6 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       'revalidateStateVersion must be a function'
     );
   }
-
   let currentBoundary = boundary;
   let currentRequest = request;
   let currentSignals = orderedSignals;
@@ -157,6 +152,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
   decisionLoop: while (true) {
     const safeRequest = immutable(currentRequest);
     let repair = null;
+    let structuralRepairUsed = false;
+    let semanticRepairUsed = false;
     let rawPlan;
     while (true) {
       try {
@@ -257,7 +254,12 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       }
       const structuralErrors = structuralPlanErrors(
         rawPlan, safeRequest, mode);
-      if (repair !== null) {
+      const semanticRepair = domainResult?.fresh_semantic_repair === true;
+      const repairAlreadyUsed = semanticRepair
+        ? semanticRepairUsed : structuralRepairUsed;
+      const semanticAfterStructural = semanticRepair
+        && structuralRepairUsed && !semanticRepairUsed;
+      if (repairAlreadyUsed || (repair !== null && !semanticAfterStructural)) {
         const reportedErrors = structuralErrors.length > 0
           ? structuralErrors : repairContext(rawPlan).validation_errors;
         fail(
@@ -268,6 +270,8 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
             validation_errors: reportedErrors }
         );
       }
+      if (semanticRepair) semanticRepairUsed = true;
+      else structuralRepairUsed = true;
       repair = repairContext(rawPlan, domainResult?.errors
         ?? (structuralErrors.length > 0 ? structuralErrors : null));
     }

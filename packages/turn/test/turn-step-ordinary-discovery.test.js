@@ -51,7 +51,8 @@ test('unresolved ordinary discovery returns one player-safe no-result', async ()
     buildPresenceRequest: () => ({}),
     sealAtomicWritePlan: () => ({})
   });
-  const result = await resolve({ working_projection: { revision: 7 } });
+  const result = await resolve({ operation: { query: 'осмотреть чужой мешок' },
+    working_projection: { revision: 7 } });
 
   assert.deepEqual(result, {
     working_projection: { revision: 7 },
@@ -59,7 +60,8 @@ test('unresolved ordinary discovery returns one player-safe no-result', async ()
     summary: 'ordinary discovery unavailable',
     duration_minutes: 0,
     consequence_fragment: { visible_seed: { ordinary_presence_seed: {
-      kind: 'ordinary_presence_seed', resolution: 'no_change'
+      kind: 'ordinary_presence_seed', resolution: 'no_change',
+      query: 'осмотреть чужой мешок'
     } } },
     player_response_boundary: true
   });
@@ -79,7 +81,8 @@ test('multi-item ordinary inspection returns no-result before context or model',
       sealAtomicWritePlan: () => ({})
     });
     const result = await resolve({
-      operation: { target_refs: ['visible-bowl', 'visible-cup'] },
+      operation: { target_refs: ['visible-bowl', 'visible-cup'],
+        query: 'осмотреть посуду' },
       working_projection: { revision: 9 }
     });
 

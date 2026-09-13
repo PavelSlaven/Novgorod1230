@@ -1,4 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
+import { applyNpcRoutineProjection } from './npc-routine-temporal.js';
 import { applyLocalFireTemporalProjection } from
   './lower-dvina-trace-local-fire-temporal.js';
 
@@ -13,6 +14,14 @@ export function lowerDvinaTraceTemporalSourceRegistrations(registrations) {
     return { ...registration,
       resolve(candidate, context) {
         const resolution = registration.resolve(candidate, context);
+        const routine = resolution?.proposals?.find((proposal) => proposal.npc_routine_transition);
+        if (routine) {
+          const expected = applyNpcRoutineProjection(context.projection, routine.npc_routine_transition);
+          if (canonicalDigest(expected)
+              !== canonicalDigest(resolution.state_projection)) fail(candidate,
+            'NPC_ROUTINE_TEMPORAL_PROJECTION_INVALID');
+          return resolution;
+        }
         return context.projection.conversation_state == null
           ? validatePhase6TemporalSourceResolution({ candidate,
               projection: context.projection, resolution })

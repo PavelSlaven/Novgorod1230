@@ -1,3 +1,5 @@
+import { canonicalDigest } from './core.js';
+
 export function buildLowerDvinaTracePlayerDossier({
   input,
   playerId,
@@ -33,7 +35,10 @@ export function buildLowerDvinaTracePlayerDossier({
     origin: {
       current_region_id: wreck.location.region_ref,
       year: projection.historical_year,
-      biography_basis: profile.approval.basis
+      biography_basis: profile.approval.basis,
+      ...(projection.origin?.biography == null ? {} : {
+        biography: projection.origin.biography
+      })
     },
     body: {
       health: body.values.health,
@@ -47,6 +52,7 @@ export function buildLowerDvinaTracePlayerDossier({
     attributes: structuredClone(profile.attributes),
     skills: structuredClone(profile.skills),
     knowledge: structuredClone(projection.knowledge),
+    ...(projection.memory == null ? {} : { memory: structuredClone(projection.memory) }),
     goals: structuredClone(projection.goals),
     inventory: {
       items: [{
@@ -85,4 +91,51 @@ export function buildLowerDvinaTracePlayerDossier({
     source_trace: [{ source_id: profile.profile_id, digest: sourceDigest }],
     audit_self_check: structuredClone(projection.audit_self_check)
   };
+}
+
+export function assertLowerDvinaTracePlayerDossierProjection({ bundle, bindings, location, fail }) {
+  const dossier = bindings.player_dossier_projection;
+  const playerKnowledge = bundle.knowledge_lie_memory_rules.participant_knowledge_bindings
+    .filter((value) => value.participant_ref === 'player_clerk');
+  const knife = bundle.item_container_set.item_templates
+    .filter((value) => value.item_template_id === 'trace_ld_v1_item_mikula_knife');
+  const startYear = Number(bundle.body_environment_profiles.start_timestamp_specification
+    ?.calendar_date_contract?.exact_date?.year);
+  const itemProjection = dossier?.inventory_item_projections?.[knife[0]?.item_template_id];
+  if (playerKnowledge.length !== 1 || knife.length !== 1
+    || dossier?.historical_year !== startYear
+    || dossier.knowledge?.region_id !== location[0].region_ref
+    || dossier.knowledge?.current_year !== startYear
+    || canonicalDigest(dossier.knowledge?.initially_forbidden_categories)
+      !== canonicalDigest(playerKnowledge[0].initially_forbidden_categories)
+    || dossier.start_place_connection?.selected_candidate_id !== location[0].location_profile_id
+    || dossier.start_place_connection?.region_id !== location[0].region_ref
+    || dossier.start_place_connection?.year !== startYear
+    || !dossier.start_place_connection?.reason
+    || !dossier.goals?.immediate_need
+    || !dossier.goals?.consequence_of_inaction
+    || itemProjection?.use !== knife[0].causal_basis
+    || !Array.isArray(itemProjection?.risk)
+    || itemProjection.risk.length !== 0
+    || !itemProjection?.condition_state
+    || !itemProjection?.legal_status
+    || !itemProjection?.physical_position
+    || !itemProjection?.claim_state
+    || !Array.isArray(dossier.property_and_access?.rules)
+    || dossier.property_and_access.rules.length !== 0
+    || !Array.isArray(dossier.relations)
+    || dossier.relations.some(relation => relation.npc_candidate_id != null
+      ? !bundle.participant_profile_set.participant_slots.includes(relation.npc_candidate_id)
+      : relation.relation_mode !== 'abstract_background_relation'
+        || !bundle.item_container_set.external_property_principals.some(
+          principal => principal.principal_ref === relation.external_owner_ref))
+    || !Array.isArray(dossier.approved_empty_collections)
+    || canonicalDigest(dossier.approved_empty_collections) !== canonicalDigest([
+      'inventory_item_projections.trace_ld_v1_item_mikula_knife.risk',
+      'property_and_access.rules',
+      ...(dossier.relations.length === 0 ? ['relations'] : [])
+    ])
+    || dossier.audit_self_check?.pass !== true) {
+    fail('TRACE_PLAYER_DOSSIER_BINDING_INCOMPLETE', 'Player dossier semantics must resolve from the approved Phase-1A binding.');
+  }
 }

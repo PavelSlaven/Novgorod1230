@@ -32,7 +32,8 @@ export async function prepareTracePhase3PlayerConversationPlan(input) {
     phase: 'phase_3',
     checkResult: null,
     targetActor: target,
-    actualNpcActors: contracts.actors,
+    actualNpcActors: contracts.actors.filter(({ anchor_id: anchorId }) =>
+      anchorId === input.state.position?.g5_anchor_id),
     availableEvidence,
     ...(input.evidence ? {
       requiredResolution: 'check_required',
@@ -60,7 +61,9 @@ export async function prepareTracePhase4PlayerConversationPlan(input) {
   const target = contracts.actors[targetActorRef];
   if (!target?.instance_id) fail('TRACE_M2_PHASE_4_TARGET_INVALID');
   const actualNpcActors = Object.entries(contracts.actors)
-    .map(([ref, actor]) => ({ ref, ...structuredClone(actor) }));
+    .map(([ref, actor]) => ({ ref, ...structuredClone(actor) }))
+    .filter(({ anchor_id: anchorId }) =>
+      anchorId === input.state.position?.g5_anchor_id);
   const requiresPromise = targetActorRef === 'ratsha_storehouse_helper'
     && input.requiresPromise === true;
   return prepareM2PlayerConversationPlan(createM2ConversationContext({

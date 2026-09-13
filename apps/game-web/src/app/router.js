@@ -10,6 +10,7 @@ import { renderDiagnostics } from '../features/diagnostics/render.js';
 import { renderConversationPortrait } from
   '../features/conversation-portrait/render.js';
 import { renderCurrentTask } from '../features/current-task/render.js';
+import { renderChecks } from '../features/checks/render.js';
 import { renderLandscape } from '../features/landscape/render.js';
 import { escapeHtml } from '../shared/escape-html.js';
 
@@ -17,6 +18,14 @@ const PANEL_META = Object.freeze([
   ['character', 'Персонаж'], ['inventory', 'Ноша'], ['people', 'Люди'],
   ['route', 'Путь'], ['map', 'Карта'], ['journal', 'Летопись']
 ]);
+const TURN_PROGRESS_LABELS = Object.freeze({
+  accepted: 'Ход принят',
+  understanding_action: 'Разбираем действие',
+  resolving_world: 'Определяем последствия',
+  saving_result: 'Сохраняем результат',
+  preparing_screen: 'Готовим сцену',
+  recovering_saved_result: 'Восстанавливаем сохранённый результат'
+});
 
 export function renderScreen(screen, options = {}) {
   if (!screen) return renderLanding(options);
@@ -25,7 +34,7 @@ export function renderScreen(screen, options = {}) {
   const disabled = options.loading === true || !openingReady;
   const navigationDisabled = options.loading === true
     || options.openingStatus === 'pending';
-  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderCurrentTask(screen)}${renderProse(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft })}</section></main>${renderOverlay(screen, options)}</div>`;
+  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderCurrentTask(screen)}${renderProse(screen)}${renderChecks(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft, pendingTurn: options.pendingTurn })}</section></main>${renderOverlay(screen, options)}</div>`;
 }
 
 export function renderAppState(state) {
@@ -40,6 +49,8 @@ export function renderAppState(state) {
     openingStatus: state.opening?.status,
     newGameDraft: state.newGameDraft,
     turnDraft: state.turnDraft,
+    pendingTurn: state.pendingTurn,
+    turnProgress: state.turnProgress,
     llmSettings: state.llmSettings,
     llmSettingsDraft: state.llmSettingsDraft,
     llmSettingsMessage: state.llmSettingsMessage
@@ -73,11 +84,17 @@ function renderNewGame({ scenarios = [], newGameDraft = '', theme = 'light',
 }
 
 function renderContext(screen) {
-  const context = screen.visible_context ?? {};
+  const context = { ...screen.visible_context, ...screen.presentation_context };
+  const character = screen.panels?.character?.visible === true
+    ? screen.panels.character.data : null;
+  const identity = scalar(character?.name) == null ? null
+    : [scalar(character.name), scalar(character.role)].filter(Boolean).join(', ');
   const candidates = [
+    ['Вы', identity],
     ['Место', context.location_label ?? context.place],
     ['Дата', context.date_label ?? context.calendar],
     ['Время', context.time_label ?? context.day_part_label],
+    ['Ход занял', context.turn_elapsed_label],
     ['Погода', context.weather_label],
     ['Состояние', context.status_label]
   ];
@@ -144,8 +161,18 @@ function panelBody(kind, screen, options) {
 
 function renderStatus(state) {
   if (!state.error || state.opening?.status === 'failed') {
-    return state.status === 'loading'
-      ? '<div class="request-status" role="status">Загрузка…</div>' : '';
+    if (state.status !== 'loading') return '';
+    const progress = state.turnProgress;
+    if (!progress) return '<div class="request-status" role="status">Загрузка…</div>';
+    const seconds = Number.isInteger(progress.elapsed_seconds)
+      ? progress.elapsed_seconds : 0;
+    const phase = TURN_PROGRESS_LABELS[progress.phase] ?? 'Готовим ход';
+    const label = progress.commit_state === 'committed'
+      ? `Результат сохранён. ${phase}` : phase;
+    const wait = seconds >= 30
+      ? 'Дольше целевых 30 секунд; обработка продолжается. Точное время окончания неизвестно.'
+      : 'Точное время окончания неизвестно.';
+    return `<div class="request-status"><strong role="status" aria-live="polite" aria-atomic="true">${escapeHtml(label)}</strong><span aria-hidden="true">Прошло ${seconds} с</span><small>${escapeHtml(wait)}</small></div>`;
   }
   return `<div class="error error-toast" role="alert"><span>${escapeHtml(state.error.message)}</span><button type="button" data-dismiss-error aria-label="Закрыть">×</button></div>`;
 }

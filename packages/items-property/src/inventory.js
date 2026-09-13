@@ -7,6 +7,8 @@ import {
   inventoryItemIsCarried
 } from './inventory-mass.js';
 
+export { inventoryItemIsCarried } from './inventory-mass.js';
+
 const PHYSICAL_POSITIONS = new Set(['hands', 'worn', 'worn_quick', 'equipped', 'external', 'external_load']);
 
 export { calculateContainerUsage } from './inventory-container-usage.js';

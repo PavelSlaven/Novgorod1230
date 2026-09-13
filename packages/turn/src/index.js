@@ -24,7 +24,7 @@ import { resolveWorldProcessStep, validateWorldProcessStepPlan } from './world-p
 import { resolveSpatialSemanticDescriptor } from './spatial-semantic-remainder.js';
 import { resolveNpcOrdinarySemanticRemainder } from
   './npc-ordinary-semantic-remainder.js';
-export { isBackgroundNpcSemanticRemainderInScope,
+import { isBackgroundNpcSemanticRemainderInScope,
   resolveBackgroundNpcSemanticRemainder } from
   './turn-step-background-npc-remainder.js';
 import { isDomainStepOperation, isOrdinaryDiscoveryInScope } from
@@ -71,6 +71,8 @@ import { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate,
 import { spatialResult } from './stages/narration.js';
 import { requestWorldKnowledgeQueryPlan, resolveTurnStepWorldKnowledge } from
   './world-knowledge-grounding.js';
+import { createSpatialV3PerceptionBoundaryParticipant } from
+  './spatial-v3-perception-boundary-participant.js';
 
 export {
   createTurnWorkflowContext,
@@ -115,7 +117,8 @@ export {
   isDomainStepOperation,
   isOrdinaryDiscoveryInScope,
   requestWorldKnowledgeQueryPlan,
-  resolveTurnStepWorldKnowledge
+  resolveTurnStepWorldKnowledge,
+  createSpatialV3PerceptionBoundaryParticipant
 };
 export {
   TURN_PRIMARY_MODES,
@@ -153,6 +156,10 @@ export {
   runTurnStepLoop
 } from './turn-step-loop.js';
 export {
+  advancePostAppliedActorStep,
+  requireFactualEvents
+} from './post-applied-actor-step.js';
+export {
   resolveTurnStepExactTimeWindow,
   resolveTurnStepSemanticActivityTime
 } from
@@ -169,6 +176,8 @@ export {
   validateWorldProcessStepPlan,
   resolveSpatialSemanticDescriptor,
   resolveNpcOrdinarySemanticRemainder,
+  isBackgroundNpcSemanticRemainderInScope,
+  resolveBackgroundNpcSemanticRemainder,
   createOrdinaryMaterializationDiscoveryOwner
 };
 export {

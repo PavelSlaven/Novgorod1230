@@ -59,9 +59,10 @@ export function semanticNegotiationCommand({
       (precondition) =>
         tracePhase4PreconditionSatisfied(precondition, state, contracts)
     ),
-    prepareAvailability: async ({ state, playerInput, modeResolution }) => {
+    prepareAvailability: async ({ state, playerInput, modeResolution,
+      semanticOperation }) => {
       const selectedInteraction = selectedConversationOperation(
-        modeResolution, contracts);
+        { modeResolution, semanticOperation }, contracts);
       const targetActorRef = selectedInteraction.targetActorRef;
       const playerPlan = await prepareTracePhase4PlayerConversationPlan({
         state,
@@ -95,7 +96,8 @@ export function semanticNegotiationCommand({
       availability,
       checks,
       playerInput,
-      modeResolution
+      modeResolution,
+      semanticOperation
     }) => {
       const playerPlan = availability.causal_stages?.find(
         ({ schema }) => schema === 'rus.trace_player_conversation_plan_stage.v1'
@@ -144,7 +146,7 @@ export function semanticNegotiationCommand({
           temporalAdvanceOwner,
           revalidateStateVersion,
           targetActorRef: selectedConversationTarget(
-            modeResolution, contracts)
+            { modeResolution, semanticOperation }, contracts)
         });
       const combatInitialization = contracts.combatBindings == null
         ? null
@@ -175,23 +177,30 @@ export function semanticNegotiationCommand({
   });
 }
 
-function selectedConversationTarget(modeResolution, contracts) {
-  return selectedConversationOperation(modeResolution, contracts)
+function selectedConversationTarget(selection, contracts) {
+  return selectedConversationOperation(selection, contracts)
     .targetActorRef;
 }
 
-function selectedConversationOperation(modeResolution, contracts) {
-  const operation = [...(modeResolution?.decision_trace?.step_traces ?? [])]
-    .reverse()
-    .flatMap(({ approved_plan: plan }) => plan?.operations ?? [])
-    .find(({ op, target_actor_refs: targets }) => op === 'emit_interaction'
-      && targets?.length === 1);
+function selectedConversationOperation({ modeResolution,
+  semanticOperation }, contracts) {
+  const operation = semanticOperation
+    ?? [...(modeResolution?.decision_trace?.step_traces ?? [])]
+      .reverse()
+      .flatMap(({ approved_plan: plan }) => plan?.operations ?? [])
+      .find(({ op, target_actor_refs: targets }) => op === 'emit_interaction'
+        && targets?.length === 1);
   const selectedId = operation?.target_actor_refs[0];
   const selected = Object.entries(contracts.actors).find(
     ([, actor]) => actor.instance_id === selectedId);
-  return {
-    targetActorRef: selected?.[0] ?? 'ratsha_storehouse_helper'
-  };
+  if (operation?.op !== 'emit_interaction'
+      || operation.target_actor_refs?.length !== 1 || selected == null) {
+    throw Object.assign(new Error(
+      'Conversation requires one exact current NPC target.'), {
+      code: 'TRACE_M2_PHASE_4_TARGET_INVALID'
+    });
+  }
+  return { targetActorRef: selected[0] };
 }
 
 function semanticConsequence({ contracts, inputDigest, checkResult,

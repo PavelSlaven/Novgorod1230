@@ -1,35 +1,19 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
-import {
+import { addRationalMinutes,
   compareRationalMinutes,
   normalizeElapsedTime,
   normalizeGameTimestamp,
   subtractGameTimestamp
 } from '@rus/time-events-history';
-import { turnFailure } from './errors.js';
-
-const LEDGER_SCHEMA='turn_step_prepared_effect_ledger_v1',SLICE_SCHEMA='turn_step_prepared_effect_slice_v1';
-const EFFECT_KINDS = new Set(['domain_command', 'semantic_activity']);
-const RAW_KEYS = new Set([
-  'step_index', 'effect_kind', 'owner_ref', 'operation_ref', 'availability',
-  'consequence', 'time_update', 'body_update', 'body_state_before'
-]);
-const SLICE_KEYS = new Set([
-  'version', 'schema', 'ordinal', 'step_index', 'effect_kind', 'owner_ref',
-  'operation_ref', 'availability', 'consequence', 'time_update',
-  'body_update', 'body_state_before_digest', 'projection_before_digest',
-  'projection_after_digest', 'previous_slice_digest', 'slice_digest'
-]);
-const LEDGER_KEYS = new Set([
-  'version', 'schema', 'root_turn_id', 'committed_state_version', 'slices',
-  'ledger_digest'
-]);
+import { LEDGER_KEYS, LEDGER_SCHEMA, SLICE_SCHEMA, advanceWorkingClock,
+  assertExactWindow, digest, exactKeys, exactMinutes, invalid, plain,
+  rationalAsNumber, requireObject, requirePreparedRequest, requireRawEffect,
+  same, text, validateSlice } from './turn-step-prepared-effect-validation.js';
 export function buildTurnStepPreparedChainContext({
-  priorEffectCount,
-  currentClock,
-  currentBodyState
+  priorEffectCount, currentClock, currentBodyState
 }) {
   if (!Number.isSafeInteger(priorEffectCount) || priorEffectCount < 0
-      || priorEffectCount > 2 || !plain(currentClock)
+      || !plain(currentClock)
       || !plain(currentBodyState)) {
     invalid('Prepared effect chain context is invalid.');
   }
@@ -95,6 +79,14 @@ export async function orchestrateTurnStepPreparedEffect({
   const { prepared_effect_request: _request, ...result } = applied;
   const advancedProjection = advanceWorkingClock(
     result.working_projection, timeUpdate.clock_after);
+  const interrupted = candidate.effect_kind === 'semantic_activity'
+    && compareRationalMinutes(
+      normalizeElapsedTime(timeUpdate.exact_elapsed).exact_minutes,
+      normalizeElapsedTime({ exact_minutes: {
+        numerator: String(candidate.consequence.duration_minutes),
+        denominator: '1'
+      } }).exact_minutes
+    ) < 0;
   const workingProjection = projectionOwner == null
     ? advancedProjection
     : await projectionOwner(deepFreeze({
@@ -105,6 +97,13 @@ export async function orchestrateTurnStepPreparedEffect({
       }));
   return deepFreeze({
     ...structuredClone(result),
+    interrupted,
+    player_response_boundary: result.player_response_boundary === true
+      || (timeUpdate.temporal_results ?? []).some((temporal) =>
+        temporal.temporal_status === 'paused'
+        || temporal.trace?.stopped_after_current_batch === true
+        || temporal.visible_package_candidate?.player_safe_interruption != null
+        || temporal.visible_package_candidate?.visible_payload?.player_safe_interruption != null),
     local_fire_atomic_write_plans:[...structuredClone(result
       .local_fire_atomic_write_plans??[]),...structuredClone(timeUpdate
       .local_fire_atomic_write_plans??[])],
@@ -114,9 +113,7 @@ export async function orchestrateTurnStepPreparedEffect({
   });
 }
 export function buildTurnStepPreparedEffectLedger({
-  rootTurnId,
-  committedStateVersion,
-  effects
+  rootTurnId, committedStateVersion, effects
 }) {
   if (!text(rootTurnId)
       || !Number.isSafeInteger(committedStateVersion)
@@ -221,17 +218,19 @@ export function requireTurnStepPreparedEffectLedger(value) {
   }
   return deepFreeze(ledger);
 }
-
 export function buildTurnStepPreparedTimeUpdate(value) {
   const ledger = requireTurnStepPreparedEffectLedger(value);
   const first = ledger.slices[0];
   const last = ledger.slices.at(-1);
-  const duration = ledger.slices.reduce((sum, slice) =>
-    sum + requireIntegralDuration(slice.consequence.duration_minutes), 0);
+  const exactElapsed = ledger.slices.reduce((sum, slice) =>
+    addRationalMinutes(
+      sum,
+      normalizeElapsedTime(slice.time_update.exact_elapsed).exact_minutes
+    ), { numerator: '0', denominator: '1' });
   assertExactWindow({
     clockBefore: first.time_update.clock_before,
     clockAfter: last.time_update.clock_after,
-    exactElapsed: exactMinutes(duration)
+    exactElapsed: { exact_minutes: exactElapsed }
   }, 'prepared effect aggregate');
   return deepFreeze({
     version: 2,
@@ -239,7 +238,7 @@ export function buildTurnStepPreparedTimeUpdate(value) {
     owner: '@rus/time-events-history',
     clock_before: structuredClone(first.time_update.clock_before),
     clock_after: structuredClone(last.time_update.clock_after),
-    exact_elapsed: exactMinutes(duration),
+    exact_elapsed: { exact_minutes: exactElapsed },
     nearest_boundary: null,
     boundary_trace: {
       owner: 'turn_step_prepared_effect_ledger',
@@ -256,14 +255,10 @@ export function buildTurnStepPreparedTimeUpdate(value) {
     prepared_effect_ledger: structuredClone(ledger)
   });
 }
-
 export function buildTurnStepPreparedBodyUpdate(value) {
   const ledger = requireTurnStepPreparedEffectLedger(value);
   const applied = ledger.slices.filter(
     (slice) => slice.body_update.applied === true);
-  if (applied.length > 1) {
-    invalid('Multiple prepared body owners require an explicit composite owner.');
-  }
   const lastState = ledger.slices.at(-1).body_update.state_after;
   if (applied.length === 0) {
     return deepFreeze({
@@ -276,224 +271,53 @@ export function buildTurnStepPreparedBodyUpdate(value) {
       prepared_effect_ledger_digest: ledger.ledger_digest
     });
   }
+  if (applied.length === 1) {
+    return deepFreeze({
+      ...structuredClone(applied[0].body_update),
+      state_after: structuredClone(lastState),
+      prepared_effect_ledger_digest: ledger.ledger_digest
+    });
+  }
+  const updates = applied.map(({ body_update: update }) => update);
+  const first = updates[0];
+  const proposal = structuredClone(first.proposal);
+  if (updates.some((update) => update.owner !== first.owner
+      || update.proposal?.profile_ref !== proposal.profile_ref
+      || !same(update.proposal?.profile_pin, proposal.profile_pin)
+      || update.proposal?.selection_policy !== proposal.selection_policy
+      || update.proposal?.rng_consumption !== proposal.rng_consumption
+      || !Array.isArray(update.proposal?.component_proposals))) {
+    invalid('Prepared body updates require one existing composite owner.');
+  }
+  proposal.component_proposals = updates.flatMap((update) =>
+    structuredClone(update.proposal.component_proposals));
+  proposal.exact_deltas = Object.fromEntries(
+    Object.keys(proposal.exact_deltas).map((metric) => [metric,
+      proposal.component_proposals.reduce((sum, component) =>
+        sum + Number(component.exact_deltas?.[metric] ?? 0), 0)]));
   return deepFreeze({
-    ...structuredClone(applied[0].body_update),
+    ...structuredClone(first), proposal,
     state_after: structuredClone(lastState),
     prepared_effect_ledger_digest: ledger.ledger_digest
   });
 }
-
 export function bindTurnStepPreparedConsequence(value, ledgerValue) {
   const ledger = requireTurnStepPreparedEffectLedger(ledgerValue);
+  const consequence = structuredClone(requireObject(value, 'consequence'));
+  for (const slice of ledger.slices) {
+    if (slice.effect_kind !== 'semantic_activity') continue;
+    for (const [key, seed] of Object.entries(slice.consequence.visible_seed ?? {})) {
+      if (seed?.kind === 'semantic_activity' && consequence.visible_seed?.[key] != null)
+        consequence.visible_seed[key].duration_minutes = rationalAsNumber(
+          slice.time_update.exact_elapsed.exact_minutes
+        );
+    }
+  }
   return deepFreeze({
-    ...structuredClone(requireObject(value, 'consequence')),
+    ...consequence,
+    duration_minutes: rationalAsNumber(
+      buildTurnStepPreparedTimeUpdate(ledger).exact_elapsed.exact_minutes
+    ),
     prepared_effect_ledger_digest: ledger.ledger_digest
   });
-}
-
-function requireRawEffect(value) {
-  const raw = requireObject(value, 'prepared effect');
-  if (!exactKeys(raw, RAW_KEYS)
-      || !Number.isSafeInteger(raw.step_index)
-      || raw.step_index < 1 || raw.step_index > 8
-      || !EFFECT_KINDS.has(raw.effect_kind)
-      || !text(raw.owner_ref) || !text(raw.operation_ref)
-      || (raw.effect_kind === 'domain_command')
-        !== (raw.availability != null)
-      || !plain(raw.consequence)
-      || !plain(raw.time_update)
-      || raw.time_update.schema !== 'turn_time_update'
-      || !validBodyUpdate(raw.body_update)
-      || !plain(raw.body_state_before)) {
-    invalid('Prepared effect has an invalid exact contract.');
-  }
-  validateEffectState(raw);
-  return raw;
-}
-
-function requirePreparedRequest(value) {
-  const request = requireObject(value, 'prepared effect request');
-  const keys = new Set([
-    'effect_kind', 'owner_ref', 'operation_ref', 'availability', 'consequence'
-  ]);
-  if (!exactKeys(request, keys) || !EFFECT_KINDS.has(request.effect_kind)
-      || !text(request.owner_ref) || !text(request.operation_ref)
-      || (request.effect_kind === 'domain_command')
-        !== (request.availability != null)
-      || !plain(request.consequence)) {
-    invalid('Prepared effect request has an invalid exact contract.');
-  }
-  return request;
-}
-
-function advanceWorkingClock(value, clockAfter) {
-  const projection = requireObject(value, 'working projection');
-  return {
-    ...projection,
-    clock: structuredClone(clockAfter),
-    ...(plain(projection.clock_weather_light) ? {
-      clock_weather_light: {
-        ...projection.clock_weather_light,
-        clock: structuredClone(clockAfter)
-      }
-    } : {})
-  };
-}
-
-function validateSlice(slice, {
-  ordinal,
-  rootTurnId,
-  committedStateVersion,
-  previous
-}) {
-  if (!exactKeys(slice, SLICE_KEYS)
-      || slice.version !== 1
-      || slice.schema !== SLICE_SCHEMA
-      || slice.ordinal !== ordinal
-      || !Number.isSafeInteger(slice.step_index)
-      || slice.step_index < 1 || slice.step_index > 8
-      || (previous != null && slice.step_index < previous.step_index)
-      || !EFFECT_KINDS.has(slice.effect_kind)
-      || !text(slice.owner_ref) || !text(slice.operation_ref)
-      || (slice.effect_kind === 'domain_command')
-        !== (slice.availability != null)
-      || !plain(slice.consequence)
-      || !plain(slice.time_update)
-      || slice.time_update.schema !== 'turn_time_update'
-      || !validBodyUpdate(slice.body_update)
-      || ![slice.body_state_before_digest,
-        slice.projection_before_digest, slice.projection_after_digest,
-        slice.previous_slice_digest, slice.slice_digest].every(digest)) {
-    invalid('Prepared effect slice has an invalid exact contract.', {
-      ordinal
-    });
-  }
-  validateEffectState(slice);
-  const expectedPrevious = previous?.slice_digest ?? sha256({
-    schema: 'turn_step_prepared_effect_chain_seed_v1',
-    root_turn_id: rootTurnId,
-    committed_state_version: committedStateVersion,
-    projection_before_digest: slice.projection_before_digest,
-    body_state_before_digest: slice.body_state_before_digest,
-    clock_before: slice.time_update.clock_before
-  });
-  const { slice_digest: actual, ...payload } = slice;
-  if (slice.previous_slice_digest !== expectedPrevious
-      || (previous != null
-        && (slice.body_state_before_digest
-            !== sha256(previous.body_update.state_after)
-          || !same(slice.time_update.clock_before,
-            previous.time_update.clock_after)))
-      || sha256(payload) !== actual) {
-    invalid('Prepared effect slice chain or digest is invalid.', { ordinal });
-  }
-}
-
-function validateEffectState(effect) {
-  const duration = requireIntegralDuration(
-    effect.consequence.duration_minutes);
-  assertExactWindow({
-    clockBefore: effect.time_update.clock_before,
-    clockAfter: effect.time_update.clock_after,
-    exactElapsed: effect.time_update.exact_elapsed
-  }, `prepared effect ${effect.step_index}`);
-  const exact = normalizeElapsedTime(effect.time_update.exact_elapsed);
-  if (exact.exact_minutes.denominator !== '1'
-      || exact.exact_minutes.numerator !== String(duration)) {
-    invalid('Prepared effect consequence and exact time differ.', {
-      step_index: effect.step_index
-    });
-  }
-  if (effect.body_update.applied !== true
-      && effect.body_state_before_digest != null
-      && effect.body_state_before_digest
-        !== sha256(effect.body_update.state_after)) {
-    invalid('A non-applied body slice changed body state.', {
-      step_index: effect.step_index
-    });
-  }
-  if (Object.hasOwn(effect, 'body_state_before')
-      && effect.body_update.applied !== true
-      && !same(effect.body_state_before, effect.body_update.state_after)) {
-    invalid('A non-applied body effect changed body state.', {
-      step_index: effect.step_index
-    });
-  }
-}
-
-function validBodyUpdate(value) {
-  return plain(value)
-    && value.schema === 'turn_body_update'
-    && typeof value.applied === 'boolean'
-    && plain(value.state_after)
-    && (value.applied === true ? plain(value.proposal) : value.proposal === null);
-}
-
-function assertExactWindow({ clockBefore, clockAfter, exactElapsed }, label) {
-  try {
-    const before = normalizeGameTimestamp(clockBefore);
-    const after = normalizeGameTimestamp(clockAfter);
-    const elapsed = normalizeElapsedTime(exactElapsed);
-    const actual = subtractGameTimestamp(after, before);
-    if (compareRationalMinutes(actual, elapsed.exact_minutes) !== 0) {
-      invalid(`${label} exact elapsed differs from its clock window.`);
-    }
-  } catch (cause) {
-    if (cause?.code === 'TURN_STEP_PREPARED_EFFECT_INVALID') throw cause;
-    invalid(`${label} has an invalid exact clock window.`, {
-      cause: cause?.message
-    });
-  }
-}
-
-function requireIntegralDuration(value) {
-  const number = Number(value ?? 0);
-  if (!Number.isSafeInteger(number) || number < 0) {
-    invalid('Prepared effect duration must be a non-negative integer.');
-  }
-  return number;
-}
-
-function exactMinutes(value) {
-  return { exact_minutes: { numerator: String(value), denominator: '1' } };
-}
-
-function requireObject(value, label) {
-  if (!plain(value)) invalid(`${label} must be a JSON object.`);
-  try {
-    return structuredClone(value);
-  } catch {
-    invalid(`${label} must be detached JSON data.`);
-  }
-}
-
-function exactKeys(value, keys) {
-  return plain(value)
-    && Object.keys(value).length === keys.size
-    && Object.keys(value).every((key) => keys.has(key));
-}
-
-function same(left, right) {
-  return sha256(left) === sha256(right);
-}
-
-function plain(value) {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
-
-function text(value) {
-  return typeof value === 'string' && value.trim() === value
-    && value.length > 0;
-}
-
-function digest(value) {
-  return typeof value === 'string' && /^[a-f0-9]{64}$/u.test(value);
-}
-
-function invalid(message, details = {}) {
-  throw turnFailure(
-    'TURN_STEP_PREPARED_EFFECT_INVALID',
-    message,
-    details
-  );
 }

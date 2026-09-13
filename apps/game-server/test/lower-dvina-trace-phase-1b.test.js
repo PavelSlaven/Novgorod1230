@@ -16,6 +16,8 @@ import {
 import { hash } from '../src/runtime/first-playable/shared.js';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
+import { assertOpeningPublication } from
+  './lower-dvina-trace-opening-publication-assertions.js';
 import {
   canonicalDigest,
   MATERIALIZER_VERSION,
@@ -161,7 +163,8 @@ test('historical Phase 1A commits recover through their pinned publications', as
       const requestId = `historical-phase-1a-v${revision + 1}-orphan`;
       const partyId = `party:${hash(requestId).slice(0, 24)}`;
       const pub = await loadLowerDvinaTracePhase1BPublication({
-        phase1AManifestDigest: historical.phase_1a_manifest_digest
+        phase1AManifestDigest: historical.phase_1a_manifest_digest,
+        scenarioDefinitionRevision: historical.scenario_definition_revision
       });
       const binding = pub.binding;
       const world = binding.world_compatibility;
@@ -201,6 +204,9 @@ test('historical Phase 1A commits recover through their pinned publications', as
     });
   }
 });
+
+test('opening publication v28 applies to new parties and preserves v27 replay',
+  () => assertOpeningPublication({ fixture, createRuntime, release }));
 
 test('trace replay bypasses publication', async () => {
   const f = fixture();
@@ -403,7 +409,7 @@ test('acknowledgement rejects a tampered trace marker before mutation', async ()
   assert.equal(session.delivery_ack_result, null);
 });
 
-test('initial session read does not impose an obsolete whole-turn deadline', async () => {
+test('initial session read remains inside the six-minute turn deadline', async () => {
   let now = 0;
   let exhaustRead = false;
   const budget = createLlmTurnBudget({ now: () => now });
@@ -411,7 +417,7 @@ test('initial session read does not impose an obsolete whole-turn deadline', asy
   const f = fixture({ onLoadSession({ options }) {
     if (!exhaustRead) return;
     assert.equal(options.turnBudget, budget);
-    now = 30_000;
+    now = 359_999;
   } });
   const opening = await createRuntime(f).startNewGame({
     scenario_id: 'lower_dvina_trace_v1', request_id: 'deadline-opening'
@@ -428,7 +434,7 @@ test('initial session read does not impose an obsolete whole-turn deadline', asy
   });
   assert.equal(submitted, 1);
   assert.equal(diagnostics.report({ party_id: opening.party_id,
-    request_id: 'deadline-initial-read' }).turn_duration_ms, 30_000);
+    request_id: 'deadline-initial-read' }).turn_duration_ms, 359_999);
 });
 
 test('first acknowledgement is immutable and exact replay performs no write', async () => {
@@ -498,7 +504,7 @@ function createRuntime(f, traceTurnRuntime = null) {
   return createLowerDvinaTracePublicRuntime({
     partyPool: { connect() {} },
     committer: { commit() {} },
-    release,
+    release: f.release ?? release,
     runtimeCatalogPin,
     idFactory: () => 'fixed-id',
     now: () => '2026-07-29T00:00:00.000Z',
@@ -679,6 +685,11 @@ function fixture({
       events.push('loadInternal');
       return {
         party_id: partyId,
+        player: { instance_id: visible.player.character_id, dossier: {
+          identity: { name: visible.player.name },
+          social_status: structuredClone(visible.player.social_status) } },
+        body: structuredClone(visible.body), timestamp: structuredClone(visible.timestamp),
+        position: structuredClone(visible.position), items: [], containers: [],
         request_identity: structuredClone(lastRequest)
       };
     },

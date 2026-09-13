@@ -1,13 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createTurnStepDomainOwnerPreflight } from
-  '../src/turn-step-admission.js';
-import { requestTurnStepPlanWithRepair } from
-  '../src/turn-step-plan-repair.js';
-import { createTurnStepExecutionRegistry, runTurnStepLoop } from
-  '../src/turn-step-loop.js';
+import { createTurnStepDomainOwnerPreflight } from '../src/turn-step-admission.js';
+import { requestTurnStepPlanWithRepair } from '../src/turn-step-plan-repair.js';
+import { createTurnStepExecutionRegistry, runTurnStepLoop } from '../src/turn-step-loop.js';
 import { createTurnCommandRegistry, runTurnWorkflow } from '../src/index.js';
 import { createServices, input as workflowInput, turnStepPlan } from './turn-workflow-fixture.js';
+import { activity, body, clock } from
+  './turn-step-domain-owner-preflight-fixture.js';
 
 const bands = [
   'clean_success', 'success', 'success_with_cost',
@@ -366,12 +365,15 @@ test('prepared followups bind each available precursor',
 
 test('prepared continuation recomputes operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
+  let ownerRawText = null;
   const { services } = createServices([], { command: {
     matches: () => false,
-    availability: ({ committed_state: state }) => ({ version: 1,
-      schema: 'turn_availability_decision',
-      status: state.after_prepare ? 'blocked' : 'available',
-      can_attempt: !state.after_prepare, reasons: [], check_requests: [] }),
+    availability: ({ committed_state: state, semanticPlan, playerInput }) => {
+      if (semanticPlan != null) ownerRawText = playerInput.raw_text;
+      return { version: 1, schema: 'turn_availability_decision',
+        status: state.after_prepare ? 'blocked' : 'available',
+        can_attempt: !state.after_prepare, reasons: [], check_requests: [] };
+    },
     consequence: () => ({ version: 1, schema: 'turn_consequence_package',
       status: 'resolved', duration_minutes: 1, visible_seed: {}, hidden_update: {},
       state_changes: [], suggested_actions: [] }),
@@ -404,21 +406,26 @@ test('prepared continuation recomputes operation DTOs', async () => {
     applied: false, proposal: null, state_after: context.current_body_state
   });
   const requests = [];
+  const suffix = 'затем осматриваюсь';
   services.turnStepModel = (request) => {
     requests.push(request);
     if (request.step_index === 2) throw new Error('second request captured');
     return turnStepPlan(request, { resolution: 'domain_request',
       goal_result: 'pending',
+      interpretation: { player_goal: request.root_player_action,
+        grounded_attempt: 'прошу спутника помочь', adaptation: 'literal' },
       activity: { owner: 'domain', duration_class: null, effort: null },
       operations: [dto], continuation: {
-        remaining_intent: 'осмотреться', depends_on_refs: [] } });
+        remaining_intent: suffix, depends_on_refs: [] } });
   };
-  await assert.rejects(() => runTurnWorkflow(workflowInput(), services),
+  await assert.rejects(() => runTurnWorkflow({ ...workflowInput(),
+    raw_text: `прошу спутника помочь, ${suffix}` }, services),
     /second request captured/u);
+  assert.equal(ownerRawText, 'прошу спутника помочь');
   assert.deepEqual(requests.map((request) => request.available_domain_operations), [[dto], []]);
 });
 
-test('direct continuation drops initial operation DTOs', async () => {
+test('direct continuation retains non-conversation operation DTOs', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1',
     activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const { services } = createServices([], { command: { matches: () => false,
@@ -442,7 +449,7 @@ test('direct continuation drops initial operation DTOs', async () => {
   await assert.rejects(() => runTurnWorkflow(workflowInput(), services),
     /second request captured/u);
   assert.deepEqual(requests.map((request) => request.available_domain_operations),
-    [[dto], []]);
+    [[dto], [dto]]);
 });
 
 test('direct continuation keeps conversation owner', async () => {
@@ -475,19 +482,6 @@ test('direct continuation keeps conversation owner', async () => {
   assert.deepEqual(requests.map((request) => request.available_domain_operations),
     [[dto], [dto]]);
 });
-
-function clock(value) {
-  return { whole_minutes: String(value), subminute_numerator: '0', subminute_denominator: '1' };
-}
-
-function body() {
-  return { health: 100, satiety: 100, energy: 100, active_conditions: [] };
-}
-
-function activity(description) {
-  return { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'wait',
-    target_refs: [], description };
-}
 
 test('invalid structure fails before owner resolution', async () => {
   let calls = 0;
@@ -552,6 +546,7 @@ test('preflight delegates semantic grounding',
     prepared_chain_context: null };
     await assert.rejects(validate(value), expected);
     assert.deepEqual(received, { plan: value.plan, request: value.request,
+      allow_speech_metadata_projection: false,
       resolved_domain_operations: [{ path: '$.operations.0',
         owner_kind: 'external' }] });
   });

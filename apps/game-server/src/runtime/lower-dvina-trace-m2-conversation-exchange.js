@@ -45,7 +45,6 @@ import {
 import { projectM2ConversationExecutionResult } from
   './lower-dvina-trace-m2-conversation-result.js';
 import { applyPersistedPlayerPlan } from './lower-dvina-trace-m2-conversation-player-resume.js';
-
 export function createM2ConversationContext(input) {
   const stateVersion = input.state.party_state?.state_version;
   if (!Number.isSafeInteger(stateVersion) || stateVersion < 1
@@ -64,7 +63,15 @@ export function createM2ConversationContext(input) {
     );
   }
   const targetRef = npcRef(input.targetActor.instance_id);
-  const actualNpcActors = canonicalActors(input.actualNpcActors);
+  const presentNpcIds = new Set(canonicalActors(input.state.npcs)
+    .filter((npc) => npcAtPlayerPosition(npc, input.state.position))
+    .map(({ instance_id: instanceId }) => instanceId));
+  const suppliedNpcActors = canonicalActors(input.actualNpcActors);
+  const resuming = input.state.pending_npc_conversation_execution != null
+    || input.state.pending_player_conversation_execution != null;
+  const actualNpcActors = resuming ? suppliedNpcActors
+    : suppliedNpcActors.filter(
+      ({ instance_id: instanceId }) => presentNpcIds.has(instanceId));
   if (!actualNpcActors.some(
     ({ instance_id: instanceId }) => instanceId === targetRef.entity_id
   )) {
@@ -124,6 +131,13 @@ export function createM2ConversationContext(input) {
         input.state.party_state.turn_number + 1
       )
   };
+}
+function npcAtPlayerPosition(npc, position) {
+  return typeof npc?.instance_id === 'string'
+    && ((typeof npc.location_profile_ref === 'string'
+        && npc.location_profile_ref === position?.location_ref)
+      || (typeof npc.anchor_id === 'string'
+        && npc.anchor_id === position?.g5_anchor_id));
 }
 export async function executeM2ConversationExchange(context, {
   initialNpcDecision = null

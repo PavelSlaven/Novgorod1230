@@ -29,7 +29,9 @@ export function createTurnStepExecutionRegistry({
       return directHandlers.get(operation?.op) ?? null;
     },
     domain(operation) {
-      return domainHandlers.get(operation?.op) ?? null;
+      const handler = domainHandlers.get(operation?.op);
+      return handler && (typeof handler.supports !== 'function'
+        || handler.supports(operation)) ? handler : null;
     },
     semanticActivity() {
       return applySemanticActivity;

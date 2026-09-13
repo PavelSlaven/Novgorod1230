@@ -1,4 +1,5 @@
 import { sha256 } from '@rus/kernel';
+import { validateNarrationFlowResult } from '@rus/narration';
 import {
   AVAILABILITY_STATUSES,
   TURN_ALLOWED_CHECKS,
@@ -80,16 +81,9 @@ export function validateConsequencePackage(value) {
 }
 
 export function validateNarrationResult(value) {
-  const errors = [];
-  if (!plain(value)) return fail('narration result must be an object');
-  if (value.schema !== 'narration_flow_result') errors.push('schema must be narration_flow_result');
-  if (value.status !== 'approved' || value.pass !== true) errors.push('narration flow must be approved');
-  if (!plain(value.approved_output)) errors.push('approved_output must be an object');
-  else {
-    if (value.approved_output.schema !== 'narration_output') errors.push('approved_output schema must be narration_output');
-    requiredText(errors, value.approved_output.prose, 'approved_output.prose');
-  }
-  if (!plain(value.final_audit) || value.final_audit.pass !== true) errors.push('final_audit must approve the output');
+  const errors = [...validateNarrationFlowResult(value).errors];
+  if (value?.status !== 'approved' || value?.pass !== true) errors.push('narration flow must be approved');
+  if (value?.surface !== 'turn') errors.push('turn requires turn narration surface');
   return result(errors);
 }
 

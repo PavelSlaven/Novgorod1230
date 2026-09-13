@@ -1,0 +1,366 @@
+{
+  "description": "Historical diagnostic observations associated with PR93 code baseline; public-field extract, not a full private trace or fresh qualification.",
+  "reported_with_code_baseline": "fea106a80290c270443eb64336bfc41484274f8a",
+  "report_date": "2026-09-11",
+  "source": "Private server turn.completed records and existing safe paired-role report; fields selected for publication.",
+  "limitations": [
+    "Server duration is not browser submit-to-ready timing.",
+    "Known cases are regressions, not sealed holdout.",
+    "Recorded ready or model PASS is not independent acceptance.",
+    "No raw prompts, credentials, operator endpoints, party identifiers or private reasoning are included."
+  ],
+  "gemma_gameplay_cases": [
+    {
+      "input": "Зову Онисима и длинной ветвью осторожно прощупываю воду между обломками.",
+      "server_turn_duration_ms": 78687,
+      "browser_e2e_duration_ms": null,
+      "browser_e2e_status": "not_measured",
+      "player_safe_visible_changes": [
+        "Вы произнесли: «Онисим!» Прошла 1 минута.",
+        "Обнаружено: «длинная ветвь».",
+        "Прошло 5 минут. Вы выполнили попытку: «и длинной ветвью осторожно прощупываю воду между обломками.». Результат наблюдения не установлен."
+      ],
+      "optional_sensory_details": [
+        "Мокрый песок и ивняк тянутся вдоль берега реки.",
+        "У самой воды лежат разбитые доски и обрывки снастей.",
+        "У воды тянется полоса камыша и осоки; среди обломков лежат вынесенные течением ветви.",
+        "Над открытым берегом тянется низкое сырое небо.",
+        "Между мокрым песком и ивняком начинается приметная тропа; за кустами её продолжения не видно.",
+        "У самого берега слышен плеск воды."
+      ],
+      "final_prose": "Вы произнесли: «Онисим!» В течение одной минуты над берегом крушения тянется низкое сырое небо, а у самой воды слышен плеск. Среди обломков, разбитых досок и обрывков снастей, лежащих у кромки реки, вы обнаруживаете длинную ветвь. Спустя пять минут вы осторожно прощупываете этой ветвью воду между обломками, но что скрывается под поверхностью, остается неизвестным.",
+      "recorded_screen_status": "ready",
+      "waterfall": [
+        {
+          "role": "world_knowledge_query_planner",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 6566,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 6378,
+            "output_tokens": 206,
+            "total_tokens": 6584
+          }
+        },
+        {
+          "role": "turn_step_planner",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 11546,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 13023,
+            "output_tokens": 310,
+            "total_tokens": 13333
+          }
+        },
+        {
+          "role": "turn_step_grounding_auditor",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 2010,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 558,
+            "output_tokens": 60,
+            "total_tokens": 618
+          }
+        },
+        {
+          "role": "world_knowledge_query_planner",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 5685,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 5822,
+            "output_tokens": 203,
+            "total_tokens": 6025
+          }
+        },
+        {
+          "role": "turn_step_planner",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 10383,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 12423,
+            "output_tokens": 196,
+            "total_tokens": 12619
+          }
+        },
+        {
+          "role": "turn_step_grounding_auditor",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 3127,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 2503,
+            "output_tokens": 44,
+            "total_tokens": 2547
+          }
+        },
+        {
+          "role": "world_knowledge_query_planner",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 6163,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 6112,
+            "output_tokens": 186,
+            "total_tokens": 6298
+          }
+        },
+        {
+          "role": "ordinary_materialization",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 6879,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 5352,
+            "output_tokens": 313,
+            "total_tokens": 5665
+          }
+        },
+        {
+          "role": "world_knowledge_query_planner",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 6464,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 5886,
+            "output_tokens": 229,
+            "total_tokens": 6115
+          }
+        },
+        {
+          "role": "turn_step_planner",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 6043,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 12510,
+            "output_tokens": 197,
+            "total_tokens": 12707
+          }
+        },
+        {
+          "role": "turn_step_grounding_auditor",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 3384,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 2982,
+            "output_tokens": 15,
+            "total_tokens": 2997
+          }
+        },
+        {
+          "role": "gameplay_narrator",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 3157,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 1634,
+            "output_tokens": 122,
+            "total_tokens": 1756
+          }
+        },
+        {
+          "role": "gameplay_narrator_auditor",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 5064,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 2700,
+            "output_tokens": 287,
+            "total_tokens": 2987
+          }
+        }
+      ]
+    },
+    {
+      "input": "Снова осторожно прощупываю длинной ветвью воду между обломками.",
+      "server_turn_duration_ms": 30563,
+      "browser_e2e_duration_ms": null,
+      "browser_e2e_status": "not_measured",
+      "player_safe_visible_changes": [
+        "Вы в течение 1 минуты выполняли попытку: «Снова осторожно прощупываю длинной ветвью воду между обломками.». Результат наблюдения не установлен."
+      ],
+      "optional_sensory_details": [
+        "Мокрый песок и ивняк тянутся вдоль берега реки.",
+        "У самой воды лежат разбитые доски и обрывки снастей.",
+        "У воды тянется полоса камыша и осоки; среди обломков лежат вынесенные течением ветви.",
+        "Над открытым берегом тянется низкое сырое небо.",
+        "Между мокрым песком и ивняком начинается приметная тропа; за кустами её продолжения не видно.",
+        "У самого берега слышен плеск воды."
+      ],
+      "final_prose": "Вы в течение одной минуты осторожно прощупываете длинной ветвью воду между обломками на берегу крушения. У самой воды лежат разбитые доски и обрывки снастей, а среди них — вынесенные течением ветви. Слышен плеск воды, над открытым берегом тянется низкое сырое небо, и вдоль кромки воды расстилается полоса камыша и осоки. Мокрый песок и ивняк тянутся вдоль берега, а за кустами теряется приметная тропа, начинающаяся от песка.",
+      "recorded_screen_status": "ready",
+      "waterfall": [
+        {
+          "role": "world_knowledge_query_planner",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 6354,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 6421,
+            "output_tokens": 204,
+            "total_tokens": 6625
+          }
+        },
+        {
+          "role": "turn_step_planner",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 11776,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 13323,
+            "output_tokens": 301,
+            "total_tokens": 13624
+          }
+        },
+        {
+          "role": "turn_step_grounding_auditor",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 3097,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 3486,
+            "output_tokens": 15,
+            "total_tokens": 3501
+          }
+        },
+        {
+          "role": "gameplay_narrator",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 3630,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 1639,
+            "output_tokens": 148,
+            "total_tokens": 1787
+          }
+        },
+        {
+          "role": "gameplay_narrator_auditor",
+          "model": "gemma-4-26b-a4b-it",
+          "duration_ms": 4399,
+          "status": "ok",
+          "repair": false,
+          "usage": {
+            "input_tokens": 2738,
+            "output_tokens": 214,
+            "total_tokens": 2952
+          }
+        }
+      ]
+    }
+  ],
+  "qwen_pair": {
+    "scope": "two sequential exact-message role probes; model identity changed only",
+    "service_reasoning": "off",
+    "results": [
+      {
+        "role": "gameplay_narrator",
+        "duration_ms": 3233,
+        "model": "qwen3.8-27b-uncensored",
+        "http_status": 200,
+        "finish_reason": "stop",
+        "json_valid": true,
+        "usage": {
+          "input_tokens": 1607,
+          "output_tokens": 44,
+          "total_tokens": 1651
+        },
+        "output": {
+          "prose": "Вы в течение минуты осторожно прощупываете длинной ветвью воду между обломками. Результат наблюдения пока не установлен.",
+          "action_options": [],
+          "used_references": [
+            "visible_change_1"
+          ]
+        },
+        "retries": 0
+      },
+      {
+        "role": "gameplay_narrator_auditor",
+        "duration_ms": 10081,
+        "model": "qwen3.8-27b-uncensored",
+        "http_status": 200,
+        "finish_reason": "stop",
+        "json_valid": true,
+        "usage": {
+          "input_tokens": 2657,
+          "output_tokens": 269,
+          "total_tokens": 2926
+        },
+        "output": {
+          "reviewed_segments": [
+            "s1",
+            "s2",
+            "s3",
+            "s4"
+          ],
+          "failure_checks": {
+            "current_beat_buried": [],
+            "elapsed_as_service_report": [],
+            "static_context_dump": [],
+            "weak_literary_composition": [],
+            "unsupported_response_or_continuation": []
+          },
+          "coverage": {
+            "visible_change_1": [
+              "s1"
+            ]
+          },
+          "artistic_verdict": "pass",
+          "technical_verdict": "pass",
+          "pass": true,
+          "concerns": [],
+          "evidence": [
+            "The required change (1-minute probing attempt with unestablished result) is fully covered by s1, which integrates the duration and action without asserting a specific outcome.",
+            "Sensory details in s2, s3, and s4 are selected from the optional support and rendered as a coherent scene without dumping all available facts or adding unsupported elements.",
+            "The prose maintains the second-person perspective and literary style, avoiding system-report language or metadata recitation."
+          ]
+        },
+        "retries": 0
+      }
+    ],
+    "independent_assessment": {
+      "verdict": "block",
+      "writer": {
+        "required_propositions": 2,
+        "required_propositions_conveyed": 2,
+        "selected_optional_sensory_facts": 0,
+        "available_optional_sensory_facts": 6,
+        "output_contract_valid": false,
+        "output_contract_errors": [
+          "used_references must be empty until visible_context defines reference vocabulary"
+        ],
+        "service_wording_repeated": true
+      },
+      "frozen_bad_auditor": {
+        "expected_pass": false,
+        "observed_pass": true,
+        "missed_embedded_unresolved_result": true,
+        "missed_static_context_dump": true,
+        "required_coverage_false_positive": true
+      },
+      "total_duration_ms": 13314
+    }
+  }
+}

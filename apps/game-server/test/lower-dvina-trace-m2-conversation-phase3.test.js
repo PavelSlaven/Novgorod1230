@@ -279,6 +279,9 @@ test('historical bounded Phase 3 does not require a semantic exchange', () => {
 test('revision 14 Eremey semantic plans withhold or disclose and persist the exact heard exchange', async () => {
   assert.equal(revision14Bundle.definition_revision, 14);
   const state = phase3State();
+  state.current_visible_context = { sensory_details: [
+    'На очаговой площадке сейчас нет огня.'
+  ] };
   const ratsha = state.npcs.find(
     ({ participant_slot_ref: slot }) => slot === 'ratsha_storehouse_helper'
   );
@@ -346,6 +349,14 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
     disclosed.npcRequest.knowledge.private_persistence_marker,
     persistenceMarker
   );
+  const currentObservation = disclosed.npcRequest.memory
+    .current_observations[0];
+  assert.equal(currentObservation.fact_text,
+    'На очаговой площадке сейчас нет огня.');
+  assert.ok(disclosed.npcRequest.allowed_references.knowledge_refs.some(
+    (reference) => reference.entity_kind === 'perception_result'
+      && reference.entity_id === currentObservation.observation_ref.entity_id
+  ));
   assert.deepEqual(
     disclosed.npcRequest.decision_scope.operation_contract
       .disclose_known_route.player_safe_context,

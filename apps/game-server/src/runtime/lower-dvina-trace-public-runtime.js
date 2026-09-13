@@ -100,14 +100,15 @@ export function createLowerDvinaTracePublicRuntime({
         screen: session.screen
       };
     },
-    recoverPendingPresentation: async (partyId) => {
+    recoverPendingPresentation: async (partyId, input = {}) => {
       const session = await repository.loadSession(partyId);
       validateLowerDvinaTraceSessionRead({ partyId, session });
       if (typeof traceTurnRuntime?.recoverPendingPresentation !== 'function') {
         throw serverError('TRACE_PHASE_2_DEPENDENCY_MISSING',
           'Повтор презентации требует настроенный runtime фазы 2.', { status: 503 });
       }
-      await traceTurnRuntime.recoverPendingPresentation({ partyId, session });
+      await traceTurnRuntime.recoverPendingPresentation({ partyId, session,
+        requestId: input.request_id ?? null });
       const recovered = await repository.loadSession(partyId);
       validateLowerDvinaTraceSessionRead({ partyId, session: recovered });
       return { party_id: partyId, turn_number: recovered.turn_number,

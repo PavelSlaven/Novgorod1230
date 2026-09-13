@@ -49,7 +49,7 @@
 
 | Документ | Статус | Scope |
 |---|---|---|
-| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline |
+| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |
 
 `Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.
 
@@ -70,7 +70,8 @@ Contract Auditor не копирует весь generated module index сюда 
 | [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |
 | [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |
 | [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details |
-| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |
+| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant, role-owned reasoning effort и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |
+| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; private auditor возвращает ordered source reviews и semantic/literary failures, Adapter детерминированно собирает coverage/verdict и fail-closed отклоняет malformed output; atomic current-beat sources отдельно сохраняют выполненную попытку и неизвестный результат наблюдения; opening сохраняет Stage 23 audit; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |
 | [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |
 | [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |
 | [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |
@@ -110,10 +111,10 @@ runtime World Knowledge получает только `verification_ref`, без
 families по location/materialization потребностям, не по числу claims/cells.
 
 World Knowledge §0.1 разделяет статическое наполнение и последующую
-gameplay-testing фазу. §112.12 задаёт target Gameplay Gap Auditor, trace
-requirements, классификацию, lifecycle и saturation; наличие internal
-development tooling не активирует testing и не делает saturation gate
-критерием статической готовности.
+gameplay-testing фазу. §112.12 задаёт active testing architecture Gameplay Gap
+Auditor, trace requirements, классификацию, lifecycle и saturation;
+активированная testing-фаза не делает saturation gate критерием статической
+готовности.
 
 World Knowledge §0.2 разрешает честно отмеченную игровую реконструкцию из
 аналогий и здравого смысла. §35.1 использует тот же независимый approval для
@@ -229,5 +230,17 @@ An undeclared guide may still be relevant, but it must not silently override an 
 **Resolution:** ordinary paths do not repair an empty authored candidate set. Apply the active ordinary profile through its own request/admission/persistence contract; preserve authored fail-closed semantics.
 
 ## 10. Maintenance rule
+
+`turn_step_llm_contract.md` §8.2.1 также владеет узким direct `player_utterance`
+contract: exact resolved speech сохраняется через текущий turn semantic trace;
+broadcast-capable речь обязана нести explicit qualitative delivery, а missing или
+malformed delivery отклоняется без silent default;
+broadcast audience/perception этим не активируются. Единственный speech repair
+с isolated copy/goal metadata errors полного envelope получает bounded projection
+только через faithful re-audit и повторную strict validation; третьего planner нет.
+§9.1 задаёт owner-aware
+discovery prerequisite и проекцию оставшегося intent при player boundary;
+standalone focused inspect использует существующий short/light activity owner,
+а `look` и prerequisite inspect с неизменённым later intent остаются free.
 
 Any PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.

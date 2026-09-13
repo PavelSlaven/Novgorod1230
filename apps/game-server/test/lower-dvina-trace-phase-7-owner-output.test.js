@@ -61,6 +61,51 @@ test('ambient portion binding accepts owner-normalized provenance and mechanics 
   });
 });
 
+test('semantic activity binds before its completion operation', () => {
+  const activity = { target: 'party_events', value: { step_index: 1,
+    duration_class: 'moment', effort: 'light' } };
+  const move = { target: 'party_items', value: { step_index: 1,
+    operation_kind: 'move_entity', payload: { entity_ref: 'item:branches',
+      placement: { relation: 'located_at', target_ref: 'shore' } } } };
+  const input = { batch: { operations: [activity, move] }, state: {
+    actor_id: 'actor', position: { location_ref: 'shore' },
+    items: [{ item_id: 'item:branches' }], containers: []
+  }, factual: { loop_trace: { step_traces: [{ applied: true, step_index: 1,
+    approved_plan: { resolution: 'direct', operations: [{ op: 'move_entity',
+      entity_ref: 'item:branches', placement: { relation: 'located_at',
+        target_ref: 'shore' } }], activity: { owner: 'semantic',
+      duration_class: 'moment', effort: 'light' } }
+  }] } } };
+  assert.doesNotThrow(() => validateTurnStepBatchPlanBindings(input));
+  assert.throws(() => validateTurnStepBatchPlanBindings({ ...input,
+    batch: { operations: [move, activity] } }), {
+    code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH'
+  });
+});
+
+test('a code-owned blocked move does not require a physical fragment', () => {
+  const activity = { target: 'party_events', value: { step_index: 1,
+    duration_class: 'moment', effort: 'light' } };
+  const blocked = { change: 'move_blocked', reason: 'hands_full',
+    step_index: 1, operation_index: 0, entity_ref: 'item:rope',
+    display_label: 'rope' };
+  const input = { batch: { operations: [activity] }, state: {
+    actor_id: 'actor', items: [{ item_id: 'item:rope' }], containers: []
+  }, factual: { consequence: { visible_seed: { blocked } },
+    loop_trace: { step_traces: [{ applied: true, step_index: 1,
+      approved_plan: { resolution: 'direct', operations: [{ op: 'move_entity',
+        entity_ref: 'item:rope', placement: { relation: 'held_by',
+          target_ref: 'actor' } }], activity: { owner: 'semantic',
+        duration_class: 'moment', effort: 'light' } }
+    }] } } };
+
+  assert.doesNotThrow(() => validateTurnStepBatchPlanBindings(input));
+  blocked.operation_index = 1;
+  assert.throws(() => validateTurnStepBatchPlanBindings(input), {
+    code: 'TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH'
+  });
+});
+
 test('Phase 7 rejects every owner output family injected on selected wait', () => {
   for (const patch of [
     { ordinary_materialization_atomic_write_plan: {} },
@@ -305,7 +350,7 @@ async function commit({ state, contracts, consequence }) {
       turn_id: consequence.phase7.autonomous.request.root_turn_id,
       decision_trace: { state_version: state.party_state.state_version,
         action_set_digest: 'action-set' } }, consequence, time_update, body_update },
-    state, inputDigest: digest, visibleContext: { visible_scene: 'У костра прошло полчаса.',
+    state, inputDigest: digest, visibleContext: { visible_scene: 'У костра одежда немного подсохла.',
       visible_changes: ['elapsed_30_minutes'], sensory_details: [], visible_npc: [],
       visible_objects: [], known_context: [], uncertainties: [] }, phase7Contracts: contracts });
 }

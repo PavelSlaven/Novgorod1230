@@ -13,7 +13,8 @@ export async function buildTimeUpdateStage({
   consequence,
   temporalAdvance = null,
   turnStepOperationBatch = null,
-  preparedEffectLedger = null
+  preparedEffectLedger = null,
+  postAppliedTemporalResults = []
 }) {
   const clock = retrievedState.clock_weather_light?.clock ?? retrievedState.clock ?? {};
   const duration = consequence.duration_minutes ?? 0;
@@ -36,7 +37,8 @@ export async function buildTimeUpdateStage({
       exactElapsed: prepared.exact_elapsed,
       preparedEffectLedger: ledger
     });
-    return freezeOutput({ ...prepared, ...(semantic ?? {}) });
+    return freezeOutput(withPostAppliedTemporalResults(
+      { ...prepared, ...(semantic ?? {}) }, postAppliedTemporalResults));
   }
   const finish = (output) => {
     const semantic = resolveTurnStepSemanticActivityTime({
@@ -46,10 +48,10 @@ export async function buildTimeUpdateStage({
       clockAfter: output.clock_after,
       exactElapsed: output.exact_elapsed
     });
-    return freezeOutput({
+    return freezeOutput(withPostAppliedTemporalResults({
       ...output,
       ...(semantic ?? {})
-    });
+    }, postAppliedTemporalResults));
   };
   if (typeof temporalAdvance === 'function') {
     const result = await temporalAdvance({
@@ -102,4 +104,21 @@ export async function buildTimeUpdateStage({
   };
   const update = buildTimeDrivenUpdateRequest(clock, duration, state);
   return finish({ version: 1, schema: 'turn_time_update', ...update });
+}
+
+function withPostAppliedTemporalResults(output, postApplied) {
+  if (!Array.isArray(postApplied)) {
+    const error = new Error(
+      'Post-applied temporal results must be an ordered array.');
+    error.code = 'TURN_STEP_POST_APPLIED_RESULT_INVALID';
+    throw error;
+  }
+  if (postApplied.length === 0) return output;
+  return {
+    ...output,
+    temporal_results: [
+      ...(output.temporal_results ?? []),
+      ...structuredClone(postApplied)
+    ]
+  };
 }

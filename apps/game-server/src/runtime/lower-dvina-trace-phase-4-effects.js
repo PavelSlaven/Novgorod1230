@@ -1,6 +1,7 @@
 import { addElapsedTime } from '@rus/time-events-history';
 import { getCommittedInventoryLoad } from './lower-dvina-trace-committed-inventory.js';
 import { executeTraceLocalTraversal } from './lower-dvina-trace-local-traversal.js';
+import { tracePhase4BoundaryFreeUntil } from './lower-dvina-trace-phase-4-admission.js';
 import { buildTracePhase4M2ArrivalPayload } from
   './lower-dvina-trace-phase-4-arrival.js';
 import { projectConversationTemporalAdvance } from
@@ -139,9 +140,6 @@ export function createTracePhase4TemporalAdvance({ phase3Advance }) {
         roots: input.consequence.negotiation.activity_roots
       });
     }
-    if (candidates.length > 0) {
-      fail('TRACE_PHASE_4_TEMPORAL_BOUNDARY_PENDING');
-    }
     if (input.consequence.phase4_kind === 'movement') {
       const traversal = input.consequence.movement.traversal;
       if (traversal.interval_result.clock_commit_mode !== 'direct_party_clock'
@@ -149,16 +147,18 @@ export function createTracePhase4TemporalAdvance({ phase3Advance }) {
           || traversal.interval_result.actual_time_denominator !== '1') {
         fail('TRACE_PHASE_4_TEMPORAL_STATE_INVALID');
       }
+      if (!tracePhase4BoundaryFreeUntil(candidates, traversal.clock_update.world_time_after))
+        fail('TRACE_PHASE_4_TEMPORAL_BOUNDARY_PENDING');
       return temporalResult({
         before: traversal.clock_before,
         after: traversal.clock_update.world_time_after,
-        exactMinutes: 12,
-        owner: 'movement_route_owner',
-        candidates,
-        roots: [{ activity_ref: input.consequence.movement.activity_ref,
+        exactMinutes: 12, owner: 'movement_route_owner',
+        policy: 'commit_only_before_next_boundary',
+        candidates, roots: [{ activity_ref: input.consequence.movement.activity_ref,
           duration_minutes: 12 }]
       });
     }
+    if (candidates.length > 0) fail('TRACE_PHASE_4_TEMPORAL_BOUNDARY_PENDING');
     const roots = input.consequence.negotiation.activity_roots;
     const minutes = roots.reduce(
       (sum, root) => sum + Number(root.duration_minutes), 0
@@ -275,7 +275,7 @@ function visibleGap(code) {
     { code }
   );
 }
-function temporalResult({ before, after, exactMinutes, owner, candidates, roots }) {
+function temporalResult({ before, after, exactMinutes, owner, candidates, roots, policy = 'commit_only_with_empty_boundary_candidate_set' }) {
   return {
     clock_before: structuredClone(before),
     clock_after: structuredClone(after),
@@ -285,7 +285,7 @@ function temporalResult({ before, after, exactMinutes, owner, candidates, roots 
     nearest_boundary: null,
     boundary_trace: {
       owner,
-      policy: 'commit_only_with_empty_boundary_candidate_set',
+      policy,
       evaluated_candidate_count: candidates.length,
       processed_boundary_ids: [],
       activity_roots: structuredClone(roots)

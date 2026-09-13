@@ -3,6 +3,7 @@ import {
   validateTurnStepPlan,
   validateTurnStepRequest
 } from './turn-step-contracts.js';
+import { requireFactualEvents } from './post-applied-actor-step.js';
 
 export function validateTurnStepCommitChecks(errors, checks) {
   exactKeys(errors, checks, ['version', 'schema', 'requests', 'results'],
@@ -44,14 +45,21 @@ export function validateTurnStepLoopTrace(errors, value, envelope) {
     'version', 'schema', 'root_turn_id', 'request_id',
     'committed_state_version', 'status', 'stop_reason', 'working_revision',
     'next_step_index', 'remaining_intent', 'completed_steps', 'step_traces',
-    'check_results', 'clarification'
+    'check_results', 'factual_events', 'clarification'
   ], 'loop_trace');
   const allowedStops = new Set([
     'terminal', 'player_response', 'clarification_required', 'no_progress',
     'step_limit'
   ]);
-  validateCompletedSteps(errors, value.completed_steps);
+  validateCompletedSteps(errors, value.completed_steps, value.step_traces);
   validateStepTraces(errors, value.step_traces, envelope);
+  if (Array.isArray(value.factual_events)) {
+    try {
+      requireFactualEvents(value.factual_events);
+    } catch {
+      errors.push('loop_trace.factual_events must contain exact factual events');
+    }
+  }
   if (value.version !== 1
       || value.schema !== 'turn_step_commit_trace_v1'
       || !['resolved', 'player_response_required'].includes(value.status)
@@ -66,6 +74,7 @@ export function validateTurnStepLoopTrace(errors, value, envelope) {
       || value.step_traces.length < value.working_revision
       || value.step_traces.length > 8
       || !Array.isArray(value.check_results)
+      || !Array.isArray(value.factual_events)
       || !allowedStops.has(value.stop_reason)
       || (value.status === 'resolved') !== (value.stop_reason === 'terminal')
       || (value.clarification != null)
@@ -77,11 +86,21 @@ export function validateTurnStepLoopTrace(errors, value, envelope) {
   }
 }
 
-function validateCompletedSteps(errors, steps) {
+function validateCompletedSteps(errors, steps, traces) {
   if (!Array.isArray(steps)) return;
-  if (steps.some((step, index) => !hasExact(step, [
-    'step_index', 'summary'
-  ]) || step.step_index !== index + 1 || !text(step.summary))) {
+  const outcomes = new Set(['clean_success', 'success', 'success_with_cost',
+    'failure_with_consequence', 'severe_failure']);
+  if (steps.some((step, index) => {
+    const trace = Array.isArray(traces) ? traces.find((candidate) =>
+      candidate?.step_index === step?.step_index && candidate?.applied) : null;
+    const expected = trace?.check_outcome ?? null;
+    return !(hasExact(step, ['step_index', 'summary'])
+      || hasExact(step, ['step_index', 'summary', 'check_outcome']))
+      || step.step_index !== index + 1 || !text(step.summary)
+      || (expected === null && Object.hasOwn(step, 'check_outcome'))
+      || (expected !== null && (step.check_outcome !== expected
+        || !outcomes.has(step.check_outcome)));
+  })) {
     errors.push('completed_steps must contain exact ordered step summaries');
   }
 }

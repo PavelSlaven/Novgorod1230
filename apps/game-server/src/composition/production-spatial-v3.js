@@ -76,7 +76,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() }),
       loadLowerDvinaTraceScenePresentation({
         rootDir: config.rootDir ?? process.cwd(),
-        scenarioDefinitionRevision: 32
+        scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
       }),
       loadLowerDvinaTraceN1Profile({
         rootDir: config.rootDir ?? process.cwd()
@@ -88,7 +88,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           : { encoderFactory: worldKnowledgeEncoderFactory }) }),
       loadLowerDvinaTraceMaterializationBundle({
         rootDir: config.rootDir ?? process.cwd(),
-        scenarioDefinitionRevision: 32
+        scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
       })
     ]);
     const worldKnowledge = Object.freeze({ ...loadedWorldKnowledge,

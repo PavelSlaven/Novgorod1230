@@ -2,17 +2,37 @@
 
 ## Назначение
 
+Narration boundary принимает только approved `surface: turn` через публичный
+`@rus/narration.validateNarrationFlowResult`, включая coverage segment IDs
+утверждённой прозы; локальный validator не дублирует ослабленную схему.
+
 Оркестратор игрового хода, active player semantic step boundary, revision-14 conversation exchange и Temporal World v4 execution composition. Он сохраняет exact command fast path, связывает explicit ports, исполняет валидированные semantic plans через code-owned handlers, собирает proposals и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.
 
 ## Владеет
 
 - Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, deterministic model-output canonicalization и одним semantic repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, revision-16 persisted combat session/intent lifecycle и automatic same-time exchange orchestration, combined logical write-plan composition и visible-package security gate.
+- `runTurnWorkflow` сохраняет существующие ordered stage events и может передать
+  clone каждого события через optional `options.onEvent`. Observer не добавляет
+  stage, phase или authority: его return не используется, callback не ожидается,
+  а synchronous exception игнорируется и не меняет workflow, result либо commit.
+  Public progress phases и request-scoped read model принадлежат server Adapter.
 
 ## Не владеет
 
 Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Autonomous NPC action active в Phase 7 через общий temporal/persistence/visibility pipeline; revision 16 combat orchestration принимает только формальные intents/proposals и делегирует checks, harm/body, items, position, time и persistence профильным owners.
 
 ## Public API
+
+Provider assembler проецирует только top-level envelope/interpretation на поля
+канонической схемы до strict validation. Неизвестная metadata удаляется;
+known nested mapping ambiguity (включая unavailable mappings из полного registry),
+conflicting continuation и operation_choice mismatch
+остаются invalid. Вложенная механика не очищается; новых repair calls нет.
+
+Temporal write integration может составить несколько ordered update proposals
+одной строки в один P16 CAS. Каждый следующий `previous_record` обязан совпасть
+с предыдущим фактическим record; base и resulting persisted version общие для
+одного commit. Append-only causal transitions сохраняются по отдельности.
 
 `selectTemporaryDispositionOptions` проверяет выбранные из raw intent ровно
 по одному option id на измерение из закрытого набора, построенного domain
@@ -22,7 +42,11 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `resolveWorldProcessStep`, `validateWorldProcessStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, `spatialResult`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state и сохраняет ordered step traces. Model adapter до validator исправляет только однозначные closed формы (`"null"`, choice wrapper, unique exact operation choice, exact misplaced/duplicated continuation, отсутствующие diagnostic reason fields и single-target discovery); несколько discovery targets превращаются в typed code-owned очередь внутри существующего continuation и исполняются по одному без нового planner choice. Исходный later-continuation восстанавливается дословно после очереди; обычная player boundary останавливает root и оставляет остаток в approved continuation. Один LLM repair разрешён только для semantic mismatch. Неисправимая structural ошибка и любой повторно невалидный plan после semantic repair возвращают typed `TURN_STEP_PLAN_INVALID` до execution, commit и narration, без внутриигрового `not_achieved`. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
-- `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner. Gameplay call site не активирован, пока нет production coverage profile для текущего world runtime.
+- После generic check соответствующий `completed_steps[]` несёт только
+  code-owned `check_outcome` band; следующий semantic step видит степень уже
+  выполненного исхода без roll/DC/audit. Narrator получает safe band/margin и
+  action binding, но не RNG internals; механику он не пересчитывает.
+- `requestWorldKnowledgeQueryPlan` валидирует bounded information-need plan и допускает ровно один structural repair того же immutable request; canonical empty plan self-terminates `RETRIEVE` как `NO_KNOWLEDGE_REQUIRED` без Core. `resolveTurnStepWorldKnowledge` явно различает `NONE|EXACT|RETRIEVE`, для `EXACT` не вызывает planner и добавляет authoritative context только после planner.
 - Internal ordinary hook применяет уже вычисленный pure aggregate result к общей working projection без собственного schema/type; raw ordinary transition остаётся ответственностью `@rus/materialization` reducer. Hook не экспортируется как второй projection owner и не активирует O1.
 - Общий ordinary discovery owner передаёт одну player-safe scene projection
   в seed и presence, включая structural repair; candidate query имеет нулевой
@@ -30,6 +54,9 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   Исчерпание budget/cap без transition возвращает existing player-response no-op:
   состояние неизменно, model/record/commit и technical failure отсутствуют; seed
   transition того же turn всё ещё может запечатать собственный `no_change` plan.
+  Presence preflight с `decision: null` не создаёт resolve_presence; сохраняется
+  только уже принятый seed. Нормальные модельные отрицательные решения
+  сохраняют собственную presence identity, отличную от seed и replay.
 - Сводка уже player-safe carried/worn items и качественная оценка уже
   предъявленных sensory facts относятся к write-free direct observation, а не
   к ordinary materialization. Обязательный для успешного write-free direct
@@ -55,6 +82,27 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
   current availability, semantic validation и applicability admission; иначе
   следующий step заново выбирается моделью. Prepared draft не резервирует
   будущую operation.
+- Положительная длительность semantic шага без body change сама по себе не
+  создаёт player boundary при наличии continuation. Existing prepared-effect
+  chain сначала применяет exact time/body и temporal projection; следующий
+  planner видит обновлённый state и дословный остаток после revalidation.
+  Semantic-only prefix допускает совместимый direct/generic или ordinary-owner
+  следующий шаг; уже разрешённый A1 owner также допускается при отсутствии selected
+  authored command, с прежними preflight/revalidation/conservation checks.
+  Body-changing результат завершает root. Temporal pause,
+  stop-after-batch и player-safe interruption сохраняют остаток на границе.
+  Ранняя temporal boundary semantic slice фиксирует только actual elapsed;
+  continuous body owner получает тот же фактический interval. Approved planned
+  duration остаётся в activity, прерванная execution сохраняется как paused с
+  paused attempt, точным остатком и без terminal marker в existing normalized
+  rows. Start body effects применяются до interval, а item/domain completion
+  operations — только после полного interval и повторной owner-проверки.
+  До восьми semantic шагов входят в один atomic commit/replay. Existing
+  domain-command prepared pair и ограничения нескольких body owners сохраняются.
+- Финальный `remaining_intent` loop передаётся без потерь в существующий
+  decision trace для committed результата и player-safe projection. Narration
+  различает выполненные изменения и переданный невыполненный остаток;
+  отсутствие остатка не разрешает придумывать завершение всей исходной заявки.
 - `createTurnStepExecutionRegistry(...)` публикует через
   `operationContract()` только те semantic operations, для которых в этом же
   registry зарегистрирован фактический handler; request не получает
@@ -198,36 +246,65 @@ objective context, запрещает concrete entities и принимает о
 density band; numeric budget выводится versioned code policy. Stage B имеет
 `evidence_weight = 0`, а code-owned builder создаёт normalized
 classification/coverage/policy fields. Normalized discovery query (NFKC,
-trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит
-code-owned candidate identity и передаётся model только как `candidate_hint`;
-это не noun/recipe allowlist и не authority. Exact retry сохраняет identity,
-другой normalized query получает другую identity. O1 plan отдельно хранит
+trim, collapse whitespace, ru-RU lowercase), exact target и canonical
+`requested_quantity` (`{value,unit}` либо `null`) выводят code-owned candidate
+identity и передаются model только как `candidate_hint`; это не noun/recipe
+allowlist и не authority. Exact retry сохраняет identity, другой normalized
+query или quantity получает другую identity. Unspecified quantity намеренно
+отличается от explicit quantity 1.
+Опциональный `request_discovery.quantity` переносит явно заявленную конечную
+группу 1–16 как typed mechanics requirement; Stage B proposal обязан совпасть
+с ним точно, иначе используется единственный repair до любого commit.
+O1 plan отдельно хранит
 выбранную semantic target в `semantic_target_ref`, тогда как `scope_ref`
 остаётся G6 simulation scope; P16 связывает owner output с exact
 `request_discovery` target до commit. Один discovery имеет общий лимит двух
 semantic calls; structural repair расходует оставшийся call, а
-Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Turn принимает positive только после independent
-WK-grounded Stage B `materialize` с хотя бы одним exact
-`world_knowledge_claim_refs` из текущего factual slice; code binding отвергает
-пустые и отсутствующие в slice refs до admission/commit. Затем выполняется
+Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Для
+`common_mundane` World Knowledge ограничивает reconstruction применимыми hard
+constraints, но не является positive inventory whitelist: causal scene basis и
+ordinary physical/historical plausibility достаточны без positive claim ref.
+При непустом hard-constraint slice model обязана вернуть отдельные exact
+constraint refs для всего slice и verdict `clear|blocked`; пропуск, подмена,
+дубликат или неизвестный ref fail-closed, а `blocked` code-owned binder всегда
+превращает в `no_change`. Hard constraint никогда не считается positive
+support. Non-common materialization требует exact supporting claim ref только
+из `facts`; любой неизвестный или constraint ref отклоняется. Затем выполняется
 supporting-basis/property/placement admission `@rus/items-property`, собирается
 один ordinary P16 plan после revalidation и передаёт его persistence owner;
 model call никогда не находится внутри physical transaction. Player-safe
 working projection получает только capability marker и approved concrete
 result, narration начинается лишь после commit. Exact positive/negative
 resolution/idempotency сохраняется, поэтому retry/reload не reroll-ит её для
-code-owned identity. Active cutover локально проверяет versioned approval
+code-owned identity. `ordinary_presence_seed` переносит exact query только как
+предмет вопроса: `absent` даёт scoped результат, `no_change` и
+`authority_required` — неопределённость. Admitted `materialize` даёт strict
+`materialized` seed с exact query и `display_name` из admitted item descriptor;
+он фиксирует обнаружение до последующего физического действия. Query не доказывает существование,
+принадлежность или выполненное действие. Active cutover локально проверяет versioned approval
 receipt ранее выполненного adversarial Stage B classification eval, связанный
 с profile digest и exact production provider/model/config identity; gameplay
 не запускает probes. Любой sensitive `materialize` блокирует активацию.
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 
+`max_new_entities = 1` ограничивает один ordinary resolution, а не суммарное
+число identities в G6. Legacy aggregate budget/cap fields читаются для
+совместимости, но не блокируют последующие независимые resolutions. Common
+ordinary result может быть одной persisted stack identity с code-bounded
+`quantity <= 16`; exact total mass, packing и placement проходят существующий
+`@rus/items-property` admission. Active revision-34 canonical profile задаёт
+`trace_ld_v1_o1_mechanics_policy_v2.max_quantity = 16`; runtime не расширяет
+этот pinned bound.
+
 Повторный `inspect` или сравнение уже наблюдённых evidence refs имеет общий
 bounded owner. Он принимает только exact refs из code-projected
 `observed_evidence_inspection` с player-safe presentation, не доверяет сырому
 `knowledge`, не создаёт новую истину и возвращает только отсутствие достаточных
 подтверждённых данных; authored/external owner сохраняет приоритет.
+Результат сохраняет исходный вопрос в `observed_evidence_inspection_seed`;
+presentation передаёт его как открытый вопрос вместе с текущей сценой,
+без утверждения отсутствия предмета или нового вывода.
 
 Active O2a добавляет authored wreck-shore ambient capability и first-entry
 context-bound finite stock подготовленной глины. Player-safe state показывает
@@ -236,9 +313,11 @@ state; concealed capabilities остаются server-only. Unresolved remainder
 проецируется только через boolean `discovery_available`, без expected result,
 permission и capacity.
 Stage B может выбрать unlisted ordinary semantic type/name и независимо назвать
-admission class полного candidate с qualifiers/relations; при несовпадении с
-code-owned candidate owner fail-closed
-фиксирует `absent`. До item admission полный candidate также получает verdict
+admission class полного candidate с qualifiers/relations. Явные `no_change` и
+`authority_required` сохраняются до classification и ничего не admit-ят;
+для остальных verdict при несовпадении с
+code-owned candidate owner фиксирует `authority_required`, не физическое
+отсутствие. Exact retry сохраняет этот отказ, не reroll и не `absent`. До item admission полный candidate также получает verdict
 `standalone_item|non_item_detail`; `non_item_detail` сохраняет `no_change`
 без item/mechanics/property/placement writes. source/property/permission/mechanics и пустой
 facts остаются code-owned gates. Сам `ambient_ordinary`
@@ -341,4 +420,97 @@ visible package после P16 commit.
 
 ## Тесты
 
+Короткая речь без supplied interaction owner поддерживает typed direct
+`player_utterance`: exact resolved text/current speaker и input mode находятся
+в validated approved plan и существующем persisted semantic trace. Quoted input
+сохраняется verbatim; unquoted speech intent конкретизируется единственным
+turn-step planner. Это не audience/knowledge owner и не ответ NPC. Broadcast
+perception вне conversation остаётся отдельным непройденным owner path.
+Existing repair owner допускает только effort→none trial полного direct speech
+с semantic/moment activity без requested duration, effects, dependencies и carriers.
+Исходный effort принадлежит действующему enum; полная validation trial устраняет
+envelope error и оставляет только разрешённые copy/goal ошибки по §8.2.1.
+Semantic validator через domain preflight может вернуть bounded speech metadata
+projection по §8.2.1: допускается валидный initial speech envelope либо только
+изолированные verbatim exact-copy/goal-continuation ошибки. Core повторяет полную
+`validateTurnStepPlan` и freeze без второго model/audit call; любые другие ошибки
+initial plan не получают права на такую коррекцию.
+Единственный repair после faithful re-audit получает ту же bounded metadata
+projection с `repaired:true`. Raw repair сохраняется: только isolated strict
+copy/goal metadata errors полного semantic/moment/none speech envelope с точным
+непустым suffix допускают этот re-audit до повторной strict validation/freeze.
+Effort trial на repair запрещён; другие structural ошибки и оставшаяся ошибка
+terminal, третьего planner/audit нет.
+Domain preflight не допускает authored investigation с полностью неизменённым
+continuation под видом ordinary material prerequisite.
+
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.
+
+Known ordinary lookup returns its existing positive or negative resolution as a
+transient owner result. Positive replay reuses the exact committed visible item;
+it never becomes `no_change` or creates another item. Reusing world knowledge
+does not cancel a newly executed standalone physical discovery; exact transport
+replay remains outside execution.
+
+Existing-item inspection is code-first before ordinary candidate/enablement selection: the adapter reads the exact target from the current actor-safe working projection. Already available identity, placement, physical condition and perceived facts are observations, not new ordinary entities or newly inferred attributes. A momentary reading of these supplied facts costs zero minutes; this does not authorize a physical search or establish unknown causes, ownership or history. The result snapshots its observations and preserves the exact question as unresolved beyond them. Typed queued targets continue in order; the last observation returns the original later intention at the player response boundary. Hidden or closed-container contents require their existing perception/access owner. Transport replay reuses the committed result.
+
+`request_item_use` с `use_kind: other` и semantic `description`, без
+`action_production`, разрешает transient non-transforming физическую попытку.
+Existing item runtime owner перепроверяет current actor, item ref, доступ
+в текущем placement и player-safe target refs. Current-visible item доступен
+на месте при точном совпадении всех его scope refs с текущей position;
+`scene_position_id` сравнивается с player-safe `position_id`. Held actor item
+тоже доступен. Pickup не требуется; `move_entity` обслуживает только явно
+заявленное перемещение. Semantic activity owner сохраняет
+время/body. Результат фиксирует только попытку: без durable item/world facts,
+расхода, трансформации, скрытых сведений и подтверждённого результата наблюдения.
+Existing handler supports оставляет authored/legacy use и A1 их владельцам.
+Known material ref не отправляется повторно в ordinary discovery при repair.
+
+Focused ordinary location audit допускает strict `prerequisite_query` correction:
+LLM выделяет только отсутствующий ordinary referent; code сохраняет exact полный
+remaining intent, связывает inspect/current scope и повторяет owner admission без
+нового LLM вызова. Hidden/significant/authored evidence не является prerequisite.
+Empty target_refs одной unselected discovery связывается только с доступным
+current location при ordinary capability; explicit refs не заменяются.
+
+Unsupported direct_result_kind у literal direct/not_achieved no-op denial может
+быть обнулён только в audit-only trial, если весь plan после этого strict valid.
+Trial не принимается как результат. Existing focused classifier может выделить
+ordinary prerequisite тем же протоколом; code соберёт corrected plan и перепроверит
+owner/schema без full planner repair. Disabled/authority-limited случаи не получают
+ordinary bypass; прежний lawful repair/fail-closed сохраняется.
+
+Single transient use с отсутствующим item_ref допускает audit-only material trial
+только при непустом наборе unknown_ref/source_placement_grounding того же ref, literal,
+пустом continuation и доступном ordinary current location. Template/catalog ref
+не считается stable item identity и не перепривязывается к известному item. Known недоступный item
+не дублируется. Existing focused classifier выделяет nominal prerequisite; code
+сохраняет полный exact intent. Для strict-valid single literal accessible transient
+use без continuation/check/clarification code подставляет exact remaining_intent в
+description ДО первого semantic audit. Transformation/discovery/independent actions
+не становятся transient от копирования текста. Только pass возвращает corrected_plan
+для strict owner/schema revalidation; stable ref/placement и visible seed сохраняют
+точный intent, дополнительный auditor/full planner repair не нужен.
+
+Denial/missing-ref trials помечают focused input `correction_candidate:
+missing_ordinary_referent`: pseudo query передаёт полный physical intent, а не
+выбранный поиск. В этом режиме аудитор проверяет missing ordinary prerequisite;
+успех требует nominal prerequisite_query. Normal discovery input marker не имеет;
+negative different_action остаётся reject, отсутствие/authority guards сохраняются.
+
+Strict literal single ordinary current-location discovery с nominal query и exact
+полным unchanged continuation получает input mode `proposed_material_prerequisite`
+существующего focused auditor. Код проверяет форму, LLM подтверждает номинальный
+недостающий referent и ordinary/authority границу. Только material_prerequisite с
+consumed_intent:null собирается server-side как corrected_plan (inspect + полный
+continuation) и повторно проходит owner/schema admission. focused_discovery при
+таком input остаётся rejected; обычные standalone/prefix discovery не меняются.
+
+Applied-step causal projection связывает semantic_activity duration в самом source:
+speech получает «этот шаг занял N …», не утверждая непрерывность речи; single
+transient_item_use получает «в течение N … выполняли попытку» с exact description
+и явно неизвестным observation result. Отдельный elapsed component этого step
+удаляется перед финальной сборкой; elapsed-only и search остаются прежними.
+Narrator переводит evidence wording в естественную речь и конкретное движение,
+не копирует служебные слова step/attempt и не перепривязывает минуты к окружению.

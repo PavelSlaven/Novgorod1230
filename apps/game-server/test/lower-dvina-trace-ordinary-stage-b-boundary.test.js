@@ -13,7 +13,7 @@ import { absentPlan, modelIdentity, presenceRequest } from
   './lower-dvina-trace-ordinary-stage-b-eval-fixture.js';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
-  + 'lower-dvina-trace-v1/phase-m7-content/'
+  + 'lower-dvina-trace-v1/phase-m22-content/'
   + 'ordinary-materialization-profile.json', import.meta.url);
 
 async function evalContract() {

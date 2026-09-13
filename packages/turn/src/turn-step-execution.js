@@ -18,6 +18,7 @@ export function collectTurnStepExecutionResult({
   summaries,
   writes,
   consequences,
+  factualEvents,
   preparedEffects,
   ordinaryPlans,
   actionProducedPlans,
@@ -49,6 +50,13 @@ export function collectTurnStepExecutionResult({
   writes.push(...writeFragments(applied.write_fragments));
   if (applied.consequence_fragment != null) {
     consequences.push(structuredClone(applied.consequence_fragment));
+  }
+  if (applied.factual_events != null) {
+    if (!Array.isArray(factualEvents) || !Array.isArray(applied.factual_events)) {
+      throw turnFailure('TURN_STEP_FACTUAL_EVENTS_INVALID',
+        'factual_events must be an ordered array.');
+    }
+    factualEvents.push(...structuredClone(applied.factual_events));
   }
   if (applied.prepared_effect != null) {
     if (!Array.isArray(preparedEffects)) {
@@ -121,6 +129,7 @@ export function createTurnStepExecutionInput({
   plan,
   request,
   operation,
+  operationIndex = null,
   projection,
   checkResult,
   preparedChainContext,
@@ -132,6 +141,7 @@ export function createTurnStepExecutionInput({
     plan: structuredClone(plan),
     request: structuredClone(request),
     operation: structuredClone(operation),
+    operation_index: operationIndex,
     working_projection: structuredClone(projection),
     check_result: checkResult == null ? null : structuredClone(checkResult),
     prepared_chain_context: preparedChainContext == null ? null

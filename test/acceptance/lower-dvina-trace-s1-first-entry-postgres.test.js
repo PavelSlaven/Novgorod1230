@@ -273,7 +273,7 @@ function s1Responder(shouldFail = () => false) {
       assert.equal(typeof target, 'string');
       const operation = { op: 'request_discovery', actor_ref: turn.actor.actor_id,
         discovery_kind: 'inspect', target_refs: [target],
-        query: 'осмотреть видимую загородку' };
+        query: turn.remaining_intent };
       assert.equal(isSpatialSemanticRemainderInScope({ operation,
         playerSafeState: turn.player_safe_state }), true);
       return { schema: 'turn_step_plan_v1', request_id: turn.request_id,

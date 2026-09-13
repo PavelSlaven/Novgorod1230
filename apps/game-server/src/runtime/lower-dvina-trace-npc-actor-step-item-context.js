@@ -1,7 +1,8 @@
 import { projectNpcSafeResourceSnapshots } from '@rus/npc-runtime';
 import { runtimeItemContentsAreOpen } from '@rus/items-property';
 import { initializeRuntimeState } from './lower-dvina-trace-turn-step-item-support.js';
-import { getCommittedActorInventoryLoad } from
+import { getCommittedActorInventoryItemRefs,
+  getCommittedActorInventoryLoad } from
   './lower-dvina-trace-committed-inventory.js';
 
 export function npcItemWorkingProjection({ workingProjection, state, npc,
@@ -62,10 +63,7 @@ function npcInventory(state, npc) {
     const load = getCommittedActorInventoryLoad(state, npc.instance_id);
     return { total_weight: { grams: load.total_mass_grams },
       occupied_hands: load.hands_used,
-      items: (state.items ?? []).filter((item) =>
-        item?.holder_npc_id === npc.instance_id
-          || item?.placement?.holder_npc_id === npc.instance_id)
-        .map(({ item_id, instance_id }) => item_id ?? instance_id),
+      items: getCommittedActorInventoryItemRefs(state, npc.instance_id),
       load_category: load.load_category };
   } catch { return null; }
 }

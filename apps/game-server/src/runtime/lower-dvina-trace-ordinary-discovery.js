@@ -1,3 +1,6 @@
+import { applySemanticActivity } from './lower-dvina-trace-turn-step-delegated-ports.js';
+import { ordinaryDiscoveryActivity } from './lower-dvina-trace-turn-step-generic-owners.js';
+import { projectPreparedOrdinaryItem } from './lower-dvina-trace-phase-2-player-safe.js';
 import { createOrdinaryMaterializationDiscoveryOwner } from '@rus/turn';
 import {
   buildOrdinaryMaterializationPresenceRequest,
@@ -16,6 +19,8 @@ import { bindCommittedSourceIdentity } from
   './lower-dvina-trace-ordinary-discovery-internal.js';
 import { snapshotOrdinaryMaterializationEnablement } from
   './ordinary-materialization-enablement-snapshot.js';
+import { resolveExistingItemInspection } from
+  './lower-dvina-trace-existing-item-inspection.js';
 
 /** Lower Dvina supplies profile/context adapters to the common @rus/turn owner. */
 export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
@@ -30,6 +35,7 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
     throw new TypeError('ordinary discovery requires enablement and verified model ports');
   }
   return createOrdinaryMaterializationDiscoveryOwner({
+    resolveExistingInspection: resolveExistingItemInspection,
     ordinaryMaterializationModel,
     verifyStageBCutover: (input) => verifyStageBCutover.call(
       ordinaryMaterializationModel, input),
@@ -231,4 +237,38 @@ function validMechanicsPolicy(value) {
     && Array.isArray(value.allowed_carry_forms)
     && Number.isSafeInteger(value.max_packing_slot_cost)
     && Number.isSafeInteger(value.max_quantity);
+}
+
+/** Project the admitted ordinary result and apply its existing physical activity. */
+export async function prepareOrdinaryDiscoveryResult({ applied, execution,
+  state, semanticActivityOwner, workingProjectionAuthority }) {
+  const plan = applied?.ordinary_materialization_atomic_write_plan;
+  const projection = plan == null ? applied.working_projection
+    : workingProjectionAuthority.admit(projectPreparedOrdinaryItem(
+      applied.working_projection, plan));
+  const activity = ordinaryDiscoveryActivity({ operation: execution.operation,
+    request: execution.request, plan: execution.plan, ordinaryPlan: plan,
+    knownResolution: applied.known_resolution });
+  if (activity == null) return plan == null ? applied
+    : { ...applied, working_projection: projection };
+  const timed = await applySemanticActivity({ ...execution,
+    working_projection: projection,
+    operation: { op: 'apply_semantic_activity', activity }
+  }, state, semanticActivityOwner);
+  const presence = applied.consequence_fragment?.visible_seed?.ordinary_presence_seed;
+  const searchResult = ['no_change', 'authority_required'].includes(presence?.resolution)
+    ? { resolution: presence.resolution, query: presence.query } : null;
+  return { ...applied, ...timed, summary: applied.summary,
+    player_response_boundary: applied.player_response_boundary === true
+      || timed.player_response_boundary === true,
+    duration_minutes: timed.consequence_fragment.duration_minutes,
+    write_fragments: [...applied.write_fragments, ...timed.write_fragments],
+    consequence_fragment: { ...applied.consequence_fragment,
+      ...timed.consequence_fragment, visible_seed: {
+        ...applied.consequence_fragment?.visible_seed,
+        ...Object.fromEntries(Object.entries(timed.consequence_fragment.visible_seed)
+          .map(([key, value]) => [key, { ...value,
+            discovery_kind: execution.operation.discovery_kind,
+            ...(searchResult == null ? {} : { discovery_result: searchResult }) }]))
+      } } };
 }

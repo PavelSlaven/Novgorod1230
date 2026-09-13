@@ -22,6 +22,8 @@ import { isPreparedPhase7RestLedger } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-prepared-validation.js';
 import { isPreparedTurn10Ledger } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-10-prepared-validation.js';
+import { npcRoutineTemporalRegistration } from '../src/runtime/npc-routine-temporal.js';
+import { phase7StateBeforeSchedule } from '../src/runtime/lower-dvina-trace-phase-7-state-projection.js';
 import { fixture, loadScenarioBundle } from
   './lower-dvina-trace-phase-2-fixture.js';
 import {
@@ -36,7 +38,7 @@ import {
   phase7CommittedState as committedState,
   phase7PlayerInput as playerInput
 } from './lower-dvina-trace-phase-7-runtime-fixture.js';
-import { externalBoundary, factualTurn, phase7ReadPool, rows, timeUpdate,
+import { addPhase7RoutineBoundary, externalBoundary, factualTurn, phase7ReadPool, rows, timeUpdate,
   versioned, visibleContext } from
   './lower-dvina-trace-phase-7-persistence-fixture.js';
 
@@ -186,8 +188,9 @@ test('Phase 7 preserves an external pause and resumes without a second NPC decis
     const policyRef = versioned('activity_contract', 'external-pause');
     state.temporal_boundary_candidates = [externalBoundary(
       state.party_id, ruleRef, policyRef, '127')];
+    const routineNpc = addPhase7RoutineBoundary(state, 120);
     const temporalAdvanceOwner = createTemporalAdvanceOwner({
-      source_registrations: [{
+      source_registrations: [npcRoutineTemporalRegistration(), {
         rule_ref: ruleRef,
         policy_ref: policyRef,
         resolve(candidate, context) {
@@ -240,6 +243,10 @@ test('Phase 7 preserves an external pause and resumes without a second NPC decis
     assert.equal(pausedExecution.cumulative_elapsed_numerator, 27);
     assert.equal(pausedExecution.remaining_time_numerator, 3);
     assert.equal(pausedAttempt.result_kind, 'paused');
+    const pausedNpc = paused.npcs.find(({ instance_id: id }) => id === routineNpc.instance_id);
+    assert.equal(pausedNpc.machine_state.npc_schedule_history.length, 1);
+    assert.equal(pausedNpc.machine_state.active_npc_actor_step.status, 'started');
+    assert.equal(rows(firstCommit.plan, 'party_npc_runtime_transitions').length, 1);
     assert.equal(rows(firstCommit.plan, 'party_body_temporal_history').length,
       0);
     await assert.doesNotReject(() => assertPhase7NormalizedRows(
@@ -260,6 +267,8 @@ test('Phase 7 preserves an external pause and resumes without a second NPC decis
     assert.equal(second.phase7.resumed, true);
     assert.equal(second.phase7.schedule_temporal.rest_completed, true);
     assert.equal(modelCalls, 1);
+    assert.deepEqual(phase7StateBeforeSchedule(paused, second.phase7).npcs,
+      paused.npcs, 'resume preserves the committed history and active step before its current result');
     const secondTime = timeUpdate(paused, second, 3);
     const secondBody = createTracePhase7BodyEffect({
       contracts: resumedContracts,
@@ -286,6 +295,13 @@ test('Phase 7 preserves an external pause and resumes without a second NPC decis
     assert.equal(completedExecution.remaining_time_numerator, 0);
     assert.equal(completedAttempt.attempt_ordinal, 1);
     assert.equal(completedAttempt.actual_time_numerator, 3);
+    const completedNpc = completed.npcs.find(({ instance_id: id }) => id === routineNpc.instance_id);
+    assert.equal(completedNpc.machine_state.npc_schedule_history.length, 2);
+    assert.deepEqual(completedNpc.machine_state.npc_schedule_history[0],
+      pausedNpc.machine_state.npc_schedule_history[0]);
+    assert.equal(rows(secondCommit.plan, 'party_npc_runtime_transitions').length, 0);
+    assert.deepEqual(rows(secondCommit.plan, 'party_npcs')[0].record.machine_state,
+      completedNpc.machine_state);
     assert.equal(rows(secondCommit.plan,
       'party_npc_decision_traces').length, 0);
     assert.equal(rows(secondCommit.plan,

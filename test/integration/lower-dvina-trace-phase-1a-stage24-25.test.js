@@ -70,6 +70,7 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
     'party_g5_sites',
     'party_scene_baselines',
     'party_g6_instances',
+    'g6_acoustic_profiles',
     'scene_position_nodes',
     'party_journey_locations',
     'preparation_snapshots',
@@ -173,7 +174,7 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
       }
     } } }
   });
-  assert.equal(firstEntry.approved_write_sets[0].inserts.length, 10);
+  assert.equal(firstEntry.approved_write_sets[0].inserts.length, 12);
   const targetSite = firstEntry.approved_write_sets[0].inserts.find(
     ({ target_table: table }) => table === 'party_g5_sites'
   ).record;
@@ -190,6 +191,15 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
   const sourcePosition = stage24.party_db_write_plan.write_batches.find(
     ({ target_table: table }) => table === 'scene_position_nodes'
   ).records.find(({ id }) => id === snapshot.first_entry_spatial_v3.source.position_id);
+  const sourceAcoustics = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'g6_acoustic_profiles'
+  ).records[0];
+  assert.deepEqual(sourceAcoustics, {
+    party_id: materialization.party_id,
+    g6_instance_id: snapshot.first_entry_spatial_v3.source.g6_instance_id,
+    ambient_noise: 0, acoustic_uniformity: 'uniform', state_version: 1,
+    updated_change_set_id: sourceG6.updated_change_set_id
+  });
   const destinationG6 = firstEntry.approved_write_sets[0].inserts.find(
     ({ target_table: table, id }) => table === 'party_g6_instances'
       && id === snapshot.first_entry_spatial_v3.target.g6_instance_id
@@ -267,7 +277,7 @@ test('revision 26 Stage 24 persists deterministic drying-shed preparation', asyn
     consequence: { phase3_kind: 'movement', movement: {
       route_ref: 'trace_ld_v1_route_camp_to_shed', destination: {
         location_ref: 'trace_ld_v1_loc_old_drying_shed' } } } } });
-  assert.equal(firstEntry.approved_write_sets[0].inserts.length, 10);
+  assert.equal(firstEntry.approved_write_sets[0].inserts.length, 12);
   assert.equal(firstEntry.expected_state_versions.length, 2);
 });
 

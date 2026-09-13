@@ -225,6 +225,7 @@ function transactionOwner(client, lockKeys, shouldFailSettle = () => false) {
       return result;
     } catch (cause) {
       await client.query('ROLLBACK');
+      cause.transaction_rollback_confirmed = true;
       throw cause;
     }
   };
@@ -460,6 +461,39 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   assert.equal((await client.query("SELECT state_version FROM party_runtime.party_clocks WHERE party_id='p' ")).rows[0].state_version, '2');
   assert.deepEqual(locks, [...locks].sort(), 'lock phases are globally sorted');
 
+  const factualEventPlan = await makePlan({
+    planId: 'factual-event-plan', idempotencyId: 'factual-event-idem',
+    idempotencyKey: 'factual-event-command-key',
+    changeSetId: 'factual-event-cs',
+    physicalKeys: ['party_runtime.party_temporal_events:factual-event'],
+    inserts: [{
+      target_table: 'party_temporal_events', id: 'factual-event', record: {
+        event_id: 'factual-event', party_id: 'p',
+        event_kind: 'actor_factual_event', status: 'resolved',
+        scheduled_at_whole_minutes: 10,
+        scheduled_at_subminute_numerator: 0,
+        scheduled_at_subminute_denominator: 1,
+        rule_ref: { entity_kind: 'activity_profile',
+          entity_id: 'speech-profile', authoring_version: '1' },
+        policy_ref: { entity_kind: 'turn_step_owner_profile_set',
+          entity_id: 'turn-step-owner-profiles', authoring_version: '1' },
+        preconditions_digest: hex,
+        idempotency_key: 'factual-event-command-key:event:factual-event',
+        change_set_id: 'factual-event-cs',
+        terminal_change_set_id: 'factual-event-cs', state_version: 2
+      }
+    }]
+  });
+  assert.equal((await committer.commit({ plan: factualEventPlan })).ok, true);
+  assert.deepEqual((await client.query(`SELECT status,state_version,
+    change_set_id,terminal_change_set_id
+    FROM party_runtime.party_temporal_events
+    WHERE event_id='factual-event'`)).rows[0], {
+    status: 'resolved', state_version: '2',
+    change_set_id: 'factual-event-cs',
+    terminal_change_set_id: 'factual-event-cs'
+  });
+
   const seededOrdinary = makeSeededOrdinaryState();
   const ordinaryBasisDigest = canonicalDigest({
     domain: 'ordinary_supporting_basis_catalog_v1',
@@ -660,6 +694,15 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   assert.equal(reclaimed.ok, true, JSON.stringify(reclaimed));
   assert.deepEqual((await client.query("SELECT status,state_version,lease_token,result_change_set_id FROM party_runtime.party_command_idempotency WHERE id='reclaim-idem'")).rows[0], { status: 'committed', state_version: '3', lease_token: null, result_change_set_id: 'reclaim-cs' }, 'reclaim uses versioned CAS then terminal settlement');
 
+  const unmarkedLease = await makePlan({ planId: 'unmarked-lease-plan',
+    idempotencyId: 'unmarked-lease-idem', idempotencyKey: 'unmarked-lease-key',
+    changeSetId: 'unmarked-lease-cs' });
+  await client.query("INSERT INTO party_runtime.party_command_idempotency(id,party_id,operation_kind,idempotency_key,canonical_input_digest,expected_state_version_set_digest,status,lease_token,lease_expires_at,created_at_turn) VALUES ('unmarked-lease-idem','p','move','unmarked-lease-key',$1,$2,'leased','active lease','2031-01-01T00:00:00Z',0)", [hex, unmarkedLease.expected_state_versions_digest.replace('sha256:', '')]);
+  const unmarkedLeaseResult = await committer.commit({ plan: unmarkedLease });
+  assert.equal(unmarkedLeaseResult.in_progress, true);
+  assert.equal(unmarkedLeaseResult.error.diagnostics.turn_commit_status,
+    undefined, 'unmarked generic transaction rejection stays ambiguous');
+
   const terminal = await makePlan({ planId: 'terminal-plan', idempotencyId: 'terminal-idem', idempotencyKey: 'terminal-key', changeSetId: 'terminal-cs' });
   await client.query("INSERT INTO party_runtime.party_command_idempotency(id,party_id,operation_kind,idempotency_key,canonical_input_digest,expected_state_version_set_digest,status,terminal_failure_code,terminal_failure_digest,created_at_turn,finalized_at_turn) VALUES ('terminal-idem','p','move','terminal-key',$1,$2,'failed_terminal','state_version_conflict','terminal-digest',0,1)", [hex, terminal.expected_state_versions_digest.replace('sha256:', '')]);
   rechecks = 0;
@@ -684,7 +727,10 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     planId: 'rollback-plan', idempotencyId: 'rollback-idem', idempotencyKey: 'rollback-key', changeSetId: 'rollback-cs'
   });
   failSettle = true;
-  assert.equal((await committer.commit({ plan: rollback })).ok, false, 'late persistence failure is returned by the real committer');
+  const rollbackResult = await committer.commit({ plan: rollback });
+  assert.equal(rollbackResult.ok, false, 'late persistence failure is returned by the real committer');
+  assert.equal(rollbackResult.error.diagnostics.turn_commit_status,
+    'not_started', 'confirmed rollback is an authoritative no-commit result');
   failSettle = false;
   assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_v3_change_sets WHERE id='rollback-cs'")).rows[0].count, '0');
   assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_command_idempotency WHERE id='rollback-idem'")).rows[0].count, '0', 'failed write rolls back both change set and leased idempotency row');
@@ -704,6 +750,36 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     now: () => later,
     recheck: async () => ({ ok: true })
   });
+  const liveLease = await makePlan({ planId: 'live-lease-plan',
+    idempotencyId: 'live-lease-idem', idempotencyKey: 'live-lease-key',
+    changeSetId: 'live-lease-cs' });
+  await client.query(`INSERT INTO party_runtime.party_command_idempotency
+    (id,party_id,operation_kind,idempotency_key,canonical_input_digest,
+     expected_state_version_set_digest,status,lease_token,lease_expires_at,
+     created_at_turn) VALUES ('live-lease-idem','p','move','live-lease-key',
+       $1,$2,'leased','active lease','2031-01-01T00:00:00Z',0)`, [
+    liveLease.canonical_input_digest.replace('sha256:', ''),
+    liveLease.expected_state_versions_digest.replace('sha256:', '')
+  ]);
+  const liveLeaseResult = await concurrentCommitter.commit({ plan: liveLease });
+  assert.equal(liveLeaseResult.in_progress, true);
+  assert.equal(liveLeaseResult.error.diagnostics.turn_commit_status, undefined);
+  const markedRollback = await makePlan({ planId: 'marked-rollback-plan',
+    idempotencyId: 'marked-rollback-idem', idempotencyKey: 'marked-rollback-key',
+    changeSetId: 'marked-rollback-cs' });
+  await client.query(`INSERT INTO party_runtime.party_command_idempotency
+    (id,party_id,operation_kind,idempotency_key,canonical_input_digest,
+     expected_state_version_set_digest,status,terminal_failure_code,
+     terminal_failure_digest,created_at_turn,finalized_at_turn)
+    VALUES ('marked-rollback-idem','p','move','marked-rollback-key',$1,$2,
+      'failed_terminal','state_version_conflict','failure-digest',0,1)`, [
+    markedRollback.canonical_input_digest.replace('sha256:', ''),
+    markedRollback.expected_state_versions_digest.replace('sha256:', '')
+  ]);
+  const markedRollbackResult = await concurrentCommitter.commit({
+    plan: markedRollback });
+  assert.equal(markedRollbackResult.error.diagnostics.turn_commit_status,
+    'not_started');
   await client.query(`INSERT INTO party_runtime.party_npcs
     (party_id,npc_id,run_id,profile_set_id,profile_level,anchor_id,
      identity_state,machine_state,semantic_state)

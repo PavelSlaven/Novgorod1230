@@ -3,11 +3,16 @@ import { TURN_STEP_PLAN_MAPPINGS } from
 import { OBSERVED_EVIDENCE_PLAN_MAPPING } from
   './lower-dvina-trace-phase-2-turn-step-perception-prompt.js';
 
+export function allTurnStepPlanMappings() {
+  return { ...JSON.parse(TURN_STEP_PLAN_MAPPINGS),
+    observed_evidence_inspection: OBSERVED_EVIDENCE_PLAN_MAPPING };
+}
+
 export function turnStepPlanMappings(request) {
-  const mappings = JSON.parse(TURN_STEP_PLAN_MAPPINGS);
+  const mappings = allTurnStepPlanMappings();
   if (request.player_safe_state?.observed_evidence_inspection
-      ?.semantic_grounding_available === true) {
-    mappings.observed_evidence_inspection = OBSERVED_EVIDENCE_PLAN_MAPPING;
+      ?.semantic_grounding_available !== true) {
+    delete mappings.observed_evidence_inspection;
   }
   if (request.player_safe_state?.ordinary_resolution
       ?.discovery_available !== true) {

@@ -1,6 +1,6 @@
 import {
   addElapsedTime,
-  compareGameTimestamp
+  compareGameTimestamp, subtractGameTimestamp
 } from '@rus/time-events-history';
 import {
   selectEarliestTemporalBoundaryBatch
@@ -26,7 +26,7 @@ export function createTracePhase2TemporalAdvance({ contracts,
   }
   return async function advance({
     clock_before: clockBefore,
-    exact_elapsed: exactElapsed,
+    exact_elapsed: exactElapsed, effect_kind: effectKind, consequence,
     relevant_state: state,local_fire_atomic_write_plans:actorPlans=[],
     root_turn_id:rootTurnId='turn:prepared',change_set_id:changeSetId=
       `change:${state.party_id}:trace-phase2:${state.party_state.turn_number+1}`
@@ -53,6 +53,8 @@ export function createTracePhase2TemporalAdvance({ contracts,
         entity_id:executionId}],active_execution_requires_boundary:false,
       available_event_ids:sourceCandidates.map(({boundary_id:id})=>id),
       cumulative_elapsed_minutes:0,processed_source_boundary_ids:[],
+      phase6_state: structuredClone(state),
+      npc_schedule_runtime: structuredClone(state.npc_schedule_runtime ?? []),
       local_fire_runtime:localFireProjection.local_fire_runtime};
     const request=buildTracePhase7TemporalRequest({state,contracts:null,
       executionId,limit:window.clock_after,commandIdempotencyKey:
@@ -70,14 +72,17 @@ export function createTracePhase2TemporalAdvance({ contracts,
       finalization:{visible_package_candidate:
         tracePhase7TemporalVisibleEnvelope(request),
         validation_report:{ok:true}},stop_after_source_batch:false});
-    if(compareGameTimestamp(advanced.result.clock_after,window.clock_after)!==0)
+    const partial = compareGameTimestamp(advanced.result.clock_after,window.clock_after)!==0;
+    if (partial && !(effectKind === 'semantic_activity'
+        && advanced.result.trace.stopped_after_current_batch === true))
       throw temporalError('TRACE_PHASE_2_TEMPORAL_BOUNDARY_REQUIRES_RESOLUTION');
     const plans=advanced.result.combined_change_set.proposals.flatMap(
       (proposal)=>proposal.local_fire_atomic_write_plans??[]);
     return {
       clock_before: clockBefore,
       clock_after: advanced.result.clock_after,
-      exact_elapsed: exactElapsed,
+      exact_elapsed: partial ? { exact_minutes: subtractGameTimestamp(
+        advanced.result.clock_after, clockBefore) } : exactElapsed,
       nearest_boundary: null,
       temporal_results: [advanced.result],
       local_fire_atomic_write_plans:plans,

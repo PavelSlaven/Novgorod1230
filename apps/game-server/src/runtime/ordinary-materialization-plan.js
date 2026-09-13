@@ -82,12 +82,15 @@ export function bindOrdinaryMaterializationPlan(request, output) {
   if (request.mode !== 'resolve_presence') return output;
   const authority = request.authority_envelope;
   if (authority?.stage !== 'resolve_presence') return output;
+  if (['no_change', 'authority_required'].includes(output.resolution)) {
+    return negativePlan(request, output.resolution, output.reason_code);
+  }
   if (authority.selected_supporting_basis_ref != null) {
     if (!ADMISSION_CLASSES.has(output.semantic_admission_class)) {
       return { ...output, semantic_admission_class: null };
     }
     if (output.semantic_admission_class !== authority.candidate.admission_class) {
-      return negativePlan(request, 'absent', 'semantic_admission_mismatch');
+      return negativePlan(request, 'authority_required', 'semantic_admission_mismatch');
     }
     if (!MATERIALIZATION_KINDS.has(output.semantic_materialization_kind)) {
       return { ...output, semantic_materialization_kind: null };
@@ -96,16 +99,27 @@ export function bindOrdinaryMaterializationPlan(request, output) {
       return negativePlan(request, 'no_change', 'semantic_non_item_detail');
     }
   }
+  if (output.resolution === 'materialize') {
+    const constraintVerdict = worldKnowledgeConstraintVerdict(output,
+      request.world_knowledge);
+    if (constraintVerdict == null) return output;
+    if (constraintVerdict === 'blocked') {
+      return negativePlan(request, 'no_change', 'world_knowledge_hard_constraint');
+    }
+  }
   if (['absent', 'no_change', 'authority_required'].includes(output.resolution)) {
     return negativePlan(request, output.resolution, output.reason_code);
   }
   if (output.resolution !== 'materialize' || !Array.isArray(output.entities)
       || output.entities.length !== 1 || !plain(output.entities[0])) return output;
   const entity = output.entities[0];
-  if (!plain(entity.semantic_descriptor)
+  if (Object.keys(entity).length !== 4
+      || !['semantic_type', 'name', 'presence_expectation',
+        'mechanics_proposal'].every((key) => Object.hasOwn(entity, key))
+      || !text(entity.semantic_type) || !text(entity.name)
       || !plain(entity.mechanics_proposal)
       || !supportedWorldKnowledgeRefs(output.world_knowledge_claim_refs,
-        request.world_knowledge)
+        request.world_knowledge, authority.candidate.admission_class)
       || !text(authority.selected_supporting_basis_ref)
       || !authority.allowed_supporting_bases.some(({ basis_ref }) =>
         basis_ref === authority.selected_supporting_basis_ref)
@@ -116,8 +130,8 @@ export function bindOrdinaryMaterializationPlan(request, output) {
     resolution: 'materialize', density_band_proposal: null,
     background_groups: [], presence_resolutions: [],
     entities: [{ semantic_descriptor: {
-      semantic_type: entity.semantic_descriptor.semantic_type,
-      name: entity.semantic_descriptor.name, facts: [] },
+      semantic_type: entity.semantic_type,
+      name: entity.name, facts: [] },
       authority_class: 'ordinary',
       admission_class: authority.candidate.admission_class,
       availability_class: authority.candidate.availability_class,
@@ -133,14 +147,33 @@ export function bindOrdinaryMaterializationPlan(request, output) {
   };
 }
 
-function supportedWorldKnowledgeRefs(refs, worldKnowledge) {
+function supportedWorldKnowledgeRefs(refs, worldKnowledge, admissionClass) {
   if (worldKnowledge == null) return true;
-  const supplied = new Set([
-    ...(worldKnowledge.facts ?? []),
-    ...(worldKnowledge.hard_constraints ?? [])
-  ].map(({ claim_ref: ref }) => ref).filter(text));
-  return Array.isArray(refs) && refs.length > 0
+  const supplied = new Set((worldKnowledge.facts ?? [])
+    .map(({ claim_ref: ref }) => ref).filter(text));
+  if (refs == null || Array.isArray(refs) && refs.length === 0) {
+    return admissionClass === 'common_mundane';
+  }
+  return Array.isArray(refs)
+    && refs.length === new Set(refs).size
     && refs.every((ref) => text(ref) && supplied.has(ref));
+}
+
+function worldKnowledgeConstraintVerdict(output, worldKnowledge) {
+  if (worldKnowledge == null) return 'clear';
+  const constraints = worldKnowledge.hard_constraints ?? [];
+  if (!Array.isArray(constraints)) return null;
+  if (constraints.length === 0) return 'clear';
+  const supplied = constraints.map(({ claim_ref: ref } = {}) => ref);
+  const refs = output.world_knowledge_constraint_refs;
+  if (supplied.some((ref) => !text(ref))
+      || new Set(supplied).size !== supplied.length
+      || !Array.isArray(refs) || refs.length !== supplied.length
+      || new Set(refs).size !== refs.length
+      || refs.some((ref) => !text(ref) || !supplied.includes(ref))) return null;
+  return ['clear', 'blocked'].includes(
+    output.world_knowledge_constraint_verdict)
+    ? output.world_knowledge_constraint_verdict : null;
 }
 
 function noChangePlan(request, reasonCode) {

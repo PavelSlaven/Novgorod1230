@@ -7,6 +7,7 @@ import {
   requireTurnStepExecutionRegistry
 } from './turn-step-execution-registry.js';
 import { requestTurnStepPlanWithRepair } from './turn-step-plan-repair.js';
+import { advancePostAppliedActorStep } from './post-applied-actor-step.js';
 import {
   initialPreparedChainContext,
   nextPendingDiscovery,
@@ -49,6 +50,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const checkRequests = [];
   const writeFragments = [];
   const consequenceFragments = [];
+  const factualEvents = [];
+  const postAppliedTemporalResults = [];
   const preparedEffects = [];
   const ordinaryPlans = [];
   const actionProducedPlans = [];
@@ -134,7 +137,13 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     }
     const preparedContinuationAllowed = preparedPlan != null
       || preparedEffects.length === 0
-      || preparedDirectContinuation(plan)
+      || preparedDirectContinuation(plan, preparedEffects)
+      || (typeof ports.preparedEffectContinuation === 'function'
+        && await ports.preparedEffectContinuation(deepFreeze({
+          plan: structuredClone(plan),
+          request: structuredClone(request),
+          prepared_chain_context: structuredClone(preparedChainContext)
+        })) === true)
       || (plan.resolution === 'domain_request'
         && typeof ports.admitPreparedDomainPlan === 'function'
         && await ports.admitPreparedDomainPlan(deepFreeze({
@@ -176,6 +185,14 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       registry,
       ports
     });
+    const postApplied = await advancePostAppliedActorStep({
+      root_turn_id: identity.rootTurnId,
+      step_index: stepIndex,
+      actor: identity.actor,
+      actor_step_plan: plan,
+      working_projection: execution.workingProjection,
+      factual_events: execution.factualEvents
+    }, ports.postAppliedActorStep);
     if (execution.ordinary_materialization_atomic_write_plan != null
         && ordinaryPlans.length !== 0) {
       stopReason = 'player_response';
@@ -185,9 +202,15 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       }));
       break;
     }
-    workingProjection = execution.workingProjection;
+    workingProjection = postApplied.working_projection;
+    factualEvents.push(...execution.factualEvents);
+    postAppliedTemporalResults.push(...(postApplied.temporal_results ?? []));
     writeFragments.push(...execution.writeFragments);
+    writeFragments.push(...(postApplied.write_fragments ?? []));
     consequenceFragments.push(...execution.consequenceFragments);
+    if (postApplied.consequence_fragment != null) {
+      consequenceFragments.push(postApplied.consequence_fragment);
+    }
     preparedEffects.push(...execution.preparedEffects);
     if (execution.ordinary_materialization_atomic_write_plan != null) {
       ordinaryPlans.push(execution.ordinary_materialization_atomic_write_plan);
@@ -215,17 +238,19 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         execution.background_npc_semantic_atomic_write_plan);
     }
     preparedChainContext = execution.preparedChainContext;
-    if (preparedEffects.length > 2) {
-      throw turnFailure('TURN_STEP_PREPARED_EFFECT_COUNT_INVALID',
-        'A turn-step loop can prepare at most route and direct effect slices.');
-    }
-    const preparedSequenceComplete = preparedEffects.length === 2;
+    // Existing domain-command persistence admits only its prepared pair;
+    // semantic-only chains use the ordinary eight-step loop limit.
+    const preparedDomainBoundary = preparedEffects.length >= 2
+      && preparedEffects.some(({ effect }) => effect.effect_kind === 'domain_command');
     if (execution.checkResult) {
       checkResults.push(execution.checkResult);
       checkRequests.push(execution.checkRequest);
     }
     const summary = plan.interpretation.grounded_attempt;
-    completedSteps.push({ step_index: stepIndex, summary });
+    completedSteps.push({ step_index: stepIndex, summary,
+      ...(execution.checkResult == null ? {} : {
+        check_outcome: execution.checkResult.outcome.band
+      }) });
     workingRevision += 1;
     stepTraces.push(traceFor({
       plan,
@@ -234,12 +259,12 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       applied: true,
       checkResult: execution.checkResult,
       checkRequest: execution.checkRequest,
-      boundary: execution.boundary || preparedSequenceComplete
+      boundary: execution.boundary || preparedDomainBoundary
     }));
 
     const continuation = execution.continuation;
     pendingDiscovery = nextPendingDiscovery({ plan, continuation });
-    if (execution.boundary || preparedSequenceComplete
+    if (execution.boundary || preparedDomainBoundary
         || (pendingDiscovery != null && ordinaryPlans.length > 0)) {
       stopReason = 'player_response';
       remainingIntent = continuation?.remaining_intent ?? '';
@@ -289,6 +314,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     check_requests: checkRequests,
     write_fragments: writeFragments,
     consequence_fragments: consequenceFragments,
+    factual_events: factualEvents,
+    post_applied_temporal_results: postAppliedTemporalResults,
     prepared_effect_ledger: preparedEffectLedger,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plans: actionProducedPlans,

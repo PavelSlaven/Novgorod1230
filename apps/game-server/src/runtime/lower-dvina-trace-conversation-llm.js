@@ -1,5 +1,6 @@
 import { serverError } from '../errors.js';
 import {
+  npcConversationCandidates,
   npcConversationInstructions,
   playerConversationInstructions
 } from './lower-dvina-trace-phase-2-llm-prompts.js';
@@ -32,7 +33,7 @@ export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}
           validation_errors: repair.validation_errors
         } : request)
       }],
-      overrides: { temperature: 0, maxTokens: 20_000 }
+      overrides: { temperature: 0, maxTokens: 1_000 }
     });
     return assemblePlayerConversationPlan(response.output, request);
   };
@@ -46,6 +47,10 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     const semanticRepair = repair?.validation_errors?.some(
       ({ category }) => category === 'semantic_grounding'
     ) === true;
+    if (semanticRepair && npcConversationCandidates(request).some(
+      (candidate) => candidate.contribution_kind === 'speech'
+        && candidate.supporting_operations.length === 0
+    )) return semanticGroundingFallback(repair.original_output, request);
     const modelRequest = worldKnowledgeGrounder == null ? request
       : await worldKnowledgeGrounder.ground(request, 'conversation');
     const response = await roleRunner.run({
@@ -68,7 +73,7 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
           validation_errors: repair.validation_errors
         } : modelRequest)
       }],
-      overrides: { temperature: 0, maxTokens: 20_000 }
+      overrides: { temperature: 0, maxTokens: 1_000 }
     });
     return assembleNpcConversationPlan(response.output, request);
   };
@@ -76,6 +81,47 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     roleRunner, plan, request
   });
   return model;
+}
+
+function semanticGroundingFallback(original, request) {
+  const observations = new Map((request.memory?.current_observations ?? [])
+    .map((entry) => [entry.observation_ref?.entity_id, entry]));
+  const retained = new Map();
+  for (const claim of original?.speech?.claims ?? []) {
+    for (const reference of claim?.source_knowledge_refs ?? []) {
+      const observation = reference?.entity_kind === 'perception_result'
+        ? observations.get(reference.entity_id) : null;
+      if (observation) retained.set(reference.entity_id, observation);
+    }
+  }
+  const facts = [...retained.values()];
+  const uncertainty = 'Остального я подтвердить не могу.';
+  return assembleNpcConversationPlan({
+    contribution_kind: 'speech',
+    speech: {
+      utterance_text: [...facts.map(({ fact_text }) => fact_text),
+        uncertainty].join(' '),
+      dominant_act: 'answer', interaction_tags: [], topic_refs: [],
+      claims: facts.map((entry, index) => ({
+        claim_id: `fallback-current-observation-${index + 1}`,
+        content_summary: entry.fact_text, form: 'assertion',
+        speaker_posture: 'believed_true',
+        source_knowledge_refs: [structuredClone(entry.observation_ref)],
+        mentioned_entity_refs: []
+      })),
+      response_expectation: { kind: 'none', target_refs: [] }
+    },
+    interpretation: {
+      intent: 'Ответить только по подтверждённым сведениям.',
+      grounded_contribution: [...facts.map(({ fact_text }) => fact_text),
+        uncertainty].join(' '),
+      adaptation: 'literal'
+    },
+    resolution: 'automatic',
+    activity: { duration_class: 'domain_owned', effort: 'none' },
+    supporting_operations: [], check: null, handoff: null,
+    reason: 'Ответ ограничен точными текущими наблюдениями.'
+  }, request);
 }
 
 export function createLowerDvinaTraceNpcDecisionSelector({ roleRunner } = {}) {

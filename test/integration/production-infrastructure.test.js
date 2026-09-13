@@ -120,7 +120,7 @@ test('production provider adapter uses role runtime transport and exact HTTP pay
   assert.equal(provider.calls[0].url, '/chat/completions');
   assert.equal(provider.calls[0].authorization, 'Bearer test-key');
   assert.equal(provider.calls[0].body.model, 'fixture-model');
-  assert.equal(provider.calls[0].body.max_tokens, 20_000);
+  assert.equal(provider.calls[0].body.max_tokens, 64);
 });
 
 test('production Stage 25 ports execute the actual Stage 24 party_runtime_v2 plan', async () => {
@@ -293,7 +293,7 @@ test('runTurnWorkflow preserves the code-owned plan seal through the production 
     semanticResolver: async () => ({ status: 'unknown' }),
     decisionSecret: 'production-infrastructure-test',
     decisionExpiresAt: '2030-01-01T00:05:00.000Z',
-    narrator: { run: async ({ request_id: requestId }) => ({ version: 1, schema: 'narration_flow_result', request_id: requestId, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${requestId}`, prose: 'Проходит минута.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['visible'] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }) },
+    narrator: { run: async ({ request_id: requestId }) => ({ version: 1, schema: 'narration_flow_result', request_id: requestId, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${requestId}`, prose: 'Проходит минута.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['visible'] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }) },
     partyStore: store
   };
   const result = await runTurnWorkflow({ party_id: 'party-e2e', turn_number: 1, request_id: 'turn-e2e', idempotency_key: 'turn-e2e', raw_text: 'Жду.', received_at: '2030-01-01T00:00:00.000Z' }, services, { now: '2030-01-01T00:00:00.000Z', requestId: 'turn-e2e' });

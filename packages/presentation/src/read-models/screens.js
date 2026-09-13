@@ -41,6 +41,7 @@ export function createTurnScreenReadModel({
   visibleContext,
   narration,
   actions = [],
+  checks = [],
   panels = {},
   generatedAt = new Date().toISOString()
 } = {}) {
@@ -49,6 +50,7 @@ export function createTurnScreenReadModel({
   if (!Number.isInteger(Number(turnNumber)) || Number(turnNumber) < 1) throw presentationError('TURN_SCREEN_NUMBER_INVALID', 'turnNumber must be a positive integer.');
   if (!plain(visibleContext)) throw presentationError('TURN_SCREEN_VISIBLE_CONTEXT_REQUIRED', 'visibleContext is required.');
   if (!Array.isArray(actions)) throw presentationError('TURN_SCREEN_ACTIONS_INVALID', 'actions must be an array.');
+  if (!validChecks(checks)) throw presentationError('TURN_SCREEN_CHECKS_INVALID', 'checks must be an ordered player-safe array.');
   if (!plain(panels)) throw presentationError('TURN_SCREEN_PANELS_INVALID', 'panels must be an object.');
 
   const output = {
@@ -63,6 +65,7 @@ export function createTurnScreenReadModel({
     visible_context: structuredClone(visibleContext),
     action_panel: { suggested_actions: structuredClone(actions) },
     actions: structuredClone(actions),
+    checks: structuredClone(checks),
     panels: structuredClone(panels),
     input_panel: { free_text_enabled: true, input_contract: 'intent_not_fact' },
     delivery_state: { generated_at: generatedAt, ready: true },
@@ -98,6 +101,7 @@ export function validateTurnScreen(value) {
   if (!text(value.main_prose)) errors.push('main_prose is required');
   if (!plain(value.visible_context)) errors.push('visible_context is required');
   if (value.input_panel?.input_contract !== 'intent_not_fact') errors.push('input contract must be intent_not_fact');
+  if (!validChecks(value.checks ?? [])) errors.push('checks must be an ordered player-safe array');
   errors.push(...sceneAffordanceContextErrors(value.visible_context));
   errors.push(...sceneAffordancePanelErrors(value.panels));
   if (detectHiddenLeaks(value).length) errors.push('screen contains hidden data');
@@ -128,5 +132,31 @@ function rejectHidden(value, label) {
 function presentationError(code, message, details = {}) { const error = new Error(message); error.code = code; error.details = details; return error; }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function text(value) { return String(value ?? '').trim(); }
+function validChecks(checks) {
+  const modifierKinds = ['attribute', 'skill', 'state', 'equipment',
+    'circumstances'];
+  const outcomeBands = ['clean_success', 'success', 'success_with_cost',
+    'failure_with_consequence', 'severe_failure'];
+  return Array.isArray(checks) && checks.every((check, index) =>
+    plain(check) && check.ordinal === index + 1
+    && text(check.actor_label) && text(check.action_label)
+    && check.die === 'd20' && text(check.formula)
+    && Number.isInteger(check.roll) && check.roll >= 1 && check.roll <= 20
+    && Number.isInteger(check.difficulty)
+    && Number.isFinite(check.total)
+    && Array.isArray(check.modifiers)
+    && check.modifiers.length === modifierKinds.length
+    && check.modifiers.every((modifier, modifierIndex) =>
+      plain(modifier) && modifier.kind === modifierKinds[modifierIndex]
+      && text(modifier.label) && Number.isFinite(modifier.value))
+    && plain(check.outcome) && outcomeBands.includes(check.outcome.band)
+    && Number.isFinite(check.outcome.margin)
+    && typeof check.outcome.success === 'boolean'
+    && typeof check.outcome.cost_required === 'boolean'
+    && typeof check.outcome.severe_failure === 'boolean'
+    && (check.outcome.roll_note === null
+      || ['natural_1', 'natural_20'].includes(check.outcome.roll_note))
+    && (check.consequence_label === null || text(check.consequence_label)));
+}
 function result(errors) { return { ok: errors.length === 0, errors }; }
 function fail(message) { return { ok: false, errors: [message] }; }

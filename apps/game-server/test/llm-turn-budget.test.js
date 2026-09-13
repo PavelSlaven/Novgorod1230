@@ -142,7 +142,7 @@ test('gameplay narrator and repair retain custom provider and shared limits', as
     ['local-narrator', 'local-narrator']);
 });
 
-test('every active role and an unseen role receive shared execution limits', async () => {
+test('every role receives the shared timeout and may request a lower token cap', async () => {
   const calls = [];
   const runner = createLlmRoleRunnerAdapter({
     execute: async (input) => {
@@ -156,7 +156,7 @@ test('every active role and an unseen role receive shared execution limits', asy
       overrides: { maxTokens: 1, requestTimeoutMs: 1 } });
   }
   for (const call of calls) assert.deepEqual(call.overrides,
-    { maxTokens: 20_000, requestTimeoutMs: 120_000 });
+    { maxTokens: 1, requestTimeoutMs: 120_000 });
 });
 
 test('runtime provider override reaches every registered gameplay and portrait role', async () => {
@@ -204,32 +204,64 @@ test('selected provider failure has no fallback call', async () => {
   assert.equal(calls[0].runtimeProviderOverride.model, 'chosen-model');
 });
 
-test('turn context has no obsolete whole-turn deadline or aggregate LLM budget', async () => {
+test('turn context enforces a six-minute safety deadline without an aggregate LLM budget', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   await budget.runTurn(async () => {
     assert.equal(budget.clamp(), 120_000);
     assert.equal(budget.clamp({ requestedTimeoutMs: 400 }), 120_000);
     now = 60_000;
-    assert.equal(budget.remaining().deadline_ms, null);
+    assert.equal(budget.remaining().deadline_ms, 300_000);
     assert.equal(budget.remaining().llm_budget_ms, null);
     assert.doesNotThrow(() => budget.assertCanCommit());
     assert.doesNotThrow(() => budget.assertWithinDeadline());
+    now = 355_001;
+    assert.throws(() => budget.assertCanCommit(), (error) => {
+      assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
+      assert.equal(error.deadline_exceeded, false);
+      assert.equal(error.budget_exhausted, true);
+      return true;
+    });
+    now = 360_001;
+    assert.throws(() => budget.assertWithinDeadline(), (error) => {
+      assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
+      assert.equal(error.deadline_exceeded, true);
+      return true;
+    });
   });
   assert.doesNotThrow(() => budget.assertCanCommit());
 });
 
-test('production role runner ignores legacy turn clamp for active calls', async () => {
+test('later gameplay calls are clamped to the remaining safety deadline', async () => {
+  let now = 0;
+  const calls = [];
+  const budget = createLlmTurnBudget({ now: () => now });
+  const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
+    execute: async (input) => {
+      calls.push(input);
+      return { status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm' };
+    } });
+  await budget.runTurn(async () => {
+    await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner' });
+    now = 330_000;
+    await runner.run({ scope: 'turn_runtime', role_id: 'gameplay_narrator' });
+  });
+  assert.deepEqual(calls.map((call) => call.overrides.requestTimeoutMs),
+    [120_000, 30_000]);
+});
+
+test('production role runner applies the active turn safety clamp', async () => {
   const calls = [];
   const runner = createProductionLlmRoleRunner({ turnBudget: {
-    clamp: ({ requestedTimeoutMs }) => Math.min(requestedTimeoutMs, 321)
+    clamp: () => 321,
+    assertWithinDeadline() {}
   }, execute: async (input) => {
     calls.push(input);
     return { status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm', durationMs: 1 };
   } });
   await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner',
     overrides: { requestTimeoutMs: 500 } });
-  assert.equal(calls[0].overrides.requestTimeoutMs, 120_000);
+  assert.equal(calls[0].overrides.requestTimeoutMs, 321);
   assert.equal(calls[0].overrides.maxTokens, 20_000);
 });
 

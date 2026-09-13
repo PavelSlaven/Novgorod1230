@@ -152,6 +152,7 @@ export function createTracePhase3VisibleProjector({
       }
       const speakerLabel = speaker?.ref === contracts.ids.eremeyRef
         ? 'Еремей' : 'Рыбак';
+      const speakerIsEremey = speaker?.ref === contracts.ids.eremeyRef;
       const disclosed = semantic
         ? semantic.route_disclosure != null
         : conversation.route_knowledge_ref != null;
@@ -206,7 +207,7 @@ export function createTracePhase3VisibleProjector({
             'Слова Еремея и найденная синяя шерсть остаются независимыми сведениями.'
           ] : [])
         ],
-        uncertainties: responseKind == null
+        uncertainties: responseKind == null || !speakerIsEremey
           ? [] : disclosed
           ? ['Синяя шерсть ещё не сопоставлена с одеждой Ратши.']
           : ['Еремей мог сообщить не всё, что знает.'],

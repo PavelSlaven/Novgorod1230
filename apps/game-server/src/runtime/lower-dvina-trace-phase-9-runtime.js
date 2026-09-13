@@ -9,7 +9,7 @@ export function createTracePhase9Runtime({ state, bundle,
   conversationBindings, inputDigest, playerConversationModel,
   npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion }) {
   if (![17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-    32].includes(bundle.definition_revision)
+    32, 33, 34].includes(bundle.definition_revision)
       || !phase8Terminal(state)) return null;
   const contracts = resolveTracePhase9Contracts({ state, bundle,
     conversationBindings });

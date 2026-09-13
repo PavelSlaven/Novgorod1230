@@ -532,7 +532,7 @@ const temporalPureModules = new Map([
   ['world-processes', 'test/world-processes.test.js']
 ]);
 const temporalPureImportsByModule = new Map([
-  ['npc-runtime', new Set(['@rus/items-property'])]
+  ['npc-runtime', new Set(['@rus/items-property', '@rus/time-events-history/calendar'])]
 ]);
 const temporalPureImports = new Set([
   '@rus/contracts/spatial-v3/registry',

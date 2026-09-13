@@ -3,6 +3,7 @@ import { resolveTurnStepDomainOwner } from './turn-step-domain-owner-resolution.
 
 export function createTurnStepDomainOwnerPreflight({ externalRegistry,
   semanticBindings, availableOptions, actor, committedState, services,
+  currentCommittedState = () => committedState,
   isDomainStepOperation, isOrdinaryDiscoveryInScope,
   isSpatialSemanticRemainderInScope, isBackgroundNpcSemanticRemainderInScope,
   isActionProductionOwnerInScope,
@@ -13,7 +14,7 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
     const cached = cachedOwners.get(key);
     if (cached != null) return cached;
     const owner = resolveTurnStepDomainOwner({ operation, plan, request, actor,
-      playerSafeState: request.player_safe_state, committedState,
+      playerSafeState: request.player_safe_state, committedState: currentCommittedState(),
       externalRegistry, semanticBindings, availableOptions, preparedChainContext,
       services, isOrdinaryDiscoveryInScope, isSpatialSemanticRemainderInScope,
       isBackgroundNpcSemanticRemainderInScope,
@@ -21,10 +22,12 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
     cachedOwners.set(key, owner);
     return owner;
   };
-  const validate = ({ plan, request,
+  const validate = ({ plan, request, allow_speech_metadata_projection = false,
+    allow_denial_metadata_projection = false,
+    material_prerequisite_candidate = false,
     prepared_chain_context: preparedChainContext }) => {
     const errors = [];
-    const resolvedDomainOperations = [];
+    let resolvedDomainOperations = [];
     const marker = plan.continuation?.prepared_followup_ref;
     if (marker != null && semanticBindings.filter(({ command, binding }) =>
       availableOptions.has(command.option_id)
@@ -33,16 +36,17 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
           operation: structuredClone(operation), plan: structuredClone(plan),
           actor: structuredClone(actor),
           player_safe_state: structuredClone(request.player_safe_state),
-          committed_state: structuredClone(committedState)
+          committed_state: structuredClone(currentCommittedState())
         })) === true)).length !== 1) {
       errors.push({ path: '$.continuation.prepared_followup_ref',
         rule: 'prepared_followup_binding', code: 'prepared_followup_binding',
         message: 'must bind the current available prepared command' });
     }
-    const validateOwners = () => {
-      for (const { operation, path } of plannedDomainOperations(plan,
+    const validateOwners = (candidate = plan) => {
+      resolvedDomainOperations = [];
+      for (const { operation, path } of plannedDomainOperations(candidate,
         isDomainStepOperation)) {
-        const owner = resolve({ operation, plan, request,
+        const owner = resolve({ operation, plan: candidate, request,
           preparedChainContext });
         if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner,
           turnCommandError);
@@ -52,20 +56,41 @@ export function createTurnStepDomainOwnerPreflight({ externalRegistry,
             bound_operation: structuredClone(owner.bound_operation)
           })
         });
-        if (owner.kind === 'missing' && !deferredPreparedDomainPlan({
-          plan, path, preparedChainContext
-        })) errors.push({ path,
+        if (owner.kind === 'missing' && !(candidate === plan
+          && deferredPreparedDomainPlan({
+            plan: candidate, path, preparedChainContext
+          }))) errors.push({ path,
           rule: 'domain_owner_unavailable', code: 'domain_owner_unavailable',
           message: 'must resolve to one available domain owner' });
       }
       if (errors.length !== 0) throw turnCommandError('TURN_STEP_PLAN_INVALID',
         'Semantic plan references an unavailable domain owner.', { errors });
+      if (candidate.continuation?.remaining_intent === request.remaining_intent
+          && candidate.operations?.some((operation, index) =>
+            operation.op === 'request_discovery'
+            && resolvedDomainOperations.some(({ path, owner_kind: kind }) =>
+              path === `$.operations.${index}` && kind === 'binding'))) {
+        throw turnCommandError('TURN_STEP_PLAN_INVALID',
+          'Authored discovery must consume its investigation intent.', { errors: [{
+            path: '$.continuation.remaining_intent',
+            rule: 'continuation_progress', code: 'continuation_progress',
+            message: 'an authored investigation cannot be a material prerequisite; preserve only independent uncovered intent'
+          }] });
+      }
     };
     validateOwners();
-    return services.turnStepSemanticGroundingValidator?.(deepFreeze({
+    const result = services.turnStepSemanticGroundingValidator?.(deepFreeze({
       plan: structuredClone(plan), request: structuredClone(request),
-      resolved_domain_operations: resolvedDomainOperations
+      resolved_domain_operations: resolvedDomainOperations,
+      allow_speech_metadata_projection,
+      ...(allow_denial_metadata_projection ? { allow_denial_metadata_projection: true } : {}),
+      ...(material_prerequisite_candidate ? { material_prerequisite_candidate: true } : {})
     }));
+    const revalidate = (audited) => {
+      if (audited?.corrected_plan != null) validateOwners(audited.corrected_plan);
+      return audited;
+    };
+    return result?.then ? result.then(revalidate) : revalidate(result);
   };
   validate.resolve = resolve;
   return validate;
@@ -91,7 +116,7 @@ function* plannedDomainOperations(plan, isDomainStepOperation) {
   }
 }
 
-function domainOwnerResolutionError(owner, turnCommandError) {
+export function domainOwnerResolutionError(owner, turnCommandError) {
   return turnCommandError(
     owner.kind === 'ambiguous'
       ? 'TURN_STEP_DOMAIN_BINDING_AMBIGUOUS'

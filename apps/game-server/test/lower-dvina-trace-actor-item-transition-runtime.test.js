@@ -87,6 +87,59 @@ test('generic move_entity transfers an NPC worn-quick container to player hands'
     assert.equal(fragment.value.payload.placement.physical_position, 'hands');
   });
 
+test('player-safe inventory derives held runtime items from committed topology',
+  () => {
+    const held = {
+      item_id: 'ordinary-board', template_id: 'ordinary-board-template',
+      quantity: 1,
+      placement: { holder_character_id: 'mikula', physical_position: 'hands' },
+      inventory_profile: {
+        mass_grams: 500, carry_form: 'regular', external_hand_cost: 1
+      }
+    };
+    const committedState = committedStateWith(held);
+    const inventory = projectLowerDvinaTracePlayerSafeState({
+      committed_state: committedState, actor_id: 'mikula'
+    }).player_safe_state.inventory;
+
+    assert.deepEqual(inventory.items, ['ordinary-board']);
+    assert.deepEqual(inventory.total_weight, { grams: 500 });
+    assert.equal(inventory.occupied_hands, 1);
+  });
+
+test('a full pair of hands becomes an in-world move failure', async () => {
+  const held = {
+    item_id: 'held-load', template_id: 'held-load-template', quantity: 1,
+    placement: { holder_character_id: 'mikula', physical_position: 'hands' },
+    inventory_profile: {
+      mass_grams: 500, carry_form: 'regular', external_hand_cost: 2
+    }
+  };
+  const loose = {
+    item_id: 'loose-rope', template_id: 'loose-rope-template', quantity: 1,
+    placement: { location_ref: 'shore' },
+    inventory_profile: {
+      mass_grams: 200, carry_form: 'compact', external_hand_cost: 1
+    }
+  };
+  const committedState = committedStateWith(held);
+  committedState.items.push(loose);
+  const projection = projectLowerDvinaTracePlayerSafeState({
+    committed_state: committedState, actor_id: 'mikula'
+  }).player_safe_state;
+  const result = await runMove(runtimePorts(
+    committedState, loose.inventory_profile), projection, 1,
+  'held_by', loose.item_id);
+
+  assert.equal(result.goal_result, 'not_achieved');
+  assert.equal(result.player_response_boundary, true);
+  assert.deepEqual(result.write_fragments, []);
+  assert.equal(result.consequence_fragment.visible_seed[
+    Object.keys(result.consequence_fragment.visible_seed)[0]].reason,
+  'hands_full');
+  assert.equal(result.working_projection.inventory.occupied_hands, 2);
+});
+
 function actorHeldItem({ itemId, physicalPosition, equipmentSlot, handCost }) {
   const profile = {
     mass_grams: 500, carry_form: 'regular', external_hand_cost: handCost

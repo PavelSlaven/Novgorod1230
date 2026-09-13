@@ -14,6 +14,8 @@
   `active_interlocutor.portrait_asset_id` is an optional non-empty string;
   presentation does not select assets, read positions or infer identity;
 - visible-only validation и leak rejection;
+- ordered `TurnScreen.checks` с уже вычисленными player-safe d20, DC,
+  modifiers, total и outcome; arithmetic остаётся у `@rus/checks-rng`;
 - compatibility `createPublicViewModel`;
 - first-screen delivery attempt, acknowledgement и Stage 27 intent handoff.
 
@@ -46,6 +48,8 @@ write beliefs, or alter the P08 fail-closed port boundary.
 
 - публичный экран не содержит hidden/audit/source payloads;
 - TurnScreen строится только из approved narration flow;
+- `TurnScreen.checks` не содержит `check_id`, RNG audit/seed, policy refs или
+  скрытые NPC checks; порядок задаёт server projection из committed result;
 - FirstGameScreen принимает только успешный Stage 26 result;
 - UI input contract всегда `intent_not_fact`;
 - diagnostic panel разрешён только при явном developer mode и также не содержит hidden state.

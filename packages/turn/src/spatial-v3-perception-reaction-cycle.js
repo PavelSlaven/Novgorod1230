@@ -253,6 +253,45 @@ function resolvePreparedCycle({
   });
 }
 
+export function resolveSpatialV3PerceptionKnowledge({
+  perception_request,
+  knowledge_state_before,
+  persisted_perception = null,
+  persisted_perception_replay_evidence = null
+} = {}) {
+  const perceived = proposeNpcPerception({
+    request: perception_request,
+    persisted_perception,
+    persisted_replay_evidence: persisted_perception_replay_evidence
+  });
+  if (!perceived.ok) return perceived;
+  const knowledge = mergeFormalKnowledgeMemory({
+    proposal: perceived.knowledge_proposal,
+    state_before_fact_refs: knowledge_state_before?.fact_refs,
+    state_before_hypothesis_refs: knowledge_state_before?.hypothesis_refs,
+    state_version_before: knowledge_state_before?.state_version
+  });
+  if (!knowledge.ok) {
+    return fail(
+      knowledge.error_code,
+      knowledge.errors[0],
+      perceived.perception.perceiver_ref,
+      perception_request?.dependency_pins
+    );
+  }
+  return freeze({
+    ok: true,
+    status: 'completed',
+    decision_mode: null,
+    perception_result: perceived.perception,
+    perception_replay_evidence: perceived.perception_evidence,
+    knowledge_proposal: perceived.knowledge_proposal,
+    knowledge_merge_result: knowledge.result,
+    reaction_option_proposal: null,
+    reaction_proposal: null
+  });
+}
+
 /**
  * Synchronous pure participant for a temporal boundary. All state needed to
  * derive the reaction context is already sealed by turn orchestration.

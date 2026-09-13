@@ -29,6 +29,25 @@ export function validateApiEnvelope(value) {
   return value;
 }
 
+export function validateTurnProgress(value) {
+  if (value == null) return null;
+  const phases = ['accepted', 'understanding_action', 'resolving_world',
+    'saving_result', 'preparing_screen', 'recovering_saved_result'];
+  if (!plain(value) || value.version !== 1 || value.schema !== 'turn_progress_v1'
+      || value.status !== 'running' || !text(value.request_id)
+      || !phases.includes(value.phase) || !nonNegativeInteger(value.sequence)
+      || !nonNegativeInteger(value.started_at)
+      || !nonNegativeInteger(value.phase_started_at)
+      || !['unconfirmed', 'committed'].includes(value.commit_state)
+      || !nonNegativeInteger(value.elapsed_seconds)
+      || value.remaining_seconds !== null) {
+    throw webError('TURN_PROGRESS_INVALID',
+      'Turn progress must use the player-safe versioned shape.');
+  }
+  assertNoHiddenFields(value);
+  return value;
+}
+
 export function validatePublicScreen(screen) {
   if (!plain(screen) || screen.version !== 1) throw webError('SCREEN_INVALID', 'Versioned screen is required.');
   if (!['first_game_screen', 'turn_screen',
@@ -41,10 +60,39 @@ export function validatePublicScreen(screen) {
     .includes(screen.schema)) {
     if (!text(screen.turn_id) || !Number.isInteger(Number(screen.turn_number))) throw webError('TURN_SCREEN_ID_INVALID', 'turn_id and turn_number are required.');
     if (screen.input_panel?.input_contract !== 'intent_not_fact') throw webError('INPUT_CONTRACT_INVALID', 'Turn input must use intent_not_fact.');
+    validateChecks(screen.checks ?? []);
   }
   validateSceneAffordances(screen);
   assertNoHiddenFields(screen);
   return screen;
+}
+
+function validateChecks(checks) {
+  const modifierKinds = ['attribute', 'skill', 'state', 'equipment',
+    'circumstances'];
+  const outcomeBands = ['clean_success', 'success', 'success_with_cost',
+    'failure_with_consequence', 'severe_failure'];
+  const valid = Array.isArray(checks) && checks.every((check, index) =>
+    plain(check) && check.ordinal === index + 1
+    && text(check.actor_label) && text(check.action_label)
+    && check.die === 'd20' && text(check.formula)
+    && Number.isInteger(check.roll) && check.roll >= 1 && check.roll <= 20
+    && Number.isInteger(check.difficulty) && Number.isFinite(check.total)
+    && Array.isArray(check.modifiers)
+    && check.modifiers.length === modifierKinds.length
+    && check.modifiers.every((modifier, modifierIndex) =>
+      plain(modifier) && modifier.kind === modifierKinds[modifierIndex]
+      && text(modifier.label) && Number.isFinite(modifier.value))
+    && plain(check.outcome) && outcomeBands.includes(check.outcome.band)
+    && Number.isFinite(check.outcome.margin)
+    && typeof check.outcome.success === 'boolean'
+    && typeof check.outcome.cost_required === 'boolean'
+    && typeof check.outcome.severe_failure === 'boolean'
+    && (check.outcome.roll_note === null
+      || ['natural_1', 'natural_20'].includes(check.outcome.roll_note))
+    && (check.consequence_label === null || text(check.consequence_label)));
+  if (!valid) throw webError('SCREEN_CHECKS_INVALID',
+    'Screen checks must use the ordered player-safe shape.');
 }
 
 function validateSceneAffordances(screen) {
@@ -108,3 +156,4 @@ function forbidden(key) {
 }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function text(value) { return String(value ?? '').trim(); }
+function nonNegativeInteger(value) { return Number.isInteger(value) && value >= 0; }

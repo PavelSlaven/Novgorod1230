@@ -171,6 +171,7 @@ test('Phase 3 presents the actual ordinary NPC speaker, not Eremey', async () =>
 
   assert.match(visible.visible_scene, /^Рыбак говорит:/u);
   assert.deepEqual(visible.visible_changes, ['Рыбак ответил.']);
+  assert.deepEqual(visible.uncertainties, []);
   assert.equal(visible.visible_scene.includes('Еремей'), false);
   assert.equal(visible.visible_npc.find(({ entity_ref: ref }) =>
     ref.entity_id === fisher.instance_id).visible_status, 'говорит с вами');

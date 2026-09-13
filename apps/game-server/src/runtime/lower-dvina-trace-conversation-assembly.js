@@ -37,7 +37,7 @@ export function assembleNpcConversationPlan(choice, request) {
   const requiredCandidate = requiredNpcConversationCandidate(request);
   const admittedCandidate = requiredCandidate
     ?? matchingNpcConversationCandidate(choice, request);
-  return assembleConversationPlan(choice, admittedCandidate, {
+  const assembled = assembleConversationPlan(choice, admittedCandidate, {
     schema: 'conversation_contribution_plan_v1',
     request_id: request.request_id,
     boundary_id: request.boundary_id,
@@ -45,16 +45,34 @@ export function assembleNpcConversationPlan(choice, request) {
     exchange_id: request.exchange_id,
     state_version: request.state_version,
     speaker_ref: structuredClone(request.npc_ref)
-  }, requiredCandidate == null && admittedCandidate != null);
+  }, requiredCandidate == null && admittedCandidate != null,
+  requiredCandidate?.resolution === 'automatic'
+    && requiredCandidate.speech?.claims?.length === 0);
+  const requiredOperation = requiredCandidate?.supporting_operations?.[0]?.op;
+  const allowedActs = request.decision_scope?.operation_contract
+    ?.[requiredOperation]?.required_dominant_acts;
+  return requiredCandidate?.resolution === 'automatic'
+      && Array.isArray(allowedActs)
+      && allowedActs.includes(choice?.speech?.dominant_act)
+    ? { ...assembled, speech: { ...assembled.speech,
+      dominant_act: choice.speech.dominant_act } }
+    : assembled;
 }
 
 function assembleConversationPlan(choice, candidate, envelope,
-  preserveNpcSemantics = false) {
+  preserveNpcSemantics = false, preserveAutomaticSemantics = false) {
   const semantic = structuredClone(choice);
   let bound = candidate == null
     ? semantic : bindKnownConversationValues(candidate, semantic);
-  if (preserveNpcSemantics) bound = preserveNpcConversationSemantics(
-    bound, semantic);
+  if (preserveNpcSemantics || preserveAutomaticSemantics) {
+    const admittedSpeech = bound.speech;
+    bound = preserveNpcConversationSemantics(bound, semantic);
+    if (preserveAutomaticSemantics && bound.speech != null) {
+      bound.speech = { ...bound.speech,
+        dominant_act: admittedSpeech.dominant_act,
+        interaction_tags: structuredClone(admittedSpeech.interaction_tags) };
+    }
+  }
   return { ...bound, ...envelope };
 }
 
@@ -90,7 +108,7 @@ function preserveNpcConversationSemantics(bound, semantic) {
   return {
     ...bound,
     ...(semantic?.speech === null || typeof semantic?.speech !== 'object'
-      ? {} : { speech: structuredClone(semantic.speech) }),
+      ? {} : { speech: completeClaimReferenceLists(semantic.speech) }),
     ...(semantic?.interpretation === null
       || typeof semantic?.interpretation !== 'object'
       ? {} : { interpretation: structuredClone(semantic.interpretation) }),
@@ -99,6 +117,23 @@ function preserveNpcConversationSemantics(bound, semantic) {
     ...(bound?.handoff === null || typeof semantic?.handoff?.intent !== 'string'
       ? {} : { handoff: { ...bound.handoff, intent: semantic.handoff.intent } })
   };
+}
+
+function completeClaimReferenceLists(speech) {
+  const copy = structuredClone(speech);
+  if (!Array.isArray(copy.claims)) return copy;
+  copy.claims = copy.claims.map((claim) => claim == null
+    || typeof claim !== 'object' || Array.isArray(claim) ? claim : ({
+      claim_id: claim.claim_id,
+      content_summary: claim.content_summary,
+      form: claim.form,
+      speaker_posture: claim.speaker_posture,
+      source_knowledge_refs: Array.isArray(claim.source_knowledge_refs)
+        ? claim.source_knowledge_refs : [],
+      mentioned_entity_refs: Array.isArray(claim.mentioned_entity_refs)
+        ? claim.mentioned_entity_refs : []
+    }));
+  return copy;
 }
 
 function bindKnownConversationValues(template, semantic) {

@@ -7,6 +7,7 @@ const ROLE_MODELS = Object.freeze({
   TURN_STEP_GROUNDING_AUDITOR_MODEL: 'fixture-turn-step-grounding-auditor',
   TURN_WORLD_KNOWLEDGE_QUERY_PLANNER_MODEL:
     'fixture-world-knowledge-query-planner',
+  TURN_WORLD_PROCESS_STEP_MODEL: 'fixture-world-process-step',
   TURN_SPATIAL_SEMANTIC_DESCRIPTOR_MODEL:
     'fixture-spatial-semantic-descriptor',
   PLAYER_CONVERSATION_INTERPRETER_MODEL:
@@ -23,6 +24,10 @@ const ROLE_MODELS = Object.freeze({
     'fixture-npc-autonomous-decider-repair',
   NPC_COMBAT_DECIDER_MODEL: 'fixture-npc-combat-decider',
   NPC_COMBAT_DECIDER_REPAIR_MODEL: 'fixture-npc-combat-decider-repair',
+  TURN_NPC_ORDINARY_SEMANTIC_REMAINDER_MODEL:
+    'fixture-npc-ordinary-semantic-remainder',
+  TURN_NPC_ORDINARY_SEMANTIC_REMAINDER_AUDITOR_MODEL:
+    'fixture-npc-ordinary-semantic-remainder-auditor',
   TURN_GAMEPLAY_NARRATOR_MODEL: 'fixture-gameplay-narrator',
   TURN_GAMEPLAY_NARRATOR_REPAIR_MODEL: 'fixture-gameplay-narrator-repair',
   TURN_GAMEPLAY_NARRATOR_AUDITOR_MODEL: 'fixture-gameplay-narrator-auditor'

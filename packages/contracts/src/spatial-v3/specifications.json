@@ -1,7 +1,7 @@
 {
   "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
   "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
-  "amendment_scope": "Appendix A.1-A.7",
+  "amendment_scope": "Appendix A.1-A.8",
   "additional_amendment_sources": [
     {
       "source": "data/knowledge-source/corpus/DOCUMENTS/npc_combat_and_trigger_contract.md",
@@ -10657,7 +10657,7 @@
         {
           "name": "party_state_version",
           "required": true,
-          "type": "positive_decimal_string"
+          "type": "non_negative_decimal_string"
         },
         {
           "name": "relevant_state_projection",
@@ -10999,7 +10999,7 @@
         {
           "name": "base_state_version",
           "required": true,
-          "type": "positive_decimal_string"
+          "type": "non_negative_decimal_string"
         },
         {
           "name": "clock_before",
@@ -13882,7 +13882,8 @@
       "invariants": [
         "raw_text is player input rather than a factual utterance until semantic interpretation and commit.",
         "The context is player-safe and the operation contract contains only code-supported capabilities.",
-        "player_safe_context contains code-owned allowed actor, entity, knowledge and combat target references for the contribution plan."
+        "player_safe_context contains code-owned allowed actor, entity, knowledge and combat target references for the contribution plan.",
+        "activity.duration_class belongs to player_safe_context.allowed_duration_classes."
       ]
     },
     {
@@ -14184,7 +14185,9 @@
         "The request contains only messages and conversation history actually perceived by this NPC.",
         "Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.",
         "Hidden reasons, objective unknown facts and other model prompts are excluded.",
-        "Every actor, entity, knowledge and combat target reference in the response must belong to the explicit code-owned allowed_references set."
+        "Every actor, entity, knowledge and combat target reference in the response must belong to the explicit code-owned allowed_references set.",
+        "Every check attribute, skill and profile reference must belong to the explicit decision_scope allowlists.",
+        "activity.duration_class belongs to decision_scope.allowed_duration_classes."
       ]
     },
     {

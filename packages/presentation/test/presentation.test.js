@@ -45,7 +45,7 @@ function narration() {
       used_references: [],
       self_check: {}
     },
-    final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['Grounded.'] },
+    final_audit: { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['Grounded.'] },
     generation_history: [],
     audit_history: [],
     repair_history: []
@@ -66,6 +66,29 @@ test('creates versioned TurnScreen from approved narration only', () => {
   assert.equal(screen.main_prose, 'На площади глухо переговариваются люди.');
   assert.equal(screen.input_panel.input_contract, 'intent_not_fact');
   assert.equal(validateTurnScreen(screen).ok, true);
+});
+
+test('turn screen carries ordered player-safe checks', () => {
+  const check = {
+    ordinal: 1, actor_label: 'Микула', action_label: 'Перепрыгнуть канаву',
+    die: 'd20', formula: 'd20 + модификаторы', roll: 12, difficulty: 15,
+    modifiers: [
+      { kind: 'attribute', label: 'Характеристика: Ловкость', value: 2 },
+      { kind: 'skill', label: 'Навык: Атлетика', value: 1 },
+      { kind: 'state', label: 'Состояние', value: -1 },
+      { kind: 'equipment', label: 'Снаряжение и нагрузка', value: -2 },
+      { kind: 'circumstances', label: 'Обстоятельства', value: 0 }
+    ], total: 12, outcome: { band: 'success_with_cost', margin: -3,
+      success: false, cost_required: true, severe_failure: false,
+      roll_note: null }, consequence_label: null
+  };
+  const screen = createTurnScreenReadModel({
+    partyId: 'party-1', turnId: 'turn-1', turnNumber: 1,
+    visibleContext: visibleContext(), narration: narration(), checks: [check]
+  });
+  assert.deepEqual(screen.checks, [check]);
+  assert.equal(validateTurnScreen({ ...screen,
+    checks: [{ ...check, total: '12' }] }).ok, false);
 });
 
 test('rejects hidden fields in screen and panels', () => {

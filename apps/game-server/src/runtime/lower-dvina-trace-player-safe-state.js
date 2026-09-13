@@ -26,8 +26,12 @@ import { applyLowerDvinaTraceWorkingProjection } from
   './lower-dvina-trace-player-safe-working.js';
 import { projectActiveConversationInterlocutor } from
   '@rus/visibility-knowledge-memory';
+import { perceivedRoutesForState } from './lower-dvina-trace-scene-presentation.js';
 import { projectLowerDvinaTraceVisibleNpcDetails } from
   './lower-dvina-trace-player-safe-npc-details.js';
+import { inventoryItemIsCarried } from '@rus/items-property';
+import { getCommittedInventoryLoad } from
+  './lower-dvina-trace-committed-inventory.js';
 export { projectLowerDvinaTraceVisibleNpcDetails } from
   './lower-dvina-trace-player-safe-npc-details.js';
 
@@ -35,22 +39,23 @@ export function projectLowerDvinaTracePlayerSafeState({
   committed_state: committedState,
   working_projection: workingProjection,
   working_projection_authority: workingProjectionAuthority,
-  actor_id: actorId
+  actor_id: actorId, scene_presentation: scenePresentation = null
 } = {}) {
   assertProjectionInput(committedState, actorId);
   const profile = committedState.player_profile ?? {};
   const clockWeatherLight = committedState.clock_weather_light ?? {};
   const position = projectPosition(committedState.position);
   const visibleContext = projectVisibleContext(committedState.visible_context);
-  const currentVisibleContext = projectVisibleContext(
+  const currentVisibleContext = projectCampFireState(projectVisibleContext(
     committedState.current_visible_context,
     { path: 'current_visible_context' }
-  );
+  ), committedState, position);
   const visibleContextPackage = projectVisibleContext(
     committedState.visible_context_package,
     { path: 'visible_context_package' }
   );
   const npcs = projectNpcs(committedState.npcs, { position });
+  const perceivedRoutes = perceivedRoutesForState({ scenePresentation, state: committedState });
   const visibleNpcIds = new Set((currentVisibleContext?.visible_npc ?? [])
     .flatMap(({ entity_ref: ref }) => ref?.entity_kind === 'npc'
       ? [ref.entity_id] : []).filter(Boolean));
@@ -80,7 +85,8 @@ export function projectLowerDvinaTracePlayerSafeState({
       clockWeatherLight,
       committedState.clock
     ),
-    inventory: projectInventory(committedState.inventory ?? profile.inventory, {
+    inventory: projectInventory(committedInventory(
+      committedState, committedState.inventory ?? profile.inventory), {
       allowedItemIds: playerSafeItemIds(items)
     }),
     items,
@@ -93,10 +99,12 @@ export function projectLowerDvinaTracePlayerSafeState({
     npcs,
     interactions: projectInteractions(committedState.interactions),
     routes: projectRoutes(committedState.routes),
-    available_routes: projectRoutes(committedState.available_routes),
+    available_routes: projectRoutes(perceivedRoutes.length === 0 ? committedState.available_routes
+      : [...(committedState.available_routes ?? []), ...perceivedRoutes]),
     route_history: projectRouteHistory(committedState.route_history),
     route_knowledge: projectRouteKnowledge(committedState.route_knowledge),
-    knowledge: projectKnowledge(committedState.knowledge),
+    knowledge: projectKnowledge([...(profile.knowledge?.initial_records ?? []),
+      ...(committedState.knowledge ?? [])]),
     visible_context: visibleContext,
     visible_context_package: visibleContextPackage,
     current_visible_context: currentVisibleContext,
@@ -125,6 +133,48 @@ export function projectLowerDvinaTracePlayerSafeState({
     player_safe_state: playerSafeState.position?.location_ref
       === base.position?.location_ref ? playerSafeState : withoutStaleInterlocutor
   });
+}
+
+function committedInventory(state, fallback) {
+  if (!plain(state.party_state)
+      || !plain(state.player_profile?.attributes?.strength)
+      || !plain(state.position)
+      || typeof state.position.g5_anchor_id !== 'string') return fallback;
+  const current = getCommittedInventoryLoad(state);
+  if (!current.mass.pass || !current.hands.pass || !current.load.pass) {
+    return fallback;
+  }
+  const prior = new Map((fallback?.items ?? []).map((item) => [
+    typeof item === 'string' ? item : item?.item_id ?? item?.instance_id,
+    item
+  ]));
+  return {
+    ...(plain(fallback) ? structuredClone(fallback) : {}),
+    items: current.inventory.items.filter(({ item_id: itemId }) =>
+      inventoryItemIsCarried(current.inventory, itemId)).map(({ item_id }) =>
+      structuredClone(prior.get(item_id) ?? item_id)),
+    total_weight: { grams: current.mass.total_mass_grams },
+    load_category: current.load.load_category,
+    occupied_hands: current.hands.hands_used
+  };
+}
+
+export function projectCampFireState(context, state, position) {
+  if (context == null
+      || position?.location_ref !== 'trace_ld_v1_loc_fishing_camp') {
+    return context;
+  }
+  const snapshot = state.environment_snapshot;
+  const lit = snapshot?.source === 'party_environment_snapshot'
+    && snapshot.environment_profile_id === 'trace_ld_v1_env_camp_fire'
+    && snapshot.scope?.location_ref === position.location_ref
+    && snapshot.facts?.includes('lit_fire');
+  const observation = lit
+    ? 'На очаговой площадке горит огонь; рядом устроено место для просушки.'
+    : 'На очаговой площадке сейчас не видно ни пламени, ни тлеющих углей.';
+  return { ...context, sensory_details: [...new Set([
+    ...(context.sensory_details ?? []), observation
+  ])] };
 }
 function projectTemporaryDispositionOptions(value) {
   if (value?.schema !== 'temporary_disposition_option_set_v1') return undefined;

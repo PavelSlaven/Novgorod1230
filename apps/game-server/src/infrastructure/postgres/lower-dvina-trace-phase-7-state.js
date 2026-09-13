@@ -9,6 +9,7 @@ import { completeTurn10Phase7Factual } from
   './lower-dvina-trace-turn-10-phase7.js';
 import {
   applyTracePhase7ScheduleState,
+  phase7StateBeforeSchedule,
   tracePhase7ScheduleHistoryEntry
 } from '../../runtime/lower-dvina-trace-phase-7-state-projection.js';
 import { tracePhase7ActorStep } from
@@ -19,10 +20,10 @@ import { projectLowerDvinaTraceNpcActorStepModeHandoff } from
 export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest, turn10Contracts = null }) {
   factual = completeTurn10Phase7Factual(factual);
-  let next = structuredClone(state);
+  const phase7 = factual.consequence.phase7;
+  let next = phase7StateBeforeSchedule(state, phase7);
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;
-  const phase7 = factual.consequence.phase7;
   const autonomous = phase7.autonomous;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
   const restCompleted = phase7.schedule_temporal.rest_completed === true;

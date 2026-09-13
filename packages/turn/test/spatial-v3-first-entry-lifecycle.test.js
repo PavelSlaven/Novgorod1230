@@ -11,8 +11,12 @@ const topologyWrites = () => [
   write('party_g5_sites', 'g5-1', { parent_g4_id: 'g4-destination' }),
   write('party_scene_baselines', 'baseline-1', { scene_template_ref: template }),
   write('party_g6_instances', 'g6-1', { scene_baseline_id: 'baseline-1', source_scene_template_ref: template }),
+  write('g6_acoustic_profiles', 'g6-1', { g6_instance_id: 'g6-1', ambient_noise: 0,
+    acoustic_uniformity: undefined, state_version: undefined, updated_change_set_id: undefined }),
   write('scene_position_nodes', 'position-1', { g6_instance_id: 'g6-1' }),
   write('party_g6_instances', 'g6-s1', { scene_baseline_id: 'baseline-1', source_scene_template_ref: template }),
+  write('g6_acoustic_profiles', 'g6-s1', { g6_instance_id: 'g6-s1', ambient_noise: 0,
+    acoustic_uniformity: undefined, state_version: undefined, updated_change_set_id: undefined }),
   write('scene_position_nodes', 'position-s1', { g6_instance_id: 'g6-s1' }),
   write('scene_movement_edges', 'edge-out', { scene_baseline_id: 'baseline-1', source_scene_template_ref: template, from_position_id: 'position-1', to_position_id: 'position-s1', reverse_edge_id: 'edge-back' }),
   write('scene_movement_edges', 'edge-back', { scene_baseline_id: 'baseline-1', source_scene_template_ref: template, from_position_id: 'position-s1', to_position_id: 'position-1', reverse_edge_id: 'edge-out' }),
@@ -105,6 +109,7 @@ test('partial or forged S1 topology fails before P16', () => {
     (writes) => writes.pop(),
     (writes) => { writes.find(({ id }) => id === 'edge-back').record.reverse_edge_id = 'forged'; },
     (writes) => { writes.find(({ id }) => id === 'g6-s1').record.source_scene_template_ref = { ...template, authoring_version: '2' }; },
+    (writes) => { writes.find(({ target_table, id }) => target_table === 'g6_acoustic_profiles' && id === 'g6-s1').record.ambient_noise = 1; },
     (writes) => { writes.find(({ id }) => id === 'g6-s1').record.source_scene_template_ref = { ...template, extra: true }; },
     (writes) => { writes.find(({ id }) => id === 'g6-s1').record.source_scene_template_ref = { entity_ref: { entity_kind: 'scene_template' }, authoring_version: '1' }; }
   ]) {

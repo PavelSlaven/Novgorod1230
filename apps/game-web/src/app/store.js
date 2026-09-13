@@ -14,6 +14,7 @@ export function createUiStore(initial = {}) {
     theme: theme(initial.theme),
     newGameDraft: '',
     turnDraft: '',
+    turnProgress: null,
     llmSettings: null,
     llmSettingsDraft: null,
     llmSettingsMessage: null,
@@ -24,7 +25,13 @@ export function createUiStore(initial = {}) {
   return Object.freeze({
     getState: () => state,
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
-    setLoading() { state = freeze({ ...state, status: 'loading', error: null }); publish(); },
+    setLoading(progress = null) { state = freeze({ ...state, status: 'loading', error: null,
+      turnProgress: progress ? structuredClone(progress) : null }); publish(); },
+    setTurnProgress(progress) {
+      if (state.status !== 'loading') return;
+      state = freeze({ ...state, turnProgress: progress ? structuredClone(progress) : null });
+      publish();
+    },
     setScenarios(scenarios) {
       state = freeze({
         ...state,
@@ -46,12 +53,13 @@ export function createUiStore(initial = {}) {
         screen: structuredClone(validated),
         partyId: validated.party_id,
         error: null,
+        turnProgress: null,
         activeOverlay: null,
         opening: freeze({ status: openingStatus, clientAckId, acknowledgedAt })
       });
       publish();
     },
-    setError(error) { state = freeze({ ...state, status: 'error', error: { code: error?.code ?? 'UNKNOWN', message: error?.message ?? 'Request failed.' } }); publish(); },
+    setError(error) { state = freeze({ ...state, status: 'error', turnProgress: null, error: { code: error?.code ?? 'UNKNOWN', message: error?.message ?? 'Request failed.' } }); publish(); },
     showLanding() {
       state = freeze({
         ...state,

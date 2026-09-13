@@ -9,7 +9,8 @@ export function mergePhase2Items(items, clue) {
         condition_state: clue.condition_state,
         legal_status: clue.legal_status,
         ownership: structuredClone(clue.ownership) } : {}),
-      placement: structuredClone(clue.placement), state: exactPickup ? {
+      placement: exactPickup ? structuredClone(clue.placement)
+        : { anchor_id: clue.placement.anchor_id }, state: exactPickup ? {
         semantic_category: clue.semantic_category,
         display_name: 'клочок синей шерсти',
         property_state: structuredClone(clue.property_state),

@@ -25,8 +25,14 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 
 - `normalizeItem`
 - `validateItem`
+- `runtimeItemIsAccessibleInPlace` — current actor control либо current-visible
+  item с точным совпадением всех placement scope refs; concealed, blocked,
+  foreign-held, contained и attached item не получает доступ через этот путь
 - `physicalAccessTier`
 - `calculateCarriedWeight`
+- `inventoryItemIsCarried` — единое pure-правило прямого и вложенного carried
+  placement; runtime transition использует его и учитывает persisted inventory
+  baseline только для refs, уже входивших в этот baseline, без двойного веса
 - `resolveLoadCategory`
 - `buildRecognitionRequest`
 - `validatePropertyRelation`
@@ -72,6 +78,11 @@ Form-only `source_fact_delta` допустим: пустые text/removal fields
 code-owned изменения inventory geometry. Положительные `weapon_capable`,
 `money_like_token` и `written_carrier` требуют хотя бы один уже admitted tool;
 `ordinary_mundane` и `no_useful_result` сохраняют zero-tool path.
+
+O1 common ordinary admission принимает небольшую однородную группу как одну
+persisted identity с bounded `quantity`; mechanics snapshot хранит exact total
+mass, packing и placement всей группы. Quantity не создаёт дополнительные
+LLM-generated identities и не обходит conservation.
 
 A1 v1 сознательно не моделирует небольшой subtractive mass loss/known waste для single-source `preserve_source`; outputs одного action однородны; tools остаются неизменяемыми pins без wear/consumption. Дополнительный finite material в `preserve_source` расходуется только целой unit (`whole`), а finite partial independent transformation закрыта. Неназванное игроком число outputs представляется `requested_output_count = null`; item owner выбирает один actual output, а явно названное число принимает только в пределах массы и `max_new_entities`.
 

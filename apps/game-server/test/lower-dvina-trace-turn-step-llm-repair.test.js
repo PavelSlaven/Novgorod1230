@@ -84,18 +84,20 @@ test('repair role receives original output, request, and structural errors', asy
     original_output: { resolution: 'domain_request', operation_choice: 'missing' }
   });
   assert.equal(seen.role_id, 'turn_step_planner_repair');
-  assert.deepEqual(seen.overrides, { temperature: 0, maxTokens: 20_000 });
+  assert.deepEqual(seen.overrides, { temperature: 0, maxTokens: 20_000,
+    reasoningEffort: 'low' });
   const payload = JSON.parse(seen.messages[1].content);
   assert.deepEqual(Object.keys(payload).sort(), ['original_output', 'request', 'structural_errors']);
   assert.deepEqual(payload.original_output,
     { resolution: 'domain_request', operation_choice: 'missing' });
   assert.deepEqual(payload.request, input);
   assert.deepEqual(payload.structural_errors, structuralErrors);
-  assert.equal(seen.messages[0].content.includes('Repair only listed validation errors'), true);
+  assert.equal(seen.messages[0].content.includes('Repair the listed errors and their dependent causal fields'), true);
+  assert.equal(seen.messages[0].content.includes('complete player_utterance envelope'), false);
   assert.match(seen.messages[0].content,
     /only error is.*activity\.owner[\s\S]*action production requires semantic activity[\s\S]*keep domain_request and the original action_production operation[\s\S]*duration_class and effort[\s\S]*Never clear operations or switch to direct/u);
   assert.equal(seen.messages[0].content.includes(
-    'owner absence is not evidence of impossibility or fantasy'), true);
+    'Owner absence does not establish physical impossibility or fantasy'), true);
   assert.equal(seen.messages[0].content.includes(
     'Never combine move_entity and action_production in one plan'), true);
   assert.equal(seen.messages[0].content.includes(
@@ -107,7 +109,7 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'For action_production_identity_grounding'), true);
   assert.equal(seen.messages[0].content.includes(
-    'remove the unavailable domain operation instead of preserving it'), true);
+    'remove the unavailable domain operation and use a lawful direct reality_limited attempt'), true);
   assert.equal(seen.messages[0].content.includes(
     'For continuation_progress, preserve the original action order'), true);
   assert.equal(seen.messages[0].content.includes(
@@ -115,15 +117,15 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(seen.messages[0].content.includes(
     'does not prove that the selected operation consumed none of the intent'), true);
   assert.equal(seen.messages[0].content.includes(
-    'keep it and remove that covered event'), true);
+    'keep it and remove only that covered event'), true);
   assert.equal(seen.messages[0].content.includes(
     'never return the discarded later operation in operations'), true);
   assert.equal(seen.messages[0].content.includes(
-    'plus any preceding ownerless ambient utterance'), true);
+    'Never drop an earlier uncommitted utterance'), true);
   assert.equal(seen.messages[0].content.includes(
-    'preserve only independent actions after it'), true);
+    'preserve independent uncovered actions'), true);
   assert.equal(seen.messages[0].content.includes(
-    'Re-plan only fields named by structural_errors; do not invent operations or refs.'), true);
+    'Re-plan fields named by structural_errors and their causally dependent fields; use supplied semantic mappings and existing refs, never invent refs.'), true);
   assert.equal(seen.messages[0].content.includes(
     'restore the matching supplied semantic mapping'), true);
   assert.equal(seen.messages[0].content.includes(
@@ -135,7 +137,7 @@ test('repair role receives original output, request, and structural errors', asy
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 
-test('semantic repair prompt does not teach deterministic discovery rewrites',
+test('semantic repair prompt preserves both discovery continuation shapes',
   async () => {
     const remainingIntent = 'Осмотреть плащ и затем уйти с берега.';
     let prompt;
@@ -151,7 +153,51 @@ test('semantic repair prompt does not teach deterministic discovery rewrites',
         code: 'ordinary_discovery_query_identity'
       }]
     });
-    assert.doesNotMatch(prompt, /Required ordinary discovery repair:/u);
+    assert.match(prompt,
+      /Required ordinary discovery repair:[\s\S]*material prerequisite[\s\S]*continuation is exactly[\s\S]*standalone focused discovery losslessly[\s\S]*exact uncovered suffix/u);
+    assert.match(prompt,
+      /Never return a focused discovery query that starts after the beginning[\s\S]*include that introduction in the query[\s\S]*plan the earlier action first/u);
+});
+
+test('continuation repair treats only the current suffix as executable', async () => {
+  const current = 'затем развязываю узел';
+  let prompt;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      prompt = call.messages[0].content;
+      return { output: output() };
+    }
+  } });
+  await model(request({ step_index: 2, working_revision: 1,
+    root_player_action: 'прошу спутника помочь, затем развязываю узел',
+    remaining_intent: current,
+    completed_steps: [{ step_index: 1, summary: 'прошу спутника помочь' }] }), {
+    original_output: {}, structural_errors: [{
+      path: '$.continuation.remaining_intent', code: 'continuation_progress'
+    }]
+  });
+  assert.match(prompt,
+    /Plan only request\.remaining_intent[\s\S]*never repeat, re-plan, or place a completed event/u);
+  assert.match(prompt,
+    /Current step repair:[\s\S]*затем развязываю узел[\s\S]*root_player_action and completed_steps are history[\s\S]*only the exact uncovered suffix/u);
+});
+
+test('operation grounding repair preserves physical acts after discovery',
+  async () => {
+    let prompt;
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run(call) {
+        prompt = call.messages[0].content;
+        return { output: output() };
+      }
+    } });
+    await model(request(), { original_output: {}, structural_errors: [{
+      path: '$.operations.0', code: 'operation_semantic_grounding'
+    }] });
+    assert.match(prompt,
+      /Required operation grounding repair:[\s\S]*discovery only reveals or materializes[\s\S]*never acquires, relocates, transforms, handles, or uses[\s\S]*Words copied into a discovery query do not execute a physical act[\s\S]*every physical act[\s\S]*continuation[\s\S]*textual prefix/u);
+    assert.match(prompt,
+      /current_visible_context\.sensory_details or visible_npc visible_status values already directly answer every visible fact requested[\s\S]*explicit negative fact[\s\S]*achieved direct player_safe_observation/u);
   });
 
 test('repair drops a field rejected as an additional property', async () => {
@@ -166,6 +212,39 @@ test('repair drops a field rejected as an additional property', async () => {
       code: 'additional_property', message: 'is forbidden' }]
   });
   assert.equal('adaptation_type' in plan.interpretation, false);
+});
+
+test('repair omission clears rejected top-level speech fields', async () => {
+  const input = request();
+  const original = { ...output(), resolution: 'direct', goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [], direct_result_kind: 'player_utterance',
+    utterance: { speaker_ref: 'actor_mikula', utterance_text: 'Доброе утро.',
+      input_mode: 'verbatim', delivery: { loudness: 2,
+        duration_class: 'instant' } },
+    continuation: { remaining_intent: input.remaining_intent,
+      depends_on_refs: [] } };
+  const repaired = { ...original,
+    interpretation: { ...original.interpretation,
+      grounded_attempt: 'Подхожу к собеседнику' },
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
+    continuation: { remaining_intent: 'и говорю: «Доброе утро.»',
+      depends_on_refs: [] } };
+  delete repaired.direct_result_kind;
+  delete repaired.utterance;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run() { return { output: repaired }; }
+  } });
+
+  const plan = await model(input, { original_output: original,
+    structural_errors: [
+      { path: '$.direct_result_kind', code: 'direct_result_kind' },
+      { path: '$.utterance', code: 'operation_semantic_grounding' }
+    ] });
+
+  assert.equal(plan.direct_result_kind, null);
+  assert.equal(Object.hasOwn(plan, 'utterance'), false);
+  assert.equal(validateTurnStepPlan(plan, { request: input }).ok, true);
 });
 
 test('unrelated repair cannot invent a code-owned operation selector',

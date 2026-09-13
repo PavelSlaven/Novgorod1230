@@ -1,0 +1,76 @@
+{
+  "schema": "rus.lower_dvina_trace_publication_binding.v1",
+  "binding_id": "lower_dvina_trace_phase_1b_publication_v28",
+  "revision": 28,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "superseded_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v27/publication-binding.json",
+    "id": "lower_dvina_trace_phase_1b_publication_v27",
+    "revision": 27,
+    "schema": "rus.lower_dvina_trace_publication_binding.v1",
+    "digest": "83cd8eca17879484867262199970bf0f70152f2adb69d22d8900a1466045e88a"
+  },
+  "public_metadata": {
+    "title": "След на Нижней Двине",
+    "description": "Младший приказчик приходит в себя после крушения на Нижней Двине.",
+    "available": true
+  },
+  "phase_1a_manifest_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v24/manifest.json",
+    "id": "lower_dvina_trace_phase_1a_v24",
+    "revision": 24,
+    "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
+    "digest": "c1c6feaa072bc334a12703df17fe97df057c741cebc0ce0cf078527df87ee66b"
+  },
+  "scenario_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m21-content/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 33,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "220b872de6b470c8482c982019f9e20e23422927018357fca2a2f07cc2308d5c"
+  },
+  "content_refs": {
+    "scene_presentation": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json",
+      "id": "lower_dvina_trace_scene_presentation_v3",
+      "revision": 3,
+      "schema": "rus.lower_dvina_trace_scene_presentation.v1",
+      "digest": "91f52897e3d3f1c0a64b362ee8b9119f1e398dfc8ebeed0aa3ae6a1785029f6f"
+    }
+  },
+  "materializer_binding_id": "lower_dvina_trace_phase_1a_materialization_bindings_v24",
+  "opening_projection": {
+    "projection_id": "lower_dvina_trace_phase_1b_opening_projection_v18",
+    "schema": "first_game_screen",
+    "version": 1,
+    "visible_field_allowlist": [
+      "party_id",
+      "player.name",
+      "player.social_status",
+      "position",
+      "timestamp",
+      "body",
+      "environment"
+    ],
+    "place_label": "берег крушения на Нижней Двине",
+    "calendar_label": "20 августа 1230 года по юлианскому календарю, 07:00 LMST",
+    "opening_prose": "Вас зовут Микула. Вы — младший приказчик, сын разорившегося кожевника. Ремесло отца вам знакомо: в семье вы помогали с сырьём и товаром, участвовали в погрузке, выполняли хозяйственные поручения. Самостоятельным мастером вы не стали. Когда отцовское дело разорилось, пришлось искать заработок у торговых людей. Теперь вы сопровождаете старших в поездках, следите за счётом товара, различаете владельческие знаки и переписываете простые записи.\n\nВ эту поездку вас отправил купец Савва Твердич. Нанятый лодочник Онисим вёз вас и порученное имущество по реке. Путь оборвало крушение.\n\nВы приходите в себя на берегу Нижней Двины. Одежда промокла насквозь, вас знобит. Голова отзывается тупой болью, ушибленное плечо ноет. Прежде всего надо бы согреться. А дальше — решить, что делать.\n\nНад рекой висит низкое сырое небо. Вдоль берега тянется мокрый песок, за ним темнеет ивняк. У самой воды разбросаны разбитые доски и обрывки снастей. Полоса камыша и осоки уходит вдоль берега; среди обломков лежат ветви, вынесенные сюда течением. Между мокрым песком и ивняком начинается приметная тропа; за кустами её продолжения не видно. У самого берега слышен плеск воды."
+  },
+  "execution_identity": {
+    "materializer_version": "code_materializer_v2",
+    "rng_algorithm_id": "mulberry32_v1",
+    "seed_context": "lower_dvina_trace_phase_1a_mikula_v1",
+    "trigger": "new_game",
+    "occurrence": 0,
+    "scenario_definition_revision": 33,
+    "phase_1a_manifest_digest": "c1c6feaa072bc334a12703df17fe97df057c741cebc0ce0cf078527df87ee66b",
+    "scenario_definition_digest": "220b872de6b470c8482c982019f9e20e23422927018357fca2a2f07cc2308d5c"
+  },
+  "world_compatibility_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v22/publication-binding.json",
+    "digest": "b773277623afa3e89b87dc8b44eb3bebe36ea025fb4864aef73211389f46bf7a"
+  },
+  "publication_availability": "public",
+  "fallback_policy": "forbidden"
+}

@@ -245,8 +245,12 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
       ?? readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) ?? 120_000,
     api: scopeDefaults.api,
     model: provider?.model ?? readRoleModel(defaults, env, shared.model),
-    thinking: defaults.thinking ? { type: readText(env[`${defaults.envPrefix}_THINKING`]) || defaults.thinking } : undefined,
-    reasoningEffort: defaults.reasoningEffort ? (readText(env[`${defaults.envPrefix}_REASONING_EFFORT`]) || defaults.reasoningEffort) : null,
+    thinking: scopeKey === LLM_SCOPES.TURN_RUNTIME
+      ? { type: 'disabled' }
+      : (defaults.thinking ? { type: readText(env[`${defaults.envPrefix}_THINKING`]) || defaults.thinking } : undefined),
+    reasoningEffort: scopeKey === LLM_SCOPES.TURN_RUNTIME
+      ? null
+      : (defaults.reasoningEffort ? (readText(env[`${defaults.envPrefix}_REASONING_EFFORT`]) || defaults.reasoningEffort) : null),
     responseFormat: defaults.responseFormat
       ? { type: readText(env[`${defaults.envPrefix}_RESPONSE_FORMAT`]) || defaults.responseFormat }
       : undefined,

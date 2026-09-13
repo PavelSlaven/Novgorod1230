@@ -2147,6 +2147,13 @@ RETRIEVE
 
 Не вводить отдельную универсальную classifier LLM только ради этих трёх состояний. Использовать фактический semantic orchestration и real call sites.
 
+Для raw free-text boundary, где code-owned call site не может доказать `NONE`
+до понимания текста, уже существующий query planner может завершить собственную
+работу каноническим пустым six-field plan. Это означает
+`NO_KNOWLEDGE_REQUIRED`, а не отсутствие coverage: такой план допустим только
+когда semantic step полностью разрешается supplied current state без внешней
+factual premise. Второй classifier или planner не создаётся.
+
 ---
 
 # 51. Query planner responsibility
@@ -2164,6 +2171,14 @@ requested_predicates
 search_hints
 query_locale
 ```
+
+Для purpose `semantic_resolution` `domains: []` вместе с пустыми
+`focus_refs`, `requested_predicates` и
+`search_hints` является единственной planner-формой
+`NO_KNOWLEDGE_REQUIRED`. Любая factual need требует хотя бы одного allowed
+domain, даже если подходящий ref отсутствует или ожидается gap. Непустые refs,
+predicates либо hints при пустом `domains` invalid. Другие purposes сохраняют
+непустой domain и собственный grounding contract.
 
 Planner не может:
 
@@ -2469,6 +2484,10 @@ KNOWLEDGE_UNAVAILABLE
 ```
 
 Для `PARTIAL/UNRESOLVED/OUT_OF_SCOPE/UNAVAILABLE` model не получает право «дополнить факт по памяти».
+
+Для planner-resolved `NO_KNOWLEDGE_REQUIRED` retrieval/Core не вызываются;
+consumer получает явный sufficiency marker и не добавляет factual premises из
+model memory.
 
 Она может:
 
@@ -3714,6 +3733,15 @@ Auditor отдельно перечисляет required, used и implied factua
 их evidence и unsupported accepted premises; пустой backlog без такого
 per-trace assessment не является положительным аудитом.
 
+После ready/failed результата и сохранения immutable trace аудитор может
+последовательно использовать отдельную малую NLI-модель для проверки
+relevance/entailment/contradiction. Она получает только audit projection
+завершённого хода, не участвует в gameplay critical path, не veto/repair-ит
+ответ, не поставляет отсутствующие facts, не пишет party/WK state и не меняет
+accepted/commit/presentation status. Её PASS — лишь evidence component и не
+заменяет независимый premise audit или saturation verdict. Timeout/ошибка
+NLI сохраняется как audit concern, не меняя результат игры.
+
 ### Gap classes и правильный owner
 
 - `COVERED_BY_WORLD_KNOWLEDGE`: существующий approved factual support.
@@ -3742,7 +3770,7 @@ Replay ссылается на реальную новую трассу и не�
 commit либо ожидаемый typed rejection с совпадающим error code и без commit.
 Простая смена status, HTTP 200 или unit fixture не заменяет replay.
 
-### Реальный browser/local-model acceptance
+### Реальный browser/selected-model acceptance
 
 Финальный PLAYER работает через настоящий Chromium/Playwright. Он получает
 только фактический player-facing DOM, формирует свободное намерение и вводит
@@ -3753,14 +3781,19 @@ LLM fixture, canned response и network interception запрещены. Private
 `play:local` в каждом acceptance run проверяет/provisions embedded PostgreSQL
 и pinned Giga, запускает production server и owned processes, а runner
 гарантированно закрывает их. По умолчанию он также provisions local Gemma.
-Для явно назначенного владельцем acceptance endpoint допустима та же Gemma на
-другом компьютере через OpenAI-compatible API; runner не запускает второй
-inference process на текущем ПК. Development explorer и все production roles
-используют один явно зафиксированный endpoint без fallback. Каждая LLM call
-сохраняет единые `maxTokens = 20_000` и timeout 120 с.
+Для явно назначенного владельцем acceptance endpoint/model допустим внешний
+OpenAI-compatible provider; runner не запускает второй gameplay/generative
+inference process на текущем ПК. Development explorer и все production roles используют один явно
+зафиксированный endpoint/model без fallback. Отдельный post-turn NLI-аудитор
+может быть размещён на той же GPU0 или CPU только вне runtime и после trace;
+evidence фиксирует model/revision, backend, размещение, latency, peak memory и
+запас GPU0. Каждая gameplay LLM call сохраняет `maxTokens = 20_000` и верхнюю
+границу timeout 120 с; поздний вызов ограничивается остатком общего safety
+deadline владельца хода.
 
-Evidence фиксирует exact HEAD, Gemma model и revision/checksum либо точный
-served model identity для внешнего endpoint, inference version/backend, Giga
+Evidence фиксирует exact HEAD, default Gemma model и revision/checksum либо
+точный selected served model identity для внешнего endpoint, inference
+version/backend, Giga
 revision, provider config identity, hardware/runtime metadata,
 campaign/turn/trace IDs и private gap audit. Fixture-based unit/CI не заменяет
 этот evidence.
@@ -3775,7 +3808,7 @@ unsupported premises в accepted traces — ноль. P2 должен быть r
 иметь независимо принятый bounded limit. Regression replay не считается unseen.
 Новый critical finding сбрасывает последовательность. Это ограниченное
 эмпирическое насыщение проверенного пространства, не математическая полнота
-мира. Verdict допустим только после трёх реальных browser/Gemma кампаний
+мира. Verdict допустим только после трёх реальных browser/selected-model кампаний
 на неизменном candidate и явного доказательства `unsupported accepted
 premises = 0`, `new P0/P1 = 0`.
 

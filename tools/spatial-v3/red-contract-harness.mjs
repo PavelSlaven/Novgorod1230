@@ -80,7 +80,7 @@ export async function loadCanonicalTarget() {
     ...npcAmendmentContracts.flat()
   ]);
   const errors = mergeByName(historical.errors, amendmentErrors);
-  if (amendmentContracts.length !== 62 || amendmentErrors.length !== 24) throw new Error('Temporal/PR8 amendment totals changed; refresh the target contract evidence');
+  if (amendmentContracts.length !== 64 || amendmentErrors.length !== 24) throw new Error('Temporal/PR8 amendment totals changed; refresh the target contract evidence');
   if (npcAmendmentContracts.map((contracts) => contracts.length).join(',') !== '2,3,7') throw new Error('M2 NPC contract amendment totals changed; refresh the target contract evidence');
   if (contracts.length !== 225 || errors.length !== 82) throw new Error('Current 4.5 target union no longer matches the canonical amendments');
   return {

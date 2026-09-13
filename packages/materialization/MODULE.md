@@ -13,7 +13,7 @@
 - проекцией G5 из approved profile/layout/slot rules и NPC/items из нормализованных eligible candidates;
 - code-only item placement primitive, который Stage 16 использует для
   equipment candidate → NPC/player instance resolution;
-- pure ordinary foundation helpers: density/budget policy, supporting-basis and
+- pure ordinary foundation helpers: density metadata, supporting-basis and
   prepared-group validation, stable refs and minimal aggregate transitions;
 - signed command tokens и проверкой bounded decisions.
 
@@ -24,6 +24,17 @@
 - не подмешивает equipment в scenario party result: этот handoff завершает
   общий Stage 16;
 - не вызывает LLM.
+
+Revision 33 инициализирует calendar routine через `@rus/npc-runtime` из
+approved profile. Current successor item templates use exact approved catalog
+labels; materialization writes them once to existing `state.display_name` for
+initial items and Stage 16 equipment. Historical template content is unchanged.
+The current dossier binding also supplies player-known biography, memories,
+received instructions and prior relations through the existing dossier fields.
+Materialization copies those authored premises; it creates neither a new NPC
+nor a current perceptual identification from a remembered relationship.
+Stage 24 сохраняет её в canonical schedule table в общей
+NewGame транзакции; подготовленный G6 при этом не materialize заранее.
 
 ## Публичный API
 
@@ -70,7 +81,7 @@ persisted formal placement.
 
 ## Допустимые зависимости
 
-`@rus/kernel` и стандартная библиотека Node.js.
+`@rus/kernel`, чистый routine API `@rus/npc-runtime` и стандартная библиотека Node.js.
 
 ## Запрещённые зависимости
 
@@ -89,10 +100,27 @@ draws идут после прежнего deterministic prefix, а пустой
 ограничивает prerequisite draws: например, authored `braided` требует
 совместимую длину волос, а facial hair — совместимые sex/age. Противоречивый
 authored набор отклоняется до первого RNG draw.
-Ordinary aggregate transition также детерминирован, CAS-bound и bounded
-`resolution_record_cap`; повторный candidate/coverage/context или identity
+Ordinary aggregate transition также детерминирован и CAS-bound; legacy
+`identity_budget`, `remaining_identity_budget` и `resolution_record_cap`
+сохраняются как compatibility fields, но не ограничивают суммарную
+конкретизацию scope. Повторный candidate/coverage/context или identity
 отклоняется вместо reroll. `concealed` либо container access не меняют authority
 и не являются фактом этого ledger.
+
+## Полнота воспринимаемой сцены
+
+Литературная приёмка использует единую
+[ситуационную норму](../../data/knowledge-source/corpus/DOCUMENTS/situational_prose_requirements.md).
+
+Полнота воспринимаемой сцены принадлежит исходным world/profile owners и
+материализации, а не длине текста narrator. При появлении в новом месте должны
+быть доступны причинно подтверждённые ориентиры ближнего и дальнего плана,
+видимые выходы и значимые препятствия; погода, свет и слышимая деятельность —
+когда для них есть актуальное основание. Это не обязательный список ощущений
+для каждого хода. Видимость пути не доказывает знание его назначения или
+безопасности. Недостающую ordinary-конкретику разрешает существующая
+materialization boundary; значимая география, люди и hidden facts требуют
+соответствующей authority. Narration не восполняет отсутствующий источник.
 
 ## Ошибки
 

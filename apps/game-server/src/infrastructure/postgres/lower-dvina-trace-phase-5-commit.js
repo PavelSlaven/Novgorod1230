@@ -59,7 +59,7 @@ export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
   });
   next = turnStep.snapshot;
   const pendingScreen = phase5PendingScreen({
-    state, factual, visibleEnvelope, turnNumber, nextVersion
+    state: next, factual, visibleEnvelope, turnNumber, nextVersion
   });
   const writes = mergeLowerDvinaTraceTurnStepWrites(phase5Writes({
     partyId, state, next, factual, visibleEnvelope, pendingScreen,

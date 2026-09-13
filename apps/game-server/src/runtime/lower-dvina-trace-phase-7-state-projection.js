@@ -1,3 +1,23 @@
+import { compareGameTimestamp } from '@rus/time-events-history';
+import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
+
+export function phase7AttemptTemporalResults(phase7) {
+  return [...(phase7.resumed === true ? [] : [phase7.temporal.result]),
+    phase7.schedule_temporal.result];
+}
+
+export function phase7StateBeforeSchedule(state, phase7) {
+  const results = phase7AttemptTemporalResults(phase7);
+  const transitions = results.flatMap((result) =>
+    result.combined_change_set?.proposals ?? [])
+    .map((proposal) => proposal.npc_routine_transition).filter(Boolean);
+  if (transitions.some(({ occurred_at: at }) =>
+    compareGameTimestamp(at, phase7.schedule_execution.clock_after) > 0)) {
+    fail('TRACE_PHASE_7_TEMPORAL_WRITE_CONFLICT');
+  }
+  return applyNpcRoutineTemporalResults(structuredClone(state), results);
+}
+
 export function applyTracePhase7ScheduleState({ state, execution,
   changeSetId, activeActorStep }) {
   const next = structuredClone(state);

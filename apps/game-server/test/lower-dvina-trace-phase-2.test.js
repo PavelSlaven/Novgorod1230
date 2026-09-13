@@ -118,9 +118,9 @@ test('RNG version mismatch fails before resolver or commit', async () => {
   assert.equal(f.commitCount(), 0);
 });
 
-test('exact path commits inspection, check, time, body effect and clue', async () => {
-  const diagnostics = createLlmDiagnostics({ developerMode: true });
-  const f = fixture({ llmDiagnostics: diagnostics });
+test('exact inspection commits', async () => {
+  const diag = createLlmDiagnostics({ developerMode: true });
+  const f = fixture({ llmDiagnostics: diag });
   const result = await f.runtime.submitTurn({
     partyId: f.partyId,
     input: {
@@ -131,7 +131,7 @@ test('exact path commits inspection, check, time, body effect and clue', async (
     }
   });
   assert.equal(result.option_id, 'inspect_wreck_in_detail');
-  const trace = diagnostics.takeLogReport({ party_id: f.partyId }).gameplay_traces;
+  const trace = diag.takeLogReport({ party_id: f.partyId }).gameplay_traces;
   assert.equal(trace[0].event, 'turn_context');
   assert.equal(trace[0].authoritative_context.party_state.state_version, 1);
   assert.deepEqual(trace[0].player_safe_state.party_state, undefined);
@@ -144,7 +144,7 @@ test('exact path commits inspection, check, time, body effect and clue', async (
   assert.ok(trace.find(({ event }) => event === 'owner_commit_requested')?.write_plan);
   assert.ok(trace.find(({ event }) => event === 'owner_commit_completed')
     ?.outcome);
-  assert.equal(JSON.stringify(diagnostics.report({ party_id: f.partyId })).includes('authoritative_context'), false);
+  assert.equal(JSON.stringify(diag.report({ party_id: f.partyId })).includes('authoritative_context'), false);
   assert.equal(f.bundleRequests[0].scenarioDefinitionRevision, 7);
   assert.equal(result.check.difficulty, 12);
   assert.equal(result.check.modifiers.attribute, 1);
@@ -182,6 +182,7 @@ test('exact path commits inspection, check, time, body effect and clue', async (
   assert.equal(f.narratorInput().delivery_turn_number, 1);
   const visible = f.narratorInput().visible_context;
   assert.deepEqual(visible.visible_changes, [
+    'Вы подробно осмотрели место крушения.',
     'На берегу лежат обломки разбитой лодки.',
     'В мокром песке видны босые следы.',
     'Рядом заметен отдельный след сапога.',

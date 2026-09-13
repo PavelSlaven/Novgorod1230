@@ -81,18 +81,37 @@ for (const discoveryKind of ['search', 'inspect']) test(
   `executed ${discoveryKind} result is one completed visible change`, async () => {
     const query = 'Следы у кромки воды.';
     const action = discoveryKind === 'search' ? 'Поиск' : 'Осмотр';
+    const activity = { kind: 'semantic_activity',
+      discovery_kind: discoveryKind, duration_minutes: 15,
+      discovery_result: { resolution: 'no_change', query } };
     const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
       fallback: { project: async () => assert.fail() }
     }).project({ retrieved_state: committedState(), consequence: {
-      visible_seed: { turn_step_discovery: { kind: 'semantic_activity',
-        discovery_kind: discoveryKind, duration_minutes: 15,
-        discovery_result: { resolution: 'no_change', query } },
+      visible_seed: { turn_step_discovery: activity,
       ordinary_presence_seed: { kind: 'ordinary_presence_seed',
         resolution: 'no_change', query } }
-    } });
-    assert.deepEqual(visible.visible_changes, [
-      `${action} по вопросу «${query}» не дал подтверждённой находки.`]);
+    }, time_update: { prepared_effect_ledger: { slices: [{ step_index: 1,
+      consequence: { visible_seed: { turn_step_discovery: activity } } }] } },
+    mode_resolution: { decision_trace: { remaining_intent: 'Развести огонь.',
+      step_traces: [{ step_index: 1, applied: true, approved_plan: {
+        resolution: 'domain_request', goal_result: 'pending',
+        operations: [{ op: 'request_discovery' }] } }] } } });
+    const expected = `${action} по вопросу «${query}» не дал подтверждённой находки.`;
+    assert.deepEqual(visible.visible_changes, [expected]);
     assert.deepEqual(visible.uncertainties, []);
+    const narrator = createLowerDvinaTraceNarrationService({ roleRunner: {
+      async run(call) {
+        const wire = JSON.parse(call.messages[1].content);
+        assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), [expected]);
+        if (call.role_id === 'gameplay_narrator') return { output: {
+          prose: expected, action_options: [], used_references: [] } };
+        return { output: { ...reviewedNarration(wire.segments, {
+          visible_change_1: ['s1'] }), evidence: ['Performed result is the current beat.'] } };
+      }
+    } });
+    assert.equal((await narrator.run({ version: 1, schema: 'narration_request',
+      request_id: `domain-${discoveryKind}`, surface: 'turn',
+      visible_context: visible, context: {} })).status, 'approved');
   });
 
 test('unexecuted or mismatched discovery keeps ordinary uncertainty', async () => {
@@ -279,6 +298,8 @@ for (const [scene, detail, query] of [
       assert.equal(visible.visible_changes.some(value => value.includes('15 минут')), false);
       assert.ok(visible[resolution === 'absent' ? 'visible_changes' : 'uncertainties']
         .some(value => value.includes(`«${query}»`)));
+      if (resolution === 'absent') assert.equal(
+        visible.visible_changes.includes('Вы завершили поиск.'), false);
       assert.equal(visible.uncertainties.some((value) =>
         value.includes(remaining)), false);
       assert.ok(visible.do_not_imply.includes('uncompleted_remaining_intent'));

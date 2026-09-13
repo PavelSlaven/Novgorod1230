@@ -247,7 +247,8 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
     : workingProjectionAuthority.admit(projectPreparedOrdinaryItem(
       applied.working_projection, plan));
   const activity = ordinaryDiscoveryActivity({ operation: execution.operation,
-    request: execution.request, ordinaryPlan: plan, knownResolution: applied.known_resolution });
+    request: execution.request, plan: execution.plan, ordinaryPlan: plan,
+    knownResolution: applied.known_resolution });
   if (activity == null) return plan == null ? applied
     : { ...applied, working_projection: projection };
   const timed = await applySemanticActivity({ ...execution,
@@ -266,7 +267,8 @@ export async function prepareOrdinaryDiscoveryResult({ applied, execution,
       ...timed.consequence_fragment, visible_seed: {
         ...applied.consequence_fragment?.visible_seed,
         ...Object.fromEntries(Object.entries(timed.consequence_fragment.visible_seed)
-          .map(([key, value]) => [key, { ...value, discovery_kind: 'search',
+          .map(([key, value]) => [key, { ...value,
+            discovery_kind: execution.operation.discovery_kind,
             ...(searchResult == null ? {} : { discovery_result: searchResult }) }]))
       } } };
 }

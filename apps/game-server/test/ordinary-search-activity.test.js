@@ -8,7 +8,7 @@ import { resolveTurnStepSemanticActivityTime } from '@rus/turn';
 import { enabled, group, request, verifyStageBCutover } from './lower-dvina-trace-o1-fixture.js';
 import { createPorts, projection } from './lower-dvina-trace-turn-step-runtime-ports-fixture.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
-import { createLowerDvinaTraceTurnStepGenericOwners } from '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
+import { createLowerDvinaTraceTurnStepGenericOwners, ordinaryDiscoveryActivity } from '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
 import { validateTurnStepBatchPlanBindings } from '../src/infrastructure/postgres/lower-dvina-trace-turn-step-plan-binding.js';
 
 const raw = await readFile(new URL('../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/turn-step-owner-profiles.json', import.meta.url));
@@ -110,11 +110,91 @@ for (const resolution of ['absent', 'no_change', 'authority_required']) {
       batch: { ...cachedBinding.batch, operations: retry.write_fragments.map(fragment => ({
         ...fragment, value: { ...fragment.value, step_index: 2 } })) } }));
     committed = null;
+    const prerequisiteOperation = { ...input.operation,
+      discovery_kind: 'inspect', query: 'обрезок кожи' };
+    const remainingIntent = 'Взять обрезок кожи и обернуть рукоять.';
     const inspect = await ports.ordinaryDiscoveryResolver({ ...input,
-      operation: { ...input.operation, discovery_kind: 'inspect' } });
+      operation: prerequisiteOperation,
+      request: { ...input.request, remaining_intent: remainingIntent },
+      plan: { ...input.plan, operations: [prerequisiteOperation],
+        continuation: { remaining_intent: remainingIntent,
+          depends_on_refs: [] } } });
     assert.equal(inspect.duration_minutes, 0, 'material prerequisite does not perform a physical search');
   });
 }
+
+test('standalone ordinary inspect no_change performs and persists its activity',
+  async () => {
+    const input = request('Осматриваю берег.');
+    input.request.step_index = 1;
+    input.request.actor = { actor_id: 'mikula', body: { health: 100,
+      satiety: 100, energy: 100, active_conditions: [], body_parts: {} } };
+    input.operation = { ...input.operation, op: 'request_discovery',
+      actor_ref: 'mikula', discovery_kind: 'inspect' };
+    input.plan = { resolution: 'domain_request', activity: { owner: 'domain' },
+      operations: [input.operation], continuation: null };
+    input.working_projection = projection();
+    let calls = 0;
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'inspect', verifyStageBCutover,
+      loadEnablement: async () => enabled(),
+      ordinaryMaterializationModel: async (modelRequest) => {
+        calls += 1;
+        return modelRequest.mode === 'seed_scope' ? {
+          schema: 'ordinary_materialization_plan_v1',
+          request_id: modelRequest.request_id, resolution: 'seeded',
+          density_band_proposal: 'ordinary', background_groups: [group()],
+          entities: [], presence_resolutions: [], reason_code: 'seed'
+        } : {
+          schema: 'ordinary_materialization_plan_v1',
+          request_id: modelRequest.request_id, resolution: 'no_change',
+          density_band_proposal: null, background_groups: [], entities: [],
+          presence_resolutions: [{
+            candidate_key: modelRequest.candidate_query.candidate_key,
+            coverage_key: modelRequest.candidate_query.coverage_key,
+            resolution: 'no_change'
+          }], reason_code: 'no_change'
+        };
+      }
+    });
+    const ports = createPorts({ ordinaryDiscoveryResolver: resolver,
+      semanticActivityOwner: owners.semanticActivityOwner });
+    const applied = await ports.ordinaryDiscoveryResolver(input);
+    assert.equal(calls, 2);
+    assert.equal(applied.duration_minutes, 15);
+    assert.equal(applied.body_state_after.energy, 99);
+    assert.equal(applied.write_fragments.length, 1);
+    const activitySeed = Object.values(
+      applied.consequence_fragment.visible_seed
+    ).find(({ kind }) => kind === 'semantic_activity');
+    assert.equal(activitySeed.discovery_kind, 'inspect');
+    assert.deepEqual(projectDirectSeedChanges({
+      input: { consequence: applied.consequence_fragment },
+      directSeedKeys: Object.entries(applied.consequence_fragment.visible_seed)
+        .filter(([, value]) => value.kind === 'semantic_activity')
+        .map(([key]) => key)
+    }), [`Осмотр по вопросу «${input.operation.query}» не дал подтверждённой находки.`]);
+    assert.doesNotThrow(() => validateTurnStepBatchPlanBindings({
+      batch: { root_turn_id: input.request.root_turn_id,
+        operations: applied.write_fragments },
+      state: { actor_id: 'mikula', items: [] },
+      ordinaryPlan: applied.ordinary_materialization_atomic_write_plan,
+      factual: { loop_trace: { step_traces: [{ applied: true, step_index: 1,
+        approved_plan: input.plan, plan_request: input.request }] } }
+    }));
+  });
+
+test('ordinary look remains free after a resolved discovery result', () => {
+  assert.equal(ordinaryDiscoveryActivity({
+    operation: { op: 'request_discovery', discovery_kind: 'look' },
+    request: { root_turn_id: 'turn:party:1', step_index: 1 },
+    plan: { continuation: null },
+    ordinaryPlan: {
+      resolution: 'no_change',
+      request_identity: 'turn:party:1:ordinary:presence:step:1'
+    }
+  }), null);
+});
 
 function restoredEnablement(plan) {
   const value = enabled();

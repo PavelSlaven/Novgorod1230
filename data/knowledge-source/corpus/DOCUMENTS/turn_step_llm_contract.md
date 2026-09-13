@@ -554,7 +554,10 @@ Discovery проходит обычный focused audit; повторный lite
 Closed material-prerequisite mapping в assembly привязывает model-emitted discovery kind к `inspect`
 только при ordinary scope, literal, exact полном intent в continuation и отдельном
 query. Это не semantic acceptance: focused auditor по-прежнему проверяет query.
-Настоящий focused search сохраняет duration/body и его player-response boundary.
+Настоящий focused search и standalone focused inspect с `continuation:null`
+сохраняют duration/body и player-response boundary. Inspect как material
+prerequisite с полным неизменённым intent в continuation остаётся preflight и
+не исполняет более позднее действие.
 Отсутствие actionable ref не доказывает отсутствия ordinary материала;
 committed sensory facts могут обосновать prerequisite, слова игрока имеют
 `evidence_weight: 0`. `reality_limited`, `make_believe` и disabled discovery
@@ -563,10 +566,10 @@ committed sensory facts могут обосновать prerequisite, слова
 отсутствие owner не доказывает физической невозможности и не разрешает успех.
 После admitted O1 `materialize` текущий beat включает обнаружение по admitted
 `display_name` до физического продолжения. Applied traces сохраняют порядок
-точной реплики, времени поиска, находки и физического A1 результата. Prepared ledger
+точной реплики, времени focused discovery, находки и физического A1 результата. Prepared ledger
 `slice.step_index` и keys `slice.consequence.visible_seed` привязывают activity/time
 к результату того же applied step; один step получает один grouped visible change.
-Реплика стоит перед своим временем, поиск перед находкой, activity перед физическим
+Реплика стоит перед своим временем, discovery перед находкой, activity перед физическим
 результатом. Отдельные component changes удаляются из base, propositions сохраняются; оставшаяся
 неопределённость следует после подтверждённых изменений. O1 `semantic_type`
 сохраняет конкретный semantic type, выбранный моделью для материала или объекта;
@@ -1821,7 +1824,8 @@ plan и owner admission без второго semantic audit или полног
 Невалидная classification, copied full query и missing/authored owner fail closed.
 Единственная unselected discovery с пустыми target_refs получает exact current
 location ref только при доступном ordinary scope; explicit target не заменяется.
-Обычный focused search сохраняет query, consumption и domain-owned время.
+Обычные focused search и standalone inspect сохраняют query, consumption и
+domain-owned время; `look` и material-prerequisite inspect остаются free.
 
 Для near-valid literal direct/not_achieved denial без операций, check, clarification
 и continuation допускается audit-only trial unsupported string direct_result_kind

@@ -86,10 +86,11 @@ function expectedSlots(traces, ordinaryPlan, fragments, blocked) {
       && op === 'request_container_access');
     const discoveryActivity = plan?.resolution !== 'domain_request'
       || operations.length !== 1 ? null : ordinaryDiscoveryActivity({
-        operation: operations[0], request: trace.plan_request, ordinaryPlan })
+        operation: operations[0], request: trace.plan_request, plan,
+        ordinaryPlan })
         ?? ((ordinaryPlan == null || ordinaryTrace != null && ordinaryTrace !== trace) && fragments.some(fragment => fragment.target === 'party_events'
           && fragment.value.step_index === trace.step_index)
-          ? ordinarySearchActivity(operations[0]) : null);
+          ? ordinarySearchActivity(operations[0], plan) : null);
     const activities = plan?.activity?.owner !== 'semantic' ? [] : [
       plan?.activity,
       ...(selected?.additional_activity == null

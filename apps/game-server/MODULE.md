@@ -153,10 +153,13 @@ and adds no second transaction owner.
   место, наблюдаемые вещи и sensory details синтетическим сообщением об успехе.
   Domain-native projection сохраняет приоритет; невыполненный intent остаётся
   отдельной неопределённостью и не доказывает частичное достижение цели.
-  Успешно применённый физический поиск связывает собственный no_change или
-  authority_required с activity seed: подтверждённой находки в этой попытке
-  нет. Это не доказывает отсутствия вещи в мире; inspect/preflight и другая
-  activity не получают такой вывод по соседнему query.
+  Успешно применённый физический `search` или standalone focused `inspect` с
+  `continuation:null` связывает собственный no_change или authority_required с
+  activity seed: подтверждённой находки в этой попытке нет. Эти ответы
+  ограничивают находку, а не уже выполненную activity, и не доказывают отсутствия
+  вещи в мире. Existing-item inspection, `look`, preflight и material-prerequisite
+  inspect с полным неизменённым later intent остаются free; другая activity не
+  получает этот вывод по соседнему query.
 - Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
 
 Каждый applied direct `not_achieved`, в том числе после achieved speech, передаёт через общий turn-step result overlay недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи. Duration нескольких direct semantic seeds суммируется до текстовой дедупликации. Applied speech и failed results выводятся в порядке step traces; unapplied plans не проецируются как результаты.
@@ -308,33 +311,33 @@ remain fail-closed. Currency identity,
 significant/hidden facts, template-less containers and O2b/A1/F1/N1 remain
 disabled. Negative resolutions contain no item and
 every failure rolls back.
-A new admitted ordinary `search` with any normal presence decision applies
-the existing `short/light` activity profile through the same activity, body,
-time and P16 owners. The approved domain search binds this activity to its
+A new admitted ordinary `search`, or standalone focused `inspect` with
+`continuation:null`, applies the existing `short/light` activity profile through
+the same activity, body, time and P16 owners. The approved domain discovery binds this activity to its
 exact step; a fresh ordinary request requires it, and a known answer permits
 it without a new ordinary write. Preflight refusal and `inspect` material
-prerequisites do not execute that search.
+prerequisites with the unchanged later intent do not execute that discovery.
 A model `no_change` or `authority_required` limits the answer, not the executed
-search. A presence preflight with no decision may retain a first scene seed,
-but creates no presence resolution and incurs no search activity.
-The admitted activity projects a performed search with its exact duration;
+discovery. A presence preflight with no decision may retain a first scene seed,
+but creates no presence resolution and incurs no discovery activity.
+The admitted activity projects a performed discovery with its exact duration;
 its separate candidate query remains a question, never ownership or success.
 An admitted O1 item adds a strict `ordinary_presence_seed` with resolution
 `materialized`, exact query and admitted `display_name`. The current beat reports
 that discovery once. Applied step traces and prepared ledger slice seed keys group
-each step into one required change: exact speech then its elapsed time; search time
+each step into one required change: exact speech then its elapsed time; discovery time
 then discovery; physical result after its activity. The ordinary material prerequisite
 mapping binds `inspect` for an exact full-intent continuation in ordinary scope;
 focused audit still checks its semantics and real focused searches retain activity/body boundaries. Query alone implies
 neither ownership nor execution. An already resolved A1 owner can continue a
 prepared semantic chain when no authored command was selected; its existing
 scope, preflight, revalidation, conservation and atomic P16 owners remain required.
-A new physical search can reuse an existing positive or negative presence answer
+A new physical search or standalone focused inspect can reuse an existing positive or negative presence answer
 without a model call or materialization write, while applying a new activity/body
 cost. Positive replay resolves the exact committed visible item and never degrades
-to `no_change`. The applied domain search authorizes that activity.
-Inspection/recall remains free.
-The item or negative resolution and the search cost commit together; transport retry
+to `no_change`. The applied domain discovery authorizes that activity.
+Existing-item inspection, recall, `look`, and material-prerequisite inspect remain free.
+The item or negative resolution and the discovery cost commit together; transport retry
 replays the committed result without another activity or model call.
 
 Active O2b keeps the same public `request_container_access`. Production startup

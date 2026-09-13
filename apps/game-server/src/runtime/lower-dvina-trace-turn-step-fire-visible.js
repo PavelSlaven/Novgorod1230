@@ -98,7 +98,9 @@ function overlayTurnStepResults(base, input) {
     if (keys.length === 0 && traces.length === 1) keys.push(...availableKeys);
     if (seeds.ordinary_presence_seed?.resolution === 'materialized' && plan.operations?.some(op =>
       op.op === 'request_discovery' && op.query === seeds.ordinary_presence_seed.query)) {
-      keys.push(...availableKeys.filter(key => seeds[key]?.discovery_kind === 'search'), 'ordinary_presence_seed');
+      keys.push(...availableKeys.filter(key =>
+        ['search', 'inspect'].includes(seeds[key]?.discovery_kind)),
+      'ordinary_presence_seed');
     }
     const actionKey = `turn_step_action_production_${step}`;
     if (Object.hasOwn(seeds, actionKey)) keys.push(actionKey);

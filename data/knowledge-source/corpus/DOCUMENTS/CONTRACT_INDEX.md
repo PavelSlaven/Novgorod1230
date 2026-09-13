@@ -239,6 +239,8 @@ broadcast audience/perception этим не активируются. Единс
 с isolated copy/goal metadata errors полного envelope получает bounded projection
 только через faithful re-audit и повторную strict validation; третьего planner нет.
 §9.1 задаёт owner-aware
-discovery prerequisite и проекцию оставшегося intent при player boundary.
+discovery prerequisite и проекцию оставшегося intent при player boundary;
+standalone focused inspect использует существующий short/light activity owner,
+а `look` и prerequisite inspect с неизменённым later intent остаются free.
 
 Any PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.

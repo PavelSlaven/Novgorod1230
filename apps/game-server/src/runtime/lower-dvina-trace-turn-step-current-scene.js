@@ -182,12 +182,14 @@ function directSeedChange(value) {
     if (!Number.isSafeInteger(duration) || duration <= 0) return null;
     const result = value.discovery_result;
     if (result == null) return value.discovery_kind === 'search'
-      ? 'Вы завершили поиск.' : null;
-    if (value.discovery_kind !== 'search' || !plain(result)
+      ? 'Вы завершили поиск.'
+      : value.discovery_kind === 'inspect' ? 'Вы завершили осмотр.' : null;
+    if (!['search', 'inspect'].includes(value.discovery_kind) || !plain(result)
         || Object.keys(result).length !== 2
         || !['no_change', 'authority_required'].includes(result.resolution)
         || !text(result.query) || !result.query.trim()) failCurrentScene();
-    return `Поиск по вопросу «${result.query}» не дал подтверждённой находки.`;
+    const action = value.discovery_kind === 'search' ? 'Поиск' : 'Осмотр';
+    return `${action} по вопросу «${result.query}» не дал подтверждённой находки.`;
   }
   if (value?.kind === 'body_event') {
     return 'Вы ощутили перемену в своём состоянии.';

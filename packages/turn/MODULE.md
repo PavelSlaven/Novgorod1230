@@ -449,8 +449,8 @@ Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js
 Known ordinary lookup returns its existing positive or negative resolution as a
 transient owner result. Positive replay reuses the exact committed visible item;
 it never becomes `no_change` or creates another item. Reusing world knowledge
-does not cancel a newly executed physical search; exact transport replay remains
-outside execution.
+does not cancel a newly executed standalone physical discovery; exact transport
+replay remains outside execution.
 
 Existing-item inspection is code-first before ordinary candidate/enablement selection: the adapter reads the exact target from the current actor-safe working projection. Already available identity, placement, physical condition and perceived facts are observations, not new ordinary entities or newly inferred attributes. A momentary reading of these supplied facts costs zero minutes; this does not authorize a physical search or establish unknown causes, ownership or history. The result snapshots its observations and preserves the exact question as unresolved beyond them. Typed queued targets continue in order; the last observation returns the original later intention at the player response boundary. Hidden or closed-container contents require their existing perception/access owner. Transport replay reuses the committed result.
 

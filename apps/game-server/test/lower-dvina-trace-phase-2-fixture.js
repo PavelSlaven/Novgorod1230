@@ -46,6 +46,9 @@ function fixture({
   npcCombatModel = unexpectedNpcCombatModel,
   playerSafeStateProjector = null,
   temporalAdvanceOwner = null,
+  createTurnStepOrdinaryDiscoveryResolver = null,
+  ordinaryDiscoveryEnablementMarker = null,
+  ordinaryDiscoveryScopeBinding = null,
   actionProductionProfile = null,
   createTurnStepActionProductionOwner = null,
   localFireProfile = null,
@@ -550,6 +553,13 @@ function fixture({
     },
     ...(playerSafeStateProjector ? { playerSafeStateProjector } : {}),
     ...(temporalAdvanceOwner ? { temporalAdvanceOwner } : {}),
+    ...(createTurnStepOrdinaryDiscoveryResolver ? {
+      createTurnStepOrdinaryDiscoveryResolver
+    } : {}),
+    ...(ordinaryDiscoveryEnablementMarker ? {
+      ordinaryDiscoveryEnablementMarker
+    } : {}),
+    ...(ordinaryDiscoveryScopeBinding ? { ordinaryDiscoveryScopeBinding } : {}),
     actionProductionProfile,
     createTurnStepActionProductionOwner,
     localFireProfile,

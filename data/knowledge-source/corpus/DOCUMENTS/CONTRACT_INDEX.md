@@ -53,6 +53,8 @@
 
 `Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.
 
+Для нетривиальных задач разработки §19 `AGENTS.md` задаёт обязательный workflow `codebase-memory-mcp` Verify (Tier 2): discovery владельцев и зависимостей, сверка исходников, `detect_changes` и проверка покрытия. [Локальная настройка CBM](../../../../docs/setup/CODEBASE_MEMORY_MCP.md) — техническая инструкция; граф не заменяет нормативный канал `@rus/knowledge-source` и canonical documents.
+
 ## 3.1. Module contracts and public schemas
 
 Все module-level contracts перечислены в generated [`MODULE_INDEX.md`](../../../../MODULE_INDEX.md). Этот generated файл используется только для навигации; точный owner и public boundary задаёт соответствующий `MODULE.md`, а physical schema — canonical DDL/schema source затронутой области.

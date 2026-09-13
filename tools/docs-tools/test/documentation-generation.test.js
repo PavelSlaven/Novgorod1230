@@ -47,6 +47,12 @@ test('canonical documentation preserves active guidance without obsolete workflo
   assert.doesNotMatch(agents, /Перед grep, file search, GitHub code search/u);
   assert.doesNotMatch(agents, /PR №13/u);
   assert.match(agents, /Канонический индекс контрактов/u);
+  assert.match(agents, /`codebase-memory-mcp` в режиме Verify \(Tier 2\)/u);
+  assert.match(agents, /`detect_changes` для фактического diff/u);
+  assert.match(agents, /`check_index_coverage` для всех путей/u);
+  assert.match(agents, /`@rus\/knowledge-source` остаётся отдельным нормативным каналом/u);
+  assert.match(agents, /очевидной локальной задачи[\s\S]*прямой `rg`/u);
+  assert.doesNotMatch(agents, /Graphify|repo-intel/u);
 
   const developmentRules = await readFile(join(root, 'data/knowledge-source/corpus/DOCUMENTS/development_rules.txt'), 'utf8');
   assert.match(developmentRules, /Эти правила реализуют active-архитектуру materialization v2 и проверяются единым release gate/u);

@@ -31,14 +31,15 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'Descriptive scene facts may move from source order to the relevant action or result beat. '
   + 'Regroup them into a spatially coherent image by shared supplied subjects or spatial anchors, '
   + 'then choose one coherent focal sweep. '
-  + 'When required_current_beat is dense, build a progression around a supplied performed action or '
-  + 'perceived result: group facts only by an explicitly supplied shared object, spatial anchor, or '
-  + 'before/after relation. Preserve every atomic proposition, certainty, and performed-action order; '
-  + 'leave unrelated result, body, and epistemic-boundary facts as concise consequence beats. Do not '
-  + 'force a layout, replace required sources with optional support, or invent a causal bridge. '
-  + 'When supplied descriptive facts are perceived results of a current perception action, '
-  + 'make that perception action grammatically govern the descriptive cluster. A standalone '
-  + 'perception-action sentence followed by a descriptive inventory is not action-centered. '
+  + 'When a current inspection or perception action supplies descriptive observations, make that '
+  + 'action grammatically govern at least one compact cluster joined by a supplied shared object, '
+  + 'spatial anchor, or before/after relation. This applies whether the current beat is dense or not; '
+  + 'a standalone action sentence followed by a descriptive inventory is not action-centered. '
+  + 'When required_current_beat is dense, extend that focal progression by grouping facts only through '
+  + 'an explicitly supplied shared object, spatial anchor, or before/after relation. Preserve every '
+  + 'atomic proposition, certainty, and performed-action order; leave unrelated result, body, and '
+  + 'epistemic-boundary facts as concise consequence beats. Do not force a layout, replace required '
+  + 'sources with optional support, or invent a causal bridge. '
   + 'A focal verb or colon does not compose independent observations by itself: it remains '
   + 'weak_literary_composition unless the focal action grammatically governs at least one compact '
   + 'factual cluster joined by a supplied shared object, spatial anchor, or before/after relation. '
@@ -72,6 +73,11 @@ const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certai
 
 const WRITER_SHAPE = 'Return only {"prose":"<complete Russian prose>"}. The server assembles version, schema, output_id, action_options=[], used_references=[] and neutral self_check={}; do not generate those fields.';
 
+const INSPECTION_REPAIR_RULE = 'For an inspection or perception current beat with supplied observations, '
+  + 'whether dense or not, make the action grammatically govern at least one compact factual cluster '
+  + 'linked by a supplied shared object, spatial anchor, or before/after relation; a focal verb or '
+  + 'colon before an independent catalogue is not a repair. ';
+
 export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
   if (typeof roleRunner?.run !== 'function') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING', 'Configured LLM role runner is required.', { status: 503 });
@@ -83,7 +89,7 @@ export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
     auditor: { audit: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_auditor',
       narrationAuditInstruction(request), request) },
     semanticRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_semantic_repair',
-      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For weak_literary_composition, preserve performed-action order; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. For a dense required_current_beat, make a supplied performed action or perceived result the focal progression; group only facts with an explicitly supplied shared object, spatial anchor, or before/after relation, preserving every atomic proposition and certainty once. A focal verb or colon alone does not repair an independent catalogue: the focal action must grammatically govern at least one compact factual cluster linked by a supplied shared object, spatial anchor, or before/after relation. Leave other required facts as concise consequence or uncertainty beats. Never invent a causal bridge, force a layout, or replace a required source with optional support. When a concern identifies ongoing wording for a completed action, make completion grammatically explicit; never replace it with another present or ongoing verb. For static_context_dump, remove the unchanged independent panorama and retain only support that composes the current beat; fluent spatial regrouping of the same snapshot is not a repair. Then regroup retained descriptive facts by supplied shared subjects and spatial anchors instead of input order. When they are supplied results of a perception beat, that beat must grammatically govern the cluster; a standalone perception-action sentence plus a descriptive inventory still fails. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES} FINAL REPAIR CHECK: a weak-composition concern requires a newly composed whole passage, never a copy or a synonym, punctuation, clause-order, or standalone-sentence permutation. A focal verb or colon alone is still weak: attach at least one compact factual cluster to the focal beat through a supplied object, place, or before/after relation, then keep the rest as concise consequence or uncertainty beats without an invented bridge.`, request) }
+      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For weak_literary_composition, preserve performed-action order; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. ${INSPECTION_REPAIR_RULE}For a dense required_current_beat, make a supplied performed action or perceived result the focal progression; group only facts with an explicitly supplied shared object, spatial anchor, or before/after relation, preserving every atomic proposition and certainty once. A focal verb or colon alone does not repair an independent catalogue: the focal action must grammatically govern at least one compact factual cluster linked by a supplied shared object, spatial anchor, or before/after relation. Leave other required facts as concise consequence or uncertainty beats. Never invent a causal bridge, force a layout, or replace a required source with optional support. When a concern identifies ongoing wording for a completed action, make completion grammatically explicit; never replace it with another present or ongoing verb. For static_context_dump, remove the unchanged independent panorama and retain only support that composes the current beat; fluent spatial regrouping of the same snapshot is not a repair. Then regroup retained descriptive facts by supplied shared subjects and spatial anchors instead of input order. When they are supplied results of a perception beat, that beat must grammatically govern the cluster; a standalone perception-action sentence plus a descriptive inventory still fails. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES} FINAL REPAIR CHECK: a weak-composition concern requires a newly composed whole passage, never a copy or a synonym, punctuation, clause-order, or standalone-sentence permutation. A focal verb or colon alone is still weak: attach at least one compact factual cluster to the focal beat through a supplied object, place, or before/after relation, then keep the rest as concise consequence or uncertainty beats without an invented bridge.`, request) }
   });
 }
 

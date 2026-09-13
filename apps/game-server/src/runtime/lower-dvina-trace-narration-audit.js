@@ -72,10 +72,11 @@ mainly restates required sources one by one, without composing
 the performed action or perceived result with supplied spatial relations, is
 weak_literary_composition even when coverage is complete and every proposition
 is supported. A focal verb or colon before independent observations is also
-weak_literary_composition unless the focal action grammatically governs at least
-one compact factual cluster joined by a supplied shared object, spatial anchor,
-or before/after relation; other required facts must remain concise consequence
-or uncertainty beats. Matching source order or using one multi-clause sentence is not
+weak_literary_composition when a current inspection or perception action supplies
+those observations unless the focal action grammatically governs at least one compact
+factual cluster joined by a supplied shared object, spatial anchor, or before/after
+relation, whether the beat is dense or not; other required facts must remain concise
+consequence or uncertainty beats. Matching source order or using one multi-clause sentence is not
 by itself evidence of weak composition. A grounded current qualitative assessment
 or conclusion counts as a perceived result; when related scene facts frame or
 lead to it within one coherent focal sentence, do not report a checklist merely
@@ -92,10 +93,10 @@ never use it to restate or penalize an omitted source whose review is [].
 4. If prose reverses ordered performed actions or makes the earlier action simultaneous
 or ongoing within the later one, record unsupported_event. Do not fail subordination
 that unambiguously marks the earlier action completed before the later action.
-5. When several scene facts accompany a performed action or perceived result,
-reject an uncomposed source-order checklist and a focal verb or colon followed by
-an independent catalogue as weak_literary_composition. A focal beat passes only
-when it grammatically governs at least one compact cluster linked by a supplied
+5. When an inspection or perception action has supplied observations, including a
+non-dense beat, reject an uncomposed source-order checklist and a focal verb or colon
+followed by an independent catalogue as weak_literary_composition. A focal beat passes
+only when it grammatically governs at least one compact cluster linked by a supplied
 object, place, or before/after relation. Source order alone is not a failure;
 complete factual coverage alone is not a literary PASS either.
 6. For a performed attempt with no supplied result or uncertainty, any claim

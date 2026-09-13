@@ -269,7 +269,7 @@ test('screen check projection preserves generic order and excludes NPC combat', 
     [2, 'Открыть тяжёлую дверь'],
     [3, 'Пробраться к двери и открыть её.']]);
   assert.deepEqual(checks.map(({ consequence_label }) => consequence_label), [
-    'Итог проверки: успех с ценой.',
+    'Итог проверки: частичный результат с ценой.',
     'Итог проверки: успех.',
     'Итог проверки: успех.'
   ]);
@@ -278,6 +278,26 @@ test('screen check projection preserves generic order and excludes NPC combat', 
   assert.equal(checks[0].modifiers[1].label, 'Навык: Скрытность');
   assert.equal(JSON.stringify(checks).includes('npc-step'), false);
   assert.equal(JSON.stringify(checks).includes('seed_ref'), false);
+});
+
+test('screen check projection labels below-DC cost result as partial', () => {
+  const checks = projectPlayerSafeChecks({
+    actor_id: 'player-1', player_profile: { identity: { name: 'Микула' } },
+    last_turn: { raw_text: 'Перепрыгнуть канаву.', consequence: {},
+      check_result: {
+        check_id: 'check-1', roll: 8, difficulty: 12, total: 10,
+        modifiers: { attribute: 2, skill: 1, state: -1, equipment: 0,
+          circumstances: 0 },
+        outcome: { band: 'success_with_cost', margin: -2, success: false,
+          cost_required: true, severe_failure: false, roll_note: null }
+      } }
+  });
+  assert.deepEqual(checks[0].outcome, {
+    band: 'success_with_cost', margin: -2, success: false,
+    cost_required: true, severe_failure: false, roll_note: null
+  });
+  assert.equal(checks[0].consequence_label,
+    'Итог проверки: частичный результат с ценой.');
 });
 
 test('screen check projection includes Phase 4 negotiation and Phase 5 treatment', () => {

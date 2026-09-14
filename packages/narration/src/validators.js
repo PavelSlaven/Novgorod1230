@@ -149,6 +149,86 @@ export function validateNarrationFlowResult(value) {
   return result(errors);
 }
 
+// This is deliberately narrower than validateNarrationFlowResult: terminal factual
+// delivery is allowed only after the complete bounded turn narration policy flow.
+export function validateTerminalNarrationPolicyRejection(flow, request) {
+  const errors = [];
+  errors.push(...validateNarrationFlowResult(flow).errors.map((item) => `flow: ${item}`));
+  errors.push(...validateNarrationRequest(request).errors.map((item) => `request: ${item}`));
+  if (!plain(flow) || !plain(request)) return result(errors);
+  if (flow.status !== 'blocked' || flow.pass !== false) errors.push('flow must be blocked and failed');
+  if (flow.surface !== 'turn' || flow.surface !== request.surface) errors.push('flow surface must match turn request');
+  if (flow.request_id !== request.request_id) errors.push('flow request_id must match request');
+  if (flow.approved_output !== null || flow.final_audit !== null) errors.push('blocked terminal flow must not expose approved output or final audit');
+  if (flow.diagnostics?.phase !== 'final_audit_failed') errors.push('flow diagnostics must be final_audit_failed');
+
+  const counts = narrationSourceCounts(request);
+  if (!counts) errors.push('request visible_context source counts are invalid');
+  const histories = terminalHistories(flow, errors);
+  if (!histories) return result(errors);
+  const { initialOutput, finalRepair, initialAudit, finalAudit } = histories;
+  errors.push(...outputWithRequestErrors(initialOutput, request.request_id, 'initial output'));
+  errors.push(...validateNarrationAudit(initialAudit,
+    proseSegmentIds(initialOutput?.prose), counts).errors.map((item) => `initial audit: ${item}`));
+  if (initialAudit?.pass !== false) errors.push('initial audit must fail before semantic repair');
+  errors.push(...validateNarrationSemanticRepair(finalRepair, ['s1']).errors
+    .map((item) => `semantic repair: ${item}`));
+  const finalOutput = plain(initialOutput) && plain(finalRepair)
+    ? { ...initialOutput, prose: finalRepair.replacements?.[0]?.prose } : null;
+  errors.push(...outputWithRequestErrors(finalOutput, request.request_id, 'final output'));
+  errors.push(...validateNarrationAudit(finalAudit,
+    proseSegmentIds(finalOutput?.prose), counts).errors.map((item) => `final audit: ${item}`));
+  if (finalAudit?.pass !== false || !Array.isArray(finalAudit?.concerns) || !finalAudit.concerns.length) {
+    errors.push('final audit must be a failed audit with concerns');
+  }
+  if (!sameJson(flow.diagnostics?.errors, finalAudit?.concerns)) {
+    errors.push('final_audit_failed diagnostics must match final audit concerns');
+  }
+  return result(errors);
+}
+
+function terminalHistories(flow, errors) {
+  const generation = flow.generation_history;
+  const repairs = flow.repair_history;
+  const audits = flow.audit_history;
+  if (!Array.isArray(generation) || !Array.isArray(repairs) || !Array.isArray(audits)) return null;
+  const hasFormatRepair = generation.length === 3 && generation[1]?.role === 'format_repairer';
+  const expectedGeneration = hasFormatRepair
+    ? ['writer', 'format_repairer', 'semantic_repairer'] : ['writer', 'semantic_repairer'];
+  const expectedRepairs = hasFormatRepair ? ['format_repair', 'semantic_repair'] : ['semantic_repair'];
+  if (!roleSequence(generation, expectedGeneration)) errors.push('generation history must contain writer, optional format repairer, and semantic repairer');
+  if (!roleSequence(repairs, expectedRepairs)) errors.push('repair history must match generation repairs');
+  if (!roleSequence(audits, ['auditor', 'auditor'])) errors.push('audit history must contain initial and final auditor records');
+  if (errors.length) return null;
+  return {
+    initialOutput: generation[hasFormatRepair ? 1 : 0].value,
+    finalRepair: generation.at(-1).value,
+    initialAudit: audits[0].value,
+    finalAudit: audits[1].value
+  };
+}
+
+function roleSequence(history, roles) {
+  return history.length === roles.length
+    && history.every((entry, index) => plain(entry) && entry.role === roles[index] && plain(entry.value));
+}
+function narrationSourceCounts(request) {
+  const context = request?.visible_context;
+  if (!Array.isArray(context?.visible_changes) || !Array.isArray(context?.uncertainties)) return null;
+  return { visible_changes: context.visible_changes.length, uncertainties: context.uncertainties.length };
+}
+function proseSegmentIds(prose) {
+  return typeof prose === 'string' ? segmentProse(prose).map(({ segment_id }) => segment_id) : [];
+}
+function outputWithRequestErrors(output, requestId, label) {
+  const errors = validateNarrationOutput(output).errors.map((item) => `${label}: ${item}`);
+  if (output?.output_id != null && output.output_id !== requestId) errors.push(`${label}: output_id must match request_id`);
+  return errors;
+}
+function sameJson(left, right) {
+  try { return JSON.stringify(left) === JSON.stringify(right); } catch { return false; }
+}
+
 export function validateOpeningNarrationAudit(audit, requestId) {
   const errors = [];
   if (!plain(audit)) return fail('opening audit must be an object');

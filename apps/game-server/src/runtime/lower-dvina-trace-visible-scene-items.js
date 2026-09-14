@@ -44,12 +44,16 @@ export function lowerDvinaTraceObservedSceneChanges(scene) {
 }
 
 export function distinctNpcLabels(npcs) {
+  const normalized = npcs.map((npc) => npc?.recognition === 'unrecognized'
+      && / \(\d+\)$/u.test(npc.display_label)
+    ? { ...npc, display_label: npc.display_label.replace(/ \(\d+\)$/u, '') }
+    : npc);
   const totals = new Map();
-  for (const { display_label: label } of npcs) {
+  for (const { display_label: label } of normalized) {
     if (text(label)) totals.set(label, (totals.get(label) ?? 0) + 1);
   }
   const seen = new Map();
-  return npcs.map((npc) => {
+  return normalized.map((npc) => {
     const label = npc?.display_label;
     if (!text(label) || totals.get(label) < 2) return npc;
     const ordinal = (seen.get(label) ?? 0) + 1;

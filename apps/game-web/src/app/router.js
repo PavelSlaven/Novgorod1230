@@ -34,7 +34,21 @@ export function renderScreen(screen, options = {}) {
   const disabled = options.loading === true || !openingReady;
   const navigationDisabled = options.loading === true
     || options.openingStatus === 'pending';
-  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderCurrentTask(screen)}${renderProse(screen)}${renderChecks(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft, pendingTurn: options.pendingTurn })}</section></main>${renderOverlay(screen, options)}</div>`;
+  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderCurrentTask(screen)}${renderNarrativeSlot(screen)}${renderChecks(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft, pendingTurn: options.pendingTurn })}</section></main>${renderOverlay(screen, options)}</div>`;
+}
+
+function renderNarrativeSlot(screen) {
+  return screen.schema === 'factual_turn_delivery_screen'
+    ? renderFactualTurnDelivery(screen) : renderProse(screen);
+}
+
+function renderFactualTurnDelivery(screen) {
+  return `<section class="factual-turn-delivery" aria-label="Восстановленное состояние после хода"><p class="eyebrow">Восстановленное состояние</p><h1>Текущий момент</h1><p>${escapeHtml(screen.visible_context.visible_scene ?? '')}</p>${renderFactualList('Изменения', screen.visible_changes)}${renderFactualList('Неясное', screen.uncertainties)}</section>`;
+}
+
+function renderFactualList(title, items) {
+  if (items.length === 0) return '';
+  return `<section class="factual-turn-list"><h2>${title}</h2><ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section>`;
 }
 
 export function renderAppState(state) {

@@ -9,7 +9,12 @@ import {
   mergeKnowledge,
   projectPhase3SemanticConversation
 } from './lower-dvina-trace-phase-3-semantic-state-projection.js';
-export { activityHistoryEntry, phase3ActivityRef, routeMovement } from './lower-dvina-trace-phase-3-activity-state.js';
+import { phase3ConversationFactual } from
+  './lower-dvina-trace-phase-3-activity-state.js';
+import { projectFirstEntryArrivalState } from
+  '../../runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
+export { activityHistoryEntry, phase3ActivityRef, phase3ConversationFactual,
+  routeMovement } from './lower-dvina-trace-phase-3-activity-state.js';
 export function nextState({
   state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
   rootTurnId, workingRevision
@@ -54,51 +59,27 @@ export function nextState({
   appendPhase3ActivityHistory({
     next, state, factual, turnNumber, inputDigest, changeSetId
   });
+  let conversationState = state;
   if (routeMovement(factual)) {
     const firstEntry = state.first_entry_preparation?.spatial_v3;
-    const firstEntryPending = firstEntry != null
-      && firstEntry.target?.status !== 'prepared';
-    if (firstEntryPending) {
-      const existing = new Set((next.npcs ?? []).map(({ instance_id: id }) => id));
-      next.npcs = [...(next.npcs ?? []),
-        ...(next.first_entry_preparation.npcs ?? []).filter(
-          ({ instance_id: id }) => !existing.has(id))];
-      const firstEntryNpcs = new Set(
-        (state.first_entry_preparation.npcs ?? [])
-          .map(({ instance_id: id }) => id));
-      next.npcs = next.npcs.map((npc) => firstEntryNpcs.has(npc.instance_id)
-        ? { ...npc, anchor_id:
-            factual.consequence.movement.destination.g5_anchor_id }
-        : npc);
-      next.first_entry_preparation.spatial_v3.target.status = 'prepared';
-      for (const schedule of next.npc_schedule_runtime ?? []) {
-        const deferred = schedule.causal_state_ref.deferred_placement;
-        if (schedule.current_position_node_id == null
-            && deferred?.snapshot_id === firstEntry.preparation_snapshot_id
-            && deferred?.member_ordinal === firstEntry.preparation_member_ordinal) {
-          schedule.current_position_node_id = firstEntry.target.position_id;
-        }
-      }
-    }
+    const firstEntryPending = projectFirstEntryArrivalState(
+      next, factual.consequence.movement);
     const destinationPositionId = factual.consequence.movement.destination.scene_position_id
       ?? (firstEntry?.target?.status === 'prepared'
         && state.first_entry_preparation?.scene?.location_profile_ref
           === factual.consequence.movement.destination.location_ref
         ? firstEntry.target.position_id : null)
       ?? (firstEntryPending ? firstEntry.target.position_id : null);
+    const destinationIsFirstEntry = firstEntry != null
+      && state.first_entry_preparation?.scene?.location_profile_ref
+        === factual.consequence.movement.destination.location_ref;
+    const destinationG6Id = factual.consequence.movement.destination.g6_instance_id
+      ?? (destinationIsFirstEntry ? firstEntry.target.g6_instance_id : null);
     next.position = {
       ...next.position,
-      ...(firstEntryPending ? { position_id: firstEntry.target.position_id,
-        g6_id: firstEntry.target.g6_instance_id }
-        : (factual.consequence.movement.destination.scene_position_id
-          ?? (firstEntry?.target?.status === 'prepared'
-            && state.first_entry_preparation?.scene?.location_profile_ref
-              === factual.consequence.movement.destination.location_ref
-            ? firstEntry.target.position_id : null)) != null
-        ? { position_id: factual.consequence.movement.destination.scene_position_id
-          ?? firstEntry.target.position_id,
-          g6_id: firstEntry?.target?.g6_instance_id }
-        : {}),
+      ...(destinationPositionId == null ? {}
+        : { position_id: destinationPositionId }),
+      ...(destinationG6Id == null ? {} : { g6_id: destinationG6Id }),
       location_ref:
         factual.consequence.movement.destination.location_ref,
       g5_anchor_id:
@@ -111,6 +92,8 @@ export function nextState({
     };
     if (destinationPositionId == null) {
       delete next.position.position_id;
+      delete next.position.g6_id;
+    } else if (destinationG6Id == null) {
       delete next.position.g6_id;
     }
     next.route_history = [...(next.route_history ?? []), {
@@ -143,8 +126,11 @@ export function nextState({
             spatial_zone_ref: factual.consequence.movement.destination.zone_ref }
         } : {}) }
       : npc);
-  } else {
-    const conversation = factual.consequence.conversation;
+    conversationState = structuredClone(next);
+  }
+  const conversation = factual.consequence.conversation;
+  if (conversation != null) {
+    const conversationFactual = phase3ConversationFactual(factual);
     if (conversation.semantic_exchange != null) {
       const { exchange } = conversation.semantic_exchange;
       const applied = exchange.applied_contribution_count > 0;
@@ -165,8 +151,8 @@ export function nextState({
       }
       next = projectPhase3SemanticConversation({
         next,
-        state,
-        factual,
+        state: conversationState,
+        factual: conversationFactual,
         conversation,
         turnNumber
       });
@@ -174,7 +160,7 @@ export function nextState({
         semanticExchange: conversation.semantic_exchange,
         activityExecutionId:
           `activity:${state.party_id}:trace-phase3:${turnNumber}`,
-        startedAt: factual.time_update.clock_before,
+        startedAt: conversationFactual.time_update.clock_before,
         optionId: factual.mode_resolution.option_id,
         originatingRequestId: factual.player_input.request_id });
     } else {
@@ -191,8 +177,8 @@ export function nextState({
         journal_text: conversation.journal_text,
         decision_trace: conversation.decision.trace,
         statement_is_new: conversation.statement_is_new,
-        started_at: factual.time_update.clock_before,
-        occurred_at: factual.time_update.clock_after
+        started_at: conversationFactual.time_update.clock_before,
+        occurred_at: conversationFactual.time_update.clock_after
       };
       next.interactions = [...(next.interactions ?? []), interaction];
       if (conversation.route_knowledge_ref) {

@@ -123,12 +123,12 @@ for (const sample of [
       return { output: { prose: sample.checklist } };
     }
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
-      assert.match(call.messages[0].content, /weak_literary_composition/u);
+      assert.match(call.messages[0].content, /Rebuild the whole passage/u);
       assert.ok(wire.concerns.some(({ kind }) => kind === 'literary_quality'));
       return { output: { replacements: [{ prose: sample.repaired }] } };
     }
     const initial = wire.phase === 'initial';
-    assert.match(call.messages[0].content, /source-order checklist/u);
+    assert.match(call.messages[0].content, /Matching source order[\s\S]*not a failure/u);
     return { output: reviewed(wire, {
       literaryFailures: initial ? [{ check: 'weak_literary_composition',
         segment_choice: 's1',
@@ -194,6 +194,10 @@ test('captured repair preserves completed-before action order and regroups scene
         calls.push(call.role_id);
         const wire = JSON.parse(call.messages[1].content);
         if (call.role_id === 'gameplay_narrator') {
+          assert.match(call.messages[0].content,
+            /A supplied player-safe source supports exactly its atomic factual\s+propositions/u);
+          assert.match(call.messages[0].content,
+            /Labels, IDs, categories, names and plausible implications add no sensory trait, causality, time, result, execution or certainty/u);
           assert.match(call.messages[0].content, /Only performed-action sources constrain action order/u);
           assert.match(call.messages[0].content, /shared supplied subjects or spatial anchors/u);
           assert.match(call.messages[0].content, /one coherent focal sweep/u);
@@ -203,11 +207,18 @@ test('captured repair preserves completed-before action order and regroups scene
           return { output: { prose: sample.changes.join(' ') } };
         }
         if (call.role_id === 'gameplay_narrator_semantic_repair') {
+          assert.match(call.messages[0].content, /source_segments are evidence/u);
           assert.match(call.messages[0].content, /completed-before subordination/u);
           assert.match(call.messages[0].content, /visible_scene.*action target/u);
-          assert.match(call.messages[0].content, /standalone perception-action sentence.*descriptive inventory/u);
+          assert.match(call.messages[0].content,
+            /inspection or perception current beat[\s\S]*grammatically governs/u);
           return { output: { replacements: [{ prose: repair.prose }] } };
         }
+        assert.match(call.messages[0].content,
+          /A supplied player-safe source supports exactly its atomic factual\s+propositions/u);
+        assert.match(call.messages[0].content,
+          /Labels, IDs, categories, names and plausible\s+implications add no sensory trait, causality, time, result, execution or certainty/u);
+        assert.match(call.messages[0].content, /Never accept reversed causal order/u);
         assert.match(call.messages[0].content, /Grammatical subordination[\s\S]*completed before/u);
         assert.match(call.messages[0].content, /simultaneous or ongoing/u);
         const initial = wire.phase === 'initial';
@@ -228,13 +239,100 @@ test('captured repair preserves completed-before action order and regroups scene
         surface: 'turn', visible_context: {
           ...scene(), visible_scene: sample.scene, visible_changes: sample.changes
         }, context: {} });
-      const shouldApprove = repair.accepted || repair.overlap !== true;
+      const shouldApprove = repair.accepted;
       assert.equal(result.status, shouldApprove ? 'approved' : 'blocked');
       if (shouldApprove) assert.equal(result.approved_output.prose, repair.prose);
       assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
         'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
     }
   });
+});
+
+test('dense required current beat is repaired into focal clusters while a flat sibling remains blocked', async (t) => {
+  const changes = [
+    'Вы осмотрели кладовую.',
+    'У дальней стены стоят ящики.',
+    'На верхнем ящике лежит ключ.',
+    'Под ним видна трещина.',
+    'У двери висит фонарь.',
+    'На полу тянется полоса песка.',
+    'Возле порога лежит обрывок верёвки.',
+    'На полке стоит глиняная чаша.',
+    'В чаше заметна вода.',
+    'Одежда осталась сырой.'
+  ];
+  const uncertainty = 'Наблюдения не устанавливают, кто оставил ключ.';
+  const flat = `${changes.join(' ')} ${uncertainty}`;
+  const focused = 'Осматривая кладовую, вы различаете у дальней стены ящики: на верхнем лежит ключ, а под ним видна трещина. У двери висит фонарь. На полу возле порога тянется полоса песка и лежит обрывок верёвки. На полке стоит глиняная чаша с водой. Одежда осталась сырой. Наблюдения не устанавливают, кто оставил ключ.';
+  const focalCatalogue = 'Осматривая кладовую, вы различаете: у дальней стены стоят ящики, на верхнем лежит ключ, под ним видна трещина; у двери висит фонарь; на полу тянется полоса песка; возле порога лежит обрывок верёвки; на полке стоит глиняная чаша, в чаше заметна вода. Одежда осталась сырой. Наблюдения не устанавливают, кто оставил ключ.';
+  const repairs = [
+    { name: 'focal repair passes', prose: focused, accepted: true },
+    { name: 'focal verb plus independent catalogue stays terminal', prose: focalCatalogue, accepted: false },
+    { name: 'byte-identical repair stays terminal', prose: flat, accepted: false },
+    { name: 'clause permutation stays terminal',
+      prose: `${uncertainty} ${[...changes].reverse().join(' ')}`, accepted: false }
+  ];
+  for (const repair of repairs) await t.test(repair.name, async () => {
+    const calls = [];
+    const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+      calls.push(call.role_id);
+      const wire = JSON.parse(call.messages[1].content);
+      if (call.role_id === 'gameplay_narrator') {
+        assert.match(call.messages[0].content, /For a dense inspection or perception/u);
+        assert.match(call.messages[0].content, /shared object, spatial anchor, or\s+before\/after relation/u);
+        return { output: { prose: flat } };
+      }
+      if (call.role_id === 'gameplay_narrator_semantic_repair') {
+        assert.equal(wire.required_current_beat.changes.length, changes.length);
+        assert.equal(wire.required_current_beat.uncertainties.length, 1);
+        assert.equal(wire.segments[0].prose, flat);
+        assert.match(call.messages[0].content, /For a dense inspection or perception/u);
+        assert.match(call.messages[0].content, /add no bridge, cause, sensation or result/u);
+        assert.match(call.messages[0].content, /source_segments are evidence/u);
+        assert.match(call.messages[0].content, /replacement must differ/u);
+        return { output: { replacements: [{ prose: repair.prose }] } };
+      }
+      const initial = wire.phase === 'initial';
+      const audit = reviewed(wire, {
+        literaryFailures: initial || !repair.accepted ? [{ check: 'weak_literary_composition',
+          segment_choice: 's1', reason: repair.name.includes('independent catalogue')
+            ? 'Focal wording introduces independent observations without an anchored factual cluster.'
+            : 'Dense required facts remain a source-order checklist.' }] : [],
+        evidence: initial || !repair.accepted ? [] : ['Supplied anchors organize the dense current beat.']
+      });
+      return { output: audit };
+    } } });
+    const result = await service.run({ version: 1, schema: 'narration_request',
+      request_id: `dense-current-${repair.accepted}-${repair.name}`, surface: 'turn', visible_context: {
+        ...scene(), visible_changes: changes, uncertainties: [uncertainty]
+      }, context: {} });
+    assert.equal(result.status, repair.accepted ? 'approved' : 'blocked');
+    if (repair.accepted) {
+      assert.equal(result.approved_output.prose, focused);
+      assert.equal(result.final_audit.coverage.visible_changes.length, changes.length);
+      assert.equal(result.final_audit.coverage.uncertainties.length, 1);
+    } else assert.equal(result.diagnostics.phase, 'final_audit_failed');
+    assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
+      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+  });
+});
+
+test('sparse current beat remains concise without an invented bridge or layout', async () => {
+  const prose = 'На пороге лежит ключ.';
+  const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+    const wire = JSON.parse(call.messages[1].content);
+    if (call.role_id === 'gameplay_narrator') {
+      assert.match(call.messages[0].content, /Sparse evidence calls for concise prose/u);
+      return { output: { prose } };
+    }
+    return { output: reviewed(wire, { evidence: ['The sparse grounded result is concise.'] }) };
+  } } });
+  const result = await service.run({ version: 1, schema: 'narration_request',
+    request_id: 'sparse-current', surface: 'turn', visible_context: {
+      ...scene(), visible_changes: ['На пороге лежит ключ.']
+    }, context: {} });
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, prose);
 });
 
 function scene() {

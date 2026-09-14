@@ -20,7 +20,7 @@ import {
 } from './lower-dvina-trace-m2-conversation-shared.js';
 import { fullyPerceivedCurrentOffer } from
   './lower-dvina-trace-m2-conversation-offer-privacy.js';
-import { npcConversationDecisionCapability } from
+import { npcConversationDecisionCapability, npcPresentationContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
 import { projectCampFireState } from
   './lower-dvina-trace-player-safe-state.js';
@@ -43,8 +43,7 @@ export function buildNpcBoundary(context, working) {
   });
   return evaluation.boundary;
 }
-export function buildNpcDecision(context, working, boundary,
-  latestContribution = null) {
+export function buildNpcDecision(context, working, boundary, latestContribution = null) {
   const signalIds = new Set(boundary.signal_refs.map(
     ({ entity_id: entityId }) => entityId
   ));
@@ -111,6 +110,7 @@ export function buildNpcDecision(context, working, boundary,
     social_context: {
       delivery_cues: structuredClone(perceivedMessage?.delivery_cues ?? []),
       claims_are_speaker_assertions_not_objective_truth: true,
+      ...npcPresentationContext(context, latestContribution),
       ...(context.phase === 'phase_3' && presentedEvidenceRecognized
         ? { presented_evidence_ref: context.contracts.ids.evidence }
         : {}),

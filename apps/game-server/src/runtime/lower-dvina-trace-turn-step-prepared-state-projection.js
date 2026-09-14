@@ -5,9 +5,33 @@ import { applyTracePhase7ScheduleState } from
 import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
 import { tracePhase7ActorStep } from
   './lower-dvina-trace-phase-7-schedule-execution.js';
+import { withLowerDvinaTraceCurrentScene } from
+  './lower-dvina-trace-turn-step-current-scene.js';
 
 export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
+  if (effect.consequence?.movement?.destination?.location_ref != null) {
+    const movement = effect.consequence.movement;
+    projectFirstEntryArrivalState(next, movement);
+    next = buildLowerDvinaTracePreparedRouteWorkingProjection({
+      projection: next,
+      movement,
+      committedState: next,
+      clockAfter: effect.time_update.clock_after
+    });
+    const firstEntry = next.first_entry_preparation;
+    const destinationG6Id = movement.destination.g6_instance_id
+      ?? (firstEntry?.scene?.location_profile_ref
+          === movement.destination.location_ref
+        ? firstEntry.spatial_v3?.target?.g6_instance_id : null);
+    if (next.position?.position_id == null || destinationG6Id == null) {
+      delete next.position.g6_id;
+    } else {
+      next.position.g6_id = destinationG6Id;
+    }
+    for (const key of ['visible_context', 'visible_context_package',
+      'current_visible_context']) delete next[key];
+  }
   applyNpcRoutineTemporalResults(next, effect.time_update.temporal_results);
   if ((effect.time_update.temporal_results ?? []).some((result) =>
     result.combined_change_set?.proposals?.some((proposal) => proposal.npc_routine_transition))) {
@@ -125,17 +149,84 @@ export function buildLowerDvinaTracePreparedRouteWorkingProjection({
   const routeEntry = { route_ref: movement.route_ref,
     from_ref: movement.source.location_ref, to_ref: destination.location_ref,
     status: 'completed' };
+  const firstEntry = committedState.first_entry_preparation?.spatial_v3;
+  const destinationIsFirstEntry = firstEntry != null
+    && committedState.first_entry_preparation?.scene?.location_profile_ref
+      === destination.location_ref;
+  const destinationPositionId = destination.scene_position_id
+    ?? (destinationIsFirstEntry ? firstEntry.target.position_id : null);
   const { active_interlocutor: _activeInterlocutor,
     ...projectionWithoutInterlocutor } = structuredClone(projection);
+  const position = { ...structuredClone(projection.position ?? {}),
+    location_ref: destination.location_ref,
+    g5_anchor_id: destination.g5_anchor_id,
+    g5_node_id: scene.node.instance_id,
+    ...(destination.zone_ref == null ? {} : { zone_ref: destination.zone_ref }) };
+  if (destinationPositionId == null) {
+    delete position.position_id;
+  } else {
+    position.position_id = destinationPositionId;
+  }
+  delete position.g6_id;
   const moved = { ...projectionWithoutInterlocutor,
-    position: { ...structuredClone(projection.position ?? {}),
-      location_ref: destination.location_ref,
-      g5_anchor_id: destination.g5_anchor_id,
-      g5_node_id: scene.node.instance_id,
-      ...(destination.zone_ref == null ? {} : { zone_ref: destination.zone_ref }) },
+    position,
     route_history: [...structuredClone(projection.route_history ?? []), routeEntry] };
   if (clockAfter == null) return moved;
   return { ...moved, clock: structuredClone(clockAfter),
     clock_weather_light: { ...structuredClone(moved.clock_weather_light ?? {}),
       clock: structuredClone(clockAfter) } };
+}
+
+export function projectFirstEntryArrivalState(state, movement) {
+  const firstEntry = state.first_entry_preparation?.spatial_v3;
+  if (firstEntry == null || firstEntry.target?.status === 'prepared'
+      || state.first_entry_preparation?.scene?.location_profile_ref
+        !== movement.destination?.location_ref) return false;
+  const firstEntryNpcs = new Set(
+    (state.first_entry_preparation.npcs ?? [])
+      .map(({ instance_id: id }) => id));
+  const existing = new Set((state.npcs ?? [])
+    .map(({ instance_id: id }) => id));
+  const arriving = new Set((state.first_entry_preparation.npcs ?? [])
+    .filter(({ instance_id: id }) => !existing.has(id)
+      || state.npcs.some((npc) => npc.instance_id === id
+        && npc.anchor_id == null))
+    .map(({ instance_id: id }) => id));
+  state.npcs = (state.npcs ?? []).map((npc) =>
+    firstEntryNpcs.has(npc.instance_id) && npc.anchor_id == null
+      ? { ...npc, anchor_id: movement.destination.g5_anchor_id }
+      : npc);
+  state.npcs.push(...(state.first_entry_preparation.npcs ?? []).filter(
+    ({ instance_id: id }) => !existing.has(id)).map((npc) => ({
+      ...npc, anchor_id: movement.destination.g5_anchor_id
+    })));
+  firstEntry.target.status = 'prepared';
+  for (const schedule of state.npc_schedule_runtime ?? []) {
+    const deferred = schedule.causal_state_ref?.deferred_placement;
+    if (arriving.has(schedule.npc_id)
+        && schedule.current_position_node_id == null
+        && deferred?.snapshot_id === firstEntry.preparation_snapshot_id
+        && deferred?.member_ordinal === firstEntry.preparation_member_ordinal) {
+      schedule.current_position_node_id = firstEntry.target.position_id;
+    }
+  }
+  return true;
+}
+
+export function refreshPreparedMovementScene({
+  projection, committedState, projectCurrentScene = null,
+  locationProfiles = null, scenePresentation = null
+}) {
+  const next = structuredClone(projection);
+  for (const key of ['npcs', 'visible_npcs', 'scene_npcs', 'available_routes',
+    'visible_context', 'visible_context_package', 'current_visible_context']) {
+    delete next[key];
+  }
+  const refreshed = (projectCurrentScene ?? ((state) =>
+    withLowerDvinaTraceCurrentScene({
+      committedState: state, locationProfiles, scenePresentation
+    })))(committedState);
+  next.current_visible_context = projectVisibleContext(
+    refreshed.current_visible_context);
+  return next;
 }

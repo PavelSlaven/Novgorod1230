@@ -18,17 +18,22 @@ export function narrationAuditInstruction(request) {
 each supplied segment into every factual proposition, including subordinate
 clauses, sensations, action, result, time claims, causality and certainty. For every
 proposition require one exact supporting ref or field from the supplied
-player-safe input. Plausibility is never evidence. An object or place never
-supports an unstated sound, smell, touch, motion, reaction or persistence.
+player-safe input. A supplied player-safe source supports exactly its atomic factual
+propositions, including stated relation, motion, cause, qualifier and certainty.
+Faithful prose may use ordinary grammatical inflection or natural paraphrase only
+when it adds no atomic proposition. Labels, IDs, categories, names and plausible
+implications add no sensory trait, causality, time, result, execution or certainty.
+Plausibility is never evidence. An object or place never supports an unstated sound,
+smell, touch, motion, reaction or persistence.
 Treat a required_current_beat uncertainty with status unperformed_result_unknown
 as evidence only that the second-person player's named continuation is not yet
 performed and has no result. Never attribute it to an NPC. An explicitly open
 future or possible next choice conveying both facts is
 supported and is not unsupported_attempt. Present, past, or ongoing execution is
 still unsupported_response_or_continuation or unsupported_attempt.
-replace a named or labelled NPC from a required source with second-person player
+Never replace a named or labelled NPC from a required source with second-person player
 action; report that as unsupported_npc_state and leave that source uncovered.
-accept reversed causal order. Grammatical subordination of an earlier action is
+Never accept reversed causal order. Grammatical subordination of an earlier action is
 allowed only when aspect or an explicit marker makes it unambiguously completed before
 the later action. A later action cannot precede an earlier one; reject subordination
 that makes the earlier action simultaneous or ongoing within the later action.
@@ -53,18 +58,52 @@ only in literary_failures for an invented response, nonresponse, performed
 continuation or continued action. current_beat_buried requires a required source to be present but displaced;
 an omitted source belongs only in source_reviews as []. Never add
 current_beat_buried merely because another required source has an empty review.
-Optional support may compose the current beat but a recap of unchanged
-support is static_context_dump. Turn duration is code-owned UI metadata and is
+Optional support is a candidate set, never a coverage target. After a current
+beat, a recital of unchanged, independent optional scene facts as panorama or
+context is static_context_dump even when fluent, reordered, spatially grouped,
+or placed after the beat. A required_current_beat source never becomes optional
+support merely because another input field repeats it; static_context_dump
+applies only to a proposition supported solely by optional_support. Each retained support detail must locate, contrast,
+constrain, or constitute the action or result being narrated. A perception beat
+may govern supplied details that are themselves its perceived result; this does
+not license unrelated snapshot recap. A recap of unchanged support is static_context_dump.
+Turn duration is code-owned UI metadata and is
 not supplied as prose evidence. Any invented elapsed time is unsupported_fact;
-service-like time reporting is also elapsed_as_service_report. A passage that
-mainly restates required sources one by one, without composing
-the performed action or perceived result with supplied spatial relations, is
-weak_literary_composition even when coverage is complete and every proposition
-is supported. Matching source order or using one multi-clause sentence is not
-by itself evidence of weak composition. A grounded current qualitative assessment
-or conclusion counts as a perceived result; when related scene facts frame or
-lead to it within one coherent focal sentence, do not report a checklist merely
-because the clauses follow source order. Do not demand an invented causal,
+service-like time reporting is also elapsed_as_service_report. Judge
+weak_literary_composition for an inspection or perception across the whole
+passage. PASS when every supplied scene-observation cluster is either
+grammatically governed by the completed action in the same sentence or has its
+own finite verb that grammatically makes the player the perceiver or actor.
+Multiple such player verbs may govern their respective observations in one
+sentence; do not require separate sentences or beats for each observation.
+The pattern player-verb(A), player-verb(B and C) passes: evaluate the direct
+dependents of every player verb, and do not require one verb to govern them all.
+A finite static predicate whose subject is the observed thing does not count.
+A repeated supplied place, its supplied subplace, and explicit supplied
+coreference count as one shared anchor. The terminal-action failure means a
+completed action sentence followed by static scene sentences that lack their
+own player perception/action verb. Never apply it to a later sentence that has
+such a player verb. Report it only with check weak_literary_composition;
+terminal_action_failure is a description, never a check value. A later static state or locative predicate is not a
+perception beat merely because it is anchored or follows the action. It needs
+its own finite player perception or action verb, or must be syntactically
+subordinate to the completed inspection in the same sentence; a dependent
+gerundial phrase or relative clause counts as such subordination. Source order,
+factual coverage, punctuation, conjunction and a shared anchor never create
+governance. The pattern "Вы осмотрели X, заметив A, B и C" passes because the
+dependent player gerund governs the observations despite the terminal finite
+inspection verb; apply the same rule to an unambiguous relative clause. Treat
+the terminal-action-plus-static-clusters form as
+weak_literary_composition. Omit weak_literary_composition when this PASS rule
+holds; separately governed clusters at different supplied anchors are not an
+independent inventory. Exclude supplied held results, body consequences, and
+uncertainties only from this governance test; they may be standalone grounded
+sentences. Still review uncertainty wording: an ordinary player-facing open
+question passes, while an abstract policy or disclaimer about what observations
+prove or establish is weak_literary_composition. Complete factual coverage alone is not a literary PASS. Matching source order or using one multi-clause sentence
+alone is not a failure. A grounded current qualitative assessment or conclusion
+may be the perceived result when related scene facts frame or lead to it within
+one coherent focal sentence. Do not demand an invented causal,
 temporal or spatial bridge to avoid that failure. Evaluate all five checks
 independently: one failure never excuses a missed second failure.
 
@@ -77,16 +116,30 @@ never use it to restate or penalize an omitted source whose review is [].
 4. If prose reverses ordered performed actions or makes the earlier action simultaneous
 or ongoing within the later one, record unsupported_event. Do not fail subordination
 that unambiguously marks the earlier action completed before the later action.
-5. When several scene facts accompany a performed action or perceived result,
-reject only an uncomposed source-order checklist as weak_literary_composition. Source
-order alone is not a failure; complete factual coverage alone is not a literary
-PASS either.
+5. First exclude supplied held results, body consequences/states, and
+uncertainties only from the scene-governance requirement. They do not need a
+player perception verb. Still review uncertainty phrasing: an ordinary open
+question passes; an abstract diagnostic or policy statement about what
+observations prove or establish receives weak_literary_composition. Then
+review every scene-observation segment. A
+terminal independent completed action never governs a later static cluster;
+each cluster needs same-sentence subordination or its own finite player
+perception/action verb. Report every cluster that lacks governance, including
+the first one after the terminal action. Source order, factual coverage,
+punctuation, conjunction and a shared anchor do not create governance.
+Separately governed clusters at different anchors pass.
+If a scene segment has its own finite player perception/action verb, it does
+not need grammatical connection to the preceding or following segment. Mark it
+governed and do not apply the terminal-action failure to it.
 6. For a performed attempt with no supplied result or uncertainty, any claim
 that the result is unknown or unestablished is unsupported_result. The attempt
 alone without any outcome claim is supported and must not be flagged.
+7. Never report static_context_dump for a proposition that is also in
+required_current_beat. Repetition in optional_support cannot change its status.
 
 Return only the exact JSON shape shown below. reviewed_segments must copy every
-segment choice exactly once and in order. source_reviews must contain exactly
+literal segment ID (for example "s1"), never prose, exactly once and in order.
+source_reviews must contain exactly
 the shown required_current_beat refs and order; each segment_choices value lists
 segments that fully convey that source. Use [] for an omitted or partially
 conveyed source. If no required source exists, source_reviews must be [].
@@ -95,6 +148,8 @@ unsupported_attempt, unsupported_success, unsupported_object_use,
 unsupported_result, unsupported_sensory, unsupported_event,
 unsupported_world_state, unsupported_npc_state, unsupported_fact.
 literary_failures contains only {"check","segment_choice","reason"}.
+Every segment_choice field is one literal segment ID, never a comma-separated
+list or range; use separate findings when more than one segment fails.
 Output only failures, not supported proposition reviews. evidence is a concise
 nonempty list when there are no failures and may be empty otherwise. Shape:
 ${JSON.stringify(shape)}
@@ -103,30 +158,19 @@ Segment choices: ${JSON.stringify(choices)}.`;
 
 export function assembleNarrationAuditOutput(output, request) {
   const normalized = normalizeChoices(output, request);
-  const boundedCompositionRepair = request.phase === 'final'
-    && Array.isArray(normalized?.literary_failures)
-    && normalized.literary_failures.some(
-      ({ check }) => check === 'weak_literary_composition');
-  const normalizedOutput = boundedCompositionRepair ? {
-    ...normalized,
-    literary_failures: normalized.literary_failures.filter(
-      ({ check }) => check !== 'weak_literary_composition')
-  } : normalized;
-  const clean = Array.isArray(normalizedOutput?.source_reviews)
-    && normalizedOutput.source_reviews.every(({ segment_choices }) =>
+  const clean = Array.isArray(normalized?.source_reviews)
+    && normalized.source_reviews.every(({ segment_choices }) =>
       Array.isArray(segment_choices) && segment_choices.length > 0)
-    && Array.isArray(normalizedOutput.unsupported)
-    && normalizedOutput.unsupported.length === 0
-    && Array.isArray(normalizedOutput.literary_failures)
-    && normalizedOutput.literary_failures.length === 0;
+    && Array.isArray(normalized.unsupported)
+    && normalized.unsupported.length === 0
+    && Array.isArray(normalized.literary_failures)
+    && normalized.literary_failures.length === 0;
   const modelOutput = {
-    ...normalizedOutput,
+    ...normalized,
     reviewed_segments: request.segments.map(({ segment_id }) => segment_id),
-    ...(clean && Array.isArray(normalizedOutput.evidence)
-      && normalizedOutput.evidence.length === 0
-      ? { evidence: [boundedCompositionRepair
-          ? 'All required sources are covered and no factual or presentation failures remain after bounded composition repair.'
-          : 'All required sources are covered and no audit failures were reported.'] }
+    ...(clean && Array.isArray(normalized.evidence)
+      && normalized.evidence.length === 0
+      ? { evidence: ['All required sources are covered and no audit failures were reported.'] }
       : {})
   };
   if (!validNarrationAuditModelOutput(modelOutput, request)) {

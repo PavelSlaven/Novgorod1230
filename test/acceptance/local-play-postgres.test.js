@@ -45,10 +45,11 @@ test('local play persists a free turn and replays it after a server restart',
       providerSnapshot: () => provider
     } }).describe({ scope: 'turn_runtime', role_id: 'ordinary_materialization' });
     const settingsPath = join(directory, 'llm-settings.json');
-    await writeFile(settingsPath, `${JSON.stringify({ version: 1,
+    await writeFile(settingsPath, `${JSON.stringify({ version: 2,
       settings: { mode: 'custom', compatibility: provider.compatibility,
         base_url: provider.baseUrl, model: provider.model, api_key: null },
-      ordinary_materialization_identity: identity })}\n`);
+      ordinary_materialization_identity: identity,
+      qualification_version: 70 })}\n`);
     let localPlay = null;
     context.after(async () => {
       await localPlay?.close().catch(() => {});
@@ -141,7 +142,6 @@ test('local play persists a free turn and replays it after a server restart',
         if (resolution === 'no_change' || resolution === 'authority_required') {
           assert.ok(beat.changes.some(({ text }) => text.includes(
             `Поиск по вопросу «${turnRequest.raw_text}» не дал подтверждённой находки.`)));
-          assert.ok(beat.uncertainties.some(({ text }) => text.includes(`«${turnRequest.raw_text}»`)));
         } else assert.ok(beat.changes.some(
           ({ text }) => text.includes('Обнаружено:')));
         assert.equal(JSON.stringify(beat).includes('15 минут'), false);

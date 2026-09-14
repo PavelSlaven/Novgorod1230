@@ -22,26 +22,26 @@ test('turn screen validates and renders committed check arithmetic', () => {
   const check = {
     ordinal: 1, actor_label: '<Микула>',
     action_label: 'Перепрыгнуть канаву', die: 'd20',
-    formula: 'd20 + модификаторы', roll: 12, difficulty: 15,
+    formula: 'd20 + модификаторы', roll: 10, difficulty: 12,
     modifiers: [
       { kind: 'attribute', label: 'Характеристика: Ловкость', value: 2 },
       { kind: 'skill', label: 'Навык: Атлетика', value: 1 },
       { kind: 'state', label: 'Состояние', value: -1 },
       { kind: 'equipment', label: 'Снаряжение и нагрузка', value: -2 },
       { kind: 'circumstances', label: 'Обстоятельства', value: 0 }
-    ], total: 12, outcome: { band: 'success_with_cost', margin: -3,
+    ], total: 10, outcome: { band: 'success_with_cost', margin: -2,
       success: false, cost_required: true, severe_failure: false,
-      roll_note: null }, consequence_label: 'Итог проверки: успех с ценой.'
+      roll_note: null }, consequence_label: 'Итог проверки: частичный результат с ценой.'
   };
   const screen = { ...firstScreen(), schema: 'lower_dvina_trace_turn_screen',
     turn_id: 'turn-1', turn_number: 1,
     input_panel: { input_contract: 'intent_not_fact' }, checks: [check] };
   assert.doesNotThrow(() => validatePublicScreen(screen));
   const html = renderScreen(screen);
-  assert.match(html, /d20: <strong>12<\/strong>/u);
-  assert.match(html, /против сложности <strong>15<\/strong>/u);
-  assert.match(html, /успех с ценой/u);
-  assert.match(html, /Итог проверки: успех с ценой\./u);
+  assert.match(html, /d20: <strong>10<\/strong>/u);
+  assert.match(html, /против сложности <strong>12<\/strong>/u);
+  assert.match(html, /частичный результат с ценой/u);
+  assert.match(html, /Итог проверки: частичный результат с ценой\./u);
   assert.match(html, /Навык: Атлетика<\/dt><dd>\+1/u);
   assert.match(html, /&lt;Микула&gt;/u);
   assert.doesNotMatch(html, /<Микула>/u);

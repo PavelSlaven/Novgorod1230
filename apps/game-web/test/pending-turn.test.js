@@ -13,6 +13,11 @@ function storage() {
     removeItem: (key) => values.delete(key) };
 }
 
+function readyResult() {
+  return { screen: { version: 1, schema: 'first_game_screen',
+    screen_status: 'ready', party_id: 'party' } };
+}
+
 test('lost post-commit response reuses persisted exact request after reload and new intent gets a new identity', async () => {
   const saved = storage();
   const calls = []; const committed = new Map(); let effects = 0;
@@ -21,7 +26,7 @@ test('lost post-commit response reuses persisted exact request after reload and 
     calls.push(JSON.stringify(request));
     if (committed.has(request.idempotency_key)) return committed.get(request.idempotency_key);
     effects += 1;
-    const result = { screen: { screen_status: 'ready' } };
+    const result = readyResult();
     committed.set(request.idempotency_key, result);
     if (calls.length === 1) throw new TypeError('connection lost');
     return result;
@@ -104,7 +109,7 @@ test('pending presentation recovery retains identity until ready without another
   const saved = storage(); let posts = 0;
   const api = { async submitTurn() { posts += 1; return {
     screen: { screen_status: 'committed_presentation_pending' } }; },
-  async recoverPendingPresentation() { return { screen: { screen_status: 'ready' } }; } };
+  async recoverPendingPresentation() { return readyResult(); } };
   await submitRecoverableTurn(api, saved, 'party', { selected_action_option_id: 'inspect' });
   assert.equal(posts, 1);
   assert.equal(storedPendingTurn(saved, 'party'), null);
@@ -149,7 +154,7 @@ test('turn progress polling uses exact request, never overlaps, stops, and is no
   assert.equal(maxActive, 1);
   finishProgress();
   await new Promise((resolve) => setTimeout(resolve, 5));
-  finishTurn({ screen: { screen_status: 'ready' } });
+  finishTurn(readyResult());
   await pending;
   const stoppedAt = polls;
   await new Promise((resolve) => setTimeout(resolve, 5));
@@ -159,7 +164,7 @@ test('turn progress polling uses exact request, never overlaps, stops, and is no
       elapsed_seconds: 0 });
 
   await submitRecoverableTurn({
-    async submitTurn() { return { screen: { screen_status: 'ready' } }; },
+    async submitTurn() { return readyResult(); },
     async getTurnProgress() { throw new Error('status unavailable'); }
   }, saved, 'party', { raw_text: 'Иду.' }, { onProgress() {}, pollIntervalMs: 1 });
 });
@@ -196,7 +201,7 @@ test('turn progress keeps local elapsed monotonic when polling fails', async () 
     assert.equal(updates.at(-1).elapsed_seconds, 42,
       'elapsed never moves backwards with the local clock');
   } finally {
-    finishTurn({ screen: { screen_status: 'ready' } });
+    finishTurn(readyResult());
     await pending;
   }
 });
@@ -220,7 +225,7 @@ test('screen-only pending presentation recovery polls its committed request', as
     screen_status: 'committed_presentation_pending', turn_id: 'turn-7'
   }, { onProgress: (value) => updates.push(value), pollIntervalMs: 1 });
   await new Promise((resolve) => setTimeout(resolve, 5));
-  finishRecovery({ screen: { screen_status: 'ready' } });
+  finishRecovery(readyResult());
   await recovery;
   const stoppedAt = polls;
   await new Promise((resolve) => setTimeout(resolve, 5));

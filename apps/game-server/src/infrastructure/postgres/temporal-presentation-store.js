@@ -1,4 +1,8 @@
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { validFactualTurnDelivery, rebuildExpectedFactualTurnDelivery,
+  factualTurnDeliveryMatchesExpected } from './factual-presentation-delivery.js';
+import { loadLowerDvinaTraceScreenPresentation } from
+  '../../internal/lower-dvina-trace-screen-presentation.js';
 import { queryWithTurnDeadline, withTurnDeadlineTransaction } from
   './query-with-turn-deadline.js';
 
@@ -46,10 +50,26 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
   }
 
   async function jobForUpdate(tx, partyId, packageId, key) {
-    const result = await tx.query(`SELECT job_id,party_id,package_id,status,idempotency_key,next_attempt_ordinal,active_attempt_id,claim_token,lease_expires_at,narration_output,output_digest,state_version
+    const result = await tx.query(`SELECT job_id,party_id,package_id,status,idempotency_key,next_attempt_ordinal,active_attempt_id,claim_token,lease_expires_at,delivery_mode,narration_output,output_digest,factual_screen,state_version
       FROM party_runtime.party_narration_jobs WHERE party_id=$1 AND package_id=$2 AND idempotency_key=$3 FOR UPDATE`, [partyId, packageId, key]);
     if (result.rowCount !== 1) throw new Error('presentation job not found');
     return result.rows[0];
+  }
+
+  async function factualEnvelope(tx, pkg) {
+    const snapshot = await tx.query(`SELECT state_payload AS snapshot_payload,state_digest
+      FROM party_runtime.party_state_snapshots
+      WHERE party_id=$1 AND state_version=$2`,
+    [pkg.party_id, pkg.committed_state_version]);
+    if (snapshot.rowCount !== 1) throw new Error('committed factual snapshot not found');
+    return { ...pkg, ...snapshot.rows[0] };
+  }
+
+  async function expectedFactualScreen(tx, pkg) {
+    const envelope = await factualEnvelope(tx, pkg);
+    return { envelope, screen: rebuildExpectedFactualTurnDelivery({ envelope,
+      presentation: await loadLowerDvinaTraceScreenPresentation(
+        envelope.snapshot_payload) }) };
   }
 
   return Object.freeze({
@@ -74,7 +94,15 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
         if (job.status === 'delivered' || job.status === 'output_ready') {
           if (!Number.isInteger(job.next_attempt_ordinal) || job.next_attempt_ordinal <= 0) throw new Error('presentation attempt cursor is invalid');
           const persistedAttemptId = attemptId(job.job_id, job.next_attempt_ordinal - 1);
-          return Object.freeze({ ok: true, disposition: job.status, attempt_id: persistedAttemptId, narration_result: clone(job.narration_output), output_digest: job.output_digest, presentation_outcome: job.status === 'delivered' ? { presentation_status: 'delivered', attempt_id: persistedAttemptId, output_digest: job.output_digest } : null });
+          const factual = job.delivery_mode === 'factual';
+          const expected = factual ? await expectedFactualScreen(tx, pkg) : null;
+          if (factual && (!validFactualTurnDelivery(job.factual_screen,
+            expected.envelope)
+            || !factualTurnDeliveryMatchesExpected(job.factual_screen,
+              expected.screen))) {
+            throw new Error('persisted factual presentation is invalid');
+          }
+          return Object.freeze({ ok: true, disposition: factual ? 'factual_delivered' : job.status, attempt_id: persistedAttemptId, narration_result: factual ? null : clone(job.narration_output), factual_screen: factual ? clone(job.factual_screen) : null, output_digest: factual ? null : job.output_digest, presentation_outcome: job.status === 'delivered' ? { presentation_status: factual ? 'factual_delivered' : 'delivered', attempt_id: persistedAttemptId, output_digest: factual ? null : job.output_digest } : null });
         }
         const clock = now();
         if (job.status === 'in_progress' && new Date(job.lease_expires_at) > clock) return Object.freeze({ ok: true, disposition: 'in_progress', attempt_id: job.active_attempt_id });
@@ -141,6 +169,26 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
             VALUES ($1,$2,$3,'failed_retryable',$4,$5)`, [input.attempt_id, job.job_id, job.next_attempt_ordinal - 1, input.failure?.stage ?? 'narration_failed', JSON.stringify(input.failure ?? {})]);
         }
         return Object.freeze({ ok: true, presentation_status: input.presentation_status, attempt_id: input.attempt_id, output_digest: input.presentation_status === 'delivered' ? input.output_digest : null });
+      }, input.turnBudget);
+    },
+    async finalizeFactualPresentationAttempt(input = {}) {
+      required(input, 'party_id', 'package_id', 'package_digest', 'presentation_idempotency_key', 'attempt_id', 'claim_token');
+      if (!input.factual_screen || typeof input.factual_screen !== 'object' || Array.isArray(input.factual_screen)) throw new TypeError('factual screen is required');
+      return transaction(async (tx) => {
+        const pkg = await lock(tx, input.party_id, input.package_id, input.package_digest);
+        const job = await jobForUpdate(tx, input.party_id, input.package_id, input.presentation_idempotency_key);
+        const expected = await expectedFactualScreen(tx, pkg);
+        if (!validFactualTurnDelivery(input.factual_screen, expected.envelope)
+            || !factualTurnDeliveryMatchesExpected(input.factual_screen,
+              expected.screen)) {
+          throw new TypeError('factual screen identity is invalid');
+        }
+        const updated = await tx.query(`UPDATE party_runtime.party_narration_jobs SET status='delivered',delivery_mode='factual',active_attempt_id=NULL,claim_token=NULL,lease_expires_at=NULL,factual_screen=$1,state_version=state_version+1
+          WHERE job_id=$2 AND status='in_progress' AND active_attempt_id=$3 AND claim_token=$4 AND state_version=$5`, [JSON.stringify(input.factual_screen), job.job_id, input.attempt_id, input.claim_token, job.state_version]);
+        if (updated.rowCount !== 1) return Object.freeze({ ok: false, presentation_status: 'state_conflict' });
+        await tx.query(`INSERT INTO party_runtime.party_narration_attempts (attempt_id,job_id,attempt_ordinal,outcome)
+          VALUES ($1,$2,$3,'factual_delivered')`, [input.attempt_id, job.job_id, job.next_attempt_ordinal - 1]);
+        return Object.freeze({ ok: true, presentation_status: 'factual_delivered', attempt_id: input.attempt_id, output_digest: null });
       }, input.turnBudget);
     }
   });

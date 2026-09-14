@@ -1,4 +1,5 @@
 import { removePendingTurn, storedPendingTurn, storePendingTurn } from './pending-turn.js';
+import { validatePublicScreen } from '../api/contracts.js';
 
 export function createTurnRequest(input) {
   const requestId = `web:turn:${globalThis.crypto?.randomUUID?.()
@@ -18,6 +19,7 @@ export async function submitRecoverableTurn(api, storage, partyId, input = {},
     });
   try {
     const result = await submitTurnWithPresentationReplay(api, partyId, pending.request);
+    validatePublicScreen(result?.screen);
     removePendingTurn(storage, pending);
     return result;
   } catch (error) {

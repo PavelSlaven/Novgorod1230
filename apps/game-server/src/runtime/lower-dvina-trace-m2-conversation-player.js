@@ -3,7 +3,8 @@ import {
   prepareM2PlayerConversationPlan
 } from './lower-dvina-trace-m2-conversation-exchange.js';
 import {
-  accessibleBlueWoolItem
+  accessibleBlueWoolItem,
+  presentPhase3NpcActors
 } from './lower-dvina-trace-phase-3-admission.js';
 import {
   EVIDENCE_INTERACTION,
@@ -32,9 +33,12 @@ export async function prepareTracePhase3PlayerConversationPlan(input) {
     phase: 'phase_3',
     checkResult: null,
     targetActor: target,
-    actualNpcActors: contracts.actors.filter(({ anchor_id: anchorId }) =>
-      anchorId === input.state.position?.g5_anchor_id),
+    actualNpcActors: presentPhase3NpcActors(input.state, contracts),
     availableEvidence,
+    ...(input.requiredIntendedAddresseeRefs == null ? {} : {
+      requiredIntendedAddresseeRefs:
+        input.requiredIntendedAddresseeRefs
+    }),
     ...(input.evidence ? {
       requiredResolution: 'check_required',
       requiredCheck: {

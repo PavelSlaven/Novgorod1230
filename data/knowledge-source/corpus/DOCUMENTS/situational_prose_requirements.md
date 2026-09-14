@@ -28,6 +28,20 @@ Narrator преобразует только переданный authoritative/
 
 Если нужного для хорошей сцены факта нет во входе, дефект принадлежит materialization, domain owner, perception/knowledge или player-safe projection. Writer обязан сохранить границу, а acceptance обязан зафиксировать upstream gap. Более длинная фраза не считается исправлением.
 
+### 2.1. Terminal factual delivery — degraded recovery, не проза
+
+После factual commit отдельный `FactualTurnDeliveryScreen v1` возможен только
+для typed terminal `final_audit_failed` завершённого bounded narration flow.
+Это availability-only degraded recovery: structured player-safe delivery exact
+committed facts и всего применимого обычного public UI (`checks`, panels,
+actions/affordances и прочих полей нормального screen), в котором отсутствует
+только approved prose. Он не содержит narrator output, rejected prose, digest,
+audit/provider/retry diagnostics либо новую causal фразу; UI не склеивает его
+поля в prose. Factual delivery не является narration/audit fallback, не
+ослабляет strict приёмку и не легализует state-report как игровой ответ.
+Все provider, infrastructure, malformed-payload и admission failures остаются
+pending/retryable и не получают factual terminal screen.
+
 ## 3. Достаточный вход сцены
 
 Player-safe projector передаёт только применимые к текущей сцене сведения. Полный потенциальный набор:
@@ -244,6 +258,16 @@ Stage 23 проверяет это через обязательный `literary
 6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.
 
 `PASS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой.
+
+Обычный approved `TurnScreen` — единственный качественный narration `PASS`.
+Появление `FactualTurnDeliveryScreen` означает degraded presentation после
+terminal `final_audit_failed`: оно сохраняет доступность уже committed хода,
+но никогда не закрывает narration quality, blind-play, demo или TURN FORENSIC
+acceptance. Любой такой экран в этих прогонах автоматически создаёт blocking
+narration finding; Contract Auditor не меняет эту норму, чтобы легализовать
+непрошедший writer/audit flow. Factual recovery сохраняет полный применимый
+player-safe public UI нормального экрана и заменяет только отсутствующую
+approved prose.
 
 В обычном ходе итоговый `narration_audit` содержит `coverage.visible_changes` и
 `coverage.uncertainties`: записи `{source_index, segment_ids}` с нулевым индексом

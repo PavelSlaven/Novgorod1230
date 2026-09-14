@@ -62,7 +62,8 @@ export async function runGameplayGapCampaign({ nextIntent, explorerRef,
     campaign_id: campaignId, explorer_ref: explorerRef, scenario_id: scenarioId,
     mode: acceptance ? 'acceptance_candidate' : 'development', git: before,
     exploration_kind: replayGapIdsByTurn.some(refs => refs.length) ? 'regression' : 'generative',
-    status: 'running', turns: [], started_at: new Date().toISOString() };
+    status: 'running', turns: [], findings: [], narration_quality_pass: true,
+    started_at: new Date().toISOString() };
   // Flush after every turn: a later failure must not erase a discovered gap.
   const save = () => writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
   // Claim a fresh report before entering failure handling, which also saves.
@@ -144,6 +145,10 @@ export async function runGameplayGapCampaign({ nextIntent, explorerRef,
           boundary.event === 'owner_commit_completed'
             ? [`${trace.trace_ref}#/events/${eventIndex}/llm/gameplay_traces/${boundaryIndex}/result`] : [])]);
       trace.replay_of_gap_ids = [...(replayGapIdsByTurn[index] ?? [])];
+      const terminalEventIndex = events.findLastIndex(({ event }) => event === 'turn.completed');
+      recordNarrationQuality({ report, trace, partyId,
+        event: terminalEventIndex >= 0 ? events[terminalEventIndex] : events.at(-1),
+        eventIndex: terminalEventIndex >= 0 ? terminalEventIndex : events.length - 1 });
       await save();
       if (events.some(event => event.llm?.gameplay_traces?.some(item => item.event === 'capture_failed'))) {
         throw new Error('Incomplete private gameplay trace');
@@ -155,7 +160,8 @@ export async function runGameplayGapCampaign({ nextIntent, explorerRef,
     if (report.git_after.head !== before.head || (acceptance && report.git_after.dirty !== false)) {
       throw new Error('Candidate changed during campaign');
     }
-    report.status = 'captured'; // Not saturation or factual approval.
+    report.status = acceptance === true && report.narration_quality_pass === false
+      ? 'quality_failed' : 'captured'; // Not saturation or factual approval.
     return report;
   } catch (error) {
     report.status = 'failed';
@@ -208,6 +214,45 @@ export function auditEvent(event) {
         grounding: call.schema === 'world_knowledge_grounding_diagnostic_v1'
           ? groundingDiagnostic(call) : null
       })) } };
+}
+
+export function narrationQualityFinding({ partyId, event } = {}) {
+  const screen = event?.event === 'turn.completed' ? event.output?.screen : null;
+  if (screen?.schema !== 'factual_turn_delivery_screen'
+      || screen.presentation_quality !== 'degraded') return null;
+  const tuple = ['party_id', 'turn_id', 'package_id'].map((key) =>
+    String(screen[key] ?? '').trim());
+  if (tuple.some((value) => !value) || tuple[0] !== partyId) {
+    throw new Error('Degraded factual delivery has no matching immutable screen tuple.');
+  }
+  const [screenPartyId, turnId, packageId] = tuple;
+  return Object.freeze({
+    finding_id: `narration-degraded:${screenPartyId}:${turnId}:${packageId}`,
+    severity: 'blocking', category: 'narration',
+    code: 'NARRATION_DEGRADED_FACTUAL_DELIVERY',
+    party_id: screenPartyId, turn_id: turnId, package_id: packageId,
+    message: 'Committed turn reached only degraded factual presentation.'
+  });
+}
+
+export function recordNarrationQuality({ report, trace, partyId, event, eventIndex = 0 } = {}) {
+  if (!report || !trace || !text(partyId)) throw new TypeError(
+    'report, trace and party_id are required for narration quality evidence.');
+  if (event?.event !== 'turn.completed') {
+    trace.narration_quality_pass = null;
+    return null;
+  }
+  const finding = narrationQualityFinding({ partyId, event });
+  trace.narration_quality_pass = finding == null;
+  if (finding == null) return null;
+  const findings = report.findings ?? (report.findings = []);
+  if (!findings.some(({ finding_id }) => finding_id === finding.finding_id)) {
+    findings.push({ ...finding,
+      evidence_ref: `${trace.trace_ref}#/events/${eventIndex}/output/screen` });
+  }
+  trace.narration_finding_ids = [finding.finding_id];
+  report.narration_quality_pass = false;
+  return finding;
 }
 function groundingDiagnostic(call) {
   return { schema: call.schema, purpose: call.purpose,

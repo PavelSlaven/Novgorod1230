@@ -1,13 +1,15 @@
-import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js'; import { canonicalDigest } from '@rus/materialization'; import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a'; import { spatialResult } from '@rus/turn';
-import { json } from '../../runtime/first-playable/shared.js'; import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
+import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js'; import { canonicalDigest } from '@rus/materialization'; import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
+import { json } from '../../runtime/first-playable/shared.js';
 import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.js';
 import { assertPhase2NormalizedRows, phase2IntegrityError, validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
 import { loadInitialTracePhase2State } from './lower-dvina-trace-phase-2-initial-state.js';
-import { buildPhase2ReadyScreen, phase2PublicResult, phase2ScreenDigest, publicCombatStateFromConsequence } from './lower-dvina-trace-phase-2-projection.js';
+import { phase2PublicResult, phase2ScreenDigest, publicCombatStateFromConsequence } from './lower-dvina-trace-phase-2-projection.js';
+import { validFactualTurnDelivery, rebuildExpectedFactualTurnDelivery, factualTurnDeliveryMatchesExpected } from './factual-presentation-delivery.js';
 import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-panels.js';
 import { phase2InitialCurrentVisibleContext, withPhase2CurrentVisibleContext,
   withoutPhase2CurrentVisibleContext } from './lower-dvina-trace-phase-2-current-visible.js';
 import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2-replay.js';
+import { replayLowerDvinaTracePhase2Presentation } from './lower-dvina-trace-phase-2-presentation-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
 import { hydrateNpcRoutineState } from '../../runtime/npc-routine-temporal.js';
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
@@ -173,52 +175,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
     });
   }
   async function replayPhase2Turn({ partyId, replay, narrator, turnBudget = null }) {
-    if (replay.screen?.screen_status !== 'committed_presentation_pending') {
-      return replay.public_result;
-    }
-    const visibleContext = await loadPhase2VisibleContext(partyPool, {
-      commit: replay.state.last_turn.visible_package, turnBudget
-    });
-    const narration = await runWithinTurnDeadline(turnBudget, () => narrator.run({
-      version: 1,
-      schema: 'narration_request',
-      request_id: replay.screen.turn_id,
-      surface: 'turn',
-      visible_context: visibleContext,
-      context: { attempt: { text: replay.state.last_turn.raw_text },
-        outcome: spatialResult({ consequence: replay.state.last_turn.consequence }) },
-      style_policy: {
-        preserve_uncertainty: true,
-        no_new_world_facts: true
-      },
-      max_repairs: 1,
-      turnBudget
-    }));
-    return persistPhase2Screen({
-      partyId,
-      inputDigest: replay.input_digest,
-      turnBudget,
-      result: {
-        commit: {
-          state_version: replay.state.party_state.state_version,
-          turn_number: replay.state.party_state.turn_number,
-          package_id:
-            replay.state.last_turn.visible_package.package_id,
-          package_digest:
-            replay.state.last_turn.visible_package.package_digest
-        },
-        narration,
-        screen: buildPhase2ReadyScreen({
-          payload: replay.state,
-          turnId: replay.screen.turn_id,
-          visibleContext,
-          narration,
-          narrationOutputDigest:
-            narration.presentation.output_digest
-        }),
-        turn_id: replay.screen.turn_id
-      }
-    });
+    return replayLowerDvinaTracePhase2Presentation({ partyPool, partyId, replay,
+      narrator, turnBudget, persistPhase2Screen });
   }
   async function commitPhase2Turn(input) {
     return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget) });
@@ -245,20 +203,56 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
   }
   async function persistPhase2Screen({ partyId, inputDigest, result, turnBudget = null }) {
     const anchor = result.commit;
+    const factualDelivery = result.factual_delivery;
+    const snapshot = (await queryWithTurnDeadline(partyPool, {
+      text: `SELECT state_payload,state_digest
+         FROM party_runtime.party_state_snapshots
+       WHERE party_id=$1 AND state_version=$2`,
+      values: [partyId, anchor.state_version]
+    }, turnBudget)).rows[0];
+    const payload = snapshot?.state_payload;
+    if (payload?.last_turn?.input_digest !== inputDigest
+        || (factualDelivery != null
+          && snapshot?.state_digest !== canonicalDigest(payload))) {
+      throw phase2IntegrityError();
+    }
+    if (factualDelivery != null) {
+      const factualEnvelope = (await queryWithTurnDeadline(partyPool, {
+        text: `SELECT visible.package_id,visible.party_id,visible.turn_id,
+                      visible.committed_state_version,visible.package_digest,
+                      visible.visible_payload,snapshot.state_payload AS snapshot_payload,
+                      snapshot.state_digest
+                 FROM party_runtime.party_visible_packages visible
+                 JOIN party_runtime.party_state_snapshots snapshot
+                   ON snapshot.party_id=visible.party_id
+                  AND snapshot.state_version=visible.committed_state_version
+                WHERE visible.party_id=$1 AND visible.package_id=$2
+                  AND visible.package_digest=$3`,
+        values: [partyId, anchor.package_id, anchor.package_digest]
+      }, turnBudget)).rows[0];
+      if (!factualEnvelope
+          || factualEnvelope.turn_id !== result.turn_id
+          || String(factualEnvelope.committed_state_version) !== String(anchor.state_version)
+          || !validFactualTurnDelivery(factualDelivery, factualEnvelope)
+          || !factualTurnDeliveryMatchesExpected(factualDelivery,
+            rebuildExpectedFactualTurnDelivery({ envelope: factualEnvelope,
+              presentation: await loadLowerDvinaTraceScreenPresentation(factualEnvelope.snapshot_payload) }))) {
+        throw phase2IntegrityError();
+      }
+      const updated = await queryWithTurnDeadline(partyPool, {
+        text: `UPDATE party_runtime.party_server_sessions
+            SET screen=$2::jsonb,updated_at=now()
+          WHERE party_id=$1 AND last_turn_id=$3`,
+        values: [partyId, json(factualDelivery), result.turn_id]
+      }, turnBudget);
+      if (updated.rowCount !== 1) throw phase2IntegrityError();
+      return phase2PublicResult({ payload, screen: factualDelivery });
+    }
     const narration =
       result.narration ?? result.checkpoint?.stages?.narration;
     const narrationOutputDigest =
       narration.presentation?.output_digest
       ?? canonicalDigest(narration.approved_output);
-    const payload = (await queryWithTurnDeadline(partyPool, {
-      text: `SELECT state_payload
-         FROM party_runtime.party_state_snapshots
-       WHERE party_id=$1 AND state_version=$2`,
-      values: [partyId, anchor.state_version]
-    }, turnBudget)).rows[0]?.state_payload;
-    if (payload?.last_turn?.input_digest !== inputDigest) {
-      throw phase2IntegrityError();
-    }
     const combatState = publicCombatStateFromConsequence(payload.last_turn?.consequence);
     const screen = projectLowerDvinaTraceScreenPanels({
       payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),

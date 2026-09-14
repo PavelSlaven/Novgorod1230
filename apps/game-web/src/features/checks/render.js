@@ -2,7 +2,7 @@ import { escapeHtml } from '../../shared/escape-html.js';
 
 const OUTCOME_LABELS = Object.freeze({
   clean_success: 'чистый успех', success: 'успех',
-  success_with_cost: 'успех с ценой',
+  success_with_cost: 'частичный результат с ценой',
   failure_with_consequence: 'неудача с последствием',
   severe_failure: 'тяжёлая неудача'
 });

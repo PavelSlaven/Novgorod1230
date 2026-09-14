@@ -6,7 +6,8 @@ import {
   appendPhase3MovementTraversal
 } from './lower-dvina-trace-phase-3-movement-writes.js';
 import { appendWorldRouteJourney } from './lower-dvina-trace-world-route-journey.js';
-import { routeMovement } from './lower-dvina-trace-phase-3-state.js';
+import { phase3ConversationFactual, routeMovement } from
+  './lower-dvina-trace-phase-3-state.js';
 import { appendRouteBodyWrites } from './lower-dvina-trace-route-body-writes.js';
 import {
   appendNpcSemanticConversationWrites,
@@ -120,18 +121,24 @@ export function phase3Writes(input) {
     }
     appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase3:${turnNumber}` });
-  } else {
+  }
+  if (factual.consequence.conversation != null) {
+    const conversationFactual = phase3ConversationFactual(factual);
+    const activityState = routeMovement(factual)
+      ? { ...structuredClone(state), position: structuredClone(next.position) }
+      : state;
     appendActivity({
-      inserts, updates, appends, state, next, factual, partyId, turnNumber,
+      inserts, updates, appends, state: activityState, next,
+      factual: conversationFactual, partyId, turnNumber,
       changeSetId, idemId, inputDigest
     });
     const semanticExchange =
-      factual.consequence.conversation?.semantic_exchange ?? null;
+      conversationFactual.consequence.conversation?.semantic_exchange ?? null;
     if (semanticExchange !== null
         && (semanticExchange.exchange.applied_contribution_count > 0
           || semanticExchange.exchange.stop_reason === 'npc_unavailable')) {
       const semanticInput = buildNpcSemanticConversationWriteInput({
-        state,
+        state: activityState,
         next,
         semanticExchange
       });
@@ -161,8 +168,8 @@ export function phase3Writes(input) {
       appendPhase3SemanticConsequences({
         appends,
         inserts,
-        state,
-        factual,
+        state: activityState,
+        factual: conversationFactual,
         semanticExchange,
         partyId,
         turnNumber,
@@ -171,7 +178,8 @@ export function phase3Writes(input) {
       });
     } else if (semanticExchange === null) {
       appendConversation({
-        appends, inserts, state, next, factual, partyId, turnNumber,
+        appends, inserts, state, next, factual: conversationFactual,
+        partyId, turnNumber,
         changeSetId, inputDigest
       });
     }

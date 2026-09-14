@@ -1,4 +1,4 @@
-import { activityHistoryEntry } from
+import { activityHistoryEntry, phase3ConversationFactual } from
   './lower-dvina-trace-phase-3-activity-state.js';
 
 export function appendPhase3ActivityHistory({
@@ -9,8 +9,13 @@ export function appendPhase3ActivityHistory({
   inputDigest,
   changeSetId
 }) {
-  const historyEntry = activityHistoryEntry({
+  const conversationFactual = phase3ConversationFactual(factual);
+  const routeEntry = conversationFactual === factual ? null : activityHistoryEntry({
     partyId: state.party_id, turnNumber, factual, inputDigest, changeSetId
+  });
+  const historyEntry = activityHistoryEntry({
+    partyId: state.party_id, turnNumber, factual: conversationFactual,
+    inputDigest, changeSetId
   });
   const semantic = factual.consequence.conversation?.semantic_exchange;
   const pendingActivity = semantic?.resumed_npc_execution != null
@@ -18,7 +23,8 @@ export function appendPhase3ActivityHistory({
     : semantic?.resumed_player_execution != null
       ? state.pending_player_conversation_execution : null;
   if (pendingActivity?.activity_execution_id == null) {
-    next.activity_history = [...(next.activity_history ?? []), historyEntry];
+    next.activity_history = [...(next.activity_history ?? []),
+      ...(routeEntry == null ? [] : [routeEntry]), historyEntry];
     return;
   }
   const priorEntry = (next.activity_history ?? []).find(

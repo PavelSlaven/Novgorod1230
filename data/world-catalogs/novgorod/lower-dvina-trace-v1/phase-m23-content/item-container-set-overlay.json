@@ -1,0 +1,23 @@
+{
+  "schema": "rus.trace_item_container_set_overlay.v1",
+  "set_id": "trace_ld_v1_item_container_set",
+  "revision": 7,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "supersedes_ref": {
+    "id": "trace_ld_v1_item_container_set",
+    "revision": 6,
+    "schema": "rus.trace_item_container_set_overlay.v1",
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m21-content/item-container-set-overlay.json",
+    "digest": "ff8c3cd970bbe27fcff3b4ead470d68b1855e976047c31c1fae1a690a46bcb50"
+  },
+  "item_inventory_profile_overrides": [
+    {
+      "inventory_profile_id": "trace_ld_v1_inventory_profile_blue_wool_fragment",
+      "external_hand_cost": 1
+    }
+  ],
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

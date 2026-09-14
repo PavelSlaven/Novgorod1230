@@ -1,10 +1,11 @@
 import { serverError } from '../errors.js';
-
+import { readFile } from 'node:fs/promises';
+import { createLowerDvinaTraceNarrationService } from './lower-dvina-trace-narration-llm.js';
+const QUALIFICATION_VERSION = 70;
 export const LOCAL_LLM_PRESET = Object.freeze({
   base_url: 'http://127.0.0.1:8000/v1',
   model: 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced'
 });
-
 export function createLlmSettingsOwner({ qualifyCustom = null,
   probeCustom = null, now = Date.now, initialRecord = null,
   persistSettings = null, runtimeStatus = null } = {}) {
@@ -13,12 +14,14 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
     : normalizeStoredRecord(initialRecord);
   let active = restored.active;
   let qualifiedO1Identity = restored.identity;
+  let requalificationRequired = restored.requalificationRequired === true;
   let generation = 0;
   let commitQueue = Promise.resolve();
   return Object.freeze({
     read() { return publicSnapshot(active, runtimeStatus); },
     providerSnapshot() { return active; },
     ordinaryMaterializationIdentity() { return qualifiedO1Identity; },
+    requiresRequalification() { return requalificationRequired; },
     async apply(input) {
       const next = normalizeSettings(input, active);
       const applyingGeneration = ++generation;
@@ -31,6 +34,7 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
         if (applyingGeneration !== generation) stale();
         active = next;
         qualifiedO1Identity = qualified;
+        requalificationRequired = false;
         return publicSnapshot(active, runtimeStatus);
       });
     },
@@ -55,7 +59,6 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
     },
     reset() { return this.apply({ mode: 'default' }); }
   });
-
   function commit(operation) {
     const result = commitQueue.then(operation, operation);
     commitQueue = result.catch(() => {});
@@ -66,7 +69,102 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
       'LLM settings apply was superseded.', { status: 409 });
   }
 }
-
+export async function applyInitialLocalSettings(owner, storedRecord) {
+  if (storedRecord == null) await owner.apply({ mode: 'local' });
+  else if (owner.requiresRequalification()) await owner.apply(storedRecord.settings);
+}
+export function createProductionLlmQualifier({ qualifyOrdinary, roleRunner } = {}) {
+  if (typeof qualifyOrdinary !== 'function') throw new TypeError('qualifyOrdinary is required.');
+  return async (candidate) => {
+    const identity = await qualifyOrdinary(candidate);
+    await runNarrationWorkflowQualification({ roleRunner, candidate });
+    return Object.freeze({ ...identity, qualification_version: QUALIFICATION_VERSION });
+  };
+}
+export async function runNarrationWorkflowQualification({ roleRunner, candidate } = {}) {
+  if (typeof roleRunner?.run !== 'function' || typeof roleRunner?.describe !== 'function') throw new TypeError('Narration qualification requires LLM role transport.');
+  const controls = [['gameplay-narrator-auditor-cycle17-shore-catalogue', false], ['gameplay-narrator-auditor-dense-storeyard-terminal-static', false], ['gameplay-narrator-auditor-dense-cellar-terminal-static', false], ['gameplay-narrator-auditor-dense-storeyard-governed-action', true], ['gameplay-narrator-auditor-dense-cellar-finite-perception', true]];
+  const allFixtures = await frozenNarrationFixtures();
+  const fixtures = controls.map(([id]) => allFixtures.find((fixture) => fixture.id === id));
+  if (fixtures.length !== controls.length || fixtures.some((fixture) => fixture == null)) throw narrationQualificationError();
+  try {
+    const probes = [];
+    for (const [fixtureIndex, fixture] of fixtures.entries()) {
+      const initialPass = controls.find(([id]) => id === fixture.id)[1];
+      const request = narrationRequest(fixture);
+      let initialRaw = null;
+      let initialProvider = null;
+      const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
+        async run(call) {
+          if (call.role_id === 'gameplay_narrator') return { output: fixture.request.output };
+          const expected = roleRunner.describe({ scope: call.scope, role_id: call.role_id,
+            overrides: call.overrides, provider_snapshot: candidate });
+          const response = await roleRunner.run({ ...call, provider_snapshot: candidate });
+          if (!sameIdentity(expected, response?.provider_record)) throw narrationQualificationError();
+          if (call.role_id === 'gameplay_narrator_auditor'
+              && auditPhase(call) === 'initial') {
+            initialRaw = response.output;
+            initialProvider = response.provider_record;
+          }
+          return response;
+        }
+      } });
+      const result = await narration.run(request);
+      const initialWeakComposition = initialRaw?.literary_failures?.some(
+        ({ check }) => check === 'weak_literary_composition') === true;
+      if (result.status !== 'approved' || !result.approved_output?.prose?.trim()
+          || result.repair_history.filter(({ role }) => role === 'semantic_repair').length
+            !== (initialPass ? 0 : 1)
+          || result.audit_history.length !== (initialPass ? 1 : 2)
+          || result.audit_history[0]?.value?.pass !== initialPass
+          || initialWeakComposition !== !initialPass
+          || result.audit_history.at(-1)?.value?.pass !== true
+          || !result.final_audit?.coverage?.visible_changes?.every(({ segment_ids }) => segment_ids.length)
+          || !result.final_audit?.coverage?.uncertainties?.every(({ segment_ids }) => segment_ids.length)) throw narrationQualificationError();
+      const live = fixtureIndex === 0 ? await createLowerDvinaTraceNarrationService({ roleRunner: {
+        async run(call) {
+          const expected = roleRunner.describe({ scope: call.scope, role_id: call.role_id,
+            overrides: call.overrides, provider_snapshot: candidate });
+          const response = await roleRunner.run({ ...call, provider_snapshot: candidate });
+          if (!sameIdentity(expected, response?.provider_record)) throw narrationQualificationError();
+          return response;
+        }
+      } }).run(request) : null;
+      if (live && (live.status !== 'approved' || !live.approved_output?.prose?.trim()
+          || !live.final_audit?.coverage?.visible_changes?.every(({ segment_ids }) => segment_ids.length)
+          || !live.final_audit?.coverage?.uncertainties?.every(({ segment_ids }) => segment_ids.length))) {
+        throw narrationQualificationError();
+      }
+      probes.push(Object.freeze({ fixture_id: fixture.id,
+        provider: initialProvider?.provider ?? null, model: initialProvider?.model ?? null,
+        role_id: initialProvider?.role_id ?? null,
+        initial_raw_weak_literary_composition: initialWeakComposition,
+        initial_assembled_rejected: result.audit_history[0].value.pass === false,
+        repair_count: result.repair_history.filter(({ role }) => role === 'semantic_repair').length,
+        final_pass: result.audit_history.at(-1).value.pass === true,
+        status: result.status, candidate_writer: live == null ? null : Object.freeze({
+          repair_count: live.repair_history.filter(({ role }) => role === 'semantic_repair').length,
+          final_pass: live.final_audit?.pass === true, status: live.status }), errors: [] }));
+    }
+    return Object.freeze(probes);
+  } catch (error) {
+    if (error?.code === 'LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED') throw error;
+    if (/^(?:timeout|transport_error|invalid_response|json_parse_failed|http_\d{3})$/u
+      .test(String(error?.code ?? ''))) throw error;
+    throw narrationQualificationError();
+  }
+}
+function auditPhase(call) {
+  try { return JSON.parse(call.messages?.at(-1)?.content).phase; }
+  catch { return null; }
+}
+export const runNarrationAuditorQualification = runNarrationWorkflowQualification;
+function narrationRequest(fixture) {
+  const auditRequest = fixture?.request;
+  return { version: 1, schema: 'narration_request', request_id: auditRequest?.output?.output_id,
+    surface: 'turn', visible_context: auditRequest?.visible_context,
+    style_policy: auditRequest?.style_policy ?? {} };
+}
 async function qualify(candidate, qualifyCustom) {
   if (typeof qualifyCustom !== 'function') {
     throw serverError('LLM_SETTINGS_QUALIFICATION_UNAVAILABLE',
@@ -79,11 +177,9 @@ async function qualify(candidate, qualifyCustom) {
   }
   return Object.freeze({ ...identity });
 }
-
 export function normalizeLlmSettingsCandidate(input) {
   return normalizeProvider(input);
 }
-
 function normalizeSettings(input, active) {
   if (!plain(input)) invalid('LLM_SETTINGS_BODY_INVALID', 'LLM settings must be an object.');
   if (input.mode === 'default') {
@@ -95,7 +191,6 @@ function normalizeSettings(input, active) {
   }
   invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be default, local, or custom.');
 }
-
 function normalizeProvider(input, active = null) {
   if (!plain(input)) invalid('LLM_SETTINGS_BODY_INVALID', 'LLM settings must be an object.');
   assertFields(input, ['mode', 'compatibility', 'base_url', 'model', 'api_key']);
@@ -113,7 +208,6 @@ function normalizeProvider(input, active = null) {
   return Object.freeze({ mode: input.mode, compatibility: 'openai_compatible',
     baseUrl, model, apiKey });
 }
-
 function defaultSnapshot() { return Object.freeze({ mode: 'local',
   compatibility: 'openai_compatible', baseUrl: LOCAL_LLM_PRESET.base_url,
   model: LOCAL_LLM_PRESET.model, apiKey: null }); }
@@ -126,28 +220,28 @@ function publicSnapshot(snapshot, runtimeStatus) {
     ...(runtimeStatus ? { local_runtime: runtimeStatus } : {})
   });
 }
-
 function storedRecord(snapshot, identity) {
   return Object.freeze({
-    version: 1,
+    version: 2,
     settings: { mode: snapshot.mode, compatibility: snapshot.compatibility,
       base_url: snapshot.baseUrl, model: snapshot.model, api_key: snapshot.apiKey },
-    ordinary_materialization_identity: identity
+    ordinary_materialization_identity: identity,
+    qualification_version: identity?.qualification_version ?? null
   });
 }
-
 function normalizeStoredRecord(record) {
-  if (!plain(record) || record.version !== 1 || !plain(record.settings)) {
+  if (!plain(record) || record.version !== 2 || !plain(record.settings)) {
     throw serverError('LLM_SETTINGS_FILE_INVALID',
       'Saved LLM settings are invalid.', { status: 500, public_exposure: 'internal' });
   }
   const active = normalizeSettings(record.settings, null);
   const legacyDefault = record.settings.mode === 'default';
-  const identity = legacyDefault ? null
-    : normalizeIdentity(record.ordinary_materialization_identity);
-  return { active, identity };
+  if (legacyDefault) return { active, identity: null, requalificationRequired: false };
+  if (record.qualification_version !== QUALIFICATION_VERSION) {
+    return { active, identity: null, requalificationRequired: true };
+  }
+  return { active, identity: normalizeIdentity(record.ordinary_materialization_identity), requalificationRequired: false };
 }
-
 function normalizeIdentity(value) {
   const keys = ['provider', 'model', 'scope', 'role_id', 'config_hash'];
   if (!plain(value) || keys.some((key) => typeof value[key] !== 'string'
@@ -157,6 +251,22 @@ function normalizeIdentity(value) {
       'Saved LLM settings are invalid.', { status: 500, public_exposure: 'internal' });
   }
   return Object.freeze(Object.fromEntries(keys.map((key) => [key, value[key]])));
+}
+function sameIdentity(expected, actual) {
+  return ['provider', 'model', 'scope', 'role_id', 'config_hash'].every((key) =>
+    expected?.[key] === actual?.[key]);
+}
+function narrationQualificationError() {
+  return serverError('LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED',
+    'Custom LLM settings failed narration-auditor qualification.', { status: 422 });
+}
+let narrationFixtures;
+async function frozenNarrationFixtures() {
+  if (narrationFixtures == null) {
+    const source = new URL('../../../../data/model-evals/llm-runtime/frozen-role-requests-v1.json', import.meta.url);
+    narrationFixtures = JSON.parse(await readFile(source, 'utf8')).fixtures;
+  }
+  return narrationFixtures;
 }
 function normalizeUrl(value) {
   const raw = requiredText(value, 'LLM_SETTINGS_BASE_URL_REQUIRED', 'base_url is required.');

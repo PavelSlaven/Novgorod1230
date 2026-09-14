@@ -41,16 +41,27 @@ export function loadLowerDvinaTraceRevision33Publication(options = {}) {
 export function loadLowerDvinaTraceRevision34Publication(options = {}) {
   return loadPublication({ ...options, publicationRevision: 29 });
 }
+export function loadLowerDvinaTraceRevision35Publication(options = {}) {
+  return loadPublication({ ...options, publicationRevision: 30 });
+}
 async function loadPublication({
   rootDir = process.cwd(), phase1AManifestDigest = null,
   publicationRevision = 27 } = {}) {
-  if (![27, 28, 29].includes(publicationRevision)) fail();
-  const scenarioRevision = publicationRevision === 29 ? 34
+  if (![27, 28, 29, 30].includes(publicationRevision)) fail();
+  const scenarioRevision = publicationRevision === 30 ? 35 : publicationRevision === 29 ? 34
     : publicationRevision === 28 ? 33 : 32;
-  const phase1aDigest = publicationRevision >= 28
+  const phase1aDigest = publicationRevision === 30
+    ? '986fd4fa149997ed9581924b13f502b6f9eafff640b31d390b4347f113c500e6'
+    : publicationRevision >= 28
     ? TRACE_REVISION33_PHASE_1A_MANIFEST_DIGEST
     : TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST;
-  const pins = publicationRevision === 29 ? POST_ACTION_PINS
+  const pins = publicationRevision === 30 ? Object.freeze({
+    ...POST_ACTION_PINS,
+    manifest: 'ad0ae1b1ab66c2713e17de0cb85861932759e763ed4ffdd3123a96a50e4f32f4',
+    binding: 'e2a3c0d8af00f061b403ae0931934a63c38f5bcabaa5940d7b07bbe8de06d1a9',
+    definition: '807596c419fc6a0f9d676d7c57daba6672c6f95d1b1ead767bee6c7e28aced6f',
+    priorBinding: POST_ACTION_PINS.binding
+  }) : publicationRevision === 29 ? POST_ACTION_PINS
     : publicationRevision === 28 ? OPENING_PINS : HISTORICAL_PINS;
   if (phase1AManifestDigest != null
       && phase1AManifestDigest !== phase1aDigest) {
@@ -59,8 +70,8 @@ async function loadPublication({
   const paths = {
     manifest: `${ROOT}/phase-1b-v${publicationRevision}/manifest.json`,
     binding: `${ROOT}/phase-1b-v${publicationRevision}/publication-binding.json`,
-    phase1a: `${ROOT}/phase-1a-v${publicationRevision >= 28 ? 24 : 23}/manifest.json`,
-    definition: `${ROOT}/phase-m${publicationRevision === 29 ? 22
+    phase1a: `${ROOT}/phase-1a-v${publicationRevision === 30 ? 25 : publicationRevision >= 28 ? 24 : 23}/manifest.json`,
+    definition: `${ROOT}/phase-m${publicationRevision === 30 ? 23 : publicationRevision === 29 ? 22
       : publicationRevision === 28 ? 21 : 20}-content/definition.json`,
     presentation: publicationRevision >= 28 ? `${ROOT}/phase-1b-v28/scene-presentation-v3.json`
       : `${ROOT}/phase-1b-v26/scene-presentation-v2.json`,

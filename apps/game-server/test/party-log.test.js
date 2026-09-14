@@ -80,6 +80,7 @@ test('party log records complete player flow and detailed LLM trace in one JSONL
       return write;
     } },
     llmDiagnostics,
+    developerMode: true,
     metadata: { release_id: 'release-1' },
     clock: () => { time += 5; return time; }
   });
@@ -185,7 +186,7 @@ test('failed turn cannot reuse consumed LLM trace from previous turn', async () 
   await assert.rejects(logged.submitTurn('party-1', { raw_text: 'Второй ход' }),
     /failed before LLM/u);
   const failed = events.find(({ event }) => event === 'turn.failed');
-  assert.equal(failed.llm, null);
+  assert.equal(failed.llm, undefined);
 });
 
 test('party log excludes custom provider credentials and endpoint', async () => {
@@ -249,4 +250,36 @@ test('party log excludes custom provider credentials and endpoint', async () => 
   } finally {
     globalThis.fetch = originalFetch;
   }
+});
+
+test('party log redacts recursive credentials but preserves gameplay text', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'rus-party-log-recursive-secret-'));
+  const log = createPartyLog({ directory });
+  const secret = 'nested-secret-sentinel';
+  await log.append('party-redacted', {
+    event: 'turn.failed',
+    input: { raw_text: 'Осмотреть лодку у берега.' },
+    diagnostics: {
+      api_key: secret,
+      error: { cause: { authorization: `Bearer ${secret}` } },
+      ui: { password: secret, nested: { credentials: secret,
+        baseUrl: 'https://provider.private.test/v1',
+        provider_url: 'https://provider.private.test/other',
+        provider_endpoint: 'https://provider.private.test/provider',
+        api_endpoint: 'https://provider.private.test/api' } },
+      transport: { endpoint: 'https://provider.private.test/transport' },
+      scene: { endpoint: 'берег', source_endpoint: 'лодка',
+        destination_endpoint: 'причал' },
+      source_url: 'https://github.com/PavelSlaven/Novgorod1230/pull/96',
+      pull_request_url: 'https://github.com/PavelSlaven/Novgorod1230/pull/96'
+    }
+  });
+  const saved = await readFile(log.pathFor('party-redacted'), 'utf8');
+  assert.equal(saved.includes(secret), false);
+  assert.equal(saved.includes('provider.private.test'), false);
+  assert.equal(saved.includes('"endpoint":"берег"'), true);
+  assert.equal(saved.includes('"source_endpoint":"лодка"'), true);
+  assert.equal(saved.includes('"destination_endpoint":"причал"'), true);
+  assert.equal(saved.includes('Осмотреть лодку у берега.'), true);
+  assert.equal(saved.includes('github.com/PavelSlaven/Novgorod1230/pull/96'), true);
 });

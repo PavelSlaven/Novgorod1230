@@ -2,6 +2,8 @@ import { classifyOrdinaryConversationPlan } from
   './lower-dvina-trace-m2-conversation-plans.js';
 import { fail, sameRef } from
   './lower-dvina-trace-m2-conversation-shared.js';
+import { playerSafeHeardNpcIntroduction } from
+  './lower-dvina-trace-player-safe-npc-details.js';
 
 export function conversationNpcContext(context, targetRef) {
   const targetActor = context.actualNpcActors.find(
@@ -60,6 +62,41 @@ export function npcConversationDecisionCapability(context) {
   }
   return actorLocation == null || playerLocation == null
     || actorLocation === playerLocation;
+}
+
+export function npcPresentationContext(context, latestContribution) {
+  if (context.phase !== 'phase_3'
+      || context.targetActor?.ref !== context.contracts.ids?.eremeyRef) {
+    return {};
+  }
+  const name = context.targetActor?.identity_state?.canonical_name;
+  const greeted = latestContribution?.speaker_ref?.entity_kind
+      === 'player_character'
+    && latestContribution.interaction_tags?.includes('greeting')
+    && latestContribution.intended_addressee_refs?.some((reference) =>
+      sameRef(reference, context.targetRef));
+  const heardName = greeted && typeof name === 'string' && name.trim()
+    ? playerSafeHeardNpcIntroduction({
+        committedNpcs: context.state.npcs,
+        conversationStatements: context.state.conversation_contributions
+          ?? context.state.conversation_statements,
+        receivedMessages: context.state.received_messages,
+        playerId: context.state.actor_id,
+        npcId: context.targetRef.entity_id
+      })
+    : null;
+  return {
+    ...(greeted && typeof name === 'string' && name.trim() && heardName === null
+      ? { first_contact_introduction: { canonical_name: name.trim() } } : {}),
+    npc_behavior: {
+      current_stance: context.evidencePresented ? 'cooperation_enabled' : 'guarded',
+      goals: structuredClone(context.contracts.npcPolicy.goals),
+      fears: structuredClone(context.contracts.npcPolicy.fears),
+      ...(context.evidencePresented ? {} : {
+        required_interaction_tag: 'withhold'
+      })
+    }
+  };
 }
 
 export function playerDecisionSignalRecords({

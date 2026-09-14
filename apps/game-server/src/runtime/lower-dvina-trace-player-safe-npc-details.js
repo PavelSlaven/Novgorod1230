@@ -3,6 +3,8 @@ import { PORTRAIT_SPEC_V1_ENUMS } from '@rus/contracts';
 import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 import { validateNpcOrdinarySemanticRemainder } from '@rus/npc-runtime';
 import { plain } from './lower-dvina-trace-player-safe-json.js';
+import { distinctNpcLabels } from
+  './lower-dvina-trace-visible-scene-items.js';
 
 export function projectLowerDvinaTraceVisibleNpcDetails({
   visibleContext, projectedNpcs, committedNpcs, committedItems
@@ -36,6 +38,79 @@ export function projectLowerDvinaTraceVisibleNpcDetails({
         committed?.semantic_state?.n1_remainder)
     };
   }).filter(Boolean);
+}
+
+export function projectLowerDvinaTraceRecognizedNpcContext({
+  visibleContext, committedNpcs, conversationStatements, receivedMessages,
+  playerId
+}) {
+  if (!Array.isArray(visibleContext?.visible_npc)
+      || !Array.isArray(conversationStatements)
+      || !Array.isArray(receivedMessages)
+      || !safeText(playerId)) return visibleContext;
+  const recognized = new Map();
+  for (const npc of visibleContext.visible_npc) {
+    const npcId = npc?.entity_ref?.entity_kind === 'npc'
+      ? npc.entity_ref.entity_id : null;
+    const name = playerSafeHeardNpcIntroduction({
+      committedNpcs, conversationStatements, receivedMessages, playerId, npcId
+    });
+    if (name) recognized.set(npcId, name);
+  }
+  if (recognized.size === 0) return visibleContext;
+  const projected = visibleContext.visible_npc.map((npc) => {
+    const name = npc?.entity_ref?.entity_kind === 'npc'
+      ? recognized.get(npc.entity_ref.entity_id) : null;
+    return name == null ? npc : {
+      ...npc, display_label: name, recognition: 'recognized'
+    };
+  });
+  return {
+    ...visibleContext,
+    visible_npc: distinctNpcLabels(projected)
+  };
+}
+
+export function playerSafeHeardNpcIntroduction({
+  committedNpcs, conversationStatements, receivedMessages, playerId, npcId
+}) {
+  if (!safeText(playerId) || !safeText(npcId)
+      || !Array.isArray(conversationStatements)
+      || !Array.isArray(receivedMessages)
+      || (committedNpcs ?? []).filter((npc) =>
+        [npc?.instance_id, npc?.actor_id, npc?.npc_id].includes(npcId)
+      ).length !== 1) return null;
+  const statements = new Map(conversationStatements.map((statement) => [
+    statement?.statement_id, statement
+  ]));
+  for (const message of receivedMessages) {
+    const statement = statements.get(message?.source_statement_ref?.entity_id);
+    if (message?.source_statement_ref?.entity_kind === 'conversation_statement'
+        && message?.listener_ref?.entity_kind === 'player_character'
+        && message.listener_ref.entity_id === playerId
+        && message.comprehension === 'full'
+        && statement?.speaker_ref?.entity_kind === 'npc'
+        && statement.speaker_ref.entity_id === npcId
+        && message.utterance_text === statement.utterance_text
+        && (message.speaker_ref == null
+          || message.speaker_ref.entity_kind === statement.speaker_ref.entity_kind
+            && message.speaker_ref.entity_id === statement.speaker_ref.entity_id)) {
+      const name = playerSafeSelfIntroductionName(statement.utterance_text);
+      if (name) return name;
+    }
+  }
+  return null;
+}
+
+export function playerSafeSelfIntroductionName(utterance) {
+  const spoken = safeText(utterance);
+  if (!spoken) return null;
+  const name = String.raw`\p{Lu}[\p{L}\p{M}'’]*(?:-[\p{Lu}][\p{L}\p{M}'’]*)*`;
+  const introduction = new RegExp(
+    `^(?:[^.!?…"'«»“”„‘’]*[.!?…]\\s+)?(?:(?:Я|я)\\s*(?:[—-]\\s*)?|(?:Меня|меня)\\s+(?:зовут|Зовут)\\s+)(${name})(?=$|[\\s,.;:!?…])`,
+    'u'
+  );
+  return introduction.exec(spoken)?.[1] ?? null;
 }
 
 function safeOrdinaryRemainder(value) {

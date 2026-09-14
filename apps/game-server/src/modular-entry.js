@@ -6,7 +6,7 @@ import { createGameHttpServer, listen } from './http/server.js';
 import { loadConfiguredComposition } from './runtime/load-composition.js';
 import { createProductionLlmRoleRunner } from './infrastructure/provider/deepseek.js';
 import { createPortraitSpecNormalizer } from './portrait-lab/normalizer.js';
-import { createLlmSettingsOwner } from './runtime/llm-settings.js';
+import { applyInitialLocalSettings, createLlmSettingsOwner, createProductionLlmQualifier } from './runtime/llm-settings.js';
 import { createLlmDiagnostics } from './runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from './runtime/llm-turn-budget.js';
 import { createOrdinaryMaterializationStageBQualifier } from './runtime/ordinary-materialization-stage-b-qualification.js';
@@ -22,16 +22,20 @@ const qualificationRunner = createProductionLlmRoleRunner({ env: process.env });
 const llmSettingsStore = createLlmSettingsFileStore({
   ...(config.llmSettingsPath ? { filePath: config.llmSettingsPath } : {})
 });
+const storedLlmSettings = await llmSettingsStore.load();
 const llmSettings = createLlmSettingsOwner({
-  initialRecord: await llmSettingsStore.load(),
+  initialRecord: storedLlmSettings,
   persistSettings: (record) => llmSettingsStore.save(record),
   runtimeStatus: parseLocalRuntimeStatus(process.env.RUS_LOCAL_LLM_RUNTIME_STATUS),
   probeCustom: (candidate) => qualificationRunner.probe(candidate),
-  qualifyCustom: createOrdinaryMaterializationStageBQualifier({
-    roleRunner: qualificationRunner,
-    evalContract: ordinaryProfile.stage_b_classification_eval
+  qualifyCustom: createProductionLlmQualifier({ roleRunner: qualificationRunner,
+    qualifyOrdinary: createOrdinaryMaterializationStageBQualifier({
+      roleRunner: qualificationRunner,
+      evalContract: ordinaryProfile.stage_b_classification_eval
+    })
   })
 });
+await applyInitialLocalSettings(llmSettings, storedLlmSettings);
 const llmTurnBudget = createLlmTurnBudget();
 const llmDiagnostics = createLlmDiagnostics({ turnBudget: llmTurnBudget,
   developerMode: config.developerMode });
@@ -51,9 +55,13 @@ const root = createPartyLoggingRoot({
     directory: config.logDirectory || resolve(here, '../../../logs')
   }),
   llmDiagnostics,
+  developerMode: config.developerMode,
   metadata: Object.freeze({
+    developer_mode: config.developerMode,
     server: productionRoot.health(),
-    process: { node: process.version, platform: process.platform, pid: process.pid }
+    process: { node: process.version, platform: process.platform, pid: process.pid },
+    git: { head: process.env.RUS_GIT_HEAD ?? null, branch: process.env.RUS_GIT_BRANCH ?? null,
+      pr: process.env.RUS_GIT_PR ?? null, build: process.env.RUS_BUILD_ID ?? null }
   })
 });
 const webRoot = resolve(here, '../../game-web');

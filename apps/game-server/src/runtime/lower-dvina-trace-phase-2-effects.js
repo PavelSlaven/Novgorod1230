@@ -140,6 +140,7 @@ export function createTracePhase2VisibleProjector({ contracts, scenePresentation
         schema: 'visible_context_package',
         visible_scene: 'место крушения на берегу',
         visible_changes: [
+          'Вы подробно осмотрели место крушения.',
           ...consequence.observations.map(({ fact_id: factId }) =>
             scenePresentation == null
               ? historicalFactPresentation(factId)

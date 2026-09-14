@@ -17,6 +17,8 @@ import { createLowerDvinaTraceWorldProcessStepModel } from
   '../src/runtime/lower-dvina-trace-world-process-llm.js';
 import { buildOrdinaryMaterializationMessages } from
   '../src/runtime/ordinary-materialization-llm.js';
+import { assembleNarrationAuditOutput } from
+  '../src/runtime/lower-dvina-trace-narration-audit.js';
 
 const frozenRoleRequestsUrl = new URL('../../../data/model-evals/llm-runtime/'
   + 'frozen-role-requests-v1.json', import.meta.url);
@@ -69,6 +71,30 @@ test('frozen narration auditor prompts require the raw source-review shape', asy
     assert.doesNotMatch(prompt, /failure_checks/u);
     assert.doesNotMatch(prompt, /artistic_verdict|technical_verdict|concerns/u);
     assert.doesNotMatch(prompt, /"pass":/u);
+  }
+});
+
+test('frozen dense controls distinguish terminal static clusters from governed prose', async () => {
+  const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
+  const controls = new Set([
+    'gameplay-narrator-auditor-cycle17-shore-catalogue',
+    'gameplay-narrator-auditor-dense-storeyard-terminal-static',
+    'gameplay-narrator-auditor-dense-cellar-terminal-static',
+    'gameplay-narrator-auditor-dense-storeyard-governed-action',
+    'gameplay-narrator-auditor-dense-cellar-finite-perception'
+  ]);
+  const fixtures = corpus.fixtures.filter(({ id }) => controls.has(id));
+  assert.equal(fixtures.length, controls.size);
+  for (const fixture of fixtures) {
+    const assembled = assembleNarrationAuditOutput(fixture.expected_output, {
+      ...JSON.parse(fixture.messages[1].content),
+      visible_context: fixture.request.visible_context
+    });
+    const governed = fixture.id.endsWith('governed-action')
+      || fixture.id.endsWith('finite-perception');
+    assert.equal(assembled.pass, governed, fixture.id);
+    assert.equal(assembled.concerns.some(({ kind }) =>
+      kind === 'literary_quality'), !governed, fixture.id);
   }
 });
 

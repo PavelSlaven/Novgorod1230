@@ -151,6 +151,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor'
   ]);
   for (const call of calls) {
+    assert.equal(call.overrides.temperature,
+      call.roleId === 'gameplay_narrator_semantic_repair' ? 0.2 : 0);
     const payload = JSON.parse(call.messages[1].content);
     assert.equal(Object.hasOwn(payload, 'visible_context'), false);
     assert.deepEqual(payload.required_current_beat.uncertainties,
@@ -160,6 +162,11 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     if (call.roleId === 'gameplay_narrator_auditor') {
       assert.match(call.messages[0].content, /strict evidence auditor/u);
       assert.match(call.messages[0].content, /embedded unknown result must remain unknown/u);
+    } else if (call.roleId === 'gameplay_narrator_semantic_repair') {
+      assert.match(call.messages[0].content, /every required proposition and certainty/iu);
+      assert.match(call.messages[0].content, /confirmed speech verbatim/u);
+      assert.match(call.messages[0].content, /performed-action order/u);
+      assert.match(call.messages[0].content, /remove each unsupported claim/u);
     } else {
       assert.match(call.messages[0].content, /Preserve confirmed speech verbatim/u);
       assert.match(call.messages[0].content, /preserve certainty/u);

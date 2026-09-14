@@ -11,6 +11,8 @@ import {
 import {
   buildLowerDvinaTracePreparedRouteWorkingProjection
 } from '../../runtime/lower-dvina-trace-turn-step-prepared-effects.js';
+import { projectPreparedDomainState, refreshPreparedMovementScene } from
+  '../../runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
 import {
   preparedEffectFail,
   samePreparedValue
@@ -23,6 +25,7 @@ export function validatePreparedRouteTraceLineage({
   loopTrace,
   envelope,
   state,
+  phase3Contracts,
   routeOnly,
   scenePresentation = null,
   intermediateTraces = []
@@ -51,7 +54,7 @@ export function validatePreparedRouteTraceLineage({
       committedState: state,
       clockAfter: route.time_update.clock_after
     });
-    const stateAfterRoute = structuredClone(state);
+    const stateAfterRoute = projectPreparedDomainState(state, route);
     const firstEntry = stateAfterRoute.first_entry_preparation;
     if (firstEntry?.scene?.location_profile_ref
         === route.consequence.movement.destination.location_ref
@@ -59,6 +62,10 @@ export function validatePreparedRouteTraceLineage({
       && firstEntry.spatial_v3.target.status !== 'prepared') {
       firstEntry.spatial_v3.target.status = 'prepared';
     }
+    routeWorkingAfter = refreshPreparedMovementScene({
+      projection: routeWorkingAfter, committedState: stateAfterRoute,
+      locationProfiles: phase3Contracts?.locationProfiles, scenePresentation
+    });
     const authority =
       createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
     playerSafeAfter = projectLowerDvinaTracePlayerSafeState({

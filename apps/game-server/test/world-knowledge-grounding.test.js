@@ -52,7 +52,9 @@ test('production grounding plans once and injects only an applicable bounded sli
         focus_refs: ['wk:environment:regional-fish-exploitation'],
         requested_predicates: ['supported_fact'],
         search_hints: ['рыбные ресурсы']
-      } };
+      }, provider_record: { scope: 'turn_runtime',
+        role_id: 'world_knowledge_query_planner', provider: 'test-provider',
+        model: 'test-model' } };
     } } });
   const request = { request_id: 'turn:1', remaining_intent:
     'Можно ли здесь добыть рыбу?', player_safe_state: { hidden: 'never-trace-me' } };
@@ -123,6 +125,11 @@ test('production grounding plans once and injects only an applicable bounded sli
   assert.equal(trace.schema, 'world_knowledge_boundary_trace_v1');
   assert.deepEqual(trace.safe_need, { source: 'remaining_intent',
     value: 'Можно ли здесь добыть рыбу?' });
+  assert.deepEqual(trace.question_classes, questionClasses(worldKnowledge,
+    'semantic_resolution', ['environment']));
+  assert.deepEqual(trace.planner_identity, { scope: 'turn_runtime',
+    role_id: 'world_knowledge_query_planner', provider: 'test-provider',
+    model: 'test-model' });
   assert.deepEqual(trace.planner_request, {
     schema: plannerRequest.schema, pack_ref: plannerRequest.pack_ref,
     purpose: plannerRequest.purpose, input_locale: plannerRequest.input_locale,
@@ -176,7 +183,9 @@ test('an explicit empty plan records NO_KNOWLEDGE_REQUIRED without retrieval', a
       assert.match(call.messages[0].content, /canonical NO_KNOWLEDGE_REQUIRED plan/u);
       return { output: { schema: 'world_knowledge_query_plan_v1',
         query_locale: 'ru', domains: [], focus_refs: [],
-        requested_predicates: [], search_hints: [] } };
+        requested_predicates: [], search_hints: [] }, provider_record: {
+        scope: 'turn_runtime', role_id: 'world_knowledge_query_planner',
+        provider: 'test-provider', model: 'test-model' } };
     } }
   });
   const request = { request_id: 'turn:no-wk', remaining_intent: 'Громко зову Онисима.',
@@ -195,6 +204,10 @@ test('an explicit empty plan records NO_KNOWLEDGE_REQUIRED without retrieval', a
   assert.equal(diagnostics[0].retrieval_observability, null);
   assert.deepEqual(diagnostics[0].domains, []);
   assert.equal(traces[0].event, 'world_knowledge_not_required');
+  assert.deepEqual(traces[0].question_classes, []);
+  assert.deepEqual(traces[0].planner_identity, { scope: 'turn_runtime',
+    role_id: 'world_knowledge_query_planner', provider: 'test-provider',
+    model: 'test-model' });
   assert.equal(traces[0].query, null);
   assert.equal(traces[0].core_result, null);
   assert.deepEqual(traces[0].consumer.input.world_knowledge,
@@ -226,6 +239,14 @@ function assertRetrievalObservability(observability, grounded) {
     assert.equal(Number.isFinite(observability[field]), true, field);
     assert.ok(observability[field] >= 0, field);
   }
+}
+
+function questionClasses(worldKnowledge, purpose, domains) {
+  const selected = new Set(domains);
+  return [...new Set(worldKnowledge.bundle.coverage_profiles
+    .filter((profile) => selected.has(profile.domain)
+      && profile.purposes.includes(purpose))
+    .flatMap((profile) => profile.question_classes))].sort();
 }
 
 test('all hints use one combined query embedding and one vector lookup', async () => {

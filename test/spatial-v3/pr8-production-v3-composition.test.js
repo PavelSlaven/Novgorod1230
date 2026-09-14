@@ -149,9 +149,9 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
     '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad');
 });
 
-test('production-v15 is the sole release and pins World Knowledge', () => {
+test('production-v16 is the sole release and pins World Knowledge', () => {
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.release_id,
-    'spatial-v3-production-v15');
+    'spatial-v3-production-v16');
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_ref,
     'wk-pack:novgorod-1230');
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.world_knowledge_pack_revision,
@@ -163,17 +163,17 @@ test('production-v15 is the sole release and pins World Knowledge', () => {
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins.world_revision_id,
     'novgorod_spatial_v3_production_v6_candidate_001');
   assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.scenario_profile_exact_pins, {
-    scenario_definition_revision: 33,
+    scenario_definition_revision: 35,
     scenario_definition_digest:
-      '220b872de6b470c8482c982019f9e20e23422927018357fca2a2f07cc2308d5c',
-    phase_1a_package_id: 'lower_dvina_trace_phase_1a_v24',
+      '807596c419fc6a0f9d676d7c57daba6672c6f95d1b1ead767bee6c7e28aced6f',
+    phase_1a_package_id: 'lower_dvina_trace_phase_1a_v25',
     phase_1a_manifest_digest:
-      'c1c6feaa072bc334a12703df17fe97df057c741cebc0ce0cf078527df87ee66b',
-    phase_1b_package_id: 'lower_dvina_trace_phase_1b_v28',
+      '986fd4fa149997ed9581924b13f502b6f9eafff640b31d390b4347f113c500e6',
+    phase_1b_package_id: 'lower_dvina_trace_phase_1b_v30',
     phase_1b_manifest_digest:
-      '23fa6c3bc5b2716b148a69c22bbbb6efdac9e88ebd068fe58782067a73e8aa6c',
+      'ad0ae1b1ab66c2713e17de0cb85861932759e763ed4ffdd3123a96a50e4f32f4',
     phase_1b_binding_digest:
-      '3311695c856a1d25a981838bc40fb38b26389ce274c74c9574481e1cf7635ffd',
+      'e2a3c0d8af00f061b403ae0931934a63c38f5bcabaa5940d7b07bbe8de06d1a9',
     n1_profile_id: 'lower_dvina_trace_n1_background_npc_v1',
     n1_profile_revision: 1,
     n1_profile_scenario_definition_revision: 31,
@@ -182,10 +182,10 @@ test('production-v15 is the sole release and pins World Knowledge', () => {
   });
 });
 
-test('production-v15 binding rejects the unversioned v14 and knowledge mix', async () => {
+test('production-v16 binding rejects historical v15 and knowledge mix', async () => {
   await assert.rejects(
     loadSpatialV3RuntimeBindings(SPATIAL_V3_PRODUCTION_BINDINGS_MODULE, {
-      release: { ...TEST_RELEASE, release_id: 'spatial-v3-production-v14' },
+      release: { ...TEST_RELEASE, release_id: 'spatial-v3-production-v15' },
       worldKnowledge: TEST_WORLD_KNOWLEDGE,
       npcSemanticRemainderProfile: {
         digest: TEST_RELEASE.scenario_profile_exact_pins.n1_profile_digest,
@@ -198,7 +198,7 @@ test('production-v15 binding rejects the unversioned v14 and knowledge mix', asy
         }
       }
     }),
-    /exact spatial-v3-production-v15 semantic release/u
+    /exact spatial-v3-production-v16 semantic release/u
   );
 });
 
@@ -347,7 +347,7 @@ test('production release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v15 root is sole owner', async () => {
+test('production-v16 root is sole owner', async () => {
   assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins, {
     world_revision_id: 'novgorod_spatial_v3_production_v6_candidate_001',
     world_catalog_digest:
@@ -697,7 +697,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger through migration 031', async () => {
+test('restart extends the exact immutable catalog ledger through migration 032', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -727,7 +727,7 @@ test('restart extends the exact immutable catalog ledger through migration 031',
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 20);
+  assert.equal(result.newly_applied, 21);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
@@ -762,7 +762,7 @@ test('restart extends the exact immutable catalog ledger through migration 031',
   assert.equal(statements.at(-1), 'COMMIT');
 });
 
-test('cutover config selects only builtin production-v15 binding', () => {
+test('cutover config selects only builtin production-v16 binding', () => {
   const configured = readServerConfig({
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
       TEST_PIN_MANIFEST_DIGEST
@@ -777,7 +777,7 @@ test('cutover config selects only builtin production-v15 binding', () => {
   );
   assert.equal(assertModularStartupConfig(configured), configured);
   assert.equal(SPATIAL_V3_PRODUCTION_BINDINGS_MODULE,
-    'builtin:spatial-v3-production-v15');
+    'builtin:spatial-v3-production-v16');
   assert.throws(
     () => assertModularStartupConfig(readServerConfig({
       RUS_SPATIAL_V3_BINDINGS_MODULE:

@@ -191,7 +191,8 @@ export function buildNpcSemanticConversationWriteInput({
     persistedMessageAudiences,
     supportingOperationEvidence,
     expectedSessionStateVersion: existingSession?.state_version ?? null,
-    partyStateVersion: state.party_state?.state_version,
+    partyStateVersion: next.party_state?.state_version
+      ?? state.party_state?.state_version,
     sameTimeBatchRef,
     contributions: structuredClone(
       semanticExchange.exchange?.contributions ?? []

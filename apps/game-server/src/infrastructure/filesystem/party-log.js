@@ -17,9 +17,9 @@ export function createPartyLog({ directory,
         throw new TypeError('party log event must be an object.');
       }
       const path = join(directory, `${fileName(id)}.jsonl`);
-      const line = `${stringify({ ...event, version: 1,
+      const line = `${stringify(redact({ ...event, version: 1,
         schema: 'rus.party_game_log_event.v1', recorded_at: now(),
-        party_id: id })}\n`;
+        party_id: id }))}\n`;
       const write = (pending.get(path) ?? Promise.resolve())
         .catch(() => undefined)
         .then(async () => {
@@ -35,7 +35,7 @@ export function createPartyLog({ directory,
 }
 
 export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
-  metadata = null, clock = () => Date.now(), onLogError = console.error } = {}) {
+  metadata = null, developerMode = false, clock = () => Date.now(), onLogError = console.error } = {}) {
   for (const method of ['startNewGame', 'acknowledgeOpening', 'submitTurn',
     'getPartyScreen', 'recoverPendingPresentation']) {
     if (typeof root?.[method] !== 'function') {
@@ -52,9 +52,11 @@ export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
         catch { /* Diagnostic reporting must not affect gameplay. */ }
       });
   };
-  const llmReport = (partyId) => llmDiagnostics?.takeLogReport?.({
-    party_id: partyId
+  const llmReport = (partyId, input) => llmDiagnostics?.takeLogReport?.({
+    party_id: partyId, request_id: input?.request_id ?? input?.requestId
   }) ?? null;
+  const turnEvent = (partyId, input, event) => developerMode === true ? { ...event,
+    correlation: correlation(partyId, input), metadata } : event;
 
   return Object.freeze({
     ...root,
@@ -86,19 +88,20 @@ export function createPartyLoggingRoot({ root, partyLog, llmDiagnostics = null,
     },
     async submitTurn(partyId, input) {
       const startedAt = clock();
-      record(partyId, { event: 'turn.requested', input });
+      record(partyId, turnEvent(partyId, input, { event: 'turn.requested', input }));
       try {
         const output = await root.submitTurn(partyId, input);
-        record(partyId, {
+        record(partyId, turnEvent(partyId, input, {
           event: 'turn.completed', duration_ms: duration(startedAt, clock()),
-          input, output, llm: llmReport(partyId)
-        });
+          input, output, ...(developerMode === true ? { llm: llmReport(partyId, input) } : {})
+        }));
         return output;
       } catch (error) {
-        record(partyId, {
+        record(partyId, turnEvent(partyId, input, {
           event: 'turn.failed', duration_ms: duration(startedAt, clock()),
-          input, error: errorRecord(error), llm: llmReport(partyId)
-        });
+          input, error: errorRecord(error),
+          ...(developerMode === true ? { llm: llmReport(partyId, input) } : {})
+        }));
         throw error;
       }
     },
@@ -160,6 +163,23 @@ function stringify(value) {
     }
     return entry;
   });
+}
+function redact(value, ancestors = [], branchKeys = []) {
+  if (value && typeof value === 'object' && ancestors.includes(value)) return '[Circular]';
+  if (!value || typeof value !== 'object') return value;
+  if (value instanceof Error) return redact(errorRecord(value), ancestors, branchKeys);
+  const next = [...ancestors, value];
+  if (Array.isArray(value)) return value.map((entry) => redact(entry, next, branchKeys));
+  return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key,
+    /(?:api.?key|authorization|password|credential)|^(?:base_?url|provider_?url|provider_?base_?url|provider_?endpoint|api_?endpoint)$/iu.test(key)
+      || (key.toLowerCase() === 'endpoint'
+        && branchKeys.some((ancestor) => /^(?:llm|provider|transport|network)$/iu.test(ancestor)))
+      ? '[REDACTED]' : redact(entry, next, [...branchKeys, key])]));
+}
+function correlation(partyId, input = {}) {
+  return { party_id: partyId, request_id: input.request_id ?? input.requestId ?? null,
+    idempotency_key: input.idempotency_key ?? input.idempotencyKey ?? null,
+    turn_number: input.turn_number ?? input.turnNumber ?? null };
 }
 function fileName(partyId) {
   const value = requiredText(partyId, 'party_id')

@@ -14,13 +14,13 @@ export function visibleNpc(npc, position, visibleLabels) {
   const entityId = npc?.instance_id ?? npc?.actor_id ?? npc?.npc_id;
   const prior = visibleLabels?.get(entityId);
   const displayLabel = prior?.display_label;
-  if (!samePositionScope(npc, position) || !text(entityId) || !text(displayLabel)) {
+  if (!samePositionScope(npc, position) || !text(entityId)) {
     return null;
   }
   return {
     entity_ref: { entity_kind: 'npc', entity_id: entityId },
-    display_label: displayLabel,
-    recognition: prior?.recognition ?? 'recognized'
+    display_label: text(displayLabel) ? displayLabel : genericNpcLabel(npc),
+    recognition: text(displayLabel) ? prior?.recognition ?? 'recognized' : 'unrecognized'
   };
 }
 
@@ -39,3 +39,9 @@ function samePositionScope(npc, position) {
     npc[npcKey] === position?.[positionKey]);
 }
 function text(value) { return typeof value === 'string' && value.length > 0; }
+
+function genericNpcLabel(npc) {
+  const publicRole = [npc?.role_ref, npc?.occupation_ref]
+    .filter(text).join(' ').toLowerCase();
+  return publicRole.includes('fisher') ? 'рыбак' : 'человек';
+}

@@ -2,30 +2,30 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
-import { executeTraceTurnWithDiagnostics } from '../src/runtime/lower-dvina-trace-phase-2-runtime-input.js';
+import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics } from
+  '../src/runtime/lower-dvina-trace-phase-2-runtime-input.js';
 import { withTurnDeadlineQueryPool, withTurnDeadlineTransaction } from
   '../src/infrastructure/postgres/query-with-turn-deadline.js';
 import { createTemporalPresentationPostgresStore } from
   '../src/infrastructure/postgres/temporal-presentation-store.js';
-import { createLowerDvinaTracePhase2DurableNarrator } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
-import { sealApprovedNarration } from
+import { createLowerDvinaTracePhase2DurableNarrator, sealApprovedNarration } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
 import { loadSession } from
   '../src/infrastructure/postgres/first-playable/repository-support.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
-import { createStateVersionRevalidator } from
-  '../src/runtime/lower-dvina-trace-phase-2-runtime-input.js';
 import { createLowerDvinaTracePhase2StateReader } from
   '../src/runtime/lower-dvina-trace-phase-2-state-reader.js';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { fixture } from './lower-dvina-trace-phase-2-fixture.js';
 
-const unusedNarrationService = { async run() { throw new Error('unexpected narration'); } };
+const unusedNarrator = { async run() { throw new Error('unexpected narration'); } };
+const snapshot = { party_state: { turn_number: 7 } };
+const factSnap = { snapshot_payload: snapshot,
+  state_digest: computeSpatialV3CanonicalDigest(snapshot).slice(7) };
 
-test('temporal presentation package read uses the gameplay deadline', async () => {
+test('presentation package read uses turn deadline', async () => {
   const queries = [];
   const turnBudget = { assertWithinDeadline() {},
     remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
@@ -48,17 +48,21 @@ test('temporal presentation package read uses the gameplay deadline', async () =
   assert.equal(queries.at(-1), 'RESET statement_timeout');
 });
 
-test('durable narrator forwards gameplay deadline to presentation store', async () => {
+test('narrator forwards deadline to presentation store', async () => {
   const visiblePayload = { perceived_scene: 'Берег.', perceived_changes: [],
     sensory_details: [], visible_npcs: [], visible_objects: [], known_context: [],
     uncertainties: [] };
   const turnBudget = { assertWithinDeadline() {},
     remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
+  let envelopeQuery = null;
   const client = {
     async query(query) {
-      if (typeof query === 'object') return { rows: [{ package_id: 'package',
+      if (typeof query === 'object') {
+        envelopeQuery = query;
+        return { rows: [{ package_id: 'package',
         party_id: 'party', package_digest: computeSpatialV3CanonicalDigest(visiblePayload),
-        visible_payload: visiblePayload }] };
+        visible_payload: visiblePayload, ...factSnap }] };
+      }
       return {};
     },
     release() {}
@@ -73,22 +77,23 @@ test('durable narrator forwards gameplay deadline to presentation store', async 
       return { ok: true, disposition: 'in_progress', attempt_id: 'attempt' };
     } }
   });
-  await assert.rejects(narrator.run({ request_id: 'turn', turnBudget,
+  await assert.rejects(narrator.run({ party_id: 'party', request_id: 'turn', turnBudget,
     visible_context: { version: 1, schema: 'visible_context_package',
       visible_scene: 'Берег.', visible_changes: [], sensory_details: [],
       visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
       allowed_tensions: [], do_not_imply: [] } }),
   { code: 'TRACE_PHASE_2_NARRATION_IN_PROGRESS' });
   assert.equal(claimInput.turnBudget, turnBudget);
+  assert.deepEqual(envelopeQuery.values, ['party', 'turn']);
 });
 
-test('durable narrator reuses persisted delivered narration without LLM', async () => {
+test('narrator reuses delivered narration without LLM', async () => {
   const visible_payload = { perceived_scene: 'Берег.', perceived_changes: [],
     sensory_details: [], visible_npcs: [], visible_objects: [],
     known_context: [], uncertainties: [] };
   const envelope = { party_id: 'party', package_id: 'package', turn_id: 'turn',
     package_digest: computeSpatialV3CanonicalDigest(visible_payload),
-    dependency_pins: {}, visible_payload };
+    dependency_pins: {}, visible_payload, ...factSnap };
   const flow = { schema: 'narration_flow_result', status: 'approved', pass: true,
     approved_output: { prose: 'Вода тихо идет у берега.' } };
   const narration_output = sealApprovedNarration({ envelope, flow });
@@ -106,7 +111,7 @@ test('durable narrator reuses persisted delivered narration without LLM', async 
         output_digest: narration_output.canonical_digest };
     } }
   });
-  const result = await narrator.run({ request_id: 'turn', visible_context: {
+  const result = await narrator.run({ party_id: 'party', request_id: 'turn', visible_context: {
     version: 1, schema: 'visible_context_package', visible_scene: 'Берег.',
     visible_changes: [], sensory_details: [], visible_npc: [],
     visible_objects: [], known_context: [], uncertainties: [],
@@ -116,14 +121,14 @@ test('durable narrator reuses persisted delivered narration without LLM', async 
   assert.equal(result.presentation.output_digest, narration_output.canonical_digest);
 });
 
-test('durable narrator does not hide failed-retryable persistence failure',
+test('narrator exposes retryable persistence failure',
   async () => {
     const visible_payload = { perceived_scene: 'Берег.', perceived_changes: [],
       sensory_details: [], visible_npcs: [], visible_objects: [],
       known_context: [], uncertainties: [] };
     const envelope = { party_id: 'party', package_id: 'package', turn_id: 'turn',
       package_digest: computeSpatialV3CanonicalDigest(visible_payload),
-      dependency_pins: {}, visible_payload };
+      dependency_pins: {}, visible_payload, ...factSnap };
     const persistenceFailure = new Error('presentation persistence failed');
     const narrator = createLowerDvinaTracePhase2DurableNarrator({
       partyPool: { query: async () => ({ rows: [envelope] }) },
@@ -136,7 +141,7 @@ test('durable narrator does not hide failed-retryable persistence failure',
         async finalizePresentationAttempt() { throw persistenceFailure; }
       }
     });
-    await assert.rejects(narrator.run({ request_id: 'turn',
+    await assert.rejects(narrator.run({ party_id: 'party', request_id: 'turn',
       visible_context: { version: 1, schema: 'visible_context_package',
         visible_scene: 'Берег.', visible_changes: [], sensory_details: [],
         visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
@@ -144,7 +149,7 @@ test('durable narrator does not hide failed-retryable persistence failure',
     (error) => error === persistenceFailure);
   });
 
-test('Postgres read queries receive the current gameplay deadline as statement timeout', async () => {
+test('Postgres reads receive deadline as statement timeout', async () => {
   let remainingMs = 1_234.8;
   const queries = [];
   const turnBudget = {
@@ -192,7 +197,7 @@ test('initial public session read uses its gameplay deadline', async () => {
   assert.equal(queries[2], 'RESET statement_timeout');
 });
 
-test('Postgres acquisition after the gameplay deadline releases without querying', async () => {
+test('late Postgres acquisition releases without query', async () => {
   let released = 0;
   let queries = 0;
   const turnBudget = {
@@ -210,7 +215,7 @@ test('Postgres acquisition after the gameplay deadline releases without querying
   assert.equal(released, 1);
 });
 
-test('failed deadline transaction cleanup destroys the client without masking work failure', async () => {
+test('failed deadline cleanup destroys client', async () => {
   for (const failingStatement of ['ROLLBACK', 'RESET statement_timeout']) {
     const released = [];
     const workFailure = new Error('injected work failure');
@@ -318,7 +323,7 @@ test('Phase 2 replay read uses a deadline-bound read-only pool', async () => {
       query() { throw new Error('unexpected direct pool query'); },
       connect(callback) { callback(null, client, () => client.release()); }
     },
-    committer: { commit() {} }, narrationService: unusedNarrationService
+    committer: { commit() {} }, narrationService: unusedNarrator
   });
   assert.equal(await repository.loadPhase2Replay({ partyId: 'party',
     idempotencyKey: 'key', turnBudget }), null);
@@ -346,7 +351,7 @@ test('Phase 2 state-version read uses a deadline-bound read-only pool', async ()
       query() { throw new Error('unexpected direct pool query'); },
       connect(callback) { callback(null, client, () => client.release()); }
     },
-    committer: { commit() {} }, narrationService: unusedNarrationService
+    committer: { commit() {} }, narrationService: unusedNarrator
   });
   assert.equal(await repository.loadPhase2StateVersion('party', { turnBudget }), 17);
   assert.equal(queries[0], 'SET statement_timeout = 1000');
@@ -433,7 +438,7 @@ test('replay deadline after visible read does not call narrator', async () => {
       query() { throw new Error('unexpected direct query'); },
       connect(callback) { callback(null, client, () => client.release()); }
     },
-    committer: { commit() {} }, narrationService: unusedNarrationService
+    committer: { commit() {} }, narrationService: unusedNarrator
   });
   await assert.rejects(repository.replayPhase2Turn({
     partyId: 'party',

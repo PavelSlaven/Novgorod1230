@@ -215,13 +215,24 @@ function requiredActorRef(request) {
 }
 
 function requiredVisibleNpcRef(request, displayLabel) {
-  const matches = (request?.player_safe_state?.current_visible_context
-    ?.visible_npc ?? []).filter(({ display_label: label }) => label === displayLabel);
+  const visible = request?.player_safe_state?.current_visible_context
+    ?.visible_npc ?? [];
+  const matches = visible.filter(
+    ({ display_label: label }) => label === displayLabel);
   const npcRef = matches[0]?.entity_ref?.entity_id;
-  if (matches.length !== 1 || typeof npcRef !== 'string' || npcRef.length === 0) {
-    fail(`Lower Dvina test turn step requires visible NPC ${displayLabel}.`);
+  if (matches.length === 1 && typeof npcRef === 'string' && npcRef.length > 0) {
+    return npcRef;
   }
-  return npcRef;
+  const visibleRefs = new Set(visible.map(({ entity_ref: ref }) =>
+    ref?.entity_id).filter(Boolean));
+  const offeredRefs = new Set((request.available_domain_operations ?? [])
+    .filter(({ op }) => op === 'emit_interaction')
+    .flatMap(({ target_actor_refs: refs = [] }) => refs)
+    .filter((ref) => visibleRefs.has(ref)));
+  if (matches.length === 0 && offeredRefs.size === 1) {
+    return [...offeredRefs][0];
+  }
+  fail(`Lower Dvina test turn step requires visible NPC ${displayLabel}.`);
 }
 
 function contains(text, fragments) {

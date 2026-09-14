@@ -29,8 +29,7 @@ export function phase3SemanticCommitContext({
   factual,
   scenarioRevision
 }) {
-  const isConversation =
-    factual.consequence.phase3_kind === 'conversation';
+  const isConversation = factual.consequence?.conversation != null;
   const semanticExchange = isConversation
     ? factual.consequence.conversation?.semantic_exchange
     : null;

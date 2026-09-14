@@ -87,7 +87,7 @@ export function createLowerDvinaTracePublicRuntime({
     }),
     getPartyScreen: async (partyId) => {
       const session = await repository.loadSession(partyId);
-      validateLowerDvinaTraceSessionRead({ partyId, session });
+      await validateLowerDvinaTraceSessionRead({ partyId, session });
       if (Number(session.turn_number) > 0) {
         await traceTurnRuntime?.validateSessionRead?.({
           partyId,
@@ -102,7 +102,7 @@ export function createLowerDvinaTracePublicRuntime({
     },
     recoverPendingPresentation: async (partyId, input = {}) => {
       const session = await repository.loadSession(partyId);
-      validateLowerDvinaTraceSessionRead({ partyId, session });
+      await validateLowerDvinaTraceSessionRead({ partyId, session });
       if (typeof traceTurnRuntime?.recoverPendingPresentation !== 'function') {
         throw serverError('TRACE_PHASE_2_DEPENDENCY_MISSING',
           'Повтор презентации требует настроенный runtime фазы 2.', { status: 503 });
@@ -110,7 +110,7 @@ export function createLowerDvinaTracePublicRuntime({
       await traceTurnRuntime.recoverPendingPresentation({ partyId, session,
         requestId: input.request_id ?? null });
       const recovered = await repository.loadSession(partyId);
-      validateLowerDvinaTraceSessionRead({ partyId, session: recovered });
+      await validateLowerDvinaTraceSessionRead({ partyId, session: recovered });
       return { party_id: partyId, turn_number: recovered.turn_number,
         screen: recovered.screen };
     },
@@ -121,7 +121,7 @@ export function createLowerDvinaTracePublicRuntime({
           ?? traceTurnRuntime?.llmDiagnostics?.turnBudget ?? null;
         const session = await repository.loadSession(partyId, { turnBudget });
         turnBudget?.assertWithinDeadline?.();
-        validateLowerDvinaTraceSessionRead({ partyId, session });
+        await validateLowerDvinaTraceSessionRead({ partyId, session });
         if (typeof traceTurnRuntime?.submitTurn !== 'function') {
           throw serverError(
             'TRACE_PHASE_2_DEPENDENCY_MISSING',
@@ -232,14 +232,14 @@ async function acknowledgeOpening({
     );
   }
   const before = await repository.loadSession(partyId);
-  validateLowerDvinaTraceSessionRead({ partyId, session: before });
+  await validateLowerDvinaTraceSessionRead({ partyId, session: before });
   const acknowledgement = await repository.acknowledgeOpening({
     partyId,
     clientAckId,
     acknowledgedAt: now()
   });
   const session = await repository.loadSession(partyId);
-  validateLowerDvinaTraceSessionRead({ partyId, session });
+  await validateLowerDvinaTraceSessionRead({ partyId, session });
   return {
     party_id: partyId,
     message_id: `opening:${partyId}`,

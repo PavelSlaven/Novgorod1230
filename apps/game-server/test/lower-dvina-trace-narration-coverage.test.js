@@ -112,24 +112,99 @@ test('code routes a misplaced continuation finding through semantic repair', () 
     { visible_changes: 2, uncertainties: 0 }).ok, true);
 });
 
-test('final audit bounds repeated composition repair without weakening factual failures', () => {
+test('final audit keeps literary and factual failures blocking after the one repair', () => {
   const weakOnly = passAudit();
   weakOnly.literary_failures = [{ check: 'weak_literary_composition',
     segment_choice: 's1', reason: 'The repaired passage is still list-like.' }];
   weakOnly.evidence = [];
   const request = { phase: 'final', visible_context: visible, segments };
-  const accepted = assembleNarrationRoleOutput('gameplay_narrator_auditor', weakOnly, request);
-  assert.equal(accepted.pass, true);
-  assert.deepEqual(accepted.concerns, []);
-  assert.equal(validateNarrationAudit(accepted, ['s1', 's2'],
+  const rejectedWeak = assembleNarrationRoleOutput('gameplay_narrator_auditor', weakOnly, request);
+  assert.equal(rejectedWeak.pass, false);
+  assert.equal(rejectedWeak.artistic_verdict, 'fail');
+  assert.deepEqual(rejectedWeak.concerns.map(({ kind }) => kind), ['literary_quality']);
+  assert.equal(validateNarrationAudit(rejectedWeak, ['s1', 's2'],
     { visible_changes: 2, uncertainties: 0 }).ok, true);
+
+  const staticDump = structuredClone(weakOnly);
+  staticDump.literary_failures = [{ check: 'static_context_dump',
+    segment_choice: 's2', reason: 'The repaired passage still recites unchanged support.' }];
+  const rejectedDump = assembleNarrationRoleOutput('gameplay_narrator_auditor', staticDump, request);
+  assert.equal(rejectedDump.pass, false);
+  assert.deepEqual(rejectedDump.concerns.map(({ kind }) => kind), ['literary_quality']);
 
   const unsupported = structuredClone(weakOnly);
   unsupported.unsupported = [{ segment_choice: 's1', kind: 'unsupported_fact',
     reason: 'The repaired passage still invents a fact.' }];
   const rejected = assembleNarrationRoleOutput('gameplay_narrator_auditor', unsupported, request);
   assert.equal(rejected.pass, false);
-  assert.deepEqual(rejected.concerns.map(({ kind }) => kind), ['unsupported_fact']);
+  assert.deepEqual(rejected.concerns.map(({ kind }) => kind), [
+    'unsupported_fact', 'literary_quality'
+  ]);
+});
+
+for (const sample of [
+  { name: 'negative discovery', change: 'Поиск среди мокрых досок не дал подтверждённой находки.',
+    selected: 'Поиск среди мокрых досок не дал подтверждённой находки.' },
+  { name: 'unseen material change', change: 'На мокрой доске у края осталась сухая перевязь.',
+    selected: 'На мокрой доске у края осталась сухая перевязь.' }
+]) for (const repeatDump of [false, true]) test(
+  `${sample.name} ${repeatDump ? 'repeated panorama blocks' : 'repairs panorama into selected support'}`,
+  async () => {
+    const sensory = ['У края лежат мокрые доски.', 'Над водой висит серое небо.',
+      'За кустами начинается тропа.'];
+    const visibleContext = { ...visible, visible_changes: [sample.change],
+      sensory_details: sensory };
+    const panorama = `${sample.change} ${sensory.join(' ')}`;
+    const calls = [];
+    const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+      calls.push(call.role_id);
+      const wire = JSON.parse(call.messages[1].content);
+      assert.deepEqual(wire.optional_support, {
+        visible_scene: visibleContext.visible_scene, sensory_details: sensory
+      });
+      assert.match(call.messages[0].content, /candidate set, never a coverage target/u);
+      if (call.role_id === 'gameplay_narrator') return { output: { prose: panorama } };
+      if (call.role_id === 'gameplay_narrator_semantic_repair') {
+        assert.match(call.messages[0].content, /fluent spatial regrouping of the same snapshot is not a repair/u);
+        return { output: { replacements: [{ prose: repeatDump ? panorama : sample.selected }] } };
+      }
+      const ids = wire.segments.map(({ segment_id }) => segment_id);
+      const audit = { ...reviewedNarration(wire.segments,
+        { visible_change_1: ids }),
+      literary_failures: wire.phase === 'initial' || repeatDump ? [{
+        check: 'static_context_dump', segment_choice: ids.at(-1),
+        reason: 'Independent unchanged support is recited as panorama.'
+      }] : [],
+      evidence: wire.phase === 'initial' || repeatDump ? [] : ['The current beat selects one supporting image.'] };
+      return { output: audit };
+    } } });
+    const result = await service.run({ version: 1, schema: 'narration_request',
+      request_id: `${sample.name}-${repeatDump}`, surface: 'turn', visible_context: visibleContext,
+      context: {} });
+    assert.equal(result.status, repeatDump ? 'blocked' : 'approved');
+    assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
+      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+  });
+
+test('perception result may retain its compact action-governed sensory cluster', async () => {
+  const sensory = ['На верстаке лежит резец.', 'Под окном темнеют стружки.'];
+  const visibleContext = { ...visible, visible_changes: ['Вы осмотрели мастерскую.'],
+    sensory_details: sensory };
+  const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
+    const wire = JSON.parse(call.messages[1].content);
+    assert.deepEqual(wire.optional_support, {
+      visible_scene: visibleContext.visible_scene, sensory_details: sensory
+    });
+    assert.match(call.messages[0].content, /perception beat[\s\S]*may govern supplied details/u);
+    if (call.role_id === 'gameplay_narrator') return { output: {
+      prose: 'Осматривая мастерскую, вы видите резец на верстаке и стружки под окном.' } };
+    return { output: { ...reviewedNarration(wire.segments, {
+      visible_change_1: wire.segments.map(({ segment_id }) => segment_id)
+    }), evidence: ['The perception action governs its supplied details.'] } };
+  } } });
+  const result = await service.run({ version: 1, schema: 'narration_request',
+    request_id: 'perception-cluster', surface: 'turn', visible_context: visibleContext, context: {} });
+  assert.equal(result.status, 'approved');
 });
 
 test('omitted atomic unresolved result becomes deterministic missing-visible-change failure', () => {

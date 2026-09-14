@@ -2,6 +2,9 @@ import { createTurnScreenReadModel, validateTurnScreen } from '@rus/presentation
 import { freezeOutput } from './shared.js';
 
 export function buildScreenProjectionStage({ playerInput, modeResolution, visibleContext, narration, consequence, screenProjector = null }) {
+  if (narration?.factual_delivery) {
+    return freezeOutput(narration.factual_delivery);
+  }
   const actions = structuredClone(consequence.suggested_actions ?? []);
   const defaultScreen = createTurnScreenReadModel({
     partyId: playerInput.party_id,

@@ -86,7 +86,7 @@ function semanticRequestStateVersion(request) {
     ? request.committed_state_version
     : request?.state_version;
   const stateVersion = Number(rawStateVersion);
-  if (!Number.isSafeInteger(stateVersion) || stateVersion < 1) {
+  if (!Number.isSafeInteger(stateVersion) || stateVersion < 0) {
     throw new TypeError(
       'Semantic NPC decision request requires a committed state version.'
     );

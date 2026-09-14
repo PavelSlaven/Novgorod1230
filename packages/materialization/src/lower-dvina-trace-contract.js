@@ -1,26 +1,13 @@
 import{canonicalDigest,MATERIALIZER_VERSION,MaterializationError,RNG_VERSION}from'./core.js';
-import { ARTIFACT_CONTRACTS, M1_ARTIFACT_CONTRACT_OVERRIDES,
-  M1_REQUIRED_ARTIFACTS, M2_ARTIFACT_CONTRACT_OVERRIDES,
-  M2_REQUIRED_ARTIFACTS, M3_ARTIFACT_CONTRACT_OVERRIDES, M3_REQUIRED_ARTIFACTS,
-  M4_ARTIFACT_CONTRACT_OVERRIDES, M4_REQUIRED_ARTIFACTS,
-  M5_ARTIFACT_CONTRACT_OVERRIDES,
-  M5_REQUIRED_ARTIFACTS,
-  M6_ARTIFACT_CONTRACT_OVERRIDES,
-  M6_REQUIRED_ARTIFACTS,
-  M7_ARTIFACT_CONTRACT_OVERRIDES,
-  M7_REQUIRED_ARTIFACTS,
-  M8_ARTIFACT_CONTRACT_OVERRIDES,
-  M8_REQUIRED_ARTIFACTS,
-  M9_ARTIFACT_CONTRACT_OVERRIDES,
-  M9_REQUIRED_ARTIFACTS,
-  M10_ARTIFACT_CONTRACT_OVERRIDES,
-  M10_REQUIRED_ARTIFACTS,
-  M11_ARTIFACT_CONTRACT_OVERRIDES,
-  M11_REQUIRED_ARTIFACTS,
-  M12_ARTIFACT_CONTRACT_OVERRIDES,
-  M12_REQUIRED_ARTIFACTS,
-  M13_ARTIFACT_CONTRACT_OVERRIDES,
-  M13_REQUIRED_ARTIFACTS,
+import { ARTIFACT_CONTRACTS, M1_ARTIFACT_CONTRACT_OVERRIDES, M1_REQUIRED_ARTIFACTS,
+  M2_ARTIFACT_CONTRACT_OVERRIDES, M2_REQUIRED_ARTIFACTS, M3_ARTIFACT_CONTRACT_OVERRIDES,
+  M3_REQUIRED_ARTIFACTS, M4_ARTIFACT_CONTRACT_OVERRIDES, M4_REQUIRED_ARTIFACTS,
+  M5_ARTIFACT_CONTRACT_OVERRIDES, M5_REQUIRED_ARTIFACTS, M6_ARTIFACT_CONTRACT_OVERRIDES,
+  M6_REQUIRED_ARTIFACTS, M7_ARTIFACT_CONTRACT_OVERRIDES, M7_REQUIRED_ARTIFACTS,
+  M8_ARTIFACT_CONTRACT_OVERRIDES, M8_REQUIRED_ARTIFACTS, M9_ARTIFACT_CONTRACT_OVERRIDES,
+  M9_REQUIRED_ARTIFACTS, M10_ARTIFACT_CONTRACT_OVERRIDES, M10_REQUIRED_ARTIFACTS,
+  M11_ARTIFACT_CONTRACT_OVERRIDES, M11_REQUIRED_ARTIFACTS, M12_ARTIFACT_CONTRACT_OVERRIDES,
+  M12_REQUIRED_ARTIFACTS, M13_ARTIFACT_CONTRACT_OVERRIDES, M13_REQUIRED_ARTIFACTS,
   M14_ARTIFACT_CONTRACT_OVERRIDES,
   M15_ARTIFACT_CONTRACT_OVERRIDES,
   M16_ARTIFACT_CONTRACT_OVERRIDES,
@@ -30,6 +17,7 @@ import { ARTIFACT_CONTRACTS, M1_ARTIFACT_CONTRACT_OVERRIDES,
   M20_ARTIFACT_CONTRACT_OVERRIDES,
   M21_ARTIFACT_CONTRACT_OVERRIDES,
   M22_ARTIFACT_CONTRACT_OVERRIDES,
+  M23_ARTIFACT_CONTRACT_OVERRIDES as m23c,
   PHASE_3_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_3_PICKUP_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_4_ARTIFACT_CONTRACT_OVERRIDES,
@@ -57,6 +45,7 @@ const { LOWER_DVINA_TRACE_SCENARIO_ID, LOWER_DVINA_TRACE_DEFINITION_REVISION,
   LOWER_DVINA_TRACE_M20_DEFINITION_REVISION,
   LOWER_DVINA_TRACE_M21_DEFINITION_REVISION,
   LOWER_DVINA_TRACE_M22_DEFINITION_REVISION,
+  LOWER_DVINA_TRACE_M23_DEFINITION_REVISION:m23,
   LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
   LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
   LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST,
@@ -95,6 +84,7 @@ export function assertLowerDvinaTraceRequest(input) {
       ,LOWER_DVINA_TRACE_M20_DEFINITION_REVISION
       ,LOWER_DVINA_TRACE_M21_DEFINITION_REVISION
       ,LOWER_DVINA_TRACE_M22_DEFINITION_REVISION
+      ,m23
     ]
       .includes(input.scenario_definition_revision)) {
     fail(
@@ -107,19 +97,11 @@ export function assertLowerDvinaTraceRequest(input) {
   if (input.existing_party_state?.baseline_exists === true) fail('BASELINE_ALREADY_MATERIALIZED', 'An existing baseline cannot be materialized again.');
   if (typeof input.resolve_timestamp !== 'function') fail('TIME_OWNER_MISSING', 'The approved time-owner resolver is required.');
   const domainPin = input.domain_catalog_pin;
-  const requiredDomainPinFields = [
-    'catalog_scope',
-    'catalog_revision_id',
-    'catalog_digest',
-    'import_id',
-    'import_audit_digest',
-    'record_registry_digest',
-    'runtime_contract_digest',
-    'compatible_world_revision_id',
-    'compatible_world_catalog_digest',
-    'compatible_world_pin_manifest_digest',
-    'activation_event_id'
-  ];
+  const requiredDomainPinFields = ['catalog_scope', 'catalog_revision_id',
+    'catalog_digest', 'import_id', 'import_audit_digest', 'record_registry_digest',
+    'runtime_contract_digest', 'compatible_world_revision_id',
+    'compatible_world_catalog_digest', 'compatible_world_pin_manifest_digest',
+    'activation_event_id'];
   if (domainPin?.schema !== 'rus.runtime_catalog_pin.v2'
     || domainPin.catalog_scope !== 'item_container_materialization_v2'
     || requiredDomainPinFields.some((key) => typeof domainPin[key] !== 'string' || !domainPin[key])
@@ -130,45 +112,46 @@ export function assertLowerDvinaTraceRequest(input) {
 }
 
 export function assertLowerDvinaTraceBundle(bundle, input) {
+  const revision = input.scenario_definition_revision;
   if (!bundle || bundle.schema !== 'rus.lower_dvina_trace_materialization_bundle.v1' || bundle.version !== 1) fail('TRACE_SCENARIO_BUNDLE_INVALID', 'Pinned materialization bundle v1 is required.');
   if (bundle.scenario_id !== input.scenario_id || bundle.definition_revision !== input.scenario_definition_revision || bundle.manifest_digest !== input.scenario_manifest_digest) fail('TRACE_SCENARIO_MANIFEST_MISMATCH', 'Scenario bundle identity does not match the request.');
-  const requiredArtifacts = input.scenario_definition_revision
+  const requiredArtifacts = revision
       >= LOWER_DVINA_TRACE_M13_DEFINITION_REVISION
     ? M13_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M12_DEFINITION_REVISION
     ? M12_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M11_DEFINITION_REVISION
     ? M11_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M10_DEFINITION_REVISION
     ? M10_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M9_DEFINITION_REVISION
     ? M9_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M8_DEFINITION_REVISION
     ? M8_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M7_DEFINITION_REVISION
     ? M7_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M6_DEFINITION_REVISION
     ? M6_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M5_DEFINITION_REVISION
     ? M5_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M4_DEFINITION_REVISION
     ? M4_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
       === LOWER_DVINA_TRACE_M3_DEFINITION_REVISION
     ? M3_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
         === LOWER_DVINA_TRACE_M2_DEFINITION_REVISION
     ? M2_REQUIRED_ARTIFACTS
-    : input.scenario_definition_revision
+    : revision
         === LOWER_DVINA_TRACE_M1_DEFINITION_REVISION
       ? M1_REQUIRED_ARTIFACTS
       : REQUIRED_ARTIFACTS;
@@ -226,12 +209,14 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
       ,m20: LOWER_DVINA_TRACE_M20_DEFINITION_REVISION
       ,m21: LOWER_DVINA_TRACE_M21_DEFINITION_REVISION
       ,m22: LOWER_DVINA_TRACE_M22_DEFINITION_REVISION
+      ,m23
     }
   });
   return bundle;
 }
 
 function artifactContractFor(key, definitionRevision) {
+  if(definitionRevision===m23)return m23c[key]??ARTIFACT_CONTRACTS[key];
   if (definitionRevision === LOWER_DVINA_TRACE_M22_DEFINITION_REVISION) {
     return M22_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];
   }

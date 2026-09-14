@@ -1,22 +1,15 @@
 import { loadLowerDvinaTraceScreenPresentation } from '../../internal/lower-dvina-trace-screen-presentation.js';
 import { canonicalDigest } from '@rus/materialization';
-import {
-  computeSpatialV3CanonicalDigest
-} from '@rus/contracts/spatial-v3/registry';
-import {
-  phase2IntegrityError
-} from './lower-dvina-trace-phase-2-read.js';
+import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
+import { validFactualTurnDelivery, rebuildExpectedFactualTurnDelivery,
+  factualTurnDeliveryMatchesExpected } from './factual-presentation-delivery.js';
 import {
   phase2PublicResult,
   rebuildPhase2HistoricalScreen
 } from './lower-dvina-trace-phase-2-projection.js';
-import {
-  buildLowerDvinaTraceTurnStepCheckWrites
-} from './lower-dvina-trace-turn-step-checks.js';
-import {
-  validLowerDvinaTraceTurnStepReplayEvidence
-} from './lower-dvina-trace-turn-step-idempotency.js';
-
+import { buildLowerDvinaTraceTurnStepCheckWrites } from './lower-dvina-trace-turn-step-checks.js';
+import { validLowerDvinaTraceTurnStepReplayEvidence } from './lower-dvina-trace-turn-step-idempotency.js';
 export async function loadPhase2IdempotencyRecord({
   partyPool,
   partyId,
@@ -38,7 +31,6 @@ export async function loadPhase2IdempotencyRecord({
   }
   return record;
 }
-
 export async function loadCurrentOrHistoricalPhase2Replay({
   partyPool,
   partyId,
@@ -60,16 +52,26 @@ export async function loadCurrentOrHistoricalPhase2Replay({
   }
   const result = await partyPool.query(
     `SELECT session.screen,session.turn_number,
-            visible.package_id,visible.package_digest,
+            visible.party_id,visible.package_id,visible.turn_id,
+            visible.committed_state_version,visible.package_digest,
+            visible.visible_payload,snapshot.state_payload AS snapshot_payload,
+            snapshot.state_digest,
             visible.dependency_pins,
-            source.dependency_pins AS source_dependency_pins
+            source.dependency_pins AS source_dependency_pins,
+            narration.status AS narration_status,narration.delivery_mode,
+            narration.narration_output,narration.output_digest,narration.factual_screen
        FROM party_runtime.party_server_sessions session
        JOIN party_runtime.party_visible_packages visible
          ON visible.party_id=session.party_id
         AND visible.change_set_id=$2
+       JOIN party_runtime.party_state_snapshots snapshot
+         ON snapshot.party_id=visible.party_id
+        AND snapshot.state_version=visible.committed_state_version
        JOIN party_runtime.party_visible_packages source
          ON source.party_id=session.party_id
         AND source.change_set_id=$3
+       LEFT JOIN party_runtime.party_narration_jobs narration
+         ON narration.party_id=visible.party_id AND narration.package_id=visible.package_id
       WHERE session.party_id=$1`,
     [partyId, state.last_turn.visible_package.change_set_id,
       idempotency.result_change_set_id]
@@ -78,6 +80,20 @@ export async function loadCurrentOrHistoricalPhase2Replay({
   if (result.rowCount !== 1
       || row.package_id !== state.last_turn.visible_package.package_id
       || row.package_digest !== state.last_turn.visible_package.package_digest) {
+    throw phase2IntegrityError();
+  }
+  const factualDelivery = row.delivery_mode === 'factual';
+  const factualSchema = row.screen?.schema === 'factual_turn_delivery_screen';
+  const invalidFactualDelivery = factualDelivery && (
+    row.narration_status !== 'delivered'
+    || row.narration_output != null || row.output_digest != null
+    || canonicalDigest(row.factual_screen) !== canonicalDigest(row.screen)
+    || !validFactualTurnDelivery(row.screen, row)
+    || !factualTurnDeliveryMatchesExpected(row.screen,
+      rebuildExpectedFactualTurnDelivery({ envelope: row,
+        presentation: await loadLowerDvinaTraceScreenPresentation(row.snapshot_payload) }))
+  );
+  if (factualDelivery !== factualSchema || invalidFactualDelivery) {
     throw phase2IntegrityError();
   }
   assertPhase2ReplayRecord({
@@ -99,7 +115,6 @@ export async function loadCurrentOrHistoricalPhase2Replay({
     public_result: phase2PublicResult({ payload: state, screen: row.screen })
   };
 }
-
 export async function loadHistoricalPhase2Replay({
   partyPool,
   partyId,
@@ -113,13 +128,16 @@ export async function loadHistoricalPhase2Replay({
   if (record == null) return null;
   const persisted = await partyPool.query(
     `SELECT snapshot.state_payload,snapshot.state_digest,
-            visible.package_id,visible.turn_id,
+            visible.party_id,visible.package_id,visible.turn_id,
+            visible.committed_state_version,
             visible.package_digest,visible.visible_payload,
+            package_snapshot.state_payload AS snapshot_payload,
+            package_snapshot.state_digest AS package_snapshot_digest,
             visible.dependency_pins,
             source.dependency_pins AS source_dependency_pins,
-            narration.status AS narration_status,
-            narration.narration_output,
-            narration.output_digest
+             narration.status AS narration_status,narration.delivery_mode,
+             narration.narration_output,
+             narration.output_digest,narration.factual_screen
        FROM party_runtime.party_state_snapshots snapshot
        JOIN party_runtime.party_visible_packages visible
          ON visible.party_id=snapshot.party_id
@@ -128,6 +146,9 @@ export async function loadHistoricalPhase2Replay({
        JOIN party_runtime.party_visible_packages source
          ON source.party_id=snapshot.party_id
         AND source.change_set_id=$2
+       JOIN party_runtime.party_state_snapshots package_snapshot
+         ON package_snapshot.party_id=visible.party_id
+        AND package_snapshot.state_version=visible.committed_state_version
        JOIN party_runtime.party_narration_jobs narration
          ON narration.party_id=visible.party_id
         AND narration.package_id=visible.package_id
@@ -151,10 +172,8 @@ export async function loadHistoricalPhase2Replay({
         !== payload.last_turn.visible_package.package_digest
       || row.package_digest
         !== computeSpatialV3CanonicalDigest(row.visible_payload)
-      || row.narration_status !== 'delivered'
-      || row.output_digest
-        !== row.narration_output?.canonical_digest
-      || !validNarrationOutput(row.narration_output)) {
+       || row.narration_status !== 'delivered'
+       || !(await validHistoricalDelivery(row, payload))) {
     throw phase2IntegrityError();
   }
   assertPhase2ReplayRecord({
@@ -171,13 +190,15 @@ export async function loadHistoricalPhase2Replay({
       idempotencyRecordId: record.id
     });
   }
-  const screen = rebuildPhase2HistoricalScreen({
-    payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),
-    turnId: row.turn_id,
-    visiblePayload: row.visible_payload,
-    narrationOutput: row.narration_output,
-    narrationOutputDigest: row.output_digest
-  });
+  const screen = row.delivery_mode === 'factual'
+    ? structuredClone(row.factual_screen)
+    : rebuildPhase2HistoricalScreen({
+        payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),
+        turnId: row.turn_id,
+        visiblePayload: row.visible_payload,
+        narrationOutput: row.narration_output,
+        narrationOutputDigest: row.output_digest
+      });
   return {
     input_digest: payload.last_turn.input_digest,
     state: payload,
@@ -185,7 +206,6 @@ export async function loadHistoricalPhase2Replay({
     public_result: phase2PublicResult({ payload, screen })
   };
 }
-
 export function assertPhase2ReplayRecord({
   record,
   payload,
@@ -214,7 +234,6 @@ export function assertPhase2ReplayRecord({
     throw phase2IntegrityError();
   }
 }
-
 export async function assertCommittedTurnStepChecks({
   partyPool, payload, changeSetId, idempotencyRecordId
 }) {
@@ -248,7 +267,6 @@ export async function assertCommittedTurnStepChecks({
     throw phase2IntegrityError();
   }
 }
-
 function validNarrationOutput(narration) {
   if (!narration || narration.kind !== 'approved_narration') return false;
   const { canonical_digest: digest, ...payload } = narration;
@@ -257,4 +275,23 @@ function validNarrationOutput(narration) {
     && narration.flow_result?.pass === true
     && narration.text
       === narration.flow_result?.approved_output?.prose;
+}
+async function validHistoricalDelivery(row, payload) {
+  if (row.delivery_mode === 'factual') {
+    const factual = row.factual_screen;
+    return row.narration_output == null
+      && row.output_digest == null
+      && validFactualTurnDelivery(factual, {
+        ...row, snapshot_payload: row.snapshot_payload,
+        state_digest: row.package_snapshot_digest
+      })
+      && factualTurnDeliveryMatchesExpected(factual, rebuildExpectedFactualTurnDelivery({
+        envelope: { ...row, snapshot_payload: row.snapshot_payload,
+          state_digest: row.package_snapshot_digest },
+        presentation: await loadLowerDvinaTraceScreenPresentation(row.snapshot_payload)
+      }));
+  }
+  return row.delivery_mode === 'narrated'
+    && row.output_digest === row.narration_output?.canonical_digest
+    && validNarrationOutput(row.narration_output);
 }

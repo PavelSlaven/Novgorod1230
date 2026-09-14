@@ -8,8 +8,7 @@ import { conversationHandoffProjection } from './lower-dvina-trace-m2-conversati
 import { buildPlayerConversationPlanStage, buildTracePhase3ConversationCheckRequests,
   prepareTracePhase3PlayerConversationPlan, requirePlayerConversationPlanStage } from
   './lower-dvina-trace-m2-conversation-player.js';
-import { phase3ConversationTarget, phase3ConversationTargetId } from
-  './lower-dvina-trace-phase-2-target-refs.js';
+import { phase3ConversationTarget, phase3ConversationTargetId, phase3ConversationTargetRefs } from './lower-dvina-trace-phase-2-target-refs.js';
 
 export function createTracePhase3ConversationCommand({
   contracts, inputDigest, evidence,
@@ -222,11 +221,13 @@ function createSemanticConversationCommand({
         tracePhase3PreconditionSatisfied(precondition, state, contracts));
       if (!allowed) return available(false, [], ['conversation_precondition_failed']);
       if (context.action_set_evaluation === true) return available(true, [], []);
+      const selectedTargetRefs = phase3ConversationTargetRefs(context, contracts);
       const playerPlan = await prepareTracePhase3PlayerConversationPlan({
         state,
         contracts,
         evidence,
         targetActorId: phase3ConversationTargetId(context, contracts),
+        requiredIntendedAddresseeRefs: selectedTargetRefs?.length > 1 ? selectedTargetRefs : null,
         playerInput: context.playerInput,
         inputDigest,
         playerConversationModel,

@@ -22,7 +22,7 @@ export function validateNpcSemanticDecisionTrace(value, request = null,
     || !stableId(value.root_turn_id)
     || !stableId(value.boundary_id)
     || !stableId(value.npc_ref)
-    || !finiteInteger(value.committed_state_version, 1)
+    || !finiteInteger(value.committed_state_version)
     || !finiteInteger(value.working_revision)
     || !stableId(value.applied_change_set_id)
     || value.status !== 'committed'

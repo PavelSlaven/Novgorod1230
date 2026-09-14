@@ -12,8 +12,11 @@ export function tracePhase3PreconditionSatisfied(
     return accessibleBlueWoolItem(state, contracts) !== null;
   }
   if (precondition.kind === 'materialized_present_npc') {
-    const actor = contracts.actors.find(({ ref }) => ref === precondition.ref);
-    return actor?.instance_id
+    const contractActor = contracts.actors.find(
+      ({ ref }) => ref === precondition.ref);
+    const actor = (state.npcs ?? []).find(
+      ({ instance_id: id }) => id === contractActor?.instance_id);
+    return actor?.anchor_id != null
       && actor.anchor_id === state.position?.g5_anchor_id;
   }
   if (precondition.kind === 'approved_access_policy') {
@@ -37,6 +40,20 @@ export function tracePhase3PreconditionSatisfied(
       && required.every(({ from }) => current.has(from));
   }
   return false;
+}
+
+export function presentPhase3NpcActors(state, contracts) {
+  const anchorId = state.position?.g5_anchor_id;
+  if (anchorId == null) return [];
+  return contracts.actors.flatMap((contractActor) => {
+    const current = (state.npcs ?? []).find(({ instance_id: id }) =>
+      id === contractActor.instance_id);
+    return current?.anchor_id === anchorId ? [{
+      ...structuredClone(contractActor),
+      ...structuredClone(current),
+      ref: contractActor.ref
+    }] : [];
+  });
 }
 
 function noCurrentTemporalBoundary(state) {

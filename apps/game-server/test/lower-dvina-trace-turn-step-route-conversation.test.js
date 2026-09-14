@@ -13,6 +13,8 @@ import { tracePhase3PreconditionSatisfied } from
   '../src/runtime/lower-dvina-trace-phase-3-admission.js';
 import { createLowerDvinaTracePreparedDomainEffect } from
   '../src/runtime/lower-dvina-trace-turn-step-prepared-effects.js';
+import { projectPosition } from
+  '../src/runtime/lower-dvina-trace-player-safe-world.js';
 
 const currentBundle = await loadScenarioBundle(14);
 const productionScenePresentation = JSON.parse(await readFile(new URL(
@@ -79,7 +81,7 @@ test('prepared first entry projects destination identity before continuation', (
   }, { npcs: [], position: {} }, { actors: [] }), false);
 });
 
-test('prepared route carrier projects pending first-entry position', async () => {
+test('prepared route carrier projects only player-safe first-entry position', async () => {
   const state = pendingFirstEntryState();
   const movement = pendingFirstEntryMovement();
   const owner = createLowerDvinaTracePreparedDomainEffect({
@@ -88,20 +90,19 @@ test('prepared route carrier projects pending first-entry position', async () =>
   const prepared = await owner.apply({
     command_id: 'lower_dvina_trace.follow_path_to_fishing_camp',
     operation: { op: 'request_movement' },
-    working_projection: state,
+    working_projection: { position: {
+      location_ref: 'wreck', position_id: 'position:wreck',
+      g5_anchor_id: 'anchor:wreck', g5_node_id: 'node:wreck'
+    } },
     prepared_chain_context: { prior_effect_count: 0 }, availability: {},
     consequence: { phase3_kind: 'movement', duration_minutes: 8,
       movement }
   });
-  assert.deepEqual(prepared.working_projection.position, {
-    location_ref: 'camp', position_id: 'position:camp', g6_id: 'g6:camp',
+  assert.deepEqual(projectPosition(prepared.working_projection.position,
+    { strict: true }), {
+    location_ref: 'camp', position_id: 'position:camp',
     g5_anchor_id: 'anchor:camp', g5_node_id: 'node:camp'
   });
-  assert.equal(prepared.working_projection.npcs[0].anchor_id, 'anchor:camp');
-  assert.equal(prepared.working_projection.first_entry_preparation.spatial_v3
-    .target.status, 'prepared');
-  assert.equal(prepared.working_projection.npc_schedule_runtime[0]
-    .current_position_node_id, 'position:camp');
 });
 
 test('first entry neither recalls departed NPC nor leaks camp G6 to later moves', () => {

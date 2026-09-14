@@ -11,13 +11,24 @@ import { withLowerDvinaTraceCurrentScene } from
 export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
   if (effect.consequence?.movement?.destination?.location_ref != null) {
-    projectFirstEntryArrivalState(next, effect.consequence.movement);
+    const movement = effect.consequence.movement;
+    projectFirstEntryArrivalState(next, movement);
     next = buildLowerDvinaTracePreparedRouteWorkingProjection({
       projection: next,
-      movement: effect.consequence.movement,
+      movement,
       committedState: next,
       clockAfter: effect.time_update.clock_after
     });
+    const firstEntry = next.first_entry_preparation;
+    const destinationG6Id = movement.destination.g6_instance_id
+      ?? (firstEntry?.scene?.location_profile_ref
+          === movement.destination.location_ref
+        ? firstEntry.spatial_v3?.target?.g6_instance_id : null);
+    if (next.position?.position_id == null || destinationG6Id == null) {
+      delete next.position.g6_id;
+    } else {
+      next.position.g6_id = destinationG6Id;
+    }
     for (const key of ['visible_context', 'visible_context_package',
       'current_visible_context']) delete next[key];
   }
@@ -144,8 +155,6 @@ export function buildLowerDvinaTracePreparedRouteWorkingProjection({
       === destination.location_ref;
   const destinationPositionId = destination.scene_position_id
     ?? (destinationIsFirstEntry ? firstEntry.target.position_id : null);
-  const destinationG6Id = destination.g6_instance_id
-    ?? (destinationIsFirstEntry ? firstEntry.target.g6_instance_id : null);
   const { active_interlocutor: _activeInterlocutor,
     ...projectionWithoutInterlocutor } = structuredClone(projection);
   const position = { ...structuredClone(projection.position ?? {}),
@@ -155,12 +164,10 @@ export function buildLowerDvinaTracePreparedRouteWorkingProjection({
     ...(destination.zone_ref == null ? {} : { zone_ref: destination.zone_ref }) };
   if (destinationPositionId == null) {
     delete position.position_id;
-    delete position.g6_id;
   } else {
     position.position_id = destinationPositionId;
-    if (destinationG6Id == null) delete position.g6_id;
-    else position.g6_id = destinationG6Id;
   }
+  delete position.g6_id;
   const moved = { ...projectionWithoutInterlocutor,
     position,
     route_history: [...structuredClone(projection.route_history ?? []), routeEntry] };

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { phase3ConversationProjection } from
+import { phase3ConversationProjection, withPhase3Conversation } from
   '../src/runtime/lower-dvina-trace-phase-3-visible.js';
 import { projectLowerDvinaTracePlayerSafeState } from
   '../src/runtime/lower-dvina-trace-player-safe-state.js';
@@ -73,9 +73,7 @@ test('committed perceived self-introduction survives player-safe reload', () => 
     ['человек (2)', 'unrecognized'],
     ['человек (3)', 'unrecognized']
   ]);
-  assert.deepEqual(safe.active_interlocutor, {
-    entity_ref: speakerRef, display_label: 'Еремей'
-  });
+  assert.equal(safe.active_interlocutor, undefined);
 });
 
 test('heard self-introduction alias is preserved instead of hidden canonical name',
@@ -118,7 +116,7 @@ test('mentioning a canonical name does not reveal NPC identity', () => {
   assert.equal(visible.visible_npc[0].recognition, 'unrecognized');
 });
 
-test('group conversation projects every perceived NPC response', () => {
+test('group conversation keeps identical replies attributable', () => {
   const playerStatementRef = {
     entity_kind: 'conversation_statement', entity_id: 'statement-player'
   };
@@ -126,9 +124,9 @@ test('group conversation projects every perceived NPC response', () => {
     statement_id: `statement-${index + 1}`,
     conversation_id: 'conversation-1',
     speaker_ref: { entity_kind: 'npc', entity_id: actorId },
-    utterance_text: `Ответ ${index + 1}.`
+    utterance_text: 'Одинаковый ответ.'
   }));
-  const visible = phase3ConversationProjection({
+  const input = {
     consequence: { conversation: { semantic_exchange: {
       response_kind: 'speech',
       decision_request: { npc_ref: statements[0].speaker_ref,
@@ -154,12 +152,24 @@ test('group conversation projects every perceived NPC response', () => {
           comprehension: 'full', utterance_text: entry.utterance_text }]
       }))
     } } },
-    retrieved_state: { current_visible_context: context() }
-  }, { actors, ids: { eremeyRef: actors[0].ref } });
+    retrieved_state: { current_visible_context: context(false) }
+  };
+  const visible = withPhase3Conversation({ input,
+    contracts: { actors, ids: { eremeyRef: actors[0].ref } }, movement: {
+      version: 1, schema: 'visible_context_package', visible_scene: 'стан',
+      visible_changes: ['Вы пришли в стан.'], sensory_details: [],
+      visible_npc: [], visible_objects: [], known_context: [],
+      uncertainties: [], allowed_tensions: [], do_not_imply: []
+    } });
 
   assert.equal(visible.visible_scene.match(/человек \(\d\) говорит:/gu)?.length,
     3);
-  assert.equal(visible.visible_changes.length, 3);
+  assert.deepEqual(visible.visible_changes, [
+    'Вы пришли в стан.',
+    'человек (1) говорит: «Одинаковый ответ.»',
+    'человек (2) говорит: «Одинаковый ответ.»',
+    'человек (3) говорит: «Одинаковый ответ.»'
+  ]);
   assert.ok(visible.visible_npc.every(({ visible_status: status }) =>
     status === 'говорит с вами'));
 });
@@ -221,12 +231,13 @@ function message(text = utterance) {
     utterance_text: text };
 }
 
-function context() {
+function context(numbered = true) {
   return { version: 1, schema: 'visible_context_package',
     visible_scene: 'рыбацкий стан', visible_changes: [], sensory_details: [],
     visible_npc: actors.map(({ instance_id }, index) => ({
       entity_ref: { entity_kind: 'npc', entity_id: instance_id },
-      display_label: `человек (${index + 1})`, recognition: 'unrecognized'
+      display_label: numbered ? `человек (${index + 1})` : 'человек',
+      recognition: 'unrecognized'
     })),
     visible_objects: [], known_context: [], uncertainties: [] };
 }

@@ -1,5 +1,7 @@
 import { playerSafeSelfIntroductionName } from
   './lower-dvina-trace-player-safe-npc-details.js';
+import { distinctNpcLabels } from
+  './lower-dvina-trace-visible-scene-items.js';
 
 export function withPhase3Conversation({ input, contracts, movement }) {
   if (input.consequence.conversation == null) return movement;
@@ -186,13 +188,16 @@ function perceivedNpcGroupResponses(semantic, contracts, visibleContext) {
   const requests = (semantic.decisions ?? []).map(({ request }) => request)
     .filter((request) => sameStatementRef(
       request?.perceived_message?.source_statement_ref, sourceRef));
+  const labels = new Map(distinctNpcLabels(visibleContext?.visible_npc ?? [])
+    .map((npc) => [npc?.entity_ref?.entity_id, npc.display_label]));
   return intended.map((npcRef) => {
     const actor = contracts.actors.find(({ instance_id: id }) =>
       id === npcRef.entity_id);
     if (actor == null) {
       throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_SPEAKER_GAP');
     }
-    const label = playerSafeNpc(actor, null, visibleContext).display_label;
+    const label = labels.get(actor.instance_id)
+      ?? playerSafeNpc(actor, null, visibleContext).display_label;
     const matchingRequests = requests.filter(({ npc_ref: ref }) =>
       ref?.entity_kind === npcRef.entity_kind
         && ref.entity_id === npcRef.entity_id);
@@ -208,9 +213,9 @@ function perceivedNpcGroupResponses(semantic, contracts, visibleContext) {
       const statement = semantic.statements?.find(({ statement_id: id }) =>
         id === projected.contribution_ref.entity_id);
       if (statement == null) throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_GAP');
-      return perceivedSpeechEntry(
-        semantic, contracts, visibleContext, statement
-      );
+      const speech = perceivedSpeechEntry(
+        semantic, contracts, visibleContext, statement);
+      return { ...speech, label: speech.name ?? label };
     }
     if (projected?.applied === true
         && ['silence', 'leave_conversation'].includes(

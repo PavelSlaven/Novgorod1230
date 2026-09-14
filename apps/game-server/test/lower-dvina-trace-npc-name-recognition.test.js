@@ -152,13 +152,13 @@ test('group conversation keeps identical replies attributable', () => {
           comprehension: 'full', utterance_text: entry.utterance_text }]
       }))
     } } },
-    retrieved_state: { current_visible_context: context(false) }
+    retrieved_state: { current_visible_context: context(false, []) }
   };
   const visible = withPhase3Conversation({ input,
     contracts: { actors, ids: { eremeyRef: actors[0].ref } }, movement: {
       version: 1, schema: 'visible_context_package', visible_scene: 'стан',
       visible_changes: ['Вы пришли в стан.'], sensory_details: [],
-      visible_npc: [], visible_objects: [], known_context: [],
+      visible_npc: context(false).visible_npc, visible_objects: [], known_context: [],
       uncertainties: [], allowed_tensions: [], do_not_imply: []
     } });
 
@@ -231,10 +231,10 @@ function message(text = utterance) {
     utterance_text: text };
 }
 
-function context(numbered = true) {
+function context(numbered = true, contextActors = actors) {
   return { version: 1, schema: 'visible_context_package',
     visible_scene: 'рыбацкий стан', visible_changes: [], sensory_details: [],
-    visible_npc: actors.map(({ instance_id }, index) => ({
+    visible_npc: contextActors.map(({ instance_id }, index) => ({
       entity_ref: { entity_kind: 'npc', entity_id: instance_id },
       display_label: numbered ? `человек (${index + 1})` : 'человек',
       recognition: 'unrecognized'

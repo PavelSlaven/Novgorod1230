@@ -5,7 +5,7 @@ import { distinctNpcLabels } from
 
 export function withPhase3Conversation({ input, contracts, movement }) {
   if (input.consequence.conversation == null) return movement;
-  const conversation = phase3ConversationProjection(input, contracts);
+  const conversation = phase3ConversationProjection(input, contracts, movement);
   return {
     ...conversation,
     visible_changes: unique([
@@ -29,7 +29,8 @@ export function withPhase3Conversation({ input, contracts, movement }) {
   };
 }
 
-export function phase3ConversationProjection(input, contracts) {
+export function phase3ConversationProjection(input, contracts,
+  visibleContext = input.retrieved_state?.current_visible_context) {
   const conversation = input.consequence.conversation;
   const semantic = conversation.semantic_exchange ?? null;
   const responseKind = semantic?.response_kind ?? null;
@@ -49,10 +50,10 @@ export function phase3ConversationProjection(input, contracts) {
   ].includes(responseKind);
   const groupResponses = semantic == null ? null
     : perceivedNpcGroupResponses(semantic, contracts,
-        input.retrieved_state?.current_visible_context);
+        visibleContext);
   const speechEntries = groupResponses == null
     ? speechResponse ? [perceivedNpcSpeech(semantic, contracts,
-        input.retrieved_state?.current_visible_context)
+        visibleContext)
       ] : []
     : groupResponses.filter(({ kind }) => kind === 'speech');
   const primarySpeech = speechEntries.find(({ actor }) =>
@@ -63,7 +64,7 @@ export function phase3ConversationProjection(input, contracts) {
   const speakerName = primarySpeech?.name ?? null;
   const speakerLabel = primarySpeech?.label ?? (speaker == null ? 'человек'
     : playerSafeNpc(speaker, null,
-      input.retrieved_state?.current_visible_context).display_label);
+      visibleContext).display_label);
   const speechLines = speechEntries.map(({ label, utterance }) =>
     `${label} говорит: «${utterance}»${/[.!?…]$/u.test(utterance) ? '' : '.'}`);
   const groupLines = groupResponses?.map(responseLine) ?? null;
@@ -108,7 +109,7 @@ export function phase3ConversationProjection(input, contracts) {
         actorResponse == null
           ? actor.instance_id === speaker?.instance_id ? speakerStatus : null
           : actorResponse.status,
-        input.retrieved_state?.current_visible_context);
+        visibleContext);
       return actorResponse?.name
         ? { ...projected, display_label: actorResponse.name,
             recognition: 'recognized' }

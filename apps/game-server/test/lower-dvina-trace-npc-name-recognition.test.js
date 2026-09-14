@@ -70,8 +70,8 @@ test('committed perceived self-introduction survives player-safe reload', () => 
   assert.deepEqual(safe.current_visible_context.visible_npc.map(
     ({ display_label, recognition }) => [display_label, recognition]), [
     ['Еремей', 'recognized'],
-    ['человек (2)', 'unrecognized'],
-    ['человек (3)', 'unrecognized']
+    ['человек (1)', 'unrecognized'],
+    ['человек (2)', 'unrecognized']
   ]);
   assert.equal(safe.active_interlocutor, undefined);
 });
@@ -174,6 +174,25 @@ test('group conversation keeps identical replies attributable', () => {
     status === 'говорит с вами'));
 });
 
+test('group labels are renumbered after a non-first self-introduction', () => {
+  const visible = phase3ConversationProjection(groupReplyInput([
+    'Первый ответ.',
+    'Здравствуйте. Я Влас. Об этом я ничего подтвердить не могу.',
+    'Третий ответ.'
+  ]), { actors, ids: { eremeyRef: actors[0].ref } });
+
+  assert.deepEqual(visible.visible_changes.map((line) =>
+    line.match(/^(.*?) (?:говорит|промолчал|не ответил)/u)?.[1]), [
+    'человек (1)', 'Влас', 'человек (2)'
+  ]);
+  assert.deepEqual(visible.visible_npc.map(({ entity_ref: ref, display_label,
+    recognition }) => [ref.entity_id, display_label, recognition]), [
+    ['npc-eremey', 'человек (1)', 'unrecognized'],
+    ['npc-fisher-2', 'Влас', 'recognized'],
+    ['npc-fisher-3', 'человек (2)', 'unrecognized']
+  ]);
+});
+
 test('group conversation shows silence and unavailable targets', () => {
   const playerStatementRef = {
     entity_kind: 'conversation_statement', entity_id: 'statement-player'
@@ -229,6 +248,45 @@ function statement(text = utterance) {
 function message(text = utterance) {
   return { listener_ref: playerRef, comprehension: 'full',
     utterance_text: text };
+}
+
+function groupReplyInput(utterances) {
+  const playerStatementRef = {
+    entity_kind: 'conversation_statement', entity_id: 'statement-player'
+  };
+  const replies = actors.map(({ instance_id: actorId }, index) => ({
+    statement_id: `statement-group-${index + 1}`,
+    conversation_id: 'conversation-1',
+    speaker_ref: { entity_kind: 'npc', entity_id: actorId },
+    utterance_text: utterances[index]
+  }));
+  return {
+    consequence: { conversation: { semantic_exchange: {
+      response_kind: 'speech',
+      decision_request: { npc_ref: replies[0].speaker_ref,
+        perceived_message: { source_statement_ref: playerStatementRef } },
+      decisions: replies.map((reply, index) => ({ request: {
+        request_id: `request-group-${index + 1}`,
+        npc_ref: reply.speaker_ref,
+        perceived_message: { source_statement_ref: playerStatementRef }
+      } })),
+      npc_outcomes: replies.map((reply, index) => ({
+        request_id: `request-group-${index + 1}`, applied: true,
+        contribution_ref: { entity_kind: 'conversation_statement',
+          entity_id: reply.statement_id }
+      })),
+      statements: [{ statement_id: playerStatementRef.entity_id,
+        speaker_ref: playerRef, intended_addressee_refs: actors.map(
+          ({ instance_id: entityId }) => ({ entity_kind: 'npc',
+            entity_id: entityId })) }, ...replies],
+      audiences: replies.map((reply) => ({
+        statement_ref: { entity_kind: 'conversation_statement',
+          entity_id: reply.statement_id },
+        received_messages: [message(reply.utterance_text)]
+      }))
+    } } },
+    retrieved_state: { current_visible_context: context() }
+  };
 }
 
 function context(numbered = true, contextActors = actors) {

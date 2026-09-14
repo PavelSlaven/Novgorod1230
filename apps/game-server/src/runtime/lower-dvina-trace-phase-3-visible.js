@@ -48,13 +48,43 @@ export function phase3ConversationProjection(input, contracts,
   const speechResponse = semantic !== null && [
     'route_disclosure', 'withhold', 'speech'
   ].includes(responseKind);
-  const groupResponses = semantic == null ? null
+  const perceivedGroup = semantic == null ? null
     : perceivedNpcGroupResponses(semantic, contracts,
         visibleContext);
-  const speechEntries = groupResponses == null
+  const perceivedSpeech = perceivedGroup == null
     ? speechResponse ? [perceivedNpcSpeech(semantic, contracts,
         visibleContext)
       ] : []
+    : perceivedGroup.filter(({ kind }) => kind === 'speech');
+  const responseByActor = new Map((perceivedGroup ?? perceivedSpeech)
+    .map((entry) => [entry.actor.instance_id, entry]));
+  const speakerStatus = responseKind === 'silence'
+    ? 'молчит после вашего обращения'
+    : responseKind === 'leave_conversation'
+      ? 'прекращает разговор с вами'
+      : speechResponse ? 'говорит с вами' : null;
+  const projectedNpcs = contracts.actors.map((actor) => {
+    const actorResponse = responseByActor.get(actor.instance_id);
+    const projected = playerSafeNpc(actor,
+      actorResponse == null
+        ? actor.instance_id === speaker?.instance_id ? speakerStatus : null
+        : actorResponse.status,
+      visibleContext);
+    return actorResponse?.name
+      ? { ...projected, display_label: actorResponse.name,
+          recognition: 'recognized' }
+      : projected;
+  });
+  const visibleNpcs = perceivedGroup == null
+    ? projectedNpcs : distinctNpcLabels(projectedNpcs);
+  const labelByActor = new Map(visibleNpcs.map((npc) => [
+    npc.entity_ref.entity_id, npc.display_label
+  ]));
+  const labelResponse = (entry) => ({ ...entry,
+    label: labelByActor.get(entry.actor.instance_id) ?? entry.label });
+  const groupResponses = perceivedGroup?.map(labelResponse) ?? null;
+  const speechEntries = groupResponses == null
+    ? perceivedSpeech.map(labelResponse)
     : groupResponses.filter(({ kind }) => kind === 'speech');
   const primarySpeech = speechEntries.find(({ actor }) =>
     actor.instance_id === speaker?.instance_id);
@@ -77,14 +107,6 @@ export function phase3ConversationProjection(input, contracts,
         : semantic != null
           ? 'Ответа не последовало.'
           : `Разговор с ${speakerLabel} продолжился.`]);
-  const responseByActor = new Map((groupResponses ?? speechEntries).map((entry) => [
-    entry.actor.instance_id, entry
-  ]));
-  const speakerStatus = responseKind === 'silence'
-    ? 'молчит после вашего обращения'
-    : responseKind === 'leave_conversation'
-      ? 'прекращает разговор с вами'
-      : speechResponse ? 'говорит с вами' : null;
   return {
     version: 1,
     schema: 'visible_context_package',
@@ -103,18 +125,7 @@ export function phase3ConversationProjection(input, contracts,
         : `${speakerLabel} уклонился от полного ответа о крушении.`,
     visible_changes: visibleChanges,
     sensory_details: [],
-    visible_npc: contracts.actors.map((actor) => {
-      const actorResponse = responseByActor.get(actor.instance_id);
-      const projected = playerSafeNpc(actor,
-        actorResponse == null
-          ? actor.instance_id === speaker?.instance_id ? speakerStatus : null
-          : actorResponse.status,
-        visibleContext);
-      return actorResponse?.name
-        ? { ...projected, display_label: actorResponse.name,
-            recognition: 'recognized' }
-        : projected;
-    }),
+    visible_npc: visibleNpcs,
     visible_objects: [],
     known_context: [
       ...(semantic ? [] : [conversation.journal_ref]),

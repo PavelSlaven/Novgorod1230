@@ -3,6 +3,8 @@ import { PORTRAIT_SPEC_V1_ENUMS } from '@rus/contracts';
 import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 import { validateNpcOrdinarySemanticRemainder } from '@rus/npc-runtime';
 import { plain } from './lower-dvina-trace-player-safe-json.js';
+import { distinctNpcLabels } from
+  './lower-dvina-trace-visible-scene-items.js';
 
 export function projectLowerDvinaTraceVisibleNpcDetails({
   visibleContext, projectedNpcs, committedNpcs, committedItems
@@ -72,15 +74,16 @@ export function projectLowerDvinaTraceRecognizedNpcContext({
     if (name) recognized.set(statement.speaker_ref.entity_id, name);
   }
   if (recognized.size === 0) return visibleContext;
+  const projected = visibleContext.visible_npc.map((npc) => {
+    const name = npc?.entity_ref?.entity_kind === 'npc'
+      ? recognized.get(npc.entity_ref.entity_id) : null;
+    return name == null ? npc : {
+      ...npc, display_label: name, recognition: 'recognized'
+    };
+  });
   return {
     ...visibleContext,
-    visible_npc: visibleContext.visible_npc.map((npc) => {
-      const name = npc?.entity_ref?.entity_kind === 'npc'
-        ? recognized.get(npc.entity_ref.entity_id) : null;
-      return name == null ? npc : {
-        ...npc, display_label: name, recognition: 'recognized'
-      };
-    })
+    visible_npc: distinctNpcLabels(projected)
   };
 }
 

@@ -17,12 +17,14 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
     : normalizeStoredRecord(initialRecord);
   let active = restored.active;
   let qualifiedO1Identity = restored.identity;
+  let requalificationRequired = restored.requalificationRequired === true;
   let generation = 0;
   let commitQueue = Promise.resolve();
   return Object.freeze({
     read() { return publicSnapshot(active, runtimeStatus); },
     providerSnapshot() { return active; },
     ordinaryMaterializationIdentity() { return qualifiedO1Identity; },
+    requiresRequalification() { return requalificationRequired; },
     async apply(input) {
       const next = normalizeSettings(input, active);
       const applyingGeneration = ++generation;
@@ -35,6 +37,7 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
         if (applyingGeneration !== generation) stale();
         active = next;
         qualifiedO1Identity = qualified;
+        requalificationRequired = false;
         return publicSnapshot(active, runtimeStatus);
       });
     },
@@ -73,6 +76,7 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
 
 export async function applyInitialLocalSettings(owner, storedRecord) {
   if (storedRecord == null) await owner.apply({ mode: 'local' });
+  else if (owner.requiresRequalification()) await owner.apply(storedRecord.settings);
 }
 
 export function createProductionLlmQualifier({ qualifyOrdinary, roleRunner } = {}) {
@@ -232,12 +236,11 @@ function normalizeStoredRecord(record) {
   }
   const active = normalizeSettings(record.settings, null);
   const legacyDefault = record.settings.mode === 'default';
-  const identity = legacyDefault ? null : normalizeIdentity(record.ordinary_materialization_identity);
-  if (!legacyDefault && record.qualification_version !== QUALIFICATION_VERSION) {
-    throw serverError('LLM_SETTINGS_FILE_INVALID',
-      'Saved LLM settings require renewed qualification.', { status: 500, public_exposure: 'internal' });
+  if (legacyDefault) return { active, identity: null, requalificationRequired: false };
+  if (record.qualification_version !== QUALIFICATION_VERSION) {
+    return { active, identity: null, requalificationRequired: true };
   }
-  return { active, identity };
+  return { active, identity: normalizeIdentity(record.ordinary_materialization_identity), requalificationRequired: false };
 }
 
 function normalizeIdentity(value) {

@@ -318,9 +318,22 @@ test('narration workflow qualification repairs both frozen catalogues and reject
   await assert.rejects(rejected.apply({ ...custom, model: 'wrong-literary-check-model' }),
     { code: 'LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED' });
   assert.equal(rejected.read().model, 'local-model');
+  const staleRecord = { version: 2, settings: custom,
+    ordinary_materialization_identity: {}, qualification_version: 67 };
+  const requalified = [];
+  const restarted = createLlmSettingsOwner({ initialRecord: staleRecord,
+    qualifyCustom: async (candidate) => {
+      requalified.push(candidate);
+      return { ...identity(), model: candidate.model, qualification_version: 68 };
+    }, persistSettings: async (record) => { requalified.push(record); } });
+  assert.equal(restarted.ordinaryMaterializationIdentity(), null);
+  await applyInitialLocalSettings(restarted, staleRecord);
+  assert.equal(requalified[0].model, 'local-model');
+  assert.equal(requalified[1].qualification_version, 68);
+  assert.equal(restarted.ordinaryMaterializationIdentity().model, 'local-model');
   await assert.rejects(async () => createLlmSettingsOwner({ initialRecord: {
-    version: 2, settings: custom, ordinary_materialization_identity: identity(),
-    qualification_version: 67
+    version: 2, settings: custom, ordinary_materialization_identity: {},
+    qualification_version: 68
   } }), { code: 'LLM_SETTINGS_FILE_INVALID' });
 });
 

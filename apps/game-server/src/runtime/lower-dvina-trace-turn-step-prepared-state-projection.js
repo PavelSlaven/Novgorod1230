@@ -157,7 +157,7 @@ export function refreshPreparedMovementScene({
   locationProfiles = null, scenePresentation = null
 }) {
   const next = structuredClone(projection);
-  for (const key of ['npcs', 'visible_npcs', 'scene_npcs',
+  for (const key of ['npcs', 'visible_npcs', 'scene_npcs', 'available_routes',
     'visible_context', 'visible_context_package', 'current_visible_context']) {
     delete next[key];
   }

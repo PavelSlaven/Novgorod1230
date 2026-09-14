@@ -99,8 +99,10 @@ export function projectLowerDvinaTracePlayerSafeState({
     npcs,
     interactions: projectInteractions(committedState.interactions),
     routes: projectRoutes(committedState.routes),
-    available_routes: projectRoutes(perceivedRoutes.length === 0 ? committedState.available_routes
-      : [...(committedState.available_routes ?? []), ...perceivedRoutes]),
+    available_routes: projectRoutes([
+      ...(committedState.available_routes ?? []), ...perceivedRoutes
+    ].filter((route) => (route.from_ref ?? route.source_ref)
+      === position?.location_ref)),
     route_history: projectRouteHistory(committedState.route_history),
     route_knowledge: projectRouteKnowledge(committedState.route_knowledge),
     knowledge: projectKnowledge([...(profile.knowledge?.initial_records ?? []),

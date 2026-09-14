@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {
   assertBodyCommitted,
@@ -22,6 +23,10 @@ import { createTracePhase3VisibleProjector } from
   '../src/runtime/lower-dvina-trace-phase-3-effects.js';
 import { validateAuthoritativePreparedRoute } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-prepared-effect-authority.js';
+
+const productionScenePresentation = JSON.parse(await readFile(new URL(
+  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json',
+  import.meta.url), 'utf8'));
 
 test('generic camp-to-shed prepared route binds its resolved destination zone', () => {
   const state = { clock: { whole_minutes: '10', subminute_numerator: '0',
@@ -94,6 +99,24 @@ test('route continuation receives only fresh first-contact fishers at camp', asy
     npc.display_label === 'человек' && npc.recognition === 'unrecognized'));
   assert.doesNotMatch(JSON.stringify(context),
     /Еремей|canonical_name|participant_slot_ref|берег крушения/u);
+});
+
+test('route continuation receives only routes from the destination', async () => {
+  let sourceRequest = null, destinationRequest = null;
+  await routeDirectScenario({
+    scenePresentation: productionScenePresentation,
+    onSourceRequest: (request) => { sourceRequest = request; },
+    onDestinationRequest: (request) => { destinationRequest = request; }
+  });
+  assert.ok(sourceRequest.player_safe_state.available_routes.some(
+    ({ route_ref: routeRef, from_ref: fromRef }) =>
+      routeRef === 'trace_ld_v1_route_wreck_to_camp'
+      && fromRef === 'trace_ld_v1_loc_wreck_shore'));
+  const routes = destinationRequest.player_safe_state.available_routes ?? [];
+  assert.ok(routes.every(({ from_ref: fromRef }) =>
+    fromRef === 'trace_ld_v1_loc_fishing_camp'));
+  assert.ok(routes.every(({ route_ref: routeRef }) =>
+    routeRef !== 'trace_ld_v1_route_wreck_to_camp'));
 });
 
 test('route commit persists no interlocutor portrait from its planner trace',

@@ -20,7 +20,7 @@ const bundle13 = await loadScenarioBundle(13);
 
 export async function routeDirectScenario({ firstEntryOnly = false,
   plannerPortrait = false, plannerPresentationOverlay = false,
-  onDestinationRequest = null,
+  onSourceRequest = null, onDestinationRequest = null,
   scenePresentation = null } = {}) {
   const bootstrap = fixture({ scenarioBundle: bundle13,
     materializationBundle: bundle13, rollValue: 0 });
@@ -73,6 +73,7 @@ export async function routeDirectScenario({ firstEntryOnly = false,
     } } : {}),
     turnStepModel(request) {
       if (request.step_index === 1) {
+        onSourceRequest?.(structuredClone(request));
         return domainPlan(request, {
           op: 'request_movement', actor_ref: request.actor.actor_id,
           movement_kind: 'local',

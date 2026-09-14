@@ -51,10 +51,10 @@ export function phase3ConversationProjection(input, contracts) {
     ? `${speakerLabel} промолчал.`
     : responseKind === 'leave_conversation'
       ? `${speakerLabel} прекратил разговор.`
-      : disclosed
-        ? `${speakerLabel} ответил и указал путь к сушильне.`
-        : speechResponse
-          ? `${speakerLabel} ответил.`
+      : speechResponse
+        ? `${speakerLabel} говорит: «${semanticUtterance}».`
+        : disclosed
+          ? `${speakerLabel} ответил и указал путь к сушильне.`
         : semantic != null
           ? 'Ответа не последовало.'
           : `Разговор с ${speakerLabel} продолжился.`];

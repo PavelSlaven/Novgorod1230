@@ -170,7 +170,7 @@ test('Phase 3 presents an unrecognized ordinary NPC speaker without an invented 
   } } });
 
   assert.match(visible.visible_scene, /^человек говорит:/u);
-  assert.deepEqual(visible.visible_changes, ['человек ответил.']);
+  assert.deepEqual(visible.visible_changes, [`${visible.visible_scene}.`]);
   assert.deepEqual(visible.uncertainties, []);
   assert.equal(visible.visible_scene.includes('Еремей'), false);
   assert.equal(visible.visible_npc.find(({ entity_ref: ref }) =>

@@ -212,6 +212,7 @@ test('route continuation reaches a visible NPC conversation in the same turn',
     assert.ok(factual.consequence.conversation?.semantic_exchange);
     const visible = semantic.narratorInput().visible_context;
     assert.match(visible.visible_scene, /^человек говорит:/u);
+    assert.ok(visible.visible_changes.includes(`${visible.visible_scene}.`));
     assert.doesNotMatch(JSON.stringify(visible), /Еремей/u);
     assert.ok(visible.visible_npc.every(({ display_label: label,
       recognition }) => label === 'человек' && recognition === 'unrecognized'));

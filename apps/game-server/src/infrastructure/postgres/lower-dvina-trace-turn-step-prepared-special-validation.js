@@ -1,8 +1,10 @@
 import { buildTurnStepPreparedBodyUpdate,
   buildTurnStepPreparedTimeUpdate } from '@rus/turn';
 import { preparedEffectFail, samePreparedValue, validatePreparedBodyReplay,
-  validatePreparedSemanticSlices } from
+  validateAuthoritativePreparedRoute, validatePreparedSemanticSlices } from
   './lower-dvina-trace-turn-step-prepared-effect-authority.js';
+import { validatePreparedRouteTraceLineage } from
+  './lower-dvina-trace-turn-step-prepared-route-lineage.js';
 import { samePreparedTimeBase } from
   './lower-dvina-trace-turn-step-prepared-effect-values.js';
 import { validTraceCombatStartConsequence,
@@ -13,6 +15,86 @@ const PHASE4_ROUTE_COMMAND =
   'lower_dvina_trace.follow_known_route_to_drying_shed';
 const PHASE4_CONVERSATION_COMMAND =
   'lower_dvina_trace.offer_conditional_protection_and_seek_surrender';
+export function preparedPhase3RouteConversation(ledger) {
+  const [route, conversation] = ledger.slices;
+  return ledger.slices.length === 2
+    && route.effect_kind === 'domain_command'
+    && route.operation_ref === 'request_movement'
+    && route.consequence?.phase3_kind === 'movement'
+    && conversation.effect_kind === 'domain_command'
+    && conversation.operation_ref === 'emit_interaction'
+    && conversation.consequence?.conversation != null;
+}
+
+export function validatePreparedPhase3RouteConversation({ ledger, envelope,
+  factual, state, batch, phase3Contracts, turnStepApprovedOwners }) {
+  const [route, conversation] = ledger.slices;
+  const traces = envelope.loop_trace?.step_traces;
+  const [routeTrace, conversationTrace] = traces ?? [];
+  const routeOperation = routeTrace?.approved_plan?.operations?.[0];
+  const conversationOperation = conversationTrace?.approved_plan?.operations?.[0];
+  const offeredInteractions =
+    conversationTrace?.plan_request?.available_domain_operations?.filter(
+      (operation) => samePreparedValue(operation, conversationOperation)) ?? [];
+  const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
+  const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+  const target = conversationOperation?.target_actor_refs?.[0];
+  if (batch != null || !Array.isArray(traces) || traces.length !== 2
+      || traces.some(({ applied }) => applied !== true)
+      || envelope.loop_trace.working_revision !== 2
+      || route.step_index !== 1 || route.operation_ref !== 'request_movement'
+      || route.consequence?.phase3_kind !== 'movement'
+      || routeTrace?.approved_plan?.resolution !== 'domain_request'
+      || routeTrace.player_response_boundary !== false
+      || routeOperation?.op !== 'request_movement'
+      || conversation.step_index !== 2
+      || conversation.operation_ref !== 'emit_interaction'
+      || conversation.consequence?.phase3_kind != null
+      || conversation.consequence?.conversation == null
+      || conversationTrace?.approved_plan?.resolution !== 'domain_request'
+      || conversationTrace.player_response_boundary !== true
+      || conversationTrace.approved_plan.operations?.length !== 1
+      || conversationOperation?.op !== 'emit_interaction'
+      || offeredInteractions.length !== 1
+      || conversationOperation.target_actor_refs?.length !== 1
+      || !Array.isArray(conversationOperation.instrument_refs)
+      || conversation.consequence.conversation.npc_id !== target
+      || !samePreparedValue(conversation.time_update.clock_before,
+        route.time_update.clock_after)
+      || conversation.body_update?.applied !== false
+      || !samePreparedValue(conversation.body_update?.state_after,
+        route.body_update?.state_after)
+      || ledger.root_turn_id !== envelope.root_turn_id
+      || ledger.committed_state_version !== envelope.base_state_version
+      || !samePreparedValue(envelope.consequence, factual?.consequence)
+      || envelope.consequence?.phase3_kind !== 'movement'
+      || !samePreparedValue(envelope.consequence?.movement,
+        route.consequence.movement)
+      || !samePreparedValue(envelope.consequence?.conversation,
+        conversation.consequence.conversation)
+      || !samePreparedValue(envelope.time_update, factual?.time_update)
+      || !samePreparedValue(envelope.body_update, factual?.body_update)
+      || !samePreparedValue(envelope.hidden_update, factual?.hidden_update)
+      || !samePreparedValue(envelope.player_input, factual?.player_input)
+      || !samePreparedValue(envelope.mode_resolution, factual?.mode_resolution)
+      || !samePreparedValue(route.availability, factual?.availability)
+      || !samePreparedTimeBase(expectedTime, envelope.time_update)
+      || !samePreparedValue(expectedBody, envelope.body_update)) {
+    preparedEffectFail(
+      'phase3 route and conversation differ from their committed chain');
+  }
+  validateAuthoritativePreparedRoute({ route, state, phase3Contracts });
+  validatePreparedRouteTraceLineage({
+    route, routeTrace, directTrace: conversationTrace,
+    loopTrace: envelope.loop_trace, envelope, state, phase3Contracts,
+    routeOnly: false, intermediateTraces: [],
+    scenePresentation: turnStepApprovedOwners?.scenePresentation
+  });
+  validatePreparedBodyReplay({ route, direct: conversation,
+    factual: envelope, state, phase3Contracts });
+  return { prepared: true, routeSlice: route,
+    phase3ConversationSlice: conversation };
+}
 
 export function preparedPhase4Conversation(ledger) {
   return [1, 2].includes(ledger.slices.length)

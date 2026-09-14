@@ -21,9 +21,12 @@ const bundle13 = await loadScenarioBundle(13);
 export async function routeDirectScenario({ firstEntryOnly = false,
   plannerPortrait = false, plannerPresentationOverlay = false,
   onSourceRequest = null, onDestinationRequest = null,
-  scenePresentation = null } = {}) {
-  const bootstrap = fixture({ scenarioBundle: bundle13,
-    materializationBundle: bundle13, rollValue: 0 });
+  scenePresentation = null, scenarioBundle = bundle13,
+  destinationOperation = null, playerConversationModel = undefined,
+  npcSemanticModel = undefined, temporalAdvanceOwner = undefined,
+  rootText = null, continuationText = 'осмотреться у ворот' } = {}) {
+  const bootstrap = fixture({ scenarioBundle,
+    materializationBundle: scenarioBundle, rollValue: 0 });
   await submit(bootstrap, turn('route-direct-bootstrap',
     'Осмотреть место крушения подробно.'));
   const before = stateWithCommittedBlueWool(bootstrap.state);
@@ -46,11 +49,14 @@ export async function routeDirectScenario({ firstEntryOnly = false,
     };
   }
   const semantic = fixture({
-    scenarioBundle: scenePresentation == null ? bundle13
-      : { ...bundle13, scene_presentation: scenePresentation },
-    materializationBundle: bundle13,
+    scenarioBundle: scenePresentation == null ? scenarioBundle
+      : { ...scenarioBundle, scene_presentation: scenePresentation },
+    materializationBundle: scenarioBundle,
     committedState: before,
     rollValue: 0.99,
+    ...(playerConversationModel == null ? {} : { playerConversationModel }),
+    ...(npcSemanticModel == null ? {} : { npcSemanticModel }),
+    ...(temporalAdvanceOwner == null ? {} : { temporalAdvanceOwner }),
     ...(plannerPortrait || plannerPresentationOverlay
       ? { playerSafeStateProjector: (input) => {
       const projected = projectLowerDvinaTracePlayerSafeState(input);
@@ -78,17 +84,18 @@ export async function routeDirectScenario({ firstEntryOnly = false,
           op: 'request_movement', actor_ref: request.actor.actor_id,
           movement_kind: 'local',
           target_ref: 'trace_ld_v1_loc_fishing_camp'
-        }, { continuation: { remaining_intent: 'осмотреться у ворот',
+        }, { continuation: { remaining_intent: continuationText,
           depends_on_refs: ['trace_ld_v1_loc_fishing_camp'] } });
       }
       assert.equal(request.player_safe_state.position.location_ref,
         'trace_ld_v1_loc_fishing_camp');
       onDestinationRequest?.(structuredClone(request));
-      return directPlan(request);
+      return destinationOperation == null ? directPlan(request)
+        : domainPlan(request, destinationOperation(request));
     }
   });
   const input = turn('route-direct-root',
-    'Иду по тропе к рыбакам и, добравшись до стана, коротко осматриваюсь у ворот.');
+    rootText ?? 'Иду по тропе к рыбакам и, добравшись до стана, коротко осматриваюсь у ворот.');
   const first = await submit(semantic, input);
   const writePlan = semantic.lastWritePlan();
   const factual = writePlan.write_targets.find(

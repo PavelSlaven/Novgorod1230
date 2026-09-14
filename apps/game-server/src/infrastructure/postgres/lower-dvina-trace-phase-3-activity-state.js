@@ -45,6 +45,28 @@ export function phase3RouteTimeUpdate(factual) {
   return route?.time_update ?? factual.time_update;
 }
 
+export function phase3ConversationFactual(factual) {
+  if (!routeMovement(factual) || factual.consequence?.conversation == null) {
+    return factual;
+  }
+  const slice = factual.time_update?.prepared_effect_ledger?.slices?.find(
+    ({ operation_ref: operation, consequence }) =>
+      operation === 'emit_interaction' && consequence?.conversation != null);
+  if (slice == null) {
+    throw new Error('TRACE_PHASE_3_COMPOSED_CONVERSATION_MISSING');
+  }
+  return {
+    ...factual,
+    availability: structuredClone(slice.availability),
+    consequence: {
+      ...structuredClone(slice.consequence),
+      phase3_kind: 'conversation'
+    },
+    time_update: structuredClone(slice.time_update),
+    body_update: structuredClone(slice.body_update)
+  };
+}
+
 export function phase3ActivityRef(factual) {
   return routeMovement(factual)
     ? factual.consequence.movement.activity_ref

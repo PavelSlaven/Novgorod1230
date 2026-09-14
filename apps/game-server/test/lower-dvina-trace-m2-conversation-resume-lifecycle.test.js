@@ -120,7 +120,7 @@ test('NPC response survives two interruptions and resumes one exact plan',
       }
     });
     assert.equal(visible.visible_scene,
-      'Еремей говорит: «От лагеря иди к старой сушильне по тропе.»');
+      'человек говорит: «От лагеря иди к старой сушильне по тропе.»');
   });
 
 test('remaining addressed NPC responds after interrupted first responder reload',

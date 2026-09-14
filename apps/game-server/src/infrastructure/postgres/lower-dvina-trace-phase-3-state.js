@@ -9,7 +9,10 @@ import {
   mergeKnowledge,
   projectPhase3SemanticConversation
 } from './lower-dvina-trace-phase-3-semantic-state-projection.js';
-export { activityHistoryEntry, phase3ActivityRef, routeMovement } from './lower-dvina-trace-phase-3-activity-state.js';
+import { phase3ConversationFactual } from
+  './lower-dvina-trace-phase-3-activity-state.js';
+export { activityHistoryEntry, phase3ActivityRef, phase3ConversationFactual,
+  routeMovement } from './lower-dvina-trace-phase-3-activity-state.js';
 export function nextState({
   state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
   rootTurnId, workingRevision
@@ -54,6 +57,7 @@ export function nextState({
   appendPhase3ActivityHistory({
     next, state, factual, turnNumber, inputDigest, changeSetId
   });
+  let conversationState = state;
   if (routeMovement(factual)) {
     const firstEntry = state.first_entry_preparation?.spatial_v3;
     const firstEntryPending = firstEntry != null
@@ -143,8 +147,11 @@ export function nextState({
             spatial_zone_ref: factual.consequence.movement.destination.zone_ref }
         } : {}) }
       : npc);
-  } else {
-    const conversation = factual.consequence.conversation;
+    conversationState = structuredClone(next);
+  }
+  const conversation = factual.consequence.conversation;
+  if (conversation != null) {
+    const conversationFactual = phase3ConversationFactual(factual);
     if (conversation.semantic_exchange != null) {
       const { exchange } = conversation.semantic_exchange;
       const applied = exchange.applied_contribution_count > 0;
@@ -165,8 +172,8 @@ export function nextState({
       }
       next = projectPhase3SemanticConversation({
         next,
-        state,
-        factual,
+        state: conversationState,
+        factual: conversationFactual,
         conversation,
         turnNumber
       });
@@ -174,7 +181,7 @@ export function nextState({
         semanticExchange: conversation.semantic_exchange,
         activityExecutionId:
           `activity:${state.party_id}:trace-phase3:${turnNumber}`,
-        startedAt: factual.time_update.clock_before,
+        startedAt: conversationFactual.time_update.clock_before,
         optionId: factual.mode_resolution.option_id,
         originatingRequestId: factual.player_input.request_id });
     } else {
@@ -191,8 +198,8 @@ export function nextState({
         journal_text: conversation.journal_text,
         decision_trace: conversation.decision.trace,
         statement_is_new: conversation.statement_is_new,
-        started_at: factual.time_update.clock_before,
-        occurred_at: factual.time_update.clock_after
+        started_at: conversationFactual.time_update.clock_before,
+        occurred_at: conversationFactual.time_update.clock_after
       };
       next.interactions = [...(next.interactions ?? []), interaction];
       if (conversation.route_knowledge_ref) {

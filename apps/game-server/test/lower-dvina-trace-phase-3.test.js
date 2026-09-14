@@ -158,13 +158,7 @@ test('Phase 3 exposes the full shore action set and moves to the existing camp i
       entry.display_label,
       entry.recognition
     ]),
-    f.state.npcs.map((npc) => [
-      npc.instance_id,
-      npc.participant_slot_ref === 'eremey_fisher' ? 'Еремей' : 'рыбак',
-      npc.participant_slot_ref === 'eremey_fisher'
-        ? 'known'
-        : 'unrecognized'
-    ])
+    f.state.npcs.map((npc) => [npc.instance_id, 'человек', 'unrecognized'])
   );
   assert.equal(
     JSON.stringify([f.semanticRequests, f.narratorRequests])

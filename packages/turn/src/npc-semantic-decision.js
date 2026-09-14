@@ -199,10 +199,10 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
       }
 
       if (!Number.isSafeInteger(currentStateVersion)
-          || currentStateVersion < 1) {
+          || currentStateVersion < 0) {
         fail(
           'TURN_NPC_STATE_REVALIDATION_INVALID',
-          'revalidateStateVersion must return a positive safe integer',
+          'revalidateStateVersion must return a non-negative safe integer',
           { request_id: currentRequest.request_id,
             boundary_id: currentBoundary.boundary_id }
         );

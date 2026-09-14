@@ -110,10 +110,10 @@ export async function requestPlayerConversationContribution({
     );
   }
 
-  if (!Number.isSafeInteger(currentStateVersion) || currentStateVersion < 1) {
+  if (!Number.isSafeInteger(currentStateVersion) || currentStateVersion < 0) {
     fail(
       'TURN_CONVERSATION_STATE_REVALIDATION_INVALID',
-      'revalidateStateVersion must return a positive safe integer'
+      'revalidateStateVersion must return a non-negative safe integer'
     );
   }
   if (currentStateVersion !== safeRequest.state_version) {

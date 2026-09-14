@@ -171,6 +171,7 @@ test('route continuation reaches a visible NPC conversation in the same turn',
       scenarioBundle: currentBundle,
       ...models,
       temporalAdvanceOwner: conversationTemporalOwner({}),
+      committedStateVersion: 0,
       rootText: 'Иду к рыбакам, здороваюсь и спрашиваю, видели ли они Онисима.',
       continuationText: 'здороваюсь и спрашиваю, видели ли они Онисима',
       destinationOperation(request) {
@@ -211,6 +212,14 @@ test('route continuation reaches a visible NPC conversation in the same turn',
     assert.equal(snapshot.route_history.length, 1);
     assert.ok(snapshot.conversation_sessions?.length > 0);
     assert.ok(snapshot.interactions?.length > 0);
+    const decisionTrace = plans[0].appends.find(
+      ({ target_table: table }) => table === 'party_npc_decision_traces');
+    assert.equal(decisionTrace.record.state_version, 0);
+    const contributions = plans[0].appends.filter(
+      ({ target_table: table }) => table === 'party_conversation_contributions');
+    assert.ok(contributions.length > 0);
+    assert.ok(contributions.every(({ record }) =>
+      record.party_state_version === 1 && record.session_state_version === 1));
     const persistedInteraction = plans[0].appends.find(
       ({ target_table: table }) => table === 'party_actor_npc_interactions');
     assert.equal(persistedInteraction.record.location_ref.location_ref,

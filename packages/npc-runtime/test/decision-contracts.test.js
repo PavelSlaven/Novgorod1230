@@ -81,7 +81,7 @@ test('mode-specific boundary ID', () => {
       ref('npc_decision_signal', 'signal-z'),
       ref('npc_decision_signal', 'signal-a')
     ],
-    state_version: '4'
+    state_version: '0'
   };
   const autonomous = buildNpcDecisionBoundary({ decision_mode: 'autonomous', ...input });
   const conversation = buildNpcDecisionBoundary({ decision_mode: 'conversation', ...input });
@@ -223,7 +223,7 @@ test('player conversation supporting operations are closed by the request operat
     schema: 'player_conversation_input_v1',
     request_id: 'request-1',
     conversation_id: 'conversation-1',
-    state_version: 1,
+    state_version: 0,
     speaker_ref: ref('player_character', 'player'),
     raw_text: 'Показываю на лодку.',
     received_at: 'system-time-1',

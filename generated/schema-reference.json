@@ -1080,6 +1080,12 @@
       "type": "sql"
     },
     {
+      "bytes": 273,
+      "path": "schemas/party-db/033_party_runtime_initial_semantic_decision.sql",
+      "sha256": "eca7800db1583f12fdfe8e35e48f0bc1bac2d0aac594b42722f4e2cde21b7197",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

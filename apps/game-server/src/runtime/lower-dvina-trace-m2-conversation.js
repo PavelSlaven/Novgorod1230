@@ -20,6 +20,8 @@ import {
 } from './lower-dvina-trace-m2-conversation-shared.js';
 import { hydratedPendingPlayerExecution } from
   './lower-dvina-trace-m2-conversation-resume.js';
+import { presentPhase3NpcActors } from
+  './lower-dvina-trace-phase-3-admission.js';
 
 export { resolveTracePhase4ConversationExchange } from
   './lower-dvina-trace-m2-conversation-phase4.js';
@@ -94,10 +96,7 @@ export async function resolveTracePhase3ConversationExchange({
     checkResult: effectiveCheckResult,
     mapping: contracts.conversationSignalMappings?.question,
     targetActor: target,
-    actualNpcActors: contracts.actors.filter(
-      ({ anchor_id: anchorId }) =>
-        anchorId === state.position?.g5_anchor_id
-    ),
+    actualNpcActors: presentPhase3NpcActors(state, contracts),
     playerConversationModel,
     npcSemanticModel,
     revalidateStateVersion,

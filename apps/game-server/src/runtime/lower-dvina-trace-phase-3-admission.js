@@ -42,6 +42,20 @@ export function tracePhase3PreconditionSatisfied(
   return false;
 }
 
+export function presentPhase3NpcActors(state, contracts) {
+  const anchorId = state.position?.g5_anchor_id;
+  if (anchorId == null) return [];
+  return contracts.actors.flatMap((contractActor) => {
+    const current = (state.npcs ?? []).find(({ instance_id: id }) =>
+      id === contractActor.instance_id);
+    return current?.anchor_id === anchorId ? [{
+      ...structuredClone(contractActor),
+      ...structuredClone(current),
+      ref: contractActor.ref
+    }] : [];
+  });
+}
+
 function noCurrentTemporalBoundary(state) {
   return Array.isArray(state.temporal_boundary_candidates)
     && state.temporal_boundary_candidates.every(({ scheduled_at: scheduledAt }) =>

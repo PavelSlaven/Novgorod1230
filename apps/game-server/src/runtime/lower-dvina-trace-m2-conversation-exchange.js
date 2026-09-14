@@ -47,7 +47,7 @@ import { projectM2ConversationExecutionResult } from
 import { applyPersistedPlayerPlan } from './lower-dvina-trace-m2-conversation-player-resume.js';
 export function createM2ConversationContext(input) {
   const stateVersion = input.state.party_state?.state_version;
-  if (!Number.isSafeInteger(stateVersion) || stateVersion < 1
+  if (!Number.isSafeInteger(stateVersion) || stateVersion < 0
       || !Number.isSafeInteger(input.state.party_state?.turn_number)
       || input.state.party_state.turn_number < 0
       || !exactTimestamp(input.state.clock)

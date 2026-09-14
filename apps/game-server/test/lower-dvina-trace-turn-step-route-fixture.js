@@ -24,12 +24,16 @@ export async function routeDirectScenario({ firstEntryOnly = false,
   scenePresentation = null, scenarioBundle = bundle13,
   destinationOperation = null, playerConversationModel = undefined,
   npcSemanticModel = undefined, temporalAdvanceOwner = undefined,
-  rootText = null, continuationText = 'осмотреться у ворот' } = {}) {
+  rootText = null, continuationText = 'осмотреться у ворот',
+  committedStateVersion = null } = {}) {
   const bootstrap = fixture({ scenarioBundle,
     materializationBundle: scenarioBundle, rollValue: 0 });
   await submit(bootstrap, turn('route-direct-bootstrap',
     'Осмотреть место крушения подробно.'));
   const before = stateWithCommittedBlueWool(bootstrap.state);
+  if (committedStateVersion != null) {
+    before.party_state.state_version = committedStateVersion;
+  }
   if (firstEntryOnly) {
     const camp = before.prepared_scenes.find(({ location_profile_ref: ref }) =>
       ref === 'trace_ld_v1_loc_fishing_camp')

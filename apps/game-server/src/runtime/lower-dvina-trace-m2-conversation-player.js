@@ -35,6 +35,10 @@ export async function prepareTracePhase3PlayerConversationPlan(input) {
     targetActor: target,
     actualNpcActors: presentPhase3NpcActors(input.state, contracts),
     availableEvidence,
+    ...(input.requiredIntendedAddresseeRefs == null ? {} : {
+      requiredIntendedAddresseeRefs:
+        input.requiredIntendedAddresseeRefs
+    }),
     ...(input.evidence ? {
       requiredResolution: 'check_required',
       requiredCheck: {

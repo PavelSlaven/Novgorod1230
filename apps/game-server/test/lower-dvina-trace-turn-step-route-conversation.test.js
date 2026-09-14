@@ -15,11 +15,26 @@ import { createLowerDvinaTracePreparedDomainEffect } from
   '../src/runtime/lower-dvina-trace-turn-step-prepared-effects.js';
 import { projectPosition } from
   '../src/runtime/lower-dvina-trace-player-safe-world.js';
+import { phase3ConversationTargetRefs } from
+  '../src/runtime/lower-dvina-trace-phase-2-target-refs.js';
 
 const currentBundle = await loadScenarioBundle(14);
 const productionScenePresentation = JSON.parse(await readFile(new URL(
   '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json',
   import.meta.url), 'utf8'));
+
+test('Phase 3 keeps every selected conversation target', () => {
+  const targetIds = currentBundle.phase_m2_content?.actors?.map(
+    ({ instance_id: instanceId }) => instanceId)
+    ?? ['npc:one', 'npc:two', 'npc:three'];
+  const contracts = { actors: targetIds.map((instanceId) => ({ instance_id:
+    instanceId })) };
+  assert.deepEqual(phase3ConversationTargetRefs({ semanticPlan: {
+    operations: [{ op: 'emit_interaction', target_actor_refs: targetIds }]
+  } }, contracts), targetIds.map((entityId) => ({
+    entity_kind: 'npc', entity_id: entityId
+  })));
+});
 
 test('route continuation receives only fresh first-contact fishers at camp', async () => {
   let destinationRequest = null;
@@ -216,7 +231,6 @@ test('route continuation reaches a visible NPC conversation in the same turn',
     assert.doesNotMatch(JSON.stringify(visible), /Еремей/u);
     assert.ok(visible.visible_npc.every(({ display_label: label,
       recognition }) => label === 'человек' && recognition === 'unrecognized'));
-
     const plans = [];
     await commit(writePlan, scenario, plans);
     const snapshot = plans[0].inserts.find(

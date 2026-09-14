@@ -45,27 +45,38 @@ export function phase3ConversationProjection(input, contracts) {
   const speechResponse = semantic !== null && [
     'route_disclosure', 'withhold', 'speech'
   ].includes(responseKind);
-  const semanticUtterance = speechResponse
-    ? perceivedNpcUtterance(semantic, 'TRACE_M2_PHASE_3_VISIBLE_GAP')
-    : null;
-  const speakerName = playerSafeSelfIntroductionName(
-    semanticUtterance, speaker?.identity_state);
-  const speakerLabel = speakerName ?? (speaker == null ? 'человек'
+  const groupResponses = semantic == null ? null
+    : perceivedNpcGroupResponses(semantic, contracts,
+        input.retrieved_state?.current_visible_context);
+  const speechEntries = groupResponses == null
+    ? speechResponse ? [perceivedNpcSpeech(semantic, contracts,
+        input.retrieved_state?.current_visible_context)
+      ] : []
+    : groupResponses.filter(({ kind }) => kind === 'speech');
+  const primarySpeech = speechEntries.find(({ actor }) =>
+    actor.instance_id === speaker?.instance_id);
+  if (speechResponse && primarySpeech == null) {
+    throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_GAP');
+  }
+  const speakerName = primarySpeech?.name ?? null;
+  const speakerLabel = primarySpeech?.label ?? (speaker == null ? 'человек'
     : playerSafeNpc(speaker, null,
       input.retrieved_state?.current_visible_context).display_label);
-  const speechLine = speechResponse
-    ? `${speakerLabel} говорит: «${semanticUtterance}»` : null;
-  const visibleChanges = [responseKind === 'silence'
+  const speechLines = speechEntries.map(({ label, utterance }) =>
+    `${label} говорит: «${utterance}»${/[.!?…]$/u.test(utterance) ? '' : '.'}`);
+  const groupLines = groupResponses?.map(responseLine) ?? null;
+  const visibleChanges = groupLines ?? (speechResponse ? speechLines : [responseKind === 'silence'
     ? `${speakerLabel} промолчал.`
     : responseKind === 'leave_conversation'
       ? `${speakerLabel} прекратил разговор.`
-      : speechResponse
-        ? `${speechLine}${/[.!?…]$/u.test(semanticUtterance) ? '' : '.'}`
-        : disclosed
+      : disclosed
           ? `${speakerLabel} ответил и указал путь к сушильне.`
         : semantic != null
           ? 'Ответа не последовало.'
-          : `Разговор с ${speakerLabel} продолжился.`];
+          : `Разговор с ${speakerLabel} продолжился.`]);
+  const responseByActor = new Map((groupResponses ?? speechEntries).map((entry) => [
+    entry.actor.instance_id, entry
+  ]));
   const speakerStatus = responseKind === 'silence'
     ? 'молчит после вашего обращения'
     : responseKind === 'leave_conversation'
@@ -74,8 +85,10 @@ export function phase3ConversationProjection(input, contracts) {
   return {
     version: 1,
     schema: 'visible_context_package',
-    visible_scene: speechResponse
-      ? speechLine
+    visible_scene: groupLines != null
+      ? groupLines.join(' ')
+      : speechResponse
+      ? speechLines.join(' ')
       : responseKind === 'silence'
         ? `${speakerLabel} молчит.`
         : responseKind === 'leave_conversation'
@@ -88,11 +101,14 @@ export function phase3ConversationProjection(input, contracts) {
     visible_changes: visibleChanges,
     sensory_details: [],
     visible_npc: contracts.actors.map((actor) => {
+      const actorResponse = responseByActor.get(actor.instance_id);
       const projected = playerSafeNpc(actor,
-        actor.instance_id === speaker?.instance_id ? speakerStatus : null,
+        actorResponse == null
+          ? actor.instance_id === speaker?.instance_id ? speakerStatus : null
+          : actorResponse.status,
         input.retrieved_state?.current_visible_context);
-      return actor.instance_id === speaker?.instance_id && speakerName
-        ? { ...projected, display_label: speakerName,
+      return actorResponse?.name
+        ? { ...projected, display_label: actorResponse.name,
             recognition: 'recognized' }
         : projected;
     }),
@@ -143,27 +159,108 @@ export function visibleGap(code) {
   );
 }
 
-function perceivedNpcUtterance(semantic, code) {
+function perceivedNpcSpeech(semantic, contracts, visibleContext) {
   const primaryNpcRef = perceivedNpcSpeakerRef(semantic);
-  const statement = semantic?.statements?.find(
-    ({ speaker_ref: speaker }) =>
-      speaker?.entity_kind === primaryNpcRef?.entity_kind
-      && speaker.entity_id === primaryNpcRef.entity_id
+  const statements = (semantic?.statements ?? []).filter((statement) =>
+    statement?.speaker_ref?.entity_kind === 'npc'
+      && statement.speaker_ref.entity_kind === primaryNpcRef?.entity_kind
+      && statement.speaker_ref.entity_id === primaryNpcRef.entity_id);
+  if (statements.length === 0) throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_GAP');
+  return perceivedSpeechEntry(
+    semantic, contracts, visibleContext, statements[0]
   );
-  if (statement == null) throw visibleGap(code);
+}
+
+function perceivedNpcGroupResponses(semantic, contracts, visibleContext) {
+  const sourceRef = semantic?.decision_request?.perceived_message
+    ?.source_statement_ref;
+  if (sourceRef?.entity_kind !== 'conversation_statement') return null;
+  const source = semantic.statements?.find(({ statement_id: statementId }) =>
+    statementId === sourceRef.entity_id);
+  const intended = (source?.intended_addressee_refs ?? []).filter(
+    ({ entity_kind: kind }) => kind === 'npc');
+  if (intended.length < 2) return null;
+  if (new Set(intended.map(({ entity_id: id }) => id)).size !== intended.length) {
+    throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_GAP');
+  }
+  const requests = (semantic.decisions ?? []).map(({ request }) => request)
+    .filter((request) => sameStatementRef(
+      request?.perceived_message?.source_statement_ref, sourceRef));
+  return intended.map((npcRef) => {
+    const actor = contracts.actors.find(({ instance_id: id }) =>
+      id === npcRef.entity_id);
+    if (actor == null) {
+      throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_SPEAKER_GAP');
+    }
+    const label = playerSafeNpc(actor, null, visibleContext).display_label;
+    const matchingRequests = requests.filter(({ npc_ref: ref }) =>
+      ref?.entity_kind === npcRef.entity_kind
+        && ref.entity_id === npcRef.entity_id);
+    if (matchingRequests.length > 1) {
+      throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_GAP');
+    }
+    const request = matchingRequests[0];
+    const projected = request == null ? null : (semantic.npc_outcomes ?? [])
+      .filter(({ request_id: id }) => id === request.request_id).at(-1) ?? null;
+    if (projected?.applied === true
+        && projected.contribution_ref?.entity_kind
+          === 'conversation_statement') {
+      const statement = semantic.statements?.find(({ statement_id: id }) =>
+        id === projected.contribution_ref.entity_id);
+      if (statement == null) throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_GAP');
+      return perceivedSpeechEntry(
+        semantic, contracts, visibleContext, statement
+      );
+    }
+    if (projected?.applied === true
+        && ['silence', 'leave_conversation'].includes(
+          projected.outcome?.kind)) {
+      return { actor, label, kind: projected.outcome.kind,
+        status: projected.outcome.kind === 'silence'
+          ? 'молчит после вашего обращения'
+          : 'прекращает разговор с вами' };
+    }
+    return { actor, label, kind: 'unavailable', status: 'не ответил' };
+  });
+}
+
+function perceivedSpeechEntry(semantic, contracts, visibleContext, statement) {
+  const actor = contracts.actors.find(({ instance_id: instanceId }) =>
+    instanceId === statement.speaker_ref.entity_id);
+  if (actor == null) {
+    throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_SPEAKER_GAP');
+  }
   const audience = semantic.audiences?.find(
-    ({ statement_ref: statementRef }) =>
-      statementRef?.entity_kind === 'conversation_statement'
-      && statementRef.entity_id === statement.statement_id
-  );
+    ({ statement_ref: statementRef }) => sameStatementRef(statementRef, {
+      entity_kind: 'conversation_statement', entity_id: statement.statement_id
+    }));
   const playerMessages = audience?.received_messages?.filter(
     ({ listener_ref: listener, comprehension, utterance_text: utterance }) =>
       listener?.entity_kind === 'player_character'
       && comprehension === 'full'
-      && utterance === statement.utterance_text
-  ) ?? [];
-  if (playerMessages.length !== 1) throw visibleGap(code);
-  return statement.utterance_text;
+      && utterance === statement.utterance_text) ?? [];
+  if (playerMessages.length !== 1) {
+    throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_GAP');
+  }
+  const name = playerSafeSelfIntroductionName(statement.utterance_text);
+  return { actor, utterance: statement.utterance_text, name, kind: 'speech',
+    status: 'говорит с вами', label: name
+      ?? playerSafeNpc(actor, null, visibleContext).display_label };
+}
+
+function responseLine({ kind, label, utterance }) {
+  if (kind === 'speech') {
+    return `${label} говорит: «${utterance}»${/[.!?…]$/u.test(utterance)
+      ? '' : '.'}`;
+  }
+  if (kind === 'silence') return `${label} промолчал.`;
+  if (kind === 'leave_conversation') return `${label} прекратил разговор.`;
+  return `${label} не ответил.`;
+}
+
+function sameStatementRef(left, right) {
+  return left?.entity_kind === right?.entity_kind
+    && left?.entity_id === right?.entity_id;
 }
 
 function perceivedNpcSpeakerRef(semantic) {

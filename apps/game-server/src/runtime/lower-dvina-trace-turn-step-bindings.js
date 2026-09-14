@@ -138,16 +138,22 @@ function combatPlannerOperations({ record, actorRef, targetRef, scopeRef }) {
 }
 function interactionPlannerOperations({ command, expected, record, actorRef,
   targetRef, evidenceRef }) {
-  const targets = expected.targetAlternativeKey == null || !Array.isArray(targetRef)
-    ? [targetRef] : targetRef;
-  return targets.flatMap((target) => record[expected.kindsField].map(
+  const alternatives = expected.targetAlternativeKey != null
+    && Array.isArray(targetRef);
+  const targetSets = alternatives
+    ? [...new Set(targetRef)].map((target) => [target])
+    : [Array.isArray(targetRef) ? targetRef : [targetRef]];
+  if (alternatives && targetSets.length > 1) {
+    targetSets.push(targetSets.map(([target]) => target));
+  }
+  return targetSets.flatMap((targetSet) => record[expected.kindsField].map(
     (interactionKind) => plannerOperation({
       command: expected.targetAlternativeKey == null ? command : {
         ...command,
         label: 'Обратиться к видимому собеседнику'
       },
       expected: { ...expected, kind: interactionKind }, actorRef,
-      targetRef: target, evidenceRef })));
+      targetRef: targetSet, evidenceRef })));
 }
 function matchesOperation({ operation, expected, allowedKinds, actorRef,
   targetRef, evidenceRef, commandLabel }) {
@@ -174,8 +180,12 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
   }
   const targetField = expected.operation === 'emit_interaction' ? 'target_actor_refs' : 'target_refs';
   if (expected.targetAlternativeKey != null && Array.isArray(targetRef)) {
-    if (operation[targetField]?.length !== 1
-        || !targetRef.includes(operation[targetField][0])) return false;
+    const alternatives = [...new Set(targetRef)];
+    const selected = operation[targetField];
+    if (!Array.isArray(selected)
+        || ![1, alternatives.length].includes(selected.length)
+        || new Set(selected).size !== selected.length
+        || selected.some((ref) => !alternatives.includes(ref))) return false;
   } else {
     const expectedTargets = Array.isArray(targetRef) ? targetRef : [targetRef];
     if (operation[targetField]?.length !== expectedTargets.length || expectedTargets.some((ref) => operation[targetField]?.includes(ref) !== true)) return false;

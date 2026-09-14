@@ -78,6 +78,32 @@ test('committed perceived self-introduction survives player-safe reload', () => 
   });
 });
 
+test('heard self-introduction alias is preserved instead of hidden canonical name',
+  () => {
+    const alias = 'Я Влас. Об этом я ничего подтвердить не могу.';
+    const state = richCommittedState();
+    state.position = { location_ref: 'camp', g5_anchor_id: 'camp-anchor' };
+    state.npcs = structuredClone(actors).map((npc) => ({
+      ...npc, location_ref: 'camp', anchor_id: 'camp-anchor'
+    }));
+    state.current_visible_context = context();
+    state.conversation_statements = [statement(alias)];
+    state.received_messages = [{
+      ...message(alias), source_statement_ref: statementRef,
+      speaker_ref: speakerRef
+    }];
+
+    const safe = projectLowerDvinaTracePlayerSafeState({
+      committed_state: state, actor_id: 'mikula'
+    }).player_safe_state;
+    assert.equal(safe.current_visible_context.visible_npc[0].display_label,
+      'Влас');
+    assert.equal(safe.current_visible_context.visible_npc[0].recognition,
+      'recognized');
+    assert.doesNotMatch(JSON.stringify(safe.current_visible_context),
+      /Еремей/u);
+  });
+
 test('mentioning a canonical name does not reveal NPC identity', () => {
   const visible = phase3ConversationProjection({
     consequence: { conversation: { semantic_exchange: {
@@ -90,6 +116,93 @@ test('mentioning a canonical name does not reveal NPC identity', () => {
   }, { actors, ids: { eremeyRef: actors[0].ref } });
   assert.equal(visible.visible_npc[0].display_label, 'человек (1)');
   assert.equal(visible.visible_npc[0].recognition, 'unrecognized');
+});
+
+test('group conversation projects every perceived NPC response', () => {
+  const playerStatementRef = {
+    entity_kind: 'conversation_statement', entity_id: 'statement-player'
+  };
+  const statements = actors.map(({ instance_id: actorId }, index) => ({
+    statement_id: `statement-${index + 1}`,
+    conversation_id: 'conversation-1',
+    speaker_ref: { entity_kind: 'npc', entity_id: actorId },
+    utterance_text: `Ответ ${index + 1}.`
+  }));
+  const visible = phase3ConversationProjection({
+    consequence: { conversation: { semantic_exchange: {
+      response_kind: 'speech',
+      decision_request: { npc_ref: statements[0].speaker_ref,
+        perceived_message: { source_statement_ref: playerStatementRef } },
+      decisions: statements.map((entry, index) => ({ request: {
+        request_id: `request-${index + 1}`,
+        npc_ref: entry.speaker_ref,
+        perceived_message: { source_statement_ref: playerStatementRef }
+      } })),
+      npc_outcomes: statements.map((entry, index) => ({
+        request_id: `request-${index + 1}`, applied: true,
+        contribution_ref: { entity_kind: 'conversation_statement',
+          entity_id: entry.statement_id }
+      })),
+      statements: [{ statement_id: playerStatementRef.entity_id,
+        speaker_ref: playerRef, intended_addressee_refs: actors.map(
+          ({ instance_id: entityId }) => ({ entity_kind: 'npc', entity_id:
+            entityId })) }, ...statements],
+      audiences: statements.map((entry) => ({
+        statement_ref: { entity_kind: 'conversation_statement',
+          entity_id: entry.statement_id },
+        received_messages: [{ listener_ref: playerRef,
+          comprehension: 'full', utterance_text: entry.utterance_text }]
+      }))
+    } } },
+    retrieved_state: { current_visible_context: context() }
+  }, { actors, ids: { eremeyRef: actors[0].ref } });
+
+  assert.equal(visible.visible_scene.match(/человек \(\d\) говорит:/gu)?.length,
+    3);
+  assert.equal(visible.visible_changes.length, 3);
+  assert.ok(visible.visible_npc.every(({ visible_status: status }) =>
+    status === 'говорит с вами'));
+});
+
+test('group conversation shows silence and unavailable targets', () => {
+  const playerStatementRef = {
+    entity_kind: 'conversation_statement', entity_id: 'statement-player'
+  };
+  const reply = statement('Первый ответ.');
+  const intended = actors.map(({ instance_id: entityId }) => ({
+    entity_kind: 'npc', entity_id: entityId
+  }));
+  const requests = intended.slice(0, 2).map((npcRef, index) => ({ request: {
+    request_id: `request-${index + 1}`, npc_ref: npcRef,
+    perceived_message: { source_statement_ref: playerStatementRef }
+  } }));
+  const visible = phase3ConversationProjection({
+    consequence: { conversation: { semantic_exchange: {
+      response_kind: 'speech', decision_request: requests[0].request,
+      decisions: requests,
+      npc_outcomes: [{ request_id: 'request-1', applied: true,
+        contribution_ref: { entity_kind: 'conversation_statement',
+          entity_id: reply.statement_id } },
+      { request_id: 'request-2', applied: true,
+        contribution_ref: { entity_kind: 'conversation_contribution',
+          entity_id: 'silence-2' }, outcome: { kind: 'silence' } }],
+      terminal_npc_outcomes: [{ npc_ref: intended[2],
+        outcome: 'npc_unavailable' }],
+      statements: [{ statement_id: playerStatementRef.entity_id,
+        speaker_ref: playerRef, intended_addressee_refs: intended }, reply],
+      audiences: [{ statement_ref: statementRef,
+        received_messages: [message('Первый ответ.')] }]
+    } } },
+    retrieved_state: { current_visible_context: context() }
+  }, { actors, ids: { eremeyRef: actors[0].ref } });
+
+  assert.deepEqual(visible.visible_changes, [
+    'человек (1) говорит: «Первый ответ.»',
+    'человек (2) промолчал.',
+    'человек (3) не ответил.'
+  ]);
+  assert.deepEqual(visible.visible_npc.map(({ visible_status: status }) =>
+    status), ['говорит с вами', 'молчит после вашего обращения', 'не ответил']);
 });
 
 function actor(instanceId, canonicalName) {

@@ -98,7 +98,7 @@ function semanticGroundingFallback(original, request) {
   }
   const facts = [...retained.values()];
   const introducedName = playerSafeSelfIntroductionName(
-    original?.speech?.utterance_text, request.npc?.identity_state);
+    original?.speech?.utterance_text);
   const introduction = introducedName ? `Я ${introducedName}.` : null;
   const uncertainty = facts.length === 0
     ? 'Об этом я ничего подтвердить не могу.'

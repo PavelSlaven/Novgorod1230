@@ -67,8 +67,7 @@ export function projectLowerDvinaTraceRecognizedNpcContext({
       [npc?.instance_id, npc?.actor_id, npc?.npc_id]
         .includes(statement.speaker_ref.entity_id));
     const name = matches.length === 1
-      ? playerSafeSelfIntroductionName(
-          statement.utterance_text, matches[0].identity_state)
+      ? playerSafeSelfIntroductionName(statement.utterance_text)
       : null;
     if (name) recognized.set(statement.speaker_ref.entity_id, name);
   }
@@ -85,16 +84,15 @@ export function projectLowerDvinaTraceRecognizedNpcContext({
   };
 }
 
-export function playerSafeSelfIntroductionName(utterance, identityState) {
-  const name = safeText(identityState?.canonical_name);
+export function playerSafeSelfIntroductionName(utterance) {
   const spoken = safeText(utterance);
-  if (!name || !spoken) return null;
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+  if (!spoken) return null;
+  const name = String.raw`\p{Lu}[\p{L}\p{M}'’]*(?:-[\p{Lu}][\p{L}\p{M}'’]*)*`;
   const introduction = new RegExp(
-    `^(?:я\\s*(?:[—-]\\s*)?|меня\\s+зовут\\s+)${escaped}(?=$|[\\s,.;:!?…])`,
-    'iu'
+    `^(?:(?:Я|я)\\s*(?:[—-]\\s*)?|(?:Меня|меня)\\s+(?:зовут|Зовут)\\s+)(${name})(?=$|[\\s,.;:!?…])`,
+    'u'
   );
-  return introduction.test(spoken) ? name : null;
+  return introduction.exec(spoken)?.[1] ?? null;
 }
 
 function safeOrdinaryRemainder(value) {

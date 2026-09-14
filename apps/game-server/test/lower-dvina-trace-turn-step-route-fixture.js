@@ -20,6 +20,7 @@ const bundle13 = await loadScenarioBundle(13);
 
 export async function routeDirectScenario({ firstEntryOnly = false,
   plannerPortrait = false, plannerPresentationOverlay = false,
+  onDestinationRequest = null,
   scenePresentation = null } = {}) {
   const bootstrap = fixture({ scenarioBundle: bundle13,
     materializationBundle: bundle13, rollValue: 0 });
@@ -81,6 +82,7 @@ export async function routeDirectScenario({ firstEntryOnly = false,
       }
       assert.equal(request.player_safe_state.position.location_ref,
         'trace_ld_v1_loc_fishing_camp');
+      onDestinationRequest?.(structuredClone(request));
       return directPlan(request);
     }
   });

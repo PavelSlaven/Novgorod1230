@@ -81,6 +81,21 @@ test('revision 13 route then direct semantic activity commits one ordered t9 roo
     assert.equal(semantic.commitCount(), 1);
   });
 
+test('route continuation receives only fresh first-contact fishers at camp', async () => {
+  let destinationRequest = null;
+  const scenario = await routeDirectScenario({
+    onDestinationRequest: (request) => { destinationRequest = request; }
+  });
+  const context = destinationRequest.player_safe_state.current_visible_context;
+  assert.equal(scenario.semantic.turnStepCount(), 2);
+  assert.equal(context.visible_scene, 'рыбацкий стан');
+  assert.equal(context.visible_npc.length, 3);
+  assert.ok(context.visible_npc.every((npc) =>
+    npc.display_label === 'человек' && npc.recognition === 'unrecognized'));
+  assert.doesNotMatch(JSON.stringify(context),
+    /Еремей|canonical_name|participant_slot_ref|берег крушения/u);
+});
+
 test('route commit persists no interlocutor portrait from its planner trace',
   async () => {
     const scenario = await routeDirectScenario({ plannerPortrait: true });

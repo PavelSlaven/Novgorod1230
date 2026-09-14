@@ -5,9 +5,21 @@ import { applyTracePhase7ScheduleState } from
 import { applyNpcRoutineTemporalResults } from './npc-routine-temporal.js';
 import { tracePhase7ActorStep } from
   './lower-dvina-trace-phase-7-schedule-execution.js';
+import { withLowerDvinaTraceCurrentScene } from
+  './lower-dvina-trace-turn-step-current-scene.js';
 
 export function projectPreparedDomainState(state, effect) {
   let next = structuredClone(state);
+  if (effect.consequence?.movement?.destination?.location_ref != null) {
+    next = buildLowerDvinaTracePreparedRouteWorkingProjection({
+      projection: next,
+      movement: effect.consequence.movement,
+      committedState: next,
+      clockAfter: effect.time_update.clock_after
+    });
+    for (const key of ['visible_context', 'visible_context_package',
+      'current_visible_context']) delete next[key];
+  }
   applyNpcRoutineTemporalResults(next, effect.time_update.temporal_results);
   if ((effect.time_update.temporal_results ?? []).some((result) =>
     result.combined_change_set?.proposals?.some((proposal) => proposal.npc_routine_transition))) {
@@ -138,4 +150,22 @@ export function buildLowerDvinaTracePreparedRouteWorkingProjection({
   return { ...moved, clock: structuredClone(clockAfter),
     clock_weather_light: { ...structuredClone(moved.clock_weather_light ?? {}),
       clock: structuredClone(clockAfter) } };
+}
+
+export function refreshPreparedMovementScene({
+  projection, committedState, projectCurrentScene = null,
+  locationProfiles = null, scenePresentation = null
+}) {
+  const next = structuredClone(projection);
+  for (const key of ['npcs', 'visible_npcs', 'scene_npcs',
+    'visible_context', 'visible_context_package', 'current_visible_context']) {
+    delete next[key];
+  }
+  const refreshed = (projectCurrentScene ?? ((state) =>
+    withLowerDvinaTraceCurrentScene({
+      committedState: state, locationProfiles, scenePresentation
+    })))(committedState);
+  next.current_visible_context = projectVisibleContext(
+    refreshed.current_visible_context);
+  return next;
 }

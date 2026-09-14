@@ -86,8 +86,11 @@ test('current scene never promotes an authored NPC name into player knowledge', 
   const current = withLowerDvinaTraceCurrentScene({
     committedState: state, locationProfiles
   });
-  assert.equal(current.current_visible_context.visible_npc.some(
-    ({ entity_ref: ref }) => ref.entity_id === 'unknown'), false);
+  const unknown = current.current_visible_context.visible_npc.find(
+    ({ entity_ref: ref }) => ref.entity_id === 'unknown');
+  assert.equal(unknown.display_label, 'человек');
+  assert.equal(unknown.recognition, 'unrecognized');
+  assert.equal(JSON.stringify(unknown).includes('Незнакомое имя'), false);
 });
 
 test('current scene maps actor age into the player-safe portrait vocabulary', () => {

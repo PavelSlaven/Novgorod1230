@@ -136,7 +136,7 @@ export function validatePreparedEffectCommit({
   validateAuthoritativePreparedRoute({ route, state, phase3Contracts });
   validatePreparedRouteTraceLineage({
     route, routeTrace, directTrace, loopTrace: envelope.loop_trace,
-    envelope, state, routeOnly: !hasDirect,
+    envelope, state, phase3Contracts, routeOnly: !hasDirect,
     intermediateTraces, scenePresentation: turnStepApprovedOwners?.scenePresentation
   });
   if (hasDirect) validatePreparedDirectSlice({

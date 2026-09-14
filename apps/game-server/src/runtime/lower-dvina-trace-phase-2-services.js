@@ -90,6 +90,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     semanticActivityOwner: turnStepSemanticActivityOwner,
     idempotencyKey,
     postActionPerceptionProfile,
+    projectCurrentScene,
     temporalAdvance,
     workingProjectionAuthority
   });

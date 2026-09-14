@@ -48,30 +48,14 @@ export function projectLowerDvinaTraceRecognizedNpcContext({
       || !Array.isArray(conversationStatements)
       || !Array.isArray(receivedMessages)
       || !safeText(playerId)) return visibleContext;
-  const statements = new Map(conversationStatements.map((statement) => [
-    statement?.statement_id, statement
-  ]));
   const recognized = new Map();
-  for (const message of receivedMessages) {
-    const statement = statements.get(message?.source_statement_ref?.entity_id);
-    if (message?.source_statement_ref?.entity_kind !== 'conversation_statement'
-        || message?.listener_ref?.entity_kind !== 'player_character'
-        || message.listener_ref.entity_id !== playerId
-        || message.comprehension !== 'full'
-        || statement?.speaker_ref?.entity_kind !== 'npc'
-        || message.utterance_text !== statement.utterance_text
-        || message.speaker_ref != null
-          && (message.speaker_ref.entity_kind !== statement.speaker_ref.entity_kind
-            || message.speaker_ref.entity_id !== statement.speaker_ref.entity_id)) {
-      continue;
-    }
-    const matches = (committedNpcs ?? []).filter((npc) =>
-      [npc?.instance_id, npc?.actor_id, npc?.npc_id]
-        .includes(statement.speaker_ref.entity_id));
-    const name = matches.length === 1
-      ? playerSafeSelfIntroductionName(statement.utterance_text)
-      : null;
-    if (name) recognized.set(statement.speaker_ref.entity_id, name);
+  for (const npc of visibleContext.visible_npc) {
+    const npcId = npc?.entity_ref?.entity_kind === 'npc'
+      ? npc.entity_ref.entity_id : null;
+    const name = playerSafeHeardNpcIntroduction({
+      committedNpcs, conversationStatements, receivedMessages, playerId, npcId
+    });
+    if (name) recognized.set(npcId, name);
   }
   if (recognized.size === 0) return visibleContext;
   const projected = visibleContext.visible_npc.map((npc) => {
@@ -85,6 +69,37 @@ export function projectLowerDvinaTraceRecognizedNpcContext({
     ...visibleContext,
     visible_npc: distinctNpcLabels(projected)
   };
+}
+
+export function playerSafeHeardNpcIntroduction({
+  committedNpcs, conversationStatements, receivedMessages, playerId, npcId
+}) {
+  if (!safeText(playerId) || !safeText(npcId)
+      || !Array.isArray(conversationStatements)
+      || !Array.isArray(receivedMessages)
+      || (committedNpcs ?? []).filter((npc) =>
+        [npc?.instance_id, npc?.actor_id, npc?.npc_id].includes(npcId)
+      ).length !== 1) return null;
+  const statements = new Map(conversationStatements.map((statement) => [
+    statement?.statement_id, statement
+  ]));
+  for (const message of receivedMessages) {
+    const statement = statements.get(message?.source_statement_ref?.entity_id);
+    if (message?.source_statement_ref?.entity_kind === 'conversation_statement'
+        && message?.listener_ref?.entity_kind === 'player_character'
+        && message.listener_ref.entity_id === playerId
+        && message.comprehension === 'full'
+        && statement?.speaker_ref?.entity_kind === 'npc'
+        && statement.speaker_ref.entity_id === npcId
+        && message.utterance_text === statement.utterance_text
+        && (message.speaker_ref == null
+          || message.speaker_ref.entity_kind === statement.speaker_ref.entity_kind
+            && message.speaker_ref.entity_id === statement.speaker_ref.entity_id)) {
+      const name = playerSafeSelfIntroductionName(statement.utterance_text);
+      if (name) return name;
+    }
+  }
+  return null;
 }
 
 export function playerSafeSelfIntroductionName(utterance) {

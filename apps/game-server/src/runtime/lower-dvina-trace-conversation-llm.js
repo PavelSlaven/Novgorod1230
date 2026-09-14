@@ -79,9 +79,10 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     });
     return assembleNpcConversationPlan(response.output, request);
   };
-  model.validateFreshPlan = (plan, request) => auditFreshNpcSpeech({
-    roleRunner, plan, request
-  });
+  model.validateFreshPlan = async (plan, request) => {
+    const presentation = validateRequiredNpcPresentation(plan, request);
+    return presentation ?? auditFreshNpcSpeech({ roleRunner, plan, request });
+  };
   return model;
 }
 
@@ -97,9 +98,11 @@ function semanticGroundingFallback(original, request) {
     }
   }
   const facts = [...retained.values()];
-  const introducedName = playerSafeSelfIntroductionName(
-    original?.speech?.utterance_text);
+  const introducedName = requiredFirstContactName(request)
+    ?? playerSafeSelfIntroductionName(original?.speech?.utterance_text);
   const introduction = introducedName ? `Я ${introducedName}.` : null;
+  const requiredTag = request.social_context?.npc_behavior
+    ?.required_interaction_tag;
   const uncertainty = facts.length === 0
     ? 'Об этом я ничего подтвердить не могу.'
     : 'Остального я подтвердить не могу.';
@@ -109,7 +112,10 @@ function semanticGroundingFallback(original, request) {
     contribution_kind: 'speech',
     speech: {
       utterance_text: utterance,
-      dominant_act: 'answer', interaction_tags: [], topic_refs: [],
+      dominant_act: 'answer',
+      interaction_tags: typeof requiredTag === 'string' && requiredTag
+        ? [requiredTag] : [],
+      topic_refs: [],
       claims: facts.map((entry, index) => ({
         claim_id: `fallback-current-observation-${index + 1}`,
         content_summary: entry.fact_text, form: 'assertion',
@@ -129,6 +135,39 @@ function semanticGroundingFallback(original, request) {
     supporting_operations: [], check: null, handoff: null,
     reason: 'Ответ ограничен точными текущими наблюдениями.'
   }, request);
+}
+
+function validateRequiredNpcPresentation(plan, request) {
+  const requiredName = requiredFirstContactName(request);
+  const requiredTag = request.social_context?.npc_behavior
+    ?.required_interaction_tag;
+  const errors = [
+    ...(requiredName !== null
+        && playerSafeSelfIntroductionName(plan?.speech?.utterance_text)
+          !== requiredName
+      ? ['first_contact_introduction_missing'] : []),
+    ...(typeof requiredTag === 'string' && requiredTag
+        && !plan?.speech?.interaction_tags?.includes(requiredTag)
+      ? ['required_npc_behavior_missing'] : [])
+  ];
+  return errors.length === 0 ? null : {
+    pass: false,
+    errors: errors.map((kind) => ({
+      code: 'TRACE_NPC_REQUIRED_PRESENTATION_MISSING',
+      category: 'semantic_grounding',
+      retryable: true,
+      concern_kinds: [kind],
+      message: 'Rewrite the response with the required first-contact presentation.'
+    }))
+  };
+}
+
+function requiredFirstContactName(request) {
+  const name = request?.social_context?.first_contact_introduction
+    ?.canonical_name;
+  return typeof name === 'string' && name.trim()
+      && name.trim() === request?.npc?.identity_state?.canonical_name
+    ? name.trim() : null;
 }
 
 export function createLowerDvinaTraceNpcDecisionSelector({ roleRunner } = {}) {

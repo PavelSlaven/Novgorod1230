@@ -137,6 +137,36 @@ test('source-free NPC claims fail before the semantic auditor call', async () =>
   assert.equal(fixture.calls.length, 0);
 });
 
+test('first-contact identity and guarded behavior are required and repaired',
+  async () => {
+    const input = request();
+    input.npc = { identity_state: { canonical_name: 'Еремей' } };
+    input.social_context = {
+      first_contact_introduction: { canonical_name: 'Еремей' },
+      npc_behavior: { required_interaction_tag: 'withhold' }
+    };
+    const incomplete = plan(input);
+    const fixture = runner(() => assert.fail('semantic auditor must not run'));
+    const model = createLowerDvinaTraceNpcSemanticModel(fixture);
+
+    const validation = await model.validateFreshPlan(incomplete, input);
+    assert.equal(validation.pass, false);
+    assert.deepEqual(validation.errors.flatMap(({ concern_kinds: kinds }) => kinds), [
+      'first_contact_introduction_missing',
+      'required_npc_behavior_missing'
+    ]);
+    assert.equal(validation.errors.every(({ retryable }) => retryable), true);
+    assert.equal(fixture.calls.length, 0);
+
+    const repaired = await model(input, { repair: {
+      original_output: incomplete,
+      validation_errors: validation.errors
+    } });
+    assert.equal(repaired.speech.utterance_text,
+      'Я Еремей. Об этом я ничего подтвердить не могу.');
+    assert.deepEqual(repaired.speech.interaction_tags, ['withhold']);
+  });
+
 test('semantic grounding failure keeps cited present facts and falls back safely',
   async () => {
     const input = request();

@@ -3,7 +3,7 @@ import { EventEmitter } from 'node:events';
 import test from 'node:test';
 
 import { assertReadiness, buildServerEnv, startLocalPlay,
-  validateLocalPlay } from '../local-play.js';
+  localGitProvenance, validateLocalPlay } from '../local-play.js';
 
 const digest = 'a'.repeat(64);
 const managed = { hardware: { supported: true, reasons: [], facts: {} },
@@ -38,6 +38,35 @@ test('launcher replaces ambient Git provenance and keeps detached branch empty',
   assert.equal(env.RUS_GIT_BRANCH, undefined);
   assert.equal(env.RUS_GIT_PR, undefined);
   assert.equal(env.RUS_BUILD_ID, undefined);
+});
+
+test('launcher passes only the exact open-PR provenance to the child', () => {
+  const env = buildServerEnv({ env: { RUS_GIT_PR: 'ambient' }, worldUrl: 'world',
+    partyUrl: 'party', pinManifestDigest: digest, port: 3001, managedRuntime: managed,
+    git: { head: 'c'.repeat(40), branch: 'codex/test', pr: 96 } });
+  assert.equal(env.RUS_GIT_PR, '96');
+});
+
+test('Git provenance accepts only an open PR at exact HEAD', async () => {
+  const head = 'd'.repeat(40);
+  const exec = async (command, args) => command === 'git'
+    ? { stdout: `${args[0] === 'rev-parse' ? head : 'codex/test'}\n` }
+    : { stdout: JSON.stringify([{ number: 96, headRefOid: head }]) };
+  assert.deepEqual(await localGitProvenance({ exec }), {
+    head, branch: 'codex/test', pr: 96
+  });
+  const noPr = async (command, args) => command === 'git'
+    ? { stdout: `${args[0] === 'rev-parse' ? head : 'codex/test'}\n` } : { stdout: '[]' };
+  assert.deepEqual(await localGitProvenance({ exec: noPr }), {
+    head, branch: 'codex/test', pr: null
+  });
+  const mismatch = async (command, args) => command === 'git'
+    ? { stdout: `${args[0] === 'rev-parse' ? head : 'codex/test'}\n` }
+    : { stdout: JSON.stringify([{ number: 96, headRefOid: 'e'.repeat(40) }]) };
+  await assert.rejects(localGitProvenance({ exec: mismatch }),
+    { code: 'LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE' });
+  await assert.rejects(localGitProvenance({ exec: async () => { throw new Error('gh unavailable'); } }),
+    { code: 'LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE' });
 });
 
 test('readiness rejects wrong release and unavailable scenario', async () => {

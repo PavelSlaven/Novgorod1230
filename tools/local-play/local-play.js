@@ -60,6 +60,7 @@ export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
     RUS_SERVER_PORT: String(port),
     RUS_GIT_HEAD: git.head,
     ...(git.branch == null ? {} : { RUS_GIT_BRANCH: git.branch }),
+    ...(git.pr == null ? {} : { RUS_GIT_PR: String(git.pr) }),
     RUS_TURN_DECISION_SECRET: 'novgorod1230-local-play-decision-secret-v1',
     RUS_WORLD_KNOWLEDGE_PYTHON: managedRuntime.giga.python,
     ...(managedRuntime.giga.modelPath
@@ -186,25 +187,39 @@ export async function startLocalPlay({
     } });
 }
 
-async function localGitProvenance() {
+export async function localGitProvenance({ exec = execFileAsync } = {}) {
   try {
-    const { stdout } = await execFileAsync('git', ['rev-parse', '--verify', 'HEAD^{commit}'],
+    const { stdout } = await exec('git', ['rev-parse', '--verify', 'HEAD^{commit}'],
       { cwd: ROOT, windowsHide: true });
     const head = stdout.trim();
     if (!/^[a-f0-9]{40}$/iu.test(head)) throw new Error('invalid HEAD');
+    let branch;
     try {
-      const branch = (await execFileAsync('git', ['symbolic-ref', '--quiet', '--short', 'HEAD'],
+      branch = (await exec('git', ['symbolic-ref', '--quiet', '--short', 'HEAD'],
         { cwd: ROOT, windowsHide: true })).stdout.trim();
       if (!branch) throw new Error('invalid branch');
-      return { head, branch };
     } catch (error) {
-      if (error?.code === 1) return { head, branch: null };
+      if (error?.code === 1) return { head, branch: null, pr: null };
       throw error;
     }
+    const pr = await openPullRequest({ exec, branch, head });
+    return { head, branch, pr };
   } catch {
     throw localPlayError('LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE',
       'Local Git provenance is unavailable.');
   }
+}
+
+async function openPullRequest({ exec, branch, head }) {
+  const { stdout } = await exec('gh', ['pr', 'list', '--head', branch, '--state', 'open',
+    '--json', 'number,headRefOid', '--limit', '1'], { cwd: ROOT, windowsHide: true });
+  const records = JSON.parse(stdout);
+  if (!Array.isArray(records) || records.length === 0) return null;
+  const record = records[0];
+  if (!Number.isSafeInteger(record?.number) || record.headRefOid !== head) {
+    throw new Error('open PR does not match HEAD');
+  }
+  return record.number;
 }
 
 function assertHealth(health) {

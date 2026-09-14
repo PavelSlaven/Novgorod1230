@@ -217,7 +217,7 @@ test('local preset and private server config survive restart', async (t) => {
     filePath: join(directory, 'llm-settings.json')
   });
   const qualifyCustom = async (candidate) => ({ ...identity(),
-    model: candidate.model, qualification_version: 69 });
+    model: candidate.model, qualification_version: 70 });
   const first = createLlmSettingsOwner({ qualifyCustom,
     persistSettings: (record) => store.save(record) });
   const applied = await first.apply({ mode: 'local', api_key: 'local-secret' });
@@ -260,7 +260,7 @@ test('missing saved settings apply local qualification before composition can pr
   assert.equal(calls, 1);
 });
 
-test('narration workflow qualification repairs both frozen catalogues and rejects malformed audit atomically', async () => {
+test('narration workflow qualification distinguishes split static clusters and rejects malformed audit atomically', async () => {
   let candidateWriterCalls = 0;
   const qualifyingRunner = ({ invalid = null } = {}) => ({
     describe: ({ role_id }) => ({ provider: 'openai_compatible', model: 'local-model',
@@ -286,35 +286,40 @@ test('narration workflow qualification repairs both frozen catalogues and reject
       const sources = [...wire.required_current_beat.changes,
         ...wire.required_current_beat.uncertainties];
       const initial = wire.phase === 'initial';
+      const positive = wire.output.output_id.endsWith('governed-action')
+        || wire.output.output_id.endsWith('finite-perception');
       return { output: {
         reviewed_segments: wire.segments.map(({ segment_id }) => segment_id),
         source_reviews: sources.map(({ ref }, index) => ({ ref,
           segment_choices: [initial ? (wire.segments[index]?.segment_id ?? 's1') : 's1'] })),
-        unsupported: [], literary_failures: initial ? [{
+        unsupported: [], literary_failures: initial && !positive ? [{
           check: invalid ?? 'weak_literary_composition', segment_choice: 's1', reason: 'catalogue'
-        }] : [], evidence: initial ? [] : ['approved']
+        }] : [], evidence: initial && !positive ? [] : ['approved']
       }, provider_record: record };
     }
   });
   const runner = qualifyingRunner();
   const probes = await runNarrationWorkflowQualification({ roleRunner: runner, candidate: custom });
   assert.deepEqual(probes.map(({ fixture_id }) => fixture_id), [
-    'gameplay-narrator-auditor-dense-storeyard-catalogue',
-    'gameplay-narrator-auditor-dense-cellar-catalogue'
+    'gameplay-narrator-auditor-cycle17-shore-catalogue',
+    'gameplay-narrator-auditor-dense-storeyard-terminal-static',
+    'gameplay-narrator-auditor-dense-cellar-terminal-static',
+    'gameplay-narrator-auditor-dense-storeyard-governed-action',
+    'gameplay-narrator-auditor-dense-cellar-finite-perception'
   ]);
   assert.deepEqual(probes.map(({ initial_raw_weak_literary_composition, repair_count,
     final_pass, status }) => [initial_raw_weak_literary_composition, repair_count,
-    final_pass, status]), [[true, 1, true, 'approved'], [true, 1, true, 'approved']]);
+    final_pass, status]), [[true, 1, true, 'approved'], [true, 1, true, 'approved'],
+    [true, 1, true, 'approved'], [false, 0, true, 'approved'], [false, 0, true, 'approved']]);
   assert.deepEqual(probes[0].candidate_writer, {
     repair_count: 1, final_pass: true, status: 'approved'
   });
-  assert.deepEqual(probes[1].candidate_writer, {
-    repair_count: 1, final_pass: true, status: 'approved'
-  });
-  assert.equal(candidateWriterCalls, 2);
+  assert.deepEqual(probes.slice(1).map(({ candidate_writer }) => candidate_writer),
+    [null, null, null, null]);
+  assert.equal(candidateWriterCalls, 1);
   const owner = createLlmSettingsOwner({ qualifyCustom: async (candidate) => {
     await runNarrationWorkflowQualification({ roleRunner: runner, candidate });
-    return { ...identity(), qualification_version: 69 };
+    return { ...identity(), qualification_version: 70 };
   } });
   await owner.apply(custom);
   assert.equal(owner.read().model, 'local-model');
@@ -342,16 +347,16 @@ test('narration workflow qualification repairs both frozen catalogues and reject
   const restarted = createLlmSettingsOwner({ initialRecord: staleRecord,
     qualifyCustom: async (candidate) => {
       requalified.push(candidate);
-      return { ...identity(), model: candidate.model, qualification_version: 69 };
+      return { ...identity(), model: candidate.model, qualification_version: 70 };
     }, persistSettings: async (record) => { requalified.push(record); } });
   assert.equal(restarted.ordinaryMaterializationIdentity(), null);
   await applyInitialLocalSettings(restarted, staleRecord);
   assert.equal(requalified[0].model, 'local-model');
-  assert.equal(requalified[1].qualification_version, 69);
+  assert.equal(requalified[1].qualification_version, 70);
   assert.equal(restarted.ordinaryMaterializationIdentity().model, 'local-model');
   await assert.rejects(async () => createLlmSettingsOwner({ initialRecord: {
     version: 2, settings: custom, ordinary_materialization_identity: {},
-    qualification_version: 69
+    qualification_version: 70
   } }), { code: 'LLM_SETTINGS_FILE_INVALID' });
 });
 

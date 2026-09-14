@@ -7,7 +7,7 @@ test('non-dense unseen workshop inspection requires a governed observation clust
   const changes = ['Вы подробно осмотрели мастерскую.',
     'На верстаке лежит резец.', 'Под окном темнеют стружки.'];
   const catalogue = changes.join(' ');
-  const governed = 'Подробно осматривая мастерскую, вы видите резец на верстаке; под окном темнеют стружки.';
+  const governed = 'Подробно осматривая мастерскую, вы видите резец на верстаке и замечаете стружки под окном.';
   for (const [prose, accepted] of [[catalogue, false], [governed, true]]) {
     await t.test(accepted ? 'governed cluster passes' : 'action stub plus catalogue fails', async () => {
       const calls = [];
@@ -23,7 +23,7 @@ test('non-dense unseen workshop inspection requires a governed observation clust
           return { output: { replacements: [{ prose }] } };
         }
         assert.match(call.messages[0].content,
-          /inspection or perception across the whole[\s\S]*compact cluster/u);
+          /inspection or perception across the whole[\s\S]*every supplied scene-observation cluster/u);
         const initial = wire.phase === 'initial';
         return { output: review(wire, initial || !accepted) };
       } } });

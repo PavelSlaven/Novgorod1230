@@ -74,12 +74,17 @@ test('frozen narration auditor prompts require the raw source-review shape', asy
   }
 });
 
-test('frozen dense auditor controls assemble governed prose as pass and catalogues as failure', async () => {
+test('frozen dense controls distinguish terminal static clusters from governed prose', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
-  const fixtures = corpus.fixtures.filter(({ id }) =>
-    id.startsWith('gameplay-narrator-auditor-dense-storeyard-')
-      || id.startsWith('gameplay-narrator-auditor-dense-cellar-'));
-  assert.equal(fixtures.length, 4);
+  const controls = new Set([
+    'gameplay-narrator-auditor-cycle17-shore-catalogue',
+    'gameplay-narrator-auditor-dense-storeyard-terminal-static',
+    'gameplay-narrator-auditor-dense-cellar-terminal-static',
+    'gameplay-narrator-auditor-dense-storeyard-governed-action',
+    'gameplay-narrator-auditor-dense-cellar-finite-perception'
+  ]);
+  const fixtures = corpus.fixtures.filter(({ id }) => controls.has(id));
+  assert.equal(fixtures.length, controls.size);
   for (const fixture of fixtures) {
     const assembled = assembleNarrationAuditOutput(fixture.expected_output, {
       ...JSON.parse(fixture.messages[1].content),

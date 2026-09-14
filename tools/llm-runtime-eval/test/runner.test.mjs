@@ -25,7 +25,7 @@ function providerOutput(fixture) {
 }
 
 test('frozen corpus runs through runtime override and reports deterministic aggregates', async () => {
-  assert.equal(corpus.corpus_version, 67);
+  assert.equal(corpus.corpus_version, 68);
   const outputs = corpus.fixtures.map(providerOutput);
   const server = createServer(async (request, response) => {
     let body = ''; for await (const chunk of request) body += chunk;
@@ -40,17 +40,17 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
       git: { checkout_sha: 'fixture-sha', dirty: false },
       corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 19 }
     } });
-    assert.equal(report.fixture_count, 32);
-    assert.equal(report.aggregates.total.passed, 32,
+    assert.equal(report.fixture_count, 38);
+    assert.equal(report.aggregates.total.passed, 38,
       JSON.stringify(report.results.filter(({ pass }) => !pass)));
     assert.equal(report.aggregates.total.errors, 0);
-    assert.equal(report.aggregates.total.scored, 32);
+    assert.equal(report.aggregates.total.scored, 38);
     assert.equal(report.aggregates.total.unscored, 0);
-    assert.equal(report.aggregates.total.automated_passed, 32);
-    assert.equal(report.aggregates.total.quality_denominator, 32);
+    assert.equal(report.aggregates.total.automated_passed, 38);
+    assert.equal(report.aggregates.total.quality_denominator, 38);
     assert.equal(report.aggregates.total.repairs, 8);
-    assert.equal(report.aggregates.total.input_tokens, 64);
-    assert.equal(report.aggregates.total.output_tokens, 96);
+    assert.equal(report.aggregates.total.input_tokens, 76);
+    assert.equal(report.aggregates.total.output_tokens, 114);
     assert.ok(report.aggregates.total.p95_ms >= report.aggregates.total.p50_ms);
     assert.deepEqual(report.metadata.execution, { passes: 1, concurrency: 1 });
     assert.deepEqual(report.metadata.git, { checkout_sha: 'fixture-sha', dirty: false });

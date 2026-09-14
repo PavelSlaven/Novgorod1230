@@ -1,7 +1,7 @@
 import { serverError } from '../errors.js';
 import { readFile } from 'node:fs/promises';
 import { createLowerDvinaTraceNarrationService } from './lower-dvina-trace-narration-llm.js';
-const QUALIFICATION_VERSION = 69;
+const QUALIFICATION_VERSION = 70;
 export const LOCAL_LLM_PRESET = Object.freeze({
   base_url: 'http://127.0.0.1:8000/v1',
   model: 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced'
@@ -82,17 +82,15 @@ export function createProductionLlmQualifier({ qualifyOrdinary, roleRunner } = {
   };
 }
 export async function runNarrationWorkflowQualification({ roleRunner, candidate } = {}) {
-  if (typeof roleRunner?.run !== 'function' || typeof roleRunner?.describe !== 'function') {
-    throw new TypeError('Narration qualification requires LLM role transport.');
-  }
-  const fixtures = (await frozenNarrationFixtures()).filter(({ id }) => [
-    'gameplay-narrator-auditor-dense-storeyard-catalogue',
-    'gameplay-narrator-auditor-dense-cellar-catalogue'
-  ].includes(id));
-  if (fixtures.length !== 2) throw narrationQualificationError();
+  if (typeof roleRunner?.run !== 'function' || typeof roleRunner?.describe !== 'function') throw new TypeError('Narration qualification requires LLM role transport.');
+  const controls = [['gameplay-narrator-auditor-cycle17-shore-catalogue', false], ['gameplay-narrator-auditor-dense-storeyard-terminal-static', false], ['gameplay-narrator-auditor-dense-cellar-terminal-static', false], ['gameplay-narrator-auditor-dense-storeyard-governed-action', true], ['gameplay-narrator-auditor-dense-cellar-finite-perception', true]];
+  const allFixtures = await frozenNarrationFixtures();
+  const fixtures = controls.map(([id]) => allFixtures.find((fixture) => fixture.id === id));
+  if (fixtures.length !== controls.length || fixtures.some((fixture) => fixture == null)) throw narrationQualificationError();
   try {
     const probes = [];
-    for (const fixture of fixtures) {
+    for (const [fixtureIndex, fixture] of fixtures.entries()) {
+      const initialPass = controls.find(([id]) => id === fixture.id)[1];
       const request = narrationRequest(fixture);
       let initialRaw = null;
       let initialProvider = null;
@@ -115,12 +113,15 @@ export async function runNarrationWorkflowQualification({ roleRunner, candidate 
       const initialWeakComposition = initialRaw?.literary_failures?.some(
         ({ check }) => check === 'weak_literary_composition') === true;
       if (result.status !== 'approved' || !result.approved_output?.prose?.trim()
-          || result.repair_history.filter(({ role }) => role === 'semantic_repair').length !== 1
-          || result.audit_history.length !== 2
-          || result.audit_history[0]?.value?.pass !== false
-          || !initialWeakComposition
-          || result.audit_history[1]?.value?.pass !== true) throw narrationQualificationError();
-      const live = await createLowerDvinaTraceNarrationService({ roleRunner: {
+          || result.repair_history.filter(({ role }) => role === 'semantic_repair').length
+            !== (initialPass ? 0 : 1)
+          || result.audit_history.length !== (initialPass ? 1 : 2)
+          || result.audit_history[0]?.value?.pass !== initialPass
+          || initialWeakComposition !== !initialPass
+          || result.audit_history.at(-1)?.value?.pass !== true
+          || !result.final_audit?.coverage?.visible_changes?.every(({ segment_ids }) => segment_ids.length)
+          || !result.final_audit?.coverage?.uncertainties?.every(({ segment_ids }) => segment_ids.length)) throw narrationQualificationError();
+      const live = fixtureIndex === 0 ? await createLowerDvinaTraceNarrationService({ roleRunner: {
         async run(call) {
           const expected = roleRunner.describe({ scope: call.scope, role_id: call.role_id,
             overrides: call.overrides, provider_snapshot: candidate });
@@ -128,10 +129,10 @@ export async function runNarrationWorkflowQualification({ roleRunner, candidate 
           if (!sameIdentity(expected, response?.provider_record)) throw narrationQualificationError();
           return response;
         }
-      } }).run(request);
-      if (live.status !== 'approved' || !live.approved_output?.prose?.trim()
+      } }).run(request) : null;
+      if (live && (live.status !== 'approved' || !live.approved_output?.prose?.trim()
           || !live.final_audit?.coverage?.visible_changes?.every(({ segment_ids }) => segment_ids.length)
-          || !live.final_audit?.coverage?.uncertainties?.every(({ segment_ids }) => segment_ids.length)) {
+          || !live.final_audit?.coverage?.uncertainties?.every(({ segment_ids }) => segment_ids.length))) {
         throw narrationQualificationError();
       }
       probes.push(Object.freeze({ fixture_id: fixture.id,
@@ -140,8 +141,8 @@ export async function runNarrationWorkflowQualification({ roleRunner, candidate 
         initial_raw_weak_literary_composition: initialWeakComposition,
         initial_assembled_rejected: result.audit_history[0].value.pass === false,
         repair_count: result.repair_history.filter(({ role }) => role === 'semantic_repair').length,
-        final_pass: result.audit_history[1].value.pass === true,
-        status: result.status, candidate_writer: Object.freeze({
+        final_pass: result.audit_history.at(-1).value.pass === true,
+        status: result.status, candidate_writer: live == null ? null : Object.freeze({
           repair_count: live.repair_history.filter(({ role }) => role === 'semantic_repair').length,
           final_pass: live.final_audit?.pass === true, status: live.status }), errors: [] }));
     }

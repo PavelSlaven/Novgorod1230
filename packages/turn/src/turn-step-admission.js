@@ -323,12 +323,22 @@ export async function resolveBoundTurnStepCommand({
         return true;
       }
       const preparedOwner = services.turnStepPreparedDomainEffect;
-      if (owner.kind !== 'binding') return false;
+      const commands = owner.kind === 'binding' ? [owner.command]
+        : semanticBindings.filter(({ binding }) =>
+          binding.operation === operation.op
+          && binding.matches(deepFreeze({
+            operation: structuredClone(operation),
+            plan: structuredClone(plan),
+            actor: structuredClone(projected.actor),
+            player_safe_state: structuredClone(request.player_safe_state),
+            committed_state: structuredClone(committedState)
+          })) === true).map(({ command }) => command);
+      if (commands.length !== 1) return false;
       const supported = typeof preparedOwner?.supports === 'function'
         && preparedOwner.supports(deepFreeze({
           operation: structuredClone(operation),
-          command_id: owner.command.command_id,
-          option_id: owner.command.option_id,
+          command_id: commands[0].command_id,
+          option_id: commands[0].option_id,
           prepared_chain_context: structuredClone(preparedChainContext)
         })) === true;
       if (!supported) {

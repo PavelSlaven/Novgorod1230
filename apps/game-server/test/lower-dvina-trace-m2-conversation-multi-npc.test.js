@@ -170,7 +170,7 @@ test('Phase 3 presents an unrecognized ordinary NPC speaker without an invented 
   } } });
 
   assert.match(visible.visible_scene, /^человек говорит:/u);
-  assert.deepEqual(visible.visible_changes, [`${visible.visible_scene}.`]);
+  assert.deepEqual(visible.visible_changes, [visible.visible_scene]);
   assert.deepEqual(visible.uncertainties, []);
   assert.equal(visible.visible_scene.includes('Еремей'), false);
   assert.equal(visible.visible_npc.find(({ entity_ref: ref }) =>
@@ -178,6 +178,37 @@ test('Phase 3 presents an unrecognized ordinary NPC speaker without an invented 
   assert.equal(visible.visible_npc.some(({ display_label: label }) =>
     label === 'Еремей'), false);
 });
+
+test('Phase 3 preserves terminal speech punctuation without duplicating it',
+  async () => {
+    for (const [inputDigest, utterance] of [
+      [digest('1'), 'Я отвечу.'],
+      [digest('2'), 'Вы спрашивали?'],
+      [digest('3'), 'Стойте!']
+    ]) {
+      const state = phase3State();
+      const contracts = resolveContracts(state);
+      const fisher = npcBySlot(state, 'background_fisher_1');
+      const exchange = await runPhase3({ state, contracts,
+        rawText: 'Ответь мне.', inputDigest,
+        responseKind: 'speech', targetActorId: fisher.instance_id,
+        transformNpcPlan(plan) {
+          plan.speech.utterance_text = utterance;
+          return plan;
+        } });
+      const visible = await createTracePhase3VisibleProjector({
+        phase2Projector: { project() {
+          throw new Error('Unexpected Phase 2 projection.');
+        } },
+        contracts
+      }).project({ consequence: { phase3_kind: 'conversation', conversation: {
+        npc_id: fisher.instance_id, semantic_exchange: exchange.result
+      } } });
+
+      assert.equal(visible.visible_scene, `человек говорит: «${utterance}»`);
+      assert.deepEqual(visible.visible_changes, [visible.visible_scene]);
+    }
+  });
 
 test('second responder receives only the perceived part of the first reply',
   async () => {

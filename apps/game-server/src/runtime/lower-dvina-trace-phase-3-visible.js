@@ -47,12 +47,14 @@ export function phase3ConversationProjection(input, contracts) {
   const semanticUtterance = speechResponse
     ? perceivedNpcUtterance(semantic, 'TRACE_M2_PHASE_3_VISIBLE_GAP')
     : null;
+  const speechLine = speechResponse
+    ? `${speakerLabel} говорит: «${semanticUtterance}»` : null;
   const visibleChanges = [responseKind === 'silence'
     ? `${speakerLabel} промолчал.`
     : responseKind === 'leave_conversation'
       ? `${speakerLabel} прекратил разговор.`
       : speechResponse
-        ? `${speakerLabel} говорит: «${semanticUtterance}».`
+        ? `${speechLine}${/[.!?…]$/u.test(semanticUtterance) ? '' : '.'}`
         : disclosed
           ? `${speakerLabel} ответил и указал путь к сушильне.`
         : semantic != null
@@ -67,7 +69,7 @@ export function phase3ConversationProjection(input, contracts) {
     version: 1,
     schema: 'visible_context_package',
     visible_scene: speechResponse
-      ? `${speakerLabel} говорит: «${semanticUtterance}»`
+      ? speechLine
       : responseKind === 'silence'
         ? `${speakerLabel} молчит.`
         : responseKind === 'leave_conversation'

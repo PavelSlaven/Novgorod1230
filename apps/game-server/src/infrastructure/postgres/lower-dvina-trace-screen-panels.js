@@ -29,11 +29,15 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     (projection.current_visible_context?.visible_npc ?? [])
       .filter((npc) => nearbyNpcIds.has(npc.entity_ref?.entity_id)));
   if (visibleNpcs.length > 0) {
-    peopleData.visible_npcs = visibleNpcs.map((npc) => ({
-      display_label: npc.display_label,
-      ...(typeof npc.visible_status === 'string'
-        ? { status: npc.visible_status } : {})
-    }));
+    peopleData.visible_npcs = visibleNpcs.map((npc) => {
+      const appearance = playerSafeAppearanceSummary(npc);
+      return {
+        display_label: npc.display_label,
+        ...(appearance == null ? {} : { appearance }),
+        ...(typeof npc.visible_status === 'string'
+          ? { status: npc.visible_status } : {})
+      };
+    });
   }
   if (activeInterlocutor !== null) {
     const visibleNpc = visibleNpcs.find((npc) =>
@@ -148,4 +152,53 @@ function exactElapsedLabel(value) {
   const denominator = BigInt(value.denominator);
   if (denominator === 0n) return null;
   return `${denominator === 1n ? numerator : `${numerator}/${denominator}`} мин`;
+}
+
+const HAIR_COLORS = Object.freeze({
+  blond: 'русые', light_brown: 'светло-каштановые',
+  dark_brown: 'тёмно-каштановые', black: 'чёрные', auburn: 'рыжие',
+  gray: 'седые', white: 'белые'
+});
+const HAIR_STYLES = Object.freeze({
+  straight: 'прямые', wavy: 'волнистые', loose: 'распущенные',
+  braided: 'заплетённые'
+});
+const FACIAL_HAIR = Object.freeze({
+  moustache: 'усы', short_beard: 'короткая борода',
+  full_beard: 'густая борода'
+});
+const CLOTHING_COLORS = Object.freeze({
+  undyed_linen: 'неокрашенная льняная', dark_blue: 'тёмно-синяя',
+  forest_green: 'зелёная', madder_red: 'красная', ochre: 'охряная',
+  brown: 'коричневая', charcoal: 'угольно-серая'
+});
+
+function playerSafeAppearanceSummary(npc) {
+  const appearance = npc?.observable_cues?.identity?.appearance;
+  const hair = appearance?.hair;
+  const details = [];
+  if (hair?.length === 'bald') {
+    details.push('лысина');
+  } else {
+    const color = HAIR_COLORS[hair?.color];
+    const style = HAIR_STYLES[hair?.style];
+    const length = hair?.length === 'short' ? 'короткие'
+      : hair?.length === 'long' ? 'длинные' : null;
+    const hairDescription = [length, color, style, 'волосы']
+      .filter(Boolean).join(' ');
+    if (color != null || style != null || length != null) {
+      details.push(hair?.length === 'medium'
+        ? `${hairDescription} средней длины` : hairDescription);
+    }
+  }
+  if (FACIAL_HAIR[hair?.facial_hair]) {
+    details.push(FACIAL_HAIR[hair.facial_hair]);
+  }
+  const garment = (npc?.observable_cues?.equipment ?? []).find(({ visual_profile_snapshot: visual }) =>
+    ['outer_garment', 'outer'].includes(visual?.equipment_slot))
+    ?? npc?.observable_cues?.equipment?.[0];
+  const garmentColor = CLOTHING_COLORS[
+    garment?.visual_profile_snapshot?.main_visible_color];
+  if (garmentColor != null) details.push(`${garmentColor} одежда`);
+  return details.length > 0 ? details.join(', ') : null;
 }

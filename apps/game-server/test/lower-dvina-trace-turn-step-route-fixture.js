@@ -25,7 +25,7 @@ export async function routeDirectScenario({ firstEntryOnly = false,
   destinationOperation = null, playerConversationModel = undefined,
   npcSemanticModel = undefined, temporalAdvanceOwner = undefined,
   rootText = null, continuationText = 'осмотреться у ворот',
-  committedStateVersion = null } = {}) {
+  destinationPlanOverrides = {}, committedStateVersion = null } = {}) {
   const bootstrap = fixture({ scenarioBundle,
     materializationBundle: scenarioBundle, rollValue: 0 });
   await submit(bootstrap, turn('route-direct-bootstrap',
@@ -95,7 +95,8 @@ export async function routeDirectScenario({ firstEntryOnly = false,
         'trace_ld_v1_loc_fishing_camp');
       onDestinationRequest?.(structuredClone(request));
       return destinationOperation == null ? directPlan(request)
-        : domainPlan(request, destinationOperation(request));
+        : domainPlan(request, destinationOperation(request),
+          destinationPlanOverrides);
     }
   });
   const input = turn('route-direct-root',

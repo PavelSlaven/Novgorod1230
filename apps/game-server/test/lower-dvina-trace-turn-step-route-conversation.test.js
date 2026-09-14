@@ -172,8 +172,19 @@ test('route continuation reaches a visible NPC conversation in the same turn',
       ...models,
       temporalAdvanceOwner: conversationTemporalOwner({}),
       committedStateVersion: 0,
-      rootText: 'Иду к рыбакам, здороваюсь и спрашиваю, видели ли они Онисима.',
-      continuationText: 'здороваюсь и спрашиваю, видели ли они Онисима',
+      rootText: 'Иду по тропе к стоянке рыбаков. Увидев людей, здороваюсь и спрашиваю, не знают ли они лодочника Онисима и не видели ли его после крушения.',
+      continuationText: 'Увидев людей, здороваюсь и спрашиваю, не знают ли они лодочника Онисима и не видели ли его после крушения.',
+      destinationPlanOverrides: {
+        interpretation: {
+          player_goal: 'найти лодочника Онисима после крушения',
+          grounded_attempt: 'здороваюсь и спрашиваю видимого человека, не знает ли он лодочника Онисима и не видел ли его после крушения',
+          adaptation: 'literal'
+        },
+        continuation: {
+          remaining_intent: 'здороваюсь и спрашиваю, не знают ли они лодочника Онисима и не видели ли его после крушения',
+          depends_on_refs: []
+        }
+      },
       destinationOperation(request) {
         const operation = request.available_domain_operations.find(({ op,
           interaction_kind: kind }) => op === 'emit_interaction'
@@ -193,7 +204,10 @@ test('route continuation reaches a visible NPC conversation in the same turn',
     assert.equal(semantic.playerConversationCount(), 1);
     assert.equal(semantic.npcSemanticCount(), 1);
     assert.equal(semantic.playerConversationInput().raw_text,
-      'здороваюсь и спрашиваю, видели ли они Онисима');
+      'здороваюсь и спрашиваю видимого человека, не знает ли он лодочника Онисима и не видел ли его после крушения');
+    assert.match(semantic.npcSemanticInput().public_conversation_history
+      .at(-1).utterance_text,
+      /Онисима.*после крушения/u);
     assert.equal(factual.consequence.phase3_kind, 'movement');
     assert.ok(factual.consequence.conversation?.semantic_exchange);
     const visible = semantic.narratorInput().visible_context;

@@ -406,22 +406,23 @@ test('prepared continuation recomputes operation DTOs', async () => {
     applied: false, proposal: null, state_after: context.current_body_state
   });
   const requests = [];
-  const suffix = 'затем осматриваюсь';
+  const suffix = 'здороваюсь и спрашиваю об Онисиме';
+  const groundedAttempt = 'здороваюсь и спрашиваю видимого человека об Онисиме';
   services.turnStepModel = (request) => {
     requests.push(request);
     if (request.step_index === 2) throw new Error('second request captured');
     return turnStepPlan(request, { resolution: 'domain_request',
       goal_result: 'pending',
       interpretation: { player_goal: request.root_player_action,
-        grounded_attempt: 'прошу спутника помочь', adaptation: 'literal' },
+        grounded_attempt: groundedAttempt, adaptation: 'literal' },
       activity: { owner: 'domain', duration_class: null, effort: null },
       operations: [dto], continuation: {
         remaining_intent: suffix, depends_on_refs: [] } });
   };
   await assert.rejects(() => runTurnWorkflow({ ...workflowInput(),
-    raw_text: `прошу спутника помочь, ${suffix}` }, services),
+    raw_text: `Увидев людей, ${suffix}` }, services),
     /second request captured/u);
-  assert.equal(ownerRawText, 'прошу спутника помочь');
+  assert.equal(ownerRawText, groundedAttempt);
   assert.deepEqual(requests.map((request) => request.available_domain_operations), [[dto], []]);
 });
 

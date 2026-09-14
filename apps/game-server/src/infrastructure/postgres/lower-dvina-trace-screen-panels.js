@@ -1,6 +1,8 @@
 import { createPeoplePanel, createCharacterPanel, createRoutePanel } from '@rus/presentation';
 import { projectCalendar } from '@rus/time-events-history/calendar';
 import { projectTraceInventoryPanel } from './lower-dvina-trace-screen-inventory.js';
+import { distinctNpcLabels } from
+  '../../runtime/lower-dvina-trace-visible-scene-items.js';
 
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
@@ -23,8 +25,9 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
   delete peopleData.visible_npcs;
   const nearbyNpcIds = new Set((projection.npcs ?? []).map((npc) =>
     npc.instance_id ?? npc.actor_id ?? npc.npc_id).filter(Boolean));
-  const visibleNpcs = (projection.current_visible_context?.visible_npc ?? [])
-    .filter((npc) => nearbyNpcIds.has(npc.entity_ref?.entity_id));
+  const visibleNpcs = distinctNpcLabels(
+    (projection.current_visible_context?.visible_npc ?? [])
+      .filter((npc) => nearbyNpcIds.has(npc.entity_ref?.entity_id)));
   if (visibleNpcs.length > 0) {
     peopleData.visible_npcs = visibleNpcs.map((npc) => ({
       display_label: npc.display_label,
@@ -33,8 +36,10 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen, presentati
     }));
   }
   if (activeInterlocutor !== null) {
+    const visibleNpc = visibleNpcs.find((npc) =>
+      npc.entity_ref?.entity_id === activeInterlocutor.entity_ref?.entity_id);
     peopleData.active_interlocutor = decorateActiveInterlocutor({
-      activeInterlocutor, committedNpcs: payload.npcs
+      activeInterlocutor, committedNpcs: payload.npcs, visibleNpc
     });
   }
   if (Object.keys(peopleData).length > 0) {
@@ -114,12 +119,17 @@ function sceneAssetFor(position) {
     ?? SCENE_ASSET_BY_LOCATION.get(position?.location_ref) ?? null;
 }
 
-function decorateActiveInterlocutor({ activeInterlocutor, committedNpcs }) {
+function decorateActiveInterlocutor({ activeInterlocutor, committedNpcs,
+  visibleNpc }) {
   const result = structuredClone(activeInterlocutor);
+  if (typeof visibleNpc?.display_label === 'string') {
+    result.display_label = visibleNpc.display_label;
+  }
   const entityId = result.entity_ref?.entity_id;
   const matches = (committedNpcs ?? []).filter((npc) =>
     [npc?.instance_id, npc?.actor_id, npc?.npc_id].includes(entityId));
   const portraitAssetId = matches.length === 1
+      && ['known', 'recognized'].includes(visibleNpc?.recognition)
     ? PORTRAIT_ASSET_BY_SLOT.get(matches[0].participant_slot_ref)
     : null;
   if (portraitAssetId == null) delete result.portrait_asset_id;

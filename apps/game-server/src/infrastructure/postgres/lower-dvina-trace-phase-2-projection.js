@@ -43,11 +43,14 @@ function semanticNegotiationCandidate(negotiation) {
 }
 
 function publicConversationProjection({ conversation, payload }) {
+  if (conversation == null) return conversation;
+  const { npc_ref: _npcRef, activity_ref: _activityRef,
+    ...playerSafeConversation } = conversation;
   if (conversation?.semantic_exchange != null) {
     throw new TypeError('Private semantic exchange cannot be projected from shared state.');
   }
   const semantic = conversation?.semantic_exchange_projection;
-  if (semantic == null) return conversation;
+  if (semantic == null) return playerSafeConversation;
   if (semantic.factual_status === 'not_applied') {
     if (semantic.npc_ref !== null
         || semantic.response_kind !== null
@@ -135,7 +138,8 @@ function publicConversationProjection({ conversation, payload }) {
     }
     npcUtterance = playerMessages[0].utterance_text;
   }
-  const { semantic_exchange_projection: _semanticProjection, ...publicConversation } = conversation;
+  const { semantic_exchange_projection: _semanticProjection,
+    ...publicConversation } = playerSafeConversation;
   const projectedConversation = structuredClone(publicConversation);
   if (projectedConversation.check_result != null) {
     projectedConversation.check_result = publicCheckProjection(

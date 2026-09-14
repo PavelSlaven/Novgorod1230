@@ -144,6 +144,8 @@ test('public conversation check omits private RNG audit', () => {
       option_id: 'talk', check_result: null, time_update: null,
       body_update: null,
       consequence: { conversation: {
+        npc_id: 'npc-1', npc_ref: 'eremey_fisher',
+        activity_ref: 'trace_ld_v1_activity_first_eremey_talk',
         check_result: { roll: 12, audit: { seed_ref: 'private' } },
         semantic_exchange_projection: {
           factual_status: 'applied', response_kind: 'route_disclosure',
@@ -158,6 +160,9 @@ test('public conversation check omits private RNG audit', () => {
   };
   const result = phase2PublicResult({ payload, screen: { schema: 'screen' } });
   assert.equal(Object.hasOwn(result.conversation.check_result, 'audit'), false);
+  assert.equal(result.conversation.npc_id, 'npc-1');
+  assert.equal(Object.hasOwn(result.conversation, 'npc_ref'), false);
+  assert.equal(Object.hasOwn(result.conversation, 'activity_ref'), false);
   assert.deepEqual(detectHiddenLeaks(result), []);
 });
 

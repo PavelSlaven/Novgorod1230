@@ -95,12 +95,26 @@ function semanticGroundingFallback(original, request) {
     }
   }
   const facts = [...retained.values()];
-  const uncertainty = 'Остального я подтвердить не могу.';
+  const playerStatement = request.public_conversation_history?.findLast(
+    (statement) => statement?.speaker_ref?.entity_kind === 'player_character'
+      && typeof statement.utterance_text === 'string'
+      && statement.utterance_text.trim() !== ''
+  )?.utterance_text.trim().replace(/[.!?…]+$/u, '');
+  const rawCanonicalName = request.npc?.identity_state?.canonical_name;
+  const canonicalName = typeof rawCanonicalName === 'string'
+    ? rawCanonicalName.trim() : null;
+  const introduction = canonicalName
+    && original?.speech?.utterance_text?.includes(canonicalName)
+    ? `Я ${canonicalName}.` : null;
+  const uncertainty = playerStatement
+    ? `Вы спросили: «${playerStatement}». Подтвердить это я не могу.`
+    : 'Иного подтверждённого ответа у меня нет.';
+  const utterance = [introduction, ...facts.map(({ fact_text }) => fact_text),
+    uncertainty].filter(Boolean).join(' ');
   return assembleNpcConversationPlan({
     contribution_kind: 'speech',
     speech: {
-      utterance_text: [...facts.map(({ fact_text }) => fact_text),
-        uncertainty].join(' '),
+      utterance_text: utterance,
       dominant_act: 'answer', interaction_tags: [], topic_refs: [],
       claims: facts.map((entry, index) => ({
         claim_id: `fallback-current-observation-${index + 1}`,
@@ -113,8 +127,7 @@ function semanticGroundingFallback(original, request) {
     },
     interpretation: {
       intent: 'Ответить только по подтверждённым сведениям.',
-      grounded_contribution: [...facts.map(({ fact_text }) => fact_text),
-        uncertainty].join(' '),
+      grounded_contribution: utterance,
       adaptation: 'literal'
     },
     resolution: 'automatic',

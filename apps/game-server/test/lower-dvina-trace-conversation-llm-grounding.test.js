@@ -170,7 +170,7 @@ test('semantic grounding failure keeps cited present facts and falls back safely
     assert.equal(fixture.calls.length, 0);
     assert.equal(validateConversationContributionPlan(result, input), true);
     assert.equal(result.speech.utterance_text,
-      'На очаге не видно пламени. Остального я подтвердить не могу.');
+      'На очаге не видно пламени. Иного подтверждённого ответа у меня нет.');
     assert.deepEqual(result.speech.claims, [{
       claim_id: 'fallback-current-observation-1',
       content_summary: observation.fact_text, form: 'assertion',
@@ -179,6 +179,57 @@ test('semantic grounding failure keeps cited present facts and falls back safely
       mentioned_entity_refs: []
     }]);
   });
+
+test('semantic grounding fallback preserves the player question and emitted NPC name',
+  async () => {
+    const input = request();
+    input.npc = { identity_state: { canonical_name: 'Еремей' } };
+    input.memory = { records: [], received_messages: [] };
+    input.public_conversation_history = [{
+      speaker_ref: ref('player_character', 'player-1'),
+      utterance_text: 'Спрашиваю про лодочника Онисима и крушение.'
+    }];
+    const original = plan(input);
+    original.speech.utterance_text =
+      'Я Еремей. Онисима я не знаю и после крушения его не видел.';
+    original.speech.claims = [{ claim_id: 'unsupported',
+      content_summary: 'После крушения Онисима не видел.', form: 'assertion',
+      speaker_posture: 'believed_true', source_knowledge_refs: [],
+      mentioned_entity_refs: [] }];
+    const fixture = runner(() => assert.fail('repair must use safe fallback'));
+
+    const result = await createLowerDvinaTraceNpcSemanticModel(
+      fixture)(input, { repair: {
+      original_output: original,
+      validation_errors: [{
+        code: 'TRACE_NPC_SPEECH_GROUNDING_UNSUPPORTED',
+        category: 'semantic_grounding', retryable: true
+      }]
+    } });
+
+    assert.equal(fixture.calls.length, 0);
+    assert.equal(validateConversationContributionPlan(result, input), true);
+    assert.equal(result.speech.utterance_text,
+      'Я Еремей. Вы спросили: «Спрашиваю про лодочника Онисима и крушение». Подтвердить это я не могу.');
+    assert.doesNotMatch(result.speech.utterance_text, /не знаю|не видел/u);
+    assert.deepEqual(result.speech.claims, []);
+  });
+
+test('semantic grounding fallback ignores a non-string NPC name', async () => {
+  const input = request();
+  input.npc = { identity_state: { canonical_name: 7 } };
+  const original = plan(input);
+  const fixture = runner(() => assert.fail('repair must use safe fallback'));
+
+  const result = await createLowerDvinaTraceNpcSemanticModel(
+    fixture)(input, { repair: {
+    original_output: original,
+    validation_errors: [{ category: 'semantic_grounding' }]
+  } });
+
+  assert.equal(result.speech.utterance_text,
+    'Иного подтверждённого ответа у меня нет.');
+});
 
 test('route contract candidate reaches initial and repair prompts', async () => {
   const input = request();

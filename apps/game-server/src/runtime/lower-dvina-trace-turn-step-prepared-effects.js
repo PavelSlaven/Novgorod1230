@@ -1,8 +1,8 @@
 import { serverError } from '../errors.js';
 import { deepFreeze } from
   './lower-dvina-trace-turn-step-runtime-common.js';
-import { buildLowerDvinaTracePreparedRouteWorkingProjection, projectPreparedDomainState } from
-  './lower-dvina-trace-turn-step-prepared-state-projection.js';
+import { buildLowerDvinaTracePreparedRouteWorkingProjection,
+  projectFirstEntryArrivalState, projectPreparedDomainState } from './lower-dvina-trace-turn-step-prepared-state-projection.js';
 export { buildLowerDvinaTracePreparedRouteWorkingProjection } from './lower-dvina-trace-turn-step-prepared-state-projection.js';
 import { validTraceCombatStartConsequence,
   validTracePreparedCombatConsequence } from
@@ -204,7 +204,6 @@ function preparedResult(input, consequence, playerResponseBoundary) {
     }
   });
 }
-
 async function applyPreparedPhase3Route({
   input,
   committedState,
@@ -220,11 +219,12 @@ async function applyPreparedPhase3Route({
       || !validRoutePriorCount(input, semanticPrefix)) {
     fail('TRACE_TURN_STEP_PREPARED_ROUTE_INVALID');
   }
-  const projection = buildLowerDvinaTracePreparedRouteWorkingProjection({
-    projection: input.working_projection,
-    movement,
-    committedState
-  });
+  const projectionBeforeMove = structuredClone(input.working_projection);
+  projectFirstEntryArrivalState(projectionBeforeMove, movement);
+  const authority = structuredClone(committedState);
+  projectFirstEntryArrivalState(authority, movement);
+  const projection = buildLowerDvinaTracePreparedRouteWorkingProjection(
+    { projection: projectionBeforeMove, movement, committedState: authority });
   return deepFreeze({
     working_projection: projection,
     summary: `prepared:${input.command_id}`,

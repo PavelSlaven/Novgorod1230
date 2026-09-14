@@ -7,6 +7,13 @@ import { loadScenarioBundle } from './lower-dvina-trace-phase-2-fixture.js';
 import { conversationTemporalOwner, createM2ConversationModels } from
   './lower-dvina-trace-m2-conversation-fixture.js';
 
+import { projectPreparedDomainState } from
+  '../src/runtime/lower-dvina-trace-turn-step-prepared-state-projection.js';
+import { tracePhase3PreconditionSatisfied } from
+  '../src/runtime/lower-dvina-trace-phase-3-admission.js';
+import { createLowerDvinaTracePreparedDomainEffect } from
+  '../src/runtime/lower-dvina-trace-turn-step-prepared-effects.js';
+
 const currentBundle = await loadScenarioBundle(14);
 const productionScenePresentation = JSON.parse(await readFile(new URL(
   '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v28/scene-presentation-v3.json',
@@ -44,6 +51,117 @@ test('route continuation receives only routes from the destination', async () =>
   assert.ok(routes.every(({ route_ref: routeRef }) =>
     routeRef !== 'trace_ld_v1_route_wreck_to_camp'));
 });
+
+test('prepared first entry projects destination identity before continuation', () => {
+  const state = pendingFirstEntryState();
+  const actor = state.npcs[0];
+  const movement = pendingFirstEntryMovement();
+  const projected = projectPreparedDomainState(state, {
+    consequence: { movement }, time_update: { temporal_results: [],
+      clock_after: { whole_minutes: '8', subminute_numerator: '0',
+        subminute_denominator: '1' } },
+    body_update: { state_after: {} }
+  });
+  assert.deepEqual(projected.position, {
+    location_ref: 'camp', position_id: 'position:camp', g6_id: 'g6:camp',
+    g5_anchor_id: 'anchor:camp', g5_node_id: 'node:camp'
+  });
+  assert.equal(projected.npcs[0].anchor_id, 'anchor:camp');
+  assert.equal(projected.first_entry_preparation.spatial_v3.target.status,
+    'prepared');
+  assert.equal(projected.npc_schedule_runtime[0].current_position_node_id,
+    'position:camp');
+  assert.equal(tracePhase3PreconditionSatisfied({
+    kind: 'materialized_present_npc', ref: 'fisher'
+  }, projected, { actors: [actor] }), true);
+  assert.equal(tracePhase3PreconditionSatisfied({
+    kind: 'materialized_present_npc', ref: 'missing'
+  }, { npcs: [], position: {} }, { actors: [] }), false);
+});
+
+test('prepared route carrier projects pending first-entry position', async () => {
+  const state = pendingFirstEntryState();
+  const movement = pendingFirstEntryMovement();
+  const owner = createLowerDvinaTracePreparedDomainEffect({
+    committedState: state
+  });
+  const prepared = await owner.apply({
+    command_id: 'lower_dvina_trace.follow_path_to_fishing_camp',
+    operation: { op: 'request_movement' },
+    working_projection: state,
+    prepared_chain_context: { prior_effect_count: 0 }, availability: {},
+    consequence: { phase3_kind: 'movement', duration_minutes: 8,
+      movement }
+  });
+  assert.deepEqual(prepared.working_projection.position, {
+    location_ref: 'camp', position_id: 'position:camp', g6_id: 'g6:camp',
+    g5_anchor_id: 'anchor:camp', g5_node_id: 'node:camp'
+  });
+  assert.equal(prepared.working_projection.npcs[0].anchor_id, 'anchor:camp');
+  assert.equal(prepared.working_projection.first_entry_preparation.spatial_v3
+    .target.status, 'prepared');
+  assert.equal(prepared.working_projection.npc_schedule_runtime[0]
+    .current_position_node_id, 'position:camp');
+});
+
+test('first entry neither recalls departed NPC nor leaks camp G6 to later moves', () => {
+  const state = pendingFirstEntryState();
+  state.npcs[0].anchor_id = 'anchor:elsewhere';
+  const projected = projectPreparedDomainState(state, {
+    consequence: { movement: pendingFirstEntryMovement() },
+    time_update: { temporal_results: [], clock_after: state.clock },
+    body_update: { state_after: {} }
+  });
+  assert.equal(projected.npcs[0].anchor_id, 'anchor:elsewhere');
+  assert.equal(projected.npc_schedule_runtime[0].current_position_node_id,
+    null);
+  assert.equal(tracePhase3PreconditionSatisfied({
+    kind: 'materialized_present_npc', ref: 'fisher'
+  }, projected, { actors: [state.npcs[0]] }), false);
+  const later = projectPreparedDomainState({
+    ...projected,
+    prepared_scenes: [{ location_profile_ref: 'shed',
+      node: { instance_id: 'node:shed' } }]
+  }, {
+    consequence: { movement: { route_ref: 'camp-to-shed',
+      source: { location_ref: 'camp' }, destination: {
+        location_ref: 'shed', g5_anchor_id: 'anchor:shed',
+        scene_position_id: 'position:shed' } } },
+    time_update: { temporal_results: [], clock_after: state.clock },
+    body_update: { state_after: {} }
+  });
+  assert.equal(later.position.position_id, 'position:shed');
+  assert.equal(Object.hasOwn(later.position, 'g6_id'), false);
+});
+
+function pendingFirstEntryState() {
+  const actor = { ref: 'fisher', instance_id: 'npc:fisher', anchor_id: null };
+  return {
+    position: { location_ref: 'wreck', position_id: 'position:wreck',
+      g6_id: 'g6:wreck' }, npcs: [structuredClone(actor)],
+    first_entry_preparation: {
+      scene: { location_profile_ref: 'camp',
+        node: { instance_id: 'node:camp' } },
+      npcs: [{ ...actor, anchor_id: 'anchor:camp' }],
+      spatial_v3: { preparation_snapshot_id: 'snapshot:camp',
+        preparation_member_ordinal: 0,
+        target: { status: 'pending', position_id: 'position:camp',
+          g6_instance_id: 'g6:camp' } }
+    },
+    npc_schedule_runtime: [{ npc_id: actor.instance_id,
+      current_position_node_id: null,
+      causal_state_ref: { deferred_placement: {
+        snapshot_id: 'snapshot:camp', member_ordinal: 0 } } }],
+    clock: { whole_minutes: '0', subminute_numerator: '0',
+      subminute_denominator: '1' }, body_state: {}
+  };
+}
+
+function pendingFirstEntryMovement() {
+  return { route_ref: 'wreck-to-camp',
+    source: { location_ref: 'wreck' }, destination: {
+      location_ref: 'camp', g5_anchor_id: 'anchor:camp' } };
+}
 
 test('route continuation reaches a visible NPC conversation in the same turn',
   async () => {

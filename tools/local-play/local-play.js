@@ -71,7 +71,7 @@ export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
   };
 }
 
-export async function assertReadiness({ baseUrl, fetchImpl = fetch, sleep = delay, child, attempts = 120 } = {}) {
+export async function assertReadiness({ baseUrl, fetchImpl = fetch, sleep = delay, child, attempts = 480 } = {}) {
   let lastError = null;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     if (child?.exitCode != null) {

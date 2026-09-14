@@ -50,6 +50,19 @@ test('readiness rejects wrong release and unavailable scenario', async () => {
   { code: 'LOCAL_PLAY_SCENARIO_UNAVAILABLE' });
 });
 
+test('readiness allows startup qualification to exceed thirty seconds', async () => {
+  let calls = 0;
+  await assertReadiness({ baseUrl: 'http://test', sleep: async () => {},
+    fetchImpl: async (url) => {
+      calls += 1;
+      if (calls <= 120) throw new Error('not listening yet');
+      return response(url.endsWith('/health') ? health() : {
+        scenarios: [{ scenario_id: 'lower_dvina_trace_v1', available: true }]
+      });
+    } });
+  assert.equal(calls, 122);
+});
+
 test('validation and occupied port fail before provisioning', async () => {
   assert.throws(() => validateLocalPlay({ env: { RUS_SERVER_PORT: '0' },
     nodeVersion: '22.0.0' }), { code: 'LOCAL_PLAY_PORT_INVALID' });

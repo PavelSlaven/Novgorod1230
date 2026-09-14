@@ -1,5 +1,8 @@
 import { serverError } from '../errors.js';
 import { readFile } from 'node:fs/promises';
+import { createLowerDvinaTraceNarrationService } from './lower-dvina-trace-narration-llm.js';
+
+const QUALIFICATION_VERSION = 68;
 
 export const LOCAL_LLM_PRESET = Object.freeze({
   base_url: 'http://127.0.0.1:8000/v1',
@@ -68,16 +71,20 @@ export function createLlmSettingsOwner({ qualifyCustom = null,
   }
 }
 
+export async function applyInitialLocalSettings(owner, storedRecord) {
+  if (storedRecord == null) await owner.apply({ mode: 'local' });
+}
+
 export function createProductionLlmQualifier({ qualifyOrdinary, roleRunner } = {}) {
   if (typeof qualifyOrdinary !== 'function') throw new TypeError('qualifyOrdinary is required.');
   return async (candidate) => {
     const identity = await qualifyOrdinary(candidate);
-    await runNarrationAuditorQualification({ roleRunner, candidate });
-    return Object.freeze({ ...identity, qualification_version: 67 });
+    await runNarrationWorkflowQualification({ roleRunner, candidate });
+    return Object.freeze({ ...identity, qualification_version: QUALIFICATION_VERSION });
   };
 }
 
-export async function runNarrationAuditorQualification({ roleRunner, candidate } = {}) {
+export async function runNarrationWorkflowQualification({ roleRunner, candidate } = {}) {
   if (typeof roleRunner?.run !== 'function' || typeof roleRunner?.describe !== 'function') {
     throw new TypeError('Narration qualification requires LLM role transport.');
   }
@@ -86,24 +93,66 @@ export async function runNarrationAuditorQualification({ roleRunner, candidate }
     'gameplay-narrator-auditor-unseen-inspection-catalogue'
   ].includes(id));
   if (fixtures.length !== 2) throw narrationQualificationError();
-  const invocation = { scope: 'turn_runtime', role_id: 'gameplay_narrator_auditor',
-    overrides: { temperature: 0, maxTokens: 20_000, requestTimeoutMs: 120_000 },
-    provider_snapshot: candidate };
-  const identity = roleRunner.describe(invocation);
   try {
+    const probes = [];
     for (const fixture of fixtures) {
-      const response = await roleRunner.run({ ...invocation, messages: fixture.messages });
-      if (!sameIdentity(identity, response?.provider_record)
-          || !response?.output?.literary_failures?.some(
-            ({ check }) => check === 'weak_literary_composition')) throw narrationQualificationError();
+      const request = narrationRequest(fixture);
+      let initialRaw = null;
+      let initialProvider = null;
+      const narration = createLowerDvinaTraceNarrationService({ roleRunner: {
+        async run(call) {
+          if (call.role_id === 'gameplay_narrator') return { output: fixture.request.output };
+          const expected = roleRunner.describe({ scope: call.scope, role_id: call.role_id,
+            overrides: call.overrides, provider_snapshot: candidate });
+          const response = await roleRunner.run({ ...call, provider_snapshot: candidate });
+          if (!sameIdentity(expected, response?.provider_record)) throw narrationQualificationError();
+          if (call.role_id === 'gameplay_narrator_auditor'
+              && auditPhase(call) === 'initial') {
+            initialRaw = response.output;
+            initialProvider = response.provider_record;
+          }
+          return response;
+        }
+      } });
+      const result = await narration.run(request);
+      const initialWeakComposition = initialRaw?.literary_failures?.some(
+        ({ check }) => check === 'weak_literary_composition') === true;
+      if (result.status !== 'approved' || !result.approved_output?.prose?.trim()
+          || result.repair_history.filter(({ role }) => role === 'semantic_repair').length !== 1
+          || result.audit_history.length !== 2
+          || result.audit_history[0]?.value?.pass !== false
+          || !initialWeakComposition
+          || result.audit_history[1]?.value?.pass !== true) throw narrationQualificationError();
+      probes.push(Object.freeze({ fixture_id: fixture.id,
+        provider: initialProvider?.provider ?? null, model: initialProvider?.model ?? null,
+        role_id: initialProvider?.role_id ?? null,
+        initial_raw_weak_literary_composition: initialWeakComposition,
+        initial_assembled_rejected: result.audit_history[0].value.pass === false,
+        repair_count: result.repair_history.filter(({ role }) => role === 'semantic_repair').length,
+        final_pass: result.audit_history[1].value.pass === true,
+        status: result.status, errors: [] }));
     }
-    return identity;
+    return Object.freeze(probes);
   } catch (error) {
     if (error?.code === 'LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED') throw error;
     if (/^(?:timeout|transport_error|invalid_response|json_parse_failed|http_\d{3})$/u
       .test(String(error?.code ?? ''))) throw error;
     throw narrationQualificationError();
   }
+}
+
+function auditPhase(call) {
+  try { return JSON.parse(call.messages?.at(-1)?.content).phase; }
+  catch { return null; }
+}
+
+export const runNarrationAuditorQualification = runNarrationWorkflowQualification;
+
+function narrationRequest(fixture) {
+  const auditRequest = fixture?.request;
+  return { version: 1, schema: 'narration_request', request_id: auditRequest?.output?.output_id,
+    surface: 'turn', visible_context: auditRequest?.visible_context,
+    style_policy: auditRequest?.style_policy ?? {} };
 }
 
 async function qualify(candidate, qualifyCustom) {
@@ -184,7 +233,7 @@ function normalizeStoredRecord(record) {
   const active = normalizeSettings(record.settings, null);
   const legacyDefault = record.settings.mode === 'default';
   const identity = legacyDefault ? null : normalizeIdentity(record.ordinary_materialization_identity);
-  if (!legacyDefault && record.qualification_version !== 67) {
+  if (!legacyDefault && record.qualification_version !== QUALIFICATION_VERSION) {
     throw serverError('LLM_SETTINGS_FILE_INVALID',
       'Saved LLM settings require renewed qualification.', { status: 500, public_exposure: 'internal' });
   }

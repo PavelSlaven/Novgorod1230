@@ -32,8 +32,12 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'Regroup them into a spatially coherent image by shared supplied subjects or spatial anchors, '
   + 'then choose one coherent focal sweep. '
   + 'When a current inspection or perception action supplies descriptive observations, make that '
-  + 'action grammatically govern at least one compact cluster joined by a supplied shared object, '
-  + 'spatial anchor, or before/after relation. This applies whether the current beat is dense or not; '
+  + 'action a dependent clause or finite perception verb that grammatically governs at least one compact '
+  + 'cluster joined by a supplied shared object, spatial anchor, or before/after relation. Never use an '
+  + 'action followed by a colon and a factual catalogue. For a multi-fact inspection, use one related pair '
+  + 'as the governed cluster and put every other observation in its own concise consequence or uncertainty '
+  + 'sentence; never join those remaining facts with a list or semicolon. '
+  + 'This applies whether the current beat is dense or not; '
   + 'a standalone action sentence followed by a descriptive inventory is not action-centered. '
   + 'When required_current_beat is dense, extend that focal progression by grouping facts only through '
   + 'an explicitly supplied shared object, spatial anchor, or before/after relation. Preserve every '
@@ -74,9 +78,12 @@ const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certai
 const WRITER_SHAPE = 'Return only {"prose":"<complete Russian prose>"}. The server assembles version, schema, output_id, action_options=[], used_references=[] and neutral self_check={}; do not generate those fields.';
 
 const INSPECTION_REPAIR_RULE = 'For an inspection or perception current beat with supplied observations, '
-  + 'whether dense or not, make the action grammatically govern at least one compact factual cluster '
-  + 'linked by a supplied shared object, spatial anchor, or before/after relation; a focal verb or '
-  + 'colon before an independent catalogue is not a repair. ';
+  + 'whether dense or not, make the action a dependent clause or finite perception verb that grammatically '
+  + 'governs at least one compact factual cluster linked by a supplied shared object, spatial anchor, or '
+  + 'before/after relation. Never use an action followed by a colon and a factual catalogue; a focal verb '
+  + 'or colon before an independent catalogue is not a repair. For a multi-fact inspection, use one related '
+  + 'pair as the governed cluster and put every other observation in its own concise consequence or '
+  + 'uncertainty sentence; never join those remaining facts with a list or semicolon. ';
 
 export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
   if (typeof roleRunner?.run !== 'function') throw serverError(

@@ -100,7 +100,7 @@ test('canonical Turn 10 preserves parent activity for prepared followup marker',
     input
   });
 
-  assert.equal(runtimeFixture.turnStepCount(), 2);
+  assert.equal(runtimeFixture.turnStepCount(), 1);
   assert.equal(autonomousCalls, 1);
   assert.equal(playerCalls, 1);
   assert.equal(npcCalls, 4);
@@ -211,7 +211,7 @@ test('canonical Turn 10 preserves parent activity for prepared followup marker',
     input
   });
   assert.deepEqual(replay, first);
-  assert.equal(runtimeFixture.turnStepCount(), 2);
+  assert.equal(runtimeFixture.turnStepCount(), 1);
   assert.equal(autonomousCalls, 1);
   assert.equal(playerCalls, 1);
   assert.equal(npcCalls, 4);

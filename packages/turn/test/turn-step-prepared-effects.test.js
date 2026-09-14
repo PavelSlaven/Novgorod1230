@@ -45,7 +45,8 @@ test('prepared followup executes its current admitted exact operation without pl
   async () => {
     const operation = preparedFollowupOperation();
     const candidate = { prepared_followup_ref: 'followup',
-      precursor_operation: followup(), operation };
+      precursor_operation: { ...followup(), description: 'canonical label' },
+      operation };
     let modelCalls = 0;
     let admitted = null;
     const order = [];
@@ -151,44 +152,39 @@ test('prepared followup falls back when required gate is absent or admission rej
     });
   });
 
-test('prepared followup requires one exact precursor candidate', async (t) => {
-  for (const current of [{ name: 'wrong precursor', candidates: [{
-    prepared_followup_ref: 'followup',
-    precursor_operation: { ...followup(), target_ref: 'other-camp' },
-    operation: followup()
-  }] }, { name: 'ambiguous precursor', candidates: [{
+test('prepared followup requires one unique marker candidate', async () => {
+  const candidates = [{
     prepared_followup_ref: 'followup', precursor_operation: followup(),
     operation: followup()
   }, {
     prepared_followup_ref: 'followup', precursor_operation: followup(),
     operation: preparedFollowupOperation()
-  }] }]) await t.test(current.name, async () => {
-    let modelCalls = 0;
-    let admissions = 0;
-    await runTurnStepLoop(input(), ports({
-      executionRegistry: preparedRegistry(),
-      projectPlayerSafeState: async ({ working_projection: projection,
-        completed_steps: completed }) => ({ ...structuredClone(projection),
-        ...(completed.length === 0
-          ? { prepared_followup_candidates: current.candidates }
-          : { available_domain_operations: [followup()] })
-      }),
-      semanticPlanValidator: async () => {},
-      admitPreparedDomainPlan: async () => {
-        admissions += 1;
-        return true;
-      },
-      turnStepModel(request) {
-        modelCalls += 1;
-        if (request.step_index !== 1) return directPlan(request);
-        const plan = routePlan(request);
-        return { ...plan, continuation: { ...plan.continuation,
-          prepared_followup_ref: 'followup' } };
-      }
-    }));
-    assert.equal(modelCalls, 2);
-    assert.equal(admissions, 0);
-  });
+  }];
+  let modelCalls = 0;
+  let admissions = 0;
+  await runTurnStepLoop(input(), ports({
+    executionRegistry: preparedRegistry(),
+    projectPlayerSafeState: async ({ working_projection: projection,
+      completed_steps: completed }) => ({ ...structuredClone(projection),
+      ...(completed.length === 0
+        ? { prepared_followup_candidates: candidates }
+        : { available_domain_operations: [followup()] })
+    }),
+    semanticPlanValidator: async () => {},
+    admitPreparedDomainPlan: async () => {
+      admissions += 1;
+      return true;
+    },
+    turnStepModel(request) {
+      modelCalls += 1;
+      if (request.step_index !== 1) return directPlan(request);
+      const plan = routePlan(request);
+      return { ...plan, continuation: { ...plan.continuation,
+        prepared_followup_ref: 'followup' } };
+    }
+  }));
+  assert.equal(modelCalls, 2);
+  assert.equal(admissions, 0);
 });
 test('prepared followup accepts reordered operation keys', async () => {
   const operation = preparedFollowupOperation();

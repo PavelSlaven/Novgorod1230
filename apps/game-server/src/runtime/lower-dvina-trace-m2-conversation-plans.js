@@ -40,7 +40,7 @@ export function classifyEremeyPlan(plan, {
         'Eremey returned an unsupported operation.'
       );
     }
-    if (mentionsRouteDisclosure(plan.speech, routeRef, knowledgeScopeRef)) {
+    if (mentionsRouteDisclosure(plan.speech, routeRef)) {
       fail(
         'TRACE_M2_ROUTE_DISCLOSURE_UNBACKED',
         'Route references require the exact authored route operation.'
@@ -74,13 +74,10 @@ export function classifyEremeyPlan(plan, {
   return { kind: 'route_disclosure', statementRef: null };
 }
 
-function mentionsRouteDisclosure(speech, routeRef, knowledgeScopeRef) {
+function mentionsRouteDisclosure(speech, routeRef) {
   return speech.topic_refs.includes(routeRef)
     || speech.claims.some((claim) =>
-      claim.source_knowledge_refs.some((sourceRef) =>
-        sourceRef.entity_kind === 'knowledge_scope'
-        && sourceRef.entity_id === knowledgeScopeRef)
-      || claim.mentioned_entity_refs.some((mentionedRef) =>
+      claim.mentioned_entity_refs.some((mentionedRef) =>
         mentionedRef.entity_kind === 'route'
         && mentionedRef.entity_id === routeRef));
 }

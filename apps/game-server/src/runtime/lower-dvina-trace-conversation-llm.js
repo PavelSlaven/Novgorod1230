@@ -11,6 +11,8 @@ import {
 import { auditFreshNpcSpeech } from
   './lower-dvina-trace-npc-speech-grounding-audit.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
+import { playerSafeSelfIntroductionName } from
+  './lower-dvina-trace-player-safe-npc-details.js';
 
 export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}) {
   requireRoleRunner(roleRunner);
@@ -95,20 +97,12 @@ function semanticGroundingFallback(original, request) {
     }
   }
   const facts = [...retained.values()];
-  const playerStatement = request.public_conversation_history?.findLast(
-    (statement) => statement?.speaker_ref?.entity_kind === 'player_character'
-      && typeof statement.utterance_text === 'string'
-      && statement.utterance_text.trim() !== ''
-  )?.utterance_text.trim().replace(/[.!?…]+$/u, '');
-  const rawCanonicalName = request.npc?.identity_state?.canonical_name;
-  const canonicalName = typeof rawCanonicalName === 'string'
-    ? rawCanonicalName.trim() : null;
-  const introduction = canonicalName
-    && original?.speech?.utterance_text?.includes(canonicalName)
-    ? `Я ${canonicalName}.` : null;
-  const uncertainty = playerStatement
-    ? `Вы спросили: «${playerStatement}». Подтвердить это я не могу.`
-    : 'Иного подтверждённого ответа у меня нет.';
+  const introducedName = playerSafeSelfIntroductionName(
+    original?.speech?.utterance_text, request.npc?.identity_state);
+  const introduction = introducedName ? `Я ${introducedName}.` : null;
+  const uncertainty = facts.length === 0
+    ? 'Об этом я ничего подтвердить не могу.'
+    : 'Остального я подтвердить не могу.';
   const utterance = [introduction, ...facts.map(({ fact_text }) => fact_text),
     uncertainty].filter(Boolean).join(' ');
   return assembleNpcConversationPlan({

@@ -1,3 +1,6 @@
+import { playerSafeSelfIntroductionName } from
+  './lower-dvina-trace-player-safe-npc-details.js';
+
 export function withPhase3Conversation({ input, contracts, movement }) {
   if (input.consequence.conversation == null) return movement;
   const conversation = phase3ConversationProjection(input, contracts);
@@ -35,8 +38,6 @@ export function phase3ConversationProjection(input, contracts) {
   if (responseKind != null && speaker == null) {
     throw visibleGap('TRACE_M2_PHASE_3_VISIBLE_SPEAKER_GAP');
   }
-  const speakerLabel = speaker == null ? 'человек' : playerSafeNpc(speaker,
-    null, input.retrieved_state?.current_visible_context).display_label;
   const speakerIsEremey = speaker?.ref === contracts.ids.eremeyRef;
   const disclosed = semantic
     ? semantic.route_disclosure != null
@@ -47,6 +48,11 @@ export function phase3ConversationProjection(input, contracts) {
   const semanticUtterance = speechResponse
     ? perceivedNpcUtterance(semantic, 'TRACE_M2_PHASE_3_VISIBLE_GAP')
     : null;
+  const speakerName = playerSafeSelfIntroductionName(
+    semanticUtterance, speaker?.identity_state);
+  const speakerLabel = speakerName ?? (speaker == null ? 'человек'
+    : playerSafeNpc(speaker, null,
+      input.retrieved_state?.current_visible_context).display_label);
   const speechLine = speechResponse
     ? `${speakerLabel} говорит: «${semanticUtterance}»` : null;
   const visibleChanges = [responseKind === 'silence'
@@ -81,9 +87,15 @@ export function phase3ConversationProjection(input, contracts) {
         : `${speakerLabel} уклонился от полного ответа о крушении.`,
     visible_changes: visibleChanges,
     sensory_details: [],
-    visible_npc: contracts.actors.map((actor) => playerSafeNpc(actor,
-      actor.instance_id === speaker?.instance_id ? speakerStatus : null,
-      input.retrieved_state?.current_visible_context)),
+    visible_npc: contracts.actors.map((actor) => {
+      const projected = playerSafeNpc(actor,
+        actor.instance_id === speaker?.instance_id ? speakerStatus : null,
+        input.retrieved_state?.current_visible_context);
+      return actor.instance_id === speaker?.instance_id && speakerName
+        ? { ...projected, display_label: speakerName,
+            recognition: 'recognized' }
+        : projected;
+    }),
     visible_objects: [],
     known_context: [
       ...(semantic ? [] : [conversation.journal_ref]),

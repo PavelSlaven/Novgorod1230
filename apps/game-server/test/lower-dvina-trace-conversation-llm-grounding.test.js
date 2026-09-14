@@ -170,7 +170,7 @@ test('semantic grounding failure keeps cited present facts and falls back safely
     assert.equal(fixture.calls.length, 0);
     assert.equal(validateConversationContributionPlan(result, input), true);
     assert.equal(result.speech.utterance_text,
-      'На очаге не видно пламени. Иного подтверждённого ответа у меня нет.');
+      'На очаге не видно пламени. Остального я подтвердить не могу.');
     assert.deepEqual(result.speech.claims, [{
       claim_id: 'fallback-current-observation-1',
       content_summary: observation.fact_text, form: 'assertion',
@@ -180,7 +180,7 @@ test('semantic grounding failure keeps cited present facts and falls back safely
     }]);
   });
 
-test('semantic grounding fallback preserves the player question and emitted NPC name',
+test('semantic grounding fallback gives a direct safe reply and keeps self-introduction',
   async () => {
     const input = request();
     input.npc = { identity_state: { canonical_name: 'Еремей' } };
@@ -210,8 +210,9 @@ test('semantic grounding fallback preserves the player question and emitted NPC 
     assert.equal(fixture.calls.length, 0);
     assert.equal(validateConversationContributionPlan(result, input), true);
     assert.equal(result.speech.utterance_text,
-      'Я Еремей. Вы спросили: «Спрашиваю про лодочника Онисима и крушение». Подтвердить это я не могу.');
-    assert.doesNotMatch(result.speech.utterance_text, /не знаю|не видел/u);
+      'Я Еремей. Об этом я ничего подтвердить не могу.');
+    assert.doesNotMatch(result.speech.utterance_text,
+      /Вы спросили|«|»|не знаю|не видел/u);
     assert.deepEqual(result.speech.claims, []);
   });
 
@@ -228,7 +229,7 @@ test('semantic grounding fallback ignores a non-string NPC name', async () => {
   } });
 
   assert.equal(result.speech.utterance_text,
-    'Иного подтверждённого ответа у меня нет.');
+    'Об этом я ничего подтвердить не могу.');
 });
 
 test('route contract candidate reaches initial and repair prompts', async () => {

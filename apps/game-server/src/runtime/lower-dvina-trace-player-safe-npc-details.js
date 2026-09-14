@@ -38,6 +38,65 @@ export function projectLowerDvinaTraceVisibleNpcDetails({
   }).filter(Boolean);
 }
 
+export function projectLowerDvinaTraceRecognizedNpcContext({
+  visibleContext, committedNpcs, conversationStatements, receivedMessages,
+  playerId
+}) {
+  if (!Array.isArray(visibleContext?.visible_npc)
+      || !Array.isArray(conversationStatements)
+      || !Array.isArray(receivedMessages)
+      || !safeText(playerId)) return visibleContext;
+  const statements = new Map(conversationStatements.map((statement) => [
+    statement?.statement_id, statement
+  ]));
+  const recognized = new Map();
+  for (const message of receivedMessages) {
+    const statement = statements.get(message?.source_statement_ref?.entity_id);
+    if (message?.source_statement_ref?.entity_kind !== 'conversation_statement'
+        || message?.listener_ref?.entity_kind !== 'player_character'
+        || message.listener_ref.entity_id !== playerId
+        || message.comprehension !== 'full'
+        || statement?.speaker_ref?.entity_kind !== 'npc'
+        || message.utterance_text !== statement.utterance_text
+        || message.speaker_ref != null
+          && (message.speaker_ref.entity_kind !== statement.speaker_ref.entity_kind
+            || message.speaker_ref.entity_id !== statement.speaker_ref.entity_id)) {
+      continue;
+    }
+    const matches = (committedNpcs ?? []).filter((npc) =>
+      [npc?.instance_id, npc?.actor_id, npc?.npc_id]
+        .includes(statement.speaker_ref.entity_id));
+    const name = matches.length === 1
+      ? playerSafeSelfIntroductionName(
+          statement.utterance_text, matches[0].identity_state)
+      : null;
+    if (name) recognized.set(statement.speaker_ref.entity_id, name);
+  }
+  if (recognized.size === 0) return visibleContext;
+  return {
+    ...visibleContext,
+    visible_npc: visibleContext.visible_npc.map((npc) => {
+      const name = npc?.entity_ref?.entity_kind === 'npc'
+        ? recognized.get(npc.entity_ref.entity_id) : null;
+      return name == null ? npc : {
+        ...npc, display_label: name, recognition: 'recognized'
+      };
+    })
+  };
+}
+
+export function playerSafeSelfIntroductionName(utterance, identityState) {
+  const name = safeText(identityState?.canonical_name);
+  const spoken = safeText(utterance);
+  if (!name || !spoken) return null;
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+  const introduction = new RegExp(
+    `^(?:я\\s*(?:[—-]\\s*)?|меня\\s+зовут\\s+)${escaped}(?=$|[\\s,.;:!?…])`,
+    'iu'
+  );
+  return introduction.test(spoken) ? name : null;
+}
+
 function safeOrdinaryRemainder(value) {
   if (!validateNpcOrdinarySemanticRemainder(value)) return null;
   return {

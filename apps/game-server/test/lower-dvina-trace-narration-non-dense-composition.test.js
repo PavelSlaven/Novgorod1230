@@ -22,7 +22,8 @@ test('non-dense unseen workshop inspection requires a governed observation clust
           assert.match(call.messages[0].content, /whether dense or not/u);
           return { output: { replacements: [{ prose }] } };
         }
-        assert.match(call.messages[0].content, /including a\s+non-dense beat/u);
+        assert.match(call.messages[0].content,
+          /inspection or perception across the whole[\s\S]*compact cluster/u);
         const initial = wire.phase === 'initial';
         return { output: review(wire, initial || !accepted) };
       } } });

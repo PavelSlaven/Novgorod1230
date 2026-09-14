@@ -383,15 +383,8 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     energy: -1
   });
   assert.equal(failure.body_update.state_after.energy, 39);
-  assert.deepEqual(failure.observations.map(({ fact_id: id }) => id), [
-    'visible:wreck_present',
-    'trace_ld_v1_evidence_onisim_barefoot_tracks',
-    'trace_ld_v1_evidence_boot_track'
-  ]);
-  assert.deepEqual(failure.evidence.map(({ evidence_id: id }) => id), [
-    'trace_ld_v1_evidence_onisim_barefoot_tracks',
-    'trace_ld_v1_evidence_boot_track'
-  ]);
+  assert.deepEqual(failure.observations, []);
+  assert.deepEqual(failure.evidence, []);
   assert.equal(failure.clue, null);
   assert.equal((await pool.query(
     `SELECT count(*)::int AS count

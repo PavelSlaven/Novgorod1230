@@ -162,6 +162,11 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     if (call.roleId === 'gameplay_narrator_auditor') {
       assert.match(call.messages[0].content, /strict evidence auditor/u);
       assert.match(call.messages[0].content, /embedded unknown result must remain unknown/u);
+    } else if (call.roleId === 'gameplay_narrator_semantic_repair') {
+      assert.match(call.messages[0].content, /every required proposition and certainty/iu);
+      assert.match(call.messages[0].content, /confirmed speech verbatim/u);
+      assert.match(call.messages[0].content, /performed-action order/u);
+      assert.match(call.messages[0].content, /remove each unsupported claim/u);
     } else {
       assert.match(call.messages[0].content, /Preserve confirmed speech verbatim/u);
       assert.match(call.messages[0].content, /preserve certainty/u);

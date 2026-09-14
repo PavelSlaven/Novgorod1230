@@ -6,7 +6,7 @@ import { startLowerDvinaProductionAcceptanceEnv } from
 import { createCanonicalPhase11LlmResponder, PHASE11_CANONICAL_TURNS } from
   '../helpers/lower-dvina-phase-11-llm.js';
 
-test('revision 34 survives production restart and exact replay through Phase 10',
+test('revision 35 survives production restart and exact replay through Phase 10',
   { timeout: 300_000 }, async (context) => {
     const environment = await startLowerDvinaProductionAcceptanceEnv({
       llmRespond: createCanonicalPhase11LlmResponder()
@@ -31,7 +31,7 @@ test('revision 34 survives production restart and exact replay through Phase 10'
         WHERE party_id = $1 ORDER BY state_version DESC LIMIT 1`,
       [partyId]
     )).rows[0]?.revision;
-    assert.equal(revision, '34');
+    assert.equal(revision, '35');
 
     let restResult;
     for (const [turnId, rawText] of PHASE11_CANONICAL_TURNS) {

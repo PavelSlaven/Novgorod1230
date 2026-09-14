@@ -61,26 +61,30 @@ current_beat_buried merely because another required source has an empty review.
 Optional support is a candidate set, never a coverage target. After a current
 beat, a recital of unchanged, independent optional scene facts as panorama or
 context is static_context_dump even when fluent, reordered, spatially grouped,
-or placed after the beat. Each retained support detail must locate, contrast,
+or placed after the beat. A required_current_beat source never becomes optional
+support merely because another input field repeats it; static_context_dump
+applies only to a proposition supported solely by optional_support. Each retained support detail must locate, contrast,
 constrain, or constitute the action or result being narrated. A perception beat
 may govern supplied details that are themselves its perceived result; this does
 not license unrelated snapshot recap. A recap of unchanged support is static_context_dump.
 Turn duration is code-owned UI metadata and is
 not supplied as prose evidence. Any invented elapsed time is unsupported_fact;
-service-like time reporting is also elapsed_as_service_report. A passage that
-mainly restates required sources one by one, without composing
-the performed action or perceived result with supplied spatial relations, is
-weak_literary_composition even when coverage is complete and every proposition
-is supported. A focal verb or colon before independent observations is also
-weak_literary_composition when a current inspection or perception action supplies
-those observations unless the focal action grammatically governs at least one compact
-factual cluster joined by a supplied shared object, spatial anchor, or before/after
-relation, whether the beat is dense or not; other required facts must remain concise
-consequence or uncertainty beats. Matching source order or using one multi-clause sentence is not
-by itself evidence of weak composition. A grounded current qualitative assessment
-or conclusion counts as a perceived result; when related scene facts frame or
-lead to it within one coherent focal sentence, do not report a checklist merely
-because the clauses follow source order. Do not demand an invented causal,
+service-like time reporting is also elapsed_as_service_report. Judge
+weak_literary_composition for an inspection or perception across the whole
+passage. PASS when the completed action or a finite perception verb grammatically
+governs at least one compact cluster of two or more supplied observations tied
+by one supplied object, place, or before/after relation, and every further
+observation cluster is a separately anchored perception or consequence beat.
+A repeated supplied place, its supplied subplace, and explicit supplied
+coreference count as one shared anchor. Omit weak_literary_composition when this
+PASS rule holds; separately governed clusters at different supplied anchors
+are not an independent inventory. FAIL only when a cluster lacks its own
+governing perception/action beat or supplied anchor, or when different anchors
+are merged after a bare action through a colon, semicolon, or coordinating
+chain. Complete factual coverage alone is not a literary PASS. Matching source order or using one multi-clause sentence
+alone is not a failure. A grounded current qualitative assessment or conclusion
+may be the perceived result when related scene facts frame or lead to it within
+one coherent focal sentence. Do not demand an invented causal,
 temporal or spatial bridge to avoid that failure. Evaluate all five checks
 independently: one failure never excuses a missed second failure.
 
@@ -93,15 +97,18 @@ never use it to restate or penalize an omitted source whose review is [].
 4. If prose reverses ordered performed actions or makes the earlier action simultaneous
 or ongoing within the later one, record unsupported_event. Do not fail subordination
 that unambiguously marks the earlier action completed before the later action.
-5. When an inspection or perception action has supplied observations, including a
-non-dense beat, reject an uncomposed source-order checklist and a focal verb or colon
-followed by an independent catalogue as weak_literary_composition. A focal beat passes
-only when it grammatically governs at least one compact cluster linked by a supplied
-object, place, or before/after relation. Source order alone is not a failure;
-complete factual coverage alone is not a literary PASS either.
+5. Apply the inspection/perception PASS rule above across the whole passage and
+omit weak_literary_composition when it holds. Reject an independent inventory,
+meaning a cluster without its own governing beat or supplied anchor, or a bare
+action followed by different anchors merged through a colon, semicolon, or
+coordinating chain. Separately governed clusters at different anchors pass.
+Source order alone is not a failure and complete coverage
+alone is not a PASS.
 6. For a performed attempt with no supplied result or uncertainty, any claim
 that the result is unknown or unestablished is unsupported_result. The attempt
 alone without any outcome claim is supported and must not be flagged.
+7. Never report static_context_dump for a proposition that is also in
+required_current_beat. Repetition in optional_support cannot change its status.
 
 Return only the exact JSON shape shown below. reviewed_segments must copy every
 segment choice exactly once and in order. source_reviews must contain exactly

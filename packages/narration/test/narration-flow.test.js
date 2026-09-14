@@ -198,7 +198,7 @@ test('semantic repair rewrites one coherent paragraph instead of duplicating nea
       audits += 1;
       return audits === 1
         ? { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'fail', coverage: { visible_changes: [], uncertainties: [] }, pass: false,
-            concerns: [{ segment_id: 's1', kind: 'technical_presentation',
+            concerns: [{ segment_id: 's2', kind: 'technical_presentation',
               reason: 'Elapsed time is a standalone report.' }],
             evidence: ['Both changes are supported.'] }
         : { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass', coverage: { visible_changes: [], uncertainties: [] }, pass: true,
@@ -209,6 +209,11 @@ test('semantic repair rewrites one coherent paragraph instead of duplicating nea
         segment_id: 's1', prose: original, nearby_context: []
       }]);
       assert.deepEqual(input.concerns.map(({ segment_id: id }) => id), ['s1']);
+      assert.deepEqual(input.concerns.map(({ source_segment_ids }) => source_segment_ids), [['s2']]);
+      assert.deepEqual(input.source_segments, [
+        { segment_id: 's1', prose: 'Плечо обмотано лентой, узел затянут. ' },
+        { segment_id: 's2', prose: 'Прошло пять минут.' }
+      ]);
       return { version: 1, schema: 'narration_semantic_repair',
         replacements: [{ segment_id: 's1', prose: repaired }] };
     } }
@@ -369,6 +374,27 @@ test('blocks malformed auditor, invalid repair target, and failed final audit wi
     const result = await runNarrationFlow(request(), ports({ auditor: { async audit() { return {}; } } }));
     assert.equal(result.status, 'blocked');
     assert.equal(result.diagnostics.phase, 'audit_validation');
+  });
+  await t.test('malformed actionable concern keeps only its reason', async () => {
+    let audits = 0;
+    const result = await runNarrationFlow(request(), ports({
+      auditor: { async audit() {
+        audits += 1;
+        return audits === 1
+          ? { version: 1, schema: 'narration_audit', artistic_verdict: 'fail', technical_verdict: 'pass',
+              coverage: { visible_changes: [], uncertainties: [] }, pass: false,
+              concerns: [{ segment_id: 'poisoned', kind: 'poisoned', reason: 'Rewrite.' }], evidence: ['Malformed.'] }
+          : { version: 1, schema: 'narration_audit', artistic_verdict: 'pass', technical_verdict: 'pass',
+              coverage: { visible_changes: [], uncertainties: [] }, pass: true, concerns: [], evidence: ['Grounded.'] };
+      } },
+      semanticRepairer: { async repair(input) {
+        assert.deepEqual(input.concerns, [{ segment_id: 's1', reason: 'Rewrite.' }]);
+        assert.deepEqual(input.source_segments, [{ segment_id: 's1', prose: 'У ворот неподвижно стоит телега.' }]);
+        return { version: 1, schema: 'narration_semantic_repair',
+          replacements: [{ segment_id: 's1', prose: 'У ворот стоит телега.' }] };
+      } }
+    }));
+    assert.equal(result.status, 'approved');
   });
   await t.test('invalid repair target', async () => {
     const result = await runNarrationFlow(request(), ports({

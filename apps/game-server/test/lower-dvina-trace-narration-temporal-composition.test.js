@@ -123,12 +123,12 @@ for (const sample of [
       return { output: { prose: sample.checklist } };
     }
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
-      assert.match(call.messages[0].content, /weak_literary_composition/u);
+      assert.match(call.messages[0].content, /Rebuild the whole passage/u);
       assert.ok(wire.concerns.some(({ kind }) => kind === 'literary_quality'));
       return { output: { replacements: [{ prose: sample.repaired }] } };
     }
     const initial = wire.phase === 'initial';
-    assert.match(call.messages[0].content, /source-order checklist/u);
+    assert.match(call.messages[0].content, /Matching source order[\s\S]*not a failure/u);
     return { output: reviewed(wire, {
       literaryFailures: initial ? [{ check: 'weak_literary_composition',
         segment_choice: 's1',
@@ -207,11 +207,11 @@ test('captured repair preserves completed-before action order and regroups scene
           return { output: { prose: sample.changes.join(' ') } };
         }
         if (call.role_id === 'gameplay_narrator_semantic_repair') {
-          assert.match(call.messages[0].content,
-            /A supplied player-safe source supports exactly its atomic factual\s+propositions/u);
+          assert.match(call.messages[0].content, /source_segments are evidence/u);
           assert.match(call.messages[0].content, /completed-before subordination/u);
           assert.match(call.messages[0].content, /visible_scene.*action target/u);
-          assert.match(call.messages[0].content, /standalone perception-action sentence.*descriptive inventory/u);
+          assert.match(call.messages[0].content,
+            /inspection or perception current beat[\s\S]*grammatically governs/u);
           return { output: { replacements: [{ prose: repair.prose }] } };
         }
         assert.match(call.messages[0].content,
@@ -278,7 +278,7 @@ test('dense required current beat is repaired into focal clusters while a flat s
       calls.push(call.role_id);
       const wire = JSON.parse(call.messages[1].content);
       if (call.role_id === 'gameplay_narrator') {
-        assert.match(call.messages[0].content, /When required_current_beat is dense/u);
+        assert.match(call.messages[0].content, /For a dense inspection or perception/u);
         assert.match(call.messages[0].content, /shared object, spatial anchor, or\s+before\/after relation/u);
         return { output: { prose: flat } };
       }
@@ -286,13 +286,10 @@ test('dense required current beat is repaired into focal clusters while a flat s
         assert.equal(wire.required_current_beat.changes.length, changes.length);
         assert.equal(wire.required_current_beat.uncertainties.length, 1);
         assert.equal(wire.segments[0].prose, flat);
-        assert.match(call.messages[0].content, /For a dense required_current_beat/u);
-        assert.match(call.messages[0].content, /Never invent a causal bridge, force a layout/u);
-        assert.match(call.messages[0].content, /A focal verb or colon alone does not repair an independent catalogue/u);
-        const instruction = call.messages[0].content;
-        assert.ok(instruction.lastIndexOf('FINAL REPAIR CHECK') >
-          instruction.lastIndexOf('A committed transient attempt'));
-        assert.match(instruction, /never a copy or a synonym, punctuation, clause-order, or standalone-sentence permutation/u);
+        assert.match(call.messages[0].content, /For a dense inspection or perception/u);
+        assert.match(call.messages[0].content, /add no bridge, cause, sensation or result/u);
+        assert.match(call.messages[0].content, /source_segments are evidence/u);
+        assert.match(call.messages[0].content, /replacement must differ/u);
         return { output: { replacements: [{ prose: repair.prose }] } };
       }
       const initial = wire.phase === 'initial';
@@ -325,7 +322,7 @@ test('sparse current beat remains concise without an invented bridge or layout',
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     const wire = JSON.parse(call.messages[1].content);
     if (call.role_id === 'gameplay_narrator') {
-      assert.match(call.messages[0].content, /Do not force a layout/u);
+      assert.match(call.messages[0].content, /Sparse evidence calls for concise prose/u);
       return { output: { prose } };
     }
     return { output: reviewed(wire, { evidence: ['The sparse grounded result is concise.'] }) };

@@ -34,19 +34,9 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'When a current inspection or perception action supplies descriptive observations, make that '
   + 'action a dependent clause or finite perception verb that grammatically governs at least one compact '
   + 'cluster joined by a supplied shared object, spatial anchor, or before/after relation. Never use an '
-  + 'action followed by a colon and a factual catalogue. For a multi-fact inspection, use one related pair '
-  + 'as the governed cluster and put every other observation in its own concise consequence or uncertainty '
-  + 'sentence; never join those remaining facts with a list or semicolon. '
+  + 'action followed by a colon and a factual catalogue. '
   + 'This applies whether the current beat is dense or not; '
   + 'a standalone action sentence followed by a descriptive inventory is not action-centered. '
-  + 'When required_current_beat is dense, extend that focal progression by grouping facts only through '
-  + 'an explicitly supplied shared object, spatial anchor, or before/after relation. Preserve every '
-  + 'atomic proposition, certainty, and performed-action order; leave unrelated result, body, and '
-  + 'epistemic-boundary facts as concise consequence beats. Do not force a layout, replace required '
-  + 'sources with optional support, or invent a causal bridge. '
-  + 'A focal verb or colon does not compose independent observations by itself: it remains '
-  + 'weak_literary_composition unless the focal action grammatically governs at least one compact '
-  + 'factual cluster joined by a supplied shared object, spatial anchor, or before/after relation. '
   + 'Keep other required facts as concise consequence or uncertainty beats. '
   + 'Do not invent perception or causality for other action classes. '
   + 'Source order alone is not a failure. A source-order checklist remains weak only when it '
@@ -56,6 +46,8 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'visible_scene may locate the passage but never supplies an observed object or action target. '
   + 'Never invent a causal, temporal or spatial bridge merely to connect facts. Sparse evidence '
   + 'calls for concise prose, not invented connective facts or a service report.';
+
+const DENSE_COMPOSITION_RULE = 'For a dense inspection or perception with multiple supplied observations, group observations only by an explicit supplied object, place, or before/after relation. Start with one grammatical beat in which the completed action or a finite perception verb governs a compact cluster of two or more supplied observations; never put that action in a standalone sentence. Express every further cluster as a separately anchored perception or consequence beat; never leave a cluster as a bare state sentence. Do not collapse different anchors into one coordinating or semicolon chain. Put the supplied held result, body consequence and unresolved uncertainty in concise grounded sentences. Preserve every proposition, anchor and certainty once; add no bridge, cause, sensation or result.';
 
 const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certainty; '
   + 'plausibility is not evidence. A supplied player-safe source supports exactly its '
@@ -81,22 +73,21 @@ const INSPECTION_REPAIR_RULE = 'For an inspection or perception current beat wit
   + 'whether dense or not, make the action a dependent clause or finite perception verb that grammatically '
   + 'governs at least one compact factual cluster linked by a supplied shared object, spatial anchor, or '
   + 'before/after relation. Never use an action followed by a colon and a factual catalogue; a focal verb '
-  + 'or colon before an independent catalogue is not a repair. For a multi-fact inspection, use one related '
-  + 'pair as the governed cluster and put every other observation in its own concise consequence or '
-  + 'uncertainty sentence; never join those remaining facts with a list or semicolon. ';
+  + 'or colon before an independent catalogue is not a repair. ';
+
 
 export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
   if (typeof roleRunner?.run !== 'function') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING', 'Configured LLM role runner is required.', { status: 503 });
   return createNarrationService({
     writer: { generate: (request) => runNarrationRole(roleRunner, 'gameplay_narrator',
-      `${WRITER_SHAPE} ${PROSE_RULES} ${GROUNDING_RULES}`, request) },
+      `${WRITER_SHAPE} ${PROSE_RULES} ${GROUNDING_RULES} ${DENSE_COMPOSITION_RULE}`, request) },
     formatRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_format_repair',
-      `${WRITER_SHAPE} Repair the invalid JSON shape against validation_errors, retaining supported meaning. ${PROSE_RULES} ${GROUNDING_RULES}`, request) },
+      `${WRITER_SHAPE} Repair the invalid JSON shape against validation_errors, retaining supported meaning. ${PROSE_RULES} ${GROUNDING_RULES} ${DENSE_COMPOSITION_RULE}`, request) },
     auditor: { audit: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_auditor',
       narrationAuditInstruction(request), request) },
     semanticRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_semantic_repair',
-      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For weak_literary_composition, preserve performed-action order; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. ${INSPECTION_REPAIR_RULE}For a dense required_current_beat, make a supplied performed action or perceived result the focal progression; group only facts with an explicitly supplied shared object, spatial anchor, or before/after relation, preserving every atomic proposition and certainty once. A focal verb or colon alone does not repair an independent catalogue: the focal action must grammatically govern at least one compact factual cluster linked by a supplied shared object, spatial anchor, or before/after relation. Leave other required facts as concise consequence or uncertainty beats. Never invent a causal bridge, force a layout, or replace a required source with optional support. When a concern identifies ongoing wording for a completed action, make completion grammatically explicit; never replace it with another present or ongoing verb. For static_context_dump, remove the unchanged independent panorama and retain only support that composes the current beat; fluent spatial regrouping of the same snapshot is not a repair. Then regroup retained descriptive facts by supplied shared subjects and spatial anchors instead of input order. When they are supplied results of a perception beat, that beat must grammatically govern the cluster; a standalone perception-action sentence plus a descriptive inventory still fails. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES} FINAL REPAIR CHECK: a weak-composition concern requires a newly composed whole passage, never a copy or a synonym, punctuation, clause-order, or standalone-sentence permutation. A focal verb or colon alone is still weak: attach at least one compact factual cluster to the focal beat through a supplied object, place, or before/after relation, then keep the rest as concise consequence or uncertainty beats without an invented bridge.`, request) }
+      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. source_segments are evidence for source_segment_ids in concerns; only the immutable s1 target is replaceable. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. Use only supplied player-safe facts. Preserve every required proposition and certainty once, confirmed speech verbatim with its NPC speaker, performed-action order, unresolved-result uncertainty, and each sensory modality exactly. Second person denotes only the player. Completed actions must stay completed; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. An unexecuted continuation stays the player's open choice and explicitly has not happened and has no known result. ${INSPECTION_REPAIR_RULE}Optional support is a candidate set, never a coverage target. For static_context_dump, remove the unchanged independent panorama and retain only support that composes the current beat; fluent spatial regrouping of the same snapshot is not a repair. Regroup retained observations only by supplied shared subjects and spatial anchors. visible_scene may locate the passage but supplies no observed object or action target. For elapsed_as_service_report, remove elapsed-time wording; turn duration belongs only to the UI. A label or ID supplies identity, not a trait, action, result, time, cause, or sensation. A transient attempt supplies only its performed handling unless a result is also supplied. With sparse support, shorten rather than embellish. Add no hidden fact, diagnosis, unsupported bridge, cause, reaction, sensation, action, result, or certainty. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. FINAL REPAIR CHECK: a weak-composition repair is never a copy, synonym swap, punctuation change, clause-order change, or standalone-sentence permutation. ${DENSE_COMPOSITION_RULE}`, request) }
   });
 }
 

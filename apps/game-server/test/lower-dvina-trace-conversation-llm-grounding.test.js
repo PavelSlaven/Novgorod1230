@@ -191,7 +191,7 @@ test('semantic grounding fallback gives a direct safe reply and keeps self-intro
     }];
     const original = plan(input);
     original.speech.utterance_text =
-      'Я Еремей. Онисима я не знаю и после крушения его не видел.';
+      'Здравствуйте. Я Еремей, рыбак. Онисима я не знаю и после крушения его не видел.';
     original.speech.claims = [{ claim_id: 'unsupported',
       content_summary: 'После крушения Онисима не видел.', form: 'assertion',
       speaker_posture: 'believed_true', source_knowledge_refs: [],

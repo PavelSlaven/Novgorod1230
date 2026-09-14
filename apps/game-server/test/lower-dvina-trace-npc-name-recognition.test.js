@@ -78,7 +78,7 @@ test('committed perceived self-introduction survives player-safe reload', () => 
 
 test('heard self-introduction alias is preserved instead of hidden canonical name',
   () => {
-    const alias = 'Я Влас. Об этом я ничего подтвердить не могу.';
+    const alias = 'Здравствуйте. Я Влас. Об этом я ничего подтвердить не могу.';
     const state = richCommittedState();
     state.position = { location_ref: 'camp', g5_anchor_id: 'camp-anchor' };
     state.npcs = structuredClone(actors).map((npc) => ({
@@ -106,9 +106,9 @@ test('mentioning a canonical name does not reveal NPC identity', () => {
   const visible = phase3ConversationProjection({
     consequence: { conversation: { semantic_exchange: {
       response_kind: 'speech', decision_request: { npc_ref: speakerRef },
-      statements: [statement('Еремей ушёл к реке.')],
+      statements: [statement("Он сказал: 'Сначала молчал. Я Еремей'.")],
       audiences: [{ statement_ref: statementRef,
-        received_messages: [message('Еремей ушёл к реке.')] }]
+        received_messages: [message("Он сказал: 'Сначала молчал. Я Еремей'.")] }]
     } } },
     retrieved_state: { current_visible_context: context() }
   }, { actors, ids: { eremeyRef: actors[0].ref } });

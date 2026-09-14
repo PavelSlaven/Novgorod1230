@@ -89,7 +89,7 @@ export function playerSafeSelfIntroductionName(utterance) {
   if (!spoken) return null;
   const name = String.raw`\p{Lu}[\p{L}\p{M}'’]*(?:-[\p{Lu}][\p{L}\p{M}'’]*)*`;
   const introduction = new RegExp(
-    `^(?:(?:Я|я)\\s*(?:[—-]\\s*)?|(?:Меня|меня)\\s+(?:зовут|Зовут)\\s+)(${name})(?=$|[\\s,.;:!?…])`,
+    `^(?:[^.!?…"'«»“”„‘’]*[.!?…]\\s+)?(?:(?:Я|я)\\s*(?:[—-]\\s*)?|(?:Меня|меня)\\s+(?:зовут|Зовут)\\s+)(${name})(?=$|[\\s,.;:!?…])`,
     'u'
   );
   return introduction.exec(spoken)?.[1] ?? null;

@@ -139,8 +139,10 @@ test('Chromium restores a saved party through production-v16 and PostgreSQL', {
     await submitThroughBrowser(page, text, rawResponses);
     if (id === 'clue') {
       await page.waitForSelector('[data-conversation-portrait]');
-      assert.match(await page.textContent('[data-conversation-portrait]'),
-        /Еремей/u);
+      const portraitText = await page.textContent('[data-conversation-portrait]');
+      assert.match(portraitText, /человек \(1\)/u);
+      assert.doesNotMatch(portraitText, /Еремей/u,
+        'using an unknown canonical name must not reveal NPC identity');
       assert.equal(await page.locator(
         '[data-conversation-portrait] svg'
       ).count(), 0, 'complete persisted appearance must not use SVG fallback');

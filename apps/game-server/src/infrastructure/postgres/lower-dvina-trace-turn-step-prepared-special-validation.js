@@ -7,6 +7,8 @@ import { validatePreparedRouteTraceLineage } from
   './lower-dvina-trace-turn-step-prepared-route-lineage.js';
 import { samePreparedTimeBase } from
   './lower-dvina-trace-turn-step-prepared-effect-values.js';
+import { validPreparedPhase3ConversationTargets } from
+  './lower-dvina-trace-turn-step-prepared-conversation-targets.js';
 import { validTraceCombatStartConsequence,
   validTracePreparedCombatConsequence } from
   '../../runtime/lower-dvina-trace-combat-prepared-contract.js';
@@ -56,7 +58,8 @@ export function validatePreparedPhase3RouteConversation({ ledger, envelope,
       || conversationTrace.approved_plan.operations?.length !== 1
       || conversationOperation?.op !== 'emit_interaction'
       || offeredInteractions.length !== 1
-      || conversationOperation.target_actor_refs?.length !== 1
+      || !validPreparedPhase3ConversationTargets(
+        conversationOperation, conversation.consequence.conversation)
       || !Array.isArray(conversationOperation.instrument_refs)
       || conversation.consequence.conversation.npc_id !== target
       || !samePreparedValue(conversation.time_update.clock_before,

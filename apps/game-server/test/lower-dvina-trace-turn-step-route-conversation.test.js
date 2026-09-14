@@ -17,6 +17,8 @@ import { projectPosition } from
   '../src/runtime/lower-dvina-trace-player-safe-world.js';
 import { phase3ConversationTargetRefs } from
   '../src/runtime/lower-dvina-trace-phase-2-target-refs.js';
+import { validPreparedPhase3ConversationTargets } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-step-prepared-conversation-targets.js';
 
 const currentBundle = await loadScenarioBundle(14);
 const productionScenePresentation = JSON.parse(await readFile(new URL(
@@ -34,6 +36,61 @@ test('Phase 3 keeps every selected conversation target', () => {
   } }, contracts), targetIds.map((entityId) => ({
     entity_kind: 'npc', entity_id: entityId
   })));
+});
+
+test('prepared Phase 3 conversation accounts for every selected NPC', () => {
+  const targets = ['npc:one', 'npc:two', 'npc:three'];
+  const sourceRef = {
+    entity_kind: 'conversation_statement', entity_id: 'statement:player'
+  };
+  const npcRefs = targets.map((entityId) => ({
+    entity_kind: 'npc', entity_id: entityId
+  }));
+  const requests = npcRefs.slice(0, 2).map((npcRef, index) => ({ request: {
+    request_id: `request:${index + 1}`, npc_ref: npcRef,
+    perceived_message: { source_statement_ref: sourceRef }
+  } }));
+  const conversation = { npc_id: targets[0], semantic_exchange: {
+    decision_request: requests[0].request,
+    decisions: requests,
+    statements: [{ statement_id: sourceRef.entity_id,
+      speaker_ref: { entity_kind: 'player_character', entity_id: 'player' },
+      intended_addressee_refs: npcRefs }],
+    audiences: [{ statement_ref: sourceRef,
+      received_messages: npcRefs.map((listenerRef) => ({
+        listener_ref: listenerRef
+      })) }],
+    npc_outcomes: requests.map(({ request }, index) => ({
+      request_id: request.request_id, applied: true,
+      contribution_ref: { entity_kind: index === 0
+        ? 'conversation_statement' : 'conversation_contribution',
+      entity_id: `contribution:${index + 1}` }
+    })),
+    terminal_npc_outcomes: [{ npc_ref: npcRefs[2],
+      outcome: 'npc_unavailable' }]
+  } };
+  const operation = { target_actor_refs: targets };
+  assert.equal(validPreparedPhase3ConversationTargets(
+    operation, conversation), true);
+  const mutations = [
+    (copy) => { copy.operation.target_actor_refs[0] = ''; },
+    (copy) => copy.operation.target_actor_refs.push(targets[0]),
+    (copy) => copy.conversation.semantic_exchange.decisions.push(
+      structuredClone(copy.conversation.semantic_exchange.decisions[0])),
+    (copy) => copy.conversation.semantic_exchange.npc_outcomes.pop(),
+    (copy) => copy.conversation.semantic_exchange.statements[0]
+      .intended_addressee_refs.pop(),
+    (copy) => copy.conversation.semantic_exchange.audiences[0]
+      .received_messages.pop(),
+    (copy) => copy.conversation.semantic_exchange.terminal_npc_outcomes[0]
+      .npc_ref.entity_id = 'npc:other'
+  ];
+  for (const mutate of mutations) {
+    const copy = structuredClone({ operation, conversation });
+    mutate(copy);
+    assert.equal(validPreparedPhase3ConversationTargets(
+      copy.operation, copy.conversation), false);
+  }
 });
 
 test('route continuation receives only fresh first-contact fishers at camp', async () => {

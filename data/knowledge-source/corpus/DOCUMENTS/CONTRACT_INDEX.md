@@ -53,7 +53,7 @@
 
 `Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.
 
-Для нетривиальных задач разработки §19 `AGENTS.md` задаёт обязательный workflow `codebase-memory-mcp` Verify (Tier 2): discovery владельцев и зависимостей, сверка исходников, `detect_changes` и проверка покрытия. [Локальная настройка CBM](../../../../docs/setup/CODEBASE_MEMORY_MCP.md) — техническая инструкция; граф не заменяет нормативный канал `@rus/knowledge-source` и canonical documents.
+Для нетривиальных задач разработки §19 `AGENTS.md` задаёт обязательный workflow `codebase-memory-mcp` Verify (Tier 2): discovery владельцев и зависимостей, сверка исходников, `detect_changes` и проверка покрытия. Если инструмент недоступен, это отмечается в итоговом отчёте, а owners, зависимости и полнота выводов устанавливаются прямым чтением и `rg` по затронутому scope; сама недоступность не блокирует задачу. [Локальная настройка CBM](../../../../docs/setup/CODEBASE_MEMORY_MCP.md) — техническая инструкция; граф не заменяет нормативный канал `@rus/knowledge-source` и canonical documents.
 
 ## 3.1. Module contracts and public schemas
 
@@ -174,7 +174,7 @@ An undeclared guide may still be relevant, but it must not silently override an 
 
 ## 8. Contract Auditor
 
-Обязательность Contract Auditor, его read-only роль, mandatory triggers, always-read source set, формат `CONTRACT AUDIT FINDING` и blocking criteria определяются единственным governing owner — root `AGENTS.md`, §25.1. Этот индекс не дублирует эти правила; он дополняет их только навигацией и domain scope matrix.
+Обязательность Contract Auditor, границы логического изменения для его проведения, read-only роль, mandatory triggers, source set по затронутым owners и границам diff, формат `CONTRACT AUDIT FINDING` и blocking criteria определяются единственным governing owner — root `AGENTS.md`, §25.1. Этот индекс не дублирует эти правила; он дополняет их только навигацией и domain scope matrix.
 
 ### 8.1. Scope matrix
 

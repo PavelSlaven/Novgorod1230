@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "32e58cbbc4978616220329d62e0f86dbe141ba4f1c42b108865611d4e8dc41e3",
+  "corpus_hash": "3c9ca48d4a4d3b0ff1a7df9208ed695163b4640d4df973ac01eeacb39213daed",
   "chunk_count": 2812,
   "chunks": [
     {
@@ -486,8 +486,8 @@
       "section": "Compatibility redirect: independent audit and Contract Auditor",
       "line_start": 1,
       "line_end": 14,
-      "text": "## code_critic_invocation_rule.txt — Compatibility redirect: independent audit and Contract Auditor\n# Compatibility redirect: independent audit and Contract Auditor\n\nStatus: superseded.\n\nThe old rule requiring a critic after every code or behavior change no longer applies.\n\nUse:\n\n1. root `AGENTS.md`, section 25, for risk-based independent audit;\n2. `CONTRACT_INDEX.md`, section 8, for the read-only Contract Auditor, its triggers, source sets and finding format.\n\nAn ordinary local fix does not require a separate critic when CHIEF proves that public behavior, contracts, owner boundaries, persistence/schema, LLM authority and active profile status are unchanged.\n\nElevated-risk work remains subject to mandatory independent audit as defined by root `AGENTS.md`.",
-      "char_count": 765
+      "text": "## code_critic_invocation_rule.txt — Compatibility redirect: independent audit and Contract Auditor\n# Compatibility redirect: independent audit and Contract Auditor\n\nStatus: superseded.\n\nThe old rule requiring a critic after every code or behavior change no longer applies.\n\nUse:\n\n1. root `AGENTS.md`, section 25, for risk-based independent audit and section 25.1 for the read-only Contract Auditor, its triggers, audit timing, source sets scoped to the affected owners and diff boundaries, and finding format;\n2. `CONTRACT_INDEX.md`, section 8, for contract navigation and the domain scope matrix.\n\nAn ordinary local fix does not require a separate critic when CHIEF proves that public behavior, contracts, owner boundaries, persistence/schema, LLM authority and active profile status are unchanged.\n\nElevated-risk work remains subject to mandatory independent audit as defined by root `AGENTS.md`.",
+      "char_count": 899
     },
     {
       "id": "code_driven_world_materialization_architecture.md:Архитектура кодовой материализации мира:0",
@@ -1359,8 +1359,8 @@
       "section": "3. Governing source",
       "line_start": 48,
       "line_end": 57,
-      "text": "## CONTRACT_INDEX.md — 3. Governing source\nолча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.\n\nДля нетривиальных задач разработки §19 `AGENTS.md` задаёт обязательный workflow `codebase-memory-mcp` Verify (Tier 2): discovery владельцев и зависимостей, сверка исходников, `detect_changes` и проверка покрытия. [Локальная настройка CBM](../../../../docs/setup/CODEBASE_MEMORY_MCP.md) — техническая инструкция; граф не заменяет нормативный канал `@rus/knowledge-source` и canonical documents.",
-      "char_count": 588
+      "text": "## CONTRACT_INDEX.md — 3. Governing source\nолча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.\n\nДля нетривиальных задач разработки §19 `AGENTS.md` задаёт обязательный workflow `codebase-memory-mcp` Verify (Tier 2): discovery владельцев и зависимостей, сверка исходников, `detect_changes` и проверка покрытия. Если инструмент недоступен, это отмечается в итоговом отчёте, а owners, зависимости и полнота выводов устанавливаются прямым чтением и `rg` по затронутому scope; сама недоступность не блокирует задачу. [Локальная настройка CBM](../../../../docs/setup/CODEBASE_MEMORY_MCP.md) — техническая инструкция; граф не заменяет нормативный канал `@rus/knowledge-source` и canonical documents.",
+      "char_count": 790
     },
     {
       "id": "CONTRACT_INDEX.md:3.1. Module contracts and public schemas:0",
@@ -1476,8 +1476,8 @@
       "section": "8. Contract Auditor",
       "line_start": 175,
       "line_end": 178,
-      "text": "## CONTRACT_INDEX.md — 8. Contract Auditor\n## 8. Contract Auditor\n\nОбязательность Contract Auditor, его read-only роль, mandatory triggers, always-read source set, формат `CONTRACT AUDIT FINDING` и blocking criteria определяются единственным governing owner — root `AGENTS.md`, §25.1. Этот индекс не дублирует эти правила; он дополняет их только навигацией и domain scope matrix.",
-      "char_count": 379
+      "text": "## CONTRACT_INDEX.md — 8. Contract Auditor\n## 8. Contract Auditor\n\nОбязательность Contract Auditor, границы логического изменения для его проведения, read-only роль, mandatory triggers, source set по затронутым owners и границам diff, формат `CONTRACT AUDIT FINDING` и blocking criteria определяются единственным governing owner — root `AGENTS.md`, §25.1. Этот индекс не дублирует эти правила; он дополняет их только навигацией и domain scope matrix.",
+      "char_count": 450
     },
     {
       "id": "CONTRACT_INDEX.md:8.1. Scope matrix:0",

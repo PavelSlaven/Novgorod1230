@@ -121,6 +121,12 @@ and adds no second transaction owner.
   audit/seed/policy refs и не публикует NPC checks без perception binding.
   Pending semantic/combat screen, ready screen и historical replay используют
   ту же persisted арифметику; presentation recovery не reroll-ит её.
+- Terminal factual delivery после `final_audit_failed` — только availability
+  recovery уже committed хода. Она сохраняет весь применимый player-safe public
+  screen (включая checks, panels и actions/affordances) и заменяет только
+  отсутствующую approved prose. Такой экран никогда не является narration-
+  quality PASS: blind-play, demo и TURN FORENSIC фиксируют его как blocking
+  narration finding.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side
   provider-selected LLM-вызовом, который преобразует свободный текст только в
   валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые
@@ -162,6 +168,14 @@ and adds no second transaction owner.
   inspect с полным неизменённым later intent остаются free; другая activity не
   получает этот вывод по соседнему query.
 - Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists.
+- После P16 server ведёт existing presentation job для exact committed package.
+  Approved narration сохраняет existing narrated `TurnScreen`. Только typed
+  `final_audit_failed` после bounded repair/final audit может через один
+  job/attempt CAS сохранить `delivery_mode: factual` и
+  `FactualTurnDeliveryScreen`; `narration_output` и `output_digest` тогда null.
+  Provider/deadline/store/lease/CAS/package/projection failures остаются pending
+  recovery, не factual delivery. Factual replay возвращает тот же validated
+  screen без narrator или gameplay execution; terminal mode не upgrade-ится в prose.
 
 Каждый applied direct `not_achieved`, в том числе после achieved speech, передаёт через общий turn-step result overlay недостигнутую `interpretation.player_goal` как отрицательный результат. Это не утверждает невозможность способа `grounded_attempt`, выполнение контакта или причину неудачи. Duration нескольких direct semantic seeds суммируется до текстовой дедупликации. Applied speech и failed results выводятся в порядке step traces; unapplied plans не проецируются как результаты.
 
@@ -471,7 +485,7 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
-The current versioned production activation cutover is `spatial-v3-production-v15`.
+The current versioned production activation cutover is `spatial-v3-production-v16`.
 The server and config expose only
 `builtin:production-spatial-v3`; v2 has no runtime selector or public
 composition export. Startup requires the complete Spatial-v3 bindings module
@@ -522,12 +536,15 @@ empty arrays). Native planner requests retain the complete ordered ref array for
 validation and diagnostics; candidate and retrieval budgets are unchanged.
 Retrieved claims are bounded context only: domain owners
 still control current state, mechanics, persistence, access, and outcomes.
-The Giga/vector path is mandatory whenever v15 needs a WK slice. Missing local
+The Giga/vector path is mandatory whenever v16 needs a WK slice. Missing local
 weights, startup/encode timeout, malformed vector or scan failure returns typed
 `WORLD_KNOWLEDGE_UNAVAILABLE` before the semantic consumer and P16 commit; no
 lexical gameplay fallback, mutation or failure ledger is created. HTTP hides
 the internal cause in its normal temporary-unavailable envelope, and a retry
 after encoder recovery follows the existing idempotency owner.
+Release v16 is the direct non-selectable child of v15. It pins Lower Dvina
+Trace revision 35 / M23 / Phase 1A v25 / Phase 1B v30; blue-wool evidence
+uses its corrected one-hand authored inventory profile.
 Один WK need объединяет approved search hints в один query text и выполняет
 ровно один Giga encode и один vector lookup перед одним Core resolution.
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,

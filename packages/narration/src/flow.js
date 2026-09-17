@@ -40,7 +40,9 @@ export async function runNarrationFlow(request, ports, options = {}) {
     segment_id: 's1', prose: draft.prose, nearby_context: []
   };
   const repairConcerns = (auditErrors.length ? actionableConcerns : audit.concerns).map((concern) => ({
-    ...(auditErrors.length ? { reason: concern.reason } : clone(concern)),
+    ...(auditErrors.length
+      ? { reason: concern.reason }
+      : { ...clone(concern), source_segment_ids: [concern.segment_id] }),
     segment_id: repairSegment.segment_id
   }));
   const confirmedOutcome = confirmedOutcomeContext(request);
@@ -52,7 +54,8 @@ export async function runNarrationFlow(request, ports, options = {}) {
     ...(confirmedOutcome ? { confirmed_outcome: confirmedOutcome } : {}),
     style_policy: clone(request.style_policy ?? {}),
     concerns: repairConcerns,
-    segments: [repairSegment]
+    segments: [repairSegment],
+    source_segments: clone(segments)
   });
   generationHistory.push(record('semantic_repairer', repair));
   repairHistory.push(record('semantic_repair', repair));

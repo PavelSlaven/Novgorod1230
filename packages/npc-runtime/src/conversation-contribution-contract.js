@@ -27,7 +27,7 @@ export function jsonSafe(value, ancestors = new Set()) {
   return valid;
 }
 export function nonEmptyText(value) { return typeof value === 'string' && value.trim().length > 0; }
-export function stateVersion(value) { return Number.isSafeInteger(value) && value >= 1; }
+export function stateVersion(value) { return Number.isSafeInteger(value) && value >= 0; }
 export function contractEntityRef(value, expectedKind = null) {
   return exactKeys(value, ['entity_kind', 'entity_id']) && stableId(value.entity_kind)
     && stableId(value.entity_id) && (expectedKind === null || value.entity_kind === expectedKind);

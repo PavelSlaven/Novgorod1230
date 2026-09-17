@@ -71,7 +71,7 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "b6cf41c4a9dc231393a92581145fbe6a9a70fdbf66aaa039dc465174eeecd60e",
+      "sha256": "4350be2f10de20e18f5a7937206136f77cb82df60b8fc4d5c40931f0c4f1d920",
       "bytes": 26993,
       "status": "active",
       "provenance_mode": "native"
@@ -307,8 +307,8 @@
       "file_name": "situational_prose_requirements.md",
       "status": "active",
       "provenance_mode": "native",
-      "sha256": "979c65f15a8176888112cfe306084c7aab498082e1a5d05e72e6ec7b736711a9",
-      "bytes": 60655
+        "sha256": "eece47276d0a853b8e4e1bbf1347ef935632e00ae3d9007ab0b91997bf7f5862",
+        "bytes": 62692
     },
     {
       "document_id": "spatial-architecture-standard-g0-g6",
@@ -380,8 +380,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "87d776e905be48fa711a1e72276420efcce5dfbafe125570311f14b893d61e67",
-      "bytes": 116671,
+        "sha256": "fbc521452f83b6779602f0fc58352ec659834de47ef4d3cba80897624f75befb",
+        "bytes": 118926,
       "status": "active",
       "provenance_mode": "native"
     },

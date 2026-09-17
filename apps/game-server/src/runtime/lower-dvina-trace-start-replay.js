@@ -14,7 +14,7 @@ export async function replayExistingLowerDvinaTraceStart({
     if (error?.code === 'PARTY_NOT_FOUND') return null;
     throw error;
   }
-  validateLowerDvinaTraceSessionRead({ partyId, session });
+  await validateLowerDvinaTraceSessionRead({ partyId, session });
   return {
     request_id: requestId,
     party_id: partyId,

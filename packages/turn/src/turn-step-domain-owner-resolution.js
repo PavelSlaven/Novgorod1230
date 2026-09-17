@@ -13,9 +13,12 @@ export function resolveTurnStepDomainOwner({
   if (typeof externalHandler === 'function') {
     return { kind: 'external', handler: externalHandler };
   }
+  const prepared = (preparedChainContext?.prior_effect_count ?? 0) > 0;
   const matches = semanticBindings.filter(({ command, binding }) =>
-    ((preparedChainContext?.prior_effect_count ?? 0) > 0
-      || availableOptions.has(command.option_id))
+    (prepared
+      ? bindingOperations(binding).some((candidate) =>
+          isDeepStrictEqual(candidate, operation))
+      : availableOptions.has(command.option_id))
     && binding.operation === operation.op
     && binding.matches(deepFreeze({
       operation: structuredClone(operation), plan: structuredClone(plan),

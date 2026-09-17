@@ -129,16 +129,19 @@ for (const sample of [
       calls.push(call.role_id);
       const wire = JSON.parse(call.messages[1].content);
       assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details });
-      assert.match(call.messages[0].content, /Turn duration is code-owned UI metadata/u);
+      assert.match(call.messages[0].content,
+        /turn duration (?:is code-owned UI metadata|belongs only to the UI)/iu);
       assert.match(call.messages[0].content, call.role_id === 'gameplay_narrator_auditor'
         ? /recap of unchanged\s+support is static_context_dump/u
-        : /do not recap unchanged scene/u);
+        : call.role_id === 'gameplay_narrator_semantic_repair'
+          ? /remove the unchanged independent panorama/u
+          : /do not recap unchanged scene/u);
       if (call.role_id === 'gameplay_narrator') {
         assert.match(call.messages[0].content, /Source order alone is not a failure/u);
       }
       if (call.role_id === 'gameplay_narrator_auditor') {
         assert.match(call.messages[0].content,
-          /qualitative assessment[\s\S]*counts as a perceived result/u);
+          /qualitative assessment[\s\S]*may be the perceived result/u);
       }
       if (call.role_id === 'gameplay_narrator') return { output: {
         prose: dump ? `${sample.prose} ${visible.sensory_details.join(' ')}` : sample.prose,

@@ -10,15 +10,7 @@ export function activeConversationOperations(operations, playerSafeState) {
       && operation.instrument_refs?.length === 0));
 }
 export function currentStepText({ plan, request }) {
-  const current = request.remaining_intent;
-  const remainder = plan.continuation?.remaining_intent;
-  if (typeof current === 'string' && typeof remainder === 'string'
-      && current.endsWith(remainder) && current.length > remainder.length) {
-    const prefix = current.slice(0, -remainder.length)
-      .replace(/[\s,;:—-]+$/u, '').trim();
-    if (prefix) return prefix;
-  }
-  return plan.interpretation?.grounded_attempt ?? current;
+  return plan.interpretation?.grounded_attempt ?? request.remaining_intent;
 }
 export function commandWithDraftWrites({ command, registry, loopResult }) {
   const draftWrites = loopResult.write_fragments.length > 0

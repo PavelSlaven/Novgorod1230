@@ -36,6 +36,7 @@
         "После чтения committed screen/state владеет server-side adapter, который",
         "Общий screen projector строит Character/Inventory/Route из текущего committed",
         "Тот же projector строит ordered `screen.checks` из committed check results:",
+        "Terminal factual delivery после `final_audit_failed` — только availability",
         "Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side",
         "Владеет одним server-side LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Режимы `local`/`custom`, OpenAI-compatible base URL/model/optional key и существующая O1 qualification identity сохраняются в одном локальном user-config (`RUS_LLM_SETTINGS_PATH` либо platform config directory) и атомарно применяются к новым calls через `@rus/llm-runtime`. API key не входит в public read model, party save/replay, logs или telemetry; отдельного provider/gameplay path и silent fallback нет",
         "В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены",
@@ -47,7 +48,8 @@
         "Для этого audit core может подготовить effort→none trial по §8.2.1; существующий auditor не меняет effort/owner/duration и не получает нового LLM role. Trial должен пройти core admission полного speech envelope без requested duration; ошибки за пределами copy/goal не разрешают metadata projection",
         "Та же bounded metadata projection разрешена после faithful re-audit structurally valid единственного repair: strict validation/freeze сохраняются, дополнительного planner/audit нет. Effort trial и structural recovery на repair не распространяются; оставшаяся ошибка terminal",
         "Ordinary presence и semantic activity накладывают подтверждённые изменения",
-        "Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists"
+        "Production turn narration uses `turn_runtime` Flash roles `gameplay_narrator`, optional one-shot `gameplay_narrator_format_repair`, `gameplay_narrator_auditor` and optional one-shot whole-prose `gameplay_narrator_semantic_repair`; writer и repair получают only confirmed player-safe visible context/outcome, а auditor отдельно получает optional action-intent только как non-evidence для обнаружения intent-to-success. `@rus/narration` deterministically validates schema, visible context, hidden leaks, whole-prose replacement and final audit. No router, senior cascade or narration fallback exists",
+        "После P16 server ведёт existing presentation job для exact committed package"
       ],
       "path": "apps/game-server",
       "public_entry": "./src/index.js",
@@ -63,7 +65,8 @@
         "UI-only store",
         "постоянным указанием управляемого персонажа в header из уже публичных",
         "отображением готового `presentation_context` в header; календарь, место и",
-        "маршрутизацией FirstGameScreen/TurnScreen",
+        "маршрутизацией FirstGameScreen/TurnScreen/FactualTurnDeliveryScreen",
+        "проверкой и rendering `FactualTurnDeliveryScreen v1`: degraded recovery",
         "feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics",
         "чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome",
         "Character отображает уже безопасные предысторию, память и известные сведения",
@@ -390,7 +393,7 @@
       ],
       "name": "@rus/presentation",
       "owns": [
-        "`FirstGameScreen` и `TurnScreen` version 1",
+        "`FirstGameScreen`, approved-prose-only `TurnScreen` и отдельный degraded `FactualTurnDeliveryScreen` version 1",
         "Character, Inventory, People, Route, Map, Journal и Diagnostic panels",
         "optional exact `portrait_spec_v1` внутри player-safe active interlocutor",
         "additive presentation data in versioned read models: presentation carries it",
@@ -495,7 +498,7 @@
       ],
       "path": "packages/turn",
       "public_entry": "./src/index.js",
-      "purpose": "Narration boundary принимает только approved `surface: turn` через публичный `@rus/narration.validateNarrationFlowResult`, включая coverage segment IDs утверждённой прозы; локальный validator не дублирует ослабленную схему.",
+      "purpose": "Narration boundary принимает только approved `surface: turn` через публичный `@rus/narration.validateNarrationFlowResult`, включая coverage segment IDs утверждённой прозы; локальный validator не дублирует ослабленную схему. `FactualTurnDeliveryScreen` после terminal `final_audit_failed` принадлежит presentation delivery, а не narration quality: он availability-only degraded recovery, никогда не образует prose PASS и в blind/demo/TURN FORENSIC служит blocking narration finding.",
       "version": "0.15.0"
     },
     {

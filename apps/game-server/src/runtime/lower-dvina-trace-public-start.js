@@ -173,7 +173,7 @@ export async function startLowerDvinaTrace({
     screen
   });
   const persisted = await repository.loadSession(partyId);
-  validateLowerDvinaTraceSessionRead({ partyId, session: persisted });
+  await validateLowerDvinaTraceSessionRead({ partyId, session: persisted });
   return {
     request_id: requestId,
     party_id: partyId,

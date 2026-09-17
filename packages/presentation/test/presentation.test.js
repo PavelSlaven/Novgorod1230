@@ -7,7 +7,10 @@ import {
   createFirstGameScreenReadModel,
   createJournalPanel,
   createPeoplePanel,
+  createFactualTurnDeliveryScreenReadModel,
   createTurnScreenReadModel,
+  validateFactualTurnDeliveryScreen,
+  validateLowerDvinaFactualTurnDeliveryScreen,
   validateTurnScreen
 } from '../src/index.js';
 
@@ -52,6 +55,36 @@ function narration() {
   };
 }
 
+function factualScreenInput(overrides = {}) {
+  return {
+    partyId: 'party-1', turnId: 'turn-1', turnNumber: 1,
+    packageId: 'package-1', committedStateVersion: '39',
+    visibleContext: visibleContext(), visibleChanges: ['Ты снял верёвку с телеги.'],
+    uncertainties: ['Прочность оси пока не установлена.'],
+    actionPanel: { suggested_actions: [{ label: 'Осмотреться', command: 'осматриваюсь' }] },
+    actions: [{ label: 'Осмотреться', command: 'осматриваюсь' }], checks: [],
+    panels: { journal: { visible: true, data: { current_task: 'Осмотреть телегу' } } },
+    inputPanel: { free_text_enabled: true, input_contract: 'intent_not_fact' },
+    scenarioId: 'lower_dvina_trace_v1', screenKind: 'trace_turn',
+    deliveryState: { ready: true, generated_at: '1230-01-01T00:00:00.000Z' },
+    openingScreenDigest: 'opening-1',
+    currentProjectionAnchor: { committed_state_version: '39', package_id: 'package-1',
+      package_digest: 'package-digest-1', narration_output_digest: null },
+    presentationContext: { location_label: 'Берег' },
+    ...overrides
+  };
+}
+
+function genericFactualScreenInput(overrides = {}) {
+  return {
+    partyId: 'party-1', turnId: 'turn-1', turnNumber: 1,
+    packageId: 'package-1', committedStateVersion: '39',
+    visibleContext: visibleContext(), visibleChanges: ['Ты снял верёвку с телеги.'],
+    uncertainties: [], panels: {},
+    ...overrides
+  };
+}
+
 test('creates versioned TurnScreen from approved narration only', () => {
   const screen = createTurnScreenReadModel({
     partyId: 'party-1',
@@ -66,6 +99,54 @@ test('creates versioned TurnScreen from approved narration only', () => {
   assert.equal(screen.main_prose, 'На площади глухо переговариваются люди.');
   assert.equal(screen.input_panel.input_contract, 'intent_not_fact');
   assert.equal(validateTurnScreen(screen).ok, true);
+});
+
+test('creates factual delivery screen from exact committed public fields without prose', () => {
+  const screen = createFactualTurnDeliveryScreenReadModel(factualScreenInput());
+  assert.equal(screen.schema, 'factual_turn_delivery_screen');
+  assert.equal(screen.main_prose, undefined);
+  assert.equal(screen.presentation_quality, 'degraded');
+  assert.deepEqual(screen.action_panel, { suggested_actions: [{ label: 'Осмотреться', command: 'осматриваюсь' }] });
+  assert.deepEqual(screen.actions, [{ label: 'Осмотреться', command: 'осматриваюсь' }]);
+  assert.equal(screen.input_panel.input_contract, 'intent_not_fact');
+  assert.equal(validateFactualTurnDeliveryScreen(screen).ok, true);
+  assert.equal(validateLowerDvinaFactualTurnDeliveryScreen(screen).ok, true);
+});
+
+test('creates generic degraded factual delivery without a scenario carrier', () => {
+  const screen = createFactualTurnDeliveryScreenReadModel(
+    genericFactualScreenInput()
+  );
+  assert.equal(screen.presentation_quality, 'degraded');
+  assert.deepEqual(screen.action_panel, { suggested_actions: [] });
+  assert.deepEqual(screen.actions, []);
+  assert.deepEqual(screen.checks, []);
+  assert.deepEqual(screen.delivery_state, { ready: true });
+  assert.equal(screen.main_prose, undefined);
+  assert.equal(validateFactualTurnDeliveryScreen(screen).ok, true);
+  assert.equal(validateLowerDvinaFactualTurnDeliveryScreen(screen).ok, false);
+  assert.equal(validateFactualTurnDeliveryScreen({ ...screen,
+    actions: [{ label: 'Осмотреться' }] }).ok, false);
+  assert.equal(validateFactualTurnDeliveryScreen({ ...screen,
+    scenario_id: 'lower_dvina_trace_v1' }).ok, false);
+});
+
+test('factual delivery screen rejects prose, private data and malformed current beat', () => {
+  const screen = createFactualTurnDeliveryScreenReadModel(factualScreenInput({
+    visibleChanges: ['Ты связал импровизированные сани.'], uncertainties: [], panels: {}
+  }));
+  for (const invalid of [
+    { ...screen, main_prose: 'Запрещённая проза.' },
+    { ...screen, presentation_quality: 'approved' },
+    (({ checks, ...candidate }) => candidate)(screen),
+    { ...screen, action_panel: {} },
+    { ...screen, action_panel: { suggested_actions: [] } },
+    { ...screen, current_projection_anchor: { ...screen.current_projection_anchor,
+      narration_output_digest: 'narration-digest' } },
+    { ...screen, package_digest: 'sha256:private' },
+    { ...screen, visible_context: { ...screen.visible_context, hidden_state: { secret: true } } },
+    { ...screen, visible_changes: [{ text: 'Не точная запись.' }] }
+  ]) assert.equal(validateFactualTurnDeliveryScreen(invalid).ok, false);
 });
 
 test('turn screen carries ordered player-safe checks', () => {

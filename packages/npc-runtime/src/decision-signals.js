@@ -246,7 +246,7 @@ export function validateNpcDecisionBoundary(value) {
     || !uniqueRefs(value.signal_refs, 'npc_decision_signal')
     || value.signal_refs.length === 0
     || !refsAreCanonical(value.signal_refs)
-    || !positiveDecimal(value.state_version)
+    || !(value.state_version === '0' || positiveDecimal(value.state_version))
     || value.resolution_class !== 'reaction_decision'
     || !stableId(value.idempotency_key)) {
     return false;
@@ -359,7 +359,7 @@ export function evaluateNpcDecisionSignals(input = {}) {
       && !(input.persisted_boundary_id === null
         || stableId(input.persisted_boundary_id)))
     || !exactEntityRef(input.same_time_batch_ref, 'temporal_batch')
-    || !positiveDecimal(input.state_version)) {
+    || !(input.state_version === '0' || positiveDecimal(input.state_version))) {
     invalid('NPC_DECISION_EVALUATION_INVALID', 'NPC decision signal evaluation input is not formal');
   }
 

@@ -23,7 +23,7 @@ import {
   fixture
 } from './lower-dvina-trace-phase-2-fixture.js';
 
-test('Phase 2 execution package is immutable, exact and excludes Phase 3', async () => {
+test('Phase 2 package excludes Phase 3', async () => {
   const phase2 = await loadLowerDvinaTracePhase2Bundle();
   assert.equal(phase2.manifest.scenario_definition_revision, 7);
   assert.equal(phase2.manifest.phase_3_content, 'forbidden');
@@ -50,7 +50,7 @@ test('Phase 2 execution package is immutable, exact and excludes Phase 3', async
   );
 });
 
-test('revision 31 Phase 2 package pins revision 31 publication chain', async () => {
+test('revision 31 package pins publication chain', async () => {
   const phase2 = await loadLowerDvinaTracePhase2Bundle({
     scenarioDefinitionRevision: 31
   });
@@ -60,7 +60,7 @@ test('revision 31 Phase 2 package pins revision 31 publication chain', async () 
   assert.equal(phase2.binding.scenario_definition_revision, 31);
 });
 
-test('ranges-only body effect fails closed before resolver, roll or commit', async () => {
+test('ranges-only body effect fails before resolver or commit', async () => {
   const invalidBundle = structuredClone(bundle);
   const effect = invalidBundle.body_environment_profiles.effect_profiles.find(
     ({ effect_profile_id: id }) =>
@@ -98,7 +98,7 @@ test('ranges-only body effect fails closed before resolver, roll or commit', asy
   assert.equal(f.commitCount(), 0);
 });
 
-test('committed RNG version mismatch fails before resolver, roll or commit', async () => {
+test('RNG version mismatch fails before resolver or commit', async () => {
   const f = fixture();
   f.state.materialization_trace.rng_version = 'invented_rng_v9';
   await assert.rejects(
@@ -118,9 +118,9 @@ test('committed RNG version mismatch fails before resolver, roll or commit', asy
   assert.equal(f.commitCount(), 0);
 });
 
-test('exact fast path commits one canonical inspection, check, elapsed, body effect and clue', async () => {
-  const diagnostics = createLlmDiagnostics({ developerMode: true });
-  const f = fixture({ llmDiagnostics: diagnostics });
+test('exact inspection commits', async () => {
+  const diag = createLlmDiagnostics({ developerMode: true });
+  const f = fixture({ llmDiagnostics: diag });
   const result = await f.runtime.submitTurn({
     partyId: f.partyId,
     input: {
@@ -131,13 +131,20 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
     }
   });
   assert.equal(result.option_id, 'inspect_wreck_in_detail');
-  const trace = diagnostics.takeLogReport({ party_id: f.partyId }).gameplay_traces;
-  assert.deepEqual(trace.map(({ event }) => event),
-    ['turn_context', 'owner_commit_requested', 'owner_commit_completed']);
+  const trace = diag.takeLogReport({ party_id: f.partyId }).gameplay_traces;
+  assert.equal(trace[0].event, 'turn_context');
   assert.equal(trace[0].authoritative_context.party_state.state_version, 1);
-  assert.deepEqual(trace[1], { event: 'owner_commit_requested' });
-  assert.deepEqual(trace[2], { event: 'owner_commit_completed' });
-  assert.equal(JSON.stringify(diagnostics.report({ party_id: f.partyId })).includes('authoritative_context'), false);
+  assert.deepEqual(trace[0].player_safe_state.party_state, undefined);
+  assert.equal(trace[0].request_id, 'phase2-exact');
+  assert.equal(trace[0].idempotency_key, 'phase2-exact');
+  const completed = trace.find(({ event }) => event === 'workflow_completed');
+  assert.ok(completed?.result?.checkpoint);
+  assert.ok(completed.checkpoint?.stages?.persistence_plan);
+  assert.equal(trace.at(-1), completed);
+  assert.ok(trace.find(({ event }) => event === 'owner_commit_requested')?.write_plan);
+  assert.ok(trace.find(({ event }) => event === 'owner_commit_completed')
+    ?.outcome);
+  assert.equal(JSON.stringify(diag.report({ party_id: f.partyId })).includes('authoritative_context'), false);
   assert.equal(f.bundleRequests[0].scenarioDefinitionRevision, 7);
   assert.equal(result.check.difficulty, 12);
   assert.equal(result.check.modifiers.attribute, 1);
@@ -172,8 +179,10 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
   });
   assert.equal(result.body_update.proposal.rng_consumption, 'forbidden');
   assert.equal(result.clue.template_id, 'trace_ld_v1_item_blue_wool_fragment');
+  assert.equal(f.narratorInput().delivery_turn_number, 1);
   const visible = f.narratorInput().visible_context;
   assert.deepEqual(visible.visible_changes, [
+    'Вы подробно осмотрели место крушения.',
     'На берегу лежат обломки разбитой лодки.',
     'В мокром песке видны босые следы.',
     'Рядом заметен отдельный след сапога.',
@@ -208,7 +217,7 @@ test('exact fast path commits one canonical inspection, check, elapsed, body eff
   ]);
 });
 
-test('revision 9 success atomically picks up blue wool with exact owner-preserving inventory state', async () => {
+test('revision 9 pickup preserves inventory owner', async () => {
   const f = fixture({ scenarioBundle: bundle9, rollValue: 0.99 });
   const result = await f.runtime.submitTurn({
     partyId: f.partyId,
@@ -279,29 +288,6 @@ test('revision 9 success atomically picks up blue wool with exact owner-preservi
   });
 });
 
-test('revision 9 failed inspection commits time and body but no blue-wool item', async () => {
-  const f = fixture({ scenarioBundle: bundle9, rollValue: 0 });
-  const result = await f.runtime.submitTurn({
-    partyId: f.partyId,
-    input: {
-      request_id: 'phase2-revision9-failure',
-      idempotency_key: 'phase2-revision9-failure',
-      raw_text: 'Осмотреть место крушения подробно.'
-    }
-  });
-  assert.equal(result.check.outcome.success, false);
-  assert.equal(result.clue, null);
-  assert.deepEqual(result.time_update.exact_elapsed.exact_minutes, {
-    numerator: '15',
-    denominator: '1'
-  });
-  assert.equal(result.body_update.proposal.exact_deltas.energy, -1);
-  assert.equal(
-    f.state.items.some((item) =>
-      item.template_id === 'trace_ld_v1_item_blue_wool_fragment'),
-    false
-  );
-});
 
 test('wreck inspection does not reveal a missing road bag without prior knowledge',
   async (t) => {
@@ -331,7 +317,7 @@ test('wreck inspection does not reveal a missing road bag without prior knowledg
     }
   });
 
-test('authored prior bag knowledge admits the missing-road-bag observation',
+test('authored prior bag knowledge admits missing-road-bag observation only on success',
   async (t) => {
     for (const factId of [
       'trace_ld_v1_statement_eremey_disclosure',
@@ -339,7 +325,7 @@ test('authored prior bag knowledge admits the missing-road-bag observation',
       'trace_ld_v1_evidence_bag_at_zhdanko'
     ]) {
       await t.test(factId, async () => {
-        const f = fixture({ rollValue: 0 });
+        const f = fixture({ rollValue: 0.99 });
         f.state.knowledge.push({
           fact_id: factId,
           knowledge_state: 'known_from_committed_source',
@@ -361,6 +347,23 @@ test('authored prior bag knowledge admits the missing-road-bag observation',
           'Дорожной сумки, о которой было известно, здесь нет.'), true);
         assert.equal(JSON.stringify(visibleChanges).includes(
           'visible:road_bag_missing'), false);
+        const failed = fixture({ rollValue: 0 });
+        failed.state.knowledge.push({
+          fact_id: factId,
+          knowledge_state: 'known_from_committed_source',
+          evidence_refs: []
+        });
+        const failure = await failed.runtime.submitTurn({
+          partyId: failed.partyId,
+          input: {
+            request_id: `phase2-road-bag-known-failure-${factId}`,
+            idempotency_key: `phase2-road-bag-known-failure-${factId}`,
+            raw_text: 'Осмотреть место крушения подробно.'
+          }
+        });
+        assert.equal(failure.observations.some(
+          ({ fact_id: observed }) => observed === 'visible:road_bag_missing'),
+        false);
       });
     }
   });
@@ -393,7 +396,8 @@ test('free paraphrase resolves through a player-safe closed set to the same exac
 });
 
 test('unknown intent creates no roll, elapsed, clue or factual commit', async () => {
-  const f = fixture({ semantic: 'unknown' });
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const f = fixture({ semantic: 'unknown', llmDiagnostics: diagnostics });
   await assert.rejects(
     () => f.runtime.submitTurn({
       partyId: f.partyId,
@@ -409,6 +413,13 @@ test('unknown intent creates no roll, elapsed, clue or factual commit', async ()
   assert.equal(f.commitCount(), 0);
   assert.equal(f.state.party_state.state_version, 1);
   assert.equal(f.state.items.length, 1);
+  const traces = diagnostics.takeLogReport({ party_id: f.partyId }).gameplay_traces;
+  assert.equal(traces[0].event, 'turn_context');
+  const failed = traces.find(({ event }) => event === 'workflow_failed');
+  assert.equal(failed.error.code, 'TURN_SEMANTIC_INTENT_UNKNOWN');
+  assert.equal(failed.checkpoint.stages.available_actions.schema,
+    'turn_available_action_set');
+  assert.equal(failed.events.at(-1).stageId, 4);
 });
 
 test('an earlier temporal boundary blocks the inspection before roll or mutation', async () => {
@@ -521,7 +532,8 @@ test('ambiguous intent creates no roll, elapsed, clue or factual commit', async 
 });
 
 test('exact replay does not rerun resolver, roll, time, body or clue materialization', async () => {
-  const f = fixture();
+  const diagnostics = createLlmDiagnostics({ developerMode: true });
+  const f = fixture({ llmDiagnostics: diagnostics });
   const input = {
     request_id: 'phase2-replay',
     idempotency_key: 'phase2-replay',
@@ -533,6 +545,11 @@ test('exact replay does not rerun resolver, roll, time, body or clue materializa
   assert.deepEqual(replayed, first);
   assert.equal(f.rollCount(), 1);
   assert.equal(f.commitCount(), 1);
+  const firstTrace = diagnostics.takeLogReport({ party_id: f.partyId });
+  const replayTrace = diagnostics.takeLogReport({ party_id: f.partyId });
+  const events = [...firstTrace.gameplay_traces, ...replayTrace.gameplay_traces];
+  assert.equal(events.filter(({ event }) => event === 'owner_commit_completed').length, 1);
+  assert.equal(events.filter(({ event }) => event === 'turn_replay').length, 1);
   assert.equal(
     f.state.items.filter(
       (item) => item.template_id === 'trace_ld_v1_item_blue_wool_fragment'

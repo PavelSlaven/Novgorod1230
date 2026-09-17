@@ -11,6 +11,8 @@ import {
 import { auditFreshNpcSpeech } from
   './lower-dvina-trace-npc-speech-grounding-audit.js';
 import { worldKnowledgeFactualClosure } from './world-knowledge-grounding.js';
+import { playerSafeSelfIntroductionName } from
+  './lower-dvina-trace-player-safe-npc-details.js';
 
 export function createLowerDvinaTracePlayerConversationModel({ roleRunner } = {}) {
   requireRoleRunner(roleRunner);
@@ -77,9 +79,10 @@ export function createLowerDvinaTraceNpcSemanticModel({ roleRunner,
     });
     return assembleNpcConversationPlan(response.output, request);
   };
-  model.validateFreshPlan = (plan, request) => auditFreshNpcSpeech({
-    roleRunner, plan, request
-  });
+  model.validateFreshPlan = async (plan, request) => {
+    const presentation = validateRequiredNpcPresentation(plan, request);
+    return presentation ?? auditFreshNpcSpeech({ roleRunner, plan, request });
+  };
   return model;
 }
 
@@ -95,13 +98,24 @@ function semanticGroundingFallback(original, request) {
     }
   }
   const facts = [...retained.values()];
-  const uncertainty = 'Остального я подтвердить не могу.';
+  const introducedName = requiredFirstContactName(request)
+    ?? playerSafeSelfIntroductionName(original?.speech?.utterance_text);
+  const introduction = introducedName ? `Я ${introducedName}.` : null;
+  const requiredTag = request.social_context?.npc_behavior
+    ?.required_interaction_tag;
+  const uncertainty = facts.length === 0
+    ? 'Об этом я ничего подтвердить не могу.'
+    : 'Остального я подтвердить не могу.';
+  const utterance = [introduction, ...facts.map(({ fact_text }) => fact_text),
+    uncertainty].filter(Boolean).join(' ');
   return assembleNpcConversationPlan({
     contribution_kind: 'speech',
     speech: {
-      utterance_text: [...facts.map(({ fact_text }) => fact_text),
-        uncertainty].join(' '),
-      dominant_act: 'answer', interaction_tags: [], topic_refs: [],
+      utterance_text: utterance,
+      dominant_act: 'answer',
+      interaction_tags: typeof requiredTag === 'string' && requiredTag
+        ? [requiredTag] : [],
+      topic_refs: [],
       claims: facts.map((entry, index) => ({
         claim_id: `fallback-current-observation-${index + 1}`,
         content_summary: entry.fact_text, form: 'assertion',
@@ -113,8 +127,7 @@ function semanticGroundingFallback(original, request) {
     },
     interpretation: {
       intent: 'Ответить только по подтверждённым сведениям.',
-      grounded_contribution: [...facts.map(({ fact_text }) => fact_text),
-        uncertainty].join(' '),
+      grounded_contribution: utterance,
       adaptation: 'literal'
     },
     resolution: 'automatic',
@@ -122,6 +135,39 @@ function semanticGroundingFallback(original, request) {
     supporting_operations: [], check: null, handoff: null,
     reason: 'Ответ ограничен точными текущими наблюдениями.'
   }, request);
+}
+
+function validateRequiredNpcPresentation(plan, request) {
+  const requiredName = requiredFirstContactName(request);
+  const requiredTag = request.social_context?.npc_behavior
+    ?.required_interaction_tag;
+  const errors = [
+    ...(requiredName !== null
+        && playerSafeSelfIntroductionName(plan?.speech?.utterance_text)
+          !== requiredName
+      ? ['first_contact_introduction_missing'] : []),
+    ...(typeof requiredTag === 'string' && requiredTag
+        && !plan?.speech?.interaction_tags?.includes(requiredTag)
+      ? ['required_npc_behavior_missing'] : [])
+  ];
+  return errors.length === 0 ? null : {
+    pass: false,
+    errors: errors.map((kind) => ({
+      code: 'TRACE_NPC_REQUIRED_PRESENTATION_MISSING',
+      category: 'semantic_grounding',
+      retryable: true,
+      concern_kinds: [kind],
+      message: 'Rewrite the response with the required first-contact presentation.'
+    }))
+  };
+}
+
+function requiredFirstContactName(request) {
+  const name = request?.social_context?.first_contact_introduction
+    ?.canonical_name;
+  return typeof name === 'string' && name.trim()
+      && name.trim() === request?.npc?.identity_state?.canonical_name
+    ? name.trim() : null;
 }
 
 export function createLowerDvinaTraceNpcDecisionSelector({ roleRunner } = {}) {

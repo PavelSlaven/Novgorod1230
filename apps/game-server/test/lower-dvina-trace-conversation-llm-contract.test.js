@@ -160,6 +160,8 @@ test('intent paraphrase keeps literal adaptation', async () => {
   assert.equal(validatePlayerConversationContributionPlan(plan, request), true);
   assert.equal(plan.input_mode, 'intent_paraphrase');
   assert.equal(plan.interpretation.adaptation, 'literal');
+  assert.match(fixture.calls[0].messages[0].content,
+    /utterance_text contains only the words the character would naturally say/u);
 });
 
 test('verbatim player request emits required check and operation once', async () => {

@@ -51,11 +51,16 @@ export function validateTurnProgress(value) {
 export function validatePublicScreen(screen) {
   if (!plain(screen) || screen.version !== 1) throw webError('SCREEN_INVALID', 'Versioned screen is required.');
   if (!['first_game_screen', 'turn_screen',
-    'lower_dvina_trace_turn_screen'].includes(screen.schema)) {
+    'lower_dvina_trace_turn_screen', 'factual_turn_delivery_screen'].includes(screen.schema)) {
     throw webError('SCREEN_SCHEMA_UNSUPPORTED', 'Unsupported screen schema.');
   }
   if (screen.screen_status !== 'ready') throw webError('SCREEN_NOT_READY', 'Screen must be ready.');
   if (!text(screen.party_id)) throw webError('SCREEN_PARTY_ID_REQUIRED', 'party_id is required.');
+  if (screen.schema === 'factual_turn_delivery_screen') {
+    validateFactualTurnDeliveryScreen(screen);
+    assertNoHiddenFields(screen);
+    return screen;
+  }
   if (['turn_screen', 'lower_dvina_trace_turn_screen']
     .includes(screen.schema)) {
     if (!text(screen.turn_id) || !Number.isInteger(Number(screen.turn_number))) throw webError('TURN_SCREEN_ID_INVALID', 'turn_id and turn_number are required.');
@@ -65,6 +70,36 @@ export function validatePublicScreen(screen) {
   validateSceneAffordances(screen);
   assertNoHiddenFields(screen);
   return screen;
+}
+
+function validateFactualTurnDeliveryScreen(screen) {
+  const allowed = new Set([
+    'version', 'schema', 'screen_status', 'party_id', 'turn_id', 'turn_number',
+    'package_id', 'committed_state_version', 'visible_context', 'visible_changes',
+    'uncertainties', 'presentation_quality', 'scenario_id', 'screen_kind',
+    'action_panel', 'actions', 'checks', 'panels', 'input_panel', 'delivery_state',
+    'opening_screen_digest', 'current_projection_anchor', 'presentation_context',
+    'scene_asset_id', 'combat_state'
+  ]);
+  if (Object.keys(screen).some((key) => !allowed.has(key))
+    || !text(screen.turn_id) || !Number.isInteger(screen.turn_number)
+    || screen.turn_number < 1 || !text(screen.package_id)
+    || !text(screen.committed_state_version) || !plain(screen.visible_context)
+    || !textArray(screen.visible_changes) || !textArray(screen.uncertainties)
+    || screen.presentation_quality !== 'degraded'
+    || screen.scenario_id !== 'lower_dvina_trace_v1' || screen.screen_kind !== 'trace_turn'
+    || !plain(screen.presentation_context)
+    || !plain(screen.action_panel) || !Array.isArray(screen.action_panel.suggested_actions)
+    || !Array.isArray(screen.actions)
+    || screen.delivery_state?.ready !== true || !text(screen.delivery_state.generated_at)
+    || !text(screen.opening_screen_digest) || !plain(screen.current_projection_anchor)
+    || !plain(screen.panels) || screen.input_panel?.free_text_enabled !== true
+    || screen.input_panel?.input_contract !== 'intent_not_fact') {
+    throw webError('FACTUAL_TURN_DELIVERY_INVALID',
+      'Factual turn delivery must use exact committed player-safe fields.');
+  }
+  validateChecks(screen.checks ?? []);
+  validateSceneAffordances(screen);
 }
 
 function validateChecks(checks) {
@@ -156,4 +191,5 @@ function forbidden(key) {
 }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function text(value) { return String(value ?? '').trim(); }
+function textArray(value) { return Array.isArray(value) && value.every((item) => text(item)); }
 function nonNegativeInteger(value) { return Number.isInteger(value) && value >= 0; }

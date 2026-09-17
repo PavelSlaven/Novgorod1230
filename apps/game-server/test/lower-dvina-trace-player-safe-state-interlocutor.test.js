@@ -28,11 +28,9 @@ function conversationState() {
   return committedState;
 }
 
-test('projects only safely visible active group interlocutor', () => {
+test('does not select one arbitrary interlocutor from an active group', () => {
   const result = projectLowerDvinaTracePlayerSafeState({ committed_state: conversationState(), actor_id: 'mikula' });
-  assert.deepEqual(result.player_safe_state.active_interlocutor, {
-    entity_ref: { entity_kind: 'npc', entity_id: 'eremey' }, display_label: 'Еремей'
-  });
+  assert.equal(result.player_safe_state.active_interlocutor, undefined);
   assert.equal(JSON.stringify(result.player_safe_state).includes('conversation-1'), false);
 });
 

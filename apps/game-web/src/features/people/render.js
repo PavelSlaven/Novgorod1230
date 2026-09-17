@@ -8,7 +8,9 @@ export function renderPeoplePanel(screen) {
     empty: 'Рядом никого не видно.',
     item: (person) => listItem(
       labelOf(person, ['display_label', 'label', 'name', 'title']),
-      labelOf(person, ['role', 'activity', 'status', 'state', 'mood'])
+      [labelOf(person, ['appearance']),
+        labelOf(person, ['role', 'activity', 'status', 'state', 'mood'])]
+        .filter(Boolean).join(' · ')
     )
   });
 }

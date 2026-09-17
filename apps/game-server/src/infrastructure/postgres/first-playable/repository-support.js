@@ -9,15 +9,21 @@ export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
             p.materializer_version AS party_materializer_version,
             p.rng_version AS party_rng_algorithm_id,
             p.command_catalog_digest AS party_scenario_manifest_digest,
+            p.state_version AS current_party_state_version,
             snapshot.state_payload->>'schema' AS party_snapshot_schema,
+            snapshot.state_payload AS current_party_snapshot_payload,
+            snapshot.state_digest AS current_party_snapshot_digest,
             visible.package_id AS current_projection_package_id,
+            visible.turn_id AS current_projection_turn_id,
             visible.package_digest AS current_projection_package_digest,
             visible.committed_state_version
               AS current_projection_state_version,
             visible.visible_payload AS current_projection_payload,
             narration.status AS current_narration_status,
+            narration.delivery_mode AS current_narration_delivery_mode,
             narration.output_digest AS current_narration_output_digest,
-            narration.narration_output AS current_narration_output
+            narration.narration_output AS current_narration_output,
+            narration.factual_screen AS current_narration_factual_screen
        FROM party_runtime.party_server_sessions s
        JOIN party_runtime.parties p
          ON p.party_id=s.party_id
@@ -26,8 +32,15 @@ export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
         AND snapshot.state_version=p.state_version
        LEFT JOIN party_runtime.party_visible_packages visible
          ON visible.party_id=s.party_id
-        AND visible.package_id=
-          s.screen->'current_projection_anchor'->>'package_id'
+        AND visible.package_id=COALESCE(
+          s.screen->'current_projection_anchor'->>'package_id',
+          s.screen->>'package_id'
+        )
+        AND (
+          s.screen->>'schema' <> 'factual_turn_delivery_screen'
+          OR visible.committed_state_version::text
+            = s.screen->>'committed_state_version'
+        )
        LEFT JOIN party_runtime.party_narration_jobs narration
          ON narration.party_id=s.party_id
         AND narration.package_id=visible.package_id
@@ -57,9 +70,17 @@ export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
       result.rows[0].party_rng_algorithm_id,
     party_scenario_manifest_digest:
       result.rows[0].party_scenario_manifest_digest,
+    current_party_state_version:
+      Number(result.rows[0].current_party_state_version),
     party_snapshot_schema: result.rows[0].party_snapshot_schema,
+    current_party_snapshot_payload:
+      result.rows[0].current_party_snapshot_payload,
+    current_party_snapshot_digest:
+      result.rows[0].current_party_snapshot_digest,
     current_projection_package_id:
       result.rows[0].current_projection_package_id ?? null,
+    current_projection_turn_id:
+      result.rows[0].current_projection_turn_id ?? null,
     current_projection_package_digest:
       result.rows[0].current_projection_package_digest ?? null,
     current_projection_state_version:
@@ -68,10 +89,14 @@ export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
       result.rows[0].current_projection_payload ?? null,
     current_narration_status:
       result.rows[0].current_narration_status ?? null,
+    current_narration_delivery_mode:
+      result.rows[0].current_narration_delivery_mode ?? null,
     current_narration_output_digest:
       result.rows[0].current_narration_output_digest ?? null,
     current_narration_output:
-      result.rows[0].current_narration_output ?? null
+      result.rows[0].current_narration_output ?? null,
+    current_narration_factual_screen:
+      result.rows[0].current_narration_factual_screen ?? null
   };
 }
 

@@ -64,7 +64,7 @@ test('active interlocutor projection fails closed for conversation ambiguity', (
   }), null);
 });
 
-test('group conversation projects only its last committed NPC speaker', () => {
+test('group conversation has no arbitrary singular active interlocutor', () => {
   const group = session({
     active_participant_refs: [player, eremey, ratsha, fisher],
     last_contribution_ref: {
@@ -73,10 +73,8 @@ test('group conversation projects only its last committed NPC speaker', () => {
   });
   const statements = [{ statement_id: 'statement-eremey',
     conversation_id: group.conversation_id, speaker_ref: eremey }];
-  assert.deepEqual(project({ conversation_sessions: [group],
-    conversation_statements: statements }), {
-    entity_ref: eremey, display_label: 'Еремей'
-  });
+  assert.equal(project({ conversation_sessions: [group],
+    conversation_statements: statements }), null);
   assert.equal(project({ conversation_sessions: [group],
     conversation_statements: [] }), null);
   assert.equal(project({ conversation_sessions: [group],

@@ -13,3 +13,15 @@ test('people panel renders player-safe display labels', () => {
   assert.match(html, /рыбак/u);
   assert.doesNotMatch(html, /Рядом никого не видно/u);
 });
+
+test('people panel renders appearance beside current status', () => {
+  const html = renderPeoplePanel({ panels: { people: { visible: true, data: {
+    visible_npcs: [{ display_label: 'человек (1)',
+      appearance: 'русые волосы, короткая борода', status: 'чинит сети' },
+    { display_label: 'человек (2)', appearance: 'лысина, густая борода',
+      status: 'чинит сети' }]
+  } } } });
+
+  assert.match(html, /русые волосы, короткая борода · чинит сети/u);
+  assert.match(html, /лысина, густая борода · чинит сети/u);
+});

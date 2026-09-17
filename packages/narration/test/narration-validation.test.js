@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   validateNarrationAudit, validateNarrationFlowResult, validateNarrationOutput,
-  validateNarrationRequest, validateNarrationSemanticRepair
+  validateNarrationRequest, validateNarrationSemanticRepair,
+  validateTerminalNarrationPolicyRejection
 } from '../src/index.js';
 
 const output = { version: 1, schema: 'narration_output', output_id: 'turn-1',
@@ -63,4 +64,31 @@ test('public audit and repair text stays typed and placeholder evidence cannot a
   assert.equal(validateNarrationSemanticRepair(repair, ['s1']).ok, true);
   repair.replacements[0].segment_id = ['s1'];
   assert.equal(validateNarrationSemanticRepair(repair, ['s1']).ok, false);
+});
+
+test('terminal factual eligibility requires the completed strict final-audit flow', () => {
+  const concern = { segment_id: 's1', kind: 'unsupported_fact', reason: 'Нет опоры.' };
+  const failedAudit = { ...audit, pass: false, concerns: [concern] };
+  const request = { version: 1, schema: 'narration_request', request_id: 'turn-1',
+    surface: 'turn', visible_context: { visible_changes: [], uncertainties: [] } };
+  const rejected = { version: 1, schema: 'narration_flow_result', request_id: 'turn-1',
+    surface: 'turn', status: 'blocked', pass: false, approved_output: null, final_audit: null,
+    generation_history: [{ role: 'writer', value: output },
+      { role: 'semantic_repairer', value: { version: 1, schema: 'narration_semantic_repair',
+        replacements: [{ segment_id: 's1', prose: output.prose }] } }],
+    repair_history: [{ role: 'semantic_repair', value: { version: 1,
+      schema: 'narration_semantic_repair', replacements: [{ segment_id: 's1', prose: output.prose }] } }],
+    audit_history: [{ role: 'auditor', value: failedAudit }, { role: 'auditor', value: failedAudit }],
+    diagnostics: { phase: 'final_audit_failed', errors: [concern], repairs_used: 1 } };
+  assert.equal(validateTerminalNarrationPolicyRejection(rejected, request).ok, true);
+  for (const mutate of [
+    (value) => { value.audit_history = [{ role: 'auditor', value: failedAudit }]; },
+    (value) => { value.audit_history[1].value.concerns[0].segment_id = 's2'; },
+    (value) => { value.diagnostics.errors = []; },
+    (value) => { value.generation_history[1].role = 'writer'; }
+  ]) {
+    const value = structuredClone(rejected);
+    mutate(value);
+    assert.equal(validateTerminalNarrationPolicyRejection(value, request).ok, false);
+  }
 });

@@ -46,6 +46,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
   } = context;
   let committedPublicResult = null, turnCommitStatus = 'not_started';
+  const trace = (record) => { try { context.llmDiagnostics?.recordGameplayTrace?.(record); }
+    catch { /* Diagnostic capture must not affect gameplay. */ } };
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
@@ -88,6 +90,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     semanticActivityOwner: turnStepSemanticActivityOwner,
     idempotencyKey,
     postActionPerceptionProfile,
+    projectCurrentScene,
     temporalAdvance,
     workingProjectionAuthority
   });
@@ -177,7 +180,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       async commit(writePlan) {
         turnBudget?.assertCanCommit();
         turnCommitStatus = 'ambiguous';
-        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_requested' });
+        trace({ event: 'owner_commit_requested',
+          write_plan: writePlan, expected_versions: writePlan?.expected_versions ?? null });
         let committed;
         try { committed = await repository.commitPhase2Turn({
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
@@ -191,29 +195,36 @@ export function buildLowerDvinaTracePhase2Services(context) {
           if (authoritativeNotStarted(error)) {
             turnCommitStatus = 'not_started';
           }
-          context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_rejected',
-            code: error?.code ?? null });
+          trace({ event: 'owner_commit_rejected',
+            code: error?.code ?? null, turn_commit_status: turnCommitStatus,
+            details: error?.details ?? null });
           throw error;
         }
         if (authoritativeNotStarted(committed)) turnCommitStatus = 'not_started';
         else if (committed?.ok === true) turnCommitStatus = 'committed';
-        context.llmDiagnostics?.recordGameplayTrace?.({ event: 'owner_commit_completed' });
         committedPublicResult = committed.committed_public_result ?? null;
+        trace({ event: 'owner_commit_completed',
+          turn_commit_status: turnCommitStatus, outcome: committed,
+          committed_public_result: committedPublicResult });
         return committed;
       }
     },
     persistedVisibleReader: {
-      read(request) {
-        return runWithinTurnDeadline(turnBudget, () => repository.loadPhase2VisibleContext({
+      async read(request) {
+        const result = await runWithinTurnDeadline(turnBudget, () => repository.loadPhase2VisibleContext({
           partyId, commit: request.commit, turnBudget
         }));
+        trace({ event: 'owner_readback_completed', result });
+        return result;
       }
     },
     narrator: {
       ...narrator,
       run(request) {
         return runWithinTurnDeadline(turnBudget, () => narrator.run({
-          ...request, turnBudget
+          ...request, party_id: partyId,
+          delivery_turn_number: committedPublicResult?.turn_number,
+          turnBudget
         }));
       }
     },
@@ -231,6 +242,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
           opening_screen_digest: state.opening_identity.opening_screen_digest
         };
         turnBudget?.assertWithinDeadline();
+        trace({ event: 'owner_screen_projected', screen });
         return screen;
       }
     },

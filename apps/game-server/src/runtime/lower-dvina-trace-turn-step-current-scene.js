@@ -149,7 +149,10 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
   const attempts = values.filter(value => value?.kind === 'transient_item_use'
     && Object.keys(value).length === 2 && text(value.description));
   const changes = values.flatMap((value) => {
-    if (appliedPlan != null && (value?.kind === 'semantic_activity'
+    if (appliedPlan != null && (
+        (value?.kind === 'semantic_activity'
+          && (appliedPlan.resolution === 'direct'
+            || value.discovery_result == null))
         || (attempts.length === 1 && value === attempts[0]))) return [];
     return directSeedChange(value);
   }).filter(Boolean);

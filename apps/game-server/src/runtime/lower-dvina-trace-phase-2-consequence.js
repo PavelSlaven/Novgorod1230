@@ -33,7 +33,7 @@ export function resolveInspectionConsequence({
   const roadBagKnown = (retrievedState.knowledge ?? []).some((record) =>
     ROAD_BAG_KNOWLEDGE_SOURCES.has(record.fact_id));
   const evidenceRefs = [
-    ...contracts.check.precheck_automatic_observation_refs.filter((ref) =>
+    ...(success ? contracts.check.precheck_automatic_observation_refs : []).filter((ref) =>
       contracts.evidenceGraph.evidence_records.some(
         (record) => record.evidence_id === ref
       )),
@@ -42,7 +42,7 @@ export function resolveInspectionConsequence({
       : contracts.check.admitted_evidence_by_outcome.failure)
   ];
   const observationRefs = [...new Set([
-    ...contracts.check.precheck_automatic_observation_refs,
+    ...(success ? contracts.check.precheck_automatic_observation_refs : []),
     ...(success ? contracts.check.success_observation_refs : []),
     ...evidenceRefs
   ])].filter((ref) => ref !== ROAD_BAG_MISSING || roadBagKnown);

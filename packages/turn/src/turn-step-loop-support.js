@@ -82,7 +82,7 @@ export function selectedPreparedFollowup({ plan, request, continuation }) {
   const marker = continuation?.prepared_followup_ref;
   if (typeof marker !== 'string' || plan.operations?.length !== 1) return null;
   const candidates = request.prepared_followup_candidates?.filter((value) =>
-    value.prepared_followup_ref === marker && sameJson(value.precursor_operation, plan.operations[0])) ?? [];
+    value.prepared_followup_ref === marker) ?? [];
   return candidates.length !== 1 ? null : { operation: structuredClone(candidates[0].operation),
     adaptation: plan.interpretation.adaptation };
 }

@@ -71,9 +71,9 @@ for (const generic of [false, true]) {
       : 'Вы вышли к пристани за излучиной.',
     'Обратный путь идёт вдоль берега.']);
     for (const fact of [...scenePresentation.locations[0].player_visible_physical_facts,
-      'В поле зрения — Еремей.',
-      'Еремей: На рукавах налипли стружки.',
-      'Еремей: Перебирает обрезки досок.']) {
+      'В поле зрения — человек.',
+      'человек: На рукавах налипли стружки.',
+      'человек: Перебирает обрезки досок.']) {
       assert.ok(visible.sensory_details.includes(fact), fact);
     }
     await assertCurrentWire(visible, visible.visible_changes);
@@ -90,8 +90,23 @@ test('real historical phase3 arrival keeps destination, NPC and discovered retur
       'Обратная тропа к месту крушения теперь известна.']);
   assert.ok(visible.sensory_details.includes(
     'Рабочий стан стоит у берега Нижней Двины.'));
-  assert.ok(visible.sensory_details.includes('В поле зрения — Еремей.'));
+  assert.ok(visible.sensory_details.includes('В поле зрения — человек.'));
   await assertCurrentWire(visible, visible.visible_changes);
+});
+
+test('phase3 arrival keeps a name only when the player-safe scene already carries it', async () => {
+  const visible = await createTracePhase3VisibleProjector({
+    phase2Projector: fallback, contracts
+  }).project({ consequence: { phase3_kind: 'movement' }, retrieved_state: {
+    current_visible_context: {
+      ...currentScene(), visible_npc: [{ entity_ref: {
+        entity_kind: 'npc', entity_id: 'fisher'
+      }, display_label: 'Еремей', recognition: 'recognized' }]
+    }
+  } });
+  assert.deepEqual(visible.visible_npc, [{ entity_ref: {
+    entity_kind: 'npc', entity_id: 'fisher'
+  }, display_label: 'Еремей', recognition: 'recognized' }]);
 });
 
 test('real terminal carrying arrival exposes destination facts without source snapshot', async () => {

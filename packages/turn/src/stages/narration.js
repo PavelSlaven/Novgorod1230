@@ -1,4 +1,5 @@
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
+import { validateFactualTurnDeliveryScreen } from '@rus/presentation';
 import { assertValid, validateNarrationResult } from '../validators.js';
 import { freezeOutput } from './shared.js';
 
@@ -19,6 +20,18 @@ export async function buildNarrationStage({ playerInput, modeResolution, visible
     style_policy: { preserve_uncertainty: true, no_new_world_facts: true },
     max_repairs: 1
   });
+  if (output?.factual_delivery) {
+    const validation = validateFactualTurnDeliveryScreen(output.factual_delivery);
+    if (!validation.ok) {
+      const error = new Error(
+        `factual_turn_delivery_screen invalid: ${validation.errors.join('; ')}`
+      );
+      error.code = 'TURN_SCREEN_INVALID';
+      error.details = { errors: validation.errors };
+      throw error;
+    }
+    return freezeOutput(output);
+  }
   if (output?.schema === 'narration_flow_result'
       && (output.status !== 'approved' || output.pass !== true)) {
     const error = new Error('Narration did not produce an approved presentation.');

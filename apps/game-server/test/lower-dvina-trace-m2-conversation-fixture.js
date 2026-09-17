@@ -401,7 +401,9 @@ export function playerPlan(request, {
   offer = false,
   evidence,
   primaryAddresseeRef = request.player_safe_context.target_npc_ref,
-  intendedAddresseeRefs = [request.player_safe_context.target_npc_ref]
+  intendedAddresseeRefs = request.player_safe_context
+    .required_intended_addressee_refs
+    ?? [request.player_safe_context.target_npc_ref]
 } = {}) {
   const context = request.player_safe_context;
   const requiredCheck = context.required_check ?? context.available_check;

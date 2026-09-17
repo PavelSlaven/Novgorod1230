@@ -44,7 +44,8 @@ test('focused speech audit rejects lost later actions and accepts exact suffix',
             assert.equal(call.role_id, 'turn_step_grounding_auditor');
             const payload = JSON.parse(call.messages[1].content);
             assert.deepEqual(Object.keys(payload),
-              ['remaining_intent', 'actor_ref', 'utterance']);
+              ['remaining_intent', 'completed_steps', 'actor_ref',
+                'player_safe_state', 'utterance']);
             return { output: { speech_faithful: true, required_input_mode: 'verbatim',
               unexecuted_intent: later } };
           } }
@@ -73,6 +74,40 @@ test('focused speech audit rejects lost later actions and accepts exact suffix',
         }
       });
     }
+  });
+
+test('focused speech audit accepts a satisfied arrival condition before speech',
+  async () => {
+    const input = request({
+      remaining_intent: 'Увидев людей, здороваюсь и спрашиваю, не знают ли они лодочника.',
+      completed_steps: [{ step_index: 1,
+        summary: 'Микула перешёл с места крушения в рыбацкий стан.' }],
+      step_index: 2, working_revision: 1,
+      player_safe_state: {
+        position: { location_ref: 'location:fishing-camp' },
+        current_visible_context: { location_ref: 'location:fishing-camp',
+          visible_npc: [{ entity_ref: 'npc:fisher-1', recognition_state: 'unrecognized' }] }
+      }
+    });
+    const plan = speechOutput(input,
+      'Здравствуйте. Не знаете ли вы лодочника?');
+    plan.utterance.input_mode = 'intent_paraphrase';
+    const validate = createLowerDvinaTraceTurnStepSemanticGroundingValidator({
+      roleRunner: { async run(call) {
+        assert.match(call.messages[0].content,
+          /первое независимое исполнимое действие/u);
+        const payload = JSON.parse(call.messages[1].content);
+        assert.deepEqual(payload.completed_steps, input.completed_steps);
+        assert.deepEqual(payload.player_safe_state.position,
+          input.player_safe_state.position);
+        assert.deepEqual(payload.player_safe_state.current_visible_context,
+          input.player_safe_state.current_visible_context);
+        return { output: { speech_faithful: true,
+          required_input_mode: 'intent_paraphrase', unexecuted_intent: null } };
+      } }
+    });
+
+    assert.equal(await validate({ plan, request: input }), true);
   });
 
 test('focused speech audit restores a missing continuation without repair', async () => {

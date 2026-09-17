@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { canonicalDigest } from '@rus/materialization';
+import { TurnWorkflowError } from '@rus/turn';
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
 import { phase2PublicResult, projectPlayerSafeChecks } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
@@ -11,6 +12,28 @@ import { phase4PendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-4-write-projection.js';
 import { phase5PendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-5-writes.js';
+import { createGameHttpServer, listen } from '../src/index.js';
+
+test('HTTP error never exposes an internal partial workflow checkpoint', async (t) => {
+  const root = { submitTurn: async () => {
+    const error = new TurnWorkflowError('TURN_WORKFLOW_STOPPED', 'private workflow', {
+      checkpoint: { stages: { load_context: { hidden_state: 'must-not-reach-player' } } }
+    });
+    error.status = 500;
+    throw error;
+  } };
+  const server = createGameHttpServer({ root, developerMode: true });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  const response = await fetch(`http://127.0.0.1:${address.port}/api/v1/parties/party-1/turns`, {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ raw_text: 'Осмотреться' })
+  });
+  const body = await response.json();
+  assert.equal(response.status, 500);
+  assert.equal(JSON.stringify(body).includes('must-not-reach-player'), false);
+  assert.equal(JSON.stringify(body).includes('checkpoint'), false);
+});
 
 test('validated opening projection supplies the initial current scene', () => {
   const screen = {
@@ -121,6 +144,8 @@ test('public conversation check omits private RNG audit', () => {
       option_id: 'talk', check_result: null, time_update: null,
       body_update: null,
       consequence: { conversation: {
+        npc_id: 'npc-1', npc_ref: 'eremey_fisher',
+        activity_ref: 'trace_ld_v1_activity_first_eremey_talk',
         check_result: { roll: 12, audit: { seed_ref: 'private' } },
         semantic_exchange_projection: {
           factual_status: 'applied', response_kind: 'route_disclosure',
@@ -135,6 +160,9 @@ test('public conversation check omits private RNG audit', () => {
   };
   const result = phase2PublicResult({ payload, screen: { schema: 'screen' } });
   assert.equal(Object.hasOwn(result.conversation.check_result, 'audit'), false);
+  assert.equal(result.conversation.npc_id, 'npc-1');
+  assert.equal(Object.hasOwn(result.conversation, 'npc_ref'), false);
+  assert.equal(Object.hasOwn(result.conversation, 'activity_ref'), false);
   assert.deepEqual(detectHiddenLeaks(result), []);
 });
 
@@ -246,7 +274,7 @@ test('screen check projection preserves generic order and excludes NPC combat', 
     [2, 'Открыть тяжёлую дверь'],
     [3, 'Пробраться к двери и открыть её.']]);
   assert.deepEqual(checks.map(({ consequence_label }) => consequence_label), [
-    'Итог проверки: успех с ценой.',
+    'Итог проверки: частичный результат с ценой.',
     'Итог проверки: успех.',
     'Итог проверки: успех.'
   ]);
@@ -255,6 +283,26 @@ test('screen check projection preserves generic order and excludes NPC combat', 
   assert.equal(checks[0].modifiers[1].label, 'Навык: Скрытность');
   assert.equal(JSON.stringify(checks).includes('npc-step'), false);
   assert.equal(JSON.stringify(checks).includes('seed_ref'), false);
+});
+
+test('screen check projection labels below-DC cost result as partial', () => {
+  const checks = projectPlayerSafeChecks({
+    actor_id: 'player-1', player_profile: { identity: { name: 'Микула' } },
+    last_turn: { raw_text: 'Перепрыгнуть канаву.', consequence: {},
+      check_result: {
+        check_id: 'check-1', roll: 8, difficulty: 12, total: 10,
+        modifiers: { attribute: 2, skill: 1, state: -1, equipment: 0,
+          circumstances: 0 },
+        outcome: { band: 'success_with_cost', margin: -2, success: false,
+          cost_required: true, severe_failure: false, roll_note: null }
+      } }
+  });
+  assert.deepEqual(checks[0].outcome, {
+    band: 'success_with_cost', margin: -2, success: false,
+    cost_required: true, severe_failure: false, roll_note: null
+  });
+  assert.equal(checks[0].consequence_label,
+    'Итог проверки: частичный результат с ценой.');
 });
 
 test('screen check projection includes Phase 4 negotiation and Phase 5 treatment', () => {

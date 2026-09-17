@@ -36,12 +36,12 @@ import {
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
   SPATIAL_V3_PRODUCTION_RELEASE,
   createSpatialV3ProductionRelease
-} from './production-spatial-v3-release.js';
+} from './production-spatial-v3-release-v16.js';
 export {
   SPATIAL_V3_PRODUCTION_RELEASE_ID,
   SPATIAL_V3_PRODUCTION_RELEASE,
   createSpatialV3ProductionRelease
-} from './production-spatial-v3-release.js';
+} from './production-spatial-v3-release-v16.js';
 export async function createSpatialV3ProductionCompositionRoot({
   env = process.env,
   config = {},

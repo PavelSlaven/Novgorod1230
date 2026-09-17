@@ -19,8 +19,9 @@ import {
 } from './lower-dvina-trace-phase-7-prepared-validation.js';
 import { PHASE8_PREPARED_COMMANDS, validatePreparedPhase8 } from
   './lower-dvina-trace-phase-8-prepared-validation.js';
-import { preparedPhase4Conversation, preparedPhase4Route,
-  validatePreparedCombat, validatePreparedPhase4Conversation,
+import { preparedPhase3RouteConversation, preparedPhase4Conversation,
+  preparedPhase4Route, validatePreparedCombat,
+  validatePreparedPhase3RouteConversation, validatePreparedPhase4Conversation,
   validatePreparedPhase4Route } from
   './lower-dvina-trace-turn-step-prepared-special-validation.js';
 import { validatePreparedEnvelopeAggregate,
@@ -96,6 +97,10 @@ export function validatePreparedEffectCommit({
     return validatePreparedPhase4Conversation({ ledger, envelope, factual,
       state, batch, turnStepApprovedOwners });
   }
+  if (preparedPhase3RouteConversation(ledger)) {
+    return validatePreparedPhase3RouteConversation({ ledger, envelope,
+      factual, state, batch, phase3Contracts, turnStepApprovedOwners });
+  }
   const [route, direct] = slices;
   const routeTrace = traces?.find(({step_index:step})=>step===route?.step_index);
   const directTrace = direct == null ? traces?.[1] : traces?.find(
@@ -136,7 +141,7 @@ export function validatePreparedEffectCommit({
   validateAuthoritativePreparedRoute({ route, state, phase3Contracts });
   validatePreparedRouteTraceLineage({
     route, routeTrace, directTrace, loopTrace: envelope.loop_trace,
-    envelope, state, routeOnly: !hasDirect,
+    envelope, state, phase3Contracts, routeOnly: !hasDirect,
     intermediateTraces, scenePresentation: turnStepApprovedOwners?.scenePresentation
   });
   if (hasDirect) validatePreparedDirectSlice({

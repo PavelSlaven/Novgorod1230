@@ -18,7 +18,12 @@ Browser-клиент, который получает только versioned pub
 - отображением готового `presentation_context` в header; календарь, место и
   exact длительность последнего committed хода вычисляет server из committed
   state, `visible_context` остаётся без изменений;
-- маршрутизацией FirstGameScreen/TurnScreen;
+- маршрутизацией FirstGameScreen/TurnScreen/FactualTurnDeliveryScreen;
+- проверкой и rendering `FactualTurnDeliveryScreen v1`: degraded recovery
+  переиспользует обычные context, navigation, scene, task, checks, actions и
+  overlays, заменяя только prose slot factual block; сохраняет `intent_not_fact`
+  input, не показывает `main_prose`/`prose`, narrator output, digest,
+  audit/provider/retry diagnostics или новую causal фразу;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - чистым renderer `screen.checks`: краткий actor/action, roll/total/DC/outcome
   виден сразу, полная формула и signed modifiers доступны через `<details>`;

@@ -1,26 +1,12 @@
 import { canonicalDigest } from '@rus/materialization';
-import { publicCheckProjection, publicTimeProjection,
-  stripPublicInternals } from './lower-dvina-trace-public-projection-filter.js';
+import { publicCheckProjection, publicTimeProjection, stripPublicInternals } from './lower-dvina-trace-public-projection-filter.js';
 import { createTurnScreenReadModel } from '@rus/presentation';
-import { projectLowerDvinaTraceScreenPanels } from
-  './lower-dvina-trace-screen-panels.js';
+import { projectLowerDvinaTraceScreenPanels } from './lower-dvina-trace-screen-panels.js';
 import { projectPlayerSafeChecks } from './lower-dvina-trace-check-projection.js';
 export { projectPlayerSafeChecks } from './lower-dvina-trace-check-projection.js';
 
-const SPEECH_RESPONSE_KINDS = new Set([
-  'route_disclosure',
-  'withhold',
-  'surrender',
-  'lie',
-  'bargain',
-  'speech'
-]);
-const NON_SPEECH_RESPONSE_KINDS = new Set([
-  'silence',
-  'leave_conversation',
-  'action_handoff',
-  'combat_handoff'
-]);
+const SPEECH_RESPONSE_KINDS = new Set(['route_disclosure', 'withhold', 'surrender', 'lie', 'bargain', 'speech']);
+const NON_SPEECH_RESPONSE_KINDS = new Set(['silence', 'leave_conversation', 'action_handoff', 'combat_handoff']);
 
 export function phase2PublicResult({ payload, screen }) {
   const consequence = payload.last_turn.consequence;
@@ -46,8 +32,7 @@ export function phase2PublicResult({ payload, screen }) {
 }
 
 export function committedPendingPhase2PublicResult({ payload, screen }) {
-  return phase2PublicResult({ payload: structuredClone(payload),
-    screen: structuredClone(screen) });
+  return phase2PublicResult({ payload: structuredClone(payload), screen: structuredClone(screen) });
 }
 
 function semanticNegotiationCandidate(negotiation) {
@@ -58,13 +43,14 @@ function semanticNegotiationCandidate(negotiation) {
 }
 
 function publicConversationProjection({ conversation, payload }) {
+  if (conversation == null) return conversation;
+  const { npc_ref: _npcRef, activity_ref: _activityRef,
+    ...playerSafeConversation } = conversation;
   if (conversation?.semantic_exchange != null) {
-    throw new TypeError(
-      'Private semantic exchange cannot be projected from shared state.'
-    );
+    throw new TypeError('Private semantic exchange cannot be projected from shared state.');
   }
   const semantic = conversation?.semantic_exchange_projection;
-  if (semantic == null) return conversation;
+  if (semantic == null) return playerSafeConversation;
   if (semantic.factual_status === 'not_applied') {
     if (semantic.npc_ref !== null
         || semantic.response_kind !== null
@@ -72,9 +58,7 @@ function publicConversationProjection({ conversation, payload }) {
         || !Array.isArray(semantic.statement_refs)
         || semantic.statement_refs.length !== 0
         || semantic.route_disclosure !== null) {
-      throw new TypeError(
-        'Unapplied semantic conversation projection is invalid.'
-      );
+      throw new TypeError('Unapplied semantic conversation projection is invalid.');
     }
     return null;
   }
@@ -83,9 +67,7 @@ function publicConversationProjection({ conversation, payload }) {
   const nonSpeechResponse = NON_SPEECH_RESPONSE_KINDS.has(responseKind);
   const noResponse = responseKind === null;
   if (!speechResponse && !nonSpeechResponse && !noResponse) {
-    throw new TypeError(
-      'Semantic conversation response kind is not player-projectable.'
-    );
+    throw new TypeError('Semantic conversation response kind is not player-projectable.');
   }
   const statementRefs = semantic.statement_refs;
   const expectedStatementCount = speechResponse || noResponse ? 1 : 0;
@@ -127,16 +109,12 @@ function publicConversationProjection({ conversation, payload }) {
   if (noResponse && referencedStatements.some(({ speaker_ref: speaker }) =>
     speaker?.entity_kind !== 'player_character'
       || speaker.entity_id !== payload.actor_id)) {
-    throw new TypeError(
-      'Semantic statement does not belong to the projected player.'
-    );
+    throw new TypeError('Semantic statement does not belong to the projected player.');
   }
   if (!noResponse && referencedStatements.some(({ speaker_ref: speaker }) =>
     speaker?.entity_kind !== npcRef.entity_kind
       || speaker.entity_id !== npcRef.entity_id)) {
-    throw new TypeError(
-      'Semantic statement does not belong to the projected NPC.'
-    );
+    throw new TypeError('Semantic statement does not belong to the projected NPC.');
   }
   let npcUtterance = null;
   if (speechResponse) {
@@ -156,16 +134,12 @@ function publicConversationProjection({ conversation, payload }) {
       );
     });
     if (referencedStatements.length !== 1 || playerMessages.length !== 1) {
-      throw new TypeError(
-        'Semantic conversation has no single player-visible NPC utterance.'
-      );
+      throw new TypeError('Semantic conversation has no single player-visible NPC utterance.');
     }
     npcUtterance = playerMessages[0].utterance_text;
   }
-  const {
-    semantic_exchange_projection: _semanticProjection,
-    ...publicConversation
-  } = conversation;
+  const { semantic_exchange_projection: _semanticProjection,
+    ...publicConversation } = playerSafeConversation;
   const projectedConversation = structuredClone(publicConversation);
   if (projectedConversation.check_result != null) {
     projectedConversation.check_result = publicCheckProjection(
@@ -214,48 +188,73 @@ export function buildPhase2ReadyScreen({
   payload,
   turnId,
   visibleContext,
+  visiblePayload = null,
   narration,
   narrationOutputDigest,
   presentation = null
 }) {
+  const carrier = buildPhase2PreProseCarrier({ payload, turnId, visibleContext,
+    visiblePayload, narrationOutputDigest, presentation });
+  const screen = {
+    ...createTurnScreenReadModel({
+      partyId: carrier.party_id,
+      turnId: carrier.turn_id,
+      turnNumber: carrier.turn_number,
+      visibleContext: carrier.visible_context,
+      narration,
+      actions: carrier.actions,
+      checks: carrier.checks,
+      panels: carrier.panels
+    }),
+    ...carrier,
+    schema: 'lower_dvina_trace_turn_screen',
+    screen_status: 'ready'
+  };
+  screen.screen_digest = phase2ScreenDigest(screen);
+  return screen;
+}
+
+// This is the single player-safe carrier used before prose exists.  A
+// narration failure may replace prose only; it must not shrink the committed UI.
+export function buildPhase2PreProseCarrier({
+  payload,
+  turnId,
+  visibleContext,
+  visiblePayload = null,
+  narrationOutputDigest = null,
+  presentation = null
+}) {
   const combatState = publicCombatStateFromConsequence(
     payload.last_turn?.consequence);
-  const screen = projectLowerDvinaTraceScreenPanels({
+  return projectLowerDvinaTraceScreenPanels({
     payload, presentation,
     screen: {
-      ...createTurnScreenReadModel({
-        partyId: payload.party_id,
-        turnId,
-        turnNumber: payload.party_state.turn_number,
-        visibleContext,
-        narration,
-        actions: [],
-        checks: projectPlayerSafeChecks(payload),
-        panels: {}
-      }),
+      party_id: payload.party_id,
+      turn_id: turnId,
+      turn_number: payload.party_state.turn_number,
+      visible_context: structuredClone(visibleContext),
+      action_panel: { suggested_actions: structuredClone(
+        visiblePayload?.allowed_action_affordances ?? []) },
+      actions: structuredClone(visiblePayload?.allowed_action_affordances ?? []),
+      checks: projectPlayerSafeChecks(payload),
+      panels: {},
+      input_panel: { free_text_enabled: true, input_contract: 'intent_not_fact' },
       scenario_id: 'lower_dvina_trace_v1',
       screen_kind: 'trace_turn',
       delivery_state: {
         ready: true,
         generated_at: payload.last_turn.received_at
       },
-      opening_screen_digest:
-        payload.opening_identity.opening_screen_digest,
-      schema: 'lower_dvina_trace_turn_screen',
-      screen_status: 'ready',
+      opening_screen_digest: payload.opening_identity.opening_screen_digest,
       ...(combatState == null ? {} : { combat_state: combatState }),
       current_projection_anchor: {
-        committed_state_version:
-          payload.party_state.state_version,
+        committed_state_version: payload.party_state.state_version,
         package_id: payload.last_turn.visible_package.package_id,
-        package_digest:
-          payload.last_turn.visible_package.package_digest,
+        package_digest: payload.last_turn.visible_package.package_digest,
         narration_output_digest: narrationOutputDigest
       }
     }
   });
-  screen.screen_digest = phase2ScreenDigest(screen);
-  return screen;
 }
 
 export function publicCombatStateFromConsequence(consequence) {

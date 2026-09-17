@@ -287,7 +287,11 @@ test('revision 17 exposes valid copyable DTOs except bounded selection', () => {
   }
   const conversation = bound.find(({ command_id: id }) => id ===
     'lower_dvina_trace.offer_conditional_protection_and_seek_surrender');
-  assert.equal(conversation.semantic_binding.operation_dtos.length, 12);
+  assert.equal(conversation.semantic_binding.operation_dtos.length, 15);
+  assert.equal(conversation.semantic_binding.operation_dtos.some(
+    ({ target_actor_refs: refs }) => refs.length === 4
+      && targetRefs.phase4ConversationActors.every((ref) =>
+        refs.includes(ref))), true);
   assert.deepEqual(new Set(conversation.semantic_binding.operation_dtos.map(
     ({ target_actor_refs: refs }) => refs[0])), new Set([
     targetRefs.ratsha, targetRefs.onisim, targetRefs.eremey,
@@ -343,6 +347,9 @@ test('revision 32 exposes each present camp NPC through the conversation owner',
   assert.deepEqual(new Set(conversation.semantic_binding.operation_dtos.map(
     ({ target_actor_refs: refs }) => refs[0])),
   new Set(targetRefs.phase3ConversationActors));
+  assert.deepEqual(conversation.semantic_binding.operation_dtos.find(
+    ({ target_actor_refs: refs }) => refs.length === 3)?.target_actor_refs,
+  targetRefs.phase3ConversationActors);
   assert.equal(conversation.semantic_binding.operation_dtos.every((operation) =>
     conversation.semantic_binding.matches({ operation })), true);
 });

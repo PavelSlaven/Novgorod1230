@@ -300,6 +300,31 @@ test('nearby NPC is listed without becoming an interlocutor', () => {
     projected.panels.people.data, 'active_interlocutor'), false);
 });
 
+test('people panel distinguishes repeated player-safe NPC labels', () => {
+  const context = { ...visibleContext(), visible_npc: [
+    { entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+      display_label: 'человек', recognition: 'unrecognized' },
+    { entity_ref: { entity_kind: 'npc', entity_id: 'npc-fisher-1' },
+      display_label: 'человек', recognition: 'unrecognized' },
+    { entity_ref: { entity_kind: 'npc', entity_id: 'npc-fisher-2' },
+      display_label: 'человек', recognition: 'unrecognized' }
+  ] };
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: payload({ current_visible_context: context, npcs: [
+      { instance_id: 'npc-eremey', location_ref: 'camp' },
+      { instance_id: 'npc-fisher-1', location_ref: 'camp' },
+      { instance_id: 'npc-fisher-2', location_ref: 'camp' }
+    ] }),
+    screen: { panels: {}, visible_context: context }
+  });
+  assert.deepEqual(projected.panels.people.data.visible_npcs.map(
+    ({ display_label: label }) => label), [
+    'человек (1)', 'человек (2)', 'человек (3)'
+  ]);
+  assert.equal(projected.panels.people.data.active_interlocutor.display_label,
+    'человек (1)');
+});
+
 test('active session without a visible NPC label exposes no interlocutor', () => {
   const projected = projectLowerDvinaTraceScreenPanels({
     payload: payload({ current_visible_context: {
@@ -453,6 +478,21 @@ for (const [slot, portraitAssetId] of [
     assert.deepEqual(state, before);
   });
 }
+
+test('unrecognized interlocutor does not get an authored portrait asset', () => {
+  const state = payload();
+  state.npcs[0].participant_slot_ref = 'eremey_fisher';
+  const context = { ...visibleContext(), visible_npc: [{
+    ...visibleContext().visible_npc[0], display_label: 'человек',
+    recognition: 'unrecognized'
+  }] };
+  const interlocutor = projectLowerDvinaTraceScreenPanels({
+    payload: { ...state, current_visible_context: context },
+    screen: { panels: {}, visible_context: context }
+  }).panels.people.data.active_interlocutor;
+  assert.equal(interlocutor.display_label, 'человек');
+  assert.equal(Object.hasOwn(interlocutor, 'portrait_asset_id'), false);
+});
 
 test('ambiguous committed NPC match keeps active interlocutor without portrait asset', () => {
   const state = payload();

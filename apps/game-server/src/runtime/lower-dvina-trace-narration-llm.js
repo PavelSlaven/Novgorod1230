@@ -22,12 +22,22 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'Use optional support selectively to compose the beat; do not recap unchanged '
   + 'scene, inventory, body or NPC facts. Turn duration is code-owned UI metadata '
   + 'and is not supplied to prose; never invent elapsed minutes or report time spent. '
+  + 'Optional support is a candidate set, never a coverage target. After a current beat, '
+  + 'a recital of unchanged, independent optional scene facts as panorama or context is a '
+  + 'static_context_dump even when fluent, reordered, spatially grouped, or placed after the beat. '
+  + 'Retain a support detail only when it locates, contrasts, constrains, or constitutes the '
+  + 'action or result being narrated. A perception beat may govern supplied details that are '
+  + 'themselves its perceived result; this never licenses an unrelated snapshot recap. '
   + 'Descriptive scene facts may move from source order to the relevant action or result beat. '
   + 'Regroup them into a spatially coherent image by shared supplied subjects or spatial anchors, '
   + 'then choose one coherent focal sweep. '
-  + 'When supplied descriptive facts are perceived results of a current perception action, '
-  + 'make that perception action grammatically govern the descriptive cluster. A standalone '
-  + 'perception-action sentence followed by a descriptive inventory is not action-centered. '
+  + 'When a current inspection or perception action supplies descriptive observations, make that '
+  + 'action a dependent clause or finite perception verb that grammatically governs at least one compact '
+  + 'cluster joined by a supplied shared object, spatial anchor, or before/after relation. Never use an '
+  + 'action followed by a colon and a factual catalogue. '
+  + 'This applies whether the current beat is dense or not; '
+  + 'a standalone action sentence followed by a descriptive inventory is not action-centered. '
+  + 'Keep other required facts as concise consequence or uncertainty beats. '
   + 'Do not invent perception or causality for other action classes. '
   + 'Source order alone is not a failure. A source-order checklist remains weak only when it '
   + 'serializes facts without a shared focal beat; a grounded current qualitative assessment may be '
@@ -37,11 +47,18 @@ const PROSE_RULES = 'Write connected, restrained literary Russian in second pers
   + 'Never invent a causal, temporal or spatial bridge merely to connect facts. Sparse evidence '
   + 'calls for concise prose, not invented connective facts or a service report.';
 
+const DENSE_COMPOSITION_RULE = 'For a dense inspection or perception with multiple supplied observations, group observations only by an explicit supplied object, place, or before/after relation. Do not emit an isolated completed action followed by static observation sentences: a terminal independent action does not govern later independent predicates. Compose each supplied cluster through that action in the same sentence or through its own finite player perception or action verb. A dependent gerundial phrase or relative clause may provide that subordination when it unambiguously ties the observation to the completed player inspection; never use coordination or a relative modifier merely to reattach an observation to a nearby noun or make a later static predicate inherit governance. Repeat the supplied anchor and finite player verb when needed. Express every further cluster as a separately anchored perception or consequence beat; never leave a cluster as a bare state sentence. Do not collapse different anchors into one coordinating or semicolon chain. State a supplied unresolved uncertainty as an ordinary player-facing open question, never as a policy about what observations prove or establish. Put the supplied held result and body consequence in concise grounded sentences. Preserve every proposition, anchor and certainty once; add no bridge, cause, sensation or result.';
+
 const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certainty; '
-  + 'plausibility is not evidence. Ground every sensation, action, temporal relation '
-  + 'and causal link. Empty optional arrays are omissions, not absence or silence. '
-  + 'A label supplies identity, not traits; a scene label supplies location, not '
-  + 'ambience. Second person denotes only the player; a named or labelled NPC in '
+  + 'plausibility is not evidence. A supplied player-safe source supports exactly its '
+  + 'atomic factual propositions, including stated relation, motion, cause, qualifier '
+  + 'and certainty. Faithful prose may use ordinary grammatical inflection or natural '
+  + 'paraphrase only when it adds no atomic proposition. Labels, IDs, categories, names '
+  + 'and plausible implications add no sensory trait, causality, time, result, execution '
+  + 'or certainty. Ground every sensation, action, temporal relation and causal link. '
+  + 'Empty optional arrays are omissions, not absence or silence. A label supplies identity, '
+  + 'not traits; a scene label supplies location, not ambience. Second person denotes only '
+  + 'the player; a named or labelled NPC in '
   + 'a required change remains a third-person NPC. Keep each NPC cue with its entity. Item placement proves only '
   + 'placement; actor movement requires confirmed_outcome.movement_committed=true. '
   + 'Missing or false outcome fields are silent constraints. action_intent supplies '
@@ -52,18 +69,25 @@ const GROUNDING_RULES = 'Use only supplied player-safe facts and preserve certai
 
 const WRITER_SHAPE = 'Return only {"prose":"<complete Russian prose>"}. The server assembles version, schema, output_id, action_options=[], used_references=[] and neutral self_check={}; do not generate those fields.';
 
+const INSPECTION_REPAIR_RULE = 'For an inspection or perception current beat with supplied observations, '
+  + 'whether dense or not, make the action a dependent clause or finite perception verb that grammatically '
+  + 'governs at least one compact factual cluster linked by a supplied shared object, spatial anchor, or '
+  + 'before/after relation. Never use an action followed by a colon and a factual catalogue; a focal verb '
+  + 'or colon before an independent catalogue is not a repair. ';
+
+
 export function createLowerDvinaTraceNarrationService({ roleRunner } = {}) {
   if (typeof roleRunner?.run !== 'function') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING', 'Configured LLM role runner is required.', { status: 503 });
   return createNarrationService({
     writer: { generate: (request) => runNarrationRole(roleRunner, 'gameplay_narrator',
-      `${WRITER_SHAPE} ${PROSE_RULES} ${GROUNDING_RULES}`, request) },
+      `${WRITER_SHAPE} ${PROSE_RULES} ${GROUNDING_RULES} ${DENSE_COMPOSITION_RULE}`, request) },
     formatRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_format_repair',
-      `${WRITER_SHAPE} Repair the invalid JSON shape against validation_errors, retaining supported meaning. ${PROSE_RULES} ${GROUNDING_RULES}`, request) },
+      `${WRITER_SHAPE} Repair the invalid JSON shape against validation_errors, retaining supported meaning. ${PROSE_RULES} ${GROUNDING_RULES} ${DENSE_COMPOSITION_RULE}`, request) },
     auditor: { audit: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_auditor',
       narrationAuditInstruction(request), request) },
     semanticRepairer: { repair: (request) => runNarrationRole(roleRunner, 'gameplay_narrator_semantic_repair',
-      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. For weak_literary_composition, preserve performed-action order; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. When a concern identifies ongoing wording for a completed action, make completion grammatically explicit; never replace it with another present or ongoing verb. Then regroup descriptive facts by supplied shared subjects and spatial anchors instead of input order. When they are supplied results of a perception beat, that beat must grammatically govern the cluster; a standalone perception-action sentence plus a descriptive inventory still fails. For elapsed_as_service_report, remove the elapsed-time service wording; turn duration belongs only to the UI. With sparse support, shorten rather than embellish. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. ${PROSE_RULES} ${GROUNDING_RULES}`, request) }
+      `Return only {"replacements":[{"prose":"<complete repaired Russian prose>"}]} with exactly one replacement. source_segments are evidence for source_segment_ids in concerns; only the immutable s1 target is replaceable. Rebuild the whole passage using concerns, not isolated sentence patches; concerns are not an exhaustive whitelist of defects. The replacement must differ from the rejected prose. Reapply every rule to the whole replacement, remove each unsupported claim and restore every omitted required meaning without repetition. Use only supplied player-safe facts. Preserve every required proposition and certainty once, confirmed speech verbatim with its NPC speaker, performed-action order, unresolved-result uncertainty, and each sensory modality exactly. Second person denotes only the player. Completed actions must stay completed; completed-before subordination is allowed, but simultaneous or ongoing embedding is not. An unexecuted continuation stays the player's open choice and explicitly has not happened and has no known result. ${INSPECTION_REPAIR_RULE}Optional support is a candidate set, never a coverage target. For static_context_dump, remove the unchanged independent panorama and retain only support that composes the current beat; fluent spatial regrouping of the same snapshot is not a repair. Regroup retained observations only by supplied shared subjects and spatial anchors. visible_scene may locate the passage but supplies no observed object or action target. For elapsed_as_service_report, remove elapsed-time wording; turn duration belongs only to the UI. A label or ID supplies identity, not a trait, action, result, time, cause, or sensation. A transient attempt supplies only its performed handling unless a result is also supplied. With sparse support, shorten rather than embellish. Add no hidden fact, diagnosis, unsupported bridge, cause, reaction, sensation, action, result, or certainty. If no supported meaning remains, return empty prose. The server assembles immutable segment_id. FINAL REPAIR CHECK: a weak-composition repair is never a copy, synonym swap, punctuation change, clause-order change, or standalone-sentence permutation. Compare every grammatical subject and spatial relation to required_current_beat; if compression would reattach one to a different object or place, use a separate player-perception clause. ${DENSE_COMPOSITION_RULE}`, request) }
   });
 }
 
@@ -101,7 +125,7 @@ async function runNarrationRole(roleRunner, roleId, instruction, request) {
     request_identity: request.request_id ?? request.request?.request_id,
     messages: [{ role: 'system', content: instruction },
       { role: 'user', content: JSON.stringify(narrationWire(request)) }],
-    overrides: { temperature: 0 } });
+    overrides: { temperature: roleId === 'gameplay_narrator_semantic_repair' ? 0.2 : 0 } });
   if (!response?.output || typeof response.output !== 'object') throw serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING',
     `Narration role ${roleId} returned no JSON object.`, { status: 503 });

@@ -1,12 +1,14 @@
 import { canonicalDigest } from '@rus/materialization';
 import { row } from './first-playable/plan-shared.js';
-import { activityHistoryEntry } from './lower-dvina-trace-phase-3-state.js';
+import { activityHistoryEntry, phase3ConversationFactual } from
+  './lower-dvina-trace-phase-3-state.js';
 
 export function appendActivity(input) {
-  const {
+  let {
     inserts, updates = [], appends, state, next, factual, partyId, turnNumber,
     changeSetId, idemId, inputDigest
   } = input;
+  factual = phase3ConversationFactual(factual);
   const semantic = factual.consequence.conversation?.semantic_exchange ?? null;
   const semanticBudget = semantic?.exchange?.time_budget ?? null;
   const resumedNpc = semantic?.resumed_npc_execution != null;

@@ -28,6 +28,14 @@ export function assertLowerDvinaTracePhase1AValidation({
 
 function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scenarioId) {
   const bindings = bundle.materialization_bindings;
+  if (definitionRevision === revisions.m23) {
+    if (bindings?.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v25'
+        || bindings.scenario_definition_revision !== 35
+        || bundle.artifact_pins?.materialization_bindings?.digest !== '328cb8f90994c3cfabf359073233ca4bb834fda44778cfc8133c16d91c86965d') {
+      fail('TRACE_PHASE_1A_BINDING_INVALID', 'Revision 35 requires Phase 1A v25.');
+    }
+    return;
+  }
   if ([revisions.m21, revisions.m22].includes(definitionRevision)) {
     if (bindings?.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v24'
         || bindings.scenario_definition_revision !== 33
@@ -157,6 +165,14 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
+  if (definitionRevision === revisions.m23) {
+    if (bundle.phase_1a_manifest?.package_id !== 'lower_dvina_trace_phase_1a_v25'
+        || bundle.phase_1a_manifest.scenario_definition_revision !== 35
+        || bundle.artifact_pins?.phase_1a_manifest?.digest !== '986fd4fa149997ed9581924b13f502b6f9eafff640b31d390b4347f113c500e6') {
+      fail('TRACE_PHASE_1A_CUTOVER_IDENTITY_INVALID', 'Revision 35 requires Phase 1A v25.');
+    }
+    return;
+  }
   if ([revisions.m21, revisions.m22].includes(definitionRevision)) {
     if (bundle.phase_1a_manifest?.package_id !== 'lower_dvina_trace_phase_1a_v24'
         || bundle.phase_1a_manifest.scenario_definition_revision !== 33

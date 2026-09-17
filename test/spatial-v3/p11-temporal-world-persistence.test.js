@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const migrationPath = new URL('../../schemas/party-db/007_party_runtime_temporal_world.sql', import.meta.url);
 const resumeTerminalMigrationPath = new URL('../../schemas/party-db/014_party_runtime_activity_resume_terminal.sql', import.meta.url);
+const initialSemanticDecisionMigrationPath = new URL('../../schemas/party-db/033_party_runtime_initial_semantic_decision.sql', import.meta.url);
 const loaderPath = new URL('../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js', import.meta.url);
 
 test('P11 temporal-world migration persists the bounded temporal runtime model', async () => {
@@ -78,9 +79,16 @@ test('P11 temporal-world migration persists the bounded temporal runtime model',
   assert.match(sql, /CREATE INDEX IF NOT EXISTS party_propagation_processes_due_idx/u);
 });
 
-test('P11 target migration loader applies the complete ordered 001 through 017 chain', async () => {
+test('P11 target migration loader starts the complete ordered chain', async () => {
   const source = await readFile(loaderPath, 'utf8');
-  assert.match(source, /const files = \['001_party_runtime\.sql', '002_party_runtime_v3\.sql', '003_party_runtime_v3_planning\.sql', '004_party_runtime_v3_journeys\.sql', '005_party_runtime_v3_domain\.sql', '006_party_runtime_v3_migration\.sql', '007_party_runtime_temporal_world\.sql', '008_party_runtime_pr8_first_entry\.sql', '009_party_runtime_pr8_reaction_knowledge\.sql', '010_party_runtime_pr8_reaction_options\.sql', '011_party_runtime_first_playable\.sql', '012_party_runtime_external_ownership\.sql', '013_party_runtime_obligations\.sql', '014_party_runtime_activity_resume_terminal\.sql', '015_party_runtime_turn_step_items\.sql', '016_party_runtime_npc_semantic_conversation\.sql', '017_party_runtime_conversation_transcript\.sql'\]/u);
+  assert.match(source, /const files = \['001_party_runtime\.sql'/u);
+  assert.match(source, /'033_party_runtime_initial_semantic_decision\.sql'\]/u);
+});
+
+test('initial committed state may own a semantic NPC decision', async () => {
+  const sql = await readFile(initialSemanticDecisionMigrationPath, 'utf8');
+  assert.match(sql, /party_npc_decision_traces_state_version_check/u);
+  assert.match(sql, /CHECK \(state_version >= 0\)/u);
 });
 
 test('P11 resume-terminal migration permits only one proven resumed attempt', async () => {

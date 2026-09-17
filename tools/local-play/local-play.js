@@ -1,4 +1,5 @@
-import { spawn } from 'node:child_process';
+import { execFile, spawn } from 'node:child_process';
+import { promisify } from 'node:util';
 import { createServer } from 'node:net';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,8 +21,9 @@ import { provisionManagedRuntime } from './managed-runtime.js';
 import { installActivatedRuntimeCatalog } from './production-setup.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const RELEASE_ID = 'spatial-v3-production-v15';
+const RELEASE_ID = 'spatial-v3-production-v16';
 const SCENARIO_ID = 'lower_dvina_trace_v1';
+const execFileAsync = promisify(execFile);
 
 export function validateLocalPlay({ env = process.env, nodeVersion = process.versions.node } = {}) {
   const major = Number(String(nodeVersion).split('.')[0]);
@@ -36,22 +38,29 @@ export function validateLocalPlay({ env = process.env, nodeVersion = process.ver
 }
 
 export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
-  pinManifestDigest, port, managedRuntime }) {
+  pinManifestDigest, port, managedRuntime, git }) {
   const childEnv = { ...env };
   delete childEnv.RUS_RUNTIME_BINDINGS_MODULE;
   delete childEnv.RUS_RUN_PARTY_MIGRATIONS;
+  delete childEnv.RUS_GIT_HEAD;
+  delete childEnv.RUS_GIT_BRANCH;
+  delete childEnv.RUS_GIT_PR;
+  delete childEnv.RUS_BUILD_ID;
   return {
     ...childEnv,
     RUS_RUNTIME_ROUTE: 'modular',
     RUS_CUTOVER_STAGE: '13',
     RUS_COMPOSITION_MODULE: 'builtin:production-spatial-v3',
-    RUS_SPATIAL_V3_BINDINGS_MODULE: 'builtin:spatial-v3-production-v15',
+    RUS_SPATIAL_V3_BINDINGS_MODULE: 'builtin:spatial-v3-production-v16',
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST: pinManifestDigest,
     RUS_WORLD_DATABASE_URL: worldUrl,
     RUS_PARTY_DATABASE_URL: partyUrl,
     RUS_DATABASE_SSL: 'false',
     RUS_SERVER_HOST: '127.0.0.1',
     RUS_SERVER_PORT: String(port),
+    RUS_GIT_HEAD: git.head,
+    ...(git.branch == null ? {} : { RUS_GIT_BRANCH: git.branch }),
+    ...(git.pr == null ? {} : { RUS_GIT_PR: String(git.pr) }),
     RUS_TURN_DECISION_SECRET: 'novgorod1230-local-play-decision-secret-v1',
     RUS_WORLD_KNOWLEDGE_PYTHON: managedRuntime.giga.python,
     ...(managedRuntime.giga.modelPath
@@ -63,7 +72,7 @@ export function buildServerEnv({ env = process.env, worldUrl, partyUrl,
   };
 }
 
-export async function assertReadiness({ baseUrl, fetchImpl = fetch, sleep = delay, child, attempts = 120 } = {}) {
+export async function assertReadiness({ baseUrl, fetchImpl = fetch, sleep = delay, child, attempts = 480 } = {}) {
   let lastError = null;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     if (child?.exitCode != null) {
@@ -102,9 +111,22 @@ export async function startLocalPlay({
   fetchImpl = fetch,
   sleep = delay,
   isPortAvailable = portAvailable,
+  readGit = localGitProvenance,
   log = console.log
 } = {}) {
   const { port } = validateLocalPlay({ env, nodeVersion });
+  let git;
+  try { git = await readGit(); }
+  catch (error) {
+    if (error?.code === 'LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE') throw error;
+    throw localPlayError('LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE',
+      'Local Git provenance is unavailable.');
+  }
+  if (!/^[a-f0-9]{40}$/iu.test(String(git?.head ?? ''))
+      || (git?.branch != null && !String(git.branch).trim())) {
+    throw localPlayError('LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE',
+      'Local Git provenance is unavailable.');
+  }
   if (!(await isPortAvailable(port))) {
     throw localPlayError('LOCAL_PLAY_PORT_UNAVAILABLE', `Port ${port} is already in use.`);
   }
@@ -136,7 +158,7 @@ export async function startLocalPlay({
   }
   const child = spawnServer({ env: buildServerEnv({ env,
     worldUrl: postgres.worldUrl, partyUrl: postgres.partyUrl,
-    pinManifestDigest, port, managedRuntime }) });
+    pinManifestDigest, port, managedRuntime, git }) });
   const baseUrl = `http://127.0.0.1:${port}`;
   try {
     await assertReadiness({ baseUrl, fetchImpl, sleep, child });
@@ -163,6 +185,41 @@ export async function startLocalPlay({
       if (child.exitCode == null) child.kill('SIGKILL');
       await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     } });
+}
+
+export async function localGitProvenance({ exec = execFileAsync } = {}) {
+  try {
+    const { stdout } = await exec('git', ['rev-parse', '--verify', 'HEAD^{commit}'],
+      { cwd: ROOT, windowsHide: true });
+    const head = stdout.trim();
+    if (!/^[a-f0-9]{40}$/iu.test(head)) throw new Error('invalid HEAD');
+    let branch;
+    try {
+      branch = (await exec('git', ['symbolic-ref', '--quiet', '--short', 'HEAD'],
+        { cwd: ROOT, windowsHide: true })).stdout.trim();
+      if (!branch) throw new Error('invalid branch');
+    } catch (error) {
+      if (error?.code === 1) return { head, branch: null, pr: null };
+      throw error;
+    }
+    const pr = await openPullRequest({ exec, branch, head });
+    return { head, branch, pr };
+  } catch {
+    throw localPlayError('LOCAL_PLAY_GIT_PROVENANCE_UNAVAILABLE',
+      'Local Git provenance is unavailable.');
+  }
+}
+
+async function openPullRequest({ exec, branch, head }) {
+  const { stdout } = await exec('gh', ['pr', 'list', '--head', branch, '--state', 'open',
+    '--json', 'number,headRefOid', '--limit', '1'], { cwd: ROOT, windowsHide: true });
+  const records = JSON.parse(stdout);
+  if (!Array.isArray(records) || records.length === 0) return null;
+  const record = records[0];
+  if (!Number.isSafeInteger(record?.number) || record.headRefOid !== head) {
+    throw new Error('open PR does not match HEAD');
+  }
+  return record.number;
 }
 
 function assertHealth(health) {

@@ -22,7 +22,6 @@ import { createTracePhase3VisibleProjector } from
   '../src/runtime/lower-dvina-trace-phase-3-effects.js';
 import { validateAuthoritativePreparedRoute } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-prepared-effect-authority.js';
-
 test('generic camp-to-shed prepared route binds its resolved destination zone', () => {
   const state = { clock: { whole_minutes: '10', subminute_numerator: '0',
     subminute_denominator: '1' }, position: { location_ref: 'camp',
@@ -442,7 +441,7 @@ test('generic known-route projection uses the authored route and location presen
     visible_changes: ['Перед вами — незнакомая пристань.'],
     sensory_details: ['Сухой настил поднимается над водой.'],
     visible_npc: [{ entity_ref: { entity_kind: 'npc',
-      entity_id: destinationActor.instance_id }, display_label: 'рыбак',
+      entity_id: destinationActor.instance_id }, display_label: 'человек',
     recognition: 'unrecognized' }], visible_objects: [],
     known_context: ['Обратный путь отмечен приметами на берегу.'], uncertainties: [],
     allowed_tensions: [], do_not_imply: []

@@ -124,6 +124,33 @@ LLM получает:
 
 Общий semantic signal/boundary protocol для NPC не активирован revision 13 и не является частью этого player contract. Conversation-профиль активен для Lower Dvina Trace revision 14, autonomous-профиль — для Phase 7 / `spatial-v3-production-v5` по `npc_autonomous_decision_contract.md`, combat-профиль — для revision 16 / `spatial-v3-production-v6` по `npc_combat_and_trigger_contract.md`. Ни один профиль нельзя добавлять как частичный либо fallback path внутри другой decision boundary.
 
+### 3.4. Доставка после factual commit
+
+Narration начинается только после P16 с exact committed player-safe package и
+существующей pending presentation job. Обычный успешный путь остаётся прежним:
+approved narration даёт `TurnScreen v1`, который всегда содержит approved prose.
+
+Отдельный terminal path допустим только когда завершённый строгий narration flow
+вернул typed `final_audit_failed` после своего bounded repair/final audit. Server
+валидирует тот же committed package и job, затем один раз CAS-доставляет
+`FactualTurnDeliveryScreen v1` как availability-only degraded presentation.
+Он сохраняет весь применимый committed player-safe UI нормального экрана
+(`checks`, panels, actions/affordances и другие public fields) и заменяет
+только отсутствующую approved prose. `delivery_mode` взаимоисключающий:
+`narrated` сохраняет approved narration и output digest; `factual` сохраняет
+delivered job с `narration_output: null` и `output_digest: null`.
+
+Provider/deadline/store/lease/CAS failures, malformed или mismatched package,
+projection failure и любой pre-commit/semantic/domain failure не являются
+factual-terminal причиной: job остаётся pending/retryable. Factual delivery
+не запускает новый P16, planner, checks, RNG, time, mechanics или hidden-state
+read. Она terminal: replay возвращает тот же validated factual screen, narration
+позднее не retry-ится и не заменяет его prose после продолжения игрока.
+Это recovery committed хода, а не качественный narration outcome: только
+approved `TurnScreen v1` может пройти narration quality, blind/demo или TURN
+FORENSIC acceptance. Любое factual delivery в таких прогонах — blocking
+narration finding; менять prose contract ради снятия этого finding запрещено.
+
 ## 4. Что ожидается от LLM
 
 На каждом вызове LLM отвечает только на следующие вопросы:

@@ -3,6 +3,7 @@ export function assertBlueWoolPickupContract({
   placement,
   pickupTransition: transition,
   inventoryProfile: profile,
+  definitionRevision,
   activity,
   check,
   fail
@@ -16,7 +17,7 @@ export function assertBlueWoolPickupContract({
       || profile.item_template_ref !== item.item_template_id
       || profile.mass_grams !== 10
       || profile.carry_form !== 'compact'
-      || profile.external_hand_cost !== 0
+      || profile.external_hand_cost !== (definitionRevision >= 35 ? 1 : 0)
       || source.owner_ref !== 'ratsha_storehouse_helper'
       || source.holder_ref !== null
       || source.controller_ref !== null

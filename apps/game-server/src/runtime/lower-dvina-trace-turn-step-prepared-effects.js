@@ -4,31 +4,20 @@ import { deepFreeze } from
 import { buildLowerDvinaTracePreparedRouteWorkingProjection,
   projectPreparedDomainState } from
   './lower-dvina-trace-turn-step-prepared-state-projection.js';
-export { buildLowerDvinaTracePreparedRouteWorkingProjection } from
-  './lower-dvina-trace-turn-step-prepared-state-projection.js';
-import { validTracePreparedCombatConsequence } from
-  './lower-dvina-trace-combat-prepared-contract.js';
-import { validTraceCombatStartConsequence } from
+export { buildLowerDvinaTracePreparedRouteWorkingProjection } from './lower-dvina-trace-turn-step-prepared-state-projection.js';
+import { validTraceCombatStartConsequence,
+  validTracePreparedCombatConsequence } from
   './lower-dvina-trace-combat-prepared-contract.js';
 import { TRACE_PHASE9_PREPARED_COMMANDS } from
   './lower-dvina-trace-phase-9-prepared-commands.js';
-
-const PHASE3_ROUTE_COMMAND =
-  'lower_dvina_trace.follow_path_to_fishing_camp';
-const PHASE4_ROUTE_COMMAND =
-  'lower_dvina_trace.follow_known_route_to_drying_shed';
-const PHASE4_CONVERSATION_COMMAND =
-  'lower_dvina_trace.offer_conditional_protection_and_seek_surrender';
-const PHASE7_REST_COMMAND =
-  'lower_dvina_trace.rest_by_fire_and_dry_clothing';
-const PHASE8_ROUTE_COMMAND =
-  'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse';
-export const TURN10_COMPANION_COMMAND =
-  'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse';
-export const COMBAT_RESPONSE_COMMAND =
-  'lower_dvina_trace.respond_in_active_combat';
+const PHASE3_ROUTE_COMMAND = 'lower_dvina_trace.follow_path_to_fishing_camp';
+const PHASE4_ROUTE_COMMAND = 'lower_dvina_trace.follow_known_route_to_drying_shed';
+const PHASE4_CONVERSATION_COMMAND = 'lower_dvina_trace.offer_conditional_protection_and_seek_surrender';
+const PHASE7_REST_COMMAND = 'lower_dvina_trace.rest_by_fire_and_dry_clothing';
+const PHASE8_ROUTE_COMMAND = 'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse';
+export const TURN10_COMPANION_COMMAND = 'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse';
+export const COMBAT_RESPONSE_COMMAND = 'lower_dvina_trace.respond_in_active_combat';
 const KNOWN_ROUTE_COMMAND = 'lower_dvina_trace.follow_admitted_known_route:';
-
 export function createLowerDvinaTracePreparedDomainEffect({
   committedState
 }) {
@@ -42,6 +31,11 @@ export function createLowerDvinaTracePreparedDomainEffect({
         && preparedEffects.length === 1
         && preparedEffects[0].effect_kind === 'semantic_activity'
         && preparedEffects[0].body_update?.applied !== true;
+      const phase3RoutePrefix = priorCount === 1
+        && preparedEffects.length === 1
+        && preparedEffects[0].effect_kind === 'domain_command'
+        && preparedEffects[0].operation_ref === 'request_movement'
+        && preparedEffects[0].consequence?.phase3_kind === 'movement';
       return (operation?.op === 'request_movement'
           && [PHASE3_ROUTE_COMMAND, PHASE4_ROUTE_COMMAND,
             PHASE8_ROUTE_COMMAND].includes(commandId)
@@ -51,6 +45,7 @@ export function createLowerDvinaTracePreparedDomainEffect({
           && (priorCount === 0 || routePrefix))
         || (operation?.op === 'request_activity'
           && commandId === PHASE7_REST_COMMAND && priorCount === 0)
+        || (operation?.op === 'emit_interaction' && phase3RoutePrefix)
         || (operation?.op === 'emit_interaction'
           && commandId === PHASE4_CONVERSATION_COMMAND && priorCount === 0)
         || (operation?.op === 'emit_interaction'
@@ -96,6 +91,10 @@ export function createLowerDvinaTracePreparedDomainEffect({
       if (input?.command_id === PHASE4_CONVERSATION_COMMAND) {
         return applyPreparedPhase4Conversation(input);
       }
+      if (input?.consequence?.phase3_kind === 'conversation'
+          && input?.prepared_chain_context?.prior_effect_count === 1) {
+        return applyPreparedPhase3Conversation(input);
+      }
       if (input?.command_id === PHASE7_REST_COMMAND) {
         return applyPreparedPhase7Rest(input);
       }
@@ -111,6 +110,17 @@ export function createLowerDvinaTracePreparedDomainEffect({
       fail('TRACE_TURN_STEP_PREPARED_COMMAND_UNSUPPORTED');
     }
   });
+}
+
+function applyPreparedPhase3Conversation(input) {
+  const consequence = input?.consequence;
+  if (consequence?.phase3_kind !== 'conversation'
+      || consequence.conversation == null
+      || input?.prepared_chain_context?.prior_effect_count !== 1) {
+    fail('TRACE_TURN_STEP_PREPARED_CONVERSATION_INVALID');
+  }
+  const { phase3_kind: _phase3Kind, ...composed } = consequence;
+  return preparedResult(input, composed, true);
 }
 
 function applyPreparedPhase4Conversation(input) {
@@ -195,7 +205,6 @@ function preparedResult(input, consequence, playerResponseBoundary) {
     }
   });
 }
-
 async function applyPreparedPhase3Route({
   input,
   committedState,
@@ -212,10 +221,7 @@ async function applyPreparedPhase3Route({
     fail('TRACE_TURN_STEP_PREPARED_ROUTE_INVALID');
   }
   const projection = buildLowerDvinaTracePreparedRouteWorkingProjection({
-    projection: input.working_projection,
-    movement,
-    committedState
-  });
+    projection: input.working_projection, movement, committedState });
   return deepFreeze({
     working_projection: projection,
     summary: `prepared:${input.command_id}`,

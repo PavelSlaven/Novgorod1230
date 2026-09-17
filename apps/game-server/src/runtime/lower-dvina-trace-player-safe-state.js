@@ -27,7 +27,10 @@ import { applyLowerDvinaTraceWorkingProjection } from
 import { projectActiveConversationInterlocutor } from
   '@rus/visibility-knowledge-memory';
 import { perceivedRoutesForState } from './lower-dvina-trace-scene-presentation.js';
-import { projectLowerDvinaTraceVisibleNpcDetails } from
+import {
+  projectLowerDvinaTraceRecognizedNpcContext,
+  projectLowerDvinaTraceVisibleNpcDetails
+} from
   './lower-dvina-trace-player-safe-npc-details.js';
 import { inventoryItemIsCarried } from '@rus/items-property';
 import { getCommittedInventoryLoad } from
@@ -46,10 +49,16 @@ export function projectLowerDvinaTracePlayerSafeState({
   const clockWeatherLight = committedState.clock_weather_light ?? {};
   const position = projectPosition(committedState.position);
   const visibleContext = projectVisibleContext(committedState.visible_context);
-  const currentVisibleContext = projectCampFireState(projectVisibleContext(
-    committedState.current_visible_context,
-    { path: 'current_visible_context' }
-  ), committedState, position);
+  const currentVisibleContext = projectLowerDvinaTraceRecognizedNpcContext({
+    visibleContext: projectCampFireState(projectVisibleContext(
+      committedState.current_visible_context,
+      { path: 'current_visible_context' }
+    ), committedState, position),
+    committedNpcs: committedState.npcs,
+    conversationStatements: committedState.conversation_statements,
+    receivedMessages: committedState.received_messages,
+    playerId: actorId
+  });
   const visibleContextPackage = projectVisibleContext(
     committedState.visible_context_package,
     { path: 'visible_context_package' }
@@ -99,8 +108,10 @@ export function projectLowerDvinaTracePlayerSafeState({
     npcs,
     interactions: projectInteractions(committedState.interactions),
     routes: projectRoutes(committedState.routes),
-    available_routes: projectRoutes(perceivedRoutes.length === 0 ? committedState.available_routes
-      : [...(committedState.available_routes ?? []), ...perceivedRoutes]),
+    available_routes: projectRoutes([
+      ...(committedState.available_routes ?? []), ...perceivedRoutes
+    ].filter((route) => (route.from_ref ?? route.source_ref)
+      === position?.location_ref)),
     route_history: projectRouteHistory(committedState.route_history),
     route_knowledge: projectRouteKnowledge(committedState.route_knowledge),
     knowledge: projectKnowledge([...(profile.knowledge?.initial_records ?? []),

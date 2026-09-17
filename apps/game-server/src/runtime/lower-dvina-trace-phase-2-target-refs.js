@@ -22,12 +22,21 @@ export function buildTracePhase2TargetRefs({ state, contracts,
 }
 
 export function phase3ConversationTargetId(context, contracts) {
+  return phase3ConversationTargetRefs(context, contracts)?.[0]?.entity_id
+    ?? null;
+}
+
+export function phase3ConversationTargetRefs(context, contracts) {
   const targetRefs = context.semanticPlan?.operations?.find(
     ({ op }) => op === 'emit_interaction')?.target_actor_refs;
-  const targetId = Array.isArray(targetRefs) && targetRefs.length === 1
-    ? targetRefs[0] : contracts.actors[0]?.instance_id;
-  return contracts.actors.some(({ instance_id: instanceId }) =>
-    instanceId === targetId) ? targetId : null;
+  const selected = Array.isArray(targetRefs) && targetRefs.length > 0
+    ? targetRefs : [contracts.actors[0]?.instance_id];
+  const available = new Set(contracts.actors.map(
+    ({ instance_id: instanceId }) => instanceId));
+  return new Set(selected).size === selected.length
+      && selected.every((targetId) => available.has(targetId))
+    ? selected.map((targetId) => ({ entity_kind: 'npc', entity_id: targetId }))
+    : null;
 }
 
 export function phase3ConversationTarget(contracts, addressee) {

@@ -3,15 +3,12 @@ import { applyBodyEvent, applySemanticActivity, resolveLowerDvinaTraceTurnStepCh
 import { createItemOperationHandlers, createTransientItemUseHandler, initializeRuntimeState } from
   './lower-dvina-trace-turn-step-item-operations.js';
 import { applyInventoryTransition, matchesItem, requireProjectedItem } from './lower-dvina-trace-turn-step-item-support.js';
-import { applyActionProducedRuntimeProjection } from
-  './lower-dvina-trace-action-produced-runtime.js';
-import { createContainerAccessHandler, snapshotO2bCommittedContainerInput } from
-  './lower-dvina-trace-turn-step-container-access.js';
-import { createLowerDvinaTracePreparedDomainEffect } from
-  './lower-dvina-trace-turn-step-prepared-effects.js';
+import { applyActionProducedRuntimeProjection } from './lower-dvina-trace-action-produced-runtime.js';
+import { createContainerAccessHandler, snapshotO2bCommittedContainerInput } from './lower-dvina-trace-turn-step-container-access.js';
+import { createLowerDvinaTracePreparedDomainEffect } from './lower-dvina-trace-turn-step-prepared-effects.js';
+import { refreshPreparedMovementScene } from './lower-dvina-trace-turn-step-prepared-state-projection.js';
 import { prepareOrdinaryDiscoveryResult } from './lower-dvina-trace-ordinary-discovery.js';
-import { createLowerDvinaTracePostAppliedActorStepOwner } from
-  './lower-dvina-trace-post-applied-actor-step.js';
+import { createLowerDvinaTracePostAppliedActorStepOwner } from './lower-dvina-trace-post-applied-actor-step.js';
 export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEventOwner = null,
   committedState = null,
@@ -26,13 +23,13 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   temporalAdvance = null,
   bodyEffect = null, idempotencyKey = null,
   postActionPerceptionProfile = null,
+  projectCurrentScene = null,
   workingProjectionAuthority
 } = {}) {
   if (typeof workingProjectionAuthority?.admit !== 'function') {
     throw new TypeError('workingProjectionAuthority.admit is required.');
   }
-  const safeCommittedState = typeof ordinaryContainerContentsResolver === 'function'
-    ? snapshotO2bCommittedContainerInput(committedState) : committedState;
+  const safeCommittedState = typeof ordinaryContainerContentsResolver === 'function' ? snapshotO2bCommittedContainerInput(committedState) : committedState;
   if (typeof ordinaryContainerContentsResolver === 'function'
       && committedState != null && safeCommittedState == null) {
     const error = new TypeError('TRACE_TURN_STEP_CONTAINER_ORDINARY_CONTEXT_INVALID');
@@ -68,7 +65,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         handler(execution), workingProjectionAuthority)
     ]));
   const phase9ContainerOwner = [17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
-    28, 29, 30, 31, 32, 33, 34].includes(safeCommittedState
+    28, 29, 30, 31, 32, 33, 34, 35].includes(safeCommittedState
     ?.materialization_trace?.seed_context?.scenario_definition_revision)
     && (safeCommittedState.phase9 != null
       || safeCommittedState.last_turn?.consequence?.combat?.session_after
@@ -116,11 +113,14 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
       preparedEffectProjectionOwner: (input) => {
         preparedDomainEffect.advanceState(input);
         let projection = structuredClone(input.working_projection);
+        if (input.prepared_effect.consequence?.movement?.destination?.location_ref != null
+            && typeof projectCurrentScene === 'function') {
+          projection = refreshPreparedMovementScene({ projection, committedState: preparedDomainEffect.currentState(), projectCurrentScene });
+        }
         if ((input.prepared_effect.time_update.temporal_results ?? []).some(
           (result) => result.combined_change_set?.proposals?.some(
             (proposal) => proposal.npc_routine_transition != null))) {
-          // Rebuild NPC views from advanced authoritative state on the next
-          // projection; old working aliases would otherwise mask the transition.
+          // Rebuild advanced NPC views; old aliases would mask transition.
           for (const key of ['npcs', 'visible_npcs', 'scene_npcs',
             'visible_context', 'visible_context_package', 'current_visible_context']) {
             delete projection[key];

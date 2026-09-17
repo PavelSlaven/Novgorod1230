@@ -82,23 +82,36 @@ const snapshotValidatorAliasSql = readFileSync(
   new URL('../../schemas/party-db/030_party_runtime_snapshot_validator_alias.sql', import.meta.url),
   'utf8'
 );
+const deferredNpcSchedulesSql = readFileSync(
+  new URL('../../schemas/party-db/031_party_runtime_deferred_npc_schedules.sql', import.meta.url),
+  'utf8'
+);
+const factualPresentationSql = readFileSync(
+  new URL('../../schemas/party-db/032_party_runtime_factual_presentation_delivery.sql', import.meta.url),
+  'utf8'
+);
+const initialSemanticDecisionSql = readFileSync(
+  new URL('../../schemas/party-db/033_party_runtime_initial_semantic_decision.sql', import.meta.url),
+  'utf8'
+);
 const localFireSql = readFileSync(
   new URL('../../schemas/party-db/028_party_runtime_local_exact_fire.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 030 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 30);
+test('target chain appends migrations 011 through 033 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 33);
   assert.deepEqual(
     getSpatialV3TargetMigrationsBeforeCatalogMigration(),
     SPATIAL_V3_TARGET_MIGRATIONS.slice(0, 11)
   );
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-20), [sql,
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-23), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
     ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql,
     finiteResourceSql, existingContainerOrdinarySql, actionProductionSql, localFireSql,
-    spatialSemanticSql, snapshotValidatorAliasSql]);
+    spatialSemanticSql, snapshotValidatorAliasSql, deferredNpcSchedulesSql,
+    factualPresentationSql, initialSemanticDecisionSql]);
 });
 
 test('015 and 030 qualify jsonb array entry values in snapshot validators', () => {

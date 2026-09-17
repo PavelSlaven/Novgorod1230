@@ -7,7 +7,7 @@ import {
 } from './lower-dvina-trace-turn-step-binding-profile.js';
 
 export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRefs }) {
-  if (![13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
   const expectedCommands = Object.entries(EXPECTED).filter(([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision);
   const byCommand = new Map();
@@ -85,7 +85,7 @@ export function bindLowerDvinaTraceTurnStepCommands({ commands, bundle, targetRe
     [...byCommand.entries()].some(([commandId, record]) => {
       const command = bound.find(({ command_id: id }) => id === commandId);
       if (command?.semantic_binding) return false;
-      return !(STATE_GATED_COMMANDS.has(commandId) || ([24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34].includes(bundle.definition_revision) && REVISION_24_STATE_GATED_COMMANDS.has(commandId))) || !validRecord(record, EXPECTED[commandId], bundle.definition_revision);
+      return !(STATE_GATED_COMMANDS.has(commandId) || ([24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision) && REVISION_24_STATE_GATED_COMMANDS.has(commandId))) || !validRecord(record, EXPECTED[commandId], bundle.definition_revision);
     })
   ) {
     gap();
@@ -138,16 +138,22 @@ function combatPlannerOperations({ record, actorRef, targetRef, scopeRef }) {
 }
 function interactionPlannerOperations({ command, expected, record, actorRef,
   targetRef, evidenceRef }) {
-  const targets = expected.targetAlternativeKey == null || !Array.isArray(targetRef)
-    ? [targetRef] : targetRef;
-  return targets.flatMap((target) => record[expected.kindsField].map(
+  const alternatives = expected.targetAlternativeKey != null
+    && Array.isArray(targetRef);
+  const targetSets = alternatives
+    ? [...new Set(targetRef)].map((target) => [target])
+    : [Array.isArray(targetRef) ? targetRef : [targetRef]];
+  if (alternatives && targetSets.length > 1) {
+    targetSets.push(targetSets.map(([target]) => target));
+  }
+  return targetSets.flatMap((targetSet) => record[expected.kindsField].map(
     (interactionKind) => plannerOperation({
       command: expected.targetAlternativeKey == null ? command : {
         ...command,
         label: 'Обратиться к видимому собеседнику'
       },
       expected: { ...expected, kind: interactionKind }, actorRef,
-      targetRef: target, evidenceRef })));
+      targetRef: targetSet, evidenceRef })));
 }
 function matchesOperation({ operation, expected, allowedKinds, actorRef,
   targetRef, evidenceRef, commandLabel }) {
@@ -174,8 +180,12 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
   }
   const targetField = expected.operation === 'emit_interaction' ? 'target_actor_refs' : 'target_refs';
   if (expected.targetAlternativeKey != null && Array.isArray(targetRef)) {
-    if (operation[targetField]?.length !== 1
-        || !targetRef.includes(operation[targetField][0])) return false;
+    const alternatives = [...new Set(targetRef)];
+    const selected = operation[targetField];
+    if (!Array.isArray(selected)
+        || ![1, alternatives.length].includes(selected.length)
+        || new Set(selected).size !== selected.length
+        || selected.some((ref) => !alternatives.includes(ref))) return false;
   } else {
     const expectedTargets = Array.isArray(targetRef) ? targetRef : [targetRef];
     if (operation[targetField]?.length !== expectedTargets.length || expectedTargets.some((ref) => operation[targetField]?.includes(ref) !== true)) return false;

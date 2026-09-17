@@ -21,10 +21,14 @@ import { loadLowerDvinaTraceRevision29Publication } from './lower-dvina-trace-re
 import { loadLowerDvinaTraceRevision30Publication } from './lower-dvina-trace-revision-30-publication.js';
 import { loadLowerDvinaTraceRevision31Publication } from './lower-dvina-trace-revision-31-publication.js';
 import { loadLowerDvinaTraceRevision32Publication, loadLowerDvinaTraceRevision33Publication,
-  loadLowerDvinaTraceRevision34Publication } from
+  loadLowerDvinaTraceRevision34Publication, loadLowerDvinaTraceRevision35Publication } from
   './lower-dvina-trace-revision-32-publication.js';
 export async function loadLowerDvinaTracePhase1BPublication({ rootDir = process.cwd(),
   phase1AManifestDigest = null, scenarioDefinitionRevision = null } = {}) {
+  if (scenarioDefinitionRevision === 35) {
+    return loadLowerDvinaTraceRevision35Publication({ rootDir,
+      phase1AManifestDigest });
+  }
   if (scenarioDefinitionRevision === 34) {
     return loadLowerDvinaTraceRevision34Publication({ rootDir,
       phase1AManifestDigest });

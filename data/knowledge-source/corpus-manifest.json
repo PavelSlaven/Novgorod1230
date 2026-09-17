@@ -41,8 +41,8 @@
       "document_id": "code-critic-invocation-rule",
       "canonical_path": "corpus/DOCUMENTS/code_critic_invocation_rule.txt",
       "file_name": "code_critic_invocation_rule.txt",
-      "sha256": "4efd1f5d741e6f5279118776e41825c4d2df8049a80d618881ece4767faf933a",
-      "bytes": 666,
+      "sha256": "28ba80280ca128a287ba1552e448df5182e1ebf89a14d08d0972ee735c756046",
+      "bytes": 800,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -71,8 +71,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "4350be2f10de20e18f5a7937206136f77cb82df60b8fc4d5c40931f0c4f1d920",
-      "bytes": 26993,
+      "sha256": "08a022fa5cc2a3225978d22e3d0c66b647ceea03e267d177f3140fa742beec19",
+      "bytes": 27482,
       "status": "active",
       "provenance_mode": "native"
     },

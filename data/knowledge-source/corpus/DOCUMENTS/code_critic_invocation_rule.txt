@@ -6,8 +6,8 @@ The old rule requiring a critic after every code or behavior change no longer ap
 
 Use:
 
-1. root `AGENTS.md`, section 25, for risk-based independent audit;
-2. `CONTRACT_INDEX.md`, section 8, for the read-only Contract Auditor, its triggers, source sets and finding format.
+1. root `AGENTS.md`, section 25, for risk-based independent audit and section 25.1 for the read-only Contract Auditor, its triggers, audit timing, source sets scoped to the affected owners and diff boundaries, and finding format;
+2. `CONTRACT_INDEX.md`, section 8, for contract navigation and the domain scope matrix.
 
 An ordinary local fix does not require a separate critic when CHIEF proves that public behavior, contracts, owner boundaries, persistence/schema, LLM authority and active profile status are unchanged.
 

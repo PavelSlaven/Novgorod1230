@@ -14,7 +14,8 @@ test('captured live snapshot candidates cannot displace the current speech and p
   const narrator = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
     const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support, { visible_scene: visible_context.visible_scene, sensory_details: visible_context.sensory_details });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: visible_context.visible_scene });
     assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text), visible_context.visible_changes);
     assert.deepEqual(wire.required_current_beat.uncertainties.map(({ text }) => text), visible_context.uncertainties);
     if (call.role_id === 'gameplay_narrator') return { output: {
@@ -27,7 +28,7 @@ test('captured live snapshot candidates cannot displace the current speech and p
   assert.equal(calls, 2);
 });
 
-test('private prose wire admits only scene and sensory support beside a current beat', async (t) => {
+test('private prose wire admits only scene identity beside a current beat', async (t) => {
   const cases = [
     { name: 'physical result and body with a pending second action',
       changes: ['Сухой конец жерди отломлен.', 'Одежда стала менее мокрой.'],
@@ -66,7 +67,7 @@ test('private prose wire admits only scene and sensory support beside a current 
       assert.equal(Object.hasOwn(wire, 'visible_context'), false);
       assert.deepEqual(wire.optional_support, visible_changes.length || uncertainties.length
         ? sample.outcome?.qualitative_assessment === true ? {}
-          : { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details }
+          : { visible_scene: visible.visible_scene }
         : support);
       assert.deepEqual(wire.constraints, { allowed_tensions, do_not_imply, style_policy: style });
       assert.deepEqual(wire.required_current_beat.changes,
@@ -128,7 +129,8 @@ for (const sample of [
     const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
       calls.push(call.role_id);
       const wire = JSON.parse(call.messages[1].content);
-      assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details });
+      assert.deepEqual(wire.optional_support,
+        { visible_scene: visible.visible_scene });
       assert.match(call.messages[0].content,
         /turn duration (?:is code-owned UI metadata|belongs only to the UI)/iu);
       assert.match(call.messages[0].content, call.role_id === 'gameplay_narrator_auditor'

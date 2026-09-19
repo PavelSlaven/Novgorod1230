@@ -32,7 +32,7 @@ test('planner shares stable rules before filtered request choices on initial and
   t.diagnostic(`Stable planner prefix: ${prefixes[0].length} chars.`);
 });
 
-test('narration initial and final audits share all rules before dynamic shape and choices', async (t) => {
+test('narration audit keeps stable rules before dynamic shape and choices', async (t) => {
   const prompts = [], calls = [];
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls.push(call.role_id);
@@ -58,14 +58,11 @@ test('narration initial and final audits share all rules before dynamic shape an
       visible_objects: [], visible_npc: [], known_context: [], allowed_tensions: [], do_not_imply: []
     }, context: {} });
   assert.equal(result.status, 'approved');
-  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
-    'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+  assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
   const marker = 'Shape:';
   const prefix = prompts[0].slice(0, prompts[0].indexOf(marker));
-  assert.equal(prompts[1].slice(0, prompts[1].indexOf(marker)), prefix);
   assert.match(prefix, /strict evidence auditor/u);
   assert.match(prefix, /Output only failures/u);
-  assert.notEqual(prompts[0], prompts[1]);
   t.diagnostic(`Stable narration audit prefix: ${prefix.length} chars.`);
 });
 

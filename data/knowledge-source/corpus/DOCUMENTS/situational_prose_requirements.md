@@ -102,7 +102,7 @@ Player-safe projector передаёт только применимые к те
 
 **Good / bad.** Good даёт герою биографическую непрерывность и сценическую ориентацию. Bad можно без потери смысла перенести любому безымянному герою в любое место либо он сообщает только «вы на берегу, вам холодно».
 
-Stage 23 проверяет это через обязательный `literary_composition_check` существующего semantic auditor. Factual-only approval недостаточен: dossier/report/padding дают `NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION` и semantic prose repair; adapter только передаёт approved prose. Отсутствующие во входе биография и ставка не изобретаются ради check.
+Stage 23 оценивает это через `literary_composition_check` существующего semantic auditor. Dossier/report/padding дают `NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION`, но чисто литературный finding сохраняется как квалификация и не блокирует старт партии. Фактические, hidden, coverage и technical checks по-прежнему обязательны для доставки. Отсутствующие во входе биография и ставка не изобретаются ради check.
 
 **Unseen validation.** Другая стартовая ситуация: не кораблекрушение, а ночной постой после торговой дороги. Тот же writer должен связать другого героя, другую память, закрытый выход, дальний звук и телесное состояние без нового шаблона или branch.
 
@@ -257,9 +257,9 @@ Stage 23 проверяет это через обязательный `literary
 5. **Literary scene:** текст имеет центр, связные beats, конкретные образы и уместный объём; не является ledger, справкой или водой.
 6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.
 
-`PASS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой.
+Полный литературный `PASS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой, но может быть безопасно доставлен с `artistic_verdict: fail` для последующей оценки качества.
 
-Обычный approved `TurnScreen` — единственный качественный narration `PASS`.
+Обычный approved `TurnScreen` доказывает фактическую и техническую пригодность доставки, но сам по себе не доказывает литературный `PASS` при `artistic_verdict: fail`.
 Появление `FactualTurnDeliveryScreen` означает degraded presentation после
 terminal `final_audit_failed`: оно сохраняет доступность уже committed хода,
 но никогда не закрывает narration quality, blind-play, demo или TURN FORENSIC
@@ -279,8 +279,11 @@ approved prose.
 неизвестные индексы, сегменты, дубли и malformed coverage не принимаются кодом.
 Независимые `artistic_verdict` и `technical_verdict` имеют значения `pass|fail`;
 `fail` требует соответственно concern `literary_quality` или
-`technical_presentation`. Общий `PASS` требует оба verdict `pass`, полное
-coverage, отсутствие concerns и непустое evidence. Public verdict и coverage
+`technical_presentation`. Public `pass` означает допустимость доставки: полное
+coverage, отсутствие factual/hidden/technical concerns и непустое evidence.
+`literary_quality` concern и `artistic_verdict: fail` не меняют delivery `pass`;
+полный литературный PASS дополнительно требует `artistic_verdict: pass` и отсутствие
+литературных concerns. Public verdict и coverage
 собирает Adapter детерминированно из private source reviews и failures; LLM их
 не назначает. Те же проверки действуют
 после единственного существующего цельного semantic repair, без нового role
@@ -290,8 +293,10 @@ Private wire сохраняет обязательные текущие факт
 с changes `{ref,text}` и uncertainties `{ref,text,status:unperformed_result_unknown}`,
 `constraints` содержит do_not_imply/allowed_tensions/style_policy.
 При любом change или uncertainty `optional_support` содержит только
-visible_scene и текущие grounded sensory_details, если они переданы. Writer выбирает
-только относящиеся к текущему beat детали; весь sensory snapshot не пересказывается.
+`visible_scene`; неизменный sensory panorama не поступает writer/auditor/repair.
+Новые относящиеся к текущему beat sensory facts должны приходить через
+`required_current_beat.visible_changes`. При отсутствии current beat scene-only wire
+сохраняет `visible_scene` и grounded descriptive sensory support.
 Static NPC/object/inventory/body arrays, known_context и snapshot metadata
 не поступают writer/auditor/repair.
 Новые существенные факты должны приходить через visible_changes. Существующие
@@ -336,13 +341,17 @@ weak_literary_composition, unsupported_response_or_continuation. Positive
 proposition reviews, verdict, concerns, source indices и public coverage модель
 не возвращает.
 
-Adapter требует exact own-key set, source refs/order, canonical unique choices,
+Adapter требует exact own-key set, literal source refs/order и canonical unique
+segment IDs без positional/prose aliases,
 allowed semantic kinds/literary checks и непустые reasons. Затем код выводит
-source_index по исходному порядку, собирает coverage, missing_visible_change и
-остальные concerns, artistic/technical verdict и общий pass. Чистый отчёт требует
-непустое evidence. Любой malformed private output преобразуется в невалидный
-audit и блокирует flow fail-closed; Adapter не синтезирует repair concern.
-Согласованный code-assembled FAIL использует существующий цельный repair без
+source_index по исходному порядку, собирает coverage, `missing_visible_change`
+с `segment_id: null` для непокрытого source (без alias на первый segment) и
+остальные concerns, artistic/technical verdict и delivery pass. Чистый отчёт
+требует непустое evidence; при чисто литературном finding полные source reviews
+остаются фактическим контролем, а пояснительное evidence может быть пустым.
+Любой malformed private output преобразуется в невалидный audit и
+блокирует flow fail-closed; Adapter не синтезирует reviewed segments, evidence
+или repair concern. Согласованный code-assembled factual/technical FAIL использует существующий цельный repair без
 нового role/call; final audit повторяет тот же строгий seam.
 
 Temporal/aspectual overlap и persistence между фактами требуют явного основания:
@@ -363,8 +372,9 @@ reversal и подчинение со смыслом simultaneous/ongoing; об�
 Repair concerns не являются
 исчерпывающим whitelist: все правила повторно применяются ко всей прозе,
 при sparse support текст сокращается, а не украшается выдуманными связями.
-PASS также требует двух pass verdicts, полной coverage, пустых concerns и непустого
-массива evidence. Повторный semantic repair запрещён. Private writer и format
+Полный литературный PASS также требует двух pass verdicts, полной coverage,
+пустых concerns и непустого массива evidence. Delivery pass допускает только
+литературные concerns. Повторный semantic repair запрещён. Private writer и format
 repair не генерируют self-check flags: публичный `self_check={}` нейтрален,
 не содержит model approval и не заменяет независимый audit.
 
@@ -420,9 +430,11 @@ coverage/verdict, а final audit строго проверяется по IDs
 prose wire: её вычисляет temporal owner и показывает server-owned UI projection.
 Любая придуманная narrator временная величина является unsupported fact, а
 служебная формулировка дополнительно проваливает elapsed_as_service_report.
-При current beat private wire
-допускает visible_scene + sensory_details; narrator выбирает только относящиеся
-к этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.
+При current beat `optional_support` private wire допускает только `visible_scene`;
+неизменный sensory panorama не передаётся. Новые относящиеся к эпизоду sensory facts
+обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
+dump остаётся static_context_dump. При отсутствии current beat scene-only wire
+сохраняет `visible_scene` и grounded descriptive sensory support.
 
 Temporal/aspect grounding не позволяет выводить длительность из действия или
 sensory sky/weather/sound. Sensory support связывает сцену. Source review требует все propositions каждого atomic

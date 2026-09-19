@@ -13,7 +13,9 @@ export function buildLowerDvinaTracePersistedProjection({
   const preparedNpcs = result.immediate.npcs ?? [];
   const preparedContainers = result.immediate.containers ?? [];
   return {
-    schema: 'rus.lower_dvina_trace_persisted_projection.v2',
+    schema: result.schema === 'rus.authored_start_party_materialization_result.v1'
+      ? 'rus.authored_start_persisted_projection.v1'
+      : 'rus.lower_dvina_trace_persisted_projection.v2',
     materialization_run: structuredClone(runRecord),
     ...(preparedNpcs.some((npc) => npc.routine_state != null) ? {
       npc_spatial_schedules: initialNpcRoutineRecords({ result, changeSetId,
@@ -89,7 +91,7 @@ export function buildLowerDvinaTracePersistedProjection({
         g5_node_id: result.immediate.spatial.position.g5_node_id,
         g5_anchor_id: result.immediate.spatial.position.g5_anchor_id
       },
-      ...(result.request_identity.scenario_definition_revision >= 8 ? {
+      ...(preparedScenes.length > 0 ? {
         prepared_scenes: preparedScenes.map((scene) => ({
           location_profile_ref: scene.location_profile_ref,
           node: {
@@ -113,7 +115,7 @@ export function buildLowerDvinaTracePersistedProjection({
         })).sort((left, right) => left.node.g5_node_id.localeCompare(right.node.g5_node_id))
       } : {})
     },
-    ...(result.request_identity.scenario_definition_revision >= 8 ? {
+    ...(preparedNpcs.length > 0 ? {
       npcs: preparedNpcs.map((npc) => ({
         npc_id: npc.instance_id,
         run_id: result.run_id,
@@ -254,4 +256,31 @@ export function projectNameProfileSnapshot(identity = {}) {
     if (Object.hasOwn(identity, key)) snapshot[key] = structuredClone(identity[key]);
   }
   return snapshot;
+}
+
+export function phase3PreparedInputs(result) {
+  const authored = result.schema
+    === 'rus.authored_start_party_materialization_result.v1';
+  const revision = result.request_identity.scenario_definition_revision;
+  if (!authored && revision < 8) {
+    return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
+  }
+  const preparedScenes = result.immediate.prepared_scenes;
+  const preparedNpcs = result.immediate.npcs;
+  const preparedContainers = result.immediate.containers ?? [];
+  const phase4 = revision >= 10 && revision <= 14;
+  const phase7 = revision >= 15;
+  const firstEntry = revision >= 24;
+  if (!Array.isArray(preparedScenes) || !Array.isArray(preparedNpcs)
+    || !Array.isArray(preparedContainers)
+    || (!authored && (preparedScenes.length
+      !== (firstEntry ? 2 : phase7 ? 3 : phase4 ? 2 : 1)
+      || preparedNpcs.length !== (firstEntry || phase7 ? 6 : phase4 ? 5 : 3)
+      || preparedContainers.length !== (phase7 ? 1 : 0)))) {
+    const error = new Error('Prepared scene and NPC inventory is incomplete.');
+    error.code = authored ? 'AUTHORED_START_PREPARED_STATE_INVALID'
+      : 'LOWER_DVINA_TRACE_PHASE_3_PREPARED_STATE_INVALID';
+    throw error;
+  }
+  return { preparedScenes, preparedNpcs, preparedContainers };
 }

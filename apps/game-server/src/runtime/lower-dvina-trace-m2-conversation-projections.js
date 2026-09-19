@@ -7,6 +7,7 @@ import {
   refKey,
   sameRef
 } from './lower-dvina-trace-m2-conversation-shared.js';
+import { selectBoundedActorContext } from '@rus/visibility-knowledge-memory';
 
 export function perceivedChanges(records, { presentedEvidenceRecognized }) {
   const categories = new Set(records.map(({ signal }) => signal.category));
@@ -82,13 +83,12 @@ export function currentSceneObservationProjection(state,
 export function ownMemoryProjection(actor, state, targetRef,
   currentObservations = currentSceneObservationProjection(state)) {
   return {
-    records: structuredClone(actor.knowledge_records ?? []),
-    received_messages: structuredClone(
+    records: selectBoundedActorContext(actor.knowledge_records ?? []),
+    received_messages: selectBoundedActorContext(
       (state.received_messages ?? []).filter(
         ({ listener_ref: listenerRef }) => sameRef(listenerRef, targetRef)
-      )
-    ),
-    current_observations: structuredClone(currentObservations)
+      )),
+    current_observations: selectBoundedActorContext(currentObservations)
   };
 }
 

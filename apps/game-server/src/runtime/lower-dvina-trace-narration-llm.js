@@ -109,7 +109,7 @@ function narrationWire(request) {
       }))
     },
     optional_support: visible_changes.length || uncertainties.length
-      ? Object.fromEntries((assessmentOnly ? [] : ['visible_scene', 'sensory_details'])
+      ? Object.fromEntries((assessmentOnly ? [] : ['visible_scene'])
         .filter(key => Object.hasOwn(support, key))
         .map(key => [key, support[key]]))
       : support,

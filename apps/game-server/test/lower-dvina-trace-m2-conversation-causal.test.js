@@ -54,6 +54,26 @@ test('continued history preserves append order instead of digest order', async (
   ]);
 });
 
+test('long conversation context keeps its first accepted speech and recent tail', async () => {
+  let state = phase3State();
+  for (let index = 0; index < 13; index += 1) {
+    const exchange = await runPhase3({ state,
+      contracts: resolveContracts(state), rawText: `Вопрос ${index + 1}.`,
+      inputDigest: digest('0123456789abcdef'[index]),
+      responseKind: 'speech' });
+    state = project(exchange, state, `long:${index}`);
+  }
+  const next = await runPhase3({ state, contracts: resolveContracts(state),
+    rawText: 'Последний вопрос.', inputDigest: digest('f'),
+    responseKind: 'speech' });
+
+  assert.equal(next.npcRequest.public_conversation_history.length, 24);
+  assert.equal(next.npcRequest.public_conversation_history[0].utterance_text,
+    'Вопрос 1.');
+  assert.equal(next.npcRequest.public_conversation_history.at(-1)
+    .utterance_text, 'Последний вопрос.');
+});
+
 test('continued history includes a prior NPC silence contribution', async () => {
   const state = phase3State();
   const first = await runPhase3({ state, contracts: resolveContracts(state),

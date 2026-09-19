@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { assertCurrentSceneSelfIdentity } from './lower-dvina-trace-current-scene-self-identity.js';
 import {
+  projectDirectSeedChanges,
   projectCurrentSceneForNoOperationDirect,
   projectCurrentSceneForVisibleOverlay,
   withLowerDvinaTraceCurrentScene
@@ -19,6 +20,23 @@ import { lowerDvinaTraceDirectResultChanges } from
 const locationProfiles = [{ location_profile_id: 'shed',
   display_name: 'Старая сушильня', landscape_basis: 'Доски и мокрая трава.',
   economic_basis: 'Пустая сушильня.' }];
+
+test('direct sustained activity exposes the performed attempt without elapsed-time prose', () => {
+  const changes = projectDirectSeedChanges({
+    input: { consequence: { visible_seed: { turn_step_1: {
+      kind: 'semantic_activity', duration_minutes: 60
+    } } }, time_update: { semantic_activity_resolutions: [{
+      execution: { status: 'completed' }
+    }] } },
+    directSeedKeys: ['turn_step_1'],
+    appliedPlan: { resolution: 'direct', direct_result_kind: null,
+      activity: { requested_duration_minutes: 60 },
+      interpretation: { grounded_attempt: 'Жду здесь.' } }
+  });
+
+  assert.deepEqual(changes, ['Жду здесь.']);
+  assert.equal(JSON.stringify(changes).includes('один час'), false);
+});
 
 test('current scene keeps prior player-safe co-located NPC observations only', () => {
   const state = committedState();

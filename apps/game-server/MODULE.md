@@ -29,6 +29,33 @@ and adds no second transaction owner.
 
 ## Владеет
 
+- M2a public start catalog подключает approved authored starts из одного
+  versioned `live-world-runtime-v1` binding. Демо и другие authored starts
+  проходят тот же Phase 1A → Stage 24/25 → PostgreSQL → persisted screen path;
+  party сохраняет exact runtime binding, а старые trace sessions продолжают
+  проверяться по своим historical pins. Neutral catalog владеет собственными
+  execution/world/binding inputs; Lower Dvina publication загружается только
+  для своей external entry и не блокирует другой authored start. Read/reload
+  разрешает exact persisted approved/deprecated binding, без latest fallback;
+  только новая партия выбирает current binding. Authored profile получает
+  bounded role/occupation closure из digest-pinned regional catalogs; server
+  не назначает actor approval самостоятельно.
+
+- M2b проводит demo и authored-start партии через один существующий
+  `runTurnWorkflow` → P16 commit → durable narration/recovery path. Для
+  authored-start catalog поставляет нейтральный versioned turn-owner profile;
+  runtime не загружает demo bundle, revision contracts или scenario prose.
+  Профиль допускает общие semantic activity, body/check, item и temporal
+  owners, а отсутствующая capability остаётся честным direct/gap результатом.
+  Exact elapsed time остаётся code-owned UI metadata; narration получает
+  подтверждённый performed-action beat без копирования длительности.
+  Current authored binding revision 4 pins the M2b initial snapshot and
+  `live_world_authored_start_v2`. Accepted M2a revision 3 remains deprecated:
+  Phase 2 resolves only its persisted exact binding to a versioned turn
+  compatibility projection, without latest lookup, reroll or rematerialization.
+  Its first factual turn commits the normal v2 turn snapshot; reload and later
+  turns use that committed state.
+
 - Planner examples остаются flat semantic objects; mapping labels находятся
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.
   Stable system rules предшествуют request-specific choices/mappings и audit
@@ -49,9 +76,10 @@ and adds no second transaction owner.
   visible_change_N/uncertainty_N. Private wire разделяет required_current_beat
   (changes/uncertainties с ref/text), optional_support
   и constraints (do_not_imply/allowed_tensions/style_policy), без копии visible_context.
-  При любом current change/uncertainty optional_support содержит только visible_scene и sensory_details:
-  остальные static arrays/metadata не поступают writer/auditor/repair. Sensory details
-  выбираются по текущему beat; полный пересказ окружения запрещён.
+  При любом current change/uncertainty optional_support содержит только
+  `visible_scene`: остальные static arrays/metadata и неизменный sensory panorama
+  не поступают writer/auditor/repair. Newly relevant sensory details уже входят
+  в required visible changes; полный пересказ окружения запрещён.
   Newly relevant facts приходят через visible_changes: applied observation
   продвигает воспринимаемые scene facts, arrival — destination facts/NPC/objects/route,
   включая safe entity label/status и уже human N1 ordinary cues; portrait enums
@@ -67,10 +95,13 @@ and adds no second transaction owner.
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,
   refs/order, canonical segment choices, allowed failure kinds/checks и reasons,
   затем детерминированно собирает public source_index coverage, concerns,
-  artistic/technical verdict и общий pass. LLM не назначает verdict или индексы.
+  artistic/technical verdict и delivery pass. Литературный finding сохраняется,
+  но не блокирует доставку; factual/hidden/technical finding блокирует. LLM не
+  назначает verdict или индексы, а server не синтезирует reviewed segments/evidence.
   Пустой review частично либо полностью потерянного source становится
   missing_visible_change; malformed private output fail-closed и не получает
-  синтезированного repair concern. Final audit всегда strict.
+  синтезированного repair concern. Непокрытый source получает null segment,
+  а не alias на первый model segment. Final audit всегда strict.
   Private writer/format-repair возвращает только prose; Adapter всегда собирает
   публичные action_options=[], used_references=[] и нейтральный self_check={},
   которые не служат model approval.
@@ -655,9 +686,11 @@ coverage/verdict, а final audit строго проверяется по IDs
 prose wire: её вычисляет temporal owner и показывает server-owned UI projection.
 Любая придуманная narrator временная величина является unsupported fact, а
 служебная формулировка дополнительно проваливает elapsed_as_service_report.
-При current beat private wire
-допускает visible_scene + sensory_details; narrator выбирает только относящиеся
-к этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.
+При current beat `optional_support` private wire допускает только `visible_scene`;
+неизменный sensory panorama не передаётся. Новые относящиеся к эпизоду sensory facts
+обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
+dump остаётся static_context_dump. При отсутствии current beat scene-only wire
+сохраняет `visible_scene` и grounded descriptive sensory support.
 Полный grounded пересказ required sources по одному в исходном порядке является
 weak_literary_composition, если действие или воспринятый результат не организует
 поддержанные пространственные детали в сцену; выдуманная связка недопустима.

@@ -24,6 +24,7 @@ import { npcConversationDecisionCapability, npcPresentationContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
 import { projectCampFireState } from
   './lower-dvina-trace-player-safe-state.js';
+import { selectBoundedActorContext } from '@rus/visibility-knowledge-memory';
 export function buildNpcBoundary(context, working) {
   const resolvedRecords = allSignalRecords(context, working).filter(
     ({ same_time_batch_key: batchKey }) => batchKey === context.batchKey
@@ -295,5 +296,5 @@ function publicConversationHistory(
       history.push(structuredClone(latestVisible));
     }
   }
-  return history;
+  return selectBoundedActorContext(history);
 }

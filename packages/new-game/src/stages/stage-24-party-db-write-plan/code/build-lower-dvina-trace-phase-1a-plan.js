@@ -1,6 +1,7 @@
 import { initialNpcRoutineRecords } from './npc-routine-schedules.js';
 import {
   computeMaterializationEnvelopeDigest,
+  computeStage24ArtifactDigest,
   STAGE24_PLAN_SCHEMA,
 } from '@rus/contracts';
 import { sha256 } from '@rus/kernel';
@@ -15,6 +16,7 @@ import {
 import {
   buildLowerDvinaTracePersistedProjection,
   normalizeExternalOwnerRef,
+  phase3PreparedInputs,
   projectNameProfileSnapshot
 } from './lower-dvina-trace-persisted-projection.js';
 import { assertRevision19CharacterState } from
@@ -37,7 +39,9 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,
-    source_kind: 'lower_dvina_trace_phase_1a_materialization',
+    source_kind: result.schema === 'rus.authored_start_party_materialization_result.v1'
+      ? 'approved_authored_start_materialization'
+      : 'lower_dvina_trace_phase_1a_materialization',
     digest: result.trace.result_digest
   }];
   assertPartyRuntimeCatalogPins(party_creation_context);
@@ -380,8 +384,11 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     choiceRecords
   });
   const snapshotPayload = {
-    schema: 'rus.lower_dvina_trace_initial_party_snapshot.v2',
+    schema: result.schema === 'rus.authored_start_party_materialization_result.v1'
+      ? 'rus.authored_start_initial_party_snapshot.v1'
+      : 'rus.lower_dvina_trace_initial_party_snapshot.v2',
     version: 2,
+    materialization_result_schema: result.schema,
     request_identity: result.request_identity,
     immediate: result.immediate,
     ...(firstEntryPreparation == null ? {} : {
@@ -451,44 +458,33 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
   });
 }
 
-function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].includes(
-    result.request_identity.scenario_definition_revision
-  )) {
-    return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
-  }
-  const preparedScenes = result.immediate.prepared_scenes;
-  const preparedNpcs = result.immediate.npcs;
-  const preparedContainers = result.immediate.containers ?? [];
-  const phase4 = [10, 11, 12, 13, 14].includes(
-    result.request_identity.scenario_definition_revision
-  );
-  const phase7 = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].includes(
-    result.request_identity.scenario_definition_revision
-  );
-  const firstEntry = result.request_identity.scenario_definition_revision >= 24;
-  if (!Array.isArray(preparedScenes)
-    || preparedScenes.length !== (firstEntry ? 2 : phase7 ? 3 : phase4 ? 2 : 1)
-    || !Array.isArray(preparedNpcs)
-    || preparedNpcs.length !== (firstEntry ? 6 : phase7 ? 6 : phase4 ? 5 : 3)
-    || !Array.isArray(preparedContainers)
-    || preparedContainers.length !== (phase7 ? 1 : 0)) {
-    const error = new Error(
-      `Lower Dvina trace prepared scene and NPC inventory is incomplete: scenes=${preparedScenes?.length}, npcs=${preparedNpcs?.length}, containers=${preparedContainers?.length}.`
-    );
-    error.code = 'LOWER_DVINA_TRACE_PHASE_3_PREPARED_STATE_INVALID';
-    throw error;
-  }
-  return { preparedScenes, preparedNpcs, preparedContainers };
-}
-
 function assertInput(input) {
   const result = input?.approved_pipeline_outputs?.materialization_result;
   const semantic = input?.approved_pipeline_outputs?.player_character_audit;
+  const authored = result?.schema
+    === 'rus.authored_start_party_materialization_result.v1';
+  const authoredAdmission = authored
+    && semantic?.schema === 'rus.live_world_runtime.authored_start_admission.v1'
+    && computeStage24ArtifactDigest(semantic)
+      === computeStage24ArtifactDigest(result.validation_report)
+    && semantic.world_base_reference_digest
+      === input.world_base_reference_digest
+    && semantic.domain_catalog_digest
+      === input.party_creation_context?.domain_catalog_pin?.catalog_digest
+    && semantic.domain_catalog_bundle_digest
+      === result.trace?.catalog_bundle_digest
+    && semantic.actor_catalog_digest === result.trace?.actor_catalog_digest
+    && ['exact_world_closure', 'exact_domain_closure', 'actor_refs',
+      'placements', 'resources', 'player_known']
+      .every((key) => semantic.checks?.[key] === true)
+    && Array.isArray(semantic.resolved_actor_refs)
+    && semantic.resolved_actor_refs.length
+      === (result.immediate?.npcs?.length ?? -1) + 1;
   if (!input?.request_id || !input.party_creation_context?.idempotency_key || result?.validation_report?.pass !== true
     || semantic?.pass !== true || result?.party_id !== input.party_creation_context.party_id
     || result?.trace?.result_digest !== computeMaterializationEnvelopeDigest(result)
-    || input.party_db_write_plan_input_digest == null) {
+    || input.party_db_write_plan_input_digest == null
+    || (authored && !authoredAdmission)) {
     const error = new Error('Lower Dvina trace Phase 1A requires one validated materialization result bound to the party.');
     error.code = 'LOWER_DVINA_TRACE_PHASE_1A_PLAN_INPUT_INVALID';
     throw error;

@@ -127,6 +127,7 @@ const SEMANTIC_REPAIR_CODES = new Set([
   'continuation_progress',
   'direct_result_kind',
   'domain_owner_unavailable',
+  'elapsed_time_grounding',
   'material_extent_shape',
   'material_transformation_grounding',
   'operation_semantic_grounding',

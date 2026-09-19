@@ -42,7 +42,8 @@ export async function runNarrationFlow(request, ports, options = {}) {
   const repairConcerns = (auditErrors.length ? actionableConcerns : audit.concerns).map((concern) => ({
     ...(auditErrors.length
       ? { reason: concern.reason }
-      : { ...clone(concern), source_segment_ids: [concern.segment_id] }),
+      : { ...clone(concern), source_segment_ids: concern.segment_id == null
+        ? [] : [concern.segment_id] }),
     segment_id: repairSegment.segment_id
   }));
   const confirmedOutcome = confirmedOutcomeContext(request);

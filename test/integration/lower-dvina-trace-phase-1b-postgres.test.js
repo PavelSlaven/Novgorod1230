@@ -1,12 +1,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createServer } from 'node:http';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import pg from 'pg';
+import { chromium } from 'playwright-core';
+import { createGameHttpServer, createStaticAssetResolver, listen } from
+  '@rus/game-server';
+import { canonicalDigest } from '@rus/materialization';
+import { createSeededRandomSource } from '@rus/checks-rng';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import {
   createLowerDvinaTracePublicRuntime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
+import { createLowerDvinaTracePhase2Runtime } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
+import { createLowerDvinaTracePhase2PostgresRepository } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import { createLowerDvinaTracePhase2DurableNarrator } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
+import { createSpatialV3PostgresCombinedAtomicCommitter } from
+  '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { firstPlayableCommitRecheck } from
+  '../../apps/game-server/src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { approvedNarration } from
+  '../../apps/game-server/test/lower-dvina-trace-phase-2-fixture-support.js';
 import {
   createLowerDvinaTracePhase1BProductionAdapter,
   readPartyDatabaseSchemaSnapshot
@@ -14,9 +37,6 @@ import {
 import {
   createFirstPlayablePartyRepository
 } from '../../apps/game-server/src/infrastructure/postgres/first-playable/repository.js';
-import {
-  createHttpHandler
-} from '../../apps/game-server/src/http/handler.js';
 import {
   loadActiveRuntimeCatalogPin
 } from '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
@@ -46,46 +66,67 @@ import { buildS1AuthoringV6ImportSql } from
   '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
 import { TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST } from
   '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
+import { loadLiveWorldAuthoredStartCatalog } from
+  '../../apps/game-server/src/internal/live-world-authored-starts.js';
+import { hash as hashForTest } from
+  '../../apps/game-server/src/runtime/first-playable/shared.js';
+import { ensureLocalPostgres, LOCAL_POSTGRES } from
+  '../../tools/local-play/local-postgres.js';
 
 const docker = (args) => spawnSync(
   'docker',
   args,
   { encoding: 'utf8', timeout: 45_000 }
 );
+const executablePath = [
+  process.env.RUS_CHROMIUM_PATH,
+  'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+  '/usr/bin/chromium',
+  '/usr/bin/chromium-browser',
+  '/usr/bin/google-chrome'
+].find((item) => item && existsSync(item));
 test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', async (t) => {
-  if (docker(['version']).status !== 0) {
-    t.skip('Docker is required for isolated Phase 1B PostgreSQL integration');
-    return;
-  }
+  const dockerReady = docker(['version']).status === 0;
   const name = `lower-dvina-phase-1b-${process.pid}`;
   let pool;
   let server;
+  let managed;
+  let managedRoot;
   t.after(async () => {
     if (server) await new Promise((resolve) => server.close(resolve));
     if (pool) await pool.end();
-    docker(['rm', '-f', name]);
+    if (managed) await managed.close();
+    if (managedRoot) await rm(managedRoot, { recursive: true, force: true });
+    if (dockerReady) docker(['rm', '-f', name]);
   });
-  const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
-    '-e', 'POSTGRES_PASSWORD=local_only',
-    '-e', 'POSTGRES_USER=phase1b',
-    '-e', 'POSTGRES_DB=pr17_phase1b',
-    'postgres:16-alpine'
-  ]);
-  assert.equal(started.status, 0, started.stderr);
-  await waitForPostgres(name);
-  await new Promise((resolve) => setTimeout(resolve, 700));
-  const port = Number(
-    docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
-  );
-  pool = new pg.Pool({
-    host: '127.0.0.1',
-    port,
-    user: 'phase1b',
-    password: 'local_only',
-    database: 'pr17_phase1b',
-    max: 8
-  });
+  let databaseUrl;
+  if (dockerReady) {
+    const started = docker([
+      'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=local_only',
+      '-e', 'POSTGRES_USER=phase1b',
+      '-e', 'POSTGRES_DB=pr17_phase1b',
+      'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    await waitForPostgres(name);
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    const port = Number(
+      docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
+    );
+    databaseUrl = `postgresql://phase1b:local_only@127.0.0.1:${port}/pr17_phase1b`;
+  } else {
+    managedRoot = await mkdtemp(join(tmpdir(), 'novgorod-m2a-postgres-'));
+    managed = await ensureLocalPostgres({ dataRoot: managedRoot,
+      settings: { ...LOCAL_POSTGRES,
+        worldDatabase: `pr17_m2a_world_${process.pid}`,
+        partyDatabase: `pr17_m2a_party_${process.pid}`,
+        worldUser: `m2a_world_${process.pid}`,
+        partyUser: `m2a_party_${process.pid}` } });
+    databaseUrl = managed.partyUrl;
+  }
+  pool = new pg.Pool({ connectionString: databaseUrl, max: 8 });
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
@@ -102,7 +143,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   );
   const runtimeCatalogPin = await installActivatedRuntimeCatalog({
     pool,
-    databaseUrl: `postgresql://phase1b:local_only@127.0.0.1:${port}/pr17_phase1b`
+    databaseUrl
   });
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
@@ -149,15 +190,24 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     compatible_world_pin_manifest_digest:
       runtimeCatalogPin.compatible_world_pin_manifest_digest
   });
+  const authoredStartCatalog = await loadLiveWorldAuthoredStartCatalog({
+    phase1AManifestDigest: TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
+    scenarioDefinitionRevision: 32
+  });
   const makeRuntime = (partyRepository = null, {
     publicationLoader,
-    adapterTransform
+    adapterTransform,
+    catalog = authoredStartCatalog,
+    authoredStartResolver = catalog.resolveProfile,
+    traceTurnRuntime = null,
+    committer = { commit: async () => ({ ok: true }) }
   } = {}) => {
     const adapter = createLowerDvinaTracePhase1BProductionAdapter({
       partyPool: pool,
       worldPool: pool,
       release,
-      runtimeCatalogPin
+      runtimeCatalogPin,
+      authoredStartResolver
     });
     const runtimeAdapter = adapterTransform
       ? adapterTransform(adapter)
@@ -165,15 +215,17 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     return {
       runtime: createLowerDvinaTracePublicRuntime({
         partyPool: pool,
-        committer: { commit: async () => ({ ok: true }) },
+        committer,
         release,
         runtimeCatalogPin,
         activePhase1AManifestDigest:
           TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
         activeScenarioDefinitionRevision: 32,
         traceStartAdapter: runtimeAdapter,
+        traceTurnRuntime,
         partyRepository,
-        publicationLoader
+        publicationLoader,
+        authoredStartCatalog: catalog
       }),
       adapter
     };
@@ -187,26 +239,33 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     }),
     { code: 'TRACE_PHASE_1B_EXECUTION_VERSION_UNSUPPORTED' }
   );
-  server = createServer(createHttpHandler({
-    root: first.runtime,
-    maxBodyBytes: 1024 * 1024,
+  const here = dirname(fileURLToPath(import.meta.url));
+  server = createGameHttpServer({
+    root: Object.freeze({ ...first.runtime,
+      getLlmSettings: () => ({ mode: 'local',
+        compatibility: 'openai_compatible',
+        base_url: 'http://127.0.0.1:8000/v1', model: 'test-not-used',
+        api_key_present: false,
+        local_runtime: { ready: true, reasons: [] } }),
+      getTurnProgress: () => null }),
+    staticAssets: createStaticAssetResolver({
+      webRoot: resolve(here, '../../apps/game-web'),
+      contractsRoot: resolve(here, '../../packages/contracts/src')
+    }),
     developerMode: true
-  }));
-  await new Promise((resolve) =>
-    server.listen(0, '127.0.0.1', resolve));
-  const base = `http://127.0.0.1:${server.address().port}`;
+  });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  const base = `http://127.0.0.1:${address.port}`;
 
   const catalog = await api(base, '/api/v1/scenarios');
   const scenarioIds = catalog.data.scenarios.map(({ scenario_id: id }) => id);
   assert.deepEqual(
     scenarioIds,
-    ['lower_dvina_trace_v1']
+    ['lower_dvina_trace_v1', 'vikhtuy_fishing_camp_v1']
   );
-  assert.equal(
-    scenarioIds.includes('lower_dvina_late_summer_open_water_v1'),
-    false
-  );
+  assert.equal(scenarioIds.includes('lower_dvina_late_summer_open_water_v1'), false);
   assert.equal(scenarioIds.includes('lower_dvina_trace_v1'), true);
+  assert.equal(scenarioIds.includes('upper_msta_weavers_yard_v1'), false);
   await assert.rejects(
     () => api(base, '/api/v1/new-games', {
       scenario_id: 'lower_dvina_late_summer_open_water_v1',
@@ -214,6 +273,15 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     }),
     { code: 'SCENARIO_NOT_SUPPORTED' }
   );
+  await assert.rejects(
+    () => api(base, '/api/v1/new-games', {
+      scenario_id: 'upper_msta_weavers_yard_v1',
+      request_id: 'm2a-false-geography-alias'
+    }),
+    { code: 'SCENARIO_NOT_SUPPORTED' }
+  );
+  assert.equal(await count(pool, 'party_runtime.parties',
+    `party:${hashForTest('m2a-false-geography-alias').slice(0, 24)}`), 0);
   const publicRequest = {
     scenario_id: 'lower_dvina_trace_v1',
     request_id: 'phase-1b-postgres-public'
@@ -226,6 +294,336 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assertPublic(start);
 
   const partyId = start.data.party_id;
+  const authoredRequest = {
+    scenario_id: 'vikhtuy_fishing_camp_v1',
+    request_id: 'm2b-authored-public-v4'
+  };
+  const authoredStart = await api(base, '/api/v1/new-games', authoredRequest);
+  assert.equal(authoredStart.status, 201);
+  assert.equal(authoredStart.data.screen.scenario_id,
+    'vikhtuy_fishing_camp_v1');
+  assert.match(authoredStart.data.screen.main_prose, /Вихтуя/u);
+  assert.doesNotMatch(authoredStart.data.screen.main_prose, /Мст/u);
+  assert.equal(authoredStart.data.screen.panels.character.data.name, 'Любава');
+  const authoredPartyId = authoredStart.data.party_id;
+  const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
+  assert.equal(authoredInternal.npcs.length, 2);
+  assert.equal(authoredInternal.items.length, 2);
+  assert.equal(authoredInternal.position.g4_id,
+    'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach');
+  const demoInternal = await first.adapter.loadInternal(partyId);
+  assert.notEqual(authoredInternal.position.g4_id, demoInternal.position.g4_id);
+  const nodes = await pool.query(
+    `SELECT party_id,state_payload#>'{immediate,spatial,node}' AS node
+       FROM party_runtime.party_state_snapshots
+      WHERE party_id=ANY($1::text[])`, [[partyId, authoredPartyId]]
+  );
+  const nodesByParty = new Map(nodes.rows.map((row) => [row.party_id, row.node]));
+  assert.equal(nodesByParty.get(partyId).template_id,
+    'trace_ld_v1_tpl_wreck_shore');
+  assert.equal(nodesByParty.get(authoredPartyId).template_id,
+    'trace_ld_v1_tpl_fishing_camp');
+  assert.equal(nodesByParty.get(authoredPartyId).state.canonical_g5_ref.id,
+    'trace_ld_v1_g5_fishing_camp');
+  assert.deepEqual(authoredInternal.items.map(({ quantity }) => Number(quantity))
+    .sort((a, b) => a - b), [1, 1]);
+  const authoredMechanics = Object.fromEntries(authoredInternal.items.map(
+    (item) => [item.template_id, item.state.inventory_profile_snapshot]));
+  assert.deepEqual([
+    authoredMechanics.item_tpl_nov_linen_shirt_v1.packing_slot_cost,
+    authoredMechanics.item_tpl_nov_linen_shirt_v1.packing_bundle_size,
+    authoredMechanics.item_tpl_nov_rope_v1.packing_slot_cost,
+    authoredMechanics.item_tpl_nov_rope_v1.packing_bundle_size
+  ], [3, 1, 6, 1]);
+  assert.notEqual(authoredPartyId, partyId);
+  assert.deepEqual(
+    (await api(base, '/api/v1/new-games', authoredRequest)).data,
+    authoredStart.data
+  );
+  assert.equal(await count(pool, 'party_runtime.parties', authoredPartyId), 1);
+  assert.equal(await count(pool, 'party_runtime.party_materialization_runs', authoredPartyId), 1);
+  assert.equal(await count(pool, 'party_runtime.party_server_sessions', authoredPartyId), 1);
+  const authoredIdentity = (await pool.query(
+    `SELECT stage26_result FROM party_runtime.party_server_sessions
+      WHERE party_id=$1`, [authoredPartyId])).rows[0].stage26_result;
+  assert.deepEqual(authoredIdentity.runtime_binding,
+    authoredStartCatalog.runtime_binding);
+  assert.equal(authoredIdentity.runtime_binding.revision, 4);
+  assert.equal(authoredIdentity.materializer_binding_id,
+    'live_world_authored_start_v2');
+  assert.equal(await count(pool, 'party_runtime.parties', partyId), 1);
+  const invalidCases = [
+    ['g4', (profile) => { profile.geometry.start.g4_id = 'missing-g4'; }],
+    ['node-template', (profile) => {
+      profile.geometry.start.node_template_id = 'missing-template';
+    }],
+    ['location-profile', (profile) => {
+      profile.geometry.start.location_profile_id = 'missing-profile';
+    }],
+    ['item-profile', (profile) => {
+      profile.resources[0].inventory_profile_id = 'missing-profile';
+    }],
+    ['item-category', (profile) => {
+      profile.resources[0].category_id = 'missing-category';
+    }],
+    ['environment', (profile) => {
+      profile.environment.profile_id = 'missing-environment';
+    }],
+    ['player-known', (profile) => {
+      profile.player.known_fact_refs = ['missing-fact'];
+    }],
+    ['player-role', (profile) => {
+      profile.player.role_id = 'missing-role';
+    }],
+    ['player-occupation', (profile) => {
+      profile.player.occupation_id = 'missing-occupation';
+    }],
+    ['npc-role', (profile) => {
+      profile.people[0].role_id = 'missing-role';
+    }],
+    ['npc-occupation', (profile) => {
+      profile.people[0].occupation_id = 'missing-occupation';
+    }],
+    ['player-incompatible-role-occupation', (profile) => {
+      profile.player.occupation_id = 'nov_occ_boatman';
+    }],
+    ['npc-incompatible-role-occupation', (profile) => {
+      profile.people[0].role_id = 'nov_role_fisher';
+    }]
+  ];
+  for (const [name, mutate] of invalidCases) {
+    const invalidProfile = structuredClone(
+      authoredStartCatalog.resolveProfile('vikhtuy_fishing_camp_v1')
+    );
+    mutate(invalidProfile);
+    const invalidRuntime = makeRuntime(null, {
+      authoredStartResolver: (scenarioId) =>
+        scenarioId === invalidProfile.scenario_id ? invalidProfile : null
+    }).runtime;
+    const requestId = `m2a-invalid-${name}`;
+    await assert.rejects(() => invalidRuntime.startNewGame({
+      scenario_id: invalidProfile.scenario_id,
+      request_id: requestId
+    }), { code: 'AUTHORED_START_PROFILE_INVALID' });
+    const invalidPartyId =
+      `party:${hashForTest(requestId).slice(0, 24)}`;
+    assert.equal(await count(pool, 'party_runtime.parties', invalidPartyId), 0);
+  }
+
+  const unavailableDemoCatalog = await loadLiveWorldAuthoredStartCatalog({
+    phase1AManifestDigest: TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
+    scenarioDefinitionRevision: 32,
+    externalPublicationLoader: async () => {
+      throw Object.assign(new Error('demo unavailable'), {
+        code: 'DEMO_PUBLICATION_UNAVAILABLE'
+      });
+    }
+  });
+  const neutralRuntime = makeRuntime(null, {
+    catalog: unavailableDemoCatalog
+  }).runtime;
+  assert.equal((await neutralRuntime.listScenarios()).scenarios.some(
+    ({ scenario_id: id }) => id === 'vikhtuy_fishing_camp_v1'), true);
+  const neutralStart = await neutralRuntime.startNewGame({
+    scenario_id: 'vikhtuy_fishing_camp_v1',
+    request_id: 'm2a-neutral-with-demo-unavailable'
+  });
+  assert.equal(neutralStart.screen.scenario_id,
+    'vikhtuy_fishing_camp_v1');
+  await assert.rejects(() => neutralRuntime.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'm2a-demo-unavailable'
+  }), { code: 'DEMO_PUBLICATION_UNAVAILABLE' });
+
+  assert.ok(executablePath, 'Chromium executable is required for M2a E2E.');
+  const browser = await chromium.launch({ executablePath, headless: true,
+    args: ['--no-sandbox', '--no-proxy-server', '--proxy-bypass-list=*'] });
+  t.after(() => browser.close());
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  await page.goto(base);
+  await page.waitForSelector('[data-start-new-game]');
+  await page.click('[data-start-new-game]');
+  await page.waitForSelector('[data-new-game-screen]');
+  await page.click('[data-scenario-id="vikhtuy_fishing_camp_v1"]');
+  await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+  assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
+  const browserPartyId = await page.evaluate(() =>
+    localStorage.getItem('rus.party_id'));
+  assert.equal(await count(pool, 'party_runtime.parties', browserPartyId), 1);
+  await page.click('[data-return-start]');
+  await page.reload();
+  await page.waitForSelector('[data-continue-party]');
+  await page.click('[data-continue-party]');
+  await page.waitForSelector('[data-screen-schema="first_game_screen"]');
+  assert.equal(await page.evaluate(() => localStorage.getItem('rus.party_id')),
+    browserPartyId);
+  assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
+  await browser.close();
+  const turnCommitter = createSpatialV3PostgresCombinedAtomicCommitter({
+    pool, recheck: firstPlayableCommitRecheck,
+    now: () => new Date('2026-09-19T08:00:00.000Z')
+  });
+  const phase2Repository = createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: pool, committer: turnCommitter,
+    authoredRuntimeBindingResolver:
+      authoredStartCatalog.resolveRuntimeBinding
+  });
+  const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
+    repository: phase2Repository,
+    semanticResolver: async () => ({ status: 'unknown',
+      reason_code: 'free_intent' }),
+    turnStepModel: m2bTurnPlan,
+    playerConversationModel: async () => { throw new Error('unexpected'); },
+    npcSemanticModel: async () => { throw new Error('unexpected'); },
+    narrator: createLowerDvinaTracePhase2DurableNarrator({
+      partyPool: pool,
+      narrationService: { run: async (request) =>
+        approvedNarration(request.request_id) }
+    }),
+    randomSourceFactory: () => createSeededRandomSource(
+      'm2b-live-world-postgres'),
+    temporalAdvanceOwner: createTemporalAdvanceOwner({}),
+    decisionSecret: 'm2b-live-world-secret',
+    authoredTurnProfile: authoredStartCatalog.turn_profile,
+    now: () => '2026-09-19T08:00:00.000Z'
+  });
+  const playable = makeRuntime(null, { traceTurnRuntime,
+    committer: turnCommitter }).runtime;
+  const turnServer = createGameHttpServer({
+    root: Object.freeze({ ...playable,
+      getLlmSettings: () => ({ mode: 'custom',
+        compatibility: 'openai_compatible', base_url: 'http://127.0.0.1/v1',
+        model: 'test-not-used', api_key_present: false,
+        local_runtime: { ready: true, reasons: [] } }),
+      getTurnProgress: () => null }),
+    staticAssets: createStaticAssetResolver({
+      webRoot: resolve(here, '../../apps/game-web'),
+      contractsRoot: resolve(here, '../../packages/contracts/src')
+    }), developerMode: true
+  });
+  t.after(() => turnServer.close());
+  const turnAddress = await listen(turnServer, { host: '127.0.0.1', port: 0 });
+  const turnBase = `http://127.0.0.1:${turnAddress.port}`;
+  const m2aFixtureRaw = await readFile(resolve(here,
+    '../fixtures/m2a-5f7e83cd-party-rows.json'));
+  assert.equal(createHash('sha256').update(m2aFixtureRaw).digest('hex'),
+    'f8fa571d16402fe0cca3fdff6c684f315a838e513286e1ff2c77f7517bf96083');
+  const m2aFixture = JSON.parse(m2aFixtureRaw);
+  assert.equal(m2aFixture.source_head,
+    '5f7e83cd5f76b071382754ea1af20ec2bf295c81');
+  await importM2aPartyRows(pool, m2aFixture);
+  const m2aRuntime = makeRuntime(null, { traceTurnRuntime,
+    committer: turnCommitter }).runtime;
+  const m2aStart = { party_id: m2aFixture.party_id };
+  const m2aBefore = await first.adapter.loadInternal(m2aStart.party_id);
+  assert.equal(m2aBefore.player.dossier.attributes, undefined);
+  assert.equal(m2aBefore.items.every((item) =>
+    item.state.inventory_profile_snapshot == null), true);
+  const m2aRunBefore = (await pool.query(
+    `SELECT result_digest FROM party_runtime.party_materialization_runs
+      WHERE party_id=$1`, [m2aStart.party_id])).rows[0].result_digest;
+  await m2aRuntime.acknowledgeOpening(m2aStart.party_id, {
+    client_ack_id: 'm2a-compat-opening'
+  });
+  const compatibleInitial = await phase2Repository.loadPhase2State(
+    m2aStart.party_id);
+  assert.equal(compatibleInitial.player_profile.attributes.strength.value, 10);
+  const m2aFirstTurn = await m2aRuntime.submitTurn(m2aStart.party_id, {
+    request_id: 'm2a-compat-turn-1', idempotency_key: 'm2a-compat-turn-1',
+    raw_text: 'Осматриваюсь.'
+  });
+  assert.equal(m2aFirstTurn.turn_number, 1);
+  const m2aRestarted = makeRuntime(null, { traceTurnRuntime,
+    committer: turnCommitter }).runtime;
+  assert.equal((await m2aRestarted.getPartyScreen(m2aStart.party_id))
+    .turn_number, 1);
+  const m2aSecondTurn = await m2aRestarted.submitTurn(m2aStart.party_id, {
+    request_id: 'm2a-compat-turn-2', idempotency_key: 'm2a-compat-turn-2',
+    raw_text: 'Оглядываюсь вокруг.'
+  });
+  assert.equal(m2aSecondTurn.turn_number, 2);
+  const m2aReloadedState = await phase2Repository.loadPhase2State(
+    m2aStart.party_id);
+  const m2aReloadedMechanics = Object.fromEntries(
+    m2aReloadedState.items.map((item) => [item.template_id,
+      item.state.inventory_profile_snapshot]));
+  assert.deepEqual([
+    m2aReloadedMechanics.item_tpl_nov_linen_shirt_v1.packing_slot_cost,
+    m2aReloadedMechanics.item_tpl_nov_linen_shirt_v1.packing_bundle_size,
+    m2aReloadedMechanics.item_tpl_nov_rope_v1.packing_slot_cost,
+    m2aReloadedMechanics.item_tpl_nov_rope_v1.packing_bundle_size
+  ], [3, 1, 6, 1]);
+  assert.equal(await count(pool, 'party_runtime.party_materialization_runs',
+    m2aStart.party_id), 1);
+  assert.equal((await pool.query(
+    `SELECT result_digest FROM party_runtime.party_materialization_runs
+      WHERE party_id=$1`, [m2aStart.party_id])).rows[0].result_digest,
+  m2aRunBefore);
+  const playableStart = (await api(turnBase, '/api/v1/new-games', {
+    scenario_id: 'vikhtuy_fishing_camp_v1',
+    request_id: 'm2b-authored-turn-party'
+  })).data;
+  const playablePartyId = playableStart.party_id;
+  await playable.acknowledgeOpening(playablePartyId, {
+    client_ack_id: 'm2b-authored-opening'
+  });
+  for (let index = 0; index < 10; index += 1) {
+    const key = `m2b-authored-turn-${index}`;
+    const turnResult = (await api(turnBase,
+      `/api/v1/parties/${encodeURIComponent(playablePartyId)}/turns`, {
+      request_id: key, idempotency_key: key,
+      raw_text: M2B_TURNS[index]
+    })).data;
+    assert.equal(turnResult.turn_number, index + 1);
+    assert.equal(turnResult.screen.scenario_id, 'vikhtuy_fishing_camp_v1');
+    assert.equal(turnResult.screen.schema, 'turn_screen');
+    if (index === 0) {
+      assert.deepEqual((await api(turnBase,
+        `/api/v1/parties/${encodeURIComponent(playablePartyId)}/turns`, {
+        request_id: key, idempotency_key: key, raw_text: M2B_TURNS[index]
+      })).data, turnResult);
+      await assert.rejects(() => api(turnBase,
+        `/api/v1/parties/${encodeURIComponent(playablePartyId)}/turns`, {
+        request_id: key, idempotency_key: key, raw_text: 'Другой payload.'
+      }), { code: 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT' });
+    }
+  }
+  assert.equal((await playable.getPartyScreen(playablePartyId)).turn_number, 10);
+  const demoPlayableStart = await playable.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'm2b-demo-turn-party'
+  });
+  await playable.acknowledgeOpening(demoPlayableStart.party_id, {
+    client_ack_id: 'm2b-demo-opening'
+  });
+  for (let index = 0; index < 10; index += 1) {
+    const key = `m2b-demo-turn-${index}`;
+    const turnResult = (await api(turnBase,
+      `/api/v1/parties/${encodeURIComponent(demoPlayableStart.party_id)}/turns`, {
+      request_id: key, idempotency_key: key,
+      raw_text: M2B_TURNS[index]
+    })).data;
+    assert.equal(turnResult.turn_number, index + 1);
+    assert.equal(turnResult.screen.scenario_id, 'lower_dvina_trace_v1');
+  }
+  assert.equal((await playable.getPartyScreen(demoPlayableStart.party_id))
+    .turn_number, 10);
+  const continuedBrowser = await chromium.launch({ executablePath,
+    headless: true,
+    args: ['--no-sandbox', '--no-proxy-server', '--proxy-bypass-list=*'] });
+  t.after(() => continuedBrowser.close());
+  const continuedPage = await continuedBrowser.newPage();
+  await continuedPage.goto(turnBase);
+  await continuedPage.evaluate((partyId) =>
+    localStorage.setItem('rus.party_id', partyId), playablePartyId);
+  await continuedPage.reload();
+  await continuedPage.waitForSelector('[data-continue-party]');
+  await continuedPage.click('[data-continue-party]');
+  await continuedPage.waitForSelector('[data-screen-schema="turn_screen"]');
+  assert.match(await continuedPage.textContent('body'), /Вихту/iu);
+  assert.equal(await continuedPage.evaluate(() => localStorage.getItem(
+    'rus.party_id')), playablePartyId);
+  await continuedBrowser.close();
   const beforeRestart = await first.adapter.loadInternal(partyId);
   assert.equal(
     (await count(pool, 'party_runtime.parties', partyId)),
@@ -262,6 +660,63 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const restarted = makeRuntime();
   const screen = await restarted.runtime.getPartyScreen(partyId);
   assert.deepEqual(screen.screen, start.data.screen);
+  assert.deepEqual(
+    (await restarted.runtime.getPartyScreen(authoredPartyId)).screen,
+    authoredStart.data.screen
+  );
+  const v1Catalog = Object.freeze({
+    runtime_binding: Object.freeze({
+      catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
+      revision: 1
+    }),
+    listPublic: authoredStartCatalog.listPublic,
+    hasScenario: authoredStartCatalog.hasScenario,
+    resolveProfile: authoredStartCatalog.resolveProfile,
+    resolveRuntimeBinding: (binding) => binding?.catalog_id
+      === authoredStartCatalog.runtime_binding.catalog_id
+      && binding.revision === 1
+      ? Object.freeze({ ...binding, status: 'approved' }) : null,
+    async loadPublication(scenarioId) {
+      const publication = structuredClone(
+        await authoredStartCatalog.loadPublication(scenarioId)
+      );
+      publication.binding.binding_id = `${scenarioId}@1`;
+      publication.binding.revision = 1;
+      publication.binding.phase_1a_manifest_ref.digest = canonicalDigest({
+        catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
+        revision: 1
+      });
+      publication.binding.scenario_definition_ref.revision = 1;
+      publication.binding.scenario_definition_ref.digest = canonicalDigest({
+        catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
+        revision: 1,
+        scenario_id: scenarioId
+      });
+      publication.binding.execution_identity.seed_context =
+        `authored_start:${scenarioId}:v1`;
+      publication.binding.runtime_binding.revision = 1;
+      publication.binding_digest = canonicalDigest(publication.binding);
+      return publication;
+    }
+  });
+  const v1StartRuntime = makeRuntime(null, { catalog: v1Catalog }).runtime;
+  const v1Start = await v1StartRuntime.startNewGame({
+    scenario_id: 'vikhtuy_fishing_camp_v1',
+    request_id: 'm2a-authored-v1-save'
+  });
+  const historicalAuthored = makeRuntime();
+  assert.deepEqual(
+    (await historicalAuthored.runtime.getPartyScreen(v1Start.party_id)).screen,
+    v1Start.screen
+  );
+  const missingHistoricalBinding = makeRuntime(null, {
+    catalog: Object.freeze({ ...authoredStartCatalog,
+      resolveRuntimeBinding: () => null })
+  });
+  await assert.rejects(
+    () => missingHistoricalBinding.runtime.getPartyScreen(v1Start.party_id),
+    { code: 'AUTHORED_START_RUNTIME_BINDING_MISSING' }
+  );
   const afterRestart = await restarted.adapter.loadInternal(partyId);
   assert.deepEqual(afterRestart.request_identity, beforeRestart.request_identity);
   assert.deepEqual(afterRestart.sealed_selections, beforeRestart.sealed_selections);
@@ -458,6 +913,37 @@ async function installActivatedRuntimeCatalog({ pool, databaseUrl }) {
   return loadActiveRuntimeCatalogPin(pool, 'item_container_materialization_v2');
 }
 
+async function importM2aPartyRows(pool, fixture) {
+  const order = [
+    'parties', 'party_v3_change_sets', 'party_catalog_pins',
+    'party_materialization_runs', 'party_materialization_run_catalog_pins',
+    'party_materialization_choices', 'party_g5_nodes', 'party_g5_anchors',
+    'party_player_characters', 'party_npcs', 'party_actor_profile_bindings',
+    'party_actor_body_states', 'party_clocks', 'party_positions', 'party_items',
+    'party_item_placements', 'party_ownership', 'party_state_snapshots',
+    'party_server_sessions'
+  ];
+  const transaction = await pool.connect();
+  try {
+    await transaction.query('BEGIN');
+    for (const table of order) {
+      const rows = fixture.tables[table] ?? [];
+      if (rows.length === 0) continue;
+      await transaction.query(
+        `INSERT INTO party_runtime."${table}"
+         SELECT * FROM json_populate_recordset(
+           NULL::party_runtime."${table}",$1::json)`,
+        [JSON.stringify(rows)]);
+    }
+    await transaction.query('COMMIT');
+  } catch (error) {
+    await transaction.query('ROLLBACK');
+    throw error;
+  } finally {
+    transaction.release();
+  }
+}
+
 async function api(base, path, body = null) {
   const response = await fetch(`${base}${path}`, body == null ? {} : {
     method: 'POST',
@@ -503,4 +989,62 @@ async function waitForPostgres(name) {
     ]).status === 0) return;
   }
   assert.fail('PostgreSQL container did not become ready');
+}
+
+const M2B_TURNS = Object.freeze([
+  'Осматриваюсь.',
+  'Оглядываюсь вокруг.',
+  'Говорю вслух: «Проверю сети».',
+  'Прыгну к облакам и останусь там.',
+  'После неудачи снова спокойно осматриваюсь.',
+  'Осматриваюсь, затем кричу: «Эй!»',
+  'Жду здесь один час.',
+  'Проверяю, что изменилось вокруг.',
+  'Ещё раз оглядываюсь другими словами.',
+  'Спокойно наблюдаю за станом.'
+]);
+
+function m2bTurnPlan(request) {
+  const base = {
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: 'осмотреть доступную обстановку',
+      adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: 'player_safe_observation',
+    reason_code: 'observe_current_scene',
+    reason: 'Наблюдение использует только player-safe состояние.'
+  };
+  const text = request.remaining_intent;
+  if (text.includes('Жду здесь')) return { ...base,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: text, adaptation: 'literal' },
+    activity: { owner: 'semantic', duration_class: 'extended', effort: 'none',
+      requested_duration_minutes: 60 }, direct_result_kind: null,
+    reason_code: 'wait_sixty_minutes' };
+  if (text.includes('облакам')) return { ...base,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: 'подпрыгнуть настолько высоко, насколько возможно',
+      adaptation: 'reality_limited' }, goal_result: 'not_achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
+    direct_result_kind: null, reason_code: 'impossible_height' };
+  if (text.includes('затем кричу') && request.step_index === 1) return { ...base,
+    goal_result: 'pending', continuation: {
+      remaining_intent: 'кричу: «Эй!»', depends_on_refs: []
+    } };
+  if (text.includes('Говорю вслух') || text.includes('кричу:')) {
+    const utteranceText = text.includes('Эй') ? 'Эй!' : 'Проверю сети';
+    return { ...base, interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: text, adaptation: 'literal' },
+      direct_result_kind: 'player_utterance', utterance: {
+        speaker_ref: request.actor.actor_id, utterance_text: utteranceText,
+        input_mode: 'verbatim',
+        delivery: { loudness: 2, duration_class: 'instant' }
+      }, reason_code: 'speak_verbatim' };
+  }
+  return base;
 }

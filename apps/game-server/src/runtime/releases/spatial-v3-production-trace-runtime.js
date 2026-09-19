@@ -68,6 +68,8 @@ export function createTraceTurnRuntime({
   actionProductionProfile, localFireProfile,
   spatialSemanticProfile,
   npcSemanticRemainderProfile,
+  authoredTurnProfile,
+  authoredRuntimeBindingResolver,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
@@ -164,7 +166,7 @@ export function createTraceTurnRuntime({
     worldKnowledgeGrounder });
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
-      partyPool, committer
+      partyPool, committer, authoredRuntimeBindingResolver
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,
@@ -228,7 +230,8 @@ export function createTraceTurnRuntime({
     turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret,
     llmTurnBudget: turnBudget,
-    llmDiagnostics
+    llmDiagnostics,
+    authoredTurnProfile
   });
   return Object.freeze({ ...runtime, llmDiagnostics });
 }

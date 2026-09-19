@@ -54,7 +54,8 @@ for (const [query, name, spoken, pending] of [
     assert.deepEqual(wire.required_current_beat.changes.map(({ ref }) => ref), expected.map((_, index) => `visible_change_${index + 1}`));
     assert.deepEqual(wire.required_current_beat.uncertainties, []);
     assert.match(call.messages[0].content, /Turn duration is code-owned UI metadata/u);
-    assert.deepEqual(wire.optional_support, { visible_scene: projected.visible_scene, sensory_details: projected.sensory_details });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: projected.visible_scene });
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: `Вы произнесли: «${spoken}» Поиск принёс находку — ${name}. ${pending ? '' : physical + ' '}Можно продолжить задуманное или выбрать другое действие.`,
       action_options: [], used_references: [] } };
@@ -207,7 +208,8 @@ for (const domainFallback of [false, true]) test(`materialized O1 precedes physi
   const narration = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     calls += 1;
     const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support, { visible_scene: visible.visible_scene, sensory_details: visible.sensory_details });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: visible.visible_scene });
     const changes = wire.required_current_beat.changes.map(({ text }) => text);
     assert.ok(changes.includes(found)); assert.ok(changes.includes(physical));
     return { output: call.role_id === 'gameplay_narrator'

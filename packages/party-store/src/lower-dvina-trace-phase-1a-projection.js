@@ -15,10 +15,11 @@ export function buildActualPersistedProjection({
   run,
   choices,
   includePreparedScenes,
-  includeNpcs
+  includeNpcs,
+  projectionSchema = 'rus.lower_dvina_trace_persisted_projection.v2'
 }) {
   return {
-    schema: 'rus.lower_dvina_trace_persisted_projection.v2',
+    schema: projectionSchema,
     materialization_run: {
       party_id: run.party_id,
       run_id: run.run_id,

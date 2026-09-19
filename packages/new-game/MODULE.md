@@ -24,6 +24,12 @@
 
 ## Контракты
 
+Phase 1A internal materialization принимает как historical Lower Dvina result,
+так и общий approved authored-start result; оба используют один Stage 24/25
+atomic commit contract и одну physical transaction boundary game-server.
+Для authored result Stage 24 сверяет полный вычисленный admission, exact
+world/domain closure digests и resolved refs; одного `pass` boolean недостаточно.
+
 Каждый stage принимает точный input contract. Для активированного
 `actor_base_appearance_v1` Stage 7 требует pinned actor profile snapshot и
 возвращает typed hard block при его отсутствии; historical revisions сохраняют
@@ -34,6 +40,10 @@ code-owned appearance completion, Stages 12/15/24 требуют полный к
 реальные item instances. Stages
 13, 15, 16 и 24 выполняются кодом; LLM используется только в явно разрешённых
 ролях.
+
+Stage 23 сохраняет литературную оценку opening отдельно от фактического допуска:
+чисто литературный finding не блокирует первый экран, а factual, hidden,
+coverage и technical failures остаются fail-closed.
 
 ## Допустимые зависимости
 

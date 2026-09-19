@@ -148,6 +148,8 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
       ? plan.operations[0] : genericOrdinaryDiscovery({ audited, plan, request, resolved });
     if (genericDiscovery != null
         && plan.continuation?.pending_discovery == null) {
+      if (exactBackgroundNpcDiscoveryGrounding({ operation: genericDiscovery,
+        plan, request })) return true;
       if (isSimpleLocationDiscovery(genericDiscovery, request)) {
         const prerequisiteProjection = plan.interpretation?.adaptation === 'literal'
           && plan.clarification == null && plan.direct_result_kind == null
@@ -293,6 +295,28 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
         response.output.concerns.map(({ kind }) =>
           concern(kind, audited, resolved)) } });
   };
+}
+
+export function exactBackgroundNpcDiscoveryGrounding({ operation, plan,
+  request }) {
+  const target = operation?.target_refs?.length === 1
+    ? operation.target_refs[0] : null;
+  const eligible = request?.player_safe_state?.background_npc_remainder
+    ?.eligible_npc_refs;
+  const visible = request?.player_safe_state?.current_visible_context
+    ?.visible_npc;
+  return operation?.op === 'request_discovery'
+    && ['look', 'inspect'].includes(operation.discovery_kind)
+    && typeof target === 'string' && Array.isArray(eligible)
+    && eligible.includes(target) && Array.isArray(visible)
+    && visible.some(({ entity_ref: ref }) => ref?.entity_kind === 'npc'
+      && ref.entity_id === target)
+    && normalized(operation.query) === normalized(request.remaining_intent)
+    && normalized(plan?.interpretation?.grounded_attempt)
+      === normalized(request.remaining_intent)
+    && plan.interpretation?.adaptation === 'literal'
+    && plan.continuation == null && plan.clarification == null
+    && plan.direct_result_kind == null;
 }
 
 function containsElapsedDuration(value) {

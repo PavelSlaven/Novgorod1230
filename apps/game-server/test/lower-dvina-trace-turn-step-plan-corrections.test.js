@@ -5,6 +5,8 @@ import { correctOrdinaryDiscoveryScope,
   '../src/runtime/lower-dvina-trace-turn-step-plan-corrections.js';
 import { projectLowerDvinaTraceTurnStepPlannerState } from
   '../src/runtime/lower-dvina-trace-phase-2-player-safe.js';
+import { exactBackgroundNpcDiscoveryGrounding } from
+  '../src/runtime/lower-dvina-trace-turn-step-grounding-audit.js';
 
 test('ordinary search uses the committed location instead of a scene position', () => {
   const plan = discovery('search');
@@ -46,6 +48,21 @@ test('visible S1 local ref exposes one code-owned bidirectional movement operati
     op: 'request_movement', actor_ref: 'actor:player',
     target_ref: 'local:shelter', movement_kind: 'local'
   }]);
+});
+
+test('exact eligible background inspection is code-grounded before model audit', () => {
+  const operation = { op: 'request_discovery', discovery_kind: 'inspect',
+    actor_ref: 'actor:player', target_refs: ['npc:background'],
+    query: 'осматриваю внешность рыбака' };
+  const request = { remaining_intent: operation.query, player_safe_state: {
+    background_npc_remainder: { eligible_npc_refs: ['npc:background'] },
+    current_visible_context: { visible_npc: [{ entity_ref: {
+      entity_kind: 'npc', entity_id: 'npc:background' } }] }
+  } };
+  assert.equal(exactBackgroundNpcDiscoveryGrounding({ operation, request,
+    plan: { interpretation: { grounded_attempt: operation.query,
+      adaptation: 'literal' }, continuation: null, clarification: null,
+    direct_result_kind: null } }), true);
 });
 
 function discovery(discovery_kind) {

@@ -24,6 +24,10 @@
 
 ## Контракты
 
+Phase 1A internal materialization принимает как historical Lower Dvina result,
+так и общий approved authored-start result; оба используют один Stage 24/25
+atomic commit contract и одну physical transaction boundary game-server.
+
 Каждый stage принимает точный input contract. Для активированного
 `actor_base_appearance_v1` Stage 7 требует pinned actor profile snapshot и
 возвращает typed hard block при его отсутствии; historical revisions сохраняют

@@ -325,7 +325,8 @@ function assertRoundTrip({
   const expectedNpcs = payload?.immediate?.npcs ?? [];
   const materializationEnvelope = payload ? {
     version: 1,
-    schema: 'rus.lower_dvina_trace_party_materialization_result.v1',
+    schema: payload.materialization_result_schema
+      ?? 'rus.lower_dvina_trace_party_materialization_result.v1',
     status: 'materialized',
     party_id: snapshot.party_id,
     run_id: run?.run_id,
@@ -340,7 +341,8 @@ function assertRoundTrip({
     validation_report: run?.validation_report?.materialization,
     trace: run?.trace
   } : null;
-  if (!payload || payload.schema !== 'rus.lower_dvina_trace_initial_party_snapshot.v2'
+  if (!payload || !['rus.lower_dvina_trace_initial_party_snapshot.v2',
+    'rus.authored_start_initial_party_snapshot.v1'].includes(payload.schema)
     || !player || !position || !startSpatial || !clock || !run || !counts || choices.length === 0 || items.length === 0
     || payload.immediate.player.instance_id !== player.character_id
     || payload.immediate.spatial.position.g4_id !== position.g4_id
@@ -406,11 +408,13 @@ function assertRoundTrip({
     run,
     choices,
     includePreparedScenes: Object.hasOwn(expectedProjection?.spatial ?? {}, 'prepared_scenes'),
-    includeNpcs: Object.hasOwn(expectedProjection ?? {}, 'npcs')
+    includeNpcs: Object.hasOwn(expectedProjection ?? {}, 'npcs'),
+    projectionSchema: expectedProjection?.schema
   });
   if (npcSpatialSchedules != null) actualProjection.npc_spatial_schedules = npcSpatialSchedules;
   const expectedDigest = sha256(expectedProjection);
-  if (expectedProjection?.schema !== 'rus.lower_dvina_trace_persisted_projection.v2'
+  if (!['rus.lower_dvina_trace_persisted_projection.v2',
+    'rus.authored_start_persisted_projection.v1'].includes(expectedProjection?.schema)
     || payload.persisted_projection_digest !== expectedDigest
     || sha256(actualProjection) !== expectedDigest) {
     const error = new Error('Committed Lower Dvina trace normalized projection differs from the approved snapshot.');

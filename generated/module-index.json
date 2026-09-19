@@ -26,6 +26,7 @@
       ],
       "name": "@rus/game-server",
       "owns": [
+        "M2a public start catalog подключает approved authored starts из одного",
         "Planner examples остаются flat semantic objects; mapping labels находятся",
         "Production WK query planner может вернуть canonical empty six-field plan,",
         "Narration adapter даёт auditor request-local sources",

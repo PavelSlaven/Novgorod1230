@@ -9,6 +9,7 @@ import {
   readPartyDatabaseSchemaSnapshot,
   readWorldBaseReferenceSnapshot
 } from './lower-dvina-trace-phase-1b-snapshots.js';
+import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
 export {
   readPartyDatabaseSchemaSnapshot,
   readWorldBaseReferenceSnapshot
@@ -22,6 +23,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   initialOrdinaryProvisioner = null,
   initialOrdinaryScopeBinding = null,
   worldKnowledge = null,
+  authoredStartResolver = null,
   rootDir = process.cwd()
 } = {}) {
   requirePool(partyPool, 'partyPool');
@@ -54,6 +56,9 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
             request.world_compatibility
           )
         ]);
+      const authoredProfile = await authoredStartResolver?.(
+        request.scenario_id
+      ) ?? null;
       return materializeLowerDvinaTraceParty({
         request,
         domainCatalogPinLoader: async (identity) => {
@@ -74,6 +79,21 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         repository,
         stage25Ports,
         worldKnowledge,
+        ...(authoredProfile == null ? {} : {
+          scenarioBundleLoader: async () => ({
+            ...structuredClone(authoredProfile),
+            definition: {
+              schema: 'rus.live_world_runtime.authored_start_definition.v1',
+              ...structuredClone(authoredProfile)
+            }
+          }),
+          materializePartyInstance: materializeAuthoredStartPartyInstance,
+          validatePlayerDossier: (result) => ({
+            schema: 'rus.live_world_runtime.authored_start_player_audit.v1',
+            pass: result.validation_report?.pass === true,
+            checks: { approved_authored_start: true }
+          })
+        }),
         rootDir
       });
     },

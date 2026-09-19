@@ -4,6 +4,10 @@
   "revision": 1,
   "status": "integration_candidate",
   "activation": "not_active",
+  "authored_starts": {
+    "path": "data/world-catalogs/novgorod/live-world-runtime-v1/authored-starts.json",
+    "status": "approved"
+  },
   "profile_sets": [
     {
       "profile_set_id": "novgorod_live_world_runtime_m1_v1",

@@ -19,6 +19,7 @@ export async function startLowerDvinaTrace({
   traceStartAdapter,
   publicationLoader,
   traceOpeningProjector,
+  validateSession = validateLowerDvinaTraceSessionRead,
   activePhase1AManifestDigest = null,
   activeScenarioDefinitionRevision = null
 }) {
@@ -39,6 +40,8 @@ export async function startLowerDvinaTrace({
     ? loadedBeforeStart
     : null;
   const publication = await publicationLoader({
+    scenarioId: committedBeforeStart?.request_identity?.scenario_id
+      ?? creationIdentity.scenario_id,
     phase1AManifestDigest:
       committedBeforeStart?.request_identity?.scenario_manifest_digest
         ?? activePhase1AManifestDigest,
@@ -120,8 +123,10 @@ export async function startLowerDvinaTrace({
     position: internal.position,
     container_placements: (internal.containers ?? []).map(container => ({
       ...container, container_id: container.container_id })) };
-  const screen = projectLowerDvinaTraceScreenPanels({ payload, screen: initialScreen,
-    presentation: await loadLowerDvinaTraceScreenPresentation(payload) });
+  const screen = binding.runtime_binding == null
+    ? projectLowerDvinaTraceScreenPanels({ payload, screen: initialScreen,
+      presentation: await loadLowerDvinaTraceScreenPresentation(payload) })
+    : initialScreen;
   const screenValidation = validateFirstGameScreen(screen);
   if (!screenValidation.ok || detectHiddenLeaks(screen).length > 0) {
     throw serverError(
@@ -133,7 +138,9 @@ export async function startLowerDvinaTrace({
   const screenDigest = canonicalDigest(screen);
   const sessionIdentity = {
     version: 1,
-    schema: 'rus.lower_dvina_trace_phase_1b_session_identity.v1',
+    schema: binding.runtime_binding == null
+      ? 'rus.lower_dvina_trace_phase_1b_session_identity.v1'
+      : 'rus.live_world_runtime.authored_start_session_identity.v1',
     scenario_id: binding.scenario_id,
     creation_identity: structuredClone(creationIdentity),
     request_id: requestId,
@@ -153,6 +160,9 @@ export async function startLowerDvinaTrace({
       binding.execution_identity.materializer_version,
     rng_algorithm_id:
       binding.execution_identity.rng_algorithm_id,
+    ...(binding.runtime_binding == null ? {} : {
+      runtime_binding: structuredClone(binding.runtime_binding)
+    }),
     opening_screen_digest: screenDigest
   };
   const deliveryAttempt = {
@@ -173,7 +183,7 @@ export async function startLowerDvinaTrace({
     screen
   });
   const persisted = await repository.loadSession(partyId);
-  await validateLowerDvinaTraceSessionRead({ partyId, session: persisted });
+  await validateSession({ partyId, session: persisted });
   return {
     request_id: requestId,
     party_id: partyId,

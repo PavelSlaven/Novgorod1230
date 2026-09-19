@@ -139,7 +139,9 @@ function validateLowerDvinaTracePhase1AArtifacts(outputs, party, requestId) {
   const semantic = outputs?.player_character_audit;
   const closure = outputs?.sealed_selection_closure;
   if (!isObject(result)
-    || result.schema !== 'rus.lower_dvina_trace_party_materialization_result.v1'
+    || !['rus.lower_dvina_trace_party_materialization_result.v1',
+      'rus.authored_start_party_materialization_result.v1']
+      .includes(result.schema)
     || result.status !== 'materialized'
     || result.validation_report?.pass !== true
     || result.party_id !== party?.party_id
@@ -170,7 +172,12 @@ function validateLowerDvinaTracePhase1AArtifacts(outputs, party, requestId) {
       party?.domain_catalog_pin
     ));
   }
-  if (semantic?.pass !== true || semantic?.stage11?.pass !== true || semantic?.stage12?.pass !== true) {
+  const authoredAudit = result?.schema
+    === 'rus.authored_start_party_materialization_result.v1'
+    && semantic?.checks?.approved_authored_start === true;
+  if (semantic?.pass !== true
+    || (!authoredAudit
+      && (semantic?.stage11?.pass !== true || semantic?.stage12?.pass !== true))) {
     concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'Phase 1A player audit must contain passing Stage 11 and Stage 12 proofs.', 'approved_pipeline_outputs.player_character_audit'));
   }
   if (!isObject(closure)

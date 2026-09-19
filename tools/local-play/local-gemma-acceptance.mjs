@@ -31,13 +31,14 @@ const CHROMIUM = [process.env.RUS_CHROMIUM_PATH,
 
 export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
   focus, turns = 8, campaignId = `local-gemma-${randomUUID()}`,
+  scenarioId = 'lower_dvina_trace_v1',
   sequence = 1, afterP0P1FixRef = null, start = startIsolatedLocalPlay,
   launch = (options) => chromium.launch(options), snapshot = gitSnapshot,
   chromiumPath = CHROMIUM, headless = false, provider = null,
   resume = false, signal = null,
   createCompletionObserver = defaultCompletionObserver,
   createExplorer = createGameplayGapExplorer } = {}) {
-  if (!outputDirectory || !focus
+  if (!outputDirectory || !focus || !/^[a-z0-9_]+$/u.test(scenarioId)
       || (turns !== null && (!Number.isInteger(turns) || turns < 1))
       || typeof resume !== 'boolean'
       || !chromiumPath) throw new TypeError(
@@ -63,7 +64,7 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
     report = { schema: 'world_knowledge_gameplay_campaign_v1',
       campaign_id: campaignId,
       explorer_ref: `local-gemma-explorer:${campaignId}`,
-      scenario_id: 'lower_dvina_trace_v1', mode: 'acceptance_candidate',
+      scenario_id: scenarioId, mode: 'acceptance_candidate',
       independent_unseen: true, sequence, focus,
       after_p0_p1_fix_ref: afterP0P1FixRef ?? before.head,
       git: before, status: 'running', turns: [], trace_refs: [], findings: [],
@@ -137,7 +138,7 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
       await page.waitForSelector('[data-start-new-game]:not([disabled])');
       await page.click('[data-start-new-game]');
       await page.waitForSelector('[data-new-game-screen]');
-      await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
+      await page.click(`[data-scenario-id="${scenarioId}"]`);
     }
     await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
     const partyId = resume ? report.party_id : await page.evaluate(() =>
@@ -615,6 +616,8 @@ if (process.argv[1]
     controller.abort(event));
   const report = await runLocalGemmaBrowserAcceptance({ outputDirectory,
     focus, turns: count === 'completion' ? null : Number(count),
+    scenarioId: process.env.RUS_ACCEPTANCE_SCENARIO_ID
+      || 'lower_dvina_trace_v1',
     sequence: Number(sequence), signal: controller.signal,
     resume: process.env.RUS_ACCEPTANCE_RESUME === 'true',
     provider: await acceptanceProviderFromEnv() });

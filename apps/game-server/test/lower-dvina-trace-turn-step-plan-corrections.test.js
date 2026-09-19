@@ -39,10 +39,10 @@ test('eligible background NPC inspection reaches N1 instead of status correction
 
 test('visible S1 local ref exposes one code-owned bidirectional movement operation', () => {
   const state = projectLowerDvinaTraceTurnStepPlannerState({
-    actor_id: 'actor:player', current_visible_context: { visible_objects: [{
+    actor_id: 'actor:player', visible_objects: [{
       entity_ref: { entity_kind: 'spatial_local_reference',
         entity_id: 'local:shelter' }, visible_status: 'внутри'
-    }] }
+    }], current_visible_context: { visible_objects: [] }
   });
   assert.deepEqual(state.available_domain_operations, [{
     op: 'request_movement', actor_ref: 'actor:player',

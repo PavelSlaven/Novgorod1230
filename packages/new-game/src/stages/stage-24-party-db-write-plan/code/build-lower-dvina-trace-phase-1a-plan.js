@@ -7,6 +7,7 @@ import {
 import { sha256 } from '@rus/kernel';
 import { addFirstEntryPreparationBatches } from
   './lower-dvina-trace-first-entry-preparation.js';
+import { addAuthoredStartSpatialV3Batches } from './authored-start-spatial-v3.js';
 import {
   assertMaterializationRuntimeCatalogPins,
   assertPartyRuntimeCatalogPins,
@@ -371,6 +372,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     state_version: 1,
     updated_change_set_id: changeSetId
   }], ['parties', 'party_v3_change_sets'], sourceTrace);
+  const authoredInitialSpatial = addAuthoredStartSpatialV3Batches({ batches, result, partyId, playerId, changeSetId, sourceTrace, addBatch });
   const firstEntryPreparation = addFirstEntryPreparationBatches({
     batches, result, partyId, playerId,
     changeSetId, sourceTrace, addBatch });
@@ -391,6 +393,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     materialization_result_schema: result.schema,
     request_identity: result.request_identity,
     immediate: result.immediate,
+    ...(authoredInitialSpatial == null ? {} : { initial_spatial_v3: result.initial_spatial_v3,
+      initial_spatial_v3_runtime: authoredInitialSpatial }),
     ...(firstEntryPreparation == null ? {} : {
       first_entry_preparation: result.first_entry_preparation,
       first_entry_spatial_v3: firstEntryPreparation.spatial_v3

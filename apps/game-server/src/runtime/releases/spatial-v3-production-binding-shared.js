@@ -174,9 +174,7 @@ export async function createSpatialV3ProductionBindings(
             worldKnowledge,
             authoredStartResolver: authoredStartCatalog.resolveProfile,
             ...(initialOrdinaryProvisioner == null ? {} : {
-              initialOrdinaryProvisioner,
-              initialOrdinaryScopeBinding:
-                ordinaryMaterializationProfile.o2a_ambient.scope_binding
+              initialOrdinaryProvisioner
             })
           }),
         traceTurnRuntime: createTraceTurnRuntime({

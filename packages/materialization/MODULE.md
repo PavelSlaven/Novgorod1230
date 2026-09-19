@@ -48,6 +48,11 @@ player-known refs. Player/NPC role и occupation разрешаются из exa
 digest-pinned approved regional actor catalog; неизвестная, неодобренная или
 несовместимая пара отклоняется до write plan.
 
+Current authored binding v3 дополнительно выводит initial Spatial-v3
+G5/baseline/G6/position input только из exact approved canonical G5 и
+scene-template closure. Materializer не создаёт route/topology и не заменяет
+canonical связи семантикой.
+
 Authored resource mechanics additionally resolve exactly one approved
 `size_band` binding and its approved item category from the verified runtime
 catalog. The persisted inventory snapshot copies its exact packing slot cost,

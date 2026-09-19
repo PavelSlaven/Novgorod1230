@@ -2,15 +2,22 @@ import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
 
 export async function loadPhase2JourneyLocation(partyPool, partyId, actorId) {
   const journey = await partyPool.query(
-    `SELECT id,scene_position_id,state_version FROM party_runtime.party_journey_locations
-      WHERE party_id=$1 AND owner_kind='actor' AND owner_id=$2`,
+    `SELECT journey.id,journey.scene_position_id,journey.state_version,
+            position.g6_instance_id
+       FROM party_runtime.party_journey_locations journey
+       JOIN party_runtime.scene_position_nodes position
+         ON position.party_id=journey.party_id
+        AND position.id=journey.scene_position_id
+      WHERE journey.party_id=$1 AND journey.owner_kind='actor'
+        AND journey.owner_id=$2`,
     [partyId, actorId]);
   return normalizeJourneyLocationRows(journey.rows);
 }
 
 export function normalizeJourneyLocation(row) {
   if (row == null || typeof row !== 'object'
-      || !text(row.id) || !text(row.scene_position_id)) throw phase2IntegrityError();
+      || !text(row.id) || !text(row.scene_position_id)
+      || !text(row.g6_instance_id)) throw phase2IntegrityError();
   const stateVersion = typeof row.state_version === 'number'
     ? row.state_version
     : typeof row.state_version === 'string'
@@ -20,6 +27,7 @@ export function normalizeJourneyLocation(row) {
     throw phase2IntegrityError();
   }
   return { id: row.id, scene_position_id: row.scene_position_id,
+    g6_instance_id: row.g6_instance_id,
     state_version: stateVersion };
 }
 
@@ -37,10 +45,7 @@ export function withJourneyLocation(state, journeyLocation) {
   }
   state.journey_location = journeyLocation;
   state.position.position_id = journeyLocation.scene_position_id;
-  const target = state.first_entry_preparation?.spatial_v3?.target;
-  if (target?.position_id === journeyLocation.scene_position_id) {
-    state.position.g6_id = target.g6_instance_id;
-  }
+  state.position.g6_id = journeyLocation.g6_instance_id;
   return state;
 }
 

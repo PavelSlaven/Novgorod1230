@@ -193,6 +193,7 @@ export function buildPhase2ReadyScreen({
   narrationOutputDigest,
   presentation = null
 }) {
+  const scenarioId = payload.scenario_id ?? 'lower_dvina_trace_v1';
   const carrier = buildPhase2PreProseCarrier({ payload, turnId, visibleContext,
     visiblePayload, narrationOutputDigest, presentation });
   const screen = {
@@ -207,7 +208,8 @@ export function buildPhase2ReadyScreen({
       panels: carrier.panels
     }),
     ...carrier,
-    schema: 'lower_dvina_trace_turn_screen',
+    schema: scenarioId === 'lower_dvina_trace_v1'
+      ? 'lower_dvina_trace_turn_screen' : 'turn_screen',
     screen_status: 'ready'
   };
   screen.screen_digest = phase2ScreenDigest(screen);
@@ -224,6 +226,7 @@ export function buildPhase2PreProseCarrier({
   narrationOutputDigest = null,
   presentation = null
 }) {
+  const scenarioId = payload.scenario_id ?? 'lower_dvina_trace_v1';
   const combatState = publicCombatStateFromConsequence(
     payload.last_turn?.consequence);
   return projectLowerDvinaTraceScreenPanels({
@@ -239,8 +242,9 @@ export function buildPhase2PreProseCarrier({
       checks: projectPlayerSafeChecks(payload),
       panels: {},
       input_panel: { free_text_enabled: true, input_contract: 'intent_not_fact' },
-      scenario_id: 'lower_dvina_trace_v1',
-      screen_kind: 'trace_turn',
+      scenario_id: scenarioId,
+      screen_kind: scenarioId === 'lower_dvina_trace_v1'
+        ? 'trace_turn' : 'live_world_turn',
       delivery_state: {
         ready: true,
         generated_at: payload.last_turn.received_at

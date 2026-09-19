@@ -68,6 +68,10 @@ import { TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST } from
   '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
 import { loadLiveWorldAuthoredStartCatalog } from
   '../../apps/game-server/src/internal/live-world-authored-starts.js';
+import { loadLowerDvinaTraceProductionMaterializationProfiles } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-production-materialization-profiles.js';
+import { createOrdinaryMaterializationFirstEntryProvisioner } from
+  '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { hash as hashForTest } from
   '../../apps/game-server/src/runtime/first-playable/shared.js';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
@@ -194,6 +198,13 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     phase1AManifestDigest: TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
     scenarioDefinitionRevision: 32
   });
+  const materializationProfiles =
+    await loadLowerDvinaTraceProductionMaterializationProfiles();
+  const initialOrdinaryProvisioner =
+    createOrdinaryMaterializationFirstEntryProvisioner({
+      profile: materializationProfiles.ordinaryMaterializationProfile,
+      includeContextBoundCapabilities: false
+    });
   const makeRuntime = (partyRepository = null, {
     publicationLoader,
     adapterTransform,
@@ -207,6 +218,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       worldPool: pool,
       release,
       runtimeCatalogPin,
+      initialOrdinaryProvisioner,
       authoredStartResolver
     });
     const runtimeAdapter = adapterTransform
@@ -348,9 +360,9 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       WHERE party_id=$1`, [authoredPartyId])).rows[0].stage26_result;
   assert.deepEqual(authoredIdentity.runtime_binding,
     authoredStartCatalog.runtime_binding);
-  assert.equal(authoredIdentity.runtime_binding.revision, 4);
+  assert.equal(authoredIdentity.runtime_binding.revision, 5);
   assert.equal(authoredIdentity.materializer_binding_id,
-    'live_world_authored_start_v2');
+    'live_world_authored_start_v3');
   assert.equal(await count(pool, 'party_runtime.parties', partyId), 1);
   const invalidCases = [
     ['g4', (profile) => { profile.geometry.start.g4_id = 'missing-g4'; }],
@@ -430,6 +442,21 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   });
   assert.equal(neutralStart.screen.scenario_id,
     'vikhtuy_fishing_camp_v1');
+  const neutralOrdinary = await pool.query(
+    `SELECT enablement.scope_id,position.g6_instance_id
+       FROM party_runtime.party_ordinary_materialization_enablements enablement
+       JOIN party_runtime.party_player_characters player
+         ON player.party_id=enablement.party_id
+       JOIN party_runtime.party_journey_locations journey
+         ON journey.party_id=player.party_id AND journey.owner_kind='actor'
+        AND journey.owner_id=player.character_id AND journey.location_kind='scene'
+       JOIN party_runtime.scene_position_nodes position
+         ON position.party_id=journey.party_id
+        AND position.id=journey.scene_position_id
+      WHERE enablement.party_id=$1`, [neutralStart.party_id]);
+  assert.equal(neutralOrdinary.rowCount, 1);
+  assert.equal(neutralOrdinary.rows[0].scope_id,
+    neutralOrdinary.rows[0].g6_instance_id);
   await assert.rejects(() => neutralRuntime.startNewGame({
     scenario_id: 'lower_dvina_trace_v1',
     request_id: 'm2a-demo-unavailable'

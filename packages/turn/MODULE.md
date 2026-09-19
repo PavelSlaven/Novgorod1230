@@ -377,6 +377,12 @@ materials — grounded `minor|half|major|whole`. Числовую долю и ex
 `domain_request` A1 содержит ровно одну operation: direct preparation в том же
 step запрещена, потому что A1 не имеет prepared-direct overlay.
 
+Live-world authored binding v3 включает тот же O1 discovery и A1
+physical-change owner после party-derived initial ordinary provisioning.
+Scenario ID и текст заявки не являются admission gate; exact persisted
+resolution/item identity, access, mechanics, conservation и P16 остаются у
+прежних owners.
+
 Ограничения A1 v1: single-source preserve не моделирует небольшой subtractive mass loss/known waste; outputs одного action однородны; tools не изнашиваются и не расходуются. Дополнительный finite source в preserve допускает только whole-unit consumption. Independent multi-source property требует одинаковую owner/claim basis и выбирает канонический минимальный source ref; mixed basis закрыта.
 
 Active F1 сохраняет единственную actor-step semantic boundary: public

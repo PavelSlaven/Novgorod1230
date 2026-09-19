@@ -332,6 +332,9 @@ function assertRoundTrip({
     run_id: run?.run_id,
     request_identity: payload.request_identity,
     immediate: payload.immediate,
+    ...(payload.initial_spatial_v3 == null ? {} : {
+      initial_spatial_v3: payload.initial_spatial_v3
+    }),
     ...(payload.first_entry_preparation == null ? {} : {
       first_entry_preparation: payload.first_entry_preparation
     }),

@@ -17,6 +17,9 @@ Logical party persistence boundary: validates/adapts approved plans and delegate
 Initial authored-start snapshots используют тот же normalized Phase 1A
 repository/readback contract. Historical Lower Dvina snapshot/projection schemas
 остаются допустимы; новый authored schema не меняет их интерпретацию.
+Current authored binding v3 rehydrates party-derived initial G6/journey rows;
+deprecated bindings v1/v2 читаются по собственным persisted binding revisions
+без latest inference или rematerialization.
 
 - `.`: `createPartyStore({ transact })`.
 - `./stage-25`: physical-plan adapter contract and fixed v2 schema mappings.

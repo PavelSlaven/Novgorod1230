@@ -126,6 +126,10 @@ export function materializeAuthoredStartPartyInstance(input) {
     prepared_scenes: otherScenes,
     npcs
   };
+  const initialSpatialV3 = authoredInitialSpatialV3({
+    admission, place: profile.geometry.start, node_id: startNodeId,
+    anchor_id: startAnchorId
+  });
   const hiddenTruth = { kind: 'none', digest: canonicalDigest({ kind: 'none' }) };
   const trace = {
     run_id: runId,
@@ -153,6 +157,7 @@ export function materializeAuthoredStartPartyInstance(input) {
     run_id: runId,
     request_identity: identity,
     immediate,
+    initial_spatial_v3: initialSpatialV3,
     hidden_truth: hiddenTruth,
     sealed_selections: [],
     policy_profile_pins: [],
@@ -161,6 +166,25 @@ export function materializeAuthoredStartPartyInstance(input) {
   };
   trace.result_digest = computeMaterializationEnvelopeDigest(result);
   return deepFreeze(result);
+}
+
+function authoredInitialSpatialV3({ admission, place, node_id, anchor_id }) {
+  const resolved = admission.spatial_closures[0];
+  const g6 = resolved.closure.g6_slots.find(({ scene_slot_key: key }) =>
+    key === resolved.position.g6_scene_slot_key);
+  if (!g6) invalid({ place: place.slot_key, failures: ['g6_slot'] });
+  return {
+    canonical_g5_ref: { entity_kind: 'canonical_spatial_node',
+      entity_id: resolved.binding.id, authoring_version: String(resolved.binding.version) },
+    materialization_profile_ref: { entity_kind: 'scene_materialization_profile',
+      entity_id: resolved.binding.materialization_profile_id,
+      authoring_version: String(resolved.binding.materialization_profile_version) },
+    scene_template_ref: { entity_ref: { entity_kind: 'scene_template',
+      entity_id: resolved.closure.header.id },
+      authoring_version: String(resolved.closure.header.version) },
+    node_id, anchor_id, g6: structuredClone(g6),
+    position: structuredClone(resolved.position)
+  };
 }
 
 function requestIdentity(input) {
@@ -251,6 +275,7 @@ function resolveAuthoritativeAdmission(input, profile) {
     actor_catalog_digest: actorCatalogDigest,
     resource_mechanics: resourceRefs.map(({ inventory_profile }) =>
       inventory_profile),
+    spatial_closures: spatialRefs,
     validation_report: {
       version: 1,
       schema: 'rus.live_world_runtime.authored_start_admission.v1',

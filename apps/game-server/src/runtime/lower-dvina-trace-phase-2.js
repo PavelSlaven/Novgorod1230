@@ -105,6 +105,8 @@ export function createLowerDvinaTracePhase2Runtime({
           inputDigest, state, bundle, phase2Bundle, contracts,
           playerSafeStateProjector });
         const activeSpatialSemanticProfile = isExactLowerDvinaTraceSpatialSemanticProfile(bundle, spatialSemanticProfile) ? spatialSemanticProfile : null;
+        const actionProductionEnabled = authored || [21, 22, 23, 24, 25, 26,
+          28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision);
         const { phase3Contracts, phase4Contracts, phase5Contracts,
           phase6Contracts, phase7Contracts } = authored
           ? { phase3Contracts: null, phase4Contracts: null,
@@ -244,7 +246,10 @@ export function createLowerDvinaTracePhase2Runtime({
           turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
           createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker,
           ordinaryDiscoveryScopeBinding,
-          createTurnStepActionProductionOwner: [21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21, 22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision) ? actionProductionProfile : null,
+          createTurnStepActionProductionOwner: actionProductionEnabled
+            ? createTurnStepActionProductionOwner : null,
+          actionProductionProfile: actionProductionEnabled
+            ? actionProductionProfile : null,
           createTurnStepWorldProcessResolver: [22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision) ? localFireProfile : null,
           createTurnStepSpatialSemanticResolver:
             activeSpatialSemanticProfile == null

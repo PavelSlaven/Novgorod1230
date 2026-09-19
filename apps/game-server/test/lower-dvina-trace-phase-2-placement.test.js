@@ -204,18 +204,27 @@ test('initial Phase 2 item bindings remain admissible to their domain owner',
 
 test('Phase 2 normalizes persisted journey version and rejects malformed rows', () => {
   assert.deepEqual(normalizeJourneyLocation({ id: 'journey:player',
-    scene_position_id: 'position:shore', state_version: '4' }), {
-    id: 'journey:player', scene_position_id: 'position:shore', state_version: 4
+    scene_position_id: 'position:shore', g6_instance_id: 'g6:shore',
+    state_version: '4' }), {
+    id: 'journey:player', scene_position_id: 'position:shore',
+    g6_instance_id: 'g6:shore', state_version: 4
   });
   for (const row of [
-    { id: 'journey:player', scene_position_id: 'position:shore', state_version: '4.0' },
-    { id: 'journey:player', scene_position_id: '', state_version: '4' },
-    { id: 'journey:player', scene_position_id: 'position:shore', state_version: '-1' }
+    { id: 'journey:player', scene_position_id: 'position:shore',
+      g6_instance_id: 'g6:shore', state_version: '4.0' },
+    { id: 'journey:player', scene_position_id: '',
+      g6_instance_id: 'g6:shore', state_version: '4' },
+    { id: 'journey:player', scene_position_id: 'position:shore',
+      g6_instance_id: '', state_version: '4' },
+    { id: 'journey:player', scene_position_id: 'position:shore',
+      g6_instance_id: 'g6:shore', state_version: '-1' }
   ]) assert.throws(() => normalizeJourneyLocation(row));
   assert.equal(normalizeJourneyLocationRows([]), null);
   assert.throws(() => normalizeJourneyLocationRows([
-    { id: 'journey:one', scene_position_id: 'position:shore', state_version: '4' },
-    { id: 'journey:two', scene_position_id: 'position:shore', state_version: '4' }
+    { id: 'journey:one', scene_position_id: 'position:shore',
+      g6_instance_id: 'g6:shore', state_version: '4' },
+    { id: 'journey:two', scene_position_id: 'position:shore',
+      g6_instance_id: 'g6:shore', state_version: '4' }
   ]));
 });
 

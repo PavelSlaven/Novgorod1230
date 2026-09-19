@@ -127,6 +127,43 @@ test('action production prompt matches the active qualitative DTO', async () => 
   assert.doesNotMatch(prompt, /request_item_use kind other|output_facts|output_physical_form|fact_removals|independent_outputs":\[\]|preserve_source":true/u);
 });
 
+test('partial direct partition canonicalizes the closed result class',
+  async () => {
+    const action = 'Отщепляю от найденной щепки тонкую лучину.';
+    const input = request({ root_player_action: action,
+      remaining_intent: action, actor: { actor_ref: 'actor:player' } });
+    const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+      async run() { return { output: {
+        interpretation: { player_goal: action, grounded_attempt: action,
+          adaptation: 'literal' }, resolution: 'domain_request',
+        goal_result: 'pending', activity: { owner: 'semantic',
+          duration_class: 'brief', effort: 'light' },
+        operation_family: null, operation_choice: null,
+        operations: [{ op: 'request_item_use', actor_ref: 'actor:player',
+          item_ref: 'item:chip', use_kind: 'other', target_refs: [],
+          action_production: { source_refs: ['item:chip'], tool_refs: [],
+            requested_output_count: null,
+            identity_mode: 'independent_outputs', origin: 'direct_partition',
+            result_class: 'ordinary_physical_result', material_extent: 'minor',
+            result_descriptor: { display_name: 'тонкая лучина',
+              physical_description: 'тонкая лучина', qualitative_facts: [],
+              removed_physical_fact_refs: [], inscription_text: null,
+              physical_form: 'long', source_fact_delta: {
+                physical_description: 'щепка с отколотым краем',
+                qualitative_facts: [], removed_physical_fact_refs: [],
+                physical_form: 'compact' } }, output_class: 'ordinary_mundane' }
+        }], check: null, continuation: null, clarification: null,
+        direct_result_kind: null, reason_code: 'partial_partition',
+        reason: 'A thin independent part is split from the source.'
+      } }; }
+    } });
+
+    const plan = await model(input);
+    assert.equal(plan.operations[0].action_production.result_class,
+      'partial_transformation');
+    assert.equal(plan.operations[0].action_production.material_extent, 'minor');
+  });
+
 test('movement keeps supplied semantic label', async () => {
   const movement = { op: 'request_movement', actor_ref: 'actor:player', movement_kind: 'route',
     target_ref: 'location:destination', description: 'Follow marked path to settlement.' };

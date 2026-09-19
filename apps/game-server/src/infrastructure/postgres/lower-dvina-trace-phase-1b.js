@@ -23,7 +23,6 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   release,
   runtimeCatalogPin,
   initialOrdinaryProvisioner = null,
-  initialOrdinaryScopeBinding = null,
   worldKnowledge = null,
   authoredStartResolver = null,
   runtimeCatalogLoader = null,
@@ -109,12 +108,9 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     },
     ...(initialOrdinaryProvisioner == null ? {} : {
       async provisionInitialOrdinary(partyId) {
-        const binding = initialOrdinaryScopeBinding;
-        if (!text(partyId) || !text(binding?.position_ref)
-            || !text(binding?.g6_ref)
-            || typeof partyPool.connect !== 'function') {
+        if (!text(partyId) || typeof partyPool.connect !== 'function') {
           fail('TRACE_INITIAL_ORDINARY_PROVISIONING_INVALID',
-            'Initial ordinary scope binding is invalid.');
+            'Initial ordinary party identity is invalid.');
         }
         const transaction = await partyPool.connect();
         try {
@@ -124,6 +120,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
                       '{immediate,spatial,node,state,location_profile_ref}'
                       AS location_ref,
                     journey.scene_position_id AS position_id,
+                    position.g6_instance_id AS g6_instance_id,
                     change_set.id AS change_set_id
                FROM party_runtime.parties party
                JOIN party_runtime.party_state_snapshots snapshot
@@ -136,6 +133,10 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
                 AND journey.owner_kind='actor'
                 AND journey.owner_id=player.character_id
                 AND journey.location_kind='scene'
+               JOIN party_runtime.scene_position_nodes position
+                 ON position.party_id=party.party_id
+                AND position.id=journey.scene_position_id
+                AND position.status='active'
                JOIN LATERAL (
                  SELECT id FROM party_runtime.party_v3_change_sets
                   WHERE party_id=party.party_id AND operation_kind='new_game'
@@ -145,15 +146,15 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
               FOR UPDATE OF party`, [partyId]);
           const row = loaded.rows[0];
           if (loaded.rowCount !== 1
-              || row?.location_ref !== binding.position_ref
-              || !text(row?.position_id) || !text(row.change_set_id)) {
+              || !text(row?.position_id) || !text(row?.g6_instance_id)
+              || !text(row.change_set_id)) {
             fail('TRACE_INITIAL_ORDINARY_PROVISIONING_INVALID',
-              'Committed initial position does not match the ordinary scope.');
+              'Committed initial ordinary scope is incomplete.');
           }
           const result = await initialOrdinaryProvisioner.provision({
             transaction, partyId, changeSetId: row.change_set_id,
             firstEntryBinding: {
-              g6_instance_id: binding.g6_ref,
+              g6_instance_id: row.g6_instance_id,
               position_id: row.position_id
             }
           });

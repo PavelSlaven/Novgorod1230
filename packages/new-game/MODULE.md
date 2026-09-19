@@ -29,6 +29,9 @@ Phase 1A internal materialization принимает как historical Lower Dvi
 atomic commit contract и одну physical transaction boundary game-server.
 Для authored result Stage 24 сверяет полный вычисленный admission, exact
 world/domain closure digests и resolved refs; одного `pass` boolean недостаточно.
+Current authored binding v3 сохраняет из approved closure один initial
+Spatial-v3 baseline/G6/position и actor journey location в той же new-game
+transaction; route либо local topology этим не синтезируются.
 
 Каждый stage принимает точный input contract. Для активированного
 `actor_base_appearance_v1` Stage 7 требует pinned actor profile snapshot и

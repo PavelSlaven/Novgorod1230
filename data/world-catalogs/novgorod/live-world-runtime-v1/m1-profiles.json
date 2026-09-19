@@ -9,31 +9,49 @@
   },
   "profiles": {
     "property_transition": {
+      "schema": "rus.items_property.approved_actor_transition_profile.v1",
       "transition_profile_id": "small_accessible_item_holder_transfer_v1",
+      "version": 1,
+      "status": "approved",
       "owner": "@rus/items-property",
       "applicable_instance_class": "small_personal_item",
       "owner_change": "forbidden",
       "required_facts": []
     },
     "npc_schedule": {
-      "profile_id": "ordinary_awake_local_activity_v1",
-      "owner": "@rus/npc-runtime",
-      "applicable_actor_class": "available_awake_npc",
-      "decision_boundary": "material_perceived_change",
-      "automatic_outcome": "forbidden"
+      "schema": "npc_routine_profile_v1",
+      "profile_id": "ordinary_local_work_cycle_v1",
+      "revision": 1,
+      "status": "approved",
+      "phases": [
+        {
+          "state_id": "work",
+          "duration_minutes": 60,
+          "activity_ref": "current_ordinary_work",
+          "summary": "Продолжает текущее обычное занятие.",
+          "activity_status": "active",
+          "runtime_status": "available",
+          "can_continue_automatically": true,
+          "decision_required": false
+        },
+        {
+          "state_id": "reconsider",
+          "duration_minutes": 10,
+          "activity_ref": "reconsider_current_activity",
+          "summary": "Оценивает изменившиеся обстоятельства.",
+          "activity_status": "active",
+          "runtime_status": "available",
+          "can_continue_automatically": false,
+          "decision_required": true
+        }
+      ]
     },
-    "body": {
-      "profile_id": "ordinary_awake_body_capability_v1",
-      "owner": "@rus/body-state",
-      "required_metrics": ["health", "satiety", "energy"],
-      "incapacitating_conditions": ["unconscious", "immobilized"]
-    },
-    "activity": {
-      "profile_id": "brief_contested_reach_v1",
-      "owner": "@rus/turn",
-      "duration_class": "brief",
-      "effort": "light",
-      "check_before_rng": true
+    "canonical_temporal_records": {
+      "activity_record_id": "record:activity_categories_profiles:carrier_transfer_10m_v1",
+      "body_record_ids": [
+        "record:body_time_effect_profiles_thresholds:satiety_hourly_spend_v2",
+        "record:body_time_effect_profiles_thresholds:energy_awake_spend_v2"
+      ]
     },
     "item_mechanics": {
       "small_personal_item": {

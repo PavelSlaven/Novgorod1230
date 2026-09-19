@@ -6,21 +6,39 @@ import {
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
 import { executeCheck } from '@rus/checks-rng';
-import { validateBodyState } from '@rus/body-state';
+import { stateModifier, validateBodyState } from '@rus/body-state';
 import {
-  planApprovedActorItemTransition
+  applyApprovedActorItemTransitionProposal,
+  planApprovedActorItemTransition,
+  validateApprovedActorItemTransitionProfile
 } from '@rus/items-property';
 import {
   buildNpcActionDecisionRequestFromSnapshots,
   buildNpcDecisionSignal,
+  createNpcRoutineState,
   evaluateNpcDecisionSignals,
-  proposeNpcPerception,
-  validateNpcActionDecisionRequest
+  proposeNpcRoutineTransition,
+  validateNpcActionDecisionRequest,
+  validateNpcRoutineProfile
 } from '@rus/npc-runtime';
 import { requestNpcSemanticDecision } from '@rus/turn';
+import { resolveSpatialV3PerceptionKnowledge } from
+  '@rus/turn/spatial-v3-perception-reaction-cycle';
 
 const PROFILE_URL = new URL(
   '../../data/world-catalogs/novgorod/live-world-runtime-v1/m1-profiles.json',
+  import.meta.url
+);
+const MANIFEST_URL = new URL(
+  '../../data/world-catalogs/novgorod/live-world-runtime-v1/manifest.json',
+  import.meta.url
+);
+const ACTIVITY_PROFILES_URL = new URL(
+  '../../data/world-catalogs/novgorod/temporal-v4/datasets/activity_categories_profiles.json',
+  import.meta.url
+);
+const BODY_PROFILES_URL = new URL(
+  '../../data/world-catalogs/novgorod/temporal-v4/datasets/body_time_effect_profiles_thresholds.json',
   import.meta.url
 );
 const AT = Object.freeze({ whole_minutes: '10',
@@ -37,7 +55,28 @@ const pin = (dependency_role, value) => ({ dependency_role,
 });
 
 async function profiles() {
-  return JSON.parse(await readFile(PROFILE_URL, 'utf8'));
+  const [manifest, profileSet] = await Promise.all([
+    readFile(MANIFEST_URL, 'utf8').then(JSON.parse),
+    readFile(PROFILE_URL, 'utf8').then(JSON.parse)
+  ]);
+  assert.equal(manifest.activation, 'not_active');
+  assert.equal(manifest.profile_sets[0].profile_set_id,
+    profileSet.profile_set_id);
+  return profileSet;
+}
+
+async function canonicalTemporalProfiles(profileSet) {
+  const [activities, bodies] = await Promise.all([
+    readFile(ACTIVITY_PROFILES_URL, 'utf8').then(JSON.parse),
+    readFile(BODY_PROFILES_URL, 'utf8').then(JSON.parse)
+  ]);
+  const refs = profileSet.profiles.canonical_temporal_records;
+  return {
+    activity: activities.find(({ record_id }) =>
+      record_id === refs.activity_record_id),
+    bodies: refs.body_record_ids.map((recordId) =>
+      bodies.find(({ record_id }) => record_id === recordId))
+  };
 }
 
 function perceptionRequest({ perceptionId, observerId, eventId,
@@ -159,28 +198,47 @@ function transitionInput({ profileSet, itemId, templateId, ownerId, holderId,
   };
 }
 
-function applyProposal(input, result) {
-  return {
-    ...input,
-    state_version: input.state_version + 1,
-    expected_state_version: input.state_version + 1,
-    item_placements: [result.proposal.placement],
-    ownership: [result.proposal.ownership.next]
-  };
-}
-
 test('M1 public exports execute a portable causal holder-transfer chain',
   async () => {
     const profileSet = await profiles();
+    const temporalProfiles = await canonicalTemporalProfiles(profileSet);
     assert.equal(profileSet.status, 'approved');
     assert.equal(profileSet.applicability.scenario_ref, null);
-    assert.deepEqual(Object.values(profileSet.profiles)
-      .filter((value) => value?.owner)
-      .map(({ owner }) => owner).sort(), [
-      '@rus/body-state', '@rus/items-property', '@rus/npc-runtime', '@rus/turn'
-    ]);
+    assert.equal(validateApprovedActorItemTransitionProfile(
+      profileSet.profiles.property_transition).ok, true);
+    assert.equal(validateNpcRoutineProfile(
+      profileSet.profiles.npc_schedule).profile_id,
+    'ordinary_local_work_cycle_v1');
+    assert.equal(temporalProfiles.activity.status, 'approved');
+    assert.equal(temporalProfiles.bodies.every((record) =>
+      record?.status === 'approved'), true);
     assert.equal(validateBodyState({ health: 100, satiety: 70, energy: 80,
       active_conditions: [] }).ok, true);
+
+    const routine = createNpcRoutineState({
+      profile: profileSet.profiles.npc_schedule, started_at: {
+        whole_minutes: '0', subminute_numerator: '0',
+        subminute_denominator: '1'
+      }, current_activity: { activity_ref: 'market-help',
+        summary: 'Ищет обычную работу на торгу.' }
+    });
+    const routineTransition = proposeNpcRoutineTransition({
+      runtime: routine, scheduled_at: { whole_minutes: '60',
+        subminute_numerator: '0', subminute_denominator: '1' },
+      npc_state: { npc_ref: ref('npc', 'thief'), state_version: '1',
+        current_activity_execution_ref: null,
+        placement_ref: ref('entity_placement', 'position-thief'),
+        attention_state_ref: ref('condition_set', 'attention-thief'),
+        body_state_ref: ref('body_state', 'body-thief'),
+        knowledge_state_ref: ref('knowledge_fact', 'knowledge-thief'),
+        relationship_state_ref: ref('condition_set', 'relations-thief') },
+      recheck_snapshot: { observed_state_version: '1',
+        placement_ref: ref('entity_placement', 'position-thief'),
+        access_ok: true, orders_ok: true, danger_ok: true, body_ok: true,
+        activity_ok: true }
+    });
+    assert.equal(routineTransition.ok, true);
+    assert.equal(routineTransition.factual_transition.decision_required, true);
 
     const initialPerceptionInput = perceptionRequest({
       perceptionId: 'thief-sees-pouch', observerId: 'thief',
@@ -188,11 +246,17 @@ test('M1 public exports execute a portable causal holder-transfer chain',
     });
     assert.deepEqual(validateSpatialV3Contract('npc_perception_request',
       initialPerceptionInput.request), []);
-    const initialPerception = proposeNpcPerception(initialPerceptionInput);
+    const initialPerception = resolveSpatialV3PerceptionKnowledge({
+      perception_request: initialPerceptionInput.request,
+      knowledge_state_before: { fact_refs: [], hypothesis_refs: [],
+        state_version: 1 }
+    });
     assert.equal(initialPerception.ok, true, JSON.stringify(initialPerception));
-    assert.equal(initialPerception.perception.result, 'recognized');
+    assert.equal(initialPerception.perception_result.result, 'recognized');
     assert.deepEqual(validateSpatialV3Contract('perception_result',
-      initialPerception.perception), []);
+      initialPerception.perception_result), []);
+    assert.equal(initialPerception.knowledge_merge_result.state_version_after,
+      2);
 
     const signal = buildNpcDecisionSignal({
       occurred_at: AT, category: 'others', significance: 'material',
@@ -200,7 +264,7 @@ test('M1 public exports execute a portable causal holder-transfer chain',
       subject_ref: ref('npc', 'thief'), scope_refs: [],
       perception_required: true,
       source_perception_ref: ref('perception_result',
-        initialPerception.perception.perception_id),
+        initialPerception.perception_result.perception_id),
       causal_parent_refs: []
     });
     const evaluated = evaluateNpcDecisionSignals({
@@ -224,9 +288,7 @@ test('M1 public exports execute a portable causal holder-transfer chain',
         social_role: { role_ref: 'market-helper' }, attributes: [], skills: [],
         machine_state: {}
       },
-      current_activity_snapshot: { activity_ref:
-          profileSet.profiles.npc_schedule.profile_id, summary: 'ожидает работу',
-        status: 'idle', can_continue_automatically: false },
+      current_activity_snapshot: routineTransition.activity_after,
       body_snapshot: { summary: 'может действовать', conditions: [] },
       resource_snapshots: [{ resource_ref: 'pouch', template_ref: 'pouch',
         holder_npc_id: 'owner' }],
@@ -242,7 +304,7 @@ test('M1 public exports execute a portable causal holder-transfer chain',
       memory_snapshot: { recent_events: [] },
       resolved_signals: [signal],
       operation_contract: { request_activity: {
-        activity_refs: [profileSet.profiles.activity.profile_id]
+        activity_refs: [temporalProfiles.activity.payload.activity_profile_id]
       } }
     });
     assert.equal(validateNpcActionDecisionRequest(request), true);
@@ -283,26 +345,37 @@ test('M1 public exports execute a portable causal holder-transfer chain',
     const preflight = planApprovedActorItemTransition(input);
     assert.equal(preflight.pass, true, JSON.stringify(preflight.errors));
     const check = executeCheck({ check_id: 'm1-pouch-reach', difficulty: 10,
-      attribute_value: 14, skill_bonus: 2 }, { next: () => 0.75 });
+      attribute_value: 14, skill_bonus: 2,
+      state_modifier: stateModifier({ health: 100, satiety: 70, energy: 80 })
+    }, { next: () => 0.75 });
     assert.equal(check.outcome.success, true);
-    const after = applyProposal(input, preflight);
+    const applied = applyApprovedActorItemTransitionProposal(input, preflight);
+    assert.equal(applied.pass, true, JSON.stringify(applied.errors));
+    const after = applied.state;
     assert.equal(after.item_placements[0].holder_npc_id, 'thief');
     assert.equal(after.ownership[0].owner_npc_id, 'owner');
     assert.equal(after.ownership[0].controller_npc_id, 'thief');
 
-    const ownerPerception = proposeNpcPerception(perceptionRequest({
-      perceptionId: 'owner-sees-loss', observerId: 'owner',
-      eventId: 'pouch-holder-changed'
-    }));
-    const distantPerception = proposeNpcPerception(perceptionRequest({
-      perceptionId: 'porter-misses-loss', observerId: 'porter',
-      eventId: 'pouch-holder-changed', recognized: false
-    }));
-    assert.equal(ownerPerception.perception.result, 'recognized');
-    assert.equal(distantPerception.perception.result, 'not_perceived');
+    const ownerPerception = resolveSpatialV3PerceptionKnowledge({
+      perception_request: perceptionRequest({ perceptionId: 'owner-sees-loss',
+        observerId: 'owner', eventId: 'pouch-holder-changed' }).request,
+      knowledge_state_before: { fact_refs: [], hypothesis_refs: [],
+        state_version: 1 }
+    });
+    const distantPerception = resolveSpatialV3PerceptionKnowledge({
+      perception_request: perceptionRequest({
+        perceptionId: 'porter-misses-loss', observerId: 'porter',
+        eventId: 'pouch-holder-changed', recognized: false }).request,
+      knowledge_state_before: { fact_refs: [], hypothesis_refs: [],
+        state_version: 1 }
+    });
+    assert.equal(ownerPerception.perception_result.result, 'recognized');
+    assert.equal(distantPerception.perception_result.result, 'not_perceived');
 
     const nextInput = {
       ...after,
+      approved_transition: profileSet.profiles.property_transition,
+      approved_facts: [], item_id: 'pouch',
       source: { actor_id: 'thief', actor_kind: 'npc',
         controller_actor_id: 'thief', physical_position: 'hands',
         accessibility: 'immediate' },
@@ -340,6 +413,10 @@ test('M1 preflight blocks unreachable target before RNG and failure keeps state'
       holderId: 'merchant', thiefId: 'apprentice' });
     const validPlan = planApprovedActorItemTransition(reachable);
     assert.equal(validPlan.pass, true);
+    const forged = structuredClone(validPlan);
+    forged.proposal.ownership.next.owner_npc_id = 'apprentice';
+    assert.equal(applyApprovedActorItemTransitionProposal(
+      reachable, forged).pass, false);
     const failedCheck = executeCheck({ difficulty: 20, attribute_value: 8 },
       { next: () => 0 });
     assert.equal(failedCheck.outcome.success, false);

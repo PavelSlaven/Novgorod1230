@@ -30,7 +30,9 @@ import { admitLocalFireIgnitionBasis, admitLocalFireInput,
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer, inventoryItemIsCarried } from './inventory.js';
 export {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
-  planApprovedActorItemTransition
+  applyApprovedActorItemTransitionProposal,
+  planApprovedActorItemTransition,
+  validateApprovedActorItemTransitionProfile
 } from './approved-actor-item-transition.js';
 export { planApprovedPropertyTransition } from './approved-property-transition.js';
 export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryProfile } from './inventory-archetypes.js';

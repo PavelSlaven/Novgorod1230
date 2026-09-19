@@ -149,6 +149,8 @@ test('production binding activates S1 only for exact loaded revision 24 profile'
     const absent = await capturedTraceRuntime(null);
     assert.equal(absent.createTurnStepSpatialSemanticResolver, null);
     assert.equal(absent.spatialSemanticProfile, null);
+    assert.equal(typeof absent.createTurnStepAuthoredSpatialSemanticResolver,
+      'function');
     const historical = structuredClone(loadedProfile);
     historical.profile.revision = 1;
     historical.profile.scenario_definition_revision = 23;

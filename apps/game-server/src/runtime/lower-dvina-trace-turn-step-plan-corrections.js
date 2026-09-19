@@ -28,6 +28,25 @@ export async function correctTemporalQualifierContinuation({ plan, input, roleRu
     reason: 'The end-time phrase is part of the same requested duration.' };
 }
 
+export function correctOrdinaryDiscoveryScope({ plan, input }) {
+  const operation = plan?.resolution === 'domain_request'
+    && plan.operations?.length === 1
+    && plan.operations[0]?.op === 'request_discovery'
+    ? plan.operations[0] : null;
+  const position = input?.player_safe_state?.position;
+  const target = operation?.target_refs?.[0];
+  const spatialTarget = input?.player_safe_state?.spatial_semantic?.position_ref;
+  if (operation?.target_refs?.length !== 1
+      || input.player_safe_state?.ordinary_resolution?.discovery_available !== true
+      || target !== position?.position_id
+      || typeof position?.location_ref !== 'string'
+      || operation.discovery_kind !== 'search' && target === spatialTarget) {
+    return plan;
+  }
+  return { ...plan, operations: [{ ...operation,
+    target_refs: [position.location_ref] }] };
+}
+
 export async function correctVisibleNpcStatusObservation({ plan, input, roleRunner }) {
   const operation = plan?.resolution === 'domain_request'
     && plan.operations?.length === 1

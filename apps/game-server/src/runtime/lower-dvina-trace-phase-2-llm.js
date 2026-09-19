@@ -18,7 +18,8 @@ import { activeConversationChoiceExample, preparedFollowupPrompt,
   semanticTurnStepExample, visibleConversationChoiceExamples } from
   './lower-dvina-trace-turn-step-planner-prompt.js';
 import { groundTurnRequest, wkClosure } from './world-knowledge-grounding.js';
-import { correctSupportedAssessment, correctTemporalQualifierContinuation,
+import { correctOrdinaryDiscoveryScope, correctSupportedAssessment,
+  correctTemporalQualifierContinuation,
   correctVisibleNpcStatusObservation } from
   './lower-dvina-trace-turn-step-plan-corrections.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from './lower-dvina-trace-autonomous-llm.js';
@@ -178,8 +179,11 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
     const assembled = assembleTurnStepPlan(
       canonicalizePartialPartition(semanticOutput), input,
       operationChoices);
+    const discoveryScope = correctOrdinaryDiscoveryScope({
+      plan: assembled, input
+    });
     const temporalQualifier = await correctTemporalQualifierContinuation({
-      plan: assembled, input, roleRunner
+      plan: discoveryScope, input, roleRunner
     });
     const visibleNpcObservation = await correctVisibleNpcStatusObservation({
       plan: temporalQualifier, input, roleRunner

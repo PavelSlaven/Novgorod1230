@@ -243,10 +243,11 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const scenarioIds = catalog.data.scenarios.map(({ scenario_id: id }) => id);
   assert.deepEqual(
     scenarioIds,
-    ['lower_dvina_trace_v1', 'upper_msta_weavers_yard_v1']
+    ['lower_dvina_trace_v1', 'vikhtuy_fishing_camp_v1']
   );
   assert.equal(scenarioIds.includes('lower_dvina_late_summer_open_water_v1'), false);
   assert.equal(scenarioIds.includes('lower_dvina_trace_v1'), true);
+  assert.equal(scenarioIds.includes('upper_msta_weavers_yard_v1'), false);
   await assert.rejects(
     () => api(base, '/api/v1/new-games', {
       scenario_id: 'lower_dvina_late_summer_open_water_v1',
@@ -254,6 +255,15 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     }),
     { code: 'SCENARIO_NOT_SUPPORTED' }
   );
+  await assert.rejects(
+    () => api(base, '/api/v1/new-games', {
+      scenario_id: 'upper_msta_weavers_yard_v1',
+      request_id: 'm2a-false-geography-alias'
+    }),
+    { code: 'SCENARIO_NOT_SUPPORTED' }
+  );
+  assert.equal(await count(pool, 'party_runtime.parties',
+    `party:${hashForTest('m2a-false-geography-alias').slice(0, 24)}`), 0);
   const publicRequest = {
     scenario_id: 'lower_dvina_trace_v1',
     request_id: 'phase-1b-postgres-public'
@@ -267,13 +277,15 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
 
   const partyId = start.data.party_id;
   const authoredRequest = {
-    scenario_id: 'upper_msta_weavers_yard_v1',
+    scenario_id: 'vikhtuy_fishing_camp_v1',
     request_id: 'm2a-authored-public'
   };
   const authoredStart = await api(base, '/api/v1/new-games', authoredRequest);
   assert.equal(authoredStart.status, 201);
   assert.equal(authoredStart.data.screen.scenario_id,
-    'upper_msta_weavers_yard_v1');
+    'vikhtuy_fishing_camp_v1');
+  assert.match(authoredStart.data.screen.main_prose, /Вихтуя/u);
+  assert.doesNotMatch(authoredStart.data.screen.main_prose, /Мст/u);
   assert.equal(authoredStart.data.screen.panels.character.data.name, 'Любава');
   const authoredPartyId = authoredStart.data.party_id;
   const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
@@ -281,6 +293,20 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.equal(authoredInternal.items.length, 2);
   assert.equal(authoredInternal.position.g4_id,
     'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach');
+  const demoInternal = await first.adapter.loadInternal(partyId);
+  assert.notEqual(authoredInternal.position.g4_id, demoInternal.position.g4_id);
+  const nodes = await pool.query(
+    `SELECT party_id,state_payload#>'{immediate,spatial,node}' AS node
+       FROM party_runtime.party_state_snapshots
+      WHERE party_id=ANY($1::text[])`, [[partyId, authoredPartyId]]
+  );
+  const nodesByParty = new Map(nodes.rows.map((row) => [row.party_id, row.node]));
+  assert.equal(nodesByParty.get(partyId).template_id,
+    'trace_ld_v1_tpl_wreck_shore');
+  assert.equal(nodesByParty.get(authoredPartyId).template_id,
+    'trace_ld_v1_tpl_fishing_camp');
+  assert.equal(nodesByParty.get(authoredPartyId).state.canonical_g5_ref.id,
+    'trace_ld_v1_g5_fishing_camp');
   assert.deepEqual(authoredInternal.items.map(({ quantity }) => Number(quantity))
     .sort((a, b) => a - b), [1, 1]);
   assert.notEqual(authoredPartyId, partyId);
@@ -296,7 +322,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       WHERE party_id=$1`, [authoredPartyId])).rows[0].stage26_result;
   assert.deepEqual(authoredIdentity.runtime_binding,
     authoredStartCatalog.runtime_binding);
-  assert.equal(authoredIdentity.runtime_binding.revision, 2);
+  assert.equal(authoredIdentity.runtime_binding.revision, 3);
   assert.equal(await count(pool, 'party_runtime.parties', partyId), 1);
   const invalidCases = [
     ['g4', (profile) => { profile.geometry.start.g4_id = 'missing-g4'; }],
@@ -317,11 +343,23 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     }],
     ['player-known', (profile) => {
       profile.player.known_fact_refs = ['missing-fact'];
+    }],
+    ['player-role', (profile) => {
+      profile.player.role_id = 'missing-role';
+    }],
+    ['player-occupation', (profile) => {
+      profile.player.occupation_id = 'missing-occupation';
+    }],
+    ['npc-role', (profile) => {
+      profile.people[0].role_id = 'missing-role';
+    }],
+    ['npc-occupation', (profile) => {
+      profile.people[0].occupation_id = 'missing-occupation';
     }]
   ];
   for (const [name, mutate] of invalidCases) {
     const invalidProfile = structuredClone(
-      authoredStartCatalog.resolveProfile('upper_msta_weavers_yard_v1')
+      authoredStartCatalog.resolveProfile('vikhtuy_fishing_camp_v1')
     );
     mutate(invalidProfile);
     const invalidRuntime = makeRuntime(null, {
@@ -351,13 +389,13 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     catalog: unavailableDemoCatalog
   }).runtime;
   assert.equal((await neutralRuntime.listScenarios()).scenarios.some(
-    ({ scenario_id: id }) => id === 'upper_msta_weavers_yard_v1'), true);
+    ({ scenario_id: id }) => id === 'vikhtuy_fishing_camp_v1'), true);
   const neutralStart = await neutralRuntime.startNewGame({
-    scenario_id: 'upper_msta_weavers_yard_v1',
+    scenario_id: 'vikhtuy_fishing_camp_v1',
     request_id: 'm2a-neutral-with-demo-unavailable'
   });
   assert.equal(neutralStart.screen.scenario_id,
-    'upper_msta_weavers_yard_v1');
+    'vikhtuy_fishing_camp_v1');
   await assert.rejects(() => neutralRuntime.startNewGame({
     scenario_id: 'lower_dvina_trace_v1',
     request_id: 'm2a-demo-unavailable'
@@ -372,9 +410,9 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   await page.waitForSelector('[data-start-new-game]');
   await page.click('[data-start-new-game]');
   await page.waitForSelector('[data-new-game-screen]');
-  await page.click('[data-scenario-id="upper_msta_weavers_yard_v1"]');
+  await page.click('[data-scenario-id="vikhtuy_fishing_camp_v1"]');
   await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
-  assert.match(await page.textContent('body'), /Любава|Ткацкий двор/u);
+  assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
   const browserPartyId = await page.evaluate(() =>
     localStorage.getItem('rus.party_id'));
   assert.equal(await count(pool, 'party_runtime.parties', browserPartyId), 1);
@@ -385,7 +423,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   await page.waitForSelector('[data-screen-schema="first_game_screen"]');
   assert.equal(await page.evaluate(() => localStorage.getItem('rus.party_id')),
     browserPartyId);
-  assert.match(await page.textContent('body'), /Любава|Ткацкий двор/u);
+  assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
   await browser.close();
   const beforeRestart = await first.adapter.loadInternal(partyId);
   assert.equal(
@@ -464,7 +502,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   });
   const v1StartRuntime = makeRuntime(null, { catalog: v1Catalog }).runtime;
   const v1Start = await v1StartRuntime.startNewGame({
-    scenario_id: 'upper_msta_weavers_yard_v1',
+    scenario_id: 'vikhtuy_fishing_camp_v1',
     request_id: 'm2a-authored-v1-save'
   });
   const historicalAuthored = makeRuntime();

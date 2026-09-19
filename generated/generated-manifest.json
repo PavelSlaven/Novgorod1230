@@ -23,7 +23,7 @@
     }
   ],
   "generator": "tools/docs-tools/src/cli.js",
-  "input_digest": "03b41dac600bfbd7b8068c53549d3f85daee72ae6c04b53ce3ccdeef5862b804",
+  "input_digest": "1b83defd50387994b7b331250c75477ae76f897189a0e722a56d15b2277e88f6",
   "release": "0.23.0-migration.24",
   "schema_version": "rus.generated_manifest.v1"
 }

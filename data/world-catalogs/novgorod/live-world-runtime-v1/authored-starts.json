@@ -1,9 +1,21 @@
 {
   "schema": "rus.live_world_runtime.authored_starts.v2",
   "catalog_id": "novgorod_live_world_runtime_v1",
-  "revision": 2,
+  "revision": 3,
   "status": "approved",
-  "current_binding_revision": 2,
+  "current_binding_revision": 3,
+  "actor_catalog": {
+    "version": 1,
+    "region_id": "region_novgorod_land",
+    "roles": {
+      "path": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
+      "digest": "8bece789c58e930cace79ccb8aa7e7e4baeffb7e1e9a29d1e01be6cb84c72cea"
+    },
+    "occupations": {
+      "path": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
+      "digest": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6"
+    }
+  },
   "execution_contract": {
     "materializer_version": "code_materializer_v2",
     "rng_algorithm_id": "mulberry32_v1"
@@ -29,36 +41,37 @@
   }],
   "bindings": [
     {"binding_id":"upper_msta_weavers_yard","revision":1,"status":"deprecated","scenario_id":"upper_msta_weavers_yard_v1"},
-    {"binding_id":"upper_msta_weavers_yard","revision":2,"status":"approved","scenario_id":"upper_msta_weavers_yard_v1"}
+    {"binding_id":"upper_msta_weavers_yard","revision":2,"status":"deprecated","scenario_id":"upper_msta_weavers_yard_v1"},
+    {"binding_id":"vikhtuy_fishing_camp","revision":3,"status":"approved","scenario_id":"vikhtuy_fishing_camp_v1"}
   ],
   "player_known_facts": [{
-    "fact_id": "upper_msta_cloth_due_for_autumn_market",
+    "fact_id": "vikhtuy_nets_due_before_evening",
     "status": "approved",
-    "text": "До осеннего торга нужно закончить полотно."
+    "text": "До вечера нужно проверить сети и уложить снасти."
   }],
   "starts": [
     {
-      "scenario_id": "upper_msta_weavers_yard_v1",
+      "scenario_id": "vikhtuy_fishing_camp_v1",
       "status": "approved",
       "public_metadata": {
-        "title": "Ткацкий двор на Верхней Мсте",
-        "description": "Небольшой двор готовит полотно к осеннему торгу.",
+        "title": "Рыбацкий стан у Вихтуя",
+        "description": "Небольшой стан готовит сети и снасти к вечернему лову.",
         "available": true
       },
       "opening": {
-        "place_label": "ткацкий двор над Мстой",
+        "place_label": "рыбацкий стан у Вихтуя",
         "calendar_label": "20 августа 1230 года",
-        "opening_prose": "Утро застало тебя во дворе над Мстой: у навеса сохнет пряжа, а до торга остаётся мало времени."
+        "opening_prose": "Утро застало тебя в рыбацком стане у Вихтуя: у настила лежат сети, а до вечернего лова нужно проверить снасти."
       },
       "player": {
         "name": "Любава",
-        "role_id": "nov_role_household_mistress",
-        "occupation_id": "nov_occ_weaver_cloth_worker",
-        "role_label": "ткачиха",
+        "role_id": "nov_role_fisher",
+        "occupation_id": "nov_occ_fisher",
+        "role_label": "рыбачка",
         "health": 92,
         "energy": 71,
         "satiety": 66,
-        "known_fact_refs": ["upper_msta_cloth_due_for_autumn_market"]
+        "known_fact_refs": ["vikhtuy_nets_due_before_evening"]
       },
       "geometry": {
         "start": {
@@ -92,18 +105,18 @@
         {
           "person_key": "miloslav",
           "name": "Милослав",
-          "role_id": "nov_role_craftsman_master",
-          "occupation_id": "nov_occ_weaver_cloth_worker",
-          "occupation_label": "торговец полотном",
+          "role_id": "nov_role_boatman",
+          "occupation_id": "nov_occ_boatman",
+          "occupation_label": "лодочник",
           "location": "start",
           "relationships": [{ "to": "player", "kind": "older_brother", "standing": "trusted" }]
         },
         {
           "person_key": "nezhata",
           "name": "Нежата",
-          "role_id": "nov_role_journeyman",
-          "occupation_id": "nov_occ_weaver_cloth_worker",
-          "occupation_label": "работник при льне",
+          "role_id": "nov_role_fisher",
+          "occupation_id": "nov_occ_fisher",
+          "occupation_label": "рыбак",
           "location": "other:0",
           "relationships": [{ "to": "miloslav", "kind": "hire", "standing": "owes_work" }]
         }

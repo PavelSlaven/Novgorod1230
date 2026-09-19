@@ -135,6 +135,7 @@ export function materializeAuthoredStartPartyInstance(input) {
     world_revision_id: input.world_revision_id,
     catalog_digest: input.domain_catalog_pin.catalog_digest,
     catalog_bundle_digest: admission.domain_catalog_bundle_digest,
+    actor_catalog_digest: admission.actor_catalog_digest,
     scenario_manifest_digest: input.scenario_manifest_digest,
     policy_profile_pins: [],
     policy_profile_pin_digest: canonicalDigest([]),
@@ -229,6 +230,7 @@ function resolveAuthoritativeAdmission(input, profile) {
   if (!environmentProfiles.has(profile.environment.profile_id)) invalid();
   const resourceRefs = profile.resources.map((resource) =>
     resolveResource(domain.records_by_table, resource));
+  const actorRefs = resolveActors(profile);
   const approvedFacts = new Map((profile.approved_player_known_facts ?? [])
     .filter(({ status }) => status === 'approved')
     .map((fact) => [fact.fact_id, fact.text]));
@@ -239,9 +241,11 @@ function resolveAuthoritativeAdmission(input, profile) {
   }
   const worldDigest = computeStage24ArtifactDigest(world);
   const domainBundleDigest = canonicalDigest(domain);
+  const actorCatalogDigest = canonicalDigest(profile.actor_catalog);
   return {
     player_known_facts: playerKnownFacts,
     domain_catalog_bundle_digest: domainBundleDigest,
+    actor_catalog_digest: actorCatalogDigest,
     validation_report: {
       version: 1,
       schema: 'rus.live_world_runtime.authored_start_admission.v1',
@@ -249,6 +253,7 @@ function resolveAuthoritativeAdmission(input, profile) {
       world_base_reference_digest: worldDigest,
       domain_catalog_digest: domain.pin.catalog_digest,
       domain_catalog_bundle_digest: domainBundleDigest,
+      actor_catalog_digest: actorCatalogDigest,
       checks: {
         exact_world_closure: true,
         exact_domain_closure: true,
@@ -266,9 +271,54 @@ function resolveAuthoritativeAdmission(input, profile) {
         location_profile_id: binding.materialization_profile_id,
         anchor_slot_key: position.position_slot_key
       })),
-      resolved_resource_refs: resourceRefs
+      resolved_resource_refs: resourceRefs,
+      resolved_actor_refs: actorRefs
     }
   };
+}
+
+function resolveActors(profile) {
+  const catalog = profile.actor_catalog;
+  if (catalog?.schema !== 'rus.live_world_runtime.approved_actor_catalog.v1'
+    || !Number.isInteger(catalog.version) || !catalog.region_id
+    || !Array.isArray(catalog.roles) || !Array.isArray(catalog.occupations)) {
+    invalid();
+  }
+  const roles = new Map(catalog.roles.map((record) => [record.role_id, record]));
+  const occupations = new Map(catalog.occupations.map((record) => [
+    record.occupation_id, record
+  ]));
+  const actors = [{ actor_ref: 'player', ...profile.player },
+    ...profile.people.map((person) => ({ actor_ref: person.person_key,
+      ...person }))];
+  return actors.map((actor) => {
+    const role = roles.get(actor.role_id);
+    const occupation = occupations.get(actor.occupation_id);
+    if (!role || !occupation
+      || role.status !== 'approved' || occupation.status !== 'approved'
+      || role.region_id !== catalog.region_id
+      || occupation.region_id !== catalog.region_id
+      || !allows(occupation.allowed_social_roles, actor.role_id)
+      || forbids(occupation.forbidden_social_roles, actor.role_id)
+      || !allows(role.allowed_occupations, actor.occupation_id)
+      || forbids(role.forbidden_occupations, actor.occupation_id)) invalid();
+    return { actor_ref: actor.actor_ref, role_id: role.role_id,
+      occupation_id: occupation.occupation_id };
+  });
+}
+
+function allows(value, id) {
+  const values = list(value);
+  return values.length === 0 || values.includes(id);
+}
+
+function forbids(value, id) {
+  return list(value).includes(id);
+}
+
+function list(value) {
+  return String(value ?? '').split(/[;,]/u).map((item) => item.trim())
+    .filter(Boolean);
 }
 
 function resolvePlace(world, place) {

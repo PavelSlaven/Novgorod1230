@@ -83,15 +83,15 @@ function createRecordedRoot(records) {
         description: 'Позднее лето, разбитая лодья и пропавший груз.',
         available: true
       }, {
-        scenario_id: 'upper_msta_weavers_yard_v1',
-        title: 'Ткацкий двор на Верхней Мсте',
-        description: 'Небольшой двор готовит полотно к осеннему торгу.',
+        scenario_id: 'vikhtuy_fishing_camp_v1',
+        title: 'Рыбацкий стан у Вихтуя',
+        description: 'Небольшой стан готовит сети и снасти к вечернему лову.',
         available: true
       }]
     }),
     async startNewGame(input) {
       records.newGames.push(structuredClone(input));
-      if (!['lower_dvina_trace_v1', 'upper_msta_weavers_yard_v1']
+      if (!['lower_dvina_trace_v1', 'vikhtuy_fishing_camp_v1']
         .includes(input.scenario_id)) {
         throw Object.assign(new Error('Scenario is not supported.'), {
           code: 'SCENARIO_NOT_SUPPORTED', status: 400
@@ -148,7 +148,7 @@ function createRecordedRoot(records) {
 }
 
 function openingFixture(partyId, scenarioId = 'lower_dvina_trace_v1') {
-  const authored = scenarioId === 'upper_msta_weavers_yard_v1';
+  const authored = scenarioId === 'vikhtuy_fishing_camp_v1';
   return {
     version: 1,
     schema: 'first_game_screen',
@@ -156,10 +156,10 @@ function openingFixture(partyId, scenarioId = 'lower_dvina_trace_v1') {
     party_id: partyId,
     scenario_id: scenarioId,
     main_prose: authored
-      ? 'Утро застало тебя во дворе над Мстой.'
+      ? 'Утро застало тебя в рыбацком стане у Вихтуя.'
       : 'Ты приходишь в себя на берегу Нижней Двины после крушения.',
     visible_context: {
-      location_label: authored ? 'Ткацкий двор над Мстой' : 'Берег Нижней Двины',
+      location_label: authored ? 'Рыбацкий стан у Вихтуя' : 'Берег Нижней Двины',
       calendar: '20 августа 1230 года',
       environment: {
         profile_id: 'env.land_path',
@@ -174,10 +174,10 @@ function openingFixture(partyId, scenarioId = 'lower_dvina_trace_v1') {
       character: {
         visible: true,
         data: { name: authored ? 'Любава' : '<script>bad()</script>Микула',
-          role: authored ? 'Ткачиха' : 'Приказчик', health: authored ? 92 : 9 }
+          role: authored ? 'Рыбачка' : 'Приказчик', health: authored ? 92 : 9 }
       },
       route: { visible: true, data: { current_place: authored
-        ? 'Ткацкий двор над Мстой' : 'Берег Нижней Двины' } }
+        ? 'Рыбацкий стан у Вихтуя' : 'Берег Нижней Двины' } }
     },
     delivery_state: { message_id: `opening:${partyId}` }
   };
@@ -530,12 +530,12 @@ test('browser preserves production API semantics through the Lovable UI', {
   await page.click('[data-dismiss-error]');
   await page.click('[data-return-start]');
   await page.click('[data-start-new-game]');
-  await page.click('[data-scenario-id="upper_msta_weavers_yard_v1"]');
+  await page.click('[data-scenario-id="vikhtuy_fishing_camp_v1"]');
   await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
   assert.deepEqual(records.newGames.at(-1), {
-    scenario_id: 'upper_msta_weavers_yard_v1'
+    scenario_id: 'vikhtuy_fishing_camp_v1'
   });
-  assert.match(await page.textContent('body'), /Любава|Ткацкий двор/u);
+  assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
   const authoredPartyId = await page.evaluate(() =>
     localStorage.getItem('rus.party_id'));
   await page.click('[data-return-start]');
@@ -544,7 +544,7 @@ test('browser preserves production API semantics through the Lovable UI', {
   await page.click('[data-continue-party]');
   await page.waitForSelector('[data-screen-schema="first_game_screen"]');
   assert.equal(records.screenReads.at(-1), authoredPartyId);
-  assert.match(await page.textContent('body'), /Любава|Ткацкий двор/u);
+  assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
 
   await page.evaluate(() => {
     localStorage.setItem('rus.party_id', 'party-missing');

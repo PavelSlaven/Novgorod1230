@@ -37,7 +37,9 @@ and adds no second transaction owner.
   execution/world/binding inputs; Lower Dvina publication загружается только
   для своей external entry и не блокирует другой authored start. Read/reload
   разрешает exact persisted approved/deprecated binding, без latest fallback;
-  только новая партия выбирает current binding.
+  только новая партия выбирает current binding. Authored profile получает
+  bounded role/occupation closure из digest-pinned regional catalogs; server
+  не назначает actor approval самостоятельно.
 
 - Planner examples остаются flat semantic objects; mapping labels находятся
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.

@@ -473,9 +473,13 @@ function assertInput(input) {
       === input.party_creation_context?.domain_catalog_pin?.catalog_digest
     && semantic.domain_catalog_bundle_digest
       === result.trace?.catalog_bundle_digest
+    && semantic.actor_catalog_digest === result.trace?.actor_catalog_digest
     && ['exact_world_closure', 'exact_domain_closure', 'actor_refs',
       'placements', 'resources', 'player_known']
-      .every((key) => semantic.checks?.[key] === true);
+      .every((key) => semantic.checks?.[key] === true)
+    && Array.isArray(semantic.resolved_actor_refs)
+    && semantic.resolved_actor_refs.length
+      === (result.immediate?.npcs?.length ?? -1) + 1;
   if (!input?.request_id || !input.party_creation_context?.idempotency_key || result?.validation_report?.pass !== true
     || semantic?.pass !== true || result?.party_id !== input.party_creation_context.party_id
     || result?.trace?.result_digest !== computeMaterializationEnvelopeDigest(result)

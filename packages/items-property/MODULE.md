@@ -31,7 +31,10 @@ fail-closed proposal, а `applyApprovedActorItemTransitionProposal` примен
 до RNG проверяет actor-relative attempt admission: actor участвует в переходе,
 совпадает committed scope, предмет действительно воспринят и его исходное
 physical position входит в разрешённый класс. Consent и legal owner этой
-физической проверкой не подменяются.
+физической проверкой не подменяются. Access projection строится
+`projectApprovedActorItemAttemptAccess` из полного owner-produced
+`perception_request + perception_result`: exact perceiver, event, item source и
+source scope нельзя заменить отдельным caller ref.
 
 - `normalizeItem`
 - `validateItem`

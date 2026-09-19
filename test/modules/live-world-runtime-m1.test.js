@@ -9,6 +9,7 @@ import { stateModifier, validateBodyState } from '@rus/body-state';
 import {
   applyApprovedActorItemTransitionProposal,
   planApprovedActorItemTransition,
+  projectApprovedActorItemAttemptAccess,
   validateApprovedActorItemTransitionProfile
 } from '@rus/items-property';
 import {
@@ -85,6 +86,7 @@ async function canonicalTemporalProfiles(profileSet) {
 }
 
 function perceptionRequest({ perceptionId, observerId, eventId,
+  itemId = 'personal-item',
   recognized = true } = {}) {
   const observer = ref('npc', observerId);
   const sourceScope = ref('canonical_spatial_node', 'market-stall');
@@ -108,7 +110,7 @@ function perceptionRequest({ perceptionId, observerId, eventId,
     factual_signal: seal({
       signal_ref: ref('sound_event', `signal-${eventId}`),
       channel: 'visual', source_scope_ref: sourceScope,
-      source_ref: ref('item', 'personal-item'), emission_strength: 3,
+      source_ref: ref('item', itemId), emission_strength: 3,
       signal_state_version: 1,
       player_visibility_class: 'visible_if_perceived'
     }),
@@ -176,7 +178,8 @@ function perceptionRequest({ perceptionId, observerId, eventId,
 }
 
 function transitionInput({ profileSet, itemId, templateId, ownerId, holderId,
-  thiefId, perceptionResult, reachable = true } = {}) {
+  thiefId, perceptionRequest: sourcePerceptionRequest,
+  perceptionResult, actorScopeRef = 'market-stall', reachable = true } = {}) {
   const sourcePosition = reachable ? 'worn_quick' : 'equipped';
   return {
     party_id: 'm1-party', actor_id: thiefId,
@@ -199,14 +202,10 @@ function transitionInput({ profileSet, itemId, templateId, ownerId, holderId,
     destination: { actor_id: thiefId, actor_kind: 'npc',
       controller_actor_id: thiefId, physical_position: 'hands',
       accessibility: 'immediate' },
-    attempting_actor_id: thiefId,
-    attempting_actor_scope_ref: 'market-passage',
-    source_scope_ref: 'market-passage',
-    perceived_item_refs: [itemId],
-    attempt_perception: {
-      perception_id: perceptionResult.perception_id,
-      perceiver_ref: structuredClone(perceptionResult.perceiver_ref),
-      result: perceptionResult.result
+    attempt_access_source: {
+      perception_request: structuredClone(sourcePerceptionRequest),
+      perception_result: structuredClone(perceptionResult),
+      actor_scope_ref: actorScopeRef
     },
     approved_transition: profileSet.profiles.property_transition,
     approved_facts: [], item_id: itemId
@@ -270,7 +269,8 @@ async function executeItemAttempt({ plan, request, transition, randomSource }) {
     domain: { request_activity: async ({ operation, working_projection,
       check_result: checkResult }) => {
       assert.deepEqual(operation, activityOperation(
-        transition.attempting_actor_id, transition.item_id));
+        transition.attempt_access_source.perception_result
+          .perceiver_ref.entity_id, transition.item_id));
       assert.equal(checkResult?.outcome.success, true);
       const applied = applyApprovedActorItemTransitionProposal(
         transition, preflight);
@@ -289,7 +289,8 @@ async function executeItemAttempt({ plan, request, transition, randomSource }) {
     .replace(/^sha256:/u, '');
   const result = await executeTurnStepActorStep({
     plan, request: { ...request, step_index: request.decision_index,
-      actor: { actor_id: transition.attempting_actor_id,
+      actor: { actor_id: transition.attempt_access_source.perception_result
+          .perceiver_ref.entity_id,
         attributes: { agility: { value: 14 } },
         skills: { sleight: { bonus: 2 } },
         body: { health: 100, satiety: 70, energy: 80,
@@ -364,7 +365,7 @@ test('M1 public exports execute a portable causal holder-transfer chain',
 
     const initialPerceptionInput = perceptionRequest({
       perceptionId: 'thief-sees-pouch', observerId: 'thief',
-      eventId: 'owner-shows-pouch'
+      eventId: 'owner-shows-pouch', itemId: 'pouch'
     });
     assert.deepEqual(validateSpatialV3Contract('npc_perception_request',
       initialPerceptionInput.request), []);
@@ -457,6 +458,7 @@ test('M1 public exports execute a portable causal holder-transfer chain',
     const input = transitionInput({ profileSet, itemId: 'pouch',
       templateId: 'small-personal-item', ownerId: 'owner', holderId: 'owner',
       thiefId: 'thief',
+      perceptionRequest: initialPerceptionInput.request,
       perceptionResult: initialPerception.perception_result });
     const executed = await executeItemAttempt({ plan: forcedDecision.plan,
       request, transition: input, randomSource: { next: () => 0.75 } });
@@ -487,6 +489,7 @@ test('M1 public exports execute a portable causal holder-transfer chain',
       ...after,
       approved_transition: profileSet.profiles.property_transition,
       approved_facts: [], item_id: 'pouch',
+      attempt_access_source: structuredClone(input.attempt_access_source),
       source: { actor_id: 'thief', actor_kind: 'npc',
         controller_actor_id: 'thief', physical_position: 'hands',
         accessibility: 'immediate' },
@@ -506,16 +509,19 @@ test('M1 public exports execute a portable causal holder-transfer chain',
 test('M1 preflight blocks unreachable target before RNG and failure keeps state',
   async () => {
     const profileSet = await profiles();
+    const attemptPerceptionInput = perceptionRequest({
+      perceptionId: 'apprentice-sees-brooch', observerId: 'apprentice',
+      eventId: 'merchant-shows-brooch', itemId: 'brooch'
+    });
     const attemptPerception = resolveSpatialV3PerceptionKnowledge({
-      perception_request: perceptionRequest({
-        perceptionId: 'apprentice-sees-brooch', observerId: 'apprentice',
-        eventId: 'merchant-shows-brooch' }).request,
+      perception_request: attemptPerceptionInput.request,
       knowledge_state_before: { fact_refs: [], hypothesis_refs: [],
         state_version: 1 }
     }).perception_result;
     const inaccessible = transitionInput({ profileSet, itemId: 'brooch',
       templateId: 'small-personal-item', ownerId: 'merchant',
       holderId: 'merchant', thiefId: 'apprentice',
+      perceptionRequest: attemptPerceptionInput.request,
       perceptionResult: attemptPerception, reachable: false });
     let rolls = 0;
     const request = actorStepRequest('apprentice', 'brooch');
@@ -527,6 +533,31 @@ test('M1 preflight blocks unreachable target before RNG and failure keeps state'
       } }), ({ code }) =>
       code === 'APPROVED_TRANSITION_ATTEMPT_ACCESS_DENIED');
     assert.equal(rolls, 0);
+
+    const crossItem = projectApprovedActorItemAttemptAccess({
+      perception_request: attemptPerceptionInput.request,
+      perception_result: attemptPerception,
+      item_id: 'different-item', actor_scope_ref: 'market-stall'
+    });
+    assert.equal(crossItem.pass, false);
+    const crossItemTransition = structuredClone(inaccessible);
+    crossItemTransition.source.physical_position = 'worn_quick';
+    delete crossItemTransition.source.equipment_slot_category_id;
+    crossItemTransition.item_placements[0].physical_position = 'worn_quick';
+    delete crossItemTransition.item_placements[0].equipment_slot_category_id;
+    crossItemTransition.attempt_access_source.perception_request
+      .factual_signal.source_ref.entity_id = 'different-item';
+    assert.equal(planApprovedActorItemTransition(
+      crossItemTransition).errors[0].code,
+    'APPROVED_TRANSITION_ATTEMPT_ACCESS_DENIED');
+    const crossScope = structuredClone(inaccessible);
+    crossScope.source.physical_position = 'worn_quick';
+    delete crossScope.source.equipment_slot_category_id;
+    crossScope.item_placements[0].physical_position = 'worn_quick';
+    delete crossScope.item_placements[0].equipment_slot_category_id;
+    crossScope.attempt_access_source.actor_scope_ref = 'river-bank';
+    assert.equal(planApprovedActorItemTransition(crossScope).errors[0].code,
+      'APPROVED_TRANSITION_ATTEMPT_ACCESS_DENIED');
 
     const wrongClass = structuredClone(inaccessible);
     wrongClass.items[0].instance_class = 'bulky_trade_goods';
@@ -541,6 +572,7 @@ test('M1 preflight blocks unreachable target before RNG and failure keeps state'
     const reachable = transitionInput({ profileSet, itemId: 'brooch',
       templateId: 'small-personal-item', ownerId: 'merchant',
       holderId: 'merchant', thiefId: 'apprentice',
+      perceptionRequest: attemptPerceptionInput.request,
       perceptionResult: attemptPerception });
     const validPlan = planApprovedActorItemTransition(reachable);
     assert.equal(validPlan.pass, true);

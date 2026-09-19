@@ -220,6 +220,7 @@ test('S1 local ref stays visible inside open one-space without a creation marker
       }]
     } });
   assert.equal(projected.visible_objects[0].entity_ref.entity_id, 's1-local:structure');
+  assert.equal(projected.visible_objects[0].visible_status, 'внутри');
   assert.equal(projected.spatial_semantic, undefined);
   assert.equal(JSON.stringify(projected).includes('position:inside'), false);
 });

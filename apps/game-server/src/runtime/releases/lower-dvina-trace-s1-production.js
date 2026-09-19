@@ -148,8 +148,9 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   if (!text(position)) return player;
   const resolutions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
     resolutions.filter((resolution) => visibleAtPosition(resolution, position)));
-  const next = projectLowerDvinaTraceS1Resolutions({ playerSafeState: player,
-    resolutions });
+  const next = projectLocalPositionStatus(
+    projectLowerDvinaTraceS1Resolutions({ playerSafeState: player,
+      resolutions }), resolutions, position);
   const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
     capacity_total: total, consumed_count: used }) => status === 'committed'
       && text(ref) && envelope?.position_ref === position && Number.isSafeInteger(total)
@@ -157,6 +158,15 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   return available == null ? next : { ...next, spatial_semantic: {
     semantic_grounding_available: true,
     position_ref: position } };
+}
+function projectLocalPositionStatus(state, resolutions, position) {
+  const inside = new Set(resolutions.filter((resolution) =>
+    resolution.formal_spatial_refs?.position_ref === position)
+    .map(({ local_ref: ref }) => ref));
+  if (inside.size === 0) return state;
+  return { ...state, visible_objects: (state.visible_objects ?? []).map(
+    (object) => inside.has(object.entity_ref?.entity_id)
+      ? { ...object, visible_status: 'внутри' } : object) };
 }
 
 export function projectLowerDvinaTraceNpcS1Capability({ npcSnapshot,

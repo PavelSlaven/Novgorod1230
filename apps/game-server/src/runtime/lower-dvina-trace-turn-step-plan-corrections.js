@@ -58,7 +58,10 @@ export async function correctVisibleNpcStatusObservation({ plan, input, roleRunn
       && typeof status === 'string' && status.trim());
   const targets = new Set([...(operation?.target_refs ?? []),
     ...(plan?.continuation?.pending_discovery?.remaining_target_refs ?? [])]);
+  const eligibleBackground = new Set(input.player_safe_state
+    ?.background_npc_remainder?.eligible_npc_refs ?? []);
   if (operation == null || targets.size === 0
+      || [...targets].some((ref) => eligibleBackground.has(ref))
       || [...targets].some((ref) => !visible.some(({ entity_ref }) =>
         entity_ref.entity_id === ref))) return plan;
   const response = await roleRunner.run({

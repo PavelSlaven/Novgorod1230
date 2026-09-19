@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { correctOrdinaryDiscoveryScope } from
+import { correctOrdinaryDiscoveryScope,
+  correctVisibleNpcStatusObservation } from
   '../src/runtime/lower-dvina-trace-turn-step-plan-corrections.js';
 
 test('ordinary search uses the committed location instead of a scene position', () => {
@@ -13,6 +14,23 @@ test('ordinary search uses the committed location instead of a scene position', 
 test('spatial look keeps its exact semantic position target', () => {
   const plan = discovery('look');
   assert.equal(correctOrdinaryDiscoveryScope({ plan, input: request() }), plan);
+});
+
+test('eligible background NPC inspection reaches N1 instead of status correction', async () => {
+  let calls = 0;
+  const plan = { resolution: 'domain_request', operations: [{
+    op: 'request_discovery', discovery_kind: 'inspect', actor_ref: 'actor:player',
+    target_refs: ['npc:background'], query: 'осматриваю внешность'
+  }] };
+  const input = { remaining_intent: 'осматриваю внешность',
+    player_safe_state: { background_npc_remainder: {
+      eligible_npc_refs: ['npc:background'] }, current_visible_context: {
+      visible_npc: [{ entity_ref: { entity_kind: 'npc',
+        entity_id: 'npc:background' }, visible_status: 'работает' }]
+    } } };
+  assert.equal(await correctVisibleNpcStatusObservation({ plan, input,
+    roleRunner: { run() { calls += 1; } } }), plan);
+  assert.equal(calls, 0);
 });
 
 function discovery(discovery_kind) {

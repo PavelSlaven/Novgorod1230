@@ -9,9 +9,12 @@ export async function loadInitialTracePhase2State({
   row,
   phase1A,
   partyPool,
-  temporalSourceProof
+  temporalSourceProof,
+  authoredTurnCompatibility = null
 }) {
-  const initial = await phase1A.loadInternal(partyId);
+  const loaded = await phase1A.loadInternal(partyId);
+  const initial = applyAuthoredTurnCompatibility(loaded,
+    authoredTurnCompatibility);
   if (!initial) throw phase2IntegrityError();
   const actorId = initial.player.instance_id;
   const [activeConditions, bodyEffectHistory] = await Promise.all([
@@ -118,5 +121,41 @@ export async function loadInitialTracePhase2State({
     temporal_boundary_candidates:
       structuredClone(temporalSourceProof.candidates),
     temporal_source_proof: structuredClone(temporalSourceProof)
+  };
+}
+
+export function applyAuthoredTurnCompatibility(initial, compatibility) {
+  if (compatibility == null) return initial;
+  const profiles = compatibility?.item_inventory_profiles;
+  const attributes = compatibility?.player_attributes;
+  const skills = compatibility?.player_skills;
+  if (!initial
+    || compatibility.schema
+      !== 'rus.live_world_runtime.m2a_turn_compatibility.v1'
+    || !attributes || typeof attributes !== 'object'
+    || !skills || typeof skills !== 'object'
+    || !Array.isArray(profiles) || profiles.length === 0
+    || initial.player?.dossier?.attributes != null
+    || (initial.items ?? []).some((item) =>
+      item.state?.inventory_profile_snapshot != null)) {
+    throw phase2IntegrityError();
+  }
+  const byTemplate = new Map(profiles.map((profile) => [
+    profile.template_id, profile
+  ]));
+  if (byTemplate.size !== profiles.length
+    || (initial.items ?? []).some((item) => !byTemplate.has(item.template_id))) {
+    throw phase2IntegrityError();
+  }
+  return {
+    ...initial,
+    player: { ...initial.player,
+      dossier: { ...initial.player.dossier,
+        attributes: structuredClone(attributes),
+        skills: structuredClone(skills) },
+      skills: structuredClone(skills) },
+    items: initial.items.map((item) => ({ ...item,
+      state: { ...item.state, inventory_profile_snapshot:
+        structuredClone(byTemplate.get(item.template_id)) } }))
   };
 }

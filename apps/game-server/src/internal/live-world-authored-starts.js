@@ -42,17 +42,14 @@ export async function loadLiveWorldAuthoredStartCatalog({
         structuredClone(fact))
     });
     profiles.set(profile.scenario_id, approvedProfile);
-    publications.set(profile.scenario_id, authoredPublication({
-      manifest, profile: approvedProfile, starts
-    }));
   }
   const externalStarts = new Map(starts.external_starts.map((entry) => [
     entry.scenario_id, freezeDeep(structuredClone(entry))
   ]));
   const runtimeBindings = new Map(starts.bindings.map((binding) => [
     `${starts.catalog_id}@${binding.revision}`,
-    freezeDeep({ catalog_id: starts.catalog_id, revision: binding.revision,
-      status: binding.status })
+    freezeDeep({ catalog_id: starts.catalog_id,
+      ...structuredClone(binding) })
   ]));
   const currentBinding = runtimeBindings.get(
     `${starts.catalog_id}@${starts.current_binding_revision}`
@@ -60,6 +57,9 @@ export async function loadLiveWorldAuthoredStartCatalog({
   if (currentBinding?.status !== 'approved') fail(
     'LIVE_WORLD_AUTHORED_START_CATALOG_INVALID'
   );
+  for (const profile of profiles.values()) publications.set(
+    profile.scenario_id, authoredPublication({ manifest, profile, starts,
+      currentBinding }));
   return Object.freeze({
     turn_profile: freezeDeep({ profile: structuredClone(turnProfile),
       pin: { artifact_id: turnProfile.profile_set_id,
@@ -86,7 +86,7 @@ export async function loadLiveWorldAuthoredStartCatalog({
   });
 }
 
-function authoredPublication({ manifest, profile, starts }) {
+function authoredPublication({ manifest, profile, starts, currentBinding }) {
   const runtimeBinding = {
     catalog_id: starts.catalog_id,
     revision: starts.current_binding_revision
@@ -100,7 +100,7 @@ function authoredPublication({ manifest, profile, starts }) {
     publication_availability: 'public',
     fallback_policy: 'forbidden',
     public_metadata: structuredClone(profile.public_metadata),
-    materializer_binding_id: 'live_world_authored_start_v1',
+    materializer_binding_id: currentBinding.materializer_binding_id,
     phase_1a_manifest_ref: {
       digest: canonicalDigest({ catalog_id: starts.catalog_id,
         revision: starts.current_binding_revision })
@@ -165,10 +165,40 @@ function assertCatalog(manifest, starts) {
     || !Array.isArray(starts.bindings) || starts.bindings.length === 0
     || new Set(starts.bindings.map(({ revision }) => revision)).size
       !== starts.bindings.length
+    || starts.bindings.some((binding) => !Number.isInteger(binding.revision)
+      || !['approved', 'deprecated'].includes(binding.status)
+      || !text(binding.binding_id) || !text(binding.scenario_id)
+      || binding.revision >= 3 && (!text(binding.materializer_binding_id)
+        || !text(binding.snapshot_schema))
+      || binding.revision === 3 && !validTurnCompatibility(
+        binding.turn_compatibility)
+      || binding.turn_compatibility != null
+        && !validTurnCompatibility(binding.turn_compatibility))
+    || !starts.bindings.some((binding) =>
+      binding.revision === starts.current_binding_revision
+      && binding.status === 'approved')
     || !Array.isArray(starts.player_known_facts)
     || !Array.isArray(starts.starts) || starts.starts.length === 0) {
     fail('LIVE_WORLD_AUTHORED_START_CATALOG_INVALID');
   }
+}
+
+function validTurnCompatibility(value) {
+  const profiles = value?.item_inventory_profiles;
+  return value?.schema === 'rus.live_world_runtime.m2a_turn_compatibility.v1'
+    && value.player_attributes?.strength?.value > 0
+    && value.player_skills && typeof value.player_skills === 'object'
+    && Array.isArray(profiles) && profiles.length > 0
+    && new Set(profiles.map(({ template_id: id }) => id)).size
+      === profiles.length
+    && profiles.every((profile) => text(profile.template_id)
+      && Number.isSafeInteger(profile.mass_grams) && profile.mass_grams > 0
+      && text(profile.carry_form)
+      && Number.isSafeInteger(profile.external_hand_cost)
+      && Number.isSafeInteger(profile.packing_slot_cost)
+      && profile.packing_slot_cost > 0
+      && Number.isSafeInteger(profile.packing_bundle_size)
+      && profile.packing_bundle_size > 0 && text(profile.size_band));
 }
 
 function actorCatalogForProfile(catalog, profile) {

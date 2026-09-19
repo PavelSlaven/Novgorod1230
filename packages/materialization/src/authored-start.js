@@ -232,7 +232,7 @@ function resolveAuthoritativeAdmission(input, profile) {
       .filter(Boolean)));
   if (!environmentProfiles.has(profile.environment.profile_id)) invalid();
   const resourceRefs = profile.resources.map((resource) =>
-    resolveResource(domain.records_by_table, resource));
+    resolveAuthoredStartResource(domain.records_by_table, resource));
   const actorRefs = resolveActors(profile);
   const approvedFacts = new Map((profile.approved_player_known_facts ?? [])
     .filter(({ status }) => status === 'approved')
@@ -348,13 +348,20 @@ function resolvePlace(world, place) {
   return { binding, closure, position };
 }
 
-function resolveResource(records, resource) {
+export function resolveAuthoredStartResource(records, resource) {
   const template = byId(records?.item_templates, resource.item_template_id);
   const inventory = byId(records?.item_template_inventory_profiles,
     resource.inventory_profile_id);
   const quantity = byId(records?.item_template_quantity_profiles,
     resource.quantity_profile_id);
   const category = byId(records?.universal_categories, resource.category_id);
+  const sizeBindings = records?.item_template_category_bindings?.filter(
+    (candidate) => candidate.item_template_id === resource.item_template_id
+      && candidate.binding_kind === 'size_band'
+      && candidate.status === 'approved') ?? [];
+  const sizeBinding = sizeBindings[0];
+  const sizeCategory = byId(records?.universal_categories,
+    sizeBinding?.category_id);
   if (!template || !inventory || !quantity || !category
     || template.status !== 'approved' || inventory.status !== 'approved'
     || quantity.status !== 'approved' || category.status !== 'approved'
@@ -362,7 +369,14 @@ function resolveResource(records, resource) {
     || inventory.item_template_id !== resource.item_template_id
     || quantity.item_template_id !== resource.item_template_id
     || resource.quantity < Number(quantity.minimum_quantity)
-    || resource.quantity > Number(quantity.maximum_quantity)) invalid();
+    || resource.quantity > Number(quantity.maximum_quantity)
+    || sizeBindings.length !== 1
+    || sizeCategory?.status !== 'approved'
+    || sizeCategory.domain !== 'item' || sizeCategory.facet !== 'size_band'
+    || !Number.isSafeInteger(Number(sizeBinding.packing_slot_cost))
+    || Number(sizeBinding.packing_slot_cost) <= 0
+    || !Number.isSafeInteger(Number(sizeBinding.packing_bundle_size))
+    || Number(sizeBinding.packing_bundle_size) <= 0) invalid();
   return {
     item_template_id: template.id,
     inventory_profile_id: inventory.id,
@@ -372,7 +386,9 @@ function resolveResource(records, resource) {
       mass_grams: Number(inventory.mass_grams),
       carry_form: inventory.carry_form,
       external_hand_cost: Number(inventory.external_hand_cost),
-      packing_slot_cost: 1
+      packing_slot_cost: Number(sizeBinding.packing_slot_cost),
+      packing_bundle_size: Number(sizeBinding.packing_bundle_size),
+      size_band: sizeBinding.category_id
     }
   };
 }

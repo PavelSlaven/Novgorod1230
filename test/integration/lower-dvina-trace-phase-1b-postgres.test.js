@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
@@ -295,7 +296,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const partyId = start.data.party_id;
   const authoredRequest = {
     scenario_id: 'vikhtuy_fishing_camp_v1',
-    request_id: 'm2a-authored-public'
+    request_id: 'm2b-authored-public-v4'
   };
   const authoredStart = await api(base, '/api/v1/new-games', authoredRequest);
   assert.equal(authoredStart.status, 201);
@@ -326,6 +327,14 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     'trace_ld_v1_g5_fishing_camp');
   assert.deepEqual(authoredInternal.items.map(({ quantity }) => Number(quantity))
     .sort((a, b) => a - b), [1, 1]);
+  const authoredMechanics = Object.fromEntries(authoredInternal.items.map(
+    (item) => [item.template_id, item.state.inventory_profile_snapshot]));
+  assert.deepEqual([
+    authoredMechanics.item_tpl_nov_linen_shirt_v1.packing_slot_cost,
+    authoredMechanics.item_tpl_nov_linen_shirt_v1.packing_bundle_size,
+    authoredMechanics.item_tpl_nov_rope_v1.packing_slot_cost,
+    authoredMechanics.item_tpl_nov_rope_v1.packing_bundle_size
+  ], [3, 1, 6, 1]);
   assert.notEqual(authoredPartyId, partyId);
   assert.deepEqual(
     (await api(base, '/api/v1/new-games', authoredRequest)).data,
@@ -339,7 +348,9 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       WHERE party_id=$1`, [authoredPartyId])).rows[0].stage26_result;
   assert.deepEqual(authoredIdentity.runtime_binding,
     authoredStartCatalog.runtime_binding);
-  assert.equal(authoredIdentity.runtime_binding.revision, 3);
+  assert.equal(authoredIdentity.runtime_binding.revision, 4);
+  assert.equal(authoredIdentity.materializer_binding_id,
+    'live_world_authored_start_v2');
   assert.equal(await count(pool, 'party_runtime.parties', partyId), 1);
   const invalidCases = [
     ['g4', (profile) => { profile.geometry.start.g4_id = 'missing-g4'; }],
@@ -452,10 +463,13 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     pool, recheck: firstPlayableCommitRecheck,
     now: () => new Date('2026-09-19T08:00:00.000Z')
   });
+  const phase2Repository = createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: pool, committer: turnCommitter,
+    authoredRuntimeBindingResolver:
+      authoredStartCatalog.resolveRuntimeBinding
+  });
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
-    repository: createLowerDvinaTracePhase2PostgresRepository({
-      partyPool: pool, committer: turnCommitter
-    }),
+    repository: phase2Repository,
     semanticResolver: async () => ({ status: 'unknown',
       reason_code: 'free_intent' }),
     turnStepModel: m2bTurnPlan,
@@ -490,6 +504,61 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   t.after(() => turnServer.close());
   const turnAddress = await listen(turnServer, { host: '127.0.0.1', port: 0 });
   const turnBase = `http://127.0.0.1:${turnAddress.port}`;
+  const m2aFixtureRaw = await readFile(resolve(here,
+    '../fixtures/m2a-5f7e83cd-party-rows.json'));
+  assert.equal(createHash('sha256').update(m2aFixtureRaw).digest('hex'),
+    'f8fa571d16402fe0cca3fdff6c684f315a838e513286e1ff2c77f7517bf96083');
+  const m2aFixture = JSON.parse(m2aFixtureRaw);
+  assert.equal(m2aFixture.source_head,
+    '5f7e83cd5f76b071382754ea1af20ec2bf295c81');
+  await importM2aPartyRows(pool, m2aFixture);
+  const m2aRuntime = makeRuntime(null, { traceTurnRuntime,
+    committer: turnCommitter }).runtime;
+  const m2aStart = { party_id: m2aFixture.party_id };
+  const m2aBefore = await first.adapter.loadInternal(m2aStart.party_id);
+  assert.equal(m2aBefore.player.dossier.attributes, undefined);
+  assert.equal(m2aBefore.items.every((item) =>
+    item.state.inventory_profile_snapshot == null), true);
+  const m2aRunBefore = (await pool.query(
+    `SELECT result_digest FROM party_runtime.party_materialization_runs
+      WHERE party_id=$1`, [m2aStart.party_id])).rows[0].result_digest;
+  await m2aRuntime.acknowledgeOpening(m2aStart.party_id, {
+    client_ack_id: 'm2a-compat-opening'
+  });
+  const compatibleInitial = await phase2Repository.loadPhase2State(
+    m2aStart.party_id);
+  assert.equal(compatibleInitial.player_profile.attributes.strength.value, 10);
+  const m2aFirstTurn = await m2aRuntime.submitTurn(m2aStart.party_id, {
+    request_id: 'm2a-compat-turn-1', idempotency_key: 'm2a-compat-turn-1',
+    raw_text: 'Осматриваюсь.'
+  });
+  assert.equal(m2aFirstTurn.turn_number, 1);
+  const m2aRestarted = makeRuntime(null, { traceTurnRuntime,
+    committer: turnCommitter }).runtime;
+  assert.equal((await m2aRestarted.getPartyScreen(m2aStart.party_id))
+    .turn_number, 1);
+  const m2aSecondTurn = await m2aRestarted.submitTurn(m2aStart.party_id, {
+    request_id: 'm2a-compat-turn-2', idempotency_key: 'm2a-compat-turn-2',
+    raw_text: 'Оглядываюсь вокруг.'
+  });
+  assert.equal(m2aSecondTurn.turn_number, 2);
+  const m2aReloadedState = await phase2Repository.loadPhase2State(
+    m2aStart.party_id);
+  const m2aReloadedMechanics = Object.fromEntries(
+    m2aReloadedState.items.map((item) => [item.template_id,
+      item.state.inventory_profile_snapshot]));
+  assert.deepEqual([
+    m2aReloadedMechanics.item_tpl_nov_linen_shirt_v1.packing_slot_cost,
+    m2aReloadedMechanics.item_tpl_nov_linen_shirt_v1.packing_bundle_size,
+    m2aReloadedMechanics.item_tpl_nov_rope_v1.packing_slot_cost,
+    m2aReloadedMechanics.item_tpl_nov_rope_v1.packing_bundle_size
+  ], [3, 1, 6, 1]);
+  assert.equal(await count(pool, 'party_runtime.party_materialization_runs',
+    m2aStart.party_id), 1);
+  assert.equal((await pool.query(
+    `SELECT result_digest FROM party_runtime.party_materialization_runs
+      WHERE party_id=$1`, [m2aStart.party_id])).rows[0].result_digest,
+  m2aRunBefore);
   const playableStart = (await api(turnBase, '/api/v1/new-games', {
     scenario_id: 'vikhtuy_fishing_camp_v1',
     request_id: 'm2b-authored-turn-party'
@@ -842,6 +911,37 @@ async function installActivatedRuntimeCatalog({ pool, databaseUrl }) {
     applySpatialV3ProductionV12ActivationBundle
   );
   return loadActiveRuntimeCatalogPin(pool, 'item_container_materialization_v2');
+}
+
+async function importM2aPartyRows(pool, fixture) {
+  const order = [
+    'parties', 'party_v3_change_sets', 'party_catalog_pins',
+    'party_materialization_runs', 'party_materialization_run_catalog_pins',
+    'party_materialization_choices', 'party_g5_nodes', 'party_g5_anchors',
+    'party_player_characters', 'party_npcs', 'party_actor_profile_bindings',
+    'party_actor_body_states', 'party_clocks', 'party_positions', 'party_items',
+    'party_item_placements', 'party_ownership', 'party_state_snapshots',
+    'party_server_sessions'
+  ];
+  const transaction = await pool.connect();
+  try {
+    await transaction.query('BEGIN');
+    for (const table of order) {
+      const rows = fixture.tables[table] ?? [];
+      if (rows.length === 0) continue;
+      await transaction.query(
+        `INSERT INTO party_runtime."${table}"
+         SELECT * FROM json_populate_recordset(
+           NULL::party_runtime."${table}",$1::json)`,
+        [JSON.stringify(rows)]);
+    }
+    await transaction.query('COMMIT');
+  } catch (error) {
+    await transaction.query('ROLLBACK');
+    throw error;
+  } finally {
+    transaction.release();
+  }
 }
 
 async function api(base, path, body = null) {

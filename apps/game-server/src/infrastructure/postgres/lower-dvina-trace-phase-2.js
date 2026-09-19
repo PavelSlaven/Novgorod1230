@@ -32,7 +32,7 @@ import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-versio
 import { loadLowerDvinaTraceScenePresentation } from '../../internal/lower-dvina-trace-scene-presentation.js'; import { withLowerDvinaTracePostActionKnowledge } from './lower-dvina-trace-post-action-knowledge.js';
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
-  committer } = {}) {
+  committer, authoredRuntimeBindingResolver = null } = {}) {
   if (!partyPool?.query || !partyPool?.connect
       || typeof committer?.commit !== 'function') {
     throw new TypeError(
@@ -89,6 +89,9 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       );
     }
     if (Number(row.party_state_version) === 0) {
+      const resolvedBinding = typeof authoredRuntimeBindingResolver === 'function'
+        ? authoredRuntimeBindingResolver(row.stage26_result?.runtime_binding)
+        : null;
       const temporalSourceProof =
         await loadTracePhase2TemporalSourceProof(readPool, partyId);
       const initial = await loadInitialTracePhase2State({
@@ -96,7 +99,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         row,
         phase1A,
         partyPool: readPool,
-        temporalSourceProof
+        temporalSourceProof,
+        authoredTurnCompatibility: resolvedBinding?.turn_compatibility ?? null
       });
       const visible = withPhase2CurrentVisibleContext(
         initial,

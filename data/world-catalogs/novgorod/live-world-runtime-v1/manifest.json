@@ -1,7 +1,7 @@
 {
   "schema": "rus.live_world_runtime.catalog_manifest.v1",
   "catalog_id": "novgorod_live_world_runtime_v1",
-  "revision": 3,
+  "revision": 4,
   "status": "integration_candidate",
   "activation": "not_active",
   "authored_starts": {

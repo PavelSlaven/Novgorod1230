@@ -14,6 +14,10 @@ Logical party persistence boundary: validates/adapts approved plans and delegate
 
 ## Public API и контракты
 
+Initial authored-start snapshots используют тот же normalized Phase 1A
+repository/readback contract. Historical Lower Dvina snapshot/projection schemas
+остаются допустимы; новый authored schema не меняет их интерпретацию.
+
 - `.`: `createPartyStore({ transact })`.
 - `./stage-25`: physical-plan adapter contract and fixed v2 schema mappings.
 - `./ordinary-materialization`: logical exact-scope load/CAS handoff for the

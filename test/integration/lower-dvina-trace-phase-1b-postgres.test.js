@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import pg from 'pg';
 import {
   createLowerDvinaTracePublicRuntime
@@ -46,6 +49,12 @@ import { buildS1AuthoringV6ImportSql } from
   '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
 import { TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST } from
   '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
+import { loadLiveWorldAuthoredStartCatalog } from
+  '../../apps/game-server/src/internal/live-world-authored-starts.js';
+import { hash as hashForTest } from
+  '../../apps/game-server/src/runtime/first-playable/shared.js';
+import { ensureLocalPostgres, LOCAL_POSTGRES } from
+  '../../tools/local-play/local-postgres.js';
 
 const docker = (args) => spawnSync(
   'docker',
@@ -53,39 +62,46 @@ const docker = (args) => spawnSync(
   { encoding: 'utf8', timeout: 45_000 }
 );
 test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', async (t) => {
-  if (docker(['version']).status !== 0) {
-    t.skip('Docker is required for isolated Phase 1B PostgreSQL integration');
-    return;
-  }
+  const dockerReady = docker(['version']).status === 0;
   const name = `lower-dvina-phase-1b-${process.pid}`;
   let pool;
   let server;
+  let managed;
+  let managedRoot;
   t.after(async () => {
     if (server) await new Promise((resolve) => server.close(resolve));
     if (pool) await pool.end();
-    docker(['rm', '-f', name]);
+    if (managed) await managed.close();
+    if (managedRoot) await rm(managedRoot, { recursive: true, force: true });
+    if (dockerReady) docker(['rm', '-f', name]);
   });
-  const started = docker([
-    'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
-    '-e', 'POSTGRES_PASSWORD=local_only',
-    '-e', 'POSTGRES_USER=phase1b',
-    '-e', 'POSTGRES_DB=pr17_phase1b',
-    'postgres:16-alpine'
-  ]);
-  assert.equal(started.status, 0, started.stderr);
-  await waitForPostgres(name);
-  await new Promise((resolve) => setTimeout(resolve, 700));
-  const port = Number(
-    docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
-  );
-  pool = new pg.Pool({
-    host: '127.0.0.1',
-    port,
-    user: 'phase1b',
-    password: 'local_only',
-    database: 'pr17_phase1b',
-    max: 8
-  });
+  let databaseUrl;
+  if (dockerReady) {
+    const started = docker([
+      'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=local_only',
+      '-e', 'POSTGRES_USER=phase1b',
+      '-e', 'POSTGRES_DB=pr17_phase1b',
+      'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    await waitForPostgres(name);
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    const port = Number(
+      docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]
+    );
+    databaseUrl = `postgresql://phase1b:local_only@127.0.0.1:${port}/pr17_phase1b`;
+  } else {
+    managedRoot = await mkdtemp(join(tmpdir(), 'novgorod-m2a-postgres-'));
+    managed = await ensureLocalPostgres({ dataRoot: managedRoot,
+      settings: { ...LOCAL_POSTGRES,
+        worldDatabase: `pr17_m2a_world_${process.pid}`,
+        partyDatabase: `pr17_m2a_party_${process.pid}`,
+        worldUser: `m2a_world_${process.pid}`,
+        partyUser: `m2a_party_${process.pid}` } });
+    databaseUrl = managed.partyUrl;
+  }
+  pool = new pg.Pool({ connectionString: databaseUrl, max: 8 });
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
@@ -102,7 +118,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   );
   const runtimeCatalogPin = await installActivatedRuntimeCatalog({
     pool,
-    databaseUrl: `postgresql://phase1b:local_only@127.0.0.1:${port}/pr17_phase1b`
+    databaseUrl
   });
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
@@ -149,15 +165,22 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     compatible_world_pin_manifest_digest:
       runtimeCatalogPin.compatible_world_pin_manifest_digest
   });
+  const authoredStartCatalog = await loadLiveWorldAuthoredStartCatalog({
+    phase1AManifestDigest: TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
+    scenarioDefinitionRevision: 32
+  });
   const makeRuntime = (partyRepository = null, {
     publicationLoader,
-    adapterTransform
+    adapterTransform,
+    catalog = authoredStartCatalog,
+    authoredStartResolver = catalog.resolveProfile
   } = {}) => {
     const adapter = createLowerDvinaTracePhase1BProductionAdapter({
       partyPool: pool,
       worldPool: pool,
       release,
-      runtimeCatalogPin
+      runtimeCatalogPin,
+      authoredStartResolver
     });
     const runtimeAdapter = adapterTransform
       ? adapterTransform(adapter)
@@ -173,7 +196,8 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
         activeScenarioDefinitionRevision: 32,
         traceStartAdapter: runtimeAdapter,
         partyRepository,
-        publicationLoader
+        publicationLoader,
+        authoredStartCatalog: catalog
       }),
       adapter
     };
@@ -200,12 +224,9 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const scenarioIds = catalog.data.scenarios.map(({ scenario_id: id }) => id);
   assert.deepEqual(
     scenarioIds,
-    ['lower_dvina_trace_v1']
+    ['lower_dvina_trace_v1', 'upper_msta_weavers_yard_v1']
   );
-  assert.equal(
-    scenarioIds.includes('lower_dvina_late_summer_open_water_v1'),
-    false
-  );
+  assert.equal(scenarioIds.includes('lower_dvina_late_summer_open_water_v1'), false);
   assert.equal(scenarioIds.includes('lower_dvina_trace_v1'), true);
   await assert.rejects(
     () => api(base, '/api/v1/new-games', {
@@ -226,6 +247,50 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assertPublic(start);
 
   const partyId = start.data.party_id;
+  const authoredRequest = {
+    scenario_id: 'upper_msta_weavers_yard_v1',
+    request_id: 'm2a-authored-public'
+  };
+  const authoredStart = await api(base, '/api/v1/new-games', authoredRequest);
+  assert.equal(authoredStart.status, 201);
+  assert.equal(authoredStart.data.screen.scenario_id,
+    'upper_msta_weavers_yard_v1');
+  assert.equal(authoredStart.data.screen.panels.character.data.name, 'Любава');
+  const authoredPartyId = authoredStart.data.party_id;
+  const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
+  assert.equal(authoredInternal.npcs.length, 2);
+  assert.equal(authoredInternal.items.length, 2);
+  assert.equal(authoredInternal.position.g4_id, 'gn_nov_g4_xp017_yp025');
+  assert.deepEqual(authoredInternal.items.map(({ quantity }) => Number(quantity))
+    .sort((a, b) => a - b), [4, 12]);
+  assert.notEqual(authoredPartyId, partyId);
+  assert.deepEqual(
+    (await api(base, '/api/v1/new-games', authoredRequest)).data,
+    authoredStart.data
+  );
+  assert.equal(await count(pool, 'party_runtime.parties', authoredPartyId), 1);
+  assert.equal(await count(pool, 'party_runtime.party_materialization_runs', authoredPartyId), 1);
+  assert.equal(await count(pool, 'party_runtime.party_server_sessions', authoredPartyId), 1);
+  const authoredIdentity = (await pool.query(
+    `SELECT stage26_result FROM party_runtime.party_server_sessions
+      WHERE party_id=$1`, [authoredPartyId])).rows[0].stage26_result;
+  assert.deepEqual(authoredIdentity.runtime_binding,
+    authoredStartCatalog.runtime_binding);
+  assert.equal(await count(pool, 'party_runtime.parties', partyId), 1);
+  const invalidProfile = structuredClone(
+    authoredStartCatalog.resolveProfile('upper_msta_weavers_yard_v1')
+  );
+  invalidProfile.player.unconfirmed_known_facts = ['Содержимое запертого сундука.'];
+  const invalidRuntime = makeRuntime(null, {
+    authoredStartResolver: (scenarioId) => scenarioId === invalidProfile.scenario_id
+      ? invalidProfile : null
+  }).runtime;
+  await assert.rejects(() => invalidRuntime.startNewGame({
+    scenario_id: invalidProfile.scenario_id,
+    request_id: 'm2a-invalid-player-known'
+  }), { code: 'AUTHORED_START_PROFILE_INVALID' });
+  const invalidPartyId = `party:${hashForTest('m2a-invalid-player-known').slice(0, 24)}`;
+  assert.equal(await count(pool, 'party_runtime.parties', invalidPartyId), 0);
   const beforeRestart = await first.adapter.loadInternal(partyId);
   assert.equal(
     (await count(pool, 'party_runtime.parties', partyId)),
@@ -262,6 +327,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const restarted = makeRuntime();
   const screen = await restarted.runtime.getPartyScreen(partyId);
   assert.deepEqual(screen.screen, start.data.screen);
+  assert.deepEqual(
+    (await restarted.runtime.getPartyScreen(authoredPartyId)).screen,
+    authoredStart.data.screen
+  );
   const afterRestart = await restarted.adapter.loadInternal(partyId);
   assert.deepEqual(afterRestart.request_identity, beforeRestart.request_identity);
   assert.deepEqual(afterRestart.sealed_selections, beforeRestart.sealed_selections);

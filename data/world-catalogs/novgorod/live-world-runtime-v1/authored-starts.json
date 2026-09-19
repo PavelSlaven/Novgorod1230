@@ -1,0 +1,102 @@
+{
+  "schema": "rus.live_world_runtime.authored_starts.v1",
+  "catalog_id": "novgorod_live_world_runtime_v1",
+  "revision": 1,
+  "status": "approved",
+  "runtime_binding": {
+    "catalog_id": "novgorod_live_world_runtime_v1",
+    "revision": 1
+  },
+  "starts": [
+    {
+      "scenario_id": "upper_msta_weavers_yard_v1",
+      "status": "approved",
+      "public_metadata": {
+        "title": "Ткацкий двор на Верхней Мсте",
+        "description": "Небольшой двор готовит полотно к осеннему торгу.",
+        "available": true
+      },
+      "opening": {
+        "place_label": "ткацкий двор над Мстой",
+        "calendar_label": "20 августа 1230 года",
+        "opening_prose": "Утро застало тебя во дворе над Мстой: у навеса сохнет пряжа, а до торга остаётся мало времени."
+      },
+      "player": {
+        "name": "Любава",
+        "role_id": "nov_role_household_member",
+        "occupation_id": "nov_occ_weaver",
+        "role_label": "ткачиха",
+        "health": 92,
+        "energy": 71,
+        "satiety": 66,
+        "known_facts": ["До осеннего торга нужно закончить полотно."]
+      },
+      "geometry": {
+        "g4_id": "gn_nov_g4_xp017_yp025",
+        "start": {
+          "location_profile_id": "upper_msta_weavers_yard",
+          "node_template_id": "ordinary_riverside_craft_yard",
+          "slot_key": "yard",
+          "anchor_template_id": "open_work_yard",
+          "anchor_slot_key": "loom_shelter",
+          "capacities": { "npc": 6, "item": 20, "container": 8 }
+        },
+        "other_places": [
+          {
+            "location_profile_id": "upper_msta_flax_shed",
+            "node_template_id": "ordinary_storage_shed",
+            "slot_key": "flax_shed",
+            "anchor_template_id": "covered_storage",
+            "anchor_slot_key": "shed_interior",
+            "capacities": { "npc": 3, "item": 30, "container": 12 }
+          }
+        ]
+      },
+      "people": [
+        {
+          "person_key": "miloslav",
+          "name": "Милослав",
+          "role_id": "nov_role_household_head",
+          "occupation_id": "nov_occ_cloth_trader",
+          "occupation_label": "торговец полотном",
+          "location": "start",
+          "relationships": [{ "to": "player", "kind": "older_brother", "standing": "trusted" }]
+        },
+        {
+          "person_key": "nezhata",
+          "name": "Нежата",
+          "role_id": "nov_role_hired_worker",
+          "occupation_id": "nov_occ_flax_worker",
+          "occupation_label": "работник при льне",
+          "location": "other:0",
+          "relationships": [{ "to": "miloslav", "kind": "hire", "standing": "owes_work" }]
+        }
+      ],
+      "resources": [
+        {
+          "resource_key": "linen_thread",
+          "display_name": "льняная нить",
+          "category_id": "material.textile.thread",
+          "quantity": 12,
+          "holder": "player"
+        },
+        {
+          "resource_key": "flax_bundle",
+          "display_name": "связка льна",
+          "category_id": "material.plant.flax",
+          "quantity": 4,
+          "holder": "nezhata"
+        }
+      ],
+      "environment": {
+        "profile_id": "env.riverside_craft_yard_late_summer",
+        "facts": []
+      },
+      "timestamp": {
+        "whole_minutes": "333060",
+        "subminute_numerator": "0",
+        "subminute_denominator": "1"
+      }
+    }
+  ]
+}

@@ -38,6 +38,11 @@ NewGame транзакции; подготовленный G6 при этом н
 
 ## Публичный API
 
+`materializeAuthoredStartPartyInstance` детерминированно материализует уже
+утверждённый authored-start profile: actors, relations, finite resources,
+geometry, body/time/environment и player-known facts. Функция не читает каталог,
+не пишет БД и отклоняет неподтверждённое player-known содержимое.
+
 `materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
 
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не

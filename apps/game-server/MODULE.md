@@ -29,6 +29,12 @@ and adds no second transaction owner.
 
 ## Владеет
 
+- M2a public start catalog подключает approved authored starts из одного
+  versioned `live-world-runtime-v1` binding. Демо и другие authored starts
+  проходят тот же Phase 1A → Stage 24/25 → PostgreSQL → persisted screen path;
+  party сохраняет exact runtime binding, а старые trace sessions продолжают
+  проверяться по своим historical pins.
+
 - Planner examples остаются flat semantic objects; mapping labels находятся
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.
   Stable system rules предшествуют request-specific choices/mappings и audit

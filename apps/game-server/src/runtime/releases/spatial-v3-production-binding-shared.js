@@ -21,6 +21,8 @@ import { createTraceTurnRuntime } from
   './spatial-v3-production-trace-runtime.js';
 import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../../internal/lower-dvina-trace-ordinary-stage-b-approval.js';
+import { loadLiveWorldAuthoredStartCatalog } from
+  '../../internal/live-world-authored-starts.js';
 
 export async function firstPlayableCommitRecheck(input) {
   if (input?.plan?.operation_kind === 'first_entry'
@@ -144,6 +146,12 @@ export async function createSpatialV3ProductionBindings(
       if (typeof technicalCore?.executeReleaseOperation !== 'function') {
         throw new TypeError('technical spatial-v3 core is required');
       }
+      const authoredStartCatalog = await loadLiveWorldAuthoredStartCatalog({
+        rootDir: config.rootDir ?? process.cwd(),
+        phase1AManifestDigest: release.scenario_profile_exact_pins?.phase_1a_manifest_digest
+          ?? TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
+        scenarioDefinitionRevision: release.scenario_profile_exact_pins?.scenario_definition_revision ?? 32
+      });
       publicRuntime ??= createLowerDvinaTracePublicRuntime({
         partyPool: ports.partyPool,
         committer,
@@ -153,6 +161,7 @@ export async function createSpatialV3ProductionBindings(
           ?? TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
         activeScenarioDefinitionRevision: release.scenario_profile_exact_pins?.scenario_definition_revision ?? 32,
         publicationLoader,
+        authoredStartCatalog,
         ...(typeof config.idFactory === 'function'
           ? { idFactory: config.idFactory }
           : {}),
@@ -163,6 +172,7 @@ export async function createSpatialV3ProductionBindings(
             release,
             runtimeCatalogPin,
             worldKnowledge,
+            authoredStartResolver: authoredStartCatalog.resolveProfile,
             ...(initialOrdinaryProvisioner == null ? {} : {
               initialOrdinaryProvisioner,
               initialOrdinaryScopeBinding:

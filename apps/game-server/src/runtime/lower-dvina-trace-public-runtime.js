@@ -23,6 +23,7 @@ import {
   TRACE_SCENARIO_ID,
   validateLowerDvinaTraceSessionRead
 } from './lower-dvina-trace-session.js';
+import { validateAuthoredStartSessionRead } from './authored-start-session.js';
 
 export function createLowerDvinaTracePublicRuntime({
   partyPool,
@@ -36,6 +37,7 @@ export function createLowerDvinaTracePublicRuntime({
   activePhase1AManifestDigest = null,
   activeScenarioDefinitionRevision = null,
   traceOpeningProjector = buildLowerDvinaTraceOpeningScreen,
+  authoredStartCatalog = null,
   partyRepository = null
 } = {}) {
   if (!release?.release_id || !runtimeCatalogPin?.catalog_revision_id) {
@@ -55,6 +57,10 @@ export function createLowerDvinaTracePublicRuntime({
       production_activation: release.production_activation === true
     }),
     listScenarios: async () => {
+      if (authoredStartCatalog != null) {
+        return { version: 1, schema: 'public_scenario_catalog',
+          scenarios: authoredStartCatalog.listPublic() };
+      }
       const publication = await publicationLoader({
         phase1AManifestDigest: activePhase1AManifestDigest,
         scenarioDefinitionRevision: activeScenarioDefinitionRevision
@@ -77,17 +83,19 @@ export function createLowerDvinaTracePublicRuntime({
       publicationLoader,
       activePhase1AManifestDigest,
       activeScenarioDefinitionRevision,
-      traceOpeningProjector
+      traceOpeningProjector,
+      authoredStartCatalog
     }),
     acknowledgeOpening: (partyId, input) => acknowledgeOpening({
       partyId,
       input,
       repository,
-      now
+      now,
+      authoredStartCatalog
     }),
     getPartyScreen: async (partyId) => {
       const session = await repository.loadSession(partyId);
-      await validateLowerDvinaTraceSessionRead({ partyId, session });
+      await validateSession({ partyId, session, authoredStartCatalog });
       if (Number(session.turn_number) > 0) {
         await traceTurnRuntime?.validateSessionRead?.({
           partyId,
@@ -163,12 +171,15 @@ async function startNewGame({
   publicationLoader,
   traceOpeningProjector,
   activePhase1AManifestDigest,
-  activeScenarioDefinitionRevision
+  activeScenarioDefinitionRevision,
+  authoredStartCatalog
 }) {
   const startText = String(input.start_text ?? '').trim();
   const scenario = String(input.scenario_id ?? '').trim()
     || (startText ? TRACE_SCENARIO_ID : '');
-  if (scenario !== TRACE_SCENARIO_ID) {
+  const supported = scenario === TRACE_SCENARIO_ID
+    || authoredStartCatalog?.loadPublication(scenario) != null;
+  if (!supported) {
     throw serverError(
       'SCENARIO_NOT_SUPPORTED',
       'Scenario is not supported.',
@@ -200,7 +211,9 @@ async function startNewGame({
   const replayed = await replayExistingLowerDvinaTraceStart({
     partyId,
     requestId,
-    repository
+    repository,
+    validateSession: (args) => validateSession({ ...args,
+      authoredStartCatalog })
   });
   if (replayed) return replayed;
   return startLowerDvinaTrace({
@@ -210,18 +223,33 @@ async function startNewGame({
     release,
     repository,
     traceStartAdapter,
-    publicationLoader,
+    publicationLoader: async (options) => {
+      const authored = authoredStartCatalog?.loadPublication(scenario);
+      return authored ?? publicationLoader(options);
+    },
     activePhase1AManifestDigest,
     activeScenarioDefinitionRevision,
-    traceOpeningProjector
+    traceOpeningProjector,
+    validateSession: (args) => validateSession({ ...args,
+      authoredStartCatalog })
   });
+}
+
+async function validateSession({ partyId, session, authoredStartCatalog }) {
+  if (session?.stage26_result?.schema
+      === 'rus.live_world_runtime.authored_start_session_identity.v1') {
+    return validateAuthoredStartSessionRead({ partyId, session,
+      runtimeBinding: authoredStartCatalog?.runtime_binding });
+  }
+  return validateLowerDvinaTraceSessionRead({ partyId, session });
 }
 
 async function acknowledgeOpening({
   partyId,
   input = {},
   repository,
-  now
+  now,
+  authoredStartCatalog
 }) {
   const clientAckId = String(input.client_ack_id ?? '').trim();
   if (!clientAckId) {
@@ -232,14 +260,14 @@ async function acknowledgeOpening({
     );
   }
   const before = await repository.loadSession(partyId);
-  await validateLowerDvinaTraceSessionRead({ partyId, session: before });
+  await validateSession({ partyId, session: before, authoredStartCatalog });
   const acknowledgement = await repository.acknowledgeOpening({
     partyId,
     clientAckId,
     acknowledgedAt: now()
   });
   const session = await repository.loadSession(partyId);
-  await validateLowerDvinaTraceSessionRead({ partyId, session });
+  await validateSession({ partyId, session, authoredStartCatalog });
   return {
     party_id: partyId,
     message_id: `opening:${partyId}`,

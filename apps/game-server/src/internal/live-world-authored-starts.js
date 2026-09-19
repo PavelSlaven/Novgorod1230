@@ -18,6 +18,15 @@ export async function loadLiveWorldAuthoredStartCatalog({
     readJson(rootDir, `${ROOT}/authored-starts.json`)
   ]);
   assertCatalog(manifest, starts);
+  const turnProfileRef = manifest.profile_sets?.find(({ profile_set_id: id }) =>
+    id === 'novgorod_live_world_turn_step_owner_profiles_v1');
+  const turnProfile = await readJson(rootDir, turnProfileRef?.path);
+  if (turnProfileRef?.status !== 'approved'
+    || turnProfile?.schema !== 'rus.live_world_runtime.turn_step_owner_profiles.v1'
+    || turnProfile.profile_set_id !== turnProfileRef.profile_set_id
+    || turnProfile.status !== 'approved') {
+    fail('LIVE_WORLD_AUTHORED_START_CATALOG_INVALID');
+  }
   const actorCatalog = await loadActorCatalog(rootDir, starts.actor_catalog);
   const facts = new Map(starts.player_known_facts.map((fact) => [
     fact.fact_id, freezeDeep(structuredClone(fact))
@@ -52,6 +61,10 @@ export async function loadLiveWorldAuthoredStartCatalog({
     'LIVE_WORLD_AUTHORED_START_CATALOG_INVALID'
   );
   return Object.freeze({
+    turn_profile: freezeDeep({ profile: structuredClone(turnProfile),
+      pin: { artifact_id: turnProfile.profile_set_id,
+        revision: turnProfile.revision,
+        digest: canonicalDigest(turnProfile) } }),
     runtime_binding: freezeDeep({ catalog_id: starts.catalog_id,
       revision: starts.current_binding_revision }),
     listPublic: () => [

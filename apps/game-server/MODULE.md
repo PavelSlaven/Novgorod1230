@@ -41,6 +41,15 @@ and adds no second transaction owner.
   bounded role/occupation closure из digest-pinned regional catalogs; server
   не назначает actor approval самостоятельно.
 
+- M2b проводит demo и authored-start партии через один существующий
+  `runTurnWorkflow` → P16 commit → durable narration/recovery path. Для
+  authored-start catalog поставляет нейтральный versioned turn-owner profile;
+  runtime не загружает demo bundle, revision contracts или scenario prose.
+  Профиль допускает общие semantic activity, body/check, item и temporal
+  owners, а отсутствующая capability остаётся честным direct/gap результатом.
+  Exact elapsed time остаётся code-owned UI metadata; narration получает
+  подтверждённый performed-action beat без копирования длительности.
+
 - Planner examples остаются flat semantic objects; mapping labels находятся
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.
   Stable system rules предшествуют request-specific choices/mappings и audit

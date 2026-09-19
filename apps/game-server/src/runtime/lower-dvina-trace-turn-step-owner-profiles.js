@@ -17,13 +17,19 @@ export function admitTurnStepOwnerProfiles(profiles, artifactPin) {
     'direct_body_part_policy', 'generic_check_modifier_policy',
     'ordinary_result_policy'
   ];
+  const liveWorld = profiles?.schema
+    === 'rus.live_world_runtime.turn_step_owner_profiles.v1'
+    && profiles?.profile_set_id
+      === 'novgorod_live_world_turn_step_owner_profiles_v1';
+  const historical = profiles?.schema
+    === 'rus.lower_dvina_trace_turn_step_owner_profiles.v1'
+    && profiles?.profile_set_id === 'trace_ld_v1_turn_step_owner_profiles';
   if (!plain(profiles) || !exactKeys(profiles, keys)
-      || profiles.schema !== 'rus.lower_dvina_trace_turn_step_owner_profiles.v1'
-      || profiles.profile_set_id !== 'trace_ld_v1_turn_step_owner_profiles'
+      || (!liveWorld && !historical)
       || profiles.revision !== 1 || profiles.status !== 'approved'
       || profiles.fallback_policy !== 'forbidden'
       || !validArtifactPin(artifactPin)
-      || !profilesValid(profiles)) {
+      || !profilesValid(profiles, { allowEmptyOrdinary: liveWorld })) {
     ownerFail('TRACE_TURN_STEP_OWNER_PROFILES_INVALID');
   }
   return deepFreeze({
@@ -125,7 +131,7 @@ export function ownerFail(code, details = {}) {
   });
 }
 
-function profilesValid(profiles) {
+function profilesValid(profiles, { allowEmptyOrdinary = false } = {}) {
   const durations = profiles.semantic_duration_profiles;
   const efforts = profiles.semantic_effort_profiles;
   const mechanisms = profiles.direct_body_mechanism_profiles;
@@ -151,7 +157,8 @@ function profilesValid(profiles) {
     && mechanisms.every(validMechanismProfile)
     && severities.every(validSeverityProfile)
     && validModifierPolicy(profiles.generic_check_modifier_policy)
-    && validOrdinaryResultPolicy(profiles.ordinary_result_policy);
+    && validOrdinaryResultPolicy(profiles.ordinary_result_policy,
+      allowEmptyOrdinary);
 }
 
 function validDurationProfile(profile) {
@@ -200,12 +207,13 @@ function validVersionedPolicyRef(value, entityKind) {
   ]) && value.entity_kind === entityKind && text(value.entity_id)
     && text(value.authoring_version);
 }
-function validOrdinaryResultPolicy(policy) {
+function validOrdinaryResultPolicy(policy, allowEmpty) {
   return plain(policy) && exactKeys(policy,
     ['schema', 'version', 'status', 'candidates'])
     && policy.schema === 'rus.items.ordinary_result_admission_policy.v1'
     && policy.version === 1 && policy.status === 'approved'
-    && Array.isArray(policy.candidates) && policy.candidates.length > 0
+    && Array.isArray(policy.candidates)
+    && (allowEmpty || policy.candidates.length > 0)
     && unique(policy.candidates.map(({ semantic_type: type, name }) =>
       `${type}:${name}`))
     && policy.candidates.every((candidate) => plain(candidate)

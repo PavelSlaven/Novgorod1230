@@ -68,6 +68,12 @@
         "role_id": "nov_role_fisher",
         "occupation_id": "nov_occ_fisher",
         "role_label": "рыбачка",
+        "attributes": {
+          "strength": {"value":10}, "dexterity": {"value":11},
+          "endurance": {"value":11}, "reason": {"value":10},
+          "attention": {"value":12}, "influence": {"value":10}
+        },
+        "skills": {"observation":{"bonus":1}},
         "health": 92,
         "energy": 71,
         "satiety": 66,

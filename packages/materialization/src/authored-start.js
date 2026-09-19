@@ -77,7 +77,9 @@ export function materializeAuthoredStartPartyInstance(input) {
             controller_npc_id: holderId }),
       physical_position: 'hands',
       state: { display_name: resource.display_name,
-        causal_basis: 'authored_start_resource', finite: true }
+        causal_basis: 'authored_start_resource', finite: true,
+        inventory_profile_snapshot: structuredClone(
+          admission.resource_mechanics[ordinal]) }
     };
   });
   const choice = {
@@ -105,7 +107,8 @@ export function materializeAuthoredStartPartyInstance(input) {
       social_status: { social_role_id: profile.player.role_id,
         occupation_id: profile.player.occupation_id,
         display_name: profile.player.role_label },
-      skills: {},
+      attributes: structuredClone(profile.player.attributes),
+      skills: structuredClone(profile.player.skills),
       knowledge: { known_facts: structuredClone(admission.player_known_facts) }
     } },
     spatial: {
@@ -246,6 +249,8 @@ function resolveAuthoritativeAdmission(input, profile) {
     player_known_facts: playerKnownFacts,
     domain_catalog_bundle_digest: domainBundleDigest,
     actor_catalog_digest: actorCatalogDigest,
+    resource_mechanics: resourceRefs.map(({ inventory_profile }) =>
+      inventory_profile),
     validation_report: {
       version: 1,
       schema: 'rus.live_world_runtime.authored_start_admission.v1',
@@ -362,7 +367,13 @@ function resolveResource(records, resource) {
     item_template_id: template.id,
     inventory_profile_id: inventory.id,
     quantity_profile_id: quantity.id,
-    category_id: category.id
+    category_id: category.id,
+    inventory_profile: {
+      mass_grams: Number(inventory.mass_grams),
+      carry_form: inventory.carry_form,
+      external_hand_cost: Number(inventory.external_hand_cost),
+      packing_slot_cost: 1
+    }
   };
 }
 

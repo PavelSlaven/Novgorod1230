@@ -12,9 +12,23 @@ import { chromium } from 'playwright-core';
 import { createGameHttpServer, createStaticAssetResolver, listen } from
   '@rus/game-server';
 import { canonicalDigest } from '@rus/materialization';
+import { createSeededRandomSource } from '@rus/checks-rng';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import {
   createLowerDvinaTracePublicRuntime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
+import { createLowerDvinaTracePhase2Runtime } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
+import { createLowerDvinaTracePhase2PostgresRepository } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import { createLowerDvinaTracePhase2DurableNarrator } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
+import { createSpatialV3PostgresCombinedAtomicCommitter } from
+  '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { firstPlayableCommitRecheck } from
+  '../../apps/game-server/src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { approvedNarration } from
+  '../../apps/game-server/test/lower-dvina-trace-phase-2-fixture-support.js';
 import {
   createLowerDvinaTracePhase1BProductionAdapter,
   readPartyDatabaseSchemaSnapshot
@@ -183,7 +197,9 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     publicationLoader,
     adapterTransform,
     catalog = authoredStartCatalog,
-    authoredStartResolver = catalog.resolveProfile
+    authoredStartResolver = catalog.resolveProfile,
+    traceTurnRuntime = null,
+    committer = { commit: async () => ({ ok: true }) }
   } = {}) => {
     const adapter = createLowerDvinaTracePhase1BProductionAdapter({
       partyPool: pool,
@@ -198,13 +214,14 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     return {
       runtime: createLowerDvinaTracePublicRuntime({
         partyPool: pool,
-        committer: { commit: async () => ({ ok: true }) },
+        committer,
         release,
         runtimeCatalogPin,
         activePhase1AManifestDigest:
           TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
         activeScenarioDefinitionRevision: 32,
         traceStartAdapter: runtimeAdapter,
+        traceTurnRuntime,
         partyRepository,
         publicationLoader,
         authoredStartCatalog: catalog
@@ -431,6 +448,113 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     browserPartyId);
   assert.match(await page.textContent('body'), /Любава|Вихтуй/u);
   await browser.close();
+  const turnCommitter = createSpatialV3PostgresCombinedAtomicCommitter({
+    pool, recheck: firstPlayableCommitRecheck,
+    now: () => new Date('2026-09-19T08:00:00.000Z')
+  });
+  const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
+    repository: createLowerDvinaTracePhase2PostgresRepository({
+      partyPool: pool, committer: turnCommitter
+    }),
+    semanticResolver: async () => ({ status: 'unknown',
+      reason_code: 'free_intent' }),
+    turnStepModel: m2bTurnPlan,
+    playerConversationModel: async () => { throw new Error('unexpected'); },
+    npcSemanticModel: async () => { throw new Error('unexpected'); },
+    narrator: createLowerDvinaTracePhase2DurableNarrator({
+      partyPool: pool,
+      narrationService: { run: async (request) =>
+        approvedNarration(request.request_id) }
+    }),
+    randomSourceFactory: () => createSeededRandomSource(
+      'm2b-live-world-postgres'),
+    temporalAdvanceOwner: createTemporalAdvanceOwner({}),
+    decisionSecret: 'm2b-live-world-secret',
+    authoredTurnProfile: authoredStartCatalog.turn_profile,
+    now: () => '2026-09-19T08:00:00.000Z'
+  });
+  const playable = makeRuntime(null, { traceTurnRuntime,
+    committer: turnCommitter }).runtime;
+  const turnServer = createGameHttpServer({
+    root: Object.freeze({ ...playable,
+      getLlmSettings: () => ({ mode: 'custom',
+        compatibility: 'openai_compatible', base_url: 'http://127.0.0.1/v1',
+        model: 'test-not-used', api_key_present: false,
+        local_runtime: { ready: true, reasons: [] } }),
+      getTurnProgress: () => null }),
+    staticAssets: createStaticAssetResolver({
+      webRoot: resolve(here, '../../apps/game-web'),
+      contractsRoot: resolve(here, '../../packages/contracts/src')
+    }), developerMode: true
+  });
+  t.after(() => turnServer.close());
+  const turnAddress = await listen(turnServer, { host: '127.0.0.1', port: 0 });
+  const turnBase = `http://127.0.0.1:${turnAddress.port}`;
+  const playableStart = (await api(turnBase, '/api/v1/new-games', {
+    scenario_id: 'vikhtuy_fishing_camp_v1',
+    request_id: 'm2b-authored-turn-party'
+  })).data;
+  const playablePartyId = playableStart.party_id;
+  await playable.acknowledgeOpening(playablePartyId, {
+    client_ack_id: 'm2b-authored-opening'
+  });
+  for (let index = 0; index < 10; index += 1) {
+    const key = `m2b-authored-turn-${index}`;
+    const turnResult = (await api(turnBase,
+      `/api/v1/parties/${encodeURIComponent(playablePartyId)}/turns`, {
+      request_id: key, idempotency_key: key,
+      raw_text: M2B_TURNS[index]
+    })).data;
+    assert.equal(turnResult.turn_number, index + 1);
+    assert.equal(turnResult.screen.scenario_id, 'vikhtuy_fishing_camp_v1');
+    assert.equal(turnResult.screen.schema, 'turn_screen');
+    if (index === 0) {
+      assert.deepEqual((await api(turnBase,
+        `/api/v1/parties/${encodeURIComponent(playablePartyId)}/turns`, {
+        request_id: key, idempotency_key: key, raw_text: M2B_TURNS[index]
+      })).data, turnResult);
+      await assert.rejects(() => api(turnBase,
+        `/api/v1/parties/${encodeURIComponent(playablePartyId)}/turns`, {
+        request_id: key, idempotency_key: key, raw_text: 'Другой payload.'
+      }), { code: 'TRACE_PHASE_2_IDEMPOTENCY_CONFLICT' });
+    }
+  }
+  assert.equal((await playable.getPartyScreen(playablePartyId)).turn_number, 10);
+  const demoPlayableStart = await playable.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'm2b-demo-turn-party'
+  });
+  await playable.acknowledgeOpening(demoPlayableStart.party_id, {
+    client_ack_id: 'm2b-demo-opening'
+  });
+  for (let index = 0; index < 10; index += 1) {
+    const key = `m2b-demo-turn-${index}`;
+    const turnResult = (await api(turnBase,
+      `/api/v1/parties/${encodeURIComponent(demoPlayableStart.party_id)}/turns`, {
+      request_id: key, idempotency_key: key,
+      raw_text: M2B_TURNS[index]
+    })).data;
+    assert.equal(turnResult.turn_number, index + 1);
+    assert.equal(turnResult.screen.scenario_id, 'lower_dvina_trace_v1');
+  }
+  assert.equal((await playable.getPartyScreen(demoPlayableStart.party_id))
+    .turn_number, 10);
+  const continuedBrowser = await chromium.launch({ executablePath,
+    headless: true,
+    args: ['--no-sandbox', '--no-proxy-server', '--proxy-bypass-list=*'] });
+  t.after(() => continuedBrowser.close());
+  const continuedPage = await continuedBrowser.newPage();
+  await continuedPage.goto(turnBase);
+  await continuedPage.evaluate((partyId) =>
+    localStorage.setItem('rus.party_id', partyId), playablePartyId);
+  await continuedPage.reload();
+  await continuedPage.waitForSelector('[data-continue-party]');
+  await continuedPage.click('[data-continue-party]');
+  await continuedPage.waitForSelector('[data-screen-schema="turn_screen"]');
+  assert.match(await continuedPage.textContent('body'), /Вихту/iu);
+  assert.equal(await continuedPage.evaluate(() => localStorage.getItem(
+    'rus.party_id')), playablePartyId);
+  await continuedBrowser.close();
   const beforeRestart = await first.adapter.loadInternal(partyId);
   assert.equal(
     (await count(pool, 'party_runtime.parties', partyId)),
@@ -765,4 +889,62 @@ async function waitForPostgres(name) {
     ]).status === 0) return;
   }
   assert.fail('PostgreSQL container did not become ready');
+}
+
+const M2B_TURNS = Object.freeze([
+  'Осматриваюсь.',
+  'Оглядываюсь вокруг.',
+  'Говорю вслух: «Проверю сети».',
+  'Прыгну к облакам и останусь там.',
+  'После неудачи снова спокойно осматриваюсь.',
+  'Осматриваюсь, затем кричу: «Эй!»',
+  'Жду здесь один час.',
+  'Проверяю, что изменилось вокруг.',
+  'Ещё раз оглядываюсь другими словами.',
+  'Спокойно наблюдаю за станом.'
+]);
+
+function m2bTurnPlan(request) {
+  const base = {
+    schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: 'осмотреть доступную обстановку',
+      adaptation: 'literal' },
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [], check: null, continuation: null, clarification: null,
+    direct_result_kind: 'player_safe_observation',
+    reason_code: 'observe_current_scene',
+    reason: 'Наблюдение использует только player-safe состояние.'
+  };
+  const text = request.remaining_intent;
+  if (text.includes('Жду здесь')) return { ...base,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: text, adaptation: 'literal' },
+    activity: { owner: 'semantic', duration_class: 'extended', effort: 'none',
+      requested_duration_minutes: 60 }, direct_result_kind: null,
+    reason_code: 'wait_sixty_minutes' };
+  if (text.includes('облакам')) return { ...base,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: 'подпрыгнуть настолько высоко, насколько возможно',
+      adaptation: 'reality_limited' }, goal_result: 'not_achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'light' },
+    direct_result_kind: null, reason_code: 'impossible_height' };
+  if (text.includes('затем кричу') && request.step_index === 1) return { ...base,
+    goal_result: 'pending', continuation: {
+      remaining_intent: 'кричу: «Эй!»', depends_on_refs: []
+    } };
+  if (text.includes('Говорю вслух') || text.includes('кричу:')) {
+    const utteranceText = text.includes('Эй') ? 'Эй!' : 'Проверю сети';
+    return { ...base, interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: text, adaptation: 'literal' },
+      direct_result_kind: 'player_utterance', utterance: {
+        speaker_ref: request.actor.actor_id, utterance_text: utteranceText,
+        input_mode: 'verbatim',
+        delivery: { loudness: 2, duration_class: 'instant' }
+      }, reason_code: 'speak_verbatim' };
+  }
+  return base;
 }

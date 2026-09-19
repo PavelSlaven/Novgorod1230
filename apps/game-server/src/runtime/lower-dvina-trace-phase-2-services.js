@@ -14,7 +14,7 @@ import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { createLowerDvinaTracePhase2StateReader } from './lower-dvina-trace-phase-2-state-reader.js';
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
-    partyId, requestId, idempotencyKey, inputDigest, issuedAt,
+    partyId, requestId, idempotencyKey, inputDigest, issuedAt, scenarioId,
     state, contracts, registry, repository, semanticResolver,
     turnStepModel, turnStepSemanticGroundingValidator, playerSafeStateProjector,
     locationProfiles, scenePresentation,
@@ -237,8 +237,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
             committedPublicResult?.screen?.checks ?? []
           ),
           delivery_state: { ...defaultScreen.delivery_state, generated_at: issuedAt },
-          scenario_id: 'lower_dvina_trace_v1',
-          screen_kind: 'trace_turn',
+          scenario_id: scenarioId ?? 'lower_dvina_trace_v1',
+          screen_kind: scenarioId === 'lower_dvina_trace_v1'
+            ? 'trace_turn' : 'live_world_turn',
           opening_screen_digest: state.opening_identity.opening_screen_digest
         };
         turnBudget?.assertWithinDeadline();

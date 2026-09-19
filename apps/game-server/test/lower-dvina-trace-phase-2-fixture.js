@@ -55,6 +55,7 @@ function fixture({
   createTurnStepWorldProcessResolver = null,
   worldBaseReferenceSnapshot = undefined,
   llmDiagnostics = null,
+  authoredTurnProfile = null,
   beforeSemanticResolve = null,
   beforeRandomSource = null,
   afterCommittedVisibleRead = null,
@@ -602,6 +603,7 @@ function fixture({
       },
     },
     ...(llmDiagnostics ? { llmDiagnostics } : {}),
+    ...(authoredTurnProfile ? { authoredTurnProfile } : {}),
   });
   return {
     bodyUpdateCount: () => bodyUpdateCount,

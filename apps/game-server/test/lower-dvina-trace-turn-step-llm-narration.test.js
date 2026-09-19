@@ -157,7 +157,8 @@ test('narration wires writer, audit, and coherent semantic repair roles', async 
     assert.equal(Object.hasOwn(payload, 'visible_context'), false);
     assert.deepEqual(payload.required_current_beat.uncertainties,
       [{ ref: 'uncertainty_1', text: question, status: 'unperformed_result_unknown' }]);
-    assert.deepEqual(payload.optional_support, { visible_scene: 'The clearing is quiet.', sensory_details: [] });
+    assert.deepEqual(payload.optional_support,
+      { visible_scene: 'The clearing is quiet.' });
     assert.deepEqual(payload.confirmed_outcome, {});
     if (call.roleId === 'gameplay_narrator_auditor') {
       assert.match(call.messages[0].content, /strict evidence auditor/u);

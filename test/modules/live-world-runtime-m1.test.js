@@ -179,7 +179,8 @@ function transitionInput({ profileSet, itemId, templateId, ownerId, holderId,
     item_profiles: { [templateId]: profileSet.profiles.item_mechanics
       .small_personal_item },
     container_profiles: {}, containers: [], container_placements: [],
-    items: [{ item_id: itemId, template_id: templateId, quantity: 1 }],
+    items: [{ item_id: itemId, template_id: templateId,
+      instance_class: 'small_personal_item', quantity: 1 }],
     item_placements: [{ item_id: itemId, holder_npc_id: holderId,
       physical_position: sourcePosition,
       ...(reachable ? {} : { equipment_slot_category_id: 'under_cloak' }) }],
@@ -406,6 +407,17 @@ test('M1 preflight blocks unreachable target before RNG and failure keeps state'
     assert.equal(preflight.pass, false);
     assert.equal(preflight.errors[0].code,
       'APPROVED_TRANSITION_SOURCE_ACCESS_MISMATCH');
+    assert.equal(rolls, 0);
+
+    const wrongClass = structuredClone(inaccessible);
+    wrongClass.items[0].instance_class = 'bulky_trade_goods';
+    wrongClass.source.accessibility = 'quick';
+    wrongClass.source.physical_position = 'worn_quick';
+    delete wrongClass.source.equipment_slot_category_id;
+    wrongClass.item_placements[0].physical_position = 'worn_quick';
+    delete wrongClass.item_placements[0].equipment_slot_category_id;
+    assert.equal(planApprovedActorItemTransition(wrongClass).errors[0].code,
+      'APPROVED_TRANSITION_INSTANCE_CLASS_MISMATCH');
     assert.equal(rolls, 0);
 
     const reachable = transitionInput({ profileSet, itemId: 'brooch',

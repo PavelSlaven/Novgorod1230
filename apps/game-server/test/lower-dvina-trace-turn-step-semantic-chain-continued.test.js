@@ -292,11 +292,16 @@ test('zero-check Phase 4 conversation admits its next physical inspection',
   });
 
 
-for (const { durationClass, planned, elapsed, effort, rawText, elapsedText } of [
+for (const { durationClass, planned, elapsed, effort, requested, rawText,
+  elapsedText } of [
   { durationClass: 'brief', planned: 5, elapsed: 1, effort: 'light',
     rawText: 'Предупреждаю спутников, затем проверяю опору перед собой.', elapsedText: 'Прошла 1 минута.' },
   { durationClass: 'short', planned: 15, elapsed: 2, effort: 'none',
-    rawText: 'Прислушиваюсь к шуму воды, затем осматриваю дальнюю стену.', elapsedText: 'Прошло 2 минуты.' }
+    rawText: 'Прислушиваюсь к шуму воды, затем осматриваю дальнюю стену.', elapsedText: 'Прошло 2 минуты.' },
+  { durationClass: 'extended', planned: 2, elapsed: 1, effort: 'none',
+    requested: 2,
+    rawText: 'Жду две минуты, затем проверяю опору перед собой.',
+    elapsedText: 'Прошла 1 минута.' }
 ]) test(`production temporal owner commits actual ${elapsed} of planned ${planned} minutes once`, async () => {
   const { createTemporalAdvanceOwner } = await import('@rus/turn/temporal-advance');
   const { lowerDvinaTracePhase6TemporalEffectRegistrations } = await import('../src/runtime/lower-dvina-trace-phase-6-temporal-effect-owner.js');
@@ -314,7 +319,9 @@ for (const { durationClass, planned, elapsed, effort, rawText, elapsedText } of 
     } }] });
   const f = fixture({ scenarioBundle: bundle, materializationBundle: bundle, temporalAdvanceOwner: owner,
     turnStepModel: (request) => plan(request, { goal_result: 'pending',
-      activity: { owner: 'semantic', duration_class: durationClass, effort },
+      activity: { owner: 'semantic', duration_class: durationClass, effort,
+        ...(requested == null ? {} : {
+          requested_duration_minutes: requested }) },
       continuation: { remaining_intent: 'Затем проверяю опору перед собой.', depends_on_refs: [] } }) });
   f.state.clock = at(0); f.state.clock_weather_light.clock = at(0);
   const candidate = { boundary_id: 'decision-at-one', boundary_kind: 'exact_timer', scheduled_at: at(elapsed),

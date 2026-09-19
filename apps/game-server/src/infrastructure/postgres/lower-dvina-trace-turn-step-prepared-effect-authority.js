@@ -224,7 +224,11 @@ export function validatePreparedSemanticSlices({ ledger, batch, envelope, state,
     const binding = requireActivityOwnerBinding(activity, { consequence: slice.consequence });
     const approved = turnStepApprovedOwners?.semanticActivityOwner?.resolve({
       activity: { owner: 'semantic', duration_class: activity.duration_class,
-        effort: activity.effort }, actor: { body: structuredClone(body) } });
+        effort: activity.effort,
+        ...(trace?.approved_plan?.activity?.requested_duration_minutes == null
+          ? {} : { requested_duration_minutes:
+            trace.approved_plan.activity.requested_duration_minutes }) },
+      actor: { body: structuredClone(body) } });
     if (trace?.applied !== true || activity.step_index !== slice.step_index
         || activity.activity_id !== slice.operation_ref
         || activity.profile_ref !== slice.owner_ref

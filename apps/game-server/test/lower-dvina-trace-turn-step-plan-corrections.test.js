@@ -3,6 +3,8 @@ import test from 'node:test';
 import { correctOrdinaryDiscoveryScope,
   correctVisibleNpcStatusObservation } from
   '../src/runtime/lower-dvina-trace-turn-step-plan-corrections.js';
+import { projectLowerDvinaTraceTurnStepPlannerState } from
+  '../src/runtime/lower-dvina-trace-phase-2-player-safe.js';
 
 test('ordinary search uses the committed location instead of a scene position', () => {
   const plan = discovery('search');
@@ -31,6 +33,19 @@ test('eligible background NPC inspection reaches N1 instead of status correction
   assert.equal(await correctVisibleNpcStatusObservation({ plan, input,
     roleRunner: { run() { calls += 1; } } }), plan);
   assert.equal(calls, 0);
+});
+
+test('visible S1 local ref exposes one code-owned bidirectional movement operation', () => {
+  const state = projectLowerDvinaTraceTurnStepPlannerState({
+    actor_id: 'actor:player', current_visible_context: { visible_objects: [{
+      entity_ref: { entity_kind: 'spatial_local_reference',
+        entity_id: 'local:shelter' }, visible_status: 'внутри'
+    }] }
+  });
+  assert.deepEqual(state.available_domain_operations, [{
+    op: 'request_movement', actor_ref: 'actor:player',
+    target_ref: 'local:shelter', movement_kind: 'local'
+  }]);
 });
 
 function discovery(discovery_kind) {

@@ -19,14 +19,19 @@ export function initialWorkingProjectionFrom(projected) {
 export function projectAvailableDomainOperations({ state, operations,
   semanticBindings, preparedFollowupCandidates = [] }) {
   const playerSafeState = structuredClone(state);
+  const projectedOperations = Array.isArray(
+    playerSafeState.available_domain_operations)
+    ? playerSafeState.available_domain_operations : [];
+  delete playerSafeState.available_domain_operations;
   delete playerSafeState.available_domain_operation_grounding;
+  const allOperations = [...operations, ...projectedOperations];
   const grounding = availableDomainOperationGrounding(
-    operations, semanticBindings);
+    allOperations, semanticBindings);
   if (grounding.length > 0) {
     playerSafeState.available_domain_operation_grounding = grounding;
   }
   return { player_safe_state: playerSafeState,
-    available_domain_operations: structuredClone(operations),
+    available_domain_operations: structuredClone(allOperations),
     ...(preparedFollowupCandidates.length === 0 ? {} : {
       prepared_followup_candidates: structuredClone(preparedFollowupCandidates)
     }) };

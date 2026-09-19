@@ -146,7 +146,15 @@ function projectObservedEvidenceInspection({ playerSafeState,
 export function projectLowerDvinaTraceTurnStepPlannerState(state) {
   const { npcs: _npcs, visible_npcs: _visibleNpcs,
     scene_npcs: _sceneNpcs, ...safe } = state;
-  return safe;
+  const actorRef = safe.actor_id;
+  const localMovement = (safe.current_visible_context?.visible_objects ?? [])
+    .flatMap(({ entity_ref: ref }) => ref?.entity_kind ===
+      'spatial_local_reference' && text(actorRef) && text(ref.entity_id)
+      ? [{ op: 'request_movement', actor_ref: actorRef,
+          target_ref: ref.entity_id, movement_kind: 'local' }]
+      : []);
+  return localMovement.length === 0 ? safe : { ...safe,
+    available_domain_operations: localMovement };
 }
 
 function projectLowerDvinaTraceN1Capability({ playerSafeState,

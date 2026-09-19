@@ -142,6 +142,10 @@ test('production binding activates S1 only for exact loaded revision 24 profile'
     const active = await capturedTraceRuntime(loadedProfile);
     assert.equal(typeof active.createTurnStepSpatialSemanticResolver, 'function');
     assert.equal(active.spatialSemanticProfile, loadedProfile);
+    assert.equal(typeof active.createTurnStepAuthoredSpatialSemanticResolver,
+      'function');
+    assert.equal(active.authoredSpatialSemanticProfile?.schema,
+      'rus.live_world_runtime.s1_loaded_profile.v1');
     const absent = await capturedTraceRuntime(null);
     assert.equal(absent.createTurnStepSpatialSemanticResolver, null);
     assert.equal(absent.spatialSemanticProfile, null);

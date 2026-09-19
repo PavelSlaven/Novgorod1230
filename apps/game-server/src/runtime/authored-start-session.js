@@ -18,6 +18,26 @@ export function validateAuthoredStartSessionRead({ partyId, session,
       'Persisted authored-start runtime binding is unavailable.',
       { status: 409 });
   }
+  if (Number(session?.turn_number) > 0) {
+    if (identity?.schema
+        !== 'rus.live_world_runtime.authored_start_session_identity.v1'
+      || identity.party_id !== partyId || !scenarioId
+      || persistedBinding?.catalog_id !== resolvedBinding.catalog_id
+      || persistedBinding?.revision !== resolvedBinding.revision
+      || !['approved', 'deprecated'].includes(resolvedBinding.status)
+      || creation?.schema
+        !== 'rus.first_playable_public_creation_identity.v1'
+      || creation.party_id !== partyId || creation.scenario_id !== scenarioId
+      || session.party_snapshot_schema
+        !== 'rus.lower_dvina_trace_turn_snapshot.v2'
+      || Number(session.current_party_state_version)
+        !== Number(session.turn_number)
+      || !session.last_turn_id
+      || screen?.party_id !== partyId || screen?.scenario_id !== scenarioId
+      || !['turn_screen', 'factual_turn_delivery_screen']
+        .includes(screen.schema)) invalid();
+    return session;
+  }
   if (!session
     || identity?.schema !== 'rus.live_world_runtime.authored_start_session_identity.v1'
     || identity.party_id !== partyId

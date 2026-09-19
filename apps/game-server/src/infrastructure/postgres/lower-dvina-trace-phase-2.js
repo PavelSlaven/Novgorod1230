@@ -145,6 +145,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       await assertPhase2NormalizedRows(readPool, payload, row);
     }
     const loadedPayload = structuredClone(payload);
+    loadedPayload.scenario_id ??= row.stage26_result?.scenario_id ?? null;
     const journeyLocation = await loadPhase2JourneyLocation(
       readPool, partyId, loadedPayload.actor_id);
     withJourneyLocation(loadedPayload, journeyLocation);
@@ -258,7 +259,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
       payload, presentation: await loadLowerDvinaTraceScreenPresentation(payload),
       screen: {
         ...structuredClone(result.screen),
-        schema: 'lower_dvina_trace_turn_screen',
+        schema: payload.scenario_id === 'lower_dvina_trace_v1'
+          ? 'lower_dvina_trace_turn_screen' : 'turn_screen',
         screen_status: 'ready',
         ...(combatState == null ? {} : { combat_state: combatState }),
         current_projection_anchor: {

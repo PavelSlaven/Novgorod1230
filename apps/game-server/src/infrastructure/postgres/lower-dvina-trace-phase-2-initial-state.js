@@ -20,6 +20,7 @@ export async function loadInitialTracePhase2State({
   ]);
   return {
     party_id: partyId,
+    scenario_id: row.stage26_result?.scenario_id ?? null,
     actor_id: actorId,
     world_identity: {
       world_revision_id: row.world_revision_id,
@@ -40,7 +41,8 @@ export async function loadInitialTracePhase2State({
     body_effect_history: bodyEffectHistory,
     position: {
       ...initial.position,
-      location_ref: 'trace_ld_v1_loc_wreck_shore'
+      location_ref: initial.position.location_ref
+        ?? 'trace_ld_v1_loc_wreck_shore'
     },
     prepared_scenes: structuredClone(initial.prepared_scenes),
     ...(initial.first_entry_preparation == null ? {} : {

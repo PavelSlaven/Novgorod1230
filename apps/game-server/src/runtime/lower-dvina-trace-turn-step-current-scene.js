@@ -146,6 +146,13 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
     ? spokenChange(appliedPlan.utterance.utterance_text) : null;
   const observation = appliedPlan?.resolution === 'direct'
     && appliedPlan.direct_result_kind === 'player_safe_observation';
+  const activityCompleted = input?.time_update?.semantic_activity_resolutions
+    ?.some(({ execution }) => execution?.status === 'completed') === true;
+  const directActivity = appliedPlan?.resolution === 'direct'
+    && appliedPlan.direct_result_kind == null
+    && activityCompleted
+    && values.some((value) => value?.kind === 'semantic_activity')
+    ? appliedPlan.interpretation?.grounded_attempt : null;
   const attempts = values.filter(value => value?.kind === 'transient_item_use'
     && Object.keys(value).length === 2 && text(value.description));
   const changes = values.flatMap((value) => {
@@ -157,6 +164,7 @@ export function projectDirectSeedChanges({ input, directSeedKeys, appliedPlan = 
     return directSeedChange(value);
   }).filter(Boolean);
   if (speech != null) return [speech, ...changes];
+  if (text(directActivity)) return [sentence(directActivity), ...changes];
   if (observation) return [text(appliedPlan.assessment?.text)
     ? appliedPlan.assessment.text : 'Вы внимательно изучили обстановку.',
   ...changes];

@@ -18,6 +18,8 @@ import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
 import { recoverTracePendingPresentation } from './lower-dvina-trace-presentation-recovery.js';
 import { completeTracePhase2Replay, recordTracePhase2TurnContext, runAndPersistTracePhase2Turn } from './lower-dvina-trace-phase-2-workflow.js';
+import { createTurnCommandRegistry } from '@rus/turn';
+import { TRACE_SCENARIO_ID } from './lower-dvina-trace-session.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   turnStepSemanticGroundingValidator = null, playerConversationModel = null,
@@ -50,6 +52,7 @@ export function createLowerDvinaTracePhase2Runtime({
     scenarioDefinitionRevision,
   }),
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
+  authoredTurnProfile = null,
 } = {}) {
   validatePhase2RuntimeDependencies({ repository, semanticResolver, narrator, randomSourceFactory, decisionSecret });
   const executeRequest = createTraceTurnRequestExecutor();
@@ -78,27 +81,36 @@ export function createLowerDvinaTracePhase2Runtime({
           presentationIdempotencyKey: idempotencyKey,
           turnBudget,
         });
-        const scenarioDefinitionRevision = committedTraceScenarioDefinitionRevision(state);
-        const phase2Bundle = await runWithinTurnDeadline(turnBudget, () =>
-          phase2BundleLoader({ scenarioDefinitionRevision })
-        );
-        validateConversationDependencies({
+        const authored = state.scenario_id != null
+          && state.scenario_id !== TRACE_SCENARIO_ID;
+        const scenarioDefinitionRevision = authored ? null
+          : committedTraceScenarioDefinitionRevision(state);
+        const phase2Bundle = authored ? null
+          : await runWithinTurnDeadline(turnBudget, () =>
+            phase2BundleLoader({ scenarioDefinitionRevision }));
+        if (!authored) validateConversationDependencies({
           scenarioDefinitionRevision,
           playerConversationModel,
           npcSemanticModel,
           npcAutonomousModel, npcOwnerCapabilities, npcCombatModel,
         });
-        const bundle = await runWithinTurnDeadline(turnBudget, () => bundleLoader({ scenarioDefinitionRevision }));
-        const contracts = resolveTracePhase2Contracts({
-          state,
-          bundle,
-          phase2Bundle,
-        });
+        const bundle = authored
+          ? liveWorldTurnBundle({ state, authoredTurnProfile })
+          : await runWithinTurnDeadline(turnBudget, () =>
+            bundleLoader({ scenarioDefinitionRevision }));
+        const contracts = authored
+          ? liveWorldTurnContracts(authoredTurnProfile)
+          : resolveTracePhase2Contracts({ state, bundle, phase2Bundle });
         recordTracePhase2TurnContext(llmDiagnostics, { partyId, requestId, idempotencyKey, rawText,
           inputDigest, state, bundle, phase2Bundle, contracts,
           playerSafeStateProjector });
         const activeSpatialSemanticProfile = isExactLowerDvinaTraceSpatialSemanticProfile(bundle, spatialSemanticProfile) ? spatialSemanticProfile : null;
-        const { phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts } = resolveTracePhase2InheritedContracts({ state, bundle });
+        const { phase3Contracts, phase4Contracts, phase5Contracts,
+          phase6Contracts, phase7Contracts } = authored
+          ? { phase3Contracts: null, phase4Contracts: null,
+              phase5Contracts: null, phase6Contracts: null,
+              phase7Contracts: null }
+          : resolveTracePhase2InheritedContracts({ state, bundle });
         const createBoundaryNpcOwnerCapabilities =
           typeof createNpcOwnerCapabilities !== 'function' ? null : (boundary) =>
             createNpcOwnerCapabilities({ partyId, requestId, inputDigest, state,
@@ -127,7 +139,7 @@ export function createLowerDvinaTracePhase2Runtime({
           idempotencyKey,
           turnBudget,
         });
-        const phase8 = createTracePhase8Runtime({
+        const phase8 = authored ? null : createTracePhase8Runtime({
           state,
           bundle,
           phase3Contracts,
@@ -138,7 +150,8 @@ export function createLowerDvinaTracePhase2Runtime({
           temporalAdvanceOwner,
           revalidateStateVersion,
         });
-        const phase8Contracts = phase8?.contracts ?? null, phase9 = createTracePhase9Runtime({
+        const phase8Contracts = phase8?.contracts ?? null,
+          phase9 = authored ? null : createTracePhase9Runtime({
             state,
             bundle,
             conversationBindings: phase3Contracts?.conversationBindings,
@@ -149,8 +162,8 @@ export function createLowerDvinaTracePhase2Runtime({
             revalidateStateVersion,
           }),
           phase9Contracts = phase9?.contracts ?? null;
-        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
-        const turn10 = bundle.definition_revision <= 35 ? createTraceTurn10Runtime({
+        const phase10Contracts = !authored && [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+        const turn10 = !authored && bundle.definition_revision <= 35 ? createTraceTurn10Runtime({
           state,
           bundle,
           phase3Contracts,
@@ -163,7 +176,7 @@ export function createLowerDvinaTracePhase2Runtime({
           revalidateStateVersion,
         }) : null;
         const turn10Contracts = turn10?.contracts ?? null;
-        const combatCommand = createTraceCombatCommand({
+        const combatCommand = authored ? null : createTraceCombatCommand({
           state,
           bundle,
           inputDigest,
@@ -174,7 +187,8 @@ export function createLowerDvinaTracePhase2Runtime({
           temporalAdvanceOwner,
           phase8Contracts,
         });
-        const registry = buildTracePhase2Registry({
+        const registry = authored ? liveWorldTurnRegistry()
+          : buildTracePhase2Registry({
           bundle,
           combatCommand,
           contracts,
@@ -213,7 +227,7 @@ export function createLowerDvinaTracePhase2Runtime({
         const issuedAt = now();
         const services = buildLowerDvinaTracePhase2Services({
           partyId, requestId, idempotencyKey, inputDigest,
-          issuedAt, state,
+          issuedAt, state, scenarioId: state.scenario_id,
           contracts, phase3Contracts,
           phase4Contracts, phase5Contracts,
           phase6Contracts, phase7Contracts,
@@ -270,4 +284,65 @@ export function createLowerDvinaTracePhase2Runtime({
         executeTraceTurnWithDiagnostics(llmDiagnostics, { party_id: partyId, request_id: requestId }, executeAttempt));
     },
   });
+}
+
+function liveWorldTurnBundle({ state, authoredTurnProfile }) {
+  if (authoredTurnProfile?.profile?.schema
+      !== 'rus.live_world_runtime.turn_step_owner_profiles.v1'
+    || authoredTurnProfile.profile.status !== 'approved'
+    || !authoredTurnProfile.pin?.digest) {
+    throw serverError('LIVE_WORLD_TURN_PROFILE_MISSING',
+      'Approved live-world turn profile is required.', { status: 409 });
+  }
+  const locationRef = state.position?.location_ref;
+  const displayName = state.current_visible_context?.visible_scene
+    ?? state.visible_context?.visible_scene ?? locationRef;
+  return Object.freeze({
+    definition_revision: null,
+    profile: 'live_world_authored',
+    artifact_pins: {
+      turn_step_owner_profiles: structuredClone(authoredTurnProfile.pin)
+    },
+    turn_step_owner_profiles: structuredClone(authoredTurnProfile.profile),
+    location_topology_set: { location_profiles: [{
+      location_profile_id: locationRef, display_name: displayName
+    }] },
+    calendar_profile: null,
+    scene_presentation: null,
+    post_action_perception_profile: null
+  });
+}
+
+function liveWorldTurnContracts(authoredTurnProfile) {
+  return Object.freeze({
+    activity: Object.freeze({
+      duration_minutes: 1,
+      nearest_temporal_boundary_rule: 'split_before_earliest_boundary'
+    }),
+    activityPin: Object.freeze({
+      id: authoredTurnProfile.profile.profile_set_id,
+      version: authoredTurnProfile.profile.revision,
+      digest: authoredTurnProfile.pin.digest
+    }),
+    calendarProfile: null
+  });
+}
+
+function liveWorldTurnRegistry() {
+  const blocked = () => ({ status: 'blocked', can_attempt: false,
+    check_requests: [] });
+  return createTurnCommandRegistry([{
+    command_id: 'live_world_semantic_boundary',
+    option_id: 'live_world_semantic_boundary',
+    label: 'Свободное действие',
+    matches: () => false,
+    semantic_binding: {
+      binding_id: 'live_world_semantic_boundary',
+      operation: 'request_world_process',
+      matches: () => false
+    },
+    availability: blocked,
+    consequence: blocked,
+    writeTargets: () => []
+  }]);
 }

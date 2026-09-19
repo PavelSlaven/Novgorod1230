@@ -68,6 +68,7 @@ export function createTraceTurnRuntime({
   actionProductionProfile, localFireProfile,
   spatialSemanticProfile,
   npcSemanticRemainderProfile,
+  authoredTurnProfile,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
@@ -228,7 +229,8 @@ export function createTraceTurnRuntime({
     turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret,
     llmTurnBudget: turnBudget,
-    llmDiagnostics
+    llmDiagnostics,
+    authoredTurnProfile
   });
   return Object.freeze({ ...runtime, llmDiagnostics });
 }

@@ -80,10 +80,19 @@ export async function runLocalGemmaBrowserAcceptance({ outputDirectory,
   try {
     settingsDirectory = join(directory, 'runtime');
     await mkdir(settingsDirectory, { recursive: true });
+    const settingsPath = join(settingsDirectory, 'settings.json');
+    if (provider != null) {
+      await writeFile(settingsPath, `${JSON.stringify({ version: 2,
+        settings: { mode: provider.mode,
+          compatibility: provider.compatibility,
+          base_url: provider.baseUrl, model: provider.model,
+          api_key: provider.apiKey }, ordinary_materialization_identity: null,
+        qualification_version: null }, null, 2)}\n`);
+    }
     local = await start({ env: { ...process.env, RUS_DEVELOPER_MODE: 'true',
       LOG_DIRECTORY: logDirectory,
       ...(settingsDirectory ? { RUS_LLM_SETTINGS_PATH:
-        join(settingsDirectory, 'settings.json') } : {}) },
+        settingsPath } : {}) },
       startManagedLlm: provider == null,
       acceptanceDataRoot: join(directory, 'postgres') });
     if (!provider && !local.managedRuntime?.llm) throw new Error(

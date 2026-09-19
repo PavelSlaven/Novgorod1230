@@ -81,9 +81,11 @@ fail-closed, final audit строго проверяется по immutable segm
 prose wire: её вычисляет temporal owner и показывает server-owned UI projection.
 Любая придуманная narrator временная величина является unsupported fact, а
 служебная формулировка дополнительно проваливает elapsed_as_service_report.
-При current beat private wire
-допускает visible_scene + sensory_details; narrator выбирает только относящиеся
-к этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.
+При current beat `optional_support` private wire допускает только `visible_scene`;
+неизменный sensory panorama не передаётся. Новые относящиеся к эпизоду sensory facts
+обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
+dump остаётся static_context_dump. При отсутствии current beat scene-only wire
+сохраняет `visible_scene` и grounded descriptive sensory support.
 Полный grounded пересказ required sources по одному в исходном порядке является
 weak_literary_composition, если действие или воспринятый результат не организует
 поддержанные пространственные детали в сцену; выдуманная связка недопустима.

@@ -18,7 +18,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   createTurnStepActionProductionOwner,
   localFireProfile,
   createTurnStepWorldProcessResolver,
-  createTurnStepSpatialSemanticResolver,
+  createTurnStepSpatialSemanticResolver, spatialSemanticProfile,
   createTurnStepBackgroundNpcResolver,
   npcSemanticRemainderProfile,
   ordinaryDiscoveryEnablementMarker,
@@ -64,6 +64,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     const spatialState = projectLowerDvinaTraceS1Capability({
       playerSafeState, committedState,
       resolverAvailable: typeof createTurnStepSpatialSemanticResolver === 'function'
+        || spatialSemanticProfile?.profile?.status === 'approved'
     });
     const npcState = projectObservedEvidenceInspection({
       playerSafeState: projectLowerDvinaTraceN1Capability({

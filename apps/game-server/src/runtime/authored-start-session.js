@@ -27,6 +27,7 @@ export function validateAuthoredStartSessionRead({ partyId, session,
       || resolvedBinding.materializer_binding_id != null
         && identity.materializer_binding_id
           !== resolvedBinding.materializer_binding_id
+      || identity.materializer_version !== resolvedBinding.materializer_version
       || !['approved', 'deprecated'].includes(resolvedBinding.status)
       || creation?.schema
         !== 'rus.first_playable_public_creation_identity.v1'
@@ -41,6 +42,9 @@ export function validateAuthoredStartSessionRead({ partyId, session,
         .includes(screen.schema)) invalid();
     return session;
   }
+  const initialSnapshotSchema = resolvedBinding.revision >= 5
+    ? resolvedBinding.snapshot_schema
+    : 'rus.authored_start_initial_party_snapshot.v1';
   if (!session
     || identity?.schema !== 'rus.live_world_runtime.authored_start_session_identity.v1'
     || identity.party_id !== partyId
@@ -49,6 +53,7 @@ export function validateAuthoredStartSessionRead({ partyId, session,
     || persistedBinding?.revision !== resolvedBinding.revision
     || resolvedBinding.materializer_binding_id != null
       && identity.materializer_binding_id !== resolvedBinding.materializer_binding_id
+    || identity.materializer_version !== resolvedBinding.materializer_version
     || !['approved', 'deprecated'].includes(resolvedBinding.status)
     || creation?.schema !== 'rus.first_playable_public_creation_identity.v1'
     || creation.party_id !== partyId
@@ -57,7 +62,7 @@ export function validateAuthoredStartSessionRead({ partyId, session,
     || creation.branch_input_digest !== hash(json({
       launch_branch: 'scenario_id', scenario_id: scenarioId
     }))
-    || session.party_snapshot_schema !== 'rus.authored_start_initial_party_snapshot.v1'
+    || session.party_snapshot_schema !== initialSnapshotSchema
     || session.party_scenario_manifest_digest !== identity.phase_1a_manifest_digest
     || session.party_materializer_version !== identity.materializer_version
     || session.party_rng_algorithm_id !== identity.rng_algorithm_id

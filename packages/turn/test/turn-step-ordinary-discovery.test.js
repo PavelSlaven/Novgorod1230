@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { isOrdinaryDiscoveryInScope } from '../src/turn-step-admission.js';
 import { createOrdinaryMaterializationDiscoveryOwner } from '../src/index.js';
+import { equivalentVisibleItem } from
+  '../src/ordinary-materialization-discovery-identity.js';
 
 test('ordinary discovery admits an unseen nested player-visible object', () => {
   const target = 'visible-cloak-unseen';
@@ -92,3 +94,22 @@ test('multi-item ordinary inspection returns no-result before context or model',
     assert.equal(Object.hasOwn(result,
       'ordinary_materialization_atomic_write_plan'), false);
   });
+
+test('semantic paraphrase reuses one visible ordinary item instead of cloning it', () => {
+  const request = { request: { player_safe_state: { items: [{
+    item_id: 'ordinary:cord', name: 'Льняной шнур', semantic_type: 'cord'
+  }] } } };
+  assert.equal(equivalentVisibleItem(request, { semantic_descriptor: {
+    name: ' льняной   ШНУР ', semantic_type: 'CORD'
+  } }).item_id, 'ordinary:cord');
+  assert.equal(equivalentVisibleItem(request, { semantic_descriptor: {
+    name: 'Льняная верёвка', semantic_type: 'rope'
+  } }), null);
+  assert.equal(equivalentVisibleItem({ request: { player_safe_state: {
+    items: [request.request.player_safe_state.items[0], {
+      item_id: 'ordinary:cord-2', name: 'Льняной шнур', semantic_type: 'cord'
+    }]
+  } } }, { semantic_descriptor: {
+    name: 'Льняной шнур', semantic_type: 'cord'
+  } }), null);
+});

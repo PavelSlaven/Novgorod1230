@@ -225,7 +225,9 @@ async function startNewGame({
     repository,
     traceStartAdapter,
     publicationLoader: async (options) => {
-      const authored = await authoredStartCatalog?.loadPublication(scenario);
+      const authored = await authoredStartCatalog?.loadPublication(scenario, {
+        bindingRevision: options.scenarioDefinitionRevision
+      });
       return authored ?? publicationLoader(options);
     },
     activePhase1AManifestDigest,

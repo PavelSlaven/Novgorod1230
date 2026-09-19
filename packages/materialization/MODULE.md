@@ -95,6 +95,13 @@ baseline: LLM supplies only name, description and qualitative required
 semantics; Spatial owner validates them and binds `local_ref` to the already
 persisted formal placement.
 
+Live-world authored binding revision 5 selects `code_materializer_v3` and
+produces `rus.authored_start_party_materialization_result.v3`. Its initial S1
+topology is derived only from the exact approved profile slot and pinned
+world-base closure; missing or ambiguous authority fails before party commit.
+Older persisted authored results remain read-only compatibility inputs and are
+never rerun through the current materializer.
+
 ## Контракты
 
 Принимает `world_materialization_request_v2` либо stage-specific approved bundle. Authoring candidates ссылаются на будущие экземпляры через однозначные `slot_key`, которые код разрешает после deterministic selection. Generic result содержит стартовую позицию и исполняемый, но не записанный materializer-ом `proposed_write_set` для нормализованных таблиц `party_runtime`. Profile/layout/slot/template refs, capacities, access, visibility, quantity, condition, legal status, causal basis и property policy обязательны; пропуск завершает операцию typed failure.

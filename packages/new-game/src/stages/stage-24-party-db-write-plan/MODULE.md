@@ -17,6 +17,10 @@
   после NPC и prepared scope. До first entry exact position nullable; causal
   placement ссылается на существующий prepared member или legacy anchor.
   Legacy `party_npc_schedules` для этих NPC не дублирует canonical состояние.
+- Для current authored result v3 атомарно пишет approved initial G6/position,
+  reciprocal local movement/visibility topology и snapshot v3. Historical
+  authored result v1 остаётся отдельным exact read contract; Stage 24 не
+  повышает его версию и не выводит latest binding.
 
 ## Не делает
 

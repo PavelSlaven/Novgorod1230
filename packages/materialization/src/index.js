@@ -2,7 +2,8 @@ import { deepFreeze } from '@rus/kernel';
 import { computeMaterializationResultDigest } from '@rus/contracts';
 import {
   canonicalDigest, createRandomSource, deriveSeed, deterministicInstanceId,
-  MATERIALIZER_VERSION, MaterializationError, RNG_VERSION
+  AUTHORED_MATERIALIZER_VERSION, MATERIALIZER_VERSION, MaterializationError,
+  RNG_VERSION
 } from './core.js';
 import { buildExecutableWriteSet } from './write-set.js';
 import { resolveInstanceReferences, resolvePlayerStartPosition } from './reference-resolution.js';
@@ -12,7 +13,9 @@ import { approvedWeight, assertApplicableRecord, assertMaterializationInput, cho
 import { materializeNpcInstanceAppearances } from
   './actor-base-appearance.js';
 
-export { canonicalDigest, createRandomSource, deriveSeed, MATERIALIZER_VERSION, MaterializationError, RNG_VERSION } from './core.js';
+export { AUTHORED_MATERIALIZER_VERSION, canonicalDigest, createRandomSource,
+  deriveSeed, MATERIALIZER_VERSION, MaterializationError, RNG_VERSION } from
+  './core.js';
 export { materializeAuthoredStartPartyInstance } from './authored-start.js';
 export { materializeActorBaseAppearance } from './actor-base-appearance.js';
 export { completeAuthoredItemMechanics } from

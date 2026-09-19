@@ -68,9 +68,12 @@ function buildEnvelope(profile, entry, scope, topology) {
 
 function requireProfile(value) {
   const profile = value?.profile;
-  if (value?.schema !== 'rus.lower_dvina_trace_s1_loaded_profile.v1'
-      || profile?.schema !== 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
-      || profile.status !== 'approved' || profile.scenario_definition_revision !== 24
+  const legacy = value?.schema === 'rus.lower_dvina_trace_s1_loaded_profile.v1'
+    && profile?.schema === 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
+    && profile.scenario_definition_revision === 24;
+  const neutral = value?.schema === 'rus.live_world_runtime.s1_loaded_profile.v1'
+    && profile?.schema === 'rus.live_world_runtime.s1_profile.v1';
+  if ((!legacy && !neutral) || profile.status !== 'approved'
       || !text(profile.profile_id) || !text(profile.policy_ref)
       || !Number.isSafeInteger(profile.revision) || !Number.isSafeInteger(profile.policy_version)
       || !['property_ref','function_ref','environment_ref'].every((key) => text(profile[key]))

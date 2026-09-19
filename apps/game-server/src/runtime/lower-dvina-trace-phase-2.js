@@ -44,8 +44,12 @@ export function createLowerDvinaTracePhase2Runtime({
   actionProductionProfile = null,
   createTurnStepWorldProcessResolver = null, localFireProfile = null,
   createTurnStepSpatialSemanticResolver = null, spatialSemanticProfile = null,
+  createTurnStepAuthoredSpatialSemanticResolver = null,
+  authoredSpatialSemanticProfile = null,
   createTurnStepBackgroundNpcResolver = null,
   npcSemanticRemainderProfile = null,
+  createTurnStepAuthoredBackgroundNpcResolver = null,
+  authoredNpcSemanticRemainderProfile = null,
   llmTurnBudget = null, llmDiagnostics = null,
   temporalAdvanceOwner = undefined, now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) => loadLowerDvinaTraceMaterializationBundle({
@@ -107,6 +111,20 @@ export function createLowerDvinaTracePhase2Runtime({
         const activeSpatialSemanticProfile = isExactLowerDvinaTraceSpatialSemanticProfile(bundle, spatialSemanticProfile) ? spatialSemanticProfile : null;
         const actionProductionEnabled = authored || [21, 22, 23, 24, 25, 26,
           28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision);
+        const selectedSpatialResolver = authored
+          ? createTurnStepAuthoredSpatialSemanticResolver
+          : activeSpatialSemanticProfile == null
+            ? null : createTurnStepSpatialSemanticResolver;
+        const selectedSpatialProfile = authored
+          ? authoredSpatialSemanticProfile : activeSpatialSemanticProfile;
+        const selectedBackgroundNpcResolver = authored
+          ? createTurnStepAuthoredBackgroundNpcResolver
+          : [32, 33, 34, 35].includes(bundle.definition_revision)
+            ? createTurnStepBackgroundNpcResolver : null;
+        const selectedNpcRemainderProfile = authored
+          ? authoredNpcSemanticRemainderProfile
+          : [32, 33, 34, 35].includes(bundle.definition_revision)
+            ? npcSemanticRemainderProfile : null;
         const { phase3Contracts, phase4Contracts, phase5Contracts,
           phase6Contracts, phase7Contracts } = authored
           ? { phase3Contracts: null, phase4Contracts: null,
@@ -251,15 +269,10 @@ export function createLowerDvinaTracePhase2Runtime({
           actionProductionProfile: actionProductionEnabled
             ? actionProductionProfile : null,
           createTurnStepWorldProcessResolver: [22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35].includes(bundle.definition_revision) ? localFireProfile : null,
-          createTurnStepSpatialSemanticResolver:
-            activeSpatialSemanticProfile == null
-              ? null : createTurnStepSpatialSemanticResolver,
-          spatialSemanticProfile: activeSpatialSemanticProfile,
-          createTurnStepBackgroundNpcResolver:
-            [32, 33, 34, 35].includes(bundle.definition_revision)
-              ? createTurnStepBackgroundNpcResolver : null,
-          npcSemanticRemainderProfile: [32, 33, 34, 35].includes(bundle.definition_revision)
-            ? npcSemanticRemainderProfile : null,
+          createTurnStepSpatialSemanticResolver: selectedSpatialResolver,
+          spatialSemanticProfile: selectedSpatialProfile,
+          createTurnStepBackgroundNpcResolver: selectedBackgroundNpcResolver,
+          npcSemanticRemainderProfile: selectedNpcRemainderProfile,
           admitAmbientOrdinaryPortion:
             typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
               ? createTurnStepAmbientOrdinaryPortionAdmission({

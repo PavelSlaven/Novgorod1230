@@ -1,0 +1,2153 @@
+{
+  "schema": "rus.test.authored_start_party_rows.v1",
+  "source_head": "328d2f99ae888670087324e9b2f1197081f73733",
+  "party_id": "party:21a0fc0a13bb037dc00689ac",
+  "tables": {
+    "parties": [
+      {
+        "status": "active",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "created_at": "2026-09-19T21:41:39.85516+00:00",
+        "updated_at": "2026-09-19T21:41:39.85516+00:00",
+        "rng_version": "mulberry32_v1",
+        "state_version": 0,
+        "schema_version": 3,
+        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "materializer_version": "code_materializer_v2",
+        "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+        "profile_bundle_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "command_catalog_digest": "0f71fbd72e35c72f75988990df918d63deff24445f8e7f0302a1ffa0db23677b"
+      }
+    ],
+    "party_v3_change_sets": [
+      {
+        "id": "change_7a785555f6a87186fdfa8eb2",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "operation_kind": "new_game",
+        "created_at_turn": 0,
+        "committed_at_turn": 0,
+        "write_plan_digest": "5ae3c1c4f16c94010e11d3a97b09e60b13fc79a440cc95060f7a6565071726a0",
+        "parent_change_set_id": null,
+        "expected_state_version_set": [],
+        "expected_state_version_set_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "committed_state_version_set_digest": "da93d149984055aa30d517069f188d796e27708a5c3480fe0a2beabd38b19635"
+      }
+    ],
+    "party_catalog_pins": [
+      {
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "import_id": "catalog_import_ddb001f85fd347d9f50f92c77d7e7553",
+        "pinned_at": "2026-09-19T21:41:39.85516+00:00",
+        "catalog_scope": "item_container_materialization_v2",
+        "catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+        "activation_event_id": "runtime_catalog_activation_edaab8b28587f2355512109366770e64",
+        "catalog_revision_id": "runtime_catalog_lower_dvina_spatial_v3_v12_001",
+        "import_audit_digest": "10f5defbff17a53aebd539860978a63a75eed122b33ce767f91a716b3ea127ce",
+        "record_registry_digest": "87191513c2ff0c9ce586a6c63211ab641fc7d8f255fbd852483f424101326e96",
+        "runtime_contract_digest": "60c3a601bcb561c39017fed915cb9b9cdaa779115f4f0f2c0175db3eda64a0c7",
+        "compatible_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "compatible_world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+        "compatible_world_pin_manifest_digest": "119b74f574fe5b5aa4490a66da91c8f8149b6ee5b7cc8787a739a1ac5c577713"
+      }
+    ],
+    "party_materialization_runs": [
+      {
+        "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "trace": {
+          "run_id": "authored_81758576bc723cdf3f491f8f",
+          "choices": [
+            {
+              "rng_draw": 0,
+              "slot_key": "player_profile",
+              "choice_key": "player_profile",
+              "selected_id": "Любава",
+              "candidate_ids": [
+                "Любава"
+              ],
+              "choice_ordinal": 0,
+              "candidate_set_digest": "7c17dcbe08074ea0aea1db1ca4bc7c4bd1e65a48f8bc2b8a6a0d43861f28e130"
+            }
+          ],
+          "rng_version": "mulberry32_v1",
+          "seed_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+          "input_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+          "seed_context": {
+            "trigger": "new_game",
+            "party_id": "party:21a0fc0a13bb037dc00689ac",
+            "occurrence": 0,
+            "scenario_id": "vikhtuy_fishing_camp_v1",
+            "seed_context": "authored_start:vikhtuy_fishing_camp_v1:v4",
+            "idempotency_key": "new-game:vikhtuy_fishing_camp_v1:21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+            "rng_algorithm_id": "mulberry32_v1",
+            "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+            "world_compatibility": {
+              "lineage": [
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v2/manifest.json",
+                  "digest": "3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+                  "world_catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255"
+                },
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json",
+                  "digest": "593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+                  "world_catalog_digest": "1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e"
+                },
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json",
+                  "digest": "64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+                  "world_catalog_digest": "acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79"
+                },
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json",
+                  "digest": "6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+                  "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad"
+                },
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json",
+                  "digest": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+                  "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+                }
+              ],
+              "source_status": "approved",
+              "production_status": "approved",
+              "source_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "source_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+              "production_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+              "production_world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+            },
+            "existing_party_state": {
+              "baseline_exists": false
+            },
+            "materializer_version": "code_materializer_v2",
+            "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+            "scenario_manifest_digest": "0f71fbd72e35c72f75988990df918d63deff24445f8e7f0302a1ffa0db23677b",
+            "scenario_definition_revision": 4
+          },
+          "result_digest": "5ae3c1c4f16c94010e11d3a97b09e60b13fc79a440cc95060f7a6565071726a0",
+          "catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+          "rng_draw_count": 0,
+          "idempotency_key": "new-game:vikhtuy_fishing_camp_v1:21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+          "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+          "policy_profile_pins": [],
+          "actor_catalog_digest": "2c35b37bd034c4fc3607c52f16cc32b2b638e1a4e3b47ed07ff6d775f97685fb",
+          "materializer_version": "code_materializer_v2",
+          "catalog_bundle_digest": "c19b7abee8a95e928d7cc0b88c54c658074c2ff6b632ce142751f4a4fb08f006",
+          "scenario_manifest_digest": "0f71fbd72e35c72f75988990df918d63deff24445f8e7f0302a1ffa0db23677b",
+          "policy_profile_pin_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "run_id": "authored_81758576bc723cdf3f491f8f",
+        "status": "committed",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "run_kind": "baseline",
+        "created_at": "2026-09-19T21:41:39.85516+00:00",
+        "occurrence": 0,
+        "rng_version": "mulberry32_v1",
+        "seed_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+        "committed_at": null,
+        "created_refs": [
+          {
+            "domain": "player_character",
+            "instance_id": "player_character_f9a36f60dee59172821b45d6"
+          },
+          {
+            "domain": "g5_node",
+            "instance_id": "g5_node_b38facfa8cfc1783d233ee47"
+          },
+          {
+            "domain": "g5_anchor",
+            "instance_id": "g5_anchor_cec34c15b69adb84d24cfb8d"
+          },
+          {
+            "domain": "g5_node",
+            "instance_id": "g5_node_32789131bbdd3503af2fdefb"
+          },
+          {
+            "domain": "g5_anchor",
+            "instance_id": "g5_anchor_2f9e753ee17068ea9c48ee75"
+          },
+          {
+            "domain": "npc",
+            "instance_id": "npc_8f7539ebc189ca807e8bb638"
+          },
+          {
+            "domain": "npc",
+            "instance_id": "npc_c0f21a0593e596897b28f334"
+          },
+          {
+            "domain": "item",
+            "instance_id": "item_ddb159f784fca43cd95cc448"
+          },
+          {
+            "domain": "item",
+            "instance_id": "item_30753102abf12df384dd7852"
+          }
+        ],
+        "input_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+        "repair_reason": null,
+        "result_digest": "5ae3c1c4f16c94010e11d3a97b09e60b13fc79a440cc95060f7a6565071726a0",
+        "catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+        "idempotency_key": "new-game:vikhtuy_fishing_camp_v1:21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+        "supersedes_run_id": null,
+        "validation_report": {
+          "semantic": {
+            "pass": true,
+            "checks": {
+              "resources": true,
+              "actor_refs": true,
+              "placements": true,
+              "player_known": true,
+              "exact_world_closure": true,
+              "exact_domain_closure": true
+            },
+            "schema": "rus.live_world_runtime.authored_start_admission.v1",
+            "version": 1,
+            "resolved_actor_refs": [
+              {
+                "role_id": "nov_role_fisher",
+                "actor_ref": "player",
+                "occupation_id": "nov_occ_fisher"
+              },
+              {
+                "role_id": "nov_role_boatman",
+                "actor_ref": "miloslav",
+                "occupation_id": "nov_occ_boatman"
+              },
+              {
+                "role_id": "nov_role_fisher",
+                "actor_ref": "nezhata",
+                "occupation_id": "nov_occ_fisher"
+              }
+            ],
+            "actor_catalog_digest": "2c35b37bd034c4fc3607c52f16cc32b2b638e1a4e3b47ed07ff6d775f97685fb",
+            "domain_catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+            "resolved_spatial_refs": [
+              {
+                "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+                "anchor_slot_key": "working_camp",
+                "canonical_g5_id": "trace_ld_v1_g5_fishing_camp",
+                "node_template_id": "trace_ld_v1_tpl_fishing_camp",
+                "location_profile_id": "trace_ld_v1_smp_fishing_camp",
+                "canonical_g5_version": 1,
+                "node_template_version": 1
+              },
+              {
+                "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+                "anchor_slot_key": "shed_approach",
+                "canonical_g5_id": "trace_ld_v1_g5_old_drying_shed",
+                "node_template_id": "trace_ld_v1_tpl_old_drying_shed",
+                "location_profile_id": "trace_ld_v1_smp_old_drying_shed",
+                "canonical_g5_version": 1,
+                "node_template_version": 1
+              }
+            ],
+            "resolved_resource_refs": [
+              {
+                "category_id": "cat_item_object_rope_v1",
+                "item_template_id": "item_tpl_nov_rope_v1",
+                "inventory_profile": {
+                  "size_band": "cat_item_size_packing_6_bundle_1_v1",
+                  "carry_form": "regular",
+                  "mass_grams": 3000,
+                  "packing_slot_cost": 6,
+                  "external_hand_cost": 1,
+                  "packing_bundle_size": 1
+                },
+                "quantity_profile_id": "quantity_item_tpl_nov_rope_v1_count_v5",
+                "inventory_profile_id": "inventory_item_tpl_nov_rope_v1"
+              },
+              {
+                "category_id": "cat_item_object_linen_shirt_v1",
+                "item_template_id": "item_tpl_nov_linen_shirt_v1",
+                "inventory_profile": {
+                  "size_band": "cat_item_size_packing_3_bundle_1_v1",
+                  "carry_form": "regular",
+                  "mass_grams": 600,
+                  "packing_slot_cost": 3,
+                  "external_hand_cost": 0,
+                  "packing_bundle_size": 1
+                },
+                "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "inventory_profile_id": "inventory_item_tpl_nov_linen_shirt_v1"
+              }
+            ],
+            "world_base_reference_digest": "sha256:51f4e7f99738c3c8f0976dbe10167152677d19f9a5962141a96efa2b73917795",
+            "domain_catalog_bundle_digest": "c19b7abee8a95e928d7cc0b88c54c658074c2ff6b632ce142751f4a4fb08f006"
+          },
+          "materialization": {
+            "pass": true,
+            "checks": {
+              "resources": true,
+              "actor_refs": true,
+              "placements": true,
+              "player_known": true,
+              "exact_world_closure": true,
+              "exact_domain_closure": true
+            },
+            "schema": "rus.live_world_runtime.authored_start_admission.v1",
+            "version": 1,
+            "resolved_actor_refs": [
+              {
+                "role_id": "nov_role_fisher",
+                "actor_ref": "player",
+                "occupation_id": "nov_occ_fisher"
+              },
+              {
+                "role_id": "nov_role_boatman",
+                "actor_ref": "miloslav",
+                "occupation_id": "nov_occ_boatman"
+              },
+              {
+                "role_id": "nov_role_fisher",
+                "actor_ref": "nezhata",
+                "occupation_id": "nov_occ_fisher"
+              }
+            ],
+            "actor_catalog_digest": "2c35b37bd034c4fc3607c52f16cc32b2b638e1a4e3b47ed07ff6d775f97685fb",
+            "domain_catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+            "resolved_spatial_refs": [
+              {
+                "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+                "anchor_slot_key": "working_camp",
+                "canonical_g5_id": "trace_ld_v1_g5_fishing_camp",
+                "node_template_id": "trace_ld_v1_tpl_fishing_camp",
+                "location_profile_id": "trace_ld_v1_smp_fishing_camp",
+                "canonical_g5_version": 1,
+                "node_template_version": 1
+              },
+              {
+                "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+                "anchor_slot_key": "shed_approach",
+                "canonical_g5_id": "trace_ld_v1_g5_old_drying_shed",
+                "node_template_id": "trace_ld_v1_tpl_old_drying_shed",
+                "location_profile_id": "trace_ld_v1_smp_old_drying_shed",
+                "canonical_g5_version": 1,
+                "node_template_version": 1
+              }
+            ],
+            "resolved_resource_refs": [
+              {
+                "category_id": "cat_item_object_rope_v1",
+                "item_template_id": "item_tpl_nov_rope_v1",
+                "inventory_profile": {
+                  "size_band": "cat_item_size_packing_6_bundle_1_v1",
+                  "carry_form": "regular",
+                  "mass_grams": 3000,
+                  "packing_slot_cost": 6,
+                  "external_hand_cost": 1,
+                  "packing_bundle_size": 1
+                },
+                "quantity_profile_id": "quantity_item_tpl_nov_rope_v1_count_v5",
+                "inventory_profile_id": "inventory_item_tpl_nov_rope_v1"
+              },
+              {
+                "category_id": "cat_item_object_linen_shirt_v1",
+                "item_template_id": "item_tpl_nov_linen_shirt_v1",
+                "inventory_profile": {
+                  "size_band": "cat_item_size_packing_3_bundle_1_v1",
+                  "carry_form": "regular",
+                  "mass_grams": 600,
+                  "packing_slot_cost": 3,
+                  "external_hand_cost": 0,
+                  "packing_bundle_size": 1
+                },
+                "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "inventory_profile_id": "inventory_item_tpl_nov_linen_shirt_v1"
+              }
+            ],
+            "world_base_reference_digest": "sha256:51f4e7f99738c3c8f0976dbe10167152677d19f9a5962141a96efa2b73917795",
+            "domain_catalog_bundle_digest": "c19b7abee8a95e928d7cc0b88c54c658074c2ff6b632ce142751f4a4fb08f006"
+          }
+        },
+        "materializer_version": "code_materializer_v2"
+      }
+    ],
+    "party_materialization_run_catalog_pins": [
+      {
+        "run_id": "authored_81758576bc723cdf3f491f8f",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "import_id": "catalog_import_ddb001f85fd347d9f50f92c77d7e7553",
+        "catalog_scope": "item_container_materialization_v2",
+        "catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+        "activation_event_id": "runtime_catalog_activation_edaab8b28587f2355512109366770e64",
+        "catalog_revision_id": "runtime_catalog_lower_dvina_spatial_v3_v12_001",
+        "import_audit_digest": "10f5defbff17a53aebd539860978a63a75eed122b33ce767f91a716b3ea127ce",
+        "record_registry_digest": "87191513c2ff0c9ce586a6c63211ab641fc7d8f255fbd852483f424101326e96",
+        "runtime_contract_digest": "60c3a601bcb561c39017fed915cb9b9cdaa779115f4f0f2c0175db3eda64a0c7"
+      }
+    ],
+    "party_materialization_choices": [
+      {
+        "run_id": "authored_81758576bc723cdf3f491f8f",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "rng_draw": 0,
+        "slot_key": "player_profile",
+        "selected_id": "Любава",
+        "candidate_ids": [
+          "Любава"
+        ],
+        "choice_ordinal": 0,
+        "candidate_set_digest": "7c17dcbe08074ea0aea1db1ca4bc7c4bd1e65a48f8bc2b8a6a0d43861f28e130"
+      }
+    ],
+    "party_g5_nodes": [
+      {
+        "state": {
+          "canonical_g5_ref": {
+            "id": "trace_ld_v1_g5_fishing_camp",
+            "version": 1
+          },
+          "location_profile_ref": "trace_ld_v1_smp_fishing_camp",
+          "environment_profile_ref": null
+        },
+        "run_id": "authored_81758576bc723cdf3f491f8f",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "slot_key": "yard",
+        "g5_node_id": "g5_node_b38facfa8cfc1783d233ee47",
+        "template_id": "trace_ld_v1_tpl_fishing_camp",
+        "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach"
+      },
+      {
+        "state": {
+          "canonical_g5_ref": {
+            "id": "trace_ld_v1_g5_old_drying_shed",
+            "version": 1
+          },
+          "location_profile_ref": "trace_ld_v1_smp_old_drying_shed",
+          "environment_profile_ref": null
+        },
+        "run_id": "authored_81758576bc723cdf3f491f8f",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "slot_key": "flax_shed",
+        "g5_node_id": "g5_node_32789131bbdd3503af2fdefb",
+        "template_id": "trace_ld_v1_tpl_old_drying_shed",
+        "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge"
+      }
+    ],
+    "party_g5_anchors": [
+      {
+        "state": {
+          "access_class": "ordinary_shared"
+        },
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "slot_key": "shed_approach",
+        "anchor_id": "g5_anchor_2f9e753ee17068ea9c48ee75",
+        "g5_node_id": "g5_node_32789131bbdd3503af2fdefb",
+        "template_id": "scene_position.fixed_working_reach",
+        "npc_capacity": 3,
+        "item_capacity": 7,
+        "container_capacity": 7
+      },
+      {
+        "state": {
+          "access_class": "ordinary_shared"
+        },
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "slot_key": "working_camp",
+        "anchor_id": "g5_anchor_cec34c15b69adb84d24cfb8d",
+        "g5_node_id": "g5_node_b38facfa8cfc1783d233ee47",
+        "template_id": "scene_position.fixed_working_reach",
+        "npc_capacity": 6,
+        "item_capacity": 7,
+        "container_capacity": 7
+      }
+    ],
+    "party_player_characters": [
+      {
+        "profile": {
+          "skills": {
+            "observation": {
+              "bonus": 1
+            }
+          },
+          "identity": {
+            "name": "Любава",
+            "canonical_name": "Любава"
+          },
+          "knowledge": {
+            "known_facts": [
+              "До вечера нужно проверить сети и уложить снасти."
+            ]
+          },
+          "attributes": {
+            "reason": {
+              "value": 10
+            },
+            "strength": {
+              "value": 10
+            },
+            "attention": {
+              "value": 12
+            },
+            "dexterity": {
+              "value": 11
+            },
+            "endurance": {
+              "value": 11
+            },
+            "influence": {
+              "value": 10
+            }
+          },
+          "social_status": {
+            "display_name": "рыбачка",
+            "occupation_id": "nov_occ_fisher",
+            "social_role_id": "nov_role_fisher"
+          }
+        },
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "character_id": "player_character_f9a36f60dee59172821b45d6"
+      }
+    ],
+    "party_npcs": [
+      {
+        "npc_id": "npc_8f7539ebc189ca807e8bb638",
+        "run_id": "authored_81758576bc723cdf3f491f8f",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "anchor_id": "g5_anchor_cec34c15b69adb84d24cfb8d",
+        "machine_state": {
+          "status": "active",
+          "materialization_depth": "full"
+        },
+        "profile_level": "scene",
+        "identity_state": {
+          "canonical_name": "Милослав"
+        },
+        "profile_set_id": "nov_occ_boatman",
+        "semantic_state": {
+          "zone_ref": "main",
+          "causal_basis": "authored_start",
+          "relationships": [
+            {
+              "to": "player",
+              "kind": "older_brother",
+              "standing": "trusted",
+              "target_actor_id": "player_character_f9a36f60dee59172821b45d6"
+            }
+          ],
+          "profile_revision": 1,
+          "scenario_function": "ordinary_authored_person",
+          "location_profile_ref": "trace_ld_v1_smp_fishing_camp",
+          "participant_slot_ref": "miloslav",
+          "profile_record_digest": "6544d77fd0b999616b135837c5608fbb5e58c62d6f4c70b48f65a25ab2524f6b"
+        }
+      },
+      {
+        "npc_id": "npc_c0f21a0593e596897b28f334",
+        "run_id": "authored_81758576bc723cdf3f491f8f",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "anchor_id": "g5_anchor_2f9e753ee17068ea9c48ee75",
+        "machine_state": {
+          "status": "active",
+          "materialization_depth": "full"
+        },
+        "profile_level": "scene",
+        "identity_state": {
+          "canonical_name": "Нежата"
+        },
+        "profile_set_id": "nov_occ_fisher",
+        "semantic_state": {
+          "zone_ref": "main",
+          "causal_basis": "authored_start",
+          "relationships": [
+            {
+              "to": "miloslav",
+              "kind": "hire",
+              "standing": "owes_work",
+              "target_actor_id": "npc_8f7539ebc189ca807e8bb638"
+            }
+          ],
+          "profile_revision": 1,
+          "scenario_function": "ordinary_authored_person",
+          "location_profile_ref": "trace_ld_v1_smp_old_drying_shed",
+          "participant_slot_ref": "nezhata",
+          "profile_record_digest": "555aefb6066be9f489839cba0b4f326f45ec35eb260618c9d14d9a7207982137"
+        }
+      }
+    ],
+    "party_actor_profile_bindings": [
+      {
+        "actor_id": "npc_8f7539ebc189ca807e8bb638",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "role_ref": {
+          "id": "nov_role_boatman",
+          "source": "approved_scenario_profile"
+        },
+        "actor_kind": "npc",
+        "state_version": 1,
+        "occupation_ref": {
+          "id": "nov_occ_boatman",
+          "source": "approved_scenario_profile"
+        },
+        "created_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+        "name_profile_snapshot": {
+          "canonical_name": "Милослав"
+        },
+        "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+        "skill_profile_snapshot": {},
+        "language_profile_snapshot": {},
+        "knowledge_profile_snapshot": {
+          "known_facts": []
+        },
+        "profile_candidate_set_digest": "d2aa9a8347b57641830a4d79da3948c6caeb5d7f526830f89993167a3d4340df"
+      },
+      {
+        "actor_id": "npc_c0f21a0593e596897b28f334",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "role_ref": {
+          "id": "nov_role_fisher",
+          "source": "approved_scenario_profile"
+        },
+        "actor_kind": "npc",
+        "state_version": 1,
+        "occupation_ref": {
+          "id": "nov_occ_fisher",
+          "source": "approved_scenario_profile"
+        },
+        "created_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+        "name_profile_snapshot": {
+          "canonical_name": "Нежата"
+        },
+        "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+        "skill_profile_snapshot": {},
+        "language_profile_snapshot": {},
+        "knowledge_profile_snapshot": {
+          "known_facts": []
+        },
+        "profile_candidate_set_digest": "d2aa9a8347b57641830a4d79da3948c6caeb5d7f526830f89993167a3d4340df"
+      },
+      {
+        "actor_id": "player_character_f9a36f60dee59172821b45d6",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "role_ref": {
+          "id": "nov_role_fisher",
+          "source": "approved_scenario_profile"
+        },
+        "actor_kind": "player_character",
+        "state_version": 1,
+        "occupation_ref": {
+          "id": "nov_occ_fisher",
+          "source": "approved_scenario_profile"
+        },
+        "created_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+        "name_profile_snapshot": {
+          "name": "Любава",
+          "canonical_name": "Любава"
+        },
+        "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+        "skill_profile_snapshot": {
+          "observation": {
+            "bonus": 1
+          }
+        },
+        "language_profile_snapshot": {},
+        "knowledge_profile_snapshot": {
+          "known_facts": [
+            "До вечера нужно проверить сети и уложить снасти."
+          ]
+        },
+        "profile_candidate_set_digest": "7c17dcbe08074ea0aea1db1ca4bc7c4bd1e65a48f8bc2b8a6a0d43861f28e130"
+      }
+    ],
+    "party_actor_body_states": [
+      {
+        "energy": 71,
+        "health": 92,
+        "satiety": 66,
+        "actor_id": "player_character_f9a36f60dee59172821b45d6",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "actor_kind": "player_character",
+        "state_version": 1,
+        "body_profile_ref": {
+          "id": "authored_healthy_adult_v1",
+          "digest": "23edf975abcdf2a3661c4f1e6d3c6d78e529d1afc636bdc68311361e6149634b",
+          "schema": "rus.body_state.profile.v1",
+          "revision": 1
+        },
+        "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2"
+      }
+    ],
+    "party_clocks": [
+      {
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "state_version": 1,
+        "whole_minutes": 333060,
+        "clock_owner_id": null,
+        "clock_owner_kind": "party",
+        "subminute_numerator": 0,
+        "subminute_denominator": 1,
+        "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2"
+      }
+    ],
+    "party_positions": [
+      {
+        "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "g5_node_id": "g5_node_b38facfa8cfc1783d233ee47",
+        "updated_at": "2026-09-19T21:41:39.85516+00:00",
+        "g5_anchor_id": "g5_anchor_cec34c15b69adb84d24cfb8d"
+      }
+    ],
+    "party_items": [
+      {
+        "state": {
+          "finite": true,
+          "causal_basis": "authored_start_resource",
+          "display_name": "верёвка",
+          "inventory_profile_snapshot": {
+            "size_band": "cat_item_size_packing_6_bundle_1_v1",
+            "carry_form": "regular",
+            "mass_grams": 3000,
+            "packing_slot_cost": 6,
+            "external_hand_cost": 1,
+            "packing_bundle_size": 1
+          }
+        },
+        "run_id": "authored_81758576bc723cdf3f491f8f",
+        "item_id": "item_ddb159f784fca43cd95cc448",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "quantity": 1,
+        "profile_id": "inventory_item_tpl_nov_rope_v1",
+        "category_id": "cat_item_object_rope_v1",
+        "template_id": "item_tpl_nov_rope_v1",
+        "legal_status": "owned",
+        "state_version": 1,
+        "condition_state": "serviceable"
+      },
+      {
+        "state": {
+          "finite": true,
+          "causal_basis": "authored_start_resource",
+          "display_name": "льняная рубаха",
+          "inventory_profile_snapshot": {
+            "size_band": "cat_item_size_packing_3_bundle_1_v1",
+            "carry_form": "regular",
+            "mass_grams": 600,
+            "packing_slot_cost": 3,
+            "external_hand_cost": 0,
+            "packing_bundle_size": 1
+          }
+        },
+        "run_id": "authored_81758576bc723cdf3f491f8f",
+        "item_id": "item_30753102abf12df384dd7852",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "quantity": 1,
+        "profile_id": "inventory_item_tpl_nov_linen_shirt_v1",
+        "category_id": "cat_item_object_linen_shirt_v1",
+        "template_id": "item_tpl_nov_linen_shirt_v1",
+        "legal_status": "owned",
+        "state_version": 1,
+        "condition_state": "serviceable"
+      }
+    ],
+    "party_item_placements": [
+      {
+        "item_id": "item_30753102abf12df384dd7852",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "anchor_id": null,
+        "container_id": null,
+        "holder_npc_id": "npc_c0f21a0593e596897b28f334",
+        "attached_item_id": null,
+        "physical_position": "hands",
+        "scene_position_id": null,
+        "holder_character_id": null,
+        "equipment_slot_category_id": null
+      },
+      {
+        "item_id": "item_ddb159f784fca43cd95cc448",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "anchor_id": null,
+        "container_id": null,
+        "holder_npc_id": null,
+        "attached_item_id": null,
+        "physical_position": "hands",
+        "scene_position_id": null,
+        "holder_character_id": "player_character_f9a36f60dee59172821b45d6",
+        "equipment_slot_category_id": null
+      }
+    ],
+    "party_ownership": [
+      {
+        "item_id": "item_30753102abf12df384dd7852",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "claim_state": "established",
+        "owner_party": false,
+        "container_id": null,
+        "owner_npc_id": "npc_c0f21a0593e596897b28f334",
+        "ownership_id": "ownership_item_30753102abf12df384dd7852",
+        "controller_npc_id": "npc_c0f21a0593e596897b28f334",
+        "owner_character_id": null,
+        "owner_external_ref": null,
+        "controller_character_id": null
+      },
+      {
+        "item_id": "item_ddb159f784fca43cd95cc448",
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "claim_state": "established",
+        "owner_party": false,
+        "container_id": null,
+        "owner_npc_id": null,
+        "ownership_id": "ownership_item_ddb159f784fca43cd95cc448",
+        "controller_npc_id": null,
+        "owner_character_id": "player_character_f9a36f60dee59172821b45d6",
+        "owner_external_ref": null,
+        "controller_character_id": "player_character_f9a36f60dee59172821b45d6"
+      }
+    ],
+    "party_state_snapshots": [
+      {
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "created_at": "2026-09-19T21:41:39.85516+00:00",
+        "state_digest": "5d005456f033af9d7344c8128329a7a073ba8ecd7612ef729659da6300a6c24a",
+        "state_payload": {
+          "schema": "rus.authored_start_initial_party_snapshot.v1",
+          "version": 2,
+          "immediate": {
+            "body": {
+              "schema": "rus.body_state.profile.v1",
+              "values": {
+                "energy": 71,
+                "health": 92,
+                "satiety": 66
+              },
+              "version": 1,
+              "conditions": [],
+              "profile_id": "authored_healthy_adult_v1",
+              "record_digest": "23edf975abcdf2a3661c4f1e6d3c6d78e529d1afc636bdc68311361e6149634b",
+              "condition_bindings": []
+            },
+            "npcs": [
+              {
+                "role_ref": {
+                  "id": "nov_role_boatman",
+                  "source": "approved_scenario_profile"
+                },
+                "zone_ref": "main",
+                "anchor_id": "g5_anchor_cec34c15b69adb84d24cfb8d",
+                "profile_id": "nov_occ_boatman",
+                "instance_id": "npc_8f7539ebc189ca807e8bb638",
+                "machine_state": {
+                  "status": "active",
+                  "materialization_depth": "full"
+                },
+                "profile_level": "scene",
+                "relationships": [
+                  {
+                    "to": "player",
+                    "kind": "older_brother",
+                    "standing": "trusted",
+                    "target_actor_id": "player_character_f9a36f60dee59172821b45d6"
+                  }
+                ],
+                "identity_state": {
+                  "canonical_name": "Милослав"
+                },
+                "occupation_ref": {
+                  "id": "nov_occ_boatman",
+                  "source": "approved_scenario_profile"
+                },
+                "semantic_state": {
+                  "causal_basis": "authored_start",
+                  "scenario_function": "ordinary_authored_person"
+                },
+                "profile_revision": 1,
+                "schedule_records": [],
+                "location_profile_ref": "trace_ld_v1_smp_fishing_camp",
+                "participant_slot_ref": "miloslav",
+                "profile_record_digest": "6544d77fd0b999616b135837c5608fbb5e58c62d6f4c70b48f65a25ab2524f6b",
+                "knowledge_profile_snapshot": {
+                  "known_facts": []
+                },
+                "profile_candidate_set_digest": "d2aa9a8347b57641830a4d79da3948c6caeb5d7f526830f89993167a3d4340df"
+              },
+              {
+                "role_ref": {
+                  "id": "nov_role_fisher",
+                  "source": "approved_scenario_profile"
+                },
+                "zone_ref": "main",
+                "anchor_id": "g5_anchor_2f9e753ee17068ea9c48ee75",
+                "profile_id": "nov_occ_fisher",
+                "instance_id": "npc_c0f21a0593e596897b28f334",
+                "machine_state": {
+                  "status": "active",
+                  "materialization_depth": "full"
+                },
+                "profile_level": "scene",
+                "relationships": [
+                  {
+                    "to": "miloslav",
+                    "kind": "hire",
+                    "standing": "owes_work",
+                    "target_actor_id": "npc_8f7539ebc189ca807e8bb638"
+                  }
+                ],
+                "identity_state": {
+                  "canonical_name": "Нежата"
+                },
+                "occupation_ref": {
+                  "id": "nov_occ_fisher",
+                  "source": "approved_scenario_profile"
+                },
+                "semantic_state": {
+                  "causal_basis": "authored_start",
+                  "scenario_function": "ordinary_authored_person"
+                },
+                "profile_revision": 1,
+                "schedule_records": [],
+                "location_profile_ref": "trace_ld_v1_smp_old_drying_shed",
+                "participant_slot_ref": "nezhata",
+                "profile_record_digest": "555aefb6066be9f489839cba0b4f326f45ec35eb260618c9d14d9a7207982137",
+                "knowledge_profile_snapshot": {
+                  "known_facts": []
+                },
+                "profile_candidate_set_digest": "d2aa9a8347b57641830a4d79da3948c6caeb5d7f526830f89993167a3d4340df"
+              }
+            ],
+            "items": [
+              {
+                "state": {
+                  "finite": true,
+                  "causal_basis": "authored_start_resource",
+                  "display_name": "верёвка",
+                  "inventory_profile_snapshot": {
+                    "size_band": "cat_item_size_packing_6_bundle_1_v1",
+                    "carry_form": "regular",
+                    "mass_grams": 3000,
+                    "packing_slot_cost": 6,
+                    "external_hand_cost": 1,
+                    "packing_bundle_size": 1
+                  }
+                },
+                "quantity": 1,
+                "profile_id": "inventory_item_tpl_nov_rope_v1",
+                "category_id": "cat_item_object_rope_v1",
+                "claim_state": "established",
+                "instance_id": "item_ddb159f784fca43cd95cc448",
+                "template_id": "item_tpl_nov_rope_v1",
+                "legal_status": "owned",
+                "condition_state": "serviceable",
+                "physical_position": "hands",
+                "owner_character_id": "player_character_f9a36f60dee59172821b45d6",
+                "holder_character_id": "player_character_f9a36f60dee59172821b45d6",
+                "controller_character_id": "player_character_f9a36f60dee59172821b45d6"
+              },
+              {
+                "state": {
+                  "finite": true,
+                  "causal_basis": "authored_start_resource",
+                  "display_name": "льняная рубаха",
+                  "inventory_profile_snapshot": {
+                    "size_band": "cat_item_size_packing_3_bundle_1_v1",
+                    "carry_form": "regular",
+                    "mass_grams": 600,
+                    "packing_slot_cost": 3,
+                    "external_hand_cost": 0,
+                    "packing_bundle_size": 1
+                  }
+                },
+                "quantity": 1,
+                "profile_id": "inventory_item_tpl_nov_linen_shirt_v1",
+                "category_id": "cat_item_object_linen_shirt_v1",
+                "claim_state": "established",
+                "instance_id": "item_30753102abf12df384dd7852",
+                "template_id": "item_tpl_nov_linen_shirt_v1",
+                "legal_status": "owned",
+                "owner_npc_id": "npc_c0f21a0593e596897b28f334",
+                "holder_npc_id": "npc_c0f21a0593e596897b28f334",
+                "condition_state": "serviceable",
+                "controller_npc_id": "npc_c0f21a0593e596897b28f334",
+                "physical_position": "hands"
+              }
+            ],
+            "player": {
+              "dossier": {
+                "skills": {
+                  "observation": {
+                    "bonus": 1
+                  }
+                },
+                "identity": {
+                  "name": "Любава",
+                  "canonical_name": "Любава"
+                },
+                "knowledge": {
+                  "known_facts": [
+                    "До вечера нужно проверить сети и уложить снасти."
+                  ]
+                },
+                "attributes": {
+                  "reason": {
+                    "value": 10
+                  },
+                  "strength": {
+                    "value": 10
+                  },
+                  "attention": {
+                    "value": 12
+                  },
+                  "dexterity": {
+                    "value": 11
+                  },
+                  "endurance": {
+                    "value": 11
+                  },
+                  "influence": {
+                    "value": 10
+                  }
+                },
+                "social_status": {
+                  "display_name": "рыбачка",
+                  "occupation_id": "nov_occ_fisher",
+                  "social_role_id": "nov_role_fisher"
+                }
+              },
+              "instance_id": "player_character_f9a36f60dee59172821b45d6"
+            },
+            "spatial": {
+              "node": {
+                "state": {
+                  "canonical_g5_ref": {
+                    "id": "trace_ld_v1_g5_fishing_camp",
+                    "version": 1
+                  },
+                  "location_profile_ref": "trace_ld_v1_smp_fishing_camp",
+                  "environment_profile_ref": null
+                },
+                "slot_key": "yard",
+                "instance_id": "g5_node_b38facfa8cfc1783d233ee47",
+                "template_id": "trace_ld_v1_tpl_fishing_camp",
+                "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach"
+              },
+              "anchor": {
+                "state": {
+                  "access_class": "ordinary_shared"
+                },
+                "node_id": "g5_node_b38facfa8cfc1783d233ee47",
+                "slot_key": "working_camp",
+                "instance_id": "g5_anchor_cec34c15b69adb84d24cfb8d",
+                "template_id": "scene_position.fixed_working_reach",
+                "npc_capacity": 6,
+                "item_capacity": 7,
+                "container_capacity": 7
+              },
+              "position": {
+                "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+                "g5_node_id": "g5_node_b38facfa8cfc1783d233ee47",
+                "g5_anchor_id": "g5_anchor_cec34c15b69adb84d24cfb8d"
+              }
+            },
+            "timestamp": {
+              "whole_minutes": "333060",
+              "subminute_numerator": "0",
+              "subminute_denominator": "1"
+            },
+            "containers": [],
+            "prepared_scenes": [
+              {
+                "node": {
+                  "state": {
+                    "canonical_g5_ref": {
+                      "id": "trace_ld_v1_g5_old_drying_shed",
+                      "version": 1
+                    },
+                    "location_profile_ref": "trace_ld_v1_smp_old_drying_shed",
+                    "environment_profile_ref": null
+                  },
+                  "slot_key": "flax_shed",
+                  "instance_id": "g5_node_32789131bbdd3503af2fdefb",
+                  "template_id": "trace_ld_v1_tpl_old_drying_shed",
+                  "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge"
+                },
+                "anchor": {
+                  "state": {
+                    "access_class": "ordinary_shared"
+                  },
+                  "node_id": "g5_node_32789131bbdd3503af2fdefb",
+                  "slot_key": "shed_approach",
+                  "instance_id": "g5_anchor_2f9e753ee17068ea9c48ee75",
+                  "template_id": "scene_position.fixed_working_reach",
+                  "npc_capacity": 3,
+                  "item_capacity": 7,
+                  "container_capacity": 7
+                },
+                "location_profile_ref": "trace_ld_v1_smp_old_drying_shed"
+              }
+            ],
+            "environment_snapshot": {
+              "facts": [],
+              "environment_profile_id": "env.local_variable"
+            }
+          },
+          "hidden_truth": {
+            "kind": "none",
+            "digest": "2ff9cdff091aef6faf5f29ea2e9d90021c8046bb62ad5a5591d615403ad52203"
+          },
+          "request_identity": {
+            "trigger": "new_game",
+            "party_id": "party:21a0fc0a13bb037dc00689ac",
+            "occurrence": 0,
+            "scenario_id": "vikhtuy_fishing_camp_v1",
+            "seed_context": "authored_start:vikhtuy_fishing_camp_v1:v4",
+            "idempotency_key": "new-game:vikhtuy_fishing_camp_v1:21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+            "rng_algorithm_id": "mulberry32_v1",
+            "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+            "world_compatibility": {
+              "lineage": [
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v2/manifest.json",
+                  "digest": "3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+                  "world_catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255"
+                },
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json",
+                  "digest": "593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+                  "world_catalog_digest": "1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e"
+                },
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json",
+                  "digest": "64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+                  "world_catalog_digest": "acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79"
+                },
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json",
+                  "digest": "6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+                  "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad"
+                },
+                {
+                  "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json",
+                  "digest": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb",
+                  "status": "approved",
+                  "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+                  "parent_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+                  "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+                }
+              ],
+              "source_status": "approved",
+              "production_status": "approved",
+              "source_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+              "source_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+              "production_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+              "production_world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+            },
+            "existing_party_state": {
+              "baseline_exists": false
+            },
+            "materializer_version": "code_materializer_v2",
+            "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+            "scenario_manifest_digest": "0f71fbd72e35c72f75988990df918d63deff24445f8e7f0302a1ffa0db23677b",
+            "scenario_definition_revision": 4
+          },
+          "sealed_selections": [],
+          "policy_profile_pins": [],
+          "semantic_validation": {
+            "pass": true,
+            "checks": {
+              "resources": true,
+              "actor_refs": true,
+              "placements": true,
+              "player_known": true,
+              "exact_world_closure": true,
+              "exact_domain_closure": true
+            },
+            "schema": "rus.live_world_runtime.authored_start_admission.v1",
+            "version": 1,
+            "resolved_actor_refs": [
+              {
+                "role_id": "nov_role_fisher",
+                "actor_ref": "player",
+                "occupation_id": "nov_occ_fisher"
+              },
+              {
+                "role_id": "nov_role_boatman",
+                "actor_ref": "miloslav",
+                "occupation_id": "nov_occ_boatman"
+              },
+              {
+                "role_id": "nov_role_fisher",
+                "actor_ref": "nezhata",
+                "occupation_id": "nov_occ_fisher"
+              }
+            ],
+            "actor_catalog_digest": "2c35b37bd034c4fc3607c52f16cc32b2b638e1a4e3b47ed07ff6d775f97685fb",
+            "domain_catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+            "resolved_spatial_refs": [
+              {
+                "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+                "anchor_slot_key": "working_camp",
+                "canonical_g5_id": "trace_ld_v1_g5_fishing_camp",
+                "node_template_id": "trace_ld_v1_tpl_fishing_camp",
+                "location_profile_id": "trace_ld_v1_smp_fishing_camp",
+                "canonical_g5_version": 1,
+                "node_template_version": 1
+              },
+              {
+                "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+                "anchor_slot_key": "shed_approach",
+                "canonical_g5_id": "trace_ld_v1_g5_old_drying_shed",
+                "node_template_id": "trace_ld_v1_tpl_old_drying_shed",
+                "location_profile_id": "trace_ld_v1_smp_old_drying_shed",
+                "canonical_g5_version": 1,
+                "node_template_version": 1
+              }
+            ],
+            "resolved_resource_refs": [
+              {
+                "category_id": "cat_item_object_rope_v1",
+                "item_template_id": "item_tpl_nov_rope_v1",
+                "inventory_profile": {
+                  "size_band": "cat_item_size_packing_6_bundle_1_v1",
+                  "carry_form": "regular",
+                  "mass_grams": 3000,
+                  "packing_slot_cost": 6,
+                  "external_hand_cost": 1,
+                  "packing_bundle_size": 1
+                },
+                "quantity_profile_id": "quantity_item_tpl_nov_rope_v1_count_v5",
+                "inventory_profile_id": "inventory_item_tpl_nov_rope_v1"
+              },
+              {
+                "category_id": "cat_item_object_linen_shirt_v1",
+                "item_template_id": "item_tpl_nov_linen_shirt_v1",
+                "inventory_profile": {
+                  "size_band": "cat_item_size_packing_3_bundle_1_v1",
+                  "carry_form": "regular",
+                  "mass_grams": 600,
+                  "packing_slot_cost": 3,
+                  "external_hand_cost": 0,
+                  "packing_bundle_size": 1
+                },
+                "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                "inventory_profile_id": "inventory_item_tpl_nov_linen_shirt_v1"
+              }
+            ],
+            "world_base_reference_digest": "sha256:51f4e7f99738c3c8f0976dbe10167152677d19f9a5962141a96efa2b73917795",
+            "domain_catalog_bundle_digest": "c19b7abee8a95e928d7cc0b88c54c658074c2ff6b632ce142751f4a4fb08f006"
+          },
+          "persisted_projection": {
+            "body": {
+              "energy": 71,
+              "health": 92,
+              "satiety": 66,
+              "state_version": 1,
+              "body_profile_ref": {
+                "id": "authored_healthy_adult_v1",
+                "digest": "23edf975abcdf2a3661c4f1e6d3c6d78e529d1afc636bdc68311361e6149634b",
+                "schema": "rus.body_state.profile.v1",
+                "revision": 1
+              },
+              "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2"
+            },
+            "npcs": [
+              {
+                "npc_id": "npc_8f7539ebc189ca807e8bb638",
+                "run_id": "authored_81758576bc723cdf3f491f8f",
+                "role_ref": {
+                  "id": "nov_role_boatman",
+                  "source": "approved_scenario_profile"
+                },
+                "anchor_id": "g5_anchor_cec34c15b69adb84d24cfb8d",
+                "machine_state": {
+                  "status": "active",
+                  "materialization_depth": "full"
+                },
+                "profile_level": "scene",
+                "state_version": 1,
+                "identity_state": {
+                  "canonical_name": "Милослав"
+                },
+                "occupation_ref": {
+                  "id": "nov_occ_boatman",
+                  "source": "approved_scenario_profile"
+                },
+                "profile_set_id": "nov_occ_boatman",
+                "semantic_state": {
+                  "zone_ref": "main",
+                  "causal_basis": "authored_start",
+                  "relationships": [
+                    {
+                      "to": "player",
+                      "kind": "older_brother",
+                      "standing": "trusted",
+                      "target_actor_id": "player_character_f9a36f60dee59172821b45d6"
+                    }
+                  ],
+                  "profile_revision": 1,
+                  "scenario_function": "ordinary_authored_person",
+                  "location_profile_ref": "trace_ld_v1_smp_fishing_camp",
+                  "participant_slot_ref": "miloslav",
+                  "profile_record_digest": "6544d77fd0b999616b135837c5608fbb5e58c62d6f4c70b48f65a25ab2524f6b"
+                },
+                "schedule_records": [],
+                "created_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+                "name_profile_snapshot": {
+                  "canonical_name": "Милослав"
+                },
+                "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+                "skill_profile_snapshot": {},
+                "language_profile_snapshot": {},
+                "knowledge_profile_snapshot": {
+                  "known_facts": []
+                },
+                "profile_candidate_set_digest": "d2aa9a8347b57641830a4d79da3948c6caeb5d7f526830f89993167a3d4340df"
+              },
+              {
+                "npc_id": "npc_c0f21a0593e596897b28f334",
+                "run_id": "authored_81758576bc723cdf3f491f8f",
+                "role_ref": {
+                  "id": "nov_role_fisher",
+                  "source": "approved_scenario_profile"
+                },
+                "anchor_id": "g5_anchor_2f9e753ee17068ea9c48ee75",
+                "machine_state": {
+                  "status": "active",
+                  "materialization_depth": "full"
+                },
+                "profile_level": "scene",
+                "state_version": 1,
+                "identity_state": {
+                  "canonical_name": "Нежата"
+                },
+                "occupation_ref": {
+                  "id": "nov_occ_fisher",
+                  "source": "approved_scenario_profile"
+                },
+                "profile_set_id": "nov_occ_fisher",
+                "semantic_state": {
+                  "zone_ref": "main",
+                  "causal_basis": "authored_start",
+                  "relationships": [
+                    {
+                      "to": "miloslav",
+                      "kind": "hire",
+                      "standing": "owes_work",
+                      "target_actor_id": "npc_8f7539ebc189ca807e8bb638"
+                    }
+                  ],
+                  "profile_revision": 1,
+                  "scenario_function": "ordinary_authored_person",
+                  "location_profile_ref": "trace_ld_v1_smp_old_drying_shed",
+                  "participant_slot_ref": "nezhata",
+                  "profile_record_digest": "555aefb6066be9f489839cba0b4f326f45ec35eb260618c9d14d9a7207982137"
+                },
+                "schedule_records": [],
+                "created_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+                "name_profile_snapshot": {
+                  "canonical_name": "Нежата"
+                },
+                "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+                "skill_profile_snapshot": {},
+                "language_profile_snapshot": {},
+                "knowledge_profile_snapshot": {
+                  "known_facts": []
+                },
+                "profile_candidate_set_digest": "d2aa9a8347b57641830a4d79da3948c6caeb5d7f526830f89993167a3d4340df"
+              }
+            ],
+            "clock": {
+              "state_version": 1,
+              "whole_minutes": "333060",
+              "clock_owner_id": null,
+              "clock_owner_kind": "party",
+              "subminute_numerator": "0",
+              "subminute_denominator": "1",
+              "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2"
+            },
+            "items": [
+              {
+                "state": {
+                  "finite": true,
+                  "causal_basis": "authored_start_resource",
+                  "display_name": "льняная рубаха",
+                  "inventory_profile_snapshot": {
+                    "size_band": "cat_item_size_packing_3_bundle_1_v1",
+                    "carry_form": "regular",
+                    "mass_grams": 600,
+                    "packing_slot_cost": 3,
+                    "external_hand_cost": 0,
+                    "packing_bundle_size": 1
+                  }
+                },
+                "run_id": "authored_81758576bc723cdf3f491f8f",
+                "item_id": "item_30753102abf12df384dd7852",
+                "quantity": 1,
+                "ownership": {
+                  "claim_state": "established",
+                  "owner_party": false,
+                  "container_id": null,
+                  "owner_npc_id": "npc_c0f21a0593e596897b28f334",
+                  "ownership_id": "ownership_item_30753102abf12df384dd7852",
+                  "controller_npc_id": "npc_c0f21a0593e596897b28f334",
+                  "owner_character_id": null,
+                  "owner_external_ref": null,
+                  "controller_character_id": null
+                },
+                "placement": {
+                  "anchor_id": null,
+                  "container_id": null,
+                  "holder_npc_id": "npc_c0f21a0593e596897b28f334",
+                  "physical_position": "hands",
+                  "holder_character_id": null,
+                  "equipment_slot_category_id": null
+                },
+                "profile_id": "inventory_item_tpl_nov_linen_shirt_v1",
+                "category_id": "cat_item_object_linen_shirt_v1",
+                "template_id": "item_tpl_nov_linen_shirt_v1",
+                "legal_status": "owned",
+                "condition_state": "serviceable"
+              },
+              {
+                "state": {
+                  "finite": true,
+                  "causal_basis": "authored_start_resource",
+                  "display_name": "верёвка",
+                  "inventory_profile_snapshot": {
+                    "size_band": "cat_item_size_packing_6_bundle_1_v1",
+                    "carry_form": "regular",
+                    "mass_grams": 3000,
+                    "packing_slot_cost": 6,
+                    "external_hand_cost": 1,
+                    "packing_bundle_size": 1
+                  }
+                },
+                "run_id": "authored_81758576bc723cdf3f491f8f",
+                "item_id": "item_ddb159f784fca43cd95cc448",
+                "quantity": 1,
+                "ownership": {
+                  "claim_state": "established",
+                  "owner_party": false,
+                  "container_id": null,
+                  "owner_npc_id": null,
+                  "ownership_id": "ownership_item_ddb159f784fca43cd95cc448",
+                  "controller_npc_id": null,
+                  "owner_character_id": "player_character_f9a36f60dee59172821b45d6",
+                  "owner_external_ref": null,
+                  "controller_character_id": "player_character_f9a36f60dee59172821b45d6"
+                },
+                "placement": {
+                  "anchor_id": null,
+                  "container_id": null,
+                  "holder_npc_id": null,
+                  "physical_position": "hands",
+                  "holder_character_id": "player_character_f9a36f60dee59172821b45d6",
+                  "equipment_slot_category_id": null
+                },
+                "profile_id": "inventory_item_tpl_nov_rope_v1",
+                "category_id": "cat_item_object_rope_v1",
+                "template_id": "item_tpl_nov_rope_v1",
+                "legal_status": "owned",
+                "condition_state": "serviceable"
+              }
+            ],
+            "player": {
+              "dossier": {
+                "skills": {
+                  "observation": {
+                    "bonus": 1
+                  }
+                },
+                "identity": {
+                  "name": "Любава",
+                  "canonical_name": "Любава"
+                },
+                "knowledge": {
+                  "known_facts": [
+                    "До вечера нужно проверить сети и уложить снасти."
+                  ]
+                },
+                "attributes": {
+                  "reason": {
+                    "value": 10
+                  },
+                  "strength": {
+                    "value": 10
+                  },
+                  "attention": {
+                    "value": 12
+                  },
+                  "dexterity": {
+                    "value": 11
+                  },
+                  "endurance": {
+                    "value": 11
+                  },
+                  "influence": {
+                    "value": 10
+                  }
+                },
+                "social_status": {
+                  "display_name": "рыбачка",
+                  "occupation_id": "nov_occ_fisher",
+                  "social_role_id": "nov_role_fisher"
+                }
+              },
+              "role_ref": {
+                "id": "nov_role_fisher",
+                "source": "approved_scenario_profile"
+              },
+              "character_id": "player_character_f9a36f60dee59172821b45d6",
+              "state_version": 1,
+              "occupation_ref": {
+                "id": "nov_occ_fisher",
+                "source": "approved_scenario_profile"
+              },
+              "created_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+              "name_profile_snapshot": {
+                "name": "Любава",
+                "canonical_name": "Любава"
+              },
+              "updated_change_set_id": "change_7a785555f6a87186fdfa8eb2",
+              "skill_profile_snapshot": {
+                "observation": {
+                  "bonus": 1
+                }
+              },
+              "language_profile_snapshot": {},
+              "knowledge_profile_snapshot": {
+                "known_facts": [
+                  "До вечера нужно проверить сети и уложить снасти."
+                ]
+              },
+              "profile_candidate_set_digest": "7c17dcbe08074ea0aea1db1ca4bc7c4bd1e65a48f8bc2b8a6a0d43861f28e130"
+            },
+            "schema": "rus.authored_start_persisted_projection.v1",
+            "spatial": {
+              "node": {
+                "state": {
+                  "canonical_g5_ref": {
+                    "id": "trace_ld_v1_g5_fishing_camp",
+                    "version": 1
+                  },
+                  "location_profile_ref": "trace_ld_v1_smp_fishing_camp",
+                  "environment_profile_ref": null
+                },
+                "run_id": "authored_81758576bc723cdf3f491f8f",
+                "slot_key": "yard",
+                "g5_node_id": "g5_node_b38facfa8cfc1783d233ee47",
+                "template_id": "trace_ld_v1_tpl_fishing_camp",
+                "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach"
+              },
+              "anchor": {
+                "state": {
+                  "access_class": "ordinary_shared"
+                },
+                "slot_key": "working_camp",
+                "anchor_id": "g5_anchor_cec34c15b69adb84d24cfb8d",
+                "g5_node_id": "g5_node_b38facfa8cfc1783d233ee47",
+                "template_id": "scene_position.fixed_working_reach",
+                "npc_capacity": 6,
+                "item_capacity": 7,
+                "container_capacity": 7
+              },
+              "position": {
+                "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+                "g5_node_id": "g5_node_b38facfa8cfc1783d233ee47",
+                "g5_anchor_id": "g5_anchor_cec34c15b69adb84d24cfb8d"
+              },
+              "prepared_scenes": [
+                {
+                  "node": {
+                    "state": {
+                      "canonical_g5_ref": {
+                        "id": "trace_ld_v1_g5_old_drying_shed",
+                        "version": 1
+                      },
+                      "location_profile_ref": "trace_ld_v1_smp_old_drying_shed",
+                      "environment_profile_ref": null
+                    },
+                    "run_id": "authored_81758576bc723cdf3f491f8f",
+                    "slot_key": "flax_shed",
+                    "g5_node_id": "g5_node_32789131bbdd3503af2fdefb",
+                    "template_id": "trace_ld_v1_tpl_old_drying_shed",
+                    "parent_g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge"
+                  },
+                  "anchor": {
+                    "state": {
+                      "access_class": "ordinary_shared"
+                    },
+                    "slot_key": "shed_approach",
+                    "anchor_id": "g5_anchor_2f9e753ee17068ea9c48ee75",
+                    "g5_node_id": "g5_node_32789131bbdd3503af2fdefb",
+                    "template_id": "scene_position.fixed_working_reach",
+                    "npc_capacity": 3,
+                    "item_capacity": 7,
+                    "container_capacity": 7
+                  },
+                  "location_profile_ref": "trace_ld_v1_smp_old_drying_shed"
+                }
+              ]
+            },
+            "conditions": [],
+            "containers": [],
+            "obligations": [],
+            "materialization_run": {
+              "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+              "trace": {
+                "run_id": "authored_81758576bc723cdf3f491f8f",
+                "choices": [
+                  {
+                    "rng_draw": 0,
+                    "slot_key": "player_profile",
+                    "choice_key": "player_profile",
+                    "selected_id": "Любава",
+                    "candidate_ids": [
+                      "Любава"
+                    ],
+                    "choice_ordinal": 0,
+                    "candidate_set_digest": "7c17dcbe08074ea0aea1db1ca4bc7c4bd1e65a48f8bc2b8a6a0d43861f28e130"
+                  }
+                ],
+                "rng_version": "mulberry32_v1",
+                "seed_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+                "input_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+                "seed_context": {
+                  "trigger": "new_game",
+                  "party_id": "party:21a0fc0a13bb037dc00689ac",
+                  "occurrence": 0,
+                  "scenario_id": "vikhtuy_fishing_camp_v1",
+                  "seed_context": "authored_start:vikhtuy_fishing_camp_v1:v4",
+                  "idempotency_key": "new-game:vikhtuy_fishing_camp_v1:21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+                  "rng_algorithm_id": "mulberry32_v1",
+                  "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+                  "world_compatibility": {
+                    "lineage": [
+                      {
+                        "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v2/manifest.json",
+                        "digest": "3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a",
+                        "status": "approved",
+                        "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+                        "parent_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+                        "world_catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255"
+                      },
+                      {
+                        "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json",
+                        "digest": "593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea",
+                        "status": "approved",
+                        "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+                        "parent_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+                        "world_catalog_digest": "1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e"
+                      },
+                      {
+                        "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json",
+                        "digest": "64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb",
+                        "status": "approved",
+                        "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+                        "parent_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+                        "world_catalog_digest": "acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79"
+                      },
+                      {
+                        "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json",
+                        "digest": "6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c",
+                        "status": "approved",
+                        "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+                        "parent_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+                        "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad"
+                      },
+                      {
+                        "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json",
+                        "digest": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb",
+                        "status": "approved",
+                        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+                        "parent_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+                        "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+                      }
+                    ],
+                    "source_status": "approved",
+                    "production_status": "approved",
+                    "source_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+                    "source_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+                    "production_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+                    "production_world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+                  },
+                  "existing_party_state": {
+                    "baseline_exists": false
+                  },
+                  "materializer_version": "code_materializer_v2",
+                  "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+                  "scenario_manifest_digest": "0f71fbd72e35c72f75988990df918d63deff24445f8e7f0302a1ffa0db23677b",
+                  "scenario_definition_revision": 4
+                },
+                "result_digest": "5ae3c1c4f16c94010e11d3a97b09e60b13fc79a440cc95060f7a6565071726a0",
+                "catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+                "rng_draw_count": 0,
+                "idempotency_key": "new-game:vikhtuy_fishing_camp_v1:21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+                "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+                "policy_profile_pins": [],
+                "actor_catalog_digest": "2c35b37bd034c4fc3607c52f16cc32b2b638e1a4e3b47ed07ff6d775f97685fb",
+                "materializer_version": "code_materializer_v2",
+                "catalog_bundle_digest": "c19b7abee8a95e928d7cc0b88c54c658074c2ff6b632ce142751f4a4fb08f006",
+                "scenario_manifest_digest": "0f71fbd72e35c72f75988990df918d63deff24445f8e7f0302a1ffa0db23677b",
+                "policy_profile_pin_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+              },
+              "run_id": "authored_81758576bc723cdf3f491f8f",
+              "status": "committed",
+              "party_id": "party:21a0fc0a13bb037dc00689ac",
+              "run_kind": "baseline",
+              "occurrence": 0,
+              "rng_version": "mulberry32_v1",
+              "seed_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+              "created_refs": [
+                {
+                  "domain": "player_character",
+                  "instance_id": "player_character_f9a36f60dee59172821b45d6"
+                },
+                {
+                  "domain": "g5_node",
+                  "instance_id": "g5_node_b38facfa8cfc1783d233ee47"
+                },
+                {
+                  "domain": "g5_anchor",
+                  "instance_id": "g5_anchor_cec34c15b69adb84d24cfb8d"
+                },
+                {
+                  "domain": "g5_node",
+                  "instance_id": "g5_node_32789131bbdd3503af2fdefb"
+                },
+                {
+                  "domain": "g5_anchor",
+                  "instance_id": "g5_anchor_2f9e753ee17068ea9c48ee75"
+                },
+                {
+                  "domain": "npc",
+                  "instance_id": "npc_8f7539ebc189ca807e8bb638"
+                },
+                {
+                  "domain": "npc",
+                  "instance_id": "npc_c0f21a0593e596897b28f334"
+                },
+                {
+                  "domain": "item",
+                  "instance_id": "item_ddb159f784fca43cd95cc448"
+                },
+                {
+                  "domain": "item",
+                  "instance_id": "item_30753102abf12df384dd7852"
+                }
+              ],
+              "input_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+              "repair_reason": null,
+              "result_digest": "5ae3c1c4f16c94010e11d3a97b09e60b13fc79a440cc95060f7a6565071726a0",
+              "catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+              "idempotency_key": "new-game:vikhtuy_fishing_camp_v1:21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+              "supersedes_run_id": null,
+              "validation_report": {
+                "semantic": {
+                  "pass": true,
+                  "checks": {
+                    "resources": true,
+                    "actor_refs": true,
+                    "placements": true,
+                    "player_known": true,
+                    "exact_world_closure": true,
+                    "exact_domain_closure": true
+                  },
+                  "schema": "rus.live_world_runtime.authored_start_admission.v1",
+                  "version": 1,
+                  "resolved_actor_refs": [
+                    {
+                      "role_id": "nov_role_fisher",
+                      "actor_ref": "player",
+                      "occupation_id": "nov_occ_fisher"
+                    },
+                    {
+                      "role_id": "nov_role_boatman",
+                      "actor_ref": "miloslav",
+                      "occupation_id": "nov_occ_boatman"
+                    },
+                    {
+                      "role_id": "nov_role_fisher",
+                      "actor_ref": "nezhata",
+                      "occupation_id": "nov_occ_fisher"
+                    }
+                  ],
+                  "actor_catalog_digest": "2c35b37bd034c4fc3607c52f16cc32b2b638e1a4e3b47ed07ff6d775f97685fb",
+                  "domain_catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+                  "resolved_spatial_refs": [
+                    {
+                      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+                      "anchor_slot_key": "working_camp",
+                      "canonical_g5_id": "trace_ld_v1_g5_fishing_camp",
+                      "node_template_id": "trace_ld_v1_tpl_fishing_camp",
+                      "location_profile_id": "trace_ld_v1_smp_fishing_camp",
+                      "canonical_g5_version": 1,
+                      "node_template_version": 1
+                    },
+                    {
+                      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+                      "anchor_slot_key": "shed_approach",
+                      "canonical_g5_id": "trace_ld_v1_g5_old_drying_shed",
+                      "node_template_id": "trace_ld_v1_tpl_old_drying_shed",
+                      "location_profile_id": "trace_ld_v1_smp_old_drying_shed",
+                      "canonical_g5_version": 1,
+                      "node_template_version": 1
+                    }
+                  ],
+                  "resolved_resource_refs": [
+                    {
+                      "category_id": "cat_item_object_rope_v1",
+                      "item_template_id": "item_tpl_nov_rope_v1",
+                      "inventory_profile": {
+                        "size_band": "cat_item_size_packing_6_bundle_1_v1",
+                        "carry_form": "regular",
+                        "mass_grams": 3000,
+                        "packing_slot_cost": 6,
+                        "external_hand_cost": 1,
+                        "packing_bundle_size": 1
+                      },
+                      "quantity_profile_id": "quantity_item_tpl_nov_rope_v1_count_v5",
+                      "inventory_profile_id": "inventory_item_tpl_nov_rope_v1"
+                    },
+                    {
+                      "category_id": "cat_item_object_linen_shirt_v1",
+                      "item_template_id": "item_tpl_nov_linen_shirt_v1",
+                      "inventory_profile": {
+                        "size_band": "cat_item_size_packing_3_bundle_1_v1",
+                        "carry_form": "regular",
+                        "mass_grams": 600,
+                        "packing_slot_cost": 3,
+                        "external_hand_cost": 0,
+                        "packing_bundle_size": 1
+                      },
+                      "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                      "inventory_profile_id": "inventory_item_tpl_nov_linen_shirt_v1"
+                    }
+                  ],
+                  "world_base_reference_digest": "sha256:51f4e7f99738c3c8f0976dbe10167152677d19f9a5962141a96efa2b73917795",
+                  "domain_catalog_bundle_digest": "c19b7abee8a95e928d7cc0b88c54c658074c2ff6b632ce142751f4a4fb08f006"
+                },
+                "materialization": {
+                  "pass": true,
+                  "checks": {
+                    "resources": true,
+                    "actor_refs": true,
+                    "placements": true,
+                    "player_known": true,
+                    "exact_world_closure": true,
+                    "exact_domain_closure": true
+                  },
+                  "schema": "rus.live_world_runtime.authored_start_admission.v1",
+                  "version": 1,
+                  "resolved_actor_refs": [
+                    {
+                      "role_id": "nov_role_fisher",
+                      "actor_ref": "player",
+                      "occupation_id": "nov_occ_fisher"
+                    },
+                    {
+                      "role_id": "nov_role_boatman",
+                      "actor_ref": "miloslav",
+                      "occupation_id": "nov_occ_boatman"
+                    },
+                    {
+                      "role_id": "nov_role_fisher",
+                      "actor_ref": "nezhata",
+                      "occupation_id": "nov_occ_fisher"
+                    }
+                  ],
+                  "actor_catalog_digest": "2c35b37bd034c4fc3607c52f16cc32b2b638e1a4e3b47ed07ff6d775f97685fb",
+                  "domain_catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+                  "resolved_spatial_refs": [
+                    {
+                      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+                      "anchor_slot_key": "working_camp",
+                      "canonical_g5_id": "trace_ld_v1_g5_fishing_camp",
+                      "node_template_id": "trace_ld_v1_tpl_fishing_camp",
+                      "location_profile_id": "trace_ld_v1_smp_fishing_camp",
+                      "canonical_g5_version": 1,
+                      "node_template_version": 1
+                    },
+                    {
+                      "g4_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
+                      "anchor_slot_key": "shed_approach",
+                      "canonical_g5_id": "trace_ld_v1_g5_old_drying_shed",
+                      "node_template_id": "trace_ld_v1_tpl_old_drying_shed",
+                      "location_profile_id": "trace_ld_v1_smp_old_drying_shed",
+                      "canonical_g5_version": 1,
+                      "node_template_version": 1
+                    }
+                  ],
+                  "resolved_resource_refs": [
+                    {
+                      "category_id": "cat_item_object_rope_v1",
+                      "item_template_id": "item_tpl_nov_rope_v1",
+                      "inventory_profile": {
+                        "size_band": "cat_item_size_packing_6_bundle_1_v1",
+                        "carry_form": "regular",
+                        "mass_grams": 3000,
+                        "packing_slot_cost": 6,
+                        "external_hand_cost": 1,
+                        "packing_bundle_size": 1
+                      },
+                      "quantity_profile_id": "quantity_item_tpl_nov_rope_v1_count_v5",
+                      "inventory_profile_id": "inventory_item_tpl_nov_rope_v1"
+                    },
+                    {
+                      "category_id": "cat_item_object_linen_shirt_v1",
+                      "item_template_id": "item_tpl_nov_linen_shirt_v1",
+                      "inventory_profile": {
+                        "size_band": "cat_item_size_packing_3_bundle_1_v1",
+                        "carry_form": "regular",
+                        "mass_grams": 600,
+                        "packing_slot_cost": 3,
+                        "external_hand_cost": 0,
+                        "packing_bundle_size": 1
+                      },
+                      "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
+                      "inventory_profile_id": "inventory_item_tpl_nov_linen_shirt_v1"
+                    }
+                  ],
+                  "world_base_reference_digest": "sha256:51f4e7f99738c3c8f0976dbe10167152677d19f9a5962141a96efa2b73917795",
+                  "domain_catalog_bundle_digest": "c19b7abee8a95e928d7cc0b88c54c658074c2ff6b632ce142751f4a4fb08f006"
+                }
+              },
+              "materializer_version": "code_materializer_v2"
+            },
+            "materialization_choices": [
+              {
+                "run_id": "authored_81758576bc723cdf3f491f8f",
+                "party_id": "party:21a0fc0a13bb037dc00689ac",
+                "rng_draw": "0",
+                "slot_key": "player_profile",
+                "selected_id": "Любава",
+                "candidate_ids": [
+                  "Любава"
+                ],
+                "choice_ordinal": 0,
+                "candidate_set_digest": "7c17dcbe08074ea0aea1db1ca4bc7c4bd1e65a48f8bc2b8a6a0d43861f28e130"
+              }
+            ]
+          },
+          "materialization_trace": {
+            "run_id": "authored_81758576bc723cdf3f491f8f",
+            "choices": [
+              {
+                "rng_draw": 0,
+                "slot_key": "player_profile",
+                "choice_key": "player_profile",
+                "selected_id": "Любава",
+                "candidate_ids": [
+                  "Любава"
+                ],
+                "choice_ordinal": 0,
+                "candidate_set_digest": "7c17dcbe08074ea0aea1db1ca4bc7c4bd1e65a48f8bc2b8a6a0d43861f28e130"
+              }
+            ],
+            "rng_version": "mulberry32_v1",
+            "seed_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+            "input_digest": "81758576bc723cdf3f491f8f7cb55941fba76e63b3de739cb7760392a0b78958",
+            "seed_context": {
+              "trigger": "new_game",
+              "party_id": "party:21a0fc0a13bb037dc00689ac",
+              "occurrence": 0,
+              "scenario_id": "vikhtuy_fishing_camp_v1",
+              "seed_context": "authored_start:vikhtuy_fishing_camp_v1:v4",
+              "idempotency_key": "new-game:vikhtuy_fishing_camp_v1:21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+              "rng_algorithm_id": "mulberry32_v1",
+              "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+              "world_compatibility": {
+                "lineage": [
+                  {
+                    "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v2/manifest.json",
+                    "digest": "3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a",
+                    "status": "approved",
+                    "world_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+                    "parent_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+                    "world_catalog_digest": "fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255"
+                  },
+                  {
+                    "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json",
+                    "digest": "593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea",
+                    "status": "approved",
+                    "world_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+                    "parent_revision_id": "novgorod_spatial_v3_production_v2_candidate_001",
+                    "world_catalog_digest": "1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e"
+                  },
+                  {
+                    "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json",
+                    "digest": "64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb",
+                    "status": "approved",
+                    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+                    "parent_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+                    "world_catalog_digest": "acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79"
+                  },
+                  {
+                    "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json",
+                    "digest": "6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c",
+                    "status": "approved",
+                    "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+                    "parent_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+                    "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad"
+                  },
+                  {
+                    "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json",
+                    "digest": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb",
+                    "status": "approved",
+                    "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+                    "parent_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+                    "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+                  }
+                ],
+                "source_status": "approved",
+                "production_status": "approved",
+                "source_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
+                "source_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
+                "production_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+                "production_world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+              },
+              "existing_party_state": {
+                "baseline_exists": false
+              },
+              "materializer_version": "code_materializer_v2",
+              "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+              "scenario_manifest_digest": "0f71fbd72e35c72f75988990df918d63deff24445f8e7f0302a1ffa0db23677b",
+              "scenario_definition_revision": 4
+            },
+            "result_digest": "5ae3c1c4f16c94010e11d3a97b09e60b13fc79a440cc95060f7a6565071726a0",
+            "catalog_digest": "c2eb991d4cc2e2af65abedc60981d7fd70fb90ae71208e8796090415bd0393f5",
+            "rng_draw_count": 0,
+            "idempotency_key": "new-game:vikhtuy_fishing_camp_v1:21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+            "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+            "policy_profile_pins": [],
+            "actor_catalog_digest": "2c35b37bd034c4fc3607c52f16cc32b2b638e1a4e3b47ed07ff6d775f97685fb",
+            "materializer_version": "code_materializer_v2",
+            "catalog_bundle_digest": "c19b7abee8a95e928d7cc0b88c54c658074c2ff6b632ce142751f4a4fb08f006",
+            "scenario_manifest_digest": "0f71fbd72e35c72f75988990df918d63deff24445f8e7f0302a1ffa0db23677b",
+            "policy_profile_pin_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "persisted_projection_digest": "566023df110adfecdcf06ced7ebd09bf666c6c76bb01f19b2e6640512e9dd12c",
+          "materialization_result_schema": "rus.authored_start_party_materialization_result.v1"
+        },
+        "state_version": 0
+      }
+    ],
+    "party_server_sessions": [
+      {
+        "screen": {
+          "panels": {
+            "route": {
+              "data": {
+                "current_place": "рыбацкий стан у Вихтуя"
+              },
+              "visible": true
+            },
+            "character": {
+              "data": {
+                "name": "Любава",
+                "role": "рыбачка",
+                "energy": 71,
+                "health": 92,
+                "satiety": 66
+              },
+              "visible": true
+            }
+          },
+          "schema": "first_game_screen",
+          "version": 1,
+          "party_id": "party:21a0fc0a13bb037dc00689ac",
+          "main_prose": "Утро застало тебя в рыбацком стане у Вихтуя: у настила лежат сети, а до вечернего лова нужно проверить снасти.",
+          "input_panel": {
+            "input_contract": "gameplay_not_available",
+            "free_text_enabled": false
+          },
+          "scenario_id": "vikhtuy_fishing_camp_v1",
+          "action_panel": {
+            "suggested_actions": []
+          },
+          "screen_status": "ready",
+          "delivery_state": {
+            "ready": true,
+            "message_id": "opening:party:21a0fc0a13bb037dc00689ac"
+          },
+          "visible_context": {
+            "place": "рыбацкий стан у Вихтуя",
+            "calendar": "20 августа 1230 года",
+            "timestamp": {
+              "whole_minutes": "333060",
+              "subminute_numerator": "0",
+              "subminute_denominator": "1"
+            },
+            "environment": {
+              "facts": []
+            }
+          }
+        },
+        "party_id": "party:21a0fc0a13bb037dc00689ac",
+        "request_id": "m2b-authored-public-v4",
+        "updated_at": "2026-09-19T21:41:39.902255+00:00",
+        "turn_number": 0,
+        "last_turn_id": null,
+        "state_version": 1,
+        "stage26_result": {
+          "schema": "rus.live_world_runtime.authored_start_session_identity.v1",
+          "version": 1,
+          "party_id": "party:21a0fc0a13bb037dc00689ac",
+          "request_id": "m2b-authored-public-v4",
+          "scenario_id": "vikhtuy_fishing_camp_v1",
+          "runtime_binding": {
+            "revision": 4,
+            "catalog_id": "novgorod_live_world_runtime_v1"
+          },
+          "rng_algorithm_id": "mulberry32_v1",
+          "creation_identity": {
+            "schema": "rus.first_playable_public_creation_identity.v1",
+            "version": 1,
+            "party_id": "party:21a0fc0a13bb037dc00689ac",
+            "scenario_id": "vikhtuy_fishing_camp_v1",
+            "launch_branch": "scenario_id",
+            "request_id_digest": "21a0fc0a13bb037dc00689ac1c865415f0114a3e85c595a46c86043189a0e5d1",
+            "branch_input_digest": "e5eeb122172d872032cf1b04dd3318914f42ca3aeddfdbebeb0b4f2dbe3882c7",
+            "effective_player_name": null
+          },
+          "materializer_version": "code_materializer_v2",
+          "opening_screen_digest": "efb51b65c587a0d2a8c40483b324115a83b1c26fbf59d3cf3e3e315710286f36",
+          "publication_binding_id": "vikhtuy_fishing_camp_v1@4",
+          "materializer_binding_id": "live_world_authored_start_v2",
+          "phase_1a_manifest_digest": "0f71fbd72e35c72f75988990df918d63deff24445f8e7f0302a1ffa0db23677b",
+          "publication_binding_digest": "d4c3492696e359a1fb5bdb74b537d378fb10f2e3f432e068ccc21fb3da76cec1",
+          "scenario_definition_digest": "5cb6893f5562570a15b1adaecb0b872a9c7c76c909c88f7270181288c2cc7fae",
+          "publication_manifest_digest": "9c86e7c14a05b9fdb395edb6c22bae16b3eb60dc32ac77990404f87c317c2629",
+          "publication_binding_revision": 4,
+          "scenario_definition_revision": 4
+        },
+        "delivery_attempt": {
+          "schema": "opening_delivery_attempt",
+          "status": "sent",
+          "version": 1,
+          "party_id": "party:21a0fc0a13bb037dc00689ac",
+          "message_id": "opening:party:21a0fc0a13bb037dc00689ac",
+          "screen_digest": "efb51b65c587a0d2a8c40483b324115a83b1c26fbf59d3cf3e3e315710286f36",
+          "awaiting_client_ack": true,
+          "delivery_attempt_id": "delivery:party:21a0fc0a13bb037dc00689ac"
+        },
+        "delivery_ack_result": null,
+        "updated_change_set_id": null
+      }
+    ]
+  }
+}

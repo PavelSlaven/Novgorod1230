@@ -27,6 +27,8 @@ export const PHASE_1A_TABLES = Object.freeze([
   'party_g6_instances',
   'g6_acoustic_profiles',
   'scene_position_nodes',
+  'scene_movement_edges',
+  'visibility_links',
   'party_journey_locations',
   'preparation_snapshots',
   'preparation_snapshot_members',

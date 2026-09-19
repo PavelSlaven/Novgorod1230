@@ -357,12 +357,15 @@ remain fail-closed. Currency identity,
 significant/hidden facts, template-less containers and O2b/A1/F1/N1 remain
 disabled. Negative resolutions contain no item and
 every failure rolls back.
-Current live-world authored binding v3 persists its approved initial
-Spatial-v3 G6/position/journey rows, then provisions the same generic O1 scope
-from those committed rows. O1 and A1 use the existing turn/P16 path for both
-public authored starts; deprecated authored bindings remain readable and are
-not rematerialized. Historical replay derives scenario/schema/screen kind from
-the persisted party payload instead of the Lower Dvina default.
+Current live-world authored binding revision 5 resolves
+`code_materializer_v3`, result/snapshot schema v3 and persists its approved
+initial Spatial-v3 G6/position/journey rows plus profile-owned local topology.
+It then provisions the same generic O1 and neutral S1 authority from those
+committed rows. Neutral N1 applies only to a persisted approved background NPC
+profile and materialized routine. O1, A1, S1 and N1 use existing turn/P16
+owners; deprecated authored bindings remain readable and are not
+rematerialized. Historical replay derives scenario/schema/screen kind from the
+persisted party payload instead of the Lower Dvina default.
 A new admitted ordinary `search`, or standalone focused `inspect` with
 `continuation:null`, applies the existing `short/light` activity profile through
 the same activity, body, time and P16 owners. The approved domain discovery binds this activity to its

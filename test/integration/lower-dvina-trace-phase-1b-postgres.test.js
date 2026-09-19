@@ -12,7 +12,6 @@ import pg from 'pg';
 import { chromium } from 'playwright-core';
 import { createGameHttpServer, createStaticAssetResolver, listen } from
   '@rus/game-server';
-import { canonicalDigest } from '@rus/materialization';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import {
@@ -28,6 +27,10 @@ import { createSpatialV3PostgresCombinedAtomicCommitter } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { firstPlayableCommitRecheck } from
   '../../apps/game-server/src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { createLowerDvinaTraceS1ProductionResolverFactory } from
+  '../../apps/game-server/src/runtime/releases/lower-dvina-trace-s1-production.js';
+import { createLowerDvinaTraceN1ProductionResolverFactory } from
+  '../../apps/game-server/src/runtime/releases/lower-dvina-trace-n1-production.js';
 import { approvedNarration } from
   '../../apps/game-server/test/lower-dvina-trace-phase-2-fixture-support.js';
 import {
@@ -72,6 +75,8 @@ import { loadLowerDvinaTraceProductionMaterializationProfiles } from
   '../../apps/game-server/src/internal/lower-dvina-trace-production-materialization-profiles.js';
 import { createOrdinaryMaterializationFirstEntryProvisioner } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { createSpatialSemanticFirstEntryProvisioner } from
+  '../../apps/game-server/src/infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 import { hash as hashForTest } from
   '../../apps/game-server/src/runtime/first-playable/shared.js';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
@@ -200,11 +205,20 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   });
   const materializationProfiles =
     await loadLowerDvinaTraceProductionMaterializationProfiles();
-  const initialOrdinaryProvisioner =
+  const ordinaryProvisioner =
     createOrdinaryMaterializationFirstEntryProvisioner({
       profile: materializationProfiles.ordinaryMaterializationProfile,
       includeContextBoundCapabilities: false
     });
+  const spatialProvisioner = createSpatialSemanticFirstEntryProvisioner({
+    loadedProfile: authoredStartCatalog.ordinary_profiles.s1
+  });
+  const initialOrdinaryProvisioner = Object.freeze({
+    async provision(input) {
+      return { ordinary: await ordinaryProvisioner.provision(input),
+        spatial: await spatialProvisioner.provision(input) };
+    }
+  });
   const makeRuntime = (partyRepository = null, {
     publicationLoader,
     adapterTransform,
@@ -308,7 +322,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const partyId = start.data.party_id;
   const authoredRequest = {
     scenario_id: 'vikhtuy_fishing_camp_v1',
-    request_id: 'm2b-authored-public-v4'
+    request_id: 'm3-authored-public-v5'
   };
   const authoredStart = await api(base, '/api/v1/new-games', authoredRequest);
   assert.equal(authoredStart.status, 201);
@@ -319,7 +333,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.equal(authoredStart.data.screen.panels.character.data.name, 'Любава');
   const authoredPartyId = authoredStart.data.party_id;
   const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
-  assert.equal(authoredInternal.npcs.length, 2);
+  assert.equal(authoredInternal.npcs.length, 3);
   assert.equal(authoredInternal.items.length, 2);
   assert.equal(authoredInternal.position.g4_id,
     'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach');
@@ -363,6 +377,21 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.equal(authoredIdentity.runtime_binding.revision, 5);
   assert.equal(authoredIdentity.materializer_binding_id,
     'live_world_authored_start_v3');
+  assert.equal(authoredIdentity.materializer_version, 'code_materializer_v3');
+  const authoredSnapshot = (await pool.query(
+    `SELECT (state_payload->>'version')::int AS snapshot_version,
+            state_payload->>'schema' AS snapshot_schema,
+            (state_payload->>'materialization_result_version')::int
+              AS result_version,
+            state_payload->>'materialization_result_schema' AS result_schema
+       FROM party_runtime.party_state_snapshots
+      WHERE party_id=$1 AND state_version=0`, [authoredPartyId])).rows[0];
+  assert.deepEqual(authoredSnapshot, {
+    snapshot_version: 3,
+    snapshot_schema: 'rus.authored_start_initial_party_snapshot.v3',
+    result_version: 3,
+    result_schema: 'rus.authored_start_party_materialization_result.v3'
+  });
   assert.equal(await count(pool, 'party_runtime.parties', partyId), 1);
   const invalidCases = [
     ['g4', (profile) => { profile.geometry.start.g4_id = 'missing-g4'; }],
@@ -514,6 +543,84 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     authoredTurnProfile: authoredStartCatalog.turn_profile,
     now: () => '2026-09-19T08:00:00.000Z'
   });
+  const neutralTraceTurnRuntime = createLowerDvinaTracePhase2Runtime({
+    repository: phase2Repository,
+    semanticResolver: async () => ({ status: 'unknown',
+      reason_code: 'free_intent' }),
+    turnStepModel: m3NeutralTurnPlan,
+    playerConversationModel: async () => { throw new Error('unexpected'); },
+    npcSemanticModel: async () => { throw new Error('unexpected'); },
+    narrator: createLowerDvinaTracePhase2DurableNarrator({
+      partyPool: pool,
+      narrationService: { run: async (request) =>
+        approvedNarration(request.request_id) }
+    }),
+    randomSourceFactory: () => createSeededRandomSource('m3-neutral-postgres'),
+    temporalAdvanceOwner: createTemporalAdvanceOwner({}),
+    decisionSecret: 'm3-neutral-secret',
+    authoredTurnProfile: authoredStartCatalog.turn_profile,
+    createTurnStepAuthoredSpatialSemanticResolver:
+      createLowerDvinaTraceS1ProductionResolverFactory({ pool,
+        resolveSpatialSemanticDescriptor: async ({ request }) => ({
+          schema: 'rus.s1_spatial_semantic_proposal.v1',
+          request_id: request.request_id, name: 'Плетёный навес',
+          description: 'Низкий навес из прутьев защищает рабочий настил.',
+          semantic_requirements: ['interior_space']
+        }) }),
+    authoredSpatialSemanticProfile: authoredStartCatalog.ordinary_profiles.s1,
+    createTurnStepAuthoredBackgroundNpcResolver:
+      createLowerDvinaTraceN1ProductionResolverFactory({
+        loadedProfile: authoredStartCatalog.ordinary_profiles.n1,
+        roleRunner: {},
+        resolveNpcOrdinarySemanticRemainder: async ({ request }) => ({
+          schema: 'npc_ordinary_semantic_remainder_proposal_v1',
+          request_id: request.request_id,
+          ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',
+          ordinary_activity: null
+        })
+      }),
+    authoredNpcSemanticRemainderProfile:
+      authoredStartCatalog.ordinary_profiles.n1,
+    now: () => '2026-09-19T08:00:00.000Z'
+  });
+  const neutralPlayable = makeRuntime(null, {
+    traceTurnRuntime: neutralTraceTurnRuntime,
+    committer: turnCommitter
+  }).runtime;
+  await neutralPlayable.acknowledgeOpening(authoredPartyId, {
+    client_ack_id: 'm3-neutral-opening'
+  });
+  for (const [index, rawText] of [
+    'Осматриваю незнакомого рыбака.',
+    'Осматриваю местную рабочую постройку.',
+    'Захожу внутрь местной постройки.',
+    'Возвращаюсь обратно на стоянку.'
+  ].entries()) {
+    const key = `m3-neutral-turn-${index + 1}`;
+    const submitted = await neutralPlayable.submitTurn(authoredPartyId, {
+      request_id: key, idempotency_key: key, raw_text: rawText
+    });
+    assert.equal(submitted.turn_number, index + 1);
+  }
+  const neutralRows = (await pool.query(`SELECT
+      (SELECT count(*)::int FROM party_runtime.party_spatial_semantic_resolutions
+        WHERE party_id=$1) AS spatial_resolutions,
+      (SELECT count(*)::int FROM party_runtime.party_npcs
+        WHERE party_id=$1 AND semantic_state ? 'n1_remainder') AS npc_remainders,
+      (SELECT count(*)::int FROM party_runtime.scene_movement_edges
+        WHERE party_id=$1) AS movement_edges,
+      (SELECT count(*)::int FROM party_runtime.visibility_links
+        WHERE party_id=$1) AS visibility_links`, [authoredPartyId])).rows[0];
+  assert.deepEqual(neutralRows, { spatial_resolutions: 1, npc_remainders: 1,
+    movement_edges: 2, visibility_links: 2 });
+  const neutralState = await phase2Repository.loadPhase2State(authoredPartyId);
+  assert.equal(neutralState.position.position_id,
+    `position:${authoredInternal.position.g5_anchor_id}`);
+  const neutralFinalScreen = await makeRuntime(null, {
+    traceTurnRuntime: neutralTraceTurnRuntime,
+    committer: turnCommitter
+  }).runtime.getPartyScreen(authoredPartyId);
+  assert.equal(neutralFinalScreen.turn_number, 4);
   const playable = makeRuntime(null, { traceTurnRuntime,
     committer: turnCommitter }).runtime;
   const turnServer = createGameHttpServer({
@@ -586,6 +693,71 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     `SELECT result_digest FROM party_runtime.party_materialization_runs
       WHERE party_id=$1`, [m2aStart.party_id])).rows[0].result_digest,
   m2aRunBefore);
+
+  const m2bFixtureRaw = await readFile(resolve(here,
+    '../fixtures/m2b-328d2f99-party-rows.json'));
+  assert.equal(createHash('sha256').update(m2bFixtureRaw).digest('hex'),
+    '65d8178758bb1a9dc7886c316a70ab45b58d1abd4b72232cca4976c8cd430ac7');
+  const m2bFixture = JSON.parse(m2bFixtureRaw);
+  assert.equal(m2bFixture.source_head,
+    '328d2f99ae888670087324e9b2f1197081f73733');
+  await importM2aPartyRows(pool, m2bFixture);
+  const m2bRuntime = makeRuntime(null, { traceTurnRuntime,
+    committer: turnCommitter }).runtime;
+  const m2bPartyId = m2bFixture.party_id;
+  const m2bOpening = await m2bRuntime.getPartyScreen(m2bPartyId);
+  assert.equal(m2bOpening.screen.scenario_id, 'vikhtuy_fishing_camp_v1');
+  assert.equal(await count(pool,
+    'party_runtime.party_ordinary_materialization_enablements', m2bPartyId), 0);
+  const m2bRunBefore = (await pool.query(
+    `SELECT result_digest FROM party_runtime.party_materialization_runs
+      WHERE party_id=$1`, [m2bPartyId])).rows[0].result_digest;
+  const m2bRequestId = m2bFixture.tables.party_server_sessions[0].request_id;
+  await pool.query(`DELETE FROM party_runtime.party_server_sessions
+    WHERE party_id=$1`, [m2bPartyId]);
+  const m2bRecoveredStart = await m2bRuntime.startNewGame({
+    scenario_id: 'vikhtuy_fishing_camp_v1', request_id: m2bRequestId
+  });
+  assert.deepEqual(m2bRecoveredStart.screen, m2bOpening.screen);
+  assert.deepEqual(await m2bRuntime.startNewGame({
+    scenario_id: 'vikhtuy_fishing_camp_v1', request_id: m2bRequestId
+  }), m2bRecoveredStart);
+  assert.equal(await count(pool,
+    'party_runtime.party_ordinary_materialization_enablements', m2bPartyId), 0);
+  await m2bRuntime.acknowledgeOpening(m2bPartyId, {
+    client_ack_id: 'm2b-v4-compat-opening'
+  });
+  const m2bFirstTurn = await m2bRuntime.submitTurn(m2bPartyId, {
+    request_id: 'm2b-v4-compat-turn-1',
+    idempotency_key: 'm2b-v4-compat-turn-1', raw_text: 'Осматриваюсь.'
+  });
+  assert.equal(m2bFirstTurn.turn_number, 1);
+  const m2bRestarted = makeRuntime(null, { traceTurnRuntime,
+    committer: turnCommitter }).runtime;
+  assert.equal((await m2bRestarted.getPartyScreen(m2bPartyId)).turn_number, 1);
+  assert.deepEqual(await m2bRestarted.submitTurn(m2bPartyId, {
+    request_id: 'm2b-v4-compat-turn-1',
+    idempotency_key: 'm2b-v4-compat-turn-1', raw_text: 'Осматриваюсь.'
+  }), m2bFirstTurn);
+  assert.equal((await m2bRestarted.submitTurn(m2bPartyId, {
+    request_id: 'm2b-v4-compat-turn-2',
+    idempotency_key: 'm2b-v4-compat-turn-2', raw_text: 'Оглядываюсь вокруг.'
+  })).turn_number, 2);
+  assert.equal(await count(pool,
+    'party_runtime.party_materialization_runs', m2bPartyId), 1);
+  assert.equal((await pool.query(
+    `SELECT result_digest FROM party_runtime.party_materialization_runs
+      WHERE party_id=$1`, [m2bPartyId])).rows[0].result_digest,
+  m2bRunBefore);
+  const missingM2bBinding = makeRuntime(null, {
+    catalog: Object.freeze({ ...authoredStartCatalog,
+      resolveRuntimeBinding: () => null })
+  });
+  await assert.rejects(
+    () => missingM2bBinding.runtime.getPartyScreen(m2bPartyId),
+    { code: 'AUTHORED_START_RUNTIME_BINDING_MISSING' }
+  );
+
   const playableStart = (await api(turnBase, '/api/v1/new-games', {
     scenario_id: 'vikhtuy_fishing_camp_v1',
     request_id: 'm2b-authored-turn-party'
@@ -689,60 +861,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.deepEqual(screen.screen, start.data.screen);
   assert.deepEqual(
     (await restarted.runtime.getPartyScreen(authoredPartyId)).screen,
-    authoredStart.data.screen
-  );
-  const v1Catalog = Object.freeze({
-    runtime_binding: Object.freeze({
-      catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
-      revision: 1
-    }),
-    listPublic: authoredStartCatalog.listPublic,
-    hasScenario: authoredStartCatalog.hasScenario,
-    resolveProfile: authoredStartCatalog.resolveProfile,
-    resolveRuntimeBinding: (binding) => binding?.catalog_id
-      === authoredStartCatalog.runtime_binding.catalog_id
-      && binding.revision === 1
-      ? Object.freeze({ ...binding, status: 'approved' }) : null,
-    async loadPublication(scenarioId) {
-      const publication = structuredClone(
-        await authoredStartCatalog.loadPublication(scenarioId)
-      );
-      publication.binding.binding_id = `${scenarioId}@1`;
-      publication.binding.revision = 1;
-      publication.binding.phase_1a_manifest_ref.digest = canonicalDigest({
-        catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
-        revision: 1
-      });
-      publication.binding.scenario_definition_ref.revision = 1;
-      publication.binding.scenario_definition_ref.digest = canonicalDigest({
-        catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
-        revision: 1,
-        scenario_id: scenarioId
-      });
-      publication.binding.execution_identity.seed_context =
-        `authored_start:${scenarioId}:v1`;
-      publication.binding.runtime_binding.revision = 1;
-      publication.binding_digest = canonicalDigest(publication.binding);
-      return publication;
-    }
-  });
-  const v1StartRuntime = makeRuntime(null, { catalog: v1Catalog }).runtime;
-  const v1Start = await v1StartRuntime.startNewGame({
-    scenario_id: 'vikhtuy_fishing_camp_v1',
-    request_id: 'm2a-authored-v1-save'
-  });
-  const historicalAuthored = makeRuntime();
-  assert.deepEqual(
-    (await historicalAuthored.runtime.getPartyScreen(v1Start.party_id)).screen,
-    v1Start.screen
-  );
-  const missingHistoricalBinding = makeRuntime(null, {
-    catalog: Object.freeze({ ...authoredStartCatalog,
-      resolveRuntimeBinding: () => null })
-  });
-  await assert.rejects(
-    () => missingHistoricalBinding.runtime.getPartyScreen(v1Start.party_id),
-    { code: 'AUTHORED_START_RUNTIME_BINDING_MISSING' }
+    neutralFinalScreen.screen
   );
   const afterRestart = await restarted.adapter.loadInternal(partyId);
   assert.deepEqual(afterRestart.request_identity, beforeRestart.request_identity);
@@ -1030,6 +1149,37 @@ const M2B_TURNS = Object.freeze([
   'Ещё раз оглядываюсь другими словами.',
   'Спокойно наблюдаю за станом.'
 ]);
+
+function m3NeutralTurnPlan(request) {
+  const actorRef = request.actor.actor_id;
+  const text = request.remaining_intent;
+  let operation;
+  if (text.includes('рыбака')) {
+    operation = { op: 'request_discovery', discovery_kind: 'inspect',
+      actor_ref: actorRef, target_refs: [request.player_safe_state
+        .background_npc_remainder.eligible_npc_refs[0]], query: text };
+  } else if (text.includes('Осматриваю местную')) {
+    operation = { op: 'request_discovery', discovery_kind: 'look',
+      actor_ref: actorRef, target_refs: [request.player_safe_state
+        .spatial_semantic.position_ref], query: text };
+  } else {
+    const local = request.player_safe_state.visible_objects.find(
+      ({ entity_ref: ref }) =>
+        ref?.entity_kind === 'spatial_local_reference');
+    operation = { op: 'request_movement', movement_kind: 'local',
+      actor_ref: actorRef, target_ref: local.entity_ref.entity_id };
+  }
+  return { schema: 'turn_step_plan_v1', request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision, step_index: request.step_index,
+    interpretation: { player_goal: request.root_player_action,
+      grounded_attempt: text, adaptation: 'literal' }, resolution: 'domain_request',
+    goal_result: 'pending', activity: { owner: 'domain',
+      duration_class: null, effort: null }, operations: [operation],
+    check: null, continuation: null, clarification: null,
+    direct_result_kind: null, reason_code: 'm3_neutral_owner_probe',
+    reason: 'Запрос передан существующему владельцу.' };
+}
 
 function m2bTurnPlan(request) {
   const base = {

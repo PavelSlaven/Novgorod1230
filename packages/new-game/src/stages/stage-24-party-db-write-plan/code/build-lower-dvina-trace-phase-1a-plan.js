@@ -7,7 +7,8 @@ import {
 import { sha256 } from '@rus/kernel';
 import { addFirstEntryPreparationBatches } from
   './lower-dvina-trace-first-entry-preparation.js';
-import { addAuthoredStartSpatialV3Batches } from './authored-start-spatial-v3.js';
+import { addAuthoredStartSpatialV3Batches, authoredStartSnapshotSchema,
+  isAuthoredStartMaterializationResult } from './authored-start-spatial-v3.js';
 import {
   assertMaterializationRuntimeCatalogPins,
   assertPartyRuntimeCatalogPins,
@@ -40,7 +41,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,
-    source_kind: result.schema === 'rus.authored_start_party_materialization_result.v1'
+    source_kind: isAuthoredStartMaterializationResult(result)
       ? 'approved_authored_start_materialization'
       : 'lower_dvina_trace_phase_1a_materialization',
     digest: result.trace.result_digest
@@ -385,11 +386,12 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     runRecord,
     choiceRecords
   });
+  const authoredSnapshot = authoredStartSnapshotSchema(result);
   const snapshotPayload = {
-    schema: result.schema === 'rus.authored_start_party_materialization_result.v1'
-      ? 'rus.authored_start_initial_party_snapshot.v1'
-      : 'rus.lower_dvina_trace_initial_party_snapshot.v2',
-    version: 2,
+    schema: authoredSnapshot
+      ?? 'rus.lower_dvina_trace_initial_party_snapshot.v2',
+    version: authoredSnapshot?.endsWith('.v3') ? 3 : 2,
+    materialization_result_version: result.version,
     materialization_result_schema: result.schema,
     request_identity: result.request_identity,
     immediate: result.immediate,
@@ -465,8 +467,7 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 function assertInput(input) {
   const result = input?.approved_pipeline_outputs?.materialization_result;
   const semantic = input?.approved_pipeline_outputs?.player_character_audit;
-  const authored = result?.schema
-    === 'rus.authored_start_party_materialization_result.v1';
+  const authored = isAuthoredStartMaterializationResult(result);
   const authoredAdmission = authored
     && semantic?.schema === 'rus.live_world_runtime.authored_start_admission.v1'
     && computeStage24ArtifactDigest(semantic)

@@ -31,6 +31,17 @@ export function phase2InitialCurrentVisibleContext({
   });
   const environmentFacts = presented?.player_visible_physical_facts
     ?? visibleContext?.environment?.facts;
+  const visibleNpc = (initialState?.npcs ?? []).filter((npc) =>
+    npc.anchor_id === initialState?.position?.g5_anchor_id).map((npc) => ({
+      entity_ref: { entity_kind: 'npc', entity_id: npc.instance_id },
+      display_label: npc.profile_level === 'background'
+        ? npc.identity_state?.public_role_label ?? 'незнакомый человек'
+        : npc.identity_state?.canonical_name
+          ?? npc.identity_state?.public_role_label ?? 'человек',
+      recognition: npc.profile_level === 'background'
+        ? 'unrecognized' : 'recognized',
+      visible_status: 'рядом'
+    }));
   return requirePhase2CurrentVisibleContext({
     version: 1,
     schema: 'visible_context_package',
@@ -40,7 +51,7 @@ export function phase2InitialCurrentVisibleContext({
       ? environmentFacts.filter((value) =>
           typeof value === 'string' && value.length > 0)
       : [],
-    visible_npc: [],
+    visible_npc: visibleNpc,
     visible_objects: [],
     known_context: [presented?.display_name ?? visibleContext?.place]
       .filter((value) => typeof value === 'string' && value.length > 0),

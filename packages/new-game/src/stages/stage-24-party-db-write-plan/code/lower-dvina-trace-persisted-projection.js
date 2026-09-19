@@ -13,7 +13,8 @@ export function buildLowerDvinaTracePersistedProjection({
   const preparedNpcs = result.immediate.npcs ?? [];
   const preparedContainers = result.immediate.containers ?? [];
   return {
-    schema: result.schema === 'rus.authored_start_party_materialization_result.v1'
+    schema: ['rus.authored_start_party_materialization_result.v1',
+      'rus.authored_start_party_materialization_result.v3'].includes(result.schema)
       ? 'rus.authored_start_persisted_projection.v1'
       : 'rus.lower_dvina_trace_persisted_projection.v2',
     materialization_run: structuredClone(runRecord),
@@ -259,8 +260,8 @@ export function projectNameProfileSnapshot(identity = {}) {
 }
 
 export function phase3PreparedInputs(result) {
-  const authored = result.schema
-    === 'rus.authored_start_party_materialization_result.v1';
+  const authored = ['rus.authored_start_party_materialization_result.v1',
+    'rus.authored_start_party_materialization_result.v3'].includes(result.schema);
   const revision = result.request_identity.scenario_definition_revision;
   if (!authored && revision < 8) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };

@@ -324,7 +324,7 @@ function assertRoundTrip({
   const expectedPreparedScenes = payload?.immediate?.prepared_scenes ?? [];
   const expectedNpcs = payload?.immediate?.npcs ?? [];
   const materializationEnvelope = payload ? {
-    version: 1,
+    version: payload.materialization_result_version ?? 1,
     schema: payload.materialization_result_schema
       ?? 'rus.lower_dvina_trace_party_materialization_result.v1',
     status: 'materialized',
@@ -345,7 +345,8 @@ function assertRoundTrip({
     trace: run?.trace
   } : null;
   if (!payload || !['rus.lower_dvina_trace_initial_party_snapshot.v2',
-    'rus.authored_start_initial_party_snapshot.v1'].includes(payload.schema)
+    'rus.authored_start_initial_party_snapshot.v1',
+    'rus.authored_start_initial_party_snapshot.v3'].includes(payload.schema)
     || !player || !position || !startSpatial || !clock || !run || !counts || choices.length === 0 || items.length === 0
     || payload.immediate.player.instance_id !== player.character_id
     || payload.immediate.spatial.position.g4_id !== position.g4_id

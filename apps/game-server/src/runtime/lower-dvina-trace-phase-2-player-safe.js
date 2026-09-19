@@ -151,7 +151,9 @@ export function projectLowerDvinaTraceTurnStepPlannerState(state) {
 function projectLowerDvinaTraceN1Capability({ playerSafeState,
   committedState, loadedProfile, resolverAvailable }) {
   if (!resolverAvailable
-      || loadedProfile?.schema !== 'rus.lower_dvina_trace_n1_loaded_profile.v1'
+      || !['rus.lower_dvina_trace_n1_loaded_profile.v1',
+        'rus.live_world_runtime.n1_loaded_profile.v1']
+        .includes(loadedProfile?.schema)
       || loadedProfile.profile?.status !== 'approved') return playerSafeState;
   const eligible = new Set(loadedProfile.profile.eligible_participant_profiles
     .map(({ profile_id: id, revision }) => `${id}@${revision}`));

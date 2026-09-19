@@ -1,7 +1,7 @@
 export function addAuthoredStartSpatialV3Batches({ batches, result, partyId,
   playerId, changeSetId, sourceTrace, addBatch }) {
   const spatial = result.initial_spatial_v3;
-  if (result.schema !== 'rus.authored_start_party_materialization_result.v1') {
+  if (!isAuthoredStartMaterializationResult(result)) {
     return null;
   }
   if (!valid(spatial)) fail();
@@ -38,7 +38,9 @@ export function addAuthoredStartSpatialV3Batches({ batches, result, partyId,
     default_visibility_distance_band: spatial.g6.default_visibility_distance_band,
     acoustic_uniformity: spatial.g6.acoustic_uniformity, status: 'active',
     state_version: 1, created_change_set_id: changeSetId,
-    updated_change_set_id: changeSetId }], ['party_scene_baselines'], sourceTrace);
+    updated_change_set_id: changeSetId },
+  ...s1Records(spatial, 'party_g6_instances', partyId, changeSetId)],
+  ['party_scene_baselines'], sourceTrace);
   addBatch(batches, 'g6_acoustic_profiles', [{ party_id: partyId,
     g6_instance_id: ids.g6, ambient_noise: 0,
     acoustic_uniformity: spatial.g6.acoustic_uniformity, state_version: 1,
@@ -52,7 +54,11 @@ export function addAuthoredStartSpatialV3Batches({ batches, result, partyId,
     access_class_id: spatial.position.access_class_id,
     light_profile_ref: null, hazard_profile_ref: null, status: 'active',
     state_version: 1, created_change_set_id: changeSetId,
-    updated_change_set_id: changeSetId }], ['party_g6_instances'], sourceTrace);
+    updated_change_set_id: changeSetId },
+  ...s1Records(spatial, 'scene_position_nodes', partyId, changeSetId)],
+  ['party_g6_instances'], sourceTrace);
+  addS1TopologyBatches({ batches, spatial, partyId, changeSetId, sourceTrace,
+    addBatch });
   addBatch(batches, 'party_journey_locations', [{ id: ids.journey,
     party_id: partyId, owner_kind: 'actor', owner_id: playerId,
     location_kind: 'scene', scene_position_id: ids.position,
@@ -60,6 +66,43 @@ export function addAuthoredStartSpatialV3Batches({ batches, result, partyId,
     updated_change_set_id: changeSetId }],
   ['scene_position_nodes', 'party_player_characters'], sourceTrace);
   return { ...ids };
+}
+
+function addS1TopologyBatches({ batches, spatial, partyId, changeSetId,
+  sourceTrace, addBatch }) {
+  const writes = spatial.s1_physical_writes ?? [];
+  if (spatial.s1_topology == null) {
+    if (writes.length !== 0) fail();
+    return;
+  }
+  if (writes.length !== 6) fail();
+  addBatch(batches, 'scene_movement_edges', s1Records(spatial,
+    'scene_movement_edges', partyId, changeSetId),
+    ['scene_position_nodes'], sourceTrace);
+  addBatch(batches, 'visibility_links', s1Records(spatial,
+    'visibility_links', partyId, changeSetId),
+    ['scene_position_nodes'], sourceTrace);
+}
+
+function s1Records(spatial, table, partyId, changeSetId) {
+  return (spatial.s1_physical_writes ?? [])
+    .filter(({ target_table: target }) => target === table)
+    .map(({ id, record }) => ({ id, ...structuredClone(record),
+      party_id: partyId, created_change_set_id: changeSetId,
+      updated_change_set_id: changeSetId, terminal_change_set_id: null }));
+}
+
+export function isAuthoredStartMaterializationResult(result) {
+  return ['rus.authored_start_party_materialization_result.v1',
+    'rus.authored_start_party_materialization_result.v3']
+    .includes(result?.schema);
+}
+
+export function authoredStartSnapshotSchema(result) {
+  if (!isAuthoredStartMaterializationResult(result)) return null;
+  return result.schema.endsWith('.v3')
+    ? 'rus.authored_start_initial_party_snapshot.v3'
+    : 'rus.authored_start_initial_party_snapshot.v1';
 }
 
 function valid(value) {

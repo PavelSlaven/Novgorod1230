@@ -1,7 +1,10 @@
 import { computeMaterializationEnvelopeDigest,
   computeStage24ArtifactDigest } from '@rus/contracts';
 import { deepFreeze } from '@rus/kernel';
-import { canonicalDigest, deriveSeed, deterministicInstanceId } from './core.js';
+import { AUTHORED_MATERIALIZER_VERSION, canonicalDigest, deriveSeed,
+  deterministicInstanceId } from './core.js';
+import { materializeS1OpenOneSpaceTopology } from
+  './spatial-v3-s1-first-entry.js';
 
 export function materializeAuthoredStartPartyInstance(input) {
   const profile = input?.scenario_bundle;
@@ -30,29 +33,43 @@ export function materializeAuthoredStartPartyInstance(input) {
   const npcs = profile.people.map((person) => {
     const sceneIndex = person.location === 'start'
       ? null : Number(person.location.split(':')[1]);
+    const background = person.profile_level === 'background';
+    const anchorId = sceneIndex == null
+      ? startAnchorId : otherScenes[sceneIndex].anchor.instance_id;
+    const nodeId = sceneIndex == null
+      ? startNodeId : otherScenes[sceneIndex].node.instance_id;
     return {
       instance_id: npcIds.get(person.person_key),
       participant_slot_ref: person.person_key,
       profile_id: person.occupation_id,
-      profile_revision: 1,
-      profile_level: 'scene',
-      anchor_id: sceneIndex == null
-        ? startAnchorId : otherScenes[sceneIndex].anchor.instance_id,
+      profile_revision: person.profile_revision ?? 1,
+      profile_level: background ? 'background' : 'scene',
+      anchor_id: anchorId,
       location_profile_ref: sceneIndex == null
         ? profile.geometry.start.location_profile_id
         : otherScenes[sceneIndex].location_profile_ref,
       zone_ref: 'main',
       role_ref: { id: person.role_id, source: 'approved_scenario_profile' },
       occupation_ref: { id: person.occupation_id, source: 'approved_scenario_profile' },
-      identity_state: { canonical_name: person.name },
-      machine_state: { status: 'active', materialization_depth: 'full' },
-      semantic_state: { scenario_function: 'ordinary_authored_person', causal_basis: 'authored_start' },
+      identity_state: { canonical_name: person.name,
+        public_role_label: person.occupation_label },
+      machine_state: background ? { status: 'active',
+        materialization_depth: 'full', schedule_state: 'working',
+        current_activity: { activity_ref: person.routine_profile_id,
+          status: 'active', can_continue_automatically: true,
+          summary: person.ordinary_activity } }
+        : { status: 'active', materialization_depth: 'full' },
+      semantic_state: { scenario_function: 'ordinary_authored_person',
+        causal_basis: 'authored_start', profile_revision:
+          person.profile_revision ?? 1 },
       relationships: person.relationships.map((relation) => ({
         ...relation,
         target_actor_id: relation.to === 'player'
           ? playerId : npcIds.get(relation.to)
       })),
-      schedule_records: [],
+      schedule_records: background ? [{ time_band: person.routine_time_band,
+        schedule_profile_id: person.routine_profile_id,
+        g5_node_id: nodeId }] : [],
       knowledge_profile_snapshot: { known_facts: [] },
       profile_candidate_set_digest: canonicalDigest(profile.people.map(({ person_key }) => person_key)),
       profile_record_digest: canonicalDigest(person)
@@ -127,8 +144,10 @@ export function materializeAuthoredStartPartyInstance(input) {
     npcs
   };
   const initialSpatialV3 = authoredInitialSpatialV3({
-    admission, place: profile.geometry.start, node_id: startNodeId,
-    anchor_id: startAnchorId
+    admission, ordinaryProfiles: profile.ordinary_profiles,
+    party_id: input.party_id, place: profile.geometry.start,
+    node_id: startNodeId, anchor_id: startAnchorId,
+    world_base_reference_snapshot: input.world_base_reference_snapshot
   });
   const hiddenTruth = { kind: 'none', digest: canonicalDigest({ kind: 'none' }) };
   const trace = {
@@ -150,8 +169,8 @@ export function materializeAuthoredStartPartyInstance(input) {
     rng_draw_count: 0
   };
   const result = {
-    version: 1,
-    schema: 'rus.authored_start_party_materialization_result.v1',
+    version: 3,
+    schema: 'rus.authored_start_party_materialization_result.v3',
     status: 'materialized',
     party_id: input.party_id,
     run_id: runId,
@@ -168,11 +187,23 @@ export function materializeAuthoredStartPartyInstance(input) {
   return deepFreeze(result);
 }
 
-function authoredInitialSpatialV3({ admission, place, node_id, anchor_id }) {
+function authoredInitialSpatialV3({ admission, ordinaryProfiles, party_id,
+  place, node_id, anchor_id, world_base_reference_snapshot }) {
   const resolved = admission.spatial_closures[0];
   const g6 = resolved.closure.g6_slots.find(({ scene_slot_key: key }) =>
     key === resolved.position.g6_scene_slot_key);
   if (!g6) invalid({ place: place.slot_key, failures: ['g6_slot'] });
+  const s1Entry = ordinaryProfiles?.s1?.profile?.envelopes?.find((entry) =>
+    entry.template_id === place.node_template_id);
+  const s1 = s1Entry == null ? null : materializeS1OpenOneSpaceTopology({
+    party_id, baseline_ref: `baseline:${node_id}`, g5_ref: `g5:${node_id}`,
+    position_ref: `position:${anchor_id}`,
+    base_position_slot_key: place.anchor_slot_key,
+    scene_template_ref: place.node_template_id, slot: s1Entry.topology_slot,
+    world_base_reference_snapshot
+  });
+  if (s1Entry != null && !s1?.ok) invalid({ place: place.slot_key,
+    failures: ['s1_topology'] });
   return {
     canonical_g5_ref: { entity_kind: 'canonical_spatial_node',
       entity_id: resolved.binding.id, authoring_version: String(resolved.binding.version) },
@@ -183,7 +214,12 @@ function authoredInitialSpatialV3({ admission, place, node_id, anchor_id }) {
       entity_id: resolved.closure.header.id },
       authoring_version: String(resolved.closure.header.version) },
     node_id, anchor_id, g6: structuredClone(g6),
-    position: structuredClone(resolved.position)
+    position: structuredClone(resolved.position),
+    s1_profile_ref: s1Entry == null ? null : {
+      id: ordinaryProfiles.s1.profile.profile_id,
+      revision: ordinaryProfiles.s1.profile.revision },
+    s1_topology: s1?.topology ?? null,
+    s1_physical_writes: s1?.rows ?? []
   };
 }
 
@@ -220,6 +256,7 @@ function assertInput(input, profile) {
   const places = profile?.geometry?.other_places;
   const locations = ['start', ...(places ?? []).map((_, index) => `other:${index}`)];
   if (profile?.status !== 'approved' || profile.scenario_id !== input?.scenario_id
+    || input.materializer_version !== AUTHORED_MATERIALIZER_VERSION
     || !input?.domain_catalog_pin?.catalog_digest || !profile.player?.name
     || !Array.isArray(profile.player.known_fact_refs)
     || Object.hasOwn(profile.player, 'unconfirmed_known_facts')
@@ -228,7 +265,11 @@ function assertInput(input, profile) {
     || !Array.isArray(resources) || resources.length === 0
     || !Array.isArray(places) || !profile.geometry?.start?.location_profile_id
     || people.some((person) => !person.person_key || !person.name
-      || !Array.isArray(person.relationships) || !locations.includes(person.location))
+      || !Array.isArray(person.relationships) || !locations.includes(person.location)
+      || person.profile_level === 'background'
+        && (!Number.isInteger(person.profile_revision)
+          || !person.routine_profile_id || !person.routine_time_band
+          || !person.ordinary_activity))
     || resources.some((resource) => !resource.resource_key
       || !Number.isInteger(resource.quantity) || resource.quantity <= 0
       || !['player', ...people.map(({ person_key }) => person_key)]

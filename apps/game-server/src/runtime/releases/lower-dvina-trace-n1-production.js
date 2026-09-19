@@ -10,7 +10,8 @@ export function createLowerDvinaTraceN1ProductionResolverFactory({
   loadedProfile, roleRunner, worldKnowledgeGrounder = null,
   resolveNpcOrdinarySemanticRemainder = resolveTurnRemainder
 } = {}) {
-  if (loadedProfile?.schema !== 'rus.lower_dvina_trace_n1_loaded_profile.v1'
+  if (!['rus.lower_dvina_trace_n1_loaded_profile.v1',
+    'rus.live_world_runtime.n1_loaded_profile.v1'].includes(loadedProfile?.schema)
       || loadedProfile.profile?.status !== 'approved'
       || typeof resolveNpcOrdinarySemanticRemainder !== 'function') {
     throw new TypeError('Approved N1 profile and turn resolver are required.');

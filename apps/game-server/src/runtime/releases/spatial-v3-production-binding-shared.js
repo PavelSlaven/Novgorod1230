@@ -23,6 +23,8 @@ import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../../internal/lower-dvina-trace-ordinary-stage-b-approval.js';
 import { loadLiveWorldAuthoredStartCatalog } from
   '../../internal/live-world-authored-starts.js';
+import { createSpatialSemanticFirstEntryProvisioner } from
+  '../../infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 
 export async function firstPlayableCommitRecheck(input) {
   if (input?.plan?.operation_kind === 'first_entry'
@@ -152,6 +154,16 @@ export async function createSpatialV3ProductionBindings(
           ?? TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
         scenarioDefinitionRevision: release.scenario_profile_exact_pins?.scenario_definition_revision ?? 32
       });
+      const authoredSpatialProvisioner =
+        createSpatialSemanticFirstEntryProvisioner({
+          loadedProfile: authoredStartCatalog.ordinary_profiles.s1
+        });
+      const authoredInitialProvisioner = initialOrdinaryProvisioner == null
+        ? null : { async provision(input) {
+          const ordinary = await initialOrdinaryProvisioner.provision(input);
+          const spatial = await authoredSpatialProvisioner.provision(input);
+          return Object.freeze({ ordinary, spatial });
+        } };
       publicRuntime ??= createLowerDvinaTracePublicRuntime({
         partyPool: ports.partyPool,
         committer,
@@ -173,8 +185,8 @@ export async function createSpatialV3ProductionBindings(
             runtimeCatalogPin,
             worldKnowledge,
             authoredStartResolver: authoredStartCatalog.resolveProfile,
-            ...(initialOrdinaryProvisioner == null ? {} : {
-              initialOrdinaryProvisioner
+            ...(authoredInitialProvisioner == null ? {} : {
+              initialOrdinaryProvisioner: authoredInitialProvisioner
             })
           }),
         traceTurnRuntime: createTraceTurnRuntime({
@@ -190,6 +202,10 @@ export async function createSpatialV3ProductionBindings(
           spatialSemanticProfile,
           npcSemanticRemainderProfile,
           authoredTurnProfile: authoredStartCatalog.turn_profile,
+          authoredSpatialSemanticProfile:
+            authoredStartCatalog.ordinary_profiles.s1,
+          authoredNpcSemanticRemainderProfile:
+            authoredStartCatalog.ordinary_profiles.n1,
           authoredRuntimeBindingResolver:
             authoredStartCatalog.resolveRuntimeBinding,
           worldKnowledge,

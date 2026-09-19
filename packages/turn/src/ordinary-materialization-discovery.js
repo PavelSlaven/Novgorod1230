@@ -1,5 +1,6 @@
 import { ordinaryNoop, knownResolutionResult } from './ordinary-materialization-discovery-result.js';
-import { candidateForDiscovery, knownMaterializedItemName } from
+import { candidateForDiscovery, equivalentVisibleItem,
+  knownMaterializedItemName } from
   './ordinary-materialization-discovery-identity.js';
 import {
   applyOrdinaryAggregateTransition,
@@ -164,6 +165,12 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       ?? null;
     if (presence.status === 'pending_items_property_admission') {
       const proposed = presence.pending_items_property_admission.proposed_item;
+      const equivalent = equivalentVisibleItem(request, proposed);
+      if (equivalent != null) {
+        return knownResolutionResult(request, { resolution: 'materialize' }, {
+          displayName: equivalent.name
+        });
+      }
       if (proposed.property_basis_ref
           !== envelope.request.context_refs.property_context_ref) {
         return ordinaryNoop(request);

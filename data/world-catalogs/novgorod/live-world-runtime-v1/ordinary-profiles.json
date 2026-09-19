@@ -1,0 +1,66 @@
+{
+  "schema": "rus.live_world_runtime.ordinary_profiles.v1",
+  "profile_set_id": "novgorod_live_world_ordinary_profiles_v1",
+  "revision": 1,
+  "status": "approved",
+  "s1": {
+    "schema": "rus.live_world_runtime.s1_loaded_profile.v1",
+    "profile": {
+      "schema": "rus.live_world_runtime.s1_profile.v1",
+      "profile_id": "novgorod_live_world_fishing_camp_s1_v1",
+      "revision": 1,
+      "status": "approved",
+      "policy_ref": "novgorod_live_world:s1:ordinary_spatial_semantic_v1",
+      "policy_version": 1,
+      "property_ref": "novgorod_live_world:s1:shared_worksite_property_v1",
+      "function_ref": "novgorod_live_world:s1:formal_spatial_owner_v1",
+      "environment_ref": "novgorod_live_world:s1:river_fishing_worksite_v1",
+      "envelopes": [{
+        "envelope_ref": "novgorod_live_world:s1:fishing_camp:ordinary_structure",
+        "kind": "ordinary_structure",
+        "template_id": "trace_ld_v1_tpl_fishing_camp",
+        "position_kind": "scene_position",
+        "scope_kind": "current_position_local_reference",
+        "structural_variant": "open_one_space",
+        "slot_key": "s1_open_one_space",
+        "topology_slot": {
+          "source_scene_template_ref": {"entity_ref":{"entity_kind":"scene_template","entity_id":"trace_ld_v1_tpl_fishing_camp"},"authoring_version":"1"},
+          "g6_slot_key": "s1_open_one_space",
+          "position_slot_key": "s1_open_one_space.interior",
+          "movement_edge_slot_keys": ["s1_open_one_space.out","s1_open_one_space.back"],
+          "visibility_link_slot_keys": ["s1_open_one_space.visible_out","s1_open_one_space.visible_back"]
+        },
+        "required_semantic_requirements": ["interior_space"],
+        "available_mechanics": [],
+        "capacity_total": 1,
+        "semantic_context": {
+          "allowed_kind": "ordinary_structure",
+          "period": "1230, Rus",
+          "region": "Novgorod land, Vikhutuy river district",
+          "place_type": "working fishing camp beside a river",
+          "environment": "late-summer riverside worksite with nets, timber, reeds, sand and river stones",
+          "material_culture": "early thirteenth-century Rus: wood, bark, rope, woven wattle, clay and stone; no modern technology or later institutions",
+          "ordinary_boundary": "The canonical fishing-camp G5 is fixed. Resolve one unimportant local ordinary structure inside its approved topology. Never create canonical geography, routes, historical people, hidden facts, evidence, ownership, law or numeric mechanics."
+        }
+      }],
+      "movement_hazard_policy": "none_only",
+      "water_fire_coupling": "disabled",
+      "fallback_policy": "forbidden"
+    }
+  },
+  "n1": {
+    "schema": "rus.live_world_runtime.n1_loaded_profile.v1",
+    "profile": {
+      "schema": "rus.live_world_runtime.n1_profile.v1",
+      "profile_id": "novgorod_live_world_background_fisher_n1_v1",
+      "revision": 1,
+      "status": "approved",
+      "eligible_participant_profiles": [{"profile_id":"nov_occ_fisher","revision":1}],
+      "eligible_profile_levels": ["background"],
+      "allowed_semantic_facets": ["ordinary_descriptor","ordinary_activity"],
+      "forbidden_authority": ["canonical_identity","authored_fact","hidden_fact","significant_status","route","ownership","law","exact_mechanics"],
+      "max_text_length": 240,
+      "fallback_policy": "forbidden"
+    }
+  }
+}

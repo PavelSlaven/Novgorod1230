@@ -143,7 +143,8 @@ function validateLowerDvinaTracePhase1AArtifacts(outputs, party, requestId,
   const closure = outputs?.sealed_selection_closure;
   if (!isObject(result)
     || !['rus.lower_dvina_trace_party_materialization_result.v1',
-      'rus.authored_start_party_materialization_result.v1']
+      'rus.authored_start_party_materialization_result.v1',
+      'rus.authored_start_party_materialization_result.v3']
       .includes(result.schema)
     || result.status !== 'materialized'
     || result.validation_report?.pass !== true
@@ -177,7 +178,9 @@ function validateLowerDvinaTracePhase1AArtifacts(outputs, party, requestId,
   }
   const authoredChecks = {
     result_schema: result?.schema
-      === 'rus.authored_start_party_materialization_result.v1',
+      != null && ['rus.authored_start_party_materialization_result.v1',
+        'rus.authored_start_party_materialization_result.v3']
+        .includes(outputs.materialization_result.schema),
     admission_schema: semantic?.schema
       === 'rus.live_world_runtime.authored_start_admission.v1',
     admission_identity: computeStage24Digest(semantic)

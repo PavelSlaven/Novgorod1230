@@ -36,6 +36,13 @@ export function applyBackgroundNpcSemanticPlan({ plan: input, state,
       || current.semantic_state?.n1_remainder != null) fail();
   const nextNpc = { ...structuredClone(current), semantic_state: {
     ...structuredClone(current.semantic_state ?? {}),
+    participant_slot_ref: current.participant_slot_ref
+      ?? current.semantic_state?.participant_slot_ref,
+    location_profile_ref: current.location_profile_ref
+      ?? current.semantic_state?.location_profile_ref,
+    zone_ref: current.zone_ref ?? current.semantic_state?.zone_ref,
+    profile_revision: current.profile_revision
+      ?? current.semantic_state?.profile_revision,
     n1_remainder: structuredClone(plan.remainder) } };
   const index = snapshot.npcs.findIndex((npc) => npcId(npc) === plan.npc_ref);
   if (index < 0) fail();

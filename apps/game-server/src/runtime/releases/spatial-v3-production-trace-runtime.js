@@ -69,6 +69,8 @@ export function createTraceTurnRuntime({
   spatialSemanticProfile,
   npcSemanticRemainderProfile,
   authoredTurnProfile,
+  authoredSpatialSemanticProfile = null,
+  authoredNpcSemanticRemainderProfile = null,
   authoredRuntimeBindingResolver,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts
@@ -127,12 +129,26 @@ export function createTraceTurnRuntime({
     ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool,
         roleRunner, worldKnowledgeGrounder })
     : null;
+  const authoredSpatialSemanticResolverFactory =
+    authoredSpatialSemanticProfile?.schema
+      === 'rus.live_world_runtime.s1_loaded_profile.v1'
+      && authoredSpatialSemanticProfile.profile?.status === 'approved'
+      ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool,
+          roleRunner, worldKnowledgeGrounder }) : null;
   const backgroundNpcResolverFactory =
     npcSemanticRemainderProfile?.schema
       === 'rus.lower_dvina_trace_n1_loaded_profile.v1'
       && npcSemanticRemainderProfile.profile?.status === 'approved'
       ? createLowerDvinaTraceN1ProductionResolverFactory({
           loadedProfile: npcSemanticRemainderProfile, roleRunner,
+          worldKnowledgeGrounder
+        }) : null;
+  const authoredBackgroundNpcResolverFactory =
+    authoredNpcSemanticRemainderProfile?.schema
+      === 'rus.live_world_runtime.n1_loaded_profile.v1'
+      && authoredNpcSemanticRemainderProfile.profile?.status === 'approved'
+      ? createLowerDvinaTraceN1ProductionResolverFactory({
+          loadedProfile: authoredNpcSemanticRemainderProfile, roleRunner,
           worldKnowledgeGrounder
         }) : null;
   const createNpcOwnerCapabilities = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
@@ -205,8 +221,14 @@ export function createTraceTurnRuntime({
     localFireProfile,
     createTurnStepSpatialSemanticResolver: spatialSemanticResolverFactory,
     spatialSemanticProfile: activeSpatialSemanticProfile,
+    createTurnStepAuthoredSpatialSemanticResolver:
+      authoredSpatialSemanticResolverFactory,
+    authoredSpatialSemanticProfile,
     createTurnStepBackgroundNpcResolver: backgroundNpcResolverFactory,
     npcSemanticRemainderProfile,
+    createTurnStepAuthoredBackgroundNpcResolver:
+      authoredBackgroundNpcResolverFactory,
+    authoredNpcSemanticRemainderProfile,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({
         profile: ordinaryMaterializationProfile, committedState

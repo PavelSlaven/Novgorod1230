@@ -1,6 +1,7 @@
 import { deepFreeze, sha256, stableStringify } from '@rus/kernel';
 
 export const MATERIALIZER_VERSION = 'code_materializer_v2';
+export const AUTHORED_MATERIALIZER_VERSION = 'code_materializer_v3';
 export const RNG_VERSION = 'mulberry32_v1';
 
 export class MaterializationError extends Error {

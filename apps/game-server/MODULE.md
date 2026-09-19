@@ -49,6 +49,12 @@ and adds no second transaction owner.
   owners, а отсутствующая capability остаётся честным direct/gap результатом.
   Exact elapsed time остаётся code-owned UI metadata; narration получает
   подтверждённый performed-action beat без копирования длительности.
+  Current authored binding revision 4 pins the M2b initial snapshot and
+  `live_world_authored_start_v2`. Accepted M2a revision 3 remains deprecated:
+  Phase 2 resolves only its persisted exact binding to a versioned turn
+  compatibility projection, without latest lookup, reroll or rematerialization.
+  Its first factual turn commits the normal v2 turn snapshot; reload and later
+  turns use that committed state.
 
 - Planner examples остаются flat semantic objects; mapping labels находятся
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.

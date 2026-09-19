@@ -192,6 +192,8 @@ export async function createSpatialV3ProductionBindings(
           spatialSemanticProfile,
           npcSemanticRemainderProfile,
           authoredTurnProfile: authoredStartCatalog.turn_profile,
+          authoredRuntimeBindingResolver:
+            authoredStartCatalog.resolveRuntimeBinding,
           worldKnowledge,
           createPhase2RuntimeFactory,
           createNpcRuntimePorts

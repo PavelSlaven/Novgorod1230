@@ -48,6 +48,11 @@ player-known refs. Player/NPC role и occupation разрешаются из exa
 digest-pinned approved regional actor catalog; неизвестная, неодобренная или
 несовместимая пара отклоняется до write plan.
 
+Authored resource mechanics additionally resolve exactly one approved
+`size_band` binding and its approved item category from the verified runtime
+catalog. The persisted inventory snapshot copies its exact packing slot cost,
+bundle size and size-band ref; missing or ambiguous bindings fail before plan.
+
 `materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
 
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не

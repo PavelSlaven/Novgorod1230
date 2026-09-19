@@ -24,6 +24,9 @@ export function validateAuthoredStartSessionRead({ partyId, session,
       || identity.party_id !== partyId || !scenarioId
       || persistedBinding?.catalog_id !== resolvedBinding.catalog_id
       || persistedBinding?.revision !== resolvedBinding.revision
+      || resolvedBinding.materializer_binding_id != null
+        && identity.materializer_binding_id
+          !== resolvedBinding.materializer_binding_id
       || !['approved', 'deprecated'].includes(resolvedBinding.status)
       || creation?.schema
         !== 'rus.first_playable_public_creation_identity.v1'
@@ -44,6 +47,8 @@ export function validateAuthoredStartSessionRead({ partyId, session,
     || !scenarioId
     || persistedBinding?.catalog_id !== resolvedBinding.catalog_id
     || persistedBinding?.revision !== resolvedBinding.revision
+    || resolvedBinding.materializer_binding_id != null
+      && identity.materializer_binding_id !== resolvedBinding.materializer_binding_id
     || !['approved', 'deprecated'].includes(resolvedBinding.status)
     || creation?.schema !== 'rus.first_playable_public_creation_identity.v1'
     || creation.party_id !== partyId

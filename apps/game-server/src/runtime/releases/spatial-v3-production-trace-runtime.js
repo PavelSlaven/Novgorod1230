@@ -69,6 +69,7 @@ export function createTraceTurnRuntime({
   spatialSemanticProfile,
   npcSemanticRemainderProfile,
   authoredTurnProfile,
+  authoredRuntimeBindingResolver,
   worldKnowledge,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
@@ -165,7 +166,7 @@ export function createTraceTurnRuntime({
     worldKnowledgeGrounder });
   const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
-      partyPool, committer
+      partyPool, committer, authoredRuntimeBindingResolver
     }),
     semanticResolver: createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel: createLowerDvinaTraceTurnStepModel({ roleRunner,

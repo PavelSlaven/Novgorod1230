@@ -72,7 +72,8 @@ and adds no second transaction owner.
   назначает verdict или индексы, а server не синтезирует reviewed segments/evidence.
   Пустой review частично либо полностью потерянного source становится
   missing_visible_change; malformed private output fail-closed и не получает
-  синтезированного repair concern. Final audit всегда strict.
+  синтезированного repair concern. Непокрытый source получает null segment,
+  а не alias на первый model segment. Final audit всегда strict.
   Private writer/format-repair возвращает только prose; Adapter всегда собирает
   публичные action_options=[], used_references=[] и нейтральный self_check={},
   которые не служат model approval.

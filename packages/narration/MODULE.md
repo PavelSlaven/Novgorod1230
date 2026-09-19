@@ -73,7 +73,9 @@ Production private auditor возвращает exact ordered `reviewed_segments
 refs, canonical choices, failure kinds/checks и reasons; затем детерминированно
 собирает public coverage, concerns, artistic/technical verdict и delivery pass.
 Модель обязана сама вернуть полный ordered `reviewed_segments` и evidence;
-server их не синтезирует. Positional/prose aliases и нормализация не допускаются; malformed private output
+  server их не синтезирует. Непокрытый source получает `missing_visible_change`
+  с `segment_id: null`, а не ложную ссылку на первый сегмент; whole-prose repair
+  использует отдельный code-owned synthetic target. Positional/prose aliases и нормализация не допускаются; malformed private output
 fail-closed, final audit строго проверяется по immutable segment IDs
 повторно сегментированной approved prose. Длительность хода не входит в private
 prose wire: её вычисляет temporal owner и показывает server-owned UI projection.

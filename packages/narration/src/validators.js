@@ -282,7 +282,9 @@ function validateConcern(errors, concern, index, segmentIds) {
   if (!plain(concern)) return errors.push(`concern ${index} must be an object`);
   forbiddenFields(errors, concern, ['segment_id', 'kind', 'reason'], `concern ${index}`);
   const id = concern.segment_id;
-  if (typeof id !== 'string' || !id.trim()) errors.push(`concern ${index} segment_id is required`);
+  if (id == null && concern.kind === 'missing_visible_change') {
+    // Source omissions have no truthful prose segment to reference.
+  } else if (typeof id !== 'string' || !id.trim()) errors.push(`concern ${index} segment_id is required`);
   else if (segmentIds && !segmentIds.includes(id)) errors.push(`concern ${index} has unknown segment_id: ${id}`);
   requiredText(errors, concern.kind, `concern ${index} kind`);
   requiredText(errors, concern.reason, `concern ${index} reason`);

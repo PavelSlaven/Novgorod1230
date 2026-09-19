@@ -1,11 +1,13 @@
 import { npcConversationCandidates, requiredNpcConversationCandidate,
   requiredPlayerConversationCandidate } from
   './lower-dvina-trace-phase-2-llm-prompts.js';
+import { isDeepStrictEqual } from 'node:util';
 
 const INVALID_OPERATION_CHOICE = Symbol('invalid operation choice');
 
 export function assemblePlayerConversationPlan(choice, request) {
-  let assembled = assembleConversationPlan(choice,
+  let assembled = assembleConversationPlan(
+    canonicalPlayerOperationChoice(choice, request),
     requiredPlayerConversationCandidate(request), {
       schema: 'player_conversation_contribution_plan_v1',
       request_id: request.request_id,
@@ -31,6 +33,16 @@ export function assemblePlayerConversationPlan(choice, request) {
     ? assembled.primary_addressee_ref : intended[0];
   return { ...assembled, primary_addressee_ref: structuredClone(primary),
     intended_addressee_refs: intended };
+}
+
+function canonicalPlayerOperationChoice(choice, request) {
+  const operations = choice?.supporting_operations;
+  if (!Array.isArray(operations) || operations.length !== 1
+      || operations[0]?.op != null) return choice;
+  const matches = Object.entries(request?.operation_contract ?? {})
+    .filter(([, contract]) => isDeepStrictEqual(contract, operations[0]));
+  if (matches.length !== 1) return choice;
+  return { ...choice, supporting_operations: [{ op: matches[0][0] }] };
 }
 
 export function assembleNpcConversationPlan(choice, request) {

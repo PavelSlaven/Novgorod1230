@@ -32,6 +32,7 @@ export {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
   applyApprovedActorItemTransitionProposal,
   planApprovedActorItemTransition,
+  projectApprovedActorItemAttemptAccess,
   validateApprovedActorItemTransitionProfile
 } from './approved-actor-item-transition.js';
 export { planApprovedPropertyTransition } from './approved-property-transition.js';

@@ -298,10 +298,7 @@ function resolveActors(profile) {
       || role.status !== 'approved' || occupation.status !== 'approved'
       || role.region_id !== catalog.region_id
       || occupation.region_id !== catalog.region_id
-      || !allows(occupation.allowed_social_roles, actor.role_id)
-      || forbids(occupation.forbidden_social_roles, actor.role_id)
-      || !allows(role.allowed_occupations, actor.occupation_id)
-      || forbids(role.forbidden_occupations, actor.occupation_id)) invalid();
+      || !allows(occupation.allowed_social_role_ids, actor.role_id)) invalid();
     return { actor_ref: actor.actor_ref, role_id: role.role_id,
       occupation_id: occupation.occupation_id };
   });
@@ -312,12 +309,8 @@ function allows(value, id) {
   return values.length === 0 || values.includes(id);
 }
 
-function forbids(value, id) {
-  return list(value).includes(id);
-}
-
 function list(value) {
-  return String(value ?? '').split(/[;,]/u).map((item) => item.trim())
+  return String(value ?? '').split(';').map((item) => item.trim())
     .filter(Boolean);
 }
 

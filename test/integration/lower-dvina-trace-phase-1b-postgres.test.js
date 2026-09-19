@@ -355,6 +355,12 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     }],
     ['npc-occupation', (profile) => {
       profile.people[0].occupation_id = 'missing-occupation';
+    }],
+    ['player-incompatible-role-occupation', (profile) => {
+      profile.player.occupation_id = 'nov_occ_boatman';
+    }],
+    ['npc-incompatible-role-occupation', (profile) => {
+      profile.people[0].role_id = 'nov_role_fisher';
     }]
   ];
   for (const [name, mutate] of invalidCases) {

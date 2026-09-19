@@ -213,7 +213,7 @@ test('omitted atomic unresolved result becomes deterministic missing-visible-cha
     { visible_context: visible, segments });
   assert.equal(assembled.pass, false);
   assert.deepEqual(assembled.coverage.visible_changes[1].segment_ids, []);
-  assert.deepEqual(assembled.concerns, [{ segment_id: 's1', kind: 'missing_visible_change',
+  assert.deepEqual(assembled.concerns, [{ segment_id: null, kind: 'missing_visible_change',
     reason: 'Required source visible_change_2 is not fully conveyed.' }]);
   assert.equal(validateNarrationAudit(assembled, ['s1', 's2'],
     { visible_changes: 2, uncertainties: 0 }).ok, true);
@@ -249,7 +249,11 @@ test('published omission forces one whole-prose repair and strict final audit', 
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: bad, action_options: [], used_references: [] } };
     if (call.role_id === 'gameplay_narrator_semantic_repair') {
-      assert.ok(wire.concerns.some(({ kind }) => kind === 'missing_visible_change'));
+      const missing = wire.concerns.find(({ kind }) => kind === 'missing_visible_change');
+      assert.deepEqual({ segment_id: missing.segment_id,
+        source_segment_ids: missing.source_segment_ids }, {
+        segment_id: 's1', source_segment_ids: []
+      });
       return { output: { replacements: [{ prose: good }] } };
     }
     const raw = reviewedNarration(wire.segments, Object.fromEntries(

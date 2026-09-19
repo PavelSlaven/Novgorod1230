@@ -342,7 +342,8 @@ proposition reviews, verdict, concerns, source indices и public coverage мод
 Adapter требует exact own-key set, literal source refs/order и canonical unique
 segment IDs без positional/prose aliases,
 allowed semantic kinds/literary checks и непустые reasons. Затем код выводит
-source_index по исходному порядку, собирает coverage, missing_visible_change и
+source_index по исходному порядку, собирает coverage, `missing_visible_change`
+с `segment_id: null` для непокрытого source (без alias на первый segment) и
 остальные concerns, artistic/technical verdict и delivery pass. Чистый отчёт
 требует непустое evidence; при чисто литературном finding полные source reviews
 остаются фактическим контролем, а пояснительное evidence может быть пустым.

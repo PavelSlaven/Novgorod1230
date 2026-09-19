@@ -166,13 +166,12 @@ export function assembleNarrationAuditOutput(output, request) {
     };
   }
   const concerns = [];
-  const firstSegment = request.segments[0].segment_id;
   const hasMissingSource = modelOutput.source_reviews.some(
     ({ segment_choices }) => segment_choices.length === 0);
   for (const source of modelOutput.source_reviews) {
     if (source.segment_choices.length === 0) {
       concerns.push({
-        segment_id: firstSegment,
+        segment_id: null,
         kind: 'missing_visible_change',
         reason: `Required source ${source.ref} is not fully conveyed.`
       });

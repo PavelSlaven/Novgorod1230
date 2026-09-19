@@ -33,7 +33,11 @@ and adds no second transaction owner.
   versioned `live-world-runtime-v1` binding. Демо и другие authored starts
   проходят тот же Phase 1A → Stage 24/25 → PostgreSQL → persisted screen path;
   party сохраняет exact runtime binding, а старые trace sessions продолжают
-  проверяться по своим historical pins.
+  проверяться по своим historical pins. Neutral catalog владеет собственными
+  execution/world/binding inputs; Lower Dvina publication загружается только
+  для своей external entry и не блокирует другой authored start. Read/reload
+  разрешает exact persisted approved/deprecated binding, без latest fallback;
+  только новая партия выбирает current binding.
 
 - Planner examples остаются flat semantic objects; mapping labels находятся
   вне JSON. Goal/result и exact continuation относятся ко всей заявке.

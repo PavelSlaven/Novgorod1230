@@ -1,6 +1,7 @@
 import { initialNpcRoutineRecords } from './npc-routine-schedules.js';
 import {
   computeMaterializationEnvelopeDigest,
+  computeStage24ArtifactDigest,
   STAGE24_PLAN_SCHEMA,
 } from '@rus/contracts';
 import { sha256 } from '@rus/kernel';
@@ -460,10 +461,26 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 function assertInput(input) {
   const result = input?.approved_pipeline_outputs?.materialization_result;
   const semantic = input?.approved_pipeline_outputs?.player_character_audit;
+  const authored = result?.schema
+    === 'rus.authored_start_party_materialization_result.v1';
+  const authoredAdmission = authored
+    && semantic?.schema === 'rus.live_world_runtime.authored_start_admission.v1'
+    && computeStage24ArtifactDigest(semantic)
+      === computeStage24ArtifactDigest(result.validation_report)
+    && semantic.world_base_reference_digest
+      === input.world_base_reference_digest
+    && semantic.domain_catalog_digest
+      === input.party_creation_context?.domain_catalog_pin?.catalog_digest
+    && semantic.domain_catalog_bundle_digest
+      === result.trace?.catalog_bundle_digest
+    && ['exact_world_closure', 'exact_domain_closure', 'actor_refs',
+      'placements', 'resources', 'player_known']
+      .every((key) => semantic.checks?.[key] === true);
   if (!input?.request_id || !input.party_creation_context?.idempotency_key || result?.validation_report?.pass !== true
     || semantic?.pass !== true || result?.party_id !== input.party_creation_context.party_id
     || result?.trace?.result_digest !== computeMaterializationEnvelopeDigest(result)
-    || input.party_db_write_plan_input_digest == null) {
+    || input.party_db_write_plan_input_digest == null
+    || (authored && !authoredAdmission)) {
     const error = new Error('Lower Dvina trace Phase 1A requires one validated materialization result bound to the party.');
     error.code = 'LOWER_DVINA_TRACE_PHASE_1A_PLAN_INPUT_INVALID';
     throw error;

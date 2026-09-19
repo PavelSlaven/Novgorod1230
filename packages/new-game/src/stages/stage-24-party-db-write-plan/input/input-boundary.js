@@ -118,7 +118,9 @@ export function validateStage24Input(input = {}) {
   concerns.push(...validateWorldBaseReferenceSnapshot(input.world_base_reference_snapshot));
   if (input.world_base_reference_digest !== computeStage24Digest(input.world_base_reference_snapshot)) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'world_base_reference_digest mismatch.', 'world_base_reference_digest'));
   for (const [key, expected] of Object.entries(REQUIRED_WRITE_POLICY)) if (input.write_policy?.[key] !== expected) concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', `write_policy.${key} cannot be weakened.`, `write_policy.${key}`));
-  if (phase1A) concerns.push(...validateLowerDvinaTracePhase1AArtifacts(input.approved_pipeline_outputs, party, input.request_id));
+  if (phase1A) concerns.push(...validateLowerDvinaTracePhase1AArtifacts(
+    input.approved_pipeline_outputs, party, input.request_id,
+    input.world_base_reference_snapshot));
   else {
     concerns.push(...validateMaterializationVersionPins(
       input.approved_pipeline_outputs?.g5_scene_graph?.materialization_run,
@@ -133,7 +135,8 @@ export function validateStage24Input(input = {}) {
   return concerns;
 }
 
-function validateLowerDvinaTracePhase1AArtifacts(outputs, party, requestId) {
+function validateLowerDvinaTracePhase1AArtifacts(outputs, party, requestId,
+  worldBaseReferenceSnapshot) {
   const concerns = [];
   const result = outputs?.materialization_result;
   const semantic = outputs?.player_character_audit;
@@ -172,13 +175,36 @@ function validateLowerDvinaTracePhase1AArtifacts(outputs, party, requestId) {
       party?.domain_catalog_pin
     ));
   }
-  const authoredAudit = result?.schema
-    === 'rus.authored_start_party_materialization_result.v1'
-    && semantic?.checks?.approved_authored_start === true;
+  const authoredChecks = {
+    result_schema: result?.schema
+      === 'rus.authored_start_party_materialization_result.v1',
+    admission_schema: semantic?.schema
+      === 'rus.live_world_runtime.authored_start_admission.v1',
+    admission_identity: computeStage24Digest(semantic)
+      === computeStage24Digest(result?.validation_report),
+    world_closure: semantic?.world_base_reference_digest
+      === computeStage24Digest(worldBaseReferenceSnapshot),
+    domain_pin: semantic?.domain_catalog_digest
+      === party?.domain_catalog_pin?.catalog_digest,
+    domain_closure: semantic?.domain_catalog_bundle_digest
+      === result?.trace?.catalog_bundle_digest,
+    checks: ['exact_world_closure', 'exact_domain_closure', 'actor_refs',
+      'placements', 'resources', 'player_known']
+      .every((key) => semantic?.checks?.[key] === true),
+    spatial_refs: Array.isArray(semantic?.resolved_spatial_refs)
+      && semantic.resolved_spatial_refs.length > 0,
+    resource_refs: Array.isArray(semantic?.resolved_resource_refs)
+      && semantic.resolved_resource_refs.length > 0
+  };
+  const authoredAudit = Object.values(authoredChecks).every(Boolean);
   if (semantic?.pass !== true
     || (!authoredAudit
       && (semantic?.stage11?.pass !== true || semantic?.stage12?.pass !== true))) {
-    concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', 'Phase 1A player audit must contain passing Stage 11 and Stage 12 proofs.', 'approved_pipeline_outputs.player_character_audit'));
+    concerns.push(issue('WRITE_PLAN_INPUT_BINDING_INVALID', authoredChecks.result_schema
+      ? `Authored admission is incomplete: ${Object.entries(authoredChecks)
+        .filter(([, pass]) => !pass).map(([key]) => key).join(',')}.`
+      : 'Phase 1A player audit must contain passing Stage 11 and Stage 12 proofs.',
+    'approved_pipeline_outputs.player_character_audit'));
   }
   if (!isObject(closure)
     || closure.schema !== 'rus.lower_dvina_trace_sealed_selection_closure.v1'

@@ -9,41 +9,76 @@ const ROOT = 'data/world-catalogs/novgorod/live-world-runtime-v1';
 export async function loadLiveWorldAuthoredStartCatalog({
   rootDir = process.cwd(),
   phase1AManifestDigest = null,
-  scenarioDefinitionRevision = null
+  scenarioDefinitionRevision = null,
+  externalPublicationLoader = loadLowerDvinaTracePhase1BPublication
 } = {}) {
-  const [manifest, starts, tracePublication] = await Promise.all([
+  const [manifest, starts] = await Promise.all([
     readJson(rootDir, `${ROOT}/manifest.json`),
-    readJson(rootDir, `${ROOT}/authored-starts.json`),
-    loadLowerDvinaTracePhase1BPublication({ rootDir,
-      phase1AManifestDigest, scenarioDefinitionRevision })
+    readJson(rootDir, `${ROOT}/authored-starts.json`)
   ]);
   assertCatalog(manifest, starts);
-  const publications = new Map([[tracePublication.binding.scenario_id,
-    tracePublication]]);
+  const facts = new Map(starts.player_known_facts.map((fact) => [
+    fact.fact_id, freezeDeep(structuredClone(fact))
+  ]));
   const profiles = new Map();
+  const publications = new Map();
   for (const profile of starts.starts) {
-    assertProfile(profile);
-    profiles.set(profile.scenario_id, freezeDeep(structuredClone(profile)));
+    assertProfile(profile, facts);
+    const approvedProfile = freezeDeep({
+      ...structuredClone(profile),
+      approved_player_known_facts: [...facts.values()].map((fact) =>
+        structuredClone(fact))
+    });
+    profiles.set(profile.scenario_id, approvedProfile);
     publications.set(profile.scenario_id, authoredPublication({
-      profile, starts, tracePublication
+      manifest, profile: approvedProfile, starts
     }));
   }
+  const externalStarts = new Map(starts.external_starts.map((entry) => [
+    entry.scenario_id, freezeDeep(structuredClone(entry))
+  ]));
+  const runtimeBindings = new Map(starts.bindings.map((binding) => [
+    `${starts.catalog_id}@${binding.revision}`,
+    freezeDeep({ catalog_id: starts.catalog_id, revision: binding.revision,
+      status: binding.status })
+  ]));
+  const currentBinding = runtimeBindings.get(
+    `${starts.catalog_id}@${starts.current_binding_revision}`
+  );
+  if (currentBinding?.status !== 'approved') fail(
+    'LIVE_WORLD_AUTHORED_START_CATALOG_INVALID'
+  );
   return Object.freeze({
-    runtime_binding: freezeDeep(structuredClone(starts.runtime_binding)),
-    listPublic: () => [...publications.values()].map(({ public_projection }) => ({
-      scenario_id: public_projection.scenario_id,
-      ...structuredClone(public_projection.public_metadata)
-    })),
-    loadPublication: (scenarioId) => publications.get(scenarioId) ?? null,
-    resolveProfile: (scenarioId) => profiles.get(scenarioId) ?? null
+    runtime_binding: freezeDeep({ catalog_id: starts.catalog_id,
+      revision: starts.current_binding_revision }),
+    listPublic: () => [
+      ...externalStarts.values(), ...profiles.values()
+    ].map((entry) => ({ scenario_id: entry.scenario_id,
+      ...structuredClone(entry.public_metadata) })),
+    hasScenario: (scenarioId) => externalStarts.has(scenarioId)
+      || publications.has(scenarioId),
+    loadPublication: async (scenarioId) => {
+      const authored = publications.get(scenarioId);
+      if (authored) return authored;
+      if (!externalStarts.has(scenarioId)) return null;
+      return externalPublicationLoader({ rootDir, phase1AManifestDigest,
+        scenarioDefinitionRevision });
+    },
+    resolveProfile: (scenarioId) => profiles.get(scenarioId) ?? null,
+    resolveRuntimeBinding: ({ catalog_id: catalogId, revision } = {}) =>
+      runtimeBindings.get(`${catalogId}@${revision}`) ?? null
   });
 }
 
-function authoredPublication({ profile, starts, tracePublication }) {
+function authoredPublication({ manifest, profile, starts }) {
+  const runtimeBinding = {
+    catalog_id: starts.catalog_id,
+    revision: starts.current_binding_revision
+  };
   const binding = {
     schema: 'rus.live_world_runtime.authored_start_binding.v1',
-    binding_id: `${profile.scenario_id}@${starts.revision}`,
-    revision: starts.revision,
+    binding_id: `${profile.scenario_id}@${starts.current_binding_revision}`,
+    revision: starts.current_binding_revision,
     status: 'approved',
     scenario_id: profile.scenario_id,
     publication_availability: 'public',
@@ -51,21 +86,24 @@ function authoredPublication({ profile, starts, tracePublication }) {
     public_metadata: structuredClone(profile.public_metadata),
     materializer_binding_id: 'live_world_authored_start_v1',
     phase_1a_manifest_ref: {
-      digest: tracePublication.binding.phase_1a_manifest_ref.digest
+      digest: canonicalDigest({ catalog_id: starts.catalog_id,
+        revision: starts.current_binding_revision })
     },
     scenario_definition_ref: {
-      revision: starts.revision,
+      revision: starts.current_binding_revision,
       digest: canonicalDigest({ catalog_id: starts.catalog_id,
-        revision: starts.revision, scenario_id: profile.scenario_id })
+        revision: starts.current_binding_revision,
+        scenario_id: profile.scenario_id })
     },
     execution_identity: {
-      ...structuredClone(tracePublication.binding.execution_identity),
-      seed_context: `authored_start:${profile.scenario_id}:v${starts.revision}`
+      ...structuredClone(starts.execution_contract),
+      seed_context:
+        `authored_start:${profile.scenario_id}:v${starts.current_binding_revision}`,
+      trigger: 'new_game',
+      occurrence: 0
     },
-    world_compatibility: structuredClone(
-      tracePublication.binding.world_compatibility
-    ),
-    runtime_binding: structuredClone(starts.runtime_binding)
+    world_compatibility: structuredClone(starts.world_compatibility),
+    runtime_binding: runtimeBinding
   };
   const openingProjection = {
     version: 1,
@@ -77,7 +115,7 @@ function authoredPublication({ profile, starts, tracePublication }) {
     opening_prose: profile.opening.opening_prose
   };
   return freezeDeep({
-    manifest_digest: tracePublication.manifest_digest,
+    manifest_digest: canonicalDigest(manifest),
     binding,
     binding_digest: canonicalDigest(binding),
     public_projection: { scenario_id: profile.scenario_id,
@@ -92,18 +130,26 @@ function assertCatalog(manifest, starts) {
     || manifest.status !== 'integration_candidate'
     || manifest.activation !== 'not_active'
     || manifest.authored_starts?.status !== 'approved'
-    || starts?.schema !== 'rus.live_world_runtime.authored_starts.v1'
+    || starts?.schema !== 'rus.live_world_runtime.authored_starts.v2'
     || starts.status !== 'approved'
     || starts.catalog_id !== manifest.catalog_id
     || starts.revision !== manifest.revision
-    || starts.runtime_binding?.catalog_id !== starts.catalog_id
-    || starts.runtime_binding?.revision !== starts.revision
+    || !Number.isInteger(starts.current_binding_revision)
+    || !text(starts.execution_contract?.materializer_version)
+    || !text(starts.execution_contract?.rng_algorithm_id)
+    || !text(starts.world_compatibility?.production_world_revision_id)
+    || !text(starts.world_compatibility?.production_world_catalog_digest)
+    || !Array.isArray(starts.external_starts)
+    || !Array.isArray(starts.bindings) || starts.bindings.length === 0
+    || new Set(starts.bindings.map(({ revision }) => revision)).size
+      !== starts.bindings.length
+    || !Array.isArray(starts.player_known_facts)
     || !Array.isArray(starts.starts) || starts.starts.length === 0) {
     fail('LIVE_WORLD_AUTHORED_START_CATALOG_INVALID');
   }
 }
 
-function assertProfile(profile) {
+function assertProfile(profile, facts) {
   const people = profile?.people;
   const resources = profile?.resources;
   const places = profile?.geometry?.other_places;
@@ -114,8 +160,8 @@ function assertProfile(profile) {
     || profile.public_metadata?.available !== true
     || !text(profile.opening?.opening_prose)
     || !text(profile.player?.name)
-    || !Array.isArray(profile.player?.known_facts)
-    || profile.player.known_facts.some((fact) => !text(fact))
+    || !Array.isArray(profile.player?.known_fact_refs)
+    || profile.player.known_fact_refs.some((ref) => !facts.has(ref))
     || Object.hasOwn(profile.player, 'unconfirmed_known_facts')
     || !Array.isArray(people) || people.length === 0
     || new Set(personKeys).size !== personKeys.length
@@ -124,10 +170,12 @@ function assertProfile(profile) {
       || person.relationships.some(({ to }) => !known.has(to)))
     || !Array.isArray(resources) || resources.length === 0
     || resources.some((resource) => !text(resource.resource_key)
+      || !text(resource.item_template_id)
+      || !text(resource.inventory_profile_id)
+      || !text(resource.quantity_profile_id) || !text(resource.category_id)
       || !Number.isInteger(resource.quantity) || resource.quantity <= 0
       || !known.has(resource.holder))
-    || !text(profile.geometry?.g4_id)
-    || !validPlace(profile.geometry.start)
+    || !validPlace(profile.geometry?.start)
     || !Array.isArray(places) || places.some((place) => !validPlace(place))
     || !text(profile.environment?.profile_id)
     || !Array.isArray(profile.environment.facts)) {
@@ -136,7 +184,11 @@ function assertProfile(profile) {
 }
 
 function validPlace(place) {
-  return text(place?.location_profile_id) && text(place.node_template_id)
+  return text(place?.canonical_g5_id)
+    && Number.isInteger(place.canonical_g5_version)
+    && text(place.g4_id) && text(place.location_profile_id)
+    && text(place.node_template_id)
+    && Number.isInteger(place.node_template_version)
     && text(place.slot_key) && text(place.anchor_template_id)
     && text(place.anchor_slot_key)
     && ['npc', 'item', 'container'].every((key) =>

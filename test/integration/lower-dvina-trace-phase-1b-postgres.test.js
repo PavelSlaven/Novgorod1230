@@ -1,12 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createServer } from 'node:http';
 import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import pg from 'pg';
+import { chromium } from 'playwright-core';
+import { createGameHttpServer, createStaticAssetResolver, listen } from
+  '@rus/game-server';
+import { canonicalDigest } from '@rus/materialization';
 import {
   createLowerDvinaTracePublicRuntime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
@@ -17,9 +22,6 @@ import {
 import {
   createFirstPlayablePartyRepository
 } from '../../apps/game-server/src/infrastructure/postgres/first-playable/repository.js';
-import {
-  createHttpHandler
-} from '../../apps/game-server/src/http/handler.js';
 import {
   loadActiveRuntimeCatalogPin
 } from '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
@@ -61,6 +63,14 @@ const docker = (args) => spawnSync(
   args,
   { encoding: 'utf8', timeout: 45_000 }
 );
+const executablePath = [
+  process.env.RUS_CHROMIUM_PATH,
+  'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+  '/usr/bin/chromium',
+  '/usr/bin/chromium-browser',
+  '/usr/bin/google-chrome'
+].find((item) => item && existsSync(item));
 test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', async (t) => {
   const dockerReady = docker(['version']).status === 0;
   const name = `lower-dvina-phase-1b-${process.pid}`;
@@ -211,14 +221,23 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     }),
     { code: 'TRACE_PHASE_1B_EXECUTION_VERSION_UNSUPPORTED' }
   );
-  server = createServer(createHttpHandler({
-    root: first.runtime,
-    maxBodyBytes: 1024 * 1024,
+  const here = dirname(fileURLToPath(import.meta.url));
+  server = createGameHttpServer({
+    root: Object.freeze({ ...first.runtime,
+      getLlmSettings: () => ({ mode: 'local',
+        compatibility: 'openai_compatible',
+        base_url: 'http://127.0.0.1:8000/v1', model: 'test-not-used',
+        api_key_present: false,
+        local_runtime: { ready: true, reasons: [] } }),
+      getTurnProgress: () => null }),
+    staticAssets: createStaticAssetResolver({
+      webRoot: resolve(here, '../../apps/game-web'),
+      contractsRoot: resolve(here, '../../packages/contracts/src')
+    }),
     developerMode: true
-  }));
-  await new Promise((resolve) =>
-    server.listen(0, '127.0.0.1', resolve));
-  const base = `http://127.0.0.1:${server.address().port}`;
+  });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  const base = `http://127.0.0.1:${address.port}`;
 
   const catalog = await api(base, '/api/v1/scenarios');
   const scenarioIds = catalog.data.scenarios.map(({ scenario_id: id }) => id);
@@ -260,9 +279,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
   assert.equal(authoredInternal.npcs.length, 2);
   assert.equal(authoredInternal.items.length, 2);
-  assert.equal(authoredInternal.position.g4_id, 'gn_nov_g4_xp017_yp025');
+  assert.equal(authoredInternal.position.g4_id,
+    'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach');
   assert.deepEqual(authoredInternal.items.map(({ quantity }) => Number(quantity))
-    .sort((a, b) => a - b), [4, 12]);
+    .sort((a, b) => a - b), [1, 1]);
   assert.notEqual(authoredPartyId, partyId);
   assert.deepEqual(
     (await api(base, '/api/v1/new-games', authoredRequest)).data,
@@ -276,21 +296,97 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       WHERE party_id=$1`, [authoredPartyId])).rows[0].stage26_result;
   assert.deepEqual(authoredIdentity.runtime_binding,
     authoredStartCatalog.runtime_binding);
+  assert.equal(authoredIdentity.runtime_binding.revision, 2);
   assert.equal(await count(pool, 'party_runtime.parties', partyId), 1);
-  const invalidProfile = structuredClone(
-    authoredStartCatalog.resolveProfile('upper_msta_weavers_yard_v1')
-  );
-  invalidProfile.player.unconfirmed_known_facts = ['Содержимое запертого сундука.'];
-  const invalidRuntime = makeRuntime(null, {
-    authoredStartResolver: (scenarioId) => scenarioId === invalidProfile.scenario_id
-      ? invalidProfile : null
+  const invalidCases = [
+    ['g4', (profile) => { profile.geometry.start.g4_id = 'missing-g4'; }],
+    ['node-template', (profile) => {
+      profile.geometry.start.node_template_id = 'missing-template';
+    }],
+    ['location-profile', (profile) => {
+      profile.geometry.start.location_profile_id = 'missing-profile';
+    }],
+    ['item-profile', (profile) => {
+      profile.resources[0].inventory_profile_id = 'missing-profile';
+    }],
+    ['item-category', (profile) => {
+      profile.resources[0].category_id = 'missing-category';
+    }],
+    ['environment', (profile) => {
+      profile.environment.profile_id = 'missing-environment';
+    }],
+    ['player-known', (profile) => {
+      profile.player.known_fact_refs = ['missing-fact'];
+    }]
+  ];
+  for (const [name, mutate] of invalidCases) {
+    const invalidProfile = structuredClone(
+      authoredStartCatalog.resolveProfile('upper_msta_weavers_yard_v1')
+    );
+    mutate(invalidProfile);
+    const invalidRuntime = makeRuntime(null, {
+      authoredStartResolver: (scenarioId) =>
+        scenarioId === invalidProfile.scenario_id ? invalidProfile : null
+    }).runtime;
+    const requestId = `m2a-invalid-${name}`;
+    await assert.rejects(() => invalidRuntime.startNewGame({
+      scenario_id: invalidProfile.scenario_id,
+      request_id: requestId
+    }), { code: 'AUTHORED_START_PROFILE_INVALID' });
+    const invalidPartyId =
+      `party:${hashForTest(requestId).slice(0, 24)}`;
+    assert.equal(await count(pool, 'party_runtime.parties', invalidPartyId), 0);
+  }
+
+  const unavailableDemoCatalog = await loadLiveWorldAuthoredStartCatalog({
+    phase1AManifestDigest: TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
+    scenarioDefinitionRevision: 32,
+    externalPublicationLoader: async () => {
+      throw Object.assign(new Error('demo unavailable'), {
+        code: 'DEMO_PUBLICATION_UNAVAILABLE'
+      });
+    }
+  });
+  const neutralRuntime = makeRuntime(null, {
+    catalog: unavailableDemoCatalog
   }).runtime;
-  await assert.rejects(() => invalidRuntime.startNewGame({
-    scenario_id: invalidProfile.scenario_id,
-    request_id: 'm2a-invalid-player-known'
-  }), { code: 'AUTHORED_START_PROFILE_INVALID' });
-  const invalidPartyId = `party:${hashForTest('m2a-invalid-player-known').slice(0, 24)}`;
-  assert.equal(await count(pool, 'party_runtime.parties', invalidPartyId), 0);
+  assert.equal((await neutralRuntime.listScenarios()).scenarios.some(
+    ({ scenario_id: id }) => id === 'upper_msta_weavers_yard_v1'), true);
+  const neutralStart = await neutralRuntime.startNewGame({
+    scenario_id: 'upper_msta_weavers_yard_v1',
+    request_id: 'm2a-neutral-with-demo-unavailable'
+  });
+  assert.equal(neutralStart.screen.scenario_id,
+    'upper_msta_weavers_yard_v1');
+  await assert.rejects(() => neutralRuntime.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'm2a-demo-unavailable'
+  }), { code: 'DEMO_PUBLICATION_UNAVAILABLE' });
+
+  assert.ok(executablePath, 'Chromium executable is required for M2a E2E.');
+  const browser = await chromium.launch({ executablePath, headless: true,
+    args: ['--no-sandbox', '--no-proxy-server', '--proxy-bypass-list=*'] });
+  t.after(() => browser.close());
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  await page.goto(base);
+  await page.waitForSelector('[data-start-new-game]');
+  await page.click('[data-start-new-game]');
+  await page.waitForSelector('[data-new-game-screen]');
+  await page.click('[data-scenario-id="upper_msta_weavers_yard_v1"]');
+  await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+  assert.match(await page.textContent('body'), /Любава|Ткацкий двор/u);
+  const browserPartyId = await page.evaluate(() =>
+    localStorage.getItem('rus.party_id'));
+  assert.equal(await count(pool, 'party_runtime.parties', browserPartyId), 1);
+  await page.click('[data-return-start]');
+  await page.reload();
+  await page.waitForSelector('[data-continue-party]');
+  await page.click('[data-continue-party]');
+  await page.waitForSelector('[data-screen-schema="first_game_screen"]');
+  assert.equal(await page.evaluate(() => localStorage.getItem('rus.party_id')),
+    browserPartyId);
+  assert.match(await page.textContent('body'), /Любава|Ткацкий двор/u);
+  await browser.close();
   const beforeRestart = await first.adapter.loadInternal(partyId);
   assert.equal(
     (await count(pool, 'party_runtime.parties', partyId)),
@@ -330,6 +426,59 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.deepEqual(
     (await restarted.runtime.getPartyScreen(authoredPartyId)).screen,
     authoredStart.data.screen
+  );
+  const v1Catalog = Object.freeze({
+    runtime_binding: Object.freeze({
+      catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
+      revision: 1
+    }),
+    listPublic: authoredStartCatalog.listPublic,
+    hasScenario: authoredStartCatalog.hasScenario,
+    resolveProfile: authoredStartCatalog.resolveProfile,
+    resolveRuntimeBinding: (binding) => binding?.catalog_id
+      === authoredStartCatalog.runtime_binding.catalog_id
+      && binding.revision === 1
+      ? Object.freeze({ ...binding, status: 'approved' }) : null,
+    async loadPublication(scenarioId) {
+      const publication = structuredClone(
+        await authoredStartCatalog.loadPublication(scenarioId)
+      );
+      publication.binding.binding_id = `${scenarioId}@1`;
+      publication.binding.revision = 1;
+      publication.binding.phase_1a_manifest_ref.digest = canonicalDigest({
+        catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
+        revision: 1
+      });
+      publication.binding.scenario_definition_ref.revision = 1;
+      publication.binding.scenario_definition_ref.digest = canonicalDigest({
+        catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
+        revision: 1,
+        scenario_id: scenarioId
+      });
+      publication.binding.execution_identity.seed_context =
+        `authored_start:${scenarioId}:v1`;
+      publication.binding.runtime_binding.revision = 1;
+      publication.binding_digest = canonicalDigest(publication.binding);
+      return publication;
+    }
+  });
+  const v1StartRuntime = makeRuntime(null, { catalog: v1Catalog }).runtime;
+  const v1Start = await v1StartRuntime.startNewGame({
+    scenario_id: 'upper_msta_weavers_yard_v1',
+    request_id: 'm2a-authored-v1-save'
+  });
+  const historicalAuthored = makeRuntime();
+  assert.deepEqual(
+    (await historicalAuthored.runtime.getPartyScreen(v1Start.party_id)).screen,
+    v1Start.screen
+  );
+  const missingHistoricalBinding = makeRuntime(null, {
+    catalog: Object.freeze({ ...authoredStartCatalog,
+      resolveRuntimeBinding: () => null })
+  });
+  await assert.rejects(
+    () => missingHistoricalBinding.runtime.getPartyScreen(v1Start.party_id),
+    { code: 'AUTHORED_START_RUNTIME_BINDING_MISSING' }
   );
   const afterRestart = await restarted.adapter.loadInternal(partyId);
   assert.deepEqual(afterRestart.request_identity, beforeRestart.request_identity);

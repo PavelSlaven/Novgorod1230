@@ -1,10 +1,12 @@
-import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
+import { computeMaterializationEnvelopeDigest,
+  computeStage24ArtifactDigest } from '@rus/contracts';
 import { deepFreeze } from '@rus/kernel';
 import { canonicalDigest, deriveSeed, deterministicInstanceId } from './core.js';
 
 export function materializeAuthoredStartPartyInstance(input) {
   const profile = input?.scenario_bundle;
   assertInput(input, profile);
+  const admission = resolveAuthoritativeAdmission(input, profile);
   const identity = requestIdentity(input);
   const seed = deriveSeed(identity);
   const runId = `authored_${seed.digest.slice(0, 24)}`;
@@ -18,7 +20,7 @@ export function materializeAuthoredStartPartyInstance(input) {
     const nodeId = id('g5_node', place.slot_key, ordinal + 1);
     return {
       location_profile_ref: place.location_profile_id,
-      node: node(place, nodeId, profile.geometry.g4_id),
+      node: node(place, nodeId),
       anchor: anchor(place, id('g5_anchor', place.anchor_slot_key, ordinal + 1), nodeId)
     };
   });
@@ -31,7 +33,7 @@ export function materializeAuthoredStartPartyInstance(input) {
     return {
       instance_id: npcIds.get(person.person_key),
       participant_slot_ref: person.person_key,
-      profile_id: `authored_person:${person.person_key}`,
+      profile_id: person.occupation_id,
       profile_revision: 1,
       profile_level: 'scene',
       anchor_id: sceneIndex == null
@@ -61,8 +63,8 @@ export function materializeAuthoredStartPartyInstance(input) {
     const holderId = playerHeld ? playerId : npcIds.get(resource.holder);
     return {
       instance_id: id('item', resource.resource_key, ordinal),
-      template_id: `authored_resource:${resource.resource_key}`,
-      profile_id: 'authored_finite_resource_v1',
+      template_id: resource.item_template_id,
+      profile_id: resource.inventory_profile_id,
       category_id: resource.category_id,
       quantity: resource.quantity,
       condition_state: 'serviceable',
@@ -104,12 +106,12 @@ export function materializeAuthoredStartPartyInstance(input) {
         occupation_id: profile.player.occupation_id,
         display_name: profile.player.role_label },
       skills: {},
-      knowledge: { known_facts: structuredClone(profile.player.known_facts) }
+      knowledge: { known_facts: structuredClone(admission.player_known_facts) }
     } },
     spatial: {
-      node: node(profile.geometry.start, startNodeId, profile.geometry.g4_id),
+      node: node(profile.geometry.start, startNodeId),
       anchor: anchor(profile.geometry.start, startAnchorId, startNodeId),
-      position: { g4_id: profile.geometry.g4_id, g5_node_id: startNodeId,
+      position: { g4_id: profile.geometry.start.g4_id, g5_node_id: startNodeId,
         g5_anchor_id: startAnchorId }
     },
     body,
@@ -132,6 +134,7 @@ export function materializeAuthoredStartPartyInstance(input) {
     input_digest: canonicalDigest(identity),
     world_revision_id: input.world_revision_id,
     catalog_digest: input.domain_catalog_pin.catalog_digest,
+    catalog_bundle_digest: admission.domain_catalog_bundle_digest,
     scenario_manifest_digest: input.scenario_manifest_digest,
     policy_profile_pins: [],
     policy_profile_pin_digest: canonicalDigest([]),
@@ -149,8 +152,7 @@ export function materializeAuthoredStartPartyInstance(input) {
     hidden_truth: hiddenTruth,
     sealed_selections: [],
     policy_profile_pins: [],
-    validation_report: { pass: true, checks: { approved_profile: true,
-      actor_refs: true, placements: true, resources: true, player_known: true } },
+    validation_report: admission.validation_report,
     trace
   };
   trace.result_digest = computeMaterializationEnvelopeDigest(result);
@@ -167,10 +169,12 @@ function requestIdentity(input) {
   ].map((key) => [key, structuredClone(input[key])]));
 }
 
-function node(place, instanceId, g4Id) {
-  return { instance_id: instanceId, parent_g4_id: g4Id,
+function node(place, instanceId) {
+  return { instance_id: instanceId, parent_g4_id: place.g4_id,
     template_id: place.node_template_id, slot_key: place.slot_key,
     state: { location_profile_ref: place.location_profile_id,
+      canonical_g5_ref: { id: place.canonical_g5_id,
+        version: place.canonical_g5_version },
       environment_profile_ref: null } };
 }
 
@@ -189,9 +193,9 @@ function assertInput(input, profile) {
   const locations = ['start', ...(places ?? []).map((_, index) => `other:${index}`)];
   if (profile?.status !== 'approved' || profile.scenario_id !== input?.scenario_id
     || !input?.domain_catalog_pin?.catalog_digest || !profile.player?.name
-    || !Array.isArray(profile.player.known_facts)
+    || !Array.isArray(profile.player.known_fact_refs)
     || Object.hasOwn(profile.player, 'unconfirmed_known_facts')
-    || profile.player.known_facts.some((fact) => typeof fact !== 'string' || !fact.trim())
+    || profile.player.known_fact_refs.some((fact) => typeof fact !== 'string' || !fact.trim())
     || !Array.isArray(people) || people.length === 0
     || !Array.isArray(resources) || resources.length === 0
     || !Array.isArray(places) || !profile.geometry?.start?.location_profile_id
@@ -208,8 +212,123 @@ function assertInput(input, profile) {
   }
 }
 
-function invalid() {
+function resolveAuthoritativeAdmission(input, profile) {
+  const world = input.world_base_reference_snapshot;
+  const domain = input.domain_catalog;
+  if (world?.schema !== 'world_base_reference_snapshot'
+    || domain?.schema !== 'rus.verified_item_catalog.v2'
+    || domain.verified !== true
+    || domain.pin?.catalog_digest !== input.domain_catalog_pin.catalog_digest) {
+    invalid();
+  }
+  const places = [profile.geometry.start, ...profile.geometry.other_places];
+  const spatialRefs = places.map((place) => resolvePlace(world, place));
+  const environmentProfiles = new Set(spatialRefs.flatMap(({ closure }) =>
+    closure.movement_edges.map(({ transition_environment_profile_id: id }) => id)
+      .filter(Boolean)));
+  if (!environmentProfiles.has(profile.environment.profile_id)) invalid();
+  const resourceRefs = profile.resources.map((resource) =>
+    resolveResource(domain.records_by_table, resource));
+  const approvedFacts = new Map((profile.approved_player_known_facts ?? [])
+    .filter(({ status }) => status === 'approved')
+    .map((fact) => [fact.fact_id, fact.text]));
+  const playerKnownFacts = profile.player.known_fact_refs.map((ref) =>
+    approvedFacts.get(ref));
+  if (playerKnownFacts.some((fact) => typeof fact !== 'string' || !fact.trim())) {
+    invalid();
+  }
+  const worldDigest = computeStage24ArtifactDigest(world);
+  const domainBundleDigest = canonicalDigest(domain);
+  return {
+    player_known_facts: playerKnownFacts,
+    domain_catalog_bundle_digest: domainBundleDigest,
+    validation_report: {
+      version: 1,
+      schema: 'rus.live_world_runtime.authored_start_admission.v1',
+      pass: true,
+      world_base_reference_digest: worldDigest,
+      domain_catalog_digest: domain.pin.catalog_digest,
+      domain_catalog_bundle_digest: domainBundleDigest,
+      checks: {
+        exact_world_closure: true,
+        exact_domain_closure: true,
+        actor_refs: true,
+        placements: true,
+        resources: true,
+        player_known: true
+      },
+      resolved_spatial_refs: spatialRefs.map(({ binding, position }) => ({
+        canonical_g5_id: binding.id,
+        canonical_g5_version: binding.version,
+        g4_id: binding.parent_id,
+        node_template_id: binding.scene_template_id,
+        node_template_version: binding.scene_template_version,
+        location_profile_id: binding.materialization_profile_id,
+        anchor_slot_key: position.position_slot_key
+      })),
+      resolved_resource_refs: resourceRefs
+    }
+  };
+}
+
+function resolvePlace(world, place) {
+  const binding = world.canonical_g5_scene_bindings?.find((candidate) =>
+    candidate.id === place.canonical_g5_id
+      && Number(candidate.version) === place.canonical_g5_version);
+  const closure = world.scene_template_closures?.find((candidate) =>
+    candidate.header?.id === place.node_template_id
+      && Number(candidate.header?.version) === place.node_template_version);
+  const position = closure?.position_slots?.find((candidate) =>
+    candidate.position_slot_key === place.anchor_slot_key);
+  const failures = [
+    [!binding, 'canonical_g5'],
+    [binding?.status !== 'approved', 'canonical_g5_status'],
+    [binding?.parent_id !== place.g4_id, 'g4'],
+    [binding?.scene_template_id !== place.node_template_id, 'node_template'],
+    [Number(binding?.scene_template_version) !== place.node_template_version,
+      'node_template_version'],
+    [binding?.materialization_profile_id !== place.location_profile_id,
+      'location_profile'],
+    [!closure, 'template_closure'],
+    [!position, 'anchor_slot'],
+    [position?.position_type_id !== place.anchor_template_id,
+      'anchor_template'],
+    [['npc', 'item', 'container'].some((key) =>
+      place.capacities[key] > Number(position?.capacity)), 'capacity']
+  ].filter(([failed]) => failed).map(([, name]) => name);
+  if (failures.length > 0) invalid({ place: place.slot_key, failures });
+  return { binding, closure, position };
+}
+
+function resolveResource(records, resource) {
+  const template = byId(records?.item_templates, resource.item_template_id);
+  const inventory = byId(records?.item_template_inventory_profiles,
+    resource.inventory_profile_id);
+  const quantity = byId(records?.item_template_quantity_profiles,
+    resource.quantity_profile_id);
+  const category = byId(records?.universal_categories, resource.category_id);
+  if (!template || !inventory || !quantity || !category
+    || template.status !== 'approved' || inventory.status !== 'approved'
+    || quantity.status !== 'approved' || category.status !== 'approved'
+    || template.category_id !== resource.category_id
+    || inventory.item_template_id !== resource.item_template_id
+    || quantity.item_template_id !== resource.item_template_id
+    || resource.quantity < Number(quantity.minimum_quantity)
+    || resource.quantity > Number(quantity.maximum_quantity)) invalid();
+  return {
+    item_template_id: template.id,
+    inventory_profile_id: inventory.id,
+    quantity_profile_id: quantity.id,
+    category_id: category.id
+  };
+}
+
+function byId(records, id) {
+  return records?.find((record) => record.id === id);
+}
+
+function invalid(details = {}) {
   throw Object.assign(new Error('Approved authored start profile is invalid.'), {
-    code: 'AUTHORED_START_PROFILE_INVALID'
+    code: 'AUTHORED_START_PROFILE_INVALID', details
   });
 }

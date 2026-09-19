@@ -73,6 +73,13 @@ export function planApprovedActorItemTransition(input = {}) {
   const item = target?.instance;
   const placement = target?.placement;
   if (!item || !placement) return failed('INVENTORY_TARGET_NOT_FOUND', 'topology', { item_id: itemId });
+  if (transition.schema === 'rus.items_property.approved_actor_transition_profile.v1'
+      && item.instance_class !== transition.applicable_instance_class) {
+    return failed('APPROVED_TRANSITION_INSTANCE_CLASS_MISMATCH',
+      'admission', { item_id: itemId,
+        expected: transition.applicable_instance_class,
+        actual: item.instance_class ?? null });
+  }
   const exactPolicy = validateExactPolicyState({
     transition, input, item, source, destination
   });

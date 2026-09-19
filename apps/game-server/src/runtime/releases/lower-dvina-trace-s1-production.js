@@ -264,7 +264,8 @@ function visibleLocalReference(value, target) {
       && ['entity_ref', 'display_label', 'recognition', 'visible_status'].every((key) =>
         Object.hasOwn(object, key))
       && text(object.display_label) && object.recognition === 'recognized'
-      && object.visible_status === 'замечен' && Object.keys(object.entity_ref ?? {}).length === 2
+      && ['замечен', 'внутри'].includes(object.visible_status)
+      && Object.keys(object.entity_ref ?? {}).length === 2
       && object.entity_ref?.entity_kind === 'spatial_local_reference'
       && object.entity_ref.entity_id === target);
 }

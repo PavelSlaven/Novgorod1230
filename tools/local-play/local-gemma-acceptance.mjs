@@ -11,8 +11,8 @@ import { createProductionLlmRoleRunner } from
   '../../apps/game-server/src/infrastructure/provider/deepseek.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
-import { createPostgresSessionStore } from
-  '../../apps/game-server/src/infrastructure/postgres/session-store.js';
+import { createFirstPlayablePartyRepository } from
+  '../../apps/game-server/src/infrastructure/postgres/first-playable/repository.js';
 import { createPartyLog } from
   '../../apps/game-server/src/infrastructure/filesystem/party-log.js';
 import { LOCAL_LLM_PRESET } from
@@ -453,11 +453,11 @@ async function defaultCompletionObserver(local) {
     partyPool: pool,
     committer: { async commit() { throw new Error('Read-only observer cannot commit.'); } }
   });
-  const sessions = createPostgresSessionStore({ pool });
+  const sessions = createFirstPlayablePartyRepository({ partyPool: pool });
   return Object.freeze({
     async observe({ partyId, playerDom: dom, renderedScreenSchema }) {
       const [state, session] = await Promise.all([
-        repository.loadPhase2State(partyId), sessions.load(partyId)
+        repository.loadPhase2State(partyId), sessions.loadSession(partyId)
       ]);
       return phase10TerminalObservation({ partyId, state, session, playerDom: dom,
         renderedScreenSchema });

@@ -300,9 +300,9 @@
       "owns": [
         "versioned `narration_request`, `narration_output` и `narration_flow_result`",
         "проверкой visible-only входа",
-        "writer → deterministic structural validation → at most one format repair → semantic audit",
+        "writer → deterministic structural validation → at most one format repair → factual/technical semantic audit with a separate literary verdict",
         "один synthetic whole-prose segment и не более одной цельной semantic rewrite",
-        "full final semantic audit после semantic repair",
+        "full final semantic audit после factual/technical semantic repair",
         "turn audit: строгая проверка и code-owned сборка полного `coverage`,",
         "историей генераций и ремонтов"
       ],

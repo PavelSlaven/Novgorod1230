@@ -67,7 +67,9 @@ and adds no second transaction owner.
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,
   refs/order, canonical segment choices, allowed failure kinds/checks и reasons,
   затем детерминированно собирает public source_index coverage, concerns,
-  artistic/technical verdict и общий pass. LLM не назначает verdict или индексы.
+  artistic/technical verdict и delivery pass. Литературный finding сохраняется,
+  но не блокирует доставку; factual/hidden/technical finding блокирует. LLM не
+  назначает verdict или индексы, а server не синтезирует reviewed segments/evidence.
   Пустой review частично либо полностью потерянного source становится
   missing_visible_change; malformed private output fail-closed и не получает
   синтезированного repair concern. Final audit всегда strict.

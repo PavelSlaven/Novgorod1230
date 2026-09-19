@@ -10,11 +10,11 @@ Native `narration_request` и `runNarrationFlow` принимают только
 
 - versioned `narration_request`, `narration_output` и `narration_flow_result`;
 - проверкой visible-only входа;
-- writer → deterministic structural validation → at most one format repair → semantic audit;
+- writer → deterministic structural validation → at most one format repair → factual/technical semantic audit with a separate literary verdict;
 - один synthetic whole-prose segment и не более одной цельной semantic rewrite;
-- full final semantic audit после semantic repair;
+- full final semantic audit после factual/technical semantic repair;
 - turn audit: строгая проверка и code-owned сборка полного `coverage`,
-  `artistic_verdict`, `technical_verdict` и общего `pass` из private
+  `artistic_verdict`, `technical_verdict` и delivery `pass` из private
   source reviews и semantic/literary failures через immutable segment IDs;
 - историей генераций и ремонтов.
 
@@ -53,7 +53,7 @@ Narrator использует только confirmed player-safe факты; н�
 - semantic failure не превращается в deterministic prose fallback;
 - format repair и semantic repair независимы: каждый максимум один раз;
 - initial malformed public audit допускает единственный whole-prose semantic repair только при явном `pass:false` и непустом содержательном `concern.reason`; repair получает только reasons и code-owned whole-prose segment, без доверия malformed coverage/checks/aliases. Production private auditor не возвращает public verdict/concerns: malformed private report Adapter преобразует в невалидный audit, поэтому flow блокируется fail-closed без синтеза concern;
-- malformed repair, не единственная replacement цельного synthetic segment и любой невалидный или failed final audit блокируют flow без второго semantic repair;
+- malformed repair, не единственная replacement цельного synthetic segment и любой невалидный либо factual/technical failed final audit блокируют flow без второго semantic repair; чисто литературный fail сохраняется в final audit, но не блокирует delivery;
 - semantic repair заменяет весь текст целиком; code-owned reassembly не смешивает старую и новую прозу;
 - normal gameplay вызывает один LLM auditor, без router/senior cascade;
 - approved result содержит ровно один утверждённый output;
@@ -71,8 +71,9 @@ Production private auditor возвращает exact ordered `reviewed_segments
 `literary_failures` и evidence. Он атомизирует propositions каждого source и
 помечает source покрытым только целиком. Adapter строго проверяет shape, порядок,
 refs, canonical choices, failure kinds/checks и reasons; затем детерминированно
-собирает public coverage, concerns, artistic/technical verdict и общий pass.
-Positional aliases и нормализация не допускаются; malformed private output
+собирает public coverage, concerns, artistic/technical verdict и delivery pass.
+Модель обязана сама вернуть полный ordered `reviewed_segments` и evidence;
+server их не синтезирует. Positional/prose aliases и нормализация не допускаются; malformed private output
 fail-closed, final audit строго проверяется по immutable segment IDs
 повторно сегментированной approved prose. Длительность хода не входит в private
 prose wire: её вычисляет temporal owner и показывает server-owned UI projection.

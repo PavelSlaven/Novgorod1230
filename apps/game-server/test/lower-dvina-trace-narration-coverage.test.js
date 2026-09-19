@@ -60,20 +60,19 @@ test('private audit output is strict and canonical verdicts are code-owned', asy
   });
 });
 
-test('code owns redundant reviewed segment ids and clean-audit evidence', () => {
+test('adapter rejects missing model-owned reviewed segment ids and evidence', () => {
   const raw = passAudit();
   raw.reviewed_segments = ['Model copied prose instead of the supplied segment id.'];
   raw.evidence = [];
   const assembled = assembleNarrationRoleOutput('gameplay_narrator_auditor', raw,
     { visible_context: visible, segments });
-  assert.equal(assembled.pass, true);
-  assert.deepEqual(assembled.evidence,
-    ['All required sources are covered and no audit failures were reported.']);
+  assert.equal(assembled.pass, undefined);
+  assert.deepEqual(assembled.evidence, []);
   assert.equal(validateNarrationAudit(assembled, ['s1', 's2'],
-    { visible_changes: 2, uncertainties: 0 }).ok, true);
+    { visible_changes: 2, uncertainties: 0 }).ok, false);
 });
 
-test('code normalizes exact prose aliases and whole-passage audit targets', () => {
+test('adapter rejects prose aliases and ambiguous whole-passage targets', () => {
   const proseSegments = [
     { segment_id: 's1', prose: 'Первое предложение.' },
     { segment_id: 's2', prose: 'Второе предложение.' }
@@ -87,19 +86,17 @@ test('code normalizes exact prose aliases and whole-passage audit targets', () =
   const assembled = assembleNarrationRoleOutput('gameplay_narrator_auditor', raw,
     { visible_context: visible, segments: proseSegments,
       output: { prose: 'Первое предложение. Второе предложение.' } });
-  assert.equal(assembled.pass, false);
-  assert.deepEqual(assembled.coverage.visible_changes.map(
-    ({ segment_ids: ids }) => ids), [['s1'], ['s2']]);
-  assert.equal(assembled.concerns[0].segment_id, 's1');
+  assert.equal(assembled.pass, undefined);
+  assert.equal(assembled.coverage, undefined);
   assert.equal(validateNarrationAudit(assembled, ['s1', 's2'],
-    { visible_changes: 2, uncertainties: 0 }).ok, true);
+    { visible_changes: 2, uncertainties: 0 }).ok, false);
 });
 
-test('code routes a misplaced continuation finding through semantic repair', () => {
+test('code maps a misplaced continuation finding to blocking semantic repair input', () => {
   const raw = passAudit();
   raw.source_reviews[0].segment_choices = [];
-  raw.unsupported = [{ segment_choice: 's1',
-    kind: 'unsupported_response_or_continuation',
+  raw.literary_failures = [{ segment_choice: 's1',
+    check: 'unsupported_response_or_continuation',
     reason: 'The continuation was narrated as performed.' }];
   raw.evidence = [];
   const assembled = assembleNarrationRoleOutput('gameplay_narrator_auditor', raw,
@@ -112,14 +109,14 @@ test('code routes a misplaced continuation finding through semantic repair', () 
     { visible_changes: 2, uncertainties: 0 }).ok, true);
 });
 
-test('final audit keeps literary and factual failures blocking after the one repair', () => {
+test('final audit records literary findings but blocks factual failures', () => {
   const weakOnly = passAudit();
   weakOnly.literary_failures = [{ check: 'weak_literary_composition',
     segment_choice: 's1', reason: 'The repaired passage is still list-like.' }];
   weakOnly.evidence = [];
   const request = { phase: 'final', visible_context: visible, segments };
   const rejectedWeak = assembleNarrationRoleOutput('gameplay_narrator_auditor', weakOnly, request);
-  assert.equal(rejectedWeak.pass, false);
+  assert.equal(rejectedWeak.pass, true);
   assert.equal(rejectedWeak.artistic_verdict, 'fail');
   assert.deepEqual(rejectedWeak.concerns.map(({ kind }) => kind), ['literary_quality']);
   assert.equal(validateNarrationAudit(rejectedWeak, ['s1', 's2'],
@@ -129,7 +126,7 @@ test('final audit keeps literary and factual failures blocking after the one rep
   staticDump.literary_failures = [{ check: 'static_context_dump',
     segment_choice: 's2', reason: 'The repaired passage still recites unchanged support.' }];
   const rejectedDump = assembleNarrationRoleOutput('gameplay_narrator_auditor', staticDump, request);
-  assert.equal(rejectedDump.pass, false);
+  assert.equal(rejectedDump.pass, true);
   assert.deepEqual(rejectedDump.concerns.map(({ kind }) => kind), ['literary_quality']);
 
   const unsupported = structuredClone(weakOnly);
@@ -147,8 +144,8 @@ for (const sample of [
     selected: 'Поиск среди мокрых досок не дал подтверждённой находки.' },
   { name: 'unseen material change', change: 'На мокрой доске у края осталась сухая перевязь.',
     selected: 'На мокрой доске у края осталась сухая перевязь.' }
-]) for (const repeatDump of [false, true]) test(
-  `${sample.name} ${repeatDump ? 'repeated panorama blocks' : 'repairs panorama into selected support'}`,
+]) test(
+  `${sample.name} literary panorama finding does not block delivery`,
   async () => {
     const sensory = ['У края лежат мокрые доски.', 'Над водой висит серое небо.',
       'За кустами начинается тропа.'];
@@ -165,25 +162,24 @@ for (const sample of [
       assert.match(call.messages[0].content, /candidate set, never a coverage target/u);
       if (call.role_id === 'gameplay_narrator') return { output: { prose: panorama } };
       if (call.role_id === 'gameplay_narrator_semantic_repair') {
-        assert.match(call.messages[0].content, /fluent spatial regrouping of the same snapshot is not a repair/u);
-        return { output: { replacements: [{ prose: repeatDump ? panorama : sample.selected }] } };
+        assert.fail('literary-only finding must not trigger semantic repair');
       }
       const ids = wire.segments.map(({ segment_id }) => segment_id);
       const audit = { ...reviewedNarration(wire.segments,
         { visible_change_1: ids }),
-      literary_failures: wire.phase === 'initial' || repeatDump ? [{
+      literary_failures: [{
         check: 'static_context_dump', segment_choice: ids.at(-1),
         reason: 'Independent unchanged support is recited as panorama.'
-      }] : [],
-      evidence: wire.phase === 'initial' || repeatDump ? [] : ['The current beat selects one supporting image.'] };
+      }],
+      evidence: ['All required factual sources are covered.'] };
       return { output: audit };
     } } });
     const result = await service.run({ version: 1, schema: 'narration_request',
-      request_id: `${sample.name}-${repeatDump}`, surface: 'turn', visible_context: visibleContext,
+      request_id: sample.name, surface: 'turn', visible_context: visibleContext,
       context: {} });
-    assert.equal(result.status, repeatDump ? 'blocked' : 'approved');
-    assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor',
-      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor']);
+    assert.equal(result.status, 'approved');
+    assert.equal(result.final_audit.artistic_verdict, 'fail');
+    assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
   });
 
 test('perception result may retain its compact action-governed sensory cluster', async () => {

@@ -1,0 +1,48 @@
+{
+  "schema": "rus.live_world_runtime.m1_profiles.v1",
+  "profile_set_id": "novgorod_live_world_runtime_m1_v1",
+  "revision": 1,
+  "status": "approved",
+  "applicability": {
+    "region_ref": "region_novgorod_land",
+    "scenario_ref": null
+  },
+  "profiles": {
+    "property_transition": {
+      "transition_profile_id": "small_accessible_item_holder_transfer_v1",
+      "owner": "@rus/items-property",
+      "applicable_instance_class": "small_personal_item",
+      "owner_change": "forbidden",
+      "required_facts": []
+    },
+    "npc_schedule": {
+      "profile_id": "ordinary_awake_local_activity_v1",
+      "owner": "@rus/npc-runtime",
+      "applicable_actor_class": "available_awake_npc",
+      "decision_boundary": "material_perceived_change",
+      "automatic_outcome": "forbidden"
+    },
+    "body": {
+      "profile_id": "ordinary_awake_body_capability_v1",
+      "owner": "@rus/body-state",
+      "required_metrics": ["health", "satiety", "energy"],
+      "incapacitating_conditions": ["unconscious", "immobilized"]
+    },
+    "activity": {
+      "profile_id": "brief_contested_reach_v1",
+      "owner": "@rus/turn",
+      "duration_class": "brief",
+      "effort": "light",
+      "check_before_rng": true
+    },
+    "item_mechanics": {
+      "small_personal_item": {
+        "mass_grams": 120,
+        "carry_form": "compact",
+        "external_hand_cost": 1,
+        "packing_slot_cost": 1,
+        "packing_bundle_size": 1
+      }
+    }
+  }
+}

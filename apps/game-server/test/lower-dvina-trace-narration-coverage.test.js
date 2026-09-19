@@ -156,9 +156,8 @@ for (const sample of [
     const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
       calls.push(call.role_id);
       const wire = JSON.parse(call.messages[1].content);
-      assert.deepEqual(wire.optional_support, {
-        visible_scene: visibleContext.visible_scene, sensory_details: sensory
-      });
+      assert.deepEqual(wire.optional_support,
+        { visible_scene: visibleContext.visible_scene });
       assert.match(call.messages[0].content, /candidate set, never a coverage target/u);
       if (call.role_id === 'gameplay_narrator') return { output: { prose: panorama } };
       if (call.role_id === 'gameplay_narrator_semantic_repair') {
@@ -188,9 +187,8 @@ test('perception result may retain its compact action-governed sensory cluster',
     sensory_details: sensory };
   const service = createLowerDvinaTraceNarrationService({ roleRunner: { async run(call) {
     const wire = JSON.parse(call.messages[1].content);
-    assert.deepEqual(wire.optional_support, {
-      visible_scene: visibleContext.visible_scene, sensory_details: sensory
-    });
+    assert.deepEqual(wire.optional_support,
+      { visible_scene: visibleContext.visible_scene });
     assert.match(call.messages[0].content, /perception beat[\s\S]*may govern supplied details/u);
     if (call.role_id === 'gameplay_narrator') return { output: {
       prose: 'Осматривая мастерскую, вы видите резец на верстаке и стружки под окном.' } };

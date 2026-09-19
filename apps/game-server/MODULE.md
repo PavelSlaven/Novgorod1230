@@ -76,9 +76,10 @@ and adds no second transaction owner.
   visible_change_N/uncertainty_N. Private wire разделяет required_current_beat
   (changes/uncertainties с ref/text), optional_support
   и constraints (do_not_imply/allowed_tensions/style_policy), без копии visible_context.
-  При любом current change/uncertainty optional_support содержит только visible_scene и sensory_details:
-  остальные static arrays/metadata не поступают writer/auditor/repair. Sensory details
-  выбираются по текущему beat; полный пересказ окружения запрещён.
+  При любом current change/uncertainty optional_support содержит только
+  `visible_scene`: остальные static arrays/metadata и неизменный sensory panorama
+  не поступают writer/auditor/repair. Newly relevant sensory details уже входят
+  в required visible changes; полный пересказ окружения запрещён.
   Newly relevant facts приходят через visible_changes: applied observation
   продвигает воспринимаемые scene facts, arrival — destination facts/NPC/objects/route,
   включая safe entity label/status и уже human N1 ordinary cues; portrait enums

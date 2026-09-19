@@ -49,7 +49,7 @@ test('local play persists a free turn and replays it after a server restart',
       settings: { mode: 'custom', compatibility: provider.compatibility,
         base_url: provider.baseUrl, model: provider.model, api_key: null },
       ordinary_materialization_identity: identity,
-      qualification_version: 70 })}\n`);
+      qualification_version: 71 })}\n`);
     let localPlay = null;
     context.after(async () => {
       await localPlay?.close().catch(() => {});

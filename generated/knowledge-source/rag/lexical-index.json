@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "83c419d58fd8f4e07043553d6b48c6bba582221a1ec5765fc31221811153a14b",
-  "chunk_count": 2814,
+  "corpus_hash": "7a04c66de91bbdae9c0786a2a0dba5c6df5f5473f5dfbb998707ed25b6b89297",
+  "chunk_count": 2812,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -1332,17 +1332,8 @@
       "section": "1. Обязательный порядок чтения",
       "line_start": 11,
       "line_end": 32,
-      "text": "## CONTRACT_INDEX.md — 1. Обязательный порядок чтения\n## 1. Обязательный порядок чтения\n\nДля любой задачи:\n\n1. прочитать root [`AGENTS.md`](../../../../AGENTS.md) (роутер) и назначенные им разделы `docs/governance/*.md`;\n2. открыть этот индекс: §1–§3.1, применимую строку §8.1 и строки §4–§7 для документов этой строки; для World Knowledge и direct speech — также §6 и §10; индекс целиком обязателен при правке самого индекса, статусов документов или нормативного корпуса и для Contract Auditor;\n3. прочитать applicable nested `AGENTS.md`;\n4. прочитать relevant `MODULE.md`;\n5. установить active release, profile, manifest, binding и schema затронутой области;\n6. прочитать applicable active contracts;\n7. сверить production code, callers, tests и CI;\n8. читать proposed/target/migration/reference документы только в их заявленном статусе.\n\nДля вопроса «что уже смержено сейчас» source of truth — `main`. Для текущей PR-задачи рабочим состоянием является exact checkout ветки, но несмёрженный diff не становится общей production-нормой.\n\nФайл, имя которого содержит `contract`, `standard`, `policy` или `target`, не получает статус автоматически. Статус определяется одновременно:",
-      "char_count": 1180
-    },
-    {
-      "id": "CONTRACT_INDEX.md:1. Обязательный порядок чтения:1",
-      "file": "CONTRACT_INDEX.md",
-      "section": "1. Обязательный порядок чтения",
-      "line_start": 11,
-      "line_end": 32,
-      "text": "## CONTRACT_INDEX.md — 1. Обязательный порядок чтения\nормой.\n\nФайл, имя которого содержит `contract`, `standard`, `policy` или `target`, не получает статус автоматически. Статус определяется одновременно:\n\n- явным normative header документа;\n- завершённым versioned cutover;\n- active release/profile/manifest/binding;\n- согласованными schemas, code и tests.",
-      "char_count": 357
+      "text": "## CONTRACT_INDEX.md — 1. Обязательный порядок чтения\n## 1. Обязательный порядок чтения\n\nДля любой задачи:\n\n1. прочитать root [`AGENTS.md`](../../../../AGENTS.md);\n2. прочитать этот индекс;\n3. прочитать applicable nested `AGENTS.md`;\n4. прочитать relevant `MODULE.md`;\n5. установить active release, profile, manifest, binding и schema затронутой области;\n6. прочитать applicable active contracts;\n7. сверить production code, callers, tests и CI;\n8. читать proposed/target/migration/reference документы только в их заявленном статусе.\n\nДля вопроса «что уже смержено сейчас» source of truth — `main`. Для текущей PR-задачи рабочим состоянием является exact checkout ветки, но несмёрженный diff не становится общей production-нормой.\n\nФайл, имя которого содержит `contract`, `standard`, `policy` или `target`, не получает статус автоматически. Статус определяется одновременно:\n\n- явным normative header документа;\n- завершённым versioned cutover;\n- active release/profile/manifest/binding;\n- согласованными schemas, code и tests.",
+      "char_count": 1027
     },
     {
       "id": "CONTRACT_INDEX.md:2. Статусы:0",
@@ -1350,33 +1341,24 @@
       "section": "2. Статусы",
       "line_start": 33,
       "line_end": 47,
-      "text": "## CONTRACT_INDEX.md — 2. Статусы\n## 2. Статусы\n\n| Статус | Значение |\n|---|---|\n| `GOVERNING` | стабильная продуктовая и административная норма; высший уровень — governing-корпус root `AGENTS.md` (роутер и `docs/governance/*.md`, `AGENTS.md` §1.3) |\n| `ACTIVE` | действующий норматив текущей production-семантики в заявленной области |\n| `ACTIVE SPECIALIZATION` | действующий более узкий норматив; имеет приоритет над общим документом только в своём scope |\n| `PROPOSED / UMBRELLA TARGET` | целевое предложение; не описывает production само по себе |\n| `MIGRATION / ROLLBACK` | источник для миграции, rollback или исторической интерпретации; не production fallback |\n| `REFERENCE / DOMAIN GUIDE` | полезная справка; сама по себе не доказывает active behavior |\n| `SUPERSEDED / REDIRECT` | совместимый filename, направляющий к актуальному владельцу |\n| `UNDECLARED` | файл не имеет достаточно ясного status header; Contract Auditor обязан установить его роль по active owner/binding до использования как нормы |\n\nПри конфликте применяется наиболее высокий и наиболее узкий applicable источник. Proposed, migration, reference и undeclared документы не могут отменять governing/active contract.",
-      "char_count": 1192
+      "text": "## CONTRACT_INDEX.md — 2. Статусы\n## 2. Статусы\n\n| Статус | Значение |\n|---|---|\n| `GOVERNING` | стабильная продуктовая и административная норма; высший уровень — root `AGENTS.md` |\n| `ACTIVE` | действующий норматив текущей production-семантики в заявленной области |\n| `ACTIVE SPECIALIZATION` | действующий более узкий норматив; имеет приоритет над общим документом только в своём scope |\n| `PROPOSED / UMBRELLA TARGET` | целевое предложение; не описывает production само по себе |\n| `MIGRATION / ROLLBACK` | источник для миграции, rollback или исторической интерпретации; не production fallback |\n| `REFERENCE / DOMAIN GUIDE` | полезная справка; сама по себе не доказывает active behavior |\n| `SUPERSEDED / REDIRECT` | совместимый filename, направляющий к актуальному владельцу |\n| `UNDECLARED` | файл не имеет достаточно ясного status header; Contract Auditor обязан установить его роль по active owner/binding до использования как нормы |\n\nПри конфликте применяется наиболее высокий и наиболее узкий applicable источник. Proposed, migration, reference и undeclared документы не могут отменять governing/active contract.",
+      "char_count": 1123
     },
     {
       "id": "CONTRACT_INDEX.md:3. Governing source:0",
       "file": "CONTRACT_INDEX.md",
       "section": "3. Governing source",
       "line_start": 48,
-      "line_end": 66,
-      "text": "## CONTRACT_INDEX.md — 3. Governing source\n## 3. Governing source\n\n| Документ | Статус | Scope |\n|---|---|---|\n| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |\n\nGoverning-корпус `AGENTS.md` (§1.3) также включает:\n\n- [`docs/governance/README.md`](../../../../docs/governance/README.md) — преамбула, §1.2, карта старых разделов;\n- [`docs/governance/PRODUCT_CONSTITUTION.md`](../../../../docs/governance/PRODUCT_CONSTITUTION.md) — §3–9, §30;\n- [`docs/governance/ARCHITECTURE_INVARIANTS.md`](../../../../docs/governance/ARCHITECTURE_INVARIANTS.md) — §10–17, §23, §28;\n- [`docs/governance/WORKFLOW_RULES.md`](../../../../docs/governance/WORKFLOW_RULES.md) — §2, §18–22, §24, §29;\n- [`docs/governance/AUDIT_RULES.md`](../../../../docs/governance/AUDIT_RULES.md) — §25, §25.1;\n- [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.",
-      "char_count": 1109
+      "line_end": 57,
+      "text": "## CONTRACT_INDEX.md — 3. Governing source\n## 3. Governing source\n\n| Документ | Статус | Scope |\n|---|---|---|\n| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |\n\n`Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.",
+      "char_count": 1006
     },
     {
       "id": "CONTRACT_INDEX.md:3. Governing source:1",
       "file": "CONTRACT_INDEX.md",
       "section": "3. Governing source",
       "line_start": 48,
-      "line_end": 66,
-      "text": "## CONTRACT_INDEX.md — 3. Governing source\ngovernance/AUDIT_RULES.md) — §25, §25.1;\n- [`docs/governance/GIT_SAFETY_RULES.md`](../../../../docs/governance/GIT_SAFETY_RULES.md) — §26, §26.1, §27.\n\n`Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.",
-      "char_count": 810
-    },
-    {
-      "id": "CONTRACT_INDEX.md:3. Governing source:2",
-      "file": "CONTRACT_INDEX.md",
-      "section": "3. Governing source",
-      "line_start": 48,
-      "line_end": 66,
+      "line_end": 57,
       "text": "## CONTRACT_INDEX.md — 3. Governing source\nолча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.\n\nДля нетривиальных задач разработки §19 `AGENTS.md` задаёт обязательный workflow `codebase-memory-mcp` Verify (Tier 2): discovery владельцев и зависимостей, сверка исходников, `detect_changes` и проверка покрытия. Если инструмент недоступен, это отмечается в итоговом отчёте, а owners, зависимости и полнота выводов устанавливаются прямым чтением и `rg` по затронутому scope; сама недоступность не блокирует задачу. [Локальная настройка CBM](../../../../docs/setup/CODEBASE_MEMORY_MCP.md) — техническая инструкция; граф не заменяет нормативный канал `@rus/knowledge-source` и canonical documents.",
       "char_count": 790
     },
@@ -1384,8 +1366,8 @@
       "id": "CONTRACT_INDEX.md:3.1. Module contracts and public schemas:0",
       "file": "CONTRACT_INDEX.md",
       "section": "3.1. Module contracts and public schemas",
-      "line_start": 67,
-      "line_end": 72,
+      "line_start": 58,
+      "line_end": 63,
       "text": "## CONTRACT_INDEX.md — 3.1. Module contracts and public schemas\n## 3.1. Module contracts and public schemas\n\nВсе module-level contracts перечислены в generated [`MODULE_INDEX.md`](../../../../MODULE_INDEX.md). Этот generated файл используется только для навигации; точный owner и public boundary задаёт соответствующий `MODULE.md`, а physical schema — canonical DDL/schema source затронутой области.\n\nContract Auditor не копирует весь generated module index сюда и не редактирует его вручную. Он выбирает relevant `MODULE.md` по `MODULE_INDEX.md`, затем сверяет public exports, schemas, callers и tests.",
       "char_count": 603
     },
@@ -1393,8 +1375,8 @@
       "id": "CONTRACT_INDEX.md:4. Explicit active contracts:0",
       "file": "CONTRACT_INDEX.md",
       "section": "4. Explicit active contracts",
-      "line_start": 73,
-      "line_end": 94,
+      "line_start": 64,
+      "line_end": 85,
       "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts",
       "char_count": 83
     },
@@ -1402,17 +1384,17 @@
       "id": "CONTRACT_INDEX.md:4. Explicit active contracts:1",
       "file": "CONTRACT_INDEX.md",
       "section": "4. Explicit active contracts",
-      "line_start": 73,
-      "line_end": 94,
-      "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts\n\n| Документ | Статус | Основной scope / примечание |\n|---|---|---|\n| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 production materialization; слово `target` в filename сохранено для compatibility |\n| [`spatial_architecture_standard_g0_g6.md`](spatial_architecture_standard_g0_g6.md) | `ACTIVE` | canonical Spatial G0–G6, topology, movement, scene and perception boundaries |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | active G0–G5 authoring workflow; compatibility filename |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |\n| [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details |\n| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant, role-owned reasoning effort и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |\n| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; private auditor возвращает ordered source reviews и semantic/literary failures, Adapter детерминированно собирает coverage/verdict и fail-closed отклоняет malformed output; atomic current-beat sources отдельно сохраняют выполненную попытку и неизвестный результат наблюдения; opening сохраняет Stage 23 audit; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |\n| [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |\n| [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |\n| [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |\n| [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |\n| [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |",
-      "char_count": 3578
+      "line_start": 64,
+      "line_end": 85,
+      "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\n## 4. Explicit active contracts\n\n| Документ | Статус | Основной scope / примечание |\n|---|---|---|\n| [`code_driven_world_materialization_architecture.md`](code_driven_world_materialization_architecture.md) | `ACTIVE` | общий code/LLM/materialization boundary; Spatial v3 специализирует spatial production details |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 production materialization; слово `target` в filename сохранено для compatibility |\n| [`spatial_architecture_standard_g0_g6.md`](spatial_architecture_standard_g0_g6.md) | `ACTIVE` | canonical Spatial G0–G6, topology, movement, scene and perception boundaries |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE SPECIALIZATION` | active G0–G5 authoring workflow; compatibility filename |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE SPECIALIZATION` | active read-only world-base / party-runtime graph boundary |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE SPECIALIZATION` | active Spatial v3 table-purpose contract; DDL remains physical truth |\n| [`world_base_materialization_table_requirements.md`](world_base_materialization_table_requirements.md) | `ACTIVE` with scoped migration sections | general authoring/readiness semantics; v3 specialization owns current production table-purpose details |\n| [`turn_step_llm_contract.md`](turn_step_llm_contract.md) | `ACTIVE` | sole player semantic turn-step boundary, operation contracts and LLM authority; общий production transport invariant, role-owned reasoning effort и player-selected provider override принадлежат `@rus/llm-runtime` и game-server settings owner |\n| [`situational_prose_requirements.md`](situational_prose_requirements.md) | `ACTIVE SPECIALIZATION` | художественная подача и смысловая приёмка opening/turn у `@rus/narration`; private auditor возвращает literal ordered source reviews и semantic/literary failures, Adapter без синтеза reviewed segments/evidence детерминированно собирает coverage/verdict и fail-closed отклоняет malformed output; factual/hidden/technical failures блокируют delivery, чисто литературный verdict сохраняется без блокировки сервера/первого экрана; atomic current-beat sources отдельно сохраняют выполненную попытку и неизвестный результат наблюдения; opening сохраняет Stage 23 audit; открытые классы ситуаций, не runtime router; норма не утверждает прохождение model qualification |\n| [`items_and_property.txt`](items_and_property.txt) | `ACTIVE` | item/container/property/access/mechanics and currently activated ordinary profiles |\n| [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md) | `ACTIVE` | exact time, activities, temporal boundaries, autonomous advancement |\n| [`npc_autonomous_decision_contract.md`](npc_autonomous_decision_contract.md) | `ACTIVE` | NPC subjective context, decision boundary, persistence and common mechanics |\n| [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md) | `ACTIVE` | conversation, speech, listeners, multi-NPC social flow and exact committed utterance |\n| [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md) | `ACTIVE` | combat trigger/session integration and NPC decisions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |",
+      "char_count": 3757
     },
     {
       "id": "CONTRACT_INDEX.md:4. Explicit active contracts:2",
       "file": "CONTRACT_INDEX.md",
       "section": "4. Explicit active contracts",
-      "line_start": 73,
-      "line_end": 94,
+      "line_start": 64,
+      "line_end": 85,
       "text": "## CONTRACT_INDEX.md — 4. Explicit active contracts\nsions |\n| [`combat_system.md`](combat_system.md) | `ACTIVE DOMAIN NORM` | persisted combat session and exchange behavior for current active revision |\n\nActive status applies only to the scope stated by each header and active profile. Exact schema/operation names must be verified against current code and tests.",
       "char_count": 363
     },
@@ -1420,8 +1402,8 @@
       "id": "CONTRACT_INDEX.md:5. Explicit non-production, migration and supporting contracts:0",
       "file": "CONTRACT_INDEX.md",
       "section": "5. Explicit non-production, migration and supporting contracts",
-      "line_start": 95,
-      "line_end": 109,
+      "line_start": 86,
+      "line_end": 100,
       "text": "## CONTRACT_INDEX.md — 5. Explicit non-production, migration and supporting contracts\n## 5. Explicit non-production, migration and supporting contracts",
       "char_count": 151
     },
@@ -1429,8 +1411,8 @@
       "id": "CONTRACT_INDEX.md:5. Explicit non-production, migration and supporting contracts:1",
       "file": "CONTRACT_INDEX.md",
       "section": "5. Explicit non-production, migration and supporting contracts",
-      "line_start": 95,
-      "line_end": 109,
+      "line_start": 86,
+      "line_end": 100,
       "text": "## CONTRACT_INDEX.md — 5. Explicit non-production, migration and supporting contracts\n## 5. Explicit non-production, migration and supporting contracts\n\n| Документ | Статус | Правило применения |\n|---|---|---|\n| [`world_knowledge_platform_implementation_contract.md`](world_knowledge_platform_implementation_contract.md) | `ACTIVE` | Норматив реализованной WK production-v1 PR92 (`4.13.0-world-knowledge.2`); Giga profile/vector path обязателен для каждого WK need и fail-closed без lexical runtime fallback. Managed local Gemma — default gameplay provider; user-selected custom OpenAI-compatible provider проходит через тот же общий `@rus/llm-runtime` override. Readiness, persistence, provisioning и UI принадлежат game-server/game-web/local-play MODULE owners. Runtime wiring spatial-v3 production v16 активирован как sole production owner и определяется actual release/binding. Pilot pack остаётся `reviewed/not_active`, иные optional stages — target до отдельной активации |\n| [`semantic_world_actions_materialization_and_processes_contract.md`](semantic_world_actions_materialization_and_processes_contract.md) | `PROPOSED UMBRELLA TARGET` | не active как единый контракт; активированные profile semantics берутся из их actual cutover/bindings/active contracts/code/tests, а не из старого umbrella snapshot |\n| [`universal_category_classification_policy.md`](universal_category_classification_policy.md) | `PROPOSED` | не доказывает наличие DDL, profiles, validators или runtime capability |\n| [`universal_category_classification_references.md`](universal_category_classification_references.md) | `REFERENCE FOR PROPOSED POLICY` | источники/обоснования proposed classification policy |\n| [`read_only_database_and_graph_architecture.md`](read_only_database_and_graph_architecture.md) | `MIGRATION / ROLLBACK` | materialization v2; active owner — Spatial v3 specialization |\n| [`map_g0_g4_workflow.txt`](map_g0_g4_workflow.txt) | `MIGRATION / ROLLBACK` | прежний G0–G4 workflow; active owner — Spatial v3 compatibility workflow |\n| [`spatial_v3_target_code_driven_world_materialization_architecture.md`](spatial_v3_target_code_driven_world_materialization_architecture.md) | `ACTIVE`, not proposed | explicit exception to filename heuristics |\n| [`spatial_v3_target_map_g0_g4_workflow.txt`](spatial_v3_target_map_g0_g4_workflow.txt) | `ACTIVE`, not proposed | explicit exception to filename heuristics |\n| [`spatial_v3_target_read_only_database_and_graph_architecture.md`](spatial_v3_target_read_only_database_and_graph_architecture.md) | `ACTIVE`, not proposed | explicit exception to filename heuristics |\n| [`spatial_v3_target_world_base_materialization_table_requirements.md`](spatial_v3_target_world_base_materialization_table_requirements.md) | `ACTIVE`, not proposed | explicit exception to filename heuristics |",
       "char_count": 2823
     },
@@ -1438,8 +1420,8 @@
       "id": "CONTRACT_INDEX.md:6. Compatibility navigation and superseded audit rules:0",
       "file": "CONTRACT_INDEX.md",
       "section": "6. Compatibility navigation and superseded audit rules",
-      "line_start": 110,
-      "line_end": 155,
+      "line_start": 101,
+      "line_end": 146,
       "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\n## 6. Compatibility navigation and superseded audit rules\n\nWorld Knowledge ranking (§§58–60 действующего контракта) сохраняет приоритет\nhard constraints, exact focus и requested predicates; внутри этих уровней\nquery relevance предшествует context specificity и qualifiers. Это порядок\nbounded retrieval, не изменение applicability, actor access или authority.\n\nWorld Knowledge §35.1 закрепляет production authoring approval: независимый\nper-claim verdict связан с точными claim/localization/evidence inputs.\nВладелец проверки — internal compiler `@rus/world-catalog-workflow`;\nruntime World Knowledge получает только `verification_ref`, без ledger.\n§98.1 требует отдельной category cartography и независимого поиска missing\nfamilies по location/materialization потребностям, не по числу claims/cells.\n\nWorld Knowledge §0.1 разделяет статическое наполнение и последующую\ngameplay-testing фазу. §112.12 задаёт active testing architecture Gameplay Gap\nAuditor, trace requirements, классификацию, lifecycle и saturation;\nактивированная testing-фаза не делает saturation gate критерием статической\nготовности.",
       "char_count": 1182
     },
@@ -1447,8 +1429,8 @@
       "id": "CONTRACT_INDEX.md:6. Compatibility navigation and superseded audit rules:1",
       "file": "CONTRACT_INDEX.md",
       "section": "6. Compatibility navigation and superseded audit rules",
-      "line_start": 110,
-      "line_end": 155,
+      "line_start": 101,
+      "line_end": 146,
       "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\nor, trace requirements, классификацию, lifecycle и saturation;\nактивированная testing-фаза не делает saturation gate критерием статической\nготовности.\n\nWorld Knowledge §0.2 разрешает честно отмеченную игровую реконструкцию из\nаналогий и здравого смысла. §35.1 использует тот же независимый approval для\nsource accuracy либо plausibility; точное свидетельство 1230 года для каждой\nordinary-детали не требуется. `editorial_reconstruction` — редакторское\nоснование, не внешний научный источник. Runtime owners и exact state неизменны.\n\n| Документ | Статус после этого index cutover | Replacement |\n|---|---|---|\n| [`README.md`](README.md) | `REDIRECT` | root `AGENTS.md` + this index |\n| [`llm_documentation_navigation.md`](llm_documentation_navigation.md) | `SUPERSEDED / REDIRECT` | this index |\n| [`code_critic_invocation_rule.txt`](code_critic_invocation_rule.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |\n| [`.github/Правило вызова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |",
       "char_count": 1182
     },
@@ -1456,8 +1438,8 @@
       "id": "CONTRACT_INDEX.md:6. Compatibility navigation and superseded audit rules:2",
       "file": "CONTRACT_INDEX.md",
       "section": "6. Compatibility navigation and superseded audit rules",
-      "line_start": 110,
-      "line_end": 155,
+      "line_start": 101,
+      "line_end": 146,
       "text": "## CONTRACT_INDEX.md — 6. Compatibility navigation and superseded audit rules\nзова агента-критика.txt`](../../../../.github/Правило%20вызова%20агента-критика.txt) | `SUPERSEDED / REDIRECT` | root `AGENTS.md` §25.1 + this index |\n\nThe obsolete rule “critic after every code change” does not apply. Independent read-only audit is mandatory for elevated-risk changes; an ordinary local fix does not require a separate critic when its boundaries are proven unchanged.\n\nWorld Knowledge §0.4 adds an open place-first authoring need-map:\nenvironment envelopes, linked approved premises, explicit gaps and\nplace-by-conditions reconstruction checks. It does not create location\npresence, an object whitelist, a materializer or gameplay activation.\nStructural map validation is not evidence of environmental completeness.\n\nWorld Knowledge §0.5 adds an open military-first factual need-map and static\n75 rotating + 25 blind-free probe method. It does not define combat mechanics,\na military scenario whitelist, force state, equipment presence or gameplay\nactivation; separate WK-only reconstruction exposes missing premises.",
       "char_count": 1113
     },
@@ -1465,8 +1447,8 @@
       "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:0",
       "file": "CONTRACT_INDEX.md",
       "section": "7. Domain guides and legacy/supporting documents",
-      "line_start": 156,
-      "line_end": 183,
+      "line_start": 147,
+      "line_end": 174,
       "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\n## 7. Domain guides and legacy/supporting documents\n\nThe following files remain discoverable but do not establish active production behavior by filename alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.",
       "char_count": 371
     },
@@ -1474,8 +1456,8 @@
       "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:1",
       "file": "CONTRACT_INDEX.md",
       "section": "7. Domain guides and legacy/supporting documents",
-      "line_start": 156,
-      "line_end": 183,
+      "line_start": 147,
+      "line_end": 174,
       "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\name alone. Before treating one as normative, Contract Auditor must find an explicit header, active binding or import from the applicable active owner.\n\n| Документ | Default treatment until verified | Topic |\n|---|---|---|\n| [`base_turn_orchestration.txt`](base_turn_orchestration.txt) | `UNDECLARED / DOMAIN GUIDE` | legacy/general turn orchestration |\n| [`character_inventory_equipment.txt`](character_inventory_equipment.txt) | `UNDECLARED / DOMAIN GUIDE` | character inventory/equipment |\n| [`character_parameters.txt`](character_parameters.txt) | `UNDECLARED / DOMAIN GUIDE` | character parameters |\n| [`development_rules.txt`](development_rules.txt) | `REFERENCE`; cannot override `AGENTS.md` | legacy development rules |\n| [`formulas.md`](formulas.md) | `UNDECLARED / DOMAIN GUIDE` | formulas and mechanics |\n| [`g1_g5_generation_rules.txt`](g1_g5_generation_rules.txt) | `UNDECLARED / DOMAIN GUIDE` | generation rules |\n| [`historical_events_and_figures.txt`](historical_events_and_figures.txt) | `REFERENCE / KNOWLEDGE GUIDE` | historical figures/events boundary |\n| [`information_sources_llm_prompts.md`](information_sources_llm_prompts.md) | `UNDECLARED / DOMAIN GUIDE` | information-source prompts |\n| [`interface_ux.md`](interface_ux.md) | `UNDECLARED / DOMAIN GUIDE` | player-facing interface/UX |\n| [`llm_agent_prompt_templates.md`](llm_agent_prompt_templates.md) | `REFERENCE / TEMPLATE` | agent prompt templates |\n| [`movement_locations_regions.txt`](movement_locations_regions.txt) | `UNDECLARED / DOMAIN GUIDE` | movement/locations/regions |\n| [`new_game_start_pipeline.txt`](new_game_start_pipeline.txt) | `UNDECLARED / DOMAIN GUIDE` | new-game start pipeline |\n| [`npc_generation_profiles.txt`](npc_generation_profiles.txt) | `UNDECLARED / DOMAIN GUIDE` | NPC generation profiles |\n| [`npc_inventory_item_marks.txt`](npc_inventory_item_marks.txt) | `UNDECLARED / DOMAIN GUIDE` | NPC inventory and marks |\n| [`player_character_generation.txt`](player_character_generation.txt) | `UNDECLARED / DOMAIN GUIDE` | player character generation |\n| [`time_system.txt`](time_system.txt) | `REFERENCE / LEGACY` | older time-system description; active temporal contract has priority |\n| [`weapons_and_armor.txt`](weapons_and_armor.txt) | `UNDECLARED / DOMAIN GUIDE` | weapons/armor |\n| [`world_generation_and_turns.txt`](world_generation_and_turns.txt) | `UNDECLARED / DOMAIN GUIDE` | world generation and turns |\n| [`world_regions.txt`](world_regions.txt) | `REFERENCE / DOMAIN GUIDE` | world regions |",
       "char_count": 2583
     },
@@ -1483,8 +1465,8 @@
       "id": "CONTRACT_INDEX.md:7. Domain guides and legacy/supporting documents:2",
       "file": "CONTRACT_INDEX.md",
       "section": "7. Domain guides and legacy/supporting documents",
-      "line_start": 156,
-      "line_end": 183,
+      "line_start": 147,
+      "line_end": 174,
       "text": "## CONTRACT_INDEX.md — 7. Domain guides and legacy/supporting documents\n| `UNDECLARED / DOMAIN GUIDE` | world generation and turns |\n| [`world_regions.txt`](world_regions.txt) | `REFERENCE / DOMAIN GUIDE` | world regions |\n\nAn undeclared guide may still be relevant, but it must not silently override an explicit active contract, schema or current owner.",
       "char_count": 354
     },
@@ -1492,8 +1474,8 @@
       "id": "CONTRACT_INDEX.md:8. Contract Auditor:0",
       "file": "CONTRACT_INDEX.md",
       "section": "8. Contract Auditor",
-      "line_start": 184,
-      "line_end": 187,
+      "line_start": 175,
+      "line_end": 178,
       "text": "## CONTRACT_INDEX.md — 8. Contract Auditor\n## 8. Contract Auditor\n\nОбязательность Contract Auditor, границы логического изменения для его проведения, read-only роль, mandatory triggers, source set по затронутым owners и границам diff, формат `CONTRACT AUDIT FINDING` и blocking criteria определяются единственным governing owner — root `AGENTS.md`, §25.1. Этот индекс не дублирует эти правила; он дополняет их только навигацией и domain scope matrix.",
       "char_count": 450
     },
@@ -1501,8 +1483,8 @@
       "id": "CONTRACT_INDEX.md:8.1. Scope matrix:0",
       "file": "CONTRACT_INDEX.md",
       "section": "8.1. Scope matrix",
-      "line_start": 188,
-      "line_end": 204,
+      "line_start": 179,
+      "line_end": 195,
       "text": "## CONTRACT_INDEX.md — 8.1. Scope matrix\n### 8.1. Scope matrix",
       "char_count": 62
     },
@@ -1510,8 +1492,8 @@
       "id": "CONTRACT_INDEX.md:8.1. Scope matrix:1",
       "file": "CONTRACT_INDEX.md",
       "section": "8.1. Scope matrix",
-      "line_start": 188,
-      "line_end": 204,
+      "line_start": 179,
+      "line_end": 195,
       "text": "## CONTRACT_INDEX.md — 8.1. Scope matrix\n### 8.1. Scope matrix\n\n| Scope | Mandatory contract set |\n|---|---|\n| Player semantic action / LLM | `turn_step_llm_contract.md`, relevant operation schemas, `@rus/turn` MODULE, affected domain contract |\n| Production LLM provider/configuration | `turn_step_llm_contract.md`, `@rus/llm-runtime` MODULE, game-server settings/transport owner, game-web and local-play MODULEs; selected provider must reach every registered gameplay role without fallback |\n| Authored materialization | `code_driven_world_materialization_architecture.md`, Spatial v3 specialization, world-base requirements, affected item/NPC/spatial contract |\n| Ordinary items/resources/containers | `items_and_property.txt`, `turn_step_llm_contract.md`, active ordinary profile/bindings, materialization/spatial/persistence owners; umbrella contract remains target/reference unless explicitly promoted |\n| Spatial/map | `spatial_architecture_standard_g0_g6.md` + four active Spatial v3 specializations + active world-catalog manifest/bindings |\n| NPC agency | `npc_autonomous_decision_contract.md`, `turn_step_llm_contract.md`, temporal/perception owners |\n| Conversation | NPC autonomous + `npc_conversation_mode_contract.md` + speech/perception/time contracts |\n| Combat | `npc_combat_and_trigger_contract.md`, `combat_system.md`, NPC autonomous, items/body/time owners |\n| Time/activities/processes | `temporal_world_and_interruptible_activities.md`, relevant time/world-process MODULEs, persistence contract/schema |\n| DB/persistence | DDL/generated schema reference, party-store/game-server MODULEs, transaction/idempotency/replay tests; read-only v3 specialization where applicable |\n| Historical/knowledge grounding | active source policy/catalog bindings, visibility/knowledge owner, authoritative-vs-actor-knowledge boundary |\n| Narration/UI | player-safe projection contract, exact committed speech contract, interface/narration owner and tests |",
       "char_count": 1962
     },
@@ -1519,8 +1501,8 @@
       "id": "CONTRACT_INDEX.md:9. Audited conflict register:0",
       "file": "CONTRACT_INDEX.md",
       "section": "9. Audited conflict register",
-      "line_start": 205,
-      "line_end": 206,
+      "line_start": 196,
+      "line_end": 197,
       "text": "## CONTRACT_INDEX.md — 9. Audited conflict register\n## 9. Audited conflict register",
       "char_count": 83
     },
@@ -1528,8 +1510,8 @@
       "id": "CONTRACT_INDEX.md:C-001 — absent `Novgorod1230_project_instruction_full.md`:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-001 — absent `Novgorod1230_project_instruction_full.md`",
-      "line_start": 207,
-      "line_end": 211,
+      "line_start": 198,
+      "line_end": 202,
       "text": "## CONTRACT_INDEX.md — C-001 — absent `Novgorod1230_project_instruction_full.md`\n### C-001 — absent `Novgorod1230_project_instruction_full.md`\n\n**Observed:** exact filename is absent from `main`; an administrator may still supply it externally as current task instruction.  \n**Resolution:** do not add a duplicate to the repository. For merged/current implementation state use `main`, root `AGENTS.md`, active contracts, code and tests. An explicitly supplied administrator project instruction remains governing task input for product/reviewer intent; if it conflicts with repository state, report the conflict and distinguish current production from target instead of silently overriding either side.",
       "char_count": 701
     },
@@ -1537,8 +1519,8 @@
       "id": "CONTRACT_INDEX.md:C-002 — old navigation claimed precedence over root instructions:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-002 — old navigation claimed precedence over root instructions",
-      "line_start": 212,
-      "line_end": 216,
+      "line_start": 203,
+      "line_end": 207,
       "text": "## CONTRACT_INDEX.md — C-002 — old navigation claimed precedence over root instructions\n### C-002 — old navigation claimed precedence over root instructions\n\n**Observed:** `llm_documentation_navigation.md` and `DOCUMENTS/README.md` carried an older reading order and could imply that a domain document outranked root `AGENTS.md`.  \n**Resolution:** root `AGENTS.md` → this index → nested `AGENTS.md` → `MODULE.md` → active profile/contract/schema → code/tests. Compatibility files redirect here.",
       "char_count": 494
     },
@@ -1546,8 +1528,8 @@
       "id": "CONTRACT_INDEX.md:C-003 — critic required after every code change:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-003 — critic required after every code change",
-      "line_start": 217,
-      "line_end": 222,
+      "line_start": 208,
+      "line_end": 213,
       "text": "## CONTRACT_INDEX.md — C-003 — critic required after every code change\n### C-003 — critic required after every code change\n\n**Observed:** two legacy critic-rule files mandated a critic for every behavior/code change.  \n**Conflict:** root `AGENTS.md` requires independent audit for elevated-risk work and explicitly says ordinary local fixes do not require a separate critic.  \n**Resolution:** root `AGENTS.md` §25.1 wins; legacy files redirect to that single governing audit rule and this index supplies only contract status/navigation/scope-matrix data.",
       "char_count": 554
     },
@@ -1555,8 +1537,8 @@
       "id": "CONTRACT_INDEX.md:C-004 — `target` filename interpreted as proposed:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-004 — `target` filename interpreted as proposed",
-      "line_start": 223,
-      "line_end": 227,
+      "line_start": 214,
+      "line_end": 218,
       "text": "## CONTRACT_INDEX.md — C-004 — `target` filename interpreted as proposed\n### C-004 — `target` filename interpreted as proposed\n\n**Observed:** four Spatial v3 files retain `target` in their filenames but their headers state that versioned production activation completed.  \n**Resolution:** they are active specializations. Filename heuristics are forbidden.",
       "char_count": 356
     },
@@ -1564,8 +1546,8 @@
       "id": "CONTRACT_INDEX.md:C-005 — proposed umbrella snapshot versus later profile cutovers:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-005 — proposed umbrella snapshot versus later profile cutovers",
-      "line_start": 228,
-      "line_end": 232,
+      "line_start": 219,
+      "line_end": 223,
       "text": "## CONTRACT_INDEX.md — C-005 — proposed umbrella snapshot versus later profile cutovers\n### C-005 — proposed umbrella snapshot versus later profile cutovers\n\n**Observed:** `semantic_world_actions_materialization_and_processes_contract.md` remains a proposed umbrella snapshot checked against `main` on 2026-08-16, while later `main` contains active profile-specific rules and implementation.  \n**Resolution:** the umbrella never becomes production merely because some ideas were implemented. Current behavior comes from root `AGENTS.md`, active profile contracts/bindings, code and tests. Use the umbrella only as target/history unless explicitly promoted.",
       "char_count": 656
     },
@@ -1573,8 +1555,8 @@
       "id": "CONTRACT_INDEX.md:C-006 — generic world-base norm versus active v3 table specialization:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-006 — generic world-base norm versus active v3 table specialization",
-      "line_start": 233,
-      "line_end": 237,
+      "line_start": 224,
+      "line_end": 228,
       "text": "## CONTRACT_INDEX.md — C-006 — generic world-base norm versus active v3 table specialization\n### C-006 — generic world-base norm versus active v3 table specialization\n\n**Observed:** `world_base_materialization_table_requirements.md` is active for general authoring/readiness semantics but states that the v3 target specialization owns production table-purpose semantics; older v2 portions remain migration/rollback.  \n**Resolution:** use the generic document for shared authoring principles and the v3 specialization for current production table-purpose details. DDL/generated schema remain physical truth.",
       "char_count": 606
     },
@@ -1582,8 +1564,8 @@
       "id": "CONTRACT_INDEX.md:C-007 — authored candidate closure versus active ordinary paths:0",
       "file": "CONTRACT_INDEX.md",
       "section": "C-007 — authored candidate closure versus active ordinary paths",
-      "line_start": 238,
-      "line_end": 242,
+      "line_start": 229,
+      "line_end": 233,
       "text": "## CONTRACT_INDEX.md — C-007 — authored candidate closure versus active ordinary paths\n### C-007 — authored candidate closure versus active ordinary paths\n\n**Observed:** the general materialization contract remains fail-closed for authored/significant/hidden/informational candidates, while active item/turn profiles add separately gated ordinary paths.  \n**Resolution:** ordinary paths do not repair an empty authored candidate set. Apply the active ordinary profile through its own request/admission/persistence contract; preserve authored fail-closed semantics.",
       "char_count": 564
     },
@@ -1591,8 +1573,8 @@
       "id": "CONTRACT_INDEX.md:10. Maintenance rule:0",
       "file": "CONTRACT_INDEX.md",
       "section": "10. Maintenance rule",
-      "line_start": 243,
-      "line_end": 257,
+      "line_start": 234,
+      "line_end": 248,
       "text": "## CONTRACT_INDEX.md — 10. Maintenance rule\n## 10. Maintenance rule\n\n`turn_step_llm_contract.md` §8.2.1 также владеет узким direct `player_utterance`\ncontract: exact resolved speech сохраняется через текущий turn semantic trace;\nbroadcast-capable речь обязана нести explicit qualitative delivery, а missing или\nmalformed delivery отклоняется без silent default;\nbroadcast audience/perception этим не активируются. Единственный speech repair\nс isolated copy/goal metadata errors полного envelope получает bounded projection\nтолько через faithful re-audit и повторную strict validation; третьего planner нет.\n§9.1 задаёт owner-aware\ndiscovery prerequisite и проекцию оставшегося intent при player boundary;\nstandalone focused inspect использует существующий short/light activity owner,\nа `look` и prerequisite inspect с неизменённым later intent остаются free.\n\nAny PR that creates, promotes, renames, moves, supersedes or materially changes a normative contract must update this index in the same PR. A behavioral contract change also requires the checks prescribed by root `AGENTS.md`; the index itself is never evidence that code, schema or tests were updated.",
       "char_count": 1161
     },
@@ -15102,8 +15084,8 @@
       "section": "5. Opening: первое появление героя и мира",
       "line_start": 93,
       "line_end": 108,
-      "text": "## situational_prose_requirements.md — 5. Opening: первое появление героя и мира\nжение и цель; opening завершается открытым настоящим, где видна возможность действовать. Обычно уместны 2–4 абзаца, но это не обязательный word count.\n\n**Избыточно/запрещено.** Dossier dump; перечисление всех параметров; историческая лекция; generic «вы приходите в себя» без factual basis; полное описание каждого предмета; invented destination/cause; повтор названия места вместо сцены.\n\n**Good / bad.** Good даёт герою биографическую непрерывность и сценическую ориентацию. Bad можно без потери смысла перенести любому безымянному герою в любое место либо он сообщает только «вы на берегу, вам холодно».\n\nStage 23 проверяет это через обязательный `literary_composition_check` существующего semantic auditor. Factual-only approval недостаточен: dossier/report/padding дают `NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION` и semantic prose repair; adapter только передаёт approved prose. Отсутствующие во входе биография и ставка не изобретаются ради check.",
-      "char_count": 1033
+      "text": "## situational_prose_requirements.md — 5. Opening: первое появление героя и мира\nжение и цель; opening завершается открытым настоящим, где видна возможность действовать. Обычно уместны 2–4 абзаца, но это не обязательный word count.\n\n**Избыточно/запрещено.** Dossier dump; перечисление всех параметров; историческая лекция; generic «вы приходите в себя» без factual basis; полное описание каждого предмета; invented destination/cause; повтор названия места вместо сцены.\n\n**Good / bad.** Good даёт герою биографическую непрерывность и сценическую ориентацию. Bad можно без потери смысла перенести любому безымянному герою в любое место либо он сообщает только «вы на берегу, вам холодно».\n\nStage 23 оценивает это через `literary_composition_check` существующего semantic auditor. Dossier/report/padding дают `NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION`, но чисто литературный finding сохраняется как квалификация и не блокирует старт партии. Фактические, hidden, coverage и technical checks по-прежнему обязательны для доставки. Отсутствующие во входе биография и ставка не изобретаются ради check.",
+      "char_count": 1095
     },
     {
       "id": "situational_prose_requirements.md:5. Opening: первое появление героя и мира:2",
@@ -15111,7 +15093,7 @@
       "section": "5. Opening: первое появление героя и мира",
       "line_start": 93,
       "line_end": 108,
-      "text": "## situational_prose_requirements.md — 5. Opening: первое появление героя и мира\nRY_COMPOSITION` и semantic prose repair; adapter только передаёт approved prose. Отсутствующие во входе биография и ставка не изобретаются ради check.\n\n**Unseen validation.** Другая стартовая ситуация: не кораблекрушение, а ночной постой после торговой дороги. Тот же writer должен связать другого героя, другую память, закрытый выход, дальний звук и телесное состояние без нового шаблона или branch.",
+      "text": "## situational_prose_requirements.md — 5. Opening: первое появление героя и мира\nеские, hidden, coverage и technical checks по-прежнему обязательны для доставки. Отсутствующие во входе биография и ставка не изобретаются ради check.\n\n**Unseen validation.** Другая стартовая ситуация: не кораблекрушение, а ночной постой после торговой дороги. Тот же writer должен связать другого героя, другую память, закрытый выход, дальний звук и телесное состояние без нового шаблона или branch.",
       "char_count": 481
     },
     {
@@ -15299,34 +15281,34 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n## 16. Acceptance: смысловые проверки вместо phrase whitelist\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:\n\n1. **Grounding:** каждое утверждение имеет точный player-safe source; intent и правдоподобие не служат evidence.\n2. **Coverage:** все существенные воспринимаемые confirmed changes, exact speech, material uncertainty и смысл незавершённого остатка переданы по смыслу один раз; технический перечень не требуется.\n3. **Causality:** порядок, actor/object identity, before/after и boundary сохранены.\n4. **Orientation:** когда ситуация требует, читатель понимает near/far, exits/barriers, действующих NPC и следующее пространство выбора.\n5. **Literary scene:** текст имеет центр, связные beats, конкретные образы и уместный объём; не является ledger, справкой или водой.\n6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.\n\n`PASS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой.",
-      "char_count": 1178
+      "line_end": 403,
+      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\n## 16. Acceptance: смысловые проверки вместо phrase whitelist\n\nКаждый model-backed acceptance case оценивается по шести независимым осям:\n\n1. **Grounding:** каждое утверждение имеет точный player-safe source; intent и правдоподобие не служат evidence.\n2. **Coverage:** все существенные воспринимаемые confirmed changes, exact speech, material uncertainty и смысл незавершённого остатка переданы по смыслу один раз; технический перечень не требуется.\n3. **Causality:** порядок, actor/object identity, before/after и boundary сохранены.\n4. **Orientation:** когда ситуация требует, читатель понимает near/far, exits/barriers, действующих NPC и следующее пространство выбора.\n5. **Literary scene:** текст имеет центр, связные beats, конкретные образы и уместный объём; не является ledger, справкой или водой.\n6. **Continuity:** не повторяет статический контекст без функции и не переписывает committed историю при return/reload.\n\nПолный литературный `PASS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой, но может быть безопасно доставлен с `artistic_verdict: fail` для последующей оценки качества.",
+      "char_count": 1292
     },
     {
       "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:1",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nS` требует все применимые оси. Хорошее литературное качество не оправдывает unsupported fact; безошибочный factual ledger не считается хорошей прозой.\n\nОбычный approved `TurnScreen` — единственный качественный narration `PASS`.\nПоявление `FactualTurnDeliveryScreen` означает degraded presentation после\nterminal `final_audit_failed`: оно сохраняет доступность уже committed хода,\nно никогда не закрывает narration quality, blind-play, demo или TURN FORENSIC\nacceptance. Любой такой экран в этих прогонах автоматически создаёт blocking\nnarration finding; Contract Auditor не меняет эту норму, чтобы легализовать\nнепрошедший writer/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.",
-      "char_count": 873
+      "line_end": 403,
+      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nбезошибочный factual ledger не считается хорошей прозой, но может быть безопасно доставлен с `artistic_verdict: fail` для последующей оценки качества.\n\nОбычный approved `TurnScreen` доказывает фактическую и техническую пригодность доставки, но сам по себе не доказывает литературный `PASS` при `artistic_verdict: fail`.\nПоявление `FactualTurnDeliveryScreen` означает degraded presentation после\nterminal `final_audit_failed`: оно сохраняет доступность уже committed хода,\nно никогда не закрывает narration quality, blind-play, demo или TURN FORENSIC\nacceptance. Любой такой экран в этих прогонах автоматически создаёт blocking\nnarration finding; Contract Auditor не меняет эту норму, чтобы легализовать\nнепрошедший writer/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.",
+      "char_count": 965
     },
     {
       "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:2",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\niter/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.\n\nВ обычном ходе итоговый `narration_audit` содержит `coverage.visible_changes` и\n`coverage.uncertainties`: записи `{source_index, segment_ids}` с нулевым индексом\nисходного массива и ссылками на immutable сегменты проверяемой прозы. Для `PASS`\nкаждый исходный индекс указан ровно один раз, с хотя бы одним существующим\nсегментом; пустой исходный массив требует пустого coverage. Несколько исходных\nсмыслов могут ссылаться на один сегмент. Ссылки обозначают выраженный в прозе\nсмысл, а не наличие факта во входе. Пропущенные смыслы дают `FAIL` и concern;\nнеизвестные индексы, сегменты, дубли и malformed coverage не принимаются кодом.\nНезависимые `artistic_verdict` и `technical_verdict` имеют значения `pass|fail`;\n`fail` требует соответственно concern `literary_quality` или\n`technical_presentation`. Общий `PASS` требует оба verdict `pass`, полное\ncoverage, отсутствие concerns и непустое evidence. Public verdict и coverage\nсобирает Adapter детерминированно из private source reviews и failures; LLM их\nне назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.",
-      "char_count": 1406
+      "line_end": 403,
+      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\niter/audit flow. Factual recovery сохраняет полный применимый\nplayer-safe public UI нормального экрана и заменяет только отсутствующую\napproved prose.\n\nВ обычном ходе итоговый `narration_audit` содержит `coverage.visible_changes` и\n`coverage.uncertainties`: записи `{source_index, segment_ids}` с нулевым индексом\nисходного массива и ссылками на immutable сегменты проверяемой прозы. Для `PASS`\nкаждый исходный индекс указан ровно один раз, с хотя бы одним существующим\nсегментом; пустой исходный массив требует пустого coverage. Несколько исходных\nсмыслов могут ссылаться на один сегмент. Ссылки обозначают выраженный в прозе\nсмысл, а не наличие факта во входе. Пропущенные смыслы дают `FAIL` и concern;\nнеизвестные индексы, сегменты, дубли и malformed coverage не принимаются кодом.\nНезависимые `artistic_verdict` и `technical_verdict` имеют значения `pass|fail`;\n`fail` требует соответственно concern `literary_quality` или\n`technical_presentation`. Public `pass` означает допустимость доставки: полное\ncoverage, отсутствие factual/hidden/technical concerns и непустое evidence.\n`literary_quality` concern и `artistic_verdict: fail` не меняют delivery `pass`;\nполный литературный PASS дополнительно требует `artistic_verdict: pass` и отсутствие\nлитературных concerns. Public verdict и coverage\nсобирает Adapter детерминированно из private source reviews и failures; LLM их\nне назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.",
+      "char_count": 1625
     },
     {
       "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:3",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
+      "line_end": 403,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nе назначает. Те же проверки действуют\nпосле единственного существующего цельного semantic repair, без нового role\nили дополнительного каскада вызовов.\n\nPrivate wire сохраняет обязательные текущие факты в `required_current_beat`\nс changes `{ref,text}` и uncertainties `{ref,text,status:unperformed_result_unknown}`,\n`constraints` содержит do_not_imply/allowed_tensions/style_policy.\nПри любом change или uncertainty `optional_support` содержит только\nvisible_scene и текущие grounded sensory_details, если они переданы. Writer выбирает\nтолько относящиеся к текущему beat детали; весь sensory snapshot не пересказывается.\nStatic NPC/object/inventory/body arrays, known_context и snapshot metadata\nне поступают writer/auditor/repair.\nНовые существенные факты должны приходить через visible_changes. Существующие\nprojection owners продвигают воспринимаемые признаки applied observation,\ndestination facts, видимых NPC и подтверждённый маршрут arrival, а также\nфакты текущего ordinary scene seed. Причинное основание задаёт результат owner,\nа не текст заявки или заголовок сцены; snapshot self-knowledge не продвигается.\nДополнять текущий\nрезультат пересказом static snapshot нельзя. Эти данные остаются authoritative\nи доступны профильным panels. Если оба source arrays пусты и сама сцена является\nрезультатом, descriptive support сохраняется для scene-only/perception prose.\nRaw visible_context не дублируется; used_references остаётся пустым.\nConfirmed_outcome/action_intent и role-specific output/segments/concerns/phase\nсохраняют существующую доступность. Uncertainty о вопросе не становится доказательством\nдействия; явно неисполненный continuation остаётся неначатым, а результат неизвестным.\nCommitted transient attempt в required change подтверждает выполненное физическое\nобращение/contact. Открытым остаётся только observation/discovery\nresult или новый факт. Narrator изображает совершённое движение конкретно, без\nпересказа attempt/status metadata и без выдуманной новой находки. goal_result pending\nне отменяет applied operation. Нельзя объявлять её неначатой либо навязывать выбор\nпродолжить/изменить действие, если unexecuted continuation не передан.\nProjection transient attempt создаёт два соседних atomic current-beat source:\nпервый отдельно подтверждает выполненное обращение, второй отдельно\nсохраняет неизвестность observation result. Оба остаются changes с собственными\nrequest-local refs и проверяются независимо; модель не должна сама выделять\nнеизвестный смысл из составной служебной строки.",
       "char_count": 2610
     },
@@ -15335,7 +15317,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
+      "line_end": 403,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nся changes с собственными\nrequest-local refs и проверяются независимо; модель не должна сама выделять\nнеизвестный смысл из составной служебной строки.\n\nPrivate auditor возвращает только exact shape с `reviewed_segments`,\n`source_reviews`, `unsupported`, `literary_failures` и `evidence`.\n`reviewed_segments` содержит полный canonical ordered набор segment choices.\n`source_reviews` содержит ровно ordered refs из `required_current_beat`; каждая\nзапись `{ref,segment_choices}` получает choices только если все атомарные\npropositions source переданы с той же certainty. Частичное либо отсутствующее\nпокрытие обозначается `[]`. Разные sources могут ссылаться на один segment.",
       "char_count": 770
     },
@@ -15344,7 +15326,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
+      "line_end": 403,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\npositions source переданы с той же certainty. Частичное либо отсутствующее\nпокрытие обозначается `[]`. Разные sources могут ссылаться на один segment.\n\nПеред ответом модель проверяет каждую factual proposition, включая subordinate\nclauses, и сообщает только failures. Semantic grounding failures находятся в\n`unsupported` как `{segment_choice,kind,reason}`. Художественные нарушения\nнаходятся в `literary_failures` как `{check,segment_choice,reason}` для пяти\nchecks: current_beat_buried, elapsed_as_service_report, static_context_dump,\nweak_literary_composition, unsupported_response_or_continuation. Positive\nproposition reviews, verdict, concerns, source indices и public coverage модель\nне возвращает.",
       "char_count": 803
     },
@@ -15353,25 +15335,25 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nosition, unsupported_response_or_continuation. Positive\nproposition reviews, verdict, concerns, source indices и public coverage модель\nне возвращает.\n\nAdapter требует exact own-key set, source refs/order, canonical unique choices,\nallowed semantic kinds/literary checks и непустые reasons. Затем код выводит\nsource_index по исходному порядку, собирает coverage, missing_visible_change и\nостальные concerns, artistic/technical verdict и общий pass. Чистый отчёт требует\nнепустое evidence. Любой malformed private output преобразуется в невалидный\naudit и блокирует flow fail-closed; Adapter не синтезирует repair concern.\nСогласованный code-assembled FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.",
-      "char_count": 857
+      "line_end": 403,
+      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nosition, unsupported_response_or_continuation. Positive\nproposition reviews, verdict, concerns, source indices и public coverage модель\nне возвращает.\n\nAdapter требует exact own-key set, literal source refs/order и canonical unique\nsegment IDs без positional/prose aliases,\nallowed semantic kinds/literary checks и непустые reasons. Затем код выводит\nsource_index по исходному порядку, собирает coverage, missing_visible_change и\nостальные concerns, artistic/technical verdict и delivery pass. Чистый отчёт\nтребует непустое evidence; при чисто литературном finding полные source reviews\nостаются фактическим контролем, а пояснительное evidence может быть пустым.\nЛюбой malformed private output преобразуется в невалидный audit и\nблокирует flow fail-closed; Adapter не синтезирует reviewed segments, evidence\nили repair concern. Согласованный code-assembled factual/technical FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.",
+      "char_count": 1081
     },
     {
       "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:7",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
-      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nair concern.\nСогласованный code-assembled FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.\n\nTemporal/aspectual overlap и persistence между фактами требуют явного основания:\nscene label не доказывает ambience, тишину или субъективный темп. Длительность\nхода не передаётся narrator как evidence. Любая придуманная временная величина\nявляется unsupported fact, а служебная формулировка дополнительно получает\n`elapsed_as_service_report`. Точная реплика и все propositions сохраняются.\nГрамматическое подчинение раннего выполненного действия позднему допустимо, когда\nглагольный вид или явный маркер однозначно сохраняет смысл «завершено раньше». Запрещены\nreversal и подчинение со смыслом simultaneous/ongoing; обязательной словоформы\nили раздельных предложений нет.\n`weak_literary_composition` включает пересказ pending remainder как metadata\nили пояснение плана вместо конкретного открытого следующего выбора. Полный и\nфактически верный пересказ required sources по одному и в исходном порядке тоже\nостаётся `weak_literary_composition`, если действие или воспринятый результат не\nорганизует поддержанные пространственные детали в сцену. Один союз не делает\nнабор фактов художественной сценой; выдумывать отсутствующую связь запрещено.\nRepair concerns не являются\nисчерпывающим whitelist: все правила повторно применяются ко всей прозе,\nпри sparse support текст сокращается, а не украшается выдуманными связями.\nPASS также требует двух pass verdicts, полной coverage, пустых concerns и непустого\nмассива evidence. Повторный semantic repair запрещён. Private writer и format\nrepair не генерируют self-check flags: публичный `self_check={}` нейтрален,\nне содержит model approval и не заменяет независимый audit.",
-      "char_count": 1865
+      "line_end": 403,
+      "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nсованный code-assembled factual/technical FAIL использует существующий цельный repair без\nнового role/call; final audit повторяет тот же строгий seam.\n\nTemporal/aspectual overlap и persistence между фактами требуют явного основания:\nscene label не доказывает ambience, тишину или субъективный темп. Длительность\nхода не передаётся narrator как evidence. Любая придуманная временная величина\nявляется unsupported fact, а служебная формулировка дополнительно получает\n`elapsed_as_service_report`. Точная реплика и все propositions сохраняются.\nГрамматическое подчинение раннего выполненного действия позднему допустимо, когда\nглагольный вид или явный маркер однозначно сохраняет смысл «завершено раньше». Запрещены\nreversal и подчинение со смыслом simultaneous/ongoing; обязательной словоформы\nили раздельных предложений нет.\n`weak_literary_composition` включает пересказ pending remainder как metadata\nили пояснение плана вместо конкретного открытого следующего выбора. Полный и\nфактически верный пересказ required sources по одному и в исходном порядке тоже\nостаётся `weak_literary_composition`, если действие или воспринятый результат не\nорганизует поддержанные пространственные детали в сцену. Один союз не делает\nнабор фактов художественной сценой; выдумывать отсутствующую связь запрещено.\nRepair concerns не являются\nисчерпывающим whitelist: все правила повторно применяются ко всей прозе,\nпри sparse support текст сокращается, а не украшается выдуманными связями.\nПолный литературный PASS также требует двух pass verdicts, полной coverage,\nпустых concerns и непустого массива evidence. Delivery pass допускает только\nлитературные concerns. Повторный semantic repair запрещён. Private writer и format\nrepair не генерируют self-check flags: публичный `self_check={}` нейтрален,\nне содержит model approval и не заменяет независимый audit.",
+      "char_count": 1939
     },
     {
       "id": "situational_prose_requirements.md:16. Acceptance: смысловые проверки вместо phrase whitelist:8",
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
+      "line_end": 403,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\nriter и format\nrepair не генерируют self-check flags: публичный `self_check={}` нейтрален,\nне содержит model approval и не заменяет независимый audit.\n\nЦентр ответа — текущие confirmed changes и uncertainties. Незавершённое действие\nясно остаётся ещё не начатым, его результат неизвестен; возможность продолжить\nзамысел или изменить решение передаётся естественно, без системного отчёта.\nТочное произнесённое слово сохраняется. Прошедшее время вплетается в текущий\nэпизод: служебная временная заставка с последующей статической сводкой не проходит\nтехническую приёмку. Даже фактически верный пересказ берега, тела или инвентаря\nне проходит художественную приёмку, если вытесняет смысл текущего результата.\nПри малом количестве подтверждённого материала краткая связная сцена достаточна.\nСамо произнесение не подтверждает слышимость, ответ или отсутствие ответа:\nдля реакции слушателя требуется отдельный confirmed perception/conversation fact.\nOpening сохраняет собственный утверждённый Stage 23 audit: turn coverage и\nхудожественный verdict не синтезируются задним числом для опубликованной сцены.",
       "char_count": 1196
     },
@@ -15380,7 +15362,7 @@
       "file": "situational_prose_requirements.md",
       "section": "16. Acceptance: смысловые проверки вместо phrase whitelist",
       "line_start": 249,
-      "line_end": 396,
+      "line_end": 403,
       "text": "## situational_prose_requirements.md — 16. Acceptance: смысловые проверки вместо phrase whitelist\ning сохраняет собственный утверждённый Stage 23 audit: turn coverage и\nхудожественный verdict не синтезируются задним числом для опубликованной сцены.\n\nПроверки не должны искать обязательные слова и конструкции. Рисковая карта полного qualification/acceptance покрытия для каждого класса включает:\n\n- один позитивный grounded case;\n- один factual trap: tempting, но unsupported detail;\n- один sparse-context case, который обязан выявить upstream gap, а не породить воду;\n- один unseen-equivalent с другим местом, предметом, NPC и формулировкой;\n- один continuity case после следующего хода либо reload;\n- blind semantic/literary review реального model output, а не только snapshot system prompt.\n\nЭто целевая матрица покрытия, а не требование запускать новый массовый benchmark при каждой локальной правке. Принятие нормы и локальный change проверяют relevant focused subset и не означают соответствия всей игры. Полная матрица служит итоговым gate художественной приёмки и model qualification.\n\nНовый unseen case не должен требовать нового `situation_kind`, handler, enum, phrase rule или template. Если требует, решение заскриптовано.",
       "char_count": 1234
     },
@@ -15388,8 +15370,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:0",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 397,
-      "line_end": 439,
+      "line_start": 404,
+      "line_end": 446,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n## 17. Владельцы и связанные контракты\n\nГраницы ответственности определяются следующими владельцами:",
       "char_count": 175
     },
@@ -15397,8 +15379,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:1",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 397,
-      "line_end": 439,
+      "line_start": 404,
+      "line_end": 446,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n## 17. Владельцы и связанные контракты\n\nГраницы ответственности определяются следующими владельцами:\n\n- [`AGENTS.md`](../../../../AGENTS.md), §§3–14 — свободная причинная игра, authority и persistence;\n- [`CONTRACT_INDEX.md`](CONTRACT_INDEX.md), §§4, 8.1 — active contracts и Narration/UI scope;\n- [`packages/narration/MODULE.md`](../../../../packages/narration/MODULE.md) — workflow writer/audit/repair;\n- [`apps/game-server/MODULE.md`](../../../../apps/game-server/MODULE.md) — persisted safe projection и composition;\n- [`apps/game-web/MODULE.md`](../../../../apps/game-web/MODULE.md) — faithful UI rendering;\n- [`packages/materialization/MODULE.md`](../../../../packages/materialization/MODULE.md) — grounded detail и identity;\n- [`turn_step_llm_contract.md`](turn_step_llm_contract.md), §§6, 8–9 — completed steps и remaining intent;\n- [`npc_conversation_mode_contract.md`](npc_conversation_mode_contract.md), §§18–19, 23, 29–31, 36 — exact speech, audience, causal order и narration;\n- [`temporal_world_and_interruptible_activities.md`](temporal_world_and_interruptible_activities.md), §§3.5, 12–20 — time, processes, body и visible package;\n- [`npc_combat_and_trigger_contract.md`](npc_combat_and_trigger_contract.md), §§21–29 — combat ordering, speech и terminal state;\n- [`combat_system.md`](combat_system.md), §§12–15, 27–29 — injury, death, aftermath и recovery.",
       "char_count": 1448
     },
@@ -15406,8 +15388,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:2",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 397,
-      "line_end": 439,
+      "line_start": 404,
+      "line_end": 446,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\n), §§21–29 — combat ordering, speech и terminal state;\n- [`combat_system.md`](combat_system.md), §§12–15, 27–29 — injury, death, aftermath и recovery.\n\nСами MODULE должны ссылаться только на canonical документ и кратко указывать собственную ответственность. Не копировать туда весь packet: иначе быстро появятся расходящиеся нормы.\n\nPrivate narration auditor использует exact `request.segments[].segment_id` во всех\nreviewed_segments, source_reviews, unsupported и literary_failures. Positional\naliases и нормализация не допускаются; Adapter детерминированно собирает\ncoverage/verdict, а final audit строго проверяется по IDs\nповторно сегментированной approved prose. Длительность хода не входит в private\nprose wire: её вычисляет temporal owner и показывает server-owned UI projection.\nЛюбая придуманная narrator временная величина является unsupported fact, а\nслужебная формулировка дополнительно проваливает elapsed_as_service_report.\nПри current beat private wire\nдопускает visible_scene + sensory_details; narrator выбирает только относящиеся\nк этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.",
       "char_count": 1205
     },
@@ -15415,8 +15397,8 @@
       "id": "situational_prose_requirements.md:17. Владельцы и связанные контракты:3",
       "file": "situational_prose_requirements.md",
       "section": "17. Владельцы и связанные контракты",
-      "line_start": 397,
-      "line_end": 439,
+      "line_start": 404,
+      "line_end": 446,
       "text": "## situational_prose_requirements.md — 17. Владельцы и связанные контракты\nsible_scene + sensory_details; narrator выбирает только относящиеся\nк этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.\n\nTemporal/aspect grounding не позволяет выводить длительность из действия или\nsensory sky/weather/sound. Sensory support связывает сцену. Source review требует все propositions каждого atomic\nrequired source; неизвестный результат нельзя опустить или заменить\nfailure/success. Речь передаётся естественно с дословным\nсодержанием и speaker, discovery — через подтверждённое восприятие без status report.\n\nApplied-step causal projection оставляет semantic_activity duration temporal owner;\nsingle transient_item_use получает два соседних atomic current-beat source:\nвыполненную попытку с exact description, затем отдельно неизвестный observation result.\nКаждый source получает собственный ref и проверяется независимо. Отдельный elapsed component этого step\nудаляется перед финальной сборкой; search передаёт только выполненное действие и результат.\nNarrator переводит evidence wording в естественную речь и конкретное движение,\nне копирует служебные слова step/attempt и не добавляет минуты.",
       "char_count": 1216
     },

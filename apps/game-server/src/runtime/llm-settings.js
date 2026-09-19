@@ -1,7 +1,7 @@
 import { serverError } from '../errors.js';
 import { readFile } from 'node:fs/promises';
 import { createLowerDvinaTraceNarrationService } from './lower-dvina-trace-narration-llm.js';
-const QUALIFICATION_VERSION = 70;
+const QUALIFICATION_VERSION = 71;
 export const LOCAL_LLM_PRESET = Object.freeze({
   base_url: 'http://127.0.0.1:8000/v1',
   model: 'HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced'
@@ -83,14 +83,17 @@ export function createProductionLlmQualifier({ qualifyOrdinary, roleRunner } = {
 }
 export async function runNarrationWorkflowQualification({ roleRunner, candidate } = {}) {
   if (typeof roleRunner?.run !== 'function' || typeof roleRunner?.describe !== 'function') throw new TypeError('Narration qualification requires LLM role transport.');
-  const controls = [['gameplay-narrator-auditor-cycle17-shore-catalogue', false], ['gameplay-narrator-auditor-dense-storeyard-terminal-static', false], ['gameplay-narrator-auditor-dense-cellar-terminal-static', false], ['gameplay-narrator-auditor-dense-storeyard-governed-action', true], ['gameplay-narrator-auditor-dense-cellar-finite-perception', true]];
+  const controls = ['gameplay-narrator-auditor-cycle17-shore-catalogue',
+    'gameplay-narrator-auditor-dense-storeyard-terminal-static',
+    'gameplay-narrator-auditor-dense-cellar-terminal-static',
+    'gameplay-narrator-auditor-dense-storeyard-governed-action',
+    'gameplay-narrator-auditor-dense-cellar-finite-perception'];
   const allFixtures = await frozenNarrationFixtures();
-  const fixtures = controls.map(([id]) => allFixtures.find((fixture) => fixture.id === id));
+  const fixtures = controls.map((id) => allFixtures.find((fixture) => fixture.id === id));
   if (fixtures.length !== controls.length || fixtures.some((fixture) => fixture == null)) throw narrationQualificationError();
   try {
     const probes = [];
     for (const [fixtureIndex, fixture] of fixtures.entries()) {
-      const initialPass = controls.find(([id]) => id === fixture.id)[1];
       const request = narrationRequest(fixture);
       let initialRaw = null;
       let initialProvider = null;
@@ -113,12 +116,9 @@ export async function runNarrationWorkflowQualification({ roleRunner, candidate 
       const initialWeakComposition = initialRaw?.literary_failures?.some(
         ({ check }) => check === 'weak_literary_composition') === true;
       if (result.status !== 'approved' || !result.approved_output?.prose?.trim()
-          || result.repair_history.filter(({ role }) => role === 'semantic_repair').length
-            !== (initialPass ? 0 : 1)
-          || result.audit_history.length !== (initialPass ? 1 : 2)
-          || result.audit_history[0]?.value?.pass !== initialPass
-          || initialWeakComposition !== !initialPass
-          || result.audit_history.at(-1)?.value?.pass !== true
+          || result.repair_history.some(({ role }) => role === 'semantic_repair')
+          || result.audit_history.length !== 1
+          || result.audit_history[0]?.value?.pass !== true
           || !result.final_audit?.coverage?.visible_changes?.every(({ segment_ids }) => segment_ids.length)
           || !result.final_audit?.coverage?.uncertainties?.every(({ segment_ids }) => segment_ids.length)) throw narrationQualificationError();
       const live = fixtureIndex === 0 ? await createLowerDvinaTraceNarrationService({ roleRunner: {

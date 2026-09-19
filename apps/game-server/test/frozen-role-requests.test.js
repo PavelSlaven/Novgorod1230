@@ -92,7 +92,7 @@ test('frozen dense controls distinguish terminal static clusters from governed p
     });
     const governed = fixture.id.endsWith('governed-action')
       || fixture.id.endsWith('finite-perception');
-    assert.equal(assembled.pass, governed, fixture.id);
+    assert.equal(assembled.pass, true, fixture.id);
     assert.equal(assembled.concerns.some(({ kind }) =>
       kind === 'literary_quality'), !governed, fixture.id);
   }

@@ -35,6 +35,10 @@ code-owned appearance completion, Stages 12/15/24 требуют полный к
 13, 15, 16 и 24 выполняются кодом; LLM используется только в явно разрешённых
 ролях.
 
+Stage 23 сохраняет литературную оценку opening отдельно от фактического допуска:
+чисто литературный finding не блокирует первый экран, а factual, hidden,
+coverage и technical failures остаются fail-closed.
+
 ## Допустимые зависимости
 
 `@rus/contracts`, `@rus/kernel`, `@rus/materialization`, `@rus/pipeline-engine`, `@rus/party-store` через публичные APIs.

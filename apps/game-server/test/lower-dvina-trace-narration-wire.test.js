@@ -118,7 +118,7 @@ for (const sample of [
     change: 'Вы проводили сухим лоскутом по краю глиняной чаши; результат наблюдения не установлен.',
     relevant: 'Край глиняной чаши шероховатый.', other: ['За дверью виден двор.', 'У стены лежат поленья.'],
     prose: 'По шероховатому краю глиняной чаши вы проводите сухим лоскутом; что это позволило заметить, пока неизвестно.' }
-]) test(`${sample.name}: sensory selection supports sparse action, unchanged dump fails`, async () => {
+]) test(`${sample.name}: unchanged dump is a non-blocking literary finding`, async () => {
   for (const dump of [false, true]) {
     const visible = { version: 1, schema: 'visible_context_package', visible_scene: 'Текущее место',
       visible_changes: [sample.change], uncertainties: [], sensory_details: [sample.relevant, ...sample.other],
@@ -164,8 +164,8 @@ for (const sample of [
     const result = await service.run({ version: 1, schema: 'narration_request', request_id: `${sample.name}-${dump}`,
       surface: 'turn', visible_context: visible, context: {} });
     assert.equal(result.status, 'approved');
-    assert.equal(result.approved_output.prose, sample.prose);
-    assert.deepEqual(calls, dump ? ['gameplay_narrator', 'gameplay_narrator_auditor',
-      'gameplay_narrator_semantic_repair', 'gameplay_narrator_auditor'] : ['gameplay_narrator', 'gameplay_narrator_auditor']);
+    assert.equal(result.approved_output.prose,
+      dump ? `${sample.prose} ${visible.sensory_details.join(' ')}` : sample.prose);
+    assert.deepEqual(calls, ['gameplay_narrator', 'gameplay_narrator_auditor']);
   }
 });

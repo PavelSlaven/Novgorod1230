@@ -49,7 +49,8 @@ export function validateNarrationAudit(value, segmentIds = null, sourceCounts = 
   const concerns = Array.isArray(value.concerns) ? value.concerns : [];
   for (const [field, kind] of [['artistic_verdict', 'literary_quality'], ['technical_verdict', 'technical_presentation']]) {
     enumValue(errors, value[field], ['pass', 'fail'], field);
-    if (value.pass === true && value[field] !== 'pass') errors.push(`successful audit requires ${field} pass`);
+    if (value.pass === true && field === 'technical_verdict'
+        && value[field] !== 'pass') errors.push('successful delivery audit requires technical_verdict pass');
     if (value[field] === 'fail' && !concerns.some((concern) => concern?.kind === kind)) errors.push(`${field} fail requires ${kind} concern`);
     if (value[field] === 'pass' && concerns.some((concern) => concern?.kind === kind)) errors.push(`${field} pass contradicts ${kind} concern`);
   }
@@ -60,8 +61,11 @@ export function validateNarrationAudit(value, segmentIds = null, sourceCounts = 
   if (Array.isArray(value.concerns)) {
     value.concerns.forEach((concern, index) => validateConcern(errors, concern, index, segmentIds));
   }
-  if (value.pass === true && Array.isArray(value.concerns) && value.concerns.length) errors.push('successful audit must have no concerns');
-  if (value.pass === true && Array.isArray(value.evidence) && value.evidence.length === 0) errors.push('successful audit requires evidence');
+  const blockingConcerns = concerns.filter(({ kind } = {}) => kind !== 'literary_quality');
+  if (value.pass === true && blockingConcerns.length) errors.push('successful delivery audit must have no factual or technical concerns');
+  if (value.pass === false && concerns.length && blockingConcerns.length === 0) errors.push('literary concerns alone cannot block delivery');
+  if (value.pass === true && Array.isArray(value.evidence) && value.evidence.length === 0
+      && !concerns.some(({ kind } = {}) => kind === 'literary_quality')) errors.push('clean successful audit requires evidence');
   if (value.pass === false && Array.isArray(value.concerns) && value.concerns.length === 0) errors.push('failed audit requires concerns');
   return result(errors);
 }
@@ -236,7 +240,14 @@ export function validateOpeningNarrationAudit(audit, requestId) {
   requiredText(errors, audit.request_id, 'opening audit request_id');
   if (audit.request_id !== requestId) errors.push('opening audit request_id mismatch');
   if (audit.pass !== true) errors.push('opening audit must pass');
-  if (!Array.isArray(audit.concerns) || audit.concerns.length) errors.push('opening audit requires empty concerns');
+  const concerns = Array.isArray(audit.concerns) ? audit.concerns : [];
+  if (!Array.isArray(audit.concerns) || concerns.some((concern) => !plain(concern)
+      || concern.code !== 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION'
+      || !evidenceText(concern.message))) errors.push('opening audit permits only a literary-quality concern');
+  const literaryFailed = audit.checks?.literary_composition_check?.pass === false;
+  const literaryReported = concerns.some(({ code } = {}) =>
+    code === 'NARRATOR_PROSE_WEAK_LITERARY_COMPOSITION');
+  if (literaryFailed !== literaryReported) errors.push('opening literary check and concern must agree');
   if (!Array.isArray(audit.evidence) || !audit.evidence.length || audit.evidence.some((entry) => !evidenceText(entry))) errors.push('opening audit requires evidence');
   if (audit.repair_route !== null) errors.push('opening audit repair_route must be null');
   for (const key of ['schema_and_structure', 'visible_context_compliance', 'new_fact_check',

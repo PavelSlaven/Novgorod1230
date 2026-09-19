@@ -217,7 +217,7 @@ test('local preset and private server config survive restart', async (t) => {
     filePath: join(directory, 'llm-settings.json')
   });
   const qualifyCustom = async (candidate) => ({ ...identity(),
-    model: candidate.model, qualification_version: 70 });
+    model: candidate.model, qualification_version: 71 });
   const first = createLlmSettingsOwner({ qualifyCustom,
     persistSettings: (record) => store.save(record) });
   const applied = await first.apply({ mode: 'local', api_key: 'local-secret' });
@@ -294,7 +294,7 @@ test('narration workflow qualification distinguishes split static clusters and r
           segment_choices: [initial ? (wire.segments[index]?.segment_id ?? 's1') : 's1'] })),
         unsupported: [], literary_failures: initial && !positive ? [{
           check: invalid ?? 'weak_literary_composition', segment_choice: 's1', reason: 'catalogue'
-        }] : [], evidence: initial && !positive ? [] : ['approved']
+        }] : [], evidence: ['factual coverage verified']
       }, provider_record: record };
     }
   });
@@ -309,17 +309,17 @@ test('narration workflow qualification distinguishes split static clusters and r
   ]);
   assert.deepEqual(probes.map(({ initial_raw_weak_literary_composition, repair_count,
     final_pass, status }) => [initial_raw_weak_literary_composition, repair_count,
-    final_pass, status]), [[true, 1, true, 'approved'], [true, 1, true, 'approved'],
-    [true, 1, true, 'approved'], [false, 0, true, 'approved'], [false, 0, true, 'approved']]);
+    final_pass, status]), [[true, 0, true, 'approved'], [true, 0, true, 'approved'],
+    [true, 0, true, 'approved'], [false, 0, true, 'approved'], [false, 0, true, 'approved']]);
   assert.deepEqual(probes[0].candidate_writer, {
-    repair_count: 1, final_pass: true, status: 'approved'
+    repair_count: 0, final_pass: true, status: 'approved'
   });
   assert.deepEqual(probes.slice(1).map(({ candidate_writer }) => candidate_writer),
     [null, null, null, null]);
   assert.equal(candidateWriterCalls, 1);
   const owner = createLlmSettingsOwner({ qualifyCustom: async (candidate) => {
     await runNarrationWorkflowQualification({ roleRunner: runner, candidate });
-    return { ...identity(), qualification_version: 70 };
+    return { ...identity(), qualification_version: 71 };
   } });
   await owner.apply(custom);
   assert.equal(owner.read().model, 'local-model');
@@ -338,25 +338,24 @@ test('narration workflow qualification distinguishes split static clusters and r
     { code: 'LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED' });
   assert.equal(rejected.read().model, 'local-model');
   invalid = 'static_context_dump';
-  await assert.rejects(rejected.apply({ ...custom, model: 'wrong-literary-check-model' }),
-    { code: 'LLM_SETTINGS_NARRATION_QUALIFICATION_FAILED' });
-  assert.equal(rejected.read().model, 'local-model');
+  await rejected.apply({ ...custom, model: 'literary-finding-model' });
+  assert.equal(rejected.read().model, 'literary-finding-model');
   const staleRecord = { version: 2, settings: custom,
     ordinary_materialization_identity: {}, qualification_version: 67 };
   const requalified = [];
   const restarted = createLlmSettingsOwner({ initialRecord: staleRecord,
     qualifyCustom: async (candidate) => {
       requalified.push(candidate);
-      return { ...identity(), model: candidate.model, qualification_version: 70 };
+      return { ...identity(), model: candidate.model, qualification_version: 71 };
     }, persistSettings: async (record) => { requalified.push(record); } });
   assert.equal(restarted.ordinaryMaterializationIdentity(), null);
   await applyInitialLocalSettings(restarted, staleRecord);
   assert.equal(requalified[0].model, 'local-model');
-  assert.equal(requalified[1].qualification_version, 70);
+  assert.equal(requalified[1].qualification_version, 71);
   assert.equal(restarted.ordinaryMaterializationIdentity().model, 'local-model');
   await assert.rejects(async () => createLlmSettingsOwner({ initialRecord: {
     version: 2, settings: custom, ordinary_materialization_identity: {},
-    qualification_version: 70
+    qualification_version: 71
   } }), { code: 'LLM_SETTINGS_FILE_INVALID' });
 });
 

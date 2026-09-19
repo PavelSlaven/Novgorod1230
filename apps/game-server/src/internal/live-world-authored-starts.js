@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { createHash } from 'node:crypto';
 import { canonicalDigest } from '@rus/materialization';
 import { loadLowerDvinaTracePhase1BPublication } from
   './lower-dvina-trace-phase-1b-publication.js';
@@ -17,6 +18,7 @@ export async function loadLiveWorldAuthoredStartCatalog({
     readJson(rootDir, `${ROOT}/authored-starts.json`)
   ]);
   assertCatalog(manifest, starts);
+  const actorCatalog = await loadActorCatalog(rootDir, starts.actor_catalog);
   const facts = new Map(starts.player_known_facts.map((fact) => [
     fact.fact_id, freezeDeep(structuredClone(fact))
   ]));
@@ -26,6 +28,7 @@ export async function loadLiveWorldAuthoredStartCatalog({
     assertProfile(profile, facts);
     const approvedProfile = freezeDeep({
       ...structuredClone(profile),
+      actor_catalog: actorCatalogForProfile(actorCatalog, profile),
       approved_player_known_facts: [...facts.values()].map((fact) =>
         structuredClone(fact))
     });
@@ -135,6 +138,12 @@ function assertCatalog(manifest, starts) {
     || starts.catalog_id !== manifest.catalog_id
     || starts.revision !== manifest.revision
     || !Number.isInteger(starts.current_binding_revision)
+    || !Number.isInteger(starts.actor_catalog?.version)
+    || !text(starts.actor_catalog?.region_id)
+    || !text(starts.actor_catalog?.roles?.path)
+    || !text(starts.actor_catalog?.roles?.digest)
+    || !text(starts.actor_catalog?.occupations?.path)
+    || !text(starts.actor_catalog?.occupations?.digest)
     || !text(starts.execution_contract?.materializer_version)
     || !text(starts.execution_contract?.rng_algorithm_id)
     || !text(starts.world_compatibility?.production_world_revision_id)
@@ -146,6 +155,62 @@ function assertCatalog(manifest, starts) {
     || !Array.isArray(starts.player_known_facts)
     || !Array.isArray(starts.starts) || starts.starts.length === 0) {
     fail('LIVE_WORLD_AUTHORED_START_CATALOG_INVALID');
+  }
+}
+
+function actorCatalogForProfile(catalog, profile) {
+  const actors = [profile.player, ...profile.people];
+  const roleIds = new Set(actors.map(({ role_id: id }) => id));
+  const occupationIds = new Set(actors.map(({ occupation_id: id }) => id));
+  return freezeDeep({
+    ...structuredClone(catalog),
+    roles: catalog.roles.filter(({ role_id: id }) => roleIds.has(id))
+      .map((record) => structuredClone(record)),
+    occupations: catalog.occupations.filter(({ occupation_id: id }) =>
+      occupationIds.has(id)).map((record) => structuredClone(record))
+  });
+}
+
+async function loadActorCatalog(rootDir, specification) {
+  const [roles, occupations] = await Promise.all([
+    readPinnedTsv(rootDir, specification.roles, 'role_id'),
+    readPinnedTsv(rootDir, specification.occupations, 'occupation_id')
+  ]);
+  const applicable = (record) => record.region_id === specification.region_id
+    && record.status === 'approved';
+  return freezeDeep({
+    schema: 'rus.live_world_runtime.approved_actor_catalog.v1',
+    version: specification.version,
+    region_id: specification.region_id,
+    sources: {
+      roles: structuredClone(specification.roles),
+      occupations: structuredClone(specification.occupations)
+    },
+    roles: roles.filter(applicable),
+    occupations: occupations.filter(applicable)
+  });
+}
+
+async function readPinnedTsv(rootDir, reference, idField) {
+  try {
+    const raw = await readFile(resolve(rootDir, reference.path));
+    const digest = createHash('sha256').update(raw).digest('hex');
+    if (digest !== reference.digest) throw new Error('digest mismatch');
+    const [headerLine, ...lines] = raw.toString('utf8').replace(/^\uFEFF/u, '')
+      .split(/\r?\n/u);
+    const headers = headerLine.split('\t');
+    const rows = lines.filter(Boolean).map((line) => Object.fromEntries(
+      line.split('\t').map((value, index) => [headers[index], value])
+    ));
+    if (!headers.includes(idField)
+      || new Set(rows.map((row) => row[idField])).size !== rows.length) {
+      throw new Error('invalid actor catalog rows');
+    }
+    return rows;
+  } catch (error) {
+    throw Object.assign(new Error('Pinned actor catalog is unavailable or invalid.'), {
+      code: 'LIVE_WORLD_ACTOR_CATALOG_INVALID', status: 409, cause: error
+    });
   }
 }
 

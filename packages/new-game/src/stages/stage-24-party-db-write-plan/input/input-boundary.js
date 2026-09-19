@@ -188,13 +188,18 @@ function validateLowerDvinaTracePhase1AArtifacts(outputs, party, requestId,
       === party?.domain_catalog_pin?.catalog_digest,
     domain_closure: semantic?.domain_catalog_bundle_digest
       === result?.trace?.catalog_bundle_digest,
+    actor_closure: semantic?.actor_catalog_digest
+      === result?.trace?.actor_catalog_digest,
     checks: ['exact_world_closure', 'exact_domain_closure', 'actor_refs',
       'placements', 'resources', 'player_known']
       .every((key) => semantic?.checks?.[key] === true),
     spatial_refs: Array.isArray(semantic?.resolved_spatial_refs)
       && semantic.resolved_spatial_refs.length > 0,
     resource_refs: Array.isArray(semantic?.resolved_resource_refs)
-      && semantic.resolved_resource_refs.length > 0
+      && semantic.resolved_resource_refs.length > 0,
+    actor_refs: Array.isArray(semantic?.resolved_actor_refs)
+      && semantic.resolved_actor_refs.length
+        === (result?.immediate?.npcs?.length ?? -1) + 1
   };
   const authoredAudit = Object.values(authoredChecks).every(Boolean);
   if (semantic?.pass !== true

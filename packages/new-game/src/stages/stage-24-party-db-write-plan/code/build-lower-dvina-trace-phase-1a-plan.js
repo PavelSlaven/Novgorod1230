@@ -463,7 +463,6 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
     source_trace: sourceTrace
   });
 }
-
 function assertInput(input) {
   const result = input?.approved_pipeline_outputs?.materialization_result;
   const semantic = input?.approved_pipeline_outputs?.player_character_audit;

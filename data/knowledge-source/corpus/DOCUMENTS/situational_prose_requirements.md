@@ -293,8 +293,10 @@ Private wire сохраняет обязательные текущие факт
 с changes `{ref,text}` и uncertainties `{ref,text,status:unperformed_result_unknown}`,
 `constraints` содержит do_not_imply/allowed_tensions/style_policy.
 При любом change или uncertainty `optional_support` содержит только
-visible_scene и текущие grounded sensory_details, если они переданы. Writer выбирает
-только относящиеся к текущему beat детали; весь sensory snapshot не пересказывается.
+`visible_scene`; неизменный sensory panorama не поступает writer/auditor/repair.
+Новые относящиеся к текущему beat sensory facts должны приходить через
+`required_current_beat.visible_changes`. При отсутствии current beat scene-only wire
+сохраняет `visible_scene` и grounded descriptive sensory support.
 Static NPC/object/inventory/body arrays, known_context и snapshot metadata
 не поступают writer/auditor/repair.
 Новые существенные факты должны приходить через visible_changes. Существующие
@@ -428,9 +430,11 @@ coverage/verdict, а final audit строго проверяется по IDs
 prose wire: её вычисляет temporal owner и показывает server-owned UI projection.
 Любая придуманная narrator временная величина является unsupported fact, а
 служебная формулировка дополнительно проваливает elapsed_as_service_report.
-При current beat private wire
-допускает visible_scene + sensory_details; narrator выбирает только относящиеся
-к этому эпизоду признаки, а unrelated/all-facts dump остаётся static_context_dump.
+При current beat `optional_support` private wire допускает только `visible_scene`;
+неизменный sensory panorama не передаётся. Новые относящиеся к эпизоду sensory facts
+обязаны приходить через `required_current_beat.visible_changes`, а unrelated/all-facts
+dump остаётся static_context_dump. При отсутствии current beat scene-only wire
+сохраняет `visible_scene` и grounded descriptive sensory support.
 
 Temporal/aspect grounding не позволяет выводить длительность из действия или
 sensory sky/weather/sound. Sensory support связывает сцену. Source review требует все propositions каждого atomic

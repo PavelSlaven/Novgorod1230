@@ -41,7 +41,10 @@ NewGame транзакции; подготовленный G6 при этом н
 `materializeAuthoredStartPartyInstance` детерминированно материализует уже
 утверждённый authored-start profile: actors, relations, finite resources,
 geometry, body/time/environment и player-known facts. Функция не читает каталог,
-не пишет БД и отклоняет неподтверждённое player-known содержимое.
+не пишет БД и допускает profile только через переданные exact pinned closures:
+canonical G5/G4/template/materialization profile из world-base, item template /
+inventory / quantity / category из verified runtime catalog и approved
+player-known refs. Неизвестная ссылка отклоняется до write plan.
 
 `materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
 

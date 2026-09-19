@@ -4,18 +4,27 @@ import { assertLowerDvinaTracePublicScreen } from './lower-dvina-trace-opening.j
 import { hash, json } from './first-playable/shared.js';
 
 export function validateAuthoredStartSessionRead({ partyId, session,
-  runtimeBinding } = {}) {
+  resolveRuntimeBinding } = {}) {
   const identity = session?.stage26_result;
   const creation = identity?.creation_identity;
   const screen = session?.screen;
   const delivery = session?.delivery_attempt;
   const scenarioId = identity?.scenario_id;
+  const persistedBinding = identity?.runtime_binding;
+  const resolvedBinding = typeof resolveRuntimeBinding === 'function'
+    ? resolveRuntimeBinding(persistedBinding) : null;
+  if (!resolvedBinding) {
+    throw serverError('AUTHORED_START_RUNTIME_BINDING_MISSING',
+      'Persisted authored-start runtime binding is unavailable.',
+      { status: 409 });
+  }
   if (!session
     || identity?.schema !== 'rus.live_world_runtime.authored_start_session_identity.v1'
     || identity.party_id !== partyId
     || !scenarioId
-    || identity.runtime_binding?.catalog_id !== runtimeBinding?.catalog_id
-    || identity.runtime_binding?.revision !== runtimeBinding?.revision
+    || persistedBinding?.catalog_id !== resolvedBinding.catalog_id
+    || persistedBinding?.revision !== resolvedBinding.revision
+    || !['approved', 'deprecated'].includes(resolvedBinding.status)
     || creation?.schema !== 'rus.first_playable_public_creation_identity.v1'
     || creation.party_id !== partyId
     || creation.scenario_id !== scenarioId

@@ -37,6 +37,7 @@ export async function materializeLowerDvinaTraceParty({
   domainCatalogPinLoader,
   partyDatabaseSchema,
   worldBaseReferenceSnapshot,
+  domainCatalog = null,
   repository,
   stage25Ports,
   stage24Auditor = auditPartyDbWritePlanByCode,
@@ -61,6 +62,7 @@ export async function materializeLowerDvinaTraceParty({
     domainCatalogPinLoader,
     partyDatabaseSchema,
     worldBaseReferenceSnapshot,
+    domainCatalog,
     repository,
     stage25Ports,
     stage24Auditor,
@@ -78,7 +80,7 @@ export async function materializeLowerDvinaTraceParty({
   }
 }
 
-async function materializeAndCommit({ request, domainCatalogPinLoader, partyDatabaseSchema, worldBaseReferenceSnapshot, repository, stage25Ports, stage24Auditor, worldKnowledge, scenarioBundleLoader, materializePartyInstance, validatePlayerDossier, rootDir }) {
+async function materializeAndCommit({ request, domainCatalogPinLoader, partyDatabaseSchema, worldBaseReferenceSnapshot, domainCatalog, repository, stage25Ports, stage24Auditor, worldKnowledge, scenarioBundleLoader, materializePartyInstance, validatePlayerDossier, rootDir }) {
   if (typeof domainCatalogPinLoader !== 'function') {
     fail('TRACE_PHASE_1A_DOMAIN_CATALOG_PIN_MISSING', 'The active item/container domain catalog pin loader is required before materialization.');
   }
@@ -103,6 +105,7 @@ async function materializeAndCommit({ request, domainCatalogPinLoader, partyData
     domain_catalog_pin: domainCatalogPin,
     scenario_bundle: bundle,
     world_base_reference_snapshot: worldBaseReferenceSnapshot,
+    domain_catalog: domainCatalog,
     resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
   });
   const materialization = materializeInitialActorEquipment(

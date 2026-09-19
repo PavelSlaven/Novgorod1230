@@ -10,6 +10,8 @@ import {
   readWorldBaseReferenceSnapshot
 } from './lower-dvina-trace-phase-1b-snapshots.js';
 import { materializeAuthoredStartPartyInstance } from '@rus/materialization';
+import { createRuntimeCatalogLoader } from '@rus/runtime-catalog';
+import { createPostgresWorldBaseReader } from './world-base.js';
 export {
   readPartyDatabaseSchemaSnapshot,
   readWorldBaseReferenceSnapshot
@@ -24,6 +26,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
   initialOrdinaryScopeBinding = null,
   worldKnowledge = null,
   authoredStartResolver = null,
+  runtimeCatalogLoader = null,
   rootDir = process.cwd()
 } = {}) {
   requirePool(partyPool, 'partyPool');
@@ -48,17 +51,27 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
     async materialize(request) {
       assertLowerDvinaTraceExecutionSupport(request);
       assertRequestWorldBinding(request, release, runtimeCatalogPin);
-      const [partyDatabaseSchema, worldBaseReferenceSnapshot] =
+      const authoredProfile = await authoredStartResolver?.(
+        request.scenario_id
+      ) ?? null;
+      const catalogLoader = authoredProfile == null ? null
+        : runtimeCatalogLoader ?? createRuntimeCatalogLoader({
+          worldBaseReader: createPostgresWorldBaseReader({ pool: worldPool }),
+          supportedRuntimeContractDigests: [
+            runtimeCatalogPin.runtime_contract_digest
+          ]
+        });
+      const [partyDatabaseSchema, worldBaseReferenceSnapshot,
+        domainCatalog] =
         await Promise.all([
           readPartyDatabaseSchemaSnapshot(partyPool),
           readWorldBaseReferenceSnapshot(
             worldPool,
             request.world_compatibility
-          )
+          ),
+          catalogLoader == null ? null
+            : catalogLoader.loadApprovedItemCatalog({ pin: runtimeCatalogPin })
         ]);
-      const authoredProfile = await authoredStartResolver?.(
-        request.scenario_id
-      ) ?? null;
       return materializeLowerDvinaTraceParty({
         request,
         domainCatalogPinLoader: async (identity) => {
@@ -76,6 +89,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         },
         partyDatabaseSchema,
         worldBaseReferenceSnapshot,
+        domainCatalog,
         repository,
         stage25Ports,
         worldKnowledge,
@@ -88,11 +102,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
             }
           }),
           materializePartyInstance: materializeAuthoredStartPartyInstance,
-          validatePlayerDossier: (result) => ({
-            schema: 'rus.live_world_runtime.authored_start_player_audit.v1',
-            pass: result.validation_report?.pass === true,
-            checks: { approved_authored_start: true }
-          })
+          validatePlayerDossier: (result) => result.validation_report
         }),
         rootDir
       });

@@ -178,7 +178,7 @@ async function startNewGame({
   const scenario = String(input.scenario_id ?? '').trim()
     || (startText ? TRACE_SCENARIO_ID : '');
   const supported = scenario === TRACE_SCENARIO_ID
-    || authoredStartCatalog?.loadPublication(scenario) != null;
+    || authoredStartCatalog?.hasScenario(scenario) === true;
   if (!supported) {
     throw serverError(
       'SCENARIO_NOT_SUPPORTED',
@@ -224,7 +224,7 @@ async function startNewGame({
     repository,
     traceStartAdapter,
     publicationLoader: async (options) => {
-      const authored = authoredStartCatalog?.loadPublication(scenario);
+      const authored = await authoredStartCatalog?.loadPublication(scenario);
       return authored ?? publicationLoader(options);
     },
     activePhase1AManifestDigest,
@@ -239,7 +239,7 @@ async function validateSession({ partyId, session, authoredStartCatalog }) {
   if (session?.stage26_result?.schema
       === 'rus.live_world_runtime.authored_start_session_identity.v1') {
     return validateAuthoredStartSessionRead({ partyId, session,
-      runtimeBinding: authoredStartCatalog?.runtime_binding });
+      resolveRuntimeBinding: authoredStartCatalog?.resolveRuntimeBinding });
   }
   return validateLowerDvinaTraceSessionRead({ partyId, session });
 }

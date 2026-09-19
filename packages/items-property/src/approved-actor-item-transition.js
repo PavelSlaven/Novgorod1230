@@ -13,6 +13,34 @@ export const ACTOR_ITEM_PHYSICAL_POSITIONS = Object.freeze([
 
 const PHYSICAL_POSITIONS = new Set(ACTOR_ITEM_PHYSICAL_POSITIONS);
 
+export function validateApprovedActorItemTransitionProfile(profile) {
+  const requiredFacts = profile?.required_facts;
+  const errors = [];
+  if (profile?.schema !== 'rus.items_property.approved_actor_transition_profile.v1') {
+    errors.push('profile schema is invalid');
+  }
+  if (profile?.status !== 'approved') errors.push('profile must be approved');
+  if (profile?.owner !== '@rus/items-property') errors.push('profile owner is invalid');
+  if (!Number.isSafeInteger(profile?.version) || profile.version < 1) {
+    errors.push('profile version is invalid');
+  }
+  if (!text(profile?.transition_profile_id)) {
+    errors.push('transition_profile_id is required');
+  }
+  if (!text(profile?.applicable_instance_class)) {
+    errors.push('applicable_instance_class is required');
+  }
+  if (profile?.owner_change !== 'forbidden') {
+    errors.push('owner_change must be forbidden');
+  }
+  if (!Array.isArray(requiredFacts)
+      || requiredFacts.some((value) => !text(value))
+      || new Set(requiredFacts).size !== requiredFacts.length) {
+    errors.push('required_facts must be a unique string array');
+  }
+  return deepFreeze({ ok: errors.length === 0, errors });
+}
+
 /**
  * Plans a transition which has already been admitted by the caller. This is a
  * pure, fail-closed bridge between an approved property transition and the
@@ -25,6 +53,12 @@ export function planApprovedActorItemTransition(input = {}) {
   const destination = exactState(input.destination);
   const transition = input.approved_transition;
   if (!itemId || !source || !destination) return failed('APPROVED_TRANSITION_EXACT_STATE_REQUIRED', 'validation', { item_id: itemId || null });
+  if (transition?.schema === 'rus.items_property.approved_actor_transition_profile.v1'
+      && !validateApprovedActorItemTransitionProfile(transition).ok) {
+    return failed('APPROVED_TRANSITION_METADATA_INVALID', 'validation', {
+      item_id: itemId
+    });
+  }
   if (!transition || text(transition.transition_profile_id) === '' || transition.owner_change !== 'forbidden') return failed('APPROVED_TRANSITION_METADATA_INVALID', 'validation', { item_id: itemId });
   const requiredFacts = transition.required_facts
     ?? (transition.requires?.admission_fact
@@ -113,6 +147,37 @@ export function planApprovedActorItemTransition(input = {}) {
     derived_after: deepFreeze({ source: sourceInventory.derived, destination: destinationInventory.derived }),
     errors: []
   });
+}
+
+export function applyApprovedActorItemTransitionProposal(input = {},
+  result = {}) {
+  const expected = planApprovedActorItemTransition(input);
+  if (!expected.pass || result?.pass !== true
+      || JSON.stringify(result.proposal) !== JSON.stringify(expected.proposal)) {
+    return failed('APPROVED_TRANSITION_PROPOSAL_MISMATCH', 'validation', {
+      item_id: text(input.item_id) || null
+    });
+  }
+  const placement = expected.proposal.placement;
+  const ownership = expected.proposal.ownership.next;
+  const placementField = placement.instance_kind === 'container'
+    ? 'container_placements' : 'item_placements';
+  const key = placement.instance_kind === 'container'
+    ? 'container_id' : 'item_id';
+  const next = {
+    ...structuredClone(input),
+    [placementField]: list(input[placementField]).map((value) =>
+      value?.[key] === placement[key] ? structuredClone(placement)
+        : structuredClone(value)),
+    ownership: list(input.ownership).map((value) =>
+      value?.[key] === placement[key] ? structuredClone(ownership)
+        : structuredClone(value))
+  };
+  delete next.approved_transition;
+  delete next.approved_facts;
+  delete next.source;
+  delete next.destination;
+  return deepFreeze({ pass: true, state: next, errors: [] });
 }
 
 function validateExactPolicyState({

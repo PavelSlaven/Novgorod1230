@@ -61,7 +61,7 @@ export function mergeKnowledgeFacts(current = [], updates = []) {
   return deepFreeze([...map.values()].sort((left, right) => text(left.id).localeCompare(text(right.id), 'en')));
 }
 
-export function validateMemoryFact(fact = {}) {
+function validateMemoryFact(fact = {}) {
   const errors = [];
   if (!text(fact.id)) errors.push('memory fact id is required');
   if (!text(fact.type)) errors.push('memory fact type is required');
@@ -70,6 +70,22 @@ export function validateMemoryFact(fact = {}) {
   if (detectHiddenLeaks(fact).length) errors.push('memory fact contains hidden data');
   return { ok:errors.length === 0, errors };
 }
+
+function selectBoundedActorContext(records = [], { limit = 24 } = {}) {
+  if (!Array.isArray(records) || !Number.isSafeInteger(limit) || limit < 1) {
+    throw new TypeError('Actor context records and a positive limit are required.');
+  }
+  if (records.length <= limit) return deepFreeze(structuredClone(records));
+  const selected = new Set(records.map((record, index) =>
+    record?.knowledge_status === 'obligation' ? index : null)
+    .filter((index) => index !== null).slice(0, limit));
+  selected.add(0);
+  for (let index = records.length - 1;
+    index >= 0 && selected.size < limit; index -= 1) selected.add(index);
+  return deepFreeze([...selected].sort((left, right) => left - right)
+    .slice(0, limit).map((index) => structuredClone(records[index])));
+}
+export { selectBoundedActorContext, validateMemoryFact };
 
 export function buildSafeNarratorPackage(visible = {}) {
   const safe = stripHiddenForNarrator(visible);

@@ -27,7 +27,11 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 профиль смены holder/controller; `planApprovedActorItemTransition` строит
 fail-closed proposal, а `applyApprovedActorItemTransitionProposal` применяет
 только заново подтверждённый exact proposal к pure working state. Все три
-сохраняют owner и не выполняют persistence.
+сохраняют owner и не выполняют persistence. Для нового общего профиля planner
+до RNG проверяет actor-relative attempt admission: actor участвует в переходе,
+совпадает committed scope, предмет действительно воспринят и его исходное
+physical position входит в разрешённый класс. Consent и legal owner этой
+физической проверкой не подменяются.
 
 - `normalizeItem`
 - `validateItem`

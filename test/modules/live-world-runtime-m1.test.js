@@ -5,7 +5,6 @@ import {
   computeSpatialV3CanonicalDigest,
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
-import { executeCheck } from '@rus/checks-rng';
 import { stateModifier, validateBodyState } from '@rus/body-state';
 import {
   applyApprovedActorItemTransitionProposal,
@@ -16,12 +15,18 @@ import {
   buildNpcActionDecisionRequestFromSnapshots,
   buildNpcDecisionSignal,
   createNpcRoutineState,
+  diagnoseNpcStepPlan,
   evaluateNpcDecisionSignals,
   proposeNpcRoutineTransition,
   validateNpcActionDecisionRequest,
-  validateNpcRoutineProfile
+  validateNpcRoutineProfile,
+  validateNpcStepPlan
 } from '@rus/npc-runtime';
-import { requestNpcSemanticDecision } from '@rus/turn';
+import {
+  createTurnStepExecutionRegistry,
+  executeTurnStepActorStep,
+  requestNpcSemanticDecision
+} from '@rus/turn';
 import { resolveSpatialV3PerceptionKnowledge } from
   '@rus/turn/spatial-v3-perception-reaction-cycle';
 
@@ -171,7 +176,7 @@ function perceptionRequest({ perceptionId, observerId, eventId,
 }
 
 function transitionInput({ profileSet, itemId, templateId, ownerId, holderId,
-  thiefId, reachable = true } = {}) {
+  thiefId, perceptionResult, reachable = true } = {}) {
   const sourcePosition = reachable ? 'worn_quick' : 'equipped';
   return {
     party_id: 'm1-party', actor_id: thiefId,
@@ -190,13 +195,129 @@ function transitionInput({ profileSet, itemId, templateId, ownerId, holderId,
     source: { actor_id: holderId, actor_kind: 'npc',
       controller_actor_id: holderId, physical_position: sourcePosition,
       ...(reachable ? {} : { equipment_slot_category_id: 'under_cloak' }),
-      accessibility: reachable ? 'quick' : 'unavailable' },
+      accessibility: 'quick' },
     destination: { actor_id: thiefId, actor_kind: 'npc',
       controller_actor_id: thiefId, physical_position: 'hands',
       accessibility: 'immediate' },
+    attempting_actor_id: thiefId,
+    attempting_actor_scope_ref: 'market-passage',
+    source_scope_ref: 'market-passage',
+    perceived_item_refs: [itemId],
+    attempt_perception: {
+      perception_id: perceptionResult.perception_id,
+      perceiver_ref: structuredClone(perceptionResult.perceiver_ref),
+      result: perceptionResult.result
+    },
     approved_transition: profileSet.profiles.property_transition,
     approved_facts: [], item_id: itemId
   };
+}
+
+function activityOperation(actorId, itemId) {
+  return { op: 'request_activity', actor_ref: actorId,
+    activity_kind: 'other', target_refs: [itemId],
+    description: 'Попытаться взять физически доступный предмет.' };
+}
+
+function genericCheckPlan(request, operation) {
+  const outcome = (apply) => ({
+    goal_result: apply ? 'achieved' : 'not_achieved',
+    additional_activity: null,
+    operations: apply ? [operation] : []
+  });
+  return {
+    schema: 'npc_step_plan_v1', request_id: request.request_id,
+    root_turn_id: request.root_turn_id, boundary_id: request.boundary_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    decision_index: request.decision_index, npc_ref: request.npc_ref,
+    interpretation: { npc_goal: 'завладеть предметом',
+      grounded_attempt: 'попытаться взять физически доступный предмет',
+      adaptation: 'literal' },
+    resolution: 'generic_check', goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [],
+    check: { purpose: 'взять предмет, не дав владельцу помешать',
+      attribute_ref: 'agility', skill_ref: 'sleight',
+      difficulty_id: 'ordinary', outcomes: {
+        clean_success: outcome(true), success: outcome(true),
+        success_with_cost: outcome(false),
+        failure_with_consequence: outcome(false),
+        severe_failure: outcome(false)
+      } },
+    reason_code: 'opportunity',
+    reason: 'Предмет замечен и кажется физически достижимым.'
+  };
+}
+
+function actorStepRequest(actorId, itemId) {
+  return {
+    request_id: `m1-${actorId}-${itemId}`,
+    root_turn_id: `m1-turn-${actorId}-${itemId}`,
+    boundary_id: `m1-boundary-${actorId}-${itemId}`,
+    committed_state_version: 1, working_revision: 0,
+    decision_index: 1, npc_ref: actorId,
+    decision_scope: { operation_contract: { request_activity: {
+      allowed: [{ activity_kind: 'other', target_refs: [itemId] }]
+    } } }
+  };
+}
+
+async function executeItemAttempt({ plan, request, transition, randomSource }) {
+  let preflight = null;
+  let applyCalls = 0;
+  const registry = createTurnStepExecutionRegistry({
+    domain: { request_activity: async ({ operation, working_projection,
+      check_result: checkResult }) => {
+      assert.deepEqual(operation, activityOperation(
+        transition.attempting_actor_id, transition.item_id));
+      assert.equal(checkResult?.outcome.success, true);
+      const applied = applyApprovedActorItemTransitionProposal(
+        transition, preflight);
+      assert.equal(applied.pass, true, JSON.stringify(applied.errors));
+      applyCalls += 1;
+      return { working_projection: { ...working_projection,
+        item_transition_state: applied.state },
+      summary: 'Предмет перешёл к новому держателю.' };
+    } },
+    applySemanticActivity: async ({ working_projection: projection }) => ({
+      working_projection: projection, summary: 'Попытка заняла короткое время.'
+    }),
+    operationContract: request.decision_scope.operation_contract
+  });
+  const profileDigest = digest(transition.approved_transition)
+    .replace(/^sha256:/u, '');
+  const result = await executeTurnStepActorStep({
+    plan, request: { ...request, step_index: request.decision_index,
+      actor: { actor_id: transition.attempting_actor_id,
+        attributes: { agility: { value: 14 } },
+        skills: { sleight: { bonus: 2 } },
+        body: { health: 100, satiety: 70, energy: 80,
+          active_conditions: [] } } },
+    workingProjection: {}, preparedChainContext: null,
+    preparedOrdinaryPlan: null, preparedActionProductionPlans: [],
+    registry,
+    ports: { randomSource,
+      resolveCheckContext: async () => {
+        preflight = planApprovedActorItemTransition(transition);
+        if (!preflight.pass) throw Object.assign(
+          new Error(preflight.errors[0].code), preflight.errors[0]);
+        return { attribute_value: 14, skill_bonus: 2,
+          state_modifier: stateModifier({ health: 100, satiety: 70,
+            energy: 80 }),
+          check_policy_ref: { entity_kind: 'action_contract',
+            entity_id: 'm1-item-attempt-check', authoring_version: '1' },
+          consequence_policy_ref: { entity_kind: 'action_contract',
+            entity_id: 'm1-item-attempt-consequence', authoring_version: '1' },
+          policy_profile_ref:
+            transition.approved_transition.transition_profile_id,
+          policy_profile_pin: { artifact_id:
+              transition.approved_transition.transition_profile_id,
+            revision: transition.approved_transition.version,
+            digest: profileDigest } };
+      } }
+  });
+  return { result, applyCalls };
 }
 
 test('M1 public exports execute a portable causal holder-transfer chain',
@@ -286,7 +407,10 @@ test('M1 public exports execute a portable causal holder-transfer chain',
         instance_id: 'thief', profile_level: 'scene',
         identity_state: { canonical_name: 'Гаврила',
           hidden_secret: 'owner-keeps-silver-at-home' },
-        social_role: { role_ref: 'market-helper' }, attributes: [], skills: [],
+        social_role: { role_ref: 'market-helper' },
+        attributes: [{ attribute_ref: 'agility', label: 'Ловкость',
+          value: 14 }],
+        skills: [{ skill_ref: 'sleight', label: 'Ловкость рук', value: 2 }],
         machine_state: {}
       },
       current_activity_snapshot: routineTransition.activity_after,
@@ -305,54 +429,40 @@ test('M1 public exports execute a portable causal holder-transfer chain',
       memory_snapshot: { recent_events: [] },
       resolved_signals: [signal],
       operation_contract: { request_activity: {
-        activity_refs: [temporalProfiles.activity.payload.activity_profile_id]
+        allowed: [{ activity_kind: 'other',
+          target_refs: ['pouch'] }]
       } }
     });
     assert.equal(validateNpcActionDecisionRequest(request), true);
     assert.doesNotMatch(JSON.stringify(request), /owner-keeps-silver/u);
     assert.deepEqual(request.npc.available_resources, []);
 
+    const forcedPlan = genericCheckPlan(request,
+      activityOperation('thief', 'pouch'));
+    assert.equal(validateNpcStepPlan(forcedPlan, request), true,
+      JSON.stringify(diagnoseNpcStepPlan(forcedPlan, request)));
+    const unrelatedPlan = genericCheckPlan(request, {
+      ...activityOperation('thief', 'pouch'),
+      activity_kind: 'work', target_refs: ['hidden-house']
+    });
+    assert.equal(validateNpcStepPlan(unrelatedPlan, request), false);
     const forcedDecision = await requestNpcSemanticDecision({
       boundary: evaluated.boundary,
       request,
-      semanticModel: async () => ({
-        schema: 'npc_step_plan_v1', request_id: request.request_id,
-        root_turn_id: request.root_turn_id,
-        boundary_id: request.boundary_id,
-        committed_state_version: request.committed_state_version,
-        working_revision: request.working_revision,
-        decision_index: request.decision_index, npc_ref: request.npc_ref,
-        interpretation: { npc_goal: 'завладеть кошелём',
-          grounded_attempt: 'попытаться незаметно снять доступный кошель',
-          adaptation: 'literal' },
-        resolution: 'domain_request', goal_result: 'pending',
-        activity: { owner: 'domain', duration_class: null, effort: null },
-        operations: [{ op: 'request_activity', actor_ref: request.npc_ref,
-          activity_kind: 'work', target_refs: ['pouch'],
-          description: 'Попытаться снять доступный кошель.' }],
-        check: null, reason_code: 'opportunity',
-        reason: 'Кошель доступен и привлёк внимание.'
-      }),
-      revalidateStateVersion: async () => 1,
-      validatePlan: () => true
+      semanticModel: async () => forcedPlan,
+      revalidateStateVersion: async () => 1
     });
     assert.equal(forcedDecision.status, 'planned');
-    assert.equal(forcedDecision.plan.interpretation.grounded_attempt,
-      'попытаться незаметно снять доступный кошель');
 
     const input = transitionInput({ profileSet, itemId: 'pouch',
       templateId: 'small-personal-item', ownerId: 'owner', holderId: 'owner',
-      thiefId: 'thief' });
-    const preflight = planApprovedActorItemTransition(input);
-    assert.equal(preflight.pass, true, JSON.stringify(preflight.errors));
-    const check = executeCheck({ check_id: 'm1-pouch-reach', difficulty: 10,
-      attribute_value: 14, skill_bonus: 2,
-      state_modifier: stateModifier({ health: 100, satiety: 70, energy: 80 })
-    }, { next: () => 0.75 });
-    assert.equal(check.outcome.success, true);
-    const applied = applyApprovedActorItemTransitionProposal(input, preflight);
-    assert.equal(applied.pass, true, JSON.stringify(applied.errors));
-    const after = applied.state;
+      thiefId: 'thief',
+      perceptionResult: initialPerception.perception_result });
+    const executed = await executeItemAttempt({ plan: forcedDecision.plan,
+      request, transition: input, randomSource: { next: () => 0.75 } });
+    assert.equal(executed.result.checkResult.outcome.success, true);
+    assert.equal(executed.applyCalls, 1);
+    const after = executed.result.workingProjection.item_transition_state;
     assert.equal(after.item_placements[0].holder_npc_id, 'thief');
     assert.equal(after.ownership[0].owner_npc_id, 'owner');
     assert.equal(after.ownership[0].controller_npc_id, 'thief');
@@ -396,22 +506,30 @@ test('M1 public exports execute a portable causal holder-transfer chain',
 test('M1 preflight blocks unreachable target before RNG and failure keeps state',
   async () => {
     const profileSet = await profiles();
+    const attemptPerception = resolveSpatialV3PerceptionKnowledge({
+      perception_request: perceptionRequest({
+        perceptionId: 'apprentice-sees-brooch', observerId: 'apprentice',
+        eventId: 'merchant-shows-brooch' }).request,
+      knowledge_state_before: { fact_refs: [], hypothesis_refs: [],
+        state_version: 1 }
+    }).perception_result;
     const inaccessible = transitionInput({ profileSet, itemId: 'brooch',
       templateId: 'small-personal-item', ownerId: 'merchant',
-      holderId: 'merchant', thiefId: 'apprentice', reachable: false });
+      holderId: 'merchant', thiefId: 'apprentice',
+      perceptionResult: attemptPerception, reachable: false });
     let rolls = 0;
-    const preflight = planApprovedActorItemTransition(inaccessible);
-    if (preflight.pass) executeCheck({ difficulty: 10 }, {
-      next() { rolls += 1; return 0.99; }
-    });
-    assert.equal(preflight.pass, false);
-    assert.equal(preflight.errors[0].code,
-      'APPROVED_TRANSITION_SOURCE_ACCESS_MISMATCH');
+    const request = actorStepRequest('apprentice', 'brooch');
+    const plan = genericCheckPlan(request,
+      activityOperation('apprentice', 'brooch'));
+    await assert.rejects(executeItemAttempt({ plan, request,
+      transition: inaccessible, randomSource: {
+        next() { rolls += 1; return 0.99; }
+      } }), ({ code }) =>
+      code === 'APPROVED_TRANSITION_ATTEMPT_ACCESS_DENIED');
     assert.equal(rolls, 0);
 
     const wrongClass = structuredClone(inaccessible);
     wrongClass.items[0].instance_class = 'bulky_trade_goods';
-    wrongClass.source.accessibility = 'quick';
     wrongClass.source.physical_position = 'worn_quick';
     delete wrongClass.source.equipment_slot_category_id;
     wrongClass.item_placements[0].physical_position = 'worn_quick';
@@ -422,16 +540,23 @@ test('M1 preflight blocks unreachable target before RNG and failure keeps state'
 
     const reachable = transitionInput({ profileSet, itemId: 'brooch',
       templateId: 'small-personal-item', ownerId: 'merchant',
-      holderId: 'merchant', thiefId: 'apprentice' });
+      holderId: 'merchant', thiefId: 'apprentice',
+      perceptionResult: attemptPerception });
     const validPlan = planApprovedActorItemTransition(reachable);
     assert.equal(validPlan.pass, true);
     const forged = structuredClone(validPlan);
     forged.proposal.ownership.next.owner_npc_id = 'apprentice';
     assert.equal(applyApprovedActorItemTransitionProposal(
       reachable, forged).pass, false);
-    const failedCheck = executeCheck({ difficulty: 20, attribute_value: 8 },
-      { next: () => 0 });
-    assert.equal(failedCheck.outcome.success, false);
+    const failed = await executeItemAttempt({ plan, request,
+      transition: reachable, randomSource: {
+        next() { rolls += 1; return 0; }
+      } });
+    assert.equal(failed.result.checkResult.outcome.success, false);
+    assert.equal(failed.applyCalls, 0);
+    assert.equal(failed.result.workingProjection.item_transition_state,
+      undefined);
+    assert.equal(rolls, 1);
     assert.equal(reachable.item_placements[0].holder_npc_id, 'merchant');
     assert.equal(reachable.ownership[0].owner_npc_id, 'merchant');
   });

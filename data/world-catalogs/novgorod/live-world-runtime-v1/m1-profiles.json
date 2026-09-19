@@ -16,7 +16,12 @@
       "owner": "@rus/items-property",
       "applicable_instance_class": "small_personal_item",
       "owner_change": "forbidden",
-      "required_facts": []
+      "required_facts": [],
+      "attempt_access": {
+        "require_same_scope": true,
+        "require_perception": true,
+        "source_physical_positions": ["hands", "worn_quick"]
+      }
     },
     "npc_schedule": {
       "schema": "npc_routine_profile_v1",

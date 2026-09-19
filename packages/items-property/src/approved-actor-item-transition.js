@@ -15,6 +15,7 @@ const PHYSICAL_POSITIONS = new Set(ACTOR_ITEM_PHYSICAL_POSITIONS);
 
 export function validateApprovedActorItemTransitionProfile(profile) {
   const requiredFacts = profile?.required_facts;
+  const attemptAccess = profile?.attempt_access;
   const errors = [];
   if (profile?.schema !== 'rus.items_property.approved_actor_transition_profile.v1') {
     errors.push('profile schema is invalid');
@@ -37,6 +38,17 @@ export function validateApprovedActorItemTransitionProfile(profile) {
       || requiredFacts.some((value) => !text(value))
       || new Set(requiredFacts).size !== requiredFacts.length) {
     errors.push('required_facts must be a unique string array');
+  }
+  if (!plain(attemptAccess)
+      || attemptAccess.require_same_scope !== true
+      || attemptAccess.require_perception !== true
+      || !Array.isArray(attemptAccess.source_physical_positions)
+      || attemptAccess.source_physical_positions.length === 0
+      || new Set(attemptAccess.source_physical_positions).size
+        !== attemptAccess.source_physical_positions.length
+      || attemptAccess.source_physical_positions.some((value) =>
+        !PHYSICAL_POSITIONS.has(value))) {
+    errors.push('attempt_access must define exact physical admission');
   }
   return deepFreeze({ ok: errors.length === 0, errors });
 }
@@ -79,6 +91,12 @@ export function planApprovedActorItemTransition(input = {}) {
       'admission', { item_id: itemId,
         expected: transition.applicable_instance_class,
         actual: item.instance_class ?? null });
+  }
+  if (transition.schema === 'rus.items_property.approved_actor_transition_profile.v1'
+      && !approvedAttemptAccess(input, placement, transition)) {
+    return failed('APPROVED_TRANSITION_ATTEMPT_ACCESS_DENIED',
+      'access', { item_id: itemId,
+        actor_id: text(input.attempting_actor_id) || null });
   }
   const exactPolicy = validateExactPolicyState({
     transition, input, item, source, destination
@@ -272,6 +290,25 @@ function approvedFactsPresent(required, actual) {
   const facts = new Set(list(actual).map(text).filter(Boolean));
   return list(required).every((fact) => facts.has(text(fact)));
 }
+function approvedAttemptAccess(input, placement, transition) {
+  const actorId = text(input.attempting_actor_id);
+  const actorScope = text(input.attempting_actor_scope_ref);
+  const sourceScope = text(input.source_scope_ref);
+  const perceived = list(input.perceived_item_refs).map(text);
+  const perception = input.attempt_perception;
+  return actorId
+    && [input.source?.actor_id, input.destination?.actor_id].includes(actorId)
+    && (!transition.attempt_access.require_same_scope
+      || actorScope && actorScope === sourceScope)
+    && (!transition.attempt_access.require_perception
+      || perceived.includes(text(input.item_id))
+        && text(perception?.perception_id)
+        && perception?.perceiver_ref?.entity_kind === 'npc'
+        && perception.perceiver_ref.entity_id === actorId
+        && ['recognized', 'perceived_partial'].includes(perception.result))
+    && transition.attempt_access.source_physical_positions.includes(
+      placement.physical_position);
+}
 function validateActorInventory(input, actorId) {
   const scoped = { ...input, actor_id: actorId };
   const mass = calculateInventoryMass(scoped);
@@ -361,3 +398,6 @@ function failedFrom(error) { return deepFreeze({ pass: false, errors: [error] })
 function issue(code, category, details = {}) { return deepFreeze({ code, category, retryable: false, message: code, details: deepFreeze(structuredClone(details)) }); }
 function list(value) { return Array.isArray(value) ? value : []; }
 function text(value) { return String(value ?? '').trim(); }
+function plain(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value);
+}

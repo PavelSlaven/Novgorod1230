@@ -19,6 +19,9 @@ export function turnStepRepairSpecificInstructions(repairContext, request) {
   if (codes.has('continuation_progress')) instructions.push(
     `Current step repair: plan only request.remaining_intent=${JSON.stringify(request.remaining_intent)}. root_player_action and completed_steps are history, not executable input. Never repeat a completed step in grounded_attempt or continuation. The repaired step must perform the earliest event in this exact remaining_intent; continuation is null when that event exhausts it, otherwise it contains only the exact uncovered suffix.`
   );
+  if (codes.has('elapsed_time_grounding')) instructions.push(
+    'Required elapsed-time repair: preserve activity.requested_duration_minutes exactly, but remove every elapsed duration phrase from interpretation.grounded_attempt. grounded_attempt names only the performed activity because code-owned UI presents exact elapsed time. Do not change the action, duration number, result, activity class, continuation or adaptation.'
+  );
   if (repairContext?.structural_errors?.some(({ path, code }) =>
     path === '$.utterance' && code === 'operation_semantic_grounding')) {
     instructions.push(

@@ -98,6 +98,19 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
     }
     if (audited.length === 0) {
       if (!directSemanticActivity(plan, request)) return true;
+      if (plan.activity?.requested_duration_minutes != null
+          && containsElapsedDuration(
+            plan.interpretation?.grounded_attempt)) {
+        throw serverError('TURN_STEP_PLAN_INVALID',
+          'Performed activity wording must leave elapsed time to the code-owned UI.', {
+            details: { errors: [{
+              path: '$.interpretation.grounded_attempt',
+              rule: 'elapsed_time_grounding',
+              code: 'elapsed_time_grounding',
+              message: 'remove elapsed duration wording while preserving the performed activity'
+            }] }
+          });
+      }
       const response = await roleRunner.run({
         scope: 'turn_runtime', role_id: 'turn_step_grounding_auditor',
         request_identity: request.request_id,
@@ -280,4 +293,10 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
         response.output.concerns.map(({ kind }) =>
           concern(kind, audited, resolved)) } });
   };
+}
+
+function containsElapsedDuration(value) {
+  return typeof value === 'string'
+    && /(?:^|[\s,.;:!?])(?:\d+\s*)?(?:минут(?:а|ы)?|час(?:а|ов)?|сут(?:ки|ок)|дн(?:я|ей)|недел(?:ю|и|ь))(?=$|[\s,.;:!?])/iu
+      .test(value);
 }

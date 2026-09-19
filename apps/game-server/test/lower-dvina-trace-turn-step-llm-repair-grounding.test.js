@@ -9,6 +9,45 @@ import { createLowerDvinaTraceTurnStepSemanticGroundingValidator } from
 import { output, request } from
   './lower-dvina-trace-turn-step-llm-test-helpers.js';
 
+test('explicit duration is removed from performed prose before narration',
+  async () => {
+    const intent = 'Сижу здесь двадцать минут.';
+    const input = request({ root_player_action: intent,
+      remaining_intent: intent });
+    const roles = [];
+    const roleRunner = { async run(call) {
+      roles.push(call.role_id);
+      if (call.role_id === 'turn_step_planner') return { output: {
+        ...output(), interpretation: { player_goal: intent,
+          grounded_attempt: intent, adaptation: 'literal' },
+        goal_result: 'achieved', activity: { owner: 'semantic',
+          duration_class: 'extended', effort: 'none',
+          requested_duration_minutes: 20 }
+      } };
+      if (call.role_id === 'turn_step_planner_repair') {
+        assert.match(call.messages[0].content,
+          /Required elapsed-time repair:[\s\S]*code-owned UI/u);
+        return { output: { ...output(), interpretation: {
+          player_goal: intent, grounded_attempt: 'Сижу здесь.',
+          adaptation: 'literal' }, goal_result: 'achieved',
+          activity: { owner: 'semantic', duration_class: 'extended',
+            effort: 'none', requested_duration_minutes: 20 } } };
+      }
+      assert.equal(call.role_id, 'turn_step_grounding_auditor');
+      return { output: { pass: true, concerns: [] } };
+    } };
+    const turnStepModel = createLowerDvinaTraceTurnStepModel({ roleRunner });
+    const semanticPlanValidator =
+      createLowerDvinaTraceTurnStepSemanticGroundingValidator({ roleRunner });
+    const result = await requestTurnStepPlanWithRepair({ request: input,
+      turnStepModel, semanticPlanValidator });
+    assert.equal(result.repaired, true);
+    assert.equal(result.plan.interpretation.grounded_attempt, 'Сижу здесь.');
+    assert.equal(result.plan.activity.requested_duration_minutes, 20);
+    assert.deepEqual(roles, ['turn_step_planner',
+      'turn_step_planner_repair', 'turn_step_grounding_auditor']);
+  });
+
 test('copied authored discovery is semantically rejected before its one repair',
   async () => {
     const intent = 'Осмотреть лёд в поисках безопасного места для саней.';

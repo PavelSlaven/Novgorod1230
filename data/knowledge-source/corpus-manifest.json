@@ -71,8 +71,8 @@
       "document_id": "contract-index",
       "canonical_path": "corpus/DOCUMENTS/CONTRACT_INDEX.md",
       "file_name": "CONTRACT_INDEX.md",
-      "sha256": "43ed4d452ecb26333c0f9a2e72965bc336ba55363c1b2e7f7af90521e07d153f",
-      "bytes": 27741,
+      "sha256": "b5bf21f3e56efe6e82e80583cb24c503a45c8ba158d8cad781cf074e558d4c8a",
+      "bytes": 27943,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -307,8 +307,8 @@
       "file_name": "situational_prose_requirements.md",
       "status": "active",
       "provenance_mode": "native",
-      "sha256": "1642317fc720c294b24b416808094aa510292360bc01128948d208dea662ddaf",
-      "bytes": 64005
+      "sha256": "60f2693e5fc64569252945735c124bae84f3af8b2d0e48f7464300dbb381b9ad",
+      "bytes": 64400
     },
     {
       "document_id": "spatial-architecture-standard-g0-g6",

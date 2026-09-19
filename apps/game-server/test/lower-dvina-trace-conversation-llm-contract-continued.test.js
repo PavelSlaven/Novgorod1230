@@ -268,6 +268,35 @@ test('player promise candidate is validator-valid with target from safe context'
     /offer_conditional_protection[\s\S]*actually offers the target protection[\s\S]*different proposal, bargain, cooperation/u);
 });
 
+test('player assembly canonicalizes one exact operation-contract value', () => {
+  const request = playerRequest({ target_npc_ref: ref('npc', 'npc-1'),
+    available_check: { attribute_ref: 'influence',
+      skill_ref: 'communication', difficulty_band: 'hard' } });
+  request.operation_contract = { offer_conditional_protection: {
+    owner: '@rus/social-law', policy_ref: 'promise-policy'
+  } };
+  const semantic = playerPlan(request, {
+    speech: { ...playerPlan(request).speech, dominant_act: 'offer' },
+    resolution: 'check_required',
+    supporting_operations: [{ owner: '@rus/social-law',
+      policy_ref: 'promise-policy' }],
+    check: { purpose: 'предложить защиту за сдачу',
+      ...request.player_safe_context.available_check, outcomes: outcomes() }
+  });
+
+  const assembled = assemblePlayerConversationPlan(semantic, request);
+  assert.deepEqual(assembled.supporting_operations,
+    [{ op: 'offer_conditional_protection' }]);
+  assert.equal(validatePlayerConversationContributionPlan(
+    assembled, request), true);
+
+  request.operation_contract.emit_interaction = {
+    owner: '@rus/social-law', policy_ref: 'promise-policy'
+  };
+  assert.deepEqual(assemblePlayerConversationPlan(semantic, request)
+    .supporting_operations, semantic.supporting_operations);
+});
+
 test('player required candidate is omitted for target outside allowed actors', () => {
   const request = playerRequest({
     required_resolution: 'check_required',

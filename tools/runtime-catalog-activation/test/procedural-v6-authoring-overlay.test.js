@@ -3,7 +3,8 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { validateProceduralSceneAuthoringCandidate } from '@rus/materialization';
 import { buildProceduralV6ApprovalRequest,
-  generateProceduralV6AuthoringOverlay } from
+  buildProceduralV6DryingAttestation, generateProceduralV6AuthoringOverlay,
+  validateVerificationReviewRef } from
   '../../../scripts/generate-procedural-v6-authoring-overlay.mjs';
 
 const root = new URL('../../../', import.meta.url).pathname.replace(/^\/(.:)/u, '$1');
@@ -12,7 +13,7 @@ test('route-free candidate and approval request generation is byte-stable', asyn
   const first = await generateProceduralV6AuthoringOverlay(root);
   const second = await generateProceduralV6AuthoringOverlay(root);
   assert.equal(JSON.stringify(first), JSON.stringify(second));
-  assert.equal(first.status, 'candidate_approval_pending');
+  assert.equal(first.status, 'partially_authoring_approved');
   assert.equal(first.import_authorized, false);
   assert.equal(first.activation_authorized, false);
   assert.equal(first.activation_request, null);
@@ -24,7 +25,8 @@ test('route-free candidate and approval request generation is byte-stable', asyn
   assert.equal(request.authoring_approval, 'pending_independent_review');
   assert.equal(request.import_authorized, false);
   assert.equal(request.activation_authorized, false);
-  assert.equal(request.rows.length, 3);
+  assert.equal(request.rows.length, 2);
+  assert.equal(request.approved_rows.length, 1);
   assert.ok(request.rows.every(({ claims }) => claims.length > 0
     && claims.every(({ claim_ref: ref, evidence_refs: evidence }) =>
       ref.startsWith('claim:') && evidence.length > 0)));
@@ -44,12 +46,19 @@ test('candidate rows use exact v6 closure and approved evidence limits', async (
   const natural = overlay.candidates.find(({ family }) =>
     family === 'natural_shore');
   assert.deepEqual(natural.forbidden_implications,
-    ['landing', 'access', 'safety', 'stock', 'wreck']);
+    ['landing', 'access', 'safety', 'stock', 'wreck',
+      'local_taxon_assertion']);
+  assert.deepEqual(natural.materialization_limits, ['no_local_willow',
+    'no_local_tree', 'no_local_stand', 'no_local_stock', 'no_local_entity',
+    'no_outcome']);
   assert.ok(natural.evidence_claims.some(({ claim_ref: ref }) =>
     ref === 'claim:white-willow-depends-on-moist-lit-riparian-habitat'));
   assert.deepEqual(natural.evidence_claims.map(({ source_locator: line }) => line),
     [35, 37, 38, 44]);
   assert.equal(natural.evidence_claims[3].use_scope, 'ecology_only');
+  assert.equal(natural.evidence_claims[3].local_presence_authorized, false);
+  assert.equal(natural.evidence_claims[3].resource_materialization_authorized,
+    false);
   const fishing = overlay.candidates.find(({ family }) =>
     family === 'inland_fishing_worksite');
   assert.deepEqual(fishing.forbidden_implications,
@@ -65,6 +74,12 @@ test('candidate rows use exact v6 closure and approved evidence limits', async (
     .includes('evidence:population-fishing-221'));
   assert.ok(fishing.evidence_claims.flatMap(({ evidence_refs: refs }) => refs)
     .includes('evidence:population-fishing-222'));
+  const fishingLedgerClaim = fishing.evidence_claims.find(({ claim_ref: ref }) =>
+    ref === 'claim:medieval-novgorod-fishing-attests-major-occupation-food-context');
+  assert.equal(fishingLedgerClaim.review_ref,
+    'research/verification-environment-ecology.md');
+  assert.match(fishingLedgerClaim.limits,
+    /no local entity, inventory, ownership, access, exact date, weather or outcome/u);
 });
 
 test('drying workspace stays process-owned and old draft rows are excluded', async () => {
@@ -107,7 +122,7 @@ test('candidate validator rejects routes, invented mechanics and pin drift', asy
   { code: 'PROCEDURAL_SCENE_PROFILE_COMPILER_INVALID' });
 });
 
-test('tracked artifacts contain request only and no runtime import/event', async () => {
+test('tracked row attestation authorizes only drying authoring, not import/event', async () => {
   const directory = new URL(
     '../../../data/world-catalogs/novgorod/procedural-scene-v2/', import.meta.url);
   const request = JSON.parse(await readFile(new URL('approval-request.json', directory)));
@@ -116,6 +131,64 @@ test('tracked artifacts contain request only and no runtime import/event', async
   assert.equal(request.activation_authorized, false);
   assert.equal(request.activation_request, null);
   assert.doesNotMatch(JSON.stringify(request), /"(?:import_id|activation_event)"/u);
-  await assert.rejects(() => readFile(new URL('approval-attestation.json', directory)),
-    { code: 'ENOENT' });
+  const attestation = JSON.parse(await readFile(new URL(
+    'drying-storage-workspace-approval-attestation.json', directory)));
+  assert.equal(attestation.candidate_ref,
+    'novgorod_drying_storage_workspace_v3@1');
+  assert.equal(attestation.candidate_source_commit_sha,
+    'e5f6abad33d1bf54cf71622434afc3f08dfad0bf');
+  assert.equal(attestation.candidate_digest,
+    '0bfe111d4cd73e480a88c11639b3a45dc785bad2b83040aa49a8a95955cd31d5');
+  assert.equal(attestation.reviewed_overlay_digest,
+    'ce72077addc4392426a346f575fe5c01b5a0b8c37b0518af1814ef3020797b03');
+  assert.match(attestation.rebound_candidate_digest, /^[0-9a-f]{64}$/u);
+  assert.equal(attestation.authoring_approved, true);
+  assert.equal(attestation.import_authorized, false);
+  assert.equal(attestation.activation_authorized, false);
+  assert.equal(attestation.activation_request, null);
+  assert.deepEqual(attestation.data_gap_codes, [
+    'FUNCTIONAL_TOOL_MAPPING_MISSING', 'FUNCTIONAL_STORAGE_MAPPING_MISSING',
+    'FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING',
+    'FUNCTIONAL_CONTAINER_MAPPING_MISSING']);
+  assert.deepEqual(buildProceduralV6DryingAttestation(
+    await generateProceduralV6AuthoringOverlay(root)), attestation);
+});
+
+test('ledger review refs exist and candidate limits equal ledger limits', async () => {
+  const overlay = await generateProceduralV6AuthoringOverlay(root);
+  const ledger = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/verification-ledger.json',
+    import.meta.url)));
+  const expected = new Map(ledger.verifications.map((row) =>
+    [row.claim_ref, row]));
+  for (const ref of [
+    'claim:white-willow-depends-on-moist-lit-riparian-habitat',
+    'claim:medieval-novgorod-fishing-attests-major-occupation-food-context']) {
+    const actual = overlay.candidates.flatMap(({ evidence_claims: claims }) =>
+      claims).find(({ claim_ref: claimRef }) => claimRef === ref);
+    assert.equal(actual.review_ref, expected.get(ref).review_ref);
+    assert.equal(actual.limits, expected.get(ref).limits);
+    assert.equal(actual.verification_ref, expected.get(ref).verification_ref);
+    assert.equal(await validateVerificationReviewRef(root, actual.review_ref), true);
+  }
+  await assert.rejects(() => validateVerificationReviewRef(root,
+    'research/verification-environment-ecology.md#missing-heading'),
+  { code: 'PROCEDURAL_VERIFICATION_REVIEW_REF_INVALID' });
+});
+
+test('missing required ledger claim yields typed gap and no candidate', async () => {
+  const ledger = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/world-knowledge/production-v1/verification-ledger.json',
+    import.meta.url)));
+  ledger.verifications = ledger.verifications.filter(({ claim_ref: ref }) =>
+    ref !== 'claim:white-willow-depends-on-moist-lit-riparian-habitat');
+  const overlay = await generateProceduralV6AuthoringOverlay(root,
+    { verificationLedger: ledger });
+  assert.equal(overlay.candidates.some(({ family }) =>
+    family === 'natural_shore'), false);
+  assert.deepEqual(overlay.candidate_data_gaps, [{
+    candidate_id: 'novgorod_natural_shore_v3',
+    code: 'PROCEDURAL_VERIFICATION_LEDGER_GAP',
+    claim_ref: 'claim:white-willow-depends-on-moist-lit-riparian-habitat'
+  }]);
 });

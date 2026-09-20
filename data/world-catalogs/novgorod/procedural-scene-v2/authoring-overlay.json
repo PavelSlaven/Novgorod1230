@@ -2,7 +2,7 @@
   "schema": "rus.procedural_scene_authoring_overlay.v3",
   "revision": 3,
   "overlay_id": "novgorod_procedural_v6_route_free_overlay_001",
-  "status": "candidate_approval_pending",
+  "status": "partially_authoring_approved",
   "import_authorized": false,
   "activation_authorized": false,
   "activation_request": null,
@@ -55,7 +55,16 @@
         "access",
         "safety",
         "stock",
-        "wreck"
+        "wreck",
+        "local_taxon_assertion"
+      ],
+      "materialization_limits": [
+        "no_local_willow",
+        "no_local_tree",
+        "no_local_stand",
+        "no_local_stock",
+        "no_local_entity",
+        "no_outcome"
       ],
       "global_claim_refs": [
         "claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability",
@@ -85,7 +94,8 @@
             "confidence": "medium",
             "directness": "inferred"
           },
-          "review_ref": "verification/final-nature-gap-closure-v1.md",
+          "verification_ref": null,
+          "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
           "limits": {
             "source_claim_object": {
               "kind": "literal",
@@ -118,7 +128,8 @@
             "confidence": "medium",
             "directness": "inferred"
           },
-          "review_ref": "verification/final-nature-gap-closure-v1.md",
+          "verification_ref": null,
+          "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
           "limits": {
             "source_claim_object": {
               "kind": "literal",
@@ -151,7 +162,8 @@
             "confidence": "medium",
             "directness": "inferred"
           },
-          "review_ref": "verification/final-nature-gap-closure-v1.md",
+          "verification_ref": null,
+          "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
           "limits": {
             "source_claim_object": {
               "kind": "literal",
@@ -169,6 +181,8 @@
           "source_id": "biology:environment-biology.json",
           "source_locator": 44,
           "use_scope": "ecology_only",
+          "local_presence_authorized": false,
+          "resource_materialization_authorized": false,
           "review_status": "approved",
           "evidence_refs": [
             "evidence:euforgen-salix-alba"
@@ -184,21 +198,14 @@
             "confidence": "high",
             "directness": "direct"
           },
-          "review_ref": "verification/environment-biology.md",
-          "limits": {
-            "source_claim_object": {
-              "kind": "literal",
-              "value": "moist_lit_riparian_wetland_or_floodplain_habitat"
-            },
-            "knowledge_access": {
-              "class": "general_physical",
-              "required_facets": []
-            },
-            "hard_exclusion": null
-          }
+          "verification_ref": "wk-verification:production-white-willow-depends-on-moist-lit-riparian-habitat",
+          "review_ref": "research/verification-population-environment-biology.md#final-replacement-source-check--root-2026-09-03",
+          "limits": "Качественная универсальная/видоспецифичная связь; не доказывает местный водоём, заросли, глину, зерно, погоду, запас или исход. Review mapping: candidate=ENV-13."
         }
       ],
-      "data_gap_codes": []
+      "data_gap_codes": [],
+      "candidate_digest": "3a8a1b71b22d139f3df7e9c133bd46754ff1038d23c54a06b57f4582111e8abc",
+      "authoring_approval": "pending_independent_review"
     },
     {
       "schema": "rus.procedural_scene_authoring_candidate.v1",
@@ -293,18 +300,9 @@
             "confidence": "medium",
             "directness": "direct"
           },
-          "review_ref": "verification/environment-ecology.md",
-          "limits": {
-            "source_claim_object": {
-              "kind": "literal",
-              "value": "fishing_as_major_occupation_and_important_food_context"
-            },
-            "knowledge_access": {
-              "class": "common_cultural",
-              "required_facets": []
-            },
-            "hard_exclusion": null
-          }
+          "verification_ref": "wk-verification:production-medieval-novgorod-fishing-attests-major-occupation-food-context",
+          "review_ref": "research/verification-environment-ecology.md",
+          "limits": "Candidate ECO-13 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:environment-ecology.json#claim:medieval-novgorod-fishing-attests-major-occupation-food-context). Approved only within report conditions: no local entity, inventory, ownership, access, exact date, weather or outcome. No fresh reopening is claimed."
         },
         {
           "claim_ref": "claim:population-net-work",
@@ -336,6 +334,7 @@
             "confidence": "medium",
             "directness": "direct"
           },
+          "verification_ref": null,
           "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
           "limits": "candidate PHC-01; regional practice, not individual skill."
         },
@@ -369,6 +368,7 @@
             "confidence": "medium",
             "directness": "inferred"
           },
+          "verification_ref": null,
           "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
           "limits": "candidate PHC-09; shore/boat handling only, not route/right."
         },
@@ -402,6 +402,7 @@
             "confidence": "medium",
             "directness": "inferred"
           },
+          "verification_ref": null,
           "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
           "limits": "candidate PHC-08; historical compatibility only, no recipe, shed, or shelf-life."
         },
@@ -435,6 +436,7 @@
             "confidence": "medium",
             "directness": "inferred"
           },
+          "verification_ref": null,
           "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
           "limits": "candidate PHC-10; no asserted specific camp/building."
         }
@@ -444,7 +446,9 @@
         "FUNCTIONAL_STORAGE_MAPPING_MISSING",
         "FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING",
         "FUNCTIONAL_CONTAINER_MAPPING_MISSING"
-      ]
+      ],
+      "candidate_digest": "049e5ecce5310d7f3d85874e9e1bd919f2be723eb681e9f67d8a2d4be957235c",
+      "authoring_approval": "pending_independent_review"
     },
     {
       "schema": "rus.procedural_scene_authoring_candidate.v1",
@@ -553,6 +557,7 @@
             "confidence": "medium",
             "directness": "inferred"
           },
+          "verification_ref": null,
           "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
           "limits": "candidate PHC-08; historical compatibility only, no recipe, shed, or shelf-life."
         },
@@ -586,6 +591,7 @@
             "confidence": "medium",
             "directness": "inferred"
           },
+          "verification_ref": null,
           "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
           "limits": "candidate PHC-10; no asserted building/heating/content."
         },
@@ -619,6 +625,7 @@
             "confidence": "medium",
             "directness": "inferred"
           },
+          "verification_ref": null,
           "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
           "limits": "candidate PHC-19; inferred ordinary compatibility only; no stocks/layout."
         },
@@ -652,6 +659,7 @@
             "confidence": "medium",
             "directness": "inferred"
           },
+          "verification_ref": null,
           "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
           "limits": "candidate PHC-19; inferred ordinary compatibility only; no contents/capacity."
         }
@@ -661,8 +669,11 @@
         "FUNCTIONAL_STORAGE_MAPPING_MISSING",
         "FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING",
         "FUNCTIONAL_CONTAINER_MAPPING_MISSING"
-      ]
+      ],
+      "candidate_digest": "49a3eb3582a9b28493fb573742c44d4e41e7c2f29f93f7bb6eabb4cb59034b2d",
+      "authoring_approval": "approved_row_scoped"
     }
   ],
-  "overlay_digest": "ce72077addc4392426a346f575fe5c01b5a0b8c37b0518af1814ef3020797b03"
+  "candidate_data_gaps": [],
+  "overlay_digest": "52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3"
 }

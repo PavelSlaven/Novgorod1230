@@ -11,6 +11,18 @@ const CLAIM_FILES = Object.freeze({
   biology: 'environment-biology.json', ecology: 'environment-ecology.json',
   population: 'historical-population.json'
 });
+const LEDGER_REQUIRED_CLAIMS = new Set([
+  'claim:white-willow-depends-on-moist-lit-riparian-habitat',
+  'claim:medieval-novgorod-fishing-attests-major-occupation-food-context'
+]);
+const REVIEW_OVERRIDES = Object.freeze({
+  'claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability':
+    'verification/final-nature-gap-closure-v1.md#Promotion reconciliation',
+  'claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy':
+    'verification/final-nature-gap-closure-v1.md#Promotion reconciliation',
+  'claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition':
+    'verification/final-nature-gap-closure-v1.md#Promotion reconciliation'
+});
 const FUNCTIONAL_GAPS = Object.freeze(['FUNCTIONAL_TOOL_MAPPING_MISSING',
   'FUNCTIONAL_STORAGE_MAPPING_MISSING',
   'FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING',
@@ -28,6 +40,12 @@ const CLAIM_LOCATORS = Object.freeze({
   'claim:population-household-storage': 1930,
   'claim:population-storage-vessels': 1970
 });
+const REVIEWED_CANDIDATE_COMMIT =
+  'e5f6abad33d1bf54cf71622434afc3f08dfad0bf';
+const REVIEWED_OVERLAY_DIGEST =
+  'ce72077addc4392426a346f575fe5c01b5a0b8c37b0518af1814ef3020797b03';
+const REVIEWED_DRYING_CANDIDATE_DIGEST =
+  '0bfe111d4cd73e480a88c11639b3a45dc785bad2b83040aa49a8a95955cd31d5';
 const FAMILY_SPECS = Object.freeze([
   { candidate_id: 'novgorod_natural_shore_v3', family: 'natural_shore',
     scene_template_id: 'trace_ld_v1_tpl_wreck_shore',
@@ -36,7 +54,10 @@ const FAMILY_SPECS = Object.freeze([
     requirements: { water_adjacent: true, mandatory_context_refs: [] },
     allowed_semantics: ['generic_substrate', 'generic_riparian_ecology',
       'water_adjacency'], forbidden_implications: ['landing', 'access', 'safety',
-      'stock', 'wreck'], claim_refs: [
+      'stock', 'wreck', 'local_taxon_assertion'],
+    materialization_limits: ['no_local_willow', 'no_local_tree',
+      'no_local_stand', 'no_local_stock', 'no_local_entity', 'no_outcome'],
+    claim_refs: [
       ['nature', 'claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability'],
       ['nature', 'claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy'],
       ['nature', 'claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition'],
@@ -77,9 +98,11 @@ const FAMILY_SPECS = Object.freeze([
     ], data_gap_codes: FUNCTIONAL_GAPS }
 ]);
 
-export async function generateProceduralV6AuthoringOverlay(rootDir) {
+export async function generateProceduralV6AuthoringOverlay(rootDir,
+  { verificationLedger: injectedLedger } = {}) {
   const root = resolve(rootDir);
-  const [manifest, scenes, nodes, parents, slots, perClaim, ...claimPacks] =
+  const [manifest, scenes, nodes, parents, slots, perClaim, loadedLedger,
+    ...claimPacks] =
     await Promise.all([
       json(resolve(root, SPATIAL_ROOT, 'manifest.json')),
       json(resolve(root, SPATIAL_ROOT, 'datasets/spatial_v3_scene_templates.json')),
@@ -87,6 +110,7 @@ export async function generateProceduralV6AuthoringOverlay(rootDir) {
       json(resolve(root, SPATIAL_ROOT, 'datasets/spatial_v3_node_parents.json')),
       json(resolve(root, SPATIAL_ROOT, 'datasets/spatial_v3_g6_template_slots.json')),
       json(resolve(root, 'data/world-catalogs/novgorod/world-knowledge/verification/base-per-claim-v2.json')),
+      json(resolve(root, `${WORLD_ROOT}/verification-ledger.json`)),
       ...Object.values(CLAIM_FILES).map((file) =>
         json(resolve(root, WORLD_ROOT, file)))
     ]);
@@ -95,14 +119,26 @@ export async function generateProceduralV6AuthoringOverlay(rootDir) {
   const packs = Object.fromEntries(Object.keys(CLAIM_FILES).map((key, index) =>
     [key, claimPacks[index]]));
   const reviewByClaim = indexReviews(perClaim);
+  const verificationByClaim = indexVerifications(injectedLedger ?? loadedLedger);
   const worldPin = { world_revision_id: manifest.world_revision_id,
     world_catalog_digest: manifest.catalog_digest };
-  const candidates = FAMILY_SPECS.map((spec) => {
+  const candidates = [];
+  const candidateDataGaps = [];
+  for (const spec of FAMILY_SPECS) {
     const scene = exact(scenes, spec.scene_template_id);
     const g5 = exact(nodes, spec.g5_id);
     const parent = exact(parents, spec.g5_id, 'child_id');
-    const evidenceClaims = spec.claim_refs.map(([packId, ref]) =>
-      claimProjection(packs[packId], ref, packId, reviewByClaim));
+    let evidenceClaims;
+    try {
+      evidenceClaims = spec.claim_refs.map(([packId, ref]) =>
+        claimProjection(packs[packId], ref, packId, reviewByClaim,
+          verificationByClaim));
+    } catch (error) {
+      if (error.code !== 'PROCEDURAL_VERIFICATION_LEDGER_GAP') throw error;
+      candidateDataGaps.push({ candidate_id: spec.candidate_id,
+        code: error.code, claim_ref: error.claim_ref });
+      continue;
+    }
     const candidate = {
       schema: 'rus.procedural_scene_authoring_candidate.v1',
       candidate_id: spec.candidate_id, version: 1,
@@ -128,6 +164,8 @@ export async function generateProceduralV6AuthoringOverlay(rootDir) {
       allowed_semantics: [...spec.allowed_semantics],
       requirements: structuredClone(spec.requirements),
       forbidden_implications: [...spec.forbidden_implications],
+      ...(spec.materialization_limits ? { materialization_limits:
+        [...spec.materialization_limits] } : {}),
       ...(spec.variants ? { variants: structuredClone(spec.variants) } : {}),
       global_claim_refs: evidenceClaims.filter(({ applicability }) =>
         applicability.context_scope === 'universal').map(({ claim_ref: ref }) => ref),
@@ -137,20 +175,28 @@ export async function generateProceduralV6AuthoringOverlay(rootDir) {
       evidence_claims: evidenceClaims,
       data_gap_codes: [...spec.data_gap_codes]
     };
-    return validateProceduralSceneAuthoringCandidate({ candidate,
+    const validated = validateProceduralSceneAuthoringCandidate({ candidate,
       world_pin: worldPin });
-  });
+    candidates.push({ ...validated, candidate_digest: digest(validated),
+      authoring_approval: spec.family === 'drying_storage_workspace'
+        ? 'approved_row_scoped' : 'pending_independent_review' });
+  }
+  for (const candidate of candidates) for (const claim of
+    candidate.evidence_claims) await validateVerificationReviewRef(root,
+    claim.review_ref);
   const payload = {
     schema: 'rus.procedural_scene_authoring_overlay.v3', revision: 3,
     overlay_id: 'novgorod_procedural_v6_route_free_overlay_001',
-    status: 'candidate_approval_pending', import_authorized: false,
+    status: 'partially_authoring_approved', import_authorized: false,
     activation_authorized: false, activation_request: null,
-    compatible_world_pin: worldPin, candidates
+    compatible_world_pin: worldPin, candidates,
+    candidate_data_gaps: candidateDataGaps
   };
   return { ...payload, overlay_digest: digest(payload) };
 }
 
-export function buildProceduralV6ApprovalRequest(overlay) {
+export function buildProceduralV6ApprovalRequest(overlay, dryingAttestation =
+  buildProceduralV6DryingAttestation(overlay)) {
   const payload = {
     schema: 'rus.procedural_scene_overlay_approval_request.v1',
     overlay_id: overlay.overlay_id, overlay_digest: overlay.overlay_digest,
@@ -158,7 +204,8 @@ export function buildProceduralV6ApprovalRequest(overlay) {
     authoring_approval: 'pending_independent_review',
     import_authorized: false, activation_authorized: false,
     activation_request: null,
-    rows: overlay.candidates.map((candidate) => ({
+    rows: overlay.candidates.filter(({ authoring_approval: status }) =>
+      status === 'pending_independent_review').map((candidate) => ({
       candidate_id: candidate.candidate_id, version: candidate.version,
       spatial_closure_ref: candidate.spatial_closure_ref,
       claims: candidate.evidence_claims.map(({ claim_ref: claimRef,
@@ -168,35 +215,87 @@ export function buildProceduralV6ApprovalRequest(overlay) {
         source_id: sourceId, evidence_refs: evidenceRefs,
         source_locator: sourceLocator, use_scope: useScope,
         review_ref: reviewRef, limits }))
-    }))
+    })),
+    approved_rows: [{ candidate_ref: dryingAttestation.candidate_ref,
+      attestation_path:
+        'data/world-catalogs/novgorod/procedural-scene-v2/drying-storage-workspace-approval-attestation.json',
+      attestation_digest: dryingAttestation.attestation_digest }]
   };
   return { ...payload, request_digest: digest(payload) };
 }
 
-function claimProjection(pack, claimRef, packId, reviewByClaim) {
+export function buildProceduralV6DryingAttestation(overlay) {
+  const candidate = overlay.candidates.find(({ candidate_id: id }) =>
+    id === 'novgorod_drying_storage_workspace_v3');
+  if (!candidate) throw new Error('PROCEDURAL_DRYING_CANDIDATE_MISSING');
+  const payload = {
+    schema: 'rus.procedural_scene_row_approval_attestation.v1',
+    candidate_ref: `${candidate.candidate_id}@${candidate.version}`,
+    candidate_source_commit_sha: REVIEWED_CANDIDATE_COMMIT,
+    candidate_path:
+      'data/world-catalogs/novgorod/procedural-scene-v2/authoring-overlay.json',
+    candidate_digest: REVIEWED_DRYING_CANDIDATE_DIGEST,
+    reviewed_overlay_digest: REVIEWED_OVERLAY_DIGEST,
+    rebound_candidate_digest: candidate.candidate_digest,
+    overlay_digest: overlay.overlay_digest,
+    authoring_approved: true, import_authorized: false,
+    activation_authorized: false, activation_request: null,
+    approved_by: 'independent_reaudit',
+    approval_basis: 're_audit_of_e5f6abad_route_free_candidate',
+    authority: 'editorial_reconstruction', confidence: 'medium',
+    data_gap_codes: [...FUNCTIONAL_GAPS],
+    forbidden_implications: [...candidate.forbidden_implications],
+    variants: structuredClone(candidate.variants),
+    research_report_refs: [
+      'data/world-catalogs/novgorod/world-knowledge/research/procedural-scene-family-authoring-v1.md#5. Семейство: старая сушильня / ремесленно-складское место',
+      'data/world-catalogs/novgorod/world-knowledge/research/procedural-scene-family-authoring-v1.md#7. Human approval checklist',
+      'data/world-catalogs/novgorod/world-knowledge/research/procedural-scene-family-authoring-v1.md#8. Research verdict'
+    ], approval_scope: 'authoring_row_only'
+  };
+  return { ...payload, attestation_digest: digest(payload) };
+}
+
+function claimProjection(pack, claimRef, packId, reviewByClaim,
+  verificationByClaim) {
   const claim = exact(pack.claims, claimRef, 'claim_ref');
   if (claim.review_status !== 'approved') throw new Error(
     `PROCEDURAL_SOURCE_CLAIM_NOT_APPROVED:${claimRef}`);
   const evidence = claim.evidence_refs.map((ref) => exact(pack.evidence, ref,
     'evidence_ref'));
-  const review = reviewByClaim.get(claimRef);
+  const ledger = verificationByClaim.get(claimRef);
+  if (LEDGER_REQUIRED_CLAIMS.has(claimRef) && !ledger) {
+    throw Object.assign(new Error(`Verification ledger row missing: ${claimRef}`),
+      { code: 'PROCEDURAL_VERIFICATION_LEDGER_GAP', claim_ref: claimRef });
+  }
+  const review = ledger ?? reviewByClaim.get(claimRef);
+  const reviewRef = review?.review_ref ?? REVIEW_OVERRIDES[claimRef];
+  if (!reviewRef) throw Object.assign(new Error(
+    `Verification review missing: ${claimRef}`), {
+    code: 'PROCEDURAL_VERIFICATION_LEDGER_GAP', claim_ref: claimRef });
   return { claim_ref: claimRef,
     source_id: `${packId}:${CLAIM_FILES[packId]}`,
     source_locator: CLAIM_LOCATORS[claimRef] ?? null,
     use_scope: claimRef ===
       'claim:white-willow-depends-on-moist-lit-riparian-habitat'
       ? 'ecology_only' : 'evidence_bound',
+    ...(claimRef === 'claim:white-willow-depends-on-moist-lit-riparian-habitat'
+      ? { local_presence_authorized: false,
+        resource_materialization_authorized: false } : {}),
     review_status: claim.review_status,
     evidence_refs: evidence.map(({ evidence_ref: ref }) => ref).sort(),
     source_refs: [...new Set(evidence.map(({ source_ref: ref }) => ref))].sort(),
     applicability: structuredClone(claim.applicability),
     qualifiers: structuredClone(claim.qualifiers),
-    review_ref: review?.review_ref ??
-      `verification/${CLAIM_FILES[packId].replace(/\.json$/u, '.md')}`,
+    verification_ref: ledger?.verification_ref ?? null,
+    review_ref: reviewRef,
     limits: review?.limits ?? { source_claim_object:
       structuredClone(claim.object), knowledge_access:
       structuredClone(claim.knowledge_access), hard_exclusion:
       structuredClone(claim.hard_exclusion) } };
+}
+function indexVerifications(value) {
+  return new Map((value?.verifications ?? []).filter(({ verdict }) =>
+    verdict === 'APPROVE').map((row) => [row.claim_ref, row]));
 }
 function indexReviews(value) {
   const result = new Map();
@@ -218,14 +317,43 @@ function digest(value) { return createHash('sha256').update(JSON.stringify(value
   .digest('hex'); }
 async function json(path) { return JSON.parse(await readFile(path, 'utf8')); }
 
+export async function validateVerificationReviewRef(rootDir, reviewRef) {
+  const [relativePath, heading] = String(reviewRef ?? '').split('#');
+  if (!relativePath) throw Object.assign(new Error('Review path missing.'), {
+    code: 'PROCEDURAL_VERIFICATION_REVIEW_REF_INVALID', review_ref: reviewRef });
+  let markdown;
+  try {
+    markdown = await readFile(resolve(rootDir,
+      'data/world-catalogs/novgorod/world-knowledge', relativePath), 'utf8');
+  } catch {
+    throw Object.assign(new Error('Review path missing.'), {
+      code: 'PROCEDURAL_VERIFICATION_REVIEW_REF_INVALID', review_ref: reviewRef });
+  }
+  if (heading) {
+    const headings = markdown.match(/^#{1,6}\s+.+$/gmu) ?? [];
+    const found = headings.some((line) => {
+      const text = line.replace(/^#{1,6}\s+/u, '').trim();
+      return text === heading || slug(text) === heading;
+    });
+    if (!found) throw Object.assign(new Error('Review heading missing.'), {
+      code: 'PROCEDURAL_VERIFICATION_REVIEW_REF_INVALID', review_ref: reviewRef });
+  }
+  return true;
+}
+function slug(value) { return value.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, '')
+  .trim().replace(/\s/gu, '-'); }
+
 async function main(argv) {
   const root = resolve(argv[0] ?? '.');
   const directory = resolve(root,
     'data/world-catalogs/novgorod/procedural-scene-v2');
   const overlay = await generateProceduralV6AuthoringOverlay(root);
-  const request = buildProceduralV6ApprovalRequest(overlay);
+  const attestation = buildProceduralV6DryingAttestation(overlay);
+  const request = buildProceduralV6ApprovalRequest(overlay, attestation);
   const outputs = [[resolve(directory, 'authoring-overlay.json'), overlay],
-    [resolve(directory, 'approval-request.json'), request]];
+    [resolve(directory, 'approval-request.json'), request],
+    [resolve(directory, 'drying-storage-workspace-approval-attestation.json'),
+      attestation]];
   if (argv.includes('--check')) {
     for (const [path, value] of outputs) if (await readFile(path, 'utf8')
       !== `${JSON.stringify(value, null, 2)}\n`) throw new Error(

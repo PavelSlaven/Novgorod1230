@@ -1,7 +1,7 @@
 {
   "schema": "rus.procedural_scene_overlay_approval_request.v1",
   "overlay_id": "novgorod_procedural_v6_route_free_overlay_001",
-  "overlay_digest": "ce72077addc4392426a346f575fe5c01b5a0b8c37b0518af1814ef3020797b03",
+  "overlay_digest": "52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3",
   "decision_requested": "review_route_free_authoring_candidates",
   "authoring_approval": "pending_independent_review",
   "import_authorized": false,
@@ -40,7 +40,7 @@
           ],
           "source_locator": 35,
           "use_scope": "evidence_bound",
-          "review_ref": "verification/final-nature-gap-closure-v1.md",
+          "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
           "limits": {
             "source_claim_object": {
               "kind": "literal",
@@ -61,7 +61,7 @@
           ],
           "source_locator": 37,
           "use_scope": "evidence_bound",
-          "review_ref": "verification/final-nature-gap-closure-v1.md",
+          "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
           "limits": {
             "source_claim_object": {
               "kind": "literal",
@@ -82,7 +82,7 @@
           ],
           "source_locator": 38,
           "use_scope": "evidence_bound",
-          "review_ref": "verification/final-nature-gap-closure-v1.md",
+          "review_ref": "verification/final-nature-gap-closure-v1.md#Promotion reconciliation",
           "limits": {
             "source_claim_object": {
               "kind": "literal",
@@ -103,18 +103,8 @@
           ],
           "source_locator": 44,
           "use_scope": "ecology_only",
-          "review_ref": "verification/environment-biology.md",
-          "limits": {
-            "source_claim_object": {
-              "kind": "literal",
-              "value": "moist_lit_riparian_wetland_or_floodplain_habitat"
-            },
-            "knowledge_access": {
-              "class": "general_physical",
-              "required_facets": []
-            },
-            "hard_exclusion": null
-          }
+          "review_ref": "research/verification-population-environment-biology.md#final-replacement-source-check--root-2026-09-03",
+          "limits": "Качественная универсальная/видоспецифичная связь; не доказывает местный водоём, заросли, глину, зерно, погоду, запас или исход. Review mapping: candidate=ENV-13."
         }
       ]
     },
@@ -157,18 +147,8 @@
           ],
           "source_locator": 56,
           "use_scope": "evidence_bound",
-          "review_ref": "verification/environment-ecology.md",
-          "limits": {
-            "source_claim_object": {
-              "kind": "literal",
-              "value": "fishing_as_major_occupation_and_important_food_context"
-            },
-            "knowledge_access": {
-              "class": "common_cultural",
-              "required_facets": []
-            },
-            "hard_exclusion": null
-          }
+          "review_ref": "research/verification-environment-ecology.md",
+          "limits": "Candidate ECO-13 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:environment-ecology.json#claim:medieval-novgorod-fishing-attests-major-occupation-food-context). Approved only within report conditions: no local entity, inventory, ownership, access, exact date, weather or outcome. No fresh reopening is claimed."
         },
         {
           "claim_ref": "claim:population-net-work",
@@ -215,84 +195,14 @@
           "limits": "candidate PHC-10; no asserted specific camp/building."
         }
       ]
-    },
-    {
-      "candidate_id": "novgorod_drying_storage_workspace_v3",
-      "version": 1,
-      "spatial_closure_ref": {
-        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
-        "scene_template_id": "trace_ld_v1_tpl_old_drying_shed",
-        "scene_template_version": 1,
-        "scene_template_digest": "8e5019e07de39dc1eb3d07f996bca38f2af8ef25f927cc30a729bd3edd297679",
-        "g5_id": "trace_ld_v1_g5_old_drying_shed",
-        "g5_version": 1,
-        "g5_digest": "32b6e5db1bffb825d6d9da2a4805f9d045a766c9b04a33ab834d615ec0112832",
-        "parent_id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_resource_edge",
-        "parent_version": 4,
-        "g6_slots": [
-          {
-            "scene_slot_key": "s1_enclosed_space",
-            "physical_class_id": "spatial.g6.enclosed",
-            "primary_scene_role_id": "ordinary_local",
-            "vertical_context_id": "surface",
-            "overhead_cover_id": "full"
-          },
-          {
-            "scene_slot_key": "shed_approach",
-            "physical_class_id": "spatial.g6.open",
-            "primary_scene_role_id": "working_camp",
-            "vertical_context_id": "surface",
-            "overhead_cover_id": "none"
-          }
-        ]
-      },
-      "claims": [
-        {
-          "claim_ref": "claim:population-fish-dried-form",
-          "source_id": "population:historical-population.json",
-          "evidence_refs": [
-            "evidence:population-fishing-221"
-          ],
-          "source_locator": 1769,
-          "use_scope": "evidence_bound",
-          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
-          "limits": "candidate PHC-08; historical compatibility only, no recipe, shed, or shelf-life."
-        },
-        {
-          "claim_ref": "claim:population-drying-workspace",
-          "source_id": "population:historical-population.json",
-          "evidence_refs": [
-            "evidence:population-fishing-221"
-          ],
-          "source_locator": 1890,
-          "use_scope": "evidence_bound",
-          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
-          "limits": "candidate PHC-10; no asserted building/heating/content."
-        },
-        {
-          "claim_ref": "claim:population-household-storage",
-          "source_id": "population:historical-population.json",
-          "evidence_refs": [
-            "evidence:population-things-overview"
-          ],
-          "source_locator": 1930,
-          "use_scope": "evidence_bound",
-          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
-          "limits": "candidate PHC-19; inferred ordinary compatibility only; no stocks/layout."
-        },
-        {
-          "claim_ref": "claim:population-storage-vessels",
-          "source_id": "population:historical-population.json",
-          "evidence_refs": [
-            "evidence:population-things-overview"
-          ],
-          "source_locator": 1970,
-          "use_scope": "evidence_bound",
-          "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
-          "limits": "candidate PHC-19; inferred ordinary compatibility only; no contents/capacity."
-        }
-      ]
     }
   ],
-  "request_digest": "01cc528eaf75871c5fe4f1d352a42549b693737d86238c7d7827f585cc4340a9"
+  "approved_rows": [
+    {
+      "candidate_ref": "novgorod_drying_storage_workspace_v3@1",
+      "attestation_path": "data/world-catalogs/novgorod/procedural-scene-v2/drying-storage-workspace-approval-attestation.json",
+      "attestation_digest": "965995aae64b72a6329ac97e33b09700733e69c609a247d2d76716d5d68333c3"
+    }
+  ],
+  "request_digest": "89ae5f2030961c85e8e12f3b220052db04e5b95e3c7af45ac7c6076136453325"
 }

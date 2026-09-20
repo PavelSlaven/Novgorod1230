@@ -69,7 +69,7 @@ export function buildLowerDvinaTraceOpeningScreen({
 }
 
 export function buildAuthoredOpeningVisibleContext({ requestId, visible,
-  internal, initialScene = null, approvedProjection } = {}) {
+  internal, approvedProjection } = {}) {
   assertVisibleSource(visible, approvedProjection);
   const dossier = internal?.player?.dossier;
   const context = dossier?.opening_context;
@@ -88,31 +88,20 @@ export function buildAuthoredOpeningVisibleContext({ requestId, visible,
     .map((relation) => ({ npc_instance_id: npc.instance_id,
       npc_name: npc.identity_state?.canonical_name,
       relation_kind: relation.kind, standing: relation.standing })));
-  const visibleNpcs = localNpc.map((npc) => {
-    const recognized = relations.some(({ npc_instance_id: id }) =>
-      id === npc.instance_id);
-    const equipment = (internal.items ?? []).filter((item) =>
-      item.placement?.holder_npc_id === npc.instance_id).map((item) => ({
-        item_instance_id: item.instance_id, label: item.state?.display_name,
-        physical_position: item.placement?.physical_position
-      }));
-    return {
-      npc_instance_id: npc.instance_id,
-      label: recognized ? npc.identity_state?.canonical_name
-        : npc.identity_state?.public_role_label,
-      current_activity: npc.machine_state?.current_activity?.summary ?? null,
-      recognition: recognized ? 'recognized' : 'unrecognized',
-      appearance: structuredClone(npc.identity_state?.appearance), equipment
-    };
-  });
+  const visibleNpcs = localNpc.map((npc) => ({
+    npc_instance_id: npc.instance_id,
+    label: relations.some(({ npc_instance_id: id }) => id === npc.instance_id)
+      ? npc.identity_state?.canonical_name
+      : npc.identity_state?.public_role_label,
+    current_activity: npc.machine_state?.current_activity?.summary ?? null,
+    recognition: relations.some(({ npc_instance_id: id }) => id === npc.instance_id)
+      ? 'recognized' : 'unrecognized'
+  }));
   const visibleItems = playerItems.map((item) => ({
     item_instance_id: item.instance_id, label: item.state?.display_name,
     placement: 'held_by_player', condition: item.condition_state
   }));
   const local = context.local_structure;
-  const sceneGroups = (initialScene?.background_groups ?? []).map((group) => ({
-    group_ref: group.group_ref, descriptor: group.descriptor
-  }));
   const facts = [
     { fact_id: 'opening:identity', text: `${dossier.identity.name} — ${dossier.social_status.display_name}.`, source_refs: [actorId] },
     ...knownFacts.map((text, index) => ({ fact_id: `opening:known:${index + 1}`,
@@ -125,10 +114,6 @@ export function buildAuthoredOpeningVisibleContext({ requestId, visible,
     { fact_id: 'opening:local-structure',
       text: `${local.name}: ${local.description}`,
       source_refs: [local.interior_position_ref, ...local.movement_edge_refs] },
-    ...sceneGroups.map((group, index) => ({
-      fact_id: `opening:scene-component:${index + 1}`,
-      text: group.descriptor, source_refs: [group.group_ref]
-    })),
     ...visible.environment.facts.map((text, index) => ({
       fact_id: `opening:environment:${index + 1}`, text,
       source_refs: [position.g5_anchor_id] }))
@@ -142,10 +127,9 @@ export function buildAuthoredOpeningVisibleContext({ requestId, visible,
     ['current_event', knownFacts[0]],
     ['goal_stake', knownFacts[0]],
     ['surroundings', [context.foreground.text,
-      ...context.far_orientation.map(({ text }) => text), local.description,
-      ...sceneGroups.map(({ descriptor }) => descriptor)].join(' ')],
+      ...context.far_orientation.map(({ text }) => text), local.description].join(' ')],
     ['body', bodySummary],
-    ['directions_interactions', `${local.name}; ${visibleNpcs.map(({ label }) => label).join('; ')}; ${visibleItems.map(({ label }) => label).join('; ')}; ${sceneGroups.map(({ descriptor }) => descriptor).join('; ')}`]
+    ['directions_interactions', `${local.name}; ${visibleNpcs.map(({ label }) => label).join('; ')}; ${visibleItems.map(({ label }) => label).join('; ')}`]
   ].map(([category, text]) => ({ category, text }));
   const reader = auditAuthoredOpeningContext({ mustInclude, visibleNpcs,
     visibleItems, localStructure: local, knownFacts });

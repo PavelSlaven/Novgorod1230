@@ -40,22 +40,7 @@ export function phase2InitialCurrentVisibleContext({
           ?? npc.identity_state?.public_role_label ?? 'человек',
       recognition: npc.profile_level === 'background'
         ? 'unrecognized' : 'recognized',
-      visible_status: npc.machine_state?.current_activity?.summary ?? 'рядом',
-      ...(npc.identity_state?.appearance == null ? {} : { observable_cues: {
-        identity: { display_name: npc.identity_state?.public_role_label,
-          sex_category: npc.identity_state?.sex_category,
-          age_category: npc.identity_state?.age_category,
-          appearance: structuredClone(npc.identity_state?.appearance) },
-        equipment: (initialState?.items ?? []).filter((item) =>
-          item.placement?.holder_npc_id === npc.instance_id).map((item) => ({
-            item_ref: item.item_id, display_label: item.state?.display_name,
-            physical_position: item.placement?.physical_position,
-            equipment_slot_category_id:
-              item.placement?.equipment_slot_category_id,
-            visual_profile_snapshot: structuredClone(
-              item.state?.visual_profile_snapshot)
-          })), outward_presentation: {}
-      } })
+      visible_status: 'рядом'
     }));
   return requirePhase2CurrentVisibleContext({
     version: 1,
@@ -67,11 +52,7 @@ export function phase2InitialCurrentVisibleContext({
           typeof value === 'string' && value.length > 0)
       : [],
     visible_npc: visibleNpc,
-    visible_objects: (initialState?.ordinary_scene?.background_groups ?? [])
-      .map((group) => ({ entity_ref: { entity_kind: 'ordinary_group',
-        entity_id: group.group_ref }, display_label: group.descriptor,
-      recognition: 'known',
-      visible_status: 'present' })),
+    visible_objects: [],
     known_context: [presented?.display_name ?? visibleContext?.place]
       .filter((value) => typeof value === 'string' && value.length > 0),
     uncertainties: [],

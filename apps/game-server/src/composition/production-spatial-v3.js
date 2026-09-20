@@ -5,8 +5,6 @@ import { loadLowerDvinaTraceScenePresentation } from
   '../internal/lower-dvina-trace-scene-presentation.js';
 import { ordinaryBackgroundSeedForLocation } from
   '../runtime/lower-dvina-trace-scene-presentation.js';
-import { loadProceduralSceneBaselineCatalog } from
-  '../internal/procedural-scene-baselines.js';
 import { createSpatialSemanticFirstEntryProvisioner } from '../infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 import { loadLowerDvinaTraceProductionMaterializationProfiles } from '../internal/lower-dvina-trace-production-materialization-profiles.js';
 import { loadLowerDvinaTraceSpatialSemanticProfile } from '../internal/lower-dvina-trace-spatial-semantic-profile.js';
@@ -72,7 +70,6 @@ export async function createSpatialV3ProductionCompositionRoot({
     const startup = { world_database: await probePostgresPool(pools.worldPool, 'world_base'), party_database: await probePostgresPool(pools.partyPool, 'party_runtime') };
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
     const [profiles, spatialSemanticProfile, scenePresentation,
-      sceneBaselineCatalog,
       npcSemanticRemainderProfile, loadedWorldKnowledge,
       scenarioBundle] = await Promise.all([
       loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
@@ -80,9 +77,6 @@ export async function createSpatialV3ProductionCompositionRoot({
       loadLowerDvinaTraceScenePresentation({
         rootDir: config.rootDir ?? process.cwd(),
         scenarioDefinitionRevision: release.scenario_profile_exact_pins.scenario_definition_revision
-      }),
-      loadProceduralSceneBaselineCatalog({
-        rootDir: config.rootDir ?? process.cwd()
       }),
       loadLowerDvinaTraceN1Profile({
         rootDir: config.rootDir ?? process.cwd()
@@ -126,7 +120,6 @@ export async function createSpatialV3ProductionCompositionRoot({
       createOrdinaryMaterializationFirstEntryProvisioner({
         profile: profiles.ordinaryMaterializationProfile,
         includeContextBoundCapabilities: false,
-        sceneBaselineCatalog,
         initialSceneSeed: ordinaryBackgroundSeedForLocation({ scenePresentation,
           locationRef: profiles.ordinaryMaterializationProfile
             .o2a_ambient.scope_binding.position_ref })

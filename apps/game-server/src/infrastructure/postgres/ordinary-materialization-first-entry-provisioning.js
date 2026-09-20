@@ -3,7 +3,6 @@ import {
   canonicalDigest,
   computeOrdinaryIdentityBudget,
   createOrdinaryAggregate,
-  materializeProceduralSceneBaseline,
   validateOrdinaryBackgroundGroup
 } from '@rus/materialization';
 import {
@@ -23,8 +22,7 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
   profile,
   ordinaryContainerContentsProfile = null,
   includeContextBoundCapabilities = true,
-  initialSceneSeed = null,
-  sceneBaselineCatalog = null
+  initialSceneSeed = null
 } = {}) {
   if (profile == null || typeof profile !== 'object') {
     throw new TypeError('ordinary first-entry provisioning requires a versioned profile');
@@ -36,11 +34,9 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
       }
       const scope = { entity_kind: 'g6', entity_id: firstEntryBinding.g6_instance_id };
-      const sceneProfile = resolveSceneProfile(sceneBaselineCatalog,
-        firstEntryBinding.location_ref);
       const rows = buildRows({ profile, partyId, scope,
         positionRef: firstEntryBinding.position_id,
-        includeContextBoundCapabilities, initialSceneSeed, sceneProfile });
+        includeContextBoundCapabilities, initialSceneSeed });
       const existing = await transaction.query(
         `SELECT e.objective_snapshot,e.objective_digest,e.enabled,
                 a.aggregate_payload,a.state_version,c.catalog_version,
@@ -89,9 +85,9 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
         VALUES ($1,$2,$3,$4::jsonb,$5,TRUE)`, [partyId, scope.entity_kind, scope.entity_id,
         JSON.stringify(rows.objective), rows.objective_digest]);
-      for (const source of rows.finite_sources) {
+      if (rows.finite_source != null) {
         await insertFirstEntryFiniteSource({ transaction, partyId, changeSetId,
-          source });
+          source: rows.finite_source });
       }
       await provisionInitialOrdinaryContainer({transaction,partyId,
         firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
@@ -101,7 +97,7 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
 }
 
 function buildRows({ profile, partyId, scope, positionRef,
-  includeContextBoundCapabilities, initialSceneSeed, sceneProfile }) {
+  includeContextBoundCapabilities, initialSceneSeed }) {
   const basisRef = `${profile.profile_id}:basis`;
   const propertyBasisRef = profile.context_refs?.property_context_ref;
   const placementContextRef = `${profile.profile_id}:placement`;
@@ -153,8 +149,7 @@ function buildRows({ profile, partyId, scope, positionRef,
   const initial = createOrdinaryAggregate({ scope_ref: scope,
     resolution_record_cap: profile.technical_limits.max_resolution_records });
   const seeded = seedInitialScene({ profile, request: seedRequest,
-    initial, committedBasis: basis, committedBases, initialSceneSeed,
-    sceneProfile, partyId, positionRef });
+    initial, committedBasis: basis, committedBases, initialSceneSeed });
   const bases = [...committedBases, ...seeded.committedSeedBases]
     .sort((left, right) => left.basis_ref.localeCompare(right.basis_ref));
   const policyRefs = { ...seedPolicyRefs,
@@ -172,8 +167,7 @@ function buildRows({ profile, partyId, scope, positionRef,
         positionRef, placementContextRef,
         ...bases.map(({ basis_ref }) => basis_ref)].sort() } };
   return { aggregate: seeded.aggregate,
-  bases, finite_sources: [o2a?.finite_source, ...seeded.finiteSources]
-    .filter(Boolean),
+  bases, finite_source: o2a?.finite_source ?? null,
   basis_catalog_version: seeded.committedSeedBases.length === 0 ? 0 : 1,
   basis_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1',
     supporting_bases: bases }), property_placement_context: property,
@@ -200,89 +194,53 @@ function sameExisting(row, expected) {
 }
 function seedInitialScene({ profile, request, initial, committedBasis,
   committedBases,
-  initialSceneSeed, sceneProfile, partyId, positionRef }) {
-  if (initialSceneSeed == null && sceneProfile == null) {
-    return { aggregate: initial, committedSeedBases: [], finiteSources: [] };
-  }
-  const procedural = sceneProfile == null ? null
-    : materializeProceduralSceneBaseline({ party_id: partyId,
-      scope_ref: request.scope_ref, profile: sceneProfile,
-      seed_context: { party_id: partyId, profile_id: sceneProfile.profile_id,
-        scope_ref: request.scope_ref, rng_algorithm_id: 'mulberry32_v1' } });
-  const seeds = procedural == null ? [initialSceneSeed]
-    : procedural.components.map((component) => ({
-      descriptor: component.descriptor, density_band: 'ordinary', component
-    }));
-  if (seeds.some((seed) => !text(seed.descriptor)
-      || !['sparse', 'ordinary', 'dense'].includes(seed.density_band))) {
+  initialSceneSeed }) {
+  if (initialSceneSeed == null) return { aggregate: initial, committedSeedBases: [] };
+  if (!text(initialSceneSeed.descriptor)
+      || !['sparse', 'ordinary', 'dense'].includes(initialSceneSeed.density_band)) {
     throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
   }
   const disclosure = profile.execution.allowed_disclosure_policy_refs?.[0];
   try {
-    const groups = seeds.map((seed) => validateOrdinaryBackgroundGroup({ request,
-      group: {
-        descriptor: seed.descriptor,
-        functional_bucket: committedBasis.functional_buckets[0],
-        availability_class: 'common',
-        allowed_admission_classes: ['common_mundane'],
-        causal_basis: { basis_kind: 'scope_bound_ordinary_policy',
-          basis_refs: [committedBasis.basis_ref] },
-        property_basis_ref: request.context_refs.property_context_ref,
-        permission_refs: [], disclosure_policy_ref: disclosure
-      }, basis_catalog: committedBases.map((entry) => ({
-        ...structuredClone(entry), policy: {
-          functional_buckets: structuredClone(entry.functional_buckets),
-          allowed_admission_classes:
-            structuredClone(entry.allowed_admission_classes),
-          permission_refs: structuredClone(entry.permission_refs ?? [])
-        }
-      })), allowed_disclosure_policy_refs:
-        profile.execution.allowed_disclosure_policy_refs }));
-    const density = initialSceneSeed?.density_band ?? 'dense';
-    const budget = computeOrdinaryIdentityBudget({ density_band: density,
-      authored_identity_limit: Math.min(groups.length,
-        request.technical_limits.max_new_entities),
+    const group = validateOrdinaryBackgroundGroup({ request, group: {
+      descriptor: initialSceneSeed.descriptor,
+      functional_bucket: committedBasis.functional_buckets[0],
+      availability_class: 'common',
+      allowed_admission_classes: ['common_mundane'],
+      causal_basis: { basis_kind: 'scope_bound_ordinary_policy',
+        basis_refs: [committedBasis.basis_ref] },
+      property_basis_ref: request.context_refs.property_context_ref,
+      permission_refs: [], disclosure_policy_ref: disclosure
+    }, basis_catalog: committedBases.map((entry) => ({
+      ...structuredClone(entry), policy: {
+        functional_buckets: structuredClone(entry.functional_buckets),
+        allowed_admission_classes:
+          structuredClone(entry.allowed_admission_classes),
+        permission_refs: structuredClone(entry.permission_refs ?? [])
+      }
+    })), allowed_disclosure_policy_refs:
+      profile.execution.allowed_disclosure_policy_refs });
+    const budget = computeOrdinaryIdentityBudget({
+      density_band: initialSceneSeed.density_band,
       scope: request.scope_ref,
       function_refs: request.context_refs.function_refs,
       policy: profile.execution.density_policy,
-      hard_technical_max: request.technical_limits.max_new_entities });
+      hard_technical_max: request.technical_limits.max_new_entities
+    });
     const aggregate = applyOrdinaryAggregateTransition({ aggregate: initial,
       transition: { kind: 'seed', request_identity: request.request_id,
         expected_state_version: 0, density_band: budget.density_band,
-        identity_budget: budget.identity_budget, background_groups: groups } });
-    const finiteSources = seeds.flatMap((seed, index) => {
-      const component = seed.component;
-      if (component?.kind !== 'finite_source') return [];
-      const group = groups[index];
-      const bound = { numerator: component.initial_quantity,
-        denominator: 1, unit: component.quantity_unit };
-      return [{ source_resource_node_id: group.group_ref,
-        quantity_unit_ref: { kind: 'unit', id: component.quantity_unit },
-        position_ref: positionRef,
-        property_basis_ref: request.context_refs.property_context_ref,
-        initial_amount_bounds: { minimum: bound, maximum: bound },
-        initial_quantity: component.initial_quantity }];
-    });
-    return { aggregate, finiteSources,
-      committedSeedBases: groups.map((group) => ({
-        basis_ref: group.group_ref, state: 'committed',
-        scope_ref: structuredClone(group.scope_ref),
-        prepared_seed_provenance: null,
-        functional_buckets: [group.functional_bucket],
-        allowed_admission_classes:
-          structuredClone(group.allowed_admission_classes),
-        permission_refs: structuredClone(group.permission_refs) })) };
+        identity_budget: budget.identity_budget, background_groups: [group] } });
+    return { aggregate, committedSeedBases: [{ basis_ref: group.group_ref,
+      state: 'committed', scope_ref: structuredClone(group.scope_ref),
+      prepared_seed_provenance: null,
+      functional_buckets: [group.functional_bucket],
+      allowed_admission_classes:
+        structuredClone(group.allowed_admission_classes),
+      permission_refs: structuredClone(group.permission_refs) }] };
   } catch {
     throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
   }
-}
-
-function resolveSceneProfile(catalog, locationRef) {
-  if (catalog == null) return null;
-  const matches = catalog.profiles?.filter(({ location_profile_refs: refs }) =>
-    refs.includes(locationRef)) ?? [];
-  if (matches.length !== 1) throw code('ORDINARY_FIRST_ENTRY_SCENE_PROFILE_MISSING');
-  return matches[0];
 }
 function text(value) { return typeof value === 'string' && value.trim() === value && value.length > 0; }
 function code(value) { return Object.assign(new Error(value), { code: value, spatialCode: 'state_version_conflict' }); }

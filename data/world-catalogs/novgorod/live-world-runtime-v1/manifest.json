@@ -23,11 +23,6 @@
       "profile_set_id": "novgorod_live_world_ordinary_profiles_v1",
       "path": "data/world-catalogs/novgorod/live-world-runtime-v1/ordinary-profiles.json",
       "status": "approved"
-    },
-    {
-      "profile_set_id": "novgorod_procedural_scene_baselines_v1",
-      "path": "data/world-catalogs/novgorod/live-world-runtime-v1/procedural-scene-baselines.json",
-      "status": "approved"
     }
   ]
 }

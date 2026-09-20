@@ -155,8 +155,7 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
             transaction, partyId, changeSetId: row.change_set_id,
             firstEntryBinding: {
               g6_instance_id: row.g6_instance_id,
-              position_id: row.position_id,
-              location_ref: row.location_ref
+              position_id: row.position_id
             }
           });
           await transaction.query('COMMIT');
@@ -169,33 +168,6 @@ export function createLowerDvinaTracePhase1BProductionAdapter({
         }
       }
     }),
-    async loadInitialScene(partyId) {
-      const result = await partyPool.query(
-        `SELECT aggregate.aggregate_payload,
-                COALESCE(jsonb_agg(jsonb_build_object(
-                  'resource_ref',resource.resource_node_id,
-                  'quantity',resource.quantity_numerator,
-                  'quantity_unit',resource.quantity_unit_ref,
-                  'lifecycle_state',resource.lifecycle_state)
-                  ORDER BY resource.resource_node_id)
-                  FILTER (WHERE resource.resource_node_id IS NOT NULL),
-                  '[]'::jsonb) AS resources
-           FROM party_runtime.party_ordinary_materialization_aggregates aggregate
-           LEFT JOIN party_runtime.party_resource_nodes resource
-             ON resource.party_id=aggregate.party_id
-            AND resource.source_resource_ref->>'entity_id' IN (
-              SELECT basis_ref FROM party_runtime.party_ordinary_materialization_basis_catalog
-               WHERE party_id=aggregate.party_id
-                 AND scope_kind=aggregate.scope_kind AND scope_id=aggregate.scope_id)
-          WHERE aggregate.party_id=$1
-          GROUP BY aggregate.aggregate_payload`, [partyId]);
-      if (result.rowCount !== 1) return null;
-      return Object.freeze({
-        background_groups: structuredClone(
-          result.rows[0].aggregate_payload?.background_groups ?? []),
-        resources: structuredClone(result.rows[0].resources ?? [])
-      });
-    },
     loadInternal: (partyId) => repository.loadInternal(partyId),
     loadVisible: (partyId) => repository.loadVisible(partyId)
   });

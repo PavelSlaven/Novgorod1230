@@ -116,4 +116,3 @@ test('missing personal property row blocks authoring generation', async () => {
     [path]: rows.filter(({ id }) => id !== 'property_personal_possession_v1')
   }), { code: 'FUNCTIONAL_PROPERTY_BASIS_INVALID' });
 });
-

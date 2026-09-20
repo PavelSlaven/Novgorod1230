@@ -123,7 +123,7 @@ test('reuse, duplicate item and mechanics guards are fail-closed', async () => {
       external_hand_cost: 0, external_hand_capacity: 0 } }),
   { code: 'FUNCTIONAL_MECHANICS_OVERFLOW' });
 });
-
+// End of functional allocation authoring probes.
 test('missing personal property row blocks authoring generation', async () => {
   const path = 'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/candidate.json';
   const pack = JSON.parse(await import('node:fs/promises').then(({ readFile }) =>

@@ -90,7 +90,8 @@ const integrationOpeningNarration = Object.freeze({ run: async ({ requestId }) =
     visible_context_package_digest: 'integration-visible',
     narrator_starting_prose: { version: 1,
       schema: 'narrator_starting_prose', request_id: requestId,
-      prose_status: 'drafted', prose: 'Любава готовит рыбацкий стан к работе.',
+      prose_status: 'drafted',
+      prose: 'Любава готовит рыбацкий стан у Вихтуя к работе.',
       action_options: [], used_visible_context_refs: [],
       self_constraints_check: {} }, generation_history: [],
     handoff_permission: { can_send_to_prose_audit: true } };

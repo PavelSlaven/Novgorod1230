@@ -64,11 +64,41 @@ export async function buildActorAppearanceV6CarryForward(root = process.cwd()) {
   const candidateRowCountByTable = rowCounts(projected);
   const candidateIdsByTable = idsByTable(projected);
   const candidateRowsSha256 = digest(projected);
+  const authoringAttestation = {
+    schema: 'rus.actor_appearance_carry_forward_attestation.v1',
+    subject_commit: 'd068df5b',
+    scope: 'authoring_only',
+    status: 'approved',
+    source_manifest: source,
+    target_manifest: target,
+    source_projection_sha256: sourceProjectionSha256,
+    candidate_rows_sha256: candidateRowsSha256,
+    row_count: 166,
+    row_count_by_table: candidateRowCountByTable,
+    ids_by_table: candidateIdsByTable,
+    semantic_diffs: 0,
+    added_rows: 0,
+    deleted_rows: 0,
+    allowed_change_paths: ['region_category_options[].world_revision_id'],
+    equipment_bindings: {
+      row_count: 20,
+      equipment_slot_category_refs: [
+        'garment.equipment_slot.base_garment',
+        'garment.equipment_slot.outer_garment'
+      ]
+    },
+    import_activation: false,
+    runtime_selectable: false,
+    runtime_import_rows: 0,
+    runtime_status: 'typed_data_gap'
+  };
   return {
     schema: 'rus.actor_appearance_carry_forward_candidate.v1',
     candidate_id: 'novgorod-spatial-v3-production-v6-actor-appearance-carry-forward-001',
-    status: 'pending_independent_approval',
-    approval_status: 'pending',
+    status: 'authoring_approved_pending_import_authorization',
+    approval_status: 'authoring_approved',
+    authoring_approved: true,
+    authoring_attestation: authoringAttestation,
     import_activation: false,
     runtime_status: 'typed_data_gap',
     runtime_gap_code: 'ACTOR_APPEARANCE_V6_IMPORT_NOT_APPROVED',
@@ -172,12 +202,12 @@ async function readJson(path) {
 
 function report(candidate) {
   return `# v6 actor appearance carry-forward candidate\n\n`
-    + `Status: \`${candidate.status}\`. Import and activation are \`false\`; runtime rows are intentionally empty with \`${candidate.runtime_gap_code}\`.\n\n`
+    + `Status: \`${candidate.status}\`. Authoring attestation approves commit \`${candidate.authoring_attestation.subject_commit}\`; import and activation remain \`false\`, with empty runtime rows and \`${candidate.runtime_gap_code}\`.\n\n`
     + `Source: \`${candidate.source.world_revision_id}\` / \`${candidate.source.catalog_digest}\`.\n`
     + `Target: \`${candidate.target.world_revision_id}\` / \`${candidate.target.catalog_digest}\`.\n\n`
     + `Source projection SHA-256: \`${candidate.source_projection_sha256}\`.\n`
     + `Candidate rows SHA-256: \`${candidate.candidate_rows_sha256}\`.\n\n`
-    + `Projected actor appearance and linen-shirt/wool-outer-garment binding rows preserve v4 semantics, source record, weights and applicability; only \`region_category_options.world_revision_id\` changes to v6.\n`;
+    + `Attestation: ${candidate.authoring_attestation.row_count} exact rows, zero semantic additions/deletions/diffs; only \`region_category_options.world_revision_id\` changes to v6. Equipment bindings: 20 rows, slots \`base_garment\` and \`outer_garment\`.\n`;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

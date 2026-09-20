@@ -36,8 +36,8 @@ and adds no second transaction owner.
   проверяться по своим historical pins. Neutral catalog владеет собственными
   execution/world/binding inputs; Lower Dvina publication загружается только
   для своей external entry и не блокирует другой authored start. Read/reload
-  разрешает exact persisted approved/deprecated binding, без latest fallback;
-  только новая партия выбирает current binding. Authored profile получает
+  разрешает только persisted current approved binding, без latest fallback;
+  development saves старых authored revisions не поддерживаются. Authored profile получает
   bounded role/occupation closure из digest-pinned regional catalogs; server
   не назначает actor approval самостоятельно.
 
@@ -50,8 +50,7 @@ and adds no second transaction owner.
   Exact elapsed time остаётся code-owned UI metadata; narration получает
   подтверждённый performed-action beat без копирования длительности.
   Current authored binding revision 5 pins materializer/result/snapshot v3.
-  Accepted revisions 3 and 4 remain deprecated with their truthful physical
-  snapshot v1 metadata. Phase 2 resolves only the persisted exact binding,
+  Deprecated development revisions 3 and 4 удалены. Phase 2 resolves only the persisted exact current binding,
   without latest lookup, reroll or rematerialization. The first factual turn
   commits the normal turn snapshot; reload and later turns use committed state.
 
@@ -368,8 +367,8 @@ initial Spatial-v3 G6/position/journey rows plus profile-owned local topology.
 It then provisions the same generic O1 and neutral S1 authority from those
 committed rows. Neutral N1 applies only to a persisted approved background NPC
 profile and materialized routine. O1, A1, S1 and N1 use existing turn/P16
-owners; deprecated authored bindings remain readable and are not
-rematerialized. Historical replay derives scenario/schema/screen kind from the
+owners; старые development bindings не читаются и не rematerialize-ятся.
+Current replay derives scenario/schema/screen kind from the
 persisted party payload instead of the Lower Dvina default.
 A new admitted ordinary `search`, or standalone focused `inspect` with
 `continuation:null`, applies the existing `short/light` activity profile through

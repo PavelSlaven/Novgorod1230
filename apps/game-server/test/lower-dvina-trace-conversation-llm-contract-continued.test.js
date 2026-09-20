@@ -221,6 +221,23 @@ test('player speech binds code-owned target and verbatim text', () => {
     request.player_safe_context.verbatim_utterance_text);
 });
 
+test('player leave-conversation lifecycle clears speech-only carrier fields',
+  () => {
+    const request = playerRequest({ target_npc_ref: ref('npc', 'npc-1') });
+    const semantic = playerPlan(request, {
+      contribution_kind: 'leave_conversation',
+      intended_addressee_refs: [ref('npc', 'npc-1')],
+      affected_actor_refs: [ref('npc', 'npc-1')]
+    });
+    const assembled = assemblePlayerConversationPlan(semantic, request);
+    assert.deepEqual(assembled.primary_addressee_ref, null);
+    assert.deepEqual(assembled.intended_addressee_refs, []);
+    assert.deepEqual(assembled.affected_actor_refs, []);
+    assert.equal(assembled.speech, null);
+    assert.equal(validatePlayerConversationContributionPlan(
+      assembled, request), true);
+  });
+
 test('player required candidate is validator-valid and preserves operation', () => {
   const required = {
     verbatim_utterance_text: 'Скажи правду.', required_resolution: 'check_required',

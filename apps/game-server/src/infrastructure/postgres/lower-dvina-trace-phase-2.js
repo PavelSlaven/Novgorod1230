@@ -99,8 +99,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({ partyPool,
         row,
         phase1A,
         partyPool: readPool,
-        temporalSourceProof,
-        authoredTurnCompatibility: resolvedBinding?.turn_compatibility ?? null
+        temporalSourceProof
       });
       const visible = withPhase2CurrentVisibleContext(
         initial,

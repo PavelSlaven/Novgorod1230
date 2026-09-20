@@ -200,7 +200,7 @@ function assertCatalog(manifest, starts) {
     || new Set(starts.bindings.map(({ revision }) => revision)).size
       !== starts.bindings.length
     || starts.bindings.some((binding) => !Number.isInteger(binding.revision)
-      || !['approved', 'deprecated'].includes(binding.status)
+      || binding.status !== 'approved'
       || !text(binding.binding_id) || !text(binding.scenario_id)
       || binding.revision >= 3 && (!text(binding.materializer_binding_id)
         || !text(binding.materializer_version) || !text(binding.snapshot_schema))

@@ -15,6 +15,18 @@ export function assemblePlayerConversationPlan(choice, request) {
       state_version: request.state_version,
       speaker_ref: structuredClone(request.speaker_ref)
     });
+  if (assembled.contribution_kind === 'leave_conversation') return {
+    ...assembled,
+    primary_addressee_ref: null,
+    intended_addressee_refs: [],
+    affected_actor_refs: [],
+    speech: null,
+    resolution: 'automatic',
+    activity: { duration_class: 'domain_owned', effort: 'none' },
+    supporting_operations: [],
+    check: null,
+    handoff: null
+  };
   if (assembled.contribution_kind !== 'speech') return assembled;
   if (assembled.input_mode === 'verbatim'
     && typeof request.player_safe_context?.verbatim_utterance_text === 'string') {

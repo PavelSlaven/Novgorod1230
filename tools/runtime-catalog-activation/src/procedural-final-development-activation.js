@@ -26,6 +26,22 @@ export async function buildProceduralFinalDevelopmentActivation({ worldPool,
     throw Object.assign(new Error('Development activation input mismatch.'),
       { code: 'PROCEDURAL_DEVELOPMENT_ACTIVATION_INPUT_INVALID' });
   }
+  const policy = ledger.root.development_activation_policy;
+  if (policy?.activation_scope !== 'new_development_parties_only'
+      || policy.production_deploy_authorized !== false
+      || policy.existing_party_migration_authorized !== false
+      || policy.old_save_rematerialization_authorized !== false
+      || policy.audited_candidate_digest !==
+        pack.independent_attestation.candidate_digest
+      || policy.imported_candidate_digest !== pack.candidate_digest
+      || policy.source_pack_digest !== pack.source_pack_digest
+      || policy.record_operations_digest !==
+        pack.append_only_import_plan.records_digest
+      || policy.compatible_world_pin_manifest_digest !==
+        pack.compatible_world_tuple.compatible_world_pin_manifest_digest) {
+    throw Object.assign(new Error('Development activation policy mismatch.'),
+      { code: 'PROCEDURAL_DEVELOPMENT_ACTIVATION_POLICY_INVALID' });
+  }
   const runtimeRelease = buildRuntimeReleaseIdentity({ gitCommitSha,
     buildReleaseManifestDigest: digestEnvelope({
       schema: 'rus.procedural_final_development_release.v1',
@@ -117,11 +133,38 @@ export async function buildProceduralFinalDevelopmentActivation({ worldPool,
 
 export function applyProceduralFinalDevelopmentActivation({ worldPool,
   partyPool, bundle }) {
-  if (bundle?.activation_scope !== 'new_development_parties_only')
-    throw new TypeError('Exact development activation bundle is required.');
+  assertDevelopmentActivationBoundary(bundle);
   return activateApprovedCatalog({ worldPool, partyPool,
     request: bundle.request, attestation: bundle.attestation,
     activationScope: bundle.activation_scope });
+}
+
+export function assertDevelopmentActivationBoundary(bundle) {
+  const attestation = bundle?.attestation;
+  const { attestation_digest: claimed, ...payload } = attestation ?? {};
+  if (bundle?.activation_scope !== 'new_development_parties_only'
+      || claimed !== digestEnvelope(payload)
+      || attestation.activation_scope !== 'new_development_parties_only'
+      || attestation.production_deploy_authorized !== false
+      || attestation.existing_party_migration_authorized !== false
+      || attestation.old_save_rematerialization_authorized !== false
+      || attestation.audited_candidate_digest !==
+        '12a160383a5aba4dfbda9aa5f6ef64273d712944322d9fb44f3a1eb1d45d5d67'
+      || attestation.independent_import_approval_attestation_digest !==
+        '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c'
+      || attestation.imported_candidate_digest !==
+        '29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1'
+      || attestation.source_pack_digest !==
+        '4ddd8a0bd3770312808166599e8a57801939c7fc2b915c2fcc3c7db7030422af'
+      || attestation.record_operations_digest !==
+        'ceb7fc4bd4f9a54eb1b5d6ecc1db597db47b6548e383bd8a5dd828ee697921f2'
+      || attestation.import_audit_digest !== bundle.request.import_audit_digest
+      || attestation.target_revision_id !== bundle.request.target_revision_id
+      || attestation.target_catalog_digest !== bundle.request.target_catalog_digest) {
+    throw Object.assign(new Error('Exact development activation boundary is invalid.'),
+      { code: 'PROCEDURAL_DEVELOPMENT_ACTIVATION_BOUNDARY_INVALID' });
+  }
+  return bundle;
 }
 
 export async function installProceduralFinalDevelopmentCatalog({ worldPool,

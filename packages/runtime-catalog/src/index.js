@@ -337,7 +337,8 @@ async function loadApprovedItemCatalog({
          dependency_assertions_audit_digest,
          import_audit_digest,
          imported_by,
-         imported_at
+         imported_at,
+         provenance
        FROM world_base.catalog_imports
        WHERE import_id = $1`,
       [pin.import_id]
@@ -345,6 +346,11 @@ async function loadApprovedItemCatalog({
     'RUNTIME_CATALOG_IMPORT_AUDIT_INVALID',
     'The pinned import audit root is missing.'
   );
+  const developmentPolicy = importRoot.provenance
+    ?.development_activation_policy;
+  delete importRoot.provenance;
+  if (developmentPolicy != null)
+    importRoot.development_activation_policy = developmentPolicy;
   validateImportRootAgainstPin(importRoot, pin);
 
   const tables = rowsFrom(await worldBaseReader.read(

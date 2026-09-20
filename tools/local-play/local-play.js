@@ -149,6 +149,12 @@ export async function startLocalPlay({
     await Promise.allSettled([managedRuntime.close(), postgres.close()]);
     throw localPlayError('LOCAL_PLAY_RUNTIME_PIN_INVALID', 'Active runtime catalog has no compatible pin manifest digest.');
   }
+  if (pin.catalog_revision_id === 'procedural_scene_final_candidate_v1_001'
+      && pin.activation_scope !== 'new_development_parties_only') {
+    await Promise.allSettled([managedRuntime.close(), postgres.close()]);
+    throw localPlayError('LOCAL_PLAY_RUNTIME_PIN_INVALID',
+      'Final procedural catalog is not development-scoped.');
+  }
   const child = spawnServer({ env: buildServerEnv({ env,
     worldUrl: postgres.worldUrl, partyUrl: postgres.partyUrl,
     pinManifestDigest, port, managedRuntime, git }) });

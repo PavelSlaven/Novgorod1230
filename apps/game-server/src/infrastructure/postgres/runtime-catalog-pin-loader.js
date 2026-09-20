@@ -10,7 +10,7 @@ export async function loadActiveRuntimeCatalogPin(
        e.import_id,e.import_audit_digest,e.record_registry_digest,
        e.runtime_contract_digest,e.compatible_world_revision_id,
        e.compatible_world_catalog_digest,
-       e.compatible_world_pin_manifest_digest
+       e.compatible_world_pin_manifest_digest,i.provenance
      FROM world_base.runtime_catalog_activation_events e
      JOIN world_base.domain_catalog_revisions r
        ON r.catalog_revision_id=e.catalog_revision_id
@@ -48,6 +48,19 @@ export async function loadActiveRuntimeCatalogPin(
     throw serverError('RUNTIME_CATALOG_ACTIVE_PIN_INVALID',
       'Latest runtime-catalog activation has an invalid exact pin.');
   }
+  const policy = row.provenance?.development_activation_policy ?? null;
+  if (row.catalog_revision_id === 'procedural_scene_final_candidate_v1_001'
+      && (policy?.schema !==
+          'rus.procedural_final_development_activation_policy.v1'
+        || policy.activation_scope !== 'new_development_parties_only'
+        || policy.production_deploy_authorized !== false
+        || policy.existing_party_migration_authorized !== false
+        || policy.old_save_rematerialization_authorized !== false
+        || policy.compatible_world_pin_manifest_digest !==
+          row.compatible_world_pin_manifest_digest)) {
+    throw serverError('RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID',
+      'Final procedural activation lacks exact development-only metadata.');
+  }
   return Object.freeze({
     schema: 'rus.runtime_catalog_pin.v2',
     catalog_scope: row.catalog_scope,
@@ -62,6 +75,7 @@ export async function loadActiveRuntimeCatalogPin(
     compatible_world_catalog_digest:
       row.compatible_world_catalog_digest,
     compatible_world_pin_manifest_digest:
-      row.compatible_world_pin_manifest_digest
+      row.compatible_world_pin_manifest_digest,
+    activation_scope: policy?.activation_scope ?? null
   });
 }

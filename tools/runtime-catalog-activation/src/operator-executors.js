@@ -484,7 +484,10 @@ async function insertImportLedger(client, ledger) {
              $17,$18,$19,$20,$21,$22,$23)`,
     [
       root.import_id, root.target_revision_id, root.promotion_manifest_digest,
-      JSON.stringify({ approval_request_digest: root.approval_request_digest }),
+      JSON.stringify({ approval_request_digest: root.approval_request_digest,
+        ...(root.development_activation_policy == null ? {} : {
+          development_activation_policy:
+            root.development_activation_policy }) }),
       root.catalog_scope, root.parent_revision_id, root.parent_catalog_digest,
       root.parent_snapshot_manifest_digest, root.compatible_world_revision_id,
       root.compatible_world_catalog_digest, root.compatible_world_pin_manifest_digest,

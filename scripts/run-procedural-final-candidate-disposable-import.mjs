@@ -27,6 +27,9 @@ import { RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST } from
   '../packages/runtime-catalog/src/runtime-contract.js';
 import { computeCanonicalRecordDigest, projectCanonicalRecord } from
   '../packages/runtime-catalog/src/canonical-records.js';
+import { createRuntimeCatalogLoader,
+  loadApprovedProceduralCompiledCatalog } from
+  '../packages/runtime-catalog/src/index.js';
 import { buildS1AuthoringV6ImportSql } from
   '../tools/spatial-v3/s1-authoring-v5-importer.mjs';
 import { buildLowerDvinaV2ImportSql } from
@@ -176,6 +179,14 @@ try {
     worldPool: pool, partyPool, bundle: activationBundle });
   const activePin = await loadActiveRuntimeCatalogPin(pool,
     'item_container_materialization_v2');
+  const runtimeLoader = createRuntimeCatalogLoader({ worldBaseReader: {
+    read: (sql, parameters) => pool.query(sql, parameters)
+  }, supportedRuntimeContractDigests: [
+    RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST] });
+  const verifiedCatalog = await runtimeLoader.loadApprovedItemCatalog({
+    pin: activePin });
+  const compiledCatalog = loadApprovedProceduralCompiledCatalog({
+    verifiedCatalog, pin: activePin });
   await seedPartyWithPin(partyPool, 'party-new-development', activePin);
   const partyPins = (await partyPool.query(
     `SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id
@@ -239,6 +250,8 @@ try {
         id === 'party-old-fixture').catalog_revision_id,
       new_party_revision_id: partyPins.find(({ party_id: id }) =>
         id === 'party-new-development').catalog_revision_id,
+      verified_compiled_profile_count: compiledCatalog.profiles.length,
+      verified_compiled_mapping_count: compiledCatalog.mappings.length,
       existing_party_rows_updated: 0,
       production_deploy: false,
       old_save_migration: false,

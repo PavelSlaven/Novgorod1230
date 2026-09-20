@@ -174,6 +174,8 @@ test('tracked disposable readback is sanitized and development-scoped', async ()
   assert.equal(result.development_activation.new_party_revision_id,
     'procedural_scene_final_candidate_v1_001');
   assert.equal(result.development_activation.existing_party_rows_updated, 0);
+  assert.equal(result.development_activation.verified_compiled_profile_count, 13);
+  assert.equal(result.development_activation.verified_compiled_mapping_count, 7);
   assert.doesNotMatch(JSON.stringify(result),
     /postgresql:\/\/|local_only|password|connection_string/u);
 });

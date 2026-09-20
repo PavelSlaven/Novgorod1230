@@ -216,7 +216,20 @@ export function buildProceduralFinalCandidateImportLedger({ baseline, pack }) {
       approval_request_digest: attestation.candidate_digest,
       approval_attestation_digest: attestation.attestation_digest,
       schema_migration_digest:
-        WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
+        WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest,
+      development_activation_policy: {
+        schema: 'rus.procedural_final_development_activation_policy.v1',
+        activation_scope: 'new_development_parties_only',
+        audited_candidate_digest: attestation.candidate_digest,
+        imported_candidate_digest: pack.candidate_digest,
+        source_pack_digest: pack.source_pack_digest,
+        record_operations_digest: pack.append_only_import_plan.records_digest,
+        compatible_world_pin_manifest_digest:
+          pack.compatible_world_tuple.compatible_world_pin_manifest_digest,
+        production_deploy_authorized: false,
+        existing_party_migration_authorized: false,
+        old_save_rematerialization_authorized: false
+      }
     },
     tables: pack.append_only_import_plan.tables,
     records,

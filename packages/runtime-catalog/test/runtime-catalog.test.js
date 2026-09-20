@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { createHash } from 'node:crypto';
 import {
   RUNTIME_CATALOG_SCOPE,
   RuntimeCatalogError,
@@ -570,22 +571,28 @@ test('applicable projection is pure, immutable and filters only verified records
   assert.equal(verifiedCatalog.records_by_table.item_profile_candidates.length, 2);
 });
 
-test('procedural compiled catalog requires exact final activation pin', () => {
+test('procedural compiled catalog requires exact final activation pin', async () => {
   const pin = { schema: 'rus.runtime_catalog_pin.v2',
     catalog_revision_id: 'procedural_scene_final_candidate_v1_001',
     catalog_digest:
       '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c' };
-  const records = Array.from({ length: 21 }, (_, index) => ({
-    record_id: `record-${index}`, version: 1,
-    record_kind: index < 13 ? 'profile'
-      : index < 20 ? 'mapping' : 'approval_metadata',
-    status: 'approved_authoring_not_runtime_selectable', payload: {}
-  }));
+  const source = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
+      + 'final-candidate-pack-v1/candidate.json', import.meta.url), 'utf8'));
+  const records = source.candidate_rows_by_table
+    .procedural_scene_compiled_records.map((record) => ({ ...record,
+      version: String(record.version) }));
   const verifiedCatalog = { schema: 'rus.verified_item_catalog.v2',
-    verified: true, pin: structuredClone(pin), records_by_table: {
+    verified: true, pin: structuredClone(pin), import_audit: {
+      approval_attestation_digest:
+        '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c',
+      import_audit_digest: '9'.repeat(64)
+    }, records_by_table: {
       procedural_scene_compiled_records: records,
       universal_categories: [{ id: 'category' }]
     } };
+  pin.import_audit_digest = '9'.repeat(64);
+  verifiedCatalog.pin.import_audit_digest = pin.import_audit_digest;
   const loaded = loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
     pin });
   assert.equal(loaded.profiles.length, 13);
@@ -596,5 +603,15 @@ test('procedural compiled catalog requires exact final activation pin', () => {
   { code: 'PROCEDURAL_COMPILED_CATALOG_PIN_MISMATCH' });
   assert.throws(() => loadApprovedProceduralCompiledCatalog({
     verifiedCatalog: { ...verifiedCatalog, records_by_table: {} }, pin }),
+  { code: 'PROCEDURAL_COMPILED_CATALOG_MISSING' });
+  const fake = structuredClone(verifiedCatalog);
+  fake.records_by_table.procedural_scene_compiled_records[0].record_id =
+    'approval:substitution';
+  fake.records_by_table.procedural_scene_compiled_records[0].payload_digest =
+    createHash('sha256').update(canonicalStringify(
+      fake.records_by_table.procedural_scene_compiled_records[0].payload))
+      .digest('hex');
+  assert.throws(() => loadApprovedProceduralCompiledCatalog({
+    verifiedCatalog: fake, pin }),
   { code: 'PROCEDURAL_COMPILED_CATALOG_MISSING' });
 });

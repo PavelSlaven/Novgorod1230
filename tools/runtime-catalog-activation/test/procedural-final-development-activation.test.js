@@ -5,6 +5,9 @@ import { buildProceduralFinalCandidateImportLedger } from
   '../src/procedural-v6-import.js';
 import { buildProceduralFinalDevelopmentActivation } from
   '../src/procedural-final-development-activation.js';
+import { assertDevelopmentActivationBoundary } from
+  '../src/procedural-final-development-activation.js';
+import { digestEnvelope } from '../src/artifact-contracts.js';
 import { buildPartyCatalogPinRecord } from
   '../../../packages/new-game/src/stages/stage-24-party-db-write-plan/code/runtime-catalog-pins.js';
 import { loadActiveRuntimeCatalogPin } from
@@ -74,6 +77,22 @@ test('development activation rejects an unpinned existing party', async () => {
   }), { code: 'ACTIVATION_PARTY_PREFLIGHT_BLOCKED' });
 });
 
+test('resealed production authorization tamper is rejected', async () => {
+  const ledger = buildProceduralFinalCandidateImportLedger({ baseline, pack });
+  const bundle = structuredClone(await buildProceduralFinalDevelopmentActivation({
+    worldPool: { async query() { return { rows: [] }; } },
+    partyPool: { async query() { return { rows: [{ party_count: 0,
+      pinned_party_count: 0, missing_domain_pin_count: 0,
+      inflight_count: 0 }] }; } },
+    pack, ledger, gitCommitSha: '8'.repeat(40), authorizationRef: 'test'
+  }));
+  bundle.attestation.production_deploy_authorized = true;
+  const { attestation_digest: ignored, ...payload } = bundle.attestation;
+  bundle.attestation.attestation_digest = digestEnvelope(payload);
+  assert.throws(() => assertDevelopmentActivationBoundary(bundle),
+    { code: 'PROCEDURAL_DEVELOPMENT_ACTIVATION_BOUNDARY_INVALID' });
+});
+
 test('active pin loader fails closed for missing or malformed activation',
   async () => {
     await assert.rejects(() => loadActiveRuntimeCatalogPin({
@@ -92,4 +111,19 @@ test('active pin loader fails closed for missing or malformed activation',
         compatible_world_pin_manifest_digest: '5'.repeat(64) }] }; }
     }, 'item_container_materialization_v2'),
     { code: 'RUNTIME_CATALOG_ACTIVE_PIN_INVALID' });
+    await assert.rejects(() => loadActiveRuntimeCatalogPin({
+      async query() { return { rows: [{ event_id: 'event',
+        catalog_scope: 'item_container_materialization_v2',
+        catalog_revision_id: 'procedural_scene_final_candidate_v1_001',
+        catalog_digest:
+          '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c',
+        import_id: 'import', import_audit_digest: '1'.repeat(64),
+        record_registry_digest: '2'.repeat(64),
+        runtime_contract_digest: '3'.repeat(64),
+        compatible_world_revision_id: 'world',
+        compatible_world_catalog_digest: '4'.repeat(64),
+        compatible_world_pin_manifest_digest: '5'.repeat(64),
+        provenance: {} }] }; }
+    }, 'item_container_materialization_v2'),
+    { code: 'RUNTIME_CATALOG_ACTIVE_SCOPE_INVALID' });
   });

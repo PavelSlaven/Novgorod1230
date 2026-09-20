@@ -1,5 +1,30 @@
 import { deepFreeze, fail, isDigest, rowsFrom } from './shared.js';
 import { canonicalStringify } from './canonical-records.js';
+import { createHash } from 'node:crypto';
+
+const FINAL_COMPILED_IDENTITIES = Object.freeze([
+  ['approval:final-candidate', 'approval_metadata'],
+  ['mapping:drying_dormant_storage_place_group_v1', 'mapping'],
+  ['mapping:drying_dormant_work_zone_place_group_v1', 'mapping'],
+  ['mapping:fishing_storage_place_group_v1', 'mapping'],
+  ['mapping:fishing_tool_group_v1', 'mapping'],
+  ['mapping:fishing_work_material_group_v1', 'mapping'],
+  ['mapping:fishing_work_zone_place_group_v1', 'mapping'],
+  ['mapping:natural_shore_typed_layers_v1', 'mapping'],
+  ['profile:actor-appearance-v6', 'profile'],
+  ['profile:novgorod_drying_storage_workspace_v3', 'profile'],
+  ['profile:novgorod_inland_fishing_worksite_v3', 'profile'],
+  ['profile:novgorod_natural_shore_v3', 'profile'],
+  ['profile:npc-equipment:novgorod_commoner_male_basic_clothing_v1', 'profile'],
+  ['profile:npc-equipment:novgorod_fishing_water_equipment_v1', 'profile'],
+  ['profile:npc-equipment:novgorod_transport_guiding_equipment_v1', 'profile'],
+  ['profile:onomastics-1230-1250', 'profile'],
+  ['profile:regional-drying-workspace', 'profile'],
+  ['profile:regional-land_use', 'profile'],
+  ['profile:regional-landscape', 'profile'],
+  ['profile:regional-place', 'profile'],
+  ['profile:regional-water', 'profile']
+]);
 
 const REGIONAL_SQL = Object.freeze({
   landscape: `SELECT template.* FROM world_base.landscape_templates template
@@ -46,11 +71,24 @@ export function loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
   }
   const records = verifiedCatalog.records_by_table
     ?.procedural_scene_compiled_records;
+  const expected = new Map(FINAL_COMPILED_IDENTITIES);
+  const seen = new Set();
   if (!Array.isArray(records) || records.length !== 21
       || records.some((record) => record.status !==
         'approved_authoring_not_runtime_selectable'
-          || !['profile', 'mapping', 'approval_metadata']
-            .includes(record.record_kind))) {
+          || record.version !== '1'
+          || expected.get(record.record_id) !== record.record_kind
+          || seen.has(record.record_id)
+          || record.source_pack_digest !==
+            '4ddd8a0bd3770312808166599e8a57801939c7fc2b915c2fcc3c7db7030422af'
+          || record.payload_digest !== createHash('sha256')
+            .update(canonicalStringify(record.payload)).digest('hex')
+          || (seen.add(record.record_id), false))
+      || seen.size !== expected.size
+      || verifiedCatalog.import_audit?.approval_attestation_digest !==
+        '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c'
+      || verifiedCatalog.import_audit?.import_audit_digest !==
+        pin.import_audit_digest) {
     fail('PROCEDURAL_COMPILED_CATALOG_MISSING',
       'Activated procedural compiled records are missing or invalid.');
   }

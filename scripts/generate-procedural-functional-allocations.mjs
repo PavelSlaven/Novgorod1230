@@ -38,6 +38,8 @@ export async function generateProceduralFunctionalAllocations(rootDir,
     id === 'fishing_tool_group_v1');
   const materialGroup = functional.mappings.find(({ mapping_id: id }) =>
     id === 'fishing_work_material_group_v1');
+  const workZone = functional.mappings.find(({ mapping_id: id }) =>
+    id === 'fishing_work_zone_place_group_v1');
   const fisher = equipment.occupation_equipment_profiles.find(
     ({ profile_id: id }) => id === 'novgorod_fishing_water_equipment_v1');
   const activityTool = fisher.tools.find(({ activity_profile_ref: ref }) =>
@@ -65,7 +67,7 @@ export async function generateProceduralFunctionalAllocations(rootDir,
       role_ref: 'nov_role_fisher',
       activity_profile_ref: 'activity_assist_fishing_net_v1',
       actor_presence: 'present_committed_scene',
-      actor_kinds: ['npc', 'player'],
+      actor_kinds: ['npc', 'player_character'],
       stable_unique_actor_instance_id_required: true
     },
     selection_cardinality: 'deterministic_one_from_nonempty',
@@ -94,6 +96,12 @@ export async function generateProceduralFunctionalAllocations(rootDir,
       required_position_state: 'committed',
       work_zone_role: 'causal_scene_basis_only',
       garment_slot_authorized: false
+    },
+    scene_binding: {
+      family_candidate_ref: 'novgorod_inland_fishing_worksite_v3@1',
+      function_ref: 'fishing_worksite',
+      work_zone_mapping_id: workZone.mapping_id,
+      work_zone_mapping_digest: digest(workZone)
     },
     creation: {
       reuse_before_create: true, create_quantity: 1,
@@ -152,7 +160,8 @@ export async function generateProceduralFunctionalAllocations(rootDir,
       actor_resolution_gaps: ['FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING',
         'FUNCTIONAL_ACTOR_ID_AMBIGUOUS'],
       placement_gaps: ['FUNCTIONAL_PLACEMENT_INVALID'],
-      runtime_inventory_owner_gaps: ['FUNCTIONAL_MECHANICS_INPUT_MISSING',
+      runtime_inventory_owner_gaps: [
+        'FUNCTIONAL_RUNTIME_INVENTORY_OWNER_VALIDATION_PENDING',
         'FUNCTIONAL_REUSE_PROJECTION_INVALID',
         'FUNCTIONAL_CROSS_LAYER_REUSE_INVALID'],
       always_remaining: ['FUNCTIONAL_CONTAINER_MAPPING_MISSING']
@@ -174,9 +183,19 @@ export async function generateProceduralFunctionalAllocations(rootDir,
 }
 
 export function resolveProceduralFunctionalAllocations({ policy, actors,
-  persistedPositions, existingItems = [], ...forbiddenSummary }) {
+  persistedPositions, existingItems = [], scenePackage,
+  ...forbiddenSummary }) {
   if (Object.keys(forbiddenSummary).length > 0)
     fail('FUNCTIONAL_CALLER_MECHANICS_SUMMARY_FORBIDDEN');
+  if (!scenePackage?.scene_package_id || !scenePackage.scene_package_digest
+      || scenePackage.family_candidate_ref !==
+        policy.scene_binding.family_candidate_ref
+      || scenePackage.function_ref !== policy.scene_binding.function_ref
+      || scenePackage.work_zone_mapping_id !==
+        policy.scene_binding.work_zone_mapping_id
+      || scenePackage.work_zone_mapping_digest !==
+        policy.scene_binding.work_zone_mapping_digest)
+    fail('FUNCTIONAL_SCENE_PACKAGE_MISMATCH');
   const ids = actors.map(({ actor_instance_id: id }) => id);
   if (ids.some((id) => typeof id !== 'string' || !id)
       || new Set(ids).size !== ids.length) fail('FUNCTIONAL_ACTOR_ID_AMBIGUOUS');
@@ -186,16 +205,24 @@ export function resolveProceduralFunctionalAllocations({ policy, actors,
     && actor.occupation_ref === policy.applicability.occupation_ref
     && actor.role_ref === policy.applicability.role_ref
     && actor.activity_profile_refs?.includes(
-      policy.applicability.activity_profile_ref))
+      policy.applicability.activity_profile_ref)
+    && actor.scene_package_id === scenePackage.scene_package_id
+    && actor.scene_package_digest === scenePackage.scene_package_digest)
     .sort((left, right) => left.actor_instance_id.localeCompare(
       right.actor_instance_id));
   if (matches.length === 0) fail('FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING');
   const actor = matches[0];
   const positions = persistedPositions.filter(({ function_layer: layer,
-    state, actor_instance_id: actorId }) => layer ===
+    state, actor_instance_id: actorId, scene_package_id: packageId,
+    scene_package_digest: packageDigest,
+    work_zone_mapping_id: mappingId }) => layer ===
       policy.placement.required_function_layer
       && state === policy.placement.required_position_state
-      && actorId === actor.actor_instance_id);
+      && actorId === actor.actor_instance_id
+      && packageId === scenePackage.scene_package_id
+      && packageDigest === scenePackage.scene_package_digest
+      && mappingId ===
+        policy.scene_binding.work_zone_mapping_id);
   if (positions.length !== 1) fail('FUNCTIONAL_PLACEMENT_INVALID');
   const position = positions[0];
   const existingIds = existingItems.map(({ item_instance_id: id }) => id);
@@ -227,10 +254,18 @@ export function resolveProceduralFunctionalAllocations({ policy, actors,
     const physicalPosition = entry.external_hand_cost > 0 ? 'hands' : 'external';
     const identity = `${policy.policy_id}:${actor.actor_instance_id}:`
       + `${entry.layer}:${entry.item_template_ref}`;
+    const holderFields = actor.actor_kind === 'npc'
+      ? { owner_npc_id: actor.actor_instance_id,
+        holder_npc_id: actor.actor_instance_id,
+        controller_npc_id: actor.actor_instance_id }
+      : { owner_character_id: actor.actor_instance_id,
+        holder_character_id: actor.actor_instance_id,
+        controller_character_id: actor.actor_instance_id };
     return Object.freeze({ allocation_id: identity,
       idempotency_key: identity, disposition: existing ? 'reuse' : 'create',
       item_instance_id: existing?.item_instance_id ?? `item:${identity}`,
       layer: entry.layer, actor_instance_id: actor.actor_instance_id,
+      actor_kind: actor.actor_kind, ...holderFields,
       owner_id: actor.actor_instance_id, holder_id: actor.actor_instance_id,
       controller_id: actor.actor_instance_id,
       access_policy: 'actor_controlled', physical_position: physicalPosition,
@@ -244,15 +279,20 @@ export function resolveProceduralFunctionalAllocations({ policy, actors,
     validation_owner: {
       module: '@rus/items-property',
       functions: ['validateInventoryTopology', 'calculateInventoryMass',
-        'calculateHandsState'],
+        'calculateHandsState', 'resolveInventoryLoad'],
       input: 'persisted_full_actor_inventory_snapshot'
     },
     topology_requirements: {
       allowed_physical_positions: [...policy.placement.allowed_physical_positions],
       exact_owner_holder_controller: true,
-      quantity: 1
+      quantity: 1, reject_overloaded: true
     },
-    allocations: Object.freeze(allocations), readiness: 'resolved' });
+    causal_scene_binding: { scene_package_id: scenePackage.scene_package_id,
+      scene_package_digest: scenePackage.scene_package_digest,
+      ...structuredClone(policy.scene_binding) },
+    allocations: Object.freeze(allocations),
+    readiness: 'pending_runtime_inventory_owner_validation',
+    pending_gap: 'FUNCTIONAL_RUNTIME_INVENTORY_OWNER_VALIDATION_PENDING' });
 }
 
 function allocation(layer, source) {

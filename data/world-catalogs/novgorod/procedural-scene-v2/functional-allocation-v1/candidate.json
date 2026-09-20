@@ -22,7 +22,7 @@
         "actor_presence": "present_committed_scene",
         "actor_kinds": [
           "npc",
-          "player"
+          "player_character"
         ],
         "stable_unique_actor_instance_id_required": true
       },
@@ -135,6 +135,12 @@
         "work_zone_role": "causal_scene_basis_only",
         "garment_slot_authorized": false
       },
+      "scene_binding": {
+        "family_candidate_ref": "novgorod_inland_fishing_worksite_v3@1",
+        "function_ref": "fishing_worksite",
+        "work_zone_mapping_id": "fishing_work_zone_place_group_v1",
+        "work_zone_mapping_digest": "b2fab6a6bb6fa50ed60bcdfbf163f2134646f3664c8d299906846c102b6f6a5a"
+      },
       "creation": {
         "reuse_before_create": true,
         "create_quantity": 1,
@@ -198,7 +204,7 @@
       "FUNCTIONAL_PLACEMENT_INVALID"
     ],
     "runtime_inventory_owner_gaps": [
-      "FUNCTIONAL_MECHANICS_INPUT_MISSING",
+      "FUNCTIONAL_RUNTIME_INVENTORY_OWNER_VALIDATION_PENDING",
       "FUNCTIONAL_REUSE_PROJECTION_INVALID",
       "FUNCTIONAL_CROSS_LAYER_REUSE_INVALID"
     ],
@@ -210,5 +216,5 @@
   "runtime_authorized": false,
   "activation_authorized": false,
   "activation_request": null,
-  "candidate_digest": "f1d6d7ac91322f9ad64f6cd64b36a87b4be21730c623218ffbcf8cf7080db950"
+  "candidate_digest": "d081e342e8987ed48b8c7464efe8f1799f3038349c0a364890cf32eac1628c77"
 }

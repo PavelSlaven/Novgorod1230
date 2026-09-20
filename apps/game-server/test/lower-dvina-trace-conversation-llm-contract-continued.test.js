@@ -223,19 +223,25 @@ test('player speech binds code-owned target and verbatim text', () => {
 
 test('player leave-conversation lifecycle clears speech-only carrier fields',
   () => {
-    const request = playerRequest({ target_npc_ref: ref('npc', 'npc-1') });
-    const semantic = playerPlan(request, {
-      contribution_kind: 'leave_conversation',
-      intended_addressee_refs: [ref('npc', 'npc-1')],
-      affected_actor_refs: [ref('npc', 'npc-1')]
-    });
-    const assembled = assemblePlayerConversationPlan(semantic, request);
-    assert.deepEqual(assembled.primary_addressee_ref, null);
-    assert.deepEqual(assembled.intended_addressee_refs, []);
-    assert.deepEqual(assembled.affected_actor_refs, []);
-    assert.equal(assembled.speech, null);
-    assert.equal(validatePlayerConversationContributionPlan(
-      assembled, request), true);
+    for (const raw_text of [
+      'Прекращаю разговор и отхожу осмотреть стан.',
+      'Заканчиваю беседу, затем иду осмотреться.'
+    ]) {
+      const request = playerRequest({ target_npc_ref: ref('npc', 'npc-1') });
+      request.player_safe_context.raw_text = raw_text;
+      const semantic = playerPlan(request, {
+        contribution_kind: 'leave_conversation',
+        intended_addressee_refs: [ref('npc', 'npc-1')],
+        affected_actor_refs: [ref('npc', 'npc-1')]
+      });
+      const assembled = assemblePlayerConversationPlan(semantic, request);
+      assert.deepEqual(assembled.primary_addressee_ref, null);
+      assert.deepEqual(assembled.intended_addressee_refs, []);
+      assert.deepEqual(assembled.affected_actor_refs, []);
+      assert.equal(assembled.speech, null);
+      assert.equal(validatePlayerConversationContributionPlan(
+        assembled, request), true);
+    }
   });
 
 test('player required candidate is validator-valid and preserves operation', () => {

@@ -166,7 +166,10 @@ and adds no second transaction owner.
   через approved neutral conversation profile в тот же общий player/NPC
   conversation owner. Binding зависит от stable actor/location state, а не от
   scenario ID, имени или текста реплики; speech/refusal/silence, time,
-  persistence, replay и player-safe projection остаются у общих owners.
+  persistence, replay и player-safe projection остаются у общих owners. Applied
+  player `leave_conversation` carries an explicit player contribution kind and
+  zero statement refs; forged refs or an untyped zero-statement speech remain
+  rejected at the shared public projection boundary.
 - В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены.
 - Ведёт локальный диагностический `logs/<party_id>.jsonl` (каталог переопределяется `LOG_DIRECTORY`): отдельный append-only файл на партию с public runtime input/output/error, полным player intent, показанным экраном, длительностью и приватным LLM request/response trace. Credentials/API key, base URL и runtime provider override туда не передаются; non-secret provider/model, config hash и effective generation parameters сохраняются. PostgreSQL остаётся authoritative state.
 - Владеет одним logical context для `submitTurn`, который объединяет диагностику, одноразовые repair-claims и шестиминутный safety deadline всего хода. Это защита от зависания, не SLO: поздний LLM-вызов ограничивается оставшимся временем, до factual commit сохраняется пятисекундный резерв, а после commit используется pending-presentation recovery без повторения effects или RNG. Каждый runtime LLM-вызов следует каноническому production-limits invariant из `@rus/llm-runtime`. Diagnostics показывает deadline, union wall time параллельных calls и их sum duration. Повторный repair одного вида для той же immutable request identity блокируется до provider call.

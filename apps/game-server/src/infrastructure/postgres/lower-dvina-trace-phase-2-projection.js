@@ -51,18 +51,24 @@ function publicConversationProjection({ conversation, payload }) {
   }
   const semantic = conversation?.semantic_exchange_projection;
   if (semantic == null) return playerSafeConversation;
+  const playerContributionKind = semantic.player_contribution_kind ?? null;
+  if (![null, 'leave_conversation'].includes(playerContributionKind)) {
+    throw new TypeError('Semantic player contribution kind is invalid.');
+  }
   if (semantic.factual_status === 'not_applied') {
     if (semantic.npc_ref !== null
         || semantic.response_kind !== null
         || semantic.time_budget?.status !== 'paused'
         || !Array.isArray(semantic.statement_refs)
         || semantic.statement_refs.length !== 0
+        || playerContributionKind !== null
         || semantic.route_disclosure !== null) {
       throw new TypeError('Unapplied semantic conversation projection is invalid.');
     }
     return null;
   }
   const responseKind = semantic.response_kind;
+  const playerLeave = playerContributionKind === 'leave_conversation';
   const speechResponse = SPEECH_RESPONSE_KINDS.has(responseKind);
   const nonSpeechResponse = NON_SPEECH_RESPONSE_KINDS.has(responseKind);
   const noResponse = responseKind === null;
@@ -70,7 +76,8 @@ function publicConversationProjection({ conversation, payload }) {
     throw new TypeError('Semantic conversation response kind is not player-projectable.');
   }
   const statementRefs = semantic.statement_refs;
-  const expectedStatementCount = speechResponse || noResponse ? 1 : 0;
+  const expectedStatementCount = speechResponse || noResponse && !playerLeave
+    ? 1 : 0;
   if (!Array.isArray(statementRefs)
       || statementRefs.length !== expectedStatementCount
       || statementRefs.some(({ entity_kind: kind, entity_id: id }) =>
@@ -99,6 +106,10 @@ function publicConversationProjection({ conversation, payload }) {
         || disclosedRouteRef.length === 0
       : routeDisclosure !== null) {
     throw new TypeError('Semantic route disclosure is invalid.');
+  }
+  if (playerLeave && (responseKind !== null || npcRef !== null
+      || statementRefs.length !== 0 || routeDisclosure !== null)) {
+    throw new TypeError('Semantic player leave projection is invalid.');
   }
   const referencedStatements = (payload.conversation_statements ?? []).filter(
     ({ statement_id: statementId }) => statementIds.has(statementId)
@@ -149,7 +160,8 @@ function publicConversationProjection({ conversation, payload }) {
   return {
     ...projectedConversation,
     semantic_exchange: {
-      response_kind: responseKind === 'lie' ? 'speech' : responseKind,
+      response_kind: playerLeave ? 'leave_conversation'
+        : responseKind === 'lie' ? 'speech' : responseKind,
       npc_utterance: npcUtterance,
       disclosed_route_ref: responseKind === 'route_disclosure'
         ? disclosedRouteRef

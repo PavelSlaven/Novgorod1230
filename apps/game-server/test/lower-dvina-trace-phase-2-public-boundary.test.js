@@ -13,6 +13,8 @@ import { phase4PendingScreen } from
 import { phase5PendingScreen } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-5-writes.js';
 import { createGameHttpServer, listen } from '../src/index.js';
+import { projectSharedSemanticExchange } from
+  '../src/infrastructure/postgres/lower-dvina-trace-conversation-shared-projection.js';
 
 test('HTTP error never exposes an internal partial workflow checkpoint', async (t) => {
   const root = { submitTurn: async () => {
@@ -164,6 +166,46 @@ test('public conversation check omits private RNG audit', () => {
   assert.equal(Object.hasOwn(result.conversation, 'npc_ref'), false);
   assert.equal(Object.hasOwn(result.conversation, 'activity_ref'), false);
   assert.deepEqual(detectHiddenLeaks(result), []);
+});
+
+test('player leave lifecycle projects without inventing a statement reference', () => {
+  const semantic = projectSharedSemanticExchange({
+    exchange: { applied_contribution_count: 1,
+      time_budget: { status: 'completed' }, contributions: [{
+        conversation_id: 'conversation-1', exchange_id: 'exchange-1',
+        speaker_ref: { entity_kind: 'player_character', entity_id: 'player-1' },
+        contribution_kind: 'leave_conversation'
+      }] }, decision_request: null, decision_boundary: null,
+    decision_plan: null, resumed_npc_execution: null, statements: [],
+    terminal_npc_outcomes: []
+  });
+  assert.equal(semantic.player_contribution_kind, 'leave_conversation');
+  assert.deepEqual(semantic.statement_refs, []);
+  const payload = {
+    party_id: 'party-1', actor_id: 'player-1',
+    party_state: { turn_number: 1, state_version: 1 },
+    conversation_statements: [], conversation_audiences: [],
+    last_turn: { option_id: 'talk', check_result: null, time_update: null,
+      body_update: null, consequence: { conversation: {
+        semantic_exchange_projection: semantic
+      } } }
+  };
+  assert.deepEqual(phase2PublicResult({ payload,
+    screen: { schema: 'screen' } }).conversation.semantic_exchange, {
+    response_kind: 'leave_conversation', npc_utterance: null,
+    disclosed_route_ref: null
+  });
+  for (const mutate of [
+    (value) => value.statement_refs.push({
+      entity_kind: 'conversation_statement', entity_id: 'forged' }),
+    (value) => { value.player_contribution_kind = 'forged'; }
+  ]) {
+    const forged = structuredClone(payload);
+    mutate(forged.last_turn.consequence.conversation
+      .semantic_exchange_projection);
+    assert.throws(() => phase2PublicResult({ payload: forged,
+      screen: { schema: 'screen' } }), TypeError);
+  }
 });
 
 test('public conversation does not reveal an NPC lie classification', () => {

@@ -30,7 +30,7 @@ export function createAuthoredOpeningNarrationService({ roleRunner } = {}) {
   if (typeof roleRunner?.run !== 'function') throw new TypeError(
     'Authored opening narration requires the configured role runner.');
   const role = (roleId, instruction, assemble = (output) => output) => async (input) => {
-    const response = await roleRunner.run({ scope: 'new_game', role_id: roleId,
+    const response = await roleRunner.run({ scope: 'turn_runtime', role_id: roleId,
       request_identity: input.request_id,
       messages: [{ role: 'system', content: instruction },
         { role: 'user', content: JSON.stringify(input) }],
@@ -46,10 +46,10 @@ export function createAuthoredOpeningNarrationService({ roleRunner } = {}) {
     used_visible_context_refs: [], block_reason: null,
     self_constraints_check: Object.fromEntries(SELF_CHECK_FIELDS.map((key) =>
       [key, true])) });
-  const writer = role('opening_narrator', WRITER, proseOutput);
-  const formatRepairer = role('opening_narrator_format_repair',
+  const writer = role('gameplay_narrator', WRITER, proseOutput);
+  const formatRepairer = role('gameplay_narrator_format_repair',
     `${WRITER} Repair only the requested JSON/contract defects.`, proseOutput);
-  const seniorWriter = role('opening_narrator_senior',
+  const seniorWriter = role('gameplay_narrator',
     `${WRITER} Rebuild the complete opening after the supplied validation errors.`,
     proseOutput);
   const auditOutput = (output, input) => {
@@ -70,11 +70,11 @@ export function createAuthoredOpeningNarrationService({ roleRunner } = {}) {
         can_write_player_visible_message: pass,
         can_mark_opening_scene_presented: pass } };
   };
-  const auditor = role('opening_narrator_auditor', AUDITOR, auditOutput);
-  const auditFormatRepairer = role('opening_narrator_audit_format_repair',
+  const auditor = role('gameplay_narrator_auditor', AUDITOR, auditOutput);
+  const auditFormatRepairer = role('gameplay_narrator_auditor',
     `${AUDITOR} Repair only JSON shape and preserve existing verdict meaning.`,
     auditOutput);
-  const seniorAuditor = role('opening_narrator_senior_auditor',
+  const seniorAuditor = role('gameplay_narrator_auditor',
     `${AUDITOR} Re-audit completely after the supplied validation errors.`,
     auditOutput);
   const router = async (input) => {
@@ -88,7 +88,7 @@ export function createAuthoredOpeningNarrationService({ roleRunner } = {}) {
         : 'Repair grounded opening prose.',
       supporting_concern_codes: input.concerns.map(({ code }) => code) };
   };
-  const semanticRepairer = role('opening_narrator_semantic_repair',
+  const semanticRepairer = role('gameplay_narrator_semantic_repair',
     `${WRITER} Repair every supplied Stage 23 concern.`, proseOutput);
   return Object.freeze({
     async run({ requestId, visibleContextPackage, visibleContextApproval }) {

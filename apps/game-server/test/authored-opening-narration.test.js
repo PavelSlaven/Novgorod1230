@@ -54,7 +54,7 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
   const service = createAuthoredOpeningNarrationService({ roleRunner: {
     async run(call) {
       roles.push(call.role_id);
-      if (call.role_id === 'opening_narrator') return { output: {
+      if (call.role_id === 'gameplay_narrator') return { output: {
         version: 1, schema: 'narrator_starting_prose',
         request_id: 'opening:1', prose_status: 'drafted',
         prose: 'Любава, рыбачка, с рассвета готовит стан вместе с братом.\n\nПеред ней берег, навес и работа до вечера.',
@@ -66,7 +66,7 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
           'uncertainty_remains_uncertain'
         ].map((key) => [key, true]))
       } };
-      if (call.role_id === 'opening_narrator_auditor') return { output: {
+      if (call.role_id === 'gameplay_narrator_auditor') return { output: {
         version: 1, schema: 'narrator_prose_audit', request_id: 'opening:1',
         pass: true,
         checks: Object.fromEntries(checks.map((key) => [key, { pass: true }])),
@@ -81,7 +81,7 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
   const result = await service.run({ requestId: 'opening:1',
     visibleContextPackage: pkg, visibleContextApproval: approval });
   assert.match(result.prose, /Любава/u);
-  assert.deepEqual(roles, ['opening_narrator', 'opening_narrator_auditor']);
+  assert.deepEqual(roles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
 });
 
 function openingPackage() {

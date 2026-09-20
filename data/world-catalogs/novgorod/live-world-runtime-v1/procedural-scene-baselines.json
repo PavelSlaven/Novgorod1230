@@ -9,6 +9,7 @@
       "status": "approved", "profile_id": "novgorod_river_bank_baseline_v1",
       "family": "river_bank",
       "location_profile_refs": ["trace_ld_v1_loc_wreck_shore"],
+      "scene_template_refs": ["trace_ld_v1_tpl_wreck_shore"],
       "required_components": [
         {"component_id":"wet_sand_surface","layer":"surface","kind":"group","required":true,"descriptor":"влажный песчаный берег"},
         {"component_id":"low_bank_relief","layer":"relief","kind":"group","required":true,"descriptor":"низкая речная кромка"},
@@ -29,6 +30,7 @@
       "status": "approved", "profile_id": "novgorod_fishing_worksite_baseline_v1",
       "family": "fishing_worksite",
       "location_profile_refs": ["trace_ld_v1_loc_fishing_camp", "trace_ld_v1_smp_fishing_camp"],
+      "scene_template_refs": ["trace_ld_v1_tpl_fishing_camp"],
       "required_components": [
         {"component_id":"dry_sand_surface","layer":"surface","kind":"group","required":true,"descriptor":"сухая песчаная рабочая площадка"},
         {"component_id":"river_reach","layer":"water","kind":"ambient_source","required":true,"descriptor":"доступ к речной воде","quantity_unit":"portion"},
@@ -46,6 +48,7 @@
       "status": "approved", "profile_id": "novgorod_drying_shed_baseline_v1",
       "family": "craft_human_place",
       "location_profile_refs": ["trace_ld_v1_loc_old_drying_shed", "trace_ld_v1_smp_old_drying_shed"],
+      "scene_template_refs": ["trace_ld_v1_tpl_old_drying_shed"],
       "required_components": [
         {"component_id":"dry_rise_surface","layer":"surface","kind":"group","required":true,"descriptor":"сухой пригорок над сырой низиной"},
         {"component_id":"shed_work_zone","layer":"work_zone","kind":"group","required":true,"descriptor":"укрытое место для сушки и хранения"},

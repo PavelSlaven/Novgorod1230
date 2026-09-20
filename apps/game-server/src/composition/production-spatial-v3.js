@@ -120,7 +120,8 @@ export async function createSpatialV3ProductionCompositionRoot({
         );
     const ordinaryFirstEntryProvisioner = createOrdinaryMaterializationFirstEntryProvisioner({
       profile: profiles.ordinaryMaterializationProfile,
-      ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile
+      ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile,
+      sceneBaselineCatalog
     });
     const initialOrdinaryProvisioner =
       createOrdinaryMaterializationFirstEntryProvisioner({

@@ -36,8 +36,8 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
       }
       const scope = { entity_kind: 'g6', entity_id: firstEntryBinding.g6_instance_id };
-      const sceneProfile = resolveSceneProfile(sceneBaselineCatalog,
-        firstEntryBinding.location_ref);
+      const sceneProfile = await resolveSceneProfile(transaction,
+        sceneBaselineCatalog, partyId, firstEntryBinding);
       const rows = buildRows({ profile, partyId, scope,
         positionRef: firstEntryBinding.position_id,
         includeContextBoundCapabilities, initialSceneSeed, sceneProfile });
@@ -277,10 +277,23 @@ function seedInitialScene({ profile, request, initial, committedBasis,
   }
 }
 
-function resolveSceneProfile(catalog, locationRef) {
+async function resolveSceneProfile(transaction, catalog, partyId, binding) {
   if (catalog == null) return null;
-  const matches = catalog.profiles?.filter(({ location_profile_refs: refs }) =>
-    refs.includes(locationRef)) ?? [];
+  let ref = binding.location_ref;
+  if (!text(ref) && text(binding.scene_baseline_id)) {
+    const row = await transaction.query(
+      `SELECT scene_template_ref->>'entity_id' AS scene_template_ref
+         FROM party_runtime.party_scene_baselines
+        WHERE party_id=$1 AND id=$2 AND status='active'`,
+      [partyId, binding.scene_baseline_id]);
+    if (row.rowCount !== 1 || !text(row.rows[0]?.scene_template_ref)) {
+      throw code('ORDINARY_FIRST_ENTRY_SCENE_PROFILE_MISSING');
+    }
+    ref = row.rows[0].scene_template_ref;
+  }
+  const matches = catalog.profiles?.filter(({ location_profile_refs: locations,
+    scene_template_refs: templates }) => locations.includes(ref)
+      || templates.includes(ref)) ?? [];
   if (matches.length !== 1) throw code('ORDINARY_FIRST_ENTRY_SCENE_PROFILE_MISSING');
   return matches[0];
 }

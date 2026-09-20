@@ -49,7 +49,8 @@ and adds no second transaction owner.
   owners, а отсутствующая capability остаётся честным direct/gap результатом.
   Exact elapsed time остаётся code-owned UI metadata; narration получает
   подтверждённый performed-action beat без копирования длительности.
-  Current authored binding revision 5 pins materializer/result/snapshot v3.
+  Current authored binding revision 6 pins materializer/result/snapshot v3 and
+  the persisted rich-opening source contract.
   Deprecated development revisions 3 and 4 удалены. Phase 2 resolves only the persisted exact current binding,
   without latest lookup, reroll or rematerialization. The first factual turn
   commits the normal turn snapshot; reload and later turns use committed state.
@@ -364,13 +365,19 @@ remain fail-closed. Currency identity,
 significant/hidden facts, template-less containers and O2b/A1/F1/N1 remain
 disabled. Negative resolutions contain no item and
 every failure rolls back.
-Current live-world authored binding revision 5 resolves
+Current live-world authored binding revision 6 resolves
 `code_materializer_v3`, result/snapshot schema v3 and persists its approved
 initial Spatial-v3 G6/position/journey rows plus profile-owned local topology.
 It then provisions the same generic O1 and neutral S1 authority from those
 committed rows. Neutral N1 applies only to a persisted approved background NPC
 profile and materialized routine. O1, A1, S1 and N1 use existing turn/P16
 owners; старые development bindings не читаются и не rematerialize-ятся.
+After new-game commit and first-entry provisioning, authored opening builds one
+player-safe package from persisted actor dossier, relations, NPC activities,
+items, environment and spatial topology. Existing Stage 22 writes 2–4 natural
+paragraphs and Stage 23 audits factual/agency/unknown boundaries before the
+screen is saved. Static profile prose is hint-only; the eight-question reader
+control and exact entity/topology refs fail closed before any model call.
 Current replay derives scenario/schema/screen kind from the
 persisted party payload instead of the Lower Dvina default.
 A new admitted ordinary `search`, or standalone focused `inspect` with

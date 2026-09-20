@@ -9,6 +9,10 @@ import {
   TRACE_SCENARIO_ID,
   validateLowerDvinaTraceSessionRead
 } from './lower-dvina-trace-session.js';
+import { buildAuthoredOpeningVisibleContext } from
+  './lower-dvina-trace-opening.js';
+import { buildVisibleContextAuditApproval,
+  computeVisibleContextPackageDigest } from '@rus/contracts';
 
 export async function startLowerDvinaTrace({
   requestId,
@@ -19,6 +23,7 @@ export async function startLowerDvinaTrace({
   traceStartAdapter,
   publicationLoader,
   traceOpeningProjector,
+  authoredOpeningNarration = null,
   validateSession = validateLowerDvinaTraceSessionRead,
   activePhase1AManifestDigest = null,
   activeScenarioDefinitionRevision = null
@@ -97,13 +102,16 @@ export async function startLowerDvinaTrace({
       { status: 409 }
     );
   }
-  const internal = committedBeforeStart
+  let internal = committedBeforeStart
     ?? await traceStartAdapter.loadInternal(partyId);
   const ordinaryProvisioningCompatible = binding.runtime_binding == null
     || Number(binding.runtime_binding.revision) >= 5;
   if (ordinaryProvisioningCompatible
       && typeof traceStartAdapter.provisionInitialOrdinary === 'function') {
     await traceStartAdapter.provisionInitialOrdinary(partyId);
+    if (binding.runtime_binding != null) {
+      internal = await traceStartAdapter.loadInternal(partyId);
+    }
   }
   const visible = await traceStartAdapter.loadVisible(partyId);
   if (!internal || !visible
@@ -116,8 +124,32 @@ export async function startLowerDvinaTrace({
       { status: 409 }
     );
   }
-  const initialScreen = traceOpeningProjector({
-    visible, approvedProjection: publication.public_projection
+  let openingProse = null;
+  if (binding.runtime_binding != null) {
+    if (typeof authoredOpeningNarration?.run !== 'function') {
+      throw serverError('AUTHORED_OPENING_NARRATOR_MISSING',
+        'Authored opening narration is unavailable.', { status: 503 });
+    }
+    const openingPackage = buildAuthoredOpeningVisibleContext({
+      requestId: requestId, visible, internal,
+      approvedProjection: publication.public_projection
+    });
+    const openingDigest = computeVisibleContextPackageDigest(openingPackage);
+    const approval = buildVisibleContextAuditApproval({
+      request_id: requestId, pass: true,
+      visible_context_package_digest: openingDigest,
+      visible_context_audit: { request_id: requestId, pass: true,
+        visible_context_package_digest: openingDigest },
+      commit_permission: { can_send_to_narrator: true,
+        can_write_visible_context_snapshot: true,
+        can_generate_player_facing_prose: true }
+    });
+    openingProse = (await authoredOpeningNarration.run({ requestId,
+      visibleContextPackage: openingPackage,
+      visibleContextApproval: approval })).prose;
+  }
+  const initialScreen = await traceOpeningProjector({
+    visible, approvedProjection: publication.public_projection, openingProse
   });
   const payload = { ...internal, party_id: partyId,
     actor_id: internal.player.instance_id,

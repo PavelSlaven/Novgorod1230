@@ -149,6 +149,9 @@ export function materializeAuthoredStartPartyInstance(input) {
     node_id: startNodeId, anchor_id: startAnchorId,
     world_base_reference_snapshot: input.world_base_reference_snapshot
   });
+  immediate.player.dossier.opening_context = authoredOpeningContext({
+    profile, startAnchorId, otherScenes, initialSpatialV3
+  });
   const hiddenTruth = { kind: 'none', digest: canonicalDigest({ kind: 'none' }) };
   const trace = {
     run_id: runId,
@@ -233,6 +236,33 @@ function requestIdentity(input) {
   ].map((key) => [key, structuredClone(input[key])]));
 }
 
+function authoredOpeningContext({ profile, startAnchorId, otherScenes,
+  initialSpatialV3 }) {
+  const source = profile.opening.scene_context;
+  const topology = initialSpatialV3.s1_topology;
+  const places = new Map(otherScenes.map((place, index) => [
+    `other:${index}`, place.anchor.instance_id
+  ]));
+  return {
+    version: 1,
+    schema: 'rus.authored_start_opening_context.v1',
+    source_hint: profile.opening.opening_prose,
+    foreground: { text: source.foreground, anchor_ref: startAnchorId },
+    far_orientation: source.far_orientation.map((entry) => ({
+      text: entry.text, anchor_ref: places.get(entry.place_key)
+    })),
+    local_structure: {
+      name: source.local_structure.name,
+      description: source.local_structure.description,
+      topology_slot_key: source.local_structure.topology_slot_key,
+      g6_instance_ref: topology.g6_instance_ref,
+      interior_position_ref: topology.position_ref,
+      movement_edge_refs: structuredClone(topology.movement_edge_refs)
+    },
+    uncertainty: source.uncertainty
+  };
+}
+
 function node(place, instanceId) {
   return { instance_id: instanceId, parent_g4_id: place.g4_id,
     template_id: place.node_template_id, slot_key: place.slot_key,
@@ -255,6 +285,7 @@ function assertInput(input, profile) {
   const resources = profile?.resources;
   const places = profile?.geometry?.other_places;
   const locations = ['start', ...(places ?? []).map((_, index) => `other:${index}`)];
+  const opening = profile?.opening?.scene_context;
   if (profile?.status !== 'approved' || profile.scenario_id !== input?.scenario_id
     || input.materializer_version !== AUTHORED_MATERIALIZER_VERSION
     || !input?.domain_catalog_pin?.catalog_digest || !profile.player?.name
@@ -264,6 +295,14 @@ function assertInput(input, profile) {
     || !Array.isArray(people) || people.length === 0
     || !Array.isArray(resources) || resources.length === 0
     || !Array.isArray(places) || !profile.geometry?.start?.location_profile_id
+    || !text(opening?.foreground) || !text(opening?.uncertainty)
+    || !Array.isArray(opening?.far_orientation)
+    || opening.far_orientation.length === 0
+    || opening.far_orientation.some((entry) => !locations.includes(entry.place_key)
+      || entry.place_key === 'start' || !text(entry.text))
+    || !text(opening?.local_structure?.topology_slot_key)
+    || !text(opening?.local_structure?.name)
+    || !text(opening?.local_structure?.description)
     || people.some((person) => !person.person_key || !person.name
       || !Array.isArray(person.relationships) || !locations.includes(person.location)
       || person.profile_level === 'background'
@@ -461,6 +500,10 @@ export function resolveAuthoredStartResource(records, resource) {
 
 function byId(records, id) {
   return records?.find((record) => record.id === id);
+}
+
+function text(value) {
+  return typeof value === 'string' && value.trim() === value && value.length > 0;
 }
 
 function invalid(details = {}) {

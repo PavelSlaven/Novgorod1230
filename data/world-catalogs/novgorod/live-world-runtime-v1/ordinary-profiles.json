@@ -33,6 +33,11 @@
         "required_semantic_requirements": ["interior_space"],
         "available_mechanics": [],
         "capacity_total": 1,
+        "opening_resolution": {
+          "name": "открытый навес для снастей",
+          "description": "Низкий деревянный навес имеет одно открытое рабочее пространство и свободный проход обратно на стан.",
+          "semantic_requirements": ["interior_space"]
+        },
         "semantic_context": {
           "allowed_kind": "ordinary_structure",
           "period": "1230, Rus",

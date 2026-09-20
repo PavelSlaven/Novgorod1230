@@ -61,6 +61,8 @@ import { createLlmDiagnostics } from '../llm-diagnostics.js';
 import { createLlmTurnBudget } from '../llm-turn-budget.js';
 import { createProductionWorldKnowledgeGrounder } from
   '../world-knowledge-grounding.js';
+import { createAuthoredOpeningNarrationService } from
+  '../authored-opening-narration.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
@@ -97,6 +99,9 @@ export function createTraceTurnRuntime({
         year: 1230, placeRefs: ['region_novgorod_land']
       });
   const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
+  const authoredOpeningNarration = createAuthoredOpeningNarrationService({
+    roleRunner
+  });
   const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
     roleRunner, stageBApprovalReceipt: ordinaryStageBApproval,
     qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity,
@@ -255,7 +260,8 @@ export function createTraceTurnRuntime({
     llmDiagnostics,
     authoredTurnProfile
   });
-  return Object.freeze({ ...runtime, llmDiagnostics });
+  return Object.freeze({ ...runtime, llmDiagnostics,
+    authoredOpeningNarration });
 }
 
 export function createTraceRandomSourceFactory({ env = {} } = {}) {

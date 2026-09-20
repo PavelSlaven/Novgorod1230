@@ -48,6 +48,12 @@ Stage 23 сохраняет литературную оценку opening отд
 чисто литературный finding не блокирует первый экран, а factual, hidden,
 coverage и technical failures остаются fail-closed.
 
+Authored live-world opening также использует существующие Stage 22/23 owners.
+Его code-owned player-safe package строится после committed materialization из
+persisted actor/NPC/item/spatial refs, проходит eight-question reader control и
+только затем передаётся writer/auditor. Static profile prose остаётся hint, не
+готовым первым экраном.
+
 ## Допустимые зависимости
 
 `@rus/contracts`, `@rus/kernel`, `@rus/materialization`, `@rus/pipeline-engine`, `@rus/party-store` через публичные APIs.

@@ -84,6 +84,8 @@ export function createLowerDvinaTracePublicRuntime({
       activePhase1AManifestDigest,
       activeScenarioDefinitionRevision,
       traceOpeningProjector,
+      authoredOpeningNarration:
+        traceTurnRuntime?.authoredOpeningNarration ?? null,
       authoredStartCatalog
     }),
     acknowledgeOpening: (partyId, input) => acknowledgeOpening({
@@ -171,6 +173,7 @@ async function startNewGame({
   traceStartAdapter,
   publicationLoader,
   traceOpeningProjector,
+  authoredOpeningNarration,
   activePhase1AManifestDigest,
   activeScenarioDefinitionRevision,
   authoredStartCatalog
@@ -233,6 +236,7 @@ async function startNewGame({
     activePhase1AManifestDigest,
     activeScenarioDefinitionRevision,
     traceOpeningProjector,
+    authoredOpeningNarration,
     validateSession: (args) => validateSession({ ...args,
       authoredStartCatalog })
   });

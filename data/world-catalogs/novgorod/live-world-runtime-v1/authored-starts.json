@@ -1,9 +1,9 @@
 {
   "schema": "rus.live_world_runtime.authored_starts.v2",
   "catalog_id": "novgorod_live_world_runtime_v1",
-  "revision": 5,
+  "revision": 6,
   "status": "approved",
-  "current_binding_revision": 5,
+  "current_binding_revision": 6,
   "actor_catalog": {
     "version": 1,
     "region_id": "region_novgorod_land",
@@ -40,12 +40,16 @@
     "public_metadata": {"title":"След на Нижней Двине","description":"Позднее лето, разбитая лодья и пропавший груз.","available":true}
   }],
   "bindings": [
-    {"binding_id":"vikhtuy_fishing_camp","revision":5,"status":"approved","scenario_id":"vikhtuy_fishing_camp_v1","materializer_binding_id":"live_world_authored_start_v3","materializer_version":"code_materializer_v3","snapshot_schema":"rus.authored_start_initial_party_snapshot.v3"}
+    {"binding_id":"vikhtuy_fishing_camp","revision":6,"status":"approved","scenario_id":"vikhtuy_fishing_camp_v1","materializer_binding_id":"live_world_authored_start_v3","materializer_version":"code_materializer_v3","snapshot_schema":"rus.authored_start_initial_party_snapshot.v3"}
   ],
   "player_known_facts": [{
     "fact_id": "vikhtuy_nets_due_before_evening",
     "status": "approved",
     "text": "До вечера нужно проверить сети и уложить снасти."
+  }, {
+    "fact_id": "vikhtuy_morning_work_context",
+    "status": "approved",
+    "text": "С рассвета Любава готовит рыбацкий стан к вечернему лову вместе со старшим братом Милославом."
   }],
   "starts": [
     {
@@ -59,7 +63,20 @@
       "opening": {
         "place_label": "рыбацкий стан у Вихтуя",
         "calendar_label": "20 августа 1230 года",
-        "opening_prose": "Утро застало тебя в рыбацком стане у Вихтуя: у настила лежат сети, а до вечернего лова нужно проверить снасти."
+        "opening_prose": "Утро застало тебя за подготовкой рыбацкого стана к вечернему лову.",
+        "scene_context": {
+          "foreground": "Открытая рабочая площадка тянется вдоль речного берега; рядом устроен настил для снастей.",
+          "far_orientation": [{
+            "place_key": "other:0",
+            "text": "Выше по берегу видна старая сушильня."
+          }],
+          "local_structure": {
+            "topology_slot_key": "s1_open_one_space",
+            "name": "открытый навес для снастей",
+            "description": "Низкий деревянный навес имеет одно открытое рабочее пространство и свободный проход обратно на стан."
+          },
+          "uncertainty": "Состояние снастей ещё не проверено."
+        }
       },
       "player": {
         "name": "Любава",
@@ -75,7 +92,7 @@
         "health": 92,
         "energy": 71,
         "satiety": 66,
-        "known_fact_refs": ["vikhtuy_nets_due_before_evening"]
+        "known_fact_refs": ["vikhtuy_nets_due_before_evening", "vikhtuy_morning_work_context"]
       },
       "geometry": {
         "start": {
@@ -163,7 +180,10 @@
       ],
       "environment": {
         "profile_id": "env.local_variable",
-        "facts": []
+        "facts": [
+          "Светлое позднелетнее утро.",
+          "Слышны течение Вихтуя и работа со снастями на берегу."
+        ]
       },
       "timestamp": {
         "whole_minutes": "333060",

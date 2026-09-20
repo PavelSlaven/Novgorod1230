@@ -112,6 +112,9 @@ function validOrdinaryProfiles(value, id) {
     && s1.profile?.schema === 'rus.live_world_runtime.s1_profile.v1'
     && s1.profile.status === 'approved'
     && Array.isArray(s1.profile.envelopes) && s1.profile.envelopes.length === 1
+    && s1.profile.envelopes.every((entry) => text(entry.opening_resolution?.name)
+      && text(entry.opening_resolution?.description)
+      && Array.isArray(entry.opening_resolution?.semantic_requirements))
     && n1?.schema === 'rus.live_world_runtime.n1_loaded_profile.v1'
     && n1.profile?.schema === 'rus.live_world_runtime.n1_profile.v1'
     && n1.profile.status === 'approved'
@@ -304,6 +307,15 @@ function assertProfile(profile, facts) {
     || !text(profile.player?.name)
     || !Array.isArray(profile.player?.known_fact_refs)
     || profile.player.known_fact_refs.some((ref) => !facts.has(ref))
+    || !text(profile.opening?.scene_context?.foreground)
+    || !text(profile.opening?.scene_context?.uncertainty)
+    || !Array.isArray(profile.opening?.scene_context?.far_orientation)
+    || profile.opening.scene_context.far_orientation.length === 0
+    || profile.opening.scene_context.far_orientation.some((entry) =>
+      !text(entry.place_key) || !text(entry.text))
+    || !text(profile.opening?.scene_context?.local_structure?.topology_slot_key)
+    || !text(profile.opening?.scene_context?.local_structure?.name)
+    || !text(profile.opening?.scene_context?.local_structure?.description)
     || Object.hasOwn(profile.player, 'unconfirmed_known_facts')
     || !Array.isArray(people) || people.length === 0
     || new Set(personKeys).size !== personKeys.length

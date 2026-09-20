@@ -4,6 +4,9 @@
 
 Безопасный workflow генерации и ограниченного ремонта прозы обычного хода;
 первый экран получает уже утверждённую прозу через Stage 22/23 opening adapter.
+Для authored opening Stage 22 получает не static prose, а approved rich
+player-safe package с persisted entity/topology refs и eight-question reader
+control; profile prose остаётся только optional source hint.
 Native `narration_request` и `runNarrationFlow` принимают только `surface: turn`.
 
 ## Владеет

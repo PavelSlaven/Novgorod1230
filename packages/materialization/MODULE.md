@@ -95,12 +95,18 @@ baseline: LLM supplies only name, description and qualitative required
 semantics; Spatial owner validates them and binds `local_ref` to the already
 persisted formal placement.
 
-Live-world authored binding revision 5 selects `code_materializer_v3` and
+Live-world authored binding revision 6 selects `code_materializer_v3` and
 produces `rus.authored_start_party_materialization_result.v3`. Its initial S1
 topology is derived only from the exact approved profile slot and pinned
 world-base closure; missing or ambiguous authority fails before party commit.
 Older persisted authored results remain read-only compatibility inputs and are
 never rerun through the current materializer.
+
+Revision 6 сохраняет в player dossier versioned opening context: source hint,
+near/far facts и local-structure labels с exact persisted anchor/G6/position/
+movement-edge refs. Это player-safe causal source для Stage 22/23, не prose и
+не параллельный scene owner. NPC, carried items, activity, body, clock и
+environment берутся из committed party state при построении opening package.
 
 ## Контракты
 

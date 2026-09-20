@@ -60,6 +60,13 @@ bundle size and size-band ref; missing or ambiguous bindings fail before plan.
 
 `materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
 
+`compileProceduralSceneProfile` is an authoring/readiness compiler over exact
+approved landscape, water, land-use, place-function, item and actor owner rows.
+Bindings contain refs only. Compiled components retain typed layer/category,
+owner refs, source field/value, exact quantity bounds and source selection
+weight. Missing applicable required layers are a typed data gap. The compiler
+does not treat selection weight as presence probability and does not call LLM.
+
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не
 читает БД, не выполняет commit и не активирует production O1 route. Он только
 валидирует code-owned inputs и возвращает immutable logical state/result.

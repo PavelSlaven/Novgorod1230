@@ -201,8 +201,9 @@ try {
       v2_import: { candidate_digest: v2Pack.candidate_digest,
         approval_attestation_digest: v2Attestation.attestation_digest,
         import_audit_digest: v2Imported.ledger.root.import_audit_digest,
-        ...v2Imported.readback, rollback_probe: v2Rollback,
-        catalog_import_records_zero_residual_after_probe: true,
+        ...v2Imported.readback, rollback_probe: v2Rollback.status,
+        catalog_import_records_zero_residual_after_probe:
+          v2Rollback.catalogImportRecordsZeroResidual,
         activation_performed: false },
       cleanup, production_mutated: false, runtime_activation_performed: false
     };
@@ -464,13 +465,17 @@ async function verifyV2Rollback({ pool, baseline, v1Pack, v2Pack,
   const row = (await pool.query(`SELECT
     (SELECT count(*)::int FROM world_base.world_revisions WHERE id=$1) revision_count,
     (SELECT count(*)::int FROM world_base.catalog_imports WHERE id=$2) import_count,
+    (SELECT count(*)::int FROM world_base.catalog_import_records
+      WHERE import_id=$2) import_record_count,
     (SELECT count(*)::int FROM world_base.procedural_scene_compiled_records
       WHERE record_id='policy:functional-actor-allocation-v1') policy_count`,
   [v2Pack.target_revision_id, correct.root.import_id])).rows[0];
   if (Number(row.revision_count) || Number(row.import_count)
+      || Number(row.import_record_count)
       || Number(row.policy_count))
     throw new Error('DISPOSABLE_V2_ROLLBACK_RESIDUAL_STATE');
-  return 'pass';
+  return { status: 'pass', catalogImportRecordsZeroResidual:
+    Number(row.import_record_count) === 0 };
 }
 function normalizeRow(row) {
   return Object.fromEntries(Object.entries(row).map(([key, value]) => [key,

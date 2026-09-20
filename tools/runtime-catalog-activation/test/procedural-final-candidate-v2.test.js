@@ -86,3 +86,14 @@ test('v2 importer rejects role tamper and zero target digest', async () => {
     v2Pack: { ...v2, target_catalog_digest: '0'.repeat(64) }, attestation }),
   { code: 'PROCEDURAL_FINAL_V2_PACK_INVALID' });
 });
+
+test('v2 evidence records measured catalog-import-record rollback cleanup',
+  async () => {
+    const result = JSON.parse(await readFile(new URL(
+      '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
+        + 'final-candidate-pack-v2/disposable-import-result.json',
+      import.meta.url), 'utf8'));
+    assert.equal(result.v2_import.rollback_probe, 'pass');
+    assert.equal(result.v2_import
+      .catalog_import_records_zero_residual_after_probe, true);
+  });

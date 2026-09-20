@@ -110,7 +110,15 @@ function overlayTurnStepResults(base, input) {
       .sort((a, b) => Number(seeds[b]?.kind === 'semantic_activity') - Number(seeds[a]?.kind === 'semantic_activity'));
     orderedKeys.forEach(key => usedKeys.add(key));
     projectDirectSeedChanges({ input, directSeedKeys: orderedKeys }).forEach(change => components.add(change));
-    const changes = projectDirectSeedChanges({ input, directSeedKeys: orderedKeys, appliedPlan: plan });
+    const localMovement = plan.operations?.some((operation) =>
+      operation?.op === 'request_movement'
+        && operation.movement_kind === 'local') === true
+      && input.consequence?.position_transition?.owner === '@rus/movement-routes';
+    const changes = [
+      ...(localMovement ? ['Вы переместились в пределах текущего места.'] : []),
+      ...projectDirectSeedChanges({ input, directSeedKeys: orderedKeys,
+        appliedPlan: plan })
+    ];
     if (plan.direct_result_kind === 'player_safe_observation') {
       components.add('Вы внимательно изучили обстановку.');
       components.add(text(plan.assessment?.text)

@@ -42,9 +42,7 @@ export function validateAuthoredStartSessionRead({ partyId, session,
         .includes(screen.schema)) invalid();
     return session;
   }
-  const initialSnapshotSchema = resolvedBinding.revision >= 5
-    ? resolvedBinding.snapshot_schema
-    : 'rus.authored_start_initial_party_snapshot.v1';
+  const initialSnapshotSchema = resolvedBinding.snapshot_schema;
   if (!session
     || identity?.schema !== 'rus.live_world_runtime.authored_start_session_identity.v1'
     || identity.party_id !== partyId

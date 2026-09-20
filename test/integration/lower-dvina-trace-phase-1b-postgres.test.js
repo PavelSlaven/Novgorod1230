@@ -701,6 +701,12 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const m2bFixture = JSON.parse(m2bFixtureRaw);
   assert.equal(m2bFixture.source_head,
     '328d2f99ae888670087324e9b2f1197081f73733');
+  assert.equal(authoredStartCatalog.resolveRuntimeBinding({
+    catalog_id: authoredStartCatalog.runtime_binding.catalog_id,
+    revision: 4
+  }).snapshot_schema, 'rus.authored_start_initial_party_snapshot.v1');
+  assert.equal(m2bFixture.tables.party_state_snapshots[0].state_payload.schema,
+    'rus.authored_start_initial_party_snapshot.v1');
   await importM2aPartyRows(pool, m2bFixture);
   const m2bRuntime = makeRuntime(null, { traceTurnRuntime,
     committer: turnCommitter }).runtime;

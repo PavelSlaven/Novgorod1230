@@ -6,6 +6,35 @@ import { createLowerDvinaTraceNarrationService } from '../src/runtime/lower-dvin
 import { createPorts, execution, preparedOrdinary, semanticOwners } from './lower-dvina-trace-turn-step-runtime-ports-fixture.js';
 import { createActionProductionVisibleConsequence } from '../src/runtime/releases/lower-dvina-trace-a1-production.js';
 
+test('committed local movement is a required current beat for narration', async () => {
+  const base = committedState().current_visible_context;
+  const visible = await createLowerDvinaTraceTurnStepVisibleProjector({
+    fallback: { project: async () => structuredClone(base) }
+  }).project({ retrieved_state: committedState(), consequence: {
+    position_transition: { owner: '@rus/movement-routes' }, visible_seed: {}
+  }, mode_resolution: { decision_trace: { remaining_intent: null,
+    step_traces: [{ step_index: 1, applied: true, approved_plan: {
+      resolution: 'domain_request', operations: [{ op: 'request_movement',
+        actor_ref: 'mikula', target_ref: 'local:shelter',
+        movement_kind: 'local' }] } }] } } });
+  assert.deepEqual(visible.visible_changes,
+    ['Вы переместились в пределах текущего места.']);
+  const narrator = createLowerDvinaTraceNarrationService({ roleRunner: {
+    async run(call) {
+      const wire = JSON.parse(call.messages[1].content);
+      assert.deepEqual(wire.required_current_beat.changes.map(({ text }) => text),
+        visible.visible_changes);
+      if (call.role_id === 'gameplay_narrator') return { output: {
+        prose: 'Вы переместились в пределах текущего места.' } };
+      return { output: reviewedNarration(wire.segments, {
+        visible_change_1: ['s1'] }) };
+    }
+  } });
+  assert.equal((await narrator.run({ version: 1, schema: 'narration_request',
+    request_id: 'local-movement-beat', surface: 'turn',
+    visible_context: visible, context: {} })).status, 'approved');
+});
+
 for (const [query, name, spoken, pending] of [
   ['доска', 'длинная доска', 'Постойте у берега.', false],
   ['шнур', 'короткий шнур', 'Не подходите к стене.', true]

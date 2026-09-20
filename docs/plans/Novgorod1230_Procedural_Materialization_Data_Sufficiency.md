@@ -37,18 +37,41 @@ exact Spatial-v3 v6 scene/G5/parent/G6 closure. It does not promote or copy the
 old draft landscape/water/land-use/place rows and contains no quantity or
 capacity.
 
-The paired artifact is an approval **request**, not an attestation. Authoring
-approval remains `pending_independent_review`; `import_authorized=false`,
-`activation_authorized=false`, and no activation request/event exists. Candidate
-rows are not executable runtime data.
+The paired artifact is an approval **request**, not an attestation. The three
+route-free rows now have separate row-scoped authoring attestations, while
+`import_authorized=false`, `activation_authorized=false`, and no activation
+request/event exists. Candidate rows are not executable runtime data.
+
+## Functional mapping candidate
+
+`procedural-scene-v2/functional-mapping-v1` adds one versioned, deterministic
+functional-layer candidate and a separate approval request. It is not
+self-approved and defines mappings only: no runtime item, container, stock,
+place group or event is created.
+
+- fishing `tool` selects alternatives by exact V5 profile/category IDs;
+  `work_material` is limited to finite net-component categories; both retain
+  V5 entry weight, quantity, inventory, category and source refs;
+- fishing `storage` and `work_zone`, plus dormant drying `storage` and
+  `work_zone`, are persistent place-function groups over exact approved G6
+  slots, not item/container claims;
+- natural shore remains a typed owner-context group without local taxon or
+  resource presence; wreck material requires a separate committed wreck/source;
+- one committed material source cannot appear in two functional item layers or
+  count as both unrevealed stock and a created item.
+
+The remaining typed gaps are fishing container compatibility, active drying
+tool/material and conditional container ownership, and conditional finite wreck
+source identity. Functional authoring approval remains
+`pending_independent_review`; import and activation remain forbidden.
 
 ## Current family gaps
 
 | Family | Existing nearest data | Blocking gap |
 |---|---|---|
-| natural shore | new candidate permits only generic substrate, riparian ecology and water adjacency; exact wreck-shore v6 closure | independent authoring approval pending; landing/access/safety/stock/wreck implications forbidden |
-| inland fishing worksite | new candidate requires water adjacency and approved fishing-practice/workspace evidence; exact fishing-camp v6 closure | independent approval pending; station/storage/catch/route forbidden; tool/storage/work-material/container mappings remain typed gaps |
-| drying/storage workspace | medium-confidence editorial reconstruction over exact old-shed v6 closure; dormant and process-owned active variants | independent approval pending; water/heat/fire/fuel/container/tool/material/NPC not implied; functional mappings remain typed gaps |
+| natural shore | approved route-free row plus pending typed natural-layer mapping candidate | landing/access/safety/local taxon/stock remain forbidden; conditional wreck material requires separate committed source |
+| inland fishing worksite | approved route-free row plus pending tool/work-material/place-function mappings | container compatibility remains typed conditional gap; no station/catch/route or runtime stock implied |
+| drying/storage workspace | approved editorial place row plus pending dormant storage/work-zone mappings | dormant variant implies no object/process/NPC; active tool/material and conditional container remain process-owned gaps |
 
 ## DATA GAP: executable activation
 
@@ -59,9 +82,9 @@ rows are not executable runtime data.
   present but was skipped locally because Docker was unavailable;
 - nearest data: source archive, item candidate bundle and v6 spatial manifest;
 - why insufficient: candidates/manifests do not prove active rows;
-- minimum delta: independently approve or reject the route-free candidate rows;
-  add explicit source-reviewed functional mappings where required; then run baseline
-  registration plus import/readback. Activation remains a separate forbidden step;
+- minimum delta: independently approve or reject the functional mapping
+  candidate; then run baseline registration plus import/readback. Activation
+  remains a separate forbidden step;
 - acceptance: unknown/draft/missing/ambiguous record hard-blocks before runtime.
 
 ## DATA GAP: finite resources
@@ -69,8 +92,9 @@ rows are not executable runtime data.
 - required capability: source-owned quantities and ambient policy for each
   material category used by baseline/remainder;
 - correct owner: item/resource profile plus existing `party_resource_nodes`;
-- missing data: required functional stocks do not all declare finite quantity
-  basis; natural origin is not an infinite policy;
+- missing data: the mapping preserves existing V5 quantity/mechanics refs, but
+  no runtime stock or source instance exists; natural origin is not an infinite
+  policy;
 - minimum delta: exact quantity/profile refs and explicit ambient policies only
   where authoring data says conditional abundance;
 - acceptance: depletion, reload, CAS concurrency and rollback with one shared

@@ -14,7 +14,8 @@ import/readback и append-only domain catalog activation.
 - exact baseline snapshot reproduction и authoritative compatible-world
   verification;
 - deterministic baseline registration ID и strict attestation bindings;
-- generated static readers/writers для 40 registry tables.
+- generated static readers/writers для 41 registry tables, включая immutable
+  procedural-scene compiled records.
 
 ## Не делает
 

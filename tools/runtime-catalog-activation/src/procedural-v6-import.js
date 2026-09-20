@@ -3,6 +3,7 @@ import { importApprovedCatalog, registerCatalogBaseline } from
 import { buildImportLedger, digestEnvelope, verifyDecisionAttestation } from
   './artifact-contracts.js';
 import { WORLD_RUNTIME_CATALOG_MIGRATION } from './forward-migrations.js';
+import { canonicalStringify } from '@rus/runtime-catalog/canonical-records';
 
 export async function importProceduralV6Overlay({ pool, baseline, overlay }) {
   const registered = await registerCatalogBaseline({ pool, ...baseline });
@@ -42,47 +43,8 @@ export async function importProceduralAuthoringPack({
   approvalAttestation,
   runtimeContractDigest
 }) {
-  assertPackIntegrity(pack);
-  assertPackAuthority(pack);
-  verifyDecisionAttestation({
-    attestation: approvalAttestation,
-    expectedSchema: 'rus.procedural_authoring_import_approval_attestation.v1',
-    requestDigestField: 'approval_request_digest',
-    expectedRequestDigest: pack.approvalRequest.approval_request_digest,
-    expectedDecision: 'approve_disposable_local_authoring_import',
-    expectedBindings: {
-      scope: 'disposable_local_pr_candidate_database',
-      candidate_digest: pack.candidate.candidate_digest,
-      promotion_manifest_digest:
-        pack.promotionManifest.promotion_manifest_digest,
-      target_revision_id: pack.candidate.target_revision_id,
-      target_catalog_digest: pack.candidate.target_catalog_digest
-    }
-  });
-  const ledger = buildImportLedger({
-    importId: pack.importLedger.import_id,
-    rootFields: {
-      catalog_scope: 'item_container_materialization_v2',
-      parent_revision_id: baseline.request.parent_revision_id,
-      parent_catalog_digest: baseline.request.parent_catalog_digest,
-      parent_snapshot_manifest_digest:
-        baseline.request.parent_snapshot_manifest_digest,
-      ...pack.candidate.compatible_world_tuple,
-      target_revision_id: pack.candidate.target_revision_id,
-      target_catalog_digest: pack.candidate.target_catalog_digest,
-      record_registry_digest: pack.importLedger.record_registry_digest,
-      promotion_manifest_digest:
-        pack.promotionManifest.promotion_manifest_digest,
-      approval_request_digest:
-        pack.approvalRequest.approval_request_digest,
-      approval_attestation_digest: approvalAttestation.attestation_digest,
-      schema_migration_digest:
-        WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
-    },
-    tables: [],
-    records: [],
-    dependencyAssertions: [],
-    importedBy: approvalAttestation.attested_by
+  const ledger = buildProceduralAuthoringImportLedger({
+    baseline, pack, approvalAttestation
   });
   const registered = await registerCatalogBaseline({ pool, ...baseline });
   const imported = await importApprovedCatalog({
@@ -114,17 +76,90 @@ export async function importProceduralAuthoringPack({
       WHERE i.id=$1`,
     [ledger.root.import_id]
   )).rows[0];
+  const compiledRows = (await pool.query(
+    `SELECT record_id,version,record_kind,family_candidate_ref,payload,
+            payload_digest,source_pack_digest,status
+       FROM world_base.procedural_scene_compiled_records
+      WHERE source_pack_digest=$1
+      ORDER BY record_id,version`,
+    [pack.candidate.candidate_rows_by_table
+      .procedural_scene_compiled_records[0].source_pack_digest]
+  )).rows;
+  const membershipCount = Number((await pool.query(
+    `SELECT count(*)::int AS count
+       FROM world_base.catalog_import_records
+      WHERE import_id=$1 AND table_name='procedural_scene_compiled_records'`,
+    [ledger.root.import_id]
+  )).rows[0]?.count);
   if (!readback
       || readback.target_revision_id !== pack.candidate.target_revision_id
       || readback.target_catalog_digest !== pack.candidate.target_catalog_digest
       || readback.import_audit_digest !== ledger.root.import_audit_digest
-      || readback.activation_event_count !== 0) fail(
+      || readback.activation_event_count !== 0
+      || membershipCount !== compiledRows.length
+      || canonicalStringify(compiledRows) !== canonicalStringify(
+        pack.candidate.candidate_rows_by_table
+          .procedural_scene_compiled_records)) fail(
     'PROCEDURAL_AUTHORING_IMPORT_READBACK_MISMATCH', { readback });
   return Object.freeze({ registered, imported, ledger,
     readback: Object.freeze({ ...readback,
       runtime_capabilities_authorized: [],
-      candidate_rows_by_table:
-        structuredClone(pack.candidate.candidate_rows_by_table) }) });
+      candidate_rows_by_table: Object.freeze({
+        procedural_scene_compiled_records:
+          Object.freeze(compiledRows.map(Object.freeze))
+      }) }) });
+}
+
+export function buildProceduralAuthoringImportLedger({ baseline, pack,
+  approvalAttestation }) {
+  assertPackIntegrity(pack);
+  assertPackAuthority(pack);
+  verifyDecisionAttestation({
+    attestation: approvalAttestation,
+    expectedSchema: 'rus.procedural_authoring_import_approval_attestation.v1',
+    requestDigestField: 'approval_request_digest',
+    expectedRequestDigest: pack.approvalRequest.approval_request_digest,
+    expectedDecision: 'approve_disposable_local_authoring_import',
+    expectedBindings: {
+      scope: 'disposable_local_pr_candidate_database',
+      candidate_digest: pack.candidate.candidate_digest,
+      promotion_manifest_digest:
+        pack.promotionManifest.promotion_manifest_digest,
+      target_revision_id: pack.candidate.target_revision_id,
+      target_catalog_digest: pack.candidate.target_catalog_digest
+    }
+  });
+  if (canonicalStringify(baseline.compatibilityManifest)
+      !== canonicalStringify(pack.candidate.compatibility_manifest)
+      || baseline.request.compatible_world_pin_manifest_digest !==
+        pack.candidate.compatible_world_tuple
+          .compatible_world_pin_manifest_digest) fail(
+    'PROCEDURAL_AUTHORING_IMPORT_COMPATIBILITY_MISMATCH');
+  return buildImportLedger({
+    importId: pack.importLedger.import_id,
+    rootFields: {
+      catalog_scope: 'item_container_materialization_v2',
+      parent_revision_id: baseline.request.parent_revision_id,
+      parent_catalog_digest: baseline.request.parent_catalog_digest,
+      parent_snapshot_manifest_digest:
+        baseline.request.parent_snapshot_manifest_digest,
+      ...pack.candidate.compatible_world_tuple,
+      target_revision_id: pack.candidate.target_revision_id,
+      target_catalog_digest: pack.candidate.target_catalog_digest,
+      record_registry_digest: pack.importLedger.record_registry_digest,
+      promotion_manifest_digest:
+        pack.promotionManifest.promotion_manifest_digest,
+      approval_request_digest:
+        pack.approvalRequest.approval_request_digest,
+      approval_attestation_digest: approvalAttestation.attestation_digest,
+      schema_migration_digest:
+        WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
+    },
+    tables: pack.importLedger.tables,
+    records: pack.importLedger.records,
+    dependencyAssertions: [],
+    importedBy: approvalAttestation.attested_by
+  });
 }
 
 function assertPackIntegrity(pack) {
@@ -139,22 +174,21 @@ function assertPackIntegrity(pack) {
       'PROCEDURAL_AUTHORING_IMPORT_DIGEST_MISMATCH');
   }
   const candidate = pack.candidate;
-  const rows = candidate.candidate_rows_by_table;
-  const tables = new Set(['procedural_scene_authoring_candidates',
-    'procedural_scene_functional_mappings',
-    'procedural_scene_conditional_context',
-    'procedural_scene_remaining_gaps']);
-  if (Object.keys(rows ?? {}).length !== tables.size
-      || Object.keys(rows).some((table) => !tables.has(table))
-      || rows.procedural_scene_authoring_candidates.length !== 3
-      || rows.procedural_scene_functional_mappings.length !== 7
-      || rows.procedural_scene_remaining_gaps.length !== 5
-      || rows.procedural_scene_authoring_candidates.some((row) =>
-        row.status !== 'candidate_approval_pending'
-          || !Array.isArray(row.forbidden_implications))
-      || candidate.record_operations_by_table.some((operation) =>
-        operation.records_digest !==
-          digestEnvelope(rows[operation.table_name]))) fail(
+  const rows = candidate.candidate_rows_by_table
+    ?.procedural_scene_compiled_records;
+  const metadata = rows?.find(({ record_kind: kind }) =>
+    kind === 'approval_metadata')?.payload;
+  if (!Array.isArray(rows) || rows.length !== 11
+      || Object.keys(candidate.candidate_rows_by_table).length !== 1
+      || rows.filter(({ record_kind: kind }) => kind === 'profile').length !== 3
+      || rows.filter(({ record_kind: kind }) => kind === 'mapping').length !== 7
+      || rows.some((row) => row.status !==
+        'approved_authoring_not_runtime_selectable'
+          || row.payload_digest !== digestEnvelope(row.payload))
+      || metadata?.remaining_gaps?.length !== 5
+      || candidate.record_operations_by_table.length !== 1
+      || candidate.record_operations_by_table[0].records.length !== 11
+      || pack.importLedger.records.length !== 11) fail(
     'PROCEDURAL_AUTHORING_IMPORT_ROW_PARITY_INVALID');
   if (pack.promotionManifest.candidate_digest !== candidate.candidate_digest
       || pack.approvalRequest.candidate_digest !== candidate.candidate_digest

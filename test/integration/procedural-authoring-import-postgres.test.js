@@ -11,7 +11,6 @@ import { generateProceduralAuthoringImportPack } from
 import {
   buildBaselineRegistrationId,
   buildBaselineRegistrationRequest,
-  buildBaseWorldCompatibilityManifest,
   buildOperatorBaselineSnapshotManifest,
   digestEnvelope
 } from '../../tools/runtime-catalog-activation/src/artifact-contracts.js';
@@ -58,7 +57,7 @@ test('combined procedural authoring pack imports only into disposable DB',
       });
     assert.equal(promoted.status, 0, promoted.stderr);
     pool = new pg.Pool({ connectionString: url, max: 2 });
-    for (const file of ['18.sql', '19.sql', '20.sql'])
+    for (const file of ['18.sql', '19.sql', '20.sql', '21.sql'])
       await pool.query(await readFile(`infra/world-base/schema/${file}`, 'utf8'));
     await pool.query(
       `INSERT INTO world_base.world_revisions
@@ -76,18 +75,8 @@ test('combined procedural authoring pack imports only into disposable DB',
     const baselineManifest = buildOperatorBaselineSnapshotManifest({
       schemaFingerprint: 'a'.repeat(64), registry, rowsByTable
     });
-    const compatibilityManifest = buildBaseWorldCompatibilityManifest({
-      compatibleWorldRevisionId:
-        'novgorod_spatial_v3_production_v6_candidate_001',
-      compatibleWorldCatalogDigest:
-        '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
-      sourceRuntimeConfigurationDigest: 'b'.repeat(64),
-      sourceArtifactPaths: [
-        'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json'
-      ],
-      sourceCommitSha: 'b4e3bc488ae75d724cec541641121fbeaa4be5ad',
-      validationContractVersion: 'procedural-authoring-import@1'
-    });
+    const pack = await generateProceduralAuthoringImportPack(process.cwd());
+    const compatibilityManifest = pack.candidate.compatibility_manifest;
     const request = buildBaselineRegistrationRequest({
       parentRevisionId: 'procedural_authoring_disposable_baseline_001',
       parentCatalogDigest: baselineManifest.records_aggregate_digest,
@@ -114,7 +103,6 @@ test('combined procedural authoring pack imports only into disposable DB',
       action: 'register_baseline',
       attested_by: 'disposable PostgreSQL integration'
     });
-    const pack = await generateProceduralAuthoringImportPack(process.cwd());
     const importAttestation = seal({
       schema: 'rus.procedural_authoring_import_approval_attestation.v1',
       approval_request_digest:
@@ -141,7 +129,8 @@ test('combined procedural authoring pack imports only into disposable DB',
             compatibilityManifest.compatible_world_revision_id,
           compatible_world_catalog_digest:
             compatibilityManifest.compatible_world_catalog_digest,
-          source_runtime_configuration_digest: 'b'.repeat(64)
+          source_runtime_configuration_digest:
+            compatibilityManifest.source_runtime_configuration_digest
         },
         registrationId: buildBaselineRegistrationId(request)
       },

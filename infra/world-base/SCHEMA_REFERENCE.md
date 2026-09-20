@@ -2,8 +2,8 @@
 # Справочник схемы `world_base`
 
 - Исполняемый источник: `infra/world-base/schema.sql` и 21 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `c2ccdc3bafe02ce8b04331376c72a463418cee337022c8899600827c4197cead`.
-- Таблиц: 201.
+- SHA-256 развёрнутого DDL: `9238f50829ca21a27ffbc33f25d84a152ab5b99f9e5f94f2c0adc8508366c551`.
+- Таблиц: 202.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -4390,13 +4390,33 @@ Digests, counts и dependency order таблиц одного импорта.
 |---|---|---:|---|---|---|---|
 | `import_id` | `TEXT` | нет | — | `world_base.catalog_imports(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
 | `table_name` | `TEXT` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `payload_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (payload_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
+| `payload_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (payload_digest ~ '^[a-f0-9]{64}$')` | SHA-256 канонического payload. |
 | `record_count` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (record_count >= 0)` | Описание отсутствует. |
 | `dependency_order` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (dependency_order >= 0)` | Описание отсутствует. |
 
 **Ограничения таблицы:**
 
 - `PRIMARY KEY (import_id, table_name)`
+
+### `world_base.procedural_scene_compiled_records`
+
+Неизменяемый generated cache нормализованных procedural-scene profiles, mappings и approval metadata; authoring sources и runtime instances здесь не хранятся.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `record_id` | `TEXT` | нет | — | — | `NOT NULL` | Стабильный идентификатор скомпилированной записи. |
+| `version` | `INTEGER` | нет | — | — | `NOT NULL`<br>`CHECK (version > 0)` | Описание отсутствует. |
+| `record_kind` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (record_kind IN ( 'profile','mapping','approval_metadata' ))` | Тип скомпилированной записи: profile, mapping или approval_metadata. |
+| `family_candidate_ref` | `TEXT` | да | — | — | — | Версионированная ссылка на утверждённую procedural-scene family. |
+| `payload` | `JSONB` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Нормализованный compiler output без исходного authoring descriptor. |
+| `payload_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (payload_digest ~ '^[a-f0-9]{64}$')` | SHA-256 канонического payload. |
+| `source_pack_digest` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (source_pack_digest ~ '^[a-f0-9]{64}$')` | SHA-256 полного набора утверждённых входов compiler. |
+| `status` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (status = 'approved_authoring_not_runtime_selectable')` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+| `created_at` | `TIMESTAMPTZ` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
+
+**Ограничения таблицы:**
+
+- `PRIMARY KEY (record_id, version)`
 
 ## Temporal World v4: утверждённые авторские данные
 
@@ -4443,16 +4463,16 @@ Digests, counts и dependency order таблиц одного импорта.
 
 | Поле | Тип | NULL | Default | FK | Constraints | Описание |
 |---|---|---:|---|---|---|---|
-| `record_id` | `text` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Описание отсутствует. |
+| `record_id` | `text` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Стабильный идентификатор скомпилированной записи. |
 | `family_id` | `text` | нет | — | — | `NOT NULL` | Описание отсутствует. |
-| `record_kind` | `text` | нет | — | — | `NOT NULL` | Описание отсутствует. |
+| `record_kind` | `text` | нет | — | — | `NOT NULL` | Тип скомпилированной записи: profile, mapping или approval_metadata. |
 | `record_version` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (record_version ~ '^[1-9][0-9]*$')` | Описание отсутствует. |
 | `applicability` | `text[]` | нет | — | — | `NOT NULL`<br>`CHECK (cardinality(applicability) > 0)` | Описание отсутствует. |
 | `status` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (status = 'approved')` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
 | `provenance_refs` | `text[]` | нет | — | — | `NOT NULL`<br>`CHECK (cardinality(provenance_refs) > 0)` | Описание отсутствует. |
 | `normalized_reference_ids` | `text[]` | нет | — | — | `NOT NULL`<br>`CHECK (cardinality(normalized_reference_ids) > 0)` | Описание отсутствует. |
 | `source_history_refs` | `text[]` | нет | — | — | `NOT NULL`<br>`CHECK (cardinality(source_history_refs) > 0)` | Описание отсутствует. |
-| `payload` | `jsonb` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Описание отсутствует. |
+| `payload` | `jsonb` | нет | — | — | `NOT NULL`<br>`CHECK (jsonb_typeof(payload) = 'object')` | Нормализованный compiler output без исходного authoring descriptor. |
 | `canonical_digest` | `text` | нет | — | — | `NOT NULL`<br>`CHECK (canonical_digest ~ '^[a-f0-9]{64}$')` | Описание отсутствует. |
 | `created_at` | `timestamptz` | нет | `now()` | — | `NOT NULL` | Время создания записи (UTC). |
 

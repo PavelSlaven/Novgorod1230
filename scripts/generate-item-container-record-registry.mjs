@@ -57,11 +57,22 @@ export async function buildItemContainerRecordRegistry({ root = '.' } = {}) {
     }));
   }
 
+  const proceduralCompiled = requiredTable(schemaByTable,
+    'procedural_scene_compiled_records');
+  entries.push(buildEntry({
+    table: proceduralCompiled,
+    canonicalColumns: proceduralCompiled.columns.filter(({ name }) =>
+      !OPERATIONAL_COLUMNS.has(name)),
+    primaryKeyFields: ['record_id', 'version'],
+    dependencyOrder: manifest.datasets.length,
+    operationDomain: 'catalog_membership'
+  }));
+
   const graphNodes = requiredTable(schemaByTable, 'graph_nodes');
   entries.push(buildEntry({
     table: graphNodes,
     canonicalColumns: graphNodes.columns.filter(({ name }) => !OPERATIONAL_COLUMNS.has(name)),
-    dependencyOrder: manifest.datasets.length,
+    dependencyOrder: manifest.datasets.length + 1,
     operationDomain: 'dependency_assertion'
   }));
 
@@ -105,10 +116,11 @@ export async function checkItemContainerRecordRegistry({ root = '.' } = {}) {
 function buildEntry({
   table,
   canonicalColumns,
+  primaryKeyFields: providedPrimaryKeyFields,
   dependencyOrder,
   operationDomain
 }) {
-  const primaryKeyFields = table.columns
+  const primaryKeyFields = providedPrimaryKeyFields ?? table.columns
     .filter(({ primary_key: primaryKey }) => primaryKey)
     .map(({ name }) => name);
   if (primaryKeyFields.length === 0) {

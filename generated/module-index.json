@@ -685,7 +685,7 @@
         "preflight/migration/import/activation orchestration",
         "exact baseline snapshot reproduction и authoritative compatible-world",
         "deterministic baseline registration ID и strict attestation bindings",
-        "generated static readers/writers для 40 registry tables"
+        "generated static readers/writers для 41 registry tables, включая immutable"
       ],
       "path": "tools/runtime-catalog-activation",
       "public_entry": "package exports",

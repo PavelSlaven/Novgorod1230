@@ -4,13 +4,21 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import registry from '../data/runtime-catalog/item-container-record-registry.v1.json'
   with { type: 'json' };
-import { computeRecordRegistryDigest } from
+import {
+  canonicalStringify,
+  computeCanonicalRecordDigest,
+  computeRecordRegistryDigest,
+  projectCanonicalRecord
+} from
   '../packages/runtime-catalog/src/canonical-records.js';
 import {
   computeDependencyAssertionsSemanticDigest,
+  computeTablePayloadDigest,
   computeTargetCatalogDigest
 } from '../packages/runtime-catalog/src/ledger-digests.js';
-import { digestEnvelope } from
+import { RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST } from
+  '../packages/runtime-catalog/src/runtime-contract.js';
+import { buildBaseWorldCompatibilityManifest, digestEnvelope } from
   '../tools/runtime-catalog-activation/src/artifact-contracts.js';
 
 const OUTPUT = 'data/world-catalogs/novgorod/procedural-scene-v2/import-pack-v1';
@@ -33,7 +41,7 @@ const V5 = Object.freeze({
 const WORLD = Object.freeze({
   revision_id: 'novgorod_spatial_v3_production_v6_candidate_001',
   catalog_digest: '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
-  pin_manifest_digest: '776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb'
+  manifest_sha256: '776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb'
 });
 const ROW_ATTESTATIONS = Object.freeze([
   'drying-storage-workspace-approval-attestation.json',
@@ -78,43 +86,97 @@ export async function generateProceduralAuthoringImportPack(rootDir,
       : digestBytes(await readFile(resolve(root, spatialManifestPath))),
     rowAttestations });
 
-  const candidateRowsByTable = {
-    procedural_scene_authoring_candidates:
-      structuredClone(overlay.candidates),
-    procedural_scene_functional_mappings:
-      structuredClone(functionalCandidate.mappings),
-    procedural_scene_conditional_context:
-      structuredClone(functionalCandidate.conditional_context),
-    procedural_scene_remaining_gaps:
-      structuredClone(functionalCandidate.remaining_gaps)
-  };
-  const recordOperations = Object.entries(candidateRowsByTable).map(
-    ([tableName, rows], dependencyOrder) => ({
-      table_name: tableName,
-      dependency_order: dependencyOrder,
-      operation_kind: 'assert_immutable_authoring',
-      record_count: rows.length,
-      records_digest: digestEnvelope(rows),
-      record_ids: rows.map(recordId)
-    }));
   const rowAttestationRefs = rowAttestations.map((attestation, index) => ({
     path: `${ROOT}/${ROW_ATTESTATIONS[index]}`,
     candidate_ref: attestation.candidate_ref,
     attestation_digest: attestation.attestation_digest
   })).sort((left, right) => left.candidate_ref.localeCompare(right.candidate_ref));
+  const runtimeConfiguration = {
+    schema: 'rus.first_playable_runtime_world_configuration.v1',
+    release_id: 'spatial-v3-production-v12',
+    world_revision_id: WORLD.revision_id,
+    world_catalog_digest: WORLD.catalog_digest,
+    world_manifest_sha256: WORLD.manifest_sha256,
+    scenario_binding_id: 'lower_dvina_late_summer_open_water_v1',
+    runtime_catalog_contract_digest:
+      RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST
+  };
+  const compatibilityManifest = buildBaseWorldCompatibilityManifest({
+    compatibleWorldRevisionId: WORLD.revision_id,
+    compatibleWorldCatalogDigest: WORLD.catalog_digest,
+    sourceRuntimeConfigurationDigest: digestEnvelope(runtimeConfiguration),
+    sourceArtifactPaths: [
+      'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/manifest.json',
+      'apps/game-server/src/composition/production-spatial-v3.js',
+      'apps/game-server/src/runtime/releases/spatial-v3-production-v12-bindings.js'
+    ],
+    sourceCommitSha: SUBJECT_COMMIT,
+    validationContractVersion: 'base_world_compatibility_v2'
+  });
   const registryDigest = computeRecordRegistryDigest(registry);
   const compatibleWorldTuple = {
     compatible_world_revision_id: WORLD.revision_id,
     compatible_world_catalog_digest: WORLD.catalog_digest,
-    compatible_world_pin_manifest_digest: WORLD.pin_manifest_digest
+    compatible_world_pin_manifest_digest:
+      compatibilityManifest.compatible_world_pin_manifest_digest
   };
+  const upstream = {
+    overlay_digest: overlay.overlay_digest,
+    row_attestations: rowAttestationRefs,
+    functional_candidate_digest: functionalCandidate.candidate_digest,
+    functional_request_digest: functionalRequest.request_digest,
+    functional_attestation_digest: functionalAttestation.attestation_digest,
+    v5_candidate_digest: v5Manifest.candidate_digest,
+    v5_approval_request_digest: v5Approval.request_digest,
+    v5_approval_attestation_digest: v5Promotion.approval_attestation_digest,
+    v5_target_revision_id: v5Promotion.target_revision_id,
+    v5_target_catalog_digest: v5Promotion.target_catalog_digest
+  };
+  const sourcePackDigest = digestEnvelope({
+    schema: 'rus.procedural_authoring_compiler_inputs.v1',
+    upstream,
+    compatible_world_pin_manifest_digest:
+      compatibilityManifest.compatible_world_pin_manifest_digest
+  });
+  const compiledRows = compileRows({ overlay, functionalCandidate,
+    functionalAttestation, upstream, sourcePackDigest });
+  const registryEntry = registry.entries.find(({ table_name: table }) =>
+    table === 'procedural_scene_compiled_records');
+  if (!registryEntry) throw new Error('PROCEDURAL_COMPILED_REGISTRY_MISSING');
+  const records = compiledRows.map((row, ordinal) => {
+    const canonicalPayload = projectCanonicalRecord({ registryEntry, row });
+    return { table_name: registryEntry.table_name, operation_kind: 'insert',
+      record_key: canonicalStringify(canonicalPayload.record_key),
+      canonical_payload: canonicalPayload,
+      record_digest: computeCanonicalRecordDigest(canonicalPayload), ordinal };
+  });
+  const tableOperation = {
+    table_name: registryEntry.table_name,
+    dependency_order: registryEntry.dependency_order,
+    insert_count: records.length,
+    assert_existing_count: 0,
+    record_count: records.length,
+    records_digest: computeTablePayloadDigest(records),
+    records
+  };
+  const candidateRowsByTable = {
+    procedural_scene_compiled_records: compiledRows
+  };
+  const recordOperations = [tableOperation];
   const targetCatalogDigest = computeTargetCatalogDigest({
     schema: 'rus.domain_catalog_payload.v2',
     catalog_scope: 'item_container_materialization_v2',
     target_revision_id: TARGET_REVISION,
     compatible_world_tuple: compatibleWorldTuple,
     record_registry_digest: registryDigest,
-    tables: [],
+    tables: [{
+      table_name: tableOperation.table_name,
+      dependency_order: tableOperation.dependency_order,
+      insert_count: tableOperation.insert_count,
+      assert_existing_count: 0,
+      record_count: tableOperation.record_count,
+      records_digest: tableOperation.records_digest
+    }],
     dependency_assertions_semantic_digest:
       computeDependencyAssertionsSemanticDigest([])
   });
@@ -127,18 +189,8 @@ export async function generateProceduralAuthoringImportPack(rootDir,
     target_revision_id: TARGET_REVISION,
     target_catalog_digest: targetCatalogDigest,
     compatible_world_tuple: compatibleWorldTuple,
-    upstream: {
-      overlay_digest: overlay.overlay_digest,
-      row_attestations: rowAttestationRefs,
-      functional_candidate_digest: functionalCandidate.candidate_digest,
-      functional_request_digest: functionalRequest.request_digest,
-      functional_attestation_digest: functionalAttestation.attestation_digest,
-      v5_candidate_digest: v5Manifest.candidate_digest,
-      v5_approval_request_digest: v5Approval.request_digest,
-      v5_approval_attestation_digest: v5Promotion.approval_attestation_digest,
-      v5_target_revision_id: v5Promotion.target_revision_id,
-      v5_target_catalog_digest: v5Promotion.target_catalog_digest
-    },
+    compatibility_manifest: compatibilityManifest,
+    upstream,
     candidate_rows_by_table: candidateRowsByTable,
     record_operations_by_table: recordOperations,
     authoring_approval_scopes: [
@@ -162,6 +214,14 @@ export async function generateProceduralAuthoringImportPack(rootDir,
     target_catalog_digest: targetCatalogDigest,
     compatible_world_tuple: compatibleWorldTuple,
     record_registry_digest: registryDigest,
+    tables: [{
+      table_name: tableOperation.table_name,
+      dependency_order: tableOperation.dependency_order,
+      insert_count: tableOperation.insert_count,
+      assert_existing_count: 0,
+      record_count: tableOperation.record_count,
+      records_digest: tableOperation.records_digest
+    }],
     record_operations_by_table: structuredClone(recordOperations),
     runtime_capabilities_authorized: [],
     activation_event_count: 0
@@ -203,6 +263,11 @@ export async function generateProceduralAuthoringImportPack(rootDir,
     target_catalog_digest: targetCatalogDigest,
     compatible_world_tuple: compatibleWorldTuple,
     record_registry_digest: registryDigest,
+    tables: promotionManifest.tables.map((table) => ({
+      ...table, payload_digest: table.records_digest
+    })),
+    records: records.map((record) => ({ ...record, import_id: importId })),
+    dependency_assertions: [],
     record_operations_by_table: structuredClone(recordOperations),
     runtime_capabilities_authorized: [],
     activation_event_count: 0
@@ -234,47 +299,59 @@ export function validateProceduralAuthoringImportPack({ candidate,
       || candidate.upstream.v5_approval_attestation_digest !== V5.approval_attestation
       || candidate.upstream.v5_target_revision_id !== V5.target_revision_id
       || candidate.upstream.v5_target_catalog_digest !== V5.target_catalog_digest
-      || JSON.stringify(candidate.compatible_world_tuple) !== JSON.stringify({
-        compatible_world_revision_id: WORLD.revision_id,
-        compatible_world_catalog_digest: WORLD.catalog_digest,
-        compatible_world_pin_manifest_digest: WORLD.pin_manifest_digest
-      })) fail('PROCEDURAL_IMPORT_UPSTREAM_PIN_MISMATCH');
+      || candidate.compatibility_manifest.compatible_world_revision_id !==
+        WORLD.revision_id
+      || candidate.compatibility_manifest.compatible_world_catalog_digest !==
+        WORLD.catalog_digest
+      || candidate.compatibility_manifest.compatible_world_pin_manifest_digest
+        !== candidate.compatible_world_tuple.compatible_world_pin_manifest_digest)
+    fail('PROCEDURAL_IMPORT_UPSTREAM_PIN_MISMATCH');
   const rows = candidate.candidate_rows_by_table;
-  const allowed = new Set(['procedural_scene_authoring_candidates',
-    'procedural_scene_functional_mappings',
-    'procedural_scene_conditional_context', 'procedural_scene_remaining_gaps']);
-  if (Object.keys(rows ?? {}).some((table) => !allowed.has(table)))
+  if (JSON.stringify(Object.keys(rows ?? {})) !==
+      JSON.stringify(['procedural_scene_compiled_records']))
     fail('PROCEDURAL_IMPORT_UNKNOWN_TABLE');
-  for (const operation of candidate.record_operations_by_table) {
-    const tableRows = rows[operation.table_name];
-    const ids = tableRows?.map(recordId) ?? [];
-    if (!Array.isArray(tableRows) || new Set(ids).size !== ids.length
-        || operation.operation_kind !== 'assert_immutable_authoring'
-        || operation.record_count !== tableRows.length
-        || operation.records_digest !== digestEnvelope(tableRows)
-        || JSON.stringify(operation.record_ids) !== JSON.stringify(ids))
-      fail('PROCEDURAL_IMPORT_LEDGER_MEMBERSHIP_INVALID');
-  }
-  if (candidate.record_operations_by_table.length !== allowed.size)
-    fail('PROCEDURAL_IMPORT_LEDGER_MEMBERSHIP_INVALID');
-  const families = rows.procedural_scene_authoring_candidates;
-  if (families.length !== 3 || families.some((row) =>
-    row.status !== 'candidate_approval_pending')
-      || candidate.status !== 'authoring_approved_not_imported')
+  const compiled = rows.procedural_scene_compiled_records;
+  const ids = compiled.map(({ record_id: id, version }) => `${id}@${version}`);
+  const kinds = compiled.reduce((counts, { record_kind: kind }) => ({
+    ...counts, [kind]: (counts[kind] ?? 0) + 1
+  }), {});
+  if (compiled.length !== 11 || new Set(ids).size !== ids.length
+      || kinds.profile !== 3 || kinds.mapping !== 7
+      || kinds.approval_metadata !== 1
+      || compiled.some((row) => row.status !==
+          'approved_authoring_not_runtime_selectable'
+        || row.payload_digest !== digestEnvelope(row.payload)))
     fail('PROCEDURAL_IMPORT_RUNTIME_SELECTABLE_STATUS');
-  const mappingRows = rows.procedural_scene_functional_mappings;
+  const operation = candidate.record_operations_by_table[0];
+  if (candidate.record_operations_by_table.length !== 1
+      || operation.table_name !== 'procedural_scene_compiled_records'
+      || operation.insert_count !== 11 || operation.assert_existing_count !== 0
+      || operation.record_count !== 11
+      || operation.records_digest !== computeTablePayloadDigest(operation.records)
+      || operation.records.some((record, ordinal) =>
+        record.operation_kind !== 'insert' || record.ordinal !== ordinal))
+    fail('PROCEDURAL_IMPORT_LEDGER_MEMBERSHIP_INVALID');
+  if (candidate.status !== 'authoring_approved_not_imported')
+    fail('PROCEDURAL_IMPORT_RUNTIME_SELECTABLE_STATUS');
   const forbidden = ['runtime_instance', 'stock', 'container_instance',
     'process_instance', 'operation_instance'];
   if (forbidden.some((key) => hasKey(candidate, key)))
     fail('PROCEDURAL_IMPORT_RUNTIME_ROW_FORBIDDEN');
-  if (mappingRows.length !== 7
-      || !families.every((row) => Array.isArray(row.forbidden_implications)
-        && (row.family !== 'natural_shore'
-          || Array.isArray(row.materialization_limits))))
+  const metadata = compiled.find(({ record_kind: kind }) =>
+    kind === 'approval_metadata')?.payload;
+  if (!metadata || Object.keys(metadata.profile_limits).length !== 3
+      || metadata.runtime_capabilities_authorized.length !== 0
+      || metadata.activation_event_count !== 0)
     fail('PROCEDURAL_IMPORT_ROW_PARITY_INVALID');
-  const gaps = rows.procedural_scene_remaining_gaps;
+  const gaps = metadata.remaining_gaps;
   if (JSON.stringify(gaps.map(({ code }) => code)) !== JSON.stringify(GAP_CODES))
     fail('PROCEDURAL_IMPORT_REMAINING_GAPS_INVALID');
+  if (importLedger.tables.length !== 1 || importLedger.records.length !== 11
+      || importLedger.tables[0].payload_digest !== operation.records_digest
+      || importLedger.records.some((record, index) =>
+        record.import_id !== importLedger.import_id
+          || record.record_digest !== operation.records[index].record_digest))
+    fail('PROCEDURAL_IMPORT_LEDGER_MEMBERSHIP_INVALID');
   const linked = [promotionManifest, approvalRequest, importLedger];
   if (linked.some((value) => value.target_revision_id !== TARGET_REVISION
       || value.target_catalog_digest !== candidate.target_catalog_digest)
@@ -319,7 +396,7 @@ function validateSources(value) {
       || value.spatialManifest.world_revision_id !== WORLD.revision_id
       || value.spatialManifest.catalog_digest !== WORLD.catalog_digest
       || value.spatialManifestFileDigest != null
-        && value.spatialManifestFileDigest !== WORLD.pin_manifest_digest)
+        && value.spatialManifestFileDigest !== WORLD.manifest_sha256)
     fail('PROCEDURAL_IMPORT_SOURCE_PIN_MISMATCH');
   for (const attestation of [...value.rowAttestations,
     value.functionalAttestation]) {
@@ -334,9 +411,82 @@ function validateSources(value) {
         !== 3) fail('PROCEDURAL_IMPORT_ATTESTATION_SET_INVALID');
 }
 
-function recordId(row) {
-  return row.candidate_id ? `${row.candidate_id}@${row.version}`
-    : row.mapping_id ?? `${row.family_candidate_ref}:${row.layer}`;
+function compileRows({ overlay, functionalCandidate, functionalAttestation,
+  upstream, sourcePackDigest }) {
+  const profiles = overlay.candidates.map((candidate) => {
+    const payload = {
+      family: candidate.family,
+      spatial_closure_ref: structuredClone(candidate.spatial_closure_ref),
+      allowed_semantics: [...candidate.allowed_semantics],
+      requirements: structuredClone(candidate.requirements),
+      forbidden_implications: [...candidate.forbidden_implications],
+      materialization_limits: [...(candidate.materialization_limits ?? [])],
+      data_gap_codes: [...candidate.data_gap_codes],
+      source_candidate_status: candidate.status,
+      authoring_approval: candidate.authoring_approval,
+      source_candidate_digest: candidate.candidate_digest
+    };
+    return compiledRow({
+      recordId: `profile:${candidate.candidate_id}`,
+      version: candidate.version,
+      recordKind: 'profile',
+      familyCandidateRef: `${candidate.candidate_id}@${candidate.version}`,
+      payload,
+      sourcePackDigest
+    });
+  });
+  const mappings = functionalCandidate.mappings.map((mapping) => {
+    const { evidence, ...normalized } = mapping;
+    const payload = {
+      ...structuredClone(normalized),
+      evidence_digest: digestEnvelope(evidence),
+      source_candidate_status: functionalCandidate.status,
+      authoring_approval_scope: functionalAttestation.approval_scope
+    };
+    return compiledRow({ recordId: `mapping:${mapping.mapping_id}`, version: 1,
+      recordKind: 'mapping',
+      familyCandidateRef: mapping.family_candidate_ref, payload,
+      sourcePackDigest });
+  });
+  const metadataPayload = {
+    overlay_status: overlay.status,
+    functional_candidate_status: functionalCandidate.status,
+    authoring_approval_scopes: [
+      'route_free_family_rows', functionalAttestation.approval_scope
+    ],
+    profile_limits: Object.fromEntries(overlay.candidates.map((candidate) => [
+      `${candidate.candidate_id}@${candidate.version}`,
+      {
+        forbidden_implications: [...candidate.forbidden_implications],
+        materialization_limits: [...(candidate.materialization_limits ?? [])],
+        data_gap_codes: [...candidate.data_gap_codes]
+      }
+    ])),
+    remaining_gaps: structuredClone(functionalCandidate.remaining_gaps),
+    functional_limits: structuredClone(functionalAttestation.limits),
+    upstream: structuredClone(upstream),
+    runtime_capabilities_authorized: [],
+    activation_event_count: 0
+  };
+  return [...profiles, ...mappings, compiledRow({
+    recordId: 'approval:procedural-authoring-combined', version: 1,
+    recordKind: 'approval_metadata', familyCandidateRef: null,
+    payload: metadataPayload, sourcePackDigest
+  })].sort((left, right) => left.record_id.localeCompare(right.record_id));
+}
+
+function compiledRow({ recordId, version, recordKind, familyCandidateRef,
+  payload, sourcePackDigest }) {
+  return {
+    record_id: recordId,
+    version,
+    record_kind: recordKind,
+    family_candidate_ref: familyCandidateRef,
+    payload,
+    payload_digest: digestEnvelope(payload),
+    source_pack_digest: sourcePackDigest,
+    status: 'approved_authoring_not_runtime_selectable'
+  };
 }
 function hasKey(value, key) {
   if (!value || typeof value !== 'object') return false;

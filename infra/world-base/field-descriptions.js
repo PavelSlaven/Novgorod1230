@@ -139,7 +139,7 @@ export const TABLE_GROUPS = [
   },
   {
     title: 'Materialization v2: решения и импорт',
-    tables: ['decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'catalog_imports', 'catalog_import_tables']
+    tables: ['decision_command_catalog', 'decision_policy_profiles', 'decision_policy_options', 'catalog_imports', 'catalog_import_tables', 'procedural_scene_compiled_records']
   },
   {
     title: 'Temporal World v4: утверждённые авторские данные',
@@ -295,6 +295,7 @@ export const TABLE_PURPOSE_FALLBACK = {
   g4_container_materialization_rules: 'G4-specific правила контейнеров, содержимого и доступа.',
   catalog_imports: 'Проверяемые импорты versioned authoring manifest.',
   catalog_import_tables: 'Digests, counts и dependency order таблиц одного импорта.',
+  procedural_scene_compiled_records: 'Неизменяемый generated cache нормализованных procedural-scene profiles, mappings и approval metadata; authoring sources и runtime instances здесь не хранятся.',
   temporal_source_history: 'Точные источники утверждённых Temporal World v4 записей и контрольные суммы их байтов.',
   temporal_provenance: 'Утверждённая трассировка происхождения каждой семьи Temporal World v4.',
   temporal_authoring_records: 'Нормализованные утверждённые авторские записи Temporal World v4; runtime читает их без права изменения.',
@@ -314,6 +315,12 @@ export const common = {
   audit_notes: 'Заметки редактора: споры, TODO, ссылки на проверку.',
   created_at: 'Время создания записи (UTC).',
   updated_at: 'Время последнего изменения (обновляется триггером).',
+  record_id: 'Стабильный идентификатор скомпилированной записи.',
+  record_kind: 'Тип скомпилированной записи: profile, mapping или approval_metadata.',
+  family_candidate_ref: 'Версионированная ссылка на утверждённую procedural-scene family.',
+  payload: 'Нормализованный compiler output без исходного authoring descriptor.',
+  payload_digest: 'SHA-256 канонического payload.',
+  source_pack_digest: 'SHA-256 полного набора утверждённых входов compiler.',
   region_id: 'FK → regions(id): регион, к которому относится запись.',
   place_id: 'FK → places(id): конкретное место, если применимо.',
   location_id: 'FK → place_locations(id): локация внутри места.',

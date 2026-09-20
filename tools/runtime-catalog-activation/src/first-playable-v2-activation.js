@@ -498,6 +498,10 @@ async function readPromotedMembership({
   const result = {};
   for (const entry of registry.entries) {
     if (entry.operation_domain !== 'catalog_membership') continue;
+    if (entry.table_name === 'procedural_scene_compiled_records') {
+      result[entry.table_name] = [];
+      continue;
+    }
     const dataset = datasets.get(entry.table_name);
     if (!dataset) {
       fail(

@@ -76,6 +76,13 @@ approval request and pre-approval ledger have sealed digests. Rows, statuses,
 forbidden implications, materialization limits and all five remaining gaps stay
 byte-equivalent to approved upstream artifacts.
 
+Compiler emits eleven normalized generated-cache records: three profiles,
+seven mappings and one approval/limits/gaps record. Generic catalog membership
+inserts them into `world_base.procedural_scene_compiled_records`; payloads omit
+authoring evidence prose/source descriptors and contain no runtime instances,
+stock, containers, processes or operations. Table is append-only and is the
+existing runtime-catalog readback owner, not a second persistence path.
+
 Request asks only `approve_disposable_local_authoring_import` for a disposable
 local PR-candidate database. It grants no operator, production, activation,
 default, deploy or rematerialization authority. Ledger deliberately has no

@@ -168,7 +168,7 @@ export function createTracePhase3ConversationCommand({
   };
 }
 
-function createSemanticConversationCommand({
+export function createSemanticConversationCommand({
   contracts,
   inputDigest,
   evidence,
@@ -190,7 +190,9 @@ function createSemanticConversationCommand({
   }, {
     kind: 'materialized_present_npc',
     ref: ids.eremeyRef
-  }, { kind: 'no_current_temporal_boundary_candidates' }, ...(evidence ? [{
+  }, ...(contracts.neutral_conversation === true ? [] : [{
+    kind: 'no_current_temporal_boundary_candidates'
+  }]), ...(evidence ? [{
     kind: 'committed_evidence_access',
     evidence_ref: ids.evidence
   }] : [])];

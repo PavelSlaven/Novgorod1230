@@ -1,9 +1,17 @@
 {
   "schema": "rus.live_world_runtime.turn_step_owner_profiles.v1",
   "profile_set_id": "novgorod_live_world_turn_step_owner_profiles_v1",
-  "revision": 1,
+  "revision": 2,
   "status": "approved",
   "fallback_policy": "forbidden",
+  "neutral_conversation_profile": {
+    "status": "approved",
+    "activity_profile_id": "novgorod_live_world_conversation_brief",
+    "duration_minutes": 5,
+    "access_policy_id": "live_world_visible_local_access",
+    "max_contributions_per_exchange": 8,
+    "interaction_kinds": ["speech","gesture","offer","request","threat","aid","other"]
+  },
   "semantic_activity_profile_namespace": "novgorod_live_world_semantic_activity",
   "semantic_duration_profiles": [
     {"duration_class":"moment","duration_minutes":1},

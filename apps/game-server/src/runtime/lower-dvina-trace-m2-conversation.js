@@ -52,7 +52,9 @@ export async function resolveTracePhase3ConversationExchange({
     ({ ref, instance_id: instanceId }) => targetActorId == null
       ? ref === contracts.ids?.eremeyRef : instanceId === targetActorId
   );
-  const eremeyTarget = target?.ref === contracts.ids?.eremeyRef;
+  const neutral = contracts.neutral_conversation === true;
+  const eremeyTarget = !neutral
+    && target?.ref === contracts.ids?.eremeyRef;
   const routeRef = contracts.disclosureMapping
     ?.route_knowledge_disclosure?.route_ref;
   const disclosedRoute = contracts.routeBindings?.find(
@@ -62,17 +64,18 @@ export async function resolveTracePhase3ConversationExchange({
     ({ location_profile_id: locationId }) =>
       locationId === disclosedRoute?.terminal_position_outcome
   );
-  if (!target?.instance_id || !routeRef
+  if (!target?.instance_id || (!neutral && (!routeRef
       || typeof disclosedDestination?.display_name !== 'string'
-      || !disclosedDestination.display_name.trim()
+      || !disclosedDestination.display_name.trim()))
       || (checkResult !== null
-        && checkResult.check_id !== contracts.check.check_id)) {
+        && checkResult.check_id !== contracts.check?.check_id)) {
     fail(
       'TRACE_M2_PHASE_3_CONTRACT_GAP',
       'The exact Phase 3 conversation binding is required.'
     );
   }
-  const availableEvidence = phase3AvailableEvidence(state, contracts);
+  const availableEvidence = neutral ? null
+    : phase3AvailableEvidence(state, contracts);
   const pendingExecution = state.pending_npc_conversation_execution ?? null;
   const pendingPlayer = hydratedPendingPlayerExecution({ state });
   const persistedPlayer = state.pending_player_conversation_execution ?? null;
@@ -145,7 +148,7 @@ export async function resolveTracePhase3ConversationExchange({
       ?? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext);
   const evidencePresented = effectivePlayerPlan === null ? false
     : phase3PresentedEvidence({ state, contracts, plan: effectivePlayerPlan });
-  const requiredNpcRouteOperation = eremeyTarget && evidencePresented
+  const requiredNpcRouteOperation = !neutral && eremeyTarget && evidencePresented
     && effectiveCheckResult?.outcome?.success === true
     ? {
         op: ROUTE_OPERATION,
@@ -157,7 +160,8 @@ export async function resolveTracePhase3ConversationExchange({
   const mapping = contracts.conversationSignalMappings?.[
     evidencePresented ? 'evidence' : 'question'
   ];
-  if (!mapping || mapping.target_npc_ref !== contracts.ids.eremeyRef) {
+  if (!mapping || mapping.target_npc_ref !== (neutral
+      ? target.ref : contracts.ids.eremeyRef)) {
     fail(
       'TRACE_M2_PHASE_3_CONTRACT_GAP',
       'The exact Phase 3 conversation binding is required.'

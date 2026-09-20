@@ -134,6 +134,7 @@ export function buildTracePhase3ConversationCheckRequests({
 }
 
 export function phase3AvailableEvidence(state, contracts) {
+  if (contracts.neutral_conversation === true) return null;
   const item = accessibleBlueWoolItem(state, contracts);
   return item === null ? null : Object.freeze({
     evidence_ref: contracts.ids.evidence,

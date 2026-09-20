@@ -11,6 +11,9 @@ const BODY_METRICS = ['health', 'satiety', 'energy'];
 export function admitTurnStepOwnerProfiles(profiles, artifactPin) {
   const keys = [
     'schema', 'profile_set_id', 'revision', 'status', 'fallback_policy',
+    ...(profiles?.schema ===
+      'rus.live_world_runtime.turn_step_owner_profiles.v1'
+      ? ['neutral_conversation_profile'] : []),
     'semantic_activity_profile_namespace', 'semantic_duration_profiles',
     'semantic_effort_profiles', 'direct_body_effect_profile_namespace',
     'direct_body_mechanism_profiles', 'direct_body_severity_profiles',
@@ -26,10 +29,13 @@ export function admitTurnStepOwnerProfiles(profiles, artifactPin) {
     && profiles?.profile_set_id === 'trace_ld_v1_turn_step_owner_profiles';
   if (!plain(profiles) || !exactKeys(profiles, keys)
       || (!liveWorld && !historical)
-      || profiles.revision !== 1 || profiles.status !== 'approved'
+      || profiles.revision !== (liveWorld ? 2 : 1)
+      || profiles.status !== 'approved'
       || profiles.fallback_policy !== 'forbidden'
       || !validArtifactPin(artifactPin)
-      || !profilesValid(profiles, { allowEmptyOrdinary: liveWorld })) {
+      || !profilesValid(profiles, { allowEmptyOrdinary: liveWorld })
+      || (liveWorld && !validNeutralConversationProfile(
+        profiles.neutral_conversation_profile))) {
     ownerFail('TRACE_TURN_STEP_OWNER_PROFILES_INVALID');
   }
   return deepFreeze({
@@ -40,6 +46,22 @@ export function admitTurnStepOwnerProfiles(profiles, artifactPin) {
       digest: artifactPin.digest
     }
   });
+}
+
+function validNeutralConversationProfile(value) {
+  const kinds = ['speech', 'gesture', 'offer', 'request', 'threat', 'aid',
+    'other'];
+  return plain(value) && exactKeys(value, ['status', 'activity_profile_id',
+    'duration_minutes', 'access_policy_id',
+    'max_contributions_per_exchange', 'interaction_kinds'])
+    && value.status === 'approved'
+    && text(value.activity_profile_id) && text(value.access_policy_id)
+    && Number.isSafeInteger(value.duration_minutes)
+    && value.duration_minutes > 0
+    && value.max_contributions_per_exchange === 8
+    && Array.isArray(value.interaction_kinds)
+    && value.interaction_kinds.length === kinds.length
+    && kinds.every((kind) => value.interaction_kinds.includes(kind));
 }
 
 export function expandActivityProfiles(profiles) {

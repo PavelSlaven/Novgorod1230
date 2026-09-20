@@ -289,6 +289,23 @@ Generated artifacts не являются местом для ручного а�
 
 В итоговом отчёте перечисляй только реально выполненные checks и их результаты.
 
+### 24.1. Обязательный отчёт настоящего gameplay run
+
+Каждый реальный gameplay run, который создаёт либо загружает party и выполняет
+хотя бы один настоящий игровой ход, сохраняется в том же PR как один
+санитизированный Markdown-отчёт в [`docs/playtests/`](../playtests/README.md).
+Console output, PR description и локальный JSON не заменяют отчёт.
+
+Отчёт фиксирует exact identity и preconditions запуска, точный player input и
+player-visible результат каждого хода, фактический domain outcome, commit-state,
+persistence/readback, findings и итог `PASS|FAIL|PARTIAL|RESEARCH`. Model/provider
+указываются без secrets, private endpoint, Authorization, hidden state или
+private traces.
+
+Один файл описывает один логический campaign/run. Неудачный отчёт сохраняется
+без переписывания найденного дефекта; новый прогон после исправления получает
+новый файл, а старый может только ссылаться на superseding report.
+
 ---
 
 ## 29. Завершение задачи

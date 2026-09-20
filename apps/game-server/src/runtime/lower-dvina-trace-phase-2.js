@@ -20,6 +20,8 @@ import { recoverTracePendingPresentation } from './lower-dvina-trace-presentatio
 import { completeTracePhase2Replay, recordTracePhase2TurnContext, runAndPersistTracePhase2Turn } from './lower-dvina-trace-phase-2-workflow.js';
 import { createTurnCommandRegistry } from '@rus/turn';
 import { TRACE_SCENARIO_ID } from './lower-dvina-trace-session.js';
+import { createSemanticConversationCommand } from
+  './lower-dvina-trace-phase-3-conversation-command.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   turnStepSemanticGroundingValidator = null, playerConversationModel = null,
@@ -131,9 +133,14 @@ export function createLowerDvinaTracePhase2Runtime({
           ? authoredNpcSemanticRemainderProfile
           : [32, 33, 34, 35].includes(bundle.definition_revision)
             ? npcSemanticRemainderProfile : null;
+        const authoredConversationContracts = authored
+          ? liveWorldConversationContractEntries({ state,
+              authoredTurnProfile })[0]?.contracts ?? null
+          : null;
         const { phase3Contracts, phase4Contracts, phase5Contracts,
           phase6Contracts, phase7Contracts } = authored
-          ? { phase3Contracts: null, phase4Contracts: null,
+          ? { phase3Contracts: authoredConversationContracts,
+              phase4Contracts: null,
               phase5Contracts: null, phase6Contracts: null,
               phase7Contracts: null }
           : resolveTracePhase2InheritedContracts({ state, bundle });
@@ -213,7 +220,9 @@ export function createLowerDvinaTracePhase2Runtime({
           temporalAdvanceOwner,
           phase8Contracts,
         });
-        const registry = authored ? liveWorldTurnRegistry()
+        const registry = authored ? liveWorldTurnRegistry({ state,
+          inputDigest, authoredTurnProfile, playerConversationModel,
+          npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion })
           : buildTracePhase2Registry({
           bundle,
           combatCommand,
@@ -352,7 +361,7 @@ function liveWorldTurnContracts(authoredTurnProfile) {
   });
 }
 
-function liveWorldTurnRegistry() {
+function liveWorldTurnRegistry(context) {
   const blocked = () => ({ status: 'blocked', can_attempt: false,
     check_requests: [] });
   return createTurnCommandRegistry([{
@@ -368,5 +377,101 @@ function liveWorldTurnRegistry() {
     availability: blocked,
     consequence: blocked,
     writeTargets: () => []
-  }]);
+  }, ...liveWorldConversationCommands(context)]);
+}
+
+export function liveWorldConversationCommands({ state, inputDigest,
+  authoredTurnProfile, playerConversationModel, npcSemanticModel,
+  temporalAdvanceOwner, revalidateStateVersion }) {
+  if (typeof playerConversationModel !== 'function'
+      || typeof npcSemanticModel !== 'function') return [];
+  return liveWorldConversationContractEntries({ state,
+    authoredTurnProfile }).map(({ npc, contracts }) => {
+    const command = createSemanticConversationCommand({ contracts,
+      inputDigest, evidence: false, playerConversationModel,
+      npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion });
+    const kinds = authoredTurnProfile.profile.neutral_conversation_profile
+      .interaction_kinds;
+    const operations = kinds.map((interactionKind) => ({
+      op: 'emit_interaction', actor_ref: state.actor_id,
+      target_actor_refs: [npc.instance_id], interaction_kind: interactionKind,
+      content: 'Обратиться к видимому человеку', instrument_refs: []
+    }));
+    return { ...command,
+      command_id: `live_world.conversation.${npc.instance_id}`,
+      option_id: `live_world_conversation_${npc.instance_id}`,
+      label: 'Обратиться к видимому человеку',
+      matches: () => false,
+      semantic_binding: {
+        binding_id: `live_world_conversation:${npc.instance_id}`,
+        operation: 'emit_interaction', operation_dtos: operations,
+        matches: ({ operation }) => operations.some((candidate) =>
+          candidate.actor_ref === operation?.actor_ref
+          && candidate.interaction_kind === operation.interaction_kind
+          && operation.target_actor_refs?.length === 1
+          && operation.target_actor_refs[0] === npc.instance_id)
+      }
+    };
+  });
+}
+
+function liveWorldConversationContractEntries({ state,
+  authoredTurnProfile }) {
+  const playerAnchor = state.position?.g5_anchor_id;
+  const present = (state.npcs ?? []).filter(({ instance_id: id,
+    anchor_id: anchorId }) => typeof id === 'string' && id
+      && anchorId === playerAnchor);
+  return present.map((npc) => ({ npc, contracts:
+    liveWorldConversationContracts({ state, npc,
+      actorRef: npc.participant_slot_ref ?? npc.instance_id,
+      allNpcs: present, authoredTurnProfile }) }));
+}
+
+function liveWorldConversationContracts({ state, npc, actorRef, allNpcs,
+  authoredTurnProfile }) {
+  const profile = authoredTurnProfile.profile.neutral_conversation_profile;
+  if (profile?.status !== 'approved'
+      || !Number.isSafeInteger(profile.duration_minutes)
+      || profile.duration_minutes < 1
+      || !Number.isSafeInteger(profile.max_contributions_per_exchange)
+      || !Array.isArray(profile.interaction_kinds)
+      || profile.interaction_kinds.length === 0) {
+    throw serverError('LIVE_WORLD_CONVERSATION_PROFILE_MISSING',
+      'Approved neutral conversation profile is required.', { status: 409 });
+  }
+  const pin = Object.freeze({
+    id: authoredTurnProfile.profile.profile_set_id,
+    version: authoredTurnProfile.profile.revision,
+    digest: authoredTurnProfile.pin.digest
+  });
+  const locationRef = state.position.location_ref;
+  return Object.freeze({
+    neutral_conversation: true,
+    ids: Object.freeze({ eremeyRef: actorRef,
+      campLocation: locationRef,
+      talkOption: `talk:${npc.instance_id}`,
+      talkActivity: profile.activity_profile_id,
+      evidenceOption: null, evidenceActivity: null, evidence: null }),
+    talk: Object.freeze({ profile_id: profile.activity_profile_id,
+      duration_minutes: profile.duration_minutes }),
+    evidenceTalk: null, check: null,
+    actors: Object.freeze(allNpcs.map((actor) => ({
+      ref: actor.participant_slot_ref ?? actor.instance_id,
+      ...structuredClone(actor)
+    }))),
+    access: Object.freeze({ policy_id: profile.access_policy_id,
+      location_ref: locationRef, hidden_or_open_state: 'open',
+      unmaterialized_access: 'forbidden' }),
+    activityPins: Object.freeze([pin, pin, pin]),
+    conversationBindings: Object.freeze({ fallback_policy: 'forbidden',
+      legacy_bounded_production_path: 'forbidden',
+      max_contributions_per_exchange:
+        profile.max_contributions_per_exchange }),
+    conversationSignalMappings: Object.freeze({ question: Object.freeze({
+      target_npc_ref: actorRef, signal_descriptors: Object.freeze([{
+        category: 'communication', significance: 'material'
+      }]) }) }),
+    conversationTimeProfiles: structuredClone(
+      authoredTurnProfile.profile.semantic_duration_profiles ?? [])
+  });
 }

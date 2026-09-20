@@ -34,6 +34,7 @@
 | 22. Отладка | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 23. Persistence, concurrency и БД | [AI — ARCHITECTURE_INVARIANTS.md](ARCHITECTURE_INVARIANTS.md) |
 | 24. Тестирование и проверки | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
+| 24.1. Обязательный отчёт настоящего gameplay run (добавлен после переноса) | [WR — WORKFLOW_RULES.md](WORKFLOW_RULES.md) |
 | 25. Субагенты и независимый аудит | [AR — AUDIT_RULES.md](AUDIT_RULES.md) |
 | 26. Git, GitHub и stacked PR | [GS — GIT_SAFETY_RULES.md](GIT_SAFETY_RULES.md) |
 | 27. Защита пользовательской работы и опасные действия | [GS — GIT_SAFETY_RULES.md](GIT_SAFETY_RULES.md) |

@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "8888220fcf3d64bda3aa76360b211d79ba5c21c093ec0ce357e165bb28aa58ff",
+  "corpus_hash": "420c7e630716e0455c83a6fe85d4f3c3c9e2af1517f81d3ece9b406009b12a20",
   "chunk_count": 2813,
   "chunks": [
     {
@@ -1350,8 +1350,8 @@
       "section": "3. Governing source",
       "line_start": 48,
       "line_end": 57,
-      "text": "## CONTRACT_INDEX.md — 3. Governing source\n## 3. Governing source\n\n| Документ | Статус | Scope |\n|---|---|---|\n| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |\n\n`Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.",
-      "char_count": 1006
+      "text": "## CONTRACT_INDEX.md — 3. Governing source\n## 3. Governing source\n\n| Документ | Статус | Scope |\n|---|---|---|\n| [`AGENTS.md`](../../../../AGENTS.md) | `GOVERNING` | продуктовая конституция, process rules, owner boundaries, persistence, simplicity, audit discipline; §24.1 — обязательный sanitized Markdown report каждого реального gameplay run; §26.1 — обязательная адресная уборка собственных временных ресурсов после тестов и merge, без архивирования по умолчанию |\n\n`Novgorod1230_project_instruction_full.md` отсутствует в repository `main`; отдельную копию в репозиторий добавлять не следует. Для вопроса о текущем merged implementation state source of truth остаётся `main`. Если администратор явно передал внешнюю project instruction в текущей задаче, она является governing task input на продуктовом/reviewer уровне: при конфликте с repository state нужно явно разделить current production и требуемое/целевое поведение, а не молча подменять одно другим. Такая внешняя инструкция не становится частью merged repository state, пока соответствующие изменения не приняты в GitHub.",
+      "char_count": 1085
     },
     {
       "id": "CONTRACT_INDEX.md:3. Governing source:1",

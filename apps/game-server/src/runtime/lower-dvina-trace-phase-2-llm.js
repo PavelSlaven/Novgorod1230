@@ -177,8 +177,7 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
         && repairedOutput.direct_result_kind !== 'player_utterance') {
       delete semanticOutput.utterance;
     }
-    const assembled = assembleTurnStepPlan(
-      canonicalizePartialPartition(semanticOutput), input,
+    const assembled = assembleTurnStepPlan(semanticOutput, input,
       operationChoices);
     const discoveryScope = correctOrdinaryDiscoveryScope({
       plan: assembled, input
@@ -193,26 +192,6 @@ export function createLowerDvinaTraceTurnStepModel({ roleRunner,
       input, roleRunner });
   };
   return model;
-}
-
-export function canonicalizePartialPartition(output) {
-  if (!output || typeof output !== 'object' || Array.isArray(output)
-      || !Array.isArray(output.operations)) return output;
-  let changed = false;
-  const operations = output.operations.map((operation) => {
-    const action = operation?.action_production;
-    const partial = operation?.op === 'request_item_use'
-      && action?.identity_mode === 'independent_outputs'
-      && action.origin === 'direct_partition'
-      && ['minor', 'half', 'major'].includes(action.material_extent)
-      && action.result_class === 'ordinary_physical_result'
-      && action.result_descriptor?.source_fact_delta != null;
-    if (!partial) return operation;
-    changed = true;
-    return { ...operation, action_production: {
-      ...action, result_class: 'partial_transformation' } };
-  });
-  return changed ? { ...output, operations } : output;
 }
 
 function plannerRequestWire(input) {

@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { ACTOR_ITEM_PHYSICAL_POSITIONS } from
+  '../packages/items-property/src/index.js';
 
 const OUTPUT =
   'data/world-catalogs/novgorod/procedural-scene-v2/functional-allocation-v1';
@@ -9,14 +11,17 @@ const FUNCTIONAL =
   'data/world-catalogs/novgorod/procedural-scene-v2/functional-mapping-v1/candidate.json';
 const EQUIPMENT =
   'data/world-catalogs/novgorod/procedural-scene-v2/npc-equipment-v1/candidate.json';
+const V5 = 'data/knowledge-source/imports/item-container-120-v5/candidate/tables';
 
 export async function generateProceduralFunctionalAllocations(rootDir,
   overrides = {}) {
   const root = resolve(rootDir);
   const load = async (path) => overrides[path]
     ?? JSON.parse(await readFile(resolve(root, path), 'utf8'));
-  const [functional, equipment] = await Promise.all([
-    load(FUNCTIONAL), load(EQUIPMENT)
+  const [functional, equipment, propertyProfiles, propertyRules] =
+    await Promise.all([
+    load(FUNCTIONAL), load(EQUIPMENT), load(`${V5}/property_profiles.json`),
+    load(`${V5}/property_profile_rules.json`)
   ]);
   if (functional.candidate_digest !==
       'aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588'
@@ -34,6 +39,10 @@ export async function generateProceduralFunctionalAllocations(rootDir,
   const tool = exact(toolGroup.candidates, activityTool.item_template_ref);
   const material = [...materialGroup.candidates].sort((left, right) =>
     left.item_template_ref.localeCompare(right.item_template_ref))[0];
+  const propertyProfile = projected(propertyProfiles,
+    'property_personal_possession_v1');
+  const propertyRule = projected(propertyRules,
+    'rule_property_personal_possession_v1');
   const policy = {
     policy_id: 'fishing_present_actor_functional_allocation_v1',
     family_candidate_ref: 'novgorod_inland_fishing_worksite_v3@1',
@@ -42,26 +51,48 @@ export async function generateProceduralFunctionalAllocations(rootDir,
       occupation_ref: 'nov_occ_fisher',
       role_ref: 'nov_role_fisher',
       activity_profile_ref: 'activity_assist_fishing_net_v1',
-      actor_presence: 'present_committed'
+      actor_presence: 'present_committed_scene',
+      actor_kinds: ['npc', 'player'],
+      stable_unique_actor_instance_id_required: true
     },
-    actor_selection: 'stable_actor_id_ascending',
+    selection_cardinality: 'exactly_one',
+    actor_selection: 'lowest_stable_actor_instance_id',
+    actor_selection_reason:
+      'Deterministic order-independent selection among equally applicable actors.',
     allocations: [allocation('tool', tool),
       allocation('work_material', material)],
     property_basis: {
-      owner_ref: 'selected_actor', holder_ref: 'selected_actor',
-      controller_ref: 'selected_actor', access_policy: 'actor_controlled'
+      profile: propertyProfile, rule: propertyRule,
+      owner_ref: 'selected_actor_instance',
+      holder_ref: 'selected_actor_instance',
+      controller_ref: 'selected_actor_instance',
+      access_policy: 'actor_controlled',
+      assignment_at_materialization: true
     },
     placement: {
-      mode: 'persisted_function_position',
+      mode: 'actor_held_physical_position',
+      allowed_physical_positions: ACTOR_ITEM_PHYSICAL_POSITIONS.filter(
+        (value) => ['hands', 'external'].includes(value)),
       required_function_layer: 'work_zone',
-      required_position_state: 'committed'
+      required_position_state: 'committed',
+      work_zone_role: 'causal_scene_basis_only',
+      garment_slot_authorized: false
     },
+    creation: {
+      reuse_before_create: true, create_quantity: 1,
+      cross_layer_reuse_authorized: false,
+      deterministic_identity:
+        'policy_id+actor_instance_id+layer+item_template_ref',
+      idempotency_key_same_as_identity: true
+    },
+    causal_basis: ['authoring_package', 'function_ref',
+      'activity_profile_ref'],
     limits: {
       site_or_unowned_item_authorized: false,
       household_basis_authorized: false,
       resource_node_authorized: false,
       stock_creation_authorized: false,
-      quantity_creation_authorized: false
+      quantity_creation_authorized: true
     }
   };
   const payload = {
@@ -82,7 +113,13 @@ export async function generateProceduralFunctionalAllocations(rootDir,
         'FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING'
       ],
       remains_when_no_matching_actor: [
-        'FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING'
+        'FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING',
+        'FUNCTIONAL_ACTOR_ID_AMBIGUOUS',
+        'FUNCTIONAL_PROPERTY_BASIS_INVALID',
+        'FUNCTIONAL_PLACEMENT_INVALID',
+        'FUNCTIONAL_SOURCE_REF_INVALID',
+        'FUNCTIONAL_CROSS_LAYER_REUSE_INVALID',
+        'FUNCTIONAL_MECHANICS_OVERFLOW'
       ],
       always_remaining: ['FUNCTIONAL_CONTAINER_MAPPING_MISSING']
     },
@@ -103,29 +140,62 @@ export async function generateProceduralFunctionalAllocations(rootDir,
 }
 
 export function resolveProceduralFunctionalAllocations({ policy, actors,
-  persistedPositions }) {
-  const matches = actors.filter((actor) => actor.presence_state === 'committed'
+  persistedPositions, existingItems = [], mechanics = {} }) {
+  const ids = actors.map(({ actor_instance_id: id }) => id);
+  if (ids.some((id) => typeof id !== 'string' || !id)
+      || new Set(ids).size !== ids.length) fail('FUNCTIONAL_ACTOR_ID_AMBIGUOUS');
+  const matches = actors.filter((actor) =>
+    policy.applicability.actor_kinds.includes(actor.actor_kind)
+    && actor.presence_state === 'present_committed_scene'
     && actor.occupation_ref === policy.applicability.occupation_ref
     && actor.role_ref === policy.applicability.role_ref
     && actor.activity_profile_refs?.includes(
       policy.applicability.activity_profile_ref))
-    .sort((left, right) => left.actor_id.localeCompare(right.actor_id));
+    .sort((left, right) => left.actor_instance_id.localeCompare(
+      right.actor_instance_id));
   if (matches.length === 0) fail('FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING');
   const actor = matches[0];
-  const position = persistedPositions.find(({ function_layer: layer,
-    state, actor_id: actorId }) => layer ===
+  const positions = persistedPositions.filter(({ function_layer: layer,
+    state, actor_instance_id: actorId }) => layer ===
       policy.placement.required_function_layer
       && state === policy.placement.required_position_state
-      && actorId === actor.actor_id);
-  if (!position) fail('FUNCTIONAL_PERSISTED_POSITION_MISSING');
-  return Object.freeze(policy.allocations.map((entry) => Object.freeze({
-    allocation_id: `${policy.policy_id}:${actor.actor_id}:${entry.layer}`,
-    layer: entry.layer, actor_id: actor.actor_id,
-    owner_id: actor.actor_id, holder_id: actor.actor_id,
-    controller_id: actor.actor_id, access_policy: 'actor_controlled',
-    position_id: position.position_id,
-    ...structuredClone(entry)
-  })));
+      && actorId === actor.actor_instance_id);
+  if (positions.length !== 1) fail('FUNCTIONAL_PLACEMENT_INVALID');
+  const position = positions[0];
+  const existingIds = existingItems.map(({ item_instance_id: id }) => id);
+  if (existingIds.some((id) => !id)
+      || new Set(existingIds).size !== existingIds.length)
+    fail('FUNCTIONAL_CROSS_LAYER_REUSE_INVALID');
+  const used = new Set();
+  const allocations = policy.allocations.map((entry) => {
+    const existing = existingItems.filter((item) =>
+      item.actor_instance_id === actor.actor_instance_id
+      && item.item_template_ref === entry.item_template_ref
+      && !used.has(item.item_instance_id))
+      .sort((left, right) => left.item_instance_id.localeCompare(
+        right.item_instance_id))[0];
+    if (existing) used.add(existing.item_instance_id);
+    const physicalPosition = entry.external_hand_cost > 0 ? 'hands' : 'external';
+    if (!policy.placement.allowed_physical_positions.includes(physicalPosition)
+        || Number(mechanics.carry_mass_available_grams ?? Infinity)
+          < entry.mass_grams
+        || Number(mechanics.hands_available ?? 2) < entry.external_hand_cost)
+      fail('FUNCTIONAL_MECHANICS_OVERFLOW');
+    const identity = `${policy.policy_id}:${actor.actor_instance_id}:`
+      + `${entry.layer}:${entry.item_template_ref}`;
+    return Object.freeze({ allocation_id: identity,
+      idempotency_key: identity, disposition: existing ? 'reuse' : 'create',
+      item_instance_id: existing?.item_instance_id ?? `item:${identity}`,
+      layer: entry.layer, actor_instance_id: actor.actor_instance_id,
+      owner_id: actor.actor_instance_id, holder_id: actor.actor_instance_id,
+      controller_id: actor.actor_instance_id,
+      access_policy: 'actor_controlled', physical_position: physicalPosition,
+      work_zone_position_id: position.position_id, quantity: 1,
+      ...structuredClone(entry) });
+  });
+  if (new Set(allocations.map(({ item_instance_id: id }) => id)).size
+      !== allocations.length) fail('FUNCTIONAL_CROSS_LAYER_REUSE_INVALID');
+  return Object.freeze(allocations);
 }
 
 function allocation(layer, source) {
@@ -138,7 +208,19 @@ function allocation(layer, source) {
     object_category_ref: source.object_category_ref,
     min_quantity: source.min_quantity, max_quantity: source.max_quantity,
     source_binding_refs: [...source.source_binding_refs],
-    source_refs: [...source.source_refs], committed_source_required: true };
+    source_refs: [...source.source_refs], committed_source_required: true,
+    mass_grams: source.inventory_mechanics?.mass_grams ??
+      (source.item_template_ref.includes('fishing_net') ? 5000 : 100),
+    external_hand_cost: source.inventory_mechanics?.external_hand_cost ??
+      (source.item_template_ref.includes('fishing_net') ? 2 : 0) };
+}
+function projected(rows, id) {
+  const row = rows.find((value) => value.id === id);
+  if (!row) fail('FUNCTIONAL_PROPERTY_BASIS_INVALID');
+  return { ...structuredClone(row),
+    world_revision_id: row.world_revision_id == null ? undefined
+      : 'world_revision_novgorod_1230_item_container_approved_001',
+    status: 'approved_by_exact_promotion' };
 }
 function exact(rows, id) {
   const found = rows.filter(({ item_template_ref: ref }) => ref === id);

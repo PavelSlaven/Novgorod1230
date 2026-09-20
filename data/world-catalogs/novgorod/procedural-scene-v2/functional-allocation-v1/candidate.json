@@ -17,9 +17,16 @@
         "occupation_ref": "nov_occ_fisher",
         "role_ref": "nov_role_fisher",
         "activity_profile_ref": "activity_assist_fishing_net_v1",
-        "actor_presence": "present_committed"
+        "actor_presence": "present_committed_scene",
+        "actor_kinds": [
+          "npc",
+          "player"
+        ],
+        "stable_unique_actor_instance_id_required": true
       },
-      "actor_selection": "stable_actor_id_ascending",
+      "selection_cardinality": "exactly_one",
+      "actor_selection": "lowest_stable_actor_instance_id",
+      "actor_selection_reason": "Deterministic order-independent selection among equally applicable actors.",
       "allocations": [
         {
           "layer": "tool",
@@ -43,7 +50,9 @@
             "src_novgorod_promysly",
             "src_project_stage_3b1_physical_parameter_policy"
           ],
-          "committed_source_required": true
+          "committed_source_required": true,
+          "mass_grams": 5000,
+          "external_hand_cost": 2
         },
         {
           "layer": "work_material",
@@ -67,26 +76,70 @@
             "src_novgorod_promysly",
             "src_project_stage_3b1_physical_parameter_policy"
           ],
-          "committed_source_required": true
+          "committed_source_required": true,
+          "mass_grams": 100,
+          "external_hand_cost": 0
         }
       ],
       "property_basis": {
-        "owner_ref": "selected_actor",
-        "holder_ref": "selected_actor",
-        "controller_ref": "selected_actor",
-        "access_policy": "actor_controlled"
+        "profile": {
+          "id": "property_personal_possession_v1",
+          "world_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
+          "region_id": "region_novgorod_land",
+          "property_category_id": "cat_item_property_personal_possession_v1",
+          "status": "approved_by_exact_promotion"
+        },
+        "rule": {
+          "id": "rule_property_personal_possession_v1",
+          "property_profile_id": "property_personal_possession_v1",
+          "owner_kind": "person",
+          "holder_kind": "person",
+          "controller_kind": "person",
+          "access_policy": {
+            "version": 1,
+            "mode": "explicit"
+          },
+          "claim_conditions": {
+            "version": 1,
+            "mode": "none"
+          },
+          "status": "approved_by_exact_promotion"
+        },
+        "owner_ref": "selected_actor_instance",
+        "holder_ref": "selected_actor_instance",
+        "controller_ref": "selected_actor_instance",
+        "access_policy": "actor_controlled",
+        "assignment_at_materialization": true
       },
       "placement": {
-        "mode": "persisted_function_position",
+        "mode": "actor_held_physical_position",
+        "allowed_physical_positions": [
+          "hands",
+          "external"
+        ],
         "required_function_layer": "work_zone",
-        "required_position_state": "committed"
+        "required_position_state": "committed",
+        "work_zone_role": "causal_scene_basis_only",
+        "garment_slot_authorized": false
       },
+      "creation": {
+        "reuse_before_create": true,
+        "create_quantity": 1,
+        "cross_layer_reuse_authorized": false,
+        "deterministic_identity": "policy_id+actor_instance_id+layer+item_template_ref",
+        "idempotency_key_same_as_identity": true
+      },
+      "causal_basis": [
+        "authoring_package",
+        "function_ref",
+        "activity_profile_ref"
+      ],
       "limits": {
         "site_or_unowned_item_authorized": false,
         "household_basis_authorized": false,
         "resource_node_authorized": false,
         "stock_creation_authorized": false,
-        "quantity_creation_authorized": false
+        "quantity_creation_authorized": true
       }
     }
   ],
@@ -100,7 +153,13 @@
       "FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING"
     ],
     "remains_when_no_matching_actor": [
-      "FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING"
+      "FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING",
+      "FUNCTIONAL_ACTOR_ID_AMBIGUOUS",
+      "FUNCTIONAL_PROPERTY_BASIS_INVALID",
+      "FUNCTIONAL_PLACEMENT_INVALID",
+      "FUNCTIONAL_SOURCE_REF_INVALID",
+      "FUNCTIONAL_CROSS_LAYER_REUSE_INVALID",
+      "FUNCTIONAL_MECHANICS_OVERFLOW"
     ],
     "always_remaining": [
       "FUNCTIONAL_CONTAINER_MAPPING_MISSING"
@@ -110,5 +169,5 @@
   "runtime_authorized": false,
   "activation_authorized": false,
   "activation_request": null,
-  "candidate_digest": "f291db5639e015decb15b6d9c8b0a7e20e6a29fdcfb9276aa8243886c6e729fc"
+  "candidate_digest": "2c24158f1a8c0b62a80ee4cdcb3a5a13e1bb9bd934922831868f7803ff0e842d"
 }

@@ -18,6 +18,8 @@ import { createPartyLog } from
   '../../apps/game-server/src/infrastructure/filesystem/party-log.js';
 import { DEFAULT_GAMEPLAY_MODEL } from
   '../../apps/game-server/src/runtime/llm-settings.js';
+import { createLlmSettingsFileStore } from
+  '../../apps/game-server/src/infrastructure/filesystem/llm-settings-file.js';
 import { validateFactualTurnDeliveryScreen } from '@rus/presentation';
 import { auditEvent, createGameplayGapExplorer, gitSnapshot, recordNarrationQuality } from
   './gameplay-gap-campaign.mjs';
@@ -589,9 +591,19 @@ function assertLocalProvider(record, identity, label) {
     `${label} did not use the selected acceptance provider.`);
 }
 
-export async function acceptanceProviderFromEnv(env = process.env) {
-  const baseUrl = String(env.RUS_ACCEPTANCE_LLM_BASE_URL ?? '').trim();
-  const model = String(env.RUS_ACCEPTANCE_LLM_MODEL ?? '').trim();
+export async function acceptanceProviderFromEnv(env = process.env, {
+  loadSettings = () => createLlmSettingsFileStore({
+    ...(env.RUS_LLM_SETTINGS_PATH
+      ? { filePath: env.RUS_LLM_SETTINGS_PATH } : {})
+  }).load()
+} = {}) {
+  const saved = await loadSettings();
+  const configured = saved?.settings?.mode === 'custom'
+    ? saved.settings : null;
+  const baseUrl = String(env.RUS_ACCEPTANCE_LLM_BASE_URL
+    ?? configured?.base_url ?? '').trim();
+  const model = String(env.RUS_ACCEPTANCE_LLM_MODEL
+    ?? configured?.model ?? '').trim();
   const keyFile = String(env.RUS_ACCEPTANCE_LLM_API_KEY_FILE ?? '').trim();
   const backend = String(env.RUS_ACCEPTANCE_LLM_BACKEND ?? '').trim();
   const backendVersion = String(
@@ -606,7 +618,8 @@ export async function acceptanceProviderFromEnv(env = process.env) {
     `RUS_ACCEPTANCE_LLM_MODEL must be ${DEFAULT_GAMEPLAY_MODEL}.`);
   if (!backend || !backendVersion || !runtime || !hardware) throw new Error(
     'External acceptance requires backend version, runtime and hardware metadata.');
-  const apiKey = keyFile ? (await readFile(keyFile, 'utf8')).trim() : null;
+  const apiKey = keyFile ? (await readFile(keyFile, 'utf8')).trim()
+    : String(configured?.api_key ?? '').trim() || null;
   return Object.freeze({ mode: 'custom', compatibility: 'openai_compatible',
     baseUrl, model, apiKey: apiKey || null, evidence: Object.freeze({
       backend, backendVersion, runtime, hardware }) });

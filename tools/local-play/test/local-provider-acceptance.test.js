@@ -216,14 +216,15 @@ test('acceptance provider reads an optional key from a file, never the CLI', asy
 });
 
 test('acceptance provider has no managed fallback and requires exact Qwen metadata', async () => {
-  assert.equal(await acceptanceProviderFromEnv({}), null);
+  const noSaved = { loadSettings: async () => null };
+  assert.equal(await acceptanceProviderFromEnv({}, noSaved), null);
   await assert.rejects(acceptanceProviderFromEnv({
     RUS_ACCEPTANCE_LLM_BASE_URL: 'http://192.0.2.1:8000/v1'
-  }), /required together/u);
+  }, noSaved), /required together/u);
   await assert.rejects(acceptanceProviderFromEnv({
     RUS_ACCEPTANCE_LLM_BASE_URL: 'http://192.0.2.1:8000/v1',
     RUS_ACCEPTANCE_LLM_MODEL: 'qwen3.8-27b-uncensored-w4a16-tp2'
-  }), /backend version, runtime and hardware metadata/u);
+  }, noSaved), /backend version, runtime and hardware metadata/u);
   await assert.rejects(acceptanceProviderFromEnv({
     RUS_ACCEPTANCE_LLM_BASE_URL: 'http://192.0.2.1:8000/v1',
     RUS_ACCEPTANCE_LLM_MODEL: 'retired-model',
@@ -231,7 +232,21 @@ test('acceptance provider has no managed fallback and requires exact Qwen metada
     RUS_ACCEPTANCE_LLM_BACKEND_VERSION: '1',
     RUS_ACCEPTANCE_LLM_RUNTIME_METADATA: 'runtime',
     RUS_ACCEPTANCE_LLM_HARDWARE_METADATA: 'hardware'
-  }), /must be qwen3\.8-27b-uncensored-w4a16-tp2/u);
+  }, noSaved), /must be qwen3\.8-27b-uncensored-w4a16-tp2/u);
+});
+
+test('acceptance provider reuses saved exact custom settings without copying credentials', async () => {
+  const provider = await acceptanceProviderFromEnv({
+    RUS_ACCEPTANCE_LLM_BACKEND: 'vllm',
+    RUS_ACCEPTANCE_LLM_BACKEND_VERSION: 'test',
+    RUS_ACCEPTANCE_LLM_RUNTIME_METADATA: 'test runtime',
+    RUS_ACCEPTANCE_LLM_HARDWARE_METADATA: 'test hardware'
+  }, { loadSettings: async () => ({ settings: { mode: 'custom',
+    compatibility: 'openai_compatible', base_url: 'https://saved.invalid/v1',
+    model: 'qwen3.8-27b-uncensored-w4a16-tp2', api_key: 'saved-secret'
+  } }) });
+  assert.equal(provider.model, 'qwen3.8-27b-uncensored-w4a16-tp2');
+  assert.equal(provider.apiKey, 'saved-secret');
 });
 
 test('acceptance credentials use a cleaned private temp directory and never enter evidence', async () => {

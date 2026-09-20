@@ -48,8 +48,10 @@ import { buildProceduralFinalDevelopmentActivation,
 import { loadActiveRuntimeCatalogPin } from
   '../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
 
-const OUTPUT =
-  'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/disposable-import-result.json';
+const v2Only = process.argv.includes('--v2-only');
+const OUTPUT = `data/world-catalogs/novgorod/procedural-scene-v2/`
+  + `${v2Only ? 'final-candidate-pack-v2' : 'final-candidate-pack-v1'}/`
+  + 'disposable-import-result.json';
 
 if (!process.argv.includes('--execute')) {
   throw new Error('DISPOSABLE_IMPORT_EXPLICIT_EXECUTE_REQUIRED');
@@ -105,16 +107,19 @@ try {
   await runWorldRuntimeCatalogMigration(pool);
   await runPartyRuntimeCatalogMigration(partyPool);
 
-  const oldBundle = await buildSpatialV3ProductionV12ActivationBundle({
-    worldPool: pool, partyPool, repositoryRoot: root,
-    gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
-    authorizationRef: 'disposable old-party fixture activation'
-  });
-  const oldActivation = await applySpatialV3ProductionV12ActivationBundle({
-    worldPool: pool, partyPool, bundle: oldBundle });
-  const oldPin = await loadActiveRuntimeCatalogPin(pool,
-    'item_container_materialization_v2');
-  await seedPartyWithPin(partyPool, 'party-old-fixture', oldPin);
+  let oldActivation = null;
+  if (!v2Only) {
+    const oldBundle = await buildSpatialV3ProductionV12ActivationBundle({
+      worldPool: pool, partyPool, repositoryRoot: root,
+      gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
+      authorizationRef: 'disposable old-party fixture activation'
+    });
+    oldActivation = await applySpatialV3ProductionV12ActivationBundle({
+      worldPool: pool, partyPool, bundle: oldBundle });
+    const oldPin = await loadActiveRuntimeCatalogPin(pool,
+      'item_container_materialization_v2');
+    await seedPartyWithPin(partyPool, 'party-old-fixture', oldPin);
+  }
 
   const pack = await generateProceduralFinalCandidatePack(root);
   const v5Readback = await verifyAssertExistingRows(pool, pack);
@@ -180,6 +185,29 @@ try {
   const v2Imported = await importProceduralFinalV2Pack({ pool, baseline,
     v1Pack: pack, v2Pack, attestation: v2Attestation,
     runtimeContractDigest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST });
+  if (v2Only) {
+    result = {
+      schema: 'rus.procedural_final_candidate_v2_disposable_import_result.v1',
+      status: 'PASS', environment: 'fresh_disposable_embedded_postgresql',
+      database_name: database, credentials_persisted: false,
+      v5_prerequisite: { lifecycle_applied: promotion.applied === true,
+        rollback_probe: promotion.rollback, asserted_table_count: 39,
+        asserted_record_count: 3248 },
+      v1_prerequisite: { candidate_digest: pack.candidate_digest,
+        import_audit_digest: imported.ledger.root.import_audit_digest,
+        ledger_record_count: imported.readback.ledger_record_count,
+        compiled_record_count: imported.readback.compiled_record_count,
+        activation_event_count: 0 },
+      v2_import: { candidate_digest: v2Pack.candidate_digest,
+        approval_attestation_digest: v2Attestation.attestation_digest,
+        import_audit_digest: v2Imported.ledger.root.import_audit_digest,
+        ...v2Imported.readback, rollback_probe: v2Rollback,
+        catalog_import_records_zero_residual_after_probe: true,
+        activation_performed: false },
+      cleanup, production_mutated: false, runtime_activation_performed: false
+    };
+  }
+  if (!v2Only) {
   const activationBundle = await buildProceduralFinalDevelopmentActivation({
     worldPool: pool, partyPool, pack, ledger: imported.ledger,
     gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
@@ -280,6 +308,7 @@ try {
     development_runtime_activation_performed: true,
     production_runtime_activation_performed: false
   };
+  }
 } finally {
   await pool?.end();
   await partyPool?.end();

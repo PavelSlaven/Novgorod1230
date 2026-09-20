@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { generateProceduralFinalCandidateV2 } from
   '../../../scripts/generate-procedural-final-candidate-v2.mjs';
+import { buildProceduralFinalV2ImportLedger } from
+  '../src/procedural-v6-import.js';
 
 const root = new URL('../../../', import.meta.url).pathname.replace(/^\/(.:)/u,
   '$1');
@@ -61,4 +63,26 @@ test('stale allocation digest cannot hide role predicate mutation', async () => 
   await assert.rejects(() => generateProceduralFinalCandidateV2(root, {
     [path]: allocation
   }), { code: 'FINAL_V2_ALLOCATION_GENERATED_MISMATCH' });
+});
+
+test('v2 importer rejects role tamper and zero target digest', async () => {
+  const [v1, v2, attestation] = await Promise.all([
+    'final-candidate-pack-v1/candidate.json',
+    'final-candidate-pack-v2/candidate.json',
+    'final-candidate-pack-v2/approval-attestation.json'
+  ].map((path) => readFile(new URL(
+    `../../../data/world-catalogs/novgorod/procedural-scene-v2/${path}`,
+    import.meta.url), 'utf8').then(JSON.parse)));
+  const baseline = { request: { parent_revision_id: 'baseline',
+    parent_catalog_digest: '1'.repeat(64),
+    parent_snapshot_manifest_digest: '2'.repeat(64) } };
+  const roleTamper = structuredClone(v2);
+  roleTamper.append_only_delta.record.payload.policy.applicability.role_ref =
+    'nov_role_boatman';
+  assert.throws(() => buildProceduralFinalV2ImportLedger({ baseline, v1Pack: v1,
+    v2Pack: roleTamper, attestation }),
+  { code: 'PROCEDURAL_FINAL_V2_PACK_INVALID' });
+  assert.throws(() => buildProceduralFinalV2ImportLedger({ baseline, v1Pack: v1,
+    v2Pack: { ...v2, target_catalog_digest: '0'.repeat(64) }, attestation }),
+  { code: 'PROCEDURAL_FINAL_V2_PACK_INVALID' });
 });

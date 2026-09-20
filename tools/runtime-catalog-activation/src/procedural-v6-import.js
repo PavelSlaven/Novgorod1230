@@ -9,6 +9,7 @@ import { computeCanonicalRecordDigest, projectCanonicalRecord } from
 import { computeTablePayloadDigest } from '@rus/runtime-catalog/ledger-digests';
 import registry from '../../../data/runtime-catalog/item-container-record-registry.v1.json'
   with { type: 'json' };
+import { createHash } from 'node:crypto';
 
 export async function importProceduralV6Overlay({ pool, baseline, overlay }) {
   const registered = await registerCatalogBaseline({ pool, ...baseline });
@@ -357,11 +358,46 @@ export async function importProceduralFinalCandidatePack({ pool, baseline,
 export function buildProceduralFinalV2ImportLedger({ baseline, v1Pack, v2Pack,
   attestation }) {
   assertProceduralFinalCandidatePackIntegrity(v1Pack);
+  const { candidate_digest: v2Digest, ...v2Payload } = v2Pack ?? {};
+  const sha = (value) => createHash('sha256')
+    .update(JSON.stringify(value)).digest('hex');
+  const expectedTarget = sha({ schema:
+    'rus.procedural_scene_final_candidate_v2_target.v1',
+  inherited_target_catalog_digest: v1Pack.target_catalog_digest,
+  inherited_records_digest: v1Pack.append_only_import_plan.records_digest,
+  appended_record: v2Pack.append_only_delta?.record });
+  const appendedRow = v2Pack.append_only_delta?.record;
+  if (v2Digest !== sha(v2Payload)
+      || v2Pack.target_catalog_digest !== expectedTarget
+      || v2Pack.target_revision_id !== 'procedural_scene_final_candidate_v2_001'
+      || v2Pack.append_only_delta.table_name !==
+        'procedural_scene_compiled_records'
+      || v2Pack.append_only_delta.operation_kind !== 'insert'
+      || v2Pack.append_only_delta.insert_count !== 1
+      || v2Pack.append_only_delta.update_count !== 0
+      || v2Pack.append_only_delta.delete_count !== 0
+      || appendedRow.status !== 'approved_authoring_not_runtime_selectable'
+      || appendedRow.payload_digest !== sha(appendedRow.payload)
+      || appendedRow.source_pack_digest !== sha({ v1: v1Pack.candidate_digest,
+        allocation: v2Pack.allocation_source.candidate_digest,
+        attestation: v2Pack.allocation_source.approval_attestation_digest }))
+    fail('PROCEDURAL_FINAL_V2_PACK_INVALID');
   const { attestation_digest: claimed, ...attested } = attestation ?? {};
   if (claimed !== digestEnvelope(attested)
       || claimed !== '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772'
       || attestation.candidate_digest !== v2Pack.candidate_digest
-      || v2Pack.inherited_closure.candidate_digest !== v1Pack.candidate_digest)
+      || v2Pack.inherited_closure.candidate_digest !== v1Pack.candidate_digest
+      || attestation.target_binding.target_revision_id !==
+        v2Pack.target_revision_id
+      || attestation.target_binding.target_catalog_digest !==
+        v2Pack.target_catalog_digest
+      || attestation.append_only_delta_binding.payload_digest !==
+        appendedRow.payload_digest
+      || attestation.append_only_delta_binding.source_pack_digest !==
+        appendedRow.source_pack_digest
+      || attestation.append_only_delta_binding.insert_count !== 1
+      || attestation.append_only_delta_binding
+        .expected_total_record_count_after_import !== 3270)
     fail('PROCEDURAL_FINAL_V2_ATTESTATION_INVALID');
   const entry = registry.entries.find(({ table_name: table }) => table ===
     'procedural_scene_compiled_records');

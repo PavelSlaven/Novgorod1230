@@ -1,0 +1,37 @@
+{
+  "schema": "rus.procedural_final_candidate_v2_disposable_import_result.v1",
+  "status": "PASS",
+  "environment": "fresh_disposable_embedded_postgresql",
+  "database_name": "pr17_procedural_final_candidate",
+  "credentials_persisted": false,
+  "v5_prerequisite": {
+    "lifecycle_applied": true,
+    "rollback_probe": "pass",
+    "asserted_table_count": 39,
+    "asserted_record_count": 3248
+  },
+  "v1_prerequisite": {
+    "candidate_digest": "29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1",
+    "import_audit_digest": "d5ab73748cd0f79a9064be2434899faa5eac70e96f011f2d09d48657031aa117",
+    "ledger_record_count": 3269,
+    "compiled_record_count": 21,
+    "activation_event_count": 0
+  },
+  "v2_import": {
+    "candidate_digest": "65d973f8f06ab78a38b5bda7b24cf8661da1b8b9a581742c224cfa8b1c39bdc6",
+    "approval_attestation_digest": "2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772",
+    "import_audit_digest": "6ad18c6f40185fa540bf7e3ec3bbb5d5b96e95c370b5e70c657a0db73c29f3b2",
+    "ledger_record_count": 3270,
+    "compiled_record_count": 22,
+    "activation_event_count": 0,
+    "rollback_probe": "pass",
+    "catalog_import_records_zero_residual_after_probe": true,
+    "activation_performed": false
+  },
+  "cleanup": {
+    "database_stopped": true,
+    "temporary_cluster_removed": true
+  },
+  "production_mutated": false,
+  "runtime_activation_performed": false
+}

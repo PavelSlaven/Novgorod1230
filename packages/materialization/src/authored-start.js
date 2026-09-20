@@ -5,6 +5,8 @@ import { AUTHORED_MATERIALIZER_VERSION, canonicalDigest, deriveSeed,
   deterministicInstanceId } from './core.js';
 import { materializeS1OpenOneSpaceTopology } from
   './spatial-v3-s1-first-entry.js';
+import { compileApprovedNpcRuntimeBasis } from
+  './approved-npc-runtime-basis.js';
 
 export function materializeAuthoredStartPartyInstance(input) {
   const profile = input?.scenario_bundle;
@@ -30,6 +32,8 @@ export function materializeAuthoredStartPartyInstance(input) {
   const npcIds = new Map(profile.people.map((person, ordinal) => [
     person.person_key, id('npc', person.person_key, ordinal)
   ]));
+  const actorAdmission = new Map(admission.actor_refs.map((record) =>
+    [record.actor_ref, record]));
   const npcs = profile.people.map((person) => {
     const sceneIndex = person.location === 'start'
       ? null : Number(person.location.split(':')[1]);
@@ -61,7 +65,9 @@ export function materializeAuthoredStartPartyInstance(input) {
         : { status: 'active', materialization_depth: 'full' },
       semantic_state: { scenario_function: 'ordinary_authored_person',
         causal_basis: 'authored_start', profile_revision:
-          person.profile_revision ?? 1 },
+          person.profile_revision ?? 1,
+        approved_runtime_basis: structuredClone(
+          actorAdmission.get(person.person_key).runtime_basis) },
       relationships: person.relationships.map((relation) => ({
         ...relation,
         target_actor_id: relation.to === 'player'
@@ -353,6 +359,7 @@ function resolveAuthoritativeAdmission(input, profile) {
     player_known_facts: playerKnownFacts,
     domain_catalog_bundle_digest: domainBundleDigest,
     actor_catalog_digest: actorCatalogDigest,
+    actor_refs: actorRefs,
     resource_mechanics: resourceRefs.map(({ inventory_profile }) =>
       inventory_profile),
     spatial_closures: spatialRefs,
@@ -410,7 +417,10 @@ function resolveActors(profile) {
       || occupation.region_id !== catalog.region_id
       || !allows(occupation.allowed_social_role_ids, actor.role_id)) invalid();
     return { actor_ref: actor.actor_ref, role_id: role.role_id,
-      occupation_id: occupation.occupation_id };
+      occupation_id: occupation.occupation_id,
+      runtime_basis: compileApprovedNpcRuntimeBasis({ role, occupation,
+        season: 'summer', profile_level:
+          actor.profile_level === 'background' ? 'background' : 'scene' }) };
   });
 }
 

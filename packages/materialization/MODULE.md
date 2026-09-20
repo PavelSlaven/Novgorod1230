@@ -67,6 +67,12 @@ owner refs, source field/value, exact quantity bounds and source selection
 weight. Missing applicable required layers are a typed data gap. The compiler
 does not treat selection weight as presence probability and does not call LLM.
 
+`compileApprovedNpcRuntimeBasis` derives schedule, property, tool/clothing/
+container requirements, local/route knowledge, relationships, fears, goals and
+LLM boundaries from exact approved enriched role/occupation rows. Every field
+keeps its owner source ref. Missing source data or incompatible role/occupation
+blocks before party commit; this basis does not fabricate concrete equipment.
+
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не
 читает БД, не выполняет commit и не активирует production O1 route. Он только
 валидирует code-owned inputs и возвращает immutable logical state/result.

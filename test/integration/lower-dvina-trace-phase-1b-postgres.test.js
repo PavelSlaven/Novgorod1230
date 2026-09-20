@@ -398,6 +398,11 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
   assert.equal(authoredInternal.npcs.length, 3);
   assert.equal(authoredInternal.items.length, 2);
+  assert.ok(authoredInternal.npcs.every((npc) =>
+    npc.semantic_state.approved_runtime_basis.schedule.source_ref.endsWith(
+      ':daily_schedule_summer')
+      && npc.semantic_state.approved_runtime_basis.tool_requirement.source_ref
+        .includes(`:${npc.profile_id}:typical_tools`)));
   assert.equal(authoredInternal.position.g4_id,
     'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach');
   const demoInternal = await first.adapter.loadInternal(partyId);

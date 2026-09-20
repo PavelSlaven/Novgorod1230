@@ -20,6 +20,8 @@ export { materializeAuthoredStartPartyInstance } from './authored-start.js';
 export { materializeActorBaseAppearance } from './actor-base-appearance.js';
 export { compileProceduralSceneProfile } from
   './procedural-scene-profile-compiler.js';
+export { compileApprovedNpcRuntimeBasis } from
+  './approved-npc-runtime-basis.js';
 export { completeAuthoredItemMechanics } from
   './lower-dvina-trace-selection.js';
 export {

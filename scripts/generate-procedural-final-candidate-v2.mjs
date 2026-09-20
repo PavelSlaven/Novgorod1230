@@ -2,25 +2,50 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { validateProceduralFinalCandidatePack } from
+  './generate-procedural-final-candidate-pack.mjs';
+import { generateProceduralFunctionalAllocations } from
+  './generate-procedural-functional-allocations.mjs';
 
 const ROOT = 'data/world-catalogs/novgorod/procedural-scene-v2';
 const OUTPUT = `${ROOT}/final-candidate-pack-v2/candidate.json`;
 const V1 = `${ROOT}/final-candidate-pack-v1/candidate.json`;
 const ALLOCATION = `${ROOT}/functional-allocation-v1/candidate.json`;
+const REQUEST = `${ROOT}/functional-allocation-v1/approval-request.json`;
 const ATTESTATION = `${ROOT}/functional-allocation-v1/approval-attestation.json`;
 
-export async function generateProceduralFinalCandidateV2(rootDir) {
+export async function generateProceduralFinalCandidateV2(rootDir,
+  overrides = {}) {
   const root = resolve(rootDir);
-  const [v1, allocation, attestation] = await Promise.all([V1, ALLOCATION,
-    ATTESTATION].map(async (path) => JSON.parse(await readFile(
-      resolve(root, path), 'utf8'))));
+  const load = async (path) => overrides[path]
+    ?? JSON.parse(await readFile(resolve(root, path), 'utf8'));
+  const [v1, allocation, request, attestation, generatedAllocation] =
+    await Promise.all([load(V1), load(ALLOCATION), load(REQUEST),
+      load(ATTESTATION), generateProceduralFunctionalAllocations(root)]);
+  validateProceduralFinalCandidatePack(v1);
+  if (JSON.stringify(allocation) !==
+      JSON.stringify(generatedAllocation.candidate)
+      || JSON.stringify(request) !==
+        JSON.stringify(generatedAllocation.approvalRequest))
+    fail('FINAL_V2_ALLOCATION_GENERATED_MISMATCH');
   const { attestation_digest: claimed, ...attested } = attestation;
   if (digest(attested) !== claimed
       || claimed !== '692960ad7561b60a0793f1f3fb097e757f8975aa91ec42251296edc6213b552a'
       || allocation.candidate_digest !== attestation.candidate_digest
+      || request.request_digest !== attestation.request_digest
       || v1.candidate_digest !==
         attestation.source_bindings.final_assert_existing_catalog_digest)
     fail('FINAL_V2_SOURCE_ATTESTATION_INVALID');
+  const inheritedOperations = v1.record_operations_by_table;
+  const inheritedV5 = inheritedOperations.filter(({ table_name: table }) =>
+    table !== 'procedural_scene_compiled_records');
+  const inheritedV5Records = inheritedV5.reduce((sum, operation) =>
+    sum + operation.record_count, 0);
+  if (inheritedOperations.length !== 40 || inheritedV5.length !== 39
+      || inheritedV5Records !== 3248
+      || v1.append_only_import_plan.records_digest !==
+        'ceb7fc4bd4f9a54eb1b5d6ecc1db597db47b6548e383bd8a5dd828ee697921f2')
+    fail('FINAL_V2_INHERITED_CLOSURE_INVALID');
   const appendPayload = { schema: 'rus.procedural_compiled_allocation_policy.v1',
     policy: structuredClone(allocation.policies[0]),
     approval_attestation_digest: claimed,
@@ -49,10 +74,10 @@ export async function generateProceduralFinalCandidateV2(rootDir) {
     inherited_closure: {
       candidate_path: V1, candidate_digest: v1.candidate_digest,
       target_catalog_digest: v1.target_catalog_digest,
-      record_operations_count: v1.record_operations_by_table.length,
+      record_operations_count: inheritedOperations.length,
       records_digest: v1.append_only_import_plan.records_digest,
-      v5_assert_existing_table_count: 39,
-      v5_assert_existing_record_count: 3248
+      v5_assert_existing_table_count: inheritedV5.length,
+      v5_assert_existing_record_count: inheritedV5Records
     },
     allocation_source: { candidate_path: ALLOCATION,
       candidate_digest: allocation.candidate_digest,

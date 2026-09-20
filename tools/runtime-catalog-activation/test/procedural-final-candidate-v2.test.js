@@ -35,3 +35,24 @@ test('activated v1 stays immutable and non-migrated', async () => {
       + 'final-candidate-pack-v1/candidate.json', import.meta.url), 'utf8');
   assert.equal(after, before);
 });
+
+test('stale top digest cannot hide a v1 canonical record mutation', async () => {
+  const path = 'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/candidate.json';
+  const v1 = JSON.parse(await readFile(new URL(`../../../${path}`,
+    import.meta.url), 'utf8'));
+  v1.record_operations_by_table[0].records[0]
+    .canonical_payload.canonical_fields.status = 'draft';
+  await assert.rejects(() => generateProceduralFinalCandidateV2(root, {
+    [path]: v1
+  }), { code: 'FINAL_PACK_DIGEST_MISMATCH' });
+});
+
+test('stale allocation digest cannot hide role predicate mutation', async () => {
+  const path = 'data/world-catalogs/novgorod/procedural-scene-v2/functional-allocation-v1/candidate.json';
+  const allocation = JSON.parse(await readFile(new URL(`../../../${path}`,
+    import.meta.url), 'utf8'));
+  allocation.policies[0].applicability.role_ref = 'nov_role_boatman';
+  await assert.rejects(() => generateProceduralFinalCandidateV2(root, {
+    [path]: allocation
+  }), { code: 'FINAL_V2_ALLOCATION_GENERATED_MISMATCH' });
+});

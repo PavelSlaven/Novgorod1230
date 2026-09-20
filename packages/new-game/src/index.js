@@ -7,6 +7,10 @@ export {
 export { buildStage22NarratorInput, runStage22NarratorProse,
   runStage22SemanticRepairBlock } from
   './stages/stage-22-narrator-prose/index.js';
+export { SELF_CHECK_FIELDS } from
+  './stages/stage-22-narrator-prose/policy/constants.js';
 export { buildStage23AuditInput, runStage23NarratorProseAudit,
   validateStage23CommitHandoff } from
   './stages/stage-23-narrator-prose-audit/index.js';
+export { STAGE23_REQUIRED_CHECKS, STAGE23_ROUTE_SCHEMA } from
+  './stages/stage-23-narrator-prose-audit/policy/constants.js';

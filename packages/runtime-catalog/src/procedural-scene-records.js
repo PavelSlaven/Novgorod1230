@@ -1,4 +1,5 @@
 import { deepFreeze, fail, isDigest, rowsFrom } from './shared.js';
+import { canonicalStringify } from './canonical-records.js';
 
 const REGIONAL_SQL = Object.freeze({
   landscape: `SELECT template.* FROM world_base.landscape_templates template
@@ -30,6 +31,40 @@ const REGIONAL_SQL = Object.freeze({
       AND regional.status='approved' AND regional.is_allowed=TRUE
     ORDER BY template.id`
 });
+
+export function loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
+  pin }) {
+  if (verifiedCatalog?.schema !== 'rus.verified_item_catalog.v2'
+      || verifiedCatalog.verified !== true
+      || canonicalStringify(verifiedCatalog.pin) !== canonicalStringify(pin)
+      || pin?.catalog_revision_id !==
+        'procedural_scene_final_candidate_v1_001'
+      || pin.catalog_digest !==
+        '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c') {
+    fail('PROCEDURAL_COMPILED_CATALOG_PIN_MISMATCH',
+      'Exact activated procedural final-candidate pin is required.');
+  }
+  const records = verifiedCatalog.records_by_table
+    ?.procedural_scene_compiled_records;
+  if (!Array.isArray(records) || records.length !== 21
+      || records.some((record) => record.status !==
+        'approved_authoring_not_runtime_selectable'
+          || !['profile', 'mapping', 'approval_metadata']
+            .includes(record.record_kind))) {
+    fail('PROCEDURAL_COMPILED_CATALOG_MISSING',
+      'Activated procedural compiled records are missing or invalid.');
+  }
+  return deepFreeze({
+    schema: 'rus.verified_procedural_compiled_catalog.v1', verified: true,
+    pin: structuredClone(pin),
+    profiles: records.filter(({ record_kind: kind }) => kind === 'profile'),
+    mappings: records.filter(({ record_kind: kind }) => kind === 'mapping'),
+    approval_metadata: records.find(({ record_kind: kind }) =>
+      kind === 'approval_metadata'),
+    universal_categories: structuredClone(
+      verifiedCatalog.records_by_table.universal_categories ?? [])
+  });
+}
 
 export async function loadApprovedProceduralSceneRecordBundle({
   worldBaseReader, worldPin, runtimeCatalogPin, bindings,

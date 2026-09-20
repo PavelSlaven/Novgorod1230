@@ -26,10 +26,31 @@
     "activation_event_count": 0,
     "rollback_probe": "pass"
   },
+  "development_activation": {
+    "activation_scope": "new_development_parties_only",
+    "event_id": "runtime_catalog_activation_98a107b9bb09f1778b17bbf454687424",
+    "event_sequence": 2,
+    "previous_event_id": "runtime_catalog_activation_369484deea6a4041fccb5a422737abf7",
+    "activation_request_digest": "d50efbbcc5b4ed4fdc444e1e2e29a2d7215246c91bf49a743af9f5cc9e24bf90",
+    "activation_attestation_digest": "825a838d40a2e76f63a869a940b351239638410861c9d259ed0f911ff6c568da",
+    "runtime_release_id": "55cb24f85d3a6ea51ecfdb1fdab8799911666eeb219c9c53f7c20d412a709042",
+    "audited_candidate_digest": "12a160383a5aba4dfbda9aa5f6ef64273d712944322d9fb44f3a1eb1d45d5d67",
+    "independent_import_approval_attestation_digest": "0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c",
+    "import_audit_digest": "197f8b5b2062ef5b0c653b277aae932ca7dd50deed6bf1f9c25b1534d69d5b84",
+    "active_revision_id": "procedural_scene_final_candidate_v1_001",
+    "active_catalog_digest": "4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c",
+    "old_party_revision_id": "runtime_catalog_lower_dvina_spatial_v3_v12_001",
+    "new_party_revision_id": "procedural_scene_final_candidate_v1_001",
+    "existing_party_rows_updated": 0,
+    "production_deploy": false,
+    "old_save_migration": false,
+    "rematerialization": false
+  },
   "cleanup": {
     "database_stopped": true,
     "temporary_cluster_removed": true
   },
   "production_mutated": false,
-  "runtime_activation_performed": false
+  "development_runtime_activation_performed": true,
+  "production_runtime_activation_performed": false
 }

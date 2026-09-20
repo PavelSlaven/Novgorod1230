@@ -35,6 +35,19 @@ export async function loadActiveRuntimeCatalogPin(
     );
   }
   const row = result.rows[0];
+  const digestFields = ['catalog_digest', 'import_audit_digest',
+    'record_registry_digest', 'runtime_contract_digest',
+    'compatible_world_catalog_digest',
+    'compatible_world_pin_manifest_digest'];
+  if (row.catalog_scope !== catalogScope
+      || ['event_id', 'catalog_revision_id', 'import_id',
+        'compatible_world_revision_id'].some((field) =>
+        typeof row[field] !== 'string' || row[field].length === 0)
+      || digestFields.some((field) =>
+        !/^[a-f0-9]{64}$/u.test(String(row[field] ?? '')))) {
+    throw serverError('RUNTIME_CATALOG_ACTIVE_PIN_INVALID',
+      'Latest runtime-catalog activation has an invalid exact pin.');
+  }
   return Object.freeze({
     schema: 'rus.runtime_catalog_pin.v2',
     catalog_scope: row.catalog_scope,

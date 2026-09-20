@@ -13,6 +13,8 @@ import/readback и append-only domain catalog activation.
 - preflight/migration/import/activation orchestration.
 - exact baseline snapshot reproduction и authoritative compatible-world
   verification;
+- new-development-party-only final-candidate cutover preserving every existing
+  party pin without migration or rematerialization;
 - deterministic baseline registration ID и strict attestation bindings;
 - generated static readers/writers для 41 registry tables, включая immutable
   procedural-scene compiled records.

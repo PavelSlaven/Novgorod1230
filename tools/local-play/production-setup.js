@@ -28,6 +28,8 @@ import { buildCharacterAppearanceV1ImportSql } from
   '../spatial-v3/character-appearance-v1-importer.mjs';
 import { buildS1AuthoringV6ImportSql } from
   '../spatial-v3/s1-authoring-v5-importer.mjs';
+import { installProceduralFinalDevelopmentCatalog } from
+  '../runtime-catalog-activation/src/procedural-final-development-activation.js';
 
 export async function installActivatedRuntimeCatalog({
   worldPool,
@@ -134,11 +136,17 @@ export async function installActivatedRuntimeCatalog({
     partyPool,
     bundle: v12Bundle
   });
+  const proceduralFinal = await installProceduralFinalDevelopmentCatalog({
+    worldPool, partyPool, repositoryRoot, gitCommitSha: commitSha,
+    authorizationRef:
+      `${authorizationRef}:new-development-parties-only`
+  });
   return Object.freeze({
     pinManifestDigest:
       v12Bundle.compatibility_manifest.compatible_world_pin_manifest_digest,
     v2Bundle,
     v3Bundle,
-    v12Bundle
+    v12Bundle,
+    proceduralFinal
   });
 }

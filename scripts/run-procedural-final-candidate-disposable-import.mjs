@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { createServer } from 'node:net';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import EmbeddedPostgres from 'embedded-postgres';
@@ -13,7 +13,8 @@ import {
   buildBaselineRegistrationId, buildBaselineRegistrationRequest,
   buildImportLedger, buildOperatorBaselineSnapshotManifest, digestEnvelope
 } from '../tools/runtime-catalog-activation/src/artifact-contracts.js';
-import { runWorldRuntimeCatalogMigration, WORLD_RUNTIME_CATALOG_MIGRATION } from
+import { runPartyRuntimeCatalogMigration, runWorldRuntimeCatalogMigration,
+  WORLD_RUNTIME_CATALOG_MIGRATION } from
   '../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { buildProceduralFinalCandidateImportLedger,
   importProceduralFinalCandidatePack } from
@@ -34,6 +35,14 @@ import { buildLowerDvinaBoundaryV1ImportSql } from
   '../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildCharacterAppearanceV1ImportSql } from
   '../tools/spatial-v3/character-appearance-v1-importer.mjs';
+import { buildSpatialV3ProductionV12ActivationBundle,
+  applySpatialV3ProductionV12ActivationBundle } from
+  '../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
+import { buildProceduralFinalDevelopmentActivation,
+  applyProceduralFinalDevelopmentActivation } from
+  '../tools/runtime-catalog-activation/src/procedural-final-development-activation.js';
+import { loadActiveRuntimeCatalogPin } from
+  '../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
 
 const OUTPUT =
   'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/disposable-import-result.json';
@@ -46,19 +55,24 @@ const root = resolve(process.cwd());
 const dataDir = await mkdtemp(join(tmpdir(), 'novgorod-final-import-'));
 const port = await availablePort();
 const database = 'pr17_procedural_final_candidate';
+const partyDatabase = 'pr17_procedural_final_party';
 const password = 'local_only';
 const embedded = new EmbeddedPostgres({ databaseDir: dataDir, port,
   user: 'postgres', password, persistent: false,
   initdbFlags: ['--encoding=UTF8', '--locale=C'],
   onLog() {}, onError() {} });
 let pool;
+let partyPool;
 let result;
 const cleanup = { database_stopped: false, temporary_cluster_removed: false };
 try {
   await embedded.initialise();
   await embedded.start();
   await embedded.createDatabase(database);
+  await embedded.createDatabase(partyDatabase);
   const url = `postgresql://postgres:${password}@127.0.0.1:${port}/${database}`;
+  const partyUrl =
+    `postgresql://postgres:${password}@127.0.0.1:${port}/${partyDatabase}`;
   const promoted = spawnSync(process.execPath,
     ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle'], {
       cwd: root, encoding: 'utf8', timeout: 180_000,
@@ -68,6 +82,14 @@ try {
     `DISPOSABLE_V5_IMPORT_FAILED:${promoted.stderr}`);
   const promotion = JSON.parse(promoted.stdout);
   pool = new pg.Pool({ connectionString: url, max: 2 });
+  partyPool = new pg.Pool({ connectionString: partyUrl, max: 2 });
+  const partyFiles = (await readdir(resolve(root, 'schemas/party-db')))
+    .filter((file) => /^\d+.*\.sql$/u.test(file)).sort();
+  const catalogMigrationIndex = partyFiles.findIndex((file) =>
+    file.startsWith('012_'));
+  for (const file of partyFiles.slice(0, catalogMigrationIndex))
+    await partyPool.query(await readFile(resolve(root, 'schemas/party-db', file),
+      'utf8'));
   for (const file of ['18.sql', '19.sql', '20.sql', '21.sql'])
     await pool.query(await readFile(resolve(root,
       `infra/world-base/schema/${file}`), 'utf8'));
@@ -77,6 +99,18 @@ try {
   await seedSpatialV5Revision(pool, root);
   await pool.query(await buildS1AuthoringV6ImportSql({ root }));
   await runWorldRuntimeCatalogMigration(pool);
+  await runPartyRuntimeCatalogMigration(partyPool);
+
+  const oldBundle = await buildSpatialV3ProductionV12ActivationBundle({
+    worldPool: pool, partyPool, repositoryRoot: root,
+    gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
+    authorizationRef: 'disposable old-party fixture activation'
+  });
+  const oldActivation = await applySpatialV3ProductionV12ActivationBundle({
+    worldPool: pool, partyPool, bundle: oldBundle });
+  const oldPin = await loadActiveRuntimeCatalogPin(pool,
+    'item_container_materialization_v2');
+  await seedPartyWithPin(partyPool, 'party-old-fixture', oldPin);
 
   const pack = await generateProceduralFinalCandidatePack(root);
   const v5Readback = await verifyAssertExistingRows(pool, pack);
@@ -133,6 +167,19 @@ try {
     pack,
     runtimeContractDigest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST
   });
+  const activationBundle = await buildProceduralFinalDevelopmentActivation({
+    worldPool: pool, partyPool, pack, ledger: imported.ledger,
+    gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
+    authorizationRef: 'bounded development cutover task'
+  });
+  const activation = await applyProceduralFinalDevelopmentActivation({
+    worldPool: pool, partyPool, bundle: activationBundle });
+  const activePin = await loadActiveRuntimeCatalogPin(pool,
+    'item_container_materialization_v2');
+  await seedPartyWithPin(partyPool, 'party-new-development', activePin);
+  const partyPins = (await partyPool.query(
+    `SELECT party_id,catalog_revision_id,catalog_digest,activation_event_id
+       FROM party_runtime.party_catalog_pins ORDER BY party_id`)).rows;
   const compiledRows = (await pool.query(
     `SELECT record_id,version,record_kind,family_candidate_ref,payload,
             payload_digest,source_pack_digest,status
@@ -170,16 +217,70 @@ try {
       activation_event_count: imported.readback.activation_event_count,
       rollback_probe: rollbackProbe
     },
+    development_activation: {
+      activation_scope: activationBundle.activation_scope,
+      event_id: activation.event_id,
+      event_sequence: activation.event_sequence,
+      previous_event_id: oldActivation.activated.event_id,
+      activation_request_digest:
+        activationBundle.request.activation_request_digest,
+      activation_attestation_digest:
+        activationBundle.attestation.attestation_digest,
+      runtime_release_id:
+        activationBundle.runtimeRelease.runtime_release_id,
+      audited_candidate_digest:
+        pack.independent_attestation.candidate_digest,
+      independent_import_approval_attestation_digest:
+        pack.independent_attestation.attestation_digest,
+      import_audit_digest: imported.ledger.root.import_audit_digest,
+      active_revision_id: activePin.catalog_revision_id,
+      active_catalog_digest: activePin.catalog_digest,
+      old_party_revision_id: partyPins.find(({ party_id: id }) =>
+        id === 'party-old-fixture').catalog_revision_id,
+      new_party_revision_id: partyPins.find(({ party_id: id }) =>
+        id === 'party-new-development').catalog_revision_id,
+      existing_party_rows_updated: 0,
+      production_deploy: false,
+      old_save_migration: false,
+      rematerialization: false
+    },
     cleanup,
     production_mutated: false,
-    runtime_activation_performed: false
+    development_runtime_activation_performed: true,
+    production_runtime_activation_performed: false
   };
 } finally {
   await pool?.end();
+  await partyPool?.end();
   await embedded.stop();
   cleanup.database_stopped = true;
   await rm(dataDir, { recursive: true, force: true });
   cleanup.temporary_cluster_removed = true;
+}
+
+async function seedPartyWithPin(partyPool, partyId, pin) {
+  await partyPool.query(
+    `INSERT INTO party_runtime.parties
+       (party_id,schema_version,world_revision_id,world_catalog_digest,
+        materializer_version,rng_version,command_catalog_digest,
+        profile_bundle_digest,status)
+     VALUES ($1,3,$2,$3,'development-materializer@1',
+             'request-bound-sha256@1','commands','profiles','active')`,
+    [partyId, pin.compatible_world_revision_id,
+      pin.compatible_world_catalog_digest]);
+  await partyPool.query(
+    `INSERT INTO party_runtime.party_catalog_pins
+       (party_id,catalog_scope,catalog_revision_id,catalog_digest,
+        import_id,import_audit_digest,record_registry_digest,
+        runtime_contract_digest,compatible_world_revision_id,
+        compatible_world_catalog_digest,compatible_world_pin_manifest_digest,
+        activation_event_id)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+    [partyId, pin.catalog_scope, pin.catalog_revision_id, pin.catalog_digest,
+      pin.import_id, pin.import_audit_digest, pin.record_registry_digest,
+      pin.runtime_contract_digest, pin.compatible_world_revision_id,
+      pin.compatible_world_catalog_digest,
+      pin.compatible_world_pin_manifest_digest, pin.activation_event_id]);
 }
 
 await writeFile(resolve(root, OUTPUT), `${JSON.stringify(result, null, 2)}\n`);

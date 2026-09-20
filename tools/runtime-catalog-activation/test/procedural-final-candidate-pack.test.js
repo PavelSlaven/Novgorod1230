@@ -151,7 +151,7 @@ test('ledger build rejects cache tamper even after record and table reseal',
     { code: 'PROCEDURAL_FINAL_PACK_AUDITED_SUBJECT_MISMATCH' });
   });
 
-test('tracked disposable readback is sanitized and non-activating', async () => {
+test('tracked disposable readback is sanitized and development-scoped', async () => {
   const result = await json(
     'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/disposable-import-result.json');
   assert.equal(result.status, 'PASS');
@@ -165,7 +165,15 @@ test('tracked disposable readback is sanitized and non-activating', async () => 
     temporary_cluster_removed: true });
   assert.equal(result.credentials_persisted, false);
   assert.equal(result.production_mutated, false);
-  assert.equal(result.runtime_activation_performed, false);
+  assert.equal(result.development_runtime_activation_performed, true);
+  assert.equal(result.production_runtime_activation_performed, false);
+  assert.equal(result.development_activation.activation_scope,
+    'new_development_parties_only');
+  assert.equal(result.development_activation.old_party_revision_id,
+    'runtime_catalog_lower_dvina_spatial_v3_v12_001');
+  assert.equal(result.development_activation.new_party_revision_id,
+    'procedural_scene_final_candidate_v1_001');
+  assert.equal(result.development_activation.existing_party_rows_updated, 0);
   assert.doesNotMatch(JSON.stringify(result),
     /postgresql:\/\/|local_only|password|connection_string/u);
 });

@@ -11,6 +11,7 @@ import {
 import {
   buildBaselineRegistrationId,
   buildActivationEvent,
+  buildDevelopmentPartyPreflight,
   buildOperatorBaselineSnapshotManifest,
   buildPartyPreflight,
   digestEnvelope,
@@ -345,7 +346,8 @@ export async function activateApprovedCatalog({
   worldPool,
   partyPool,
   request,
-  attestation
+  attestation,
+  activationScope = 'initial_empty_party_database'
 }) {
   return transaction(worldPool, async (client) => {
     await client.query(
@@ -379,7 +381,10 @@ export async function activateApprovedCatalog({
            WHERE status IN ('reserved','transaction_committed')) AS inflight_count`
     );
     const row = counts.rows[0];
-    const preflight = buildPartyPreflight({
+    const preflightBuilder = activationScope ===
+      'new_development_parties_only'
+      ? buildDevelopmentPartyPreflight : buildPartyPreflight;
+    const preflight = preflightBuilder({
       partyCount: Number(row.party_count),
       pinnedPartyCount: Number(row.pinned_party_count),
       missingDomainPinCount: Number(row.missing_domain_pin_count),

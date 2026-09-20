@@ -6,6 +6,7 @@ import {
   RuntimeCatalogError,
   assertCompatibleWorldPin,
   createRuntimeCatalogLoader,
+  loadApprovedProceduralCompiledCatalog,
   selectApplicableItemCatalog
 } from '../src/index.js';
 import { loadCommonCatalogLookupRecords } from '../src/common-catalog-lookups.js';
@@ -567,4 +568,33 @@ test('applicable projection is pure, immutable and filters only verified records
   );
   assert.equal(Object.isFrozen(projected), true);
   assert.equal(verifiedCatalog.records_by_table.item_profile_candidates.length, 2);
+});
+
+test('procedural compiled catalog requires exact final activation pin', () => {
+  const pin = { schema: 'rus.runtime_catalog_pin.v2',
+    catalog_revision_id: 'procedural_scene_final_candidate_v1_001',
+    catalog_digest:
+      '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c' };
+  const records = Array.from({ length: 21 }, (_, index) => ({
+    record_id: `record-${index}`, version: 1,
+    record_kind: index < 13 ? 'profile'
+      : index < 20 ? 'mapping' : 'approval_metadata',
+    status: 'approved_authoring_not_runtime_selectable', payload: {}
+  }));
+  const verifiedCatalog = { schema: 'rus.verified_item_catalog.v2',
+    verified: true, pin: structuredClone(pin), records_by_table: {
+      procedural_scene_compiled_records: records,
+      universal_categories: [{ id: 'category' }]
+    } };
+  const loaded = loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
+    pin });
+  assert.equal(loaded.profiles.length, 13);
+  assert.equal(loaded.mappings.length, 7);
+  assert.equal(loaded.approval_metadata.record_kind, 'approval_metadata');
+  assert.throws(() => loadApprovedProceduralCompiledCatalog({ verifiedCatalog,
+    pin: { ...pin, catalog_digest: digest('f') } }),
+  { code: 'PROCEDURAL_COMPILED_CATALOG_PIN_MISMATCH' });
+  assert.throws(() => loadApprovedProceduralCompiledCatalog({
+    verifiedCatalog: { ...verifiedCatalog, records_by_table: {} }, pin }),
+  { code: 'PROCEDURAL_COMPILED_CATALOG_MISSING' });
 });

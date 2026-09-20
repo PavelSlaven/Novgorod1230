@@ -32,6 +32,9 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - `loadApprovedProceduralActorTemporalBundle(...)` reads only approved enriched
   role/occupation dependencies, legal/social/archetype/skill rows, exact active
   actor components and approved Temporal records for procedural compilation;
+- `loadApprovedProceduralCompiledCatalog(...)` exposes only the exact activated
+  final-candidate compiled profiles/mappings/categories and fails closed for
+  another or missing pin;
 - `assertCompatibleWorldPin({ domainPin, worldPin })`;
 - `selectApplicableItemCatalog({ verifiedCatalog, regionId, effectiveDate })`.
 - `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.

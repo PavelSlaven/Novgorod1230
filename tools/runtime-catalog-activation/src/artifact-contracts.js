@@ -331,6 +331,34 @@ export function buildPartyPreflight({
   return deepFreeze({ ...payload, party_preflight_digest: digest(semantic) });
 }
 
+export function buildDevelopmentPartyPreflight({ partyCount,
+  pinnedPartyCount, missingDomainPinCount, inflightStage24Stage25Count,
+  runtimeReleaseId, runtimeContractDigest, checkedAt = null }) {
+  const payload = {
+    schema: 'rus.runtime_catalog_party_preflight.v2',
+    catalog_scope: 'item_container_materialization_v2',
+    party_count: nonnegative(partyCount, 'partyCount'),
+    pinned_party_count: nonnegative(pinnedPartyCount, 'pinnedPartyCount'),
+    missing_domain_pin_count: nonnegative(missingDomainPinCount,
+      'missingDomainPinCount'),
+    inflight_stage24_stage25_count: nonnegative(inflightStage24Stage25Count,
+      'inflightStage24Stage25Count'),
+    runtime_release_id: requireDigest(runtimeReleaseId, 'runtimeReleaseId'),
+    runtime_contract_digest: requireDigest(runtimeContractDigest,
+      'runtimeContractDigest'),
+    checked_at: checkedAt
+  };
+  if (payload.pinned_party_count !== payload.party_count
+      || payload.missing_domain_pin_count !== 0
+      || payload.inflight_stage24_stage25_count !== 0) {
+    fail('ACTIVATION_PARTY_PREFLIGHT_BLOCKED',
+      'Development cutover requires every existing party to retain its exact pin.',
+      payload);
+  }
+  const { checked_at: ignored, ...semantic } = payload;
+  return deepFreeze({ ...payload, party_preflight_digest: digest(semantic) });
+}
+
 export function buildActivationRequest({ fields, partyPreflight }) {
   if (fields.runtime_release_id !== partyPreflight.runtime_release_id
       || fields.runtime_contract_digest !== partyPreflight.runtime_contract_digest) {

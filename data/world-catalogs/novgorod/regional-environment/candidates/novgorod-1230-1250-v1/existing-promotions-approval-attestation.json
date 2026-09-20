@@ -1,0 +1,51 @@
+{
+  "schema": "rus.regional_environment_authoring_approval_attestation.v1",
+  "attestation_id": "novgorod_regional_environment_existing_promotions_approval_001",
+  "subject_commit_sha": "20275b3a39372d1dc5c4fa95d21660dbb44420b3",
+  "revision_id": "novgorod_regional_environment_1230_1250_v1",
+  "candidate_digest": "01517d7919be4eedecad170f21055bb348d60fa4605814ca656272a766474d3a",
+  "approval_request_digest": "cf56d748a391ad23bcc876c3cde9ef499e3a8a8e9e6ee9abd0a42326ce4ab74f",
+  "manifest_digest": "05acb07d066ff349a5b5ff965a73e325b730c5e14e5c6b018f4e882fbacbf2ed",
+  "approval_scope": "existing_promotions_only",
+  "approved_counts": {
+    "landscape": 33,
+    "water": 21,
+    "land_use": 24,
+    "place": 37
+  },
+  "conditional_guard_count": 33,
+  "authoring_approved": true,
+  "sparse_gap_retained": {
+    "code": "AUDIT_SELECTOR_PREPARED_MEMBERSHIP_MISMATCH",
+    "domain": "landscape",
+    "template_id": "lt_sparse_forest_woodland",
+    "audit_verdict": "APPROVE",
+    "candidate_status": "blocked_missing_prepared_regional_row",
+    "required_resolution": "independent authoring and audit of exact regional row",
+    "substitution_forbidden": true
+  },
+  "explicit_exclusions_retained": [
+    "lt_wet_ravine_gully",
+    "lu_open_field_strip_cultivation",
+    "lu_fishpond_aquaculture",
+    "lu_watermill_water_management",
+    "wb_mill_leat",
+    "wb_reservoir_impoundment",
+    "wb_fishpond",
+    "pt_watermill_site",
+    "pt_shipyard_boatyard"
+  ],
+  "pending_rows_excluded": [
+    "pt_drying_storage_workspace",
+    "rpt_novgorod_drying_storage_workspace"
+  ],
+  "import_authorized": false,
+  "activation_authorized": false,
+  "production_authorized": false,
+  "default_authorized": false,
+  "rematerialization_authorized": false,
+  "activation_request": null,
+  "auditor": "independent_contract_auditor",
+  "audit_date": "2026-09-21",
+  "attestation_digest": "5501e63a2d985fa3ddff0131cd3f6a7272c5dbc9a9cc4d78400579a12bb99249"
+}

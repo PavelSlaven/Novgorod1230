@@ -9,6 +9,9 @@ const DEFAULT_ROOT = resolve(HERE, '../../../../../..');
 const SOURCE_PATH = resolve(HERE, 'source-authoring.json');
 const AUDIT_SOURCE_REF =
   'task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md';
+const APPROVAL_SUBJECT_COMMIT =
+  '20275b3a39372d1dc5c4fa95d21660dbb44420b3';
+const APPROVAL_DATE = '2026-09-21';
 const FORBIDDEN_NEW_PLACE_KEYS = [
   'fire', 'fuel', 'material', 'container', 'tool', 'npc', 'process'
 ];
@@ -228,7 +231,69 @@ export async function generateRegionalEnvironmentRevision(root = DEFAULT_ROOT) {
       newPlace.universal_row.id, newPlace.regional_row.id
     ]
   };
-  return { candidate, approvalRequest, manifest, validationReport };
+  const attestations = buildApprovalAttestations({ candidate, approvalRequest,
+    manifest });
+  validateApprovalAttestations({ candidate, approvalRequest, manifest,
+    ...attestations });
+  return { candidate, approvalRequest, manifest, validationReport,
+    ...attestations };
+}
+
+export function validateApprovalAttestations({ candidate, approvalRequest,
+  manifest, existingPromotionsAttestation, dryingDesignAttestation }) {
+  const common = (value) => value.subject_commit_sha === APPROVAL_SUBJECT_COMMIT
+    && value.revision_id === candidate.revision_id
+    && value.candidate_digest === candidate.candidate_digest
+    && value.approval_request_digest === approvalRequest.request_digest
+    && value.manifest_digest === manifest.manifest_digest
+    && value.import_authorized === false
+    && value.activation_authorized === false
+    && value.production_authorized === false
+    && value.default_authorized === false
+    && value.rematerialization_authorized === false
+    && value.activation_request === null
+    && value.auditor === 'independent_contract_auditor'
+    && value.audit_date === APPROVAL_DATE;
+  for (const attestation of [existingPromotionsAttestation,
+    dryingDesignAttestation]) {
+    const { attestation_digest: claimed, ...payload } = attestation;
+    assert(claimed === digest(payload), 'APPROVAL_ATTESTATION_DIGEST_MISMATCH');
+    assert(common(attestation), 'APPROVAL_ATTESTATION_BINDING_INVALID');
+  }
+  assert(existingPromotionsAttestation.schema ===
+      'rus.regional_environment_authoring_approval_attestation.v1'
+    && existingPromotionsAttestation.approval_scope ===
+      'existing_promotions_only'
+    && JSON.stringify(existingPromotionsAttestation.approved_counts) ===
+      JSON.stringify({ landscape: 33, water: 21, land_use: 24, place: 37 })
+    && existingPromotionsAttestation.conditional_guard_count === 33
+    && existingPromotionsAttestation.authoring_approved === true
+    && JSON.stringify(existingPromotionsAttestation.sparse_gap_retained) ===
+      JSON.stringify(candidate.data_gaps[0])
+    && JSON.stringify(existingPromotionsAttestation.explicit_exclusions_retained)
+      === JSON.stringify(candidate.explicit_exclusions)
+    && JSON.stringify(existingPromotionsAttestation.pending_rows_excluded) ===
+      JSON.stringify(['pt_drying_storage_workspace',
+        'rpt_novgorod_drying_storage_workspace']),
+  'EXISTING_PROMOTIONS_ATTESTATION_INVALID');
+  const pending = candidate.pending_rows;
+  assert(dryingDesignAttestation.schema ===
+      'rus.regional_environment_drying_design_attestation.v1'
+    && dryingDesignAttestation.approval_scope === 'authoring_design_only'
+    && dryingDesignAttestation.pending_bundle_digest === digest(pending)
+    && dryingDesignAttestation.universal_row_digest ===
+      digest(pending.universal_row)
+    && dryingDesignAttestation.regional_row_digest ===
+      digest(pending.regional_row)
+    && dryingDesignAttestation.evidence_attestation_digest ===
+      pending.evidence_attestation_digest
+    && dryingDesignAttestation.authoring_design_approved === true
+    && dryingDesignAttestation.regional_enablement_approved === false
+    && dryingDesignAttestation.universal_row_status === 'needs_review'
+    && dryingDesignAttestation.regional_row_status === 'needs_review'
+    && dryingDesignAttestation.regional_is_allowed === false,
+  'DRYING_DESIGN_ATTESTATION_INVALID');
+  return true;
 }
 
 export function validateRevision({ source, candidate, approvalRequest }) {
@@ -410,6 +475,64 @@ function validateContextRefSchema(schema, usedFields) {
   'CONTEXT_REF_SCHEMA_FIELDS_INVALID');
 }
 
+function buildApprovalAttestations({ candidate, approvalRequest, manifest }) {
+  const shared = {
+    subject_commit_sha: APPROVAL_SUBJECT_COMMIT,
+    revision_id: candidate.revision_id,
+    candidate_digest: candidate.candidate_digest,
+    approval_request_digest: approvalRequest.request_digest,
+    manifest_digest: manifest.manifest_digest
+  };
+  const authority = {
+    import_authorized: false,
+    activation_authorized: false,
+    production_authorized: false,
+    default_authorized: false,
+    rematerialization_authorized: false,
+    activation_request: null,
+    auditor: 'independent_contract_auditor',
+    audit_date: APPROVAL_DATE
+  };
+  const existingPayload = {
+    schema: 'rus.regional_environment_authoring_approval_attestation.v1',
+    attestation_id: 'novgorod_regional_environment_existing_promotions_approval_001',
+    ...shared,
+    approval_scope: 'existing_promotions_only',
+    approved_counts: { landscape: 33, water: 21, land_use: 24, place: 37 },
+    conditional_guard_count: 33,
+    authoring_approved: true,
+    sparse_gap_retained: structuredClone(candidate.data_gaps[0]),
+    explicit_exclusions_retained: [...candidate.explicit_exclusions],
+    pending_rows_excluded: [
+      'pt_drying_storage_workspace', 'rpt_novgorod_drying_storage_workspace'
+    ],
+    ...authority
+  };
+  const pending = candidate.pending_rows;
+  const dryingPayload = {
+    schema: 'rus.regional_environment_drying_design_attestation.v1',
+    attestation_id: 'novgorod_drying_storage_workspace_design_approval_001',
+    ...shared,
+    approval_scope: 'authoring_design_only',
+    pending_bundle_digest: digest(pending),
+    universal_row_digest: digest(pending.universal_row),
+    regional_row_digest: digest(pending.regional_row),
+    evidence_attestation_digest: pending.evidence_attestation_digest,
+    authoring_design_approved: true,
+    regional_enablement_approved: false,
+    universal_row_status: pending.universal_row.status,
+    regional_row_status: pending.regional_row.status,
+    regional_is_allowed: pending.regional_row.is_allowed,
+    ...authority
+  };
+  return {
+    existingPromotionsAttestation: { ...existingPayload,
+      attestation_digest: digest(existingPayload) },
+    dryingDesignAttestation: { ...dryingPayload,
+      attestation_digest: digest(dryingPayload) }
+  };
+}
+
 function restoreStatus(row, status) {
   return { ...structuredClone(row), status };
 }
@@ -493,7 +616,10 @@ async function main(args) {
     ['candidate.json', pack.candidate],
     ['approval-request.json', pack.approvalRequest],
     ['manifest.json', pack.manifest],
-    ['validation-report.json', pack.validationReport]
+    ['validation-report.json', pack.validationReport],
+    ['existing-promotions-approval-attestation.json',
+      pack.existingPromotionsAttestation],
+    ['drying-design-approval-attestation.json', pack.dryingDesignAttestation]
   ];
   if (args.includes('--check')) {
     for (const [name, value] of outputs) {
@@ -508,6 +634,10 @@ async function main(args) {
     candidate_digest: pack.candidate.candidate_digest,
     approval_request_digest: pack.approvalRequest.request_digest,
     manifest_digest: pack.manifest.manifest_digest,
+    existing_promotions_attestation_digest:
+      pack.existingPromotionsAttestation.attestation_digest,
+    drying_design_attestation_digest:
+      pack.dryingDesignAttestation.attestation_digest,
     rows_requiring_second_audit:
       pack.validationReport.rows_requiring_second_audit }, null, 2)}\n`);
 }

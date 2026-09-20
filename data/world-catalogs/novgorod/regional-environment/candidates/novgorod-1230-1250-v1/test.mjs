@@ -5,6 +5,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   generateRegionalEnvironmentRevision,
+  validateApprovalAttestations,
   validateRevision
 } from './generator.mjs';
 
@@ -31,6 +32,36 @@ const auditApproveWithLimitsIds = [
 
 assert.equal(validateRevision({ source, candidate: pack.candidate,
   approvalRequest: pack.approvalRequest }), true);
+assert.equal(validateApprovalAttestations({ candidate: pack.candidate,
+  approvalRequest: pack.approvalRequest, manifest: pack.manifest,
+  existingPromotionsAttestation: pack.existingPromotionsAttestation,
+  dryingDesignAttestation: pack.dryingDesignAttestation }), true);
+assert.equal(pack.existingPromotionsAttestation.subject_commit_sha,
+  '20275b3a39372d1dc5c4fa95d21660dbb44420b3');
+assert.deepEqual(pack.existingPromotionsAttestation.approved_counts,
+  { landscape: 33, water: 21, land_use: 24, place: 37 });
+assert.equal(pack.existingPromotionsAttestation.conditional_guard_count, 33);
+assert.deepEqual(pack.existingPromotionsAttestation.sparse_gap_retained,
+  pack.candidate.data_gaps[0]);
+assert.deepEqual(pack.existingPromotionsAttestation.explicit_exclusions_retained,
+  pack.candidate.explicit_exclusions);
+assert.equal(pack.dryingDesignAttestation.pending_bundle_digest,
+  '7b9e1bd9116e70cd654c4864e92beb82e6a4b9e926b4dbed8eaf221c78c32b6a');
+assert.equal(pack.dryingDesignAttestation.universal_row_digest,
+  '8f0bc0dde9529a3d80b6f0f76f1376ac45d1a959dbae72593330f395c8637714');
+assert.equal(pack.dryingDesignAttestation.regional_row_digest,
+  'd08329ea1ac95f6b855fa314873fb901132c9037dac1d1fe121d611b6c016cdb');
+assert.equal(pack.dryingDesignAttestation.evidence_attestation_digest,
+  '965995aae64b72a6329ac97e33b09700733e69c609a247d2d76716d5d68333c3');
+
+const enabledDrying = structuredClone(pack.dryingDesignAttestation);
+enabledDrying.regional_enablement_approved = true;
+delete enabledDrying.attestation_digest;
+enabledDrying.attestation_digest = digestPayload(enabledDrying);
+assert.throws(() => validateApprovalAttestations({ candidate: pack.candidate,
+  approvalRequest: pack.approvalRequest, manifest: pack.manifest,
+  existingPromotionsAttestation: pack.existingPromotionsAttestation,
+  dryingDesignAttestation: enabledDrying }), /DRYING_DESIGN_ATTESTATION_INVALID/);
 assert.deepEqual(source.approve_with_limits_ids, auditApproveWithLimitsIds);
 const limitedRows = Object.values(pack.candidate.promotions).flat()
   .filter(({ audit_verdict: verdict }) => verdict === 'APPROVE_WITH_LIMITS');

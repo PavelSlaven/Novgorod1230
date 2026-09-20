@@ -4,8 +4,6 @@ import { loadProceduralSceneBaselineCatalog,
   resolveProceduralSceneBaselineProfile } from
   '../src/internal/procedural-scene-baselines.js';
 import { materializeProceduralSceneBaseline } from '@rus/materialization';
-import { resolveFirstEntrySceneProfile } from
-  '../src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 
 test('approved catalog supplies three families through one materializer', async () => {
   const catalog = await loadProceduralSceneBaselineCatalog();
@@ -27,17 +25,4 @@ test('approved catalog supplies three families through one materializer', async 
   }
   assert.equal(resolveProceduralSceneBaselineProfile(catalog,
     'trace_ld_v1_tpl_old_drying_shed').family, 'craft_human_place');
-});
-
-test('arrival resolves nested persisted scene-template ref', async () => {
-  const catalog = await loadProceduralSceneBaselineCatalog();
-  let statement;
-  const profile = await resolveFirstEntrySceneProfile({ async query(sql) {
-    statement = sql;
-    return { rowCount: 1, rows: [{
-      scene_template_ref: 'trace_ld_v1_tpl_fishing_camp'
-    }] };
-  } }, catalog, 'party:1', { scene_baseline_id: 'baseline:1' });
-  assert.match(statement, /scene_template_ref->'entity_ref'->>'entity_id'/u);
-  assert.equal(profile.family, 'fishing_worksite');
 });

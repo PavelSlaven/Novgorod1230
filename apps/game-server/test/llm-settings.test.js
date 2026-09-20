@@ -139,6 +139,28 @@ test('role runner fixes custom provider settings at call start and tags probes s
   });
 });
 
+test('explicit deployment default uses role env while unconfigured and local never fall back', async () => {
+  const calls = [];
+  const deployment = createLlmRoleRunnerAdapter({
+    settings: { providerSnapshot: () => ({ mode: 'default' }) },
+    env: { DEEPSEEK_API_KEY: 'test' }, execute: async (input) => {
+      calls.push(input);
+      return { status: 'ok', parsed_json: {}, provider: 'deepseek',
+        model: 'deepseek-v4-flash', durationMs: 1 };
+    }
+  });
+  await deployment.run({ scope: 'turn_runtime', role_id: 'intent_router' });
+  assert.equal(calls[0].runtimeProviderOverride, undefined);
+  for (const mode of ['unconfigured', 'local']) {
+    const blocked = createLlmRoleRunnerAdapter({ settings: {
+      providerSnapshot: () => ({ mode })
+    } });
+    await assert.rejects(blocked.run({ scope: 'turn_runtime',
+      role_id: 'intent_router' }),
+    { code: 'LLM_PROVIDER_CONFIGURATION_REQUIRED' });
+  }
+});
+
 test('LLM settings HTTP routes redact secrets and reject invalid input without changing active config', async (t) => {
   const owner = createLlmSettingsOwner({ qualifyCustom: async () => identity() });
   let probeCalls = 0;

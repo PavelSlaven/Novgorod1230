@@ -126,7 +126,7 @@ function toProviderOverride(snapshot) {
 function configuredProviderOverride(snapshot, settings) {
   const selected = snapshot ?? settings?.providerSnapshot();
   const override = toProviderOverride(selected);
-  if (settings != null && override == null) {
+  if (settings != null && override == null && selected?.mode !== 'default') {
     const error = new Error(
       'Configure the Qwen OpenAI-compatible vLLM endpoint in LLM settings.');
     error.code = 'LLM_PROVIDER_CONFIGURATION_REQUIRED';

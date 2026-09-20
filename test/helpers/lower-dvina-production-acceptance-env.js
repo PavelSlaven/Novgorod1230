@@ -68,20 +68,13 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
         activation.pinManifestDigest
     };
-    const providerSnapshot = Object.freeze({ mode: 'custom',
-      compatibility: 'openai_compatible', baseUrl: llm.baseUrl,
-      model: DEFAULT_GAMEPLAY_MODEL, apiKey: 'test' });
-    const providerSettings = Object.freeze({
-      providerSnapshot: () => providerSnapshot
-    });
-    const qualifiedO1Identity = createProductionLlmRoleRunner({ env,
-      settings: providerSettings }).describe({
+    const qualifiedO1Identity = createProductionLlmRoleRunner({ env }).describe({
       scope: 'turn_runtime',
       role_id: 'ordinary_materialization',
       overrides: { temperature: 0, maxTokens: 20_000 }
     });
     const llmSettings = Object.freeze({
-      providerSnapshot: () => providerSnapshot,
+      providerSnapshot: () => Object.freeze({ mode: 'default' }),
       ordinaryMaterializationIdentity: () => qualifiedO1Identity
     });
     const identityFactory = createAcceptanceIdentityFactory();

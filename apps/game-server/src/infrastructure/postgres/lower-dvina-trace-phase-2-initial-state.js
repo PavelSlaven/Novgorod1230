@@ -14,9 +14,10 @@ export async function loadInitialTracePhase2State({
   const initial = await phase1A.loadInternal(partyId);
   if (!initial) throw phase2IntegrityError();
   const actorId = initial.player.instance_id;
-  const [activeConditions, bodyEffectHistory] = await Promise.all([
+  const [activeConditions, bodyEffectHistory, ordinaryScene] = await Promise.all([
     loadPhase2Conditions(partyPool, partyId, actorId),
-    loadPhase2BodyHistory(partyPool, partyId, actorId)
+    loadPhase2BodyHistory(partyPool, partyId, actorId),
+    loadOrdinaryScene(partyPool, partyId)
   ]);
   return {
     party_id: partyId,
@@ -60,6 +61,7 @@ export async function loadInitialTracePhase2State({
       light: {}
     },
     environment_snapshot: initial.environment_snapshot,
+    ordinary_scene: ordinaryScene,
     sealed_selections: initial.sealed_selections,
     policy_pins: initial.policy_profile_pins,
     relevant_events: [],
@@ -119,4 +121,12 @@ export async function loadInitialTracePhase2State({
       structuredClone(temporalSourceProof.candidates),
     temporal_source_proof: structuredClone(temporalSourceProof)
   };
+}
+
+async function loadOrdinaryScene(pool, partyId) {
+  const result = await pool.query(
+    `SELECT aggregate_payload FROM party_runtime.party_ordinary_materialization_aggregates
+      WHERE party_id=$1 ORDER BY scope_kind,scope_id`, [partyId]);
+  return { background_groups: result.rows.flatMap((row) =>
+    row.aggregate_payload?.background_groups ?? []) };
 }

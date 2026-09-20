@@ -133,6 +133,8 @@ export async function startLowerDvinaTrace({
     }
     const openingPackage = buildAuthoredOpeningVisibleContext({
       requestId: requestId, visible, internal,
+      initialScene: typeof traceStartAdapter.loadInitialScene === 'function'
+        ? await traceStartAdapter.loadInitialScene(partyId) : null,
       approvedProjection: publication.public_projection
     });
     const openingDigest = computeVisibleContextPackageDigest(openingPackage);

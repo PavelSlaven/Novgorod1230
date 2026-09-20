@@ -381,6 +381,11 @@ deadline: writer, audit, optional one semantic repair and final audit only.
 Session identity persists the complete approved opening narration flow and the
 original Stage 23 audit. Static profile prose is hint-only; the eight-question reader
 control and exact entity/topology refs fail closed before any model call.
+Initial ordinary provisioning resolves one approved procedural scene profile
+from committed location profile data. The same transaction persists selected
+components as ordinary groups and finite components as `party_resource_nodes`.
+Opening narration reads those committed refs; natural/worksite facts do not
+live only in player dossier. Required components use no materialization LLM.
 Current replay derives scenario/schema/screen kind from the
 persisted party payload instead of the Lower Dvina default.
 A new admitted ordinary `search`, or standalone focused `inspect` with

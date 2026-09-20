@@ -58,7 +58,8 @@ Authored resource mechanics additionally resolve exactly one approved
 catalog. The persisted inventory snapshot copies its exact packing slot cost,
 bundle size and size-band ref; missing or ambiguous bindings fail before plan.
 
-`materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
+`materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`,
+`materializeProceduralSceneBaseline`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
 
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не
 читает БД, не выполняет commit и не активирует production O1 route. Он только
@@ -94,6 +95,12 @@ topology in the immutable baseline. Late S1 resolution never augments that
 baseline: LLM supplies only name, description and qualitative required
 semantics; Spatial owner validates them and binds `local_ref` to the already
 persisted formal placement.
+
+`materializeProceduralSceneBaseline` is one pure profile-driven selector for
+natural, worksite and other human-place families. Required components bypass
+RNG; optional presence uses the pinned RNG plus explicit authored presence,
+absence and exclusion data. The application persists returned stable component
+refs through the existing ordinary first-entry/resource owners.
 
 Live-world authored binding revision 6 selects `code_materializer_v3` and
 produces `rus.authored_start_party_materialization_result.v3`. Its initial S1

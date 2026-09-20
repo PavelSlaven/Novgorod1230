@@ -1,6 +1,7 @@
 import { computeMaterializationEnvelopeDigest,
   computeStage24ArtifactDigest } from '@rus/contracts';
 import { deepFreeze } from '@rus/kernel';
+import { validateActorBaseAppearance } from '@rus/actors';
 import { AUTHORED_MATERIALIZER_VERSION, canonicalDigest, deriveSeed,
   deterministicInstanceId } from './core.js';
 import { materializeS1OpenOneSpaceTopology } from
@@ -38,6 +39,12 @@ export function materializeAuthoredStartPartyInstance(input) {
       ? startAnchorId : otherScenes[sceneIndex].anchor.instance_id;
     const nodeId = sceneIndex == null
       ? startNodeId : otherScenes[sceneIndex].node.instance_id;
+    const equipmentRefs = profile.resources.flatMap((resource, ordinal) =>
+      resource.holder === person.person_key
+        ? [id('item', resource.resource_key, ordinal)] : []);
+    const activity = person.routine_profile_id == null ? null : {
+      activity_ref: person.routine_profile_id, status: 'active',
+      can_continue_automatically: true, summary: person.ordinary_activity };
     return {
       instance_id: npcIds.get(person.person_key),
       participant_slot_ref: person.person_key,
@@ -52,13 +59,17 @@ export function materializeAuthoredStartPartyInstance(input) {
       role_ref: { id: person.role_id, source: 'approved_scenario_profile' },
       occupation_ref: { id: person.occupation_id, source: 'approved_scenario_profile' },
       identity_state: { canonical_name: person.name,
-        public_role_label: person.occupation_label },
-      machine_state: background ? { status: 'active',
+        public_role_label: person.occupation_label,
+        sex_category: person.sex_category, age_category: person.age_category,
+        appearance: structuredClone(person.appearance) },
+      attributes: structuredClone(person.attributes),
+      skills: structuredClone(person.skills),
+      body_state: structuredClone(person.body),
+      machine_state: activity == null ? { status: 'active',
+        materialization_depth: 'full', equipment_refs: equipmentRefs }
+        : { status: 'active',
         materialization_depth: 'full', schedule_state: 'working',
-        current_activity: { activity_ref: person.routine_profile_id,
-          status: 'active', can_continue_automatically: true,
-          summary: person.ordinary_activity } }
-        : { status: 'active', materialization_depth: 'full' },
+        current_activity: activity, equipment_refs: equipmentRefs },
       semantic_state: { scenario_function: 'ordinary_authored_person',
         causal_basis: 'authored_start', profile_revision:
           person.profile_revision ?? 1 },
@@ -67,9 +78,9 @@ export function materializeAuthoredStartPartyInstance(input) {
         target_actor_id: relation.to === 'player'
           ? playerId : npcIds.get(relation.to)
       })),
-      schedule_records: background ? [{ time_band: person.routine_time_band,
+      schedule_records: activity == null ? [] : [{ time_band: person.routine_time_band,
         schedule_profile_id: person.routine_profile_id,
-        g5_node_id: nodeId }] : [],
+        g5_node_id: nodeId }],
       knowledge_profile_snapshot: { known_facts: [] },
       profile_candidate_set_digest: canonicalDigest(profile.people.map(({ person_key }) => person_key)),
       profile_record_digest: canonicalDigest(person)
@@ -92,9 +103,13 @@ export function materializeAuthoredStartPartyInstance(input) {
             controller_character_id: holderId }
         : { holder_npc_id: holderId, owner_npc_id: holderId,
             controller_npc_id: holderId }),
-      physical_position: 'hands',
+      physical_position: resource.physical_position ?? 'hands',
+      equipment_slot_category_id: resource.equipment_slot_category_id ?? null,
       state: { display_name: resource.display_name,
         causal_basis: 'authored_start_resource', finite: true,
+        ...(resource.visual_profile_snapshot == null ? {} : {
+          visual_profile_snapshot: structuredClone(resource.visual_profile_snapshot)
+        }),
         inventory_profile_snapshot: structuredClone(
           admission.resource_mechanics[ordinal]) }
     };
@@ -120,7 +135,11 @@ export function materializeAuthoredStartPartyInstance(input) {
   body.record_digest = canonicalDigest(body);
   const immediate = {
     player: { instance_id: playerId, dossier: {
-      identity: { name: profile.player.name, canonical_name: profile.player.name },
+      identity: { name: profile.player.name, canonical_name: profile.player.name,
+        sex_category: profile.player.sex_category,
+        age_category: profile.player.age_category,
+        appearance: structuredClone(profile.player.appearance) },
+      appearance_contract_version: 'actor_base_appearance_v1',
       social_status: { social_role_id: profile.player.role_id,
         occupation_id: profile.player.occupation_id,
         display_name: profile.player.role_label },
@@ -303,14 +322,25 @@ function assertInput(input, profile) {
     || !text(opening?.local_structure?.topology_slot_key)
     || !text(opening?.local_structure?.name)
     || !text(opening?.local_structure?.description)
+    || !validateActorBaseAppearance(profile.player, { requireComplete: true }).ok
     || people.some((person) => !person.person_key || !person.name
       || !Array.isArray(person.relationships) || !locations.includes(person.location)
+      || !validateActorBaseAppearance(person, { requireComplete: true }).ok
+      || !person.attributes || !person.skills
+      || !Number.isFinite(Number(person.body?.health))
+      || !Number.isFinite(Number(person.body?.energy))
+      || !Number.isFinite(Number(person.body?.satiety))
       || person.profile_level === 'background'
         && (!Number.isInteger(person.profile_revision)
           || !person.routine_profile_id || !person.routine_time_band
           || !person.ordinary_activity))
     || resources.some((resource) => !resource.resource_key
       || !Number.isInteger(resource.quantity) || resource.quantity <= 0
+      || resource.physical_position != null
+        && (resource.physical_position !== 'equipped'
+          || !text(resource.equipment_slot_category_id)
+          || resource.visual_profile_snapshot?.schema
+            !== 'item_visual_profile_snapshot_v1')
       || !['player', ...people.map(({ person_key }) => person_key)]
         .includes(resource.holder))) invalid();
   const knownPeople = new Set(['player', ...people.map(({ person_key }) => person_key)]);

@@ -90,7 +90,8 @@ const integrationOpeningNarration = Object.freeze({ run: async ({ requestId }) =
     visible_context_package_digest: 'integration-visible',
     narrator_starting_prose: { version: 1,
       schema: 'narrator_starting_prose', request_id: requestId,
-      prose_status: 'drafted', prose: 'Любава готовит рыбацкий стан к работе.',
+      prose_status: 'drafted',
+      prose: 'Любава готовит рыбацкий стан у Вихтуя к работе.',
       action_options: [], used_visible_context_refs: [],
       self_constraints_check: {} }, generation_history: [],
     handoff_permission: { can_send_to_prose_audit: true } };
@@ -111,6 +112,8 @@ import { loadLiveWorldAuthoredStartCatalog } from
   '../../apps/game-server/src/internal/live-world-authored-starts.js';
 import { loadLowerDvinaTraceProductionMaterializationProfiles } from
   '../../apps/game-server/src/internal/lower-dvina-trace-production-materialization-profiles.js';
+import { loadProceduralSceneBaselineCatalog } from
+  '../../apps/game-server/src/internal/procedural-scene-baselines.js';
 import { createOrdinaryMaterializationFirstEntryProvisioner } from
   '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { createSpatialSemanticFirstEntryProvisioner } from
@@ -243,10 +246,12 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   });
   const materializationProfiles =
     await loadLowerDvinaTraceProductionMaterializationProfiles();
+  const sceneBaselineCatalog = await loadProceduralSceneBaselineCatalog();
   const ordinaryProvisioner =
     createOrdinaryMaterializationFirstEntryProvisioner({
       profile: materializationProfiles.ordinaryMaterializationProfile,
-      includeContextBoundCapabilities: false
+      includeContextBoundCapabilities: false,
+      sceneBaselineCatalog
     });
   const spatialProvisioner = createSpatialSemanticFirstEntryProvisioner({
     loadedProfile: authoredStartCatalog.ordinary_profiles.s1
@@ -374,7 +379,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const authoredPartyId = authoredStart.data.party_id;
   const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
   assert.equal(authoredInternal.npcs.length, 3);
-  assert.equal(authoredInternal.items.length, 2);
+  assert.equal(authoredInternal.items.length, 6);
+  const authoredScene = await first.adapter.loadInitialScene(authoredPartyId);
+  assert.ok(authoredScene.background_groups.length >= 6);
+  assert.ok(authoredScene.resources.length >= 2);
   assert.equal(authoredInternal.position.g4_id,
     'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach');
   const demoInternal = await first.adapter.loadInternal(partyId);
@@ -392,7 +400,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   assert.equal(nodesByParty.get(authoredPartyId).state.canonical_g5_ref.id,
     'trace_ld_v1_g5_fishing_camp');
   assert.deepEqual(authoredInternal.items.map(({ quantity }) => Number(quantity))
-    .sort((a, b) => a - b), [1, 1]);
+    .sort((a, b) => a - b), [1, 1, 1, 1, 1, 1]);
   const authoredMechanics = Object.fromEntries(authoredInternal.items.map(
     (item) => [item.template_id, item.state.inventory_profile_snapshot]));
   assert.deepEqual([

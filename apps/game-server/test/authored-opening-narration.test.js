@@ -25,6 +25,8 @@ test('authored opening package answers all reader controls from persisted refs',
     Array(8).fill(true));
   assert.equal(pkg.visible_npcs.length, 2);
   assert.equal(pkg.visible_items[0].label, 'верёвка');
+  assert.ok(pkg.visible_scene_facts.some(({ source_refs: refs, text }) =>
+    refs.includes('ordinary:net-zone') && text === 'настил для починки сетей'));
   assert.equal(pkg.visible_exits.length, 2);
   assert.equal(JSON.stringify(pkg).includes('hidden'), true,
     'explicit do-not-include boundary remains present');
@@ -203,7 +205,9 @@ function openingPackage() {
     holder_character_id: 'player:1' },
     state: { display_name: 'верёвка' }, condition_state: 'serviceable' }] };
   return buildAuthoredOpeningVisibleContext({ requestId: 'opening:1', visible,
-    internal, approvedProjection: { scenario_id: 'scenario',
+    internal, initialScene: { background_groups: [{
+      group_ref: 'ordinary:net-zone', descriptor: 'настил для починки сетей'
+    }], resources: [] }, approvedProjection: { scenario_id: 'scenario',
       opening_projection: { place_label: 'рыбацкий стан',
         opening_prose: 'hint', visible_field_allowlist: ['party_id',
           'player.name', 'player.social_status', 'position', 'timestamp',

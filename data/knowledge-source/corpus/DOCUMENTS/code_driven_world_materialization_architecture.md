@@ -204,6 +204,16 @@ The Spatial owner validates that response against the finite envelope and binds
 one `local_ref` to the already persisted formal placement; game server only
 composes and P16/SQL-commits that owner result.
 
+Normal first-entry also resolves one approved versioned scene-baseline profile
+from the committed location profile. One shared code path handles natural,
+worksite and other human-place families. Required components are selected
+without RNG; optional components use the pinned materialization RNG and explicit
+presence/absence weights and incompatibilities. Selected components receive
+stable persisted ordinary-group refs. Finite components additionally use the
+existing `party_resource_nodes` quantity/CAS owner. Opening and later perception
+read these committed refs; player requests and narration do not seed the baseline.
+Gameplay materialization LLM calls are zero for this catalogued baseline.
+
 ### 4.5. Party database
 
 Хранит G5, NPC, предметы, контейнеры, ownership, relations, schedules, knowledge, decisions, change sets, autonomous updates, traces, visible read models и изменяемое состояние партии.

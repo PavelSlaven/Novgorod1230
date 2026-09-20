@@ -51,7 +51,8 @@ test('production start provisions the pinned initial ordinary scope', async () =
   assert.equal(provisionInput.partyId, 'party-1');
   assert.equal(provisionInput.changeSetId, 'change:new-game');
   assert.deepEqual(provisionInput.firstEntryBinding, {
-    g6_instance_id: 'g6:wreck', position_id: 'position:wreck'
+    g6_instance_id: 'g6:wreck', position_id: 'position:wreck',
+    location_ref: 'wreck'
   });
   assert.equal(statements[0], 'BEGIN');
   assert.equal(statements.at(-1), 'COMMIT');

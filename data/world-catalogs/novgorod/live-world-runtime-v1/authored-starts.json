@@ -80,6 +80,9 @@
       },
       "player": {
         "name": "Любава",
+        "sex_category": "female",
+        "age_category": "adult",
+        "appearance": {"build":"average","skin_tone":"light","face_shape":"oval","hair":{"color":"dark_brown","length":"long","style":"braided","facial_hair":"none"},"eyes":{"color":"gray"}},
         "role_id": "nov_role_fisher",
         "occupation_id": "nov_occ_fisher",
         "role_label": "рыбачка",
@@ -129,6 +132,13 @@
           "role_id": "nov_role_boatman",
           "occupation_id": "nov_occ_boatman",
           "occupation_label": "лодочник",
+          "sex_category": "male", "age_category": "adult",
+          "appearance": {"build":"stocky","skin_tone":"light","face_shape":"broad","hair":{"color":"dark_brown","length":"short","style":"straight","facial_hair":"short_beard"},"eyes":{"color":"gray"}},
+          "attributes": {"strength":{"value":12},"dexterity":{"value":10},"endurance":{"value":12},"reason":{"value":9},"attention":{"value":10},"influence":{"value":10}},
+          "skills": {"boating":{"bonus":2}},
+          "body": {"health":96,"energy":76,"satiety":68},
+          "routine_profile_id": "ordinary_local_work_cycle_v1", "routine_time_band": "day",
+          "ordinary_activity": "Проверяет лодочные снасти у рабочего настила.",
           "location": "start",
           "relationships": [{ "to": "player", "kind": "older_brother", "standing": "trusted" }]
         },
@@ -138,6 +148,13 @@
           "role_id": "nov_role_fisher",
           "occupation_id": "nov_occ_fisher",
           "occupation_label": "рыбак",
+          "sex_category": "male", "age_category": "middle_aged",
+          "appearance": {"build":"stocky","skin_tone":"light","face_shape":"round","hair":{"color":"dark_brown","length":"short","style":"straight","facial_hair":"full_beard"},"eyes":{"color":"brown"}},
+          "attributes": {"strength":{"value":11},"dexterity":{"value":10},"endurance":{"value":11},"reason":{"value":9},"attention":{"value":11},"influence":{"value":8}},
+          "skills": {"fishing":{"bonus":2}},
+          "body": {"health":88,"energy":65,"satiety":61},
+          "routine_profile_id": "ordinary_local_work_cycle_v1", "routine_time_band": "day",
+          "ordinary_activity": "Готовит снасти у старой сушильни.",
           "location": "other:0",
           "relationships": [{ "to": "miloslav", "kind": "hire", "standing": "owes_work" }]
         },
@@ -147,6 +164,11 @@
           "role_id": "nov_role_fisher",
           "occupation_id": "nov_occ_fisher",
           "occupation_label": "незнакомый рыбак",
+          "sex_category": "male", "age_category": "adult",
+          "appearance": {"build":"slim","skin_tone":"light","face_shape":"long","hair":{"color":"light_brown","length":"short","style":"wavy","facial_hair":"none"},"eyes":{"color":"blue"}},
+          "attributes": {"strength":{"value":10},"dexterity":{"value":12},"endurance":{"value":10},"reason":{"value":9},"attention":{"value":11},"influence":{"value":8}},
+          "skills": {"fishing":{"bonus":1}},
+          "body": {"health":91,"energy":72,"satiety":64},
           "profile_level": "background",
           "profile_revision": 1,
           "routine_profile_id": "ordinary_local_work_cycle_v1",
@@ -175,7 +197,35 @@
           "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5",
           "category_id": "cat_item_object_linen_shirt_v1",
           "quantity": 1,
-          "holder": "nezhata"
+          "holder": "nezhata", "physical_position": "equipped", "equipment_slot_category_id": "base_garment",
+          "visual_profile_snapshot": {"schema":"item_visual_profile_snapshot_v1","version":1,"garment_kind":"base_garment","equipment_slot":"base_garment","neckline":"slit_round","sleeve_form":"narrow","outer_form":"none","visible_fabric":"light_linen","trim":"none","main_visible_color":"undyed_linen","secondary_visible_color":"undyed_linen","headwear_kind":"none"}
+        },
+        {
+          "resource_key": "player_linen_shirt", "display_name": "льняная рубаха",
+          "item_template_id": "item_tpl_nov_linen_shirt_v1", "inventory_profile_id": "inventory_item_tpl_nov_linen_shirt_v1",
+          "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5", "category_id": "cat_item_object_linen_shirt_v1",
+          "quantity": 1, "holder": "player", "physical_position": "equipped", "equipment_slot_category_id": "base_garment",
+          "visual_profile_snapshot": {"schema":"item_visual_profile_snapshot_v1","version":1,"garment_kind":"base_garment","equipment_slot":"base_garment","neckline":"slit_round","sleeve_form":"narrow","outer_form":"none","visible_fabric":"light_linen","trim":"none","main_visible_color":"undyed_linen","secondary_visible_color":"undyed_linen","headwear_kind":"none"}
+        },
+        {
+          "resource_key": "miloslav_linen_shirt", "display_name": "льняная рубаха",
+          "item_template_id": "item_tpl_nov_linen_shirt_v1", "inventory_profile_id": "inventory_item_tpl_nov_linen_shirt_v1",
+          "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5", "category_id": "cat_item_object_linen_shirt_v1",
+          "quantity": 1, "holder": "miloslav", "physical_position": "equipped", "equipment_slot_category_id": "base_garment",
+          "visual_profile_snapshot": {"schema":"item_visual_profile_snapshot_v1","version":1,"garment_kind":"base_garment","equipment_slot":"base_garment","neckline":"slit_round","sleeve_form":"narrow","outer_form":"none","visible_fabric":"light_linen","trim":"none","main_visible_color":"undyed_linen","secondary_visible_color":"undyed_linen","headwear_kind":"none"}
+        },
+        {
+          "resource_key": "background_fisher_linen_shirt", "display_name": "льняная рубаха",
+          "item_template_id": "item_tpl_nov_linen_shirt_v1", "inventory_profile_id": "inventory_item_tpl_nov_linen_shirt_v1",
+          "quantity_profile_id": "quantity_item_tpl_nov_linen_shirt_v1_count_v5", "category_id": "cat_item_object_linen_shirt_v1",
+          "quantity": 1, "holder": "background_fisher", "physical_position": "equipped", "equipment_slot_category_id": "base_garment",
+          "visual_profile_snapshot": {"schema":"item_visual_profile_snapshot_v1","version":1,"garment_kind":"base_garment","equipment_slot":"base_garment","neckline":"slit_round","sleeve_form":"narrow","outer_form":"none","visible_fabric":"light_linen","trim":"none","main_visible_color":"undyed_linen","secondary_visible_color":"undyed_linen","headwear_kind":"none"}
+        },
+        {
+          "resource_key": "background_fisher_rope", "display_name": "ремонтная верёвка",
+          "item_template_id": "item_tpl_nov_rope_v1", "inventory_profile_id": "inventory_item_tpl_nov_rope_v1",
+          "quantity_profile_id": "quantity_item_tpl_nov_rope_v1_count_v5", "category_id": "cat_item_object_rope_v1",
+          "quantity": 1, "holder": "background_fisher"
         }
       ],
       "environment": {

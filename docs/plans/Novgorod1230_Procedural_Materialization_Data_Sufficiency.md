@@ -68,6 +68,33 @@ Season applicability is pinned to the approved Temporal v4 weather/calendar
 record and uses only `spring`, `summer`, `autumn`, `winter`; scenario schedule
 labels such as `spring_rasputitsa` do not become season vocabulary.
 
+## Regional environment authoring candidate
+
+`regional-environment/candidates/novgorod-1230-1250-v1` is a new immutable,
+not-imported authoring revision built from the tracked `rus13-base-v1` archive
+and current universal seed rows. It proposes approved universal + regional
+rows only for the audited intersection: 33 landscape, 21 water, 24 land-use
+and 37 place rows. Weights, common/dominant flags, allowed scales/node types,
+sources, limits and confidence remain source-exact; only approval fields and
+audit-required regional context guards change.
+
+The audit selected 34 landscape rows, but its
+`lt_sparse_forest_woodland` selector has no prepared regional row in the exact
+tracked archive. That archive contains `lt_wet_ravine_gully` instead. Candidate
+therefore records `AUDIT_SELECTOR_PREPARED_MEMBERSHIP_MISMATCH`, approves
+neither a fabricated sparse-forest row nor the wet-ravine substitute, and
+requires a second authoring audit for the missing exact regional row. The M3
+minimum (`lt_low_alluvial_riverbank`, `wb_small_river`,
+`lu_inland_capture_fishing`, `pt_fishing_station`) is complete.
+
+New `pt_drying_storage_workspace` and its Novgorod binding are separate
+`needs_review` rows, `is_allowed=false`, bound only to exact current old-shed
+G5 context. They describe drying, temporary storage and household processing
+compatibility; dormant/active state remains process-owned, and the rows create
+no fire, fuel, material, container, tool, NPC or process. Import, activation
+and production authority remain false. Existing combined procedural import
+pack is explicitly stale/intermediate and unchanged.
+
 ## Immutable v6 authoring overlay
 
 `procedural-scene-v2/authoring-overlay.json` revision 3 contains three new

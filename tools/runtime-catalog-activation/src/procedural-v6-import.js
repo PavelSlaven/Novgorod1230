@@ -163,6 +163,7 @@ export function buildProceduralAuthoringImportLedger({ baseline, pack,
 }
 
 export function buildProceduralFinalCandidateImportLedger({ baseline, pack }) {
+  assertProceduralFinalCandidatePackIntegrity(pack);
   const attestation = pack?.independent_attestation;
   verifyDecisionAttestation({
     attestation,
@@ -222,6 +223,73 @@ export function buildProceduralFinalCandidateImportLedger({ baseline, pack }) {
     dependencyAssertions: [],
     importedBy: attestation.auditor
   });
+}
+
+export function assertProceduralFinalCandidatePackIntegrity(pack) {
+  const { candidate_digest: candidateDigest, ...payload } = pack ?? {};
+  if (candidateDigest !== digestEnvelope(payload))
+    fail('PROCEDURAL_FINAL_PACK_DIGEST_MISMATCH');
+  const { independent_attestation: attestation, ...auditedPayload } = payload;
+  if (!attestation || digestEnvelope(auditedPayload) !==
+      attestation.candidate_digest)
+    fail('PROCEDURAL_FINAL_PACK_AUDITED_SUBJECT_MISMATCH');
+  const operations = pack.record_operations_by_table ?? [];
+  const cache = operations.find(({ table_name: table }) =>
+    table === 'procedural_scene_compiled_records');
+  const metadata = pack.candidate_rows_by_table
+    ?.procedural_scene_compiled_records?.find(({ record_id: id }) =>
+      id === 'approval:final-candidate')?.payload;
+  const expectedTarget = {
+    target_revision_id: pack.target_revision_id,
+    target_catalog_digest: pack.target_catalog_digest,
+    catalog_scope: pack.append_only_import_plan?.catalog_scope,
+    record_registry_digest: pack.record_registry_digest
+  };
+  const expectedRecord = {
+    record_operations_count: operations.length,
+    records_digest: pack.append_only_import_plan?.records_digest,
+    total_record_count: operations.reduce((sum, operation) =>
+      sum + operation.record_count, 0),
+    regional_existing_member_count: ['landscape', 'water', 'land_use', 'place']
+      .reduce((sum, key) => sum
+        + Number(pack.source_summary?.regional_environment?.[key] ?? 0), 0),
+    regional_drying_row_count:
+      pack.source_summary?.regional_environment?.drying,
+    v5_assert_existing_table_count: operations.filter((operation) =>
+      operation.table_name !== 'procedural_scene_compiled_records').length,
+    v5_assert_existing_record_count: operations.filter((operation) =>
+      operation.table_name !== 'procedural_scene_compiled_records')
+      .reduce((sum, operation) => sum + operation.record_count, 0),
+    compiled_insert_table: cache?.table_name,
+    compiled_insert_count: cache?.insert_count,
+    compiled_insert_records_digest: cache?.records_digest,
+    append_only_existing_table_only: true
+  };
+  const expectedCompatibility = {
+    compatible_world_tuple: pack.compatible_world_tuple,
+    compatibility_manifest_digest:
+      pack.compatibility_manifest?.compatible_world_pin_manifest_digest,
+    source_runtime_configuration_digest:
+      pack.compatibility_manifest?.source_runtime_configuration_digest,
+    validation_contract_version:
+      pack.compatibility_manifest?.validation_contract_version
+  };
+  if (canonicalStringify(attestation.target_binding) !==
+        canonicalStringify(expectedTarget)
+      || attestation.source_binding?.source_pack_digest !==
+        pack.source_pack_digest
+      || attestation.source_binding?.source_closure_count !==
+        pack.source_closure?.length
+      || canonicalStringify(attestation.source_binding?.source_summary) !==
+        canonicalStringify(pack.source_summary)
+      || canonicalStringify(attestation.record_binding) !==
+        canonicalStringify(expectedRecord)
+      || canonicalStringify(attestation.compatibility_binding) !==
+        canonicalStringify(expectedCompatibility)
+      || metadata?.item_container?.asserted_table_count !== 39
+      || metadata?.item_container?.asserted_record_count !== 3248)
+    fail('PROCEDURAL_FINAL_PACK_ATTESTATION_BINDING_MISMATCH');
+  return pack;
 }
 
 export async function importProceduralFinalCandidatePack({ pool, baseline,

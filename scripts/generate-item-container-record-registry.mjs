@@ -170,10 +170,11 @@ function renderAdapters(registry) {
   const entries = registry.entries.map((entry) => {
     const columns = entry.canonical_columns;
     const keys = entry.primary_key_fields;
-    const quotedColumns = columns.map((column) =>
+    const selectColumns = columns.map((column) =>
       entry.column_normalizers[column] === 'date'
         ? `${quoteIdentifier(column)}::text AS ${quoteIdentifier(column)}`
         : quoteIdentifier(column)).join(', ');
+    const insertColumns = columns.map(quoteIdentifier).join(', ');
     const keyWhere = keys.map((column, index) =>
       `${quoteIdentifier(column)} = $${index + 1}`).join(' AND ');
     const insertValues = columns.map((_, index) => `$${index + 1}`).join(', ');
@@ -184,11 +185,11 @@ function renderAdapters(registry) {
       primary_key_fields: keys,
       canonical_columns: columns,
       select_all_sql:
-        `SELECT ${quotedColumns} FROM world_base.${quoteIdentifier(entry.table_name)} ORDER BY ${keys.map(quoteIdentifier).join(', ')}`,
+        `SELECT ${selectColumns} FROM world_base.${quoteIdentifier(entry.table_name)} ORDER BY ${keys.map(quoteIdentifier).join(', ')}`,
       select_by_key_sql:
-        `SELECT ${quotedColumns} FROM world_base.${quoteIdentifier(entry.table_name)} WHERE ${keyWhere}`,
+        `SELECT ${selectColumns} FROM world_base.${quoteIdentifier(entry.table_name)} WHERE ${keyWhere}`,
       insert_sql: entry.operation_domain === 'catalog_membership'
-        ? `INSERT INTO world_base.${quoteIdentifier(entry.table_name)} (${quotedColumns}) VALUES (${insertValues})`
+        ? `INSERT INTO world_base.${quoteIdentifier(entry.table_name)} (${insertColumns}) VALUES (${insertValues})`
         : null
     };
     return `  ${JSON.stringify(entry.table_name)}: Object.freeze(${JSON.stringify(adapter)})`;

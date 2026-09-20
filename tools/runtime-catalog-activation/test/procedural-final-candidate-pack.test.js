@@ -2,6 +2,10 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { digestEnvelope } from '../src/artifact-contracts.js';
+import { computeCanonicalRecordDigest } from
+  '../../../packages/runtime-catalog/src/canonical-records.js';
+import { computeTablePayloadDigest } from
+  '../../../packages/runtime-catalog/src/ledger-digests.js';
 import { buildProceduralFinalCandidateImportLedger } from
   '../src/procedural-v6-import.js';
 import {
@@ -113,6 +117,38 @@ test('approved disposable ledger binds all 3269 records without activation',
     assert.equal(ledger.root.approval_attestation_digest,
       '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c');
     assert.equal(ledger.dependency_assertions.length, 0);
+  });
+
+test('ledger build rejects cache tamper even after record and table reseal',
+  async () => {
+    const pack = structuredClone(await generateProceduralFinalCandidatePack(root));
+    const row = pack.candidate_rows_by_table.procedural_scene_compiled_records
+      .find(({ record_kind: kind }) => kind === 'profile');
+    row.payload.family = 'tampered-family';
+    row.payload_digest = digestEnvelope(row.payload);
+    const operation = pack.record_operations_by_table.find(
+      ({ table_name: table }) => table ===
+        'procedural_scene_compiled_records');
+    const record = operation.records.find(({ canonical_payload: canonical }) =>
+      canonical.canonical_fields.record_id === row.record_id);
+    record.canonical_payload.canonical_fields.payload = structuredClone(row.payload);
+    record.canonical_payload.canonical_fields.payload_digest = row.payload_digest;
+    record.record_digest = computeCanonicalRecordDigest(record.canonical_payload);
+    operation.records_digest = computeTablePayloadDigest(operation.records);
+    pack.append_only_import_plan.tables.find(({ table_name: table }) =>
+      table === operation.table_name).payload_digest = operation.records_digest;
+    pack.append_only_import_plan.records_digest = digestEnvelope(
+      pack.record_operations_by_table.map((item) => ({
+        table_name: item.table_name, records_digest: item.records_digest
+      })));
+    const { candidate_digest: ignored, ...payload } = pack;
+    pack.candidate_digest = digestEnvelope(payload);
+    assert.throws(() => buildProceduralFinalCandidateImportLedger({ pack,
+      baseline: { request: { parent_revision_id: 'baseline',
+        parent_catalog_digest: '1'.repeat(64),
+        parent_snapshot_manifest_digest: '2'.repeat(64) },
+      compatibilityManifest: pack.compatibility_manifest } }),
+    { code: 'PROCEDURAL_FINAL_PACK_AUDITED_SUBJECT_MISMATCH' });
   });
 
 test('tracked disposable readback is sanitized and non-activating', async () => {

@@ -15,8 +15,25 @@ import {
 } from '../src/artifact-contracts.js';
 import { comparePr17OverlaySemantics } from '../src/semantic-equivalence.js';
 import { runRuntimeCatalogOperatorCli } from '../src/cli.js';
+import { RECORD_ADAPTERS } from '../src/record-adapters.generated.js';
 
 const sha = (letter) => letter.repeat(64);
+
+test('generated INSERT adapters use raw identifiers, never SELECT casts', () => {
+  for (const adapter of Object.values(RECORD_ADAPTERS)) {
+    if (adapter.insert_sql == null) continue;
+    const columnList = adapter.insert_sql.match(/\(([^)]+)\) VALUES/u)?.[1];
+    assert.ok(columnList, adapter.table_name);
+    assert.doesNotMatch(columnList, /::|\sAS\s/iu, adapter.table_name);
+    assert.deepEqual(columnList.split(', ').map((column) =>
+      column.replaceAll('"', '')), adapter.canonical_columns,
+    adapter.table_name);
+  }
+  assert.match(RECORD_ADAPTERS.building_layout_templates.select_all_sql,
+    /"valid_from"::text AS "valid_from"/u);
+  assert.doesNotMatch(RECORD_ADAPTERS.building_layout_templates.insert_sql,
+    /::text|\sAS\s/iu);
+});
 
 test('runtime catalog JSON Schema covers every persisted/operator envelope and resolves local refs', async () => {
   const schema = JSON.parse(await readFile(

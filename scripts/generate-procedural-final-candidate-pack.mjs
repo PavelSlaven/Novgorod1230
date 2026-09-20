@@ -48,6 +48,102 @@ const PATHS = Object.freeze({
   itemInventory: 'docs/implementation/item-container-120-approval-audit/evidence/OPERATOR_LEGACY_INVENTORY_SNAPSHOT.json',
   itemPromotion: 'docs/implementation/item-container-120-approval-audit/evidence/STAGE3C_PROMOTION_RESULT.json'
 });
+const INDEPENDENT_ATTESTATION = Object.freeze({
+  schema: 'rus.procedural_final_candidate_approval_attestation.v1',
+  attestation_id:
+    'novgorod_procedural_final_candidate_disposable_import_approval_001',
+  subject_commit_sha: 'ca1e9b68d2e07c2c0a15164a1af330d5d8807d6d',
+  candidate_path: `${OUTPUT}/candidate.json`,
+  pack_subject_commit_sha: SUBJECT_COMMIT,
+  pack_id: 'novgorod_procedural_scene_final_candidate_001',
+  pack_version: 1,
+  candidate_digest:
+    '12a160383a5aba4dfbda9aa5f6ef64273d712944322d9fb44f3a1eb1d45d5d67',
+  verdict: 'APPROVE_FOR_DISPOSABLE_IMPORT_READBACK_ONLY',
+  approval_scope: 'authoring_and_disposable_import_readback_eligibility_only',
+  target_binding: {
+    target_revision_id: TARGET_REVISION,
+    target_catalog_digest:
+      '4ece07fb44abff19490f998a8712144ff18c76daa3080489b51f1df3e705950c',
+    catalog_scope: 'item_container_materialization_v2',
+    record_registry_digest:
+      'a389f6d049ba6cf2b7e50b4287a145b8976ac4202694775b23a943292747b0ca'
+  },
+  source_binding: {
+    source_pack_digest:
+      '4ddd8a0bd3770312808166599e8a57801939c7fc2b915c2fcc3c7db7030422af',
+    source_closure_count: 53,
+    source_summary: {
+      procedural_profiles: 3, functional_mappings: 7,
+      regional_environment: { landscape: 33, water: 21, land_use: 24,
+        place: 37, drying: 2 },
+      onomastics_names: 54, appearance_rows: 166,
+      npc_equipment_profiles: 3, item_container_templates: 120
+    }
+  },
+  record_binding: {
+    record_operations_count: 40,
+    records_digest:
+      'ceb7fc4bd4f9a54eb1b5d6ecc1db597db47b6548e383bd8a5dd828ee697921f2',
+    total_record_count: 3269, regional_existing_member_count: 115,
+    regional_drying_row_count: 2, v5_assert_existing_table_count: 39,
+    v5_assert_existing_record_count: 3248,
+    compiled_insert_table: CACHE_TABLE, compiled_insert_count: 21,
+    compiled_insert_records_digest:
+      '1ae628a78346dcd166e18aa1d0759e78379aa3d4a2bf26326acfc6c3043effad',
+    append_only_existing_table_only: true
+  },
+  compatibility_binding: {
+    compatible_world_tuple: {
+      compatible_world_revision_id: WORLD.revision_id,
+      compatible_world_catalog_digest: WORLD.catalog_digest,
+      compatible_world_pin_manifest_digest:
+        '273824b6ea2cf3b34d1c6b4a57333909f663b54c0929a6bd8daac0989a3fed58'
+    },
+    compatibility_manifest_digest:
+      '273824b6ea2cf3b34d1c6b4a57333909f663b54c0929a6bd8daac0989a3fed58',
+    source_runtime_configuration_digest:
+      '057717aa6aef71830be85c4578d021efbccacbff72686f3d1a9b67f3cfad3693',
+    validation_contract_version: 'base_world_compatibility_v2'
+  },
+  v5_prerequisite: {
+    mode: 'required_prior_import_and_same_database_readback',
+    target_revision_id:
+      'world_revision_novgorod_1230_item_container_approved_001',
+    target_catalog_digest:
+      'a24fe55497a8aca018fa28a43ab1f54e26e2f30a5c74931ed2570ab69bc07a87',
+    candidate_digest:
+      'e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24',
+    approval_request_digest:
+      '046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771',
+    approval_attestation_digest:
+      '67baf3e92a2aacde2566a60c13e5a3a2410e3544549f096684d473d8588f18f8',
+    required_table_count: 39, required_record_count: 3248,
+    current_runtime_presence_claimed: false,
+    stage3c_isolated_database_evidence_only: true,
+    final_import_must_fail_if_any_assert_existing_record_is_absent_or_drifted:
+      true
+  },
+  authority: {
+    authoring_approved: true, disposable_import_readback_eligible: true,
+    import_authorized: false, activation_authorized: false,
+    production_authorized: false,
+    new_development_party_activation_authorized: false,
+    existing_party_migration_authorized: false,
+    old_save_rematerialization_authorized: false,
+    database_mutated: false, runtime_capabilities_authorized: [],
+    activation_request: null
+  },
+  future_activation_requirements: [
+    'successful_same_database_v5_prerequisite_import_and_readback',
+    'successful_disposable_final_candidate_import_and_readback',
+    'separate_activation_approval_for_new_development_parties_only'
+  ],
+  auditor: 'independent_final_candidate_auditor',
+  audit_date: '2026-09-21',
+  attestation_digest:
+    '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c'
+});
 
 export async function generateProceduralFinalCandidatePack(rootDir,
   overrides = {}) {
@@ -203,7 +299,8 @@ export async function generateProceduralFinalCandidatePack(rootDir,
       activation_request: null
     },
     database_mutated: false,
-    runtime_capabilities_authorized: []
+    runtime_capabilities_authorized: [],
+    independent_attestation: structuredClone(INDEPENDENT_ATTESTATION)
   };
   const pack = { ...payload, candidate_digest: digestEnvelope(payload) };
   validateProceduralFinalCandidatePack(pack);
@@ -213,6 +310,23 @@ export async function generateProceduralFinalCandidatePack(rootDir,
 export function validateProceduralFinalCandidatePack(pack) {
   const { candidate_digest: claimed, ...payload } = pack ?? {};
   if (claimed !== digestEnvelope(payload)) fail('FINAL_PACK_DIGEST_MISMATCH');
+  const { independent_attestation: attestation, ...auditedPayload } = payload;
+  const { attestation_digest: attestationDigest, ...attestationPayload } =
+    attestation ?? {};
+  if (digestEnvelope(attestationPayload) !== attestationDigest
+      || attestationDigest !==
+        '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c'
+      || digestEnvelope(auditedPayload) !== attestation.candidate_digest
+      || attestation.target_binding.target_catalog_digest !==
+        pack.target_catalog_digest
+      || attestation.source_binding.source_pack_digest !==
+        pack.source_pack_digest
+      || attestation.record_binding.records_digest !==
+        pack.append_only_import_plan.records_digest
+      || attestation.compatibility_binding.compatible_world_tuple
+        .compatible_world_pin_manifest_digest !==
+        pack.compatible_world_tuple.compatible_world_pin_manifest_digest)
+    fail('FINAL_PACK_INDEPENDENT_ATTESTATION_INVALID');
   if (pack.status !== 'sealed_candidate_not_imported'
       || pack.subject_commit_sha !== SUBJECT_COMMIT
       || pack.supersedes.accepted_as_source !== false

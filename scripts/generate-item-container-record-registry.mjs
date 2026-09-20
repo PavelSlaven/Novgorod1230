@@ -170,7 +170,10 @@ function renderAdapters(registry) {
   const entries = registry.entries.map((entry) => {
     const columns = entry.canonical_columns;
     const keys = entry.primary_key_fields;
-    const quotedColumns = columns.map(quoteIdentifier).join(', ');
+    const quotedColumns = columns.map((column) =>
+      entry.column_normalizers[column] === 'date'
+        ? `${quoteIdentifier(column)}::text AS ${quoteIdentifier(column)}`
+        : quoteIdentifier(column)).join(', ');
     const keyWhere = keys.map((column, index) =>
       `${quoteIdentifier(column)} = $${index + 1}`).join(' AND ');
     const insertValues = columns.map((_, index) => `$${index + 1}`).join(', ');

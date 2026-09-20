@@ -229,9 +229,11 @@ export async function importApprovedCatalog({
     expectedSchema: approvalContract.schema,
     requestDigestField: approvalContract.request_digest_field,
     expectedRequestDigest: ledger.root.approval_request_digest,
-    expectedDecision: approvalContract.decision
+    expectedDecision: approvalContract.decision,
+    decisionField: approvalContract.decision_field ?? 'decision'
   });
-  if (approvalAttestation.activation_authorized !== false) {
+  if ((approvalAttestation.activation_authorized
+      ?? approvalAttestation.authority?.activation_authorized) !== false) {
     fail('OVERLAY_APPROVAL_INVALID', 'Overlay import approval must not authorize activation.');
   }
   return transaction(pool, async (client) => {
@@ -246,11 +248,8 @@ export async function importApprovedCatalog({
       if (existing.rows[0].import_audit_digest !== ledger.root.import_audit_digest) {
         fail('CATALOG_IMPORT_CONFLICT', 'Existing import id has another audit digest.');
       }
-      await verifyImportedCatalog(
-        client,
-        ledger.root,
-        domainRevision.runtime_contract_digest
-      );
+      await verifyImportReadback(client, ledger,
+        domainRevision.runtime_contract_digest, domainRevision.readback_mode);
       return Object.freeze({ status: 'already_applied', import_id: ledger.root.import_id });
     }
     const target = await client.query(
@@ -314,13 +313,32 @@ export async function importApprovedCatalog({
       });
     }
     await insertImportLedger(client, ledger);
-    await verifyImportedCatalog(
-      client,
-      ledger.root,
-      domainRevision.runtime_contract_digest
-    );
+    await verifyImportReadback(client, ledger,
+      domainRevision.runtime_contract_digest, domainRevision.readback_mode);
     return Object.freeze({ status: 'applied', import_id: ledger.root.import_id });
   });
+}
+
+async function verifyImportReadback(client, ledger, runtimeContractDigest,
+  mode) {
+  if (mode !== 'authoring_only_no_runtime_projection')
+    return verifyImportedCatalog(client, ledger.root, runtimeContractDigest);
+  for (const record of orderedRecords(ledger))
+    await assertCanonicalRecord(client, record);
+  const row = (await client.query(
+    `SELECT i.id AS import_id,i.import_audit_digest,
+            (SELECT count(*)::int FROM world_base.catalog_import_records r
+              WHERE r.import_id=i.id) AS record_count,
+            (SELECT count(*)::int
+               FROM world_base.runtime_catalog_activation_events a
+              WHERE a.catalog_revision_id=i.world_revision_id)
+              AS activation_event_count
+       FROM world_base.catalog_imports i WHERE i.id=$1`,
+    [ledger.root.import_id])).rows[0];
+  assertExact(row, { import_id: ledger.root.import_id,
+    import_audit_digest: ledger.root.import_audit_digest,
+    record_count: ledger.records.length,
+    activation_event_count: 0 }, 'CATALOG_IMPORT_AUTHORING_READBACK_MISMATCH');
 }
 
 export async function activateApprovedCatalog({
@@ -431,8 +449,15 @@ async function assertCanonicalRecord(client, record) {
     fail('CATALOG_IMPORT_ASSERT_EXISTING_MISSING', 'Asserted canonical row is absent.');
   }
   const projection = projectCanonicalRecord({ registryEntry: entry, row: result.rows[0] });
-  if (computeCanonicalRecordDigest(projection) !== record.record_digest) {
-    fail('CATALOG_IMPORT_ASSERT_EXISTING_MISMATCH', 'Asserted canonical row digest differs.');
+  const actualDigest = computeCanonicalRecordDigest(projection);
+  if (actualDigest !== record.record_digest) {
+    fail('CATALOG_IMPORT_ASSERT_EXISTING_MISMATCH',
+      'Asserted canonical row digest differs.', {
+        table_name: record.table_name,
+        record_key: record.record_key,
+        expected_digest: record.record_digest,
+        actual_digest: actualDigest
+      });
   }
 }
 

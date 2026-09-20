@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { digestEnvelope } from '../src/artifact-contracts.js';
+import { buildProceduralFinalCandidateImportLedger } from
+  '../src/procedural-v6-import.js';
 import {
   generateProceduralFinalCandidatePack,
   validateNoDuplicateAuthority,
@@ -47,6 +49,10 @@ test('final candidate pack is deterministic, exact and non-activating',
       false);
     assert.equal(first.activation_policy.old_save_rematerialization_authorized,
       false);
+    assert.equal(first.independent_attestation.attestation_digest,
+      '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c');
+    assert.equal(first.independent_attestation.candidate_digest,
+      '12a160383a5aba4dfbda9aa5f6ef64273d712944322d9fb44f3a1eb1d45d5d67');
     assert.doesNotMatch(JSON.stringify(rows),
       /"(?:status|source_status|source_row_status)":"(?:pending|rejected|draft)/u);
   });
@@ -81,6 +87,51 @@ test('regional compiler preserves full approved owner semantics', async () => {
     assert.equal(bank[field], source.promotions.landscape.find(
       ({ universal }) => universal.id === 'lt_low_alluvial_riverbank')
       .universal[field]);
+});
+
+test('independent attestation payload is exact and tamper-evident', async () => {
+  const pack = structuredClone(await generateProceduralFinalCandidatePack(root));
+  pack.independent_attestation.record_binding.total_record_count += 1;
+  const { candidate_digest: ignored, ...payload } = pack;
+  pack.candidate_digest = digestEnvelope(payload);
+  assert.throws(() => validateProceduralFinalCandidatePack(pack),
+    { code: 'FINAL_PACK_INDEPENDENT_ATTESTATION_INVALID' });
+});
+
+test('approved disposable ledger binds all 3269 records without activation',
+  async () => {
+    const pack = await generateProceduralFinalCandidatePack(root);
+    const ledger = buildProceduralFinalCandidateImportLedger({ pack,
+      baseline: {
+        request: { parent_revision_id: 'disposable-baseline',
+          parent_catalog_digest: '1'.repeat(64),
+          parent_snapshot_manifest_digest: '2'.repeat(64) },
+        compatibilityManifest: pack.compatibility_manifest
+      } });
+    assert.equal(ledger.records.length, 3269);
+    assert.equal(ledger.tables.length, 40);
+    assert.equal(ledger.root.approval_attestation_digest,
+      '0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c');
+    assert.equal(ledger.dependency_assertions.length, 0);
+  });
+
+test('tracked disposable readback is sanitized and non-activating', async () => {
+  const result = await json(
+    'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/disposable-import-result.json');
+  assert.equal(result.status, 'PASS');
+  assert.equal(result.v5_prerequisite.asserted_table_count, 39);
+  assert.equal(result.v5_prerequisite.asserted_record_count, 3248);
+  assert.equal(result.final_import.ledger_record_count, 3269);
+  assert.equal(result.final_import.compiled_record_count, 21);
+  assert.equal(result.final_import.activation_event_count, 0);
+  assert.equal(result.final_import.rollback_probe, 'pass');
+  assert.deepEqual(result.cleanup, { database_stopped: true,
+    temporary_cluster_removed: true });
+  assert.equal(result.credentials_persisted, false);
+  assert.equal(result.production_mutated, false);
+  assert.equal(result.runtime_activation_performed, false);
+  assert.doesNotMatch(JSON.stringify(result),
+    /postgresql:\/\/|local_only|password|connection_string/u);
 });
 
 test('all V5 owner references resolve through exact assert-existing closure',
@@ -141,7 +192,8 @@ test('duplicate cache row identities are forbidden', async () => {
     equipment.occupation_equipment_profiles[0]);
   await assert.rejects(() => generateProceduralFinalCandidatePack(root, {
     [paths.equipment]: equipment
-  }), { code: 'FINAL_PACK_ROW_INVALID' });
+  }), (error) => ['FINAL_PACK_INDEPENDENT_ATTESTATION_INVALID',
+    'FINAL_PACK_ROW_INVALID'].includes(error.code));
 });
 
 test('duplicate authority ownership is forbidden', () => {
@@ -156,7 +208,8 @@ test('activation cannot be enabled by changing candidate flag', async () => {
   const { candidate_digest: ignored, ...payload } = pack;
   pack.candidate_digest = digestEnvelope(payload);
   assert.throws(() => validateProceduralFinalCandidatePack(pack),
-    { code: 'FINAL_PACK_AUTHORITY_INVALID' });
+    (error) => ['FINAL_PACK_INDEPENDENT_ATTESTATION_INVALID',
+      'FINAL_PACK_AUTHORITY_INVALID'].includes(error.code));
 });
 
 async function json(path) {

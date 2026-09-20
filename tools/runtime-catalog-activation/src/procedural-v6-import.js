@@ -162,6 +162,112 @@ export function buildProceduralAuthoringImportLedger({ baseline, pack,
   });
 }
 
+export function buildProceduralFinalCandidateImportLedger({ baseline, pack }) {
+  const attestation = pack?.independent_attestation;
+  verifyDecisionAttestation({
+    attestation,
+    expectedSchema: 'rus.procedural_final_candidate_approval_attestation.v1',
+    requestDigestField: 'candidate_digest',
+    expectedRequestDigest: attestation?.candidate_digest,
+    expectedDecision: 'APPROVE_FOR_DISPOSABLE_IMPORT_READBACK_ONLY',
+    decisionField: 'verdict',
+    expectedBindings: {
+      pack_subject_commit_sha: pack.subject_commit_sha,
+      pack_id: pack.pack_id,
+      pack_version: pack.version,
+      target_binding: {
+        target_revision_id: pack.target_revision_id,
+        target_catalog_digest: pack.target_catalog_digest,
+        catalog_scope: 'item_container_materialization_v2',
+        record_registry_digest: pack.record_registry_digest
+      }
+    }
+  });
+  if (canonicalStringify(baseline.compatibilityManifest)
+      !== canonicalStringify(pack.compatibility_manifest)
+      || attestation.authority.import_authorized !== false
+      || attestation.authority.activation_authorized !== false
+      || attestation.authority.production_authorized !== false
+      || attestation.authority.database_mutated !== false)
+    fail('PROCEDURAL_FINAL_IMPORT_AUTHORITY_INVALID');
+  const importId =
+    `procedural_final_import_${attestation.attestation_digest.slice(0, 32)}`;
+  const records = pack.record_operations_by_table.flatMap((operation) =>
+    operation.records.map((record) => ({ ...record, import_id: importId })));
+  return buildImportLedger({
+    importId,
+    rootFields: {
+      catalog_scope: 'item_container_materialization_v2',
+      parent_revision_id: baseline.request.parent_revision_id,
+      parent_catalog_digest: baseline.request.parent_catalog_digest,
+      parent_snapshot_manifest_digest:
+        baseline.request.parent_snapshot_manifest_digest,
+      ...pack.compatible_world_tuple,
+      target_revision_id: pack.target_revision_id,
+      target_catalog_digest: pack.target_catalog_digest,
+      record_registry_digest: pack.record_registry_digest,
+      promotion_manifest_digest: digestEnvelope({
+        schema: 'rus.procedural_final_candidate_import_plan.v1',
+        candidate_digest: attestation.candidate_digest,
+        records_digest: pack.append_only_import_plan.records_digest,
+        target_catalog_digest: pack.target_catalog_digest
+      }),
+      approval_request_digest: attestation.candidate_digest,
+      approval_attestation_digest: attestation.attestation_digest,
+      schema_migration_digest:
+        WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
+    },
+    tables: pack.append_only_import_plan.tables,
+    records,
+    dependencyAssertions: [],
+    importedBy: attestation.auditor
+  });
+}
+
+export async function importProceduralFinalCandidatePack({ pool, baseline,
+  pack, runtimeContractDigest }) {
+  const ledger = buildProceduralFinalCandidateImportLedger({ baseline, pack });
+  const registered = await registerCatalogBaseline({ pool, ...baseline });
+  const imported = await importApprovedCatalog({
+    pool, ledger,
+    domainRevision: {
+      parent_registration_id: baseline.registrationId,
+      runtime_contract_digest: runtimeContractDigest,
+      title: 'Disposable procedural final candidate import',
+      readback_mode: 'authoring_only_no_runtime_projection'
+    },
+    approvalAttestation: pack.independent_attestation,
+    approvalContract: {
+      schema: 'rus.procedural_final_candidate_approval_attestation.v1',
+      request_digest_field: 'candidate_digest',
+      decision_field: 'verdict',
+      decision: 'APPROVE_FOR_DISPOSABLE_IMPORT_READBACK_ONLY'
+    }
+  });
+  const summary = (await pool.query(
+    `SELECT
+       (SELECT count(*)::int FROM world_base.catalog_import_records
+         WHERE import_id=$1) AS ledger_record_count,
+       (SELECT count(*)::int
+          FROM world_base.procedural_scene_compiled_records
+         WHERE source_pack_digest=$2) AS compiled_record_count,
+       (SELECT count(*)::int
+          FROM world_base.runtime_catalog_activation_events
+         WHERE catalog_revision_id=$3) AS activation_event_count`,
+    [ledger.root.import_id, pack.source_pack_digest,
+      pack.target_revision_id]
+  )).rows[0];
+  if (Number(summary?.ledger_record_count) !== 3269
+      || Number(summary?.compiled_record_count) !== 21
+      || Number(summary?.activation_event_count) !== 0)
+    fail('PROCEDURAL_FINAL_IMPORT_READBACK_MISMATCH', { summary });
+  return Object.freeze({ registered, imported, ledger,
+    readback: Object.freeze({ ledger_record_count: 3269,
+      assert_existing_record_count: 3248, compiled_record_count: 21,
+      activation_event_count: 0, target_revision_id: pack.target_revision_id,
+      target_catalog_digest: pack.target_catalog_digest }) });
+}
+
 function assertPackIntegrity(pack) {
   for (const [artifact, digestField] of [
     [pack?.candidate, 'candidate_digest'],

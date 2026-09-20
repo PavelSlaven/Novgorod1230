@@ -153,11 +153,12 @@ export function verifyDecisionAttestation({
   requestDigestField,
   expectedRequestDigest,
   expectedDecision,
+  decisionField = 'decision',
   expectedBindings = {}
 }) {
   if (attestation?.schema !== expectedSchema
       || attestation?.[requestDigestField] !== expectedRequestDigest
-      || attestation?.decision !== expectedDecision
+      || attestation?.[decisionField] !== expectedDecision
       || Object.entries(expectedBindings).some(
         ([field, expected]) => canonicalStringify(attestation?.[field])
           !== canonicalStringify(expected)

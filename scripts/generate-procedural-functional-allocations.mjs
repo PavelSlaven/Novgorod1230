@@ -12,16 +12,17 @@ const FUNCTIONAL =
 const EQUIPMENT =
   'data/world-catalogs/novgorod/procedural-scene-v2/npc-equipment-v1/candidate.json';
 const V5 = 'data/knowledge-source/imports/item-container-120-v5/candidate/tables';
+const FINAL =
+  'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/candidate.json';
 
 export async function generateProceduralFunctionalAllocations(rootDir,
   overrides = {}) {
   const root = resolve(rootDir);
   const load = async (path) => overrides[path]
     ?? JSON.parse(await readFile(resolve(root, path), 'utf8'));
-  const [functional, equipment, propertyProfiles, propertyRules] =
+  const [functional, equipment, finalPack] =
     await Promise.all([
-    load(FUNCTIONAL), load(EQUIPMENT), load(`${V5}/property_profiles.json`),
-    load(`${V5}/property_profile_rules.json`)
+    load(FUNCTIONAL), load(EQUIPMENT), load(FINAL)
   ]);
   if (functional.candidate_digest !==
       'aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588'
@@ -39,10 +40,17 @@ export async function generateProceduralFunctionalAllocations(rootDir,
   const tool = exact(toolGroup.candidates, activityTool.item_template_ref);
   const material = [...materialGroup.candidates].sort((left, right) =>
     left.item_template_ref.localeCompare(right.item_template_ref))[0];
-  const propertyProfile = projected(propertyProfiles,
-    'property_personal_possession_v1');
-  const propertyRule = projected(propertyRules,
-    'rule_property_personal_possession_v1');
+  const approved = (table, predicate) => approvedRecord(finalPack, table,
+    predicate);
+  const propertyProfile = approved('property_profiles', ({ id }) =>
+    id === 'property_personal_possession_v1');
+  const propertyRule = approved('property_profile_rules', ({ id }) =>
+    id === 'rule_property_personal_possession_v1');
+  const bindMechanics = (source) => ({ ...source,
+    inventory: approved('item_template_inventory_profiles',
+      ({ item_template_id: id }) => id === source.item_template_ref),
+    quantity: approved('item_template_quantity_profiles',
+      ({ item_template_id: id }) => id === source.item_template_ref) });
   const policy = {
     policy_id: 'fishing_present_actor_functional_allocation_v1',
     family_candidate_ref: 'novgorod_inland_fishing_worksite_v3@1',
@@ -55,14 +63,18 @@ export async function generateProceduralFunctionalAllocations(rootDir,
       actor_kinds: ['npc', 'player'],
       stable_unique_actor_instance_id_required: true
     },
-    selection_cardinality: 'exactly_one',
+    selection_cardinality: 'deterministic_one_from_nonempty',
+    ambiguity_policy: 'lowest_unique_stable_actor_instance_id',
     actor_selection: 'lowest_stable_actor_instance_id',
     actor_selection_reason:
       'Deterministic order-independent selection among equally applicable actors.',
-    allocations: [allocation('tool', tool),
-      allocation('work_material', material)],
+    allocations: [allocation('tool', bindMechanics(tool)),
+      allocation('work_material', bindMechanics(material))],
     property_basis: {
-      profile: propertyProfile, rule: propertyRule,
+      profile: propertyProfile.canonical_fields,
+      profile_record_digest: propertyProfile.record_digest,
+      rule: propertyRule.canonical_fields,
+      rule_record_digest: propertyRule.record_digest,
       owner_ref: 'selected_actor_instance',
       holder_ref: 'selected_actor_instance',
       controller_ref: 'selected_actor_instance',
@@ -85,8 +97,16 @@ export async function generateProceduralFunctionalAllocations(rootDir,
         'policy_id+actor_instance_id+layer+item_template_ref',
       idempotency_key_same_as_identity: true
     },
-    causal_basis: ['authoring_package', 'function_ref',
-      'activity_profile_ref'],
+    causal_basis: {
+      authoring_package_digest: finalPack.candidate_digest,
+      mapping_candidate_digest: functional.candidate_digest,
+      property_record_ids: [propertyProfile.canonical_fields.id,
+        propertyRule.canonical_fields.id],
+      property_record_digests: [propertyProfile.record_digest,
+        propertyRule.record_digest],
+      approved_creation_source_ref:
+        'src_gameplay_physical_policy_v3'
+    },
     limits: {
       site_or_unowned_item_authorized: false,
       household_basis_authorized: false,
@@ -102,7 +122,10 @@ export async function generateProceduralFunctionalAllocations(rootDir,
     authoring_scope: 'functional_actor_allocation_only',
     source_candidate_digests: {
       functional_mapping: functional.candidate_digest,
-      npc_equipment: equipment.candidate_digest
+      npc_equipment: equipment.candidate_digest,
+      final_assert_existing_catalog: finalPack.candidate_digest,
+      final_import_approval_attestation:
+        finalPack.independent_attestation.attestation_digest
     },
     policies: [policy],
     unaffected_families: ['novgorod_drying_storage_workspace_v3@1',
@@ -140,7 +163,7 @@ export async function generateProceduralFunctionalAllocations(rootDir,
 }
 
 export function resolveProceduralFunctionalAllocations({ policy, actors,
-  persistedPositions, existingItems = [], mechanics = {} }) {
+  persistedPositions, existingItems = [], inventoryState }) {
   const ids = actors.map(({ actor_instance_id: id }) => id);
   if (ids.some((id) => typeof id !== 'string' || !id)
       || new Set(ids).size !== ids.length) fail('FUNCTIONAL_ACTOR_ID_AMBIGUOUS');
@@ -166,6 +189,11 @@ export function resolveProceduralFunctionalAllocations({ policy, actors,
   if (existingIds.some((id) => !id)
       || new Set(existingIds).size !== existingIds.length)
     fail('FUNCTIONAL_CROSS_LAYER_REUSE_INVALID');
+  if (!inventoryState || !Number.isFinite(inventoryState.mass_grams)
+      || !Number.isFinite(inventoryState.capacity_grams)
+      || !Number.isInteger(inventoryState.external_hand_cost)
+      || !Number.isInteger(inventoryState.external_hand_capacity))
+    fail('FUNCTIONAL_MECHANICS_INPUT_MISSING');
   const used = new Set();
   const allocations = policy.allocations.map((entry) => {
     const existing = existingItems.filter((item) =>
@@ -174,13 +202,21 @@ export function resolveProceduralFunctionalAllocations({ policy, actors,
       && !used.has(item.item_instance_id))
       .sort((left, right) => left.item_instance_id.localeCompare(
         right.item_instance_id))[0];
+    if (existing && (existing.state !== 'committed'
+        || existing.owner_id !== actor.actor_instance_id
+        || existing.holder_id !== actor.actor_instance_id
+        || existing.controller_id !== actor.actor_instance_id
+        || !policy.placement.allowed_physical_positions.includes(
+          existing.physical_position)
+        || existing.quantity !== 1
+        || existing.inventory_profile_ref !== entry.inventory_profile_ref
+        || existing.quantity_profile_ref !== entry.quantity_profile_ref
+        || existing.profile_entry_ref !== entry.profile_entry_ref
+        || existing.source_binding_refs_digest !==
+          digest(entry.source_binding_refs)))
+      fail('FUNCTIONAL_REUSE_PROJECTION_INVALID');
     if (existing) used.add(existing.item_instance_id);
     const physicalPosition = entry.external_hand_cost > 0 ? 'hands' : 'external';
-    if (!policy.placement.allowed_physical_positions.includes(physicalPosition)
-        || Number(mechanics.carry_mass_available_grams ?? Infinity)
-          < entry.mass_grams
-        || Number(mechanics.hands_available ?? 2) < entry.external_hand_cost)
-      fail('FUNCTIONAL_MECHANICS_OVERFLOW');
     const identity = `${policy.policy_id}:${actor.actor_instance_id}:`
       + `${entry.layer}:${entry.item_template_ref}`;
     return Object.freeze({ allocation_id: identity,
@@ -195,7 +231,19 @@ export function resolveProceduralFunctionalAllocations({ policy, actors,
   });
   if (new Set(allocations.map(({ item_instance_id: id }) => id)).size
       !== allocations.length) fail('FUNCTIONAL_CROSS_LAYER_REUSE_INVALID');
-  return Object.freeze(allocations);
+  const created = allocations.filter(({ disposition }) =>
+    disposition === 'create');
+  const addedMass = created.reduce((sum, row) => sum + row.mass_grams, 0);
+  const addedHands = created.reduce((sum, row) =>
+    sum + row.external_hand_cost, 0);
+  if (inventoryState.mass_grams + addedMass > inventoryState.capacity_grams
+      || inventoryState.external_hand_cost + addedHands
+        > inventoryState.external_hand_capacity)
+    fail('FUNCTIONAL_MECHANICS_OVERFLOW');
+  return Object.freeze({ schema: 'rus.p16.actor_item_allocation_plan.v1',
+    actor_instance_id: actor.actor_instance_id,
+    expected_inventory_state: structuredClone(inventoryState),
+    allocations: Object.freeze(allocations), readiness: 'resolved' });
 }
 
 function allocation(layer, source) {
@@ -209,18 +257,26 @@ function allocation(layer, source) {
     min_quantity: source.min_quantity, max_quantity: source.max_quantity,
     source_binding_refs: [...source.source_binding_refs],
     source_refs: [...source.source_refs], committed_source_required: true,
-    mass_grams: source.inventory_mechanics?.mass_grams ??
-      (source.item_template_ref.includes('fishing_net') ? 5000 : 100),
-    external_hand_cost: source.inventory_mechanics?.external_hand_cost ??
-      (source.item_template_ref.includes('fishing_net') ? 2 : 0) };
+    inventory_record_id: source.inventory.canonical_fields.id,
+    inventory_record_digest: source.inventory.record_digest,
+    quantity_record_id: source.quantity.canonical_fields.id,
+    quantity_record_digest: source.quantity.record_digest,
+    mass_grams: Number(source.inventory.canonical_fields.mass_grams),
+    external_hand_cost:
+      Number(source.inventory.canonical_fields.external_hand_cost) };
 }
-function projected(rows, id) {
-  const row = rows.find((value) => value.id === id);
-  if (!row) fail('FUNCTIONAL_PROPERTY_BASIS_INVALID');
-  return { ...structuredClone(row),
-    world_revision_id: row.world_revision_id == null ? undefined
-      : 'world_revision_novgorod_1230_item_container_approved_001',
-    status: 'approved_by_exact_promotion' };
+function approvedRecord(pack, table, predicate) {
+  const operation = pack.record_operations_by_table.find(
+    ({ table_name: name }) => name === table);
+  const matches = operation?.records.filter(({ canonical_payload: payload }) =>
+    predicate(payload.canonical_fields)) ?? [];
+  if (matches.length !== 1 || matches[0].operation_kind !== 'assert_existing'
+      || matches[0].canonical_payload.canonical_fields.status !== 'approved')
+    fail(table.startsWith('property_') ? 'FUNCTIONAL_PROPERTY_BASIS_INVALID'
+      : 'FUNCTIONAL_SOURCE_REF_INVALID');
+  return { canonical_fields:
+    structuredClone(matches[0].canonical_payload.canonical_fields),
+  record_digest: matches[0].record_digest };
 }
 function exact(rows, id) {
   const found = rows.filter(({ item_template_ref: ref }) => ref === id);

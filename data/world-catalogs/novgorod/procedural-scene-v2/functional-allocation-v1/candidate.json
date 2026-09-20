@@ -6,7 +6,9 @@
   "authoring_scope": "functional_actor_allocation_only",
   "source_candidate_digests": {
     "functional_mapping": "aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588",
-    "npc_equipment": "0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181"
+    "npc_equipment": "0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181",
+    "final_assert_existing_catalog": "29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1",
+    "final_import_approval_attestation": "0204d109cbe18d06aed0957be3c10d12a088e15368cc0e7eb865b1382538ef7c"
   },
   "policies": [
     {
@@ -24,7 +26,8 @@
         ],
         "stable_unique_actor_instance_id_required": true
       },
-      "selection_cardinality": "exactly_one",
+      "selection_cardinality": "deterministic_one_from_nonempty",
+      "ambiguity_policy": "lowest_unique_stable_actor_instance_id",
       "actor_selection": "lowest_stable_actor_instance_id",
       "actor_selection_reason": "Deterministic order-independent selection among equally applicable actors.",
       "allocations": [
@@ -51,6 +54,10 @@
             "src_project_stage_3b1_physical_parameter_policy"
           ],
           "committed_source_required": true,
+          "inventory_record_id": "inventory_item_tpl_nov_fishing_net_v1",
+          "inventory_record_digest": "a568e0238121bb3c002eb81101f4c456a87f35b5efb956b8cae593db86f5155f",
+          "quantity_record_id": "quantity_item_tpl_nov_fishing_net_v1_count_v5",
+          "quantity_record_digest": "f69f345e5d694519364c119eb0fcf20353e25db2fa98501e1153c15b7be2118e",
           "mass_grams": 5000,
           "external_hand_cost": 2
         },
@@ -77,7 +84,11 @@
             "src_project_stage_3b1_physical_parameter_policy"
           ],
           "committed_source_required": true,
-          "mass_grams": 100,
+          "inventory_record_id": "inventory_item_tpl_nov_fishing_line_v1",
+          "inventory_record_digest": "cc7e3c84a6de704c9ecca0e521bd5e8c362b4f879a6851317f89cf254cc1ca17",
+          "quantity_record_id": "quantity_item_tpl_nov_fishing_line_v1_count_v5",
+          "quantity_record_digest": "5e22443dd5c4f632b3424d157dbca75f9f6036bb63b5cbc48c44ecc3ec5c7c22",
+          "mass_grams": 200,
           "external_hand_cost": 0
         }
       ],
@@ -87,8 +98,9 @@
           "world_revision_id": "world_revision_novgorod_1230_item_container_approved_001",
           "region_id": "region_novgorod_land",
           "property_category_id": "cat_item_property_personal_possession_v1",
-          "status": "approved_by_exact_promotion"
+          "status": "approved"
         },
+        "profile_record_digest": "07c72e905e359513ed7402284327f8862702bba60132aed8b2fa86ebc3529dee",
         "rule": {
           "id": "rule_property_personal_possession_v1",
           "property_profile_id": "property_personal_possession_v1",
@@ -96,15 +108,16 @@
           "holder_kind": "person",
           "controller_kind": "person",
           "access_policy": {
-            "version": 1,
-            "mode": "explicit"
+            "mode": "explicit",
+            "version": 1
           },
           "claim_conditions": {
-            "version": 1,
-            "mode": "none"
+            "mode": "none",
+            "version": 1
           },
-          "status": "approved_by_exact_promotion"
+          "status": "approved"
         },
+        "rule_record_digest": "6d1ea2f0b7ee6d761466689bfa4b7a1b243cf44f9e1d900629b18af7eb3af78b",
         "owner_ref": "selected_actor_instance",
         "holder_ref": "selected_actor_instance",
         "controller_ref": "selected_actor_instance",
@@ -129,11 +142,19 @@
         "deterministic_identity": "policy_id+actor_instance_id+layer+item_template_ref",
         "idempotency_key_same_as_identity": true
       },
-      "causal_basis": [
-        "authoring_package",
-        "function_ref",
-        "activity_profile_ref"
-      ],
+      "causal_basis": {
+        "authoring_package_digest": "29e67ec2f4b365f3728af1d29d5b3aec3a86c9e368cf3c705d11552a9dfa51d1",
+        "mapping_candidate_digest": "aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588",
+        "property_record_ids": [
+          "property_personal_possession_v1",
+          "rule_property_personal_possession_v1"
+        ],
+        "property_record_digests": [
+          "07c72e905e359513ed7402284327f8862702bba60132aed8b2fa86ebc3529dee",
+          "6d1ea2f0b7ee6d761466689bfa4b7a1b243cf44f9e1d900629b18af7eb3af78b"
+        ],
+        "approved_creation_source_ref": "src_gameplay_physical_policy_v3"
+      },
       "limits": {
         "site_or_unowned_item_authorized": false,
         "household_basis_authorized": false,
@@ -169,5 +190,5 @@
   "runtime_authorized": false,
   "activation_authorized": false,
   "activation_request": null,
-  "candidate_digest": "2c24158f1a8c0b62a80ee4cdcb3a5a13e1bb9bd934922831868f7803ff0e842d"
+  "candidate_digest": "69d321d3de1a4b4fabb9f923af19cb234480638e35fb21f02d0ee8d1a44d9725"
 }

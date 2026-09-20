@@ -34,11 +34,10 @@ export async function validateActorAppearanceV6CarryForward(root = process.cwd()
   }
 
   expect(errors, candidate.schema === expected.schema, 'ACTOR_APPEARANCE_V6_SCHEMA');
-  expect(errors, candidate.status === 'authoring_approved_pending_import_authorization'
-    && candidate.approval_status === 'authoring_approved'
-    && candidate.authoring_approved === true, 'ACTOR_APPEARANCE_V6_APPROVAL_STATE');
-  expectEqual(errors, candidate.authoring_attestation, expected.authoring_attestation,
-    'ACTOR_APPEARANCE_V6_AUTHORING_ATTESTATION');
+  expect(errors, candidate.status === 'pending_independent_approval'
+    && candidate.approval_status === 'pending'
+    && !Object.hasOwn(candidate, 'authoring_approved')
+    && !Object.hasOwn(candidate, 'authoring_attestation'), 'ACTOR_APPEARANCE_V6_APPROVAL_STATE');
   expect(errors, candidate.import_activation === false
     && candidate.runtime_status === 'typed_data_gap'
     && candidate.runtime_gap_code === 'ACTOR_APPEARANCE_V6_IMPORT_NOT_APPROVED'
@@ -125,12 +124,25 @@ function validateSourceRefs(errors, rows) {
         'ACTOR_APPEARANCE_V6_PROFILE_SOURCE_MISSING', row.id);
     }
   }
+  const equipmentBindings = rows.item_template_category_bindings ?? [];
+  const templates = new Set(equipmentBindings.map(({ item_template_id: id }) => id));
+  expect(errors, templates.size === 2
+    && templates.has('item_tpl_nov_linen_shirt_v1')
+    && templates.has('item_tpl_nov_wool_outer_garment_v1'),
+  'ACTOR_APPEARANCE_V6_EQUIPMENT_TEMPLATE_SOURCE_MISSING');
+  const slots = equipmentBindings.filter(({ binding_kind: kind }) => kind === 'equipment_slot')
+    .map(({ category_id: id }) => id).sort();
+  expectEqual(errors, slots, [
+    'garment.equipment_slot.base_garment',
+    'garment.equipment_slot.outer_garment'
+  ], 'ACTOR_APPEARANCE_V6_EQUIPMENT_SLOT_DRIFT');
+  for (const row of equipmentBindings) expect(errors, categories.has(row.category_id),
+    'ACTOR_APPEARANCE_V6_EQUIPMENT_CATEGORY_SOURCE_MISSING', row.id);
 }
 
 function validateNoAuthoredPersonOverride(errors, candidate) {
   const allowed = new Set([
-    'schema', 'candidate_id', 'status', 'approval_status', 'authoring_approved',
-    'authoring_attestation', 'import_activation',
+    'schema', 'candidate_id', 'status', 'approval_status', 'import_activation',
     'runtime_status', 'runtime_gap_code', 'runtime_import_rows', 'source', 'target',
     'supported_contexts', 'source_row_count_by_table', 'source_ids_by_table',
     'source_projection_sha256', 'candidate_row_count_by_table',

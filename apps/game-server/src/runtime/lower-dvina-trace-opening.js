@@ -15,6 +15,7 @@ const FORBIDDEN_KEYS = new Set([
   'completion_state',
   'epilogue_state'
 ]);
+const SCREEN_ENVIRONMENT_FACTS = new Set(['cold', 'wet', 'exposed']);
 
 export function buildLowerDvinaTraceOpeningScreen({
   visible,
@@ -34,7 +35,8 @@ export function buildLowerDvinaTraceOpeningScreen({
       place: projection.place_label,
       calendar: projection.calendar_label,
       timestamp: structuredClone(visible.timestamp),
-      environment: { facts: structuredClone(visible.environment.facts) }
+      environment: { facts: visible.environment.facts.filter((fact) =>
+        SCREEN_ENVIRONMENT_FACTS.has(fact)) }
     },
     action_panel: { suggested_actions: [] },
     panels: {

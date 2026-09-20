@@ -3,7 +3,7 @@ import test from 'node:test';
 import { buildVisibleContextAuditApproval,
   computeVisibleContextPackageDigest } from '@rus/contracts';
 import { buildAuthoredOpeningVisibleContext,
-  auditAuthoredOpeningContext } from
+  auditAuthoredOpeningContext, buildLowerDvinaTraceOpeningScreen } from
   '../src/runtime/lower-dvina-trace-opening.js';
 import { createAuthoredOpeningNarrationService } from
   '../src/runtime/authored-opening-narration.js';
@@ -40,6 +40,26 @@ test('opening reader control fails without a persisted immediate interaction', (
       interior_position_ref: 'position:inside'
     }, knownFacts: ['one', 'two']
   }).pass, false);
+});
+
+test('rich environment remains prose evidence without violating screen vocabulary', () => {
+  const visible = { party_id: 'party:1', player: { name: 'Любава',
+    social_status: { display_name: 'рыбачка' } }, position: { g4_id: 'g4',
+    g5_node_id: 'g5', g5_anchor_id: 'anchor' },
+    timestamp: { whole_minutes: '1' },
+    body: { health: 92, energy: 71, satiety: 66 }, environment: {
+      environment_profile_id: 'env.local_variable',
+      facts: ['Светлое позднелетнее утро.',
+        'Слышны течение и работа на берегу.'] } };
+  const screen = buildLowerDvinaTraceOpeningScreen({ visible,
+    approvedProjection: { scenario_id: 'vikhtuy_fishing_camp_v1',
+      opening_projection: { version: 1, schema: 'first_game_screen',
+        visible_field_allowlist: ['party_id', 'player.name',
+          'player.social_status', 'position', 'timestamp', 'body',
+          'environment'], place_label: 'стан', calendar_label: 'дата',
+        opening_prose: 'hint' } },
+    openingProse: 'Любава готовит рыбацкий стан к работе.' });
+  assert.deepEqual(screen.visible_context.environment.facts, []);
 });
 
 test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {

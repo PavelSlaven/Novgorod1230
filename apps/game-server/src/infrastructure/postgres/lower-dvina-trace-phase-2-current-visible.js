@@ -40,7 +40,16 @@ export function phase2InitialCurrentVisibleContext({
           ?? npc.identity_state?.public_role_label ?? 'человек',
       recognition: npc.profile_level === 'background'
         ? 'unrecognized' : 'recognized',
-      visible_status: 'рядом'
+      visible_status: npc.machine_state?.current_activity?.summary ?? 'рядом',
+      ...(npc.identity_state?.appearance == null ? {} : {
+        observable_cues: { identity: {
+          display_name: npc.identity_state?.public_role_label,
+          sex_category: npc.identity_state?.sex_category,
+          age_category: npc.identity_state?.age_category,
+          appearance: structuredClone(npc.identity_state.appearance)
+        }, equipment: visibleNpcEquipment(initialState, npc.instance_id),
+        outward_presentation: {} }
+      })
     }));
   return requirePhase2CurrentVisibleContext({
     version: 1,
@@ -52,13 +61,43 @@ export function phase2InitialCurrentVisibleContext({
           typeof value === 'string' && value.length > 0)
       : [],
     visible_npc: visibleNpc,
-    visible_objects: [],
+    visible_objects: visibleInitialItems(initialState),
     known_context: [presented?.display_name ?? visibleContext?.place]
       .filter((value) => typeof value === 'string' && value.length > 0),
     uncertainties: [],
     allowed_tensions: [],
     do_not_imply: []
   });
+}
+
+function visibleInitialItems(state) {
+  const actorId = state?.actor_id;
+  const anchorId = state?.position?.g5_anchor_id;
+  return (state?.items ?? []).filter((item) =>
+    item.placement?.container_id == null
+      && (item.placement?.holder_character_id === actorId
+        || item.placement?.anchor_id === anchorId))
+    .map((item) => ({ entity_ref: { entity_kind: 'item',
+      entity_id: item.item_id },
+    display_label: item.state?.display_name ?? item.template_id,
+    recognition: 'known', visible_status: item.condition_state }));
+}
+
+function visibleNpcEquipment(state, npcId) {
+  return (state?.items ?? []).filter((item) =>
+    item.placement?.holder_npc_id === npcId
+      && item.placement?.container_id == null).map((item) => ({
+    item_ref: item.item_id,
+    display_label: item.state?.display_name ?? item.template_id,
+    physical_position: item.placement?.physical_position,
+    ...(item.placement?.equipment_slot_category_id == null ? {} : {
+      equipment_slot_category_id: item.placement.equipment_slot_category_id
+    }),
+    ...(item.state?.visual_profile_snapshot == null ? {} : {
+      visual_profile_snapshot: structuredClone(
+        item.state.visual_profile_snapshot)
+    })
+  }));
 }
 
 export function requirePhase2CurrentVisibleContext(value) {

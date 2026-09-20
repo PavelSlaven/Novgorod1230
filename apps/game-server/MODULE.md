@@ -89,6 +89,9 @@ and adds no second transaction owner.
   не продвигаются общим осмотром; ими владеет explicit item observation. Без current beat
   descriptive support сохраняется для scene-only perception. Outcome/intent
   передаются только своим ролям; used_references остаётся [].
+  Initial current-scene projection reads persisted player/local items plus
+  player-safe NPC appearance, activity and equipped-item refs; state version 0
+  does not replace existing rows with an empty `visible_objects` list.
   Private auditor возвращает только полный ordered reviewed_segments,
   ordered source_reviews `{ref,segment_choices}`, semantic `unsupported`,
   `literary_failures` и evidence. Adapter строго проверяет exact own-key set,

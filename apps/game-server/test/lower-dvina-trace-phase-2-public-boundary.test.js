@@ -100,6 +100,36 @@ test('revision 28 initial scene uses the authored presentation, not environment 
   assert.equal(JSON.stringify(current).match(/cold|wet|exposed/), null);
 });
 
+test('initial scene projects persisted items and NPC appearance/equipment', () => {
+  const screen = { version: 1, schema: 'first_game_screen',
+    screen_status: 'ready', party_id: 'party-rich', main_prose: 'Старт.',
+    visible_context: { place: 'стан', calendar: 'утро',
+      environment: { facts: ['wet'] } } };
+  const appearance = { build: 'average', skin_tone: 'light',
+    face_shape: 'oval', hair: { color: 'dark_brown', length: 'short',
+      style: 'straight', facial_hair: 'none' }, eyes: { color: 'gray' } };
+  const current = phase2InitialCurrentVisibleContext({ screen,
+    openingScreenDigest: canonicalDigest(screen), initialState: {
+      actor_id: 'player', position: { g5_anchor_id: 'anchor' },
+      npcs: [{ instance_id: 'npc', anchor_id: 'anchor', profile_level: 'background',
+        identity_state: { public_role_label: 'рыбак', sex_category: 'male',
+          age_category: 'adult', appearance }, machine_state: {
+          current_activity: { summary: 'чинит сеть' } } }],
+      items: [{ item_id: 'rope', template_id: 'rope-template',
+        condition_state: 'serviceable', state: { display_name: 'верёвка' },
+        placement: { holder_character_id: 'player', container_id: null } },
+      { item_id: 'shirt', template_id: 'shirt-template',
+        condition_state: 'serviceable', state: { display_name: 'рубаха' },
+        placement: { holder_npc_id: 'npc', container_id: null,
+          physical_position: 'equipped', equipment_slot_category_id: 'base_garment' } }]
+    } });
+  assert.equal(current.visible_objects[0].entity_ref.entity_id, 'rope');
+  assert.deepEqual(current.visible_npc[0].observable_cues.identity.appearance,
+    appearance);
+  assert.equal(current.visible_npc[0].observable_cues.equipment[0].item_ref,
+    'shirt');
+});
+
 test('public Phase 2 check omits private RNG audit', () => {
   const payload = {
     party_id: 'party-1',

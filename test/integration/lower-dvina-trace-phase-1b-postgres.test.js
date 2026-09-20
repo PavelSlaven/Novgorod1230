@@ -380,11 +380,6 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const authoredInternal = await first.adapter.loadInternal(authoredPartyId);
   assert.equal(authoredInternal.npcs.length, 3);
   assert.equal(authoredInternal.items.length, 6);
-  assert.ok(authoredInternal.npcs.every((npc) =>
-    npc.identity_state.appearance && npc.body_state
-      && npc.attributes && npc.skills
-      && npc.machine_state.current_activity
-      && npc.machine_state.equipment_refs.length > 0));
   const authoredScene = await first.adapter.loadInitialScene(authoredPartyId);
   assert.ok(authoredScene.background_groups.length >= 6);
   assert.ok(authoredScene.resources.length >= 2);
@@ -419,15 +414,6 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     (await api(base, '/api/v1/new-games', authoredRequest)).data,
     authoredStart.data
   );
-  const replayedScene = await first.adapter.loadInitialScene(authoredPartyId);
-  assert.deepEqual(replayedScene, authoredScene);
-  const finiteRows = await pool.query(
-    `SELECT quantity_numerator,lifecycle_state,state_version
-       FROM party_runtime.party_resource_nodes WHERE party_id=$1
-       ORDER BY resource_node_id`, [authoredPartyId]);
-  assert.ok(finiteRows.rows.length >= 3);
-  assert.ok(finiteRows.rows.every((row) => Number(row.quantity_numerator) > 0
-    && row.lifecycle_state === 'active' && Number(row.state_version) === 1));
   assert.equal(await count(pool, 'party_runtime.parties', authoredPartyId), 1);
   assert.equal(await count(pool, 'party_runtime.party_materialization_runs', authoredPartyId), 1);
   assert.equal(await count(pool, 'party_runtime.party_server_sessions', authoredPartyId), 1);

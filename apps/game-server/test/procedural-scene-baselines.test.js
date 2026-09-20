@@ -23,6 +23,4 @@ test('approved catalog supplies three families through one materializer', async 
     assert.ok(result.components.every(({ component_ref }) => component_ref));
     assert.ok(result.components.some(({ kind }) => kind === 'finite_source'));
   }
-  assert.equal(resolveProceduralSceneBaselineProfile(catalog,
-    'trace_ld_v1_tpl_old_drying_shed').family, 'craft_human_place');
 });

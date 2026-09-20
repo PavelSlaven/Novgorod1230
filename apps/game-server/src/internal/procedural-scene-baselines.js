@@ -19,17 +19,12 @@ export async function loadProceduralSceneBaselineCatalog({
       || !Array.isArray(value.profiles) || value.profiles.length < 3
       || binding?.length !== 1 || binding[0].path !== PATH
       || binding[0].status !== 'approved') fail();
-  const refs = new Set(), templates = new Set();
+  const refs = new Set();
   for (const profile of value.profiles) {
     if (!Array.isArray(profile.location_profile_refs)
         || profile.location_profile_refs.length === 0
-        || profile.location_profile_refs.some((ref) => !text(ref) || refs.has(ref))
-        || !Array.isArray(profile.scene_template_refs)
-        || profile.scene_template_refs.length === 0
-        || profile.scene_template_refs.some((ref) => !text(ref)
-          || templates.has(ref))) fail();
+        || profile.location_profile_refs.some((ref) => !text(ref) || refs.has(ref))) fail();
     profile.location_profile_refs.forEach((ref) => refs.add(ref));
-    profile.scene_template_refs.forEach((ref) => templates.add(ref));
     materializeProceduralSceneBaseline({ party_id: 'catalog-validation',
       scope_ref: { entity_kind: 'g6', entity_id: profile.profile_id }, profile,
       seed_context: { party_id: 'catalog-validation', profile_id: profile.profile_id,
@@ -41,9 +36,8 @@ export async function loadProceduralSceneBaselineCatalog({
 }
 
 export function resolveProceduralSceneBaselineProfile(catalog, locationRef) {
-  const matches = catalog?.profiles?.filter(({ location_profile_refs: refs,
-    scene_template_refs: templates }) => refs.includes(locationRef)
-      || templates.includes(locationRef)) ?? [];
+  const matches = catalog?.profiles?.filter(({ location_profile_refs: refs }) =>
+    refs.includes(locationRef)) ?? [];
   if (matches.length !== 1) fail();
   return structuredClone(matches[0]);
 }

@@ -118,6 +118,10 @@ import { createSpatialSemanticFirstEntryProvisioner } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 import { hash as hashForTest } from
   '../../apps/game-server/src/runtime/first-playable/shared.js';
+import { createRuntimeCatalogLoader,
+  loadApprovedProceduralSceneRecordBundle } from '@rus/runtime-catalog';
+import { generateProceduralSceneProfileCatalog } from
+  '../../scripts/generate-procedural-scene-profiles.mjs';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
 
@@ -193,6 +197,24 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     pool,
     databaseUrl
   });
+  const proceduralBindings = JSON.parse(await readFile(
+    'data/world-catalogs/novgorod/procedural-scene-v1/authoring-bindings.json',
+    'utf8'));
+  const catalogLoader = createRuntimeCatalogLoader({ worldBaseReader: {
+    read: (sql, parameters) => pool.query(sql, parameters)
+  }, supportedRuntimeContractDigests: [runtimeCatalogPin.runtime_contract_digest] });
+  const verifiedItemCatalog = await catalogLoader.loadApprovedItemCatalog({
+    pin: runtimeCatalogPin });
+  const proceduralRecords = await loadApprovedProceduralSceneRecordBundle({
+    worldBaseReader: { read: (sql, parameters) => pool.query(sql, parameters) },
+    worldPin: { world_revision_id: runtimeCatalogPin.compatible_world_revision_id,
+      world_catalog_digest: runtimeCatalogPin.compatible_world_catalog_digest },
+    runtimeCatalogPin, bindings: proceduralBindings, verifiedItemCatalog });
+  assert.throws(() => generateProceduralSceneProfileCatalog({
+    bindings: proceduralBindings, approvedRecordBundle: proceduralRecords }),
+  (error) => error.code === 'PROCEDURAL_SCENE_PROFILE_DATA_GAP'
+    && error.details.kind === 'landscape_template'
+    && error.details.id === 'lt_low_alluvial_riverbank');
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }

@@ -10,8 +10,9 @@ Only the last class is executable runtime data.
 |---|---|---|---|---|
 | G4/G5/G6 topology | Spatial-v3 v6 closure | existing Spatial-v3 reader | existing spatial materializer/committer | executable |
 | landscape/water/land use/place function | `world_base` template and regional-binding tables | procedural profile compiler | compiled profile is not activated yet | source exists; runtime activation unproved |
-| work items/containers/finite stock | approved item/profile/rule/catalog tables | runtime-catalog reader + compiler | Stage 16/items-property/resource nodes | candidate data exists; required functional entries incomplete |
-| ordinary NPC basis | actor/demographic/appearance/clothing/equipment/behavior/relationship/activity/schedule profiles | actor catalog + compiler | Stage 15/16, NPC runtime | appearance data active; full profile-set activation unproved |
+| work items/containers/finite stock | item-container-120 candidate tables | runtime-catalog reader + compiler | Stage 16/items-property/resource nodes | **NOT ACTIVE**: approval pending, activation `not_requested`; runtime use forbidden |
+| ordinary NPC basis | approved enriched occupations/social roles/legal/social-position maps; approved demographic/appearance | actor/role/occupation readers + compiler | Stage 15/16, NPC runtime | schedules, knowledge, behavior/goals and appearance are usable; concrete clothing/tools still blocked by inactive item catalog |
+| light/weather/activity/body-time | approved Temporal v4 datasets | existing temporal/environment/body owners | existing temporal persistence | executable; derive current state, never author strings in scene profile |
 | presentation | committed entity/group/item/NPC refs | existing perception/opening projection | existing presentation owner | projector currently omits first-entry ordinary objects at state version 0 |
 
 ## Compiler boundary
@@ -33,8 +34,8 @@ physical nouns, prose, probabilities or default quantities.
 | Family | Existing nearest data | Blocking gap |
 |---|---|---|
 | river bank | low alluvial riverbank, small/medium river and regional bindings exist in source/import workflows | exact v6 activated readback and structured resource/ambient policy not yet compiled |
-| fishing worksite | fishing land-use/place/item profile and scene-fisher character profile exist | active item entries are optional; no source-owned required functional tool/storage/stock set for completeness |
-| other human place | old drying-shed closure plus craft/household item profiles | no exact approved place-function binding and required material culture/NPC profile set |
+| fishing worksite | fishing land-use/place candidate plus approved enriched fisher occupation/role data | item/container profile is not active; exact tools/clothing/storage/stock cannot be instantiated |
+| other human place | old drying-shed closure plus craft/household candidate profiles | exact place-function binding absent; item profiles not active; tools/storage/stock blocked |
 
 ## DATA GAP: executable activation
 
@@ -62,3 +63,16 @@ physical nouns, prose, probabilities or default quantities.
 
 Until these gaps close, no compiled artifact is eligible for production loading
 and no gameplay/model acceptance run may claim procedural baseline coverage.
+
+### Explicit status decisions
+
+- item-container-120, building/layout/content profiles and their G4/item rules:
+  `NOT ACTIVE`; this PR does not consume them as runtime truth;
+- enriched occupations/social roles plus approved legal/social-position seeds:
+  usable for NPC schedule, property, knowledge, behavior, relationships and goals;
+- actor demographic/appearance catalog and `materializeActorBaseAppearance`:
+  usable for code-owned appearance;
+- Temporal v4 daylight/weather/activity/body-time/remote-catchup/propagation:
+  usable through existing owners;
+- draft name pools: not usable; ordinary unrecognized label remains player-safe
+  until a name has approved/authored basis.

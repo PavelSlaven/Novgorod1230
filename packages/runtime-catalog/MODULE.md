@@ -26,6 +26,9 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - `loadActivePin({ catalogScope })`;
 - `loadApprovedItemCatalog({ pin })`;
 - `loadApprovedActorProfileCatalog({ worldPin, regionId, effectiveDate })`;
+- `loadApprovedProceduralSceneRecordBundle(...)` verifies the exact world pin,
+  latest matching activation event and approved regional applicability before
+  exporting compiler inputs; candidate/manifests alone are rejected;
 - `assertCompatibleWorldPin({ domainPin, worldPin })`;
 - `selectApplicableItemCatalog({ verifiedCatalog, regionId, effectiveDate })`.
 - `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.

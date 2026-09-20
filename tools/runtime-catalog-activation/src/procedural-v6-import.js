@@ -4,6 +4,11 @@ import { buildImportLedger, digestEnvelope, verifyDecisionAttestation } from
   './artifact-contracts.js';
 import { WORLD_RUNTIME_CATALOG_MIGRATION } from './forward-migrations.js';
 import { canonicalStringify } from '@rus/runtime-catalog/canonical-records';
+import { computeCanonicalRecordDigest, projectCanonicalRecord } from
+  '@rus/runtime-catalog/canonical-records';
+import { computeTablePayloadDigest } from '@rus/runtime-catalog/ledger-digests';
+import registry from '../../../data/runtime-catalog/item-container-record-registry.v1.json'
+  with { type: 'json' };
 
 export async function importProceduralV6Overlay({ pool, baseline, overlay }) {
   const registered = await registerCatalogBaseline({ pool, ...baseline });
@@ -347,6 +352,77 @@ export async function importProceduralFinalCandidatePack({ pool, baseline,
       assert_existing_record_count: 3248, compiled_record_count: 21,
       activation_event_count: 0, target_revision_id: pack.target_revision_id,
       target_catalog_digest: pack.target_catalog_digest }) });
+}
+
+export function buildProceduralFinalV2ImportLedger({ baseline, v1Pack, v2Pack,
+  attestation }) {
+  assertProceduralFinalCandidatePackIntegrity(v1Pack);
+  const { attestation_digest: claimed, ...attested } = attestation ?? {};
+  if (claimed !== digestEnvelope(attested)
+      || claimed !== '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772'
+      || attestation.candidate_digest !== v2Pack.candidate_digest
+      || v2Pack.inherited_closure.candidate_digest !== v1Pack.candidate_digest)
+    fail('PROCEDURAL_FINAL_V2_ATTESTATION_INVALID');
+  const entry = registry.entries.find(({ table_name: table }) => table ===
+    'procedural_scene_compiled_records');
+  const row = v2Pack.append_only_delta.record;
+  const canonical = projectCanonicalRecord({ registryEntry: entry, row });
+  const appended = { table_name: entry.table_name, operation_kind: 'insert',
+    record_key: canonicalStringify(canonical.record_key),
+    canonical_payload: canonical, record_digest:
+      computeCanonicalRecordDigest(canonical), ordinal: 21 };
+  const operations = v1Pack.record_operations_by_table.map((operation) => {
+    if (operation.table_name !== entry.table_name) return structuredClone(operation);
+    const records = operation.records.map((record, ordinal) => ({ ...structuredClone(record),
+      operation_kind: 'assert_existing', ordinal }));
+    records.push(appended);
+    return { ...structuredClone(operation), insert_count: 1,
+      assert_existing_count: 21, record_count: 22, records,
+      records_digest: computeTablePayloadDigest(records) };
+  });
+  const importId = `procedural_final_v2_import_${claimed.slice(0, 32)}`;
+  return buildImportLedger({ importId, rootFields: {
+    catalog_scope: 'item_container_materialization_v2',
+    parent_revision_id: baseline.request.parent_revision_id,
+    parent_catalog_digest: baseline.request.parent_catalog_digest,
+    parent_snapshot_manifest_digest: baseline.request.parent_snapshot_manifest_digest,
+    ...v1Pack.compatible_world_tuple,
+    target_revision_id: v2Pack.target_revision_id,
+    target_catalog_digest: v2Pack.target_catalog_digest,
+    record_registry_digest: v1Pack.record_registry_digest,
+    promotion_manifest_digest: digestEnvelope(v2Pack.append_only_delta),
+    approval_request_digest: v2Pack.candidate_digest,
+    approval_attestation_digest: claimed,
+    schema_migration_digest: WORLD_RUNTIME_CATALOG_MIGRATION.migration_digest
+  }, tables: operations.map(({ records: ignored, records_digest, ...table }) =>
+    ({ ...table, payload_digest: records_digest })),
+  records: operations.flatMap((operation) => operation.records.map((record) =>
+    ({ ...record, import_id: importId }))), dependencyAssertions: [],
+  importedBy: attestation.auditor });
+}
+
+export async function importProceduralFinalV2Pack({ pool, baseline, v1Pack,
+  v2Pack, attestation, runtimeContractDigest }) {
+  const ledger = buildProceduralFinalV2ImportLedger({ baseline, v1Pack, v2Pack,
+    attestation });
+  const imported = await importApprovedCatalog({ pool, ledger,
+    domainRevision: { parent_registration_id: baseline.registrationId,
+      runtime_contract_digest: runtimeContractDigest,
+      title: 'Disposable procedural final candidate v2 import',
+      readback_mode: 'authoring_only_no_runtime_projection' },
+    approvalAttestation: attestation, approvalContract: {
+      schema: 'rus.procedural_final_candidate_v2_approval_attestation.v1',
+      request_digest_field: 'candidate_digest', decision_field: 'verdict',
+      decision: 'APPROVE_FOR_DISPOSABLE_IMPORT_READBACK_ONLY' } });
+  const counts = (await pool.query(`SELECT
+    (SELECT count(*)::int FROM world_base.catalog_import_records WHERE import_id=$1) ledger_count,
+    (SELECT count(*)::int FROM world_base.procedural_scene_compiled_records) compiled_count,
+    (SELECT count(*)::int FROM world_base.runtime_catalog_activation_events WHERE catalog_revision_id=$2) activation_count`,
+  [ledger.root.import_id, v2Pack.target_revision_id])).rows[0];
+  if (Number(counts.ledger_count) !== 3270 || Number(counts.compiled_count) !== 22
+      || Number(counts.activation_count) !== 0) fail('PROCEDURAL_FINAL_V2_READBACK_MISMATCH');
+  return { imported, ledger, readback: { ledger_record_count: 3270,
+    compiled_record_count: 22, activation_event_count: 0 } };
 }
 
 function assertPackIntegrity(pack) {

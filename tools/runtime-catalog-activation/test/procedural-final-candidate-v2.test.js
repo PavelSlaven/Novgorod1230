@@ -23,6 +23,12 @@ test('v2 is append-only, attested and inactive', async () => {
   assert.equal(candidate.inherited_closure.v5_assert_existing_record_count, 3248);
   assert.equal(candidate.append_only_delta.record.payload.policy.policy_id,
     'fishing_present_actor_functional_allocation_v1');
+  const approval = JSON.parse(await readFile(new URL(
+    '../../../data/world-catalogs/novgorod/procedural-scene-v2/'
+      + 'final-candidate-pack-v2/approval-attestation.json', import.meta.url),
+  'utf8'));
+  assert.equal(approval.attestation_digest,
+    '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772');
 });
 
 test('activated v1 stays immutable and non-migrated', async () => {

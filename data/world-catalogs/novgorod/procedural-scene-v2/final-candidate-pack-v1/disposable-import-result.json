@@ -48,6 +48,16 @@
     "old_save_migration": false,
     "rematerialization": false
   },
+  "v2_disposable_import": {
+    "candidate_digest": "65d973f8f06ab78a38b5bda7b24cf8661da1b8b9a581742c224cfa8b1c39bdc6",
+    "approval_attestation_digest": "2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772",
+    "import_audit_digest": "6ad18c6f40185fa540bf7e3ec3bbb5d5b96e95c370b5e70c657a0db73c29f3b2",
+    "ledger_record_count": 3270,
+    "compiled_record_count": 22,
+    "activation_event_count": 0,
+    "rollback_probe": "pass",
+    "activation_performed": false
+  },
   "cleanup": {
     "database_stopped": true,
     "temporary_cluster_removed": true

@@ -17,7 +17,8 @@ import { runPartyRuntimeCatalogMigration, runWorldRuntimeCatalogMigration,
   WORLD_RUNTIME_CATALOG_MIGRATION } from
   '../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { buildProceduralFinalCandidateImportLedger,
-  importProceduralFinalCandidatePack } from
+  buildProceduralFinalV2ImportLedger, importProceduralFinalCandidatePack,
+  importProceduralFinalV2Pack } from
   '../tools/runtime-catalog-activation/src/procedural-v6-import.js';
 import { importApprovedCatalog, registerCatalogBaseline } from
   '../tools/runtime-catalog-activation/src/operator-executors.js';
@@ -170,6 +171,15 @@ try {
     pack,
     runtimeContractDigest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST
   });
+  const [v2Pack, v2Attestation] = await Promise.all([
+    readFile(resolve(root, 'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v2/candidate.json'), 'utf8').then(JSON.parse),
+    readFile(resolve(root, 'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v2/approval-attestation.json'), 'utf8').then(JSON.parse)
+  ]);
+  const v2Rollback = await verifyV2Rollback({ pool, baseline, v1Pack: pack,
+    v2Pack, attestation: v2Attestation });
+  const v2Imported = await importProceduralFinalV2Pack({ pool, baseline,
+    v1Pack: pack, v2Pack, attestation: v2Attestation,
+    runtimeContractDigest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST });
   const activationBundle = await buildProceduralFinalDevelopmentActivation({
     worldPool: pool, partyPool, pack, ledger: imported.ledger,
     gitCommitSha: '8bbe8fef01c433e4cca40e3a121cfdefd9efc0b0',
@@ -256,6 +266,14 @@ try {
       production_deploy: false,
       old_save_migration: false,
       rematerialization: false
+    },
+    v2_disposable_import: {
+      candidate_digest: v2Pack.candidate_digest,
+      approval_attestation_digest: v2Attestation.attestation_digest,
+      import_audit_digest: v2Imported.ledger.root.import_audit_digest,
+      ...v2Imported.readback,
+      rollback_probe: v2Rollback,
+      activation_performed: false
     },
     cleanup,
     production_mutated: false,
@@ -382,6 +400,47 @@ async function verifyFinalImportRollback({ pool, baseline, pack }) {
   if (Number(row.revision_count) !== 0 || Number(row.import_count) !== 0
       || Number(row.compiled_count) !== 0)
     throw new Error('DISPOSABLE_ROLLBACK_PROBE_RESIDUAL_STATE');
+  return 'pass';
+}
+async function verifyV2Rollback({ pool, baseline, v1Pack, v2Pack,
+  attestation }) {
+  const correct = buildProceduralFinalV2ImportLedger({ baseline, v1Pack,
+    v2Pack, attestation });
+  const records = structuredClone(correct.records);
+  records.find(({ operation_kind: kind }) => kind === 'insert').record_digest =
+    '0'.repeat(64);
+  const root = correct.root;
+  const reserved = new Set(['schema', 'import_id', 'tables_digest',
+    'records_digest', 'dependency_assertions_semantic_digest',
+    'dependency_assertions_audit_digest', 'imported_by', 'imported_at',
+    'import_audit_digest']);
+  const rootFields = Object.fromEntries(Object.entries(root).filter(([key]) =>
+    !reserved.has(key)));
+  const tampered = buildImportLedger({ importId: root.import_id, rootFields,
+    tables: correct.tables, records, dependencyAssertions: [],
+    importedBy: root.imported_by });
+  await importApprovedCatalog({ pool, ledger: tampered,
+    domainRevision: { parent_registration_id: baseline.registrationId,
+      runtime_contract_digest: RUNTIME_CATALOG_FIRST_PLAYABLE_CONTRACT_DIGEST,
+      title: 'Disposable v2 rollback probe',
+      readback_mode: 'authoring_only_no_runtime_projection' },
+    approvalAttestation: attestation, approvalContract: {
+      schema: 'rus.procedural_final_candidate_v2_approval_attestation.v1',
+      request_digest_field: 'candidate_digest', decision_field: 'verdict',
+      decision: 'APPROVE_FOR_DISPOSABLE_IMPORT_READBACK_ONLY' }
+  }).then(() => { throw new Error('DISPOSABLE_V2_ROLLBACK_DID_NOT_FAIL'); },
+  (error) => {
+    if (error.code !== 'CATALOG_IMPORT_ASSERT_EXISTING_MISMATCH') throw error;
+  });
+  const row = (await pool.query(`SELECT
+    (SELECT count(*)::int FROM world_base.world_revisions WHERE id=$1) revision_count,
+    (SELECT count(*)::int FROM world_base.catalog_imports WHERE id=$2) import_count,
+    (SELECT count(*)::int FROM world_base.procedural_scene_compiled_records
+      WHERE record_id='policy:functional-actor-allocation-v1') policy_count`,
+  [v2Pack.target_revision_id, correct.root.import_id])).rows[0];
+  if (Number(row.revision_count) || Number(row.import_count)
+      || Number(row.policy_count))
+    throw new Error('DISPOSABLE_V2_ROLLBACK_RESIDUAL_STATE');
   return 'pass';
 }
 function normalizeRow(row) {

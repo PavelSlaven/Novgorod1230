@@ -6,6 +6,8 @@ import { validateProceduralFinalCandidatePack } from
   './generate-procedural-final-candidate-pack.mjs';
 import { generateProceduralFunctionalAllocations } from
   './generate-procedural-functional-allocations.mjs';
+import { canonicalStringify } from
+  '../packages/runtime-catalog/src/canonical-records.js';
 
 const ROOT = 'data/world-catalogs/novgorod/procedural-scene-v2';
 const OUTPUT = `${ROOT}/final-candidate-pack-v2/candidate.json`;
@@ -13,15 +15,18 @@ const V1 = `${ROOT}/final-candidate-pack-v1/candidate.json`;
 const ALLOCATION = `${ROOT}/functional-allocation-v1/candidate.json`;
 const REQUEST = `${ROOT}/functional-allocation-v1/approval-request.json`;
 const ATTESTATION = `${ROOT}/functional-allocation-v1/approval-attestation.json`;
+const V2_ATTESTATION = `${ROOT}/final-candidate-pack-v2/approval-attestation.json`;
 
 export async function generateProceduralFinalCandidateV2(rootDir,
   overrides = {}) {
   const root = resolve(rootDir);
   const load = async (path) => overrides[path]
     ?? JSON.parse(await readFile(resolve(root, path), 'utf8'));
-  const [v1, allocation, request, attestation, generatedAllocation] =
+  const [v1, allocation, request, attestation, v2Attestation,
+    generatedAllocation] =
     await Promise.all([load(V1), load(ALLOCATION), load(REQUEST),
-      load(ATTESTATION), generateProceduralFunctionalAllocations(root)]);
+      load(ATTESTATION), load(V2_ATTESTATION),
+      generateProceduralFunctionalAllocations(root)]);
   validateProceduralFinalCandidatePack(v1);
   if (JSON.stringify(allocation) !==
       JSON.stringify(generatedAllocation.candidate)
@@ -100,10 +105,26 @@ export async function generateProceduralFinalCandidateV2(rootDir,
     existing_party_migration_authorized: false,
     old_save_rematerialization_authorized: false
   };
-  return { ...payload, candidate_digest: digest(payload) };
+  const candidate = { ...payload, candidate_digest: digest(payload) };
+  const { attestation_digest: v2Digest, ...v2Payload } = v2Attestation;
+  if (digestCanonical(v2Payload) !== v2Digest
+      || v2Digest !==
+        '2917b993a9e9c63e1989725cee35e63bd0ed32dfece583a782dfb27f1c3f4772'
+      || v2Attestation.candidate_digest !== candidate.candidate_digest
+      || v2Attestation.target_binding.target_catalog_digest !==
+        candidate.target_catalog_digest
+      || v2Attestation.append_only_delta_binding.payload_digest !==
+        appendRecord.payload_digest
+      || v2Attestation.append_only_delta_binding.source_pack_digest !==
+        appendRecord.source_pack_digest)
+    fail('FINAL_V2_APPROVAL_ATTESTATION_INVALID');
+  return candidate;
 }
 function digest(value) {
   return createHash('sha256').update(JSON.stringify(value)).digest('hex');
+}
+function digestCanonical(value) {
+  return createHash('sha256').update(canonicalStringify(value)).digest('hex');
 }
 function fail(code) { throw Object.assign(new Error(code), { code }); }
 async function main(argv) {

@@ -45,6 +45,13 @@ test('N1 inspects an ordinary unknown fisherman and replays without model', asyn
       ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.',
       ordinary_activity: 'Работник рыбацкой стоянки.'
     });
+  assert.deepEqual(first.consequence_fragment, { visible_seed: {
+    turn_step_background_npc_observation_1: {
+      kind: 'background_npc_observation', npc_ref: 'npc:1',
+      display_label: 'рыбак',
+      ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.'
+    }
+  } });
   const snapshot = structuredClone(input.committed_state);
   const write = applyBackgroundNpcSemanticPlan({
     plan: first.background_npc_semantic_atomic_write_plan,
@@ -63,6 +70,7 @@ test('N1 inspects an ordinary unknown fisherman and replays without model', asyn
   const replay = await resolve(committed);
   assert.equal(calls, 1);
   assert.equal(replay.background_npc_semantic_atomic_write_plan, undefined);
+  assert.deepEqual(replay.consequence_fragment, first.consequence_fragment);
 });
 
 test('N1 cannot invent activity for an NPC without a materialized schedule', async () => {

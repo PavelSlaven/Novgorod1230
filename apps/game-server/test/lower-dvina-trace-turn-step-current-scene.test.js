@@ -38,6 +38,21 @@ test('direct sustained activity exposes the performed attempt without elapsed-ti
   assert.equal(JSON.stringify(changes).includes('один час'), false);
 });
 
+test('N1 visible seed makes the committed observation a required current beat', () => {
+  const key = 'turn_step_background_npc_observation_1';
+  const seed = { kind: 'background_npc_observation', npc_ref: 'npc:ordinary',
+    display_label: 'незнакомого рыбака',
+    ordinary_descriptor: 'Коренастый мужчина в мокрой рубахе.' };
+  assert.deepEqual(projectDirectSeedChanges({
+    input: { consequence: { visible_seed: { [key]: seed } } },
+    directSeedKeys: [key]
+  }), ['Вы рассмотрели незнакомого рыбака: Коренастый мужчина в мокрой рубахе.']);
+  assert.throws(() => projectDirectSeedChanges({
+    input: { consequence: { visible_seed: { [key]: {
+      ...seed, ordinary_descriptor: '' } } } }, directSeedKeys: [key]
+  }), { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID' });
+});
+
 test('current scene keeps prior player-safe co-located NPC observations only', () => {
   const state = committedState();
   state.current_visible_context.visible_npc[0].visible_status =

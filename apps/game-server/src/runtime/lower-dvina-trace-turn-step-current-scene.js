@@ -182,6 +182,13 @@ export function materializedOrdinaryPresenceChange(value) {
   return `Обнаружено: «${value.display_name}».`;
 }
 function directSeedChange(value) {
+  if (value?.kind === 'background_npc_observation') {
+    if (!plain(value) || Object.keys(value).length !== 4
+        || !text(value.npc_ref) || !text(value.display_label)
+        || !text(value.ordinary_descriptor)) failCurrentScene();
+    return `Вы рассмотрели ${value.display_label}: ${sentence(
+      value.ordinary_descriptor)}`;
+  }
   if (value?.kind === 'transient_item_use' && Object.keys(value).length === 2 && text(value.description))
     return [`Вы выполнили попытку: «${value.description}»${/[.!?…]$/u.test(value.description) ? '' : '.'}`];
   if (value?.kind === 'ordinary_presence_seed') return materializedOrdinaryPresenceChange(value);

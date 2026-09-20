@@ -553,7 +553,10 @@ Trace revision 32 / M20 / Phase 1A v23 / Phase 1B v27 and the approved
 background fisher. This is a profile-specific N1 activation only: look/inspect
 may persist and replay an audited semantic descriptor plus the exact activity
 already created by the code-owned materialized schedule; schedule state is
-never exposed to or authored by the N1 model. Broader N1 capability remains
+never exposed to or authored by the N1 model. The N1 owner publishes the
+accepted player-safe observation as a required current-beat visible change;
+the unchanged scene and other NPC context remain optional narration support.
+Broader N1 capability remains
 unactivated.
 Release v15 is the direct non-selectable child of v14. It pins
 `wk-pack:novgorod-1230@revision:production-v1` and

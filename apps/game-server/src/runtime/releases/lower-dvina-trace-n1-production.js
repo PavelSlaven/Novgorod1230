@@ -113,6 +113,12 @@ export function createLowerDvinaTraceN1ProductionResolverFactory({
 function result(value, remainder, plan, admit) {
   const context = snapshot(value.request.player_safe_state
     .current_visible_context);
+  const visible = visibleNpc(value.request.player_safe_state,
+    remainder.npc_ref);
+  const stepIndex = value.request.step_index;
+  if (visible == null || !Number.isSafeInteger(stepIndex) || stepIndex < 1) {
+    fail('TRACE_N1_SCOPE_INVALID');
+  }
   context.visible_npc = context.visible_npc.map((entry) =>
     entry.entity_ref?.entity_kind === 'npc'
       && entry.entity_ref.entity_id === remainder.npc_ref ? {
@@ -133,6 +139,13 @@ function result(value, remainder, plan, admit) {
     write_fragments: [],
     duration_minutes: 0,
     player_response_boundary: true,
+    consequence_fragment: { visible_seed: {
+      [`turn_step_background_npc_observation_${stepIndex}`]: {
+        kind: 'background_npc_observation', npc_ref: remainder.npc_ref,
+        display_label: visible.display_label,
+        ordinary_descriptor: remainder.ordinary_descriptor
+      }
+    } },
     ...(plan == null ? {} : {
       background_npc_semantic_atomic_write_plan: plan
     })

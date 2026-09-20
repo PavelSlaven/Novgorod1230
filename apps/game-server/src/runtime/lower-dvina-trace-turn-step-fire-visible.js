@@ -173,7 +173,8 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   let base;
   if (ordinaryDetails.length > 0 || ordinaryPresence != null
       || seedEntries.some(([key, value]) => key.startsWith('turn_step_')
-        && ['semantic_activity', 'existing_item_inspection'].includes(value?.kind))
+        && ['semantic_activity', 'existing_item_inspection',
+          'background_npc_observation'].includes(value?.kind))
       || seedEntries.some(([key]) => key === 'observed_evidence_inspection_seed')) {
     const body = currentBody(input);
     base = hasVisibleDomainProjection(consequence)

@@ -376,7 +376,10 @@ After new-game commit and first-entry provisioning, authored opening builds one
 player-safe package from persisted actor dossier, relations, NPC activities,
 items, environment and spatial topology. Existing Stage 22 writes 2–4 natural
 paragraphs and Stage 23 audits factual/agency/unknown boundaries before the
-screen is saved. Static profile prose is hint-only; the eight-question reader
+screen is saved. Whole opening runs in the existing six-minute LLM diagnostics
+deadline: writer, audit, optional one semantic repair and final audit only.
+Session identity persists the complete approved opening narration flow and the
+original Stage 23 audit. Static profile prose is hint-only; the eight-question reader
 control and exact entity/topology refs fail closed before any model call.
 Current replay derives scenario/schema/screen kind from the
 persisted party payload instead of the Lower Dvina default.

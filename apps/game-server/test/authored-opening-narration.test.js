@@ -7,6 +7,8 @@ import { buildAuthoredOpeningVisibleContext,
   '../src/runtime/lower-dvina-trace-opening.js';
 import { createAuthoredOpeningNarrationService } from
   '../src/runtime/authored-opening-narration.js';
+import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
+import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 
 const checks = ['schema_and_structure', 'visible_context_compliance',
   'new_fact_check', 'npc_check', 'item_check', 'container_check',
@@ -81,8 +83,70 @@ test('authored opening uses Stage 22 writer and Stage 23 auditor', async () => {
   const result = await service.run({ requestId: 'opening:1',
     visibleContextPackage: pkg, visibleContextApproval: approval });
   assert.match(result.prose, /Любава/u);
+  assert.equal(result.flow.status, 'approved');
+  assert.equal(result.stage23_result.pass, true);
+  assert.equal(result.original_stage23_audit.pass, true);
   assert.deepEqual(roles, ['gameplay_narrator', 'gameplay_narrator_auditor']);
 });
+
+test('opening bounds one semantic repair and final audit inside aggregate deadline',
+  async () => {
+    const pkg = openingPackage(), approval = openingApproval(pkg);
+    const calls = [];
+    let now = 0, audits = 0;
+    const turnBudget = createLlmTurnBudget({ now: () => now });
+    const diagnostics = createLlmDiagnostics({ turnBudget, now: () => now });
+    const service = createAuthoredOpeningNarrationService({
+      llmDiagnostics: diagnostics, roleRunner: { async run(call) {
+        calls.push(call.role_id); now += 80_000;
+        if (call.role_id === 'gameplay_narrator') return {
+          output: { prose: 'Первый неполный вариант.' } };
+        if (call.role_id === 'gameplay_narrator_semantic_repair') return {
+          output: { prose: 'Любава готовит стан с братом.\n\nПеред ней берег, навес и работа до вечера.' } };
+        audits += 1;
+        return { output: audits === 1 ? { pass: false,
+          failed_checks: ['must_include_check'], concerns: [{
+            code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING',
+            severity: 'repairable', message: 'Missing opening sources.'
+          }], evidence: ['Identity and surroundings are omitted.'] }
+        : { pass: true, failed_checks: [], concerns: [],
+          evidence: ['All required opening sources are grounded.'] } };
+      } } });
+    const result = await service.run({ partyId: 'party:1',
+      requestId: 'opening:1', visibleContextPackage: pkg,
+      visibleContextApproval: approval });
+    assert.deepEqual(calls, ['gameplay_narrator',
+      'gameplay_narrator_auditor', 'gameplay_narrator_semantic_repair',
+      'gameplay_narrator_auditor']);
+    assert.equal(result.original_stage23_audit.pass, false);
+    assert.equal(result.flow.status, 'approved');
+
+    now = 0; audits = 0; calls.length = 0;
+    const slowBudget = createLlmTurnBudget({ now: () => now });
+    const slowDiagnostics = createLlmDiagnostics({ turnBudget: slowBudget,
+      now: () => now });
+    const slow = createAuthoredOpeningNarrationService({
+      llmDiagnostics: slowDiagnostics, roleRunner: { async run(call) {
+        now += 100_000;
+        if (call.role_id === 'gameplay_narrator') return {
+          output: { prose: 'Первый вариант.' } };
+        if (call.role_id === 'gameplay_narrator_semantic_repair') return {
+          output: { prose: 'Исправленный вариант.' } };
+        audits += 1;
+        return { output: { pass: false,
+          failed_checks: ['must_include_check'], concerns: [{
+            code: 'NARRATOR_PROSE_MUST_INCLUDE_MISSING',
+            severity: 'repairable', message: 'Missing sources.'
+          }], evidence: ['Missing.'] } };
+      } } });
+    await assert.rejects(slow.run({ partyId: 'party:slow',
+      requestId: 'opening:slow', visibleContextPackage: {
+        ...pkg, request_id: 'opening:slow' },
+      visibleContextApproval: openingApproval({
+        ...pkg, request_id: 'opening:slow' }) }),
+    { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+    assert.ok(now < 1_200_000);
+  });
 
 function openingPackage() {
   const visible = { party_id: 'party:1', player: { name: 'Любава',
@@ -123,4 +187,15 @@ function openingPackage() {
         opening_prose: 'hint', visible_field_allowlist: ['party_id',
           'player.name', 'player.social_status', 'position', 'timestamp',
           'body', 'environment'] } } });
+}
+
+function openingApproval(pkg) {
+  const digest = computeVisibleContextPackageDigest(pkg);
+  return buildVisibleContextAuditApproval({ request_id: pkg.request_id,
+    pass: true, visible_context_package_digest: digest,
+    visible_context_audit: { request_id: pkg.request_id, pass: true,
+      visible_context_package_digest: digest },
+    commit_permission: { can_send_to_narrator: true,
+      can_write_visible_context_snapshot: true,
+      can_generate_player_facing_prose: true } });
 }

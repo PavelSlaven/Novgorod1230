@@ -100,7 +100,7 @@ export function createTraceTurnRuntime({
       });
   const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
   const authoredOpeningNarration = createAuthoredOpeningNarrationService({
-    roleRunner
+    roleRunner, llmDiagnostics
   });
   const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
     roleRunner, stageBApprovalReceipt: ordinaryStageBApproval,

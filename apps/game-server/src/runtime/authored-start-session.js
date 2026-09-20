@@ -2,6 +2,7 @@ import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
 import { assertLowerDvinaTracePublicScreen } from './lower-dvina-trace-opening.js';
 import { hash, json } from './first-playable/shared.js';
+import { validateNarrationFlowResult } from '@rus/narration';
 
 export function validateAuthoredStartSessionRead({ partyId, session,
   resolveRuntimeBinding } = {}) {
@@ -43,6 +44,8 @@ export function validateAuthoredStartSessionRead({ partyId, session,
     return session;
   }
   const initialSnapshotSchema = resolvedBinding.snapshot_schema;
+  const openingFlow = identity?.opening_narration_flow;
+  const openingAudit = identity?.opening_stage23_original_audit;
   if (!session
     || identity?.schema !== 'rus.live_world_runtime.authored_start_session_identity.v1'
     || identity.party_id !== partyId
@@ -70,6 +73,12 @@ export function validateAuthoredStartSessionRead({ partyId, session,
     || screen?.party_id !== partyId
     || screen?.scenario_id !== scenarioId
     || identity.opening_screen_digest !== canonicalDigest(screen)
+    || !validateNarrationFlowResult(openingFlow).ok
+    || openingFlow.surface !== 'first_game'
+    || openingFlow.status !== 'approved'
+    || openingFlow.approved_output?.prose !== screen.main_prose
+    || openingAudit?.schema !== 'narrator_prose_audit'
+    || typeof openingAudit.pass !== 'boolean'
     || delivery?.party_id !== partyId
     || delivery.message_id !== `opening:${partyId}`
     || delivery.delivery_attempt_id !== `delivery:${partyId}`

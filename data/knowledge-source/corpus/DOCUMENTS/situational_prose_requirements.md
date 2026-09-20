@@ -16,7 +16,7 @@
 
 ## 2. Неподвижная граница authority
 
-Narrator преобразует только переданный authoritative/code-confirmed player-safe контекст в прозу. Для обычного хода это persisted visible package после factual commit; для opening — утверждённый Stage 21 visible context, прошедший writer Stage 22 и audit Stage 23 до общего Stage 25 commit. Норма не требует новой отдельной DB-записи до opening writer. Narrator не:
+Narrator преобразует только переданный authoritative/code-confirmed player-safe контекст в прозу. Для обычного хода это persisted visible package после factual commit. Для opening factual materialization сначала атомарно сохраняет party/entities/topology; затем из exact committed readback строится утверждённый Stage 21-compatible player-safe package, который проходит writer Stage 22 и audit Stage 23 до создания и доставки первого screen/session. Timeout/retry использует тот же client request identity и уже committed party, не rematerialize-ит entities и не показывает экран до approved narration либо отдельной разрешённой typed recovery. Narrator не:
 
 - создаёт NPC, предмет, маршрут, звук, погоду, телесное ощущение, действие или исход;
 - выводит hidden motive, объективную истинность реплики, происхождение улики или будущее;

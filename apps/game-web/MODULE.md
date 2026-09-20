@@ -13,6 +13,8 @@ Browser-клиент, который получает только versioned pub
 - HTTP API client `/api/v1`;
 - валидацией публичных API envelopes и screen contracts;
 - UI-only store;
+- persisted pending new-game request identity reused after timeout/reload until
+  the same committed party opening succeeds; success clears it;
 - постоянным указанием управляемого персонажа в header из уже публичных
   `panels.character.data.name/role`; другие люди не становятся этим персонажем;
 - отображением готового `presentation_context` в header; календарь, место и

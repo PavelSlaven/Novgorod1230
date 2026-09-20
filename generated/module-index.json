@@ -66,6 +66,7 @@
         "HTTP API client `/api/v1`",
         "валидацией публичных API envelopes и screen contracts",
         "UI-only store",
+        "persisted pending new-game request identity reused after timeout/reload until",
         "постоянным указанием управляемого персонажа в header из уже публичных",
         "отображением готового `presentation_context` в header; календарь, место и",
         "маршрутизацией FirstGameScreen/TurnScreen/FactualTurnDeliveryScreen",

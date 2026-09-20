@@ -13,6 +13,7 @@ import { createGameHttpServer, createStaticAssetResolver, listen } from
   '@rus/game-server';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { adaptApprovedOpeningNarration } from '@rus/narration';
 import {
   createLowerDvinaTracePublicRuntime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
@@ -68,6 +69,44 @@ import { buildS1AuthoringV6ImportSql } from
   '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
 import { TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST } from
   '../../apps/game-server/src/internal/lower-dvina-trace-revision-32-publication.js';
+
+const openingChecks = ['schema_and_structure', 'visible_context_compliance',
+  'new_fact_check', 'npc_check', 'item_check', 'container_check',
+  'door_exit_route_check', 'time_light_weather_check', 'position_check',
+  'g5_anchor_check', 'knowledge_boundary_check', 'hidden_state_leak_check',
+  'rumor_uncertainty_check', 'action_options_check', 'technical_text_check',
+  'literary_composition_check', 'must_include_check',
+  'must_not_include_check', 'commit_readiness'];
+const integrationOpeningNarration = Object.freeze({ run: async ({ requestId }) => {
+  const audit = { version: 1, schema: 'narrator_prose_audit',
+    request_id: requestId, pass: true,
+    checks: Object.fromEntries(openingChecks.map((key) => [key, { pass: true }])),
+    concerns: [], evidence: ['Integration opening is grounded.'],
+    repair_route: null, commit_permission: { can_show_to_player: true,
+      can_write_player_visible_message: true,
+      can_mark_opening_scene_presented: true } };
+  const stage22 = { version: 1, schema: 'stage22_narrator_prose_result',
+    request_id: requestId, pass: true,
+    visible_context_package_digest: 'integration-visible',
+    narrator_starting_prose: { version: 1,
+      schema: 'narrator_starting_prose', request_id: requestId,
+      prose_status: 'drafted', prose: 'Любава готовит рыбацкий стан к работе.',
+      action_options: [], used_visible_context_refs: [],
+      self_constraints_check: {} }, generation_history: [],
+    handoff_permission: { can_send_to_prose_audit: true } };
+  const stage23 = { version: 1,
+    schema: 'stage23_narrator_prose_audit_result', request_id: requestId,
+    pass: true, narrator_starting_prose_digest: 'integration-prose',
+    narrator_prose_audit: audit, repair_route: null, audit_history: [],
+    commit_permission: { can_show_to_player: true,
+      can_write_player_visible_message: true,
+      can_mark_opening_scene_presented: true } };
+  const flow = adaptApprovedOpeningNarration({ stage22Result: stage22,
+    stage23Result: stage23 });
+  return { prose: flow.approved_output.prose, flow,
+    stage22_result: stage22, stage23_result: stage23,
+    original_stage23_audit: audit };
+} });
 import { loadLiveWorldAuthoredStartCatalog } from
   '../../apps/game-server/src/internal/live-world-authored-starts.js';
 import { loadLowerDvinaTraceProductionMaterializationProfiles } from
@@ -247,7 +286,8 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
           TRACE_REVISION32_PHASE_1A_MANIFEST_DIGEST,
         activeScenarioDefinitionRevision: 32,
         traceStartAdapter: runtimeAdapter,
-        traceTurnRuntime,
+        traceTurnRuntime: Object.freeze({ ...(traceTurnRuntime ?? {}),
+          authoredOpeningNarration: integrationOpeningNarration }),
         partyRepository,
         publicationLoader,
         authoredStartCatalog: catalog
@@ -374,10 +414,15 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       WHERE party_id=$1`, [authoredPartyId])).rows[0].stage26_result;
   assert.deepEqual(authoredIdentity.runtime_binding,
     authoredStartCatalog.runtime_binding);
-  assert.equal(authoredIdentity.runtime_binding.revision, 5);
+  assert.equal(authoredIdentity.runtime_binding.revision, 6);
   assert.equal(authoredIdentity.materializer_binding_id,
     'live_world_authored_start_v3');
   assert.equal(authoredIdentity.materializer_version, 'code_materializer_v3');
+  assert.equal(authoredIdentity.opening_narration_flow.status, 'approved');
+  assert.equal(authoredIdentity.opening_narration_flow.approved_output.prose,
+    authoredStart.data.screen.main_prose);
+  assert.equal(authoredIdentity.opening_stage23_original_audit.schema,
+    'narrator_prose_audit');
   const authoredSnapshot = (await pool.query(
     `SELECT (state_payload->>'version')::int AS snapshot_version,
             state_payload->>'schema' AS snapshot_schema,

@@ -8,6 +8,7 @@ import { removeMatchingPendingOpeningAck, removeStoredPendingOpeningAck,
 import { storedLlmSettings } from './llm-settings-preferences.js';
 import { createLlmSettingsController } from './llm-settings.js';
 import { storedPendingTurn } from './pending-turn.js';
+import { clearNewGameRequest, newGameRequest } from './pending-new-game.js';
 import { recoverPendingPresentation, submitRecoverableTurn } from './turn-submission.js';
 import { trapOverlayFocus } from './overlay-focus.js';
 export { createTurnRequest, recoverPendingPresentation, submitTurnWithPresentationReplay } from
@@ -149,9 +150,10 @@ export function bootstrapGameWeb({
   });
 
   async function startParty(input) {
+    const request = newGameRequest(partyStorage, input);
     try {
       store.setLoading();
-      const result = await api.startNewGame(input);
+      const result = await api.startNewGame(request);
       const pendingAck = {
         party_id: result.party_id,
         client_ack_id: `web:${result.party_id}:${Date.now()}`,
@@ -161,6 +163,7 @@ export function bootstrapGameWeb({
       partyStorage?.setItem?.(PARTY_STORAGE_KEY, result.party_id);
       store.setRememberedPartyId(result.party_id);
       store.clearDraft('new_game');
+      clearNewGameRequest(partyStorage, request.request_id);
       store.setScreen(result.screen, {
         openingStatus: 'pending',
         clientAckId: pendingAck.client_ack_id,

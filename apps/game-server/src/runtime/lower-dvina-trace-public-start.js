@@ -125,6 +125,7 @@ export async function startLowerDvinaTrace({
     );
   }
   let openingProse = null;
+  let openingNarrationResult = null;
   if (binding.runtime_binding != null) {
     if (typeof authoredOpeningNarration?.run !== 'function') {
       throw serverError('AUTHORED_OPENING_NARRATOR_MISSING',
@@ -144,9 +145,10 @@ export async function startLowerDvinaTrace({
         can_write_visible_context_snapshot: true,
         can_generate_player_facing_prose: true }
     });
-    openingProse = (await authoredOpeningNarration.run({ requestId,
+    openingNarrationResult = await authoredOpeningNarration.run({ partyId, requestId,
       visibleContextPackage: openingPackage,
-      visibleContextApproval: approval })).prose;
+      visibleContextApproval: approval });
+    openingProse = openingNarrationResult.prose;
   }
   const initialScreen = await traceOpeningProjector({
     visible, approvedProjection: publication.public_projection, openingProse
@@ -196,7 +198,10 @@ export async function startLowerDvinaTrace({
     rng_algorithm_id:
       binding.execution_identity.rng_algorithm_id,
     ...(binding.runtime_binding == null ? {} : {
-      runtime_binding: structuredClone(binding.runtime_binding)
+      runtime_binding: structuredClone(binding.runtime_binding),
+      opening_narration_flow: structuredClone(openingNarrationResult.flow),
+      opening_stage23_original_audit: structuredClone(
+        openingNarrationResult.original_stage23_audit)
     }),
     opening_screen_digest: screenDigest
   };

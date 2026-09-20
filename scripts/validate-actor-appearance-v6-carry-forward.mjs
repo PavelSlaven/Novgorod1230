@@ -34,8 +34,11 @@ export async function validateActorAppearanceV6CarryForward(root = process.cwd()
   }
 
   expect(errors, candidate.schema === expected.schema, 'ACTOR_APPEARANCE_V6_SCHEMA');
-  expect(errors, candidate.status === 'pending_independent_approval'
-    && candidate.approval_status === 'pending', 'ACTOR_APPEARANCE_V6_APPROVAL_STATE');
+  expect(errors, candidate.status === 'authoring_approved_pending_import_authorization'
+    && candidate.approval_status === 'authoring_approved'
+    && candidate.authoring_approved === true, 'ACTOR_APPEARANCE_V6_APPROVAL_STATE');
+  expectEqual(errors, candidate.authoring_attestation, expected.authoring_attestation,
+    'ACTOR_APPEARANCE_V6_AUTHORING_ATTESTATION');
   expect(errors, candidate.import_activation === false
     && candidate.runtime_status === 'typed_data_gap'
     && candidate.runtime_gap_code === 'ACTOR_APPEARANCE_V6_IMPORT_NOT_APPROVED'
@@ -126,7 +129,8 @@ function validateSourceRefs(errors, rows) {
 
 function validateNoAuthoredPersonOverride(errors, candidate) {
   const allowed = new Set([
-    'schema', 'candidate_id', 'status', 'approval_status', 'import_activation',
+    'schema', 'candidate_id', 'status', 'approval_status', 'authoring_approved',
+    'authoring_attestation', 'import_activation',
     'runtime_status', 'runtime_gap_code', 'runtime_import_rows', 'source', 'target',
     'supported_contexts', 'source_row_count_by_table', 'source_ids_by_table',
     'source_projection_sha256', 'candidate_row_count_by_table',

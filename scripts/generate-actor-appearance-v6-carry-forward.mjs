@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export const CARRY_FORWARD_ROOT =
@@ -52,11 +52,36 @@ export async function buildActorAppearanceV6CarryForward(root = process.cwd()) {
   const targetManifestBytes = await readFile(resolve(root, TARGET_MANIFEST));
   const source = worldRef(sourceManifest, `${SOURCE_ROOT}/manifest.json`, sourceManifestBytes);
   const target = worldRef(targetManifest, TARGET_MANIFEST.replace(/\\/gu, '/'), targetManifestBytes);
+  const sourceRowCountByTable = rowCounts(sourceProjection);
+  const sourceIdsByTable = idsByTable(sourceProjection);
+  const sourceProjectionSha256 = digest(sourceProjection);
+  const candidateRowCountByTable = rowCounts(projected);
+  const candidateIdsByTable = idsByTable(projected);
+  const candidateRowsSha256 = digest(projected);
+  const authoringAttestation = {
+    schema: 'rus.actor_appearance_carry_forward_attestation.v1',
+    status: 'approved',
+    scope: 'authoring_only',
+    source_manifest_sha256: source.manifest_sha256,
+    target_manifest_sha256: target.manifest_sha256,
+    source_projection_sha256: sourceProjectionSha256,
+    candidate_rows_sha256: candidateRowsSha256,
+    exact_row_count: Object.values(candidateRowCountByTable).reduce((sum, count) => sum + count, 0),
+    exact_row_count_by_table: candidateRowCountByTable,
+    exact_ids_by_table: candidateIdsByTable,
+    semantic_equivalence: true,
+    permitted_difference_paths: ['region_category_options[].world_revision_id'],
+    runtime_import_rows: 0,
+    import_activation: false,
+    runtime_selectable: false
+  };
   return {
     schema: 'rus.actor_appearance_carry_forward_candidate.v1',
     candidate_id: 'novgorod-spatial-v3-production-v6-actor-appearance-carry-forward-001',
-    status: 'pending_independent_approval',
-    approval_status: 'pending',
+    status: 'authoring_approved_pending_import_authorization',
+    approval_status: 'authoring_approved',
+    authoring_approved: true,
+    authoring_attestation: authoringAttestation,
     import_activation: false,
     runtime_status: 'typed_data_gap',
     runtime_gap_code: 'ACTOR_APPEARANCE_V6_IMPORT_NOT_APPROVED',
@@ -74,12 +99,12 @@ export async function buildActorAppearanceV6CarryForward(root = process.cwd()) {
       sex_categories: ['male'],
       age_categories: ['young_adult', 'adult']
     },
-    source_row_count_by_table: rowCounts(sourceProjection),
-    source_ids_by_table: idsByTable(sourceProjection),
-    source_projection_sha256: digest(sourceProjection),
-    candidate_row_count_by_table: rowCounts(projected),
-    candidate_ids_by_table: idsByTable(projected),
-    candidate_rows_sha256: digest(projected),
+    source_row_count_by_table: sourceRowCountByTable,
+    source_ids_by_table: sourceIdsByTable,
+    source_projection_sha256: sourceProjectionSha256,
+    candidate_row_count_by_table: candidateRowCountByTable,
+    candidate_ids_by_table: candidateIdsByTable,
+    candidate_rows_sha256: candidateRowsSha256,
     candidate_rows: projected
   };
 }
@@ -155,12 +180,12 @@ async function readJson(path) {
 
 function report(candidate) {
   return `# v6 actor appearance carry-forward candidate\n\n`
-    + `Status: \`${candidate.status}\`. Import and activation are \`false\`; runtime rows are intentionally empty with \`${candidate.runtime_gap_code}\`.\n\n`
+    + `Status: \`${candidate.status}\`. Authoring attestation is approved; import and activation remain \`false\`, with empty runtime rows and \`${candidate.runtime_gap_code}\`.\n\n`
     + `Source: \`${candidate.source.world_revision_id}\` / \`${candidate.source.catalog_digest}\`.\n`
     + `Target: \`${candidate.target.world_revision_id}\` / \`${candidate.target.catalog_digest}\`.\n\n`
     + `Source projection SHA-256: \`${candidate.source_projection_sha256}\`.\n`
     + `Candidate rows SHA-256: \`${candidate.candidate_rows_sha256}\`.\n\n`
-    + `Projected rows preserve v4 semantics, source record, weights and applicability; only \`region_category_options.world_revision_id\` changes to v6.\n`;
+    + `Attestation: ${candidate.authoring_attestation.exact_row_count} rows, exact IDs/counts, semantic equivalence; only \`region_category_options.world_revision_id\` changes to v6.\n`;
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

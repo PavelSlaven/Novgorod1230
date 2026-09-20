@@ -14,10 +14,14 @@ import { validateActorAppearanceV6CarryForward } from '../../scripts/validate-ac
 const source = 'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4';
 const target = 'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6';
 
-test('v6 carry-forward candidate materializes deterministically and stays runtime-inactive', async () => {
+test('v6 carry-forward candidate is authoring-approved, deterministic and runtime-inactive', async () => {
   const candidate = JSON.parse(await readFile(resolve(CARRY_FORWARD_ROOT, 'candidate.json')));
   assert.equal((await validateActorAppearanceV6CarryForward()).pass, true);
   assert.equal(candidate.import_activation, false);
+  assert.equal(candidate.authoring_approved, true);
+  assert.equal(candidate.authoring_attestation.exact_row_count, 129);
+  assert.equal(candidate.authoring_attestation.semantic_equivalence, true);
+  assert.equal(candidate.authoring_attestation.runtime_selectable, false);
   assert.equal(candidate.runtime_status, 'typed_data_gap');
   assert.deepEqual(candidate.runtime_import_rows, []);
   const input = {
@@ -34,6 +38,7 @@ test('v6 carry-forward candidate materializes deterministically and stays runtim
 for (const [name, mutate, code] of [
   ['missing row', (candidate) => candidate.candidate_rows.region_appearance_profile_entries.pop(), 'ACTOR_APPEARANCE_V6_CANDIDATE_COUNT'],
   ['weight drift', (candidate) => { candidate.candidate_rows.region_appearance_profile_entries[0].weight = 2; }, 'ACTOR_APPEARANCE_V6_SEMANTIC_DRIFT'],
+  ['authoring attestation tamper', (candidate) => { candidate.authoring_attestation.exact_row_count = 1; }, 'ACTOR_APPEARANCE_V6_AUTHORING_ATTESTATION'],
   ['world tuple tamper', (candidate) => { candidate.target.catalog_digest = '0'.repeat(64); }, 'ACTOR_APPEARANCE_V6_TARGET_TUPLE'],
   ['row status downgrade', (candidate) => { candidate.candidate_rows.region_appearance_profile_entries[0].status = 'draft'; }, 'ACTOR_APPEARANCE_V6_ROW_NOT_APPROVED']
 ]) {

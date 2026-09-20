@@ -94,14 +94,14 @@ function requireProfile(value) {
         || new Set(entry.required_semantic_requirements).size !== entry.required_semantic_requirements.length
         || !entry.required_semantic_requirements.every((requirement) => ['interior_space','controlled_passage','movement_constraint','hazard','extractable_resource'].includes(requirement))
         || !Number.isSafeInteger(entry.capacity_total) || entry.capacity_total < 1
-        || !text(entry.opening_resolution?.name)
-        || !text(entry.opening_resolution?.description)
-        || !Array.isArray(entry.opening_resolution?.semantic_requirements)
-        || new Set(entry.opening_resolution.semantic_requirements).size
-          !== entry.opening_resolution.semantic_requirements.length
-        || !entry.opening_resolution.semantic_requirements.every((requirement) =>
-          entry.required_semantic_requirements.includes(requirement)
-            || entry.available_mechanics.includes(requirement))
+        || neutral && (!text(entry.opening_resolution?.name)
+          || !text(entry.opening_resolution?.description)
+          || !Array.isArray(entry.opening_resolution?.semantic_requirements)
+          || new Set(entry.opening_resolution.semantic_requirements).size
+            !== entry.opening_resolution.semantic_requirements.length
+          || !entry.opening_resolution.semantic_requirements.every((requirement) =>
+            entry.required_semantic_requirements.includes(requirement)
+              || entry.available_mechanics.includes(requirement)))
         || (entry.structural_variant === 'open_one_space'
           && (!text(entry.slot_key)
             || !entry.required_semantic_requirements.includes('interior_space')))

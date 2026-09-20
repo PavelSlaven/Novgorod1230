@@ -23,7 +23,7 @@ const V5_APPROVAL_ATTESTATION_DIGEST =
 const APPEARANCE_PATH =
   'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json';
 const APPEARANCE_SHA256 =
-  'a036274c20d8989a0f7abc1a81e02edec06e5038de47c94de8fbf94a297d1733';
+  '1dffc2cd2d80576146090daaaf0cf2b0cab436d761b4309de75949f87b9f3533';
 const TEMPORAL_APPROVAL_PATH =
   'data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json';
 const TEMPORAL_DATASET_PATH =
@@ -122,16 +122,20 @@ export async function generateNpcEquipmentProfiles(rootDir, overrides = {}) {
       if (binding) resolvedEntries.push(projected);
       else pendingEntries.push(projected);
     }
-    const slotGap = slotAuthority.status === 'approved' ? [] : [{
-      code: 'EQUIPMENT_SLOT_BINDINGS_PENDING_APPROVAL',
+    const slotGap = slotAuthority.dependency_status === 'approved' ? [] : [{
+      code: 'EQUIPMENT_SLOT_AUTHORITY_REAUDIT_PENDING',
       status: 'typed_data_gap',
       source_ref: APPEARANCE_PATH,
       source_status: slotAuthority.source_status,
-      missing_category_refs: [...row.required_equipment_slot_category_refs]
+      resolved_category_refs: resolvedEntries.map(
+        ({ equipment_slot_category_ref: ref }) => ref),
+      unresolved_category_refs: pendingEntries.map(
+        ({ equipment_slot_category_ref: ref }) => ref)
     }];
     return {
       level: 'social_basic_clothing', profile_id: row.profile_id,
-      profile_status: slotGap.length === 0 ? 'resolved' : 'typed_data_gap',
+      profile_status: slotGap.length === 0 ? 'resolved' : 'dependency_pending',
+      executable: false,
       applicability: {
         role_refs: [...row.role_refs].sort(),
         social_class_ref: row.social_class_ref,
@@ -312,15 +316,21 @@ export function validateNpcEquipmentProfileCandidate(candidate) {
       allEntries.map(({ equipment_slot_category_ref: ref }) => ref)))
       fail('NPC_EQUIPMENT_SLOT_COVERAGE_INVALID', profile.profile_id);
     const hasPendingGap = profile.typed_gaps.some(({ code }) =>
-      code === 'EQUIPMENT_SLOT_BINDINGS_PENDING_APPROVAL');
+      code === 'EQUIPMENT_SLOT_AUTHORITY_REAUDIT_PENDING');
     if (profile.profile_status === 'resolved') {
       if (hasPendingGap || profile.pending_entries.length > 0
           || profile.entries.some((entry) => !entry.equipment_slot_binding_ref
             || !entry.normalized_equipment_slot))
         fail('NPC_EQUIPMENT_SLOT_AUTHORITY_INVALID', profile.profile_id);
-    } else if (profile.profile_status !== 'typed_data_gap' || !hasPendingGap
-        || profile.entries.length > 0 || profile.pending_entries.length === 0)
-      fail('NPC_EQUIPMENT_SLOT_GAP_INVALID', profile.profile_id);
+    } else if (profile.profile_status === 'dependency_pending') {
+      if (!hasPendingGap || profile.executable !== false
+          || allEntries.length === 0
+          || profile.entries.some((entry) => !entry.equipment_slot_binding_ref
+            || !entry.normalized_equipment_slot)
+          || profile.pending_entries.some((entry) =>
+            entry.equipment_slot_binding_ref || entry.normalized_equipment_slot))
+        fail('NPC_EQUIPMENT_SLOT_GAP_INVALID', profile.profile_id);
+    } else fail('NPC_EQUIPMENT_SLOT_GAP_INVALID', profile.profile_id);
     for (const entry of allEntries) {
       if (!sameSet(entry.applicable_seasons, profile.applicability.seasons)
           || !entry.required_seasons.every((season) =>
@@ -497,6 +507,8 @@ function validateEquipmentSlotAuthority(candidate) {
     source_status: candidate.status,
     approval_status: candidate.approval_status,
     authoring_approved: candidate.authoring_approved === true,
+    authoring_attestation_digest: candidate.authoring_attestation
+      ? digestValue(candidate.authoring_attestation) : null,
     import_activation: candidate.import_activation,
     runtime_status: candidate.runtime_status
   };
@@ -506,22 +518,41 @@ function validateEquipmentSlotAuthority(candidate) {
       || candidate.target?.catalog_digest !==
         '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad'
       || candidate.source_projection_sha256 !==
-        'f9bc9eebd548034b100f8f3b06dfd81d98998d525c7067155e2c050251aee1e4'
+        '0a65cfaacca68e75e6756ef62062a844e62d09a2c45d390471157cae27fa0286'
       || candidate.candidate_rows_sha256 !==
-        '1478274a9173c4bede79a3118368c73230f0dfa1b21ca3a6bc3ef0b88628d6a9')
+        'cfdd5d0688bcde4fd9445e194e2fe327c36138578d860c36e2b146f249aac9b3')
     fail('NPC_EQUIPMENT_SLOT_AUTHORITY_DRIFT');
   const categories = candidate.candidate_rows?.universal_categories;
   const bindings = candidate.candidate_rows?.item_template_category_bindings;
-  const approved = candidate.authoring_approved === true
-    && Array.isArray(categories) && Array.isArray(bindings);
-  return { status: approved ? 'approved' : 'pending',
+  const bindingRowsAvailable = Array.isArray(categories)
+    && Array.isArray(bindings);
+  const attestation = candidate.authoring_attestation;
+  const independentlyApproved = candidate.authoring_approved === true
+    && candidate.approval_status === 'authoring_approved'
+    && attestation?.subject_commit === 'd068df5b'
+    && attestation.scope === 'authoring_only'
+    && attestation.status === 'approved'
+    && attestation.source_projection_sha256 === candidate.source_projection_sha256
+    && attestation.candidate_rows_sha256 === candidate.candidate_rows_sha256
+    && attestation.equipment_bindings?.row_count === 20
+    && sameSet(attestation.equipment_bindings.equipment_slot_category_refs,
+      ['garment.equipment_slot.base_garment',
+        'garment.equipment_slot.outer_garment'])
+    && attestation.import_activation === false
+    && attestation.runtime_selectable === false
+    && attestation.runtime_import_rows === 0;
+  if (candidate.authoring_approved === true && !independentlyApproved)
+    fail('NPC_EQUIPMENT_SLOT_AUTHORITY_ATTESTATION_INVALID');
+  return { dependency_status: independentlyApproved ? 'approved' : 'pending',
     source_status: candidate.approval_status,
-    categories: approved ? categories : [], bindings: approved ? bindings : [],
+    binding_rows_available: bindingRowsAvailable,
+    categories: bindingRowsAvailable ? categories : [],
+    bindings: bindingRowsAvailable ? bindings : [],
     provenance };
 }
 
-function resolveEquipmentSlotBinding(entry, authority) {
-  if (authority.status !== 'approved') return null;
+export function resolveEquipmentSlotBinding(entry, authority) {
+  if (!authority.binding_rows_available) return null;
   const category = exact(authority.categories,
     entry.equipment_slot_category_ref, 'id', 'NPC_EQUIPMENT_SLOT_CATEGORY');
   const binding = exact(authority.bindings,

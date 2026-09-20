@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { generateNpcEquipmentProfiles,
-  validateNpcEquipmentProfileCandidate } from
+  resolveEquipmentSlotBinding, validateNpcEquipmentProfileCandidate } from
   '../../../scripts/generate-npc-equipment-profiles.mjs';
 
 const root = new URL('../../../', import.meta.url).pathname.replace(/^\/(.:)/u,
@@ -44,34 +44,37 @@ test('two levels preserve exact clothing, mechanics and property basis',
     assert.deepEqual(clothing.applicability.sex, ['male']);
     assert.deepEqual(clothing.applicability.seasons,
       ['spring', 'summer', 'autumn', 'winter']);
-    assert.equal(clothing.profile_status, 'typed_data_gap');
-    assert.deepEqual(clothing.entries, []);
-    assert.deepEqual(clothing.pending_entries.map(
+    assert.equal(clothing.profile_status, 'resolved');
+    assert.equal(clothing.executable, false);
+    assert.deepEqual(clothing.entries.map(
       ({ item_template_ref: id }) => id), [
       'item_tpl_nov_linen_shirt_v1',
       'item_tpl_nov_wool_outer_garment_v1'
     ]);
-    assert.deepEqual(clothing.pending_entries.map(
+    assert.deepEqual(clothing.entries.map(
       ({ equipment_slot_category_ref: ref }) => ref), [
       'garment.equipment_slot.base_garment',
       'garment.equipment_slot.outer_garment'
     ]);
-    assert.ok(clothing.pending_entries.every((entry) =>
+    assert.deepEqual(clothing.entries.map(
+      ({ normalized_equipment_slot: slot }) => slot),
+    ['base_garment', 'outer_garment']);
+    assert.ok(clothing.entries.every((entry) =>
       entry.effective_status === 'approved_by_exact_promotion'
         && entry.quantity_profile_ref && entry.inventory_profile_ref
         && entry.source_binding_refs.length === 4
-        && entry.equipment_slot_binding_ref === null
-        && entry.normalized_equipment_slot === null));
+        && entry.equipment_slot_binding_ref
+        && entry.normalized_equipment_slot));
+    assert.deepEqual(clothing.pending_entries, []);
     assert.equal(clothing.property_basis.assignment_at_authoring, false);
     assert.deepEqual(clothing.property_basis.access_policy,
       { version: 1, mode: 'explicit_owner_holder_controller',
         context_domain: 'household_personal' });
     assert.ok(clothing.typed_gaps.some(({ code, status }) =>
       code === 'FOOTWEAR_SLOT_NOT_ACTIVE' && status === 'not_applicable'));
-    assert.ok(clothing.typed_gaps.some(({ code, status }) =>
-      code === 'EQUIPMENT_SLOT_BINDINGS_PENDING_APPROVAL'
-        && status === 'typed_data_gap'));
-    assert.ok(clothing.pending_entries.every(({ item_template_ref: id }) =>
+    assert.ok(!clothing.typed_gaps.some(({ code }) =>
+      code === 'EQUIPMENT_SLOT_AUTHORITY_REAUDIT_PENDING'));
+    assert.ok(clothing.entries.every(({ item_template_ref: id }) =>
       !clothing.excluded_expensive_or_status_items.includes(id)));
   });
 
@@ -146,35 +149,72 @@ test('validator rejects unsupported activity and expensive clothing', async () =
   assert.throws(() => validateNpcEquipmentProfileCandidate(unsupported),
     { code: 'NPC_EQUIPMENT_TOOL_ACTIVITY_UNSUPPORTED' });
   const expensive = structuredClone(candidate);
-  expensive.social_clothing_profiles[0].pending_entries[0].item_template_ref =
+  expensive.social_clothing_profiles[0].entries[0].item_template_ref =
     'item_tpl_nov_boots_v1';
   assert.throws(() => validateNpcEquipmentProfileCandidate(expensive),
     { code: 'NPC_EQUIPMENT_STATUS_ITEM_FORBIDDEN' });
 });
 
-test('slot source remains a typed gap until exact current-v6 bindings exist',
+test('exact attested v6 slots resolve; unattested source stays pending',
   async () => {
     const { candidate } = await generateNpcEquipmentProfiles(root);
     const clothing = candidate.social_clothing_profiles[0];
     assert.equal(clothing.slot_authority.target_world_revision_id,
       'novgorod_spatial_v3_production_v6_candidate_001');
     assert.equal(clothing.slot_authority.candidate_rows_sha256,
-      '1478274a9173c4bede79a3118368c73230f0dfa1b21ca3a6bc3ef0b88628d6a9');
-    const falselyResolved = structuredClone(candidate);
-    const profile = falselyResolved.social_clothing_profiles[0];
-    profile.profile_status = 'resolved';
-    profile.entries = profile.pending_entries;
-    profile.pending_entries = [];
-    assert.throws(() => validateNpcEquipmentProfileCandidate(falselyResolved),
-      { code: 'NPC_EQUIPMENT_SLOT_AUTHORITY_INVALID' });
-
+      'cfdd5d0688bcde4fd9445e194e2fe327c36138578d860c36e2b146f249aac9b3');
+    assert.deepEqual(clothing.entries.map(
+      ({ equipment_slot_binding_ref: ref }) => ref), [
+      'item_tpl_nov_linen_shirt_v1:equipment_slot',
+      'item_tpl_nov_wool_outer_garment_v1:equipment_slot'
+    ]);
     const path =
       'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json';
     const appearance = await readJson(path);
+    const pending = structuredClone(appearance);
+    pending.status = 'pending_independent_approval';
+    pending.approval_status = 'pending';
+    delete pending.authoring_approved;
+    delete pending.authoring_attestation;
+    const pendingOutput = await generateNpcEquipmentProfiles(root,
+      { [path]: pending });
+    const pendingProfile = pendingOutput.candidate.social_clothing_profiles[0];
+    assert.equal(pendingProfile.profile_status, 'dependency_pending');
+    assert.equal(pendingProfile.executable, false);
+    assert.ok(pendingProfile.typed_gaps.some(({ code }) =>
+      code === 'EQUIPMENT_SLOT_AUTHORITY_REAUDIT_PENDING'));
+
     appearance.candidate_rows_sha256 = '0'.repeat(64);
     await assert.rejects(() => generateNpcEquipmentProfiles(root,
       { [path]: appearance }), { code: 'NPC_EQUIPMENT_SLOT_AUTHORITY_DRIFT' });
   });
+
+test('slot resolver rejects missing, ambiguous and draft bindings', async () => {
+  const path =
+    'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json';
+  const appearance = await readJson(path);
+  const entry = { item_template_ref: 'item_tpl_nov_linen_shirt_v1',
+    equipment_slot_category_ref: 'garment.equipment_slot.base_garment' };
+  const authority = { binding_rows_available: true,
+    categories: appearance.candidate_rows.universal_categories,
+    bindings: appearance.candidate_rows.item_template_category_bindings };
+  const target = authority.bindings.find(({ item_template_id: id,
+    binding_kind: kind }) => id === entry.item_template_ref
+      && kind === 'equipment_slot');
+  assert.equal(resolveEquipmentSlotBinding(entry, authority).normalized_slot,
+    'base_garment');
+  assert.throws(() => resolveEquipmentSlotBinding(entry, {
+    ...authority, bindings: authority.bindings.filter(({ id }) => id !== target.id)
+  }), { code: 'NPC_EQUIPMENT_SLOT_BINDING_MISSING' });
+  assert.throws(() => resolveEquipmentSlotBinding(entry, {
+    ...authority, bindings: [...authority.bindings,
+      { ...target, id: `${target.id}:duplicate` }]
+  }), { code: 'NPC_EQUIPMENT_SLOT_BINDING_AMBIGUOUS' });
+  assert.throws(() => resolveEquipmentSlotBinding(entry, {
+    ...authority, bindings: authority.bindings.map((row) => row.id === target.id
+      ? { ...row, status: 'draft' } : row)
+  }), { code: 'NPC_EQUIPMENT_SLOT_BINDING_NOT_APPROVED' });
+});
 
 test('Temporal v4 owns exact season vocabulary and approval', async () => {
   const authoringPath = `${output}/authoring-rows.json`;

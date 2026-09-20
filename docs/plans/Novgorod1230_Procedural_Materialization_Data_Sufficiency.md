@@ -39,10 +39,11 @@ import or activate data and creates no item/container instance.
   display-name scoped. It requests exact
   `garment.equipment_slot.base_garment` and
   `garment.equipment_slot.outer_garment` bindings for linen shirt and wool
-  outerwear, respectively; current-v6 appearance carry-forward is
-  authoring-approved but contains no equipment-slot binding table, so the
-  clothing profile remains `EQUIPMENT_SLOT_BINDINGS_PENDING_APPROVAL` with no
-  normalized Stage 16 slot;
+  outerwear, respectively. Current-v6 carry-forward supplies both exact
+  approved candidate bindings, from which the authoring profile derives only
+  `base_garment` and `outer_garment`; its authoring-only independent approval
+  resolves the slot dependency, while this equipment candidate remains
+  `pending_independent_review`, `executable=false` and grants no runtime use;
 - V5 footwear exists and is approved by the immutable all-120 promotion, but
   current Stage 16 has no active footwear slot, so footwear remains the typed
   `FOOTWEAR_SLOT_NOT_ACTIVE` gap instead of receiving an invented slot;

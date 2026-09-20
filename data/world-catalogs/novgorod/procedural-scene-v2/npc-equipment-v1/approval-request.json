@@ -7,11 +7,11 @@
   "activation_authorized": false,
   "activation_request": null,
   "candidate_ref": "novgorod_npc_equipment_profiles_candidate_001@1",
-  "candidate_digest": "729d05c1a864fd848078debe4ebce5c3601c29e49e88c760741702e7bc5ee796",
+  "candidate_digest": "0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181",
   "profile_ids": [
     "novgorod_commoner_male_basic_clothing_v1",
     "novgorod_fishing_water_equipment_v1",
     "novgorod_transport_guiding_equipment_v1"
   ],
-  "request_digest": "99e41e3e7daec87a0135523e898f9049cd25f68d918570477ac2e59cf32000b5"
+  "request_digest": "27e6354f63668cd2ca062bfda21c28376ad4aba8b8c775db017cfa0ee05b9eb0"
 }

@@ -23,16 +23,17 @@
     "v5_target_catalog_digest": "a24fe55497a8aca018fa28a43ab1f54e26e2f30a5c74931ed2570ab69bc07a87",
     "equipment_slot_authority": {
       "source_path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
-      "source_sha256": "a036274c20d8989a0f7abc1a81e02edec06e5038de47c94de8fbf94a297d1733",
+      "source_sha256": "1dffc2cd2d80576146090daaaf0cf2b0cab436d761b4309de75949f87b9f3533",
       "schema": "rus.actor_appearance_carry_forward_candidate.v1",
       "candidate_id": "novgorod-spatial-v3-production-v6-actor-appearance-carry-forward-001",
-      "source_projection_sha256": "f9bc9eebd548034b100f8f3b06dfd81d98998d525c7067155e2c050251aee1e4",
-      "candidate_rows_sha256": "1478274a9173c4bede79a3118368c73230f0dfa1b21ca3a6bc3ef0b88628d6a9",
+      "source_projection_sha256": "0a65cfaacca68e75e6756ef62062a844e62d09a2c45d390471157cae27fa0286",
+      "candidate_rows_sha256": "cfdd5d0688bcde4fd9445e194e2fe327c36138578d860c36e2b146f249aac9b3",
       "target_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
       "target_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
       "source_status": "authoring_approved_pending_import_authorization",
       "approval_status": "authoring_approved",
       "authoring_approved": true,
+      "authoring_attestation_digest": "5fa3693fcc4ba52b67411dc512dc5c6d988ba53263ee4814efa84e7c97cbb5df",
       "import_activation": false,
       "runtime_status": "typed_data_gap"
     },
@@ -79,7 +80,8 @@
     {
       "level": "social_basic_clothing",
       "profile_id": "novgorod_commoner_male_basic_clothing_v1",
-      "profile_status": "typed_data_gap",
+      "profile_status": "resolved",
+      "executable": false,
       "applicability": {
         "role_refs": [
           "nov_role_boatman",
@@ -147,21 +149,21 @@
       ],
       "slot_authority": {
         "source_path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
-        "source_sha256": "a036274c20d8989a0f7abc1a81e02edec06e5038de47c94de8fbf94a297d1733",
+        "source_sha256": "1dffc2cd2d80576146090daaaf0cf2b0cab436d761b4309de75949f87b9f3533",
         "schema": "rus.actor_appearance_carry_forward_candidate.v1",
         "candidate_id": "novgorod-spatial-v3-production-v6-actor-appearance-carry-forward-001",
-        "source_projection_sha256": "f9bc9eebd548034b100f8f3b06dfd81d98998d525c7067155e2c050251aee1e4",
-        "candidate_rows_sha256": "1478274a9173c4bede79a3118368c73230f0dfa1b21ca3a6bc3ef0b88628d6a9",
+        "source_projection_sha256": "0a65cfaacca68e75e6756ef62062a844e62d09a2c45d390471157cae27fa0286",
+        "candidate_rows_sha256": "cfdd5d0688bcde4fd9445e194e2fe327c36138578d860c36e2b146f249aac9b3",
         "target_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
         "target_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
         "source_status": "authoring_approved_pending_import_authorization",
         "approval_status": "authoring_approved",
         "authoring_approved": true,
+        "authoring_attestation_digest": "5fa3693fcc4ba52b67411dc512dc5c6d988ba53263ee4814efa84e7c97cbb5df",
         "import_activation": false,
         "runtime_status": "typed_data_gap"
       },
-      "entries": [],
-      "pending_entries": [
+      "entries": [
         {
           "item_template_ref": "item_tpl_nov_linen_shirt_v1",
           "object_category_ref": "cat_item_object_linen_shirt_v1",
@@ -213,8 +215,8 @@
           "source_row_status": "draft",
           "effective_status": "approved_by_exact_promotion",
           "equipment_slot_category_ref": "garment.equipment_slot.base_garment",
-          "equipment_slot_binding_ref": null,
-          "normalized_equipment_slot": null,
+          "equipment_slot_binding_ref": "item_tpl_nov_linen_shirt_v1:equipment_slot",
+          "normalized_equipment_slot": "base_garment",
           "applicable_seasons": [
             "spring",
             "summer",
@@ -279,8 +281,8 @@
           "source_row_status": "draft",
           "effective_status": "approved_by_exact_promotion",
           "equipment_slot_category_ref": "garment.equipment_slot.outer_garment",
-          "equipment_slot_binding_ref": null,
-          "normalized_equipment_slot": null,
+          "equipment_slot_binding_ref": "item_tpl_nov_wool_outer_garment_v1:equipment_slot",
+          "normalized_equipment_slot": "outer_garment",
           "applicable_seasons": [
             "spring",
             "summer",
@@ -294,21 +296,12 @@
           ]
         }
       ],
+      "pending_entries": [],
       "excluded_expensive_or_status_items": [
         "item_tpl_nov_boots_v1",
         "item_tpl_nov_fur_outerwear_v1"
       ],
       "typed_gaps": [
-        {
-          "code": "EQUIPMENT_SLOT_BINDINGS_PENDING_APPROVAL",
-          "status": "typed_data_gap",
-          "source_ref": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
-          "source_status": "authoring_approved",
-          "missing_category_refs": [
-            "garment.equipment_slot.base_garment",
-            "garment.equipment_slot.outer_garment"
-          ]
-        },
         {
           "code": "FOOTWEAR_SLOT_NOT_ACTIVE",
           "status": "not_applicable",
@@ -574,5 +567,5 @@
       ]
     }
   ],
-  "candidate_digest": "729d05c1a864fd848078debe4ebce5c3601c29e49e88c760741702e7bc5ee796"
+  "candidate_digest": "0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181"
 }

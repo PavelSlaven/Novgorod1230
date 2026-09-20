@@ -7,7 +7,10 @@ const calendar = { family_id: 'calendar_daylight_light_profiles',
     daylight_profile_id: 'daylight', daylight_boundary_rules: {
       year_daily_boundaries: { '1230': { '08-20': {
         civil_dawn_minute_of_day: '250', sunrise_minute_of_day: '300',
-        sunset_minute_of_day: '1100', civil_dusk_minute_of_day: '1150' } } } } } };
+        sunset_minute_of_day: '1100', civil_dusk_minute_of_day: '1150' } } } },
+    season_rule: { winter_months: ['12','1','2'],
+      spring_months: ['3','4','5'], summer_months: ['6','7','8'],
+      autumn_months: ['9','10','11'] } } };
 const weather = { family_id: 'weather_transition_profiles_processes',
   status: 'approved', payload: { weather_profile_id: 'weather',
     region_season_applicability: { calendar_seasons: { summer: ['6','7','8'] } },
@@ -30,6 +33,7 @@ test('initial environment derives exact daylight and weighted weather from owner
     random: createRandomSource({ seed: 4 }) });
   assert.deepEqual(left, right);
   assert.equal(left.light_state, 'daylight');
+  assert.equal(left.day_part, 'daylight');
   assert.equal(left.season, 'summer');
   assert.ok(['clear','rain'].includes(left.weather_state.weather_state_id));
 });

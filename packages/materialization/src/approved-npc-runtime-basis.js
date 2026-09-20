@@ -2,6 +2,7 @@ import { deepFreeze } from '@rus/kernel';
 import { MaterializationError } from './core.js';
 
 const SCHEDULE_FIELD = Object.freeze({ winter: 'daily_schedule_winter',
+  spring: 'daily_schedule_spring_rasputitsa',
   spring_rasputitsa: 'daily_schedule_spring_rasputitsa',
   summer: 'daily_schedule_summer', autumn: 'daily_schedule_autumn' });
 const DEPTH_FIELD = Object.freeze({ background:

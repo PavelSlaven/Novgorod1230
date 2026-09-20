@@ -55,7 +55,7 @@ export function phase2InitialCurrentVisibleContext({
     version: 1,
     schema: 'visible_context_package',
     visible_scene: presented?.display_name ?? visibleContext?.place,
-    visible_changes: [],
+    visible_changes: initialEnvironmentChange(initialState),
     sensory_details: Array.isArray(environmentFacts)
       ? environmentFacts.filter((value) =>
           typeof value === 'string' && value.length > 0)
@@ -68,6 +68,14 @@ export function phase2InitialCurrentVisibleContext({
     allowed_tensions: [],
     do_not_imply: []
   });
+}
+
+function initialEnvironmentChange(state) {
+  const value = state?.environment_snapshot;
+  if (value?.schema !== 'rus.approved_initial_environment.v1') return [];
+  return [{ change_kind: 'environment_state', season: value.season,
+    day_part: value.day_part, light_state: value.light_state,
+    weather_state_id: value.weather_state?.weather_state_id }];
 }
 
 function visibleInitialItems(state) {

@@ -111,6 +111,9 @@ test('initial scene projects persisted items and NPC appearance/equipment', () =
   const current = phase2InitialCurrentVisibleContext({ screen,
     openingScreenDigest: canonicalDigest(screen), initialState: {
       actor_id: 'player', position: { g5_anchor_id: 'anchor' },
+      environment_snapshot: { schema: 'rus.approved_initial_environment.v1',
+        season: 'summer', day_part: 'daylight', light_state: 'daylight',
+        weather_state: { weather_state_id: 'clear' } },
       npcs: [{ instance_id: 'npc', anchor_id: 'anchor', profile_level: 'background',
         identity_state: { public_role_label: 'рыбак', sex_category: 'male',
           age_category: 'adult', appearance }, machine_state: {
@@ -128,6 +131,11 @@ test('initial scene projects persisted items and NPC appearance/equipment', () =
     appearance);
   assert.equal(current.visible_npc[0].observable_cues.equipment[0].item_ref,
     'shirt');
+  assert.deepEqual(current.visible_changes[0], {
+    change_kind: 'environment_state', season: 'summer',
+    day_part: 'daylight', light_state: 'daylight',
+    weather_state_id: 'clear'
+  });
 });
 
 test('public Phase 2 check omits private RNG audit', () => {

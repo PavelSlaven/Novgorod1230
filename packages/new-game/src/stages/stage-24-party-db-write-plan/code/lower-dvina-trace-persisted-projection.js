@@ -136,7 +136,8 @@ export function buildLowerDvinaTracePersistedProjection({
         },
         role_ref: structuredClone(npc.role_ref),
         occupation_ref: structuredClone(npc.occupation_ref),
-        skill_profile_snapshot: {},
+        skill_profile_snapshot: structuredClone(
+          npc.skill_profile_snapshot ?? {}),
         name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state),
         language_profile_snapshot: {},
         knowledge_profile_snapshot: structuredClone(npc.knowledge_profile_snapshot),

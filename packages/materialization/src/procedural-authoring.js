@@ -4,3 +4,5 @@ export { compileApprovedNpcRuntimeBasis } from
   './approved-npc-runtime-basis.js';
 export { deriveApprovedInitialEnvironment } from
   './approved-initial-environment.js';
+export { materializeApprovedProceduralNpc } from
+  './approved-procedural-npc.js';

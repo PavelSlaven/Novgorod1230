@@ -79,6 +79,13 @@ weather records plus the pinned materialization RNG. It preserves owner refs
 and exact daylight boundaries; missing date coverage or weather candidates is a
 typed data gap. It does not accept authored light/weather prose.
 
+`materializeApprovedProceduralNpc` consumes only the verified actor/Temporal
+bundle plus one approved placement binding. It creates stable identity,
+canonical base appearance, social/legal/occupation refs, approved skills/body,
+schedule/current activity and private behavior/knowledge basis. Names remain
+absent without exact authored basis; required tools/clothing hard-block unless
+an active exact equipment mapping is supplied.
+
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не
 читает БД, не выполняет commit и не активирует production O1 route. Он только
 валидирует code-owned inputs и возвращает immutable logical state/result.

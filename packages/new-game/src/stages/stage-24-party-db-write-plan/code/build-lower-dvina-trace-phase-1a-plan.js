@@ -5,8 +5,7 @@ import {
   STAGE24_PLAN_SCHEMA,
 } from '@rus/contracts';
 import { sha256 } from '@rus/kernel';
-import { addFirstEntryPreparationBatches } from
-  './lower-dvina-trace-first-entry-preparation.js';
+import { addFirstEntryPreparationBatches } from './lower-dvina-trace-first-entry-preparation.js';
 import { addAuthoredStartSpatialV3Batches, authoredStartSnapshotSchema,
   isAuthoredStartMaterializationResult } from './authored-start-spatial-v3.js';
 import {
@@ -21,8 +20,8 @@ import {
   phase3PreparedInputs,
   projectNameProfileSnapshot
 } from './lower-dvina-trace-persisted-projection.js';
-import { assertRevision19CharacterState } from
-  './lower-dvina-trace-revision19-write-boundary.js';
+import { assertRevision19CharacterState } from './lower-dvina-trace-revision19-write-boundary.js';
+import { approvedNpcBodyRows, approvedNpcConditionRows } from './actor-write-boundary.js';
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertInput(input);
   const request_id = input.request_id;
@@ -247,7 +246,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     actor_id: npc.instance_id,
     role_ref: npc.role_ref,
     occupation_ref: npc.occupation_ref,
-    skill_profile_snapshot: {},
+    skill_profile_snapshot: structuredClone(npc.skill_profile_snapshot ?? {}),
     name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state),
     language_profile_snapshot: {},
     knowledge_profile_snapshot: npc.knowledge_profile_snapshot,
@@ -271,7 +270,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     satiety: result.immediate.body.values.satiety,
     state_version: 1,
     updated_change_set_id: changeSetId
-  }], ['party_player_characters', 'party_v3_change_sets'], sourceTrace);
+  }, ...approvedNpcBodyRows(identityNpcs, partyId, changeSetId)],
+  ['party_player_characters', 'party_npcs', 'party_v3_change_sets'], sourceTrace);
   addBatch(batches, 'party_actor_active_conditions', result.immediate.body.condition_bindings.map((condition) => ({
     party_id: partyId,
     actor_kind: 'player_character',
@@ -282,7 +282,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     state_version: 1,
     created_change_set_id: changeSetId,
     terminal_change_set_id: null
-  })), ['party_actor_body_states', 'party_v3_change_sets'], sourceTrace);
+  })).concat(approvedNpcConditionRows(identityNpcs, partyId, changeSetId)),
+  ['party_actor_body_states', 'party_v3_change_sets'], sourceTrace);
   addBatch(batches, 'party_items', result.immediate.items.map((item) => ({
     party_id: partyId,
     item_id: item.instance_id,
@@ -450,7 +451,6 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   };
   return plan;
 }
-
 function addBatch(batches, table, records, dependencies, sourceTrace) {
   if (records.length === 0) return;
   batches.push({

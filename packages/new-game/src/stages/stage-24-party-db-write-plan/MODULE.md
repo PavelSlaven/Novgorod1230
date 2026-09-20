@@ -21,6 +21,9 @@
   reciprocal local movement/visibility topology и snapshot v3. Historical
   authored result v1 остаётся отдельным exact read contract; Stage 24 не
   повышает его версию и не выводит latest binding.
+- Approved procedural NPC uses the same actor profile, body, NPC, schedule,
+  item/equipment and snapshot batches. NPC skill/body rows are written in the
+  same atomic plan; no secondary persistence path is introduced.
 
 ## Не делает
 

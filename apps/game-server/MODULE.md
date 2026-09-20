@@ -655,6 +655,12 @@ remembered routes use existing route knowledge/history after traversal. It is a
 read projection, not a second route store. Inspection and reload retain the
 visible path; movement recomposes routes for the actual destination.
 
+Initial current-scene projection also exposes only persisted procedural NPC
+appearance, worn/held item refs, observable activity and the structured
+approved Temporal environment state. Private knowledge, goals and fears remain
+outside the player-safe package; reload reuses the persisted weather selection
+and never rerolls it.
+
 Current publication adds an authored shore path, its limit of sight and nearby
 water sound. These are approved current sensory premises, not deductions made
 by narration from the mere presence of water. Historical presentations remain

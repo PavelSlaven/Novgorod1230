@@ -24,12 +24,20 @@ export function deriveApprovedInitialEnvironment({ calendar_record: calendar,
   const lightState = minute < dawn || minute >= dusk ? 'night'
     : minute < sunrise ? 'civil_dawn'
       : minute < sunset ? 'daylight' : 'civil_dusk';
+  const seasonRules = calendar.payload?.season_rule;
   const seasons = weather.payload?.region_season_applicability?.calendar_seasons;
   const month = String(date.month);
-  const matches = Object.entries(seasons ?? {}).filter(([, months]) =>
+  const calendarMatches = Object.entries({ winter: seasonRules?.winter_months,
+    spring: seasonRules?.spring_months, summer: seasonRules?.summer_months,
+    autumn: seasonRules?.autumn_months }).filter(([, months]) =>
     Array.isArray(months) && months.includes(month));
-  if (matches.length !== 1) gap('INITIAL_ENVIRONMENT_WEATHER_DATA_GAP');
-  const [season] = matches[0];
+  const weatherMatches = Object.entries(seasons ?? {}).filter(([, months]) =>
+    Array.isArray(months) && months.includes(month));
+  if (calendarMatches.length !== 1 || weatherMatches.length !== 1
+      || calendarMatches[0][0] !== weatherMatches[0][0]) {
+    gap('INITIAL_ENVIRONMENT_WEATHER_DATA_GAP');
+  }
+  const [season] = calendarMatches[0];
   const candidates = weather.payload?.transition_rules
     ?.seasonal_candidates?.[season];
   if (!Array.isArray(candidates) || candidates.length === 0
@@ -50,7 +58,8 @@ export function deriveApprovedInitialEnvironment({ calendar_record: calendar,
     daylight_profile_ref: calendar.payload.daylight_profile_id,
     weather_profile_ref: weather.payload.weather_profile_id,
     calendar_date: structuredClone(date), local_minute_of_day: minute,
-    season, light_state: lightState, daylight_boundary: structuredClone(boundary),
+    season, day_part: lightState, light_state: lightState,
+    daylight_boundary: structuredClone(boundary),
     weather_state: structuredClone(state), weather_candidate_ref:
       structuredClone(selected.weather_state_ref), rng_draw: draw });
 }

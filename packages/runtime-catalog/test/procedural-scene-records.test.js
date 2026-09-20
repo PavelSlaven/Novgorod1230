@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { loadApprovedProceduralSceneRecordBundle } from '../src/index.js';
+import { loadApprovedProceduralActorTemporalBundle,
+  loadApprovedProceduralSceneRecordBundle } from '../src/index.js';
 
 const digest = (char) => char.repeat(64);
 const worldPin = { world_revision_id: 'world-v6',
@@ -54,4 +55,23 @@ test('record exporter rejects activation digest drift', async () => {
     worldBaseReader: reader({ activationDigest: digest('c') }), worldPin,
     runtimeCatalogPin: pin, bindings, verifiedItemCatalog: itemCatalog }),
   { code: 'PROCEDURAL_SCENE_ACTIVATION_PIN_MISMATCH' });
+});
+
+test('actor Temporal exporter keeps approved source dependencies', async () => {
+  const sqlRows = { social_role_archetypes: [{ id: 'role-a', status: 'approved' }],
+    occupation_archetypes: [{ id: 'occ-a', status: 'approved' }],
+    legal_status_archetypes: [{ id: 'legal-a', status: 'approved' }],
+    social_position_archetypes: [{ id: 'position-a', status: 'approved' }],
+    occupation_skill_defaults: [{ occupation_archetype_id: 'occ-a', skill_id: 'fishing', status: 'approved' }] };
+  const result = await loadApprovedProceduralActorTemporalBundle({
+    worldBaseReader: { read: async (sql) => ({ rows: Object.entries(sqlRows)
+      .find(([key]) => sql.includes(key))?.[1] ?? [] }) }, worldPin,
+    actorCatalog: { schema: 'rus.live_world_runtime.approved_actor_catalog.v1',
+      roles: [{ role_id: 'role', role_archetype_id: 'role-a', legal_status_archetype_id: 'legal-a', social_position_archetype_id: 'position-a', status: 'approved' }],
+      occupations: [{ occupation_id: 'occupation', occupation_archetype_id: 'occ-a', status: 'approved' }] },
+    actorProfileCatalog: { schema: 'rus.verified_actor_profile_catalog.v1',
+      verified: true, world_pin: worldPin, records_by_table: {} },
+    temporalRecords: [{ record_id: 'daylight', status: 'approved' }] });
+  assert.equal(result.occupation_skill_defaults[0].skill_id, 'fishing');
+  assert.equal(result.temporal_records[0].record_id, 'daylight');
 });

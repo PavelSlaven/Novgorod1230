@@ -97,6 +97,69 @@ export async function loadApprovedProceduralSceneRecordBundle({
   });
 }
 
+export async function loadApprovedProceduralActorTemporalBundle({
+  worldBaseReader, worldPin, actorCatalog, actorProfileCatalog,
+  temporalRecords
+} = {}) {
+  if (typeof worldBaseReader?.read !== 'function'
+      || actorCatalog?.schema !== 'rus.live_world_runtime.approved_actor_catalog.v1'
+      || actorProfileCatalog?.schema !== 'rus.verified_actor_profile_catalog.v1'
+      || actorProfileCatalog.verified !== true
+      || actorProfileCatalog.world_pin?.world_revision_id !== worldPin?.world_revision_id
+      || actorProfileCatalog.world_pin?.world_catalog_digest
+        !== worldPin?.world_catalog_digest
+      || !Array.isArray(temporalRecords)
+      || temporalRecords.some(({ status }) => status !== 'approved')) {
+    throw new TypeError('Exact approved actor and Temporal inputs are required.');
+  }
+  const roles = actorCatalog.roles.filter(({ status }) => status === 'approved');
+  const occupations = actorCatalog.occupations.filter(({ status }) =>
+    status === 'approved');
+  const refs = (records, key) => [...new Set(records.map((record) => record[key])
+    .filter(Boolean))].sort();
+  const [roleArchetypes, occupationArchetypes, legalStatuses,
+    socialPositions, skillDefaults] = await Promise.all([
+    readOwnerRows(worldBaseReader, 'social_role_archetypes',
+      refs(roles, 'role_archetype_id')),
+    readOwnerRows(worldBaseReader, 'occupation_archetypes',
+      refs(occupations, 'occupation_archetype_id')),
+    readOwnerRows(worldBaseReader, 'legal_status_archetypes',
+      refs(roles, 'legal_status_archetype_id')),
+    readOwnerRows(worldBaseReader, 'social_position_archetypes',
+      refs(roles, 'social_position_archetype_id')),
+    readSkillDefaults(worldBaseReader,
+      refs(occupations, 'occupation_archetype_id'))
+  ]);
+  return deepFreeze({ schema: 'rus.procedural_actor_temporal_bundle.v1',
+    world_pin: structuredClone(worldPin), roles: structuredClone(roles),
+    occupations: structuredClone(occupations), role_archetypes: roleArchetypes,
+    occupation_archetypes: occupationArchetypes,
+    legal_status_archetypes: legalStatuses,
+    social_position_archetypes: socialPositions,
+    occupation_skill_defaults: skillDefaults,
+    actor_profiles: structuredClone(actorProfileCatalog.records_by_table),
+    temporal_records: structuredClone(temporalRecords) });
+}
+
+const OWNER_SQL = Object.freeze({
+  social_role_archetypes: `SELECT * FROM world_base.social_role_archetypes WHERE id=ANY($1::text[]) AND status='approved' ORDER BY id`,
+  occupation_archetypes: `SELECT * FROM world_base.occupation_archetypes WHERE id=ANY($1::text[]) AND status='approved' ORDER BY id`,
+  legal_status_archetypes: `SELECT * FROM world_base.legal_status_archetypes WHERE id=ANY($1::text[]) AND status='approved' ORDER BY id`,
+  social_position_archetypes: `SELECT * FROM world_base.social_position_archetypes WHERE id=ANY($1::text[]) AND status='approved' ORDER BY id`
+});
+async function readOwnerRows(reader, table, ids) {
+  if (ids.length === 0) return [];
+  const rows = rowsFrom(await reader.read(OWNER_SQL[table], [ids]));
+  if (rows.length !== ids.length) gap('PROCEDURAL_ACTOR_DEPENDENCY_DATA_GAP');
+  return rows;
+}
+async function readSkillDefaults(reader, ids) {
+  if (ids.length === 0) return [];
+  return rowsFrom(await reader.read(
+    `SELECT * FROM world_base.occupation_skill_defaults WHERE occupation_archetype_id=ANY($1::text[]) AND status='approved' ORDER BY occupation_archetype_id,skill_id`,
+    [ids]));
+}
+
 async function readRegional(reader, kind, ids) {
   if (ids.length === 0) return [];
   return rowsFrom(await reader.read(REGIONAL_SQL[kind], [ids]));

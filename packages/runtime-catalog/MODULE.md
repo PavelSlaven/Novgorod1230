@@ -29,6 +29,9 @@ item/container runtime catalog и exact world-pinned actor component profiles.
 - `loadApprovedProceduralSceneRecordBundle(...)` verifies the exact world pin,
   latest matching activation event and approved regional applicability before
   exporting compiler inputs; candidate/manifests alone are rejected;
+- `loadApprovedProceduralActorTemporalBundle(...)` reads only approved enriched
+  role/occupation dependencies, legal/social/archetype/skill rows, exact active
+  actor components and approved Temporal records for procedural compilation;
 - `assertCompatibleWorldPin({ domainPin, worldPin })`;
 - `selectApplicableItemCatalog({ verifiedCatalog, regionId, effectiveDate })`.
 - `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.

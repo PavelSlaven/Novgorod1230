@@ -18,8 +18,6 @@ import {
 } from './ledger-digests.js';
 import { loadApprovedActorProfileCatalog } from
   './actor-profile-catalog.js';
-import { loadApprovedProceduralSceneRecordBundle } from
-  './procedural-scene-records.js';
 import {
   deepFreeze,
   fail,
@@ -29,8 +27,10 @@ import {
   RuntimeCatalogError
 } from './shared.js';
 
-export { loadApprovedActorProfileCatalog,
-  loadApprovedProceduralSceneRecordBundle, RuntimeCatalogError };
+export { loadApprovedActorProfileCatalog, RuntimeCatalogError };
+export { loadApprovedProceduralActorTemporalBundle,
+  loadApprovedProceduralSceneRecordBundle } from
+  './procedural-scene-records.js';
 
 export const RUNTIME_CATALOG_SCOPE = 'item_container_materialization_v2';
 

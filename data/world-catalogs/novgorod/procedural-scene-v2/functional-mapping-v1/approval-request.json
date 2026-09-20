@@ -7,7 +7,7 @@
   "activation_authorized": false,
   "activation_request": null,
   "candidate_ref": "novgorod_procedural_functional_mapping_candidate_001@1",
-  "candidate_digest": "f93b630f37888cf71a1d48aacabe6ef9d4cbe6b131000cdaf94941fb7cee4aba",
+  "candidate_digest": "aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588",
   "mapping_ids": [
     "drying_dormant_storage_place_group_v1",
     "drying_dormant_work_zone_place_group_v1",
@@ -24,5 +24,5 @@
     "ACTIVE_PROCESS_CONTAINER_MAPPING_CONDITIONAL",
     "FINITE_WRECK_SOURCE_REF_REQUIRED"
   ],
-  "request_digest": "489caef8a66f86474faa4217478e9e91d286efdbfc20357268e12b9e831452cf"
+  "request_digest": "229fa7d273e2201bd47d3cac75122507762a7ef7675a9bc25a89f2ff0c188245"
 }

@@ -19,6 +19,14 @@ const EXPECTED = Object.freeze({
 const REQUIRED_SOURCE_SCOPES = Object.freeze([
   'construction', 'historical_presence', 'material', 'physical_parameter'
 ]);
+const COMPLETE_TOOL_CATEGORIES = Object.freeze([
+  'cat_item_object_fish_trap_v1', 'cat_item_object_fishing_net_v1',
+  'cat_item_object_fishing_spear_v1'
+]);
+const SPARE_COMPONENT_CATEGORIES = Object.freeze([
+  'cat_item_object_fishing_line_v1', 'cat_item_object_net_float_v1',
+  'cat_item_object_net_sinker_v1'
+]);
 
 export async function generateProceduralFunctionalMappings(rootDir,
   overrides = {}) {
@@ -71,6 +79,8 @@ export async function generateProceduralFunctionalMappings(rootDir,
       layer: row.layer,
       required: row.required,
       semantics: row.semantics,
+      ...(row.component_role ? { component_role: row.component_role } : {}),
+      committed_source_required: row.committed_source_required,
       selection_mode: row.selection.mode,
       candidates: selectV5Candidates(row.selection, { profileEntries,
         profileSets, templates, categoryBindings, quantityProfiles, inventoryProfiles,
@@ -157,6 +167,8 @@ export async function generateProceduralFunctionalMappings(rootDir,
       unrevealed_stock_and_created_item_may_share_source: false,
       runtime_instances_created: false
     },
+    active_operation: null,
+    approved_process_mappings: [],
     mappings: rows.sort((a, b) => a.mapping_id.localeCompare(b.mapping_id)),
     conditional_context: conditionalContext,
     remaining_gaps: structuredClone(authoring.remaining_gap_rows)
@@ -216,6 +228,9 @@ export function validateProceduralFunctionalMappingCandidate(candidate) {
       fail('FUNCTIONAL_STORAGE_MUST_BE_PLACE_FUNCTION', row.mapping_id);
   }
   const itemRows = candidate.mappings.filter(({ candidates }) => candidates);
+  const tool = exact(itemRows, 'tool', 'layer', 'FUNCTIONAL_TOOL_GROUP');
+  const material = exact(itemRows, 'work_material', 'layer',
+    'FUNCTIONAL_WORK_MATERIAL_GROUP');
   const seen = new Map();
   for (const row of itemRows) for (const member of row.candidates) {
     const prior = seen.get(member.item_template_ref);
@@ -223,6 +238,21 @@ export function validateProceduralFunctionalMappingCandidate(candidate) {
       `${prior}:${row.mapping_id}:${member.item_template_ref}`);
     seen.set(member.item_template_ref, row.mapping_id);
   }
+  exactCategorySet(tool.candidates, COMPLETE_TOOL_CATEGORIES,
+    'FUNCTIONAL_DEPENDENT_COMPONENT_IN_TOOL_GROUP');
+  exactCategorySet(material.candidates, SPARE_COMPONENT_CATEGORIES,
+    'FUNCTIONAL_WORK_MATERIAL_CATEGORY_INVALID');
+  if (material.component_role !== 'spare_component'
+      || material.semantics !== 'finite_spare_component_alternative_group')
+    fail('FUNCTIONAL_WORK_MATERIAL_SEMANTICS_INVALID');
+  for (const row of itemRows) {
+    if (row.committed_source_required !== true
+        || row.candidates.some((member) =>
+          member.committed_source_required !== true
+            || typeof member.profile_entry_required !== 'boolean'))
+      fail('FUNCTIONAL_COMMITTED_SOURCE_REQUIRED', row.mapping_id);
+  }
+  validateActiveOperation(candidate, tool, material);
   const gaps = new Set(candidate.remaining_gaps.map(({ code }) => code));
   for (const code of ['FUNCTIONAL_CONTAINER_MAPPING_MISSING',
     'ACTIVE_PROCESS_TOOL_REF_REQUIRED', 'ACTIVE_PROCESS_MATERIAL_REF_REQUIRED',
@@ -277,7 +307,8 @@ function selectV5Candidates(selection, tables) {
         inventory.source_id, ...sources.map(({ source_id: id }) => id)])].sort(),
       min_quantity: entry.min_quantity,
       max_quantity: entry.max_quantity,
-      source_required: entry.required,
+      profile_entry_required: entry.required,
+      committed_source_required: true,
       source_weight: entry.weight,
       quantity_policy: structuredClone(quantity.default_quantity_policy)
     };
@@ -336,6 +367,28 @@ function validateEvidence(row, family) {
 function exactLayers(rows, expected, code) {
   const actual = rows.map(({ layer }) => layer).sort();
   if (JSON.stringify(actual) !== JSON.stringify([...expected].sort())) fail(code);
+}
+function exactCategorySet(members, expected, code) {
+  const actual = members.map(({ object_category_ref: ref }) => ref).sort();
+  if (JSON.stringify(actual) !== JSON.stringify([...expected].sort())) fail(code);
+}
+function validateActiveOperation(candidate, toolGroup, materialGroup) {
+  if (candidate.active_operation == null) return;
+  const operation = candidate.active_operation;
+  const tools = new Set(toolGroup.candidates.map(({ item_template_ref: ref }) =>
+    ref));
+  const materials = new Set(materialGroup.candidates.map(
+    ({ item_template_ref: ref }) => ref));
+  if (!tools.has(operation.tool_template_ref)
+      || !materials.has(operation.work_material_template_ref))
+    fail('FUNCTIONAL_OPERATION_PAIRING_INCOMPATIBLE');
+  const matches = (candidate.approved_process_mappings ?? []).filter((row) =>
+    row.operation_ref === operation.operation_ref
+      && row.tool_template_ref === operation.tool_template_ref
+      && row.work_material_template_ref === operation.work_material_template_ref
+      && row.approval_status === 'approved'
+      && row.evidence_refs?.length > 0);
+  if (matches.length !== 1) fail('FUNCTIONAL_OPERATION_PAIRING_UNAPPROVED');
 }
 function exact(rows, id, key, code) {
   const found = rows.filter((row) => row[key] === id);

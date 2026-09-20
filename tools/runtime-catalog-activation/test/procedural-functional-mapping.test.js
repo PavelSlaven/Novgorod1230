@@ -8,6 +8,8 @@ import { generateProceduralFunctionalMappings,
 const root = new URL('../../../', import.meta.url).pathname.replace(/^\/(.:)/u,
   '$1');
 const v5 = 'data/knowledge-source/imports/item-container-120-v5/candidate';
+const authoringPath =
+  'data/world-catalogs/novgorod/procedural-scene-v2/functional-mapping-v1/authoring-rows.json';
 
 test('functional candidate and request are byte-stable and non-executable',
   async () => {
@@ -50,7 +52,7 @@ test('missing and ambiguous category mappings fail closed', async () => {
   const path = `${v5}/tables/item_template_category_bindings.json`;
   const bindings = await readJson(path);
   const target = bindings.find(({ category_id: id, binding_kind: kind }) =>
-    id === 'cat_item_object_fishhook_v1' && kind === 'object_type');
+    id === 'cat_item_object_fishing_net_v1' && kind === 'object_type');
   await assert.rejects(() => generateProceduralFunctionalMappings(root, {
     [path]: bindings.filter(({ id }) => id !== target.id)
   }), { code: 'FUNCTIONAL_CATEGORY_MAPPING_MISSING' });
@@ -74,7 +76,19 @@ test('functional completeness, place storage and typed gaps are enforced',
           && member.object_category_ref && member.item_template_ref
           && member.quantity_profile_ref && member.inventory_profile_ref
           && member.source_binding_refs.length === 4
-          && member.source_refs.length > 0));
+          && member.source_refs.length > 0
+          && member.committed_source_required === true
+          && member.profile_entry_required === false));
+    const tool = fishing.find(({ layer }) => layer === 'tool');
+    const material = fishing.find(({ layer }) => layer === 'work_material');
+    assert.deepEqual(tool.candidates.map(({ object_category_ref: ref }) => ref), [
+      'cat_item_object_fish_trap_v1', 'cat_item_object_fishing_net_v1',
+      'cat_item_object_fishing_spear_v1']);
+    assert.deepEqual(material.candidates.map(({ object_category_ref: ref }) =>
+      ref), ['cat_item_object_fishing_line_v1',
+      'cat_item_object_net_float_v1', 'cat_item_object_net_sinker_v1']);
+    assert.equal(material.component_role, 'spare_component');
+    assert.equal(material.committed_source_required, true);
     const placeGroups = candidate.mappings.filter(({ layer }) =>
       layer === 'storage' || layer === 'work_zone');
     assert.ok(placeGroups.every((row) => row.persistent === true
@@ -101,6 +115,51 @@ test('cross-layer item reuse fails single-source accounting guard', async () => 
   material.candidates.push(structuredClone(tool.candidates[0]));
   assert.throws(() => validateProceduralFunctionalMappingCandidate(changed),
     { code: 'FUNCTIONAL_CROSS_LAYER_SOURCE_DUPLICATE' });
+});
+
+test('dependent hook or line cannot become standalone tool', async () => {
+  for (const categoryId of ['cat_item_object_fishhook_v1',
+    'cat_item_object_fishing_line_v1']) {
+    const authoring = await readJson(authoringPath);
+    authoring.mapping_rows.find(({ layer }) => layer === 'tool')
+      .selection.object_category_ids = [categoryId];
+    if (categoryId === 'cat_item_object_fishing_line_v1')
+      authoring.mapping_rows.find(({ layer }) => layer === 'work_material')
+        .selection.object_category_ids = ['cat_item_object_net_float_v1',
+          'cat_item_object_net_sinker_v1'];
+    await assert.rejects(() => generateProceduralFunctionalMappings(root,
+      { [authoringPath]: authoring }),
+    { code: 'FUNCTIONAL_DEPENDENT_COMPONENT_IN_TOOL_GROUP' });
+  }
+});
+
+test('active operation needs exact approved tool/material process pairing',
+  async () => {
+    const { candidate } = await generateProceduralFunctionalMappings(root);
+    const changed = structuredClone(candidate);
+    const tool = changed.mappings.find(({ layer }) => layer === 'tool');
+    const material = changed.mappings.find(({ layer }) =>
+      layer === 'work_material');
+    changed.active_operation = {
+      operation_ref: 'repair_fishing_gear',
+      tool_template_ref: tool.candidates[0].item_template_ref,
+      work_material_template_ref: material.candidates[0].item_template_ref
+    };
+    assert.throws(() => validateProceduralFunctionalMappingCandidate(changed),
+      { code: 'FUNCTIONAL_OPERATION_PAIRING_UNAPPROVED' });
+  });
+
+test('finite groups and members require committed sources', async () => {
+  const { candidate } = await generateProceduralFunctionalMappings(root);
+  for (const mutation of [(row) => { row.committed_source_required = false; },
+    (row) => { delete row.committed_source_required; },
+    (row) => { row.candidates[0].committed_source_required = false; },
+    (row) => { delete row.candidates[0].committed_source_required; }]) {
+    const changed = structuredClone(candidate);
+    mutation(changed.mappings.find(({ layer }) => layer === 'work_material'));
+    assert.throws(() => validateProceduralFunctionalMappingCandidate(changed),
+      { code: 'FUNCTIONAL_COMMITTED_SOURCE_REQUIRED' });
+  }
 });
 
 async function readJson(relative) {

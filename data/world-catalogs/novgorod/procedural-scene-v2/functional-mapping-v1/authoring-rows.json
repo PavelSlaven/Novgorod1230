@@ -20,13 +20,12 @@
       "layer": "tool",
       "required": true,
       "semantics": "finite_item_alternative_group",
+      "committed_source_required": true,
       "selection": {
         "kind": "v5_profile_object_categories",
         "profile_id": "profile_fishing_v3",
         "object_category_ids": [
           "cat_item_object_fish_trap_v1",
-          "cat_item_object_fishhook_v1",
-          "cat_item_object_fishing_line_v1",
           "cat_item_object_fishing_net_v1",
           "cat_item_object_fishing_spear_v1"
         ],
@@ -36,7 +35,7 @@
         "claim_refs": ["claim:population-net-work"],
         "directness": "direct",
         "confidence": "high",
-        "limits": "One required functional group, not five required objects. Members remain alternatives and inherit exact V5 quantity, inventory, source and weight fields."
+        "limits": "One required functional group of independently usable complete gear, not three required objects. Members remain alternatives and inherit exact V5 quantity, inventory, source and weight fields."
       }
     },
     {
@@ -45,21 +44,27 @@
       "variant_id": "active_worksite",
       "layer": "work_material",
       "required": true,
-      "semantics": "finite_component_alternative_group",
+      "semantics": "finite_spare_component_alternative_group",
+      "component_role": "spare_component",
+      "committed_source_required": true,
       "selection": {
         "kind": "v5_profile_object_categories",
         "profile_id": "profile_fishing_v3",
         "object_category_ids": [
+          "cat_item_object_fishing_line_v1",
           "cat_item_object_net_float_v1",
           "cat_item_object_net_sinker_v1"
         ],
         "mode": "source_weight_then_template_id"
       },
       "evidence": {
-        "claim_refs": ["claim:population-net-work"],
-        "directness": "direct",
-        "confidence": "high",
-        "limits": "Only source-attested net-component categories. A runtime instance still needs one committed finite source ref; this row creates no stock or item."
+        "claim_refs": [
+          "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
+          "claim:population-fishing-workspace"
+        ],
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Stored fishing spare components only, backed by broad approved fishing/workspace evidence plus each member's exact V5 sources. No selected tool compatibility or specific repair operation is asserted. A runtime instance still needs one committed finite source ref; this row creates no stock or item."
       }
     },
     {

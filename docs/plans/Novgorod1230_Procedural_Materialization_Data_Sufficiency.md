@@ -49,9 +49,11 @@ functional-layer candidate and a separate approval request. It is not
 self-approved and defines mappings only: no runtime item, container, stock,
 place group or event is created.
 
-- fishing `tool` selects alternatives by exact V5 profile/category IDs;
-  `work_material` is limited to finite net-component categories; both retain
-  V5 entry weight, quantity, inventory, category and source refs;
+- fishing `tool` selects only independently usable trap/net/spear alternatives
+  by exact V5 profile/category IDs; `work_material` is a separate finite spare
+  line/float/sinker component group, without claiming a compatible repair
+  operation; both retain V5 entry weight, quantity, inventory, category and
+  source refs and require a committed runtime source;
 - fishing `storage` and `work_zone`, plus dormant drying `storage` and
   `work_zone`, are persistent place-function groups over exact approved G6
   slots, not item/container claims;

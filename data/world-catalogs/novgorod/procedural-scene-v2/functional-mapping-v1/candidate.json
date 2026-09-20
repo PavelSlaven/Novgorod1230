@@ -10,7 +10,7 @@
   "provenance": {
     "authoring_id": "novgorod_procedural_functional_mapping_authoring_001",
     "authoring_version": 1,
-    "authoring_rows_digest": "7a9b278ff9398a0acbfe1cc07c53c7cdf33bf52ba4487ab41b7c86fdb68cc604",
+    "authoring_rows_digest": "542eb6a3bda332097e09c100f96977b9d032de88c94aed8e5d6d7c6da062f4c4",
     "v5_bundle_id": "novgorod_1230_item_container_v5_candidate_001",
     "v5_candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24",
     "v5_approval_request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
@@ -38,6 +38,8 @@
     "unrevealed_stock_and_created_item_may_share_source": false,
     "runtime_instances_created": false
   },
+  "active_operation": null,
+  "approved_process_mappings": [],
   "mappings": [
     {
       "mapping_id": "drying_dormant_storage_place_group_v1",
@@ -131,6 +133,7 @@
       "layer": "tool",
       "required": true,
       "semantics": "finite_item_alternative_group",
+      "committed_source_required": true,
       "selection_mode": "source_weight_then_template_id",
       "candidates": [
         {
@@ -153,61 +156,8 @@
           ],
           "min_quantity": 1,
           "max_quantity": 1,
-          "source_required": false,
-          "source_weight": 55,
-          "quantity_policy": {
-            "version": 1,
-            "mode": "explicit_only"
-          }
-        },
-        {
-          "profile_entry_ref": "entry_profile_fishing_v3_item_tpl_nov_fishhook_v1",
-          "profile_ref": "profile_fishing_v3",
-          "item_template_ref": "item_tpl_nov_fishhook_v1",
-          "object_category_ref": "cat_item_object_fishhook_v1",
-          "quantity_profile_ref": "quantity_item_tpl_nov_fishhook_v1_count_v5",
-          "inventory_profile_ref": "inventory_item_tpl_nov_fishhook_v1",
-          "source_binding_refs": [
-            "claim_construction_item_tpl_nov_fishhook_v1",
-            "claim_historical_presence_item_tpl_nov_fishhook_v1",
-            "claim_material_item_tpl_nov_fishhook_v1",
-            "claim_physical_parameter_item_tpl_nov_fishhook_v1"
-          ],
-          "source_refs": [
-            "src_gameplay_physical_policy_v3",
-            "src_novgorod_promysly",
-            "src_project_stage_3b1_physical_parameter_policy"
-          ],
-          "min_quantity": 1,
-          "max_quantity": 1,
-          "source_required": false,
-          "source_weight": 55,
-          "quantity_policy": {
-            "version": 1,
-            "mode": "explicit_only"
-          }
-        },
-        {
-          "profile_entry_ref": "entry_profile_fishing_v3_item_tpl_nov_fishing_line_v1",
-          "profile_ref": "profile_fishing_v3",
-          "item_template_ref": "item_tpl_nov_fishing_line_v1",
-          "object_category_ref": "cat_item_object_fishing_line_v1",
-          "quantity_profile_ref": "quantity_item_tpl_nov_fishing_line_v1_count_v5",
-          "inventory_profile_ref": "inventory_item_tpl_nov_fishing_line_v1",
-          "source_binding_refs": [
-            "claim_construction_item_tpl_nov_fishing_line_v1",
-            "claim_historical_presence_item_tpl_nov_fishing_line_v1",
-            "claim_material_item_tpl_nov_fishing_line_v1",
-            "claim_physical_parameter_item_tpl_nov_fishing_line_v1"
-          ],
-          "source_refs": [
-            "src_gameplay_physical_policy_v3",
-            "src_novgorod_promysly",
-            "src_project_stage_3b1_physical_parameter_policy"
-          ],
-          "min_quantity": 1,
-          "max_quantity": 1,
-          "source_required": false,
+          "profile_entry_required": false,
+          "committed_source_required": true,
           "source_weight": 55,
           "quantity_policy": {
             "version": 1,
@@ -234,7 +184,8 @@
           ],
           "min_quantity": 1,
           "max_quantity": 1,
-          "source_required": false,
+          "profile_entry_required": false,
+          "committed_source_required": true,
           "source_weight": 55,
           "quantity_policy": {
             "version": 1,
@@ -261,7 +212,8 @@
           ],
           "min_quantity": 1,
           "max_quantity": 1,
-          "source_required": false,
+          "profile_entry_required": false,
+          "committed_source_required": true,
           "source_weight": 55,
           "quantity_policy": {
             "version": 1,
@@ -275,7 +227,7 @@
         ],
         "directness": "direct",
         "confidence": "high",
-        "limits": "One required functional group, not five required objects. Members remain alternatives and inherit exact V5 quantity, inventory, source and weight fields."
+        "limits": "One required functional group of independently usable complete gear, not three required objects. Members remain alternatives and inherit exact V5 quantity, inventory, source and weight fields."
       }
     },
     {
@@ -284,9 +236,39 @@
       "variant_id": "active_worksite",
       "layer": "work_material",
       "required": true,
-      "semantics": "finite_component_alternative_group",
+      "semantics": "finite_spare_component_alternative_group",
+      "component_role": "spare_component",
+      "committed_source_required": true,
       "selection_mode": "source_weight_then_template_id",
       "candidates": [
+        {
+          "profile_entry_ref": "entry_profile_fishing_v3_item_tpl_nov_fishing_line_v1",
+          "profile_ref": "profile_fishing_v3",
+          "item_template_ref": "item_tpl_nov_fishing_line_v1",
+          "object_category_ref": "cat_item_object_fishing_line_v1",
+          "quantity_profile_ref": "quantity_item_tpl_nov_fishing_line_v1_count_v5",
+          "inventory_profile_ref": "inventory_item_tpl_nov_fishing_line_v1",
+          "source_binding_refs": [
+            "claim_construction_item_tpl_nov_fishing_line_v1",
+            "claim_historical_presence_item_tpl_nov_fishing_line_v1",
+            "claim_material_item_tpl_nov_fishing_line_v1",
+            "claim_physical_parameter_item_tpl_nov_fishing_line_v1"
+          ],
+          "source_refs": [
+            "src_gameplay_physical_policy_v3",
+            "src_novgorod_promysly",
+            "src_project_stage_3b1_physical_parameter_policy"
+          ],
+          "min_quantity": 1,
+          "max_quantity": 1,
+          "profile_entry_required": false,
+          "committed_source_required": true,
+          "source_weight": 55,
+          "quantity_policy": {
+            "version": 1,
+            "mode": "explicit_only"
+          }
+        },
         {
           "profile_entry_ref": "entry_profile_fishing_v3_item_tpl_nov_net_float_v1",
           "profile_ref": "profile_fishing_v3",
@@ -307,7 +289,8 @@
           ],
           "min_quantity": 1,
           "max_quantity": 1,
-          "source_required": false,
+          "profile_entry_required": false,
+          "committed_source_required": true,
           "source_weight": 55,
           "quantity_policy": {
             "version": 1,
@@ -334,7 +317,8 @@
           ],
           "min_quantity": 1,
           "max_quantity": 1,
-          "source_required": false,
+          "profile_entry_required": false,
+          "committed_source_required": true,
           "source_weight": 55,
           "quantity_policy": {
             "version": 1,
@@ -344,11 +328,12 @@
       ],
       "evidence": {
         "claim_refs": [
-          "claim:population-net-work"
+          "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
+          "claim:population-fishing-workspace"
         ],
-        "directness": "direct",
-        "confidence": "high",
-        "limits": "Only source-attested net-component categories. A runtime instance still needs one committed finite source ref; this row creates no stock or item."
+        "directness": "inferred",
+        "confidence": "medium",
+        "limits": "Stored fishing spare components only, backed by broad approved fishing/workspace evidence plus each member's exact V5 sources. No selected tool compatibility or specific repair operation is asserted. A runtime instance still needs one committed finite source ref; this row creates no stock or item."
       }
     },
     {
@@ -463,5 +448,5 @@
       "limits": "A separate committed wreck entity/source ref and one shared finite remainder are required; this mapping creates neither."
     }
   ],
-  "candidate_digest": "f93b630f37888cf71a1d48aacabe6ef9d4cbe6b131000cdaf94941fb7cee4aba"
+  "candidate_digest": "aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588"
 }

@@ -1,0 +1,114 @@
+{
+  "schema": "rus.procedural_functional_allocation_candidate.v1",
+  "candidate_id": "novgorod_procedural_functional_allocation_candidate_001",
+  "version": 1,
+  "status": "candidate_approval_pending",
+  "authoring_scope": "functional_actor_allocation_only",
+  "source_candidate_digests": {
+    "functional_mapping": "aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588",
+    "npc_equipment": "0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181"
+  },
+  "policies": [
+    {
+      "policy_id": "fishing_present_actor_functional_allocation_v1",
+      "family_candidate_ref": "novgorod_inland_fishing_worksite_v3@1",
+      "applicability": {
+        "function_ref": "fishing_worksite",
+        "occupation_ref": "nov_occ_fisher",
+        "role_ref": "nov_role_fisher",
+        "activity_profile_ref": "activity_assist_fishing_net_v1",
+        "actor_presence": "present_committed"
+      },
+      "actor_selection": "stable_actor_id_ascending",
+      "allocations": [
+        {
+          "layer": "tool",
+          "selection_mode": "deterministic_single_approved_candidate",
+          "item_template_ref": "item_tpl_nov_fishing_net_v1",
+          "profile_ref": "profile_fishing_v3",
+          "profile_entry_ref": "entry_profile_fishing_v3_item_tpl_nov_fishing_net_v1",
+          "quantity_profile_ref": "quantity_item_tpl_nov_fishing_net_v1_count_v5",
+          "inventory_profile_ref": "inventory_item_tpl_nov_fishing_net_v1",
+          "object_category_ref": "cat_item_object_fishing_net_v1",
+          "min_quantity": 1,
+          "max_quantity": 1,
+          "source_binding_refs": [
+            "claim_construction_item_tpl_nov_fishing_net_v1",
+            "claim_historical_presence_item_tpl_nov_fishing_net_v1",
+            "claim_material_item_tpl_nov_fishing_net_v1",
+            "claim_physical_parameter_item_tpl_nov_fishing_net_v1"
+          ],
+          "source_refs": [
+            "src_gameplay_physical_policy_v3",
+            "src_novgorod_promysly",
+            "src_project_stage_3b1_physical_parameter_policy"
+          ],
+          "committed_source_required": true
+        },
+        {
+          "layer": "work_material",
+          "selection_mode": "deterministic_single_approved_candidate",
+          "item_template_ref": "item_tpl_nov_fishing_line_v1",
+          "profile_ref": "profile_fishing_v3",
+          "profile_entry_ref": "entry_profile_fishing_v3_item_tpl_nov_fishing_line_v1",
+          "quantity_profile_ref": "quantity_item_tpl_nov_fishing_line_v1_count_v5",
+          "inventory_profile_ref": "inventory_item_tpl_nov_fishing_line_v1",
+          "object_category_ref": "cat_item_object_fishing_line_v1",
+          "min_quantity": 1,
+          "max_quantity": 1,
+          "source_binding_refs": [
+            "claim_construction_item_tpl_nov_fishing_line_v1",
+            "claim_historical_presence_item_tpl_nov_fishing_line_v1",
+            "claim_material_item_tpl_nov_fishing_line_v1",
+            "claim_physical_parameter_item_tpl_nov_fishing_line_v1"
+          ],
+          "source_refs": [
+            "src_gameplay_physical_policy_v3",
+            "src_novgorod_promysly",
+            "src_project_stage_3b1_physical_parameter_policy"
+          ],
+          "committed_source_required": true
+        }
+      ],
+      "property_basis": {
+        "owner_ref": "selected_actor",
+        "holder_ref": "selected_actor",
+        "controller_ref": "selected_actor",
+        "access_policy": "actor_controlled"
+      },
+      "placement": {
+        "mode": "persisted_function_position",
+        "required_function_layer": "work_zone",
+        "required_position_state": "committed"
+      },
+      "limits": {
+        "site_or_unowned_item_authorized": false,
+        "household_basis_authorized": false,
+        "resource_node_authorized": false,
+        "stock_creation_authorized": false,
+        "quantity_creation_authorized": false
+      }
+    }
+  ],
+  "unaffected_families": [
+    "novgorod_drying_storage_workspace_v3@1",
+    "novgorod_natural_shore_v3@1"
+  ],
+  "typed_gap_reconciliation": {
+    "resolved_when_policy_applicable": [
+      "FUNCTIONAL_TOOL_MAPPING_MISSING",
+      "FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING"
+    ],
+    "remains_when_no_matching_actor": [
+      "FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING"
+    ],
+    "always_remaining": [
+      "FUNCTIONAL_CONTAINER_MAPPING_MISSING"
+    ]
+  },
+  "import_authorized": false,
+  "runtime_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "candidate_digest": "f291db5639e015decb15b6d9c8b0a7e20e6a29fdcfb9276aa8243886c6e729fc"
+}

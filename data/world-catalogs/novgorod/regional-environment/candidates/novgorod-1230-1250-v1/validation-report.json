@@ -13,9 +13,9 @@
     "new_place_process_boundary",
     "no_import_or_activation"
   ],
-  "candidate_digest": "e9d81fbc2d4f81410588758a4b56317f4fabe9fe9c685338fdc11546e86d91fd",
-  "approval_request_digest": "559a5c2ad8db6499ca55b3f1e054c9df1dd728b61224b51d27819017baed7f00",
-  "manifest_digest": "01bf0ae81c850fa3b953b895c5d0a6669c372137c6b0baed5f67eac5d990e406",
+  "candidate_digest": "01517d7919be4eedecad170f21055bb348d60fa4605814ca656272a766474d3a",
+  "approval_request_digest": "cf56d748a391ad23bcc876c3cde9ef499e3a8a8e9e6ee9abd0a42326ce4ab74f",
+  "manifest_digest": "05acb07d066ff349a5b5ff965a73e325b730c5e14e5c6b018f4e882fbacbf2ed",
   "rows_requiring_second_audit": [
     "lt_sparse_forest_woodland",
     "pt_drying_storage_workspace",

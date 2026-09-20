@@ -2,7 +2,7 @@
   "schema": "rus.regional_environment_approval_request.v1",
   "request_id": "novgorod_regional_environment_1230_1250_review_001",
   "revision_id": "novgorod_regional_environment_1230_1250_v1",
-  "candidate_digest": "e9d81fbc2d4f81410588758a4b56317f4fabe9fe9c685338fdc11546e86d91fd",
+  "candidate_digest": "01517d7919be4eedecad170f21055bb348d60fa4605814ca656272a766474d3a",
   "decision_requested": "approve_exact_audited_promotions_and_review_new_place",
   "region_id": "region_novgorod_land",
   "period": {
@@ -19,6 +19,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Южные, более освоенные и плодородные участки; не заменяет пашню.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -42,6 +43,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Использовать как хвойный вариант лесной среды; регионально уточнять по подзонам.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -64,6 +66,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Чаще в более северных/глухих лесных участках; не ставить на плотно заселённое Пooзерие как единственную среду.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -87,6 +90,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Основная лесная среда северо-запада и окрестностей Ильменя; применять как частую базу G1/G2.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -110,6 +114,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Не делать доминирующим вокруг каждого поселения; чаще в малоосвоенных ячейках.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -131,6 +136,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Связывать с низинами, водосбором, болотами и озёрно-речной сетью.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -151,6 +157,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Около озёр, рек, низин и заболоченных краёв; не путать с отдельным водным объектом.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -171,6 +178,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Сезонная вода и разлив должны задаваться отдельно через water_body_template.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -191,6 +199,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Не ставить как весь региональный граф; типично как край озера/старицы/болотной протоки.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -210,6 +219,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Чаще по окраинам болот, озёр и пойм.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -230,6 +240,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Не использовать как “вода”; это ландшафтная болотная среда.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -250,6 +261,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Применять локально; не вся болотная ячейка обязана быть торфяным болотным лесом.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -270,6 +282,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Болота как G1/G2 среда; не создавать рядом с каждым поселением.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -290,6 +303,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Связывать с низинами, источниками, ручьями и поймами.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -310,6 +324,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Редко и локально на сухих гривках, высоких берегах, вырубках.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -330,6 +345,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Обычно возле поселений, лесных прогалин и хозяйственно освоенных мест.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -350,6 +366,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Связывать с поймами и низинами; сезонно подтопляемые варианты через water_body.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -374,6 +391,14 @@
         "local_topology_ref",
         "local_succession_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "local_topology_ref",
+          "local_succession_ref"
+        ]
+      },
       "regional_limits": "Использовать как зарастающий луг/опушка, не как отдельный лес. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_succession_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -394,6 +419,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Крупно вдоль Ильменя, Волхова, Мсты, Ловати, Шелони и других речных систем.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -416,6 +442,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Пойменные влажные луга; не вся пойма, а хозяйственно важные открытые участки.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -437,6 +464,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Лесистые поймы и пойменные островки; не заменяет общий лес.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -457,6 +485,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Локально в низинах и поймах; требуются сезонные правила разлива.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -477,6 +506,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только рядом с river/water edge; не G1-доминанта без реки.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -498,6 +528,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Локально на подмываемых берегах и извилинах; не универсальный берег.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -519,6 +550,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Кустарниковые берега рек/ручьёв; использовать как вторичный слой.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -539,6 +571,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Локально у озёр, не все берега Ильменя песчаные.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -562,6 +595,14 @@
         "local_topology_ref",
         "local_geology_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "local_topology_ref",
+          "local_geology_ref"
+        ]
+      },
       "regional_limits": "Редко; скорее для валдайских/ледниковых озёр и каменистых участков. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_geology_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -583,6 +624,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Типично для мелководных, заболоченных и низких озёрных краёв.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -602,6 +644,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Край озера/старицы/болотистой низины; не отдельная вода.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -621,6 +664,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Для валдайских и моренных повышений; не превращать Новгородскую землю в горный регион.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -638,12 +682,23 @@
       "domain": "landscape",
       "universal_id": "lt_steep_hills",
       "regional_id": "rlt_novgorod_steep_hills",
-      "audit_verdict": "APPROVE",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
       "proposed_universal_status": "approved",
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
-      "required_context_refs": [],
-      "regional_limits": "Редко и локально; не использовать как доминирующую среду.",
+      "required_context_refs": [
+        "local_topology_ref",
+        "local_geology_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "local_topology_ref",
+          "local_geology_ref"
+        ]
+      },
+      "regional_limits": "Редко и локально; не использовать как доминирующую среду. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_geology_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
         "src_natgeo_landform",
@@ -664,6 +719,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Лесистые холмы и моренные участки; не путать с горами.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -681,12 +737,23 @@
       "domain": "landscape",
       "universal_id": "lt_dry_ravine_gully",
       "regional_id": "rlt_novgorod_dry_ravine_gully",
-      "audit_verdict": "APPROVE",
+      "audit_verdict": "APPROVE_WITH_LIMITS",
       "proposed_universal_status": "approved",
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
-      "required_context_refs": [],
-      "regional_limits": "Локальные овраги/промоины в холмистой местности.",
+      "required_context_refs": [
+        "local_topology_ref",
+        "local_geology_or_erosion_context_ref"
+      ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "local_topology_ref",
+          "local_geology_or_erosion_context_ref"
+        ]
+      },
+      "regional_limits": "Локальные овраги/промоины в холмистой местности. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_geology_or_erosion_context_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
         "src_natgeo_landform",
@@ -707,6 +774,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Связывать с лесом, холмами, поселениями; не делать крупным водным объектом.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -728,6 +796,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Мокрое место/сочение; не путать с ручьём или болотом.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -749,6 +818,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Ручьи часты в лесной и холмистой среде; обычно не судоходны.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -770,6 +840,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Малые реки, притоки и сельские переправы; судоходность только локально.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -791,6 +862,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Применять для значимых рек и участков речного пути.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -813,6 +885,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Для Волхова и иных крупных участков; не бродить без отдельного ford/ferry/bridge.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -835,6 +908,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только в речных/озёрно-речных системах.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -857,6 +931,13 @@
       "required_context_refs": [
         "hydrology_graph_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "hydrology_graph_ref"
+        ]
+      },
       "regional_limits": "Редко и только на конкретном river edge; не тип всей реки. AUDIT_GUARD requires_context_refs=[\"hydrology_graph_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -878,6 +959,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только в поймах и старых руслах.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -898,6 +980,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Заводь/затон рядом с рекой или озером; не самостоятельный большой водоём.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -918,6 +1001,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Пойменные озёра и низины вокруг речной системы.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -939,6 +1023,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только при поселении/мельнице/хозяйстве или естественном малом пруде.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -960,6 +1045,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Часто в озёрно-лесной зоне; не каждая ячейка озёрная.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -981,6 +1067,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Для Ильменя и крупных озёр; переход требует route edge.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1005,6 +1092,13 @@
       "required_context_refs": [
         "seasonal_hydrology_context_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "seasonal_hydrology_context_ref"
+        ]
+      },
       "regional_limits": "Сезонная вода; не фиксировать как постоянный объект без причины. AUDIT_GUARD requires_context_refs=[\"seasonal_hydrology_context_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1028,6 +1122,13 @@
       "required_context_refs": [
         "temporal_hydrology_state_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "temporal_hydrology_state_ref"
+        ]
+      },
       "regional_limits": "Активировать сезонно при паводке; не постоянный water body. AUDIT_GUARD requires_context_refs=[\"temporal_hydrology_state_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1049,6 +1150,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только внутри marsh/fen/wet meadow; опасно для движения.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1069,6 +1171,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только внутри верховых/торфяных болот; не питьевая норма.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1089,6 +1192,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Болотные протоки требуют местного знания.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1112,6 +1216,14 @@
         "brine_resource_ref",
         "authored_salt_locality_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "brine_resource_ref",
+          "authored_salt_locality_ref"
+        ]
+      },
       "regional_limits": "Редко; использовать для Старой Руссы/соляных мест при региональном уточнении. AUDIT_GUARD requires_context_refs=[\"brine_resource_ref\",\"authored_salt_locality_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1135,6 +1247,13 @@
       "required_context_refs": [
         "fortified_site_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "fortified_site_ref"
+        ]
+      },
       "regional_limits": "Только при укреплённом месте, если ров действительно наполнен водой. AUDIT_GUARD requires_context_refs=[\"fortified_site_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1156,6 +1275,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Вокруг сельских поселений и Пooзерья; не на болотах без осушения.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1178,6 +1298,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Поверх пашни/сельских угодий; не самостоятельный ландшафт.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1199,6 +1320,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только как использование лесной среды; не создавать ландшафт “подсечный лес”.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1219,6 +1341,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только внутри/рядом с двором, монастырём, посадом.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1243,6 +1366,14 @@
         "settlement_context_ref",
         "apple_orchard_basis_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "settlement_context_ref",
+          "apple_orchard_basis_ref"
+        ]
+      },
       "regional_limits": "Редко, только при дворе/монастыре и без южных культур. AUDIT_GUARD requires_context_refs=[\"settlement_context_ref\",\"apple_orchard_basis_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1264,6 +1395,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Лён/конопля возможны на сельских участках; вымачивание требует отдельной воды.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1285,6 +1417,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Особенно по поймам и влажным лугам; не на верховых болотах.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1307,6 +1440,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Вокруг поселений, на лугах, выгонах, лесных опушках.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1329,6 +1463,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только как использование леса/редколесья около поселений.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1353,6 +1488,14 @@
         "wetland_landscape_ref",
         "economic_basis_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "wetland_landscape_ref",
+          "economic_basis_ref"
+        ]
+      },
       "regional_limits": "По камышовым берегам, маршам, болотам; не водный объект. AUDIT_GUARD requires_context_refs=[\"wetland_landscape_ref\",\"economic_basis_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1374,6 +1517,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Лесной промысел; следы рубки задаются как land_use, не ландшафт.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1395,6 +1539,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Часто около поселений; не превращать в отдельный лес.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1419,6 +1564,14 @@
         "forest_resource_ref",
         "production_basis_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "forest_resource_ref",
+          "production_basis_ref"
+        ]
+      },
       "regional_limits": "Рядом с лесом и железоделанием; не каждый лес углежжение. AUDIT_GUARD requires_context_refs=[\"forest_resource_ref\",\"production_basis_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1442,6 +1595,14 @@
         "forest_work_context_ref",
         "economic_basis_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "forest_work_context_ref",
+          "economic_basis_ref"
+        ]
+      },
       "regional_limits": "Хвойный/смешанный лес, судостроение, деревообработка; не ландшафт. AUDIT_GUARD requires_context_refs=[\"forest_work_context_ref\",\"economic_basis_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1462,6 +1623,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Береста/лыко/кора как лесной ресурс; не задаёт породу леса.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1482,6 +1644,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Сезонный ресурс леса/болота/луга; не “сборной лес”.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1502,6 +1665,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только лесное использование; не “бортный лес”.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1522,6 +1686,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Зверь задаётся отдельной региональной фауной; шаблон только разрешает охотничьи угодья.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1542,6 +1707,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Не гарантирует конкретный вид пушнины; нужен фаунистический контекст.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1562,6 +1728,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только при воде; не создаёт реку/озеро автоматически.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1587,6 +1754,14 @@
         "water_ref",
         "fishing_right_or_infrastructure_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "water_ref",
+          "fishing_right_or_infrastructure_ref"
+        ]
+      },
       "regional_limits": "Стационарные ловушки только на подходящем водном ребре/месте. AUDIT_GUARD requires_context_refs=[\"water_ref\",\"fishing_right_or_infrastructure_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1611,6 +1786,14 @@
         "brine_resource_ref",
         "production_basis_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "brine_resource_ref",
+          "production_basis_ref"
+        ]
+      },
       "regional_limits": "Только у солёных источников/Старорусской зоны; не по всему региону. AUDIT_GUARD requires_context_refs=[\"brine_resource_ref\",\"production_basis_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1635,6 +1818,14 @@
         "clay_resource_patch_ref",
         "production_basis_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "clay_resource_patch_ref",
+          "production_basis_ref"
+        ]
+      },
       "regional_limits": "Локально у гончарных/строительных мест; не G1-доминанта. AUDIT_GUARD requires_context_refs=[\"clay_resource_patch_ref\",\"production_basis_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1660,6 +1851,15 @@
         "fuel_ref",
         "production_basis_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "bog_iron_resource_ref",
+          "fuel_ref",
+          "production_basis_ref"
+        ]
+      },
       "regional_limits": "Только в болотистой/лесной зоне с железоделанием; не каждое болото. AUDIT_GUARD requires_context_refs=[\"bog_iron_resource_ref\",\"fuel_ref\",\"production_basis_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1681,6 +1881,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Одиночные дворы возможны в освоенных сельских участках; не заменяют деревню.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1702,6 +1903,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Малые сельские поселения особенно у озёр, рек и освоенных лугов.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1723,6 +1925,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Сельское поселение при пашне, лугах, воде или дороге.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1745,6 +1948,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Скученное поселение там, где есть устойчивый центр/дорога/погост.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1765,6 +1969,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Группа дворов/малых поселений в сельской округе.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1789,6 +1994,14 @@
         "religious_authority_ref",
         "route_or_settlement_context_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "religious_authority_ref",
+          "route_or_settlement_context_ref"
+        ]
+      },
       "regional_limits": "Только при церковной/общинной роли; не каждое село. AUDIT_GUARD requires_context_refs=[\"religious_authority_ref\",\"route_or_settlement_context_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1810,6 +2023,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Регионально важен для Новгородской земли; требует административно-церковного смысла.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1832,6 +2046,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Двор/усадебный центр боярина/владельца/власти; не делать массовым без феодального контекста.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1855,6 +2070,14 @@
         "monastic_authority_ref",
         "economic_context_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "monastic_authority_ref",
+          "economic_context_ref"
+        ]
+      },
       "regional_limits": "Редко; только рядом с монастырским владением. AUDIT_GUARD requires_context_refs=[\"monastic_authority_ref\",\"economic_context_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1876,6 +2099,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "В лесных/промысловых угодьях; сезонность обязательна.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1896,6 +2120,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Для рубки, смолы, угля, лыка; не постоянная деревня.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1916,6 +2141,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Сезонный/временный; не рядом с каждым лесом.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1936,6 +2162,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только при реке/озере и рыболовном использовании.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1957,6 +2184,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только при подходящем русле/протоке/малом водном ходе.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -1980,6 +2208,14 @@
         "route_edge_ref",
         "access_authority_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
       "regional_limits": "При судоходной/лодочной реке; не обязательно порт. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2004,6 +2240,14 @@
         "route_edge_ref",
         "access_authority_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
       "regional_limits": "Малая лодочная стоянка на реках/озёрах. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2025,6 +2269,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Торг при городе, погосте, переправе или важном пути.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2049,6 +2294,14 @@
         "market_authority_ref",
         "route_context_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "market_authority_ref",
+          "route_context_ref"
+        ]
+      },
       "regional_limits": "Только при календарном/церковном/торговом основании. AUDIT_GUARD requires_context_refs=[\"market_authority_ref\",\"route_context_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2070,6 +2323,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Для городских центров региона; конкретные города лучше заводить как places, не генерировать массово.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2091,6 +2345,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Практически только Великий Новгород как уникальный центр.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2113,6 +2368,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только для реального укреплённого города/центра.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2134,6 +2390,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Только внутри/при городе; не отдельный сельский place.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2154,6 +2411,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Путевой узел только при graph_edges; не создавать поселение автоматически.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2177,6 +2435,14 @@
         "route_edge_ref",
         "access_authority_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
       "regional_limits": "Только на конкретной реке/ручье с water_body и route edge ford. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2201,6 +2467,14 @@
         "route_edge_ref",
         "access_authority_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
       "regional_limits": "Только на значимой реке/озере с людьми/лодкой и доступом. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2226,6 +2500,14 @@
         "route_edge_ref",
         "access_authority_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
       "regional_limits": "Только при route edge bridge; для малых/средних вод чаще, чем для крупных рек. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2249,6 +2531,14 @@
         "route_edge_ref",
         "access_authority_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "route_edge_ref",
+          "access_authority_ref"
+        ]
+      },
       "regional_limits": "Использовать на водоразделах/между водными системами; не для обычной тропы. AUDIT_GUARD requires_context_refs=[\"route_edge_ref\",\"access_authority_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2270,6 +2560,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Монастырь требует конкретной исторической или региональной причины.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2292,6 +2583,13 @@
       "required_context_refs": [
         "historical_religious_anchor_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "historical_religious_anchor_ref"
+        ]
+      },
       "regional_limits": "Редко; только с религиозным контекстом и удалённой средой. AUDIT_GUARD requires_context_refs=[\"historical_religious_anchor_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2314,6 +2612,13 @@
       "required_context_refs": [
         "historical_religious_anchor_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "historical_religious_anchor_ref"
+        ]
+      },
       "regional_limits": "Только при святыне/церкви/местной памяти. AUDIT_GUARD requires_context_refs=[\"historical_religious_anchor_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2335,6 +2640,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "Древнее/укреплённое место; не обязательно живой город.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2360,6 +2666,14 @@
         "authority_ref",
         "route_context_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "authority_ref",
+          "route_context_ref"
+        ]
+      },
       "regional_limits": "Только на важном пути, переправе, границе или при угрозе. AUDIT_GUARD requires_context_refs=[\"authority_ref\",\"route_context_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2380,6 +2694,7 @@
       "proposed_regional_status": "approved",
       "proposed_is_allowed": true,
       "required_context_refs": [],
+      "context_guard": null,
       "regional_limits": "При городе, погосте, дворе власти; не самостоятельная деревня.",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2404,6 +2719,14 @@
         "market_or_authority_ref",
         "route_context_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "market_or_authority_ref",
+          "route_context_ref"
+        ]
+      },
       "regional_limits": "Только при торговом пути, мосте, перевозе, торге. AUDIT_GUARD requires_context_refs=[\"market_or_authority_ref\",\"route_context_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2429,6 +2752,14 @@
         "brine_resource_ref",
         "authored_salt_locality_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "brine_resource_ref",
+          "authored_salt_locality_ref"
+        ]
+      },
       "regional_limits": "Только солёные/рассольные места, прежде всего Старорусское направление; не весь регион. AUDIT_GUARD requires_context_refs=[\"brine_resource_ref\",\"authored_salt_locality_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2452,6 +2783,14 @@
         "clay_resource_patch_ref",
         "land_use_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "clay_resource_patch_ref",
+          "land_use_ref"
+        ]
+      },
       "regional_limits": "Локально рядом с поселением/гончарным производством. AUDIT_GUARD requires_context_refs=[\"clay_resource_patch_ref\",\"land_use_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2476,6 +2815,15 @@
         "charcoal_resource_ref",
         "production_basis_ref"
       ],
+      "context_guard": {
+        "schema": "rus.regional_environment_context_guard.v1",
+        "enforcement": "reject_if_any_required_ref_missing",
+        "required_ref_fields": [
+          "bog_iron_resource_ref",
+          "charcoal_resource_ref",
+          "production_basis_ref"
+        ]
+      },
       "regional_limits": "Только при болотной руде/лесном топливе/кузнечном контексте. AUDIT_GUARD requires_context_refs=[\"bog_iron_resource_ref\",\"charcoal_resource_ref\",\"production_basis_ref\"].",
       "source_refs": [
         "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
@@ -2515,5 +2863,5 @@
   "production_authorized": false,
   "default_authorized": false,
   "rematerialization_authorized": false,
-  "request_digest": "559a5c2ad8db6499ca55b3f1e054c9df1dd728b61224b51d27819017baed7f00"
+  "request_digest": "cf56d748a391ad23bcc876c3cde9ef499e3a8a8e9e6ee9abd0a42326ce4ab74f"
 }

@@ -6,23 +6,23 @@
     "from_year": 1230,
     "to_year": 1250
   },
-  "candidate_digest": "e9d81fbc2d4f81410588758a4b56317f4fabe9fe9c685338fdc11546e86d91fd",
-  "approval_request_digest": "559a5c2ad8db6499ca55b3f1e054c9df1dd728b61224b51d27819017baed7f00",
+  "candidate_digest": "01517d7919be4eedecad170f21055bb348d60fa4605814ca656272a766474d3a",
+  "approval_request_digest": "cf56d748a391ad23bcc876c3cde9ef499e3a8a8e9e6ee9abd0a42326ce4ab74f",
   "files": [
     {
       "path": "source-authoring.json",
-      "sha256": "a5684b33b4363fe02d91cfd7354159c03834d43c3bc8be67947514b29926d918"
+      "sha256": "6e9b319e838eba4903c81a26686cf6c6b22d8fe3dc3a4d290c8d1abe28b77a75"
     },
     {
       "path": "candidate.json",
-      "sha256": "2fa9c529d863481b1a9d85bc5518406f93ca0fbcededccd00c04bf163fd53ad4"
+      "sha256": "4bed25cb62d1be00c9ac053b73aa2fc85d9f633d5377071831657279b4abda51"
     },
     {
       "path": "approval-request.json",
-      "sha256": "089d36b2ef1cc40fc30ce0cfda63e53e596d58a560c82d040ed3ae1514a831ed"
+      "sha256": "860286a00453c86c07898fa91a5c1cca6b2bc4af485310da4bdd40094ece4025"
     }
   ],
   "import_authorized": false,
   "activation_authorized": false,
-  "manifest_digest": "01bf0ae81c850fa3b953b895c5d0a6669c372137c6b0baed5f67eac5d990e406"
+  "manifest_digest": "05acb07d066ff349a5b5ff965a73e325b730c5e14e5c6b018f4e882fbacbf2ed"
 }

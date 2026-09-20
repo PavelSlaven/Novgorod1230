@@ -7,7 +7,7 @@
     "from_year": 1230,
     "to_year": 1250
   },
-  "source_authoring_digest": "a5684b33b4363fe02d91cfd7354159c03834d43c3bc8be67947514b29926d918",
+  "source_authoring_digest": "6e9b319e838eba4903c81a26686cf6c6b22d8fe3dc3a4d290c8d1abe28b77a75",
   "source_bundle": {
     "manifest_path": "data/world-base-sources/rus13-base-v1.manifest.json",
     "archive_path": "data/world-base-sources/rus13-base-v1.tar.gz",
@@ -18,6 +18,71 @@
     "audited_checkout": "73181ecff601c28e3db5f90144e8b33db039b104",
     "verdict": "PASS_WITH_SCOPED_EXCLUSIONS",
     "source_ref": "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md"
+  },
+  "context_ref_schema": {
+    "schema": "rus.regional_environment_context_ref.v1",
+    "guard_schema": "rus.regional_environment_context_guard.v1",
+    "enforcement": "reject_if_any_required_ref_missing",
+    "required_ref_fields": [
+      "access_authority_ref",
+      "apple_orchard_basis_ref",
+      "authored_salt_locality_ref",
+      "authority_ref",
+      "bog_iron_resource_ref",
+      "brine_resource_ref",
+      "charcoal_resource_ref",
+      "clay_resource_patch_ref",
+      "economic_basis_ref",
+      "economic_context_ref",
+      "fishing_right_or_infrastructure_ref",
+      "forest_resource_ref",
+      "forest_work_context_ref",
+      "fortified_site_ref",
+      "fuel_ref",
+      "historical_religious_anchor_ref",
+      "hydrology_graph_ref",
+      "land_use_ref",
+      "local_geology_or_erosion_context_ref",
+      "local_geology_ref",
+      "local_succession_ref",
+      "local_topology_ref",
+      "market_authority_ref",
+      "market_or_authority_ref",
+      "monastic_authority_ref",
+      "production_basis_ref",
+      "religious_authority_ref",
+      "route_context_ref",
+      "route_edge_ref",
+      "route_or_settlement_context_ref",
+      "seasonal_hydrology_context_ref",
+      "settlement_context_ref",
+      "temporal_hydrology_state_ref",
+      "water_ref",
+      "wetland_landscape_ref"
+    ],
+    "reference_shape": {
+      "required": [
+        "schema",
+        "field",
+        "world_revision_id",
+        "owner_table",
+        "owner_record_id",
+        "owner_record_version",
+        "owner_record_digest"
+      ],
+      "additional_properties": false,
+      "schema_const": "rus.regional_environment_context_ref.v1",
+      "field_enum_source": "required_ref_fields",
+      "owner_table_enum": [
+        "world_base.graph_nodes",
+        "world_base.graph_edges",
+        "world_base.spatial_v3_transition_environment_profiles",
+        "world_base.source_records"
+      ],
+      "owner_record_id_pattern": "^[a-z0-9][a-z0-9_.:-]*$",
+      "owner_record_version_type": "positive_integer",
+      "owner_record_digest_pattern": "^[0-9a-f]{64}$"
+    }
   },
   "audit_selector_counts": {
     "landscape": 34,
@@ -36,6 +101,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_gez_2010",
@@ -111,6 +177,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_gez_2010",
@@ -184,6 +251,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_gez_2010",
@@ -259,6 +327,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_gez_2010",
@@ -334,6 +403,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_gez_2010",
@@ -405,6 +475,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -476,6 +547,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -547,6 +619,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -617,6 +690,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands"
@@ -685,6 +759,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -755,6 +830,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -826,6 +902,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -897,6 +974,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -967,6 +1045,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -1037,6 +1116,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_iucn_get",
@@ -1106,6 +1186,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_iucn_get",
@@ -1176,6 +1257,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -1252,6 +1334,14 @@
           "local_topology_ref",
           "local_succession_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "local_topology_ref",
+            "local_succession_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_iucn_get",
@@ -1321,6 +1411,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -1395,6 +1486,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -1467,6 +1559,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -1537,6 +1630,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -1607,6 +1701,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -1679,6 +1774,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_natgeo_landform",
@@ -1750,6 +1846,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -1820,6 +1917,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -1893,6 +1991,14 @@
           "local_topology_ref",
           "local_geology_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "local_topology_ref",
+            "local_geology_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_natgeo_landform",
@@ -1964,6 +2070,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands"
@@ -2032,6 +2139,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands"
@@ -2100,6 +2208,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_natgeo_landform",
@@ -2171,8 +2280,19 @@
         }
       },
       {
-        "audit_verdict": "APPROVE",
-        "required_context_refs": [],
+        "audit_verdict": "APPROVE_WITH_LIMITS",
+        "required_context_refs": [
+          "local_topology_ref",
+          "local_geology_ref"
+        ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "local_topology_ref",
+            "local_geology_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_natgeo_landform",
@@ -2229,7 +2349,7 @@
             "region_cell",
             "cell_subgraph"
           ],
-          "regional_limits": "Редко и локально; не использовать как доминирующую среду.",
+          "regional_limits": "Редко и локально; не использовать как доминирующую среду. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_geology_ref\"].",
           "game_use": "Крутые склоны, овраги и местные препятствия.",
           "limits": "Означает разрешённость среды в регионе; конкретная ячейка всё равно должна иметь graph_node и локальные условия.",
           "status": "approved",
@@ -2243,6 +2363,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_natgeo_landform",
@@ -2314,8 +2435,19 @@
         }
       },
       {
-        "audit_verdict": "APPROVE",
-        "required_context_refs": [],
+        "audit_verdict": "APPROVE_WITH_LIMITS",
+        "required_context_refs": [
+          "local_topology_ref",
+          "local_geology_or_erosion_context_ref"
+        ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "local_topology_ref",
+            "local_geology_or_erosion_context_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_natgeo_landform",
@@ -2372,7 +2504,7 @@
             "region_cell",
             "cell_subgraph"
           ],
-          "regional_limits": "Локальные овраги/промоины в холмистой местности.",
+          "regional_limits": "Локальные овраги/промоины в холмистой местности. AUDIT_GUARD requires_context_refs=[\"local_topology_ref\",\"local_geology_or_erosion_context_ref\"].",
           "game_use": "Небольшое препятствие, укрытие, эрозионная форма.",
           "limits": "Означает разрешённость среды в регионе; конкретная ячейка всё равно должна иметь graph_node и локальные условия.",
           "status": "approved",
@@ -2388,6 +2520,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_usgs_freshwater",
@@ -2463,6 +2596,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_usgs_freshwater",
@@ -2537,6 +2671,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_usgs_freshwater",
@@ -2614,6 +2749,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_usgs_freshwater",
@@ -2692,6 +2828,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_usgs_freshwater",
@@ -2772,6 +2909,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_usgs_freshwater",
@@ -2851,6 +2989,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -2927,6 +3066,13 @@
         "required_context_refs": [
           "hydrology_graph_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "hydrology_graph_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_iucn_get",
@@ -3001,6 +3147,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -3074,6 +3221,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -3148,6 +3296,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -3223,6 +3372,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_usgs_freshwater",
@@ -3297,6 +3447,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_usgs_freshwater",
@@ -3374,6 +3525,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_usgs_freshwater",
@@ -3454,6 +3606,13 @@
         "required_context_refs": [
           "seasonal_hydrology_context_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "seasonal_hydrology_context_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_info",
@@ -3530,6 +3689,13 @@
         "required_context_refs": [
           "temporal_hydrology_state_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "temporal_hydrology_state_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_info",
@@ -3606,6 +3772,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -3679,6 +3846,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -3752,6 +3920,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -3829,6 +3998,14 @@
           "brine_resource_ref",
           "authored_salt_locality_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "brine_resource_ref",
+            "authored_salt_locality_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_historic_england_salterns",
@@ -3905,6 +4082,13 @@
         "required_context_refs": [
           "fortified_site_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "fortified_site_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_info",
@@ -3979,6 +4163,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_lccs",
@@ -4061,6 +4246,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_lccs",
@@ -4138,6 +4324,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_lccs",
@@ -4223,6 +4410,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_lccs",
@@ -4293,6 +4481,14 @@
           "settlement_context_ref",
           "apple_orchard_basis_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "settlement_context_ref",
+            "apple_orchard_basis_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_giahs",
@@ -4365,6 +4561,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_lccs",
@@ -4447,6 +4644,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_english_heritage_meadows",
@@ -4525,6 +4723,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_lccs",
@@ -4607,6 +4806,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_giahs",
@@ -4683,6 +4883,14 @@
           "wetland_landscape_ref",
           "economic_basis_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "wetland_landscape_ref",
+            "economic_basis_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -4766,6 +4974,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_lccs",
@@ -4854,6 +5063,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_lccs",
@@ -4946,6 +5156,14 @@
           "forest_resource_ref",
           "production_basis_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "forest_resource_ref",
+            "production_basis_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_novgorod_promysly",
@@ -5032,6 +5250,14 @@
           "forest_work_context_ref",
           "economic_basis_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "forest_work_context_ref",
+            "economic_basis_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_novgorod_promysly",
@@ -5105,6 +5331,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_novgorod_promysly",
@@ -5190,6 +5417,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_novgorod_promysly",
@@ -5294,6 +5522,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_novgorod_promysly",
@@ -5369,6 +5598,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_novgorod_promysly",
@@ -5476,6 +5706,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_novgorod_promysly",
@@ -5564,6 +5795,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_inland_fisheries",
@@ -5653,6 +5885,14 @@
           "water_ref",
           "fishing_right_or_infrastructure_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "water_ref",
+            "fishing_right_or_infrastructure_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_novgorod_promysly",
@@ -5732,6 +5972,14 @@
           "brine_resource_ref",
           "production_basis_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "brine_resource_ref",
+            "production_basis_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_historic_england_salterns",
@@ -5815,6 +6063,14 @@
           "clay_resource_patch_ref",
           "production_basis_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "clay_resource_patch_ref",
+            "production_basis_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_fao_lccs",
@@ -5893,6 +6149,15 @@
           "fuel_ref",
           "production_basis_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "bog_iron_resource_ref",
+            "fuel_ref",
+            "production_basis_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "src_ramsar_wetlands",
@@ -5973,6 +6238,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -6079,6 +6345,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -6186,6 +6453,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -6295,6 +6563,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -6399,6 +6668,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -6509,6 +6779,14 @@
           "religious_authority_ref",
           "route_or_settlement_context_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "religious_authority_ref",
+            "route_or_settlement_context_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -6615,6 +6893,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://vja.ruslang.ru/en/archive/2014-3/67-81",
@@ -6732,6 +7011,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -6841,6 +7121,14 @@
           "monastic_authority_ref",
           "economic_context_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "monastic_authority_ref",
+            "economic_context_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://www.english-heritage.org.uk/learn/histories/abbeys-and-priories/",
@@ -6948,6 +7236,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -7071,6 +7360,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -7165,6 +7455,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -7274,6 +7565,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -7393,6 +7685,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://heritage-explorer.lincolnshire.gov.uk/Designation/DLI1579",
@@ -7511,6 +7804,14 @@
           "route_edge_ref",
           "access_authority_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "route_edge_ref",
+            "access_authority_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/",
@@ -7607,6 +7908,14 @@
           "route_edge_ref",
           "access_authority_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "route_edge_ref",
+            "access_authority_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/",
@@ -7719,6 +8028,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
@@ -7822,6 +8132,14 @@
           "market_authority_ref",
           "route_context_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "market_authority_ref",
+            "route_context_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
@@ -7922,6 +8240,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -8050,6 +8369,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -8181,6 +8501,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://www.english-heritage.org.uk/learn/histories/medieval-castles/",
@@ -8308,6 +8629,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -8423,6 +8745,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -8544,6 +8867,14 @@
           "route_edge_ref",
           "access_authority_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "route_edge_ref",
+            "access_authority_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -8634,6 +8965,14 @@
           "route_edge_ref",
           "access_authority_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "route_edge_ref",
+            "access_authority_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -8744,6 +9083,14 @@
           "route_edge_ref",
           "access_authority_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "route_edge_ref",
+            "access_authority_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -8834,6 +9181,14 @@
           "route_edge_ref",
           "access_authority_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "route_edge_ref",
+            "access_authority_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -8955,6 +9310,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://www.english-heritage.org.uk/learn/histories/abbeys-and-priories/",
@@ -9102,6 +9458,13 @@
         "required_context_refs": [
           "historical_religious_anchor_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "historical_religious_anchor_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://www.english-heritage.org.uk/learn/histories/abbeys-and-priories/",
@@ -9214,6 +9577,13 @@
         "required_context_refs": [
           "historical_religious_anchor_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "historical_religious_anchor_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://www.thebecketstory.org.uk/pilgrimage/destinations-england",
@@ -9356,6 +9726,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://www.english-heritage.org.uk/learn/histories/medieval-castles/",
@@ -9475,6 +9846,14 @@
           "authority_ref",
           "route_context_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "authority_ref",
+            "route_context_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://www.english-heritage.org.uk/learn/histories/medieval-castles/",
@@ -9602,6 +9981,7 @@
       {
         "audit_verdict": "APPROVE",
         "required_context_refs": [],
+        "context_guard": null,
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/",
@@ -9722,6 +10102,14 @@
           "market_or_authority_ref",
           "route_context_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "market_or_authority_ref",
+            "route_context_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://archives.history.ac.uk/ihrcms/cmh/projects/research/markets-and-fairs2.html",
@@ -9857,6 +10245,14 @@
           "brine_resource_ref",
           "authored_salt_locality_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "brine_resource_ref",
+            "authored_salt_locality_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-preindustrial-salterns/heag225-pre-industrial-salterns/",
@@ -9970,6 +10366,14 @@
           "clay_resource_patch_ref",
           "land_use_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "clay_resource_patch_ref",
+            "land_use_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-preindustrial-mines-quarries/heag223-pre-industrial-mines-and-quarries/",
@@ -10078,6 +10482,15 @@
           "charcoal_resource_ref",
           "production_basis_ref"
         ],
+        "context_guard": {
+          "schema": "rus.regional_environment_context_guard.v1",
+          "enforcement": "reject_if_any_required_ref_missing",
+          "required_ref_fields": [
+            "bog_iron_resource_ref",
+            "charcoal_resource_ref",
+            "production_basis_ref"
+          ]
+        },
         "source_refs": [
           "task-input:Novgorod1230_Regional_Environment_Audit_Novgorod_1230_1250.md",
           "https://historicengland.org.uk/images-books/publications/iha-preindustrial-mines-quarries/heag223-pre-industrial-mines-and-quarries/",
@@ -10301,5 +10714,5 @@
   "activation_authorized": false,
   "activation_request": null,
   "combined_import_pack_status": "stale_intermediate",
-  "candidate_digest": "e9d81fbc2d4f81410588758a4b56317f4fabe9fe9c685338fdc11546e86d91fd"
+  "candidate_digest": "01517d7919be4eedecad170f21055bb348d60fa4605814ca656272a766474d3a"
 }

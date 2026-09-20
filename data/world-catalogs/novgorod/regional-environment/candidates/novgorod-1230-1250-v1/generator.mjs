@@ -99,6 +99,11 @@ export async function generateRegionalEnvironmentRevision(root = DEFAULT_ROOT) {
         audit_verdict: requiredContextRefs.length > 0
           ? 'APPROVE_WITH_LIMITS' : 'APPROVE',
         required_context_refs: requiredContextRefs,
+        context_guard: requiredContextRefs.length > 0 ? {
+          schema: source.context_ref_schema.guard_schema,
+          enforcement: source.context_ref_schema.enforcement,
+          required_ref_fields: requiredContextRefs
+        } : null,
         source_refs: unique([
           source.audit.source_ref,
           ...universalSource.sources,
@@ -125,6 +130,7 @@ export async function generateRegionalEnvironmentRevision(root = DEFAULT_ROOT) {
     source_authoring_digest: sourceAuthoringDigest,
     source_bundle: structuredClone(source.source_bundle),
     audit: structuredClone(source.audit),
+    context_ref_schema: structuredClone(source.context_ref_schema),
     audit_selector_counts: Object.fromEntries(Object.entries(DOMAINS)
       .map(([domain, spec]) => [domain, spec.count])),
     promotion_counts: Object.fromEntries(Object.entries(promotions)
@@ -152,6 +158,7 @@ export async function generateRegionalEnvironmentRevision(root = DEFAULT_ROOT) {
       proposed_regional_status: entry.regional.status,
       proposed_is_allowed: entry.regional.is_allowed,
       required_context_refs: [...entry.required_context_refs],
+      context_guard: structuredClone(entry.context_guard),
       regional_limits: entry.regional.regional_limits,
       source_refs: [...entry.source_refs],
       source_row_digests: structuredClone(entry.source_row_digests)
@@ -234,6 +241,13 @@ export function validateRevision({ source, candidate, approvalRequest }) {
   assert(claimedRequest === digest(requestPayload), 'REQUEST_DIGEST_MISMATCH');
   assert(approvalRequest.candidate_digest === candidate.candidate_digest,
     'REQUEST_CANDIDATE_MISMATCH');
+  validateContextRefSchema(source.context_ref_schema,
+    Object.values(source.conditional_guards).flat());
+  assert(JSON.stringify(candidate.context_ref_schema) ===
+    JSON.stringify(source.context_ref_schema), 'CONTEXT_REF_SCHEMA_DRIFT');
+  assert(JSON.stringify(Object.keys(source.conditional_guards).sort()) ===
+    JSON.stringify([...source.approve_with_limits_ids].sort()),
+  'APPROVE_WITH_LIMITS_SOURCE_PARITY_INVALID');
 
   for (const [domain, spec] of Object.entries(DOMAINS)) {
     const rows = candidate.promotions[domain];
@@ -261,10 +275,18 @@ export function validateRevision({ source, candidate, approvalRequest }) {
         ? 'APPROVE_WITH_LIMITS' : 'APPROVE'),
       `AUDIT_VERDICT_MISMATCH:${domain}:${id}`);
       if (expectedGuard.length) {
+        assert(entry.context_guard?.schema === source.context_ref_schema.guard_schema
+          && entry.context_guard.enforcement ===
+            'reject_if_any_required_ref_missing'
+          && JSON.stringify(entry.context_guard.required_ref_fields) ===
+            JSON.stringify(expectedGuard),
+        `CONDITIONAL_RUNTIME_REJECTION_MISSING:${domain}:${id}`);
         assert(entry.regional.regional_limits.includes(
           `requires_context_refs=${JSON.stringify(expectedGuard)}`),
         `CONDITIONAL_GUARD_NOT_PERSISTED:${domain}:${id}`);
       }
+      else assert(entry.context_guard === null,
+        `UNCONDITIONAL_ROW_HAS_GUARD:${domain}:${id}`);
       assert(entry.source_refs.includes(AUDIT_SOURCE_REF)
         && entry.source_refs.length > 1,
       `SOURCE_PROVENANCE_MISSING:${domain}:${id}`);
@@ -282,6 +304,12 @@ export function validateRevision({ source, candidate, approvalRequest }) {
     && candidate.data_gaps[0].template_id === 'lt_sparse_forest_woodland'
     && candidate.data_gaps[0].substitution_forbidden === true,
   'PREPARED_MEMBERSHIP_GAP_INVALID');
+  const limitedIds = Object.values(candidate.promotions).flat()
+    .filter(({ audit_verdict: verdict }) => verdict === 'APPROVE_WITH_LIMITS')
+    .map(({ universal }) => universal.id);
+  assert(JSON.stringify(limitedIds) ===
+    JSON.stringify(source.approve_with_limits_ids),
+  'APPROVE_WITH_LIMITS_CANDIDATE_PARITY_INVALID');
   const allApproved = Object.values(candidate.promotions).flatMap((rows) =>
     rows.flatMap((entry) => [entry.universal.id, entry.regional[regionalIdField(entry)]]));
   assert(source.explicit_exclusions.every((id) => !allApproved.includes(id)),
@@ -303,6 +331,17 @@ export function validateRevision({ source, candidate, approvalRequest }) {
   'REQUEST_AUTHORITY_INVALID');
   assert(approvalRequest.row_reviews.length === 115,
     'REQUEST_ROW_REVIEW_COUNT_INVALID');
+  const limitedRequestIds = approvalRequest.row_reviews
+    .filter(({ audit_verdict: verdict }) => verdict === 'APPROVE_WITH_LIMITS')
+    .map(({ universal_id: id }) => id);
+  assert(JSON.stringify(limitedRequestIds) ===
+    JSON.stringify(source.approve_with_limits_ids)
+    && approvalRequest.row_reviews
+      .filter(({ audit_verdict: verdict }) => verdict === 'APPROVE_WITH_LIMITS')
+      .every(({ context_guard: guard, required_context_refs: refs }) =>
+        guard?.enforcement === 'reject_if_any_required_ref_missing'
+          && JSON.stringify(guard.required_ref_fields) === JSON.stringify(refs)),
+  'APPROVE_WITH_LIMITS_REQUEST_PARITY_INVALID');
   return true;
 }
 
@@ -354,6 +393,21 @@ function validateNewPlace(pending, source) {
     'NEW_PLACE_FORBIDDEN_STATE');
   assert(!JSON.stringify(pending).includes('pt_forest_work_camp"'),
     'NEW_PLACE_FOREST_CAMP_SUBSTITUTION');
+}
+
+function validateContextRefSchema(schema, usedFields) {
+  assert(schema.schema === 'rus.regional_environment_context_ref.v1'
+    && schema.guard_schema === 'rus.regional_environment_context_guard.v1'
+    && schema.enforcement === 'reject_if_any_required_ref_missing'
+    && schema.reference_shape.additional_properties === false
+    && schema.reference_shape.field_enum_source === 'required_ref_fields'
+    && schema.reference_shape.owner_record_version_type === 'positive_integer'
+    && schema.reference_shape.owner_record_digest_pattern === '^[0-9a-f]{64}$',
+  'CONTEXT_REF_SCHEMA_INVALID');
+  const fields = new Set(schema.required_ref_fields);
+  assert(fields.size === schema.required_ref_fields.length
+    && usedFields.every((field) => fields.has(field)),
+  'CONTEXT_REF_SCHEMA_FIELDS_INVALID');
 }
 
 function restoreStatus(row, status) {

@@ -34,6 +34,8 @@
   "conditional_guards": {
     "lt_scrub_meadow": ["local_topology_ref", "local_succession_ref"],
     "lt_rocky_lake_shore": ["local_topology_ref", "local_geology_ref"],
+    "lt_steep_hills": ["local_topology_ref", "local_geology_ref"],
+    "lt_dry_ravine_gully": ["local_topology_ref", "local_geology_or_erosion_context_ref"],
     "wb_rapid_section": ["hydrology_graph_ref"],
     "wb_seasonal_pool": ["seasonal_hydrology_context_ref"],
     "wb_floodwater": ["temporal_hydrology_state_ref"],
@@ -63,6 +65,30 @@
     "pt_saltworks": ["brine_resource_ref", "authored_salt_locality_ref"],
     "pt_clay_pit_pottery_site": ["clay_resource_patch_ref", "land_use_ref"],
     "pt_iron_smelting_site": ["bog_iron_resource_ref", "charcoal_resource_ref", "production_basis_ref"]
+  },
+  "approve_with_limits_ids": [
+    "lt_scrub_meadow", "lt_rocky_lake_shore", "lt_steep_hills", "lt_dry_ravine_gully",
+    "wb_rapid_section", "wb_seasonal_pool", "wb_floodwater", "wb_brine_spring", "wb_moat_water",
+    "lu_orchard_fruit_grove", "lu_reed_sedge_harvest", "lu_charcoal_burning", "lu_resin_tar_pitch_production", "lu_fish_weir_trap_operation", "lu_saltmaking_saltern", "lu_clay_extraction", "lu_bog_iron_extraction",
+    "pt_rural_church_center", "pt_monastic_grange", "pt_river_landing", "pt_boat_landing", "pt_periodic_fairground", "pt_ford_place", "pt_ferry_place", "pt_bridge_place", "pt_portage_place", "pt_hermitage_skete", "pt_pilgrimage_shrine", "pt_watchpost_guard_post", "pt_toll_customs_post", "pt_saltworks", "pt_clay_pit_pottery_site", "pt_iron_smelting_site"
+  ],
+  "context_ref_schema": {
+    "schema": "rus.regional_environment_context_ref.v1",
+    "guard_schema": "rus.regional_environment_context_guard.v1",
+    "enforcement": "reject_if_any_required_ref_missing",
+    "required_ref_fields": [
+      "access_authority_ref", "apple_orchard_basis_ref", "authored_salt_locality_ref", "authority_ref", "bog_iron_resource_ref", "brine_resource_ref", "charcoal_resource_ref", "clay_resource_patch_ref", "economic_basis_ref", "economic_context_ref", "fishing_right_or_infrastructure_ref", "forest_resource_ref", "forest_work_context_ref", "fortified_site_ref", "fuel_ref", "historical_religious_anchor_ref", "hydrology_graph_ref", "land_use_ref", "local_geology_or_erosion_context_ref", "local_geology_ref", "local_succession_ref", "local_topology_ref", "market_authority_ref", "market_or_authority_ref", "monastic_authority_ref", "production_basis_ref", "religious_authority_ref", "route_context_ref", "route_edge_ref", "route_or_settlement_context_ref", "seasonal_hydrology_context_ref", "settlement_context_ref", "temporal_hydrology_state_ref", "water_ref", "wetland_landscape_ref"
+    ],
+    "reference_shape": {
+      "required": ["schema", "field", "world_revision_id", "owner_table", "owner_record_id", "owner_record_version", "owner_record_digest"],
+      "additional_properties": false,
+      "schema_const": "rus.regional_environment_context_ref.v1",
+      "field_enum_source": "required_ref_fields",
+      "owner_table_enum": ["world_base.graph_nodes", "world_base.graph_edges", "world_base.spatial_v3_transition_environment_profiles", "world_base.source_records"],
+      "owner_record_id_pattern": "^[a-z0-9][a-z0-9_.:-]*$",
+      "owner_record_version_type": "positive_integer",
+      "owner_record_digest_pattern": "^[0-9a-f]{64}$"
+    }
   },
   "explicit_exclusions": [
     "lt_wet_ravine_gully", "lu_open_field_strip_cultivation", "lu_fishpond_aquaculture", "lu_watermill_water_management", "wb_mill_leat", "wb_reservoir_impoundment", "wb_fishpond", "pt_watermill_site", "pt_shipyard_boatyard"

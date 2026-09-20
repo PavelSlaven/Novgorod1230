@@ -122,6 +122,8 @@ import { createRuntimeCatalogLoader,
   loadApprovedProceduralSceneRecordBundle } from '@rus/runtime-catalog';
 import { generateProceduralSceneProfileCatalog } from
   '../../scripts/generate-procedural-scene-profiles.mjs';
+import { resolveOptionalProceduralSceneCatalog } from
+  '../../apps/game-server/src/internal/procedural-scene-start-boundary.js';
 import { ensureLocalPostgres, LOCAL_POSTGRES } from
   '../../tools/local-play/local-postgres.js';
 
@@ -210,11 +212,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     worldPin: { world_revision_id: runtimeCatalogPin.compatible_world_revision_id,
       world_catalog_digest: runtimeCatalogPin.compatible_world_catalog_digest },
     runtimeCatalogPin, bindings: proceduralBindings, verifiedItemCatalog });
-  assert.throws(() => generateProceduralSceneProfileCatalog({
-    bindings: proceduralBindings, approvedRecordBundle: proceduralRecords }),
-  (error) => error.code === 'PROCEDURAL_SCENE_PROFILE_DATA_GAP'
-    && error.details.kind === 'landscape_template'
-    && error.details.id === 'lt_low_alluvial_riverbank');
+  assert.equal(resolveOptionalProceduralSceneCatalog({
+    generate: generateProceduralSceneProfileCatalog,
+    bindings: proceduralBindings, approvedRecordBundle: proceduralRecords
+  }), null);
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }

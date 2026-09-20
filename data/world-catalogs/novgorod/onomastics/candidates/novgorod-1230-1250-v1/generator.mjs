@@ -5,6 +5,30 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '../../../../../..');
 
+export const AUTHORING_ATTESTATION = {
+  schema: 'rus.onomastics.independent_authoring_attestation.v1',
+  candidate_id: 'novgorod-1230-1250-onomastics-v1',
+  candidate_version: '1.0.0-candidate.1',
+  candidate_ref: 'git:614b9f2b4cd34649b2946b59e51accbc87eb90d5:data/world-catalogs/novgorod/onomastics/candidates/novgorod-1230-1250-v1/candidate.json',
+  auditor_ref: '/root/onomastic_approval_audit',
+  independence_basis: 'read-only audit separate from candidate authoring',
+  reviewed_at: '2026-09-21',
+  candidate_sha256: '8cf9e590332f044830c517d6cd259dcce3a7d6c8fb3f38a068009af928eef1fc',
+  approval_request_sha256: '1e3749bd00f2425e95ffa1e32a2ae38f0fb7de4127a782130ebf7b211b6ac897',
+  source_authoring_sha256: 'd62bf88816200530de5e1c5c83b5c0d5f210d2b64a178c8d6eee6eaf8a3d01e9',
+  source_records_sha256: '19d84e4cf7c222d61b193790b1e7139a994968530da167b697cbbb1c4e44ea12',
+  record_sources_sha256: 'cf350e5b60945334a179e0aac2bc64a3312ffa9924ae0a3709e5753b9f778d19',
+  compiled_name_count: 54,
+  source_record_count: 9,
+  record_source_count: 58,
+  contextual_authoring_only_count: 6,
+  excluded_count: 9,
+  verdict: 'APPROVE_AUTHORING_ONLY',
+  import_enabled: false,
+  activation_enabled: false,
+  limits: 'Approval applies only to the versioned 1230-1250 authoring candidate. It does not approve runtime import, activation, other periods, contextual B1 entries, or pending/rejected entries.'
+};
+
 export const readFirstColumn = (file, delimiter = ',') => fs.readFileSync(file, 'utf8')
   .trim().split(/\r?\n/).slice(1).map(line => line.split(delimiter, 1)[0]);
 
@@ -119,4 +143,5 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     review_scope: ['compiled A1/A2 evidence bindings', 'editorial equal weights', 'contextual exclusions', 'selection policy', '30/30 position and 71/71 role coverage'],
     forbidden_promotion_source: 'tools/rus13-novgorod-regional-templates/novgorod_npc_name_pools_v1.json'
   });
+  writeJson('independent-authoring-attestation.json', AUTHORING_ATTESTATION);
 }

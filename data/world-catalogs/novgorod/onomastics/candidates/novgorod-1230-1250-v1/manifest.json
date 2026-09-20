@@ -6,7 +6,7 @@
   "import_enabled": false,
   "activation_enabled": false,
   "source_input": "external user research; corrections captured in AUDIT_CORRECTIONS.md",
-  "generated_files": ["candidate.json", "source-records.json", "record-sources.json", "approval-request.json"],
+  "generated_files": ["candidate.json", "source-records.json", "record-sources.json", "approval-request.json", "independent-authoring-attestation.json"],
   "commands": ["node generator.mjs", "node validate.mjs", "node test.mjs"],
   "runtime_changes": []
 }

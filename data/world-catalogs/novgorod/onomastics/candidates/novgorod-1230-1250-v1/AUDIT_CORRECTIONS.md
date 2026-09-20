@@ -20,3 +20,5 @@ Status: candidate notes only. This appendix does not approve, import, or activat
 ## Approval boundary
 
 `approval-request.json` requests independent per-entry review. Candidate author cannot self-approve. Runtime import and activation remain `false`.
+
+Independent audit verdict is `APPROVE_AUTHORING_ONLY` with severity P3. Its `identityProjection()` note is binding for use: this candidate helper is not a standalone player-safe runtime projector; any future runtime owner must supply already player-safe identity data.

@@ -2,10 +2,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { applyTonsure, eligible, identityProjection, selectBySeed } from './generator.mjs';
+import { applyTonsure, AUTHORING_ATTESTATION, eligible, identityProjection, selectBySeed } from './generator.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const candidate = JSON.parse(fs.readFileSync(path.join(here, 'candidate.json'), 'utf8'));
+const attestationBytes = fs.readFileSync(path.join(here, 'independent-authoring-attestation.json'), 'utf8');
 const base = { origin: 'novgorod_rus', sex: 'male', dynastic_state: false, monastic_state: false };
 
 assert.equal(selectBySeed(candidate, base, 17), selectBySeed(candidate, { ...base, occupation: 'fisher' }, 17));
@@ -24,4 +25,5 @@ assert.deepEqual(applyTonsure(identity, 'Спиридон').prior_names, ['Ив�
 
 const serialized = JSON.stringify(candidate);
 assert(!serialized.includes('novgorod_npc_name_pools_v1.json"'));
+assert.equal(attestationBytes, `${JSON.stringify(AUTHORING_ATTESTATION, null, 2)}\n`);
 console.log('onomastic candidate policy tests passed');

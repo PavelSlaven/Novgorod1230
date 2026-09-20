@@ -98,6 +98,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       if (flow?.status !== 'approved' || flow.pass !== true
           || !flow.approved_output?.prose) {
         if (validateTerminalNarrationPolicyRejection(flow, narrationRequest).ok) {
+          recordNarrationFailure(recordDiagnosticFailure, flow);
           if (deliveryTurnNumber !== envelope.turn_number) throw presentationError();
           const factualScreen = buildFactualTurnDelivery({ envelope,
             payload: envelope.snapshot_payload,
@@ -131,9 +132,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
         const error = presentationError();
         error.code = 'TRACE_PHASE_2_NARRATION_REJECTED';
         error.details = narrationFailureDetails(flow);
-        try { recordDiagnosticFailure?.(error); } catch {
-          // Diagnostics must not replace the typed presentation failure.
-        }
+        recordNarrationFailure(recordDiagnosticFailure, flow);
         throw error;
       }
       const persistedNarration = sealApprovedNarration({
@@ -161,13 +160,38 @@ export function createLowerDvinaTracePhase2DurableNarrator({
 }
 
 function narrationFailureDetails(flow) {
-  const audit = flow?.audit_history?.at(-1)?.value;
+  const audits = Array.isArray(flow?.audit_history)
+    ? flow.audit_history.map(({ value }) => value).filter(Boolean) : [];
+  const audit = audits.at(-1);
   const concerns = Array.isArray(audit?.concerns) ? audit.concerns : [];
   return {
     phase: flow?.diagnostics?.phase,
     concern_count: concerns.length,
-    concern_kinds: concerns.map(({ kind }) => kind)
+    concern_kinds: concerns.map(({ kind }) => kind),
+    audit_attempts: audits.map((candidate, index) => ({
+      ordinal: index + 1,
+      failed_checks: [
+        ...(candidate?.pass === false ? ['policy'] : []),
+        ...(candidate?.artistic_verdict === 'fail' ? ['artistic'] : []),
+        ...(candidate?.technical_verdict === 'fail' ? ['technical'] : [])
+      ],
+      coverage_refs: ['visible_changes', 'uncertainties'].flatMap((kind) =>
+        Array.isArray(candidate?.coverage?.[kind])
+          ? candidate.coverage[kind].map(({ source_index: sourceIndex,
+            segment_ids: segmentIds }) => ({ kind, source_index: sourceIndex,
+            covered: Array.isArray(segmentIds) && segmentIds.length > 0 }))
+          : [])
+    }))
   };
+}
+
+function recordNarrationFailure(recordDiagnosticFailure, flow) {
+  const error = presentationError();
+  error.code = 'TRACE_PHASE_2_NARRATION_REJECTED';
+  error.details = narrationFailureDetails(flow);
+  try { recordDiagnosticFailure?.(error); } catch {
+    // Diagnostics must not replace factual delivery or typed presentation failure.
+  }
 }
 
 async function loadEnvelope(pool, partyId, turnId, visibleContext, turnBudget = null) {

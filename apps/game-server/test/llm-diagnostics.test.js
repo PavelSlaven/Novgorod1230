@@ -182,6 +182,14 @@ test('failed narration diagnostics retain only allowlisted audit categories', ()
       concern_count: 2,
       concern_kinds: ['unsupported_fact', 'unsupported_success',
         'hidden-party-42'],
+      audit_attempts: [{ ordinal: 1,
+        failed_checks: ['policy', 'technical', 'hidden-check'],
+        coverage_refs: [
+          { kind: 'visible_changes', source_index: 0, covered: true,
+            secret_ref: 'hidden-coverage-ref' },
+          { kind: 'hidden_state', source_index: 9, covered: true },
+          { kind: 'uncertainties', source_index: -1, covered: false }
+        ], prompt: 'secret audit prompt' }],
       concerns: [{ reason: 'secret repaired prose' }],
       prompt: 'secret prompt',
       hidden_state: { entity_id: 'hidden-ref' }
@@ -191,12 +199,17 @@ test('failed narration diagnostics retain only allowlisted audit categories', ()
     code: 'TRACE_PHASE_2_NARRATION_REJECTED',
     phase: 'final_audit_failed',
     concern_count: 2,
-    concern_kinds: ['unsupported_fact', 'unsupported_success']
+    concern_kinds: ['unsupported_fact', 'unsupported_success'],
+    audit_attempts: [{ ordinal: 1,
+      failed_checks: ['policy', 'technical'],
+      coverage_refs: [{ kind: 'visible_changes', source_index: 0, covered: true }] }]
   });
   const serialized = JSON.stringify(report.failure);
   assert.equal(serialized.includes('secret'), false);
   assert.equal(serialized.includes('hidden-party-42'), false);
   assert.equal(serialized.includes('hidden-ref'), false);
+  assert.equal(serialized.includes('hidden-coverage-ref'), false);
+  assert.equal(serialized.includes('secret audit prompt'), false);
 });
 
 test('completed post-commit turn can record a safe narration failure', async () => {

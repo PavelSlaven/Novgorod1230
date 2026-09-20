@@ -1,0 +1,23 @@
+{
+  "schema": "rus.procedural_authoring_import_approval_request.v1",
+  "request_id": "novgorod_procedural_authoring_import_review_001",
+  "decision_requested": "approve_disposable_local_authoring_import",
+  "scope": "disposable_local_pr_candidate_database",
+  "subject_commit_sha": "b4e3bc488ae75d724cec541641121fbeaa4be5ad",
+  "candidate_digest": "1a133b056ba600c143f40498f485192f5dd37f6b4293f3a7d4012946e8f9f285",
+  "promotion_manifest_digest": "daa8c28bdd2eabc073b9f3b1908325651aebb3a90e6b17119f12444e076dd12b",
+  "target_revision_id": "procedural_authoring_import_v1_candidate_001",
+  "target_catalog_digest": "127a031ac2593fb97c29fecce98633acc1712b765ac98f79a9e13b6173fed5ec",
+  "compatible_world_tuple": {
+    "compatible_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+    "compatible_world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+    "compatible_world_pin_manifest_digest": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb"
+  },
+  "operator_authorized": false,
+  "production_authorized": false,
+  "import_activation_authorized": false,
+  "default_authorized": false,
+  "deploy_authorized": false,
+  "rematerialization_authorized": false,
+  "approval_request_digest": "3a94fb749fc9f471b8b8e672f4af522665bff0480d57c00504667e8feb44657d"
+}

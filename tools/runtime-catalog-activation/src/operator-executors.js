@@ -217,14 +217,19 @@ export async function importApprovedCatalog({
   pool,
   ledger,
   domainRevision,
-  approvalAttestation
+  approvalAttestation,
+  approvalContract = {
+    schema: 'rus.item_container_overlay_approval_attestation.v2',
+    request_digest_field: 'approval_request_digest',
+    decision: 'approve_overlay_import'
+  }
 }) {
   verifyDecisionAttestation({
     attestation: approvalAttestation,
-    expectedSchema: 'rus.item_container_overlay_approval_attestation.v2',
-    requestDigestField: 'approval_request_digest',
+    expectedSchema: approvalContract.schema,
+    requestDigestField: approvalContract.request_digest_field,
     expectedRequestDigest: ledger.root.approval_request_digest,
-    expectedDecision: 'approve_overlay_import'
+    expectedDecision: approvalContract.decision
   });
   if (approvalAttestation.activation_authorized !== false) {
     fail('OVERLAY_APPROVAL_INVALID', 'Overlay import approval must not authorize activation.');

@@ -64,29 +64,47 @@ place group or event is created.
 
 The remaining typed gaps are fishing container compatibility, active drying
 tool/material and conditional container ownership, and conditional finite wreck
-source identity. Functional authoring approval remains
-`pending_independent_review`; import and activation remain forbidden.
+source identity. Functional mapping candidate is independently authoring-approved
+for `authoring_mapping_only`; import and activation remain forbidden.
+
+## Combined disposable import pack
+
+`procedural-scene-v2/import-pack-v1` deterministically combines exact overlay
+rows, three row attestations, approved functional mappings, V5 approval/target
+pins and Spatial-v3 v6 compatibility tuple. Candidate, promotion manifest,
+approval request and pre-approval ledger have sealed digests. Rows, statuses,
+forbidden implications, materialization limits and all five remaining gaps stay
+byte-equivalent to approved upstream artifacts.
+
+Request asks only `approve_disposable_local_authoring_import` for a disposable
+local PR-candidate database. It grants no operator, production, activation,
+default, deploy or rematerialization authority. Ledger deliberately has no
+approval attestation yet, no runtime capability, and zero activation events.
+Safe wrapper refuses import until a separate exact independent attestation is
+provided, then uses existing baseline registration and catalog import owners;
+it never creates an activation request or event.
 
 ## Current family gaps
 
 | Family | Existing nearest data | Blocking gap |
 |---|---|---|
-| natural shore | approved route-free row plus pending typed natural-layer mapping candidate | landing/access/safety/local taxon/stock remain forbidden; conditional wreck material requires separate committed source |
-| inland fishing worksite | approved route-free row plus pending tool/work-material/place-function mappings | container compatibility remains typed conditional gap; no station/catch/route or runtime stock implied |
-| drying/storage workspace | approved editorial place row plus pending dormant storage/work-zone mappings | dormant variant implies no object/process/NPC; active tool/material and conditional container remain process-owned gaps |
+| natural shore | approved route-free row plus approved typed natural-layer authoring mapping | landing/access/safety/local taxon/stock remain forbidden; conditional wreck material requires separate committed source |
+| inland fishing worksite | approved route-free row plus approved tool/work-material/place-function authoring mappings | container compatibility remains typed conditional gap; no station/catch/route or runtime stock implied |
+| drying/storage workspace | approved editorial place row plus approved dormant storage/work-zone authoring mappings | dormant variant implies no object/process/NPC; active tool/material and conditional container remain process-owned gaps |
 
 ## DATA GAP: executable activation
 
 - required capability: compile three exact current-v6 families from approved imported rows;
 - correct owner: runtime-catalog activation and world-base authoring workflow;
-- missing proof: completed disposable-DB execution of baseline registration plus
-  no-activation import/readback for the exact v6 tuple; the integration test is
-  present but was skipped locally because Docker was unavailable;
+- missing proof: independent approval attestation and completed disposable-DB
+  execution of baseline registration plus no-activation import/readback for the
+  exact v6 tuple; integration test is present but was skipped locally because
+  Docker was unavailable;
 - nearest data: source archive, item candidate bundle and v6 spatial manifest;
 - why insufficient: candidates/manifests do not prove active rows;
-- minimum delta: independently approve or reject the functional mapping
-  candidate; then run baseline registration plus import/readback. Activation
-  remains a separate forbidden step;
+- minimum delta: independently approve or reject exact combined import request;
+  if approved, run baseline registration plus import/readback in disposable DB.
+  Activation remains a separate forbidden step;
 - acceptance: unknown/draft/missing/ambiguous record hard-blocks before runtime.
 
 ## DATA GAP: finite resources

@@ -1,0 +1,74 @@
+{
+  "schema": "rus.procedural_authoring_import_ledger.v1",
+  "import_id": "procedural_authoring_import_3a94fb749fc9f471b8b8e672f4af5226",
+  "approval_status": "pending_independent_import_approval",
+  "candidate_digest": "1a133b056ba600c143f40498f485192f5dd37f6b4293f3a7d4012946e8f9f285",
+  "promotion_manifest_digest": "daa8c28bdd2eabc073b9f3b1908325651aebb3a90e6b17119f12444e076dd12b",
+  "approval_request_digest": "3a94fb749fc9f471b8b8e672f4af522665bff0480d57c00504667e8feb44657d",
+  "approval_attestation_digest": null,
+  "target_revision_id": "procedural_authoring_import_v1_candidate_001",
+  "target_catalog_digest": "127a031ac2593fb97c29fecce98633acc1712b765ac98f79a9e13b6173fed5ec",
+  "compatible_world_tuple": {
+    "compatible_world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+    "compatible_world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad",
+    "compatible_world_pin_manifest_digest": "776ab6989f5c8bb6c49858eb27b3bb9ac637a674e314f1c7e956a35cdbe569eb"
+  },
+  "record_registry_digest": "87191513c2ff0c9ce586a6c63211ab641fc7d8f255fbd852483f424101326e96",
+  "record_operations_by_table": [
+    {
+      "table_name": "procedural_scene_authoring_candidates",
+      "dependency_order": 0,
+      "operation_kind": "assert_immutable_authoring",
+      "record_count": 3,
+      "records_digest": "6e9d64006dc736fa0da45ffe5a5adc191fa000950f40d4fa92d899e95638bcb8",
+      "record_ids": [
+        "novgorod_natural_shore_v3@1",
+        "novgorod_inland_fishing_worksite_v3@1",
+        "novgorod_drying_storage_workspace_v3@1"
+      ]
+    },
+    {
+      "table_name": "procedural_scene_functional_mappings",
+      "dependency_order": 1,
+      "operation_kind": "assert_immutable_authoring",
+      "record_count": 7,
+      "records_digest": "8d6e2f08438db7ad3bc359ae55d747f9178fb8cba736aca8ff766aa4e2fc3c2f",
+      "record_ids": [
+        "drying_dormant_storage_place_group_v1",
+        "drying_dormant_work_zone_place_group_v1",
+        "fishing_storage_place_group_v1",
+        "fishing_tool_group_v1",
+        "fishing_work_material_group_v1",
+        "fishing_work_zone_place_group_v1",
+        "natural_shore_typed_layers_v1"
+      ]
+    },
+    {
+      "table_name": "procedural_scene_conditional_context",
+      "dependency_order": 2,
+      "operation_kind": "assert_immutable_authoring",
+      "record_count": 1,
+      "records_digest": "c4c678bb293302420b7d733b28f424581bd3c66d26120d33870eb0004a8c697e",
+      "record_ids": [
+        "novgorod_inland_fishing_worksite_v3@1:npc_basis"
+      ]
+    },
+    {
+      "table_name": "procedural_scene_remaining_gaps",
+      "dependency_order": 3,
+      "operation_kind": "assert_immutable_authoring",
+      "record_count": 5,
+      "records_digest": "abb9e7e2e19e71abcf473c6feec9f99f2d73dbb3749f4b9411eae4708651a1f0",
+      "record_ids": [
+        "novgorod_inland_fishing_worksite_v3@1:container",
+        "novgorod_drying_storage_workspace_v3@1:tool",
+        "novgorod_drying_storage_workspace_v3@1:work_material",
+        "novgorod_drying_storage_workspace_v3@1:container",
+        "novgorod_natural_shore_v3@1:wreck_material"
+      ]
+    }
+  ],
+  "runtime_capabilities_authorized": [],
+  "activation_event_count": 0,
+  "import_audit_digest": "c86e886adec7438b28d9906bb53244888d6b6538f99d65f51ea6dcc053052288"
+}

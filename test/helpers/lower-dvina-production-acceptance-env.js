@@ -19,6 +19,8 @@ import { startLocalLlmProviderFixture } from
   './local-llm-provider-fixture.js';
 import { createProductionLlmRoleRunner } from
   '../../apps/game-server/src/infrastructure/provider/deepseek.js';
+import { DEFAULT_GAMEPLAY_MODEL } from
+  '../../apps/game-server/src/runtime/llm-settings.js';
 
 const POSTGRES_IMAGE = 'postgres:16-alpine';
 
@@ -66,13 +68,20 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
         activation.pinManifestDigest
     };
-    const qualifiedO1Identity = createProductionLlmRoleRunner({ env }).describe({
+    const providerSnapshot = Object.freeze({ mode: 'custom',
+      compatibility: 'openai_compatible', baseUrl: llm.baseUrl,
+      model: DEFAULT_GAMEPLAY_MODEL, apiKey: 'test' });
+    const providerSettings = Object.freeze({
+      providerSnapshot: () => providerSnapshot
+    });
+    const qualifiedO1Identity = createProductionLlmRoleRunner({ env,
+      settings: providerSettings }).describe({
       scope: 'turn_runtime',
       role_id: 'ordinary_materialization',
       overrides: { temperature: 0, maxTokens: 20_000 }
     });
     const llmSettings = Object.freeze({
-      providerSnapshot: () => Object.freeze({ mode: 'default' }),
+      providerSnapshot: () => providerSnapshot,
       ordinaryMaterializationIdentity: () => qualifiedO1Identity
     });
     const identityFactory = createAcceptanceIdentityFactory();
@@ -171,8 +180,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
 function acceptanceHttpRoot(root, llm) {
   return Object.freeze({ ...root, getLlmSettings: () => ({
     mode: 'custom', compatibility: 'openai_compatible',
-    base_url: llm.baseUrl, model: 'fixture-provider',
-    api_key_present: true
+    base_url: llm.baseUrl, model: DEFAULT_GAMEPLAY_MODEL,
+    api_key_present: true, default_model: DEFAULT_GAMEPLAY_MODEL
   }), getTurnProgress: () => null });
 }
 

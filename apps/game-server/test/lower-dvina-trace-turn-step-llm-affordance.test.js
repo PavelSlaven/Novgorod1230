@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createLowerDvinaTraceTurnStepModel } from
+import { canonicalizePartialPartition,
+  createLowerDvinaTraceTurnStepModel } from
   '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 import { assembleTurnStepPlan } from
   '../src/runtime/lower-dvina-trace-turn-step-plan-assembly.js';
@@ -174,6 +175,26 @@ test('movement keeps supplied semantic label', async () => {
     reasonCode: 'movement', onPrompt: (prompt) => assert.match(prompt, /Follow marked path to settlement/u)
   });
   assert.deepEqual((await model(input)).operations, [movement]);
+});
+
+test('partial partition canonicalization rejects adjacent incompatible shapes', () => {
+  const action = { identity_mode: 'independent_outputs',
+    origin: 'direct_partition', result_class: 'ordinary_physical_result',
+    material_extent: 'half', result_descriptor: { source_fact_delta: {
+      physical_description: 'survivor', qualitative_facts: [],
+      removed_physical_fact_refs: [], physical_form: 'compact' } } };
+  const output = (value) => ({ operations: [{ op: 'request_item_use',
+    action_production: value }] });
+  assert.equal(canonicalizePartialPartition(output(action)).operations[0]
+    .action_production.result_class, 'partial_transformation');
+  for (const incompatible of [
+    { ...action, identity_mode: 'preserve_source' },
+    { ...action, material_extent: 'whole' },
+    { ...action, result_descriptor: { source_fact_delta: null } }
+  ]) {
+    const candidate = output(incompatible);
+    assert.equal(canonicalizePartialPartition(candidate), candidate);
+  }
 });
 
 test('movement-shaped placement restores the exact supplied route', () => {

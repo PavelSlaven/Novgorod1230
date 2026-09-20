@@ -179,7 +179,8 @@ function openingPackage() {
     identity_state: { canonical_name: 'Твердята',
       public_role_label: 'незнакомый рыбак' }, relationships: [],
     machine_state: { current_activity: { summary: 'Чинит снасти.' } } }],
-  items: [{ instance_id: 'item:rope', holder_character_id: 'player:1',
+  items: [{ instance_id: 'item:rope', placement: {
+    holder_character_id: 'player:1' },
     state: { display_name: 'верёвка' }, condition_state: 'serviceable' }] };
   return buildAuthoredOpeningVisibleContext({ requestId: 'opening:1', visible,
     internal, approvedProjection: { scenario_id: 'scenario',

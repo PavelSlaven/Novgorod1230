@@ -79,7 +79,7 @@ export function buildAuthoredOpeningVisibleContext({ requestId, visible,
   const localNpc = (internal.npcs ?? []).filter((npc) =>
     npc.anchor_id === position.g5_anchor_id);
   const playerItems = (internal.items ?? []).filter((item) =>
-    item.holder_character_id === actorId);
+    item.placement?.holder_character_id === actorId);
   const knownFacts = dossier.knowledge?.known_facts ?? [];
   const relations = localNpc.flatMap((npc) => (npc.relationships ?? [])
     .filter(({ target_actor_id: target }) => target === actorId)

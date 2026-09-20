@@ -144,12 +144,16 @@ export function createLowerDvinaTraceTurnStepSemanticGroundingValidator({
         'Turn-step semantic grounding is invalid.', { details: { errors:
           [concern('operation_semantic_grounding', audited, resolved)] } });
     }
+    const exactBackgroundDiscovery = audited.length === 1
+      && plan.operations?.length === 1
+      && audited[0].operation?.op === 'request_discovery'
+      ? audited[0].operation : null;
+    if (exactBackgroundNpcDiscoveryGrounding({ operation: exactBackgroundDiscovery,
+      plan, request })) return true;
     const genericDiscovery = denialProjection && plan.operations.length === 1
       ? plan.operations[0] : genericOrdinaryDiscovery({ audited, plan, request, resolved });
     if (genericDiscovery != null
         && plan.continuation?.pending_discovery == null) {
-      if (exactBackgroundNpcDiscoveryGrounding({ operation: genericDiscovery,
-        plan, request })) return true;
       if (isSimpleLocationDiscovery(genericDiscovery, request)) {
         const prerequisiteProjection = plan.interpretation?.adaptation === 'literal'
           && plan.clarification == null && plan.direct_result_kind == null

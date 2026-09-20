@@ -31,7 +31,13 @@ test('final candidate pack is deterministic, exact and non-activating',
     const rows = first.candidate_rows_by_table
       .procedural_scene_compiled_records;
     assert.equal(rows.length, 21);
-    assert.equal(first.record_operations_by_table[0].insert_count, 21);
+    assert.equal(first.record_operations_by_table.length, 40);
+    assert.equal(first.record_operations_by_table.find(({ table_name: table }) =>
+      table === 'procedural_scene_compiled_records').insert_count, 21);
+    assert.equal(first.record_operations_by_table.filter(({ table_name: table }) =>
+      table !== 'procedural_scene_compiled_records').every((operation) =>
+      operation.insert_count === 0
+        && operation.assert_existing_count === operation.record_count), true);
     assert.equal(first.append_only_import_plan.import_authorized, false);
     assert.equal(first.activation_policy.activation_authorized, false);
     assert.equal(first.activation_policy
@@ -43,6 +49,64 @@ test('final candidate pack is deterministic, exact and non-activating',
       false);
     assert.doesNotMatch(JSON.stringify(rows),
       /"(?:status|source_status|source_row_status)":"(?:pending|rejected|draft)/u);
+  });
+
+test('regional compiler preserves full approved owner semantics', async () => {
+  const [pack, source] = await Promise.all([
+    generateProceduralFinalCandidatePack(root), json(paths.regional)
+  ]);
+  const rows = pack.candidate_rows_by_table.procedural_scene_compiled_records;
+  for (const [domain, id] of [
+    ['landscape', 'lt_low_alluvial_riverbank'],
+    ['water', 'wb_small_river'],
+    ['land_use', 'lu_inland_capture_fishing'],
+    ['place', 'pt_fishing_station']
+  ]) {
+    const compiled = rows.find(({ record_id: recordId }) =>
+      recordId === `profile:regional-${domain}`).payload.approved_members
+      .find(({ universal }) => universal.id === id);
+    const expected = source.promotions[domain].find(({ universal }) =>
+      universal.id === id);
+    assert.deepEqual(compiled.universal, expected.universal);
+    assert.deepEqual(compiled.regional, expected.regional);
+    assert.deepEqual(compiled.source_row_digests,
+      expected.source_row_digests);
+  }
+  const bank = rows.find(({ record_id: recordId }) =>
+    recordId === 'profile:regional-landscape').payload.approved_members
+    .find(({ universal }) => universal.id === 'lt_low_alluvial_riverbank')
+    .universal;
+  for (const field of ['base_environment', 'dominant_vegetation',
+    'moisture_level', 'relief_type', 'soil_ground_type'])
+    assert.equal(bank[field], source.promotions.landscape.find(
+      ({ universal }) => universal.id === 'lt_low_alluvial_riverbank')
+      .universal[field]);
+});
+
+test('all V5 owner references resolve through exact assert-existing closure',
+  async () => {
+    const pack = await generateProceduralFinalCandidatePack(root);
+    const operations = new Map(pack.record_operations_by_table.map((operation) =>
+      [operation.table_name, operation]));
+    const metadata = pack.candidate_rows_by_table
+      .procedural_scene_compiled_records.find(({ record_id: id }) =>
+        id === 'approval:final-candidate').payload;
+    assert.equal(operations.size, 40);
+    assert.equal(metadata.item_container.asserted_table_count, 39);
+    assert.equal(metadata.item_container.asserted_record_count,
+      [...operations].filter(([table]) => table !==
+        'procedural_scene_compiled_records').reduce((sum, [, operation]) =>
+        sum + operation.record_count, 0));
+    for (const table of ['item_templates', 'container_templates',
+      'item_profile_sets', 'item_profile_entries',
+      'item_template_quantity_profiles', 'item_template_inventory_profiles',
+      'container_template_inventory_profiles',
+      'container_content_category_relations',
+      'g4_item_materialization_rules', 'g4_container_materialization_rules']) {
+      assert.ok(operations.get(table)?.record_count > 0, table);
+      assert.ok(operations.get(table).records.every(({ operation_kind: kind }) =>
+        kind === 'assert_existing'), table);
+    }
   });
 
 test('stale v1 cannot be promoted through final candidate generator',

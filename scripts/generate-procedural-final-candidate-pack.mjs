@@ -18,6 +18,8 @@ import { buildBaseWorldCompatibilityManifest, digestEnvelope } from
   '../tools/runtime-catalog-activation/src/artifact-contracts.js';
 import { generateProceduralAuthoringImportPack } from
   './generate-procedural-authoring-import-pack.mjs';
+import { buildPr17Stage3CPromotionPlan } from
+  '../tools/world-catalog-workflow/src/internal/pr17-stage3c.js';
 
 const OUTPUT =
   'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1';
@@ -41,6 +43,9 @@ const PATHS = Object.freeze({
   equipmentApproval: 'data/world-catalogs/novgorod/procedural-scene-v2/npc-equipment-v1/approval-attestation.json',
   itemManifest: 'data/knowledge-source/imports/item-container-120-v5/candidate/manifest.json',
   itemApproval: 'docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json',
+  itemRequest: 'docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_REQUEST.json',
+  itemG4: 'docs/implementation/item-container-120-approval-audit/evidence/G4_DEPENDENCY_APPROVAL_REQUEST.json',
+  itemInventory: 'docs/implementation/item-container-120-approval-audit/evidence/OPERATOR_LEGACY_INVENTORY_SNAPSHOT.json',
   itemPromotion: 'docs/implementation/item-container-120-approval-audit/evidence/STAGE3C_PROMOTION_RESULT.json'
 });
 
@@ -54,23 +59,38 @@ export async function generateProceduralFinalCandidatePack(rootDir,
     : sha256(await readFile(resolve(root, path)));
   const [base, stale, regional, regionalExisting, drying, onomastics,
     onomasticsApproval, appearance, equipment, equipmentApproval,
-    itemManifest, itemApproval, itemPromotion] = await Promise.all([
+    itemManifest, itemApproval, itemRequest, itemG4, itemInventory,
+    itemPromotion] = await Promise.all([
     generateProceduralAuthoringImportPack(root, overrides),
     load(PATHS.stale), load(PATHS.regional), load(PATHS.regionalExisting),
     load(PATHS.drying), load(PATHS.onomastics),
     load(PATHS.onomasticsApproval), load(PATHS.appearance),
     load(PATHS.equipment), load(PATHS.equipmentApproval),
-    load(PATHS.itemManifest), load(PATHS.itemApproval),
+    load(PATHS.itemManifest), load(PATHS.itemApproval), load(PATHS.itemRequest),
+    load(PATHS.itemG4), load(PATHS.itemInventory),
     load(PATHS.itemPromotion)
   ]);
   validateSources({ base, stale, regional, regionalExisting, drying,
     onomastics, onomasticsApproval, appearance, equipment,
     equipmentApproval, itemManifest, itemApproval, itemPromotion });
+  const approvedV5 = await buildApprovedV5Rows({ root, load, itemManifest,
+    itemApproval, itemRequest, itemG4, itemInventory });
 
   const sourceClosure = await Promise.all(Object.entries(PATHS)
     .filter(([key]) => key !== 'stale')
     .map(async ([owner, path]) => ({ owner, path,
       sha256: await rawDigest(path) })));
+  sourceClosure.sort((left, right) => left.owner.localeCompare(right.owner));
+  for (const dataset of itemManifest.datasets) {
+    const path = `data/knowledge-source/imports/item-container-120-v5/candidate/${dataset.path}`;
+    const digest = await rawDigest(path);
+    const semanticDigest = digestEnvelope(await load(path));
+    if (semanticDigest !== dataset.sha256)
+      fail('FINAL_PACK_V5_DATASET_DIGEST_INVALID');
+    sourceClosure.push({ owner: `itemDataset:${dataset.table}`, path,
+      sha256: digest, semantic_digest: semanticDigest,
+      record_count: dataset.record_count });
+  }
   sourceClosure.sort((left, right) => left.owner.localeCompare(right.owner));
   validateClosureDigests({ sourceClosure, regional, regionalExisting, drying,
     onomasticsApproval, appearance, equipmentApproval });
@@ -85,11 +105,11 @@ export async function generateProceduralFinalCandidatePack(rootDir,
   const rows = compileRows({ base, regional, regionalExisting, drying,
     onomastics, onomasticsApproval, appearance, equipment,
     equipmentApproval, itemManifest, itemApproval, itemPromotion,
-    sourcePackDigest });
+    approvedV5, sourcePackDigest });
   const registryEntry = registry.entries.find(({ table_name: table }) =>
     table === CACHE_TABLE);
   if (!registryEntry) fail('FINAL_PACK_CACHE_REGISTRY_MISSING');
-  const records = rows.map((row, ordinal) => {
+  const cacheRecords = rows.map((row, ordinal) => {
     const canonicalPayload = projectCanonicalRecord({ registryEntry, row });
     return { table_name: CACHE_TABLE, operation_kind: 'insert',
       record_key: canonicalStringify(canonicalPayload.record_key),
@@ -98,9 +118,13 @@ export async function generateProceduralFinalCandidatePack(rootDir,
   });
   const table = { table_name: CACHE_TABLE,
     dependency_order: registryEntry.dependency_order,
-    insert_count: records.length, assert_existing_count: 0,
-    record_count: records.length,
-    records_digest: computeTablePayloadDigest(records), records };
+    insert_count: cacheRecords.length, assert_existing_count: 0,
+    record_count: cacheRecords.length,
+    records_digest: computeTablePayloadDigest(cacheRecords),
+    records: cacheRecords };
+  const recordOperations = [table, ...compileAssertExistingOperations(
+    approvedV5)].sort((left, right) => left.dependency_order
+      - right.dependency_order);
   const compatibleWorldTuple = {
     compatible_world_revision_id: WORLD.revision_id,
     compatible_world_catalog_digest: WORLD.catalog_digest,
@@ -114,10 +138,8 @@ export async function generateProceduralFinalCandidatePack(rootDir,
     target_revision_id: TARGET_REVISION,
     compatible_world_tuple: compatibleWorldTuple,
     record_registry_digest: registryDigest,
-    tables: [{ table_name: table.table_name,
-      dependency_order: table.dependency_order,
-      insert_count: table.insert_count, assert_existing_count: 0,
-      record_count: table.record_count, records_digest: table.records_digest }],
+    tables: recordOperations.map(({ records: ignored, ...operation }) =>
+      operation),
     dependency_assertions_semantic_digest:
       computeDependencyAssertionsSemanticDigest([])
   });
@@ -157,17 +179,18 @@ export async function generateProceduralFinalCandidatePack(rootDir,
     target_catalog_digest: targetCatalogDigest,
     record_registry_digest: registryDigest,
     candidate_rows_by_table: { [CACHE_TABLE]: rows },
-    record_operations_by_table: [table],
+    record_operations_by_table: recordOperations,
     append_only_import_plan: {
       catalog_scope: 'item_container_materialization_v2',
-      tables: [{ table_name: table.table_name,
-        dependency_order: table.dependency_order,
-        insert_count: table.insert_count, assert_existing_count: 0,
-        record_count: table.record_count,
-        payload_digest: table.records_digest }],
-      records_source: 'record_operations_by_table[0].records',
-      record_count: records.length,
-      records_digest: table.records_digest,
+      tables: recordOperations.map(({ records: ignored, records_digest,
+        ...operation }) => ({ ...operation, payload_digest: records_digest })),
+      records_source: 'record_operations_by_table[].records',
+      record_count: recordOperations.reduce((sum, operation) =>
+        sum + operation.record_count, 0),
+      records_digest: digestEnvelope(recordOperations.map((operation) => ({
+        table_name: operation.table_name,
+        records_digest: operation.records_digest
+      }))),
       dependency_assertions: [],
       import_authorized: false
     },
@@ -197,16 +220,41 @@ export function validateProceduralFinalCandidatePack(pack) {
       || pack.supersedes.activation_authorized !== false)
     fail('FINAL_PACK_STALE_OR_STATUS_INVALID');
   const rows = pack.candidate_rows_by_table?.[CACHE_TABLE];
-  const records = pack.record_operations_by_table?.[0]?.records;
+  const cacheOperation = pack.record_operations_by_table?.find(
+    ({ table_name: table }) => table === CACHE_TABLE);
+  const records = cacheOperation?.records;
   if (!Array.isArray(rows) || rows.length !== 21
       || !Array.isArray(records) || records.length !== rows.length
-      || pack.record_operations_by_table.length !== 1
-      || pack.record_operations_by_table[0].table_name !== CACHE_TABLE
-      || pack.record_operations_by_table[0].insert_count !== rows.length
-      || pack.record_operations_by_table[0].assert_existing_count !== 0
-      || pack.record_operations_by_table[0].records_digest !==
+      || pack.record_operations_by_table.length !== 40
+      || cacheOperation.insert_count !== rows.length
+      || cacheOperation.assert_existing_count !== 0
+      || cacheOperation.records_digest !==
         computeTablePayloadDigest(records))
     fail('FINAL_PACK_MEMBERSHIP_INVALID');
+  const asserted = pack.record_operations_by_table.filter(
+    ({ table_name: table }) => table !== CACHE_TABLE);
+  if (asserted.length !== 39 || asserted.some((operation) =>
+    operation.insert_count !== 0
+      || operation.assert_existing_count !== operation.record_count
+      || operation.records.some((record) =>
+        record.operation_kind !== 'assert_existing')
+      || operation.records_digest !== computeTablePayloadDigest(
+        operation.records))) fail('FINAL_PACK_ITEM_CLOSURE_INVALID');
+  if (/"(?:status|review_status)":"(?:pending|rejected|draft)/u.test(
+    JSON.stringify(asserted))) fail('FINAL_PACK_UNAPPROVED_ROW');
+  const reconstructedTarget = computeTargetCatalogDigest({
+    schema: 'rus.domain_catalog_payload.v2',
+    catalog_scope: pack.append_only_import_plan.catalog_scope,
+    target_revision_id: pack.target_revision_id,
+    compatible_world_tuple: pack.compatible_world_tuple,
+    record_registry_digest: pack.record_registry_digest,
+    tables: pack.record_operations_by_table.map(
+      ({ records: ignored, ...operation }) => operation),
+    dependency_assertions_semantic_digest:
+      computeDependencyAssertionsSemanticDigest([])
+  });
+  if (reconstructedTarget !== pack.target_catalog_digest)
+    fail('FINAL_PACK_TARGET_DIGEST_INVALID');
   const ids = rows.map(({ record_id: id, version }) => `${id}@${version}`);
   if (new Set(ids).size !== ids.length
       || rows.some((row) => row.status !==
@@ -226,6 +274,10 @@ export function validateProceduralFinalCandidatePack(pack) {
       || metadata.appearance_row_count !== 166
       || metadata.npc_equipment_profile_count !== 3)
     fail('FINAL_PACK_SOURCE_CLOSURE_INVALID');
+  if (metadata.item_container.asserted_table_count !== 39
+      || metadata.item_container.asserted_record_count !== asserted.reduce(
+        (sum, operation) => sum + operation.record_count, 0))
+    fail('FINAL_PACK_ITEM_CLOSURE_INVALID');
   validateNoDuplicateAuthority(metadata.authority_claims);
   if (pack.procedural_base.generated_from_current_owner_inputs !== true
       || pack.procedural_base.compiled_row_count !== 10
@@ -267,13 +319,11 @@ function compileRows(input) {
       owner: 'regional_environment', domain,
       approval_scope: input.regionalExisting.approval_scope,
       approved_members: input.regional.promotions[domain].map((entry) => ({
-        universal_id: entry.universal.id,
-        regional_id: entry.regional.id,
-        universal_digest: entry.source_row_digests.universal,
-        regional_digest: entry.source_row_digests.regional,
+        universal: structuredClone(entry.universal),
+        regional: structuredClone(entry.regional),
+        source_row_digests: structuredClone(entry.source_row_digests),
         context_guard: entry.context_guard,
-        universal_status: entry.universal.status,
-        regional_status: entry.regional.status
+        required_context_refs: [...entry.required_context_refs]
       }))
     }, input.sourcePackDigest));
   }
@@ -322,7 +372,10 @@ function compileRows(input) {
       approval_request_digest: input.itemApproval.request_digest,
       approval_attestation_digest: input.itemPromotion.approval_attestation_digest,
       target_revision_id: input.itemPromotion.target_revision_id,
-      target_catalog_digest: input.itemPromotion.target_catalog_digest
+      target_catalog_digest: input.itemPromotion.target_catalog_digest,
+      asserted_table_count: Object.keys(input.approvedV5).length,
+      asserted_record_count: Object.values(input.approvedV5).reduce(
+        (sum, tableRows) => sum + tableRows.length, 0)
     },
     authority_claims: [
       { authority: 'procedural_scene_rows', record_prefix: 'profile:novgorod_' },
@@ -349,6 +402,91 @@ function compiled(recordId, recordKind, familyCandidateRef, payload,
     family_candidate_ref: familyCandidateRef, payload,
     payload_digest: digestEnvelope(payload), source_pack_digest: sourcePackDigest,
     status: 'approved_authoring_not_runtime_selectable' };
+}
+
+function compileAssertExistingOperations(rowsByTable) {
+  return registry.entries.filter((entry) =>
+    entry.operation_domain === 'catalog_membership'
+      && entry.table_name !== CACHE_TABLE).map((entry) => {
+    const rows = rowsByTable[entry.table_name];
+    if (!Array.isArray(rows)) fail('FINAL_PACK_V5_TABLE_MISSING');
+    const records = rows.map((row) => {
+      const projectedRow = Object.fromEntries(entry.canonical_columns.map(
+        (column) => {
+          let value = Object.hasOwn(row, column) ? row[column]
+            : column === 'requires_regional_permission' ? false : null;
+          if (entry.column_normalizers[column] === 'numeric_decimal'
+              && typeof value === 'number') value = String(value);
+          return [column, value];
+        }));
+      const canonicalPayload = projectCanonicalRecord({ registryEntry: entry,
+        row: projectedRow });
+      return { table_name: entry.table_name,
+        operation_kind: 'assert_existing',
+        record_key: canonicalStringify(canonicalPayload.record_key),
+        canonical_payload: canonicalPayload,
+        record_digest: computeCanonicalRecordDigest(canonicalPayload) };
+    }).sort((left, right) => left.record_key.localeCompare(right.record_key))
+      .map((record, ordinal) => ({ ...record, ordinal }));
+    return { table_name: entry.table_name,
+      dependency_order: entry.dependency_order, insert_count: 0,
+      assert_existing_count: records.length, record_count: records.length,
+      records_digest: computeTablePayloadDigest(records), records };
+  });
+}
+
+async function buildApprovedV5Rows({ root, load, itemManifest, itemApproval,
+  itemRequest, itemG4, itemInventory }) {
+  const base =
+    'data/knowledge-source/imports/item-container-120-v5/candidate';
+  const rows = Object.fromEntries(await Promise.all(itemManifest.datasets.map(
+    async (dataset) => [dataset.table,
+      await load(`${base}/${dataset.path}`)])));
+  const [readiness, compilation, coverage] = await Promise.all([
+    load(`${base}/reports/EDITORIAL_READINESS_REPORT.json`),
+    load(`${base}/reports/COMPILATION_REPORT.json`),
+    load(`${base}/reports/G4_COVERAGE_REPORT.json`)
+  ]);
+  const mappings = itemG4.profile_mappings;
+  const targetRevision = {
+    id: 'world_revision_novgorod_1230_item_container_approved_001',
+    title: 'Novgorod 1230 approved item/container catalogue',
+    effective_from: '1230-01-01', effective_to: '1250-12-31'
+  };
+  const templateIds = [...rows.item_templates, ...rows.container_templates]
+    .map(({ id }) => id);
+  const plan = buildPr17Stage3CPromotionPlan({
+    approval_request: itemRequest,
+    approval_attestation: itemApproval,
+    candidate_manifest: itemManifest,
+    editorial_readiness_report: readiness,
+    g4_coverage_report: coverage,
+    compilation_report: compilation,
+    template_ids: templateIds,
+    legacy_inventory_snapshot: itemInventory,
+    parent_revision: { id: 'novgorod_1230_research_revision_001',
+      title: 'PR17 isolated approved parent revision', status: 'approved',
+      catalog_digest: '0'.repeat(64) },
+    target_revision: targetRevision,
+    source_records_by_table: rows,
+    approved_record_ids_by_table: Object.fromEntries(itemManifest.datasets
+      .filter(({ table }) => table !== 'world_revisions')
+      .map(({ table }) => [table, rows[table].map(({ id }) => id)])),
+    external_records_by_table: { graph_nodes: mappings.map((mapping) => ({
+      id: mapping.graph_node_id, node_type: mapping.node_type,
+      scale_level: 'G4', region_id: 'region_novgorod_land',
+      place_template_id: mapping.place_template_id,
+      building_template_id: mapping.building_template_id ?? null,
+      status: mapping.current_status
+    })) },
+    external_approved_ids: {
+      regions: new Set(['region_novgorod_land']),
+      region_social_roles: new Set(['nov_role_guard'])
+    },
+    mappings
+  });
+  if (plan.status !== 'ready') fail('FINAL_PACK_V5_PROMOTION_INVALID');
+  return plan.records_by_table;
 }
 
 function validateSources(value) {

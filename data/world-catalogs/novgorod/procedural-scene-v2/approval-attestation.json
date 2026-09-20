@@ -1,0 +1,59 @@
+{
+  "schema": "rus.procedural_scene_overlay_approval.v1",
+  "overlay_id": "novgorod_procedural_v6_overlay_001",
+  "overlay_digest": "7cf8751ee326091cb2e3f0faf8b5c7764efb2f7450efefef773cd19567a3153e",
+  "decision": "approve_authoring_audit_only",
+  "activation_authorized": false,
+  "import_authorized": false,
+  "unresolved_data_gaps": [
+    {
+      "binding_id": "novgorod_wreck_shore_natural_v2",
+      "code": "SOURCE_NOT_APPROVED:landscape_templates:lt_low_alluvial_riverbank"
+    },
+    {
+      "binding_id": "novgorod_wreck_shore_natural_v2",
+      "code": "SOURCE_NOT_APPROVED:place_templates:pt_river_landing"
+    },
+    {
+      "binding_id": "novgorod_wreck_shore_natural_v2",
+      "code": "SOURCE_NOT_APPROVED:water_body_templates:wb_small_river"
+    },
+    {
+      "binding_id": "novgorod_fishing_worksite_v2",
+      "code": "REQUIRED_FUNCTIONAL_TOOL_MAPPING_MISSING"
+    },
+    {
+      "binding_id": "novgorod_fishing_worksite_v2",
+      "code": "REQUIRED_STORAGE_MAPPING_MISSING"
+    },
+    {
+      "binding_id": "novgorod_fishing_worksite_v2",
+      "code": "SOURCE_NOT_APPROVED:land_use_templates:lu_inland_capture_fishing"
+    },
+    {
+      "binding_id": "novgorod_fishing_worksite_v2",
+      "code": "SOURCE_NOT_APPROVED:landscape_templates:lt_low_alluvial_riverbank"
+    },
+    {
+      "binding_id": "novgorod_fishing_worksite_v2",
+      "code": "SOURCE_NOT_APPROVED:place_templates:pt_fishing_station"
+    },
+    {
+      "binding_id": "novgorod_fishing_worksite_v2",
+      "code": "SOURCE_NOT_APPROVED:water_body_templates:wb_small_river"
+    },
+    {
+      "binding_id": "novgorod_old_drying_shed_v2",
+      "code": "REQUIRED_FUNCTIONAL_TOOL_MAPPING_MISSING"
+    },
+    {
+      "binding_id": "novgorod_old_drying_shed_v2",
+      "code": "SOURCE_NOT_APPROVED:landscape_templates:lt_dry_meadow"
+    },
+    {
+      "binding_id": "novgorod_old_drying_shed_v2",
+      "code": "SOURCE_NOT_APPROVED:place_templates:pt_forest_work_camp"
+    }
+  ],
+  "attestation_digest": "050557106d7a966b2789a322a1c9b9260e84d09639dc9f704c9dc17b6417d7fb"
+}

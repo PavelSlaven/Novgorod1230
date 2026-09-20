@@ -34,6 +34,8 @@ import {
 import {
   compileOverlaySemanticPayload
 } from '../../tools/runtime-catalog-activation/src/overlay-compiler.js';
+import { importProceduralV6Overlay } from
+  '../../tools/runtime-catalog-activation/src/procedural-v6-import.js';
 import { makeStage24Fixture } from '../fixtures/stage24-fixtures.mjs';
 import { buildPartyRuntimeV2WritePlan } from '@rus/new-game/stages/stage-24/compat';
 import { materializeStage25PhysicalPlan } from '@rus/new-game/stages/stage-25/compat';
@@ -259,16 +261,19 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     rowsByTable: { graph_nodes: graphRows }
   });
   const compatibilityManifest = buildBaseWorldCompatibilityManifest({
-    compatibleWorldRevisionId: 'world-compatible-v1',
-    compatibleWorldCatalogDigest: 'b'.repeat(64),
+    compatibleWorldRevisionId: 'novgorod_spatial_v3_production_v6_candidate_001',
+    compatibleWorldCatalogDigest:
+      '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
     sourceRuntimeConfigurationDigest: 'd'.repeat(64),
     sourceArtifactPaths: ['test/runtime-world-configuration.json'],
     sourceCommitSha: 'e'.repeat(40),
     validationContractVersion: 'base_world_compatibility_v1'
   });
   const compatibleWorldTuple = {
-    compatible_world_revision_id: 'world-compatible-v1',
-    compatible_world_catalog_digest: 'b'.repeat(64),
+    compatible_world_revision_id:
+      'novgorod_spatial_v3_production_v6_candidate_001',
+    compatible_world_catalog_digest:
+      '6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad',
     compatible_world_pin_manifest_digest:
       compatibilityManifest.compatible_world_pin_manifest_digest
   };
@@ -408,12 +413,24 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     parent_registration_id: baselineRegistration.registration_id,
     runtime_contract_digest: RUNTIME_CATALOG_CONTRACT_DIGEST
   };
-  assert.equal((await importApprovedCatalog({
-    pool,
-    ledger,
-    domainRevision,
-    approvalAttestation: overlayAttestation
-  })).status, 'applied');
+  const safeImport = await importProceduralV6Overlay({ pool,
+    baseline: { request: baselineRequest, attestation: baselineAttestation,
+      baselineManifest, compatibilityManifest,
+      runtimeConfigurationTuple: {
+        compatible_world_revision_id:
+          compatibilityManifest.compatible_world_revision_id,
+        compatible_world_catalog_digest:
+          compatibilityManifest.compatible_world_catalog_digest,
+        source_runtime_configuration_digest:
+          compatibilityManifest.source_runtime_configuration_digest } },
+    overlay: { ledger, domainRevision,
+      approvalAttestation: overlayAttestation } });
+  assert.equal(safeImport.imported.status, 'applied');
+  assert.equal(safeImport.readback.compatible_world_revision_id,
+    compatibleWorldTuple.compatible_world_revision_id);
+  assert.equal(safeImport.readback.compatible_world_catalog_digest,
+    compatibleWorldTuple.compatible_world_catalog_digest);
+  assert.equal(safeImport.readback.activation_event_count, 0);
   assert.equal((await importApprovedCatalog({
     pool,
     ledger,

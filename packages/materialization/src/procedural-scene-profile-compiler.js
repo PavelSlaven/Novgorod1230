@@ -55,11 +55,21 @@ export function compileProceduralSceneProfile({ binding, records_by_table: table
         'item_category');
       components.push(deepFreeze({
         component_ref: `item_profile_entries:${entry.id}`,
-        layer: itemLayer(category), required: entry.required === true,
+        layer: functionalLayer(entry), required: entry.required === true,
         owner_ref: { table: 'item_profile_entries', id: entry.id },
         category_ref: category.id, item_template_ref: item.id,
+        profile_ref: profile.id, slot_key: entry.slot_key,
         quantity_bounds: { minimum: entry.min_quantity,
-          maximum: entry.max_quantity }, selection_weight: entry.weight
+          maximum: entry.max_quantity }, selection_weight: entry.weight,
+        quantity_profile_ref: approvedOptional(tables.item_template_quantity_profiles,
+          item.id, 'item_template_id')?.id ?? null,
+        inventory_profile_ref: approvedOptional(tables.item_template_inventory_profiles,
+          item.id, 'item_template_id')?.id ?? null,
+        source_refs: (tables.item_template_source_bindings ?? [])
+          .filter((row) => row.item_template_id === item.id
+            && row.status === 'approved')
+          .map(({ id, source_id: sourceId }) => ({ id, source_id: sourceId }))
+          .sort((a, b) => a.id.localeCompare(b.id))
       }));
     }
   }
@@ -113,11 +123,17 @@ function approved(records, id, kind) {
   if (matches.length !== 1) gap(kind, id);
   return matches[0];
 }
-function itemLayer(category) {
-  const code = String(category.stable_code ?? category.id).toLowerCase();
-  if (/container|basket|box|bag|cask|bucket/u.test(code)) return 'storage';
-  if (/tool|knife|hook|spear|net|line|spade|hoe/u.test(code)) return 'tool';
-  return 'work_material';
+function functionalLayer(entry) {
+  if (!['tool', 'storage', 'work_material'].includes(entry.functional_layer)) {
+    gap('item_profile_entry_functional_layer', entry.id);
+  }
+  return entry.functional_layer;
+}
+function approvedOptional(records, value, field) {
+  const matches = (records ?? []).filter((record) => record[field] === value
+    && record.status === 'approved');
+  if (matches.length > 1) gap(field, value);
+  return matches[0] ?? null;
 }
 function gap(kind, id) {
   throw new MaterializationError('PROCEDURAL_SCENE_PROFILE_DATA_GAP',

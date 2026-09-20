@@ -1,0 +1,1633 @@
+{
+  "schema": "rus.procedural_scene_authoring_overlay.v2",
+  "revision": 2,
+  "overlay_id": "novgorod_procedural_v6_overlay_001",
+  "status": "blocked_data_gap",
+  "activation_authorized": false,
+  "activation_request": null,
+  "compatible_world_pin": {
+    "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+    "world_catalog_digest": "6e6cd611042ff86229c73409816893ea4e983c01722dd4699bac346acfb846ad"
+  },
+  "item120_source": {
+    "immutable_version": 5,
+    "candidate_digest": "e3bddda4b31cdbb91d430254db5e6f2d34a8d9d0a08e5f7e4c1e1d6cb9832a24",
+    "approval_request_digest": "046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771",
+    "approval_attestation_path": "docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json"
+  },
+  "families": [
+    {
+      "binding_id": "novgorod_wreck_shore_natural_v2",
+      "family": "river_wreck_shore",
+      "status": "blocked_data_gap",
+      "spatial_closure_ref": {
+        "table": "spatial_v3_scene_templates",
+        "id": "trace_ld_v1_tpl_wreck_shore",
+        "version": 1,
+        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "canonical_digest": "9eed3de184c60bcd4b0caee3f81fc7f642acd38c74518237aa5b69dda08fd032"
+      },
+      "required_layers": [
+        "environment",
+        "place_function",
+        "relief",
+        "surface",
+        "vegetation",
+        "water"
+      ],
+      "source_rows": [
+        {
+          "owner_ref": {
+            "table": "landscape_templates",
+            "id": "lt_low_alluvial_riverbank"
+          },
+          "status": "draft",
+          "source_refs": [
+            "src_natgeo_landform",
+            "src_ramsar_wetlands"
+          ]
+        },
+        {
+          "owner_ref": {
+            "table": "water_body_templates",
+            "id": "wb_small_river"
+          },
+          "status": "draft",
+          "source_refs": [
+            "src_ramsar_wetlands",
+            "src_usgs_freshwater"
+          ]
+        },
+        {
+          "owner_ref": {
+            "table": "place_templates",
+            "id": "pt_river_landing"
+          },
+          "status": "draft",
+          "source_refs": [
+            "https://historicengland.org.uk/research/current/discover-and-understand/coastal-and-marine/port-and-harbours/"
+          ]
+        }
+      ],
+      "item_audit": null,
+      "actor_basis": null,
+      "temporal_refs": [
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/activity_categories_profiles.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/npc_temporal_profiles_policies.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/place_access_schedules.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json"
+        }
+      ],
+      "data_gap_codes": [
+        "SOURCE_NOT_APPROVED:landscape_templates:lt_low_alluvial_riverbank",
+        "SOURCE_NOT_APPROVED:place_templates:pt_river_landing",
+        "SOURCE_NOT_APPROVED:water_body_templates:wb_small_river"
+      ]
+    },
+    {
+      "binding_id": "novgorod_fishing_worksite_v2",
+      "family": "fishing_worksite",
+      "status": "blocked_data_gap",
+      "spatial_closure_ref": {
+        "table": "spatial_v3_scene_templates",
+        "id": "trace_ld_v1_tpl_fishing_camp",
+        "version": 1,
+        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "canonical_digest": "6f68fc0225dfbccf12705e1c0636c3b1b97fff343a6c9ca53376fa6e4c81dfb4"
+      },
+      "required_layers": [
+        "environment",
+        "npc",
+        "place_function",
+        "relief",
+        "storage",
+        "surface",
+        "tool",
+        "vegetation",
+        "water",
+        "work_material",
+        "work_zone"
+      ],
+      "source_rows": [
+        {
+          "owner_ref": {
+            "table": "landscape_templates",
+            "id": "lt_low_alluvial_riverbank"
+          },
+          "status": "draft",
+          "source_refs": [
+            "src_natgeo_landform",
+            "src_ramsar_wetlands"
+          ]
+        },
+        {
+          "owner_ref": {
+            "table": "water_body_templates",
+            "id": "wb_small_river"
+          },
+          "status": "draft",
+          "source_refs": [
+            "src_ramsar_wetlands",
+            "src_usgs_freshwater"
+          ]
+        },
+        {
+          "owner_ref": {
+            "table": "land_use_templates",
+            "id": "lu_inland_capture_fishing"
+          },
+          "status": "draft",
+          "source_refs": [
+            "src_fao_inland_fisheries",
+            "src_novgorod_promysly",
+            "src_usgs_freshwater"
+          ]
+        },
+        {
+          "owner_ref": {
+            "table": "place_templates",
+            "id": "pt_fishing_station"
+          },
+          "status": "draft",
+          "source_refs": [
+            "https://heritage-explorer.lincolnshire.gov.uk/Designation/DLI1579",
+            "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/"
+          ]
+        }
+      ],
+      "item_audit": {
+        "profile_ref": {
+          "table": "item_profile_sets",
+          "id": "profile_fishing_v3",
+          "source_status": "draft",
+          "approved_by": "FINAL_APPROVAL_ATTESTATION.json"
+        },
+        "entry_count": 7,
+        "required_item_entry_count": 0,
+        "container_rule_count": 0,
+        "entries": [
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_fishing_v3_item_tpl_nov_fish_trap_v1"
+            },
+            "item_template_ref": "item_tpl_nov_fish_trap_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 55,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_fishing",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_fish_trap_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 4000,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_fish_trap_v1"
+              },
+              "mass_grams": 4000,
+              "carry_form": "regular",
+              "external_hand_cost": 2,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_fish_trap_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_fish_trap_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_fish_trap_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_fish_trap_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_fishing_v3_item_tpl_nov_fishhook_v1"
+            },
+            "item_template_ref": "item_tpl_nov_fishhook_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 55,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_fishing",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_fishhook_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 10,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_fishhook_v1"
+              },
+              "mass_grams": 10,
+              "carry_form": "compact",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_fishhook_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_fishhook_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_fishhook_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_fishhook_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_fishing_v3_item_tpl_nov_fishing_line_v1"
+            },
+            "item_template_ref": "item_tpl_nov_fishing_line_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 55,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_fishing",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_fishing_line_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 200,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_fishing_line_v1"
+              },
+              "mass_grams": 200,
+              "carry_form": "regular",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_fishing_line_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_fishing_line_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_fishing_line_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_fishing_line_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_fishing_v3_item_tpl_nov_fishing_net_v1"
+            },
+            "item_template_ref": "item_tpl_nov_fishing_net_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 55,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_fishing",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_fishing_net_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 5000,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_fishing_net_v1"
+              },
+              "mass_grams": 5000,
+              "carry_form": "regular",
+              "external_hand_cost": 2,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_fishing_net_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_fishing_net_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_fishing_net_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_fishing_net_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_fishing_v3_item_tpl_nov_fishing_spear_v1"
+            },
+            "item_template_ref": "item_tpl_nov_fishing_spear_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 55,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_fishing",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_fishing_spear_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 1800,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_fishing_spear_v1"
+              },
+              "mass_grams": 1800,
+              "carry_form": "regular",
+              "external_hand_cost": 2,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_fishing_spear_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_fishing_spear_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_fishing_spear_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_fishing_spear_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_fishing_v3_item_tpl_nov_net_float_v1"
+            },
+            "item_template_ref": "item_tpl_nov_net_float_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 55,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_fishing",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_net_float_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 50,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_net_float_v1"
+              },
+              "mass_grams": 50,
+              "carry_form": "regular",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_net_float_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_net_float_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_net_float_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_net_float_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_fishing_v3_item_tpl_nov_net_sinker_v1"
+            },
+            "item_template_ref": "item_tpl_nov_net_sinker_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 55,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_fishing",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_net_sinker_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 200,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_net_sinker_v1"
+              },
+              "mass_grams": 200,
+              "carry_form": "regular",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_net_sinker_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_net_sinker_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_net_sinker_v1",
+                "source_id": "src_novgorod_promysly"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_net_sinker_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          }
+        ]
+      },
+      "actor_basis": {
+        "occupation": {
+          "owner_ref": {
+            "table": "novgorod_occupations_v1_enriched.tsv",
+            "id": "nov_occ_fisher"
+          },
+          "status": "approved",
+          "source_refs": [
+            "src_birchbark_corpus_context",
+            "src_novgorod_first_chronicle",
+            "src_project_map_v6",
+            "src_project_region_profile_v1",
+            "src_russkaya_pravda",
+            "src_yanin_novgorod_posadniki"
+          ],
+          "legal_status_archetype_id": null,
+          "social_position_archetype_id": null
+        },
+        "role": {
+          "owner_ref": {
+            "table": "novgorod_social_roles_v1_enriched.tsv",
+            "id": "nov_role_fisher"
+          },
+          "status": "approved",
+          "source_refs": [
+            "src_birchbark_corpus_context",
+            "src_novgorod_first_chronicle",
+            "src_project_map_v6",
+            "src_project_region_profile_v1",
+            "src_russkaya_pravda",
+            "src_yanin_novgorod_posadniki"
+          ],
+          "legal_status_archetype_id": "free",
+          "social_position_archetype_id": "forest_water_producer_commoner"
+        },
+        "name_pool_ref": null
+      },
+      "temporal_refs": [
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/activity_categories_profiles.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/npc_temporal_profiles_policies.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/place_access_schedules.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json"
+        }
+      ],
+      "data_gap_codes": [
+        "REQUIRED_FUNCTIONAL_TOOL_MAPPING_MISSING",
+        "REQUIRED_STORAGE_MAPPING_MISSING",
+        "SOURCE_NOT_APPROVED:land_use_templates:lu_inland_capture_fishing",
+        "SOURCE_NOT_APPROVED:landscape_templates:lt_low_alluvial_riverbank",
+        "SOURCE_NOT_APPROVED:place_templates:pt_fishing_station",
+        "SOURCE_NOT_APPROVED:water_body_templates:wb_small_river"
+      ]
+    },
+    {
+      "binding_id": "novgorod_old_drying_shed_v2",
+      "family": "old_drying_shed",
+      "status": "blocked_data_gap",
+      "spatial_closure_ref": {
+        "table": "spatial_v3_scene_templates",
+        "id": "trace_ld_v1_tpl_old_drying_shed",
+        "version": 1,
+        "world_revision_id": "novgorod_spatial_v3_production_v6_candidate_001",
+        "canonical_digest": "8e5019e07de39dc1eb3d07f996bca38f2af8ef25f927cc30a729bd3edd297679"
+      },
+      "required_layers": [
+        "environment",
+        "npc",
+        "place_function",
+        "relief",
+        "storage",
+        "surface",
+        "tool",
+        "vegetation",
+        "work_material"
+      ],
+      "source_rows": [
+        {
+          "owner_ref": {
+            "table": "landscape_templates",
+            "id": "lt_dry_meadow"
+          },
+          "status": "draft",
+          "source_refs": [
+            "src_iucn_get",
+            "src_wwf_teow"
+          ]
+        },
+        {
+          "owner_ref": {
+            "table": "place_templates",
+            "id": "pt_forest_work_camp"
+          },
+          "status": "draft",
+          "source_refs": [
+            "https://historicengland.org.uk/images-books/publications/iha-medieval-settlements/heag210-medieval-settlements/"
+          ]
+        }
+      ],
+      "item_audit": {
+        "profile_ref": {
+          "table": "item_profile_sets",
+          "id": "profile_craft_work_v3",
+          "source_status": "draft",
+          "approved_by": "FINAL_APPROVAL_ATTESTATION.json"
+        },
+        "entry_count": 15,
+        "required_item_entry_count": 0,
+        "container_rule_count": 1,
+        "entries": [
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_adze_v1"
+            },
+            "item_template_ref": "item_tpl_nov_adze_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_adze_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 500,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_adze_v1"
+              },
+              "mass_grams": 500,
+              "carry_form": "regular",
+              "external_hand_cost": 1,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_adze_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_adze_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_adze_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_adze_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_auger_v1"
+            },
+            "item_template_ref": "item_tpl_nov_auger_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_auger_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 450,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_auger_v1"
+              },
+              "mass_grams": 450,
+              "carry_form": "regular",
+              "external_hand_cost": 1,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_auger_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_auger_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_auger_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_auger_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_awl_v1"
+            },
+            "item_template_ref": "item_tpl_nov_awl_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_awl_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 50,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_awl_v1"
+              },
+              "mass_grams": 50,
+              "carry_form": "compact",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_awl_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_awl_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_awl_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_awl_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_carving_knife_v1"
+            },
+            "item_template_ref": "item_tpl_nov_carving_knife_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_carving_knife_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 100,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_carving_knife_v1"
+              },
+              "mass_grams": 100,
+              "carry_form": "compact",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_carving_knife_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_carving_knife_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_carving_knife_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_carving_knife_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_chisel_v1"
+            },
+            "item_template_ref": "item_tpl_nov_chisel_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_chisel_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 250,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_chisel_v1"
+              },
+              "mass_grams": 250,
+              "carry_form": "regular",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_chisel_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_chisel_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_chisel_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_chisel_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_file_v1"
+            },
+            "item_template_ref": "item_tpl_nov_file_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_file_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 300,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_file_v1"
+              },
+              "mass_grams": 300,
+              "carry_form": "regular",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_file_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_file_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_file_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_file_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_hammer_v1"
+            },
+            "item_template_ref": "item_tpl_nov_hammer_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_hammer_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 800,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_hammer_v1"
+              },
+              "mass_grams": 800,
+              "carry_form": "regular",
+              "external_hand_cost": 1,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_hammer_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_hammer_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_hammer_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_hammer_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_saw_v1"
+            },
+            "item_template_ref": "item_tpl_nov_saw_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_saw_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 500,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_saw_v1"
+              },
+              "mass_grams": 500,
+              "carry_form": "regular",
+              "external_hand_cost": 1,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_saw_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_saw_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_saw_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_saw_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_scraper_v1"
+            },
+            "item_template_ref": "item_tpl_nov_scraper_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_scraper_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 200,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_scraper_v1"
+              },
+              "mass_grams": 200,
+              "carry_form": "regular",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_scraper_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_scraper_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_scraper_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_scraper_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_sewing_needle_v1"
+            },
+            "item_template_ref": "item_tpl_nov_sewing_needle_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_sewing_needle_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 2,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_sewing_needle_v1"
+              },
+              "mass_grams": 2,
+              "carry_form": "regular",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_sewing_needle_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_sewing_needle_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_sewing_needle_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_sewing_needle_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_shears_v1"
+            },
+            "item_template_ref": "item_tpl_nov_shears_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_shears_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 300,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_shears_v1"
+              },
+              "mass_grams": 300,
+              "carry_form": "regular",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_shears_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_shears_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_shears_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_shears_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_smithing_tongs_v1"
+            },
+            "item_template_ref": "item_tpl_nov_smithing_tongs_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_smithing_tongs_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 900,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_smithing_tongs_v1"
+              },
+              "mass_grams": 900,
+              "carry_form": "regular",
+              "external_hand_cost": 1,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_smithing_tongs_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_smithing_tongs_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_smithing_tongs_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_smithing_tongs_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_wedge_v1"
+            },
+            "item_template_ref": "item_tpl_nov_wedge_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_wedge_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 300,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_wedge_v1"
+              },
+              "mass_grams": 300,
+              "carry_form": "regular",
+              "external_hand_cost": 0,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_wedge_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_wedge_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_wedge_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_wedge_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_wooden_mallet_v1"
+            },
+            "item_template_ref": "item_tpl_nov_wooden_mallet_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_wooden_mallet_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 700,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_wooden_mallet_v1"
+              },
+              "mass_grams": 700,
+              "carry_form": "regular",
+              "external_hand_cost": 1,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_wooden_mallet_v1",
+                "source_id": "src_stage3b2_kolchin_wooden_1968"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_wooden_mallet_v1",
+                "source_id": "src_stage3b2_kolchin_wooden_1968"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_wooden_mallet_v1",
+                "source_id": "src_stage3b2_kolchin_wooden_1968"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_wooden_mallet_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          },
+          {
+            "owner_ref": {
+              "table": "item_profile_entries",
+              "id": "entry_profile_craft_work_v3_item_tpl_nov_working_axe_v1"
+            },
+            "item_template_ref": "item_tpl_nov_working_axe_v1",
+            "source_status": "approved_by_parent",
+            "required": false,
+            "selection_weight": 50,
+            "quantity_bounds": {
+              "minimum": 1,
+              "maximum": 1
+            },
+            "slot_key": "item_craft_work",
+            "quantity_profile": {
+              "owner_ref": {
+                "table": "item_template_quantity_profiles",
+                "id": "quantity_item_tpl_nov_working_axe_v1_count_v5"
+              },
+              "quantity_unit_id": "piece",
+              "quantity_dimension": "count",
+              "minimum_quantity": 1,
+              "maximum_quantity": 1,
+              "mass_grams_per_unit": 1400,
+              "stackable": false,
+              "partial_consumption_allowed": false,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "inventory_profile": {
+              "owner_ref": {
+                "table": "item_template_inventory_profiles",
+                "id": "inventory_item_tpl_nov_working_axe_v1"
+              },
+              "mass_grams": 1400,
+              "carry_form": "regular",
+              "external_hand_cost": 1,
+              "source_id": "src_gameplay_physical_policy_v3"
+            },
+            "source_refs": [
+              {
+                "id": "claim_construction_item_tpl_nov_working_axe_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_historical_presence_item_tpl_nov_working_axe_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_material_item_tpl_nov_working_axe_v1",
+                "source_id": "src_stage3b2_kolchin_iron_1959"
+              },
+              {
+                "id": "claim_physical_parameter_item_tpl_nov_working_axe_v1",
+                "source_id": "src_gameplay_physical_policy_v3"
+              }
+            ]
+          }
+        ]
+      },
+      "actor_basis": {
+        "occupation": {
+          "owner_ref": {
+            "table": "novgorod_occupations_v1_enriched.tsv",
+            "id": "nov_occ_carpenter"
+          },
+          "status": "approved",
+          "source_refs": [
+            "src_birchbark_corpus_context",
+            "src_novgorod_first_chronicle",
+            "src_project_map_v6",
+            "src_project_region_profile_v1",
+            "src_russkaya_pravda",
+            "src_yanin_novgorod_posadniki"
+          ],
+          "legal_status_archetype_id": null,
+          "social_position_archetype_id": null
+        },
+        "role": {
+          "owner_ref": {
+            "table": "novgorod_social_roles_v1_enriched.tsv",
+            "id": "nov_role_craftsman_master"
+          },
+          "status": "approved",
+          "source_refs": [
+            "src_birchbark_corpus_context",
+            "src_novgorod_first_chronicle",
+            "src_project_map_v6",
+            "src_project_region_profile_v1",
+            "src_russkaya_pravda",
+            "src_yanin_novgorod_posadniki"
+          ],
+          "legal_status_archetype_id": "free",
+          "social_position_archetype_id": "artisan_master_urban"
+        },
+        "name_pool_ref": null
+      },
+      "temporal_refs": [
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/activity_categories_profiles.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/calendar_daylight_light_profiles.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/npc_temporal_profiles_policies.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/place_access_schedules.json"
+        },
+        {
+          "version": 4,
+          "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json"
+        }
+      ],
+      "data_gap_codes": [
+        "REQUIRED_FUNCTIONAL_TOOL_MAPPING_MISSING",
+        "SOURCE_NOT_APPROVED:landscape_templates:lt_dry_meadow",
+        "SOURCE_NOT_APPROVED:place_templates:pt_forest_work_camp"
+      ]
+    }
+  ],
+  "overlay_digest": "7cf8751ee326091cb2e3f0faf8b5c7764efb2f7450efefef773cd19567a3153e"
+}

@@ -19,16 +19,18 @@ place_templates: [approved('place', { place_kind: 'natural_place' })] };
 const worldPin = { world_revision_id: 'world-v6',
   world_catalog_digest: 'a'.repeat(64) };
 
-test('generator binds deterministic catalog to exact active event and world pin', () => {
+test('generator binds deterministic catalog to exact import without activation', () => {
   const input = { bindings: { schema: 'rus.procedural_scene_authoring_bindings.v1',
     status: 'approved', bindings: [binding] }, approvedRecordBundle: {
     schema: 'rus.procedural_scene_approved_record_bundle.v1',
-    world_pin: worldPin, activation: { status: 'active', event_id: 'event-v6',
-      ...worldPin }, records_by_table: records } };
+    world_pin: worldPin, import_readback: { status: 'imported',
+      import_id: 'import-v6', ...worldPin }, approval: {
+      activation_authorized: false }, activation_event: null,
+    records_by_table: records } };
   assert.deepEqual(generateProceduralSceneProfileCatalog(input),
     generateProceduralSceneProfileCatalog(structuredClone(input)));
-  assert.equal(generateProceduralSceneProfileCatalog(input)
-    .activation_event_ref, 'event-v6');
+  assert.equal(generateProceduralSceneProfileCatalog(input).import_ref, 'import-v6');
+  assert.equal(generateProceduralSceneProfileCatalog(input).activation_event_ref, null);
 });
 
 test('generator refuses candidate-only or mismatched activation metadata', () => {
@@ -36,7 +38,14 @@ test('generator refuses candidate-only or mismatched activation metadata', () =>
     status: 'approved', bindings: [binding] };
   assert.throws(() => generateProceduralSceneProfileCatalog({ bindings,
     approvedRecordBundle: { schema: 'rus.procedural_scene_approved_record_bundle.v1',
-      world_pin: worldPin, activation: { status: 'candidate', event_id: 'x',
-        ...worldPin }, records_by_table: records } }),
+      world_pin: worldPin, import_readback: { status: 'candidate',
+        import_id: 'x', ...worldPin }, approval: { activation_authorized: false },
+      activation_event: null, records_by_table: records } }),
+  /PROCEDURAL_SCENE_GENERATOR_INPUT_INVALID/u);
+  assert.throws(() => generateProceduralSceneProfileCatalog({ bindings,
+    approvedRecordBundle: { schema: 'rus.procedural_scene_approved_record_bundle.v1',
+      world_pin: worldPin, import_readback: { status: 'imported',
+        import_id: 'x', ...worldPin }, approval: { activation_authorized: true },
+      activation_event: null, records_by_table: records } }),
   /PROCEDURAL_SCENE_GENERATOR_INPUT_INVALID/u);
 });

@@ -10,25 +10,26 @@ export function generateProceduralSceneProfileCatalog({ bindings,
       || bindings.status !== 'approved' || !Array.isArray(bindings.bindings)
       || approvedRecordBundle?.schema
         !== 'rus.procedural_scene_approved_record_bundle.v1'
-      || approvedRecordBundle.activation?.status !== 'active'
-      || approvedRecordBundle.activation.world_revision_id
+      || approvedRecordBundle.import_readback?.status !== 'imported'
+      || approvedRecordBundle.import_readback.world_revision_id
         !== approvedRecordBundle.world_pin?.world_revision_id
-      || approvedRecordBundle.activation.world_catalog_digest
-        !== approvedRecordBundle.world_pin?.world_catalog_digest) {
+      || approvedRecordBundle.import_readback.world_catalog_digest
+        !== approvedRecordBundle.world_pin?.world_catalog_digest
+      || approvedRecordBundle.approval?.activation_authorized !== false
+      || approvedRecordBundle.activation_event != null) {
     throw new Error('PROCEDURAL_SCENE_GENERATOR_INPUT_INVALID');
   }
   const approvedBindings = bindings.bindings.filter(({ status }) =>
     status === 'approved');
-  if (approvedBindings.length === 0) throw new Error(
-    'PROCEDURAL_SCENE_GENERATOR_BINDINGS_EMPTY');
   const profiles = approvedBindings.map((binding) =>
     compileProceduralSceneProfile({ binding,
       records_by_table: approvedRecordBundle.records_by_table,
       world_pin: approvedRecordBundle.world_pin }))
     .sort((a, b) => a.binding_id.localeCompare(b.binding_id));
-  const catalog = { schema: 'rus.compiled_procedural_scene_profile_catalog.v1',
-    version: 1, status: 'approved',
-    activation_event_ref: approvedRecordBundle.activation.event_id,
+  const catalog = { schema: 'rus.compiled_procedural_scene_profile_catalog.v2',
+    version: 2, status: profiles.length > 0 ? 'approved' : 'blocked_data_gap',
+    import_ref: approvedRecordBundle.import_readback.import_id,
+    activation_event_ref: null, activation_authorized: false,
     world_pin: structuredClone(approvedRecordBundle.world_pin), profiles,
     blocked_bindings: bindings.bindings.filter(({ status }) =>
       status !== 'approved').map(({ binding_id, status, data_gap_codes }) => ({

@@ -186,6 +186,8 @@
     "knowledge:status": "node packages/knowledge-source/src/cli.js status --root .",
     "knowledge:controls": "node packages/knowledge-source/src/cli.js controls --root .",
     "procedural-scenes:generate": "node scripts/generate-procedural-scene-profiles.mjs",
+    "procedural-scenes:v6-overlay": "node scripts/generate-procedural-v6-authoring-overlay.mjs .",
+    "procedural-scenes:v6-overlay-check": "node scripts/generate-procedural-v6-authoring-overlay.mjs . --check",
     "test:knowledge-source": "node --test packages/knowledge-source/test/*.test.js tools/docs-tools/test/knowledge-source-migration.test.js tools/docs-tools/test/knowledge-corpus-verifier.test.js test/modules/knowledge-source-architecture.test.js",
     "test:world-catalog": "node --test tools/world-catalog-workflow/test/*.test.js",
     "world-catalog:validate-novgorod-revision": "node tools/world-catalog-workflow/src/cli.js validate-revision --revision data/world-catalogs/novgorod/revisions/novgorod_1230_research_revision_001.json",

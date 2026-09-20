@@ -23,9 +23,15 @@ const tables = () => ({
   item_profile_sets: [approved('items:fishing')],
   item_profile_entries: [{ id: 'entry:net', profile_id: 'items:fishing',
     item_template_id: 'item:net', min_quantity: 1, max_quantity: 2,
-    required: true, weight: 55 }],
+    required: true, weight: 55, slot_key: 'work', functional_layer: 'tool' }],
   item_templates: [approved('item:net', { category_id: 'category:net' })],
   universal_categories: [approved('category:net', { stable_code: 'fishing_net' })],
+  item_template_quantity_profiles: [approved('quantity:net', {
+    item_template_id: 'item:net', minimum_quantity: 3, maximum_quantity: 7 })],
+  item_template_inventory_profiles: [approved('inventory:net', {
+    item_template_id: 'item:net', packing_slot_cost: 4 })],
+  item_template_source_bindings: [approved('source:net', {
+    item_template_id: 'item:net', source_id: 'source:approved-net' })],
   region_npc_profile_sets: [approved('npcs:fishing', {
     demographic_profile_id: 'demographic:regional',
     appearance_profile_id: 'appearance:regional',
@@ -46,6 +52,12 @@ test('compiler derives typed executable profile only from owner records', () => 
   assert.ok(result.components.every(({ owner_ref }) => owner_ref?.table));
   assert.ok(result.components.some(({ layer, item_template_ref }) =>
     layer === 'tool' && item_template_ref === 'item:net'));
+  const tool = result.components.find(({ layer }) => layer === 'tool');
+  assert.deepEqual(tool.quantity_bounds, { minimum: 1, maximum: 2 });
+  assert.equal(tool.quantity_profile_ref, 'quantity:net');
+  assert.equal(tool.inventory_profile_ref, 'inventory:net');
+  assert.deepEqual(tool.source_refs, [{ id: 'source:net',
+    source_id: 'source:approved-net' }]);
 });
 
 test('compiler rejects sand-only river bank and missing functional tool', () => {
@@ -70,4 +82,12 @@ test('compiler rejects candidate records not activated as approved', () => {
   assert.throws(() => compileProceduralSceneProfile({ binding: binding(['surface']),
     records_by_table: inactive, world_pin: pin }),
   { code: 'PROCEDURAL_SCENE_PROFILE_DATA_GAP' });
+});
+
+test('compiler rejects semantic layer guesses absent approved mapping', () => {
+  const unmapped = tables();
+  delete unmapped.item_profile_entries[0].functional_layer;
+  assert.throws(() => compileProceduralSceneProfile({
+    binding: binding(['surface', 'tool']), records_by_table: unmapped,
+    world_pin: pin }), { code: 'PROCEDURAL_SCENE_PROFILE_DATA_GAP' });
 });

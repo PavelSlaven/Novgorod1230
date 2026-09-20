@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { generateNpcEquipmentProfiles,
+import { buildNpcEquipmentProfileAttestation, generateNpcEquipmentProfiles,
   resolveEquipmentSlotBinding, validateNpcEquipmentProfileCandidate } from
   '../../../scripts/generate-npc-equipment-profiles.mjs';
 
@@ -20,6 +20,10 @@ test('NPC equipment candidate and request are byte-stable and non-executable',
       `${JSON.stringify(first.candidate, null, 2)}\n`);
     assert.equal(await readFile(`${root}/${output}/approval-request.json`, 'utf8'),
       `${JSON.stringify(first.approvalRequest, null, 2)}\n`);
+    const attestation = buildNpcEquipmentProfileAttestation(first.candidate,
+      first.approvalRequest);
+    assert.equal(await readFile(`${root}/${output}/approval-attestation.json`,
+      'utf8'), `${JSON.stringify(attestation, null, 2)}\n`);
     for (const value of [first.candidate, first.approvalRequest]) {
       assert.equal(value.import_authorized, false);
       assert.equal(value.activation_authorized, false);
@@ -30,6 +34,46 @@ test('NPC equipment candidate and request are byte-stable and non-executable',
       'pending_independent_review');
     assert.doesNotMatch(JSON.stringify(first.candidate),
       /"(?:display_name|name|personality)"\s*:/u);
+  });
+
+test('attestation binds exact approved authoring scope and no runtime authority',
+  async () => {
+    const { candidate, approvalRequest } = await generateNpcEquipmentProfiles(root);
+    const attestation = buildNpcEquipmentProfileAttestation(candidate,
+      approvalRequest);
+    assert.equal(attestation.schema,
+      'rus.npc_equipment_profile_approval_attestation.v1');
+    assert.equal(attestation.decision, 'approve_npc_equipment_authoring');
+    assert.equal(attestation.subject_commit_sha,
+      'ac70b4f68aa58a07bf2befafa3c753fc3b344f63');
+    assert.equal(attestation.appearance_approval_commit_sha,
+      '898de60db83650395cae9bcb7a5c605e5bd60497');
+    assert.equal(attestation.candidate_digest,
+      '0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181');
+    assert.equal(attestation.request_digest,
+      '27e6354f63668cd2ca062bfda21c28376ad4aba8b8c775db017cfa0ee05b9eb0');
+    assert.equal(attestation.authoring_approved, true);
+    assert.equal(attestation.approval_scope, 'npc_equipment_authoring_only');
+    assert.deepEqual(attestation.profile_ids, [
+      'novgorod_commoner_male_basic_clothing_v1',
+      'novgorod_fishing_water_equipment_v1',
+      'novgorod_transport_guiding_equipment_v1'
+    ]);
+    assert.deepEqual(attestation.clothing, { resolved: true, executable: false });
+    assert.deepEqual(attestation.gap_codes, [
+      'BOATMAN_CONTAINER_COMPATIBILITY_NOT_APPLICABLE',
+      'BOATMAN_PROPULSION_TOOL_MAPPING_MISSING',
+      'FEMALE_BASIC_CLOTHING_PROFILE_NOT_AUTHORED',
+      'FOOTWEAR_SLOT_NOT_ACTIVE'
+    ]);
+    assert.ok(Object.entries(attestation.authority).every(([key, value]) =>
+      key === 'activation_request' ? value === null : value === false));
+    assert.match(attestation.audit.audit_digest, /^[0-9a-f]{64}$/u);
+    assert.match(attestation.attestation_digest, /^[0-9a-f]{64}$/u);
+    const tampered = structuredClone(candidate);
+    tampered.candidate_digest = '0'.repeat(64);
+    assert.throws(() => buildNpcEquipmentProfileAttestation(tampered,
+      approvalRequest), { code: 'NPC_EQUIPMENT_ATTESTATION_SUBJECT_MISMATCH' });
   });
 
 test('two levels preserve exact clothing, mechanics and property basis',

@@ -65,6 +65,10 @@ pending or source-mismatched role/occupation rows fail closed. Raw V5 rows stay
 `draft` in their immutable source bundle and are usable here only through the
 exact digest-bound `approve_all_120` promotion; candidate entries expose this
 as `approved_by_exact_promotion`, never as a rewritten source status.
+The separate exact-subject attestation approves only
+`npc_equipment_authoring_only`. Runtime, ownership assignment, import,
+activation, default selection, deploy and rematerialization remain explicitly
+unauthorized; the attestation does not mutate the sealed candidate or request.
 Season applicability is pinned to the approved Temporal v4 weather/calendar
 record and uses only `spring`, `summer`, `autumn`, `winter`; scenario schedule
 labels such as `spring_rasputitsa` do not become season vocabulary.

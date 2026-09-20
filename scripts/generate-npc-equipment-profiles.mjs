@@ -358,6 +358,92 @@ export function validateNpcEquipmentProfileCandidate(candidate) {
   return candidate;
 }
 
+export function buildNpcEquipmentProfileAttestation(candidate, approvalRequest) {
+  const expectedCandidate =
+    '0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181';
+  const expectedRequest =
+    '27e6354f63668cd2ca062bfda21c28376ad4aba8b8c775db017cfa0ee05b9eb0';
+  if (candidate.candidate_digest !== expectedCandidate
+      || approvalRequest.request_digest !== expectedRequest
+      || approvalRequest.candidate_digest !== expectedCandidate
+      || approvalRequest.candidate_ref !==
+        'novgorod_npc_equipment_profiles_candidate_001@1')
+    fail('NPC_EQUIPMENT_ATTESTATION_SUBJECT_MISMATCH');
+  const profileIds = [...candidate.social_clothing_profiles,
+    ...candidate.occupation_equipment_profiles]
+    .map(({ profile_id: id }) => id).sort();
+  const gapCodes = [...candidate.social_clothing_profiles,
+    ...candidate.occupation_equipment_profiles]
+    .flatMap(({ typed_gaps: gaps }) => gaps.map(({ code }) => code)).sort();
+  const expectedGaps = [
+    'BOATMAN_CONTAINER_COMPATIBILITY_NOT_APPLICABLE',
+    'BOATMAN_PROPULSION_TOOL_MAPPING_MISSING',
+    'FEMALE_BASIC_CLOTHING_PROFILE_NOT_AUTHORED',
+    'FOOTWEAR_SLOT_NOT_ACTIVE'
+  ];
+  if (!sameSet(profileIds, approvalRequest.profile_ids)
+      || !sameSet(gapCodes, expectedGaps)
+      || candidate.social_clothing_profiles.some(({ profile_status: status,
+        executable }) => status !== 'resolved' || executable !== false))
+    fail('NPC_EQUIPMENT_ATTESTATION_SCOPE_INVALID');
+  const slot = candidate.provenance.equipment_slot_authority;
+  const temporal = candidate.provenance.temporal_season_authority;
+  const audit = {
+    auditor_id: 'independent_reaudit',
+    audited_at: '2026-09-21',
+    subject_commit_sha: 'ac70b4f68aa58a07bf2befafa3c753fc3b344f63',
+    appearance_approval_commit_sha:
+      '898de60db83650395cae9bcb7a5c605e5bd60497',
+    candidate_digest: expectedCandidate,
+    request_digest: expectedRequest,
+    decision: 'approve_npc_equipment_authoring'
+  };
+  const payload = {
+    schema: 'rus.npc_equipment_profile_approval_attestation.v1',
+    decision: audit.decision,
+    subject_commit_sha: audit.subject_commit_sha,
+    appearance_approval_commit_sha: audit.appearance_approval_commit_sha,
+    request_digest: expectedRequest,
+    candidate_digest: expectedCandidate,
+    candidate_ref: approvalRequest.candidate_ref,
+    authoring_approved: true,
+    approval_scope: 'npc_equipment_authoring_only',
+    profile_ids: profileIds,
+    slot_authority: {
+      source_path: slot.source_path,
+      source_sha256: slot.source_sha256,
+      source_projection_sha256: slot.source_projection_sha256,
+      candidate_rows_sha256: slot.candidate_rows_sha256,
+      authoring_attestation_digest: slot.authoring_attestation_digest
+    },
+    temporal_authority: {
+      approval_path: temporal.approval_path,
+      approval_sha256:
+        'ea7bd94f46b4d12feba39b33480af44a08ed2199118a460d859090044a7f9beb',
+      dataset_path: temporal.dataset_path,
+      dataset_sha256: temporal.dataset_sha256,
+      record_id: temporal.record_id,
+      record_version: temporal.record_version,
+      seasons: structuredClone(temporal.seasons)
+    },
+    clothing: { resolved: true, executable: false },
+    gap_codes: gapCodes,
+    authority: {
+      runtime_authorized: false,
+      ownership_assignment_authorized: false,
+      import_authorized: false,
+      activation_authorized: false,
+      default_profile_authorized: false,
+      deploy_authorized: false,
+      rematerialization_authorized: false,
+      activation_request: null
+    },
+    audit: { auditor_id: audit.auditor_id, audited_at: audit.audited_at,
+      audit_digest: digest(audit) }
+  };
+  return { ...payload, attestation_digest: digest(payload) };
+}
+
 function resolveItem(row, sources) {
   const template = exact(sources.itemTemplates, row.item_template_ref, 'id',
     'NPC_EQUIPMENT_ITEM_TEMPLATE');
@@ -692,7 +778,9 @@ async function main(argv) {
   await mkdir(resolve(root, OUTPUT_ROOT), { recursive: true });
   await Promise.all([
     ['candidate.json', output.candidate],
-    ['approval-request.json', output.approvalRequest]
+    ['approval-request.json', output.approvalRequest],
+    ['approval-attestation.json', buildNpcEquipmentProfileAttestation(
+      output.candidate, output.approvalRequest)]
   ].map(([name, value]) => writeFile(resolve(root, OUTPUT_ROOT, name),
     `${JSON.stringify(value, null, 2)}\n`)));
   if (argv.includes('--check')) process.stdout.write(

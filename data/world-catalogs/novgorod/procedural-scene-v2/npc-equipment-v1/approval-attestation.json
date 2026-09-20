@@ -1,0 +1,63 @@
+{
+  "schema": "rus.npc_equipment_profile_approval_attestation.v1",
+  "decision": "approve_npc_equipment_authoring",
+  "subject_commit_sha": "ac70b4f68aa58a07bf2befafa3c753fc3b344f63",
+  "appearance_approval_commit_sha": "898de60db83650395cae9bcb7a5c605e5bd60497",
+  "request_digest": "27e6354f63668cd2ca062bfda21c28376ad4aba8b8c775db017cfa0ee05b9eb0",
+  "candidate_digest": "0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181",
+  "candidate_ref": "novgorod_npc_equipment_profiles_candidate_001@1",
+  "authoring_approved": true,
+  "approval_scope": "npc_equipment_authoring_only",
+  "profile_ids": [
+    "novgorod_commoner_male_basic_clothing_v1",
+    "novgorod_fishing_water_equipment_v1",
+    "novgorod_transport_guiding_equipment_v1"
+  ],
+  "slot_authority": {
+    "source_path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6/actor-appearance-carry-forward-v1/candidate.json",
+    "source_sha256": "1dffc2cd2d80576146090daaaf0cf2b0cab436d761b4309de75949f87b9f3533",
+    "source_projection_sha256": "0a65cfaacca68e75e6756ef62062a844e62d09a2c45d390471157cae27fa0286",
+    "candidate_rows_sha256": "cfdd5d0688bcde4fd9445e194e2fe327c36138578d860c36e2b146f249aac9b3",
+    "authoring_attestation_digest": "5fa3693fcc4ba52b67411dc512dc5c6d988ba53263ee4814efa84e7c97cbb5df"
+  },
+  "temporal_authority": {
+    "approval_path": "data/world-catalogs/novgorod/temporal-v4/approvals/weather_transition_profiles_processes.json",
+    "approval_sha256": "ea7bd94f46b4d12feba39b33480af44a08ed2199118a460d859090044a7f9beb",
+    "dataset_path": "data/world-catalogs/novgorod/temporal-v4/datasets/weather_transition_profiles_processes.json",
+    "dataset_sha256": "b8a66008bf3830f5353b325ad913c2a2a95c085303ae5d8950f5a72265a38922",
+    "record_id": "record:weather_transition_profiles_processes:novgorod_weather_v2",
+    "record_version": "1",
+    "seasons": [
+      "autumn",
+      "spring",
+      "summer",
+      "winter"
+    ]
+  },
+  "clothing": {
+    "resolved": true,
+    "executable": false
+  },
+  "gap_codes": [
+    "BOATMAN_CONTAINER_COMPATIBILITY_NOT_APPLICABLE",
+    "BOATMAN_PROPULSION_TOOL_MAPPING_MISSING",
+    "FEMALE_BASIC_CLOTHING_PROFILE_NOT_AUTHORED",
+    "FOOTWEAR_SLOT_NOT_ACTIVE"
+  ],
+  "authority": {
+    "runtime_authorized": false,
+    "ownership_assignment_authorized": false,
+    "import_authorized": false,
+    "activation_authorized": false,
+    "default_profile_authorized": false,
+    "deploy_authorized": false,
+    "rematerialization_authorized": false,
+    "activation_request": null
+  },
+  "audit": {
+    "auditor_id": "independent_reaudit",
+    "audited_at": "2026-09-21",
+    "audit_digest": "f490c097ecd1371bf255e5ddd9032ab975876e9a93119c19dd82df0e4e5a0a01"
+  },
+  "attestation_digest": "e4cb0615a0cb869262fc882f13ce497f5706d08b62edba438ca1cafa38b61f89"
+}

@@ -2,218 +2,239 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { validateProceduralSceneAuthoringCandidate } from '@rus/materialization';
 
-const FAMILIES = Object.freeze([
-  { binding_id: 'novgorod_wreck_shore_natural_v2', family: 'river_wreck_shore',
+const WORLD_ROOT = 'data/world-catalogs/novgorod/world-knowledge/production-v1';
+const SPATIAL_ROOT = 'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6';
+const CLAIM_FILES = Object.freeze({
+  nature: 'final-nature-gap-closure-v1.json',
+  biology: 'environment-biology.json', ecology: 'environment-ecology.json',
+  population: 'historical-population.json'
+});
+const FUNCTIONAL_GAPS = Object.freeze(['FUNCTIONAL_TOOL_MAPPING_MISSING',
+  'FUNCTIONAL_STORAGE_MAPPING_MISSING',
+  'FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING',
+  'FUNCTIONAL_CONTAINER_MAPPING_MISSING']);
+const CLAIM_LOCATORS = Object.freeze({
+  'claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability': 35,
+  'claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy': 37,
+  'claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition': 38,
+  'claim:white-willow-depends-on-moist-lit-riparian-habitat': 44,
+  'claim:medieval-novgorod-fishing-attests-major-occupation-food-context': 56,
+  'claim:population-net-work': 1649, 'claim:population-boat-work': 1689,
+  'claim:population-fish-dried-form': 1769,
+  'claim:population-fishing-workspace': 1850,
+  'claim:population-drying-workspace': 1890,
+  'claim:population-household-storage': 1930,
+  'claim:population-storage-vessels': 1970
+});
+const FAMILY_SPECS = Object.freeze([
+  { candidate_id: 'novgorod_natural_shore_v3', family: 'natural_shore',
     scene_template_id: 'trace_ld_v1_tpl_wreck_shore',
-    landscape_id: 'lt_low_alluvial_riverbank', water_id: 'wb_small_river',
-    place_id: 'pt_river_landing', required_layers: ['surface', 'relief',
-      'vegetation', 'environment', 'water', 'place_function'] },
-  { binding_id: 'novgorod_fishing_worksite_v2', family: 'fishing_worksite',
+    g5_id: 'trace_ld_v1_g5_wreck_shore',
+    authority: 'evidence_bounded_natural_profile', confidence: 'medium',
+    requirements: { water_adjacent: true, mandatory_context_refs: [] },
+    allowed_semantics: ['generic_substrate', 'generic_riparian_ecology',
+      'water_adjacency'], forbidden_implications: ['landing', 'access', 'safety',
+      'stock', 'wreck'], claim_refs: [
+      ['nature', 'claim:final-nature-freeze-thaw-can-break-bank-soil-and-increase-erosion-vulnerability'],
+      ['nature', 'claim:final-nature-riparian-vegetation-and-organic-debris-can-slow-flow-and-dissipate-energy'],
+      ['nature', 'claim:final-nature-slower-riparian-flow-can-permit-sediment-deposition'],
+      ['biology', 'claim:white-willow-depends-on-moist-lit-riparian-habitat']
+    ], data_gap_codes: [] },
+  { candidate_id: 'novgorod_inland_fishing_worksite_v3',
+    family: 'inland_fishing_worksite',
     scene_template_id: 'trace_ld_v1_tpl_fishing_camp',
-    landscape_id: 'lt_low_alluvial_riverbank', water_id: 'wb_small_river',
-    land_use_id: 'lu_inland_capture_fishing', place_id: 'pt_fishing_station',
-    item_profile_id: 'profile_fishing_v3', occupation_id: 'nov_occ_fisher',
-    role_id: 'nov_role_fisher', required_layers: ['surface', 'relief',
-      'vegetation', 'environment', 'water', 'work_zone', 'place_function',
-      'tool', 'storage', 'work_material', 'npc'] },
-  { binding_id: 'novgorod_old_drying_shed_v2', family: 'old_drying_shed',
+    g5_id: 'trace_ld_v1_g5_fishing_camp',
+    authority: 'historical_compatibility_profile', confidence: 'medium',
+    requirements: { water_adjacent: true, mandatory_context_refs:
+      ['claim:medieval-novgorod-fishing-attests-major-occupation-food-context'] },
+    allowed_semantics: ['water_adjacency', 'fishing_land_use_compatibility',
+      'workspace_compatibility'], forbidden_implications: ['station', 'storage',
+      'catch', 'route'], claim_refs: [
+      ['ecology', 'claim:medieval-novgorod-fishing-attests-major-occupation-food-context'],
+      ['population', 'claim:population-net-work'],
+      ['population', 'claim:population-boat-work'],
+      ['population', 'claim:population-fish-dried-form'],
+      ['population', 'claim:population-fishing-workspace']
+    ], data_gap_codes: FUNCTIONAL_GAPS },
+  { candidate_id: 'novgorod_drying_storage_workspace_v3',
+    family: 'drying_storage_workspace',
     scene_template_id: 'trace_ld_v1_tpl_old_drying_shed',
-    landscape_id: 'lt_dry_meadow', place_id: 'pt_forest_work_camp',
-    item_profile_id: 'profile_craft_work_v3', occupation_id: 'nov_occ_carpenter',
-    role_id: 'nov_role_craftsman_master', required_layers: ['surface', 'relief',
-      'vegetation', 'environment', 'place_function', 'tool', 'storage',
-      'work_material', 'npc'] }
+    g5_id: 'trace_ld_v1_g5_old_drying_shed',
+    authority: 'editorial_reconstruction', confidence: 'medium',
+    requirements: { water_adjacent: false, mandatory_context_refs: [] },
+    allowed_semantics: ['workspace_compatibility', 'drying_compatibility',
+      'storage_compatibility'], forbidden_implications: ['water', 'heat', 'fire',
+      'fuel', 'container', 'tool', 'material', 'npc'],
+    variants: [{ id: 'dormant', process_owned_requirements: [] },
+      { id: 'active', process_owned_requirements:
+        ['material_ref', 'tool_ref'] }], claim_refs: [
+      ['population', 'claim:population-fish-dried-form'],
+      ['population', 'claim:population-drying-workspace'],
+      ['population', 'claim:population-household-storage'],
+      ['population', 'claim:population-storage-vessels']
+    ], data_gap_codes: FUNCTIONAL_GAPS }
 ]);
 
 export async function generateProceduralV6AuthoringOverlay(rootDir) {
   const root = resolve(rootDir);
-  const candidateRoot = resolve(root,
-    'data/knowledge-source/imports/item-container-120-v5/candidate');
-  const tablesRoot = resolve(candidateRoot, 'tables');
-  const spatialRoot = resolve(root,
-    'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v6');
-  const [candidate, approval, spatial, sceneTemplates, landscapes, waters,
-    landUses, places, profiles, entries, itemTemplates, quantityProfiles,
-    inventoryProfiles, sourceBindings, containerRules, occupations, roles] =
+  const [manifest, scenes, nodes, parents, slots, perClaim, ...claimPacks] =
     await Promise.all([
-      json(resolve(candidateRoot, 'manifest.json')),
-      json(resolve(root, 'docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json')),
-      json(resolve(spatialRoot, 'manifest.json')),
-      json(resolve(spatialRoot, 'datasets/spatial_v3_scene_templates.json')),
-      json(resolve(root, 'infra/world-base/landscape_templates.seed.json')),
-      json(resolve(root, 'infra/world-base/water_body_templates.seed.json')),
-      json(resolve(root, 'infra/world-base/land_use_templates.seed.json')),
-      json(resolve(root, 'infra/world-base/place_templates.seed.json')),
-      json(resolve(tablesRoot, 'item_profile_sets.json')),
-      json(resolve(tablesRoot, 'item_profile_entries.json')),
-      json(resolve(tablesRoot, 'item_templates.json')),
-      json(resolve(tablesRoot, 'item_template_quantity_profiles.json')),
-      json(resolve(tablesRoot, 'item_template_inventory_profiles.json')),
-      json(resolve(tablesRoot, 'item_template_source_bindings.json')),
-      json(resolve(tablesRoot, 'g4_container_materialization_rules.json')),
-      tsv(resolve(root, 'data/novgorod-region/novgorod_occupations_v1_enriched.tsv')),
-      tsv(resolve(root, 'data/novgorod-region/novgorod_social_roles_v1_enriched.tsv'))
+      json(resolve(root, SPATIAL_ROOT, 'manifest.json')),
+      json(resolve(root, SPATIAL_ROOT, 'datasets/spatial_v3_scene_templates.json')),
+      json(resolve(root, SPATIAL_ROOT, 'datasets/spatial_v3_nodes.json')),
+      json(resolve(root, SPATIAL_ROOT, 'datasets/spatial_v3_node_parents.json')),
+      json(resolve(root, SPATIAL_ROOT, 'datasets/spatial_v3_g6_template_slots.json')),
+      json(resolve(root, 'data/world-catalogs/novgorod/world-knowledge/verification/base-per-claim-v2.json')),
+      ...Object.values(CLAIM_FILES).map((file) =>
+        json(resolve(root, WORLD_ROOT, file)))
     ]);
-  if (approval.decision !== 'approve_all_120'
-      || approval.candidate_digest !== candidate.candidate_digest
-      || approval.activation_authorized !== false
-      || spatial.status !== 'approved') throw new Error(
-    'PROCEDURAL_V6_SOURCE_APPROVAL_CHAIN_INVALID');
-
-  const families = FAMILIES.map((family) => {
-    const closure = exact(sceneTemplates, family.scene_template_id);
-    const sourceRows = [
-      owner('landscape_templates', exact(landscapes, family.landscape_id)),
-      ...(family.water_id ? [owner('water_body_templates', exact(waters,
-        family.water_id))] : []),
-      ...(family.land_use_id ? [owner('land_use_templates', exact(landUses,
-        family.land_use_id))] : []),
-      owner('place_templates', exact(places, family.place_id))
-    ];
-    const gaps = sourceRows.filter(({ status }) => status !== 'approved')
-      .map(({ owner_ref: ref }) => `SOURCE_NOT_APPROVED:${ref.table}:${ref.id}`);
-    const itemAudit = family.item_profile_id == null ? null : auditItems({
-      family, profiles, entries, itemTemplates, quantityProfiles,
-      inventoryProfiles, sourceBindings, containerRules
-    });
-    if (itemAudit?.required_item_entry_count === 0) {
-      gaps.push('REQUIRED_FUNCTIONAL_TOOL_MAPPING_MISSING');
-    }
-    if (itemAudit?.container_rule_count === 0) {
-      gaps.push('REQUIRED_STORAGE_MAPPING_MISSING');
-    }
-    const actor = family.occupation_id == null ? null : {
-      occupation: actorRef('novgorod_occupations_v1_enriched.tsv',
-        exact(occupations, family.occupation_id, 'occupation_id'), 'occupation_id'),
-      role: actorRef('novgorod_social_roles_v1_enriched.tsv',
-        exact(roles, family.role_id, 'role_id'), 'role_id'),
-      name_pool_ref: null
+  if (manifest.status !== 'approved') throw new Error(
+    'PROCEDURAL_V6_SPATIAL_CLOSURE_NOT_APPROVED');
+  const packs = Object.fromEntries(Object.keys(CLAIM_FILES).map((key, index) =>
+    [key, claimPacks[index]]));
+  const reviewByClaim = indexReviews(perClaim);
+  const worldPin = { world_revision_id: manifest.world_revision_id,
+    world_catalog_digest: manifest.catalog_digest };
+  const candidates = FAMILY_SPECS.map((spec) => {
+    const scene = exact(scenes, spec.scene_template_id);
+    const g5 = exact(nodes, spec.g5_id);
+    const parent = exact(parents, spec.g5_id, 'child_id');
+    const evidenceClaims = spec.claim_refs.map(([packId, ref]) =>
+      claimProjection(packs[packId], ref, packId, reviewByClaim));
+    const candidate = {
+      schema: 'rus.procedural_scene_authoring_candidate.v1',
+      candidate_id: spec.candidate_id, version: 1,
+      status: 'candidate_approval_pending', family: spec.family,
+      authority: spec.authority, confidence: spec.confidence,
+      region_id: 'region_novgorod_land', route_required: false,
+      spatial_closure_ref: {
+        world_revision_id: manifest.world_revision_id,
+        scene_template_id: scene.id, scene_template_version: scene.version,
+        scene_template_digest: scene.canonical_digest,
+        g5_id: g5.id, g5_version: g5.version, g5_digest: g5.canonical_digest,
+        parent_id: parent.parent_id, parent_version: parent.parent_version,
+        g6_slots: slots.filter(({ scene_template_id: id,
+          scene_template_version: version }) => id === scene.id
+            && version === scene.version).map(({ scene_slot_key: slot,
+          physical_class_id: physicalClass, primary_scene_role_id: role,
+          vertical_context_id: vertical, overhead_cover_id: cover }) => ({
+          scene_slot_key: slot, physical_class_id: physicalClass,
+          primary_scene_role_id: role, vertical_context_id: vertical,
+          overhead_cover_id: cover })).sort((a, b) =>
+          a.scene_slot_key.localeCompare(b.scene_slot_key))
+      },
+      allowed_semantics: [...spec.allowed_semantics],
+      requirements: structuredClone(spec.requirements),
+      forbidden_implications: [...spec.forbidden_implications],
+      ...(spec.variants ? { variants: structuredClone(spec.variants) } : {}),
+      global_claim_refs: evidenceClaims.filter(({ applicability }) =>
+        applicability.context_scope === 'universal').map(({ claim_ref: ref }) => ref),
+      regional_claim_refs: evidenceClaims.filter(({ applicability }) =>
+        applicability.places?.some(({ place_ref: ref }) =>
+          ref === 'region_novgorod_land')).map(({ claim_ref: ref }) => ref),
+      evidence_claims: evidenceClaims,
+      data_gap_codes: [...spec.data_gap_codes]
     };
-    if (actor && (actor.occupation.status !== 'approved'
-        || actor.role.status !== 'approved')) gaps.push('APPROVED_NPC_BASIS_MISSING');
-    return {
-      binding_id: family.binding_id, family: family.family,
-      status: gaps.length === 0 ? 'approved' : 'blocked_data_gap',
-      spatial_closure_ref: { table: 'spatial_v3_scene_templates',
-        id: closure.id, version: closure.version,
-        world_revision_id: closure.world_revision_id,
-        canonical_digest: closure.canonical_digest },
-      required_layers: [...family.required_layers].sort(), source_rows: sourceRows,
-      item_audit: itemAudit, actor_basis: actor,
-      temporal_refs: ['activity_categories_profiles',
-        'calendar_daylight_light_profiles', 'npc_temporal_profiles_policies',
-        'place_access_schedules', 'weather_transition_profiles_processes']
-        .map((id) => ({ version: 4, approval_path:
-          `data/world-catalogs/novgorod/temporal-v4/approvals/${id}.json` })),
-      data_gap_codes: gaps.sort()
-    };
+    return validateProceduralSceneAuthoringCandidate({ candidate,
+      world_pin: worldPin });
   });
   const payload = {
-    schema: 'rus.procedural_scene_authoring_overlay.v2', revision: 2,
-    overlay_id: 'novgorod_procedural_v6_overlay_001',
-    status: families.every(({ status }) => status === 'approved')
-      ? 'approved' : 'blocked_data_gap',
+    schema: 'rus.procedural_scene_authoring_overlay.v3', revision: 3,
+    overlay_id: 'novgorod_procedural_v6_route_free_overlay_001',
+    status: 'candidate_approval_pending', import_authorized: false,
     activation_authorized: false, activation_request: null,
-    compatible_world_pin: { world_revision_id: spatial.world_revision_id,
-      world_catalog_digest: spatial.catalog_digest },
-    item120_source: { immutable_version: 5,
-      candidate_digest: candidate.candidate_digest,
-      approval_request_digest: approval.request_digest,
-      approval_attestation_path:
-        'docs/implementation/item-container-120-approval-audit/evidence/FINAL_APPROVAL_ATTESTATION.json' },
-    families
+    compatible_world_pin: worldPin, candidates
   };
   return { ...payload, overlay_digest: digest(payload) };
 }
 
-function auditItems({ family, profiles, entries, itemTemplates,
-  quantityProfiles, inventoryProfiles, sourceBindings, containerRules }) {
-  const profile = exact(profiles, family.item_profile_id);
-  const selected = entries.filter(({ profile_id: id }) => id === profile.id)
-    .sort(byId);
-  return {
-    profile_ref: { table: 'item_profile_sets', id: profile.id,
-      source_status: profile.status, approved_by:
-        'FINAL_APPROVAL_ATTESTATION.json' },
-    entry_count: selected.length,
-    required_item_entry_count: selected.filter(({ required }) => required).length,
-    container_rule_count: containerRules.filter((row) =>
-      row.applicability?.context_domain === profile.context_domain).length,
-    entries: selected.map((entry) => {
-      const item = exact(itemTemplates, entry.item_template_id);
-      const quantity = exact(quantityProfiles, item.id, 'item_template_id');
-      const inventory = exact(inventoryProfiles, item.id, 'item_template_id');
-      return { owner_ref: { table: 'item_profile_entries', id: entry.id },
-        item_template_ref: item.id, source_status: entry.status ?? 'approved_by_parent',
-        required: entry.required, selection_weight: entry.weight,
-        quantity_bounds: { minimum: entry.min_quantity,
-          maximum: entry.max_quantity }, slot_key: entry.slot_key,
-        quantity_profile: { owner_ref: { table:
-          'item_template_quantity_profiles', id: quantity.id },
-        quantity_unit_id: quantity.quantity_unit_id,
-        quantity_dimension: quantity.quantity_dimension,
-        minimum_quantity: quantity.minimum_quantity,
-        maximum_quantity: quantity.maximum_quantity,
-        mass_grams_per_unit: quantity.mass_grams_per_unit,
-        stackable: quantity.stackable,
-        partial_consumption_allowed: quantity.partial_consumption_allowed,
-        source_id: quantity.source_id },
-        inventory_profile: { owner_ref: { table:
-          'item_template_inventory_profiles', id: inventory.id },
-        mass_grams: inventory.mass_grams, carry_form: inventory.carry_form,
-        external_hand_cost: inventory.external_hand_cost,
-        source_id: inventory.source_id },
-        source_refs: sourceBindings.filter((row) =>
-          row.item_template_id === item.id).map(({ id, source_id: sourceId }) =>
-          ({ id, source_id: sourceId })).sort((a, b) => a.id.localeCompare(b.id)) };
-    })
+export function buildProceduralV6ApprovalRequest(overlay) {
+  const payload = {
+    schema: 'rus.procedural_scene_overlay_approval_request.v1',
+    overlay_id: overlay.overlay_id, overlay_digest: overlay.overlay_digest,
+    decision_requested: 'review_route_free_authoring_candidates',
+    authoring_approval: 'pending_independent_review',
+    import_authorized: false, activation_authorized: false,
+    activation_request: null,
+    rows: overlay.candidates.map((candidate) => ({
+      candidate_id: candidate.candidate_id, version: candidate.version,
+      spatial_closure_ref: candidate.spatial_closure_ref,
+      claims: candidate.evidence_claims.map(({ claim_ref: claimRef,
+        source_id: sourceId, evidence_refs: evidenceRefs,
+        source_locator: sourceLocator, use_scope: useScope,
+        review_ref: reviewRef, limits }) => ({ claim_ref: claimRef,
+        source_id: sourceId, evidence_refs: evidenceRefs,
+        source_locator: sourceLocator, use_scope: useScope,
+        review_ref: reviewRef, limits }))
+    }))
   };
+  return { ...payload, request_digest: digest(payload) };
 }
 
-function owner(table, row) { return { owner_ref: { table, id: row.id },
-  status: row.status, source_refs: [...(row.sources ?? [])].sort() }; }
-function actorRef(table, row, key) { return { owner_ref: { table, id: row[key] },
-  status: row.status, source_refs: split(row.sources),
-  legal_status_archetype_id: row.legal_status_archetype_id ?? null,
-  social_position_archetype_id: row.social_position_archetype_id ?? null }; }
-function split(value) { return String(value ?? '').split(';').map((v) => v.trim())
-  .filter(Boolean).sort(); }
+function claimProjection(pack, claimRef, packId, reviewByClaim) {
+  const claim = exact(pack.claims, claimRef, 'claim_ref');
+  if (claim.review_status !== 'approved') throw new Error(
+    `PROCEDURAL_SOURCE_CLAIM_NOT_APPROVED:${claimRef}`);
+  const evidence = claim.evidence_refs.map((ref) => exact(pack.evidence, ref,
+    'evidence_ref'));
+  const review = reviewByClaim.get(claimRef);
+  return { claim_ref: claimRef,
+    source_id: `${packId}:${CLAIM_FILES[packId]}`,
+    source_locator: CLAIM_LOCATORS[claimRef] ?? null,
+    use_scope: claimRef ===
+      'claim:white-willow-depends-on-moist-lit-riparian-habitat'
+      ? 'ecology_only' : 'evidence_bound',
+    review_status: claim.review_status,
+    evidence_refs: evidence.map(({ evidence_ref: ref }) => ref).sort(),
+    source_refs: [...new Set(evidence.map(({ source_ref: ref }) => ref))].sort(),
+    applicability: structuredClone(claim.applicability),
+    qualifiers: structuredClone(claim.qualifiers),
+    review_ref: review?.review_ref ??
+      `verification/${CLAIM_FILES[packId].replace(/\.json$/u, '.md')}`,
+    limits: review?.limits ?? { source_claim_object:
+      structuredClone(claim.object), knowledge_access:
+      structuredClone(claim.knowledge_access), hard_exclusion:
+      structuredClone(claim.hard_exclusion) } };
+}
+function indexReviews(value) {
+  const result = new Map();
+  const visit = (node) => {
+    if (Array.isArray(node)) node.forEach(visit);
+    else if (node && typeof node === 'object') {
+      if (node.claim_ref && node.verdict === 'APPROVE') result.set(
+        node.claim_ref, node);
+      Object.values(node).forEach(visit);
+    }
+  };
+  visit(value);
+  return result;
+}
 function exact(rows, id, key = 'id') { const found = rows.filter((row) =>
   row[key] === id); if (found.length !== 1) throw new Error(
   `PROCEDURAL_V6_SOURCE_ROW_INVALID:${key}:${id}`); return found[0]; }
-function byId(a, b) { return a.id.localeCompare(b.id); }
 function digest(value) { return createHash('sha256').update(JSON.stringify(value))
   .digest('hex'); }
 async function json(path) { return JSON.parse(await readFile(path, 'utf8')); }
-async function tsv(path) { const [header, ...lines] = (await readFile(path, 'utf8'))
-  .replace(/^\uFEFF/u, '').trimEnd().split(/\r?\n/u); const keys = header.split('\t');
-  return lines.map((line) => Object.fromEntries(line.split('\t').map((value,
-    index) => [keys[index], value]))); }
 
 async function main(argv) {
   const root = resolve(argv[0] ?? '.');
-  const output = resolve(root,
-    'data/world-catalogs/novgorod/procedural-scene-v2/authoring-overlay.json');
+  const directory = resolve(root,
+    'data/world-catalogs/novgorod/procedural-scene-v2');
   const overlay = await generateProceduralV6AuthoringOverlay(root);
-  const approvalOutput = resolve(root,
-    'data/world-catalogs/novgorod/procedural-scene-v2/approval-attestation.json');
-  const approval = { schema: 'rus.procedural_scene_overlay_approval.v1',
-    overlay_id: overlay.overlay_id, overlay_digest: overlay.overlay_digest,
-    decision: 'approve_authoring_audit_only', activation_authorized: false,
-    import_authorized: false, unresolved_data_gaps:
-      overlay.families.flatMap(({ binding_id: bindingId, data_gap_codes: codes }) =>
-        codes.map((code) => ({ binding_id: bindingId, code }))) };
-  const sealedApproval = { ...approval, attestation_digest: digest(approval) };
-  const expected = `${JSON.stringify(overlay, null, 2)}\n`;
-  const expectedApproval = `${JSON.stringify(sealedApproval, null, 2)}\n`;
+  const request = buildProceduralV6ApprovalRequest(overlay);
+  const outputs = [[resolve(directory, 'authoring-overlay.json'), overlay],
+    [resolve(directory, 'approval-request.json'), request]];
   if (argv.includes('--check')) {
-    if (await readFile(output, 'utf8') !== expected
-        || await readFile(approvalOutput, 'utf8') !== expectedApproval) throw new Error(
+    for (const [path, value] of outputs) if (await readFile(path, 'utf8')
+      !== `${JSON.stringify(value, null, 2)}\n`) throw new Error(
       'PROCEDURAL_V6_AUTHORING_OVERLAY_STALE');
-  } else { await mkdir(resolve(output, '..'), { recursive: true });
-    await Promise.all([writeFile(output, expected),
-      writeFile(approvalOutput, expectedApproval)]); }
+  } else {
+    await mkdir(directory, { recursive: true });
+    await Promise.all(outputs.map(([path, value]) => writeFile(path,
+      `${JSON.stringify(value, null, 2)}\n`)));
+  }
 }
 
 if (process.argv[1]

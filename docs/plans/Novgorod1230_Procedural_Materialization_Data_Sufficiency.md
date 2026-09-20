@@ -31,24 +31,24 @@ physical nouns, prose, probabilities or default quantities.
 
 ## Immutable v6 authoring overlay
 
-`procedural-scene-v2/authoring-overlay.json` is generated from the immutable V5
-item rows, their approval attestation, current Spatial-v3 v6 closure, base
-landscape/water/land-use/place seeds, approved enriched actor TSVs and approved
-Temporal v4 artifact paths. It contains no hand-written object or descriptor
-catalog and preserves exact V5 quantities, weights, slot keys, quantity/profile
-refs and source bindings.
+`procedural-scene-v2/authoring-overlay.json` revision 3 contains three new
+route-free candidate rows compiled from approved WK claim/evidence refs and the
+exact Spatial-v3 v6 scene/G5/parent/G6 closure. It does not promote or copy the
+old draft landscape/water/land-use/place rows and contains no quantity or
+capacity.
 
-The paired approval artifact has `activation_authorized=false`,
-`import_authorized=false` and no activation request. The overlay is currently
-`blocked_data_gap`; no compiled runtime profile is emitted from a blocked family.
+The paired artifact is an approval **request**, not an attestation. Authoring
+approval remains `pending_independent_review`; `import_authorized=false`,
+`activation_authorized=false`, and no activation request/event exists. Candidate
+rows are not executable runtime data.
 
 ## Current family gaps
 
 | Family | Existing nearest data | Blocking gap |
 |---|---|---|
-| river/wreck shore | approved v6 closure exists; nearest low-alluvial-bank, small-river and river-landing owner rows retain provenance | all three owner rows are still `draft`; compiler returns typed source-status gaps and emits no profile |
-| fishing worksite | approved v6 closure; approved fisher occupation/role; seven approved V5 item alternatives with exact quantity `1..1`, inventory and source refs | landscape/water/land-use/place rows are `draft`; all seven V5 entries are optional; fishing container-rule count is zero, so required tool/storage cannot be inferred |
-| old drying shed | approved v6 closure; approved carpenter/master actor basis; fifteen approved V5 craft alternatives and existing storage rules | selected landscape/place rows are `draft`; all craft entries are optional and no exact drying-shed tool/material mapping exists |
+| natural shore | new candidate permits only generic substrate, riparian ecology and water adjacency; exact wreck-shore v6 closure | independent authoring approval pending; landing/access/safety/stock/wreck implications forbidden |
+| inland fishing worksite | new candidate requires water adjacency and approved fishing-practice/workspace evidence; exact fishing-camp v6 closure | independent approval pending; station/storage/catch/route forbidden; tool/storage/work-material/container mappings remain typed gaps |
+| drying/storage workspace | medium-confidence editorial reconstruction over exact old-shed v6 closure; dormant and process-owned active variants | independent approval pending; water/heat/fire/fuel/container/tool/material/NPC not implied; functional mappings remain typed gaps |
 
 ## DATA GAP: executable activation
 
@@ -59,8 +59,8 @@ The paired approval artifact has `activation_authorized=false`,
   present but was skipped locally because Docker was unavailable;
 - nearest data: source archive, item candidate bundle and v6 spatial manifest;
 - why insufficient: candidates/manifests do not prove active rows;
-- minimum delta: approve exact environment/place owner rows; add explicit
-  source-reviewed functional mappings where required; then run baseline
+- minimum delta: independently approve or reject the route-free candidate rows;
+  add explicit source-reviewed functional mappings where required; then run baseline
   registration plus import/readback. Activation remains a separate forbidden step;
 - acceptance: unknown/draft/missing/ambiguous record hard-blocks before runtime.
 

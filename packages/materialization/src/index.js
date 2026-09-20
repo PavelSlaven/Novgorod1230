@@ -19,7 +19,8 @@ export { AUTHORED_MATERIALIZER_VERSION, canonicalDigest, createRandomSource,
 export { materializeAuthoredStartPartyInstance } from './authored-start.js';
 export { materializeActorBaseAppearance } from './actor-base-appearance.js';
 export { compileApprovedNpcRuntimeBasis, compileProceduralSceneProfile,
-  deriveApprovedInitialEnvironment, materializeApprovedProceduralNpc } from
+  deriveApprovedInitialEnvironment, materializeApprovedProceduralNpc,
+  validateProceduralSceneAuthoringCandidate } from
   './procedural-authoring.js';
 export { completeAuthoredItemMechanics } from
   './lower-dvina-trace-selection.js';

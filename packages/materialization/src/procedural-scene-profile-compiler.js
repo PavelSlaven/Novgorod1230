@@ -6,6 +6,27 @@ const LANDSCAPE_FIELDS = Object.freeze({
   vegetation: 'dominant_vegetation', environment: 'base_environment'
 });
 
+export function validateProceduralSceneAuthoringCandidate({ candidate,
+  world_pin: worldPin } = {}) {
+  if (candidate?.schema !== 'rus.procedural_scene_authoring_candidate.v1'
+      || candidate.status !== 'candidate_approval_pending'
+      || !text(candidate.candidate_id) || !text(candidate.family)
+      || candidate.route_required !== false
+      || Object.hasOwn(candidate, 'route_ref')
+      || candidate.spatial_closure_ref?.world_revision_id
+        !== worldPin?.world_revision_id
+      || !text(candidate.spatial_closure_ref?.scene_template_digest)
+      || !text(candidate.spatial_closure_ref?.g5_digest)
+      || !Array.isArray(candidate.evidence_claims)
+      || candidate.evidence_claims.length === 0
+      || candidate.evidence_claims.some((claim) =>
+        !text(claim.claim_ref) || claim.review_status !== 'approved'
+          || !Array.isArray(claim.evidence_refs) || claim.evidence_refs.length === 0)
+      || !candidateSemanticsValid(candidate)
+      || containsForbiddenField(candidate)) invalid('AUTHORING_CANDIDATE');
+  return deepFreeze(structuredClone(candidate));
+}
+
 export function compileProceduralSceneProfile({ binding, records_by_table: tables,
   world_pin: worldPin } = {}) {
   if (binding?.schema !== 'rus.procedural_scene_authoring_binding.v1'
@@ -145,3 +166,31 @@ function invalid(reason) { throw new MaterializationError(
 function text(value) { return typeof value === 'string' && value.trim() === value && value.length > 0; }
 function object(value) { return value != null && typeof value === 'object' && !Array.isArray(value); }
 function byId(a, b) { return String(a.id).localeCompare(String(b.id)); }
+function containsForbiddenField(value) {
+  if (Array.isArray(value)) return value.some(containsForbiddenField);
+  if (!object(value)) return false;
+  return Object.entries(value).some(([key, child]) =>
+    ['quantity', 'capacity', 'route_ref'].includes(key)
+      || containsForbiddenField(child));
+}
+function candidateSemanticsValid(candidate) {
+  const gaps = ['FUNCTIONAL_TOOL_MAPPING_MISSING',
+    'FUNCTIONAL_STORAGE_MAPPING_MISSING',
+    'FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING',
+    'FUNCTIONAL_CONTAINER_MAPPING_MISSING'];
+  if (candidate.family === 'natural_shore') return candidate.requirements
+    ?.water_adjacent === true && candidate.data_gap_codes?.length === 0;
+  if (candidate.family === 'inland_fishing_worksite') return candidate.requirements
+    ?.water_adjacent === true
+      && candidate.requirements.mandatory_context_refs?.includes(
+        'claim:medieval-novgorod-fishing-attests-major-occupation-food-context')
+      && gaps.every((gapCode) => candidate.data_gap_codes?.includes(gapCode));
+  if (candidate.family === 'drying_storage_workspace') return candidate.authority
+    === 'editorial_reconstruction' && candidate.confidence === 'medium'
+      && candidate.requirements?.water_adjacent === false
+      && gaps.every((gapCode) => candidate.data_gap_codes?.includes(gapCode))
+      && candidate.variants?.some(({ id, process_owned_requirements: refs }) =>
+        id === 'active' && refs?.includes('material_ref')
+          && refs?.includes('tool_ref'));
+  return false;
+}

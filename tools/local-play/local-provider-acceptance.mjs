@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
@@ -37,7 +38,9 @@ export async function runLocalProviderBrowserAcceptance({ outputDirectory,
   chromiumPath = CHROMIUM, headless = false, provider = null,
   resume = false, signal = null,
   createCompletionObserver = defaultCompletionObserver,
-  createExplorer = createGameplayGapExplorer } = {}) {
+  createExplorer = createGameplayGapExplorer,
+  createSettingsDirectory = createPrivateSettingsDirectory,
+  removeSettingsDirectory = removePrivateSettingsDirectory } = {}) {
   if (!outputDirectory || !focus || provider == null
       || !/^[a-z0-9_]+$/u.test(scenarioId)
       || (turns !== null && (!Number.isInteger(turns) || turns < 1))
@@ -79,8 +82,7 @@ export async function runLocalProviderBrowserAcceptance({ outputDirectory,
     { flag: 'wx' });
   let local; let browser; let settingsDirectory; let completionObserver;
   try {
-    settingsDirectory = join(directory, 'runtime');
-    await mkdir(settingsDirectory, { recursive: true });
+    settingsDirectory = await createSettingsDirectory();
     const settingsPath = join(settingsDirectory, 'settings.json');
     await writeFile(settingsPath, `${JSON.stringify({ version: 2,
       settings: { mode: provider.mode,
@@ -95,7 +97,7 @@ export async function runLocalProviderBrowserAcceptance({ outputDirectory,
       acceptanceDataRoot: join(directory, 'postgres') });
     const selectedProvider = provider;
     const identity = { mode: 'custom',
-      provider: 'openai_compatible', base_url: provider.baseUrl,
+      provider: 'openai_compatible',
       model: provider.model, backend: provider.evidence.backend,
       backend_version: provider.evidence.backendVersion,
       runtime_metadata: provider.evidence.runtime,
@@ -231,7 +233,8 @@ export async function runLocalProviderBrowserAcceptance({ outputDirectory,
     return report;
   } catch (error) {
     report.status = 'failed'; report.failure = {
-      code: error?.code ?? null, message: String(error?.message ?? error) };
+      code: error?.code ?? null,
+      message: redactedAcceptanceErrorMessage(error, provider) };
     throw Object.assign(error, { report });
   } finally {
     try { await save(); }
@@ -239,8 +242,24 @@ export async function runLocalProviderBrowserAcceptance({ outputDirectory,
       await browser?.close().catch(() => {});
       await completionObserver?.close?.().catch(() => {});
       await local?.close().catch(() => {});
+      if (settingsDirectory) await removeSettingsDirectory(settingsDirectory);
     }
   }
+}
+
+function createPrivateSettingsDirectory() {
+  return mkdtemp(join(tmpdir(), 'novgorod-acceptance-provider-'));
+}
+function removePrivateSettingsDirectory(path) {
+  return rm(path, { recursive: true, force: true });
+}
+function redactedAcceptanceErrorMessage(error, provider) {
+  let message = String(error?.message ?? error);
+  for (const secret of [provider?.apiKey, provider?.baseUrl]) {
+    if (secret) message = message.split(secret).join('[redacted]');
+  }
+  return message.replace(/Authorization\s*:\s*\S+(?:\s+\S+)?/giu,
+    '[redacted credential]');
 }
 
 export function pendingBrowserStorage(url, report, events) {

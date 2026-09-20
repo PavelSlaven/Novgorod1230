@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -234,6 +234,38 @@ test('acceptance provider has no managed fallback and requires exact Qwen metada
   }), /must be qwen3\.8-27b-uncensored-w4a16-tp2/u);
 });
 
+test('acceptance credentials use a cleaned private temp directory and never enter evidence', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'novgorod-provider-private-'));
+  const outputDirectory = join(root, 'evidence');
+  const settingsDirectory = join(root, 'private-settings');
+  const provider = { mode: 'custom', compatibility: 'openai_compatible',
+    baseUrl: 'https://private-provider.invalid/v1',
+    model: 'qwen3.8-27b-uncensored-w4a16-tp2',
+    apiKey: 'private-test-key', evidence: { backend: 'vllm',
+      backendVersion: 'test', runtime: 'test', hardware: 'test' } };
+  try {
+    await assert.rejects(runLocalProviderBrowserAcceptance({ outputDirectory,
+      focus: 'private settings cleanup', turns: 1, provider,
+      chromiumPath: 'chromium', headless: true,
+      snapshot: () => ({ head: 'a'.repeat(40), dirty: false }),
+      createSettingsDirectory: async () => {
+        await mkdir(settingsDirectory, { recursive: true });
+        return settingsDirectory;
+      },
+      start: async () => { throw new Error(
+        `transport ${provider.baseUrl} Authorization: Bearer ${provider.apiKey}`); }
+    }));
+    await assert.rejects(access(settingsDirectory), { code: 'ENOENT' });
+    const evidence = await readFile(join(outputDirectory, 'campaign.json'),
+      'utf8');
+    assert.equal(evidence.includes(provider.baseUrl), false);
+    assert.equal(evidence.includes(provider.apiKey), false);
+    assert.equal(/Authorization/iu.test(evidence), false);
+    await assert.rejects(access(join(outputDirectory, 'runtime',
+      'settings.json')), { code: 'ENOENT' });
+  } finally { await rm(root, { recursive: true, force: true }); }
+});
+
 test('completion observer requires committed Phase 10 narration on actual DOM', () => {
   const input = { state: { completion: { status: 'committed',
     change_set_id: 'change:terminal' }, last_turn: { visible_package: {
@@ -340,6 +372,11 @@ test('browser runner reloads to a browser screen read before each new turn', asy
     assert.equal(report.status, 'captured');
     assert.equal(report.narration_quality_pass, true);
     assert.equal(report.turns.length, 2);
+    const evidence = await readFile(join(directory, 'campaign.json'), 'utf8');
+    assert.equal(evidence.includes(provider.baseUrl), false);
+    assert.equal(/Authorization/iu.test(evidence), false);
+    await assert.rejects(access(join(directory, 'runtime', 'settings.json')),
+      { code: 'ENOENT' });
     const events = (await readFile(logPath, 'utf8')).trim().split('\n').map(JSON.parse);
     const rendered = events.filter(({ event }) => event === 'ui.rendered');
     assert.deepEqual(rendered.map(({ public_dto_before }) => public_dto_before), [
@@ -434,7 +471,7 @@ test('browser runner resumes the same party and rejects changed identity',
       evidence: { backend: 'test', backendVersion: '1', runtime: 'test',
         hardware: 'test' } };
     const identity = { mode: 'custom', provider: 'openai_compatible',
-      base_url: provider.baseUrl, model: provider.model,
+      model: provider.model,
       backend: 'test', backend_version: '1', runtime_metadata: 'test',
       hardware_metadata: 'test' };
     const execution = { interface: 'chromium_playwright_dom_only',
@@ -530,7 +567,7 @@ test('resumed pre-click proposal waits for Continue screen read before submit', 
     baseUrl: 'http://127.0.0.1:8000/v1', model: 'selected-model', apiKey: null,
     evidence: { backend: 'test', backendVersion: '1', runtime: 'test', hardware: 'test' } };
   const identity = { mode: 'custom', provider: 'openai_compatible',
-    base_url: provider.baseUrl, model: provider.model, backend: 'test',
+    model: provider.model, backend: 'test',
     backend_version: '1', runtime_metadata: 'test', hardware_metadata: 'test' };
   const execution = { interface: 'chromium_playwright_dom_only',
     gameplay_transport: 'browser_ui_only', browser: { executable: 'chromium', headless: true },
@@ -594,7 +631,7 @@ test('resumed browser request keeps its original read and rejects a late substit
     baseUrl: 'http://127.0.0.1:8000/v1', model: 'selected-model', apiKey: null,
     evidence: { backend: 'test', backendVersion: '1', runtime: 'test', hardware: 'test' } };
   const identity = { mode: 'custom', provider: 'openai_compatible',
-    base_url: provider.baseUrl, model: provider.model, backend: 'test',
+    model: provider.model, backend: 'test',
     backend_version: '1', runtime_metadata: 'test', hardware_metadata: 'test' };
   const execution = { interface: 'chromium_playwright_dom_only',
     gameplay_transport: 'browser_ui_only', browser: { executable: 'chromium', headless: true },

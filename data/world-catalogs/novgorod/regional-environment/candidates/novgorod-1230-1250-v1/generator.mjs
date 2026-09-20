@@ -12,6 +12,8 @@ const AUDIT_SOURCE_REF =
 const APPROVAL_SUBJECT_COMMIT =
   '20275b3a39372d1dc5c4fa95d21660dbb44420b3';
 const APPROVAL_DATE = '2026-09-21';
+const DRYING_ENABLEMENT_ATTESTATION_DIGEST =
+  '2ead91157c3efc214c7431bd47cb79acfd1e334f814d74dc9c45ea96a7ecd550';
 const FORBIDDEN_NEW_PLACE_KEYS = [
   'fire', 'fuel', 'material', 'container', 'tool', 'npc', 'process'
 ];
@@ -226,17 +228,83 @@ export async function generateRegionalEnvironmentRevision(root = DEFAULT_ROOT) {
     candidate_digest: candidate.candidate_digest,
     approval_request_digest: approvalRequest.request_digest,
     manifest_digest: manifest.manifest_digest,
-    rows_requiring_second_audit: [
-      ...dataGaps.map(({ template_id: id }) => id),
-      newPlace.universal_row.id, newPlace.regional_row.id
-    ]
+    rows_requiring_second_audit:
+      dataGaps.map(({ template_id: id }) => id)
   };
   const attestations = buildApprovalAttestations({ candidate, approvalRequest,
     manifest });
   validateApprovalAttestations({ candidate, approvalRequest, manifest,
     ...attestations });
+  const dryingEnablementAttestation = buildDryingEnablementAttestation({
+    candidate, approvalRequest, manifest,
+    dryingDesignAttestation: attestations.dryingDesignAttestation
+  });
+  applyDryingEnablement({ candidate, dryingEnablementAttestation });
   return { candidate, approvalRequest, manifest, validationReport,
-    ...attestations };
+    ...attestations, dryingEnablementAttestation };
+}
+
+export function applyDryingEnablement({ candidate,
+  dryingEnablementAttestation: attestation }) {
+  const { attestation_digest: claimed, ...payload } = attestation;
+  assert(claimed === DRYING_ENABLEMENT_ATTESTATION_DIGEST
+    && digest(payload) === claimed, 'DRYING_ENABLEMENT_ATTESTATION_DIGEST_MISMATCH');
+  const pending = candidate.pending_rows;
+  assert(attestation.schema ===
+      'rus.regional_environment_drying_enablement_attestation.v1'
+    && attestation.subject_commit_sha ===
+      'e53f911677fef38863897b5ea25c6aa0cb3fc138'
+    && attestation.revision_id === candidate.revision_id
+    && attestation.candidate_digest === candidate.candidate_digest
+    && attestation.pending_bundle_digest === digest(pending)
+    && attestation.evidence_attestation_digest ===
+      pending.evidence_attestation_digest
+    && attestation.universal_row.id === pending.universal_row.id
+    && attestation.universal_row.digest === digest(pending.universal_row)
+    && attestation.regional_row.id === pending.regional_row.id
+    && attestation.regional_row.digest === digest(pending.regional_row),
+  'DRYING_ENABLEMENT_SOURCE_BINDING_INVALID');
+  assert(attestation.approval_scope ===
+      'authoring_and_exact_regional_enablement_only'
+    && attestation.authoring_approved === true
+    && attestation.regional_enablement_approved === true
+    && attestation.generic_regional_generation_authorized === false
+    && attestation.import_authorized === false
+    && attestation.activation_authorized === false
+    && attestation.production_authorized === false
+    && attestation.default_authorized === false
+    && attestation.rematerialization_authorized === false
+    && attestation.activation_request === null,
+  'DRYING_ENABLEMENT_AUTHORITY_INVALID');
+  assert(JSON.stringify(attestation.applicability_guard) === JSON.stringify({
+    mode: 'exact_spatial_context_only',
+    ...pending.spatial_context_ref,
+    reject_if_context_mismatch: true
+  }), 'DRYING_ENABLEMENT_SPATIAL_GUARD_INVALID');
+  assert(JSON.stringify(attestation.process_state_contract) ===
+      JSON.stringify(pending.process_state_contract)
+    && JSON.stringify(attestation.forbidden_implications) === JSON.stringify([
+      'generic_regional_generation', 'mandatory_water', 'route', 'fire',
+      'heat', 'fuel', 'material', 'container', 'tool', 'npc', 'process',
+      'pt_forest_work_camp_substitution'
+    ]), 'DRYING_ENABLEMENT_BOUNDARY_INVALID');
+  const universal = structuredClone(pending.universal_row);
+  const regional = structuredClone(pending.regional_row);
+  applyExactTransition(universal, 'status', attestation.universal_row.status_transition);
+  applyExactTransition(regional, 'status', attestation.regional_row.status_transition);
+  applyExactTransition(regional, 'is_allowed',
+    attestation.regional_row.is_allowed_transition);
+  assert(regional.generation_weight === 0
+    && regional.generation_weight === attestation.regional_row.generation_weight,
+  'DRYING_ENABLEMENT_WEIGHT_INVALID');
+  return {
+    universal_row: universal,
+    regional_row: regional,
+    applicability_guard: structuredClone(attestation.applicability_guard),
+    generic_regional_generation_authorized: false,
+    import_authorized: false,
+    activation_authorized: false
+  };
 }
 
 export function validateApprovalAttestations({ candidate, approvalRequest,
@@ -533,6 +601,69 @@ function buildApprovalAttestations({ candidate, approvalRequest, manifest }) {
   };
 }
 
+function buildDryingEnablementAttestation({ candidate, approvalRequest,
+  manifest, dryingDesignAttestation }) {
+  const pending = candidate.pending_rows;
+  const payload = {
+    schema: 'rus.regional_environment_drying_enablement_attestation.v1',
+    attestation_id: 'novgorod_drying_storage_workspace_regional_enablement_001',
+    subject_commit_sha: 'e53f911677fef38863897b5ea25c6aa0cb3fc138',
+    revision_id: candidate.revision_id,
+    candidate_digest: candidate.candidate_digest,
+    approval_request_digest: approvalRequest.request_digest,
+    manifest_digest: manifest.manifest_digest,
+    design_attestation_digest: dryingDesignAttestation.attestation_digest,
+    pending_bundle_digest: digest(pending),
+    evidence_attestation_digest: pending.evidence_attestation_digest,
+    region_id: candidate.region_id,
+    period: structuredClone(candidate.period),
+    universal_row: {
+      id: pending.universal_row.id,
+      digest: digest(pending.universal_row),
+      status_transition: { from: 'needs_review', to: 'approved' }
+    },
+    regional_row: {
+      id: pending.regional_row.id,
+      digest: digest(pending.regional_row),
+      status_transition: { from: 'needs_review', to: 'approved' },
+      is_allowed_transition: { from: false, to: true },
+      generation_weight: 0
+    },
+    approval_scope: 'authoring_and_exact_regional_enablement_only',
+    authoring_approved: true,
+    regional_enablement_approved: true,
+    applicability_guard: {
+      mode: 'exact_spatial_context_only',
+      ...structuredClone(pending.spatial_context_ref),
+      reject_if_context_mismatch: true
+    },
+    generic_regional_generation_authorized: false,
+    process_state_contract: structuredClone(pending.process_state_contract),
+    forbidden_implications: [
+      'generic_regional_generation', 'mandatory_water', 'route', 'fire',
+      'heat', 'fuel', 'material', 'container', 'tool', 'npc', 'process',
+      'pt_forest_work_camp_substitution'
+    ],
+    import_authorized: false,
+    activation_authorized: false,
+    production_authorized: false,
+    default_authorized: false,
+    rematerialization_authorized: false,
+    activation_request: null,
+    auditor: 'independent_contract_auditor',
+    audit_date: APPROVAL_DATE
+  };
+  const attestation = { ...payload, attestation_digest: digest(payload) };
+  assert(attestation.attestation_digest === DRYING_ENABLEMENT_ATTESTATION_DIGEST,
+    'DRYING_ENABLEMENT_AUDITOR_DIGEST_MISMATCH');
+  return attestation;
+}
+
+function applyExactTransition(row, field, transition) {
+  assert(row[field] === transition.from, `DRYING_TRANSITION_FROM_MISMATCH:${field}`);
+  row[field] = transition.to;
+}
+
 function restoreStatus(row, status) {
   return { ...structuredClone(row), status };
 }
@@ -619,7 +750,9 @@ async function main(args) {
     ['validation-report.json', pack.validationReport],
     ['existing-promotions-approval-attestation.json',
       pack.existingPromotionsAttestation],
-    ['drying-design-approval-attestation.json', pack.dryingDesignAttestation]
+    ['drying-design-approval-attestation.json', pack.dryingDesignAttestation],
+    ['drying-enablement-approval-attestation.json',
+      pack.dryingEnablementAttestation]
   ];
   if (args.includes('--check')) {
     for (const [name, value] of outputs) {
@@ -638,6 +771,8 @@ async function main(args) {
       pack.existingPromotionsAttestation.attestation_digest,
     drying_design_attestation_digest:
       pack.dryingDesignAttestation.attestation_digest,
+    drying_enablement_attestation_digest:
+      pack.dryingEnablementAttestation.attestation_digest,
     rows_requiring_second_audit:
       pack.validationReport.rows_requiring_second_audit }, null, 2)}\n`);
 }

@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  applyDryingEnablement,
   generateRegionalEnvironmentRevision,
   validateApprovalAttestations,
   validateRevision
@@ -53,6 +54,41 @@ assert.equal(pack.dryingDesignAttestation.regional_row_digest,
   'd08329ea1ac95f6b855fa314873fb901132c9037dac1d1fe121d611b6c016cdb');
 assert.equal(pack.dryingDesignAttestation.evidence_attestation_digest,
   '965995aae64b72a6329ac97e33b09700733e69c609a247d2d76716d5d68333c3');
+assert.equal(pack.dryingEnablementAttestation.attestation_digest,
+  '2ead91157c3efc214c7431bd47cb79acfd1e334f814d74dc9c45ea96a7ecd550');
+const dryingProjection = applyDryingEnablement({ candidate: pack.candidate,
+  dryingEnablementAttestation: pack.dryingEnablementAttestation });
+const expectedUniversal = structuredClone(pack.candidate.pending_rows.universal_row);
+expectedUniversal.status = 'approved';
+const expectedRegional = structuredClone(pack.candidate.pending_rows.regional_row);
+expectedRegional.status = 'approved';
+expectedRegional.is_allowed = true;
+assert.deepEqual(dryingProjection.universal_row, expectedUniversal);
+assert.deepEqual(dryingProjection.regional_row, expectedRegional);
+assert.equal(dryingProjection.universal_row.status, 'approved');
+assert.equal(dryingProjection.regional_row.status, 'approved');
+assert.equal(dryingProjection.regional_row.is_allowed, true);
+assert.equal(dryingProjection.regional_row.generation_weight, 0);
+assert.equal(dryingProjection.generic_regional_generation_authorized, false);
+assert.equal(pack.candidate.pending_rows.universal_row.status, 'needs_review');
+assert.equal(pack.candidate.pending_rows.regional_row.status, 'needs_review');
+assert.equal(pack.candidate.pending_rows.regional_row.is_allowed, false);
+
+const genericDrying = structuredClone(pack.dryingEnablementAttestation);
+genericDrying.generic_regional_generation_authorized = true;
+delete genericDrying.attestation_digest;
+genericDrying.attestation_digest = digestPayload(genericDrying);
+assert.throws(() => applyDryingEnablement({ candidate: pack.candidate,
+  dryingEnablementAttestation: genericDrying }),
+  /DRYING_ENABLEMENT_ATTESTATION_DIGEST_MISMATCH/);
+
+const wrongSpatialGuard = structuredClone(pack.dryingEnablementAttestation);
+wrongSpatialGuard.applicability_guard.g5_id = 'wrong_g5';
+delete wrongSpatialGuard.attestation_digest;
+wrongSpatialGuard.attestation_digest = digestPayload(wrongSpatialGuard);
+assert.throws(() => applyDryingEnablement({ candidate: pack.candidate,
+  dryingEnablementAttestation: wrongSpatialGuard }),
+  /DRYING_ENABLEMENT_ATTESTATION_DIGEST_MISMATCH/);
 
 const enabledDrying = structuredClone(pack.dryingDesignAttestation);
 enabledDrying.regional_enablement_approved = true;

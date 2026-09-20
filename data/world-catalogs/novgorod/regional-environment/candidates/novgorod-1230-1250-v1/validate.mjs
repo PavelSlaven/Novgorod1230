@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  applyDryingEnablement,
   validateApprovalAttestations,
   validateRevision
 } from './generator.mjs';
@@ -15,14 +16,19 @@ const existingPromotionsAttestation = JSON.parse(await readFile(resolve(here,
   'existing-promotions-approval-attestation.json'), 'utf8'));
 const dryingDesignAttestation = JSON.parse(await readFile(resolve(here,
   'drying-design-approval-attestation.json'), 'utf8'));
+const dryingEnablementAttestation = JSON.parse(await readFile(resolve(here,
+  'drying-enablement-approval-attestation.json'), 'utf8'));
 
 validateRevision({ source, candidate, approvalRequest });
 validateApprovalAttestations({ candidate, approvalRequest, manifest,
   existingPromotionsAttestation, dryingDesignAttestation });
+applyDryingEnablement({ candidate, dryingEnablementAttestation });
 process.stdout.write(`${JSON.stringify({ pass: true,
   candidate_digest: candidate.candidate_digest,
   approval_request_digest: approvalRequest.request_digest,
   existing_promotions_attestation_digest:
     existingPromotionsAttestation.attestation_digest,
   drying_design_attestation_digest:
-    dryingDesignAttestation.attestation_digest }, null, 2)}\n`);
+    dryingDesignAttestation.attestation_digest,
+  drying_enablement_attestation_digest:
+    dryingEnablementAttestation.attestation_digest }, null, 2)}\n`);

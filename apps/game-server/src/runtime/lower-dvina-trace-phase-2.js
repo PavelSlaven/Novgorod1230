@@ -444,6 +444,8 @@ function liveWorldConversationContracts({ state, npc, actorRef, allNpcs,
     version: authoredTurnProfile.profile.revision,
     digest: authoredTurnProfile.pin.digest
   });
+  const conversationPin = Object.freeze({ ...pin,
+    id: profile.activity_profile_id });
   const locationRef = state.position.location_ref;
   return Object.freeze({
     neutral_conversation: true,
@@ -462,7 +464,7 @@ function liveWorldConversationContracts({ state, npc, actorRef, allNpcs,
     access: Object.freeze({ policy_id: profile.access_policy_id,
       location_ref: locationRef, hidden_or_open_state: 'open',
       unmaterialized_access: 'forbidden' }),
-    activityPins: Object.freeze([pin, pin, pin]),
+    activityPins: Object.freeze([pin, conversationPin, conversationPin]),
     conversationBindings: Object.freeze({ fallback_policy: 'forbidden',
       legacy_bounded_production_path: 'forbidden',
       max_contributions_per_exchange:

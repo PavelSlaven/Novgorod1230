@@ -3,7 +3,8 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { validateProceduralSceneAuthoringCandidate } from '@rus/materialization';
 import { buildProceduralV6ApprovalRequest,
-  buildProceduralV6DryingAttestation, generateProceduralV6AuthoringOverlay,
+  buildProceduralV6DryingAttestation, buildProceduralV6FinalRowAttestation,
+  generateProceduralV6AuthoringOverlay,
   validateVerificationReviewRef } from
   '../../../scripts/generate-procedural-v6-authoring-overlay.mjs';
 
@@ -191,4 +192,47 @@ test('missing required ledger claim yields typed gap and no candidate', async ()
     code: 'PROCEDURAL_VERIFICATION_LEDGER_GAP',
     claim_ref: 'claim:white-willow-depends-on-moist-lit-riparian-habitat'
   }]);
+});
+
+test('final natural and fishing attestations bind frozen audit subjects', async () => {
+  const overlay = await generateProceduralV6AuthoringOverlay(root);
+  const request = buildProceduralV6ApprovalRequest(overlay);
+  const directory = new URL(
+    '../../../data/world-catalogs/novgorod/procedural-scene-v2/', import.meta.url);
+  for (const [candidateId, file, expectedDigest] of [
+    ['novgorod_natural_shore_v3', 'natural-shore-approval-attestation.json',
+      '3a8a1b71b22d139f3df7e9c133bd46754ff1038d23c54a06b57f4582111e8abc'],
+    ['novgorod_inland_fishing_worksite_v3',
+      'inland-fishing-worksite-approval-attestation.json',
+      '049e5ecce5310d7f3d85874e9e1bd919f2be723eb681e9f67d8a2d4be957235c']
+  ]) {
+    const tracked = JSON.parse(await readFile(new URL(file, directory)));
+    assert.deepEqual(buildProceduralV6FinalRowAttestation(overlay, request,
+      candidateId), tracked);
+    assert.equal(tracked.subject_commit_sha,
+      '6624b1d32cd1503dc2cf5d8d72b6c8af95de5adb');
+    assert.equal(tracked.overlay_digest,
+      '52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3');
+    assert.equal(tracked.approval_request_digest,
+      '89ae5f2030961c85e8e12f3b220052db04e5b95e3c7af45ac7c6076136453325');
+    assert.equal(tracked.candidate_digest, expectedDigest);
+    assert.equal(tracked.authoring_approved, true);
+    assert.equal(tracked.import_authorized, false);
+    assert.equal(tracked.activation_authorized, false);
+    assert.equal(tracked.activation_request, null);
+    assert.ok(tracked.verification.every(({ claim_ref: claimRef,
+      review_ref: reviewRef, limits }) => claimRef && reviewRef && limits));
+  }
+  const natural = JSON.parse(await readFile(new URL(
+    'natural-shore-approval-attestation.json', directory)));
+  assert.ok(natural.forbidden_implications.includes('local_taxon_assertion'));
+  assert.deepEqual(natural.materialization_limits, ['no_local_willow',
+    'no_local_tree', 'no_local_stand', 'no_local_stock', 'no_local_entity',
+    'no_outcome']);
+  const fishing = JSON.parse(await readFile(new URL(
+    'inland-fishing-worksite-approval-attestation.json', directory)));
+  assert.deepEqual(fishing.data_gap_codes, [
+    'FUNCTIONAL_TOOL_MAPPING_MISSING', 'FUNCTIONAL_STORAGE_MAPPING_MISSING',
+    'FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING',
+    'FUNCTIONAL_CONTAINER_MAPPING_MISSING']);
 });

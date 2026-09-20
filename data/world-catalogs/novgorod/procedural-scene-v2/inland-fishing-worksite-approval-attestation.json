@@ -1,0 +1,60 @@
+{
+  "schema": "rus.procedural_scene_row_approval_attestation.v1",
+  "candidate_ref": "novgorod_inland_fishing_worksite_v3@1",
+  "subject_commit_sha": "6624b1d32cd1503dc2cf5d8d72b6c8af95de5adb",
+  "candidate_path": "data/world-catalogs/novgorod/procedural-scene-v2/authoring-overlay.json",
+  "overlay_digest": "52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3",
+  "approval_request_digest": "89ae5f2030961c85e8e12f3b220052db04e5b95e3c7af45ac7c6076136453325",
+  "candidate_digest": "049e5ecce5310d7f3d85874e9e1bd919f2be723eb681e9f67d8a2d4be957235c",
+  "authoring_approved": true,
+  "import_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "approved_by": "independent_final_audit",
+  "approval_scope": "authoring_row_only",
+  "verification": [
+    {
+      "claim_ref": "claim:medieval-novgorod-fishing-attests-major-occupation-food-context",
+      "verification_ref": "wk-verification:production-medieval-novgorod-fishing-attests-major-occupation-food-context",
+      "review_ref": "research/verification-environment-ecology.md",
+      "limits": "Candidate ECO-13 (git:782a9b4162dbc2358ad947ea0b929beaa081ace6:environment-ecology.json#claim:medieval-novgorod-fishing-attests-major-occupation-food-context). Approved only within report conditions: no local entity, inventory, ownership, access, exact date, weather or outcome. No fresh reopening is claimed."
+    },
+    {
+      "claim_ref": "claim:population-net-work",
+      "verification_ref": null,
+      "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+      "limits": "candidate PHC-01; regional practice, not individual skill."
+    },
+    {
+      "claim_ref": "claim:population-boat-work",
+      "verification_ref": null,
+      "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+      "limits": "candidate PHC-09; shore/boat handling only, not route/right."
+    },
+    {
+      "claim_ref": "claim:population-fish-dried-form",
+      "verification_ref": null,
+      "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+      "limits": "candidate PHC-08; historical compatibility only, no recipe, shed, or shelf-life."
+    },
+    {
+      "claim_ref": "claim:population-fishing-workspace",
+      "verification_ref": null,
+      "review_ref": "research/verification-population-historical-context.md#Independent verification — historical population",
+      "limits": "candidate PHC-10; no asserted specific camp/building."
+    }
+  ],
+  "data_gap_codes": [
+    "FUNCTIONAL_TOOL_MAPPING_MISSING",
+    "FUNCTIONAL_STORAGE_MAPPING_MISSING",
+    "FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING",
+    "FUNCTIONAL_CONTAINER_MAPPING_MISSING"
+  ],
+  "forbidden_implications": [
+    "station",
+    "storage",
+    "catch",
+    "route"
+  ],
+  "attestation_digest": "6574da30f84c184bc80c8b7ef4327ad8e6c796308b46a596640b7d2ea6b78c30"
+}

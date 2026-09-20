@@ -46,6 +46,18 @@ const REVIEWED_OVERLAY_DIGEST =
   'ce72077addc4392426a346f575fe5c01b5a0b8c37b0518af1814ef3020797b03';
 const REVIEWED_DRYING_CANDIDATE_DIGEST =
   '0bfe111d4cd73e480a88c11639b3a45dc785bad2b83040aa49a8a95955cd31d5';
+const FINAL_AUDIT_SUBJECT_COMMIT =
+  '6624b1d32cd1503dc2cf5d8d72b6c8af95de5adb';
+const FINAL_AUDIT_OVERLAY_DIGEST =
+  '52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3';
+const FINAL_AUDIT_REQUEST_DIGEST =
+  '89ae5f2030961c85e8e12f3b220052db04e5b95e3c7af45ac7c6076136453325';
+const FINAL_AUDIT_CANDIDATE_DIGESTS = Object.freeze({
+  novgorod_natural_shore_v3:
+    '3a8a1b71b22d139f3df7e9c133bd46754ff1038d23c54a06b57f4582111e8abc',
+  novgorod_inland_fishing_worksite_v3:
+    '049e5ecce5310d7f3d85874e9e1bd919f2be723eb681e9f67d8a2d4be957235c'
+});
 const FAMILY_SPECS = Object.freeze([
   { candidate_id: 'novgorod_natural_shore_v3', family: 'natural_shore',
     scene_template_id: 'trace_ld_v1_tpl_wreck_shore',
@@ -255,6 +267,42 @@ export function buildProceduralV6DryingAttestation(overlay) {
   return { ...payload, attestation_digest: digest(payload) };
 }
 
+export function buildProceduralV6FinalRowAttestation(overlay, approvalRequest,
+  candidateId) {
+  const expectedCandidateDigest = FINAL_AUDIT_CANDIDATE_DIGESTS[candidateId];
+  const candidate = overlay.candidates.find(({ candidate_id: id }) =>
+    id === candidateId);
+  if (!candidate || !expectedCandidateDigest
+      || overlay.overlay_digest !== FINAL_AUDIT_OVERLAY_DIGEST
+      || approvalRequest.request_digest !== FINAL_AUDIT_REQUEST_DIGEST
+      || candidate.candidate_digest !== expectedCandidateDigest) throw new Error(
+    'PROCEDURAL_FINAL_AUDIT_SUBJECT_MISMATCH');
+  const payload = {
+    schema: 'rus.procedural_scene_row_approval_attestation.v1',
+    candidate_ref: `${candidate.candidate_id}@${candidate.version}`,
+    subject_commit_sha: FINAL_AUDIT_SUBJECT_COMMIT,
+    candidate_path:
+      'data/world-catalogs/novgorod/procedural-scene-v2/authoring-overlay.json',
+    overlay_digest: FINAL_AUDIT_OVERLAY_DIGEST,
+    approval_request_digest: FINAL_AUDIT_REQUEST_DIGEST,
+    candidate_digest: expectedCandidateDigest,
+    authoring_approved: true, import_authorized: false,
+    activation_authorized: false, activation_request: null,
+    approved_by: 'independent_final_audit',
+    approval_scope: 'authoring_row_only',
+    verification: candidate.evidence_claims.map(({ claim_ref: claimRef,
+      verification_ref: verificationRef, review_ref: reviewRef, limits }) => ({
+      claim_ref: claimRef, verification_ref: verificationRef,
+      review_ref: reviewRef, limits })),
+    ...(candidate.family === 'natural_shore' ? {
+      forbidden_implications: [...candidate.forbidden_implications],
+      materialization_limits: [...candidate.materialization_limits]
+    } : { data_gap_codes: [...candidate.data_gap_codes],
+      forbidden_implications: [...candidate.forbidden_implications] })
+  };
+  return { ...payload, attestation_digest: digest(payload) };
+}
+
 function claimProjection(pack, claimRef, packId, reviewByClaim,
   verificationByClaim) {
   const claim = exact(pack.claims, claimRef, 'claim_ref');
@@ -350,10 +398,18 @@ async function main(argv) {
   const overlay = await generateProceduralV6AuthoringOverlay(root);
   const attestation = buildProceduralV6DryingAttestation(overlay);
   const request = buildProceduralV6ApprovalRequest(overlay, attestation);
+  const naturalAttestation = buildProceduralV6FinalRowAttestation(overlay,
+    request, 'novgorod_natural_shore_v3');
+  const fishingAttestation = buildProceduralV6FinalRowAttestation(overlay,
+    request, 'novgorod_inland_fishing_worksite_v3');
   const outputs = [[resolve(directory, 'authoring-overlay.json'), overlay],
     [resolve(directory, 'approval-request.json'), request],
     [resolve(directory, 'drying-storage-workspace-approval-attestation.json'),
-      attestation]];
+      attestation],
+    [resolve(directory, 'natural-shore-approval-attestation.json'),
+      naturalAttestation],
+    [resolve(directory, 'inland-fishing-worksite-approval-attestation.json'),
+      fishingAttestation]];
   if (argv.includes('--check')) {
     for (const [path, value] of outputs) if (await readFile(path, 'utf8')
       !== `${JSON.stringify(value, null, 2)}\n`) throw new Error(

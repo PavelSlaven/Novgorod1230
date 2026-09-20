@@ -70,8 +70,10 @@ and no gameplay/model acceptance run may claim procedural baseline coverage.
   `NOT ACTIVE`; this PR does not consume them as runtime truth;
 - enriched occupations/social roles plus approved legal/social-position seeds:
   usable for NPC schedule, property, knowledge, behavior, relationships and goals;
-- actor demographic/appearance catalog and `materializeActorBaseAppearance`:
-  usable for code-owned appearance;
+- actor demographic/appearance owner and `materializeActorBaseAppearance`:
+  implementation is usable, but exact current-v6 active readback contains no
+  applicable entries because the appearance candidate activation is false;
+  runtime wiring therefore remains blocked instead of falling back to candidate data;
 - Temporal v4 daylight/weather/activity/body-time/remote-catchup/propagation:
   usable through existing owners;
 - draft name pools: not usable; ordinary unrecognized label remains player-safe

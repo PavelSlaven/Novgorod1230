@@ -145,7 +145,9 @@ export async function runLocalProviderBrowserAcceptance({ outputDirectory,
       await page.waitForSelector('[data-new-game-screen]');
       await page.click(`[data-scenario-id="${scenarioId}"]`);
     }
-    await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+    await page.waitForSelector('[data-turn-form] textarea:not([disabled])', {
+      timeout: 20 * 60_000
+    });
     const partyId = resume ? report.party_id : await page.evaluate(() =>
       globalThis.localStorage.getItem('rus.party_id'));
     if (!partyId) throw new Error('Browser UI did not persist party identity.');

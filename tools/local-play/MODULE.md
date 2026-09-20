@@ -80,7 +80,9 @@ Private terminal observer читает committed Phase 10 state и ready present
 через PostgreSQL owners только после хода; PLAYER по-прежнему получает лишь DOM.
 120 секунд ограничивают отдельный LLM transport call; browser runner ждёт весь
 составной ход до 20 минут, потому что он включает несколько последовательных
-production roles.
+production roles. Authored new-game opening после scenario selection ждёт тот
+же composed 20-minute bound для последовательных Stage 22/23 roles; это не
+увеличивает timeout отдельного model call.
 
 ## Не владеет
 

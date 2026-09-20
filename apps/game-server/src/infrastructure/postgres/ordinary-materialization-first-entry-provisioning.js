@@ -36,7 +36,7 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
       }
       const scope = { entity_kind: 'g6', entity_id: firstEntryBinding.g6_instance_id };
-      const sceneProfile = await resolveSceneProfile(transaction,
+      const sceneProfile = await resolveFirstEntrySceneProfile(transaction,
         sceneBaselineCatalog, partyId, firstEntryBinding);
       const rows = buildRows({ profile, partyId, scope,
         positionRef: firstEntryBinding.position_id,
@@ -277,12 +277,14 @@ function seedInitialScene({ profile, request, initial, committedBasis,
   }
 }
 
-async function resolveSceneProfile(transaction, catalog, partyId, binding) {
+export async function resolveFirstEntrySceneProfile(transaction, catalog,
+  partyId, binding) {
   if (catalog == null) return null;
   let ref = binding.location_ref;
   if (!text(ref) && text(binding.scene_baseline_id)) {
     const row = await transaction.query(
-      `SELECT scene_template_ref->>'entity_id' AS scene_template_ref
+      `SELECT COALESCE(scene_template_ref->'entity_ref'->>'entity_id',
+                       scene_template_ref->>'entity_id') AS scene_template_ref
          FROM party_runtime.party_scene_baselines
         WHERE party_id=$1 AND id=$2 AND status='active'`,
       [partyId, binding.scene_baseline_id]);

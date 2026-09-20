@@ -14,7 +14,13 @@ const EXPECTED = Object.freeze({
   request: '046344b570789b008da8685d0dad3824512d529f9c161a122ecdc59e3cb73771',
   targetRevision: 'world_revision_novgorod_1230_item_container_approved_001',
   targetCatalog: 'a24fe55497a8aca018fa28a43ab1f54e26e2f30a5c74931ed2570ab69bc07a87',
-  overlay: '52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3'
+  overlay: '52702c0010adc3e3235fd6a6417a10b28f7627d428e65f9dd48e74c3fb19cda3',
+  functionalSubjectCommit:
+    '13da77a208e0a03f1a96a427ccf9d7759956aa21',
+  functionalCandidate:
+    'aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588',
+  functionalRequest:
+    '229fa7d273e2201bd47d3cac75122507762a7ef7675a9bc25a89f2ff0c188245'
 });
 const REQUIRED_SOURCE_SCOPES = Object.freeze([
   'construction', 'historical_presence', 'material', 'physical_parameter'
@@ -189,6 +195,45 @@ export async function generateProceduralFunctionalMappings(rootDir,
   };
   return { candidate, approvalRequest: { ...requestPayload,
     request_digest: digest(requestPayload) } };
+}
+
+export function buildProceduralFunctionalMappingAttestation(candidate,
+  approvalRequest) {
+  if (candidate.candidate_digest !== EXPECTED.functionalCandidate
+      || approvalRequest.request_digest !== EXPECTED.functionalRequest
+      || approvalRequest.candidate_digest !== EXPECTED.functionalCandidate
+      || approvalRequest.candidate_ref !==
+        'novgorod_procedural_functional_mapping_candidate_001@1')
+    fail('FUNCTIONAL_APPROVAL_SUBJECT_MISMATCH');
+  const payload = {
+    schema: 'rus.procedural_scene_functional_mapping_approval_attestation.v1',
+    decision: 'approve_functional_mapping_candidate',
+    subject_commit_sha: EXPECTED.functionalSubjectCommit,
+    request_digest: EXPECTED.functionalRequest,
+    candidate_ref: approvalRequest.candidate_ref,
+    candidate_digest: EXPECTED.functionalCandidate,
+    authoring_approved: true,
+    approval_scope: 'authoring_mapping_only',
+    approved_by: 'independent_reaudit',
+    import_authorized: false,
+    activation_authorized: false,
+    activation_request: null,
+    mapping_ids: [...approvalRequest.mapping_ids],
+    remaining_gap_codes: [...approvalRequest.remaining_gap_codes],
+    limits: {
+      runtime_instance_authorized: false,
+      stock_authorized: false,
+      container_authorized: false,
+      process_authorized: false,
+      operation_authorized: false,
+      active_operation_requires: [
+        'separate_approved_process_mapping',
+        'committed_finite_source'
+      ],
+      remaining_gaps_preserved: true
+    }
+  };
+  return { ...payload, attestation_digest: digest(payload) };
 }
 
 export function validateProceduralFunctionalMappingCandidate(candidate) {
@@ -417,9 +462,12 @@ async function json(path) { return JSON.parse(await readFile(path, 'utf8')); }
 async function main(argv) {
   const root = resolve(argv.find((arg) => !arg.startsWith('--')) ?? '.');
   const result = await generateProceduralFunctionalMappings(root);
+  const attestation = buildProceduralFunctionalMappingAttestation(
+    result.candidate, result.approvalRequest);
   const outputs = [
     [resolve(root, OUTPUT_ROOT, 'candidate.json'), result.candidate],
-    [resolve(root, OUTPUT_ROOT, 'approval-request.json'), result.approvalRequest]
+    [resolve(root, OUTPUT_ROOT, 'approval-request.json'), result.approvalRequest],
+    [resolve(root, OUTPUT_ROOT, 'approval-attestation.json'), attestation]
   ];
   if (argv.includes('--validate')) {
     for (const [path, expected] of outputs) {
@@ -443,7 +491,8 @@ async function main(argv) {
     mode: argv.includes('--validate') ? 'validate'
       : argv.includes('--check') ? 'check' : 'write',
     candidate_digest: result.candidate.candidate_digest,
-    request_digest: result.approvalRequest.request_digest }, null, 2)}\n`);
+    request_digest: result.approvalRequest.request_digest,
+    attestation_digest: attestation.attestation_digest }, null, 2)}\n`);
 }
 
 if (process.argv[1]

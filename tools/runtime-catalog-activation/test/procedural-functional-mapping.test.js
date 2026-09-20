@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { generateProceduralFunctionalMappings,
+import { buildProceduralFunctionalMappingAttestation,
+  generateProceduralFunctionalMappings,
   validateProceduralFunctionalMappingCandidate } from
   '../../../scripts/generate-procedural-functional-mappings.mjs';
 
@@ -23,6 +24,10 @@ test('functional candidate and request are byte-stable and non-executable',
       `${JSON.stringify(first.candidate, null, 2)}\n`);
     assert.equal(await readFile(new URL('approval-request.json', directory),
       'utf8'), `${JSON.stringify(first.approvalRequest, null, 2)}\n`);
+    const attestation = buildProceduralFunctionalMappingAttestation(
+      first.candidate, first.approvalRequest);
+    assert.equal(await readFile(new URL('approval-attestation.json', directory),
+      'utf8'), `${JSON.stringify(attestation, null, 2)}\n`);
     for (const value of [first.candidate, first.approvalRequest]) {
       assert.equal(value.import_authorized, false);
       assert.equal(value.activation_authorized, false);
@@ -34,6 +39,32 @@ test('functional candidate and request are byte-stable and non-executable',
       'pending_independent_review');
     assert.equal(first.approvalRequest.authoring_approval,
       'pending_independent_review');
+    assert.equal(attestation.schema,
+      'rus.procedural_scene_functional_mapping_approval_attestation.v1');
+    assert.equal(attestation.decision,
+      'approve_functional_mapping_candidate');
+    assert.equal(attestation.subject_commit_sha,
+      '13da77a208e0a03f1a96a427ccf9d7759956aa21');
+    assert.equal(attestation.request_digest,
+      '229fa7d273e2201bd47d3cac75122507762a7ef7675a9bc25a89f2ff0c188245');
+    assert.equal(attestation.candidate_digest,
+      'aac8ef388fee279d653832de033ce9b23c85fb371c159eb828e97b56080b0588');
+    assert.equal(attestation.authoring_approved, true);
+    assert.equal(attestation.approval_scope, 'authoring_mapping_only');
+    assert.equal(attestation.approved_by, 'independent_reaudit');
+    assert.equal(attestation.import_authorized, false);
+    assert.equal(attestation.activation_authorized, false);
+    assert.equal(attestation.activation_request, null);
+    assert.deepEqual(attestation.mapping_ids,
+      first.approvalRequest.mapping_ids);
+    assert.deepEqual(attestation.remaining_gap_codes,
+      first.approvalRequest.remaining_gap_codes);
+    assert.deepEqual(attestation.limits.active_operation_requires,
+      ['separate_approved_process_mapping', 'committed_finite_source']);
+    assert.equal(attestation.limits.remaining_gaps_preserved, true);
+    assert.ok(['runtime_instance_authorized', 'stock_authorized',
+      'container_authorized', 'process_authorized', 'operation_authorized']
+      .every((key) => attestation.limits[key] === false));
   });
 
 test('mapping uses IDs, never display names', async () => {

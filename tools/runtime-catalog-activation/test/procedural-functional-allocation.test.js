@@ -38,9 +38,7 @@ test('unseen equivalent fisher identity resolves without identity branch',
         activity_profile_refs: ['activity_assist_fishing_net_v1'] }],
       persistedPositions: [{ actor_instance_id: 'actor:unseen-987',
         function_layer: 'work_zone', state: 'committed',
-        position_id: 'position:persisted-1' }],
-      inventoryState: { mass_grams: 0, capacity_grams: 6000,
-        external_hand_cost: 0, external_hand_capacity: 2 }
+        position_id: 'position:persisted-1' }]
     });
     assert.deepEqual(resolved.allocations.map(({ layer }) => layer),
       ['tool', 'work_material']);
@@ -75,9 +73,7 @@ test('selection is input-order independent and rejects duplicate actor ids',
       actor_instance_id: id, function_layer: 'work_zone', state: 'committed',
       position_id: `position:${id}` }));
     const resolve = (actors) => resolveProceduralFunctionalAllocations({
-      policy: candidate.policies[0], actors, persistedPositions: positions,
-      inventoryState: { mass_grams: 0, capacity_grams: 6000,
-        external_hand_cost: 0, external_hand_capacity: 2 } });
+      policy: candidate.policies[0], actors, persistedPositions: positions });
     assert.equal(resolve([actor('actor:z'), actor('actor:a')]).actor_instance_id,
       'actor:a');
     assert.equal(resolve([actor('actor:a'), actor('actor:z')]).actor_instance_id,
@@ -95,11 +91,9 @@ test('reuse, duplicate item and mechanics guards are fail-closed', async () => {
     activity_profile_refs: ['activity_assist_fishing_net_v1'] }];
   const persistedPositions = [{ actor_instance_id: 'actor:f',
     function_layer: 'work_zone', state: 'committed', position_id: 'position:f' }];
-  const mechanics = { mass_grams: 0, capacity_grams: 6000,
-    external_hand_cost: 0, external_hand_capacity: 2 };
   const tool = policy.allocations[0];
   const reused = resolveProceduralFunctionalAllocations({ policy, actors: actor,
-    persistedPositions, inventoryState: mechanics, existingItems: [{
+    persistedPositions, existingItems: [{
       item_instance_id: 'item:net', actor_instance_id: 'actor:f',
       item_template_ref: tool.item_template_ref, state: 'committed',
       owner_id: 'actor:f', holder_id: 'actor:f', controller_id: 'actor:f',
@@ -111,7 +105,7 @@ test('reuse, duplicate item and mechanics guards are fail-closed', async () => {
         .update(JSON.stringify(tool.source_binding_refs)).digest('hex') }] });
   assert.equal(reused.allocations[0].disposition, 'reuse');
   assert.throws(() => resolveProceduralFunctionalAllocations({ policy,
-    actors: actor, persistedPositions, inventoryState: mechanics, existingItems: [
+    actors: actor, persistedPositions, existingItems: [
       { item_instance_id: 'duplicate', actor_instance_id: 'actor:f',
         item_template_ref: tool.item_template_ref },
       { item_instance_id: 'duplicate', actor_instance_id: 'actor:f',
@@ -119,9 +113,8 @@ test('reuse, duplicate item and mechanics guards are fail-closed', async () => {
   { code: 'FUNCTIONAL_CROSS_LAYER_REUSE_INVALID' });
   assert.throws(() => resolveProceduralFunctionalAllocations({ policy,
     actors: actor, persistedPositions,
-    inventoryState: { mass_grams: 0, capacity_grams: 1,
-      external_hand_cost: 0, external_hand_capacity: 0 } }),
-  { code: 'FUNCTIONAL_MECHANICS_OVERFLOW' });
+    inventorySummary: { mass_grams: 0, capacity_grams: 1 } }),
+  { code: 'FUNCTIONAL_CALLER_MECHANICS_SUMMARY_FORBIDDEN' });
 });
 // End of functional allocation authoring probes.
 test('missing personal property row blocks authoring generation', async () => {
@@ -135,6 +128,21 @@ test('missing personal property row blocks authoring generation', async () => {
       payload.canonical_fields.id !== 'property_personal_possession_v1');
   await assert.rejects(() => generateProceduralFunctionalAllocations(root, {
     [path]: pack
-  }), { code: 'FUNCTIONAL_PROPERTY_BASIS_INVALID' });
+  }), (error) => ['FINAL_PACK_DIGEST_MISMATCH',
+    'FUNCTIONAL_PROPERTY_BASIS_INVALID'].includes(error.code));
+});
+
+test('stale digest owner-kind tamper is rejected', async () => {
+  const path = 'data/world-catalogs/novgorod/procedural-scene-v2/final-candidate-pack-v1/candidate.json';
+  const pack = JSON.parse(await import('node:fs/promises').then(({ readFile }) =>
+    readFile(new URL(`../../../${path}`, import.meta.url), 'utf8')));
+  const record = pack.record_operations_by_table.find(
+    ({ table_name: table }) => table === 'property_profile_rules').records.find(
+    ({ canonical_payload: payload }) => payload.canonical_fields.id ===
+      'rule_property_personal_possession_v1');
+  record.canonical_payload.canonical_fields.owner_kind = 'household';
+  await assert.rejects(() => generateProceduralFunctionalAllocations(root, {
+    [path]: pack
+  }), { code: 'FINAL_PACK_DIGEST_MISMATCH' });
 });
 

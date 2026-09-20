@@ -153,7 +153,20 @@
           "07c72e905e359513ed7402284327f8862702bba60132aed8b2fa86ebc3529dee",
           "6d1ea2f0b7ee6d761466689bfa4b7a1b243cf44f9e1d900629b18af7eb3af78b"
         ],
-        "approved_creation_source_ref": "src_gameplay_physical_policy_v3"
+        "actor_scene_package_refs_required": true
+      },
+      "creation_authority": {
+        "authority_kind": "actor_allocation_policy_after_independent_attestation",
+        "status": "pending_independent_attestation",
+        "functional_mapping_ids": [
+          "fishing_tool_group_v1",
+          "fishing_work_material_group_v1"
+        ],
+        "activity_profile_ref": "activity_assist_fishing_net_v1",
+        "v5_record_digests": [
+          "07c72e905e359513ed7402284327f8862702bba60132aed8b2fa86ebc3529dee",
+          "6d1ea2f0b7ee6d761466689bfa4b7a1b243cf44f9e1d900629b18af7eb3af78b"
+        ]
       },
       "limits": {
         "site_or_unowned_item_authorized": false,
@@ -169,18 +182,25 @@
     "novgorod_natural_shore_v3@1"
   ],
   "typed_gap_reconciliation": {
-    "resolved_when_policy_applicable": [
+    "resolved_only_after_runtime_inventory_owner_success": [
       "FUNCTIONAL_TOOL_MAPPING_MISSING",
       "FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING"
     ],
-    "remains_when_no_matching_actor": [
-      "FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING",
-      "FUNCTIONAL_ACTOR_ID_AMBIGUOUS",
+    "authoring_gaps": [
       "FUNCTIONAL_PROPERTY_BASIS_INVALID",
-      "FUNCTIONAL_PLACEMENT_INVALID",
-      "FUNCTIONAL_SOURCE_REF_INVALID",
-      "FUNCTIONAL_CROSS_LAYER_REUSE_INVALID",
-      "FUNCTIONAL_MECHANICS_OVERFLOW"
+      "FUNCTIONAL_SOURCE_REF_INVALID"
+    ],
+    "actor_resolution_gaps": [
+      "FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING",
+      "FUNCTIONAL_ACTOR_ID_AMBIGUOUS"
+    ],
+    "placement_gaps": [
+      "FUNCTIONAL_PLACEMENT_INVALID"
+    ],
+    "runtime_inventory_owner_gaps": [
+      "FUNCTIONAL_MECHANICS_INPUT_MISSING",
+      "FUNCTIONAL_REUSE_PROJECTION_INVALID",
+      "FUNCTIONAL_CROSS_LAYER_REUSE_INVALID"
     ],
     "always_remaining": [
       "FUNCTIONAL_CONTAINER_MAPPING_MISSING"
@@ -190,5 +210,5 @@
   "runtime_authorized": false,
   "activation_authorized": false,
   "activation_request": null,
-  "candidate_digest": "69d321d3de1a4b4fabb9f923af19cb234480638e35fb21f02d0ee8d1a44d9725"
+  "candidate_digest": "f1d6d7ac91322f9ad64f6cd64b36a87b4be21730c623218ffbcf8cf7080db950"
 }

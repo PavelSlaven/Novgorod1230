@@ -4,6 +4,10 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { ACTOR_ITEM_PHYSICAL_POSITIONS } from
   '../packages/items-property/src/index.js';
+import { computeCanonicalRecordDigest } from
+  '../packages/runtime-catalog/src/canonical-records.js';
+import { validateProceduralFinalCandidatePack } from
+  './generate-procedural-final-candidate-pack.mjs';
 
 const OUTPUT =
   'data/world-catalogs/novgorod/procedural-scene-v2/functional-allocation-v1';
@@ -29,6 +33,7 @@ export async function generateProceduralFunctionalAllocations(rootDir,
       || equipment.candidate_digest !==
       '0464092cfebd2873054363ae961c024a3155f1a9d9cdd654b6bc2361924c2181')
     fail('FUNCTIONAL_ALLOCATION_SOURCE_MISMATCH');
+  validateProceduralFinalCandidatePack(finalPack);
   const toolGroup = functional.mappings.find(({ mapping_id: id }) =>
     id === 'fishing_tool_group_v1');
   const materialGroup = functional.mappings.find(({ mapping_id: id }) =>
@@ -104,8 +109,15 @@ export async function generateProceduralFunctionalAllocations(rootDir,
         propertyRule.canonical_fields.id],
       property_record_digests: [propertyProfile.record_digest,
         propertyRule.record_digest],
-      approved_creation_source_ref:
-        'src_gameplay_physical_policy_v3'
+      actor_scene_package_refs_required: true
+    },
+    creation_authority: {
+      authority_kind: 'actor_allocation_policy_after_independent_attestation',
+      status: 'pending_independent_attestation',
+      functional_mapping_ids: [toolGroup.mapping_id, materialGroup.mapping_id],
+      activity_profile_ref: 'activity_assist_fishing_net_v1',
+      v5_record_digests: [propertyProfile.record_digest,
+        propertyRule.record_digest]
     },
     limits: {
       site_or_unowned_item_authorized: false,
@@ -131,19 +143,18 @@ export async function generateProceduralFunctionalAllocations(rootDir,
     unaffected_families: ['novgorod_drying_storage_workspace_v3@1',
       'novgorod_natural_shore_v3@1'],
     typed_gap_reconciliation: {
-      resolved_when_policy_applicable: [
+      resolved_only_after_runtime_inventory_owner_success: [
         'FUNCTIONAL_TOOL_MAPPING_MISSING',
         'FUNCTIONAL_WORK_MATERIAL_MAPPING_MISSING'
       ],
-      remains_when_no_matching_actor: [
-        'FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING',
-        'FUNCTIONAL_ACTOR_ID_AMBIGUOUS',
-        'FUNCTIONAL_PROPERTY_BASIS_INVALID',
-        'FUNCTIONAL_PLACEMENT_INVALID',
-        'FUNCTIONAL_SOURCE_REF_INVALID',
-        'FUNCTIONAL_CROSS_LAYER_REUSE_INVALID',
-        'FUNCTIONAL_MECHANICS_OVERFLOW'
-      ],
+      authoring_gaps: ['FUNCTIONAL_PROPERTY_BASIS_INVALID',
+        'FUNCTIONAL_SOURCE_REF_INVALID'],
+      actor_resolution_gaps: ['FUNCTIONAL_ACTOR_SOURCE_BASIS_MISSING',
+        'FUNCTIONAL_ACTOR_ID_AMBIGUOUS'],
+      placement_gaps: ['FUNCTIONAL_PLACEMENT_INVALID'],
+      runtime_inventory_owner_gaps: ['FUNCTIONAL_MECHANICS_INPUT_MISSING',
+        'FUNCTIONAL_REUSE_PROJECTION_INVALID',
+        'FUNCTIONAL_CROSS_LAYER_REUSE_INVALID'],
       always_remaining: ['FUNCTIONAL_CONTAINER_MAPPING_MISSING']
     },
     import_authorized: false, runtime_authorized: false,
@@ -163,7 +174,9 @@ export async function generateProceduralFunctionalAllocations(rootDir,
 }
 
 export function resolveProceduralFunctionalAllocations({ policy, actors,
-  persistedPositions, existingItems = [], inventoryState }) {
+  persistedPositions, existingItems = [], ...forbiddenSummary }) {
+  if (Object.keys(forbiddenSummary).length > 0)
+    fail('FUNCTIONAL_CALLER_MECHANICS_SUMMARY_FORBIDDEN');
   const ids = actors.map(({ actor_instance_id: id }) => id);
   if (ids.some((id) => typeof id !== 'string' || !id)
       || new Set(ids).size !== ids.length) fail('FUNCTIONAL_ACTOR_ID_AMBIGUOUS');
@@ -189,11 +202,6 @@ export function resolveProceduralFunctionalAllocations({ policy, actors,
   if (existingIds.some((id) => !id)
       || new Set(existingIds).size !== existingIds.length)
     fail('FUNCTIONAL_CROSS_LAYER_REUSE_INVALID');
-  if (!inventoryState || !Number.isFinite(inventoryState.mass_grams)
-      || !Number.isFinite(inventoryState.capacity_grams)
-      || !Number.isInteger(inventoryState.external_hand_cost)
-      || !Number.isInteger(inventoryState.external_hand_capacity))
-    fail('FUNCTIONAL_MECHANICS_INPUT_MISSING');
   const used = new Set();
   const allocations = policy.allocations.map((entry) => {
     const existing = existingItems.filter((item) =>
@@ -231,18 +239,19 @@ export function resolveProceduralFunctionalAllocations({ policy, actors,
   });
   if (new Set(allocations.map(({ item_instance_id: id }) => id)).size
       !== allocations.length) fail('FUNCTIONAL_CROSS_LAYER_REUSE_INVALID');
-  const created = allocations.filter(({ disposition }) =>
-    disposition === 'create');
-  const addedMass = created.reduce((sum, row) => sum + row.mass_grams, 0);
-  const addedHands = created.reduce((sum, row) =>
-    sum + row.external_hand_cost, 0);
-  if (inventoryState.mass_grams + addedMass > inventoryState.capacity_grams
-      || inventoryState.external_hand_cost + addedHands
-        > inventoryState.external_hand_capacity)
-    fail('FUNCTIONAL_MECHANICS_OVERFLOW');
   return Object.freeze({ schema: 'rus.p16.actor_item_allocation_plan.v1',
     actor_instance_id: actor.actor_instance_id,
-    expected_inventory_state: structuredClone(inventoryState),
+    validation_owner: {
+      module: '@rus/items-property',
+      functions: ['validateInventoryTopology', 'calculateInventoryMass',
+        'calculateHandsState'],
+      input: 'persisted_full_actor_inventory_snapshot'
+    },
+    topology_requirements: {
+      allowed_physical_positions: [...policy.placement.allowed_physical_positions],
+      exact_owner_holder_controller: true,
+      quantity: 1
+    },
     allocations: Object.freeze(allocations), readiness: 'resolved' });
 }
 
@@ -274,6 +283,9 @@ function approvedRecord(pack, table, predicate) {
       || matches[0].canonical_payload.canonical_fields.status !== 'approved')
     fail(table.startsWith('property_') ? 'FUNCTIONAL_PROPERTY_BASIS_INVALID'
       : 'FUNCTIONAL_SOURCE_REF_INVALID');
+  if (computeCanonicalRecordDigest(matches[0].canonical_payload)
+      !== matches[0].record_digest)
+    fail('FUNCTIONAL_SOURCE_REF_INVALID');
   return { canonical_fields:
     structuredClone(matches[0].canonical_payload.canonical_fields),
   record_digest: matches[0].record_digest };

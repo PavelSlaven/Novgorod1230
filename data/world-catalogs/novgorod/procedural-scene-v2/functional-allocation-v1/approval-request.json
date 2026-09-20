@@ -1,10 +1,10 @@
 {
   "schema": "rus.procedural_functional_allocation_approval_request.v1",
   "decision_requested": "review_functional_actor_allocation_authoring",
-  "candidate_digest": "69d321d3de1a4b4fabb9f923af19cb234480638e35fb21f02d0ee8d1a44d9725",
+  "candidate_digest": "f1d6d7ac91322f9ad64f6cd64b36a87b4be21730c623218ffbcf8cf7080db950",
   "authoring_scope": "functional_actor_allocation_only",
   "import_authorized": false,
   "runtime_authorized": false,
   "activation_authorized": false,
-  "request_digest": "8b8899a4dd87d67c2c970fa6ca4ec2e40fb9d865fb7c25ae5db4c03e2163efc8"
+  "request_digest": "cf0a78d75306f88cbec9ad273d14c420cc8119e1b823af7783699e8389760fe9"
 }

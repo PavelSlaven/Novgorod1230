@@ -73,6 +73,12 @@ LLM boundaries from exact approved enriched role/occupation rows. Every field
 keeps its owner source ref. Missing source data or incompatible role/occupation
 blocks before party commit; this basis does not fabricate concrete equipment.
 
+`deriveApprovedInitialEnvironment` computes first-entry season/light and one
+weighted weather state from exact approved Temporal v4 calendar/daylight and
+weather records plus the pinned materialization RNG. It preserves owner refs
+and exact daylight boundaries; missing date coverage or weather candidates is a
+typed data gap. It does not accept authored light/weather prose.
+
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не
 читает БД, не выполняет commit и не активирует production O1 route. Он только
 валидирует code-owned inputs и возвращает immutable logical state/result.

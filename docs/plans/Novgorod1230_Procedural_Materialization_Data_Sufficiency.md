@@ -75,6 +75,8 @@ and no gameplay/model acceptance run may claim procedural baseline coverage.
   applicable entries because the appearance candidate activation is false;
   runtime wiring therefore remains blocked instead of falling back to candidate data;
 - Temporal v4 daylight/weather/activity/body-time/remote-catchup/propagation:
-  usable through existing owners;
+  usable through existing owners; initial environment derivation is implemented
+  and tested, but production loading remains gated on exact profile pins in the
+  compiled scene artifact;
 - draft name pools: not usable; ordinary unrecognized label remains player-safe
   until a name has approved/authored basis.

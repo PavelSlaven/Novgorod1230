@@ -1,0 +1,17 @@
+{
+  "schema": "rus.npc_equipment_profile_approval_request.v1",
+  "request_id": "novgorod_npc_equipment_profiles_review_001",
+  "decision_requested": "review_npc_equipment_profile_candidate",
+  "authoring_approval": "pending_independent_review",
+  "import_authorized": false,
+  "activation_authorized": false,
+  "activation_request": null,
+  "candidate_ref": "novgorod_npc_equipment_profiles_candidate_001@1",
+  "candidate_digest": "d6ddadb7cc099e8330f5f5511ae656bb7bf208a4b2c19edf084de7c06ede807f",
+  "profile_ids": [
+    "novgorod_commoner_male_basic_clothing_v1",
+    "novgorod_fishing_water_equipment_v1",
+    "novgorod_transport_guiding_equipment_v1"
+  ],
+  "request_digest": "5a1d019cae6a002bd4249db27a7a505f4adf03e067f3630bdf9befcabfd95cb8"
+}

@@ -1,0 +1,142 @@
+{
+  "schema": "rus.npc_equipment_profile_authoring.v1",
+  "authoring_id": "novgorod_npc_equipment_profiles_001",
+  "version": 1,
+  "status": "authoring_candidate",
+  "social_clothing_profiles": [
+    {
+      "profile_id": "novgorod_commoner_male_basic_clothing_v1",
+      "role_refs": [
+        "nov_role_boatman",
+        "nov_role_fisher"
+      ],
+      "social_class_ref": "free_commoner",
+      "legal_status_ref": "free",
+      "status_band": "low-middle",
+      "sex_applicability": [
+        "male"
+      ],
+      "body_stage_applicability": [
+        "adult"
+      ],
+      "season_applicability": [
+        "spring_rasputitsa",
+        "summer",
+        "autumn",
+        "winter"
+      ],
+      "required_slots": [
+        "base_garment",
+        "outer_garment"
+      ],
+      "property_profile_ref": "property_context_household_personal_v1",
+      "property_rule_ref": "rule_property_context_household_personal_v1",
+      "entries": [
+        {
+          "equipment_slot": "base_garment",
+          "item_template_ref": "item_tpl_nov_linen_shirt_v1",
+          "source_profile_ref": "profile_household_personal_v3",
+          "applicable_seasons": [
+            "spring_rasputitsa",
+            "summer",
+            "autumn",
+            "winter"
+          ],
+          "required_seasons": [
+            "spring_rasputitsa",
+            "summer",
+            "autumn",
+            "winter"
+          ]
+        },
+        {
+          "equipment_slot": "outer_garment",
+          "item_template_ref": "item_tpl_nov_wool_outer_garment_v1",
+          "source_profile_ref": "profile_household_personal_v3",
+          "applicable_seasons": [
+            "spring_rasputitsa",
+            "summer",
+            "autumn",
+            "winter"
+          ],
+          "required_seasons": [
+            "spring_rasputitsa",
+            "autumn",
+            "winter"
+          ]
+        }
+      ],
+      "excluded_expensive_or_status_items": [
+        "item_tpl_nov_boots_v1",
+        "item_tpl_nov_fur_outerwear_v1"
+      ],
+      "typed_gaps": [
+        {
+          "code": "FOOTWEAR_SLOT_NOT_ACTIVE",
+          "status": "not_applicable",
+          "reason": "Approved footwear template exists, but current Stage 16 actor-equipment contract has no active footwear slot."
+        },
+        {
+          "code": "FEMALE_BASIC_CLOTHING_PROFILE_NOT_AUTHORED",
+          "status": "not_applicable",
+          "reason": "No exact sex-compatible lower-body clothing profile is approved in this bounded source set."
+        }
+      ]
+    }
+  ],
+  "occupation_equipment_profiles": [
+    {
+      "profile_id": "novgorod_fishing_water_equipment_v1",
+      "occupation_ref": "nov_occ_fisher",
+      "role_ref": "nov_role_fisher",
+      "occupation_archetype_ref": "fishing_water",
+      "property_profile_ref": "property_context_fishing_v1",
+      "property_rule_ref": "rule_property_context_fishing_v1",
+      "tools": [
+        {
+          "item_template_ref": "item_tpl_nov_fishing_net_v1",
+          "source_profile_ref": "profile_fishing_v3",
+          "semantics": "required_for_bound_activity",
+          "activity_profile_ref": "activity_assist_fishing_net_v1"
+        }
+      ],
+      "containers": [
+        {
+          "container_template_ref": "container_tpl_nov_carrying_basket_v1",
+          "compatibility_relation_ref": "compat_cat_container_form_carrying_basket_v1_content_fish_allowed",
+          "semantics": "optional_if_committed_fish_holder_basis_exists"
+        }
+      ],
+      "typed_gaps": []
+    },
+    {
+      "profile_id": "novgorod_transport_guiding_equipment_v1",
+      "occupation_ref": "nov_occ_boatman",
+      "role_ref": "nov_role_boatman",
+      "occupation_archetype_ref": "transport_guiding",
+      "property_profile_ref": "property_context_household_personal_v1",
+      "property_rule_ref": "rule_property_context_household_personal_v1",
+      "tools": [
+        {
+          "item_template_ref": "item_tpl_nov_rope_v1",
+          "source_profile_ref": "profile_household_personal_v3",
+          "semantics": "optional_occupation_tool",
+          "activity_profile_ref": null
+        }
+      ],
+      "containers": [],
+      "typed_gaps": [
+        {
+          "code": "BOATMAN_CONTAINER_COMPATIBILITY_NOT_APPLICABLE",
+          "status": "not_applicable",
+          "reason": "No exact carried-content domain is required by the bounded occupation profile."
+        },
+        {
+          "code": "BOATMAN_PROPULSION_TOOL_MAPPING_MISSING",
+          "status": "not_applicable",
+          "reason": "Approved V5 rows contain no exact oar or pole item with an active activity binding."
+        }
+      ]
+    }
+  ]
+}

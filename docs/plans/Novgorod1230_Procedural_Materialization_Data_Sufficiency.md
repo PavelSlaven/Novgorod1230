@@ -29,6 +29,38 @@ physical nouns, prose, probabilities or default quantities.
 - every declared applicable required layer must be covered or compilation
   returns `PROCEDURAL_SCENE_PROFILE_DATA_GAP`.
 
+## NPC clothing and occupation-equipment candidate
+
+`procedural-scene-v2/npc-equipment-v1` contains a deterministic two-level
+authoring candidate and a separate independent-review request. It does not
+import or activate data and creates no item/container instance.
+
+- social/basic clothing is role/status/body/season scoped, not NPC- or
+  display-name scoped; current exact Stage 16 slots admit only linen
+  `base_garment` and wool `outer_garment` for the bounded adult-male commoner
+  profile;
+- V5 footwear exists and is approved by the immutable all-120 promotion, but
+  current Stage 16 has no active footwear slot, so footwear remains the typed
+  `FOOTWEAR_SLOT_NOT_ACTIVE` gap instead of receiving an invented slot;
+- occupation equipment resolves exact approved enriched role/occupation and
+  legal/social-position sources; active fishing requires exactly one
+  code-functional net bound to `activity_assist_fishing_net_v1`, while boatman
+  rope remains optional and no absent oar/pole mapping is invented;
+- the optional fisher basket is present only because the exact promoted V5
+  `carrying_basket -> content_fish -> allowed` relation exists; boatman
+  container applicability remains explicitly `not_applicable`;
+- quantity, inventory, profile-entry, source, property/access and
+  owner/holder/controller kinds are inherited unchanged from exact promoted V5
+  rows. Concrete owner, holder and controller assignment remains a later
+  materialization responsibility.
+
+Candidate status is `pending_independent_review`; `import_authorized=false`,
+`activation_authorized=false`, `activation_request=null`. Unknown, ambiguous,
+pending or source-mismatched role/occupation rows fail closed. Raw V5 rows stay
+`draft` in their immutable source bundle and are usable here only through the
+exact digest-bound `approve_all_120` promotion; candidate entries expose this
+as `approved_by_exact_promotion`, never as a rewritten source status.
+
 ## Immutable v6 authoring overlay
 
 `procedural-scene-v2/authoring-overlay.json` revision 3 contains three new
